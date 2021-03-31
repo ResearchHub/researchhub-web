@@ -93,7 +93,8 @@ class PaperDraft extends React.Component {
         setMessage("Edit saved.");
         showMessage({ show: true });
         this.setState({ isSaving: false });
-        setIsInEditMode(true);
+        setIsInEditMode(false);
+        this.editor.blur();
       })
       .catch((err) => {
         setMessage("Something went wrong. Please try again!");
