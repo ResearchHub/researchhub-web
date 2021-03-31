@@ -40,12 +40,6 @@ function PaperDraftInlineCommentTextWrap(
   // console.warn("RESULT: ", isBeingPrompted && !doesCommentExistInStore);
   // console.warn("===============================");
 
-  useEffect(() => {
-    return function cleanup() {
-      unduxStore.set("currentPromptKey")(null);
-    };
-  }, []);
-
   const hidePopoverAndInsertToStore = (event) => {
     updateInlineComment({
       store: unduxStore,
