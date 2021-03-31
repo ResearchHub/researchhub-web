@@ -73,11 +73,9 @@ function getIsReadyForNewInlineComment({
   const isGoodTimeInterval =
     unduxStore.get("lastPromptRemovedTime") === null
       ? true
-      : Date.now() - unduxStore.get("lastPromptRemovedTime") > 1000;
+      : Date.now() - unduxStore.get("lastPromptRemovedTime") > 500; // 300-500 millisec is ui convention
   const activePrompt = unduxStore.get("currentPromptKey");
   const hasActiveCommentPrompt = activePrompt != null;
-  console.warn("PromptKey: ", activePrompt);
-  console.warn("SilencedOnes: ", unduxStore.get("silencedPromptKeys"));
   const currSelection = editorState.getSelection();
   return (
     isGoodTimeInterval &&
@@ -141,7 +139,7 @@ function PaperDraftContainer({
     isDraftInEditMode,
     unduxStore: inlineCommentStore,
   });
-  console.warn("is ready: ", isReadyForNewInlineComment);
+  globalThis.editorState = editorState;
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
@@ -155,6 +153,7 @@ function PaperDraftContainer({
     }
   }, [
     editorState,
+    editorState.getSelection().getAnchorKey(),
     inlineCommentStore.get("currentPromptKey"),
     isReadyForNewInlineComment,
   ]);

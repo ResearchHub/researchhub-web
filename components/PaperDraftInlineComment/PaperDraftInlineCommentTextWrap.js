@@ -18,6 +18,13 @@ function PaperDraftInlineCommentTextWrap(
     !isSilenced && isBeingPrompted
   );
 
+  useEffect(() => {
+    // ensures popover renders properly due to race condition
+    if (!showPopover && isBeingPrompted) {
+      setShowPopover(true);
+    }
+  }, [showPopover, isBeingPrompted]);
+
   const targetInlineComment = useMemo(
     () =>
       findTargetInlineComment({
@@ -30,15 +37,6 @@ function PaperDraftInlineCommentTextWrap(
   );
 
   const doesCommentExistInStore = targetInlineComment != null;
-  console.warn("isBeingPrompted: ", isBeingPrompted);
-  // console.warn("===============================");
-  // console.warn("my entityKey: ", entityKey);
-  // console.warn("prompt: ", unduxStore.get("currentPromptKey"));
-  // console.warn("isBeingPrompted: ", isBeingPrompted);
-  // console.warn("doesCommentExistInStore: ", doesCommentExistInStore);
-  // console.warn("isSilenced: ", isSilenced);
-  // console.warn("RESULT: ", isBeingPrompted && !doesCommentExistInStore);
-  // console.warn("===============================");
 
   const hidePopoverAndInsertToStore = (event) => {
     updateInlineComment({
@@ -62,7 +60,7 @@ function PaperDraftInlineCommentTextWrap(
     /* calvin: below is indeed funcky. 
     we need to figure out a better way to handle this because with deletion, 
     there's a nasty race-condition with the way decorators are being rendered */
-    console.warn("****** hidePopoverAndSilence ******* ");
+    event.stopPropagation();
     unduxStore.set("silencedPromptKeys")(
       new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
     );
