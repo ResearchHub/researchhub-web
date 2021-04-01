@@ -55,8 +55,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    overflow: "auto",
-    width: 350,
+    overflowY: "auto",
   },
   header: {
     alignItems: "center",
