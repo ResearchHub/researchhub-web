@@ -5,16 +5,10 @@ import TextEditor from "../TextEditor";
 type Props = {
   isReadOnly: boolean;
   onCancel: () => void;
-  onChange: (str: any) => void;
   onSubmit: (text: String, plainText: String) => void;
 };
 
-function InlineCommentComposer({
-  isReadOnly,
-  onCancel,
-  onChange,
-  onSubmit,
-}: Props) {
+function InlineCommentComposer({ isReadOnly, onCancel, onSubmit }: Props) {
   return (
     <TextEditor
       canEdit={true}
@@ -23,7 +17,6 @@ function InlineCommentComposer({
       focusEditor={focus}
       initialValue={""}
       onCancel={onCancel}
-      onChange={onChange}
       onSubmit={onSubmit}
       placeholder={"What are your thoughts?"}
       readOnly={isReadOnly}
