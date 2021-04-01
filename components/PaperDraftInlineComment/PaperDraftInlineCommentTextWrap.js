@@ -9,7 +9,7 @@ import InlineCommentUnduxStore, {
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
-  const { blockKey, commentThreadID, entityKey } = props ?? {};
+  const { blockKey, contentState, entityKey } = props ?? {};
   const unduxStore = InlineCommentUnduxStore.useStore();
   const isSilenced = unduxStore.get("silencedPromptKeys").has(entityKey);
   const isBeingPrompted = unduxStore.get("currentPromptKey") === entityKey;
@@ -25,6 +25,9 @@ function PaperDraftInlineCommentTextWrap(
     }
   }, [showPopover, isBeingPrompted]);
 
+  const data = contentState.getEntity(props.entityKey).getData();
+  const { commentThreadID } = data;
+
   const targetInlineComment = useMemo(
     () =>
       findTargetInlineComment({
@@ -35,10 +38,10 @@ function PaperDraftInlineCommentTextWrap(
       }),
     [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
   );
-  console.warn("targetInlineComment @ Wrap: ", targetInlineComment);
+
+  console.warn("At Entity Text: ", commentThreadID);
   const doesCommentExistInStore = targetInlineComment != null;
-  const isCommentSavedInBackend =
-    doesCommentExistInStore && targetInlineComment.commentThreadID != null;
+  const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
 
@@ -76,6 +79,14 @@ function PaperDraftInlineCommentTextWrap(
     setShowPopover(false);
   };
 
+  const openCommentThreadDisplay = (event) => {
+    event.stopPropagation();
+    unduxStore.set("displayableInlineComments")([
+      unduxStore
+        .get("backendInlineComments")
+        .find(({ id }) => id === commentThreadID),
+    ]);
+  };
   return (
     <Popover
       above
@@ -97,6 +108,8 @@ function PaperDraftInlineCommentTextWrap(
           )}
           id={entityKey}
           key={`Popver-Child-${entityKey}`}
+          onClick={openCommentThreadDisplay}
+          role="none"
         >
           {props.children}
         </span>
@@ -108,6 +121,7 @@ function PaperDraftInlineCommentTextWrap(
 
 const styles = StyleSheet.create({
   commentTextHighLight: {
+    cursor: "pointer",
     backgroundColor: "rgb(204 243 221)",
   },
   popoverBodyStyle: {
