@@ -1,5 +1,5 @@
 import { EditorState } from "draft-js";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { emptyFunction } from "./util/PaperDraftUtils";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
@@ -10,10 +10,11 @@ import {
   handleBlockStyleToggle,
   INLINE_COMMENT_MAP,
 } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { inlineCommentFetchAll } from "../InlineCommentDisplay/api/InlineCommentFetch";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
-import { emptyFunction } from "./util/PaperDraftUtils";
 
 function getIsGoodTimeInterval(unixTimeInMilliSec) {
   return unixTimeInMilliSec === null
@@ -71,6 +72,24 @@ export default function PaperDraftContainer({
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
+  useEffect(() => {
+    /* TODO: calvinhlee - discuss actual UI behavior & refactor this out */
+    inlineCommentFetchAll({
+      paperId,
+      onSuccess: (results) => {
+        const inlineComments = results.map((result) => {
+          const { block_key, entity_key, id } = result;
+          return {
+            blockKey: block_key,
+            entityKey: entity_key,
+            commentThreadID: id,
+          };
+        });
+        inlineCommentStore.set("inlineComments")(inlineComments);
+      },
+    });
+  }, [paperId]);
+
   const decorator = useMemo(
     () =>
       getDecorator({
@@ -81,7 +100,6 @@ export default function PaperDraftContainer({
       }),
     [seenEntityKeys, setSeenEntityKeys, setActiveSection]
   );
-
   useEffect(
     /* backend fetch */
     () => {
