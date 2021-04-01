@@ -425,7 +425,6 @@ const Paper = (props) => {
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComment =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
