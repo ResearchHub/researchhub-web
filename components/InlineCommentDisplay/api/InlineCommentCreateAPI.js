@@ -1,18 +1,17 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
-// @ts-ignore
 import { Helpers } from "@quantfive/js-web-config";
-import API from "../../../config/api"; // @ts-ignore
+import API from "../../../config/api";
 import { sendAmpEvent } from "~/config/fetch";
 
-type saveCommentToBackendArgs = {
-  auth: any;
-  onError?: (error: Error) => void;
-  onSuccess: () => void;
-  openRecaptchaPrompt: Function;
-  params: any;
-  setMessage: Function /* undux functino tied to commenting */;
-  showMessage: Function /* undux functino tied to commenting */;
-};
+// type saveCommentToBackendArgs = {
+//   auth: any;
+//   onError?: (error: Error) => void;
+//   onSuccess: (threadID: ID) => void;
+//   openRecaptchaPrompt: Function;
+//   params: any;
+//   setMessage: Function /* undux functino tied to commenting */;
+//   showMessage: Function /* undux functino tied to commenting */;
+// };
 
 export function saveCommentToBackend({
   auth,
@@ -21,7 +20,8 @@ export function saveCommentToBackend({
   params,
   setMessage,
   showMessage,
-}: saveCommentToBackendArgs): void {
+}) {
+  post();
   fetch(
     API.DISCUSSION({ paperId: params.paper, twitter: null }),
     API.POST_CONFIG(params)
@@ -32,22 +32,24 @@ export function saveCommentToBackend({
       showMessage({ show: false });
       setMessage("Successfully Saved!");
       showMessage({ show: true });
+
+      const { id: threadID, is_removed: isRemoved } = resp;
       // amp events
       let payload = {
         event_type: "create_thread",
         time: +new Date(),
         user_id: auth.user ? auth.user.id && auth.user.id : null,
-        // @ts-ignore
-        insert_id: `thread_${resp.id}`,
+
+        insert_id: `thread_${threadID}`,
         event_properties: {
           interaction: "Post Thread",
           paper: params.paper,
-          // @ts-ignore
+
           is_removed: resp.is_removed,
         },
       };
       sendAmpEvent(payload);
-      onSuccess();
+      onSuccess({ threadID });
     })
     .catch((err) => {
       if (err.response.status === 429) {

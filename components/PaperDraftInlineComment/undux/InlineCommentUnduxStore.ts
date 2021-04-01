@@ -24,7 +24,9 @@ export type State = {
   currentPromptKey: ID; // entityKey
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
+  lastSavePaperTime: number | null;
   paperID: ID;
+  shouldSavePaper: boolean; // trigger to trigger background save of the paper
   silencedPromptKeys: Set<ID>; // entityKeys
 };
 export type UpdateInlineCommentArgs = {
@@ -67,6 +69,8 @@ const initialState: State = {
   currentPromptKey: null,
   inlineComments: [],
   lastPromptRemovedTime: null,
+  lastSavePaperTime: null,
+  shouldSavePaper: false,
   silencedPromptKeys: new Set(),
   paperID: null,
 };

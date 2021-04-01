@@ -1,9 +1,7 @@
 import { EditorState } from "draft-js";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Helpers } from "@quantfive/js-web-config";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { getDecorator } from "./util/PaperDraftDecoratorFinders";
-import { fetchPaperDraft } from "~/config/fetch";
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
@@ -12,57 +10,15 @@ import {
   handleBlockStyleToggle,
   INLINE_COMMENT_MAP,
 } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
-import {
-  formatBase64ToEditorState,
-  formatRawJsonToEditorState,
-} from "./util/PaperDraftUtils";
+import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
+import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
+import { emptyFunction } from "./util/PaperDraftUtils";
 
-function paperFetchHook({
-  decorator,
-  paperId,
-  setEditorState,
-  setInitEditorState,
-  setIsFetching,
-  setPaperDraftExists,
-  setPaperDraftSections,
-}) {
-  const handleFetchSuccess = (data) => {
-    const onFormatSuccess = ({ sections }) => {
-      /* logical ordering */
-      setPaperDraftSections(sections);
-      setPaperDraftExists(true);
-      setIsFetching(false);
-    };
-    let digestibleFormat = null;
-    if (typeof data !== "string") {
-      digestibleFormat = formatRawJsonToEditorState({
-        rawJson: data,
-        decorator,
-        onSuccess: onFormatSuccess,
-      });
-    } else {
-      digestibleFormat = formatBase64ToEditorState({
-        base64: data,
-        decorator,
-        onSuccess: onFormatSuccess,
-      });
-    }
-    setInitEditorState(digestibleFormat);
-    setEditorState(digestibleFormat);
-  };
-
-  const handleFetchError = (_err) => {
-    setPaperDraftExists(false);
-    setPaperDraftSections([]);
-    setIsFetching(false);
-  };
-
-  fetchPaperDraft({ paperId })
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then(handleFetchSuccess)
-    .catch(handleFetchError);
+function getIsGoodTimeInterval(unixTimeInMilliSec) {
+  return unixTimeInMilliSec === null
+    ? true
+    : Date.now() - unixTimeInMilliSec > 500; // 300-500 millisec is ui convention
 }
 
 function getIsReadyForNewInlineComment({
@@ -70,24 +26,34 @@ function getIsReadyForNewInlineComment({
   isDraftInEditMode,
   unduxStore,
 }) {
-  const isGoodTimeInterval =
-    unduxStore.get("lastPromptRemovedTime") === null
-      ? true
-      : Date.now() - unduxStore.get("lastPromptRemovedTime") > 500; // 300-500 millisec is ui convention
-  const activePrompt = unduxStore.get("currentPromptKey");
-  const hasActiveCommentPrompt = activePrompt != null;
   const currSelection = editorState.getSelection();
+  const isGoodTimeInterval = getIsGoodTimeInterval(
+    unduxStore.get("lastPromptRemovedTime")
+  );
+  const hasActiveCommentPrompt = unduxStore.get("currentPromptKey") != null;
   return (
+    !isDraftInEditMode &&
     isGoodTimeInterval &&
     !hasActiveCommentPrompt &&
     currSelection != null &&
-    !isDraftInEditMode &&
     !currSelection.isCollapsed()
   );
 }
 
+function getShouldSavePaperSilently({ isDraftInEditMode, unduxStore }) {
+  const isGoodTimeInterval = getIsGoodTimeInterval(
+    unduxStore.get("lastSavePaperTime")
+  );
+  return (
+    !isDraftInEditMode &&
+    isGoodTimeInterval &&
+    unduxStore.get("paperID") != null &&
+    unduxStore.get("shouldSavePaper")
+  );
+}
+
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
-function PaperDraftContainer({
+export default function PaperDraftContainer({
   isViewerAllowedToEdit,
   paperDraftExists,
   paperDraftSections,
@@ -134,6 +100,26 @@ function PaperDraftContainer({
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
+  const shouldSavePaperSilently = getShouldSavePaperSilently({
+    isDraftInEditMode,
+    unduxStore: inlineCommentStore,
+  });
+  useEffect(() => {
+    if (shouldSavePaperSilently) {
+      savePaperSilentlyHook({
+        editorState,
+        onError: () => emptyFunction(""),
+        onSuccess: () => {
+          inlineCommentStore.set("shouldSavePaper")(false);
+          inlineCommentStore.set("lastSavePaperTime")(Date.now());
+          setInitEditorState(editorState);
+        },
+        paperDraftSections,
+        paperId,
+      });
+    }
+  }, [shouldSavePaperSilently]);
+
   const isReadyForNewInlineComment = getIsReadyForNewInlineComment({
     editorState,
     isDraftInEditMode,
@@ -152,7 +138,6 @@ function PaperDraftContainer({
     }
   }, [
     editorState,
-    editorState.getSelection().getAnchorKey(),
     inlineCommentStore.get("currentPromptKey"),
     isReadyForNewInlineComment,
   ]);
@@ -172,7 +157,6 @@ function PaperDraftContainer({
   );
 
   return (
-    // <PaperDraftEventCaptureWrap shouldAllowEventsToPassDown={isDraftInEditMode}>
     <PaperDraft
       textEditorProps={{
         blockStyleFn: getBlockStyleFn,
@@ -192,8 +176,5 @@ function PaperDraftContainer({
       paperDraftSections={paperDraftSections}
       paperId={paperId}
     />
-    // </PaperDraftEventCaptureWrap>
   );
 }
-
-export default PaperDraftContainer;
