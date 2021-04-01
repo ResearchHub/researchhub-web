@@ -2,21 +2,55 @@
 import API from "~/config/api";
 import { DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
+import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 
 /* fetches all inline comments based on paperID */
-export function inlineCommentFetch({ paperId, onSuccess, onError }) {
+export function inlineCommentFetchAll({
+  paperId,
+  onSuccess = emptyFunction,
+  onError = emptyFunction,
+}) {
   fetch(
     API.DISCUSSION({
       paperId,
       source: DISCUSSION_URI_SOUCE,
-      // isRemoved: true,
     }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((data) => {
-      console.warn("yoyoyo: ", data);
+      try {
+        onSuccess(data.results);
+      } catch (error) {
+        onError(error);
+      }
+    })
+    .catch(onError);
+}
+
+export function inlineCommentFetchTarget({
+  paperId,
+  targetId,
+  onSuccess,
+  onError,
+}) {
+  fetch(
+    API.DISCUSSION({
+      paperId,
+      targetId,
+      source: DISCUSSION_URI_SOUCE,
+    }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((data) => {
+      try {
+        onSuccess(data.results);
+      } catch (error) {
+        onError(error);
+      }
     })
     .catch(onError);
 }
