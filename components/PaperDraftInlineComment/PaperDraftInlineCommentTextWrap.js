@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
-import icons from "../../config/themes/icons";
 import InlineCommentUnduxStore, {
   findTargetInlineComment,
   updateInlineComment,
