@@ -80,7 +80,7 @@ function InlineCommentThreadCard({
   };
   return (
     <div
-      className={css(isCommentReadOnly ? styles.hoverPointer : null)}
+      className={css(isCommentReadOnly ? styles.cursurPointer : null)}
       onClick={scrollWindowToHighlight}
       role="none"
     >
@@ -135,8 +135,8 @@ const styles = StyleSheet.create({
     padding: "20px 15px",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
-  hoverPointer: {
-    ":onHover": { cursor: "pointer" },
+  cursurPointer: {
+    cursor: "pointer",
   },
 });
 
