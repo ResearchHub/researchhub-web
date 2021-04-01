@@ -1,4 +1,5 @@
 import { Store, createConnectedStore } from "undux";
+import { EditorState } from "draft-js";
 import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 
 export type ID = string | number | null;
@@ -20,6 +21,10 @@ export type InlineComment = {
   commentThreadID: ID;
   entityKey: string;
 };
+export type PaperDraftState = {
+  editorState: EditorState | null;
+  setEditorState: Function | null;
+};
 export type State = {
   currentPromptKey: ID; // entityKey
   displayableInlineComments: Array<InlineComment>;
@@ -27,6 +32,7 @@ export type State = {
   lastPromptRemovedTime: number | null;
   lastSavePaperTime: number | null;
   paperID: ID;
+  paperDraftState: PaperDraftState;
   shouldSavePaper: boolean; // trigger to trigger background save of the paper
   silencedPromptKeys: Set<ID>; // entityKeys
 };
@@ -65,9 +71,13 @@ const initialState: State = {
   inlineComments: [],
   lastPromptRemovedTime: null,
   lastSavePaperTime: null,
+  paperID: null,
+  paperDraftState: {
+    editorState: EditorState.createEmpty(),
+    setEditorState: emptyFunction,
+  },
   shouldSavePaper: false,
   silencedPromptKeys: new Set(),
-  paperID: null,
 };
 
 export function deleteInlineComment({

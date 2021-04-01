@@ -51,7 +51,6 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   inlineCommentThreadsDisplayBar: {
-    // background: "yellow",
     display: "flex",
     flexDirection: "column",
     height: "100%",
