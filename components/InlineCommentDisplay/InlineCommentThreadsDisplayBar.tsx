@@ -5,7 +5,7 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
-import { inlineCommentFetch } from "./api/InlineCommentFetch";
+import { inlineCommentFetchAll } from "./api/InlineCommentFetch";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
 
@@ -14,27 +14,12 @@ type fetchInlineCommentThreadsArgs = {
   inlineCommentStore: InlineCommentStore;
 };
 
-function fetchInlineCommentThreads({
-  paperID,
-  inlineCommentStore,
-}: fetchInlineCommentThreadsArgs): void {
-  inlineCommentFetch({
-    paperId: paperID,
-    onSuccess: emptyFunction,
-    onError: emptyFunction,
-  });
-}
-
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-
-  useEffect((): void => {
-    fetchInlineCommentThreads({ paperID, inlineCommentStore });
-  }, [paperID, inlineCommentStore]);
 
   const commentThreadCards = displayableInlineComments.map(
     (
