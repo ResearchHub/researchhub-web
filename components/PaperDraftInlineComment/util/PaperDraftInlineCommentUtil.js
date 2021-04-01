@@ -79,20 +79,19 @@ function handleInlineCommentBlockToggle({
 
 export function updateInlineThreadIdInEntity({
   entityKey,
-  inlineCommentUndux,
-  threadID,
+  inlineCommentStore,
+  commentThreadID,
 }) {
-  const { editorState, setEditorState } = inlineCommentUndux.get(
+  const { editorState, setEditorState } = inlineCommentStore.get(
     "paperDraftState"
   );
   const currContentState = editorState.getCurrentContent();
-  const updateContentState = currContentState.mergeEntityData(entityKey, {
-    threadID,
+  // directly mutates the entity
+  currContentState.mergeEntityData(entityKey, {
+    commentThreadID,
   });
-  setEditorState(
-    EnditorState.push(editorState, updateContentState, "apply-entity")
-  );
 }
+
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
   const currBlockTypes = getBlockTypesInSet(selectionBlock);

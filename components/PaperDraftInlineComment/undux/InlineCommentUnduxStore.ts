@@ -27,6 +27,7 @@ export type PaperDraftState = {
 };
 export type State = {
   currentPromptKey: ID; // entityKey
+  backendInlineComments: Array<any>;
   displayableInlineComments: Array<InlineComment>;
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
@@ -67,6 +68,7 @@ export const findIndexOfCommentInStore = (
 
 const initialState: State = {
   currentPromptKey: null,
+  backendInlineComments: [],
   displayableInlineComments: [],
   inlineComments: [],
   lastPromptRemovedTime: null,
@@ -134,7 +136,7 @@ export function updateInlineComment({
     commentThreadID,
     store
   );
-  console.warn("TARGET index: ", targetIndex);
+  // console.warn("TARGET index: ", targetIndex);
   const newInlineComments = [...store.get("inlineComments")];
   if (targetIndex > -1) {
     newInlineComments[targetIndex] = updatedInlineComment;
