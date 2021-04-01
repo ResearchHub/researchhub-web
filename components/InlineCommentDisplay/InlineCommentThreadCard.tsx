@@ -73,11 +73,15 @@ function InlineCommentThreadCard({
   const scrollWindowToHighlight = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
-      document.getElementById(unduxInlineComment.entityKey).scrollIntoView({
-        behavior: "auto",
-        block: "center",
-        inline: "center",
-      });
+      const { entityKey } = unduxInlineComment;
+      const entityEl = document.getElementById(entityKey);
+      if (entityEl != null) {
+        entityEl.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+          inline: "center",
+        });
+      }
     }
   };
   return (
@@ -156,3 +160,6 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(InlineCommentThreadCard);
+function entityKey(entityKey: any) {
+  throw new Error("Function not implemented.");
+}
