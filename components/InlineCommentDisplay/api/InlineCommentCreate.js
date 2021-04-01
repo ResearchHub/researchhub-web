@@ -3,6 +3,7 @@ import API from "~/config/api";
 import { DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
+import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 
 export function saveCommentToBackend({
   auth,
@@ -43,6 +44,7 @@ export function saveCommentToBackend({
       onSuccess({ threadID });
     })
     .catch((err) => {
+      emptyFunction(err);
       showMessage({ show: false });
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
