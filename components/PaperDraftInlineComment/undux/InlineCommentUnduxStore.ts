@@ -38,7 +38,7 @@ export type UpdateInlineCommentArgs = {
 export const findIndexOfCommentInStore = (
   blockKey: string,
   entityKey: string | null,
-  commentThreadID: ID,
+  _commentThreadID: ID,
   store: InlineCommentStore
 ): number => {
   return store
@@ -47,20 +47,13 @@ export const findIndexOfCommentInStore = (
       ({
         blockKey: storedBlockKey,
         entityKey: storedEntityKey,
-        commentThreadID: storedCommentThreadID,
+        commentThreadID: _storedCommentThreadID,
       }: InlineComment): boolean => {
         /* intentional shallow comparison to avoid null-undefined */
         if (entityKey != null) {
-          return (
-            storedBlockKey == blockKey &&
-            entityKey == storedEntityKey &&
-            storedCommentThreadID == commentThreadID
-          );
+          return storedBlockKey == blockKey && entityKey == storedEntityKey;
         } else {
-          return (
-            storedBlockKey == blockKey &&
-            storedCommentThreadID == commentThreadID
-          );
+          return storedBlockKey == blockKey;
         }
       }
     );
@@ -117,6 +110,8 @@ export function findTargetInlineComment({
     commentThreadID,
     store
   );
+  console.warn("entityKey: ", entityKey);
+  console.warn("findTargetInlineComment: ", targetIndex);
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
 }
 
@@ -131,6 +126,7 @@ export function updateInlineComment({
     commentThreadID,
     store
   );
+  console.warn("TARGET index: ", targetIndex);
   const newInlineComments = [...store.get("inlineComments")];
   if (targetIndex > -1) {
     newInlineComments[targetIndex] = updatedInlineComment;

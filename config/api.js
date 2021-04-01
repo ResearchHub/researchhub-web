@@ -212,22 +212,26 @@ const routes = (BASE_URL) => {
     },
 
     DISCUSSION: ({
-      paperId,
       filter,
+      isRemoved,
       page,
+      paperId,
       progress,
       source,
+      targetId,
       twitter,
-      isRemoved,
     }) => {
-      let url = BASE_URL + `paper/${paperId}/discussion/`;
+      let url =
+        targetId != null
+          ? BASE_URL + `paper/${paperId}/discussion/${targetId}`
+          : BASE_URL + `paper/${paperId}/discussion/`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
           page,
           ordering: filter,
           source: source != null ? source : twitter ? "twitter" : "researchhub",
-          is_removed: isRemoved ? "False" : null,
+          is_removed: Boolean(isRemoved) ? "True" : "False",
         },
       };
       url = prepURL(url, params);
@@ -292,6 +296,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
     THREAD_COMMENT: (paperId, threadId, page) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
 

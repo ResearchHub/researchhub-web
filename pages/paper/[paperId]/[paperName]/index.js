@@ -424,7 +424,7 @@ const Paper = (props) => {
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComment =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-  console.warn("displayableInlineComments: ", shouldShowInlineComment);
+
   return (
     <div>
       <PaperTransactionModal

@@ -3,7 +3,9 @@ import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import InlineCommentUnduxStore, {
   findIndexOfCommentInStore,
+  ID,
   InlineComment,
+  updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
 import { StyleSheet, css } from "aphrodite";
@@ -11,7 +13,12 @@ import colors from "../../config/themes/colors";
 import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, { ReactElement, SyntheticEvent, useState } from "react";
+import React, {
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from "react";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
@@ -27,30 +34,51 @@ type Props = {
 function InlineCommentThreadCard({
   auth,
   unduxInlineComment,
+  unduxInlineComment: { commentThreadID },
   showMessage,
   setMessage,
   openRecaptchaPrompt,
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(false);
+  const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
+    commentThreadID != null
+  );
   const router = useRouter();
+  const { entityKey, blockKey } = unduxInlineComment;
+
+  useEffect((): void => {
+    setIsCommentReadOnly(commentThreadID != null);
+  }, [commentThreadID]);
+
   const onSubmitComment = (text: String, plainText: String): void => {
-    /* this will trigger separate background action to save paper
-       see PaperDraftSilentSave */
+    /* this will trigger separate background action to save paper see PaperDraftSilentSave */
     inlineCommentStore.set("shouldSavePaper")(true);
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
       auth,
-      onSuccess: () => setIsCommentReadOnly(true),
+      onSuccess: ({ threadID }: { threadID: ID }): void => {
+        /* TODO: calvinhlee refactor below */
+        const updatedInlineComment = {
+          ...unduxInlineComment,
+          commentThreadID: threadID,
+        };
+        updateInlineComment({
+          store: inlineCommentStore,
+          updatedInlineComment,
+        });
+        inlineCommentStore.set("displayableInlineComments")([
+          updatedInlineComment,
+        ]);
+      },
       openRecaptchaPrompt,
       params: {
         text: text,
         paper: paperId,
         plain_text: plainText,
         source: "inline_paper_body",
-        entity_key: "",
-        block_key: "",
+        entity_key: entityKey,
+        block_key: blockKey,
       },
       setMessage,
       showMessage,
