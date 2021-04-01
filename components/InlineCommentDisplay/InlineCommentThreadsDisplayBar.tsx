@@ -5,6 +5,7 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
+import { inlineCommentFetchAll } from "./api/InlineCommentFetch";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
 type fetchInlineCommentThreadsArgs = {
@@ -18,9 +19,6 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-  useEffect((): void => {
-    fetchInlineCommentThreads({ paperID, inlineCommentStore });
-  }, [paperID, inlineCommentStore]);
 
   const commentThreadCards = displayableInlineComments.map(
     (
