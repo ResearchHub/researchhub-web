@@ -4,7 +4,7 @@ import { convertToRaw } from "draft-js";
 
 export function savePaperSilentlyHook({
   editorState,
-  onError: _onError,
+  onError,
   onSuccess,
   paperDraftSections,
   paperId,
@@ -21,5 +21,6 @@ export function savePaperSilentlyHook({
     })
   )
     .then(Helpers.checkStatus)
-    .then(() => onSuccess());
+    .then(onSuccess)
+    .catch(onError);
 }
