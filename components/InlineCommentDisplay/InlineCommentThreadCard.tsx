@@ -2,7 +2,7 @@
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import InlineCommentUnduxStore, {
-  findTargetInlineComment,
+  findIndexOfCommentInStore,
   ID,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
@@ -38,15 +38,31 @@ function InlineCommentThreadCard({
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(false);
   const router = useRouter();
   const onSubmitComment = (text: String, plainText: String): void => {
-    console.warn("SUBMITTING COMMENT");
     /* this will trigger separate background action to save paper
        see PaperDraftSilentSave */
+    console.warn("SUBMITTING COMMENT");
     inlineCommentStore.set("shouldSavePaper")(true);
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
       auth,
-      onSuccess: () => {
+      onSuccess: ({ threadID }: { threadID: ID }) => {
+        const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
+        const targetIndex = findIndexOfCommentInStore(
+          blockKey,
+          entityKey,
+          commentThreadID,
+          inlineCommentStore
+        );
+        const updatedTargetComment = {
+          ...unduxInlineComment,
+          commentThreadID: threadID,
+        };
+        const updatedInlineComments = [
+          ...inlineCommentStore.get("inlineComments"),
+        ];
+        updatedInlineComments[targetIndex] = updatedTargetComment;
+        inlineCommentStore.set("inlineComments")(updatedInlineComments);
         setIsCommentReadOnly(true);
       },
       openRecaptchaPrompt,
@@ -82,7 +98,6 @@ function InlineCommentThreadCard({
           onCancel={
             emptyFunction /* close the comment editor and bring back the side menu */
           }
-          onChange={emptyFunction}
           onSubmit={onSubmitComment}
         />
       </div>
