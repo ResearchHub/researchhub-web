@@ -68,14 +68,14 @@ function InlineCommentThreadCard({
           store: inlineCommentStore,
           updatedInlineComment,
         });
+        updateInlineThreadIdInEntity({
+          entityKey,
+          inlineCommentStore,
+          commentThreadID: threadID,
+        });
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
         ]);
-        updateInlineThreadIdInEntity({
-          entityKey,
-          inlineCommentUndux: InlineCommentUnduxStore,
-          threadID,
-        });
       },
       openRecaptchaPrompt,
       params: {
