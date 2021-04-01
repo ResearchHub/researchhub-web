@@ -5,7 +5,9 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
+import { inlineCommentFetch } from "./api/InlineCommentFetch";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
+import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
 
 type fetchInlineCommentThreadsArgs = {
   paperID: ID;
@@ -16,10 +18,11 @@ function fetchInlineCommentThreads({
   paperID,
   inlineCommentStore,
 }: fetchInlineCommentThreadsArgs): void {
-  /* Unlike Waypoint (which relies on paper parsing), 
-     the source of truth for InlineComments is the backend. 
-     Hence, comment displaying logic & updating unduxStore should happen with a fetch 
-     TODO: calvinhlee - make api call here. */
+  inlineCommentFetch({
+    paperId: paperID,
+    onSuccess: emptyFunction,
+    onError: emptyFunction,
+  });
 }
 
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
@@ -28,6 +31,7 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
+
   useEffect((): void => {
     fetchInlineCommentThreads({ paperID, inlineCommentStore });
   }, [paperID, inlineCommentStore]);
