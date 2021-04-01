@@ -74,6 +74,22 @@ function handleInlineCommentBlockToggle({
   return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
+export function updateInlineThreadIdInEntity({
+  entityKey,
+  inlineCommentUndux,
+  threadID,
+}) {
+  const { editorState, setEditorState } = inlineCommentUndux.get(
+    "paperDraftState"
+  );
+  const currContentState = editorState.getCurrentContent();
+  const updateContentState = currContentState.mergeEntityData(entityKey, {
+    threadID,
+  });
+  setEditorState(
+    EnditorState.push(editorState, updateContentState, "apply-entity")
+  );
+}
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
   const currBlockTypes = getBlockTypesInSet(selectionBlock);

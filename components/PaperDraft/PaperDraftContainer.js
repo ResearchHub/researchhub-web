@@ -73,6 +73,11 @@ export default function PaperDraftContainer({
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
   useEffect(() => {
+    // TODO: calvinhlee REFACTOR below
+    inlineCommentStore.get("paperDraftState")({ editorState, setEditorState });
+  }, [editorState]);
+
+  useEffect(() => {
     /* TODO: calvinhlee - discuss actual UI behavior & refactor this out */
     inlineCommentFetchAll({
       paperId,

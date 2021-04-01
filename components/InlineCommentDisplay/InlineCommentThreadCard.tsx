@@ -22,6 +22,7 @@ import React, {
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
+import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 
 type Props = {
   auth: any /* redux */;
@@ -58,7 +59,7 @@ function InlineCommentThreadCard({
     saveCommentToBackend({
       auth,
       onSuccess: ({ threadID }: { threadID: ID }): void => {
-        /* TODO: calvinhlee refactor below */
+        /* TODO: calvinhlee REFACTOR below */
         const updatedInlineComment = {
           ...unduxInlineComment,
           commentThreadID: threadID,
@@ -70,6 +71,11 @@ function InlineCommentThreadCard({
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
         ]);
+        updateInlineThreadIdInEntity({
+          entityKey,
+          inlineCommentUndux: InlineCommentUnduxStore,
+          threadID,
+        });
       },
       openRecaptchaPrompt,
       params: {
