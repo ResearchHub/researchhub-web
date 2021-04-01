@@ -14,8 +14,7 @@ import InlineCommentComposer from "./InlineCommentComposer";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
-// Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
-import { saveCommentToBackend } from "./api/InlineCommentCreateAPI.js";
+import { saveCommentToBackend } from "./api/InlineCommentCreate";
 
 type Props = {
   auth: any /* redux */;
