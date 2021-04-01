@@ -4,9 +4,6 @@ import InlineCommentUnduxStore, {
   InlineComment,
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-<<<<<<< HEAD
-import React, { ReactElement } from "react";
-=======
 import React, { ReactElement, useEffect } from "react";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
@@ -14,33 +11,22 @@ type fetchInlineCommentThreadsArgs = {
   paperID: ID;
   inlineCommentStore: InlineCommentStore;
 };
->>>>>>> ad674ac3 (cleanup)
-
-import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperID = inlineCommentStore.get("paperID");
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-
-  const cleanupStoreAndCloseDisplay = (): void => {
-    const commentsWithThreadID = inlineCommentStore
-      .get("inlineComments")
-      .filter(
-        (inlineComment: InlineComment): boolean =>
-          inlineComment.commentThreadID != null
-      );
-    inlineCommentStore.set("displayableInlineComments")([]);
-    inlineCommentStore.set("inlineComments")(commentsWithThreadID);
-  };
+  useEffect((): void => {
+    fetchInlineCommentThreads({ paperID, inlineCommentStore });
+  }, [paperID, inlineCommentStore]);
 
   const commentThreadCards = displayableInlineComments.map(
     (
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        cleanupStoreAndCloseDisplay={cleanupStoreAndCloseDisplay}
         key={inlineComment.entityKey}
         unduxInlineComment={inlineComment}
       />
@@ -53,7 +39,9 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
         <img
           alt={"Close Button"}
           className={css(styles.closeButton)}
-          onClick={cleanupStoreAndCloseDisplay}
+          onClick={(): void =>
+            inlineCommentStore.set("displayableInlineComments")([])
+          }
           src={"/static/icons/close.png"}
         />
       </div>
@@ -64,7 +52,6 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   inlineCommentThreadsDisplayBar: {
-    flexDirection: "column",
     height: "100%",
     overflowY: "auto",
     width: 350,
