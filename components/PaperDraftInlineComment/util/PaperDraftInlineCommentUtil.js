@@ -1,4 +1,7 @@
-import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
+import {
+  draftCssToCustomCss,
+  INLINE_COMMENT_MAP,
+} from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
 
 function getSelectedBlockFromEditorState(editorState, selectionState = null) {
@@ -111,10 +114,6 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
 }
 
 /* -------- EXPORTS -------- */
-export const INLINE_COMMENT_MAP = {
-  TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
-};
-
 export function handleBlockStyleToggle({
   editorState,
   onInlineCommentPrompt,

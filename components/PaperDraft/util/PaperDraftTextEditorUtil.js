@@ -1,5 +1,8 @@
 import { RichUtils } from "draft-js";
-import { INLINE_COMMENT_MAP } from "../../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+
+export const INLINE_COMMENT_MAP = {
+  TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
+};
 
 export const draftCssToCustomCss = {
   "header-one": "RichEditor-h1",
