@@ -49,14 +49,6 @@ function handleInlineCommentBlockToggle({
   editorState,
   onInlineCommentPrompt,
 }) {
-  const selectionBlock = getSelectedBlockFromEditorState(editorState);
-  const currBlockTypes = getBlockTypesInSet(selectionBlock);
-  const currBlockData = selectionBlock.getData();
-
-  /* ---- Block Styling ---- */
-  const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
-  const formattedBlockTypes = formatBlockTypes(newBlockTypes);
-
   /* ---- Applying Entity to Draft---- */
   const blockKey = editorState.getSelection().getStartKey();
   const currContentState = editorState.getCurrentContent();
@@ -79,11 +71,7 @@ function handleInlineCommentBlockToggle({
     currentContent: updatedContentWithNewEnt,
   });
   onInlineCommentPrompt(entityKey);
-  return getModifiedContentState({
-    blockData: currBlockData,
-    editorState: updatedEditorStateWithNewEnt,
-    newBlockTypes: formattedBlockTypes,
-  });
+  return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
