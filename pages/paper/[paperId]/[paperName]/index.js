@@ -423,8 +423,10 @@ const Paper = (props) => {
   function onSectionEnter(index) {
     activeTab !== index && setActiveTab(index);
   }
-
-  const shouldShowInlineComment = true; // TODO: calvinhlee - comeup with a design decision
+  const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
+  const shouldShowInlineComment =
+    inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+  console.warn("displayableInlineComments: ", shouldShowInlineComment);
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
