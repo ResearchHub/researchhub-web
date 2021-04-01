@@ -12,7 +12,7 @@ import colors from "../../config/themes/colors";
 import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, SyntheticEvent, useState } from "react";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
@@ -40,31 +40,12 @@ function InlineCommentThreadCard({
   const onSubmitComment = (text: String, plainText: String): void => {
     /* this will trigger separate background action to save paper
        see PaperDraftSilentSave */
-    console.warn("SUBMITTING COMMENT");
     inlineCommentStore.set("shouldSavePaper")(true);
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
       auth,
-      onSuccess: ({ threadID }: { threadID: ID }) => {
-        const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
-        const targetIndex = findIndexOfCommentInStore(
-          blockKey,
-          entityKey,
-          commentThreadID,
-          inlineCommentStore
-        );
-        const updatedTargetComment = {
-          ...unduxInlineComment,
-          commentThreadID: threadID,
-        };
-        const updatedInlineComments = [
-          ...inlineCommentStore.get("inlineComments"),
-        ];
-        updatedInlineComments[targetIndex] = updatedTargetComment;
-        inlineCommentStore.set("inlineComments")(updatedInlineComments);
-        setIsCommentReadOnly(true);
-      },
+      onSuccess: () => setIsCommentReadOnly(true),
       openRecaptchaPrompt,
       params: {
         text: text,
@@ -78,30 +59,52 @@ function InlineCommentThreadCard({
       showMessage,
     });
   };
-
+  const onCancel = () => {
+    const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
+    const targetIndex = findIndexOfCommentInStore(
+      blockKey,
+      entityKey,
+      commentThreadID,
+      inlineCommentStore
+    );
+    const updatedInlineComments = [
+      ...inlineCommentStore.get("inlineComments"),
+    ].splice(targetIndex, 0);
+    inlineCommentStore.set("inlineComments")(updatedInlineComments);
+  };
+  const scrollWindowToHighlight = (event: SyntheticEvent) => {
+    event.stopPropagation();
+    if (isCommentReadOnly) {
+      location.href = `#${unduxInlineComment.entityKey}`;
+    }
+  };
   return (
-    <ColumnContainer overrideStyles={styles.container}>
-      <DiscussionPostMetadata
-        authorProfile={auth.user.author_profile} // @ts-ignore
-        data={{ created_by: auth.user }}
-        username={
-          auth.user.author_profile.first_name +
-          " " +
-          auth.user.author_profile.last_name
-        }
-        noTimeStamp={true}
-        smaller={true}
-      />
-      <div className={css(styles.composerContainer)}>
-        <InlineCommentComposer
-          isReadOnly={isCommentReadOnly}
-          onCancel={
-            emptyFunction /* close the comment editor and bring back the side menu */
+    <div
+      className={css(isCommentReadOnly ? styles.hoverPointer : null)}
+      onClick={scrollWindowToHighlight}
+      role="none"
+    >
+      <ColumnContainer overrideStyles={styles.container}>
+        <DiscussionPostMetadata
+          authorProfile={auth.user.author_profile} // @ts-ignore
+          data={{ created_by: auth.user }}
+          username={
+            auth.user.author_profile.first_name +
+            " " +
+            auth.user.author_profile.last_name
           }
-          onSubmit={onSubmitComment}
+          noTimeStamp={true}
+          smaller={true}
         />
-      </div>
-    </ColumnContainer>
+        <div className={css(styles.composerContainer)}>
+          <InlineCommentComposer
+            isReadOnly={isCommentReadOnly}
+            onCancel={onCancel}
+            onSubmit={onSubmitComment}
+          />
+        </div>
+      </ColumnContainer>
+    </div>
   );
 }
 
@@ -131,6 +134,9 @@ const styles = StyleSheet.create({
     width: 350,
     padding: "20px 15px",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+  },
+  hoverPointer: {
+    ":onHover": { cursor: "pointer" },
   },
 });
 

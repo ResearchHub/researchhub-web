@@ -108,10 +108,10 @@ export default function PaperDraftContainer({
     if (shouldSavePaperSilently) {
       savePaperSilentlyHook({
         editorState,
-        onError: () => emptyFunction(""),
+        onError: (error) => emptyFunction(error),
         onSuccess: () => {
-          inlineCommentStore.set("shouldSavePaper")(false);
           inlineCommentStore.set("lastSavePaperTime")(Date.now());
+          inlineCommentStore.set("shouldSavePaper")(false);
           setInitEditorState(editorState);
         },
         paperDraftSections,
@@ -167,7 +167,7 @@ export default function PaperDraftContainer({
         onChange: setEditorState,
         setInitEditorState,
         setIsInEditMode: setIsDraftInEditMode,
-        spellCheck: true,
+        spellCheck: isDraftInEditMode,
       }}
       inlineCommentStore={inlineCommentStore}
       isFetching={isFetching}

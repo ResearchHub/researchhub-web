@@ -89,6 +89,7 @@ function PaperDraftInlineCommentTextWrap(
           className={css(
             doesCommentExistInStore ? styles.commentTextHighLight : null
           )}
+          id={entityKey}
           key={`Popver-Child-${entityKey}`}
         >
           {props.children}
