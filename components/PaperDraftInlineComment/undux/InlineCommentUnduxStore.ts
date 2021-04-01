@@ -34,7 +34,7 @@ export type UpdateInlineCommentArgs = {
   updatedInlineComment: InlineComment;
 };
 
-const findIndexOfCommentInStore = (
+export const findIndexOfCommentInStore = (
   blockKey: string,
   entityKey: string | null,
   commentThreadID: ID,
