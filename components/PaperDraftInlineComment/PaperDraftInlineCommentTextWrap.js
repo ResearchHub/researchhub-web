@@ -38,7 +38,7 @@ function PaperDraftInlineCommentTextWrap(
       }),
     [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
   );
-
+  console.warn("targetInlineComment @ Wrap: ", targetInlineComment);
   const doesCommentExistInStore = targetInlineComment != null;
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =

@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
+  findIndexOfCommentInStore,
   ID,
   InlineComment,
   updateInlineComment,
@@ -62,7 +63,6 @@ function InlineCommentThreadCard({
       commentThreadID != null &&
       paperID != null
     ) {
-      console.warn("FETCHINGGGGG");
       inlineCommentFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
