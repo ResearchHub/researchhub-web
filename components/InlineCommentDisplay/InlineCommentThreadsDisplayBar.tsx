@@ -25,34 +25,59 @@ function fetchInlineCommentThreads({
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
-
+  const displayableInlineComments = inlineCommentStore.get(
+    "displayableInlineComments"
+  );
   useEffect((): void => {
     fetchInlineCommentThreads({ paperID, inlineCommentStore });
   }, [paperID, inlineCommentStore]);
 
-  const inlineComments = inlineCommentStore.get("inlineComments");
-  const commentThreadCards = inlineComments.map(
+  const commentThreadCards = displayableInlineComments.map(
     (
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        unduxInlineComment={inlineComment}
         key={inlineComment.entityKey}
+        unduxInlineComment={inlineComment}
       />
     )
   );
 
   return (
-    <div className={css(styles.InlineCommentThreadsDisplayBar)}>
+    <div className={css(styles.inlineCommentThreadsDisplayBar)}>
+      <div className={css(styles.header)}>
+        <img
+          alt={"Close Button"}
+          className={css(styles.closeButton)}
+          onClick={(): void =>
+            inlineCommentStore.set("displayableInlineComments")([])
+          }
+          src={"/static/icons/close.png"}
+        />
+      </div>
       {commentThreadCards}
     </div>
   );
 }
 
 const styles = StyleSheet.create({
-  InlineCommentThreadsDisplayBar: {
-    height: 900,
+  inlineCommentThreadsDisplayBar: {
+    // background: "yellow",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
     overflow: "auto",
     width: 350,
+  },
+  header: {
+    alignItems: "center",
+    cursor: "pointer",
+    display: "flex",
+    height: "100%",
+    justifyContent: "flex-start",
+    width: "100%",
+  },
+  closeButton: {
+    width: 16,
   },
 });
