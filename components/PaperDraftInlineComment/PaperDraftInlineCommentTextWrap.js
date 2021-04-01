@@ -45,15 +45,17 @@ function PaperDraftInlineCommentTextWrap(
     );
     unduxStore.set("lastPromptRemovedTime")(Date.now());
     unduxStore.set("currentPromptKey")(null);
+    const newInlineComment = {
+      blockKey,
+      commentThreadID,
+      entityKey,
+      store: unduxStore,
+    };
     updateInlineComment({
       store: unduxStore,
-      updatedInlineComment: {
-        blockKey,
-        commentThreadID,
-        entityKey,
-        store: unduxStore,
-      },
+      updatedInlineComment: newInlineComment,
     });
+    unduxStore.set("displayableInlineComments")([newInlineComment]);
     setShowPopover(false);
   };
 
