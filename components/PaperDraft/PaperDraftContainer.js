@@ -6,10 +6,8 @@ import {
   getBlockStyleFn,
   getHandleKeyCommand,
 } from "./util/PaperDraftTextEditorUtil";
-import {
-  handleBlockStyleToggle,
-  INLINE_COMMENT_MAP,
-} from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
 import { inlineCommentFetchAll } from "../InlineCommentDisplay/api/InlineCommentFetch";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
@@ -74,7 +72,7 @@ export default function PaperDraftContainer({
 
   useEffect(() => {
     // TODO: calvinhlee REFACTOR below
-    inlineCommentStore.get("paperDraftState")({ editorState, setEditorState });
+    inlineCommentStore.set("paperDraftState")({ editorState, setEditorState });
   }, [editorState]);
 
   useEffect(() => {
