@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import InlineCommentUnduxStore, {
   findIndexOfCommentInStore,
-  ID,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
@@ -16,7 +15,6 @@ import React, { ReactElement, SyntheticEvent, useState } from "react";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
-import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
 import { saveCommentToBackend } from "./api/InlineCommentCreateAPI.js";
 
 type Props = {
