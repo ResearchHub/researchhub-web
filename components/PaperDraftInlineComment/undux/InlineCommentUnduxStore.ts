@@ -22,6 +22,7 @@ export type InlineComment = {
 };
 export type State = {
   currentPromptKey: ID; // entityKey
+  displayableInlineComments: Array<InlineComment>;
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
   lastSavePaperTime: number | null;
@@ -67,6 +68,7 @@ export const findIndexOfCommentInStore = (
 
 const initialState: State = {
   currentPromptKey: null,
+  displayableInlineComments: [],
   inlineComments: [],
   lastPromptRemovedTime: null,
   lastSavePaperTime: null,
