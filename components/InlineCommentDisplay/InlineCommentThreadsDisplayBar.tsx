@@ -36,7 +36,7 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        inlineComment={inlineComment}
+        unduxInlineComment={inlineComment}
         key={inlineComment.entityKey}
       />
     )

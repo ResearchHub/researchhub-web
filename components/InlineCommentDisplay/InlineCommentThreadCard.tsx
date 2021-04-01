@@ -1,9 +1,12 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
-
+import InlineCommentUnduxStore, {
+  findTargetInlineComment,
+  ID,
+  InlineComment,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
-import { InlineComment } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
@@ -14,11 +17,11 @@ import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
 import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
-import { saveCommentToBackend } from "./api/InlineCommentCreateAPI";
+import { saveCommentToBackend } from "./api/InlineCommentCreateAPI.js";
 
 type Props = {
   auth: any /* redux */;
-  inlineComment: InlineComment;
+  unduxInlineComment: InlineComment;
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
@@ -26,18 +29,26 @@ type Props = {
 
 function InlineCommentThreadCard({
   auth,
+  unduxInlineComment,
   showMessage,
   setMessage,
   openRecaptchaPrompt,
 }: Props): ReactElement<"div"> {
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(false);
   const router = useRouter();
   const onSubmitComment = (text: String, plainText: String): void => {
+    console.warn("SUBMITTING COMMENT");
+    /* this will trigger separate background action to save paper
+       see PaperDraftSilentSave */
+    inlineCommentStore.set("shouldSavePaper")(true);
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
       auth,
-      onSuccess: () => setIsCommentReadOnly(true),
+      onSuccess: () => {
+        setIsCommentReadOnly(true);
+      },
       openRecaptchaPrompt,
       params: {
         text: text,
