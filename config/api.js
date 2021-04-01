@@ -211,14 +211,22 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: ({ paperId, filter, page, progress, twitter, isRemoved }) => {
+    DISCUSSION: ({
+      paperId,
+      filter,
+      page,
+      progress,
+      source,
+      twitter,
+      isRemoved,
+    }) => {
       let url = BASE_URL + `paper/${paperId}/discussion/`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
           page,
           ordering: filter,
-          source: twitter ? "twitter" : "researchhub",
+          source: source != null ? source : twitter ? "twitter" : "researchhub",
           is_removed: isRemoved ? "False" : null,
         },
       };
