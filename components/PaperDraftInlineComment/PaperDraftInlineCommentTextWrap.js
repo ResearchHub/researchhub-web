@@ -33,9 +33,9 @@ function PaperDraftInlineCommentTextWrap(
         entityKey,
         store: unduxStore,
       }),
-    [blockKey, commentThreadID, entityKey, unduxStore]
+    [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
   );
-
+  console.warn("targetInlineComment @ Wrap: ", targetInlineComment);
   const doesCommentExistInStore = targetInlineComment != null;
 
   const hidePopoverAndInsertToStore = (event) => {
