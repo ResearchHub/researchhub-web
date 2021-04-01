@@ -73,7 +73,11 @@ function InlineCommentThreadCard({
   const scrollWindowToHighlight = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
-      location.href = `#${unduxInlineComment.entityKey}`;
+      document.getElementById(unduxInlineComment.entityKey).scrollIntoView({
+        behavior: "auto",
+        block: "center",
+        inline: "center",
+      });
     }
   };
   return (
