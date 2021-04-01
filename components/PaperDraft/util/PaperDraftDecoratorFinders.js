@@ -1,5 +1,5 @@
 import { CompositeDecorator } from "draft-js";
-import { INLINE_COMMENT_MAP } from "../../PaperDraftInlineComment/util/paperDraftInlineCommentUtil";
+import { INLINE_COMMENT_MAP } from "./PaperDraftTextEditorUtil";
 import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "../WaypointSection";
 

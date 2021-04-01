@@ -43,10 +43,6 @@ export function saveCommentToBackend({
       onSuccess({ threadID });
     })
     .catch((err) => {
-      if (err.response.status === 429) {
-        showMessage({ show: false });
-        return openRecaptchaPrompt(true);
-      }
       showMessage({ show: false });
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });
