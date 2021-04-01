@@ -160,6 +160,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(InlineCommentThreadCard);
-function entityKey(entityKey: any) {
-  throw new Error("Function not implemented.");
-}
