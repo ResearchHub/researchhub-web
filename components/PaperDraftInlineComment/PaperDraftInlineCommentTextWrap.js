@@ -37,6 +37,10 @@ function PaperDraftInlineCommentTextWrap(
   );
   console.warn("targetInlineComment @ Wrap: ", targetInlineComment);
   const doesCommentExistInStore = targetInlineComment != null;
+  const isCommentSavedInBackend =
+    doesCommentExistInStore && targetInlineComment.commentThreadID != null;
+  const shouldTextBeHighlighted =
+    doesCommentExistInStore || isCommentSavedInBackend;
 
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
@@ -89,7 +93,7 @@ function PaperDraftInlineCommentTextWrap(
       children={
         <span
           className={css(
-            doesCommentExistInStore ? styles.commentTextHighLight : null
+            shouldTextBeHighlighted ? styles.commentTextHighLight : null
           )}
           id={entityKey}
           key={`Popver-Child-${entityKey}`}
