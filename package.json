@@ -108,6 +108,7 @@
     "webpack-bundle-analyzer": "^4.3.0"
   },
   "devDependencies": {
+    "@types/draft-js": "^0.11.1",
     "@types/react-redux": "^7.1.16",
     "axios": "^0.21.1",
     "cypress": "^6.8.0",
