@@ -6,22 +6,29 @@ type Props = {
   isReadOnly: boolean;
   onCancel: () => void;
   onSubmit: (text: String, plainText: String) => void;
+  passedValue: string;
 };
 
-function InlineCommentComposer({ isReadOnly, onCancel, onSubmit }: Props) {
+function InlineCommentComposer({
+  isReadOnly,
+  onCancel,
+  onSubmit,
+  passedValue,
+}: Props) {
+  console.warn("passedValue: ", passedValue);
   return (
     <TextEditor
       canEdit={true}
       commentEditor={true}
       commentEditorStyles={styles.commentEditorStyles}
       focusEditor={focus}
-      initialValue={""}
+      mediaOnly={true}
       onCancel={onCancel}
       onSubmit={onSubmit}
+      passedValue={passedValue}
       placeholder={"What are your thoughts?"}
       readOnly={isReadOnly}
       smallToolBar={true}
-      mediaOnly={true}
     />
   );
 }

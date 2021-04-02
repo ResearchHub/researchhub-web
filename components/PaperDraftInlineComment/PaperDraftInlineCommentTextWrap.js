@@ -81,14 +81,16 @@ function PaperDraftInlineCommentTextWrap(
 
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
-    unduxStore.set("displayableInlineComments")([
-      unduxStore
-        .get("inlineComments")
-        .find(
-          ({ commentThreadID: unduxThreadID }) =>
-            unduxThreadID === commentThreadID
-        ),
-    ]);
+    const targetInlineComment = unduxStore
+      .get("inlineComments")
+      .find(
+        ({ commentThreadID: unduxThreadID }) =>
+          unduxThreadID === commentThreadID
+      );
+    console.warn("targetInlineComment: ", targetInlineComment);
+    if (targetInlineComment != null) {
+      unduxStore.set("displayableInlineComments")([targetInlineComment]);
+    }
   };
 
   return (

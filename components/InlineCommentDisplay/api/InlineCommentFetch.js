@@ -32,8 +32,8 @@ export function inlineCommentFetchAll({
 export function inlineCommentFetchTarget({
   paperId,
   targetId,
-  onSuccess,
-  onError,
+  onSuccess = emptyFunction,
+  onError = emptyFunction,
 }) {
   fetch(
     API.DISCUSSION({
@@ -47,7 +47,7 @@ export function inlineCommentFetchTarget({
     .then(Helpers.parseJSON)
     .then((data) => {
       try {
-        onSuccess(data.results);
+        onSuccess(data);
       } catch (error) {
         onError(error);
       }
