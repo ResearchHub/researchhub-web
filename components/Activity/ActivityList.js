@@ -12,6 +12,7 @@ import Loader from "~/components/Loader/Loader";
 
 // Config
 import { fetchLatestActivity } from "~/config/fetch";
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -44,7 +45,7 @@ const ActivityList = (props) => {
     const { id: userId } = auth.user;
     setIsFetching(true);
     const resData = await fetchLatestActivity({ userId });
-    setData(resData || {});
+    setData({ ...resData, results: [] } || {});
     setIsFetching(false);
   };
 
@@ -84,7 +85,17 @@ const ActivityList = (props) => {
         </div>
       );
     } else {
-      return <span>Empty State</span>;
+      return (
+        <div className={css(styles.emptystate)}>
+          <span className={css(styles.activityFeedIcon)}>
+            {icons.activtyFeed}
+          </span>
+          <span style={{ fontWeight: 500, marginBottom: 10 }}>
+            No Activity.
+          </span>
+          Follow an author to get started!
+        </div>
+      );
     }
   };
 
@@ -160,6 +171,19 @@ const styles = StyleSheet.create({
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
     },
+  },
+  activityFeedIcon: {
+    color: colors.BLUE(),
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  emptystate: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "15px 20px 10px 20px",
+    fontSize: 14,
   },
 });
 
