@@ -25,7 +25,8 @@ function InlineCommentComposer({
       mediaOnly={true}
       onCancel={onCancel}
       onSubmit={onSubmit}
-      passedValue={passedValue}
+      data={{ text: passedValue }}
+      // passedValue={passedValue}
       placeholder={"What are your thoughts?"}
       readOnly={isReadOnly}
       smallToolBar={true}
