@@ -45,7 +45,7 @@ const ActivityList = (props) => {
     const { id: userId } = auth.user;
     setIsFetching(true);
     const resData = await fetchLatestActivity({ userId });
-    setData({ ...resData, results: [] } || {});
+    setData(resData || {});
     setIsFetching(false);
   };
 
