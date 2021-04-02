@@ -29,7 +29,7 @@ const ActivityBodyText = (props) => {
     } else if (contributionType === "SUBMITTER") {
       return source.abstract;
     } else {
-      return contributionType;
+      // return contributionType;
     }
   };
 
