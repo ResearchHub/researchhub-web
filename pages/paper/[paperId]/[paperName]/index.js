@@ -22,6 +22,7 @@ import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
+import PaperBanner from "~/components/Paper/PaperBanner.js";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
@@ -56,7 +57,6 @@ import {
   getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
-import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 const isServer = () => typeof window === "undefined";
 
