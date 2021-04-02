@@ -6,16 +6,17 @@ type Props = {
   isReadOnly: boolean;
   onCancel: () => void;
   onSubmit: (text: String, plainText: String) => void;
-  passedValue: string;
+  textData: any; // this is a draftjs object
 };
 
 function InlineCommentComposer({
   isReadOnly,
   onCancel,
   onSubmit,
-  passedValue,
+  textData,
 }: Props) {
-  console.warn("passedValue: ", passedValue); // <======= THIS GUY
+  console.log(textData);
+  console.warn("passedValue: ", textData); // <======= THIS GUY
   return (
     <TextEditor
       canEdit={true}
@@ -25,8 +26,8 @@ function InlineCommentComposer({
       mediaOnly={true}
       onCancel={onCancel}
       onSubmit={onSubmit}
-      data={{ text: passedValue }}
       // passedValue={passedValue}
+      initialValue={textData}
       placeholder={"What are your thoughts?"}
       readOnly={isReadOnly}
       smallToolBar={true}
