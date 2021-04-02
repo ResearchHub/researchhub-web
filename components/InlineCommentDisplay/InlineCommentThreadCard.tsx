@@ -26,19 +26,21 @@ import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/Pa
 
 type Props = {
   auth: any /* redux */;
-  unduxInlineComment: InlineComment;
+  cleanupStoreAndCloseDisplay: () => void;
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
+  unduxInlineComment: InlineComment;
 };
 
 function InlineCommentThreadCard({
   auth,
-  unduxInlineComment,
-  unduxInlineComment: { commentThreadID },
+  cleanupStoreAndCloseDisplay,
   showMessage,
   setMessage,
   openRecaptchaPrompt,
+  unduxInlineComment,
+  unduxInlineComment: { commentThreadID },
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
@@ -90,19 +92,19 @@ function InlineCommentThreadCard({
       showMessage,
     });
   };
-  const onCancel = () => {
-    const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
-    const targetIndex = findIndexOfCommentInStore(
-      blockKey,
-      entityKey,
-      commentThreadID,
-      inlineCommentStore
-    );
-    const updatedInlineComments = [
-      ...inlineCommentStore.get("inlineComments"),
-    ].splice(targetIndex, 0);
-    inlineCommentStore.set("inlineComments")(updatedInlineComments);
-  };
+  // const onCancel = () => {
+  //   const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
+  //   const targetIndex = findIndexOfCommentInStore(
+  //     blockKey,
+  //     entityKey,
+  //     commentThreadID,
+  //     inlineCommentStore
+  //   );
+  //   const updatedInlineComments = [
+  //     ...inlineCommentStore.get("inlineComments"),
+  //   ].splice(targetIndex, 0);
+  //   inlineCommentStore.set("inlineComments")(updatedInlineComments);
+  // };
   const scrollWindowToHighlight = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
@@ -138,7 +140,7 @@ function InlineCommentThreadCard({
         <div className={css(styles.composerContainer)}>
           <InlineCommentComposer
             isReadOnly={isCommentReadOnly}
-            onCancel={onCancel}
+            onCancel={cleanupStoreAndCloseDisplay}
             onSubmit={onSubmitComment}
           />
         </div>

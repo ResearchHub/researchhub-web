@@ -39,7 +39,7 @@ function PaperDraftInlineCommentTextWrap(
     [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
   );
 
-  console.warn("At Entity Text: ", commentThreadID);
+  // console.warn("At Entity Text: ", commentThreadID);
   const doesCommentExistInStore = targetInlineComment != null;
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
@@ -83,10 +83,14 @@ function PaperDraftInlineCommentTextWrap(
     event.stopPropagation();
     unduxStore.set("displayableInlineComments")([
       unduxStore
-        .get("backendInlineComments")
-        .find(({ id }) => id === commentThreadID),
+        .get("inlineComments")
+        .find(
+          ({ commentThreadID: unduxThreadID }) =>
+            unduxThreadID === commentThreadID
+        ),
     ]);
   };
+
   return (
     <Popover
       above
