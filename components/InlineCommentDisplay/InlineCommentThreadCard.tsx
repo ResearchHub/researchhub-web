@@ -1,4 +1,5 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
+// @ts-ignore
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import ReactPlaceholder from "react-placeholder/lib";
