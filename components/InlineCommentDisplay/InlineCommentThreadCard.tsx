@@ -1,6 +1,9 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
+import ReactPlaceholder from "react-placeholder/lib";
+
+// Config
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
   findIndexOfCommentInStore,
@@ -43,32 +46,37 @@ function InlineCommentThreadCard({
   unduxInlineComment,
   unduxInlineComment: { commentThreadID },
 }: Props): ReactElement<"div"> {
+  const commentMade = commentThreadID !== null;
+
   // TODO: calvinhlee REFACTOR
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
-    commentThreadID != null
+    commentMade
   );
-  const [fetchedCommentData, setFecthedCommentData] = useState<any>(null);
+  const [fetchedCommentData, setFecthedCommentData] = useState<any>({
+    created_by: { author_profile: {} },
+  });
+  const [commentDataFetched, setCommentDataFetched] = useState<boolean>(false);
   const router = useRouter();
   const { entityKey, blockKey } = unduxInlineComment;
 
   useEffect((): void => {
-    setIsCommentReadOnly(commentThreadID != null);
+    setIsCommentReadOnly(commentMade);
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (
-      fetchedCommentData == null &&
-      commentThreadID != null &&
-      paperID != null
-    ) {
+    if (!commentDataFetched && commentMade && paperID !== null) {
       inlineCommentFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
           setFecthedCommentData(result);
           setIsCommentReadOnly(true);
+          setCommentDataFetched(true);
+        },
+        onError: (_): void => {
+          setCommentDataFetched(true);
         },
       });
     }
@@ -139,27 +147,44 @@ function InlineCommentThreadCard({
       role="none"
     >
       <ColumnContainer overrideStyles={styles.container}>
-        <DiscussionPostMetadata
-          authorProfile={auth.user.author_profile} // @ts-ignore
-          data={{ created_by: auth.user }}
-          username={
-            auth.user.author_profile.first_name +
-            " " +
-            auth.user.author_profile.last_name
-          }
-          noTimeStamp={true}
-          smaller={true}
-        />
-        <div className={css(styles.composerContainer)}>
-          <InlineCommentComposer
-            isReadOnly={isCommentReadOnly}
-            onCancel={cleanupStoreAndCloseDisplay}
-            onSubmit={onSubmitComment}
-            passedValue={
-              fetchedCommentData != null ? fetchedCommentData.plain_text : null
+        <ReactPlaceholder
+          ready={commentMade ? commentDataFetched : true}
+          showLoadingAnimation
+          type={"media"}
+          rows={3}
+        >
+          <DiscussionPostMetadata
+            authorProfile={
+              commentMade
+                ? fetchedCommentData.created_by.author_profile
+                : auth.user.author_profile
+            } // @ts-ignore
+            data={{
+              created_by: commentMade
+                ? fetchedCommentData.created_by
+                : auth.user,
+            }}
+            username={
+              commentMade
+                ? fetchedCommentData.created_by.author_profile.first_name +
+                  " " +
+                  fetchedCommentData.created_by.author_profile.last_name
+                : auth.user.author_profile.first_name +
+                  " " +
+                  auth.user.author_profile.last_name
             }
+            noTimeStamp={true}
+            smaller={true}
           />
-        </div>
+          <div className={css(styles.composerContainer)}>
+            <InlineCommentComposer
+              isReadOnly={isCommentReadOnly}
+              onCancel={cleanupStoreAndCloseDisplay}
+              onSubmit={onSubmitComment}
+              textData={fetchedCommentData ? fetchedCommentData.text : null}
+            />
+          </div>
+        </ReactPlaceholder>
       </ColumnContainer>
     </div>
   );
@@ -190,6 +215,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     width: 350,
     padding: "20px 15px",
+    minHeight: 100,
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   cursurPointer: {
