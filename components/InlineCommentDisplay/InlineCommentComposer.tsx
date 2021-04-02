@@ -15,7 +15,7 @@ function InlineCommentComposer({
   onSubmit,
   passedValue,
 }: Props) {
-  console.warn("passedValue: ", passedValue);
+  console.warn("passedValue: ", passedValue); // <======= THIS GUY
   return (
     <TextEditor
       canEdit={true}

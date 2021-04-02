@@ -38,7 +38,6 @@ function PaperDraftInlineCommentTextWrap(
       }),
     [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
   );
-  console.warn("targetInlineComment @ Wrap: ", targetInlineComment);
   const doesCommentExistInStore = targetInlineComment != null;
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
@@ -86,7 +85,6 @@ function PaperDraftInlineCommentTextWrap(
         ({ commentThreadID: unduxThreadID }) =>
           unduxThreadID === commentThreadID
       );
-    console.warn("targetInlineComment: ", targetInlineComment);
     if (targetInlineComment != null) {
       unduxStore.set("displayableInlineComments")([targetInlineComment]);
     }
