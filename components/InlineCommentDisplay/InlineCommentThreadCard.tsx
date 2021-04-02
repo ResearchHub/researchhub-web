@@ -92,19 +92,7 @@ function InlineCommentThreadCard({
       showMessage,
     });
   };
-  // const onCancel = () => {
-  //   const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
-  //   const targetIndex = findIndexOfCommentInStore(
-  //     blockKey,
-  //     entityKey,
-  //     commentThreadID,
-  //     inlineCommentStore
-  //   );
-  //   const updatedInlineComments = [
-  //     ...inlineCommentStore.get("inlineComments"),
-  //   ].splice(targetIndex, 0);
-  //   inlineCommentStore.set("inlineComments")(updatedInlineComments);
-  // };
+
   const scrollWindowToHighlight = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
@@ -119,6 +107,7 @@ function InlineCommentThreadCard({
       }
     }
   };
+
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
