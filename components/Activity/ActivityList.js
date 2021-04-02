@@ -8,102 +8,13 @@ import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import { SideColumnTitle } from "~/components/Typography";
 import ActivityCard from "./ActivityCard";
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
+import Loader from "~/components/Loader/Loader";
 
 // Config
 import { fetchLatestActivity } from "~/config/fetch";
-import { getAuthorName } from "~/config/utils/";
 import colors from "~/config/themes/colors";
-
-const STATIC_DATA = [
-  {
-    id: 1,
-    created_date: "2021-03-27T20:30:00.049440Z",
-    update_date: "2021-03-27T20:30:00.049440Z",
-    paper: {
-      id: 430,
-      paper_title:
-        "Stressful life events are not associated with the development of dementia",
-      hubs: [
-        {
-          id: 2,
-          name: "biology",
-          is_locked: false,
-          slug: "biology",
-          is_removed: false,
-          hub_image: null,
-        },
-      ],
-      slug:
-        "stressful-life-events-are-not-associated-with-the-development-of-dementia",
-    },
-    comment: {
-      plain_text:
-        "That's pretty neat - you learn something new every day. Does anyone have any guesses? I think it's kind of interesting that when they compared their significant results to a GWAS that looked",
-      created_by: {
-        academic_verification: null,
-        author_score: 10,
-        created_date: "2020-02-11T23:21:03.141902Z",
-        description: "Here's a description.",
-        facebook: null,
-        first_name: "Joshua",
-        headline: { title: "Software Engineer", isPublic: true },
-        id: 11,
-        last_name: "Lee",
-        profile_image:
-          "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/author_profile_images/2020/09/29/blob?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=%2F8Dvt7pZ%2FFg6%2B5qi9DFrqJt10Yw%3D&Expires=1617482957",
-        reputation: 1046,
-        sift_link: "https://console.sift.com/users/4?abuse_type=content_abuse",
-        total_score: 10,
-        updated_date: "2021-03-12T17:57:57.556559Z",
-        user: 4,
-      },
-    },
-  },
-  {
-    id: 1,
-    created_date: "2021-03-27T20:30:00.049440Z",
-    update_date: "2021-03-27T20:30:00.049440Z",
-    paper: {
-      id: 430,
-      paper_title:
-        "Stressful life events are not associated with the development of dementia",
-      hubs: [
-        {
-          id: 2,
-          name: "biology",
-          is_locked: false,
-          slug: "biology",
-          is_removed: false,
-          hub_image: null,
-        },
-      ],
-      slug:
-        "stressful-life-events-are-not-associated-with-the-development-of-dementia",
-    },
-    comment: {
-      plain_text:
-        "That's pretty neat - you learn something new every day. Does anyone have any guesses? I think it's kind of interesting that when they compared their significant results to a GWAS that looked",
-      created_by: {
-        academic_verification: null,
-        author_score: 10,
-        created_date: "2020-02-11T23:21:03.141902Z",
-        description: "Here's a description.",
-        facebook: null,
-        first_name: "Joshua",
-        headline: { title: "Software Engineer", isPublic: true },
-        id: 11,
-        last_name: "Lee",
-        profile_image:
-          "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/author_profile_images/2020/09/29/blob?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=%2F8Dvt7pZ%2FFg6%2B5qi9DFrqJt10Yw%3D&Expires=1617482957",
-        reputation: 1046,
-        sift_link: "https://console.sift.com/users/4?abuse_type=content_abuse",
-        total_score: 10,
-        updated_date: "2021-03-12T17:57:57.556559Z",
-        user: 4,
-      },
-    },
-  },
-];
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 const DEFAULT_DATA = {
   count: 0,
@@ -115,7 +26,8 @@ const DEFAULT_DATA = {
 const ActivityList = (props) => {
   const { auth, setIsLatestActivityShown } = props;
   const [isFetching, setIsFetching] = useState(false);
-  const [data, setData] = useState({});
+  const [isLoadingNext, setIsLoadingNext] = useState(false);
+  const [data, setData] = useState(DEFAULT_DATA);
 
   useEffect(() => {
     if (auth.isLoggedIn) {
@@ -127,30 +39,73 @@ const ActivityList = (props) => {
   }, [auth.isLoggedIn]);
 
   const fetchActivityFeed = async () => {
-    const { id: userId } = auth.user;
+    if (data.results.length) return;
 
+    const { id: userId } = auth.user;
     setIsFetching(true);
-    const data = await fetchLatestActivity({ userId });
-    setData(data || {});
+    const resData = await fetchLatestActivity({ userId });
+    setData(resData || {});
     setIsFetching(false);
+  };
+
+  const loadMore = () => {
+    const { next } = data;
+    if (!next) return;
+
+    setIsLoadingNext(true);
+    fetch(next, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((nextData) => {
+        const { results } = nextData;
+        setData({
+          ...data,
+          results: [...data.results, ...results],
+        });
+        setIsLoadingNext(false);
+      });
   };
 
   const renderActiviyList = () => {
     const results = data.results || [];
 
     if (results.length) {
-      return results.map((activity, index) => {
-        return (
-          <ActivityCard
-            activity={activity}
-            key={`activityCard-${activity.id}`}
-            last={results.length === index + 1}
-          />
-        );
-      });
+      return (
+        <div className={css(styles.renderList)}>
+          {results.map((activity, index) => {
+            return (
+              <ActivityCard
+                activity={activity}
+                key={`activityCard-${activity.id}`}
+                last={results.length === index + 1}
+              />
+            );
+          })}
+        </div>
+      );
     } else {
       return <span>Empty State</span>;
     }
+  };
+
+  const renderViewMore = () => {
+    const { next } = data;
+    if (!next) return null;
+
+    return (
+      <div className={css(styles.viewMoreButton)} onClick={loadMore}>
+        {isLoadingNext ? (
+          <Loader
+            key={"activity-feed-loader"}
+            loading={true}
+            size={25}
+            color={colors.BLUE()}
+          />
+        ) : (
+          "View More"
+        )}
+      </div>
+    );
   };
 
   return (
@@ -165,6 +120,7 @@ const ActivityList = (props) => {
           overrideStyles={styles.title}
         />
         {renderActiviyList()}
+        {renderViewMore()}
       </ReactPlaceholder>
     </ColumnContainer>
   );
@@ -177,6 +133,9 @@ const styles = StyleSheet.create({
     top: 100,
     overflowY: "scroll",
     maxHeight: "100vh",
+    borderRadius: 4,
+  },
+  renderList: {
     boxShadow:
       "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
   },
@@ -186,9 +145,20 @@ const styles = StyleSheet.create({
     padding: "15px 20px 10px 20px",
     zIndex: 2,
     background: "#FFF",
-    boxShadow: "inset 25px 0px 25px -25px rgba(255,255,255,1)",
     "@media only screen and (max-width: 415px)": {
       padding: "15px 0 5px",
+    },
+  },
+  viewMoreButton: {
+    color: "rgba(78, 83, 255)",
+    fontWeight: 300,
+    textTransform: "capitalize",
+    fontSize: 16,
+    padding: "15px 0 15px 20px",
+    cursor: "pointer",
+    ":hover": {
+      color: "rgba(78, 83, 255, .5)",
+      textDecoration: "underline",
     },
   },
 });
