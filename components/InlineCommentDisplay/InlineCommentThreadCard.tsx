@@ -118,7 +118,9 @@ function InlineCommentThreadCard({
     event.stopPropagation();
     if (isCommentReadOnly) {
       const { entityKey } = unduxInlineComment;
-      const entityEl = document.getElementById(entityKey);
+      const entityEl = document.getElementById(
+        `inline-comment-${commentThreadID}`
+      );
       if (entityEl != null) {
         entityEl.scrollIntoView({
           behavior: "auto",
