@@ -120,8 +120,6 @@ export function findTargetInlineComment({
     commentThreadID,
     store
   );
-  console.warn("entityKey: ", entityKey);
-  console.warn("findTargetInlineComment: ", targetIndex);
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
 }
 
