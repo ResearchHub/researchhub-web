@@ -15,16 +15,10 @@ const ActivityUserLine = (props) => {
   const { activity } = props;
   const { source, paper, contribution_type: contributionType } = activity;
   const { paper_title: paperTitle } = paper;
-
-  // try {
   const user = getUser(activity);
   const author = user["author_profile"];
   const { id: authorId } = author;
   const username = getAuthorName(author);
-  // } catch {
-  //   console.log("error activity: ", activity)
-  //   setIsHidden(true)
-  // }
 
   const authorAvatarProps = {
     size: 30,
@@ -74,21 +68,24 @@ const ActivityUserLine = (props) => {
     );
   };
 
-  const renderSecondaryLine = () => {
-    if (contributionType === "COMMENTER") {
-      return (
-        <Fragment>
-          {" on "}
-          <span className={css(styles.text)}>{getTitle()}</span>
-        </Fragment>
-      );
-    } else if (contributionType === "SUBMITTER") {
-      return (
-        <Fragment>
-          {" submitted "}
-          <span className={css(styles.text)}>{getTitle()}</span>
-        </Fragment>
-      );
+  const renderTitle = () => {
+    return <span className={css(styles.text)}>{getTitle()}</span>;
+  };
+
+  const renderActionString = () => {
+    switch (contributionType) {
+      case "CURATOR": //creates summary
+        break;
+      case "UPVOTER":
+        return " voted on ";
+      case "SUBMITTER":
+        return " submitted ";
+      case "COMMENTER":
+        return " commented on ";
+      case "SUPPORTER":
+        return " supported ";
+      default:
+        return null;
     }
   };
 
@@ -96,7 +93,8 @@ const ActivityUserLine = (props) => {
     return (
       <span onClick={(e) => e.stopPropagation()}>
         {renderUsername()}
-        {renderSecondaryLine()}
+        {renderActionString()}
+        {renderTitle()}
       </span>
     );
   };
