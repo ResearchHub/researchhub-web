@@ -1,8 +1,8 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
+import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
-  findIndexOfCommentInStore,
   ID,
   InlineComment,
   updateInlineComment,
@@ -42,10 +42,13 @@ function InlineCommentThreadCard({
   unduxInlineComment,
   unduxInlineComment: { commentThreadID },
 }: Props): ReactElement<"div"> {
+  // TODO: calvinhlee REFACTOR
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperID = inlineCommentStore.get("paperID");
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
     commentThreadID != null
   );
+  const [fetchedCommentData, setFecthedCommentData] = useState<any>(null);
   const router = useRouter();
   const { entityKey, blockKey } = unduxInlineComment;
 
@@ -53,9 +56,26 @@ function InlineCommentThreadCard({
     setIsCommentReadOnly(commentThreadID != null);
   }, [commentThreadID]);
 
+  useEffect((): void => {
+    if (
+      fetchedCommentData == null &&
+      commentThreadID != null &&
+      paperID != null
+    ) {
+      console.warn("FETCHINGGGGG");
+      inlineCommentFetchTarget({
+        paperId: paperID,
+        targetId: commentThreadID,
+        onSuccess: (result: any): void => {
+          setFecthedCommentData(result);
+          setIsCommentReadOnly(true);
+        },
+      });
+    }
+  }, [commentThreadID, fetchedCommentData, paperID]);
+
   const onSubmitComment = (text: String, plainText: String): void => {
     /* this will trigger separate background action to save paper see PaperDraftSilentSave */
-    inlineCommentStore.set("shouldSavePaper")(true);
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
@@ -78,6 +98,7 @@ function InlineCommentThreadCard({
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
         ]);
+        inlineCommentStore.set("shouldSavePaper")(true);
       },
       openRecaptchaPrompt,
       params: {
@@ -107,7 +128,8 @@ function InlineCommentThreadCard({
       }
     }
   };
-
+  console.warn("commentThreadID: ", commentThreadID);
+  console.warn("fetchedCommentData: ", fetchedCommentData);
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
@@ -131,6 +153,9 @@ function InlineCommentThreadCard({
             isReadOnly={isCommentReadOnly}
             onCancel={cleanupStoreAndCloseDisplay}
             onSubmit={onSubmitComment}
+            passedValue={
+              fetchedCommentData != null ? fetchedCommentData.plain_text : null
+            }
           />
         </div>
       </ColumnContainer>
