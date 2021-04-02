@@ -7,6 +7,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import { SideColumnTitle } from "~/components/Typography";
 import ActivityCard from "./ActivityCard";
+import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import { fetchLatestActivity } from "~/config/fetch";
@@ -112,39 +113,53 @@ const DEFAULT_DATA = {
 };
 
 const ActivityList = (props) => {
-  const { auth, paperId } = props;
+  const { auth, setIsLatestActivityShown } = props;
   const [isFetching, setIsFetching] = useState(false);
   const [data, setData] = useState({});
 
   useEffect(() => {
     if (auth.isLoggedIn) {
-      console.log("fetched called; update");
-      // fetchActivityFeed();
+      setIsLatestActivityShown(true);
+      fetchActivityFeed();
+    } else {
+      setIsLatestActivityShown(false);
     }
-  }, [paperId, auth]);
+  }, [auth.isLoggedIn]);
 
   const fetchActivityFeed = async () => {
+    const { id: userId } = auth.user;
+
     setIsFetching(true);
-    const data = (await fetchLatestActivity()) || {};
-    setData(data);
+    const data = await fetchLatestActivity({ userId });
+    setData(data || {});
     setIsFetching(false);
   };
 
   const renderActiviyList = () => {
-    return STATIC_DATA.map((activity, index) => {
-      return (
-        <ActivityCard
-          activity={activity}
-          key={`activityCard-${activity.id}`}
-          last={STATIC_DATA.length === index + 1}
-        />
-      );
-    });
+    const results = data.results || [];
+
+    if (results.length) {
+      return results.map((activity, index) => {
+        return (
+          <ActivityCard
+            activity={activity}
+            key={`activityCard-${activity.id}`}
+            last={results.length === index + 1}
+          />
+        );
+      });
+    } else {
+      return <span>Empty State</span>;
+    }
   };
 
   return (
     <ColumnContainer overrideStyles={styles.container}>
-      <ReactPlaceholder ready={!isFetching} showLoadingAnimation>
+      <ReactPlaceholder
+        ready={!isFetching}
+        showLoadingAnimation
+        customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
+      >
         <SideColumnTitle
           title={"Latest Activity"}
           overrideStyles={styles.title}
@@ -160,12 +175,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     position: "sticky",
     top: 100,
+    overflowY: "scroll",
+    maxHeight: "100vh",
+    boxShadow:
+      "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
   },
   title: {
-    margin: "15px 20px 10px 20px",
-    padding: 0,
+    position: "sticky",
+    top: 0,
+    padding: "15px 20px 10px 20px",
+    zIndex: 2,
+    background: "#FFF",
+    boxShadow: "inset 25px 0px 25px -25px rgba(255,255,255,1)",
     "@media only screen and (max-width: 415px)": {
-      margin: "15px 0 5px",
+      padding: "15px 0 5px",
     },
   },
 });
