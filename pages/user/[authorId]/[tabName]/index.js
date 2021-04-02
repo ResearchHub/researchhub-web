@@ -9,6 +9,7 @@ import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
 import { TransactionActions } from "~/redux/transaction";
 import { ModalActions } from "../../../../redux/modals";
+import { MessageActions } from "~/redux/message";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -33,6 +34,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
+import { followUser } from "~/config/fetch";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import UserSummaries from "~/components/Author/Tabs/UserSummaries";
@@ -878,6 +880,14 @@ const AuthorPage = (props) => {
     });
   };
 
+  const onUserFollow = () => {
+    followUser({ followeeId: 11, userId: 4 })
+      .then((_) => {})
+      .catch((err) => {
+        console.log("follow err: ", err);
+      });
+  };
+
   const renderUserLinks = () => {
     return (
       <div className={css(styles.socialLinks)}>
@@ -1061,6 +1071,9 @@ const AuthorPage = (props) => {
                 property="name"
               >
                 {author.first_name} {author.last_name}
+                <span onClick={onUserFollow} className={css(styles.plusButton)}>
+                  {icons.plusCircleSolid}
+                </span>
               </h1>
               {renderUserLinks()}
             </div>
@@ -1215,6 +1228,15 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       textAlign: "center",
       marginBottom: 15,
+    },
+  },
+  plusButton: {
+    marginLeft: 10,
+    fontSize: 20,
+    cursor: "pointer",
+    color: colors.BLACK(0.4),
+    ":hover": {
+      color: colors.NEW_BLUE(),
     },
   },
   nameLine: {
@@ -1692,6 +1714,8 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
   openUserInfoModal: ModalActions.openUserInfoModal,
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
 };
 
 export default connect(

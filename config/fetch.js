@@ -157,9 +157,19 @@ export const fetchPaperDraft = ({ paperId }) => {
 
 export const fetchLatestActivity = ({ userId }) => {
   return fetch(
-    API.USER({ userId, route: "following_latest_activy" }),
+    API.USER({ userId, route: "following_latest_activity" }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
+};
+
+export const followUser = ({ userId, followeeId }) => {
+  const PAYLOAD = {
+    followee_id: followeeId,
+  };
+
+  fetch(API.USER({ userId, route: "follow" }), API.POST_CONFIG(PAYLOAD)).then(
+    Helpers.checkStatus
+  );
 };
