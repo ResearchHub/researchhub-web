@@ -70,6 +70,7 @@ import {
   faUserSlash,
   faQuoteRight,
   faVideoPlus,
+  faRss,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -249,6 +250,7 @@ library.add(
 );
 
 const icons = {
+  activtyFeed: <FontAwesomeIcon icon={faRss} />,
   addPaper: <FontAwesomeIcon icon={faFileUpload} />,
   angleLeft: <FontAwesomeIcon icon={faAngleLeft} />,
   angleRight: <FontAwesomeIcon icon={faAngleRight} />,
