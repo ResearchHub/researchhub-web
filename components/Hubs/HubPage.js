@@ -77,6 +77,7 @@ class HubPage extends React.Component {
       papersLoading: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
+      isLatestActivityShown: false,
     };
   }
 
@@ -619,7 +620,7 @@ class HubPage extends React.Component {
   };
 
   render() {
-    const { feed } = this.state;
+    const { feed, isLatestActivityShown } = this.state;
     const {
       auth,
       home,
@@ -785,9 +786,19 @@ class HubPage extends React.Component {
                 </ReactPlaceholder>
               </div>
             </div>
-            <div className={css(styles.column, styles.sidebar)}>
+            <div
+              className={css(
+                styles.column,
+                styles.sidebar,
+                !isLatestActivityShown && styles.hidden
+              )}
+            >
               <div className={css(styles.rightSidebarContainer)}>
-                <ActivityList />
+                <ActivityList
+                  setIsLatestActivityShown={(state) =>
+                    this.setState({ isLatestActivityShown: state })
+                  }
+                />
               </div>
             </div>
           </div>
@@ -947,9 +958,9 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
-    width: 300,
-    minWidth: 300,
-    maxWidth: 300,
+    width: 280,
+    minWidth: 280,
+    maxWidth: 280,
     minHeight: "100%",
     height: "100%",
   },
@@ -1215,6 +1226,9 @@ var styles = StyleSheet.create({
       color: "#FFF",
       backgroundColor: colors.BLUE(),
     },
+  },
+  hidden: {
+    display: "none",
   },
 });
 

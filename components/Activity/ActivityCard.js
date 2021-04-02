@@ -7,16 +7,25 @@ import Link from "next/link";
 // Components
 import TextEditor from "~/components/TextEditor"; // QuillTextEditor
 import ActivityUserLine from "./ActivityUserLine";
+import ActivityBodyText from "./ActivityBodyText";
 import { TimeStamp } from "~/components/Notifications/NotificationHelpers";
 import { ClampedText } from "~/components/Typography";
 import HubTag from "~/components/Hubs/HubTag";
 
 import colors from "~/config/themes/colors";
 
+const BLACK_LIST_TYPES = {
+  CURATOR: true,
+};
+
 const ActivityCard = (props) => {
   const { activity, last } = props;
-  const { created_date: createdDate, comment, paper } = activity;
-  const { id: paperId, slug: paperName } = paper;
+  const {
+    paper,
+    created_date: createdDate,
+    contribution_type: contributionType,
+  } = activity;
+  const { id: paperId, slug: paperName, hubs } = paper;
 
   const formatProps = (type) => {
     switch (type) {
@@ -26,7 +35,7 @@ const ActivityCard = (props) => {
           removeIcon: true,
         };
       case "hub":
-        const hub = paper.hubs[0]; // we only show one hub tag (first)
+        const hub = hubs.length && hubs[0]; // we only show one hub tag (first)
         return {
           tag: hub,
           last: true,
@@ -34,27 +43,7 @@ const ActivityCard = (props) => {
     }
   };
 
-  const renderComment = () => {
-    const { plain_text } = comment;
-    // QUILL IMPLEMENTATION
-    // if (typeof paper.text !== "string") {
-    //   return (
-    //     <TextEditor
-    //     // classNames={[styles.commentEditor]}
-    //     // commentStyles={this.props.commentStyles && this.props.commentStyles}
-    //       readOnly={true}
-    //       initialValue={paper.text}
-    //     />
-    //   )
-    // }
-
-    // PLAIN TEXT
-    return (
-      <ClampedText lines={3} textStyles={styles.text}>
-        {plain_text}
-      </ClampedText>
-    );
-  };
+  if (BLACK_LIST_TYPES[contributionType]) return null;
 
   return (
     <Link
@@ -64,7 +53,7 @@ const ActivityCard = (props) => {
       <a className={css(styles.link)}>
         <Ripples className={css(styles.root)}>
           <ActivityUserLine {...props} />
-          {renderComment()}
+          <ActivityBodyText {...props} />
           <div className={css(styles.row, last && styles.noBorderBottom)}>
             <TimeStamp {...formatProps("timestamp")} />
             <HubTag {...formatProps("hub")} />
@@ -100,16 +89,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 20,
-    borderBottom: `1px solid ${colors.BLACK(0.2)}`,
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
   },
   noBorderBottom: {
     borderBottom: "none",
-  },
-  text: {
-    color: colors.BLACK(0.8),
-    fontSize: 14,
-    margin: "10px 0",
-    lineHeight: 1.3,
   },
 });
 
