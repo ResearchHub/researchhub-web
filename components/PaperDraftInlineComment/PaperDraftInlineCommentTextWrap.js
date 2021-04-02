@@ -39,7 +39,6 @@ function PaperDraftInlineCommentTextWrap(
     [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
   );
 
-  // console.warn("At Entity Text: ", commentThreadID);
   const doesCommentExistInStore = targetInlineComment != null;
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
@@ -112,7 +111,11 @@ function PaperDraftInlineCommentTextWrap(
           className={css(
             shouldTextBeHighlighted ? styles.commentTextHighLight : null
           )}
-          id={entityKey}
+          id={
+            commentThreadID != null
+              ? `inline-comment-${commentThreadID}`
+              : entityKey
+          }
           key={`Popver-Child-${entityKey}`}
           onClick={openCommentThreadDisplay}
           role="none"
