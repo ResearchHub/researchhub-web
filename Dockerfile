@@ -1,4 +1,4 @@
-FROM node:13.7.0-alpine
+FROM node:14.15.5-alpine
 
 # install dependencies
 RUN apk add --no-cache --virtual .build-deps \
