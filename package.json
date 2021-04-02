@@ -52,7 +52,7 @@
     "js-sha3": "^0.8.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.6.2",
-    "next": "^10.1.2",
+    "next": "^9.5.3",
     "next-compose-plugins": "^2.2.0",
     "next-redux-wrapper": "^4.0.0",
     "next-transpile-modules": "^2.3.1",
