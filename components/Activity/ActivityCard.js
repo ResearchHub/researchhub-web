@@ -9,7 +9,6 @@ import TextEditor from "~/components/TextEditor"; // QuillTextEditor
 import ActivityUserLine from "./ActivityUserLine";
 import ActivityBodyText from "./ActivityBodyText";
 import { TimeStamp } from "~/components/Notifications/NotificationHelpers";
-import { ClampedText } from "~/components/Typography";
 import HubTag from "~/components/Hubs/HubTag";
 
 import colors from "~/config/themes/colors";
