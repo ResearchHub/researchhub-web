@@ -25,6 +25,7 @@ import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
+import UserFollowButton from "~/components/Author/Tabs/UserFollowButton";
 import Button from "~/components/Form/Button";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import Loader from "~/components/Loader/Loader";
@@ -880,23 +881,6 @@ const AuthorPage = (props) => {
     });
   };
 
-  const onUserFollow = () => {
-    const { showMessage, setMessage } = props;
-
-    followUser({ followeeId: 11, userId: 4 })
-      .then((isFollowing) => {
-        setMessage(
-          isFollowing
-            ? `Following ${author.first_name} ${author.last_name}`
-            : `Unfollowed ${author.first_name} ${author.last_name}`
-        );
-        showMessage({ show: true });
-      })
-      .catch((err) => {
-        console.log("follow err: ", err);
-      });
-  };
-
   const renderUserLinks = () => {
     return (
       <div className={css(styles.socialLinks)}>
@@ -916,6 +900,11 @@ const AuthorPage = (props) => {
   const renderButtons = (view = {}) => {
     return (
       <div className={css(styles.userActions)}>
+        <UserFollowButton
+          authorId={router.query.authorId}
+          authorname={`${author.first_name} ${author.last_name}`}
+        />
+
         {allowEdit && (
           <div className={css(styles.editProfileButton)}>
             <Button
@@ -1080,9 +1069,6 @@ const AuthorPage = (props) => {
                 property="name"
               >
                 {author.first_name} {author.last_name}
-                <span onClick={onUserFollow} className={css(styles.plusButton)}>
-                  {icons.plusCircleSolid}
-                </span>
               </h1>
               {renderUserLinks()}
             </div>
@@ -1184,7 +1170,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       height: 40,
-      marginTop: 10,
+      margin: "10px 0",
     },
   },
   moderatorIcon: {
