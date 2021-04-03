@@ -169,7 +169,15 @@ export const followUser = ({ userId, followeeId }) => {
     followee_id: followeeId,
   };
 
-  fetch(API.USER({ userId, route: "follow" }), API.POST_CONFIG(PAYLOAD))
+  return fetch(API.USER({ userId, route: "follow" }), API.POST_CONFIG(PAYLOAD))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const isFollowingUser = ({ authorId: userId }) => {
+  // api/user/{author_id of person you want to follow}/check_follow
+
+  return fetch(API.USER({ route: "check_follow", userId }))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
