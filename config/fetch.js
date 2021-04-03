@@ -169,7 +169,7 @@ export const followUser = ({ userId, followeeId }) => {
     followee_id: followeeId,
   };
 
-  fetch(API.USER({ userId, route: "follow" }), API.POST_CONFIG(PAYLOAD)).then(
-    Helpers.checkStatus
-  );
+  fetch(API.USER({ userId, route: "follow" }), API.POST_CONFIG(PAYLOAD))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
 };

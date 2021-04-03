@@ -881,8 +881,17 @@ const AuthorPage = (props) => {
   };
 
   const onUserFollow = () => {
+    const { showMessage, setMessage } = props;
+
     followUser({ followeeId: 11, userId: 4 })
-      .then((_) => {})
+      .then((isFollowing) => {
+        setMessage(
+          isFollowing
+            ? `Following ${author.first_name} ${author.last_name}`
+            : `Unfollowed ${author.first_name} ${author.last_name}`
+        );
+        showMessage({ show: true });
+      })
       .catch((err) => {
         console.log("follow err: ", err);
       });
