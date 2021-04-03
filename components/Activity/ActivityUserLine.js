@@ -43,7 +43,6 @@ const ActivityUserLine = (props) => {
   function getTitle() {
     switch (contributionType) {
       case "CURATOR": //creates summary
-        console.log("activity", activity);
         break;
       case "UPVOTER": // variable
       case "SUBMITTER":
