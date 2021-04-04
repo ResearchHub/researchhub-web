@@ -77,7 +77,7 @@ const UserFollowButton = (props) => {
       );
     }
 
-    if (isHovered && !isFollowing) {
+    if (isHovered && isFollowing) {
       return "Unfollow";
     }
 
@@ -98,7 +98,7 @@ const UserFollowButton = (props) => {
         label={handleLabel()}
         customButtonStyle={styles.editButtonCustom}
         rippleClass={styles.rippleClass}
-        isWhite={!isFollowing}
+        isWhite={!isFollowing || isHovered}
       />
     </div>
   );

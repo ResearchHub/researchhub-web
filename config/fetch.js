@@ -175,9 +175,7 @@ export const followUser = ({ userId, followeeId }) => {
 };
 
 export const isFollowingUser = ({ authorId: userId }) => {
-  // api/user/{author_id of person you want to follow}/check_follow
-
-  return fetch(API.USER({ route: "check_follow", userId }))
+  return fetch(API.USER({ route: "check_follow", userId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };

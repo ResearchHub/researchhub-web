@@ -8,7 +8,7 @@ import { ClampedText } from "~/components/Typography";
 import { convertDeltaToText } from "~/config/utils";
 import colors from "~/config/themes/colors";
 
-const ActivityBodyText = (props) => {
+const ActivityBody = (props) => {
   const { activity } = props;
 
   const [isHidden, setIsHidden] = useState(false);
@@ -17,19 +17,18 @@ const ActivityBodyText = (props) => {
    * converts Quill Rich Text to Plain Text (only for type commentor)
    */
   const renderBodyText = () => {
-    const { source, contribution_type: contributionType } = activity;
-    const { text } = source;
-
-    if (contributionType === "COMMENTER") {
-      try {
+    try {
+      const { source, contribution_type: contributionType } = activity;
+      const { text } = source;
+      if (contributionType === "COMMENTER") {
         return convertDeltaToText(text);
-      } catch {
-        setIsHidden(true);
+      } else if (contributionType === "SUBMITTER") {
+        return source.abstract;
+      } else {
+        // return contributionType;
       }
-    } else if (contributionType === "SUBMITTER") {
-      return source.abstract;
-    } else {
-      // return contributionType;
+    } catch {
+      !isHidden && setIsHidden(true);
     }
   };
 
@@ -55,4 +54,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ActivityBodyText;
+export default ActivityBody;
