@@ -6,25 +6,41 @@ import Link from "next/link";
 
 // Components
 import TextEditor from "~/components/TextEditor"; // QuillTextEditor
-import ActivityUserLine from "./ActivityUserLine";
-import ActivityBodyText from "./ActivityBodyText";
+import ActivityHeader from "./ActivityHeader";
+import ActivityBody from "./ActivityBody";
 import { TimeStamp } from "~/components/Notifications/NotificationHelpers";
 import HubTag from "~/components/Hubs/HubTag";
 
 import colors from "~/config/themes/colors";
 
-const BLACK_LIST_TYPES = {
-  CURATOR: true,
-};
+// const BLACK_LIST_TYPES = {
+//   CURATOR: true,
+// };
 
 const ActivityCard = (props) => {
+  const [isHidden, setIsHidden] = useState(false);
+
   const { activity, last } = props;
   const {
     paper,
+    source,
     created_date: createdDate,
     contribution_type: contributionType,
   } = activity;
+
   const { id: paperId, slug: paperName, hubs } = paper;
+
+  useEffect(() => {
+    checkIsRemoved();
+  });
+
+  function checkIsRemoved() {
+    if (contributionType === "COMMENTER") {
+      setIsHidden(source["is_removed"]);
+    } else {
+      setIsHidden(false);
+    }
+  }
 
   const formatProps = (type) => {
     switch (type) {
@@ -42,7 +58,7 @@ const ActivityCard = (props) => {
     }
   };
 
-  if (BLACK_LIST_TYPES[contributionType]) return null;
+  if (isHidden) return null;
 
   return (
     <Link
@@ -51,8 +67,8 @@ const ActivityCard = (props) => {
     >
       <a className={css(styles.link)}>
         <Ripples className={css(styles.root)}>
-          <ActivityUserLine {...props} />
-          <ActivityBodyText {...props} />
+          <ActivityHeader {...props} />
+          <ActivityBody {...props} />
           <div className={css(styles.row, last && styles.noBorderBottom)}>
             <TimeStamp {...formatProps("timestamp")} />
             <HubTag {...formatProps("hub")} />
