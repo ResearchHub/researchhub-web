@@ -9,6 +9,7 @@ import { SideColumnTitle } from "~/components/Typography";
 import ActivityCard from "./ActivityCard";
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 import Loader from "~/components/Loader/Loader";
+import ActivityEmptyState from "./ActivityEmptyState";
 
 // Config
 import { fetchLatestActivity } from "~/config/fetch";
@@ -85,17 +86,16 @@ const ActivityList = (props) => {
         </div>
       );
     } else {
-      return (
-        <div className={css(styles.emptystate)}>
-          <span className={css(styles.activityFeedIcon)}>
-            {icons.activtyFeed}
-          </span>
-          <span style={{ fontWeight: 500, marginBottom: 10 }}>
-            No Activity.
-          </span>
-          Follow an author to get started!
-        </div>
-      );
+      return <ActivityEmptyState />;
+      // <div className={css(styles.emptystate)}>
+      //   <span className={css(styles.activityFeedIcon)}>
+      //     {icons.activtyFeed}
+      //   </span>
+      //   <span style={{ fontWeight: 500, marginBottom: 10 }}>
+      //     No Activity.
+      //   </span>
+      //   Follow an author to get started!
+      // </div>
     }
   };
 
