@@ -16,6 +16,7 @@ export type InlineComment = {
   blockKey: string;
   commentThreadID: ID;
   entityKey: string;
+  highlightedText: string;
 };
 export type State = {
   displayableInlineComments: Array<
@@ -24,10 +25,7 @@ export type State = {
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
   paperID: ID;
-  promptAttr: {
-    entityKey: ID;
-    highlightedText: string | null;
-  } /* used mainly for PaperDraftInlineCommentTextWrap */;
+  promptedEntityKey: ID /* used mainly for PaperDraftInlineCommentTextWrap */;
   silencedPromptKeys: Set<ID> /* entityKeys */;
 };
 export type UpdateInlineCommentArgs = {
@@ -61,7 +59,7 @@ const initialState: State = {
   inlineComments: [],
   lastPromptRemovedTime: null,
   paperID: null,
-  promptAttr: { entityKey: null, highlightedText: null },
+  promptedEntityKey: null,
   silencedPromptKeys: new Set(),
 };
 
@@ -77,9 +75,7 @@ export function findTargetInlineComment({
     commentThreadID,
     store
   );
-  return targetIndex > -1
-    ? store.get("inlineComments")[blockKey][targetIndex]
-    : null;
+  return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
 }
 
 export function updateInlineComment({
