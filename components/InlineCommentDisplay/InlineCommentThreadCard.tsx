@@ -49,8 +49,6 @@ function InlineCommentThreadCard({
   unduxInlineComment: { commentThreadID },
 }: Props): ReactElement<"div"> {
   const commentMade = commentThreadID !== null;
-
-  // TODO: calvinhlee REFACTOR
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");

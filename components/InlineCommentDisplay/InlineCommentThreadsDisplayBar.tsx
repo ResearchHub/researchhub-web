@@ -1,21 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import InlineCommentUnduxStore, {
-  ID,
   InlineComment,
-  InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import React, { ReactElement, useEffect } from "react";
-import { inlineCommentFetchAll } from "./api/InlineCommentFetch";
+import React, { ReactElement } from "react";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
-
-type fetchInlineCommentThreadsArgs = {
-  paperID: ID;
-  inlineCommentStore: InlineCommentStore;
-};
 
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const paperID = inlineCommentStore.get("paperID");
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
