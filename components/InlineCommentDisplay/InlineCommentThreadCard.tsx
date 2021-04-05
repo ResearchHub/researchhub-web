@@ -28,6 +28,7 @@ import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 type Props = {
   auth: any /* redux */;
@@ -51,6 +52,7 @@ function InlineCommentThreadCard({
 
   // TODO: calvinhlee REFACTOR
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
     commentMade
@@ -101,13 +103,12 @@ function InlineCommentThreadCard({
         });
         updateInlineThreadIdInEntity({
           entityKey,
-          inlineCommentStore,
+          paperDraftStore,
           commentThreadID: threadID,
         });
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
-        ]);
-        inlineCommentStore.set("shouldSavePaper")(true);
+        ]); /* should also grab all the inline comments withiin the block */
       },
       openRecaptchaPrompt,
       params: {
@@ -139,7 +140,6 @@ function InlineCommentThreadCard({
       }
     }
   };
-  console.warn("commentThreadID: ", commentThreadID);
   console.warn("fetchedCommentData: ", fetchedCommentData);
   return (
     <div
