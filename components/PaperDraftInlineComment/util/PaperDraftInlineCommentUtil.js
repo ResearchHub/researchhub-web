@@ -79,17 +79,16 @@ function handleInlineCommentBlockToggle({
 
 export function updateInlineThreadIdInEntity({
   entityKey,
-  inlineCommentStore,
+  paperDraftStore,
   commentThreadID,
 }) {
-  const { editorState, setEditorState } = inlineCommentStore.get(
-    "paperDraftState"
-  );
+  const editorState = paperDraftStore.get("editorState");
   const currContentState = editorState.getCurrentContent();
   // directly mutates the entity
   currContentState.mergeEntityData(entityKey, {
     commentThreadID,
   });
+  paperDraftStore.set("shouldSavePaper")(true);
 }
 
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
