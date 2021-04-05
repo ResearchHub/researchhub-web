@@ -33,6 +33,7 @@ const UserFollowButton = (props) => {
   const onClick = () => {
     const { auth, authorId: followeeId } = props;
     const userId = auth.user.id;
+    setIsChecking(true);
     followUser({ followeeId, userId })
       .then(onFollowSucess)
       .catch(onFollowError);
@@ -44,6 +45,7 @@ const UserFollowButton = (props) => {
       ? `Following ${authorname}`
       : `Unfollowed ${authorname}`;
     setIsFollowing(state);
+    setIsChecking(false);
     setMessage(message);
     showMessage({ show: true });
   };
@@ -52,6 +54,7 @@ const UserFollowButton = (props) => {
     const { showMessage, setMessage } = props;
     setMessage("Something went wrong Please try again!");
     showMessage({ error: true, show: true });
+    setIsChecking(false);
   };
 
   const checkIsFollowingUser = () => {
