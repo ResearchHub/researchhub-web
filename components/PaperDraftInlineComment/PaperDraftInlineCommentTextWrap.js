@@ -9,7 +9,12 @@ import InlineCommentUnduxStore, {
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
-  const { blockKey, contentState, entityKey } = props ?? {};
+  const {
+    blockKey,
+    contentState,
+    decoratedText: currentSelectText,
+    entityKey,
+  } = props ?? {};
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
@@ -50,7 +55,6 @@ function PaperDraftInlineCommentTextWrap(
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
-
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
     inlineCommentStore.set("silencedPromptKeys")(
@@ -62,7 +66,7 @@ function PaperDraftInlineCommentTextWrap(
       blockKey,
       commentThreadID,
       entityKey,
-      highlightedText: "THIS IS HIGHLIGHTED TEXT YES",
+      highlightedText: currentSelectText,
       store: inlineCommentStore,
     };
     updateInlineComment({
@@ -81,7 +85,7 @@ function PaperDraftInlineCommentTextWrap(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
     inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
-    inlineCommentStore.set("currentPromptKey")(null);
+    inlineCommentStore.set("promptedEntityKey")(null);
     setShowPopover(false);
   };
 

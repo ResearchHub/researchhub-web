@@ -22,14 +22,15 @@ function getIsGoodTimeInterval(unixTimeInMilliSec) {
 
 function getIsReadyForNewInlineComment({
   editorState,
+  inlineCommentStore,
   isDraftInEditMode,
-  unduxStore,
 }) {
   const currSelection = editorState.getSelection();
   const isGoodTimeInterval = getIsGoodTimeInterval(
-    unduxStore.get("lastPromptRemovedTime")
+    inlineCommentStore.get("lastPromptRemovedTime")
   );
-  const hasActiveCommentPrompt = unduxStore.get("promptedEntityKey") != null;
+  const hasActiveCommentPrompt =
+    inlineCommentStore.get("promptedEntityKey") != null;
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
@@ -39,15 +40,15 @@ function getIsReadyForNewInlineComment({
   );
 }
 
-function getShouldSavePaperSilently({ isDraftInEditMode, unduxStore }) {
+function getShouldSavePaperSilently({ isDraftInEditMode, paperDraftStore }) {
   const isGoodTimeInterval = getIsGoodTimeInterval(
-    unduxStore.get("lastSavePaperTime")
+    paperDraftStore.get("lastSavePaperTime")
   );
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
-    unduxStore.get("paperID") != null &&
-    unduxStore.get("shouldSavePaper")
+    paperDraftStore.get("paperID") != null &&
+    paperDraftStore.get("shouldSavePaper")
   );
 }
 
@@ -123,7 +124,7 @@ export default function PaperDraftContainer({
 
   const shouldSavePaperSilently = getShouldSavePaperSilently({
     isDraftInEditMode,
-    unduxStore: paperDraftStore,
+    paperDraftStore,
   });
   useEffect(() => {
     if (shouldSavePaperSilently) {
@@ -143,8 +144,8 @@ export default function PaperDraftContainer({
 
   const isReadyForNewInlineComment = getIsReadyForNewInlineComment({
     editorState,
+    inlineCommentStore,
     isDraftInEditMode,
-    unduxStore: inlineCommentStore,
   });
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
