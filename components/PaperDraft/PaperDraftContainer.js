@@ -29,7 +29,7 @@ function getIsReadyForNewInlineComment({
   const isGoodTimeInterval = getIsGoodTimeInterval(
     unduxStore.get("lastPromptRemovedTime")
   );
-  const hasActiveCommentPrompt = unduxStore.get("currentPromptKey") != null;
+  const hasActiveCommentPrompt = unduxStore.get("promptedEntityKey") != null;
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
@@ -99,7 +99,7 @@ export default function PaperDraftContainer({
         setActiveSection,
         setSeenEntityKeys,
       }),
-    [seenEntityKeys, setSeenEntityKeys, setActiveSection]
+    [seenEntityKeys, setActiveSection, setSeenEntityKeys]
   );
 
   useEffect(
@@ -152,16 +152,12 @@ export default function PaperDraftContainer({
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
         onInlineCommentPrompt: (entityKey) =>
-          inlineCommentStore.set("currentPromptKey")(entityKey),
+          inlineCommentStore.set("promptedEntityKey")(entityKey),
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
       setEditorState(updatedEditorState);
     }
-  }, [
-    editorState,
-    inlineCommentStore.get("currentPromptKey"),
-    isReadyForNewInlineComment,
-  ]);
+  }, [editorState, isReadyForNewInlineComment]);
 
   const handleKeyCommand = useCallback(
     ({ editorState, setEditorState }) => {
