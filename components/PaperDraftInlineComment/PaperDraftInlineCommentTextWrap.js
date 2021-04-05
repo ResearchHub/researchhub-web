@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   findTargetInlineComment,
-  getInlineCommentsGivenBlockKey,
+  getSavedInlineCommentsGivenBlockKey,
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
@@ -76,12 +76,14 @@ function PaperDraftInlineCommentTextWrap(
       store: inlineCommentStore,
       updatedInlineComment: newInlineComment,
     });
-    inlineCommentStore.set("displayableInlineComments")(
-      getInlineCommentsGivenBlockKey({
+    const displayableComments = [
+      newInlineComment,
+      ...getSavedInlineCommentsGivenBlockKey({
         blockKey,
         editorState: paperDraftStore.get("editorState"),
-      })
-    );
+      }),
+    ];
+    inlineCommentStore.set("displayableInlineComments")(displayableComments);
     setShowPopover(false);
   };
 
@@ -97,20 +99,12 @@ function PaperDraftInlineCommentTextWrap(
 
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
-    const targetInlineComment = inlineCommentStore
-      .get("inlineComments")
-      .find(
-        ({ commentThreadID: unduxThreadID }) =>
-          unduxThreadID === commentThreadID
-      );
-    if (targetInlineComment != null) {
-      inlineCommentStore.set("displayableInlineComments")(
-        getInlineCommentsGivenBlockKey({
-          blockKey,
-          editorState: paperDraftStore.get("editorState"),
-        })
-      );
-    }
+    inlineCommentStore.set("displayableInlineComments")(
+      getSavedInlineCommentsGivenBlockKey({
+        blockKey,
+        editorState: paperDraftStore.get("editorState"),
+      })
+    );
   };
 
   return (

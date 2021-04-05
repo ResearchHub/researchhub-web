@@ -8,7 +8,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
   findIndexOfCommentInStore,
-  getInlineCommentsGivenBlockKey,
+  getSavedInlineCommentsGivenBlockKey,
   ID,
   InlineComment,
   updateInlineComment,
@@ -107,7 +107,7 @@ function InlineCommentThreadCard({
           commentThreadID: threadID,
         });
         inlineCommentStore.set("displayableInlineComments")(
-          getInlineCommentsGivenBlockKey({
+          getSavedInlineCommentsGivenBlockKey({
             blockKey,
             editorState:
               paperDraftStore.get("editorState") || EditorState.createEmpty(),
