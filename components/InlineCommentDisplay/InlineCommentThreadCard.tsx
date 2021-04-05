@@ -140,7 +140,7 @@ function InlineCommentThreadCard({
       }
     }
   };
-  console.warn("fetchedCommentData: ", fetchedCommentData);
+
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
