@@ -3,8 +3,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   findTargetInlineComment,
+  getInlineCommentsGivenBlockKey,
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
+import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
@@ -16,6 +18,7 @@ function PaperDraftInlineCommentTextWrap(
     entityKey,
   } = props ?? {};
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperDraftStore = PaperDraftStore.useStore();
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
     .has(entityKey);
@@ -73,12 +76,15 @@ function PaperDraftInlineCommentTextWrap(
       store: inlineCommentStore,
       updatedInlineComment: newInlineComment,
     });
-    inlineCommentStore.set("displayableInlineComments")([
-      newInlineComment,
-    ]); /* should also grab all the inline comments withiin the block */
+    inlineCommentStore.set("displayableInlineComments")(
+      getInlineCommentsGivenBlockKey({
+        blockKey,
+        editorState: paperDraftStore.get("editorState"),
+      })
+    );
     setShowPopover(false);
   };
-  console.warn("HIHIHIHIHI: ", commentThreadID);
+
   const hidePopoverAndSilence = (event) => {
     event.stopPropagation();
     inlineCommentStore.set("silencedPromptKeys")(
@@ -98,9 +104,12 @@ function PaperDraftInlineCommentTextWrap(
           unduxThreadID === commentThreadID
       );
     if (targetInlineComment != null) {
-      inlineCommentStore.set("displayableInlineComments")([
-        targetInlineComment,
-      ]); /* should also grab all the inline comments withiin the block */
+      inlineCommentStore.set("displayableInlineComments")(
+        getInlineCommentsGivenBlockKey({
+          blockKey,
+          editorState: paperDraftStore.get("editorState"),
+        })
+      );
     }
   };
 

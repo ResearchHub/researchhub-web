@@ -1,6 +1,6 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
-import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
+import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 
 export type ID = string | number | null;
 export type InlineCommentStore = Store<State>;
@@ -76,6 +76,54 @@ export function findTargetInlineComment({
     store
   );
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
+}
+
+export function getInlineCommentsGivenBlockKey({
+  blockKey,
+  editorState,
+}: {
+  blockKey: string;
+  editorState: EditorState;
+}): Array<InlineComment> {
+  const result: InlineComment[] = [];
+  const curreContent = editorState.getCurrentContent();
+  const targetBlock = curreContent.getBlockForKey(blockKey);
+  targetBlock.findEntityRanges(
+    (character): boolean => {
+      const entityKey = character.getEntity();
+      if (entityKey !== null) {
+        const detectableEntity = curreContent.getEntity(entityKey);
+        if (
+          detectableEntity != null &&
+          detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
+        ) {
+          const { commentThreadID } = curreContent
+            .getEntity(entityKey)
+            .getData();
+          if (commentThreadID != null) {
+            result.push({
+              blockKey,
+              commentThreadID,
+              entityKey,
+              highlightedText: "",
+            });
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+    (_start, _end) => {}
+  );
+  return result.sort((entA, entB) => {
+    if (entA.commentThreadID == null) {
+      return -1;
+    } else if (entB.commentThreadID == null) {
+      return 1;
+    } else {
+      return entA.commentThreadID < entB.commentThreadID ? -1 : 1;
+    }
+  });
 }
 
 export function updateInlineComment({
