@@ -10,16 +10,19 @@ function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
   const { blockKey, contentState, entityKey } = props ?? {};
-  const unduxStore = InlineCommentUnduxStore.useStore();
-  const isSilenced = unduxStore.get("silencedPromptKeys").has(entityKey);
-  const isBeingPrompted = unduxStore.get("currentPromptKey") === entityKey;
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const isSilenced = inlineCommentStore
+    .get("silencedPromptKeys")
+    .has(entityKey);
+  const isBeingPrompted =
+    inlineCommentStore.get("promptedEntityKey") === entityKey;
 
   const [showPopover, setShowPopover] = useState(
     !isSilenced && isBeingPrompted
   );
 
   useEffect(() => {
-    // ensures popover renders properly due to race condition
+    // ensures popover renders properly despite race condition
     if (!showPopover && isBeingPrompted) {
       setShowPopover(true);
     }
@@ -34,9 +37,14 @@ function PaperDraftInlineCommentTextWrap(
         blockKey,
         commentThreadID,
         entityKey,
-        store: unduxStore,
+        store: inlineCommentStore,
       }),
-    [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
+    [
+      blockKey,
+      commentThreadID,
+      entityKey,
+      inlineCommentStore.get("inlineComments"),
+    ]
   );
   const doesCommentExistInStore = targetInlineComment != null;
   const isCommentSavedInBackend = commentThreadID != null;
@@ -45,48 +53,50 @@ function PaperDraftInlineCommentTextWrap(
 
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
-    unduxStore.set("silencedPromptKeys")(
-      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    inlineCommentStore.set("silencedPromptKeys")(
+      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
-    unduxStore.set("lastPromptRemovedTime")(Date.now());
-    unduxStore.set("currentPromptKey")(null);
+    inlineCommentStore.set("promptedEntityKey")(null);
+    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
     const newInlineComment = {
       blockKey,
       commentThreadID,
       entityKey,
-      store: unduxStore,
+      highlightedText: "THIS IS HIGHLIGHTED TEXT YES",
+      store: inlineCommentStore,
     };
     updateInlineComment({
-      store: unduxStore,
+      store: inlineCommentStore,
       updatedInlineComment: newInlineComment,
     });
-    unduxStore.set("displayableInlineComments")([newInlineComment]);
+    inlineCommentStore.set("displayableInlineComments")([
+      newInlineComment,
+    ]); /* should also grab all the inline comments withiin the block */
     setShowPopover(false);
   };
 
   const hidePopoverAndSilence = (event) => {
-    /* calvin: below is indeed funcky. 
-    we need to figure out a better way to handle this because with deletion, 
-    there's a nasty race-condition with the way decorators are being rendered */
     event.stopPropagation();
-    unduxStore.set("silencedPromptKeys")(
-      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    inlineCommentStore.set("silencedPromptKeys")(
+      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
-    unduxStore.set("lastPromptRemovedTime")(Date.now());
-    unduxStore.set("currentPromptKey")(null);
+    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
+    inlineCommentStore.set("currentPromptKey")(null);
     setShowPopover(false);
   };
 
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
-    const targetInlineComment = unduxStore
+    const targetInlineComment = inlineCommentStore
       .get("inlineComments")
       .find(
         ({ commentThreadID: unduxThreadID }) =>
           unduxThreadID === commentThreadID
       );
     if (targetInlineComment != null) {
-      unduxStore.set("displayableInlineComments")([targetInlineComment]);
+      inlineCommentStore.set("displayableInlineComments")([
+        targetInlineComment,
+      ]); /* should also grab all the inline comments withiin the block */
     }
   };
 
@@ -107,7 +117,9 @@ function PaperDraftInlineCommentTextWrap(
       children={
         <span
           className={css(
-            shouldTextBeHighlighted ? styles.commentTextHighLight : null
+            shouldTextBeHighlighted
+              ? styles.commentTextHighLight
+              : styles.textNonHighLight
           )}
           id={
             commentThreadID != null
@@ -138,6 +150,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: "8px 16px",
     borderRadius: 5,
+  },
+  textNonHighLight: {
+    backgroundColor: "transparent",
   },
 });
 
