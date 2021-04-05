@@ -75,24 +75,6 @@ export default function PaperDraftContainer({
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
-  useEffect(() => {
-    /* TODO: calvinhlee - discuss actual UI behavior & refactor this out */
-    inlineCommentFetchAll({
-      paperId,
-      onSuccess: (results) => {
-        const inlineComments = results.map((result) => {
-          const { block_key, entity_key, id } = result;
-          return {
-            blockKey: block_key,
-            entityKey: entity_key,
-            commentThreadID: id,
-          };
-        });
-        inlineCommentStore.set("inlineComments")(inlineComments);
-      },
-    });
-  }, [paperId]);
-
   const decorator = useMemo(
     () =>
       getDecorator({

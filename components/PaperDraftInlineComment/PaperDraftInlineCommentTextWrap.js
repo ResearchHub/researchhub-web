@@ -78,7 +78,7 @@ function PaperDraftInlineCommentTextWrap(
     ]); /* should also grab all the inline comments withiin the block */
     setShowPopover(false);
   };
-
+  console.warn("HIHIHIHIHI: ", commentThreadID);
   const hidePopoverAndSilence = (event) => {
     event.stopPropagation();
     inlineCommentStore.set("silencedPromptKeys")(
