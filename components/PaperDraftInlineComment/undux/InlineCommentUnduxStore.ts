@@ -78,7 +78,7 @@ export function findTargetInlineComment({
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
 }
 
-export function getInlineCommentsGivenBlockKey({
+export function getSavedInlineCommentsGivenBlockKey({
   blockKey,
   editorState,
 }: {
@@ -116,13 +116,7 @@ export function getInlineCommentsGivenBlockKey({
     (_start, _end) => {}
   );
   return result.sort((entA, entB) => {
-    if (entA.commentThreadID == null) {
-      return -1;
-    } else if (entB.commentThreadID == null) {
-      return 1;
-    } else {
-      return entA.commentThreadID < entB.commentThreadID ? -1 : 1;
-    }
+    return (entA.commentThreadID || 0) < (entB.commentThreadID || 0) ? -1 : 1;
   });
 }
 
