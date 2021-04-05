@@ -42,7 +42,6 @@ function PaperDraftInlineCommentTextWrap(
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
-
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
     cleanupStoreAndCloseDisplay({
