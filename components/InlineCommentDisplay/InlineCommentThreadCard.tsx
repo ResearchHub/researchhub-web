@@ -8,6 +8,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
   findIndexOfCommentInStore,
+  getInlineCommentsGivenBlockKey,
   ID,
   InlineComment,
   updateInlineComment,
@@ -29,6 +30,7 @@ import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { EditorState } from "draft-js";
 
 type Props = {
   auth: any /* redux */;
@@ -104,9 +106,13 @@ function InlineCommentThreadCard({
           paperDraftStore,
           commentThreadID: threadID,
         });
-        inlineCommentStore.set("displayableInlineComments")([
-          updatedInlineComment,
-        ]); /* should also grab all the inline comments withiin the block */
+        inlineCommentStore.set("displayableInlineComments")(
+          getInlineCommentsGivenBlockKey({
+            blockKey,
+            editorState:
+              paperDraftStore.get("editorState") || EditorState.createEmpty(),
+          })
+        ); /* should also grab all the inline comments within the block */
       },
       openRecaptchaPrompt,
       params: {
