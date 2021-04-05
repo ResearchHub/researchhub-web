@@ -18,9 +18,12 @@ export type InlineComment = {
   entityKey: string;
 };
 export type State = {
-  displayBlockKey: ID /* used to render InlineCommentThreadsDisplayBar */;
-  inlineComments: { [blockKey: string]: Array<InlineComment> };
+  displayableInlineComments: Array<
+    InlineComment
+  > /* used to render InlineCommentThreadsDisplayBar */;
+  inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
+  paperID: ID;
   promptAttr: {
     entityKey: ID;
     highlightedText: string | null;
@@ -40,7 +43,7 @@ export const findIndexOfCommentInStore = (
 ): number => {
   return store
     .get("inlineComments")
-    [blockKey].findIndex(
+    .findIndex(
       ({
         blockKey: storedBlockKey,
         entityKey: storedEntityKey,
@@ -54,9 +57,10 @@ export const findIndexOfCommentInStore = (
 };
 
 const initialState: State = {
-  displayBlockKey: null,
-  inlineComments: {},
+  displayableInlineComments: [],
+  inlineComments: [],
   lastPromptRemovedTime: null,
+  paperID: null,
   promptAttr: { entityKey: null, highlightedText: null },
   silencedPromptKeys: new Set(),
 };
@@ -89,13 +93,11 @@ export function updateInlineComment({
     commentThreadID,
     store
   );
-  const newInlineComments = { ...store.get("inlineComments") };
+  const newInlineComments = [...store.get("inlineComments")];
   if (targetIndex > -1) {
-    newInlineComments[blockKey][targetIndex] = updatedInlineComment;
-  } else if (newInlineComments[blockKey] != null) {
-    newInlineComments[blockKey].push(updatedInlineComment);
+    newInlineComments[targetIndex] = updatedInlineComment;
   } else {
-    newInlineComments[blockKey] = [updatedInlineComment];
+    newInlineComments.push(updatedInlineComment);
   }
   store.set("inlineComments")(newInlineComments);
   return store;

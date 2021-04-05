@@ -37,6 +37,7 @@ import { BulletActions } from "~/redux/bullets";
 
 // Undux
 import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxStore";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -700,11 +701,13 @@ Paper.getInitialProps = async (ctx) => {
   return props;
 };
 
-const PaperWithInlineUndux = (props) => {
+const PaperIndexWithUndux = (props) => {
   return (
-    <InlineCommentUnduxStore.Container>
-      <Paper {...props} />
-    </InlineCommentUnduxStore.Container>
+    <PaperDraftUnduxStore.Container>
+      <InlineCommentUnduxStore.Container>
+        <Paper {...props} />
+      </InlineCommentUnduxStore.Container>
+    </PaperDraftUnduxStore.Container>
   );
 };
 
@@ -1108,4 +1111,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PaperWithInlineUndux);
+)(PaperIndexWithUndux);
