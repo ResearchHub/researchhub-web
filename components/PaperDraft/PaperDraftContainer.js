@@ -1,5 +1,7 @@
 import { emptyFunction } from "./util/PaperDraftUtils";
-import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
   getBlockStyleFn,
@@ -7,7 +9,6 @@ import {
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
-import { inlineCommentFetchAll } from "../InlineCommentDisplay/api/InlineCommentFetch";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
 import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
@@ -132,6 +133,9 @@ export default function PaperDraftContainer({
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
+      cleanupStoreAndCloseDisplay({
+        inlineCommentStore,
+      });
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
         onInlineCommentPrompt: (entityKey) =>
