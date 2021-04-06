@@ -1,7 +1,5 @@
-import { formatBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
-import React, { useMemo } from "react";
-import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
+import React from "react";
 
 const StyleButton = (props) => {
   const { isStyleActive, label, onClick } = props;

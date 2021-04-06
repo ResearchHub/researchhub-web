@@ -1,7 +1,10 @@
 import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
-import { INLINE_COMMENT_MAP } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import {
+  getCurrSelectionBlockTypesInSet,
+  INLINE_COMMENT_MAP,
+} from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
-import React from "react";
+import React, { useMemo } from "react";
 import StyleButton from "./StyleButton";
 
 // Config
@@ -9,16 +12,8 @@ import colors from "~/config/themes/colors";
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
-  /* 
-    NOTE: there are various challenges that come with styling lists especially when the user is editing. 
-    We need to revisit this. 
-      { label: "UL", style: "unordered-list-item" }, 
-      { label: "OL", style: "ordered-list-item" }, 
-  */
-  {
-    label: "Comment",
-    style: INLINE_COMMENT_MAP.TYPE_KEY,
-  },
+  { label: "UL", style: "unordered-list-item" },
+  { label: "OL", style: "ordered-list-item" },
 ];
 
 const INLINE_STYLES = [
@@ -29,37 +24,38 @@ const INLINE_STYLES = [
 
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
-  const selection = editorState.getSelection();
+  const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
 
-  const selectedBlockType = new Set(
-    editorState
-      .getCurrentContent()
-      .getBlockForKey(selection.getStartKey())
-      .getType()
-      .split(" ")
+  const blockStyleButtons = useMemo(
+    () =>
+      BLOCK_TYPES.map(({ label, style }) => (
+        <StyleButton
+          isStyleActive={
+            currSelectedBlockTypes.has(style) ||
+            currSelectedBlockTypes.has(draftCssToCustomCss[style] ?? "")
+          }
+          key={label}
+          label={label}
+          onClick={onClickBlock(style)}
+          style={style}
+        />
+      )),
+    [currSelectedBlockTypes, onClickBlock]
   );
-  const blockStyleButtons = BLOCK_TYPES.map(({ label, style }) => (
-    <StyleButton
-      isStyleActive={
-        selectedBlockType.has(style) ||
-        selectedBlockType.has(draftCssToCustomCss[style] ?? "")
-      }
-      key={label}
-      label={label}
-      onClick={onClickBlock(style)}
-      style={style}
-    />
-  ));
   const currentInlineStyle = editorState.getCurrentInlineStyle();
-  const inlineStylebuttons = INLINE_STYLES.map(({ label, style }) => (
-    <StyleButton
-      isStyleActive={currentInlineStyle === style}
-      key={label}
-      label={label}
-      onClick={onClickInline(style)}
-      style={style}
-    />
-  ));
+  const inlineStylebuttons = useMemo(
+    () =>
+      INLINE_STYLES.map(({ label, style }) => (
+        <StyleButton
+          isStyleActive={currentInlineStyle === style}
+          key={label}
+          label={label}
+          onClick={onClickInline(style)}
+          style={style}
+        />
+      )),
+    [currentInlineStyle, onClickInline]
+  );
   return (
     <div className={css(styles.root)}>
       {blockStyleButtons}
