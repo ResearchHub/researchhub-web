@@ -155,9 +155,9 @@ export const fetchPaperDraft = ({ paperId }) => {
   );
 };
 
-export const fetchLatestActivity = ({ hubId }) => {
+export const fetchLatestActivity = ({ hubIds }) => {
   return fetch(
-    API.USER({ route: "following_latest_activity", hubId }),
+    API.USER({ route: "following_latest_activity", hubIds }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)

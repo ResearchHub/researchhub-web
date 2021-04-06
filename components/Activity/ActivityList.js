@@ -67,32 +67,41 @@ const RenderViewMore = ({ data, loadMore, isLoadingNext }) => {
 };
 
 const ActivityList = (props) => {
-  const { auth, setIsLatestActivityShown } = props;
+  const { auth, subscribedHubs, feed, hub, hubId } = props;
   const [isFetching, setIsFetching] = useState(true);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
   const [data, setData] = useState(DEFAULT_DATA);
 
   useEffect(() => {
     const fetchActivityFeed = async () => {
-      if (data.results.length) return;
-
-      const { id: userId } = auth.user;
       setIsFetching(true);
-      const resData = await fetchLatestActivity({ userId });
+      console.log(feed);
+      console.log(hub);
+      const hubIds =
+        feed === 0
+          ? subscribedHubs.map((hub) => hub.id)
+          : hub
+          ? [hub.id]
+          : null;
+      console.log(hubIds);
+      const resData = await fetchLatestActivity({ hubIds });
       if (!resData.error) {
         setData(resData);
       }
       setIsFetching(false);
     };
-    fetchActivityFeed();
-  }, []);
+
+    if (auth.authChecked) {
+      fetchActivityFeed();
+    }
+  }, [auth.authChecked, hubId, feed]);
 
   const loadMore = () => {
     const { next } = data;
     if (!next) return;
 
     setIsLoadingNext(true);
-    fetch(next, API.GET_CONFIG())
+    return fetch(next, API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((nextData) => {
