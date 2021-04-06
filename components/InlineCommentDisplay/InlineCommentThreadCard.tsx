@@ -96,7 +96,6 @@ function InlineCommentThreadCard({
     saveCommentToBackend({
       auth,
       onSuccess: ({ threadID }: { threadID: ID }): void => {
-        /* TODO: calvinhlee REFACTOR below */
         const updatedInlineComment = {
           ...unduxInlineComment,
           commentThreadID: threadID,
@@ -116,7 +115,7 @@ function InlineCommentThreadCard({
             editorState:
               paperDraftStore.get("editorState") || EditorState.createEmpty(),
           })
-        ); /* should also grab all the inline comments within the block */
+        );
       },
       params: {
         text: text,
