@@ -13,7 +13,6 @@ import ActivityEmptyState from "./ActivityEmptyState";
 
 // Config
 import { fetchLatestActivity } from "~/config/fetch";
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -25,30 +24,70 @@ const DEFAULT_DATA = {
   results: [],
 };
 
+const RenderActiviyList = ({ data }) => {
+  const results = data.results || [];
+
+  if (results.length) {
+    return (
+      <div className={css(styles.renderList)}>
+        {results.map((activity, index) => {
+          return (
+            <ActivityCard
+              activity={activity}
+              key={`activityCard-${activity.id}`}
+              last={results.length === index + 1}
+            />
+          );
+        })}
+      </div>
+    );
+  } else {
+    return <ActivityEmptyState />;
+  }
+};
+
+const RenderViewMore = ({ data, loadMore, isLoadingNext }) => {
+  const { next } = data;
+  if (!next) return null;
+
+  return (
+    <div className={css(styles.viewMoreButton)} onClick={loadMore}>
+      {isLoadingNext ? (
+        <Loader
+          key={"activity-feed-loader"}
+          loading={true}
+          size={25}
+          color={colors.BLUE()}
+        />
+      ) : (
+        "View More"
+      )}
+    </div>
+  );
+};
+
 const ActivityList = (props) => {
   const { auth, setIsLatestActivityShown } = props;
   const [isFetching, setIsFetching] = useState(false);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
   const [data, setData] = useState(DEFAULT_DATA);
 
+  console.log("ACTIVITYLISTRENDER");
+
   useEffect(() => {
-    if (auth.isLoggedIn) {
-      setIsLatestActivityShown(true);
-      fetchActivityFeed();
-    } else {
-      setIsLatestActivityShown(false);
-    }
-  }, [auth.isLoggedIn]);
+    const fetchActivityFeed = async () => {
+      if (data.results.length) return;
 
-  const fetchActivityFeed = async () => {
-    if (data.results.length) return;
-
-    const { id: userId } = auth.user;
-    setIsFetching(true);
-    const resData = await fetchLatestActivity({ userId });
-    setData(resData || {});
-    setIsFetching(false);
-  };
+      const { id: userId } = auth.user;
+      setIsFetching(true);
+      const resData = await fetchLatestActivity({ userId });
+      if (!resData.error) {
+        setData(resData);
+      }
+      setIsFetching(false);
+    };
+    fetchActivityFeed();
+  }, []);
 
   const loadMore = () => {
     const { next } = data;
@@ -68,57 +107,6 @@ const ActivityList = (props) => {
       });
   };
 
-  const renderActiviyList = () => {
-    const results = data.results || [];
-
-    if (results.length) {
-      return (
-        <div className={css(styles.renderList)}>
-          {results.map((activity, index) => {
-            return (
-              <ActivityCard
-                activity={activity}
-                key={`activityCard-${activity.id}`}
-                last={results.length === index + 1}
-              />
-            );
-          })}
-        </div>
-      );
-    } else {
-      return <ActivityEmptyState />;
-      // <div className={css(styles.emptystate)}>
-      //   <span className={css(styles.activityFeedIcon)}>
-      //     {icons.activtyFeed}
-      //   </span>
-      //   <span style={{ fontWeight: 500, marginBottom: 10 }}>
-      //     No Activity.
-      //   </span>
-      //   Follow an author to get started!
-      // </div>
-    }
-  };
-
-  const renderViewMore = () => {
-    const { next } = data;
-    if (!next) return null;
-
-    return (
-      <div className={css(styles.viewMoreButton)} onClick={loadMore}>
-        {isLoadingNext ? (
-          <Loader
-            key={"activity-feed-loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
-        ) : (
-          "View More"
-        )}
-      </div>
-    );
-  };
-
   return (
     <ColumnContainer overrideStyles={styles.container}>
       <ReactPlaceholder
@@ -130,8 +118,12 @@ const ActivityList = (props) => {
           title={"Latest Activity"}
           overrideStyles={styles.title}
         />
-        {renderActiviyList()}
-        {renderViewMore()}
+        <RenderActiviyList data={data} />
+        <RenderViewMore
+          data={data}
+          isLoadingNext={isLoadingNext}
+          loadMore={loadMore}
+        />
       </ReactPlaceholder>
     </ColumnContainer>
   );
@@ -171,19 +163,6 @@ const styles = StyleSheet.create({
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
     },
-  },
-  activityFeedIcon: {
-    color: colors.BLUE(),
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  emptystate: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    padding: "15px 20px 10px 20px",
-    fontSize: 14,
   },
 });
 

@@ -15,32 +15,10 @@ const ActivityDescription = (props) => {
   const { id: authorId } = author;
   const paperTitle = paper["paper_title"] || paper["title"];
 
-  const renderUsername = () => {
-    return (
-      <Link
-        href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorId}/contributions`}
-      >
-        <a className={css(styles.link)}>
-          <span className={css(styles.text)}>{username}</span>
-        </a>
-      </Link>
-    );
-  };
-
   const updateClampStyle = (amount) => {
     if (amount !== lines) {
       setLines(amount);
     }
-  };
-
-  const renderTitle = () => {
-    /**
-     *  linking to paper page is already handled by the parent component
-     *  adding link is redundant
-     * */
-
-    return <span className={css(styles.text)}>{paperTitle}</span>;
   };
 
   /**
@@ -80,6 +58,9 @@ const ActivityDescription = (props) => {
   };
 
   const handleUpvoterString = () => {
+    if (!source) {
+      return null;
+    }
     const key = contentType["app_label"];
     const voteType = source["vote_type"];
 
@@ -109,19 +90,20 @@ const ActivityDescription = (props) => {
     return ` supported (${amount} RSC) `;
   };
 
-  const renderHeader = () => {
-    return (
-      <span onClick={(e) => e.stopPropagation()}>
-        {renderUsername()}
-        {renderActionString()}
-        {renderTitle()}
-      </span>
-    );
-  };
-
   return (
     <ClampedText lines={lines} textStyles={styles.textContainer}>
-      {renderHeader()}
+      <span onClick={(e) => e.stopPropagation()}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${authorId}/contributions`}
+        >
+          <a className={css(styles.link)}>
+            <span className={css(styles.text)}>{username}</span>
+          </a>
+        </Link>
+        <div>{renderActionString()}</div>
+        <span className={css(styles.text)}>{paperTitle}</span>
+      </span>
     </ClampedText>
   );
 };
