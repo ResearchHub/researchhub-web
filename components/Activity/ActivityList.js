@@ -68,11 +68,9 @@ const RenderViewMore = ({ data, loadMore, isLoadingNext }) => {
 
 const ActivityList = (props) => {
   const { auth, setIsLatestActivityShown } = props;
-  const [isFetching, setIsFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(true);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
   const [data, setData] = useState(DEFAULT_DATA);
-
-  console.log("ACTIVITYLISTRENDER");
 
   useEffect(() => {
     const fetchActivityFeed = async () => {
