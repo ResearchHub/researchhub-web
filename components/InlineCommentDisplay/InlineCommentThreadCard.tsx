@@ -139,8 +139,6 @@ function InlineCommentThreadCard({
       }
     }
   };
-  console.warn("commentThreadID: ", commentThreadID);
-  console.warn("fetchedCommentData: ", fetchedCommentData);
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
