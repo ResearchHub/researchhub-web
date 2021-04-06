@@ -10,7 +10,6 @@ import Router from "next/router";
 // Component
 import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
-import SubscribedHubList from "../Home/SubscribedHubList";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
@@ -545,9 +544,9 @@ class HubPage extends React.Component {
     );
   };
 
-  onHubSelect = (e) => {
-    this.setState({ feed: undefined });
-  };
+  // onHubSelect = (e) => {
+  //   this.setState({ feed: undefined });
+  // };
 
   voteCallback = (index, paper) => {
     const papers = [...this.state.papers];
@@ -787,7 +786,17 @@ class HubPage extends React.Component {
             </div>
             <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.rightSidebarContainer)}>
-                <ActivityList />
+                <ActivityList
+                  // hubIds={
+                  //   feed === 0
+                  //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
+                  //     : hub ? [hub.id] : null // Single hub or All feed
+                  // }
+                  subscribedHubs={hubState.subscribedHubs}
+                  hub={hub}
+                  hubId={hub ? hub.id : null}
+                  feed={feed}
+                />
               </div>
             </div>
           </div>
