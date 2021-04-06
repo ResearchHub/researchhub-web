@@ -126,17 +126,15 @@ export function cleanupStoreAndCloseDisplay({
 }: {
   inlineCommentStore: InlineCommentStore;
   exceptionEntityKey?: ID;
-}): Store<State> {
+}): void {
   const commentsWithThreadID = inlineCommentStore
     .get("inlineComments")
     .filter(
       (inlineComment: InlineComment): boolean =>
         inlineComment.commentThreadID != null
     );
-  console.warn("OK?: ", commentsWithThreadID);
   inlineCommentStore.set("displayableInlineComments")([]);
   inlineCommentStore.set("inlineComments")(commentsWithThreadID);
-  return inlineCommentStore;
 }
 
 export function updateInlineComment({
