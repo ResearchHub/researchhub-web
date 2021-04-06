@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
-import InlineCommentStore, {
+import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
   getSavedInlineCommentsGivenBlockKey,
@@ -13,7 +13,7 @@ function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
   const { blockKey, contentState, decoratedText, entityKey } = props ?? {};
-  const inlineCommentStore = InlineCommentStore.useStore();
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
