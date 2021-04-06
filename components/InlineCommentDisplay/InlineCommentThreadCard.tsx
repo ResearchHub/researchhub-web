@@ -3,19 +3,19 @@
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import ReactPlaceholder from "react-placeholder/lib";
-
 // Config
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
-  findIndexOfCommentInStore,
+  cleanupStoreAndCloseDisplay,
+  getSavedInlineCommentsGivenBlockKey,
   ID,
   InlineComment,
   updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
-import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
+import { css, StyleSheet } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
 import React, {
@@ -24,14 +24,17 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { EditorState } from "draft-js";
+import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import InlineCommentContextTitle from "./InlineCommentContextTitle";
+import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 type Props = {
   auth: any /* redux */;
-  cleanupStoreAndCloseDisplay: () => void;
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
@@ -40,51 +43,54 @@ type Props = {
 
 function InlineCommentThreadCard({
   auth,
-  cleanupStoreAndCloseDisplay,
   showMessage,
   setMessage,
-  openRecaptchaPrompt,
+  openRecaptchaPrompt: _openRecaptchaPrompt,
   unduxInlineComment,
-  unduxInlineComment: { commentThreadID },
+  unduxInlineComment: {
+    blockKey,
+    commentThreadID,
+    entityKey,
+    highlightedText: unduxHighlightedText,
+  },
 }: Props): ReactElement<"div"> {
-  const commentMade = commentThreadID !== null;
-
-  // TODO: calvinhlee REFACTOR
+  const isCommentSaved = commentThreadID !== null;
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
-    commentMade
+    isCommentSaved
   );
   const [fetchedCommentData, setFecthedCommentData] = useState<any>({
     created_by: { author_profile: {} },
   });
-  const [commentDataFetched, setCommentDataFetched] = useState<boolean>(false);
+  const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
+    false
+  );
   const router = useRouter();
-  const { entityKey, blockKey } = unduxInlineComment;
 
   useEffect((): void => {
-    setIsCommentReadOnly(commentMade);
+    setIsCommentReadOnly(isCommentSaved);
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (!commentDataFetched && commentMade && paperID !== null) {
+    if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
       inlineCommentFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
           setFecthedCommentData(result);
           setIsCommentReadOnly(true);
-          setCommentDataFetched(true);
+          setIsCommentDataFetched(true);
         },
         onError: (_): void => {
-          setCommentDataFetched(true);
+          setIsCommentDataFetched(true);
         },
       });
     }
   }, [commentThreadID, fetchedCommentData, paperID]);
 
   const onSubmitComment = (text: String, plainText: String): void => {
-    /* this will trigger separate background action to save paper see PaperDraftSilentSave */
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
@@ -101,22 +107,25 @@ function InlineCommentThreadCard({
         });
         updateInlineThreadIdInEntity({
           entityKey,
-          inlineCommentStore,
+          paperDraftStore,
           commentThreadID: threadID,
         });
-        inlineCommentStore.set("displayableInlineComments")([
-          updatedInlineComment,
-        ]);
-        inlineCommentStore.set("shouldSavePaper")(true);
+        inlineCommentStore.set("displayableInlineComments")(
+          getSavedInlineCommentsGivenBlockKey({
+            blockKey,
+            editorState:
+              paperDraftStore.get("editorState") || EditorState.createEmpty(),
+          })
+        ); /* should also grab all the inline comments within the block */
       },
-      openRecaptchaPrompt,
       params: {
         text: text,
         paper: paperId,
         plain_text: plainText,
-        source: "inline_paper_body",
+        source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
         entity_key: entityKey,
         block_key: blockKey,
+        context_title: unduxHighlightedText,
       },
       setMessage,
       showMessage,
@@ -126,19 +135,24 @@ function InlineCommentThreadCard({
   const scrollWindowToHighlight = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
-      const { entityKey } = unduxInlineComment;
       const entityEl = document.getElementById(
         `inline-comment-${commentThreadID}`
       );
       if (entityEl != null) {
         entityEl.scrollIntoView({
-          behavior: "auto",
+          behavior: "smooth",
           block: "center",
           inline: "center",
         });
       }
     }
   };
+
+  const formattedHighlightTxt =
+    unduxHighlightedText != null
+      ? unduxHighlightedText
+      : fetchedCommentData.context_title || "";
+
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
@@ -147,24 +161,24 @@ function InlineCommentThreadCard({
     >
       <ColumnContainer overrideStyles={styles.container}>
         <ReactPlaceholder
-          ready={commentMade ? commentDataFetched : true}
+          ready={isCommentSaved ? isCommentDataFetched : true}
           showLoadingAnimation
           type={"media"}
           rows={3}
         >
           <DiscussionPostMetadata
             authorProfile={
-              commentMade
+              isCommentSaved
                 ? fetchedCommentData.created_by.author_profile
                 : auth.user.author_profile
             } // @ts-ignore
             data={{
-              created_by: commentMade
+              created_by: isCommentSaved
                 ? fetchedCommentData.created_by
                 : auth.user,
             }}
             username={
-              commentMade
+              isCommentSaved
                 ? fetchedCommentData.created_by.author_profile.first_name +
                   " " +
                   fetchedCommentData.created_by.author_profile.last_name
@@ -175,10 +189,13 @@ function InlineCommentThreadCard({
             noTimeStamp={true}
             smaller={true}
           />
+          <InlineCommentContextTitle title={formattedHighlightTxt} />
           <div className={css(styles.composerContainer)}>
             <InlineCommentComposer
               isReadOnly={isCommentReadOnly}
-              onCancel={cleanupStoreAndCloseDisplay}
+              onCancel={(): void =>
+                cleanupStoreAndCloseDisplay({ inlineCommentStore })
+              }
               onSubmit={onSubmitComment}
               textData={fetchedCommentData ? fetchedCommentData.text : null}
             />
@@ -190,19 +207,6 @@ function InlineCommentThreadCard({
 }
 
 const styles = StyleSheet.create({
-  title: {
-    display: "flex",
-    alignItems: "center",
-    background: "#fff",
-    boxSizing: "border-box",
-    height: 40,
-    fontWeight: 500,
-    paddingLeft: 20,
-    fontSize: 12,
-    letterSpacing: 1.2,
-    color: colors.BLACK(0.6),
-    textTransform: "uppercase",
-  },
   composerContainer: {
     alignItems: "center",
     display: "flex",

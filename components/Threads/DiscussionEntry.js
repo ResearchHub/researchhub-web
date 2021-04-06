@@ -8,6 +8,7 @@ import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import CommentEntry from "./CommentEntry";
 import ThreadTextEditor from "./ThreadTextEditor";
+import InlineCommentContextTitle from "../InlineCommentDisplay/InlineCommentContextTitle";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -356,16 +357,23 @@ class DiscussionEntry extends React.Component {
   };
 
   render() {
-    const { data, paper, hostname, path, mobileView } = this.props;
-    let commentCount =
+    const {
+      data,
+      data: { context_title: contextTitle },
+      paper,
+      hostname,
+      path,
+      mobileView,
+    } = this.props;
+    const commentCount =
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
         : data.comment_count;
-    let date = data.created_date;
-    let title = data.title;
-    let body = data.source === "twitter" ? data.plain_text : data.text;
-    let username = createUsername(data);
-    let metaData = {
+    const date = data.created_date;
+    const title = data.title;
+    const body = data.source === "twitter" ? data.plain_text : data.text;
+    const username = createUsername(data);
+    const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
@@ -442,6 +450,9 @@ class DiscussionEntry extends React.Component {
                     twitterUrl={data.url}
                   />
                 </div>
+                {contextTitle != null ? (
+                  <InlineCommentContextTitle title={contextTitle} />
+                ) : null}
                 <div
                   className={css(
                     styles.content,

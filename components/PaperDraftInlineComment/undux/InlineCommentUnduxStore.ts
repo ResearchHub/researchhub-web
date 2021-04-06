@@ -1,15 +1,9 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
-import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
+import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 
 export type ID = string | number | null;
 export type InlineCommentStore = Store<State>;
-export type DeleteInlineCommentArgs = {
-  blockKey: string;
-  entityKey: string;
-  commentThreadID: ID;
-  store: InlineCommentStore;
-};
 export type FindTargetInlineCommentArg = {
   blockKey: string;
   commentThreadID: ID;
@@ -17,24 +11,22 @@ export type FindTargetInlineCommentArg = {
   store: Store<State>;
 };
 export type InlineComment = {
+  /* NOTE: blockKey & entityKey are newly assigned every render.
+     Hence, the only reliable source of truth is commentThreadID */
   blockKey: string;
   commentThreadID: ID;
   entityKey: string;
-};
-export type PaperDraftState = {
-  editorState: EditorState | null;
-  setEditorState: Function | null;
+  highlightedText: string | null;
 };
 export type State = {
-  currentPromptKey: ID; // entityKey
-  displayableInlineComments: Array<InlineComment>;
+  displayableInlineComments: Array<
+    InlineComment
+  > /* used to render InlineCommentThreadsDisplayBar */;
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
-  lastSavePaperTime: number | null;
   paperID: ID;
-  paperDraftState: PaperDraftState;
-  shouldSavePaper: boolean; // trigger to trigger background save of the paper
-  silencedPromptKeys: Set<ID>; // entityKeys
+  promptedEntityKey: ID /* used mainly for PaperDraftInlineCommentTextWrap */;
+  silencedPromptKeys: Set<ID> /* entityKeys */;
 };
 export type UpdateInlineCommentArgs = {
   store: InlineCommentStore;
@@ -54,59 +46,22 @@ export const findIndexOfCommentInStore = (
         blockKey: storedBlockKey,
         entityKey: storedEntityKey,
         commentThreadID: _storedCommentThreadID,
-      }: InlineComment): boolean => {
+      }: InlineComment): boolean =>
         /* intentional shallow comparison to avoid null-undefined */
-        if (entityKey != null) {
-          return storedBlockKey == blockKey && entityKey == storedEntityKey;
-        } else {
-          return storedBlockKey == blockKey;
-        }
-      }
+        entityKey != null
+          ? entityKey == storedEntityKey
+          : storedBlockKey == blockKey
     );
 };
 
 const initialState: State = {
-  currentPromptKey: null,
   displayableInlineComments: [],
   inlineComments: [],
   lastPromptRemovedTime: null,
-  lastSavePaperTime: null,
   paperID: null,
-  paperDraftState: {
-    editorState: EditorState.createEmpty(),
-    setEditorState: emptyFunction,
-  },
-  shouldSavePaper: false,
+  promptedEntityKey: null,
   silencedPromptKeys: new Set(),
 };
-
-export function deleteInlineComment({
-  blockKey,
-  entityKey,
-  commentThreadID,
-  store,
-}: DeleteInlineCommentArgs): InlineCommentStore {
-  const targetIndex = findIndexOfCommentInStore(
-    blockKey,
-    entityKey,
-    commentThreadID,
-    store
-  );
-  try {
-    if (targetIndex > -1) {
-      const newInlineComments = [...store.get("inlineComments")];
-      newInlineComments.splice(targetIndex, 1);
-      store.set("inlineComments")(newInlineComments);
-    } else {
-      throw new Error(
-        `trying to delete non-existing comment: blockKey-${blockKey}, commentThreadID-${commentThreadID}`
-      );
-    }
-  } catch (error) {
-    emptyFunction(error.toString());
-  }
-  return store;
-}
 
 export function findTargetInlineComment({
   blockKey,
@@ -123,6 +78,65 @@ export function findTargetInlineComment({
   console.warn("entityKey: ", entityKey);
   console.warn("findTargetInlineComment: ", targetIndex);
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
+}
+
+export function getSavedInlineCommentsGivenBlockKey({
+  blockKey,
+  editorState,
+}: {
+  blockKey: string;
+  editorState: EditorState;
+}): Array<InlineComment> {
+  const result: InlineComment[] = [];
+  const curreContent = editorState.getCurrentContent();
+  const targetBlock = curreContent.getBlockForKey(blockKey);
+  targetBlock.findEntityRanges(
+    (character): boolean => {
+      const entityKey = character.getEntity();
+      if (entityKey !== null) {
+        const detectableEntity = curreContent.getEntity(entityKey);
+        if (
+          detectableEntity != null &&
+          detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
+        ) {
+          const { commentThreadID } = curreContent
+            .getEntity(entityKey)
+            .getData();
+          if (commentThreadID != null) {
+            result.push({
+              blockKey,
+              commentThreadID,
+              entityKey,
+              highlightedText: null,
+            });
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+    (_start, _end) => {}
+  );
+  return result.sort((entA, entB) => {
+    return (entA.commentThreadID || 0) < (entB.commentThreadID || 0) ? -1 : 1;
+  });
+}
+
+/* hides comments without commentThreadID */
+export function cleanupStoreAndCloseDisplay({
+  inlineCommentStore,
+}: {
+  inlineCommentStore: InlineCommentStore;
+  exceptionEntityKey?: ID;
+}): void {
+  const commentsWithThreadID = inlineCommentStore
+    .get("inlineComments")
+    .filter(
+      (inlineComment: InlineComment): boolean =>
+        inlineComment.commentThreadID != null
+    );
+  inlineCommentStore.set("displayableInlineComments")([]);
+  inlineCommentStore.set("inlineComments")(commentsWithThreadID);
 }
 
 export function updateInlineComment({

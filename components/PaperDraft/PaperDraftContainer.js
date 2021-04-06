@@ -1,6 +1,7 @@
-import { EditorState } from "draft-js";
 import { emptyFunction } from "./util/PaperDraftUtils";
-import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
   getBlockStyleFn,
@@ -8,9 +9,9 @@ import {
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
-import { inlineCommentFetchAll } from "../InlineCommentDisplay/api/InlineCommentFetch";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
+import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
 
@@ -22,14 +23,15 @@ function getIsGoodTimeInterval(unixTimeInMilliSec) {
 
 function getIsReadyForNewInlineComment({
   editorState,
+  inlineCommentStore,
   isDraftInEditMode,
-  unduxStore,
 }) {
   const currSelection = editorState.getSelection();
   const isGoodTimeInterval = getIsGoodTimeInterval(
-    unduxStore.get("lastPromptRemovedTime")
+    inlineCommentStore.get("lastPromptRemovedTime")
   );
-  const hasActiveCommentPrompt = unduxStore.get("currentPromptKey") != null;
+  const hasActiveCommentPrompt =
+    inlineCommentStore.get("promptedEntityKey") != null;
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
@@ -39,15 +41,15 @@ function getIsReadyForNewInlineComment({
   );
 }
 
-function getShouldSavePaperSilently({ isDraftInEditMode, unduxStore }) {
+function getShouldSavePaperSilently({ isDraftInEditMode, paperDraftStore }) {
   const isGoodTimeInterval = getIsGoodTimeInterval(
-    unduxStore.get("lastSavePaperTime")
+    paperDraftStore.get("lastSavePaperTime")
   );
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
-    unduxStore.get("paperID") != null &&
-    unduxStore.get("shouldSavePaper")
+    paperDraftStore.get("paperID") != null &&
+    paperDraftStore.get("shouldSavePaper")
   );
 }
 
@@ -61,51 +63,33 @@ export default function PaperDraftContainer({
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const editorState = paperDraftStore.get("editorState");
+  const initEditorState = paperDraftStore.get("initEditorState");
+  const setEditorState = (updatedEditorState) =>
+    paperDraftStore.set("editorState")(updatedEditorState);
+  const setInitEditorState = (updatedInitStore) =>
+    paperDraftStore.set("initEditorState")(updatedInitStore);
+
   const [isDraftInEditMode, setIsDraftInEditMode] = useState(false);
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const [initEditorState, setInitEditorState] = useState(
-    EditorState.createEmpty()
-  );
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
-
-  useEffect(() => {
-    // TODO: calvinhlee REFACTOR below
-    inlineCommentStore.set("paperDraftState")({ editorState, setEditorState });
-  }, [editorState]);
-
-  useEffect(() => {
-    /* TODO: calvinhlee - discuss actual UI behavior & refactor this out */
-    inlineCommentFetchAll({
-      paperId,
-      onSuccess: (results) => {
-        const inlineComments = results.map((result) => {
-          const { block_key, entity_key, id } = result;
-          return {
-            blockKey: block_key,
-            entityKey: entity_key,
-            commentThreadID: id,
-          };
-        });
-        inlineCommentStore.set("inlineComments")(inlineComments);
-      },
-    });
-  }, [paperId]);
 
   const decorator = useMemo(
     () =>
       getDecorator({
         seenEntityKeys,
         setActiveSection,
-        setEditorState,
         setSeenEntityKeys,
       }),
-    [seenEntityKeys, setSeenEntityKeys, setActiveSection]
+    [seenEntityKeys, setActiveSection, setSeenEntityKeys]
   );
+
   useEffect(
     /* backend fetch */
     () => {
+      paperDraftStore.set("paperID")(paperId);
       inlineCommentStore.set("paperID")(paperId);
       /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
       paperFetchHook({
@@ -123,7 +107,7 @@ export default function PaperDraftContainer({
 
   const shouldSavePaperSilently = getShouldSavePaperSilently({
     isDraftInEditMode,
-    unduxStore: inlineCommentStore,
+    paperDraftStore,
   });
   useEffect(() => {
     if (shouldSavePaperSilently) {
@@ -131,8 +115,8 @@ export default function PaperDraftContainer({
         editorState,
         onError: (error) => emptyFunction(error),
         onSuccess: () => {
-          inlineCommentStore.set("lastSavePaperTime")(Date.now());
-          inlineCommentStore.set("shouldSavePaper")(false);
+          paperDraftStore.set("lastSavePaperTime")(Date.now());
+          paperDraftStore.set("shouldSavePaper")(false);
           setInitEditorState(editorState);
         },
         paperDraftSections,
@@ -143,25 +127,24 @@ export default function PaperDraftContainer({
 
   const isReadyForNewInlineComment = getIsReadyForNewInlineComment({
     editorState,
+    inlineCommentStore,
     isDraftInEditMode,
-    unduxStore: inlineCommentStore,
   });
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
+      cleanupStoreAndCloseDisplay({
+        inlineCommentStore,
+      });
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
         onInlineCommentPrompt: (entityKey) =>
-          inlineCommentStore.set("currentPromptKey")(entityKey),
+          inlineCommentStore.set("promptedEntityKey")(entityKey),
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
       setEditorState(updatedEditorState);
     }
-  }, [
-    editorState,
-    inlineCommentStore.get("currentPromptKey"),
-    isReadyForNewInlineComment,
-  ]);
+  }, [editorState, isReadyForNewInlineComment]);
 
   const handleKeyCommand = useCallback(
     ({ editorState, setEditorState }) => {

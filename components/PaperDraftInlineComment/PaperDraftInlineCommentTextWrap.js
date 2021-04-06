@@ -2,92 +2,98 @@ import { css, StyleSheet } from "aphrodite";
 import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
+  getSavedInlineCommentsGivenBlockKey,
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
+import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
-  const { blockKey, contentState, entityKey } = props ?? {};
-  const unduxStore = InlineCommentUnduxStore.useStore();
-  const isSilenced = unduxStore.get("silencedPromptKeys").has(entityKey);
-  const isBeingPrompted = unduxStore.get("currentPromptKey") === entityKey;
+  const { blockKey, contentState, decoratedText, entityKey } = props ?? {};
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperDraftStore = PaperDraftStore.useStore();
+  const isSilenced = inlineCommentStore
+    .get("silencedPromptKeys")
+    .has(entityKey);
+  const isBeingPrompted =
+    inlineCommentStore.get("promptedEntityKey") === entityKey;
 
   const [showPopover, setShowPopover] = useState(
     !isSilenced && isBeingPrompted
   );
-
   useEffect(() => {
-    // ensures popover renders properly due to race condition
+    // ensures popover renders properly despite race condition
     if (!showPopover && isBeingPrompted) {
       setShowPopover(true);
     }
   }, [showPopover, isBeingPrompted]);
 
-  const data = contentState.getEntity(props.entityKey).getData();
-  const { commentThreadID } = data;
-
-  const targetInlineComment = useMemo(
-    () =>
-      findTargetInlineComment({
-        blockKey,
-        commentThreadID,
-        entityKey,
-        store: unduxStore,
-      }),
-    [blockKey, commentThreadID, entityKey, unduxStore.get("inlineComments")]
-  );
-  const doesCommentExistInStore = targetInlineComment != null;
+  const { commentThreadID } = contentState.getEntity(props.entityKey).getData();
+  const doesCommentExistInStore =
+    findTargetInlineComment({
+      blockKey,
+      commentThreadID,
+      entityKey,
+      store: inlineCommentStore,
+    }) != null;
   const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
-
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
-    unduxStore.set("silencedPromptKeys")(
-      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    cleanupStoreAndCloseDisplay({
+      inlineCommentStore,
+    });
+    inlineCommentStore.set("silencedPromptKeys")(
+      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
-    unduxStore.set("lastPromptRemovedTime")(Date.now());
-    unduxStore.set("currentPromptKey")(null);
+    inlineCommentStore.set("promptedEntityKey")(null);
+    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
     const newInlineComment = {
       blockKey,
       commentThreadID,
       entityKey,
-      store: unduxStore,
+      highlightedText: decoratedText,
+      store: inlineCommentStore,
     };
     updateInlineComment({
-      store: unduxStore,
+      store: inlineCommentStore,
       updatedInlineComment: newInlineComment,
     });
-    unduxStore.set("displayableInlineComments")([newInlineComment]);
+    const displayableComments = [
+      newInlineComment,
+      ...getSavedInlineCommentsGivenBlockKey({
+        blockKey,
+        editorState: paperDraftStore.get("editorState"),
+      }),
+    ];
+    inlineCommentStore.set("displayableInlineComments")(displayableComments);
     setShowPopover(false);
   };
 
   const hidePopoverAndSilence = (event) => {
-    /* calvin: below is indeed funcky. 
-    we need to figure out a better way to handle this because with deletion, 
-    there's a nasty race-condition with the way decorators are being rendered */
     event.stopPropagation();
-    unduxStore.set("silencedPromptKeys")(
-      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
+    inlineCommentStore.set("silencedPromptKeys")(
+      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
-    unduxStore.set("lastPromptRemovedTime")(Date.now());
-    unduxStore.set("currentPromptKey")(null);
+    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
+    inlineCommentStore.set("promptedEntityKey")(null);
     setShowPopover(false);
   };
 
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
-    const targetInlineComment = unduxStore
-      .get("inlineComments")
-      .find(
-        ({ commentThreadID: unduxThreadID }) =>
-          unduxThreadID === commentThreadID
-      );
-    if (targetInlineComment != null) {
-      unduxStore.set("displayableInlineComments")([targetInlineComment]);
-    }
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
+    inlineCommentStore.set("displayableInlineComments")(
+      getSavedInlineCommentsGivenBlockKey({
+        blockKey,
+        editorState: paperDraftStore.get("editorState"),
+      })
+    );
   };
 
   return (
@@ -97,6 +103,7 @@ function PaperDraftInlineCommentTextWrap(
       onOuterAction={isBeingPrompted ? hidePopoverAndSilence : () => {}}
       body={
         <span
+          key={`Popver-Body-${entityKey}`}
           className={css(styles.popoverBodyStyle)}
           role="none"
           onClick={hidePopoverAndInsertToStore}
@@ -107,7 +114,9 @@ function PaperDraftInlineCommentTextWrap(
       children={
         <span
           className={css(
-            shouldTextBeHighlighted ? styles.commentTextHighLight : null
+            shouldTextBeHighlighted
+              ? styles.commentTextHighLight
+              : styles.textNonHighLight
           )}
           id={
             commentThreadID != null
@@ -138,6 +147,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: "8px 16px",
     borderRadius: 5,
+  },
+  textNonHighLight: {
+    backgroundColor: "transparent",
   },
 });
 

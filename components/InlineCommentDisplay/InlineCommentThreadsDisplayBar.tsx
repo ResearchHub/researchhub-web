@@ -1,40 +1,22 @@
 import { css, StyleSheet } from "aphrodite";
 import InlineCommentUnduxStore, {
-  ID,
+  cleanupStoreAndCloseDisplay,
   InlineComment,
-  InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import React, { ReactElement, useEffect } from "react";
-import { inlineCommentFetchAll } from "./api/InlineCommentFetch";
+import React, { ReactElement } from "react";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
-
-type fetchInlineCommentThreadsArgs = {
-  paperID: ID;
-  inlineCommentStore: InlineCommentStore;
-};
 
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const paperID = inlineCommentStore.get("paperID");
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-  const cleanupStoreAndCloseDisplay = (): void => {
-    const commentsWithThreadID = inlineCommentStore
-      .get("inlineComments")
-      .filter(
-        (inlineComment: InlineComment): boolean =>
-          inlineComment.commentThreadID != null
-      );
-    inlineCommentStore.set("displayableInlineComments")([]);
-    inlineCommentStore.set("inlineComments")(commentsWithThreadID);
-  };
+
   const commentThreadCards = displayableInlineComments.map(
     (
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        cleanupStoreAndCloseDisplay={cleanupStoreAndCloseDisplay}
         key={inlineComment.entityKey}
         unduxInlineComment={inlineComment}
       />
@@ -47,7 +29,9 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
         <img
           alt={"Close Button"}
           className={css(styles.closeButton)}
-          onClick={cleanupStoreAndCloseDisplay}
+          onClick={(): void =>
+            cleanupStoreAndCloseDisplay({ inlineCommentStore })
+          }
           src={"/static/icons/close.png"}
         />
       </div>
