@@ -1,6 +1,6 @@
 // api/paper/{paper_id}/discussions/?source=inline_paper_body
 import API from "~/config/api";
-import { DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
+import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
 import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 
@@ -13,7 +13,7 @@ export function inlineCommentFetchAll({
   fetch(
     API.DISCUSSION({
       paperId,
-      source: DISCUSSION_URI_SOUCE,
+      source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
     }),
     API.GET_CONFIG()
   )
@@ -39,7 +39,7 @@ export function inlineCommentFetchTarget({
     API.DISCUSSION({
       paperId,
       targetId,
-      source: DISCUSSION_URI_SOUCE,
+      source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
     }),
     API.GET_CONFIG()
   )
