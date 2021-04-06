@@ -1,7 +1,8 @@
 {
   "name": "researchhub",
   "scripts": {
-    "dev": "NODE_OPTIONS='--inspect' next dev",
+    "dev": "next dev",
+    "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "sentry": "node ./scripts/sentry.js",
