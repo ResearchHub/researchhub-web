@@ -31,6 +31,7 @@ import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 import { EditorState } from "draft-js";
+import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 
 type Props = {
   auth: any /* redux */;
@@ -121,7 +122,7 @@ function InlineCommentThreadCard({
         text: text,
         paper: paperId,
         plain_text: plainText,
-        source: "inline_paper_body",
+        source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
         entity_key: entityKey,
         block_key: blockKey,
         context_title: unduxHighlightedText,
@@ -139,7 +140,7 @@ function InlineCommentThreadCard({
       );
       if (entityEl != null) {
         entityEl.scrollIntoView({
-          behavior: "auto",
+          behavior: "smooth",
           block: "center",
           inline: "center",
         });
