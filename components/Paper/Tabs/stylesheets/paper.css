@@ -28,7 +28,7 @@
 
 .RichEditor-p {
   box-sizing: border-box;
-  color: rgb(36, 31, 58);
+  color: #241f3a;
   display: inline;
   font-family: CharterBT;
   font-size: 16px;
@@ -39,18 +39,12 @@
   white-space: normal;
 }
 
-.RichEditor-inline-comment {
-  background-color: rgb(204 243 221);
-  box-sizing: inherit;
-  color: inherit;
-  display: inherit;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  line-height: inherit;
-  margin: 0;
-  padding: 0;
-  white-space: inherit;
+.RichEditor-ordered-list-item {
+  list-style-type: lower-alpha;
+}
+
+.RichEditor-unordered-list-item {
+  list-style-type: circle;
 }
 
 @media only screen and (max-width: 967px) {

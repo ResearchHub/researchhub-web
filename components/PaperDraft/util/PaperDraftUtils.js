@@ -1,14 +1,6 @@
 import { EditorState, convertFromRaw } from "draft-js";
 import { convertFromHTML } from "draft-convert";
 
-const emptyFunction = (message) => {
-  if (message == null) {
-    console.warn("emptyFunction is used. this maybe a bug");
-  } else {
-    console.warn(message);
-  }
-};
-
 const htmlToBlock = (nodeName, node, idsToRemove) => {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
@@ -127,6 +119,14 @@ const formatHTMLForMarkup = (base64) => {
 };
 
 /* ------------------- EXPORTS ------------------- */
+export function emptyFunction(message) {
+  if (message == null) {
+    console.warn("emptyFunction is used. this maybe a bug");
+  } else {
+    console.warn(message);
+  }
+}
+
 export const formatBase64ToEditorState = (payload) => {
   const {
     base64 = "",

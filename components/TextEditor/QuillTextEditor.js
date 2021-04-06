@@ -15,6 +15,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { Fragment } from "react";
 
 class Editor extends React.Component {
   constructor(props) {
@@ -293,35 +294,46 @@ class Editor extends React.Component {
         className="toolbar ql-toolbar ql-snow"
         style={{ display: this.props.readOnly ? "none" : "" }}
       >
-        <span className="ql-formats">
-          <select className="ql-header">
-            <option value="2">Heading 1</option>
-            <option value="3">Heading 2</option>
-            <option defaultValue />
-          </select>
-          <button className="ql-bold" />
-          <button className="ql-italic" />
-          <button className="ql-underline" />
-        </span>
-        <span className="ql-formats">
-          <button className="ql-blockquote"></button>
-          <button className="ql-code-block"></button>
-          <button className="ql-strike"></button>
-          <select class="ql-background"></select>
-        </span>
-        <span className="ql-formats">
-          <button className="ql-list" value="ordered" />
-          <button className="ql-list" value="bullet" />
-          <button className="ql-indent" value="-1" />
-          <button className="ql-indent" value="+1" />
-        </span>
+        {this.props.mediaOnly ? (
+          <span className="ql-formats">
+            <button className="ql-link"></button>
+            <button className="ql-image" />
+            <button className="ql-video"></button>
+            {/* <button class="ql-clean"></button> */}
+          </span>
+        ) : (
+          <Fragment>
+            <span className="ql-formats">
+              <select className="ql-header">
+                <option value="2">Heading 1</option>
+                <option value="3">Heading 2</option>
+                <option defaultValue />
+              </select>
+              <button className="ql-bold" />
+              <button className="ql-italic" />
+              <button className="ql-underline" />
+            </span>
+            <span className="ql-formats">
+              <button className="ql-blockquote"></button>
+              <button className="ql-code-block"></button>
+              <button className="ql-strike"></button>
+              <select class="ql-background"></select>
+            </span>
+            <span className="ql-formats">
+              <button className="ql-list" value="ordered" />
+              <button className="ql-list" value="bullet" />
+              <button className="ql-indent" value="-1" />
+              <button className="ql-indent" value="+1" />
+            </span>
 
-        <span className="ql-formats">
-          <button className="ql-link"></button>
-          <button className="ql-image" />
-          <button className="ql-video"></button>
-          <button class="ql-clean"></button>
-        </span>
+            <span className="ql-formats">
+              <button className="ql-link"></button>
+              <button className="ql-image" />
+              <button className="ql-video"></button>
+              {/* <button class="ql-clean"></button> */}
+            </span>
+          </Fragment>
+        )}
       </div>
     );
   };
@@ -336,12 +348,17 @@ class Editor extends React.Component {
         )}
       >
         <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
-        <div className={css(toolbarStyles.buttonRow)}>
+        <div
+          className={css(
+            toolbarStyles.buttonRow,
+            props.smallToolBar && toolbarStyles.smallButtonRow
+          )}
+        >
           {!props.hideButton && !props.hideCancelButton && (
             <FormButton
               isWhite={true}
               onClick={this.onCancel}
-              label={props.smallToolBar ? "Hide" : "Cancel"}
+              label={"Cancel"}
               size={props.smallToolBar && "med"}
               customButtonStyle={
                 props.smallToolBar
@@ -717,6 +734,9 @@ const toolbarStyles = StyleSheet.create({
     "@media only screen and (max-width: 577px)": {
       marginTop: 16,
     },
+  },
+  smallButtonRow: {
+    justifyContent: "space-between",
   },
   cancelButton: {
     height: 37,
