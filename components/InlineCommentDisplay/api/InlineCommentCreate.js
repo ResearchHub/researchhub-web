@@ -8,7 +8,6 @@ import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 export function saveCommentToBackend({
   auth,
   onSuccess,
-  openRecaptchaPrompt,
   params,
   setMessage,
   showMessage,
