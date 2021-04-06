@@ -1,13 +1,25 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import colors from "~/config/themes/colors";
 import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
+import ReactTooltip from "react-tooltip";
 
-const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
+const HubTag = ({
+  tag,
+  overrideStyle,
+  hubName,
+  gray,
+  labelStyle,
+  last,
+  noHubName,
+}) => {
   let { id, name, hub_image, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
+  const [hubImage, setHubImage] = useState(
+    hub_image ? hub_image : "/static/background/hub-placeholder.svg"
+  );
 
   if (name === hubName) {
     return (
@@ -31,28 +43,29 @@ const HubTag = ({ tag, overrideStyle, hubName, gray, labelStyle, last }) => {
                   overrideStyle && overrideStyle
                 )}
               >
+                {noHubName ? <ReactTooltip /> : null}
                 <img
                   className={css(styles.hubImage) + " hubImage"}
-                  src={
-                    hub_image
-                      ? hub_image
-                      : "/static/background/hub-placeholder.svg"
-                  }
+                  src={hubImage}
+                  onError={() => {
+                    setHubImage("/static/background/hub-placeholder.svg");
+                  }}
                   alt={name}
+                  data-tip={noHubName ? name : null}
                 />
-                <span
-                  className={
-                    css(
-                      styles.label,
-                      gray && styles.grayLabel,
-                      labelStyle && labelStyle
-                    ) +
-                    " clamp1" +
-                    " hubLabel"
-                  }
-                >
-                  {name && name}
-                </span>
+                {noHubName ? null : (
+                  <span
+                    className={
+                      css(
+                        styles.label,
+                        gray && styles.grayLabel,
+                        labelStyle && labelStyle
+                      ) + " clamp1 hubLabel"
+                    }
+                  >
+                    {name && name}
+                  </span>
+                )}
               </div>
             </a>
           </Link>
@@ -92,13 +105,11 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
+    marginLeft: 6,
   },
   hubImage: {
     height: 22,
     width: 22,
-    minWidth: 22,
-    minHeight: 22,
-    marginRight: 6,
     objectFit: "cover",
     borderRadius: 3,
     dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
