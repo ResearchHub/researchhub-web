@@ -5,7 +5,6 @@ import {
 import { EditorState, Modifier } from "draft-js";
 
 function getSelectedBlockFromEditorState(editorState, selectionState = null) {
-  // TODO: calvinhlee need to improve below to capture selection range within the block
   return editorState
     .getCurrentContent()
     .getBlockForKey(

@@ -1,4 +1,3 @@
-// api/paper/{paper_id}/discussions/?source=inline_paper_body
 import API from "~/config/api";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
