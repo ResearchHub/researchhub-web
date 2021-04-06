@@ -3,7 +3,6 @@
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import ReactPlaceholder from "react-placeholder/lib";
-
 // Config
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
@@ -14,9 +13,9 @@ import InlineCommentUnduxStore, {
   updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
-import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
+import { css, StyleSheet } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
 import React, {
@@ -25,13 +24,14 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { EditorState } from "draft-js";
+import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
-import { EditorState } from "draft-js";
-import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 
 type Props = {
   auth: any /* redux */;
@@ -166,11 +166,6 @@ function InlineCommentThreadCard({
           type={"media"}
           rows={3}
         >
-          <div className={css(styles.headerHighlightedTextContainer)}>
-            <span className={css(styles.headerHighlightedText)}>
-              {formattedHighlightTxt}
-            </span>
-          </div>
           <DiscussionPostMetadata
             authorProfile={
               isCommentSaved
@@ -194,6 +189,7 @@ function InlineCommentThreadCard({
             noTimeStamp={true}
             smaller={true}
           />
+          <InlineCommentContextTitle title={formattedHighlightTxt} />
           <div className={css(styles.composerContainer)}>
             <InlineCommentComposer
               isReadOnly={isCommentReadOnly}
@@ -211,26 +207,6 @@ function InlineCommentThreadCard({
 }
 
 const styles = StyleSheet.create({
-  headerHighlightedTextContainer: {
-    alignItems: "center",
-    background: "#fff",
-    boxShadow: "rgb(0 0 0 / 10%) 2px 8px 8px",
-    boxSizing: "border-box",
-    display: "flex",
-    fontSize: 12,
-    fontWeight: 500,
-    height: 40,
-    letterSpacing: 1.2,
-    margin: "0 4px",
-    marginBottom: 12,
-    padding: "4px",
-  },
-  headerHighlightedText: {
-    backgroundColor: "rgb(204 243 221)",
-    color: colors.BLACK(0.6),
-    textDecoration: "italic",
-    padding: "8px 4px",
-  },
   composerContainer: {
     alignItems: "center",
     display: "flex",
