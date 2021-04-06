@@ -16,7 +16,7 @@ export type InlineComment = {
   blockKey: string;
   commentThreadID: ID;
   entityKey: string;
-  highlightedText: string;
+  highlightedText: string | null;
 };
 export type State = {
   displayableInlineComments: Array<
@@ -105,7 +105,7 @@ export function getSavedInlineCommentsGivenBlockKey({
               blockKey,
               commentThreadID,
               entityKey,
-              highlightedText: "",
+              highlightedText: null,
             });
             return true;
           }
@@ -118,6 +118,23 @@ export function getSavedInlineCommentsGivenBlockKey({
   return result.sort((entA, entB) => {
     return (entA.commentThreadID || 0) < (entB.commentThreadID || 0) ? -1 : 1;
   });
+}
+
+/* hides comments without commentThreadID */
+export function cleanupStoreAndCloseDisplay({
+  inlineCommentStore,
+}: {
+  inlineCommentStore: InlineCommentStore;
+  exceptionEntityKey?: ID;
+}): void {
+  const commentsWithThreadID = inlineCommentStore
+    .get("inlineComments")
+    .filter(
+      (inlineComment: InlineComment): boolean =>
+        inlineComment.commentThreadID != null
+    );
+  inlineCommentStore.set("displayableInlineComments")([]);
+  inlineCommentStore.set("inlineComments")(commentsWithThreadID);
 }
 
 export function updateInlineComment({
