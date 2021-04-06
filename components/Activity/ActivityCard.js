@@ -71,7 +71,7 @@ const ActivityCard = (props) => {
           <ActivityBody {...props} />
           <div className={css(styles.row, last && styles.noBorderBottom)}>
             <TimeStamp {...formatProps("timestamp")} />
-            <HubTag {...formatProps("hub")} />
+            <HubTag {...formatProps("hub")} noHubName={true} />
           </div>
         </Ripples>
       </a>

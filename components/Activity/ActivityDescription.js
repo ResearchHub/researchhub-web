@@ -53,7 +53,7 @@ const ActivityDescription = (props) => {
       summary: " summary",
     };
 
-    updateClampStyle(3);
+    updateClampStyle(4);
     return ` added a ${keyToString[key]} for `;
   };
 
@@ -79,14 +79,14 @@ const ActivityDescription = (props) => {
     const action = voteTypeToString[voteType];
     const object = keyToString[key];
 
-    updateClampStyle(3);
+    updateClampStyle(4);
 
     return action + object;
   };
 
   const handleSupporterString = () => {
     const { amount } = source;
-    updateClampStyle(3);
+    updateClampStyle(4);
     return ` supported (${amount} RSC) `;
   };
 
@@ -101,7 +101,7 @@ const ActivityDescription = (props) => {
             <span className={css(styles.text)}>{username}</span>
           </a>
         </Link>
-        <div>{renderActionString()}</div>
+        <span>{renderActionString()}</span>
         <span className={css(styles.text)}>{paperTitle}</span>
       </span>
     </ClampedText>

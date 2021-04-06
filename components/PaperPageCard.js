@@ -3,8 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Router from "next/router";
 import Link from "next/link";
-import Carousel from "nuka-carousel";
-import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
