@@ -45,15 +45,10 @@ function formatBlockTypes(blockTypes) {
 
 /* NOTE: This function only upserts. 
    Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
-function handleInlineCommentBlockToggle({ editorState }) {
-  const selectionBlock = getSelectedBlockFromEditorState(editorState);
-  const currBlockTypes = getBlockTypesInSet(selectionBlock);
-  const currBlockData = selectionBlock.getData();
-
-  /* ---- Block Styling ---- */
-  const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
-  const formattedBlockTypes = formatBlockTypes(newBlockTypes);
-
+function handleInlineCommentBlockToggle({
+  editorState,
+  onInlineCommentPrompt,
+}) {
   /* ---- Applying Entity to Draft---- */
   const blockKey = editorState.getSelection().getStartKey();
   const currContentState = editorState.getCurrentContent();
@@ -75,12 +70,8 @@ function handleInlineCommentBlockToggle({ editorState }) {
   const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
     currentContent: updatedContentWithNewEnt,
   });
-
-  return getModifiedContentState({
-    blockData: currBlockData,
-    editorState: updatedEditorStateWithNewEnt,
-    newBlockTypes: formattedBlockTypes,
-  });
+  onInlineCommentPrompt(entityKey);
+  return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
@@ -108,11 +99,16 @@ export const INLINE_COMMENT_MAP = {
   TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
 };
 
-export function handleBlockStyleToggle({ editorState, toggledStyle }) {
+export function handleBlockStyleToggle({
+  editorState,
+  onInlineCommentPrompt,
+  toggledStyle,
+}) {
   const modifiedContentState =
     toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
       ? handleInlineCommentBlockToggle({
           editorState,
+          onInlineCommentPrompt,
         })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);

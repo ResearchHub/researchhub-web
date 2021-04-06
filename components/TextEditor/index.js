@@ -50,6 +50,7 @@ const TextEditor = (props) => {
     focusEditor,
     hasHeader,
     summary,
+    mediaOnly,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -116,6 +117,7 @@ const TextEditor = (props) => {
       setRef={setInternalRef}
       ref={setEditorRef}
       readOnly={readOnly || false}
+      mediaOnly={mediaOnly}
       onChange={handleChange}
       canCancel={canCancel}
       canSubmit={canSubmit}

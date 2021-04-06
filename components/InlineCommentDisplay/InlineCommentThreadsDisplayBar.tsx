@@ -36,7 +36,7 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        inlineComment={inlineComment}
+        unduxInlineComment={inlineComment}
         key={inlineComment.entityKey}
       />
     )
@@ -53,5 +53,6 @@ const styles = StyleSheet.create({
   InlineCommentThreadsDisplayBar: {
     height: 900,
     overflow: "auto",
+    width: 350,
   },
 });

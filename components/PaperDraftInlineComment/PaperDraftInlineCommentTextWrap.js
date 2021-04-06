@@ -10,8 +10,20 @@ function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
   const { blockKey, commentThreadID, entityKey } = props ?? {};
-  const [showPopover, setShowPopover] = useState(false);
   const unduxStore = InlineCommentUnduxStore.useStore();
+  const isSilenced = unduxStore.get("silencedPromptKeys").has(entityKey);
+  const isBeingPrompted = unduxStore.get("currentPromptKey") === entityKey;
+
+  const [showPopover, setShowPopover] = useState(
+    !isSilenced && isBeingPrompted
+  );
+
+  useEffect(() => {
+    // ensures popover renders properly due to race condition
+    if (!showPopover && isBeingPrompted) {
+      setShowPopover(true);
+    }
+  }, [showPopover, isBeingPrompted]);
 
   const targetInlineComment = useMemo(
     () =>
@@ -23,16 +35,16 @@ function PaperDraftInlineCommentTextWrap(
       }),
     [blockKey, commentThreadID, entityKey, unduxStore]
   );
-  const doesCommentExistInStore = targetInlineComment != null;
 
-  useEffect(() => {
-    if (!doesCommentExistInStore) {
-      setShowPopover(true);
-    }
-  }, [doesCommentExistInStore]);
+  const doesCommentExistInStore = targetInlineComment != null;
 
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
+    unduxStore.set("silencedPromptKeys")(
+      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    );
+    unduxStore.set("lastPromptRemovedTime")(Date.now());
+    unduxStore.set("currentPromptKey")(null);
     updateInlineComment({
       store: unduxStore,
       updatedInlineComment: {
@@ -45,10 +57,24 @@ function PaperDraftInlineCommentTextWrap(
     setShowPopover(false);
   };
 
+  const hidePopoverAndSilence = (event) => {
+    /* calvin: below is indeed funcky. 
+    we need to figure out a better way to handle this because with deletion, 
+    there's a nasty race-condition with the way decorators are being rendered */
+    event.stopPropagation();
+    unduxStore.set("silencedPromptKeys")(
+      new Set([...unduxStore.get("silencedPromptKeys"), entityKey])
+    );
+    unduxStore.set("lastPromptRemovedTime")(Date.now());
+    unduxStore.set("currentPromptKey")(null);
+    setShowPopover(false);
+  };
+
   return (
     <Popover
-      onOuterAction={() => setShowPopover(false)}
       above
+      key={`Popver-${entityKey}`}
+      onOuterAction={isBeingPrompted ? hidePopoverAndSilence : () => {}}
       body={
         <span
           className={css(styles.popoverBodyStyle)}
@@ -63,6 +89,8 @@ function PaperDraftInlineCommentTextWrap(
           className={css(
             doesCommentExistInStore ? styles.commentTextHighLight : null
           )}
+          id={entityKey}
+          key={`Popver-Child-${entityKey}`}
         >
           {props.children}
         </span>
@@ -77,11 +105,11 @@ const styles = StyleSheet.create({
     backgroundColor: "rgb(204 243 221)",
   },
   popoverBodyStyle: {
-    background: "rgb(41, 41, 41)",
+    background: "rgb(0,0,0)",
     color: "rgb(255, 255, 255)",
     cursor: "pointer",
-    fontSize: "16px",
-    padding: "4px 8px",
+    fontSize: 14,
+    padding: "8px 16px",
     borderRadius: 5,
   },
 });
