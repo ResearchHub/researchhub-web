@@ -25,8 +25,6 @@ const ActivityDescription = (props) => {
    * handles the transformation from metadata to user readable string
    */
   const renderActionString = () => {
-    console.log("called renderActionString ", contributionType);
-
     switch (contributionType) {
       case "CURATOR":
         return handleCuratorString();
