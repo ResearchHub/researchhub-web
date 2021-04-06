@@ -1,7 +1,7 @@
 import { RichUtils } from "draft-js";
 
 export const INLINE_COMMENT_MAP = {
-  TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
+  TYPE_KEY: "ResearchHub-Inline-Comment", // used as Entity Identifier
 };
 
 export const draftCssToCustomCss = {
