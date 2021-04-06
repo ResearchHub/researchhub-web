@@ -68,7 +68,7 @@ const routes = (BASE_URL) => {
       referralCode,
       invitedBy,
       page,
-      hubId,
+      hubIds,
     }) => {
       let url = BASE_URL + "user/";
 
@@ -77,7 +77,7 @@ const routes = (BASE_URL) => {
           referral_code: referralCode,
           invited_by: invitedBy,
           author_profile: authorId,
-          hub_id: hubId,
+          hub_ids: hubIds ? hubIds.join(",") : "",
           page,
         },
         rest: {
