@@ -77,7 +77,6 @@ class HubPage extends React.Component {
       papersLoading: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
-      isLatestActivityShown: false,
     };
   }
 
@@ -136,7 +135,7 @@ class HubPage extends React.Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    window.addEventListener("scroll", this.scrollListener);
+    // window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -196,9 +195,9 @@ class HubPage extends React.Component {
     }
   };
 
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrollListener);
-  }
+  // componentWillUnmount() {
+  //   window.removeEventListener("scroll", this.scrollListener);
+  // }
 
   checkUserVotes = (papers) => {
     if (!papers || !papers.length) return;
@@ -786,19 +785,9 @@ class HubPage extends React.Component {
                 </ReactPlaceholder>
               </div>
             </div>
-            <div
-              className={css(
-                styles.column,
-                styles.sidebar,
-                !isLatestActivityShown && styles.hidden
-              )}
-            >
+            <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.rightSidebarContainer)}>
-                <ActivityList
-                  setIsLatestActivityShown={(state) =>
-                    this.setState({ isLatestActivityShown: state })
-                  }
-                />
+                <ActivityList />
               </div>
             </div>
           </div>
