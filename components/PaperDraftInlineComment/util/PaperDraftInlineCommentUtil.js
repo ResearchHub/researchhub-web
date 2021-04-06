@@ -76,20 +76,6 @@ function handleInlineCommentBlockToggle({
   return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
-export function updateInlineThreadIdInEntity({
-  entityKey,
-  paperDraftStore,
-  commentThreadID,
-}) {
-  const editorState = paperDraftStore.get("editorState");
-  const currContentState = editorState.getCurrentContent();
-  // directly mutates the entity
-  currContentState.mergeEntityData(entityKey, {
-    commentThreadID,
-  });
-  paperDraftStore.set("shouldSavePaper")(true);
-}
-
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
   const selectionBlock = getSelectedBlockFromEditorState(editorState);
   const currBlockTypes = getBlockTypesInSet(selectionBlock);
@@ -124,6 +110,20 @@ export function handleBlockStyleToggle({
         })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);
+}
+
+export function updateInlineThreadIdInEntity({
+  entityKey,
+  paperDraftStore,
+  commentThreadID,
+}) {
+  const editorState = paperDraftStore.get("editorState");
+  const currContentState = editorState.getCurrentContent();
+  // directly mutates the entity
+  currContentState.mergeEntityData(entityKey, {
+    commentThreadID,
+  });
+  paperDraftStore.set("shouldSavePaper")(true);
 }
 
 export function getCurrSelectionBlockTypesInSet(editorState) {
