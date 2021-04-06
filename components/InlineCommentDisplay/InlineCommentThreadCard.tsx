@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   headerHighlightedTextContainer: {
     alignItems: "center",
     background: "#fff",
-    boxShadow: "rgb(0 0 0 / 4%) 2px 8px 8px",
+    boxShadow: "rgb(0 0 0 / 10%) 2px 8px 8px",
     boxSizing: "border-box",
     display: "flex",
     fontSize: 12,
