@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
   getSavedInlineCommentsGivenBlockKey,
   updateInlineComment,
@@ -11,12 +12,7 @@ import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
-  const {
-    blockKey,
-    contentState,
-    decoratedText: currentSelectText,
-    entityKey,
-  } = props ?? {};
+  const { blockKey, contentState, decoratedText, entityKey } = props ?? {};
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const isSilenced = inlineCommentStore
@@ -69,7 +65,7 @@ function PaperDraftInlineCommentTextWrap(
       blockKey,
       commentThreadID,
       entityKey,
-      highlightedText: currentSelectText,
+      highlightedText: decoratedText,
       store: inlineCommentStore,
     };
     updateInlineComment({

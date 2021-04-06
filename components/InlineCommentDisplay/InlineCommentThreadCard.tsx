@@ -7,6 +7,7 @@ import ReactPlaceholder from "react-placeholder/lib";
 // Config
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
   findIndexOfCommentInStore,
   getSavedInlineCommentsGivenBlockKey,
   ID,
@@ -34,7 +35,6 @@ import { EditorState } from "draft-js";
 
 type Props = {
   auth: any /* redux */;
-  cleanupStoreAndCloseDisplay: () => void;
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
@@ -43,50 +43,50 @@ type Props = {
 
 function InlineCommentThreadCard({
   auth,
-  cleanupStoreAndCloseDisplay,
   showMessage,
   setMessage,
   openRecaptchaPrompt,
   unduxInlineComment,
   unduxInlineComment: { commentThreadID },
 }: Props): ReactElement<"div"> {
-  const commentMade = commentThreadID !== null;
+  const isCommentSaved = commentThreadID !== null;
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
-    commentMade
+    isCommentSaved
   );
   const [fetchedCommentData, setFecthedCommentData] = useState<any>({
     created_by: { author_profile: {} },
   });
-  const [commentDataFetched, setCommentDataFetched] = useState<boolean>(false);
+  const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
+    false
+  );
   const router = useRouter();
   const { entityKey, blockKey } = unduxInlineComment;
 
   useEffect((): void => {
-    setIsCommentReadOnly(commentMade);
+    setIsCommentReadOnly(isCommentSaved);
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (!commentDataFetched && commentMade && paperID !== null) {
+    if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
       inlineCommentFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
           setFecthedCommentData(result);
           setIsCommentReadOnly(true);
-          setCommentDataFetched(true);
+          setIsCommentDataFetched(true);
         },
         onError: (_): void => {
-          setCommentDataFetched(true);
+          setIsCommentDataFetched(true);
         },
       });
     }
   }, [commentThreadID, fetchedCommentData, paperID]);
 
   const onSubmitComment = (text: String, plainText: String): void => {
-    /* this will trigger separate background action to save paper see PaperDraftSilentSave */
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
     saveCommentToBackend({
@@ -131,7 +131,6 @@ function InlineCommentThreadCard({
   const scrollWindowToHighlight = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
-      const { entityKey } = unduxInlineComment;
       const entityEl = document.getElementById(
         `inline-comment-${commentThreadID}`
       );
@@ -144,7 +143,10 @@ function InlineCommentThreadCard({
       }
     }
   };
-
+  const highlightedText =
+    unduxInlineComment.highlightedText != null
+      ? unduxInlineComment.highlightedText
+      : "HEY HEY THIS IS FETCHED TEXT";
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
@@ -153,24 +155,29 @@ function InlineCommentThreadCard({
     >
       <ColumnContainer overrideStyles={styles.container}>
         <ReactPlaceholder
-          ready={commentMade ? commentDataFetched : true}
+          ready={isCommentSaved ? isCommentDataFetched : true}
           showLoadingAnimation
           type={"media"}
           rows={3}
         >
+          <div className={css(styles.headerHighlightedTextContainer)}>
+            <span className={css(styles.headerHighlightedText)}>
+              {highlightedText}
+            </span>
+          </div>
           <DiscussionPostMetadata
             authorProfile={
-              commentMade
+              isCommentSaved
                 ? fetchedCommentData.created_by.author_profile
                 : auth.user.author_profile
             } // @ts-ignore
             data={{
-              created_by: commentMade
+              created_by: isCommentSaved
                 ? fetchedCommentData.created_by
                 : auth.user,
             }}
             username={
-              commentMade
+              isCommentSaved
                 ? fetchedCommentData.created_by.author_profile.first_name +
                   " " +
                   fetchedCommentData.created_by.author_profile.last_name
@@ -184,7 +191,9 @@ function InlineCommentThreadCard({
           <div className={css(styles.composerContainer)}>
             <InlineCommentComposer
               isReadOnly={isCommentReadOnly}
-              onCancel={cleanupStoreAndCloseDisplay}
+              onCancel={(): void =>
+                cleanupStoreAndCloseDisplay({ inlineCommentStore })
+              }
               onSubmit={onSubmitComment}
               textData={fetchedCommentData ? fetchedCommentData.text : null}
             />
@@ -196,18 +205,25 @@ function InlineCommentThreadCard({
 }
 
 const styles = StyleSheet.create({
-  title: {
-    display: "flex",
+  headerHighlightedTextContainer: {
     alignItems: "center",
     background: "#fff",
+    boxShadow: "rgb(0 0 0 / 4%) 2px 8px 8px",
     boxSizing: "border-box",
-    height: 40,
-    fontWeight: 500,
-    paddingLeft: 20,
+    display: "flex",
     fontSize: 12,
+    fontWeight: 500,
+    height: 40,
     letterSpacing: 1.2,
+    margin: "0 4px",
+    marginBottom: 12,
+    padding: "4px",
+  },
+  headerHighlightedText: {
+    backgroundColor: "rgb(204 243 221)",
     color: colors.BLACK(0.6),
-    textTransform: "uppercase",
+    textDecoration: "italic",
+    padding: "8px 4px",
   },
   composerContainer: {
     alignItems: "center",
