@@ -26,8 +26,6 @@ import PaperBanner from "~/components/Paper/PaperBanner.js";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
-import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
-import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -601,7 +599,6 @@ const Paper = (props) => {
             ) : (
               <React.Fragment>
                 <PaperPreview paper={paper} paperId={paperId} />
-
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
