@@ -1,17 +1,19 @@
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
-import { updateInlineComment } from "../undux/InlineCommentUnduxStore";
 
-function getSelectedBlockFromEditorState(editorState) {
+function getSelectedBlockFromEditorState(editorState, selectionState = null) {
   // TODO: calvinhlee need to improve below to capture selection range within the block
-  const selectionState = editorState.getSelection();
   return editorState
     .getCurrentContent()
-    .getBlockForKey(selectionState.getStartKey());
+    .getBlockForKey(
+      selectionState != null
+        ? selectionState
+        : editorState.getSelection().getStartKey()
+    );
 }
 
 function getBlockTypesInSet(block) {
-  return new Set(block.getType().split(" "));
+  return block != null ? new Set(block.getType().split(" ")) : new Set();
 }
 
 function getModifiedContentState({ blockData, editorState, newBlockTypes }) {
@@ -43,15 +45,10 @@ function formatBlockTypes(blockTypes) {
 
 /* NOTE: This function only upserts. 
    Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
-function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
-  const selectionBlock = getSelectedBlockFromEditorState(editorState);
-  const currBlockTypes = getBlockTypesInSet(selectionBlock);
-  const currBlockData = selectionBlock.getData();
-
-  /* ---- Block Styling ---- */
-  const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
-  const formattedBlockTypes = formatBlockTypes(newBlockTypes);
-
+function handleInlineCommentBlockToggle({
+  editorState,
+  onInlineCommentPrompt,
+}) {
   /* ---- Applying Entity to Draft---- */
   const blockKey = editorState.getSelection().getStartKey();
   const currContentState = editorState.getCurrentContent();
@@ -61,6 +58,7 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
     /* entity meta data */
     {
       blockKey,
+      commentThreadID: null,
     }
   );
   const entityKey = currContentState.getLastCreatedEntityKey();
@@ -72,22 +70,8 @@ function handleInlineCommentBlockToggle({ editorState, inlineCommentStore }) {
   const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
     currentContent: updatedContentWithNewEnt,
   });
-
-  /* ---- Updating New InlineComment Data in Undux ----*/
-  updateInlineComment({
-    store: inlineCommentStore,
-    updatedInlineComment: {
-      blockKey,
-      entityKey,
-      commentThreadID: null /* backend instance not created until an api is called */,
-    },
-  });
-
-  return getModifiedContentState({
-    blockData: currBlockData,
-    editorState: updatedEditorStateWithNewEnt,
-    newBlockTypes: formattedBlockTypes,
-  });
+  onInlineCommentPrompt(entityKey);
+  return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
@@ -117,14 +101,14 @@ export const INLINE_COMMENT_MAP = {
 
 export function handleBlockStyleToggle({
   editorState,
-  inlineCommentStore /* unduxStore see InlineCommentUnduxStore */,
+  onInlineCommentPrompt,
   toggledStyle,
 }) {
   const modifiedContentState =
     toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
       ? handleInlineCommentBlockToggle({
           editorState,
-          inlineCommentStore,
+          onInlineCommentPrompt,
         })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);

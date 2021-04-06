@@ -1,113 +1,148 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import { connect } from "react-redux";
-import colors from "../../config/themes/colors";
-import { InlineComment } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { useRouter } from "next/router";
+import InlineCommentUnduxStore, {
+  findIndexOfCommentInStore,
+  InlineComment,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+// Components
 import { StyleSheet, css } from "aphrodite";
+import colors from "../../config/themes/colors";
+import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
-import React, { ReactElement } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
-
+import React, { ReactElement, SyntheticEvent, useState } from "react";
+import { MessageActions } from "../../redux/message";
+import { ModalActions } from "../../redux/modals";
 // Redux: TODO: calvinhlee Auth shouldn't really be dependent on the redux. Need to revist and remove.
-import { emptyFunction } from "../PaperDraft/util/PaperDraftUtils";
+import { saveCommentToBackend } from "./api/InlineCommentCreateAPI.js";
 
-type Props = { auth: any /* redux */; inlineComment: InlineComment };
+type Props = {
+  auth: any /* redux */;
+  unduxInlineComment: InlineComment;
+  showMessage: any /* redux */;
+  setMessage: any /* redux function to set a message */;
+  openRecaptchaPrompt: any /* redux function to open recaptcha */;
+};
 
 function InlineCommentThreadCard({
   auth,
-  inlineComment,
+  unduxInlineComment,
+  showMessage,
+  setMessage,
+  openRecaptchaPrompt,
 }: Props): ReactElement<"div"> {
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(false);
+  const router = useRouter();
+  const onSubmitComment = (text: String, plainText: String): void => {
+    /* this will trigger separate background action to save paper
+       see PaperDraftSilentSave */
+    inlineCommentStore.set("shouldSavePaper")(true);
+    showMessage({ load: true, show: true });
+    let { paperId } = router.query;
+    saveCommentToBackend({
+      auth,
+      onSuccess: () => setIsCommentReadOnly(true),
+      openRecaptchaPrompt,
+      params: {
+        text: text,
+        paper: paperId,
+        plain_text: plainText,
+        source: "inline_paper_body",
+        entity_key: "",
+        block_key: "",
+      },
+      setMessage,
+      showMessage,
+    });
+  };
+  const onCancel = () => {
+    const { blockKey, entityKey, commentThreadID } = unduxInlineComment;
+    const targetIndex = findIndexOfCommentInStore(
+      blockKey,
+      entityKey,
+      commentThreadID,
+      inlineCommentStore
+    );
+    const updatedInlineComments = [
+      ...inlineCommentStore.get("inlineComments"),
+    ].splice(targetIndex, 0);
+    inlineCommentStore.set("inlineComments")(updatedInlineComments);
+  };
+  const scrollWindowToHighlight = (event: SyntheticEvent) => {
+    event.stopPropagation();
+    if (isCommentReadOnly) {
+      const { entityKey } = unduxInlineComment;
+      const entityEl = document.getElementById(entityKey);
+      if (entityEl != null) {
+        entityEl.scrollIntoView({
+          behavior: "auto",
+          block: "center",
+          inline: "center",
+        });
+      }
+    }
+  };
   return (
-    <div className={css(styles.root)}>
-      <DiscussionPostMetadata
-        authorProfile={auth.user.author_profile} // @ts-ignore
-        data={{ created_by: auth.user }}
-        smaller={true}
-      />
-      <div className={css(styles.container)}>
-        <InlineCommentComposer
-          onCancel={emptyFunction /* api call & update undux store */}
-          onChange={emptyFunction}
-          onSubmit={emptyFunction /* api call & update undux store */}
-          value={""}
+    <div
+      className={css(isCommentReadOnly ? styles.cursurPointer : null)}
+      onClick={scrollWindowToHighlight}
+      role="none"
+    >
+      <ColumnContainer overrideStyles={styles.container}>
+        <DiscussionPostMetadata
+          authorProfile={auth.user.author_profile} // @ts-ignore
+          data={{ created_by: auth.user }}
+          username={
+            auth.user.author_profile.first_name +
+            " " +
+            auth.user.author_profile.last_name
+          }
+          noTimeStamp={true}
+          smaller={true}
         />
-      </div>
+        <div className={css(styles.composerContainer)}>
+          <InlineCommentComposer
+            isReadOnly={isCommentReadOnly}
+            onCancel={onCancel}
+            onSubmit={onSubmitComment}
+          />
+        </div>
+      </ColumnContainer>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
-  root: {
-    paddingLeft: 3,
+  title: {
+    display: "flex",
+    alignItems: "center",
+    background: "#fff",
+    boxSizing: "border-box",
+    height: 40,
+    fontWeight: 500,
+    paddingLeft: 20,
+    fontSize: 12,
+    letterSpacing: 1.2,
+    color: colors.BLACK(0.6),
+    textTransform: "uppercase",
   },
-  container: {
+  composerContainer: {
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     paddingTop: 5,
   },
-  contentBody: {
-    fontSize: 14,
-    lineHeight: 2,
-    maxHeight: 150,
-    overflow: "hidden",
-    position: "relative",
-    width: "100%",
+  container: {
+    marginTop: 20,
+    width: 350,
+    padding: "20px 15px",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
-  showMore: {
-    overflow: "visible",
-    maxHeight: "none",
-  },
-  blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 85%)",
-    height: "100%",
-    position: "absolute",
-    zIndex: 3,
-    top: 0,
-    width: "100%",
-  },
-  buttonContainer: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    position: "absolute",
-    bottom: -10,
-    right: 0,
-    zIndex: 3,
-  },
-  button: {
-    background: colors.BLUE(),
-    color: "#FFF",
-    padding: "0px 10px",
-    fontSize: 12,
+  cursurPointer: {
     cursor: "pointer",
-    borderRadius: 3,
-    ":hover": {
-      background: colors.BLUE(),
-    },
-  },
-  bottomRow: {
-    display: "flex",
-    width: "100%",
-    alignItems: "center",
-    paddingTop: 10,
-  },
-  action: {
-    color: colors.BLACK(0.6),
-    cursor: "pointer",
-    fontSize: 14,
-    textDecoration: "underline",
-    ":hover": {
-      color: colors.BLUE(),
-    },
-  },
-  left: {
-    marginRight: 15,
-  },
-  existingCommentsContainer: {
-    display: "flex",
-    minHeight: 40,
   },
 });
 
@@ -115,7 +150,13 @@ const mapStateToProps = ({ auth }: any) => ({
   auth,
 });
 
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
+};
+
 export default connect(
   mapStateToProps,
-  {} // mapDispatchToProps
+  mapDispatchToProps
 )(InlineCommentThreadCard);

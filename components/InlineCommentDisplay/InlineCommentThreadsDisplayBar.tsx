@@ -1,10 +1,11 @@
-import InlineCommentThreadsDisplayContainer from "./InlineCommentThreadsDisplayContainer";
+import { css, StyleSheet } from "aphrodite";
 import InlineCommentUnduxStore, {
   ID,
+  InlineComment,
   InlineCommentStore,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement, useEffect } from "react";
-import { StyleSheet, css } from "aphrodite";
+import InlineCommentThreadCard from "./InlineCommentThreadCard";
 
 type fetchInlineCommentThreadsArgs = {
   paperID: ID;
@@ -21,7 +22,7 @@ function fetchInlineCommentThreads({
      TODO: calvinhlee - make api call here. */
 }
 
-function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
+export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
 
@@ -30,36 +31,28 @@ function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   }, [paperID, inlineCommentStore]);
 
   const inlineComments = inlineCommentStore.get("inlineComments");
-  const InlineCommentThreadsDisplayContainers = Object.keys(inlineComments).map(
+  const commentThreadCards = inlineComments.map(
     (
-      blockKey: string
-    ): ReactElement<typeof InlineCommentThreadsDisplayContainer> => (
-      // NOTE: Thread-"s" are grouped by blockKey
-      <InlineCommentThreadsDisplayContainer
-        blockKey={blockKey}
-        key={blockKey}
+      inlineComment: InlineComment
+    ): ReactElement<typeof InlineCommentThreadCard> => (
+      <InlineCommentThreadCard
+        unduxInlineComment={inlineComment}
+        key={inlineComment.entityKey}
       />
     )
   );
 
   return (
-    <div className={css(styles.container)}>
-      {InlineCommentThreadsDisplayContainers}
+    <div className={css(styles.InlineCommentThreadsDisplayBar)}>
+      {commentThreadCards}
     </div>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    background: "#fff",
-    borderBottom: "1.5px solid #F0F0F0",
-    borderTop: "1.5px solid #F0F0F0",
-    boxSizing: "border-box",
-    display: "flex",
-    justifyContent: "flex-start",
-    padding: "0 20px 0 5px",
-    width: "100%",
+  InlineCommentThreadsDisplayBar: {
+    height: 900,
+    overflow: "auto",
+    width: 350,
   },
 });
-
-export default InlineCommentThreadsDisplayBar;

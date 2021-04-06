@@ -9,53 +9,71 @@ export type DeleteInlineCommentArgs = {
   commentThreadID: ID;
   store: InlineCommentStore;
 };
+export type FindTargetInlineCommentArg = {
+  blockKey: string;
+  commentThreadID: ID;
+  entityKey: string;
+  store: Store<State>;
+};
 export type InlineComment = {
   blockKey: string;
-  entityKey: string;
   commentThreadID: ID;
-};
-export type GroupedInlineComments = {
-  [blockKey: string]: Array<InlineComment>;
+  entityKey: string;
 };
 export type State = {
-  // inlineComments are grouped by blockKey to encourage threads to be recognized as relevant @ UI / UX level
-  inlineComments: GroupedInlineComments;
+  currentPromptKey: ID; // entityKey
+  inlineComments: Array<InlineComment>;
+  lastPromptRemovedTime: number | null;
+  lastSavePaperTime: number | null;
   paperID: ID;
+  shouldSavePaper: boolean; // trigger to trigger background save of the paper
+  silencedPromptKeys: Set<ID>; // entityKeys
 };
 export type UpdateInlineCommentArgs = {
   store: InlineCommentStore;
   updatedInlineComment: InlineComment;
 };
 
-const findIndexOfCommentInStore = (
+export const findIndexOfCommentInStore = (
   blockKey: string,
   entityKey: string | null,
   commentThreadID: ID,
   store: InlineCommentStore
 ): number => {
-  return (store.get("inlineComments")[blockKey] || []).findIndex(
-    ({
-      blockKey: storedBlockKey,
-      entityKey: storedEntityKey,
-      commentThreadID: storedCommentThreadID,
-    }: InlineComment): boolean => {
-      /* intentional shallow comparison to avoid null-undefined */
-      if (entityKey != null) {
-        return (
-          storedBlockKey == blockKey &&
-          entityKey == storedEntityKey &&
-          storedCommentThreadID == commentThreadID
-        );
-      } else {
-        return (
-          storedBlockKey == blockKey && storedCommentThreadID == commentThreadID
-        );
+  return store
+    .get("inlineComments")
+    .findIndex(
+      ({
+        blockKey: storedBlockKey,
+        entityKey: storedEntityKey,
+        commentThreadID: storedCommentThreadID,
+      }: InlineComment): boolean => {
+        /* intentional shallow comparison to avoid null-undefined */
+        if (entityKey != null) {
+          return (
+            storedBlockKey == blockKey &&
+            entityKey == storedEntityKey &&
+            storedCommentThreadID == commentThreadID
+          );
+        } else {
+          return (
+            storedBlockKey == blockKey &&
+            storedCommentThreadID == commentThreadID
+          );
+        }
       }
-    }
-  );
+    );
 };
 
-const initialState: State = { paperID: null, inlineComments: {} };
+const initialState: State = {
+  currentPromptKey: null,
+  inlineComments: [],
+  lastPromptRemovedTime: null,
+  lastSavePaperTime: null,
+  shouldSavePaper: false,
+  silencedPromptKeys: new Set(),
+  paperID: null,
+};
 
 export function deleteInlineComment({
   blockKey,
@@ -71,11 +89,8 @@ export function deleteInlineComment({
   );
   try {
     if (targetIndex > -1) {
-      const newInlineComments = { ...store.get("inlineComments") };
-      newInlineComments[blockKey].splice(targetIndex, 1);
-      if (newInlineComments[blockKey].length === 0) {
-        delete newInlineComments[blockKey];
-      }
+      const newInlineComments = [...store.get("inlineComments")];
+      newInlineComments.splice(targetIndex, 1);
       store.set("inlineComments")(newInlineComments);
     } else {
       throw new Error(
@@ -88,28 +103,37 @@ export function deleteInlineComment({
   return store;
 }
 
-export function updateInlineComment({
+export function findTargetInlineComment({
+  blockKey,
+  commentThreadID,
+  entityKey,
   store,
-  updatedInlineComment,
-}: UpdateInlineCommentArgs): InlineCommentStore {
-  const { blockKey, entityKey, commentThreadID } = updatedInlineComment;
+}: FindTargetInlineCommentArg): InlineComment | null {
   const targetIndex = findIndexOfCommentInStore(
     blockKey,
     entityKey,
     commentThreadID,
     store
   );
-  const newInlineComments = { ...store.get("inlineComments") };
+  return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
+}
+
+export function updateInlineComment({
+  store,
+  updatedInlineComment,
+}: UpdateInlineCommentArgs): InlineCommentStore {
+  const { blockKey, commentThreadID, entityKey } = updatedInlineComment;
+  const targetIndex = findIndexOfCommentInStore(
+    blockKey,
+    entityKey,
+    commentThreadID,
+    store
+  );
+  const newInlineComments = [...store.get("inlineComments")];
   if (targetIndex > -1) {
-    newInlineComments[blockKey][targetIndex] = updatedInlineComment;
+    newInlineComments[targetIndex] = updatedInlineComment;
   } else {
-    /* if index doesn't exist, we are creating an exntirely new comment thread given a block */
-    const targetArr = newInlineComments[blockKey];
-    if (targetArr != null) {
-      targetArr.push(updatedInlineComment);
-    } else {
-      newInlineComments[blockKey] = [updatedInlineComment];
-    }
+    newInlineComments.push(updatedInlineComment);
   }
   store.set("inlineComments")(newInlineComments);
   return store;
