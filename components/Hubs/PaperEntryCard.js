@@ -763,7 +763,6 @@ const styles = StyleSheet.create({
   metadataRow: {
     display: "flex",
     alignItems: "flex-start",
-    // flexDirection: "column",
     width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
