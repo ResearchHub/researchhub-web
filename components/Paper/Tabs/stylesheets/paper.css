@@ -47,10 +47,6 @@
   list-style-type: circle;
 }
 
-.RichEditor-research-hub-inline-comment {
-  background-color: rgb(204 243 221);
-}
-
 @media only screen and (max-width: 967px) {
   .RichEditor-p {
     font-size: 14px;

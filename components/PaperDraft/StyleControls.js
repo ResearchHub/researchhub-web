@@ -12,16 +12,8 @@ import colors from "~/config/themes/colors";
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
-  /* 
-    NOTE: there are various challenges that come with styling lists especially when the user is editing. 
-    We need to revisit this. 
-      { label: "UL", style: "unordered-list-item" }, 
-      { label: "OL", style: "ordered-list-item" }, 
-  */
-  {
-    label: "Comment",
-    style: INLINE_COMMENT_MAP.TYPE_KEY,
-  },
+  { label: "UL", style: "unordered-list-item" },
+  { label: "OL", style: "ordered-list-item" },
 ];
 
 const INLINE_STYLES = [
@@ -33,6 +25,7 @@ const INLINE_STYLES = [
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
+
   const blockStyleButtons = useMemo(
     () =>
       BLOCK_TYPES.map(({ label, style }) => (

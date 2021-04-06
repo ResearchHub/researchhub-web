@@ -1,21 +1,19 @@
 import { draftCssToCustomCss } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
 import { EditorState, Modifier } from "draft-js";
-import {
-  updateInlineComment,
-  deleteInlineComment,
-} from "../undux/InlineCommentUnduxStore";
-import PaperDraftInlineCommentTextWrap from "../PaperDraftInlineCommentTextWrap";
 
-function getSelectedBlockFromEditorState(editorState) {
+function getSelectedBlockFromEditorState(editorState, selectionState = null) {
   // TODO: calvinhlee need to improve below to capture selection range within the block
-  const selectionState = editorState.getSelection();
   return editorState
     .getCurrentContent()
-    .getBlockForKey(selectionState.getStartKey());
+    .getBlockForKey(
+      selectionState != null
+        ? selectionState
+        : editorState.getSelection().getStartKey()
+    );
 }
 
 function getBlockTypesInSet(block) {
-  return new Set(block.getType().split(" "));
+  return block != null ? new Set(block.getType().split(" ")) : new Set();
 }
 
 function getModifiedContentState({ blockData, editorState, newBlockTypes }) {
@@ -45,38 +43,35 @@ function formatBlockTypes(blockTypes) {
     : blockTypes;
 }
 
-function handleInlineCommentBlockToggle(editorState, inlineCommentStore) {
-  /* TODO: calvinhlee - add inline-comment removal plan */
-  const selectionBlock = getSelectedBlockFromEditorState(editorState);
-  const currBlockTypes = getBlockTypesInSet(selectionBlock);
-  const currBlockData = selectionBlock.getData();
-
+/* NOTE: This function only upserts. 
+   Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
+function handleInlineCommentBlockToggle({
+  editorState,
+  onInlineCommentPrompt,
+}) {
+  /* ---- Applying Entity to Draft---- */
   const blockKey = editorState.getSelection().getStartKey();
-  const newBlockTypes = new Set([...currBlockTypes]); // need to preserve curr styling
-  if (!currBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)) {
-    newBlockTypes.add(INLINE_COMMENT_MAP.TYPE_KEY);
-    updateInlineComment({
-      updatedInlineComment: {
-        blockKey,
-        commentThreadID: null,
-      },
-      store: inlineCommentStore,
-    });
-  } else {
-    newBlockTypes.delete(INLINE_COMMENT_MAP.TYPE_KEY);
-    deleteInlineComment({
+  const currContentState = editorState.getCurrentContent();
+  currContentState.createEntity(
+    INLINE_COMMENT_MAP.TYPE_KEY /* entity type key */,
+    "MUTABLE",
+    /* entity meta data */
+    {
       blockKey,
       commentThreadID: null,
-      store: inlineCommentStore,
-    });
-  }
-
-  const formattedBlockTypes = formatBlockTypes(newBlockTypes);
-  return getModifiedContentState({
-    blockData: currBlockData,
-    editorState,
-    newBlockTypes: formattedBlockTypes,
+    }
+  );
+  const entityKey = currContentState.getLastCreatedEntityKey();
+  const updatedContentWithNewEnt = Modifier.applyEntity(
+    currContentState,
+    editorState.getSelection(),
+    entityKey
+  );
+  const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
+    currentContent: updatedContentWithNewEnt,
   });
+  onInlineCommentPrompt(entityKey);
+  return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
 function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
@@ -85,9 +80,7 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
   const currBlockData = selectionBlock.getData();
 
   /* NOTE: Any new styling should be in custom type for consistency */
-  const newBlockTypes = currBlockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY)
-    ? new Set([INLINE_COMMENT_MAP.TYPE_KEY])
-    : new Set();
+  const newBlockTypes = new Set();
   const toggledBlockType = draftCssToCustomCss[toggledStyle] ?? toggledStyle;
   if (!currBlockTypes.has(toggledBlockType)) {
     newBlockTypes.add(toggledBlockType);
@@ -103,38 +96,23 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
 
 /* -------- EXPORTS -------- */
 export const INLINE_COMMENT_MAP = {
-  TYPE_KEY: "RichEditor-research-hub-inline-comment", // interpreted in paper.css
+  TYPE_KEY: "ResearchHub-Inline-Comment", // interpreted in paper.css
 };
 
 export function handleBlockStyleToggle({
   editorState,
-  inlineCommentStore /* unduxStore see InlineCommentUnduxStore */,
+  onInlineCommentPrompt,
   toggledStyle,
 }) {
   const modifiedContentState =
     toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
-      ? handleInlineCommentBlockToggle(editorState, inlineCommentStore)
+      ? handleInlineCommentBlockToggle({
+          editorState,
+          onInlineCommentPrompt,
+        })
       : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
   return EditorState.push(editorState, modifiedContentState);
 }
-
-export const getInlineCommentBlockRenderer = ({
-  inlineComments,
-  updateInlineComment,
-}) => (contentBlock) => {
-  const blockTypes = contentBlock.getType().split(" ");
-  return blockTypes.includes(INLINE_COMMENT_MAP.TYPE_KEY)
-    ? {
-        component: PaperDraftInlineCommentTextWrap,
-        editable: true,
-        props: {
-          cssClassNames: blockTypes,
-          inlineComments,
-          updateInlineComment,
-        },
-      }
-    : undefined; /* intentional undefined for DraftJS to handle */
-};
 
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
