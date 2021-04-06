@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
-import InlineCommentUnduxStore, {
+import InlineCommentStore, {
   cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
   getSavedInlineCommentsGivenBlockKey,
@@ -13,7 +13,7 @@ function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {
   const { blockKey, contentState, decoratedText, entityKey } = props ?? {};
-  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const inlineCommentStore = InlineCommentStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
@@ -24,7 +24,6 @@ function PaperDraftInlineCommentTextWrap(
   const [showPopover, setShowPopover] = useState(
     !isSilenced && isBeingPrompted
   );
-
   useEffect(() => {
     // ensures popover renders properly despite race condition
     if (!showPopover && isBeingPrompted) {
@@ -32,30 +31,42 @@ function PaperDraftInlineCommentTextWrap(
     }
   }, [showPopover, isBeingPrompted]);
 
-  const data = contentState.getEntity(props.entityKey).getData();
-  const { commentThreadID } = data;
-
-  const targetInlineComment = useMemo(
-    () =>
-      findTargetInlineComment({
-        blockKey,
-        commentThreadID,
-        entityKey,
-        store: inlineCommentStore,
-      }),
-    [
+  const isCommentSavedInBackend = commentThreadID != null;
+  const doesCommentExistInStore =
+    findTargetInlineComment({
       blockKey,
       commentThreadID,
       entityKey,
-      inlineCommentStore.get("inlineComments"),
-    ]
+      store: inlineCommentStore,
+    }) != null;
+  console.warn(
+    "decoratedText: ",
+    decoratedText,
+    " isCommentSavedInBackend: ",
+    isCommentSavedInBackend,
+    " doesCommentExistInStore: ",
+    doesCommentExistInStore
   );
-  const doesCommentExistInStore = targetInlineComment != null;
-  const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
+  // const [shouldTextBeHighlighted, setShouldTextBeHighlighted] = useState(
+
+  // );
+  // useEffect(() => {
+  //   // ensures popover renders properly despite race condition
+  //   if (!showPopover && isBeingPrompted) {
+  //     setShouldTextBeHighlighted(false);
+  //   }
+  // }, [showPopover, isBeingPrompted]);
+
+  const data = contentState.getEntity(props.entityKey).getData();
+  const { commentThreadID } = data;
+
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
+    cleanupStoreAndCloseDisplay({
+      inlineCommentStore,
+    });
     inlineCommentStore.set("silencedPromptKeys")(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
@@ -85,6 +96,7 @@ function PaperDraftInlineCommentTextWrap(
 
   const hidePopoverAndSilence = (event) => {
     event.stopPropagation();
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
     inlineCommentStore.set("silencedPromptKeys")(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
@@ -110,6 +122,7 @@ function PaperDraftInlineCommentTextWrap(
       onOuterAction={isBeingPrompted ? hidePopoverAndSilence : () => {}}
       body={
         <span
+          key={`Popver-Body-${entityKey}`}
           className={css(styles.popoverBodyStyle)}
           role="none"
           onClick={hidePopoverAndInsertToStore}
