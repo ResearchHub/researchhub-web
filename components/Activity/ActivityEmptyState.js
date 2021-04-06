@@ -1,31 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
-import PropTypes from "prop-types";
-import Link from "next/link";
 
 // Components
-import AuthorAvatar from "../AuthorAvatar";
-import { ClampedText } from "~/components/Typography";
-import TextEditor from "~/components/TextEditor"; // QuillTextEditor
-import ActivityUserLine from "./ActivityHeader";
-import { TimeStamp } from "~/components/Notifications/NotificationHelpers";
-import HubTag from "~/components/Hubs/HubTag";
-
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
-const ActivityEmptyState = (props) => {
+const ActivityEmptyState = ({ myHubs }) => {
   const authorPlaceholder = {
     author_profile: null,
   };
 
   return (
-    <div className={css(styles.root)}>
-      <div className={css(styles.row)}>
-        <AuthorAvatar author={authorPlaceholder} />
-        {/* < */}
-        {"Follow an author to get started!"}
-      </div>
+    <div className={css(styles.emptystate)}>
+      <span className={css(styles.activityFeedIcon)}>{icons.activtyFeed}</span>
+      <span style={{ fontWeight: 500, marginBottom: 10 }}>No Activity.</span>
+      {myHubs ? "Follow an author to get started!" : ""}
     </div>
   );
 };
@@ -40,6 +29,19 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  activityFeedIcon: {
+    color: colors.BLUE(),
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  emptystate: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: "15px 20px 10px 20px",
+    fontSize: 14,
   },
 });
 
