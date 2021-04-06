@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import React, { ReactElement } from "react";
@@ -10,22 +11,12 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-  const cleanupStoreAndCloseDisplay = (): void => {
-    const commentsWithThreadID = inlineCommentStore
-      .get("inlineComments")
-      .filter(
-        (inlineComment: InlineComment): boolean =>
-          inlineComment.commentThreadID != null
-      );
-    inlineCommentStore.set("displayableInlineComments")([]);
-    inlineCommentStore.set("inlineComments")(commentsWithThreadID);
-  };
+
   const commentThreadCards = displayableInlineComments.map(
     (
       inlineComment: InlineComment
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
-        cleanupStoreAndCloseDisplay={cleanupStoreAndCloseDisplay}
         key={inlineComment.entityKey}
         unduxInlineComment={inlineComment}
       />
@@ -38,7 +29,9 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
         <img
           alt={"Close Button"}
           className={css(styles.closeButton)}
-          onClick={cleanupStoreAndCloseDisplay}
+          onClick={(): void =>
+            cleanupStoreAndCloseDisplay({ inlineCommentStore })
+          }
           src={"/static/icons/close.png"}
         />
       </div>
