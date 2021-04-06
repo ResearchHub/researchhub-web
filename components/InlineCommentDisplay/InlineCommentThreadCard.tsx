@@ -8,7 +8,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  findIndexOfCommentInStore,
   getSavedInlineCommentsGivenBlockKey,
   ID,
   InlineComment,

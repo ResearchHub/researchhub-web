@@ -31,7 +31,7 @@ function PaperDraftInlineCommentTextWrap(
     }
   }, [showPopover, isBeingPrompted]);
 
-  const isCommentSavedInBackend = commentThreadID != null;
+  const { commentThreadID } = contentState.getEntity(props.entityKey).getData();
   const doesCommentExistInStore =
     findTargetInlineComment({
       blockKey,
@@ -39,28 +39,9 @@ function PaperDraftInlineCommentTextWrap(
       entityKey,
       store: inlineCommentStore,
     }) != null;
-  console.warn(
-    "decoratedText: ",
-    decoratedText,
-    " isCommentSavedInBackend: ",
-    isCommentSavedInBackend,
-    " doesCommentExistInStore: ",
-    doesCommentExistInStore
-  );
+  const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
-  // const [shouldTextBeHighlighted, setShouldTextBeHighlighted] = useState(
-
-  // );
-  // useEffect(() => {
-  //   // ensures popover renders properly despite race condition
-  //   if (!showPopover && isBeingPrompted) {
-  //     setShouldTextBeHighlighted(false);
-  //   }
-  // }, [showPopover, isBeingPrompted]);
-
-  const data = contentState.getEntity(props.entityKey).getData();
-  const { commentThreadID } = data;
 
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
