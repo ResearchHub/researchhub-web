@@ -44,9 +44,14 @@ function InlineCommentThreadCard({
   auth,
   showMessage,
   setMessage,
-  openRecaptchaPrompt,
+  openRecaptchaPrompt: _openRecaptchaPrompt,
   unduxInlineComment,
-  unduxInlineComment: { commentThreadID },
+  unduxInlineComment: {
+    blockKey,
+    commentThreadID,
+    entityKey,
+    highlightedText: unduxHighlightedText,
+  },
 }: Props): ReactElement<"div"> {
   const isCommentSaved = commentThreadID !== null;
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
@@ -62,7 +67,6 @@ function InlineCommentThreadCard({
     false
   );
   const router = useRouter();
-  const { entityKey, blockKey } = unduxInlineComment;
 
   useEffect((): void => {
     setIsCommentReadOnly(isCommentSaved);
@@ -113,7 +117,6 @@ function InlineCommentThreadCard({
           })
         ); /* should also grab all the inline comments within the block */
       },
-      openRecaptchaPrompt,
       params: {
         text: text,
         paper: paperId,
@@ -121,6 +124,7 @@ function InlineCommentThreadCard({
         source: "inline_paper_body",
         entity_key: entityKey,
         block_key: blockKey,
+        context_title: unduxHighlightedText,
       },
       setMessage,
       showMessage,
@@ -142,10 +146,12 @@ function InlineCommentThreadCard({
       }
     }
   };
-  const highlightedText =
-    unduxInlineComment.highlightedText != null
-      ? unduxInlineComment.highlightedText
-      : "HEY HEY THIS IS FETCHED TEXT";
+
+  const formattedHighlightTxt =
+    unduxHighlightedText != null
+      ? unduxHighlightedText
+      : fetchedCommentData.context_title || "";
+
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
@@ -161,7 +167,7 @@ function InlineCommentThreadCard({
         >
           <div className={css(styles.headerHighlightedTextContainer)}>
             <span className={css(styles.headerHighlightedText)}>
-              {highlightedText}
+              {formattedHighlightTxt}
             </span>
           </div>
           <DiscussionPostMetadata

@@ -88,6 +88,7 @@ function PaperDraftInlineCommentTextWrap(
 
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
     inlineCommentStore.set("displayableInlineComments")(
       getSavedInlineCommentsGivenBlockKey({
         blockKey,
