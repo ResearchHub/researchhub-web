@@ -155,13 +155,16 @@ export const fetchPaperDraft = ({ paperId }) => {
   );
 };
 
-export const fetchLatestActivity = ({ userId }) => {
+export const fetchLatestActivity = ({ hubId }) => {
   return fetch(
-    API.USER({ userId, route: "following_latest_activity" }),
+    API.USER({ route: "following_latest_activity", hubId }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    .then(Helpers.parseJSON)
+    .catch((_) => {
+      return { error: true };
+    });
 };
 
 export const followUser = ({ userId, followeeId }) => {
