@@ -15,8 +15,6 @@ function InlineCommentComposer({
   onSubmit,
   textData,
 }: Props) {
-  console.log(textData);
-  console.warn("passedValue: ", textData); // <======= THIS GUY
   return (
     <TextEditor
       canEdit={true}
@@ -26,7 +24,6 @@ function InlineCommentComposer({
       mediaOnly={true}
       onCancel={onCancel}
       onSubmit={onSubmit}
-      // passedValue={passedValue}
       initialValue={textData}
       placeholder={"What are your thoughts?"}
       readOnly={isReadOnly}
