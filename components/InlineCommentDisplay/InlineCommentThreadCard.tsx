@@ -166,11 +166,6 @@ function InlineCommentThreadCard({
           type={"media"}
           rows={3}
         >
-          <div className={css(styles.headerHighlightedTextContainer)}>
-            <span className={css(styles.headerHighlightedText)}>
-              {highlightedText}
-            </span>
-          </div>
           <DiscussionPostMetadata
             authorProfile={
               isCommentSaved
