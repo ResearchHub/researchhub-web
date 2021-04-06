@@ -1,6 +1,6 @@
 /* - calvinhlee: this file utilizes functionalities that are legacy, I'm suppressing some warnings in this file */
 import API from "~/config/api";
-import { DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
+import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
 import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
@@ -15,7 +15,7 @@ export function saveCommentToBackend({
   fetch(
     API.DISCUSSION({
       paperId: params.paper,
-      source: DISCUSSION_URI_SOUCE,
+      source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
       twitter: null,
     }),
     API.POST_CONFIG(params)
