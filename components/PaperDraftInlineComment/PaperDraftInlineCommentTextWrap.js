@@ -89,6 +89,7 @@ function PaperDraftInlineCommentTextWrap(
           className={css(
             doesCommentExistInStore ? styles.commentTextHighLight : null
           )}
+          id={entityKey}
           key={`Popver-Child-${entityKey}`}
         >
           {props.children}
@@ -107,8 +108,8 @@ const styles = StyleSheet.create({
     background: "rgb(0,0,0)",
     color: "rgb(255, 255, 255)",
     cursor: "pointer",
-    fontSize: "16px",
-    padding: "4px 8px",
+    fontSize: 14,
+    padding: "8px 16px",
     borderRadius: 5,
   },
 });
