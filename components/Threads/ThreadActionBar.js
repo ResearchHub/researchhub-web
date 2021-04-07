@@ -167,7 +167,12 @@ class ThreadActionBar extends React.Component {
       );
     }
     return (
-      <Fragment>
+      <div
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+        role="none"
+      >
         <div className={css(styles.column)}>
           <div className={css(styles.row)}>
             {!this.props.hideReply && (
@@ -199,7 +204,7 @@ class ThreadActionBar extends React.Component {
             <div className={css(styles.container)}>{this.renderReplyBox()}</div>
           )}
         </div>
-      </Fragment>
+      </div>
     );
   }
 }
