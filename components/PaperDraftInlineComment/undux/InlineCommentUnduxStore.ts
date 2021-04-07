@@ -150,7 +150,6 @@ export function updateInlineComment({
     commentThreadID,
     store
   );
-  console.warn("TARGET index: ", targetIndex);
   const newInlineComments = [...store.get("inlineComments")];
   if (targetIndex > -1) {
     newInlineComments[targetIndex] = updatedInlineComment;
