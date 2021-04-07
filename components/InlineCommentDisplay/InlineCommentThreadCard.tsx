@@ -138,6 +138,7 @@ function InlineCommentThreadCard({
         `inline-comment-${commentThreadID}`
       );
       if (entityEl != null) {
+        inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
         entityEl.scrollIntoView({
           behavior: "smooth",
           block: "center",

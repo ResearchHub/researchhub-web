@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
@@ -8,6 +8,8 @@ import InlineCommentUnduxStore, {
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+
+const ANIMATION_DURATION = 2; /* in seconds */
 
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
@@ -18,20 +20,11 @@ function PaperDraftInlineCommentTextWrap(
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
     .has(entityKey);
+  const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
   const isBeingPrompted =
     inlineCommentStore.get("promptedEntityKey") === entityKey;
-
-  const [showPopover, setShowPopover] = useState(
-    !isSilenced && isBeingPrompted
-  );
-  useEffect(() => {
-    // ensures popover renders properly despite race condition
-    if (!showPopover && isBeingPrompted) {
-      setShowPopover(true);
-    }
-  }, [showPopover, isBeingPrompted]);
-
-  const { commentThreadID } = contentState.getEntity(props.entityKey).getData();
+  const { commentThreadID } = contentState.getEntity(entityKey).getData();
+  const isCommentSavedInBackend = commentThreadID != null;
   const doesCommentExistInStore =
     findTargetInlineComment({
       blockKey,
@@ -39,9 +32,33 @@ function PaperDraftInlineCommentTextWrap(
       entityKey,
       store: inlineCommentStore,
     }) != null;
-  const isCommentSavedInBackend = commentThreadID != null;
   const shouldTextBeHighlighted =
     doesCommentExistInStore || isCommentSavedInBackend;
+
+  const [showPopover, setShowPopover] = useState(
+    !isSilenced && isBeingPrompted
+  );
+  const [shouldAnimateText, setShouldAnimateText] = useState(
+    isCommentSavedInBackend && commentThreadID === animatedTextCommentID
+  );
+
+  useEffect(() => {
+    if (isCommentSavedInBackend && commentThreadID === animatedTextCommentID) {
+      setShouldAnimateText(true);
+      setTimeout(() => {
+        inlineCommentStore.set("animatedTextCommentID")(null);
+        setShouldAnimateText(false);
+      }, ANIMATION_DURATION * 1000);
+    }
+  }, [animatedTextCommentID, commentThreadID, isCommentSavedInBackend]);
+
+  useEffect(() => {
+    // ensures popover renders properly despite race condition
+    if (!showPopover && isBeingPrompted) {
+      setShowPopover(true);
+    }
+  }, [showPopover, isBeingPrompted]);
+
   const hidePopoverAndInsertToStore = (event) => {
     event.stopPropagation();
     cleanupStoreAndCloseDisplay({
@@ -116,7 +133,8 @@ function PaperDraftInlineCommentTextWrap(
           className={css(
             shouldTextBeHighlighted
               ? styles.commentTextHighLight
-              : styles.textNonHighLight
+              : styles.textNonHighLight,
+            shouldAnimateText ? styles.textBounce : null
           )}
           id={
             commentThreadID != null
@@ -135,6 +153,18 @@ function PaperDraftInlineCommentTextWrap(
   );
 }
 
+const commentTextBounce = {
+  "0%": {
+    transform: "translateY(0)",
+  },
+  "50%": {
+    transform: "translateY(-12px)",
+  },
+  "100%": {
+    transform: "translateY(0)",
+  },
+};
+
 const styles = StyleSheet.create({
   commentTextHighLight: {
     cursor: "pointer",
@@ -150,6 +180,12 @@ const styles = StyleSheet.create({
   },
   textNonHighLight: {
     backgroundColor: "transparent",
+  },
+  textBounce: {
+    animationDuration: `${ANIMATION_DURATION}s`,
+    animationName: [commentTextBounce],
+    display: "inline-flex",
+    height: "inherit",
   },
 });
 
