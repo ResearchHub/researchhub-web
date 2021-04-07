@@ -41,6 +41,19 @@ type Props = {
   unduxInlineComment: InlineComment;
 };
 
+function isElemntWithinViewPort(element: HTMLElement): boolean {
+  var rect = element.getBoundingClientRect();
+  const result =
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= document.documentElement.clientHeight;
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= document.documentElement.clientHeight
+  );
+}
+
 function InlineCommentThreadCard({
   auth,
   showMessage,
@@ -131,14 +144,14 @@ function InlineCommentThreadCard({
     });
   };
 
-  const scrollWindowToHighlight = (event: SyntheticEvent) => {
+  const animateAndScrollToTarget = (event: SyntheticEvent) => {
     event.stopPropagation();
     if (isCommentReadOnly) {
       const entityEl = document.getElementById(
         `inline-comment-${commentThreadID}`
       );
-      if (entityEl != null) {
-        inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+      if (entityEl != null && !isElemntWithinViewPort(entityEl)) {
         entityEl.scrollIntoView({
           behavior: "smooth",
           block: "center",
@@ -156,7 +169,7 @@ function InlineCommentThreadCard({
   return (
     <div
       className={css(isCommentReadOnly ? styles.cursurPointer : null)}
-      onClick={scrollWindowToHighlight}
+      onClick={animateAndScrollToTarget}
       role="none"
     >
       <ColumnContainer overrideStyles={styles.container}>
