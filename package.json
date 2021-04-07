@@ -63,6 +63,7 @@
     "quill-to-plaintext": "^1.0.0",
     "react": "^16.10.1",
     "react-alert": "^6.0.0",
+    "react-animation": "^1.2.2",
     "react-autosize-textarea": "^7.0.0",
     "react-avatar": "^3.7.0",
     "react-avatar-edit": "^0.8.3",
