@@ -203,7 +203,9 @@ function InlineCommentThreadCard({
             noTimeStamp={true}
             smaller={true}
           />
-          <InlineCommentContextTitle title={formattedHighlightTxt} />
+          <div className={css(styles.textWrap)}>
+            <InlineCommentContextTitle title={formattedHighlightTxt} />
+          </div>
           <div className={css(styles.composerContainer)}>
             <InlineCommentComposer
               isReadOnly={isCommentReadOnly}
@@ -239,6 +241,9 @@ const styles = StyleSheet.create({
   },
   cursurPointer: {
     cursor: "pointer",
+  },
+  textWrap: {
+    margin: "4px 0 8px",
   },
 });
 
