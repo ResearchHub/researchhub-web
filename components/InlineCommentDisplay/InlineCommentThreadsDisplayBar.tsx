@@ -44,22 +44,6 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
 }
 
 const styles = StyleSheet.create({
-  inlineCommentThreadsDisplayBar: {
-    height: "100%",
-    overflowY: "auto",
-    width: 350,
-  },
-  header: {
-    alignItems: "center",
-    cursor: "pointer",
-    display: "flex",
-    height: "100%",
-    justifyContent: "flex-start",
-    width: "100%",
-  },
-  closeButton: {
-    width: 16,
-  },
   backButton: {
     color: colors.BLACK(0.5),
     textDecoration: "none",
@@ -75,6 +59,22 @@ const styles = StyleSheet.create({
       top: -90,
       left: 20,
     },
+  },
+  closeButton: {
+    width: 16,
+  },
+  header: {
+    alignItems: "center",
+    cursor: "pointer",
+    display: "flex",
+    height: "100%",
+    justifyContent: "flex-start",
+    width: "100%",
+  },
+  inlineCommentThreadsDisplayBar: {
+    height: "100%",
+    overflowY: "auto",
+    width: 350,
   },
   marginLeft8: {
     marginLeft: 8,
