@@ -19,6 +19,7 @@ export type InlineComment = {
   highlightedText: string | null;
 };
 export type State = {
+  animatedTextCommentID: ID /* commentThreadID */;
   displayableInlineComments: Array<
     InlineComment
   > /* used to render InlineCommentThreadsDisplayBar */;
@@ -55,6 +56,7 @@ export const findIndexOfCommentInStore = (
 };
 
 const initialState: State = {
+  animatedTextCommentID: null,
   displayableInlineComments: [],
   inlineComments: [],
   lastPromptRemovedTime: null,
@@ -75,8 +77,6 @@ export function findTargetInlineComment({
     commentThreadID,
     store
   );
-  console.warn("entityKey: ", entityKey);
-  console.warn("findTargetInlineComment: ", targetIndex);
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
 }
 
