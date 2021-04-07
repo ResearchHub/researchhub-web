@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     maxHeight: 40,
     overflow: "hidden",
     padding: "4px",
-    width: "100%",
+    maxWidth: "100%",
   },
   headerHighlightedText: {
     backgroundColor: "rgb(204 243 221)",
@@ -42,14 +42,5 @@ const styles = StyleSheet.create({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     width: "100%",
-    "@media only screen and (max-width: 321px)": {
-      maxWidth: 200,
-    },
-    "@media only screen and (max-width: 768px)": {
-      maxWidth: 500,
-    },
-    "@media only screen and (max-width: 1024px)": {
-      maxWidth: 620,
-    },
   },
 });
