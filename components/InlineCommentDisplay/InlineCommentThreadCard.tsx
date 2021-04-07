@@ -32,6 +32,7 @@ import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import ThreadActionBar from "../Threads/ThreadActionBar";
 
 type Props = {
   auth: any /* redux */;
@@ -213,6 +214,7 @@ function InlineCommentThreadCard({
               textData={fetchedCommentData ? fetchedCommentData.text : null}
             />
           </div>
+          <ThreadActionBar hideCount />
         </ReactPlaceholder>
       </ColumnContainer>
     </div>
@@ -225,7 +227,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    paddingTop: 5,
+    marginBottom: 8,
+    paddingTop: 4,
   },
   container: {
     marginTop: 20,
