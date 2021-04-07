@@ -1,10 +1,12 @@
+import colors from "../../config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
+import icons from "../../config/themes/icons";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import React, { ReactElement } from "react";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
+import React, { ReactElement } from "react";
 
 export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
@@ -26,14 +28,15 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
   return (
     <div className={css(styles.inlineCommentThreadsDisplayBar)}>
       <div className={css(styles.header)}>
-        <img
-          alt={"Close Button"}
-          className={css(styles.closeButton)}
+        <div
+          className={css(styles.backButton)}
           onClick={(): void =>
             cleanupStoreAndCloseDisplay({ inlineCommentStore })
           }
-          src={"/static/icons/close.png"}
-        />
+        >
+          {icons.arrowRight}
+          <span className={css(styles.marginLeft8)}>Hide</span>
+        </div>
       </div>
       {commentThreadCards}
     </div>
@@ -56,5 +59,24 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     width: 16,
+  },
+  backButton: {
+    color: colors.BLACK(0.5),
+    textDecoration: "none",
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLACK(1),
+    },
+    "@media only screen and (max-width: 767px)": {
+      top: -118,
+      left: 0,
+    },
+    "@media only screen and (max-width: 415px)": {
+      top: -90,
+      left: 20,
+    },
+  },
+  marginLeft8: {
+    marginLeft: 8,
   },
 });
