@@ -451,7 +451,9 @@ class DiscussionEntry extends React.Component {
                   />
                 </div>
                 {contextTitle != null ? (
-                  <InlineCommentContextTitle title={contextTitle} />
+                  <div className={css(styles.contextTitleWrap)}>
+                    <InlineCommentContextTitle title={contextTitle} />
+                  </div>
                 ) : null}
                 <div
                   className={css(

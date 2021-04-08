@@ -129,6 +129,7 @@ class PaperDraft extends React.Component {
 
   render() {
     const {
+      auth: { isLoggedIn },
       textEditorProps,
       textEditorProps: { editorState, isInEditMode },
       isFetching,
@@ -136,6 +137,7 @@ class PaperDraft extends React.Component {
       paperDraftExists,
     } = this.props;
     const { isSaving } = this.state;
+    console.warn("auth: ", this.props.auth);
     return (
       <ReactPlaceholder
         ready={!isFetching}
@@ -170,7 +172,8 @@ class PaperDraft extends React.Component {
             />
           </div>
           <PaperDraftEventCaptureWrap
-            shouldAllowEventsToPassDown={isInEditMode}
+            shouldAllowKeyEvents={isLoggedIn && !isInEditMode}
+            shouldAllowMouseEvents={isLoggedIn}
           >
             <div
               style={{
