@@ -142,7 +142,7 @@ function PaperDraftInlineCommentTextWrap(
           id={
             commentThreadID != null
               ? `inline-comment-${commentThreadID}`
-              : entityKey
+              : `inline-comment-${entityKey}`
           }
           key={`Popver-Child-${entityKey}`}
           onClick={openCommentThreadDisplay}
