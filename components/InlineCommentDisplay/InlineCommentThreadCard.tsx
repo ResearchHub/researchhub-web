@@ -33,7 +33,7 @@ import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
-import ThreadActionBar from "../Threads/ThreadActionBar";
+import CommentEntry from "../Threads/CommentEntry";
 
 type Props = {
   auth: any /* redux */;
@@ -55,6 +55,8 @@ function isElemntWithinViewPort(element: HTMLElement): boolean {
     rect.bottom <= document.documentElement.clientHeight
   );
 }
+
+function emptyFunction(): void {}
 
 function InlineCommentThreadCard({
   auth,
@@ -85,10 +87,10 @@ function InlineCommentThreadCard({
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
     isCommentSaved
   );
-  const [fetchedCommentData, setFecthedCommentData] = useState<any>({
+  const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
-  const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
+  const [isThreadDataFetched, setIsThreadDataFetched] = useState<boolean>(
     false
   );
   const router = useRouter();
@@ -98,21 +100,21 @@ function InlineCommentThreadCard({
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
+    if (!isThreadDataFetched && isCommentSaved && paperID !== null) {
       inlineCommentFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
-          setFecthedCommentData(result);
+          setFecthedThreadData(result);
           setIsCommentReadOnly(true);
-          setIsCommentDataFetched(true);
+          setIsThreadDataFetched(true);
         },
         onError: (_): void => {
-          setIsCommentDataFetched(true);
+          setIsThreadDataFetched(true);
         },
       });
     }
-  }, [commentThreadID, fetchedCommentData, paperID]);
+  }, [commentThreadID, fetchedThreadData, paperID]);
 
   const onSubmitComment = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
@@ -172,10 +174,26 @@ function InlineCommentThreadCard({
     }
   };
 
+  const commentEntries = fetchedThreadData.comments.map((comment) => {
+    // let { data, hostname, path, discussionCount, paper } = props;
+    const { id: commentID } = comment;
+    <CommentEntry
+      data={data}
+      hostname={hostname}
+      path={path}
+      key={`inline-thread-card-comment-${commentID}`}
+      comment={comment}
+      paper={paper}
+      // index={comment.id}
+      mobileView={false}
+      // discussionCount={discussionCount}
+      setCount={emptyFunction}
+    />;
+  });
   const formattedHighlightTxt =
     unduxHighlightedText != null
       ? unduxHighlightedText
-      : fetchedCommentData.context_title || "";
+      : fetchedThreadData.context_title || "";
 
   return (
     <div
@@ -188,7 +206,7 @@ function InlineCommentThreadCard({
     >
       <ColumnContainer overrideStyles={styles.container}>
         <ReactPlaceholder
-          ready={isCommentSaved ? isCommentDataFetched : true}
+          ready={isCommentSaved ? isThreadDataFetched : true}
           showLoadingAnimation
           type={"media"}
           rows={3}
@@ -196,19 +214,19 @@ function InlineCommentThreadCard({
           <DiscussionPostMetadata
             authorProfile={
               isCommentSaved
-                ? fetchedCommentData.created_by.author_profile
+                ? fetchedThreadData.created_by.author_profile
                 : auth.user.author_profile
             } // @ts-ignore
             data={{
               created_by: isCommentSaved
-                ? fetchedCommentData.created_by
+                ? fetchedThreadData.created_by
                 : auth.user,
             }}
             username={
               isCommentSaved
-                ? fetchedCommentData.created_by.author_profile.first_name +
+                ? fetchedThreadData.created_by.author_profile.first_name +
                   " " +
-                  fetchedCommentData.created_by.author_profile.last_name
+                  fetchedThreadData.created_by.author_profile.last_name
                 : auth.user.author_profile.first_name +
                   " " +
                   auth.user.author_profile.last_name
@@ -226,10 +244,9 @@ function InlineCommentThreadCard({
                 cleanupStoreAndCloseDisplay({ inlineCommentStore })
               }
               onSubmit={onSubmitComment}
-              textData={fetchedCommentData ? fetchedCommentData.text : null}
+              textData={fetchedThreadData ? fetchedThreadData.text : null}
             />
           </div>
-          <ThreadActionBar hideCount />
         </ReactPlaceholder>
       </ColumnContainer>
     </div>
