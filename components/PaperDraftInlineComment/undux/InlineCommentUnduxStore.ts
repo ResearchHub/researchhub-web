@@ -138,6 +138,7 @@ export function cleanupStoreAndCloseDisplay({
         inlineComment.commentThreadID != null
     );
   inlineCommentStore.set("animatedTextCommentID")(null);
+  inlineCommentStore.set("animatedTextCommentID")(null);
   inlineCommentStore.set("displayableInlineComments")([]);
   inlineCommentStore.set("inlineComments")(commentsWithThreadID);
 }
