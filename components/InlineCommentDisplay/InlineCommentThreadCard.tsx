@@ -248,7 +248,7 @@ const activeCardBump = {
 const styles = StyleSheet.create({
   inlineCommentThreadCard: { marginLeft: 12 },
   activeCard: {
-    animationDuration: "1s",
+    animationDuration: ".5s",
     animationFillMode: "forwards",
     animationName: [activeCardBump],
   },
