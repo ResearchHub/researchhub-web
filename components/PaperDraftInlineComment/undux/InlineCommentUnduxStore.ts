@@ -19,6 +19,7 @@ export type InlineComment = {
   highlightedText: string | null;
 };
 export type State = {
+  animatedEntityKey: ID /* animatedTextCommentID should be considered first */;
   animatedTextCommentID: ID /* commentThreadID */;
   displayableInlineComments: Array<
     InlineComment
@@ -56,6 +57,7 @@ export const findIndexOfCommentInStore = (
 };
 
 const initialState: State = {
+  animatedEntityKey: null,
   animatedTextCommentID: null,
   displayableInlineComments: [],
   inlineComments: [],
@@ -135,6 +137,7 @@ export function cleanupStoreAndCloseDisplay({
       (inlineComment: InlineComment): boolean =>
         inlineComment.commentThreadID != null
     );
+  inlineCommentStore.set("animatedTextCommentID")(null);
   inlineCommentStore.set("displayableInlineComments")([]);
   inlineCommentStore.set("inlineComments")(commentsWithThreadID);
 }
