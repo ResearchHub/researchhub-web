@@ -39,12 +39,14 @@ function PaperDraftInlineCommentTextWrap(
   );
   const isCurrentCommentTextActive = useMemo(
     () =>
-      (shouldTextBeHighlighted && animatedTextCommentID === commentThreadID) ||
-      animatedEntityKey === entityKey,
+      shouldTextBeHighlighted &&
+      (animatedTextCommentID === commentThreadID ||
+        animatedEntityKey === entityKey),
     [
       animatedEntityKey,
       animatedTextCommentID,
       commentThreadID,
+      entityKey,
       shouldTextBeHighlighted,
     ]
   );
