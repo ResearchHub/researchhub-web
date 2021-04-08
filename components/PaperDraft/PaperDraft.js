@@ -137,7 +137,6 @@ class PaperDraft extends React.Component {
       paperDraftExists,
     } = this.props;
     const { isSaving } = this.state;
-    console.warn("auth: ", this.props.auth);
     return (
       <ReactPlaceholder
         ready={!isFetching}
