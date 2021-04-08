@@ -156,19 +156,18 @@ function InlineCommentThreadCard({
 
   const animateAndScrollToTarget = (event: SyntheticEvent) => {
     event.stopPropagation();
-    if (isCommentReadOnly) {
-      const entityEl = document.getElementById(
-        `inline-comment-${commentThreadID}`
-      );
-      inlineCommentStore.set("animatedEntityKey")(entityKey);
-      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
-      if (entityEl != null && !isElemntWithinViewPort(entityEl)) {
-        entityEl.scrollIntoView({
-          behavior: "smooth",
-          block: "center",
-          inline: "center",
-        });
-      }
+    let entityEl = document.getElementById(`inline-comment-${commentThreadID}`);
+    if (entityEl == null) {
+      entityEl = document.getElementById(`inline-comment-${entityKey}`);
+    }
+    inlineCommentStore.set("animatedEntityKey")(entityKey);
+    inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+    if (entityEl != null && !isElemntWithinViewPort(entityEl)) {
+      entityEl.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "center",
+      });
     }
   };
 
@@ -182,7 +181,6 @@ function InlineCommentThreadCard({
       className={css([
         styles.inlineCommentThreadCard,
         isActiveCommentCard ? styles.activeCard : null,
-        isCommentReadOnly ? styles.cursurPointer : null,
       ])}
       onClick={animateAndScrollToTarget}
       role="none"
@@ -246,7 +244,7 @@ const activeCardBump = {
 };
 
 const styles = StyleSheet.create({
-  inlineCommentThreadCard: { marginLeft: 12 },
+  inlineCommentThreadCard: { cursor: "pointer", marginLeft: 12 },
   activeCard: {
     animationDuration: ".5s",
     animationFillMode: "forwards",
