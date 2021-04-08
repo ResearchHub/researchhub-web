@@ -2,30 +2,34 @@ import React, { ReactChildren, SyntheticEvent, useCallback } from "react";
 
 type Props = {
   children: ReactChildren;
-  shouldAllowEventsToPassDown: boolean;
+  shouldAllowKeyEvents: boolean;
+  shouldAllowMouseEvents: boolean;
 };
 
 export default function PaperDraftEventCaptureWrap({
   children,
-  shouldAllowEventsToPassDown,
+  shouldAllowKeyEvents = false,
+  shouldAllowMouseEvents = false,
 }: Props) {
   const eventSilencer = useCallback(
-    (event: SyntheticEvent) => {
-      if (shouldAllowEventsToPassDown) {
-        return event;
-      } else {
+    (shouldAllow) => (event: SyntheticEvent) => {
+      if (!shouldAllow) {
         event.preventDefault();
         event.stopPropagation();
         return;
       }
+      return event;
     },
-    [shouldAllowEventsToPassDown]
+    []
   );
   return (
     <div
-      onKeyDownCapture={eventSilencer}
-      onKeyPressCapture={eventSilencer}
-      onKeyUpCapture={eventSilencer}
+      onClickCapture={eventSilencer(shouldAllowMouseEvents)}
+      onKeyDownCapture={eventSilencer(shouldAllowKeyEvents)}
+      onKeyPressCapture={eventSilencer(shouldAllowKeyEvents)}
+      onKeyUpCapture={eventSilencer(shouldAllowKeyEvents)}
+      onMouseDownCapture={eventSilencer(shouldAllowMouseEvents)}
+      onMouseUpCapture={eventSilencer(shouldAllowMouseEvents)}
       style={{ display: "block", height: "100%", width: "100%" }}
     >
       {children}
