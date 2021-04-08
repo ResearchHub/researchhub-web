@@ -22,6 +22,7 @@ import React, {
   ReactElement,
   SyntheticEvent,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { EditorState } from "draft-js";
@@ -71,6 +72,15 @@ function InlineCommentThreadCard({
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
+  const animatedEntityKey = inlineCommentStore.get("animatedTextCommentID");
+  const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
+  const isActiveCommentCard = useMemo(
+    (): boolean =>
+      animatedTextCommentID === commentThreadID ||
+      animatedEntityKey === entityKey,
+    [animatedTextCommentID, commentThreadID, isCommentSaved]
+  );
+
   const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
     isCommentSaved
   );
@@ -150,6 +160,7 @@ function InlineCommentThreadCard({
       const entityEl = document.getElementById(
         `inline-comment-${commentThreadID}`
       );
+      inlineCommentStore.set("animatedEntityKey")(entityKey);
       inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
       if (entityEl != null && !isElemntWithinViewPort(entityEl)) {
         entityEl.scrollIntoView({
@@ -168,7 +179,11 @@ function InlineCommentThreadCard({
 
   return (
     <div
-      className={css(isCommentReadOnly ? styles.cursurPointer : null)}
+      className={css([
+        styles.inlineCommentThreadCard,
+        isActiveCommentCard ? styles.activeCard : null,
+        isCommentReadOnly ? styles.cursurPointer : null,
+      ])}
       onClick={animateAndScrollToTarget}
       role="none"
     >
@@ -221,7 +236,22 @@ function InlineCommentThreadCard({
   );
 }
 
+const activeCardBump = {
+  "0%": {
+    transform: "translateX(0)",
+  },
+  "100%": {
+    transform: "translateX(-12px)",
+  },
+};
+
 const styles = StyleSheet.create({
+  inlineCommentThreadCard: { marginLeft: 12 },
+  activeCard: {
+    animationDuration: "1s",
+    animationFillMode: "forwards",
+    animationName: [activeCardBump],
+  },
   composerContainer: {
     alignItems: "center",
     display: "flex",

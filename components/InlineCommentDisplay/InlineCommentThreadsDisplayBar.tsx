@@ -46,11 +46,11 @@ export default function InlineCommentThreadsDisplayBar(): ReactElement<"div"> {
 const styles = StyleSheet.create({
   backButton: {
     color: colors.BLACK(0.5),
-    textDecoration: "none",
     cursor: "pointer",
     ":hover": {
       color: colors.BLACK(1),
     },
+    textDecoration: "none",
     "@media only screen and (max-width: 767px)": {
       top: -118,
       left: 0,

@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
@@ -20,6 +20,7 @@ function PaperDraftInlineCommentTextWrap(
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
     .has(entityKey);
+  const animatedEntityKey = inlineCommentStore.get("animatedTextCommentID");
   const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
   const isBeingPrompted =
     inlineCommentStore.get("promptedEntityKey") === entityKey;
@@ -32,26 +33,25 @@ function PaperDraftInlineCommentTextWrap(
       entityKey,
       store: inlineCommentStore,
     }) != null;
-  const shouldTextBeHighlighted =
-    doesCommentExistInStore || isCommentSavedInBackend;
+  const shouldTextBeHighlighted = useMemo(
+    () => doesCommentExistInStore || isCommentSavedInBackend,
+    [doesCommentExistInStore, isCommentSavedInBackend]
+  );
+  const isCurrentCommentTextActive = useMemo(
+    () =>
+      (shouldTextBeHighlighted && animatedTextCommentID === commentThreadID) ||
+      animatedEntityKey === entityKey,
+    [
+      animatedEntityKey,
+      animatedTextCommentID,
+      commentThreadID,
+      shouldTextBeHighlighted,
+    ]
+  );
 
   const [showPopover, setShowPopover] = useState(
     !isSilenced && isBeingPrompted
   );
-  const [shouldAnimateText, setShouldAnimateText] = useState(
-    isCommentSavedInBackend && commentThreadID === animatedTextCommentID
-  );
-
-  useEffect(() => {
-    if (isCommentSavedInBackend && commentThreadID === animatedTextCommentID) {
-      setShouldAnimateText(true);
-      setTimeout(() => {
-        inlineCommentStore.set("animatedTextCommentID")(null);
-        setShouldAnimateText(false);
-      }, ANIMATION_DURATION * 1000);
-    }
-  }, [animatedTextCommentID, commentThreadID, isCommentSavedInBackend]);
-
   useEffect(() => {
     // ensures popover renders properly despite race condition
     if (!showPopover && isBeingPrompted) {
@@ -111,6 +111,7 @@ function PaperDraftInlineCommentTextWrap(
         editorState: paperDraftStore.get("editorState"),
       })
     );
+    inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
   };
 
   return (
@@ -134,7 +135,7 @@ function PaperDraftInlineCommentTextWrap(
             shouldTextBeHighlighted
               ? styles.commentTextHighLight
               : styles.textNonHighLight,
-            shouldAnimateText ? styles.textBounce : null
+            isCurrentCommentTextActive ? styles.commentActiveHighlight : null
           )}
           id={
             commentThreadID != null
@@ -153,22 +154,14 @@ function PaperDraftInlineCommentTextWrap(
   );
 }
 
-const commentTextBounce = {
-  "0%": {
-    transform: "translateY(0)",
-  },
-  "50%": {
-    transform: "translateY(-12px)",
-  },
-  "100%": {
-    transform: "translateY(0)",
-  },
-};
-
 const styles = StyleSheet.create({
-  commentTextHighLight: {
+  commentActiveHighlight: {
+    backgroundColor: "rgb(140 230 180)",
     cursor: "pointer",
+  },
+  commentTextHighLight: {
     backgroundColor: "rgb(204 243 221)",
+    cursor: "pointer",
   },
   popoverBodyStyle: {
     background: "rgb(0,0,0)",
@@ -180,12 +173,6 @@ const styles = StyleSheet.create({
   },
   textNonHighLight: {
     backgroundColor: "transparent",
-  },
-  textBounce: {
-    animationDuration: `${ANIMATION_DURATION}s`,
-    animationName: [commentTextBounce],
-    display: "inline-flex",
-    height: "inherit",
   },
 });
 
