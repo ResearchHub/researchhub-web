@@ -4,7 +4,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 
 /* fetches all inline comments based on paperID */
-export function inlineCommentFetchAll({
+export function inlineThreadFetchAll({
   paperId,
   onSuccess = emptyFunction,
   onError = emptyFunction,
@@ -28,7 +28,7 @@ export function inlineCommentFetchAll({
     .catch(onError);
 }
 
-export function inlineCommentFetchTarget({
+export function inlineThreadFetchTarget({
   paperId,
   targetId,
   onSuccess = emptyFunction,

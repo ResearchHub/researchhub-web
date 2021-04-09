@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { useRouter } from "next/router";
 import ReactPlaceholder from "react-placeholder/lib";
 // Config
-import { inlineCommentFetchTarget } from "./api/InlineCommentFetch";
+import { inlineThreadFetchTarget } from "./api/InlineThreadFetch";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   getSavedInlineCommentsGivenBlockKey,
@@ -100,7 +100,7 @@ function InlineCommentThreadCard({
 
   useEffect((): void => {
     if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
-      inlineCommentFetchTarget({
+      inlineThreadFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
