@@ -837,7 +837,6 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 1023px)": {
       display: "block",
-      width: "100%",
     },
   },
   inlineSticky: {
