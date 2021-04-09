@@ -5,7 +5,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
 import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
 
-export function saveCommentToBackend({
+export function saveThreadToBackend({
   auth,
   onSuccess,
   params,
