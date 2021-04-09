@@ -8,6 +8,7 @@ import Error from "next/error";
 import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
+import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 // Components
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
@@ -591,29 +592,124 @@ const Paper = (props) => {
               </a>
             </Waypoint>
           </div>
-          <InlineCommentThreadsDisplayBar isShown={shouldShowInlineComment} />
-          <div className={css(styles.sidebar)}>
-            <React.Fragment>
-              <PaperSideColumn
-                authors={getAllAuthors()}
-                paper={paper}
-                hubs={paper.hubs}
-                paperId={paperId}
+          <div className={css(styles.mobile)}>
+            <SlideMenu
+              right
+              isOpen={shouldShowInlineComment}
+              styles={burgerMenuStyle}
+              customBurgerIcon={false}
+            >
+              <InlineCommentThreadsDisplayBar
+                isShown={shouldShowInlineComment}
               />
-              <PaperSections
-                activeTab={activeTab} // for paper page tabs
-                setActiveTab={setActiveTab}
-                activeSection={activeSection} // for paper draft sections
-                setActiveSection={setActiveSection}
-                paperDraftSections={paperDraftSections}
-                paperDraftExists={paperDraftExists}
-              />
-            </React.Fragment>
+            </SlideMenu>
           </div>
+          <div className={css(styles.sidebar)}>
+            {shouldShowInlineComment ? (
+              <div className={css(styles.inlineSticky)}>
+                <InlineCommentThreadsDisplayBar />
+              </div>
+            ) : (
+              <React.Fragment>
+                <PaperSideColumn
+                  authors={getAllAuthors()}
+                  paper={paper}
+                  hubs={paper.hubs}
+                  paperId={paperId}
+                />
+                <PaperSections
+                  activeTab={activeTab} // for paper page tabs
+                  setActiveTab={setActiveTab}
+                  activeSection={activeSection} // for paper draft sections
+                  setActiveSection={setActiveSection}
+                  paperDraftSections={paperDraftSections}
+                  paperDraftExists={paperDraftExists}
+                />
+              </React.Fragment>
+            )}
+          </div>
+          {/* <div className={css(styles.sidebar)}>
+            { shouldShowInlineComment
+              ? <div className={css(styles.desktop)}>
+                  <InlineCommentThreadsDisplayBar isShown={shouldShowInlineComment} />
+                </div>
+              : <React.Fragment>
+                  <PaperSideColumn
+                    authors={getAllAuthors()}
+                    paper={paper}
+                    hubs={paper.hubs}
+                    paperId={paperId}
+                  />
+                  <PaperSections
+                    activeTab={activeTab} // for paper page tabs
+                    setActiveTab={setActiveTab}
+                    activeSection={activeSection} // for paper draft sections
+                    setActiveSection={setActiveSection}
+                    paperDraftSections={paperDraftSections}
+                    paperDraftExists={paperDraftExists}
+                  />
+                </React.Fragment>
+            }
+          </div> */}
         </div>
       </div>
     </div>
   );
+};
+
+const burgerMenuStyle = {
+  bmBurgerBars: {
+    background: "#373a47",
+  },
+  bmBurgerBarsHover: {
+    background: "#a90000",
+  },
+  bmCrossButton: {
+    height: "26px",
+    width: "26px",
+    color: "#FFF",
+  },
+  bmCross: {
+    background: "#bdc3c7",
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    top: 0,
+    zIndex: 3147480000,
+    height: "unset",
+  },
+  bmMenu: {
+    background: "#fff",
+    fontSize: "1.15em",
+  },
+  bmMorphShape: {
+    fill: "#373a47",
+  },
+  bmItemList: {
+    color: "#b8b7ad",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    height: "100%",
+    overflow: "auto",
+    borderTop: "1px solid rgba(255,255,255,.2)",
+    paddingTop: 16,
+    ":focus": {
+      outline: "none",
+    },
+  },
+  bmItem: {
+    display: "inline-block",
+    margin: "15px 0 15px 0",
+    color: "#FFF",
+    ":focus": {
+      outline: "none",
+    },
+  },
+  bmOverlay: {
+    background: "#fff",
+  },
 };
 
 const fetchPaper = ({ paperId }) => {
@@ -741,6 +837,19 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 1024px)": {
       width: "80%",
       display: "table",
+    },
+  },
+  desktop: {
+    display: "none",
+    "@media only screen and (min-width: 1024px)": {
+      display: "block",
+    },
+  },
+
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 1023px)": {
+      display: "block",
     },
   },
   inlineSticky: {
