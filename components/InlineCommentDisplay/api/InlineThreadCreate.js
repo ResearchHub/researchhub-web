@@ -27,8 +27,7 @@ export function saveThreadToBackend({
       setMessage("Successfully Saved!");
       showMessage({ show: true });
       const { id: threadID, is_removed: isRemoved } = resp;
-      // amp events
-      let payload = {
+      const ampEventPayload = {
         event_type: "create_thread",
         time: +new Date(),
         user_id: auth.user ? auth.user.id && auth.user.id : null,
@@ -39,7 +38,8 @@ export function saveThreadToBackend({
           is_removed: resp.is_removed,
         },
       };
-      sendAmpEvent(payload);
+      sendAmpEvent(ampEventPayload);
+
       onSuccess({ threadID });
     })
     .catch((err) => {
