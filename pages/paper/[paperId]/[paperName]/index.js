@@ -629,29 +629,6 @@ const Paper = (props) => {
               </React.Fragment>
             )}
           </div>
-          {/* <div className={css(styles.sidebar)}>
-            { shouldShowInlineComment
-              ? <div className={css(styles.desktop)}>
-                  <InlineCommentThreadsDisplayBar isShown={shouldShowInlineComment} />
-                </div>
-              : <React.Fragment>
-                  <PaperSideColumn
-                    authors={getAllAuthors()}
-                    paper={paper}
-                    hubs={paper.hubs}
-                    paperId={paperId}
-                  />
-                  <PaperSections
-                    activeTab={activeTab} // for paper page tabs
-                    setActiveTab={setActiveTab}
-                    activeSection={activeSection} // for paper draft sections
-                    setActiveSection={setActiveSection}
-                    paperDraftSections={paperDraftSections}
-                    paperDraftExists={paperDraftExists}
-                  />
-                </React.Fragment>
-            }
-          </div> */}
         </div>
       </div>
     </div>
@@ -685,10 +662,10 @@ const burgerMenuStyle = {
     width: "85%",
   },
   bmMenu: {
-    background: "rgba(0, 0, 0, 0.3)",
+    background: "#fff",
     fontSize: "1.15em",
     overflowY: "auto",
-    width: "100%f",
+    width: "100%",
   },
   bmMorphShape: {
     fill: "#373a47",
@@ -715,6 +692,10 @@ const burgerMenuStyle = {
   },
   bmOverlay: {
     background: "rgba(0, 0, 0, 0.3)",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 };
 

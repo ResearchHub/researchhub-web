@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1023px)": {
       height: 50,
     },
-    background: "#fff",
   },
   inlineCommentThreadsDisplayBar: {
     display: "flex",
