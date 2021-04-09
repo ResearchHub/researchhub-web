@@ -30,6 +30,18 @@ export const HeaderOne = () => {};
 
 export const HeaderTwo = () => {};
 
+export const ClampedText = (props) => {
+  const { lines = 1, textStyles } = props;
+
+  const clampClass = ` clamp${lines}`;
+
+  return (
+    <span className={css(textStyles && textStyles) + clampClass}>
+      {props.children}
+    </span>
+  );
+};
+
 const styles = StyleSheet.create({
   sidecolumnHeader: {
     display: "flex",

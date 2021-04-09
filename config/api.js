@@ -61,7 +61,15 @@ const prepURL = (url, params) => {
 
 const routes = (BASE_URL) => {
   return {
-    USER: ({ userId, authorId, route, referralCode, invitedBy, page }) => {
+    USER: ({
+      userId,
+      authorId,
+      route,
+      referralCode,
+      invitedBy,
+      page,
+      hubIds,
+    }) => {
       let url = BASE_URL + "user/";
 
       let params = {
@@ -69,6 +77,7 @@ const routes = (BASE_URL) => {
           referral_code: referralCode,
           invited_by: invitedBy,
           author_profile: authorId,
+          hub_ids: hubIds ? hubIds.join(",") : "",
           page,
         },
         rest: {
