@@ -252,6 +252,7 @@ function InlineCommentThreadCard({
             <div className={css(styles.responseSectionWarp)}>
               Below are responses:
               <InlineCommentThreadCardResponseSection
+                isActive={isActiveCommentCard}
                 commentData={fetchedCommentData}
                 commentThreadID={commentThreadID}
               />
