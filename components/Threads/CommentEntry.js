@@ -283,7 +283,7 @@ class CommentEntry extends React.Component {
       newReply.highlight = true;
       let replies = [...this.state.replies, newReply];
       comment.replies = replies;
-      setCount(discussionCount + 1);
+      setCount && setCount(discussionCount + 1);
       this.setState({
         revealReply: true,
         replies,
@@ -385,7 +385,7 @@ class CommentEntry extends React.Component {
     newReply.highlight = true;
     let replies = [...this.state.replies, newReply];
     comment.replies = replies;
-    setCount(discussionCount + 1);
+    setCount && setCount(discussionCount + 1);
     this.setState({
       revealReply: true,
       replies,
