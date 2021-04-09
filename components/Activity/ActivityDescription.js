@@ -6,12 +6,12 @@ import Link from "next/link";
 import { ClampedText } from "~/components/Typography";
 
 import colors from "~/config/themes/colors";
-import { getAuthorName } from "~/config/utils/";
 
 const ActivityDescription = (props) => {
   const [lines, setLines] = useState(2);
   const { activity, author, contributionType, username } = props;
   const { source, paper, content_type: contentType } = activity;
+  console.log(author);
   const { id: authorId } = author;
   const paperTitle = paper["paper_title"] || paper["title"];
 
