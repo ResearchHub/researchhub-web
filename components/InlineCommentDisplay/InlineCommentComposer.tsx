@@ -6,6 +6,7 @@ type Props = {
   isReadOnly: boolean;
   onCancel: () => void;
   onSubmit: (text: String, plainText: String) => void;
+  placeholder?: string;
   textData: any; // this is a draftjs object
 };
 
@@ -13,6 +14,7 @@ function InlineCommentComposer({
   isReadOnly,
   onCancel,
   onSubmit,
+  placeholder,
   textData,
 }: Props) {
   return (
@@ -25,7 +27,7 @@ function InlineCommentComposer({
       onCancel={onCancel}
       onSubmit={onSubmit}
       initialValue={textData}
-      placeholder={"What are your thoughts?"}
+      placeholder={placeholder || "What are your thoughts?"}
       readOnly={isReadOnly}
       smallToolBar={true}
     />
