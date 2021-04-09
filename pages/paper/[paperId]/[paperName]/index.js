@@ -591,29 +591,24 @@ const Paper = (props) => {
               </a>
             </Waypoint>
           </div>
+          <InlineCommentThreadsDisplayBar isShown={shouldShowInlineComment} />
           <div className={css(styles.sidebar)}>
-            {shouldShowInlineComment ? (
-              <div className={css(styles.inlineSticky)}>
-                <InlineCommentThreadsDisplayBar />
-              </div>
-            ) : (
-              <React.Fragment>
-                <PaperSideColumn
-                  authors={getAllAuthors()}
-                  paper={paper}
-                  hubs={paper.hubs}
-                  paperId={paperId}
-                />
-                <PaperSections
-                  activeTab={activeTab} // for paper page tabs
-                  setActiveTab={setActiveTab}
-                  activeSection={activeSection} // for paper draft sections
-                  setActiveSection={setActiveSection}
-                  paperDraftSections={paperDraftSections}
-                  paperDraftExists={paperDraftExists}
-                />
-              </React.Fragment>
-            )}
+            <React.Fragment>
+              <PaperSideColumn
+                authors={getAllAuthors()}
+                paper={paper}
+                hubs={paper.hubs}
+                paperId={paperId}
+              />
+              <PaperSections
+                activeTab={activeTab} // for paper page tabs
+                setActiveTab={setActiveTab}
+                activeSection={activeSection} // for paper draft sections
+                setActiveSection={setActiveSection}
+                paperDraftSections={paperDraftSections}
+                paperDraftExists={paperDraftExists}
+              />
+            </React.Fragment>
           </div>
         </div>
       </div>
