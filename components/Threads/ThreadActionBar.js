@@ -36,6 +36,7 @@ class ThreadActionBar extends React.Component {
           editing={this.state.showReplyBox}
           initialValue={this.props.initialValue}
           hasHeader={this.props.hasHeader}
+          mediaOnly={this.props.mediaOnly}
         />
       </div>
     );
@@ -95,7 +96,7 @@ class ThreadActionBar extends React.Component {
   renderEditButton = () => {
     const { toggleEdit, editing, small } = this.props;
 
-    let classNames = [styles.commentCountContainer];
+    let classNames = [];
 
     if (small) {
       classNames.push(styles.smallReply);
@@ -134,17 +135,16 @@ class ThreadActionBar extends React.Component {
   formatCommentCount = (count, isComment) => {
     const suffix = isComment
       ? count === 0 || count > 1
-        ? "Replie"
+        ? "Replies"
         : "Reply"
-      : "Comment";
-    const s = "s";
+      : "Comments";
 
     if (count < 1 || doesNotExist(count)) {
-      return `${suffix}${s} (${count})`;
+      return `${suffix} (${count})`;
     } else if (count < 2) {
       return `${suffix} (${count})`;
     }
-    return `${suffix}${s} (${count})`;
+    return `${suffix} (${count})`;
   };
 
   toggleReplyBox = () => {
@@ -154,8 +154,7 @@ class ThreadActionBar extends React.Component {
   };
 
   render() {
-    const { hostname, threadPath, title, small, isRemoved } = this.props;
-    const shareUrl = hostname + threadPath;
+    const { small, isRemoved } = this.props;
 
     if (isRemoved) {
       return (
@@ -313,7 +312,6 @@ const styles = StyleSheet.create({
   revealTextEditor: {
     height: "unset",
     opacity: 1,
-    border: "solid 1px #AAAAAA",
     borderRadius: 3,
     backgroundColor: "#FAFAFA",
     cursor: "default",

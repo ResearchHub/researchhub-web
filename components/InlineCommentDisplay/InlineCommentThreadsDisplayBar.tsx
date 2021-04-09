@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
   inlineCommentThreadsDisplayBar: {
     height: "100%",
     maxHeight: 1000,
-    overflowY: "auto",
     width: 350,
   },
   marginLeft8: {
