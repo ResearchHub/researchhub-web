@@ -156,6 +156,9 @@ export function formatJournalName(journal) {
     case "BMC Medical Genomics":
       return "biomedcentral";
     default:
+      if (journal && journal.includes("psyarxiv")) {
+        return "psyarxiv";
+      }
       if (journal && (journal.includes("abs") || journal.includes("arxiv"))) {
         return "arxiv";
       }
@@ -172,6 +175,7 @@ export function getJournalImagePath(source) {
     case "googleapis":
     case "informa":
       return src + ".webp";
+    case "psyarxiv":
     case "biomedcentral":
     case "sage":
     case "sciencedirect":
