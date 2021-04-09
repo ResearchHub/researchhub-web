@@ -75,15 +75,12 @@ const ActivityList = (props) => {
   useEffect(() => {
     const fetchActivityFeed = async () => {
       setIsFetching(true);
-      console.log(feed);
-      console.log(hub);
       const hubIds =
         feed === 0
           ? subscribedHubs.map((hub) => hub.id)
           : hub
           ? [hub.id]
           : null;
-      console.log(hubIds);
       const resData = await fetchLatestActivity({ hubIds });
       if (!resData.error) {
         setData(resData);
