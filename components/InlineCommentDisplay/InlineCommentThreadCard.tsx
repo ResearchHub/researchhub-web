@@ -92,6 +92,7 @@ function InlineCommentThreadCard({
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
+  const [shouldRefetch, setShouldRefetch] = useState<boolean>(false);
   const router = useRouter();
   const fetchedCommentData = fetchedTreadData.comments || [];
 
@@ -100,21 +101,25 @@ function InlineCommentThreadCard({
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
+    if (
+      shouldRefetch ||
+      (!isCommentDataFetched && isCommentSaved && paperID !== null)
+    ) {
       inlineThreadFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
           setFecthedThreadData(result);
-          setIsThreadReadOnly(true);
           setIsCommentDataFetched(true);
+          setIsThreadReadOnly(true);
+          setShouldRefetch(false);
         },
         onError: (_): void => {
           setIsCommentDataFetched(true);
         },
       });
     }
-  }, [commentThreadID, fetchedTreadData, paperID]);
+  }, [commentThreadID, fetchedTreadData, paperID, shouldRefetch]);
 
   const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
@@ -241,26 +246,26 @@ function InlineCommentThreadCard({
           <div className={css(styles.textWrap)}>
             <InlineCommentContextTitle title={formattedHighlightTxt} />
           </div>
+          Below is THREAD:
           <div className={css(styles.threadComposerContainer)}>
-            {isActiveCommentCard && (
-              <InlineCommentComposer
-                isReadOnly={isThreadReadOnly}
-                onCancel={(): void =>
-                  cleanupStoreAndCloseDisplay({ inlineCommentStore })
-                }
-                onSubmit={onSubmitThread}
-                textData={fetchedTreadData ? fetchedTreadData.text : null}
-              />
-            )}
+            <InlineCommentComposer
+              isReadOnly={isThreadReadOnly}
+              onCancel={(): void =>
+                cleanupStoreAndCloseDisplay({ inlineCommentStore })
+              }
+              onSubmit={onSubmitThread}
+              textData={fetchedTreadData ? fetchedTreadData.text : null}
+            />
           </div>
           {commentThreadID != null && (
             <div className={css(styles.responseSectionWarp)}>
-              Below are responses:
+              Below are responses (click me to see composer):
               <InlineCommentThreadCardResponseSection
                 commentData={fetchedCommentData}
                 commentThreadID={commentThreadID}
+                currBlockKey={blockKey}
                 isActive={isActiveCommentCard}
-                paperID={paperID}
+                setShouldRefetch={setShouldRefetch}
               />
             </div>
           )}

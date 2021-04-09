@@ -1,28 +1,50 @@
 import { css, StyleSheet } from "aphrodite";
-import { ID } from "../PaperDraft/undux/PaperDraftUnduxStore";
+import PaperDraftUnduxStore, {
+  ID,
+} from "../PaperDraft/undux/PaperDraftUnduxStore";
 import React, { ReactElement, ReactFragment, useEffect, useState } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
 import {
   emptyFunction,
   silentEmptyFnc,
 } from "../PaperDraft/util/PaperDraftUtils";
-import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
+  getSavedInlineCommentsGivenBlockKey,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
+import { EditorState } from "draft-js";
+import { connect } from "react-redux";
+import { MessageActions } from "../../redux/message";
+import { ModalActions } from "../../redux/modals";
 
 type Props = {
-  auth: any;
+  auth: any /* redux */;
+  showMessage: any /* redux */;
+  setMessage: any /* redux function to set a message */;
+  openRecaptchaPrompt: any /* redux function to open recaptcha */;
   commentData: Array<any>;
   commentThreadID: ID;
+  currBlockKey: ID;
   isActive?: boolean;
+  setShouldRefetch: (shouldRefetch: boolean) => void;
 };
 
-export default function InlineCommentThreadCardResponseSection({
+function InlineCommentThreadCardResponseSection({
+  auth,
+  showMessage,
+  setMessage,
+  openRecaptchaPrompt: _openRecaptchaPrompt,
   commentData,
   commentThreadID,
+  currBlockKey,
   isActive = false,
+  setShouldRefetch,
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const [composedResponse, setComposedResponse] = useState<any>(null);
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
+  const paperID = inlineCommentStore.get("paperID");
+
   const [shouldShowComposer, setShouldShowComposer] = useState<boolean>(
     isActive
   );
@@ -30,6 +52,35 @@ export default function InlineCommentThreadCardResponseSection({
   useEffect((): void => {
     setShouldShowComposer(isActive);
   }, [isActive]);
+
+  const onSubmitResponses = (text: string, plainText: string) => {
+    showMessage({ load: true, show: true });
+    saveCommentToBackend({
+      auth,
+      onError: emptyFunction,
+      onSuccess: ({ threadID }: { threadID: ID }): void => {
+        inlineCommentStore.set("animatedTextCommentID")(null);
+        inlineCommentStore.set("displayableInlineComments")(
+          getSavedInlineCommentsGivenBlockKey({
+            blockKey: String(currBlockKey),
+            editorState:
+              paperDraftStore.get("editorState") || EditorState.createEmpty(),
+          })
+        );
+        setShouldRefetch(true);
+        inlineCommentStore.set("animatedTextCommentID")(threadID);
+      },
+      paperID,
+      params: {
+        text,
+        parent: commentThreadID,
+        plain_text: plainText,
+      },
+      setMessage,
+      showMessage,
+      threadID: commentThreadID,
+    });
+  };
 
   const commentResponses =
     commentData.length > 0
@@ -46,29 +97,18 @@ export default function InlineCommentThreadCardResponseSection({
         })
       : null;
 
-  const paperID = inlineCommentStore.get("paperID");
   return (
     <div className={css(styles.inlineCommentThreadCardResponseSection)}>
       {shouldShowComposer && (
         <div className={css(styles.threadResponseComposerWrap)}>
           <InlineCommentComposer
             isReadOnly={false}
-            onCancel={silentEmptyFnc}
-            onSubmit={(text: string, plainText: string) => {
-              saveCommentToBackend({
-                onSuccess: silentEmptyFnc,
-                onError: emptyFunction,
-                paperID,
-                params: {
-                  text,
-                  parent: commentThreadID,
-                  plain_text: plainText,
-                },
-                threadID: commentThreadID,
-              });
+            onCancel={(): void => {
+              cleanupStoreAndCloseDisplay({ inlineCommentStore });
             }}
+            onSubmit={onSubmitResponses}
             placeholder={"Respond to comment above"}
-            textData={composedResponse}
+            textData={null} /* initial response composer should be empty */
           />
         </div>
       )}
@@ -97,3 +137,18 @@ const styles = StyleSheet.create({
   threadResponsesWrap: { display: "flex", flexDirection: "column" },
   threadResponseComposerWrap: { marginBottom: 8 },
 });
+
+const mapStateToProps = ({ auth }: any) => ({
+  auth,
+});
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(InlineCommentThreadCardResponseSection);
