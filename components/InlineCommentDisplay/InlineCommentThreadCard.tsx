@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
 
     marginTop: 20,
-    width: 400,
+    width: "100%",
     padding: "20px 15px",
     minHeight: 100,
   },

@@ -8,7 +8,6 @@ import InlineCommentUnduxStore, {
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 import React, { ReactElement } from "react";
 // @ts-ignore
-import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 type Props = { isShown: boolean };
 
@@ -32,84 +31,22 @@ export default function InlineCommentThreadsDisplayBar({
   );
 
   return (
-    <SlideMenu
-      top
-      isOpen={isShown}
-      styles={burgerMenuStyle}
-      customBurgerIcon={false}
-    >
-      <div className={css(styles.inlineCommentThreadsDisplayBar)}>
-        <div className={css(styles.header)}>
-          <div
-            className={css(styles.backButton)}
-            onClick={(): void =>
-              cleanupStoreAndCloseDisplay({ inlineCommentStore })
-            }
-          >
-            {icons.arrowRight}
-            <span className={css(styles.marginLeft8)}>Hide</span>
-          </div>
+    <div className={css(styles.inlineCommentThreadsDisplayBar)}>
+      <div className={css(styles.header)}>
+        <div
+          className={css(styles.backButton)}
+          onClick={(): void =>
+            cleanupStoreAndCloseDisplay({ inlineCommentStore })
+          }
+        >
+          {icons.arrowRight}
+          <span className={css(styles.marginLeft8)}>Hide</span>
         </div>
-        {commentThreadCards}
       </div>
-    </SlideMenu>
+      {commentThreadCards}
+    </div>
   );
 }
-
-const burgerMenuStyle = {
-  bmBurgerBars: {
-    background: "#373a47",
-  },
-  bmBurgerBarsHover: {
-    background: "#a90000",
-  },
-  bmCrossButton: {
-    height: "26px",
-    width: "26px",
-    color: "#FFF",
-  },
-  bmCross: {
-    background: "#bdc3c7",
-  },
-  bmMenuWrap: {
-    position: "fixed",
-    width: "100%",
-    zIndex: 3147480000,
-    height: "unset",
-  },
-  bmMenu: {
-    background: "#fff",
-    fontSize: "1.15em",
-  },
-  bmMorphShape: {
-    fill: "#373a47",
-  },
-  bmItemList: {
-    color: "#b8b7ad",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    height: "100%",
-    overflow: "auto",
-    borderTop: "1px solid rgba(255,255,255,.2)",
-    paddingTop: 16,
-    ":focus": {
-      outline: "none",
-    },
-  },
-  bmItem: {
-    display: "inline-block",
-    margin: "15px 0 15px 0",
-    color: "#FFF",
-    ":focus": {
-      outline: "none",
-    },
-  },
-  bmOverlay: {
-    background: "#fff",
-  },
-};
 
 const styles = StyleSheet.create({
   backButton: {
@@ -142,7 +79,11 @@ const styles = StyleSheet.create({
   inlineCommentThreadsDisplayBar: {
     height: "100%",
     maxHeight: 1000,
-    width: 350,
+    width: 400,
+
+    "@media only screen and (max-width: 1023px)": {
+      width: 300,
+    },
     ":focus": {
       outline: "none",
     },
