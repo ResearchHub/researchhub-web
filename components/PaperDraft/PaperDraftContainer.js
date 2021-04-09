@@ -1,100 +1,60 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Helpers } from "@quantfive/js-web-config";
-import { fetchPaperDraft } from "~/config/fetch";
-import { CompositeDecorator, EditorState } from "draft-js";
+import { emptyFunction } from "./util/PaperDraftUtils";
+import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
-  getHandleOnTab,
 } from "./util/PaperDraftTextEditorUtil";
-import {
-  formatBase64ToEditorState,
-  formatRawJsonToEditorState,
-} from "./util/PaperDraftUtils";
-import WaypointSection from "./WaypointSection";
+import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
+import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
+import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
 
-// strategy used for the decorator
-const findWayPointEntity = (seenEntityKeys, setSeenEntityKeys) => (
-  contentBlock,
-  callback,
-  contentState
-) => {
-  contentBlock.findEntityRanges((character) => {
-    const entityKey = character.getEntity();
-    if (!Boolean(seenEntityKeys[entityKey])) {
-      setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
-      return (
-        entityKey !== null &&
-        contentState.getEntity(entityKey).getType() === "WAYPOINT"
-      );
-    }
-  }, callback);
-};
+function getIsGoodTimeInterval(unixTimeInMilliSec) {
+  return unixTimeInMilliSec === null
+    ? true
+    : Date.now() - unixTimeInMilliSec > 500; // 300-500 millisec is ui convention
+}
 
-const getDecorator = ({
-  seenEntityKeys,
-  setActiveSection,
-  setSeenEntityKeys,
-}) =>
-  new CompositeDecorator([
-    {
-      component: (props) => (
-        <WaypointSection {...props} onSectionEnter={setActiveSection} />
-      ),
-      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
-    },
-  ]);
-
-function paperFetchHook({
-  decorator,
-  paperId,
-  setEditorState,
-  setInitEditorState,
-  setIsFetching,
-  setPaperDraftExists,
-  setPaperDraftSections,
+function getIsReadyForNewInlineComment({
+  editorState,
+  inlineCommentStore,
+  isDraftInEditMode,
 }) {
-  const handleFetchSuccess = (data) => {
-    const onFormatSuccess = ({ sections }) => {
-      /* logical ordering */
-      setPaperDraftSections(sections);
-      setPaperDraftExists(true);
-      setIsFetching(false);
-    };
-    let digestibleFormat = null;
-    if (typeof data !== "string") {
-      digestibleFormat = formatRawJsonToEditorState({
-        rawJson: data,
-        decorator,
-        onSuccess: onFormatSuccess,
-      });
-    } else {
-      digestibleFormat = formatBase64ToEditorState({
-        base64: data,
-        decorator,
-        onSuccess: onFormatSuccess,
-      });
-    }
-    setInitEditorState(digestibleFormat);
-    setEditorState(digestibleFormat);
-  };
+  const currSelection = editorState.getSelection();
+  const isGoodTimeInterval = getIsGoodTimeInterval(
+    inlineCommentStore.get("lastPromptRemovedTime")
+  );
+  const hasActiveCommentPrompt =
+    inlineCommentStore.get("promptedEntityKey") != null;
+  return (
+    !isDraftInEditMode &&
+    isGoodTimeInterval &&
+    !hasActiveCommentPrompt &&
+    currSelection != null &&
+    !currSelection.isCollapsed()
+  );
+}
 
-  const handleFetchError = (_err) => {
-    setPaperDraftExists(false);
-    setPaperDraftSections([]);
-    setIsFetching(false);
-  };
-
-  fetchPaperDraft({ paperId })
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then(handleFetchSuccess)
-    .catch(handleFetchError);
+function getShouldSavePaperSilently({ isDraftInEditMode, paperDraftStore }) {
+  const isGoodTimeInterval = getIsGoodTimeInterval(
+    paperDraftStore.get("lastSavePaperTime")
+  );
+  return (
+    !isDraftInEditMode &&
+    isGoodTimeInterval &&
+    paperDraftStore.get("paperID") != null &&
+    paperDraftStore.get("shouldSavePaper")
+  );
 }
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
-function PaperDraftContainer({
+export default function PaperDraftContainer({
   isViewerAllowedToEdit,
   paperDraftExists,
   paperDraftSections,
@@ -103,19 +63,34 @@ function PaperDraftContainer({
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const editorState = paperDraftStore.get("editorState");
+  const initEditorState = paperDraftStore.get("initEditorState");
+  const setEditorState = (updatedEditorState) =>
+    paperDraftStore.set("editorState")(updatedEditorState);
+  const setInitEditorState = (updatedInitStore) =>
+    paperDraftStore.set("initEditorState")(updatedInitStore);
+
+  const [isDraftInEditMode, setIsDraftInEditMode] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
-  const [initEditorState, setInitEditorState] = useState(
-    EditorState.createEmpty()
-  );
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-  const decorator = useMemo(
-    () => getDecorator({ seenEntityKeys, setSeenEntityKeys, setActiveSection }),
-    [seenEntityKeys, setSeenEntityKeys, setActiveSection]
-  );
 
-  useEffect(
+  const decorator = useMemo(
     () =>
+      getDecorator({
+        seenEntityKeys,
+        setActiveSection,
+        setSeenEntityKeys,
+      }),
+    [seenEntityKeys, setActiveSection, setSeenEntityKeys]
+  );
+  useEffect(
+    /* backend fetch */
+    () => {
+      paperDraftStore.set("paperID")(paperId);
+      inlineCommentStore.set("paperID")(paperId);
+      /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
       paperFetchHook({
         decorator,
         paperId,
@@ -124,37 +99,85 @@ function PaperDraftContainer({
         setIsFetching,
         setPaperDraftExists,
         setPaperDraftSections,
-      }),
+      });
+    },
     [paperId] /* intentionally hard enforcing only on paperID. */
   );
 
-  return (
-    <div>
-      <PaperDraft
-        textEditorProps={{
-          blockStyleFn: getBlockStyleFn,
+  const shouldSavePaperSilently = getShouldSavePaperSilently({
+    isDraftInEditMode,
+    paperDraftStore,
+  });
+  useEffect(() => {
+    if (shouldSavePaperSilently) {
+      savePaperSilentlyHook({
+        editorState,
+        onError: (error) => emptyFunction(error),
+        onSuccess: () => {
+          paperDraftStore.set("lastSavePaperTime")(Date.now());
+          paperDraftStore.set("shouldSavePaper")(false);
+          setInitEditorState(editorState);
+        },
+        paperDraftSections,
+        paperId,
+      });
+    }
+  }, [shouldSavePaperSilently]);
+
+  const isReadyForNewInlineComment = getIsReadyForNewInlineComment({
+    editorState,
+    inlineCommentStore,
+    isDraftInEditMode,
+  });
+  useEffect(() => {
+    /* listener to deal with editor selection & inline commenting */
+    if (isReadyForNewInlineComment) {
+      cleanupStoreAndCloseDisplay({
+        inlineCommentStore,
+      });
+      const updatedEditorState = handleBlockStyleToggle({
+        editorState,
+        onInlineCommentPrompt: (entityKey) =>
+          inlineCommentStore.set("promptedEntityKey")(entityKey),
+        toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
+      });
+      setEditorState(updatedEditorState);
+    }
+  }, [editorState, isReadyForNewInlineComment]);
+
+  const handleKeyCommand = useCallback(
+    ({ editorState, setEditorState }) => {
+      if (isDraftInEditMode) {
+        return getHandleKeyCommand({
           editorState,
-          handleKeyCommand: getHandleKeyCommand({
-            editorState,
-            setEditorState,
-          }),
-          initEditorState,
-          onChange: setEditorState,
-          onTab: getHandleOnTab({
-            editorState,
-            setEditorState,
-          }),
-          setInitEditorState,
-          spellCheck: true,
-        }}
-        isFetching={isFetching}
-        isViewerAllowedToEdit={isViewerAllowedToEdit}
-        paperDraftExists={paperDraftExists}
-        paperDraftSections={paperDraftSections}
-        paperId={paperId}
-      />
-    </div>
+          setEditorState,
+        });
+      } else {
+        return () => {};
+      }
+    },
+    [editorState, isDraftInEditMode, setEditorState]
+  );
+
+  return (
+    <PaperDraft
+      textEditorProps={{
+        blockStyleFn: getBlockStyleFn,
+        editorState,
+        handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
+        initEditorState,
+        isInEditMode: isDraftInEditMode,
+        onChange: setEditorState,
+        setInitEditorState,
+        setIsInEditMode: setIsDraftInEditMode,
+        spellCheck: isDraftInEditMode,
+      }}
+      inlineCommentStore={inlineCommentStore}
+      isFetching={isFetching}
+      isViewerAllowedToEdit={isViewerAllowedToEdit}
+      paperDraftExists={paperDraftExists}
+      paperDraftSections={paperDraftSections}
+      paperId={paperId}
+    />
   );
 }
-
-export default PaperDraftContainer;

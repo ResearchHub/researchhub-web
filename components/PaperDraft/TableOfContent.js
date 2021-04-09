@@ -11,7 +11,11 @@ const TableOfContent = (props) => {
   const renderContent = () => {
     return paperDraftSections.map((section, index) => {
       return (
-        <a href={`#${section}`} className={css(styles.link)}>
+        <a
+          href={`#${section}`}
+          key={`paper_section_${index}`}
+          className={css(styles.link)}
+        >
           {`${index + 1}. `}
           <span className={css(styles.section)}>{section}</span>
         </a>
@@ -29,6 +33,7 @@ const TableOfContent = (props) => {
 const styles = StyleSheet.create({
   root: {
     display: "none",
+    marginBottom: 16,
     "@media only screen and (max-width: 767px)": {
       display: "block",
     },

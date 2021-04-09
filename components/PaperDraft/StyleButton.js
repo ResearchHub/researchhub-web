@@ -1,22 +1,13 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
-
-// Config
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
+import React from "react";
 
 const StyleButton = (props) => {
-  const { onClick, label, active, style } = props;
-
-  const onToggle = (event) => {
-    event.stopPropagation();
-    onClick(style);
-  };
-
-  const className = [styles.button, active && styles.active];
-
+  const { isStyleActive, label, onClick } = props;
   return (
-    <span className={css(className)} onClick={onToggle}>
+    <span
+      className={css([styles.button, isStyleActive && styles.active])}
+      onClick={onClick}
+    >
       {label}
     </span>
   );
