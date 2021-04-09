@@ -13,10 +13,6 @@ type ScrollToTargetElFncReturn = (event: SyntheticEvent) => void;
 
 function isElemntWithinViewPort(element: HTMLElement): boolean {
   var rect = element.getBoundingClientRect();
-  const result =
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= document.documentElement.clientHeight;
   return (
     rect.top >= 0 &&
     rect.left >= 0 &&
