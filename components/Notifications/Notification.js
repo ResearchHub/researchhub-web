@@ -23,6 +23,7 @@ class Notification extends React.Component {
       newNotif: false,
       count: null,
       fetching: true,
+      notifications: [],
     };
     this.notifIcon;
     this.notifMenu;
@@ -36,6 +37,7 @@ class Notification extends React.Component {
       this.setState({
         count: this.countReadNotifications(results),
         fetching: false,
+        notifications: results,
       });
     });
   };
@@ -220,7 +222,7 @@ class Notification extends React.Component {
   };
 
   renderNotifications = () => {
-    return this.props.notifications.map((notification, index) => {
+    return this.state.notifications.map((notification, index) => {
       const action = this.formatAction(notification);
 
       if (action) {
