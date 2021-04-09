@@ -2,21 +2,26 @@ import { css, StyleSheet } from "aphrodite";
 import { ID } from "../PaperDraft/undux/PaperDraftUnduxStore";
 import React, { ReactElement, ReactFragment, useEffect, useState } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
-import icons from "../../config/themes/icons";
+import {
+  emptyFunction,
+  silentEmptyFnc,
+} from "../PaperDraft/util/PaperDraftUtils";
+import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { saveCommentToBackend } from "./api/InlineCommentCreate";
 
 type Props = {
+  auth: any;
   commentData: Array<any>;
   commentThreadID: ID;
   isActive?: boolean;
 };
-
-function emptyFunction(): void {}
 
 export default function InlineCommentThreadCardResponseSection({
   commentData,
   commentThreadID,
   isActive = false,
 }: Props): ReactElement<"div"> {
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const [composedResponse, setComposedResponse] = useState<any>(null);
   const [shouldShowComposer, setShouldShowComposer] = useState<boolean>(
     isActive
@@ -33,22 +38,35 @@ export default function InlineCommentThreadCardResponseSection({
             <InlineCommentComposer
               isReadOnly={true}
               key={`thread-response-${commentData.id}-${i}`}
-              onCancel={emptyFunction}
-              onSubmit={emptyFunction}
+              onCancel={silentEmptyFnc}
+              onSubmit={silentEmptyFnc}
               textData={commentData ? commentData.text : null}
             />
           );
         })
       : null;
 
+  const paperID = inlineCommentStore.get("paperID");
   return (
     <div className={css(styles.inlineCommentThreadCardResponseSection)}>
       {shouldShowComposer && (
         <div className={css(styles.threadResponseComposerWrap)}>
           <InlineCommentComposer
             isReadOnly={false}
-            onCancel={emptyFunction}
-            onSubmit={emptyFunction}
+            onCancel={silentEmptyFnc}
+            onSubmit={(text: string, plainText: string) => {
+              saveCommentToBackend({
+                onSuccess: silentEmptyFnc,
+                onError: emptyFunction,
+                paperID,
+                params: {
+                  text,
+                  parent: commentThreadID,
+                  plain_text: plainText,
+                },
+                threadID: commentThreadID,
+              });
+            }}
             placeholder={"Respond to comment above"}
             textData={composedResponse}
           />
