@@ -26,15 +26,18 @@ import React, {
   useState,
 } from "react";
 import { EditorState } from "draft-js";
+import {
+  getScrollToTargetElFnc,
+  getTargetInlineDraftEntityEl,
+} from "./util/InlineCommentThreadUtil";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import DiscussionEntry from "../Threads/DiscussionEntry";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
-import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
-import DiscussionEntry from "../Threads/DiscussionEntry";
 
 type Props = {
   auth: any /* redux */;
@@ -43,19 +46,6 @@ type Props = {
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
   unduxInlineComment: InlineComment;
 };
-
-function isElemntWithinViewPort(element: HTMLElement): boolean {
-  var rect = element.getBoundingClientRect();
-  const result =
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= document.documentElement.clientHeight;
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= document.documentElement.clientHeight
-  );
-}
 
 function InlineCommentThreadCard({
   auth,
@@ -165,22 +155,16 @@ function InlineCommentThreadCard({
     });
   };
 
-  const animateAndScrollToTarget = (event: SyntheticEvent) => {
-    event.stopPropagation();
-    let entityEl = document.getElementById(`inline-comment-${commentThreadID}`);
-    if (entityEl == null) {
-      entityEl = document.getElementById(`inline-comment-${entityKey}`);
-    }
-    inlineCommentStore.set("animatedEntityKey")(entityKey);
-    inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
-    if (entityEl != null && !isElemntWithinViewPort(entityEl)) {
-      entityEl.scrollIntoView({
-        behavior: "smooth",
-        block: "center",
-        inline: "center",
-      });
-    }
-  };
+  const animateAndScrollToTarget = getScrollToTargetElFnc({
+    onSuccess: (): void => {
+      inlineCommentStore.set("animatedEntityKey")(entityKey);
+      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+    },
+    targetElement: getTargetInlineDraftEntityEl({
+      commentThreadID,
+      entityKey,
+    }),
+  });
 
   const formattedHighlightTxt =
     unduxHighlightedText != null
@@ -229,7 +213,11 @@ function InlineCommentThreadCard({
               />
               {formattedHighlightTxt ? (
                 <div className={css(styles.textWrap)}>
-                  <InlineCommentContextTitle title={formattedHighlightTxt} />
+                  <InlineCommentContextTitle
+                    commentThreadID={commentThreadID}
+                    entityKey={entityKey}
+                    title={formattedHighlightTxt}
+                  />
                 </div>
               ) : null}
               <div className={css(styles.threadComposerContainer)}>
