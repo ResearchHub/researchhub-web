@@ -20,8 +20,6 @@ import { createUsername } from "../../config/utils";
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { transformReplies } from "~/redux/discussion/shims";
-import { comments } from "../../redux/discussion/shims";
 
 class CommentEntry extends React.Component {
   constructor(props) {
@@ -285,7 +283,7 @@ class CommentEntry extends React.Component {
       newReply.highlight = true;
       let replies = [...this.state.replies, newReply];
       comment.replies = replies;
-      setCount(discussionCount + 1);
+      setCount && setCount(discussionCount + 1);
       this.setState({
         revealReply: true,
         replies,
@@ -387,7 +385,7 @@ class CommentEntry extends React.Component {
     newReply.highlight = true;
     let replies = [...this.state.replies, newReply];
     comment.replies = replies;
-    setCount(discussionCount + 1);
+    setCount && setCount(discussionCount + 1);
     this.setState({
       revealReply: true,
       replies,

@@ -220,15 +220,27 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: ({ paperId, filter, page, progress, twitter, isRemoved }) => {
-      let url = BASE_URL + `paper/${paperId}/discussion/`;
+    DISCUSSION: ({
+      filter,
+      isRemoved,
+      page,
+      paperId,
+      progress,
+      source,
+      targetId,
+      twitter,
+    }) => {
+      let url =
+        targetId != null
+          ? BASE_URL + `paper/${paperId}/discussion/${targetId}`
+          : BASE_URL + `paper/${paperId}/discussion/`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
           page,
           ordering: filter,
-          source: twitter ? "twitter" : "researchhub",
-          is_removed: isRemoved ? "False" : null,
+          source: source != null ? source : twitter ? "twitter" : "researchhub",
+          is_removed: Boolean(isRemoved) ? "True" : "False",
         },
       };
       url = prepURL(url, params);
@@ -293,6 +305,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+
     THREAD_COMMENT: (paperId, threadId, page) => {
       let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
 

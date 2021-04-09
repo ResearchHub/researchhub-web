@@ -46,6 +46,7 @@ const DiscussionPostMetadata = (props) => {
     smaller,
     hideHeadline,
     containerStyle,
+    noTimeStamp,
   } = props;
 
   const alert = useAlert();
@@ -242,7 +243,7 @@ const DiscussionPostMetadata = (props) => {
             metaData={metaData}
             fetching={fetching}
           />
-          <Timestamp {...props} />
+          {noTimeStamp ? null : <Timestamp {...props} />}
           {renderDropdown()}
         </div>
         {renderHeadline()}

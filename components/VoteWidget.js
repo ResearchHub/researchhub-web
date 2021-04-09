@@ -3,7 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import { connect } from "react-redux";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -18,6 +18,10 @@ import {
   DOWNVOTE_ENUM,
 } from "../config/constants";
 import { getCurrentUserReputation, formatScore } from "../config/utils";
+
+// components
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import DiscussionActions from "../redux/discussion";
 
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
@@ -36,11 +40,22 @@ const VoteWidget = (props) => {
     promoted,
     paper,
     showPromotion,
+    postUpvotePending,
+    postUpvote,
+    paperId,
+    threadId,
+    commentId,
+    replyId,
+    postDownvote,
+    postDownvotePending,
+    comment,
   } = props;
 
-  const score = getScore(props);
+  const initialScore = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
+
+  const [score, setScore] = useState(initialScore);
 
   const [upvoteDisabled] = useState(
     permission.success &&
@@ -79,9 +94,26 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      onUpvote(e);
+      if (onUpvote) {
+        onUpvote(e);
+      } else {
+        onAfterUpvote();
+        setUpvoteSelected(true);
+        setDownvoteSelected(false);
+      }
     }
   }
+
+  const onAfterDownvote = async () => {
+    postDownvotePending();
+
+    await postDownvote(paperId, threadId, commentId, replyId);
+  };
+
+  const onAfterUpvote = async () => {
+    postUpvotePending();
+    await postUpvote(paperId, threadId, commentId, replyId);
+  };
 
   function onDownvoteClick(e) {
     if (downvoteDisabled) {
@@ -94,14 +126,15 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      onDownvote(e);
+      if (onDownVote) {
+        onDownvote(e);
+      } else {
+        onAfterDownvote();
+        setUpvoteSelected(false);
+        setDownvoteSelected(true);
+      }
     }
   }
-
-  const openPromotionInfoModal = (e) => {
-    e && e.stopPropagation();
-    dispatch(ModalActions.openPromotionInfoModal(true, paper));
-  };
 
   return (
     <Fragment>
@@ -172,15 +205,6 @@ const ScorePill = (props) => {
     showPromotion,
     horizontalView,
   } = props;
-
-  const openPromotionInfoModal = (e) => {
-    e && e.stopPropagation();
-    let reduxProps = { ...paper };
-    if (showPromotion) {
-      reduxProps.showPromotion = true;
-    }
-    dispatch(ModalActions.openPromotionInfoModal(true, reduxProps));
-  };
 
   return (
     <div className={css(styles.pillContainer)}>
@@ -355,4 +379,14 @@ const styles = StyleSheet.create({
 });
 
 export { ScorePill };
-export default VoteWidget;
+const mapDispatchToProps = {
+  postUpvotePending: DiscussionActions.postUpvotePending,
+  postUpvote: DiscussionActions.postUpvote,
+  postDownvotePending: DiscussionActions.postDownvotePending,
+  postDownvote: DiscussionActions.postDownvote,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(VoteWidget);

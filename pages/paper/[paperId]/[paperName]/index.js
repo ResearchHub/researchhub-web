@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import React, { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
@@ -8,23 +8,25 @@ import Error from "next/error";
 import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
+import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 // Components
+import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
+import InlineCommentThreadsDisplayBar from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
+import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
+import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
+import PaperPageCard from "~/components/PaperPageCard";
+import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
+import PaperSections from "~/components/Paper/SideColumn/PaperSections";
+import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
-import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-// import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
-import PaperPageCard from "~/components/PaperPageCard";
+import PaperBanner from "~/components/Paper/PaperBanner.js";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
-import PaperSections from "~/components/Paper/SideColumn/PaperSections";
-import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
+import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
-import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
-import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -33,6 +35,10 @@ import { AuthActions } from "~/redux/auth";
 import VoteActions from "~/redux/vote";
 import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
+
+// Undux
+import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxStore";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -53,7 +59,6 @@ import {
   getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
-import PaperBanner from "../../../../components/Paper/PaperBanner";
 
 const isServer = () => typeof window === "undefined";
 
@@ -419,7 +424,9 @@ const Paper = (props) => {
   function onSectionEnter(index) {
     activeTab !== index && setActiveTab(index);
   }
-
+  const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
+  const shouldShowInlineComment =
+    inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
@@ -585,26 +592,111 @@ const Paper = (props) => {
               </a>
             </Waypoint>
           </div>
+          <div className={css(styles.mobile)}>
+            <SlideMenu
+              right
+              width={"100%"}
+              isOpen={shouldShowInlineComment}
+              styles={burgerMenuStyle}
+              customBurgerIcon={false}
+            >
+              <InlineCommentThreadsDisplayBar
+                isShown={shouldShowInlineComment}
+              />
+            </SlideMenu>
+          </div>
           <div className={css(styles.sidebar)}>
-            <PaperSideColumn
-              authors={getAllAuthors()}
-              paper={paper}
-              hubs={paper.hubs}
-              paperId={paperId}
-            />
-            <PaperSections
-              activeTab={activeTab} // for paper page tabs
-              setActiveTab={setActiveTab}
-              activeSection={activeSection} // for paper draft sections
-              setActiveSection={setActiveSection}
-              paperDraftSections={paperDraftSections}
-              paperDraftExists={paperDraftExists}
-            />
+            {shouldShowInlineComment ? (
+              <div className={css(styles.inlineSticky)}>
+                <InlineCommentThreadsDisplayBar />
+              </div>
+            ) : (
+              <React.Fragment>
+                <PaperSideColumn
+                  authors={getAllAuthors()}
+                  paper={paper}
+                  hubs={paper.hubs}
+                  paperId={paperId}
+                />
+                <PaperSections
+                  activeTab={activeTab} // for paper page tabs
+                  setActiveTab={setActiveTab}
+                  activeSection={activeSection} // for paper draft sections
+                  setActiveSection={setActiveSection}
+                  paperDraftSections={paperDraftSections}
+                  paperDraftExists={paperDraftExists}
+                />
+              </React.Fragment>
+            )}
           </div>
         </div>
       </div>
     </div>
   );
+};
+
+const burgerMenuStyle = {
+  bmBurgerBars: {
+    background: "#373a47",
+  },
+  bmBurgerBarsHover: {
+    background: "#a90000",
+  },
+  bmCrossButton: {
+    height: "26px",
+    width: "26px",
+    color: "#FFF",
+    display: "none",
+    visibility: "hidden",
+  },
+  bmCross: {
+    background: "#bdc3c7",
+    display: "none",
+    visibility: "hidden",
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    top: 0,
+    zIndex: 3147480000,
+    overflowY: "auto",
+    width: "85%",
+  },
+  bmMenu: {
+    background: "#fff",
+    fontSize: "1.15em",
+    overflowY: "auto",
+    width: "100%",
+  },
+  bmMorphShape: {
+    fill: "#373a47",
+  },
+  bmItemList: {
+    color: "#b8b7ad",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    overflow: "auto",
+    borderTop: "1px solid rgba(255,255,255,.2)",
+    ":focus": {
+      outline: "none",
+    },
+  },
+  bmItem: {
+    display: "inline-block",
+    margin: "15px 0 15px 0",
+    color: "#FFF",
+    ":focus": {
+      outline: "none",
+    },
+  },
+  bmOverlay: {
+    background: "rgba(0, 0, 0, 0.3)",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
 };
 
 const fetchPaper = ({ paperId }) => {
@@ -687,6 +779,16 @@ Paper.getInitialProps = async (ctx) => {
   return props;
 };
 
+const PaperIndexWithUndux = (props) => {
+  return (
+    <PaperDraftUnduxStore.Container>
+      <InlineCommentUnduxStore.Container>
+        <Paper {...props} />
+      </InlineCommentUnduxStore.Container>
+    </PaperDraftUnduxStore.Container>
+  );
+};
+
 const styles = StyleSheet.create({
   componentWrapperStyles: {
     width: "100%",
@@ -723,6 +825,24 @@ const styles = StyleSheet.create({
       width: "80%",
       display: "table",
     },
+  },
+  desktop: {
+    display: "none",
+    "@media only screen and (min-width: 1024px)": {
+      display: "block",
+    },
+  },
+
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 1023px)": {
+      display: "block",
+      width: "100%",
+    },
+  },
+  inlineSticky: {
+    position: "sticky",
+    top: 40,
   },
   sidebar: {
     display: "table-cell",
@@ -1083,4 +1203,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Paper);
+)(PaperIndexWithUndux);

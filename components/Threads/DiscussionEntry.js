@@ -8,6 +8,7 @@ import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import CommentEntry from "./CommentEntry";
 import ThreadTextEditor from "./ThreadTextEditor";
+import InlineCommentContextTitle from "../InlineCommentDisplay/InlineCommentContextTitle";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -20,6 +21,7 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "../../config/utils";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -178,7 +180,7 @@ class DiscussionEntry extends React.Component {
       newComment.highlight = true;
       let comments = [...this.state.comments, newComment];
       data.comments = comments;
-      setCount(discussionCount + 1);
+      setCount && setCount(discussionCount + 1);
       this.setState(
         {
           comments,
@@ -356,16 +358,23 @@ class DiscussionEntry extends React.Component {
   };
 
   render() {
-    const { data, paper, hostname, path, mobileView } = this.props;
-    let commentCount =
+    const {
+      data,
+      data: { context_title: contextTitle, id: commentThreadID },
+      paper,
+      hostname,
+      path,
+      mobileView,
+    } = this.props;
+    const commentCount =
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
         : data.comment_count;
-    let date = data.created_date;
-    let title = data.title;
-    let body = data.source === "twitter" ? data.plain_text : data.text;
-    let username = createUsername(data);
-    let metaData = {
+    const date = data.created_date;
+    const title = data.title;
+    const body = data.source === "twitter" ? data.plain_text : data.text;
+    const username = createUsername(data);
+    const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
@@ -396,13 +405,17 @@ class DiscussionEntry extends React.Component {
               promoted={false}
             />
             <div
-              className={css(
-                styles.threadline,
-                this.state.revealComment && styles.activeThreadline,
-                this.state.hovered && styles.hoverThreadline
-              )}
+              className={css(styles.threadLineContainer)}
               onClick={this.toggleCommentView}
-            />
+            >
+              <div
+                className={css(
+                  styles.threadline,
+                  this.state.revealComment && styles.activeThreadline,
+                  this.state.hovered && styles.hoverThreadline
+                )}
+              />
+            </div>
           </div>
         </div>
         <div
@@ -442,6 +455,14 @@ class DiscussionEntry extends React.Component {
                     twitterUrl={data.url}
                   />
                 </div>
+                {contextTitle ? (
+                  <InlineCommentContextTitle
+                    commentThreadID={commentThreadID}
+                    entityKey={null}
+                    onSuccess={silentEmptyFnc}
+                    title={contextTitle}
+                  />
+                ) : null}
                 <div
                   className={css(
                     styles.content,
@@ -511,13 +532,21 @@ const styles = StyleSheet.create({
     height: "calc(100%)",
   },
   threadline: {
-    height: "calc(100% - 80px)",
+    height: "100%",
     width: 2,
+    paddingTop: 0,
+    paddingBottom: 0,
     backgroundColor: "#EEEFF1",
-    cursor: "pointer",
     ":hover": {
       backgroundColor: colors.BLUE(1),
     },
+  },
+  threadLineContainer: {
+    padding: 8,
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: "calc(100% - 80px)",
+    cursor: "pointer",
   },
   hoverThreadline: {
     backgroundColor: colors.BLUE(),
