@@ -77,7 +77,7 @@ class Index extends React.Component {
       return {
         slug: null,
         name: null,
-        currentHub: null,
+        currentHub,
         initialProps: { ...defaultProps },
         error: true,
       };
