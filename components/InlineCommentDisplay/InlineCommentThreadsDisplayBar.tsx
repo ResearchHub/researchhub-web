@@ -80,7 +80,6 @@ const burgerMenuStyle = {
   bmMenu: {
     background: "#fff",
     fontSize: "1.15em",
-    padding: "2.5em .6em 32px",
   },
   bmMorphShape: {
     fill: "#373a47",
