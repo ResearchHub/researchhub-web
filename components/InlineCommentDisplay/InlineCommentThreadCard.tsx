@@ -187,24 +187,6 @@ function InlineCommentThreadCard({
       ? unduxHighlightedText
       : fetchedThreadData.context_title || "";
 
-  const commentResponses =
-    commentThreadID != null && fetchedCommentData.length > 0 ? (
-      <div className={css(styles.threadResponseComposerContainer)}>
-        Below are responses:
-        {fetchedCommentData.map((commentData, i: number) => {
-          return (
-            <InlineCommentComposer
-              isReadOnly={true}
-              key={`thread-response-${commentData.id}-${i}`}
-              onCancel={silentEmptyFnc}
-              onSubmit={silentEmptyFnc}
-              textData={commentData ? commentData.text : null}
-            />
-          );
-        })}
-      </div>
-    ) : null;
-
   return (
     <div
       className={css([
@@ -221,61 +203,45 @@ function InlineCommentThreadCard({
           type={"media"}
           rows={3}
         >
-          {/* {formattedHighlightTxt ?
-            <div className={css(styles.textWrap)}>
-              <InlineCommentContextTitle title={formattedHighlightTxt} />
-            </div>
-            : null
-          } */}
-
-          <DiscussionEntry
-            data={fetchedThreadData}
-            hoverEvents={true}
-            noVoteLine={true}
-            discussionCount={fetchedCommentData.length}
-          />
-          {/* <div className={css(styles.threadComposerContainer)}>
-            <InlineCommentComposer
-              isReadOnly={isThreadReadOnly}
-              onCancel={(): void =>
-                cleanupStoreAndCloseDisplay({ inlineCommentStore })
+          {isThreadReadOnly ? (
+            <DiscussionEntry
+              data={
+                isThreadReadOnly ? fetchedThreadData : { created_by: auth.user }
               }
-              onSubmit={onSubmitThread}
-              textData={fetchedThreadData ? fetchedThreadData.text : null}
+              hoverEvents={true}
+              noVoteLine={true}
+              discussionCount={fetchedCommentData.length}
             />
-          </div>
-          <div className={css(styles.row, styles.bottom)}>
-            <ThreadActionBar
-              // count={commentCount}
-              comment={true}
-              mediaOnly={true}
-              onClick={() => setRevealReply(!revealReply)}
-              // onSubmit={this.submitReply}
-              small={true}
-              showChildrenState={revealReply}
-              // onCountHover={this.toggleHover}
-              // isRemoved={this.state.removed}
-              // Editing
-              // editing={this.state.editing}
-              // toggleEdit={this.state.canEdit && this.toggleEdit}
-              // hideReply={comment.source === "twitter"}
-            />
-          </div>
-          {
-            fetchedCommentData.map((comment, i) => {
-              return (
-                <CommentEntry
-                  data={comment}
-                  key={`comment_${comment.id}`}
-                  comment={comment}
-                  index={i}
-                  // mobileView={this.props.mobileView}
-                  discussionCount={fetchedCommentData.length}
-                  // setCount={setCount}
+          ) : (
+            <div>
+              <DiscussionPostMetadata
+                authorProfile={auth.user.author_profile} // @ts-ignore
+                data={{
+                  created_by: auth.user,
+                }}
+                username={
+                  auth.user.author_profile.first_name +
+                  " " +
+                  auth.user.author_profile.last_name
+                }
+                noTimeStamp={true}
+                smaller={true}
+              />
+              {formattedHighlightTxt ? (
+                <div className={css(styles.textWrap)}>
+                  <InlineCommentContextTitle title={formattedHighlightTxt} />
+                </div>
+              ) : null}
+              <div className={css(styles.threadComposerContainer)}>
+                <InlineCommentComposer
+                  isReadOnly={false}
+                  onCancel={cleanupStoreAndCloseDisplay}
+                  onSubmit={onSubmitThread}
+                  textData={fetchedCommentData ? fetchedCommentData.text : null}
                 />
-              );
-            })
-          } */}
+              </div>
+            </div>
+          )}
         </ReactPlaceholder>
       </ColumnContainer>
     </div>
