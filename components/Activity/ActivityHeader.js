@@ -1,13 +1,9 @@
-import React, { useState, Fragment } from "react";
-import { connect } from "react-redux";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import Link from "next/link";
 
 // import AuthorAvatar from "../AuthorAvatar";
 import ActivityAvatar from "./ActivityAvatar";
 import ActivityDescription from "./ActivityDescription";
-import { ClampedText } from "~/components/Typography";
 
 import colors from "~/config/themes/colors";
 import { getAuthorName } from "~/config/utils/";
@@ -16,8 +12,8 @@ const ActivityHeader = ({ activity }) => {
   const { contribution_type: contributionType } = activity;
 
   const user = getUser();
-  const author = user["author_profile"];
-  const username = getAuthorName(author);
+  const author = user ? user["author_profile"] : null;
+  const username = author ? getAuthorName(author) : null;
 
   function getUser() {
     switch (contributionType) {
@@ -26,8 +22,8 @@ const ActivityHeader = ({ activity }) => {
       case "SUBMITTER":
       case "CURATOR":
         return activity["user"];
-      // case "SUPPORTER":
-      //   return activity["created_by"];
+      case "SUPPORTER":
+        return activity["source"]["created_by"];
       default:
         break;
     }
