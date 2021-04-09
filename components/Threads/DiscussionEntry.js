@@ -21,6 +21,7 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "../../config/utils";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -458,6 +459,7 @@ class DiscussionEntry extends React.Component {
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={null}
+                    onSuccess={silentEmptyFnc}
                     title={contextTitle}
                   />
                 ) : null}
