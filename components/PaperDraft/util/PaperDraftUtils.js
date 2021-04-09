@@ -127,6 +127,8 @@ export function emptyFunction(message) {
   }
 }
 
+export function silentEmptyFnc() {}
+
 export const formatBase64ToEditorState = (payload) => {
   const {
     base64 = "",

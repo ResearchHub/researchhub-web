@@ -5,7 +5,7 @@ import TextEditor from "../TextEditor";
 type Props = {
   isReadOnly: boolean;
   onCancel: () => void;
-  onSubmit: (text: String, plainText: String) => void;
+  onSubmit: (text: string, plainText: string) => void;
   placeholder?: string;
   textData: any; // this is a draftjs object
 };
