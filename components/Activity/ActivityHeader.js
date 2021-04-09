@@ -26,8 +26,8 @@ const ActivityHeader = ({ activity }) => {
       case "SUBMITTER":
       case "CURATOR":
         return activity["user"];
-      case "SUPPORTER":
-        return source["created_by"];
+      // case "SUPPORTER":
+      //   return activity["created_by"];
       default:
         break;
     }
