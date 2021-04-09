@@ -1,14 +1,38 @@
 import { css, StyleSheet } from "aphrodite";
 import colors from "../../config/themes/colors";
 import React, { ReactElement } from "react";
+import {
+  getScrollToTargetElFnc,
+  getTargetInlineDraftEntityEl,
+} from "./util/InlineCommentThreadUtil";
+import InlineCommentUnduxStore, {
+  ID,
+} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
-type Props = { title: string };
+type Props = { commentThreadID: ID; entityKey: ID; title: string };
 
 export default function InlineCommentContextTitle({
+  commentThreadID,
+  entityKey,
   title,
 }: Props): ReactElement<"div"> {
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const animateAndScrollToTarget = getScrollToTargetElFnc({
+    onSuccess: (): void => {
+      inlineCommentStore.set("animatedEntityKey")(entityKey);
+      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+    },
+    targetElement: getTargetInlineDraftEntityEl({
+      commentThreadID,
+      entityKey,
+    }),
+  });
   return (
-    <div className={css(styles.headerHighlightedTextContainer)}>
+    <div
+      className={css(styles.headerHighlightedTextContainer)}
+      onClick={animateAndScrollToTarget}
+      role="none"
+    >
       <span className={css(styles.headerHighlightedText)}>{title}</span>
     </div>
   );

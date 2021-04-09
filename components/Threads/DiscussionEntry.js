@@ -359,7 +359,7 @@ class DiscussionEntry extends React.Component {
   render() {
     const {
       data,
-      data: { context_title: contextTitle },
+      data: { context_title: contextTitle, id: commentThreadID },
       paper,
       hostname,
       path,
@@ -455,7 +455,11 @@ class DiscussionEntry extends React.Component {
                   />
                 </div>
                 {contextTitle ? (
-                  <InlineCommentContextTitle title={contextTitle} />
+                  <InlineCommentContextTitle
+                    commentThreadID={commentThreadID}
+                    entityKey={null}
+                    title={contextTitle}
+                  />
                 ) : null}
                 <div
                   className={css(
