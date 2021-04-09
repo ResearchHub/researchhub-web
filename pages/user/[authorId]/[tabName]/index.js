@@ -908,10 +908,10 @@ const AuthorPage = (props) => {
   const renderButtons = (view = {}) => {
     return (
       <div className={css(styles.userActions)}>
-        <UserFollowButton
+        {/* <UserFollowButton
           authorId={router.query.authorId}
           authorname={`${author.first_name} ${author.last_name}`}
-        />
+        /> */}
 
         {allowEdit && (
           <div className={css(styles.editProfileButton)}>
