@@ -404,13 +404,17 @@ class DiscussionEntry extends React.Component {
               promoted={false}
             />
             <div
-              className={css(
-                styles.threadline,
-                this.state.revealComment && styles.activeThreadline,
-                this.state.hovered && styles.hoverThreadline
-              )}
+              className={css(styles.threadLineContainer)}
               onClick={this.toggleCommentView}
-            />
+            >
+              <div
+                className={css(
+                  styles.threadline,
+                  this.state.revealComment && styles.activeThreadline,
+                  this.state.hovered && styles.hoverThreadline
+                )}
+              />
+            </div>
           </div>
         </div>
         <div
@@ -450,10 +454,8 @@ class DiscussionEntry extends React.Component {
                     twitterUrl={data.url}
                   />
                 </div>
-                {contextTitle != null ? (
-                  <div className={css(styles.contextTitleWrap)}>
-                    <InlineCommentContextTitle title={contextTitle} />
-                  </div>
+                {contextTitle ? (
+                  <InlineCommentContextTitle title={contextTitle} />
                 ) : null}
                 <div
                   className={css(
@@ -524,13 +526,21 @@ const styles = StyleSheet.create({
     height: "calc(100%)",
   },
   threadline: {
-    height: "calc(100% - 80px)",
+    height: "100%",
     width: 2,
+    paddingTop: 0,
+    paddingBottom: 0,
     backgroundColor: "#EEEFF1",
-    cursor: "pointer",
     ":hover": {
       backgroundColor: colors.BLUE(1),
     },
+  },
+  threadLineContainer: {
+    padding: 8,
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: "calc(100% - 80px)",
+    cursor: "pointer",
   },
   hoverThreadline: {
     backgroundColor: colors.BLUE(),

@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import PaperDraftUnduxStore, {
   ID,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
-import React, { ReactElement, ReactFragment, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
 import {
   emptyFunction,
@@ -17,6 +17,7 @@ import { EditorState } from "draft-js";
 import { connect } from "react-redux";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
+import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 
 type Props = {
   auth: any /* redux */;
@@ -85,20 +86,37 @@ function InlineCommentThreadCardResponseSection({
   const commentResponses =
     commentData.length > 0
       ? commentData.map((commentData, i: number) => {
+          console.log(commentData);
           return (
-            <InlineCommentComposer
-              isReadOnly={true}
-              key={`thread-response-${commentData.id}-${i}`}
-              onCancel={silentEmptyFnc}
-              onSubmit={silentEmptyFnc}
-              textData={commentData ? commentData.text : null}
-            />
+            <div>
+              <DiscussionPostMetadata
+                authorProfile={commentData.created_by.author_profile} // @ts-ignore
+                data={{
+                  created_by: commentData.created_by,
+                }}
+                username={
+                  commentData.created_by.author_profile.first_name +
+                  " " +
+                  commentData.created_by.author_profile.last_name
+                }
+                noTimeStamp={true}
+                smaller={true}
+              />
+              <InlineCommentComposer
+                isReadOnly={true}
+                key={`thread-response-${commentData.id}-${i}`}
+                onCancel={silentEmptyFnc}
+                onSubmit={silentEmptyFnc}
+                textData={commentData ? commentData.text : null}
+              />
+            </div>
           );
         })
       : null;
 
   return (
     <div className={css(styles.inlineCommentThreadCardResponseSection)}>
+      <div className={css(styles.threadResponsesWrap)}>{commentResponses}</div>
       {shouldShowComposer && (
         <div className={css(styles.threadResponseComposerWrap)}>
           <InlineCommentComposer
@@ -112,7 +130,6 @@ function InlineCommentThreadCardResponseSection({
           />
         </div>
       )}
-      <div className={css(styles.threadResponsesWrap)}>{commentResponses}</div>
     </div>
   );
 }
