@@ -5,23 +5,23 @@ import {
   getScrollToTargetElFnc,
   getTargetInlineDraftEntityEl,
 } from "./util/InlineCommentThreadUtil";
-import InlineCommentUnduxStore, {
-  ID,
-} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { ID } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
-type Props = { commentThreadID: ID; entityKey: ID; title: string };
+type Props = {
+  commentThreadID: ID;
+  entityKey: ID;
+  onSuccess: () => void;
+  title: string;
+};
 
 export default function InlineCommentContextTitle({
   commentThreadID,
   entityKey,
+  onSuccess,
   title,
 }: Props): ReactElement<"div"> {
-  const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const animateAndScrollToTarget = getScrollToTargetElFnc({
-    onSuccess: (): void => {
-      inlineCommentStore.set("animatedEntityKey")(entityKey);
-      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
-    },
+    onSuccess,
     targetElement: getTargetInlineDraftEntityEl({
       commentThreadID,
       entityKey,

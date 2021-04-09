@@ -216,6 +216,12 @@ function InlineCommentThreadCard({
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={entityKey}
+                    onSuccess={(): void => {
+                      inlineCommentStore.set("animatedEntityKey")(entityKey);
+                      inlineCommentStore.set("animatedTextCommentID")(
+                        commentThreadID
+                      );
+                    }}
                     title={formattedHighlightTxt}
                   />
                 </div>
