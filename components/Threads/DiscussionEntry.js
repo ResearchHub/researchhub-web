@@ -180,7 +180,7 @@ class DiscussionEntry extends React.Component {
       newComment.highlight = true;
       let comments = [...this.state.comments, newComment];
       data.comments = comments;
-      setCount(discussionCount + 1);
+      setCount && setCount(discussionCount + 1);
       this.setState(
         {
           comments,
