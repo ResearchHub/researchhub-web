@@ -10,7 +10,6 @@ import Router from "next/router";
 // Component
 import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
-import SubscribedHubList from "../Home/SubscribedHubList";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
@@ -22,6 +21,7 @@ import EmpytFeedScreen from "../Home/EmptyFeedScreen";
 import MobileFeedTabs from "../Home/MobileFeedTabs";
 import Button from "../Form/Button";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
+import ActivityList from "~/components/Activity/ActivityList";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -134,7 +134,7 @@ class HubPage extends React.Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    window.addEventListener("scroll", this.scrollListener);
+    // window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -194,9 +194,9 @@ class HubPage extends React.Component {
     }
   };
 
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrollListener);
-  }
+  // componentWillUnmount() {
+  //   window.removeEventListener("scroll", this.scrollListener);
+  // }
 
   checkUserVotes = (papers) => {
     if (!papers || !papers.length) return;
@@ -544,9 +544,9 @@ class HubPage extends React.Component {
     );
   };
 
-  onHubSelect = (e) => {
-    this.setState({ feed: undefined });
-  };
+  // onHubSelect = (e) => {
+  //   this.setState({ feed: undefined });
+  // };
 
   voteCallback = (index, paper) => {
     const papers = [...this.state.papers];
@@ -618,7 +618,7 @@ class HubPage extends React.Component {
   };
 
   render() {
-    const { feed } = this.state;
+    const { feed, isLatestActivityShown } = this.state;
     const {
       auth,
       home,
@@ -672,18 +672,22 @@ class HubPage extends React.Component {
           </div>
           <div className={css(styles.row, styles.body)}>
             <div className={css(styles.column, styles.sidebar)}>
-              <FeedList
-                activeFeed={feed}
-                onFeedSelect={this.onFeedSelect}
-                current={home ? null : hub}
-              />
-              {/* <SubscribedHubList current={home ? null : hub} /> */}
-              <HubsList
-                current={home ? null : hub}
-                initialHubList={initialHubList}
-                onHubSelect={this.onHubSelect}
-              />
-              <LeaderboardContainer hubId={0} initialUsers={leaderboardFeed} />
+              <div className={css(styles.leftSidebarContainer)}>
+                <FeedList
+                  activeFeed={feed}
+                  onFeedSelect={this.onFeedSelect}
+                  current={home ? null : hub}
+                />
+                <HubsList
+                  current={home ? null : hub}
+                  initialHubList={initialHubList}
+                  onHubSelect={this.onHubSelect}
+                />
+                <LeaderboardContainer
+                  hubId={0}
+                  initialUsers={leaderboardFeed}
+                />
+              </div>
             </div>
             <div className={css(styles.column, styles.mainfeed)}>
               <MainHeader
@@ -721,7 +725,11 @@ class HubPage extends React.Component {
                   ready={this.state.doneFetching}
                   showLoadingAnimation
                   customPlaceholder={
-                    <PaperPlaceholder color="#efefef" rows={3} />
+                    <PaperPlaceholder
+                      color="#efefef"
+                      rows={3}
+                      style={{ width: "100%" }}
+                    />
                   }
                 >
                   {this.state.papers.length > 0 ? (
@@ -774,6 +782,21 @@ class HubPage extends React.Component {
                     <EmpytFeedScreen activeFeed={this.state.feed} />
                   )}
                 </ReactPlaceholder>
+              </div>
+            </div>
+            <div className={css(styles.column, styles.sidebar)}>
+              <div className={css(styles.rightSidebarContainer)}>
+                <ActivityList
+                  // hubIds={
+                  //   feed === 0
+                  //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
+                  //     : hub ? [hub.id] : null // Single hub or All feed
+                  // }
+                  subscribedHubs={hubState.subscribedHubs}
+                  hub={hub}
+                  hubId={hub ? hub.id : null}
+                  feed={feed}
+                />
               </div>
             </div>
           </div>
@@ -856,7 +879,8 @@ var styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     display: "table",
-    paddingLeft: 20,
+    minWidth: "100vw",
+    borderSpacing: "20px 0px",
     boxSizing: "border-box",
     "@media only screen and (min-width: 1920px)": {
       maxWidth: 1920,
@@ -868,6 +892,7 @@ var styles = StyleSheet.create({
   mainfeed: {
     minHeight: "inherit",
     height: "100%",
+    width: "100%",
     maxWidth: 1200,
     display: "table-cell",
     flexDirection: "column",
@@ -878,12 +903,12 @@ var styles = StyleSheet.create({
       width: "100%",
     },
     "@media only screen and (min-width: 900px)": {
-      paddingLeft: 25,
-      paddingRight: 25,
+      // paddingLeft: 25,
+      // paddingRight: 25,
     },
     "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 30,
-      paddingRight: 50,
+      // paddingLeft: 30,
+      // paddingRight: 50,
     },
 
     "@media only screen and (max-width: 577px)": {
@@ -909,19 +934,33 @@ var styles = StyleSheet.create({
   },
   sidebar: {
     display: "table-cell",
+    paddingBottom: 30,
+    // "@media only screen and (min-width: 1920px)": {
+    //   minWidth: 280,
+    // },
+    "@media only screen and (max-width: 990px)": {
+      display: "none",
+    },
+  },
+  leftSidebarContainer: {
+    display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
     width: 260,
     minWidth: 260,
     maxWidth: 260,
-    minHeight: "inherit",
-    paddingBottom: 30,
-    "@media only screen and (min-width: 1920px)": {
-      minWidth: 280,
-    },
-    "@media only screen and (max-width: 990px)": {
-      display: "none",
-    },
+    minHeight: "100%",
+    height: "100%",
+  },
+  rightSidebarContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: 280,
+    minWidth: 280,
+    maxWidth: 280,
+    minHeight: "100%",
+    height: "100%",
   },
   subtext: {
     whiteSpace: "initial",
@@ -1012,11 +1051,15 @@ var styles = StyleSheet.create({
    * INFINITE SCROLL
    */
   infiniteScroll: {
+    minWidth: "100%",
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
     marginTop: 10,
     paddingBottom: 30,
+    "@media only screen and (min-width: 1920px)": {
+      minWidth: 1200,
+    },
   },
   blur: {
     background:
@@ -1181,6 +1224,9 @@ var styles = StyleSheet.create({
       color: "#FFF",
       backgroundColor: colors.BLUE(),
     },
+  },
+  hidden: {
+    display: "none",
   },
 });
 
