@@ -164,4 +164,18 @@ export function updateInlineComment({
   return store;
 }
 
+export function getTargetInlineCommentOnThreadID({
+  commentThreadID: givenCommentThreadID,
+  store,
+}): InlineComment {
+  const result = store
+    .get("inlineComments")
+    .find((inlineComment: InlineComment) => {
+      const { commentThreadID } = inlineComment;
+      commentThreadID != null && commentThreadID === givenCommentThreadID;
+    });
+  debugger;
+  return result;
+}
+
 export default createConnectedStore(initialState);
