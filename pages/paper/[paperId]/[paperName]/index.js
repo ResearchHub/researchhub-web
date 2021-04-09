@@ -595,6 +595,7 @@ const Paper = (props) => {
           <div className={css(styles.mobile)}>
             <SlideMenu
               right
+              width={"100%"}
               isOpen={shouldShowInlineComment}
               styles={burgerMenuStyle}
               customBurgerIcon={false}
@@ -668,19 +669,26 @@ const burgerMenuStyle = {
     height: "26px",
     width: "26px",
     color: "#FFF",
+    display: "none",
+    visibility: "hidden",
   },
   bmCross: {
     background: "#bdc3c7",
+    display: "none",
+    visibility: "hidden",
   },
   bmMenuWrap: {
     position: "fixed",
     top: 0,
     zIndex: 3147480000,
-    height: "unset",
+    overflowY: "auto",
+    width: "85%",
   },
   bmMenu: {
-    background: "#fff",
+    background: "rgba(0, 0, 0, 0.3)",
     fontSize: "1.15em",
+    overflowY: "auto",
+    width: "100%f",
   },
   bmMorphShape: {
     fill: "#373a47",
@@ -691,10 +699,8 @@ const burgerMenuStyle = {
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    height: "100%",
     overflow: "auto",
     borderTop: "1px solid rgba(255,255,255,.2)",
-    paddingTop: 16,
     ":focus": {
       outline: "none",
     },
@@ -708,7 +714,7 @@ const burgerMenuStyle = {
     },
   },
   bmOverlay: {
-    background: "#fff",
+    background: "rgba(0, 0, 0, 0.3)",
   },
 };
 
@@ -850,6 +856,7 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 1023px)": {
       display: "block",
+      width: "100%",
     },
   },
   inlineSticky: {
