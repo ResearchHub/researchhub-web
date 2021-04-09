@@ -29,11 +29,12 @@ import { EditorState } from "draft-js";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
-import { saveThreadToBackend } from "./api/saveThreadToBackend";
+import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import InlineCommentThreadCardResponseSection from "./InlineCommentThreadCardResponseSection";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 type Props = {
   auth: any /* redux */;
@@ -129,11 +130,13 @@ function InlineCommentThreadCard({
           store: inlineCommentStore,
           updatedInlineComment,
         });
+        /* this will also trigger paper to save in the background */
         updateInlineThreadIdInEntity({
           entityKey,
           paperDraftStore,
           commentThreadID: threadID,
         });
+        inlineCommentStore.set("animatedTextCommentID")(threadID);
         inlineCommentStore.set("displayableInlineComments")(
           getSavedInlineCommentsGivenBlockKey({
             blockKey,
@@ -187,8 +190,8 @@ function InlineCommentThreadCard({
             <InlineCommentComposer
               isReadOnly={true}
               key={`thread-response-${commentData.id}-${i}`}
-              onCancel={() => {}}
-              onSubmit={() => {}}
+              onCancel={silentEmptyFnc}
+              onSubmit={silentEmptyFnc}
               textData={commentData ? commentData.text : null}
             />
           );
@@ -254,9 +257,10 @@ function InlineCommentThreadCard({
             <div className={css(styles.responseSectionWarp)}>
               Below are responses:
               <InlineCommentThreadCardResponseSection
-                isActive={isActiveCommentCard}
                 commentData={fetchedCommentData}
                 commentThreadID={commentThreadID}
+                isActive={isActiveCommentCard}
+                paperID={paperID}
               />
             </div>
           )}
