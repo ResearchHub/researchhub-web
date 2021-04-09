@@ -265,7 +265,7 @@ const styles = StyleSheet.create({
   cursurPointer: {
     cursor: "pointer",
   },
-  inlineCommentThreadCard: { cursor: "pointer", marginLeft: 12 },
+  inlineCommentThreadCard: { cursor: "pointer" },
   responseSectionWarp: {},
   threadComposerContainer: {
     alignItems: "center",
