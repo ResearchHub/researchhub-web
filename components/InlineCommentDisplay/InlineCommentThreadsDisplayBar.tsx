@@ -95,11 +95,17 @@ const burgerMenuStyle = {
     overflow: "auto",
     borderTop: "1px solid rgba(255,255,255,.2)",
     paddingTop: 16,
+    ":focus": {
+      outline: "none",
+    },
   },
   bmItem: {
     display: "inline-block",
     margin: "15px 0 15px 0",
     color: "#FFF",
+    ":focus": {
+      outline: "none",
+    },
   },
   bmOverlay: {
     background: "#fff",
@@ -138,6 +144,9 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: 1000,
     width: 350,
+    ":focus": {
+      outline: "none",
+    },
   },
   marginLeft8: {
     marginLeft: 8,
