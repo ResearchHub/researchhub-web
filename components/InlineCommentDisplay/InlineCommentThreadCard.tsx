@@ -229,7 +229,9 @@ function InlineCommentThreadCard({
               <div className={css(styles.threadComposerContainer)}>
                 <InlineCommentComposer
                   isReadOnly={false}
-                  onCancel={cleanupStoreAndCloseDisplay}
+                  onCancel={() =>
+                    cleanupStoreAndCloseDisplay({ inlineCommentStore })
+                  }
                   onSubmit={onSubmitThread}
                   textData={fetchedCommentData ? fetchedCommentData.text : null}
                 />
