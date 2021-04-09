@@ -33,6 +33,7 @@ const TableOfContent = (props) => {
 const styles = StyleSheet.create({
   root: {
     display: "none",
+    marginBottom: 16,
     "@media only screen and (max-width: 767px)": {
       display: "block",
     },
