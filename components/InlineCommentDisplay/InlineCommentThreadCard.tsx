@@ -29,7 +29,7 @@ import { EditorState } from "draft-js";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
-import { saveCommentToBackend } from "./api/InlineCommentCreate";
+import { saveThreadToBackend } from "./api/saveThreadToBackend";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import InlineCommentThreadCardResponseSection from "./InlineCommentThreadCardResponseSection";
@@ -115,10 +115,10 @@ function InlineCommentThreadCard({
     }
   }, [commentThreadID, fetchedTreadData, paperID]);
 
-  const onSubmitComment = (text: String, plainText: String): void => {
+  const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
-    saveCommentToBackend({
+    saveThreadToBackend({
       auth,
       onSuccess: ({ threadID }: { threadID: ID }): void => {
         const updatedInlineComment = {
@@ -239,14 +239,16 @@ function InlineCommentThreadCard({
             <InlineCommentContextTitle title={formattedHighlightTxt} />
           </div>
           <div className={css(styles.threadComposerContainer)}>
-            <InlineCommentComposer
-              isReadOnly={isThreadReadOnly}
-              onCancel={(): void =>
-                cleanupStoreAndCloseDisplay({ inlineCommentStore })
-              }
-              onSubmit={onSubmitComment}
-              textData={fetchedTreadData ? fetchedTreadData.text : null}
-            />
+            {isActiveCommentCard && (
+              <InlineCommentComposer
+                isReadOnly={isThreadReadOnly}
+                onCancel={(): void =>
+                  cleanupStoreAndCloseDisplay({ inlineCommentStore })
+                }
+                onSubmit={onSubmitThread}
+                textData={fetchedTreadData ? fetchedTreadData.text : null}
+              />
+            )}
           </div>
           {commentThreadID != null && (
             <div className={css(styles.responseSectionWarp)}>
