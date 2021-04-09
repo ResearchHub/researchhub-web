@@ -24,23 +24,24 @@ class Index extends React.Component {
       initialHubList: null,
     };
 
+    const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
+      .then((res) => res.json())
+      .then((body) => body.results[0]);
+
+    if (!currentHub) {
+      throw 404;
+    }
+
     if (!isServer()) {
       return {
         slug,
         name,
         initialProps: {},
+        currentHub,
       };
     }
 
     try {
-      const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
-        .then((res) => res.json())
-        .then((body) => body.results[0]);
-
-      if (!currentHub) {
-        throw 404;
-      }
-
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetch(
           API.GET_HUB_PAPERS({
@@ -76,7 +77,7 @@ class Index extends React.Component {
       return {
         slug: null,
         name: null,
-        currentHub: null,
+        currentHub,
         initialProps: { ...defaultProps },
         error: true,
       };
