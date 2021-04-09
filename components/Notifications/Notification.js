@@ -48,8 +48,10 @@ class Notification extends React.Component {
       const response = JSON.parse(wsResponse);
       const notification = response.data;
       addNotification(notification);
+      let newNotifications = [notification, ...notifications];
       this.setState({
-        count: this.countReadNotifications([notification, ...notifications]),
+        count: this.countReadNotifications(),
+        notifications: newNotifications,
       });
     }
     if (this.props.notifications.length > prevProps.notifications.length) {
