@@ -32,8 +32,8 @@ import { ModalActions } from "../../redux/modals";
 import { saveCommentToBackend } from "./api/InlineCommentCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
+import InlineCommentThreadCardResponseSection from "./InlineCommentThreadCardResponseSection";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
-import ThreadActionBar from "../Threads/ThreadActionBar";
 
 type Props = {
   auth: any /* redux */;
@@ -82,19 +82,20 @@ function InlineCommentThreadCard({
     [animatedTextCommentID, commentThreadID, isCommentSaved]
   );
 
-  const [isCommentReadOnly, setIsCommentReadOnly] = useState<boolean>(
+  const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
     isCommentSaved
   );
-  const [fetchedCommentData, setFecthedCommentData] = useState<any>({
+  const [fetchedTreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
   const router = useRouter();
+  const fetchedCommentData = fetchedTreadData.comments || [];
 
   useEffect((): void => {
-    setIsCommentReadOnly(isCommentSaved);
+    setIsThreadReadOnly(isCommentSaved);
   }, [commentThreadID]);
 
   useEffect((): void => {
@@ -103,8 +104,8 @@ function InlineCommentThreadCard({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
-          setFecthedCommentData(result);
-          setIsCommentReadOnly(true);
+          setFecthedThreadData(result);
+          setIsThreadReadOnly(true);
           setIsCommentDataFetched(true);
         },
         onError: (_): void => {
@@ -112,7 +113,7 @@ function InlineCommentThreadCard({
         },
       });
     }
-  }, [commentThreadID, fetchedCommentData, paperID]);
+  }, [commentThreadID, fetchedTreadData, paperID]);
 
   const onSubmitComment = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
@@ -175,7 +176,25 @@ function InlineCommentThreadCard({
   const formattedHighlightTxt =
     unduxHighlightedText != null
       ? unduxHighlightedText
-      : fetchedCommentData.context_title || "";
+      : fetchedTreadData.context_title || "";
+
+  const commentResponses =
+    commentThreadID != null && fetchedCommentData.length > 0 ? (
+      <div className={css(styles.threadResponseComposerContainer)}>
+        Below are responses:
+        {fetchedCommentData.map((commentData, i: number) => {
+          return (
+            <InlineCommentComposer
+              isReadOnly={true}
+              key={`thread-response-${commentData.id}-${i}`}
+              onCancel={() => {}}
+              onSubmit={() => {}}
+              textData={commentData ? commentData.text : null}
+            />
+          );
+        })}
+      </div>
+    ) : null;
 
   return (
     <div
@@ -196,19 +215,19 @@ function InlineCommentThreadCard({
           <DiscussionPostMetadata
             authorProfile={
               isCommentSaved
-                ? fetchedCommentData.created_by.author_profile
+                ? fetchedTreadData.created_by.author_profile
                 : auth.user.author_profile
             } // @ts-ignore
             data={{
               created_by: isCommentSaved
-                ? fetchedCommentData.created_by
+                ? fetchedTreadData.created_by
                 : auth.user,
             }}
             username={
               isCommentSaved
-                ? fetchedCommentData.created_by.author_profile.first_name +
+                ? fetchedTreadData.created_by.author_profile.first_name +
                   " " +
-                  fetchedCommentData.created_by.author_profile.last_name
+                  fetchedTreadData.created_by.author_profile.last_name
                 : auth.user.author_profile.first_name +
                   " " +
                   auth.user.author_profile.last_name
@@ -219,17 +238,25 @@ function InlineCommentThreadCard({
           <div className={css(styles.textWrap)}>
             <InlineCommentContextTitle title={formattedHighlightTxt} />
           </div>
-          <div className={css(styles.composerContainer)}>
+          <div className={css(styles.threadComposerContainer)}>
             <InlineCommentComposer
-              isReadOnly={isCommentReadOnly}
+              isReadOnly={isThreadReadOnly}
               onCancel={(): void =>
                 cleanupStoreAndCloseDisplay({ inlineCommentStore })
               }
               onSubmit={onSubmitComment}
-              textData={fetchedCommentData ? fetchedCommentData.text : null}
+              textData={fetchedTreadData ? fetchedTreadData.text : null}
             />
           </div>
-          <ThreadActionBar hideCount />
+          {commentThreadID != null && (
+            <div className={css(styles.responseSectionWarp)}>
+              Below are responses:
+              <InlineCommentThreadCardResponseSection
+                commentData={fetchedCommentData}
+                commentThreadID={commentThreadID}
+              />
+            </div>
+          )}
         </ReactPlaceholder>
       </ColumnContainer>
     </div>
@@ -246,13 +273,25 @@ const activeCardBump = {
 };
 
 const styles = StyleSheet.create({
-  inlineCommentThreadCard: { cursor: "pointer", marginLeft: 12 },
   activeCard: {
     animationDuration: ".5s",
     animationFillMode: "forwards",
     animationName: [activeCardBump],
   },
-  composerContainer: {
+  container: {
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+
+    marginTop: 20,
+    width: 350,
+    padding: "20px 15px",
+    minHeight: 100,
+  },
+  cursurPointer: {
+    cursor: "pointer",
+  },
+  inlineCommentThreadCard: { cursor: "pointer", marginLeft: 12 },
+  responseSectionWarp: {},
+  threadComposerContainer: {
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
@@ -260,16 +299,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     paddingTop: 4,
   },
-  container: {
-    marginTop: 20,
-    width: 350,
-    padding: "20px 15px",
-    minHeight: 100,
-    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-  },
-  cursurPointer: {
-    cursor: "pointer",
-  },
+  threadResponseComposerContainer: {},
   textWrap: {
     margin: "4px 0 8px",
   },
