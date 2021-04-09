@@ -20,7 +20,7 @@ function InlineCommentComposer({
   return (
     <TextEditor
       canEdit={true}
-      commentEditor={true}
+      commentEditor={!isReadOnly}
       commentEditorStyles={styles.commentEditorStyles}
       focusEditor={focus}
       mediaOnly={true}

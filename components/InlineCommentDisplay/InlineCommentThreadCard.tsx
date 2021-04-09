@@ -32,9 +32,9 @@ import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import InlineCommentContextTitle from "./InlineCommentContextTitle";
-import InlineCommentThreadCardResponseSection from "./InlineCommentThreadCardResponseSection";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
+import DiscussionEntry from "../Threads/DiscussionEntry";
 
 type Props = {
   auth: any /* redux */;
@@ -86,15 +86,16 @@ function InlineCommentThreadCard({
   const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
     isCommentSaved
   );
-  const [fetchedTreadData, setFecthedThreadData] = useState<any>({
+  const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
+  const [revealReply, setRevealReply] = useState<boolean>(false);
   const [shouldRefetch, setShouldRefetch] = useState<boolean>(false);
   const router = useRouter();
-  const fetchedCommentData = fetchedTreadData.comments || [];
+  const fetchedCommentData = fetchedThreadData.comments || [];
 
   useEffect((): void => {
     setIsThreadReadOnly(isCommentSaved);
@@ -119,7 +120,7 @@ function InlineCommentThreadCard({
         },
       });
     }
-  }, [commentThreadID, fetchedTreadData, paperID, shouldRefetch]);
+  }, [commentThreadID, fetchedThreadData, paperID, shouldRefetch]);
 
   const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
@@ -184,7 +185,7 @@ function InlineCommentThreadCard({
   const formattedHighlightTxt =
     unduxHighlightedText != null
       ? unduxHighlightedText
-      : fetchedTreadData.context_title || "";
+      : fetchedThreadData.context_title || "";
 
   const commentResponses =
     commentThreadID != null && fetchedCommentData.length > 0 ? (
@@ -208,7 +209,7 @@ function InlineCommentThreadCard({
     <div
       className={css([
         styles.inlineCommentThreadCard,
-        isActiveCommentCard ? styles.activeCard : null,
+        isActiveCommentCard ? styles.activeCard : styles.inactiveCard,
       ])}
       onClick={animateAndScrollToTarget}
       role="none"
@@ -220,55 +221,61 @@ function InlineCommentThreadCard({
           type={"media"}
           rows={3}
         >
-          <DiscussionPostMetadata
-            authorProfile={
-              isCommentSaved
-                ? fetchedTreadData.created_by.author_profile
-                : auth.user.author_profile
-            } // @ts-ignore
-            data={{
-              created_by: isCommentSaved
-                ? fetchedTreadData.created_by
-                : auth.user,
-            }}
-            username={
-              isCommentSaved
-                ? fetchedTreadData.created_by.author_profile.first_name +
-                  " " +
-                  fetchedTreadData.created_by.author_profile.last_name
-                : auth.user.author_profile.first_name +
-                  " " +
-                  auth.user.author_profile.last_name
-            }
-            noTimeStamp={true}
-            smaller={true}
+          {/* {formattedHighlightTxt ?
+            <div className={css(styles.textWrap)}>
+              <InlineCommentContextTitle title={formattedHighlightTxt} />
+            </div>
+            : null
+          } */}
+
+          <DiscussionEntry
+            data={fetchedThreadData}
+            hoverEvents={true}
+            noVoteLine={true}
+            discussionCount={fetchedCommentData.length}
           />
-          <div className={css(styles.textWrap)}>
-            <InlineCommentContextTitle title={formattedHighlightTxt} />
-          </div>
-          Below is THREAD:
-          <div className={css(styles.threadComposerContainer)}>
+          {/* <div className={css(styles.threadComposerContainer)}>
             <InlineCommentComposer
               isReadOnly={isThreadReadOnly}
               onCancel={(): void =>
                 cleanupStoreAndCloseDisplay({ inlineCommentStore })
               }
               onSubmit={onSubmitThread}
-              textData={fetchedTreadData ? fetchedTreadData.text : null}
+              textData={fetchedThreadData ? fetchedThreadData.text : null}
             />
           </div>
-          {commentThreadID != null && (
-            <div className={css(styles.responseSectionWarp)}>
-              Below are responses (click me to see composer):
-              <InlineCommentThreadCardResponseSection
-                commentData={fetchedCommentData}
-                commentThreadID={commentThreadID}
-                currBlockKey={blockKey}
-                isActive={isActiveCommentCard}
-                setShouldRefetch={setShouldRefetch}
-              />
-            </div>
-          )}
+          <div className={css(styles.row, styles.bottom)}>
+            <ThreadActionBar
+              // count={commentCount}
+              comment={true}
+              mediaOnly={true}
+              onClick={() => setRevealReply(!revealReply)}
+              // onSubmit={this.submitReply}
+              small={true}
+              showChildrenState={revealReply}
+              // onCountHover={this.toggleHover}
+              // isRemoved={this.state.removed}
+              // Editing
+              // editing={this.state.editing}
+              // toggleEdit={this.state.canEdit && this.toggleEdit}
+              // hideReply={comment.source === "twitter"}
+            />
+          </div>
+          {
+            fetchedCommentData.map((comment, i) => {
+              return (
+                <CommentEntry
+                  data={comment}
+                  key={`comment_${comment.id}`}
+                  comment={comment}
+                  index={i}
+                  // mobileView={this.props.mobileView}
+                  discussionCount={fetchedCommentData.length}
+                  // setCount={setCount}
+                />
+              );
+            })
+          } */}
         </ReactPlaceholder>
       </ColumnContainer>
     </div>
@@ -286,15 +293,18 @@ const activeCardBump = {
 
 const styles = StyleSheet.create({
   activeCard: {
-    animationDuration: ".5s",
-    animationFillMode: "forwards",
-    animationName: [activeCardBump],
+    // animationDuration: ".5s",
+    // animationFillMode: "forwards",
+    // animationName: [activeCardBump],
+  },
+  inactiveCard: {
+    display: "none",
   },
   container: {
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
 
     marginTop: 20,
-    width: 350,
+    width: 400,
     padding: "20px 15px",
     minHeight: 100,
   },
@@ -308,12 +318,42 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    marginBottom: 8,
     paddingTop: 4,
   },
   threadResponseComposerContainer: {},
   textWrap: {
     margin: "4px 0 8px",
+    borderRadius: 8,
+  },
+  left: {
+    alignItems: "center",
+    width: 48,
+    display: "table-cell",
+    height: "100%",
+    verticalAlign: "top",
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
+  },
+  column: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    height: "100%",
+  },
+  voteContainer: {
+    height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+  voteWidget: {
+    margin: 0,
+    backgroundColor: "#FFF",
+    "@media only screen and (max-width: 415px)": {
+      width: 35,
+    },
   },
 });
 
