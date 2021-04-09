@@ -50,39 +50,48 @@ export default function InlineCommentThreadsDisplayBar({
 
 const styles = StyleSheet.create({
   backButton: {
+    display: "flex",
+    alignItems: "center",
     color: colors.BLACK(0.5),
     cursor: "pointer",
     ":hover": {
       color: colors.BLACK(1),
     },
     textDecoration: "none",
+    "@media only screen and (max-width: 1023px)": {
+      paddingLeft: 8,
+      width: "100%",
+      height: "100%",
+    },
     "@media only screen and (max-width: 767px)": {
       top: -118,
       left: 0,
+      // width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       top: -90,
       left: 20,
     },
   },
-  closeButton: {
-    width: 16,
-  },
   header: {
+    positioin: "relative",
     alignItems: "center",
     cursor: "pointer",
     display: "flex",
-    height: "100%",
     justifyContent: "flex-start",
-    width: "100%",
+    "@media only screen and (max-width: 1023px)": {
+      height: 50,
+    },
+    background: "#fff",
   },
   inlineCommentThreadsDisplayBar: {
+    display: "flex",
+    flexDirection: "column",
     height: "100%",
     maxHeight: 1000,
     width: 400,
-
     "@media only screen and (max-width: 1023px)": {
-      width: 300,
+      width: "100%",
     },
     ":focus": {
       outline: "none",
