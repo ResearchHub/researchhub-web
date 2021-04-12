@@ -21,11 +21,7 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "../../config/utils";
-
-// Undux
-import InlineCommentUnduxStore, {
-  getTargetInlineCommentOnThreadID,
-} from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -365,11 +361,10 @@ class DiscussionEntry extends React.Component {
     const {
       data,
       data: { context_title: contextTitle, id: commentThreadID },
-      hostname,
-      mobileView,
       paper,
+      hostname,
       path,
-      store: inlineCommentStore,
+      mobileView,
     } = this.props;
     const commentCount =
       this.state.comments.length > data.comment_count
@@ -464,18 +459,7 @@ class DiscussionEntry extends React.Component {
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={null}
-                    onScrollSuccess={() => {
-                      inlineCommentStore.set("displayableInlineComments")([
-                        getTargetInlineCommentOnThreadID({
-                          commentThreadID,
-                          store: inlineCommentStore,
-                        }),
-                      ]);
-                      inlineCommentStore.set("animatedEntityKey")(null);
-                      inlineCommentStore.set("animatedTextCommentID")(
-                        commentThreadID
-                      );
-                    }}
+                    onSuccess={silentEmptyFnc}
                     title={contextTitle}
                   />
                 ) : null}
@@ -752,4 +736,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InlineCommentUnduxStore.withStore(DiscussionEntry));
+)(DiscussionEntry);

@@ -18,7 +18,13 @@ import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import { css, StyleSheet } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import React, {
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { EditorState } from "draft-js";
 import {
   getScrollToTargetElFnc,
@@ -149,16 +155,16 @@ function InlineCommentThreadCard({
     });
   };
 
-  // const animateAndScrollToTarget = getScrollToTargetElFnc({
-  //   onSuccess: (): void => {
-  //     inlineCommentStore.set("animatedEntityKey")(entityKey);
-  //     inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
-  //   },
-  //   targetElement: getTargetInlineDraftEntityEl({
-  //     commentThreadID,
-  //     entityKey,
-  //   }),
-  // });
+  const animateAndScrollToTarget = getScrollToTargetElFnc({
+    onSuccess: (): void => {
+      inlineCommentStore.set("animatedEntityKey")(entityKey);
+      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+    },
+    targetElement: getTargetInlineDraftEntityEl({
+      commentThreadID,
+      entityKey,
+    }),
+  });
 
   const formattedHighlightTxt =
     unduxHighlightedText != null
@@ -171,6 +177,7 @@ function InlineCommentThreadCard({
         styles.inlineCommentThreadCard,
         isActiveCommentCard ? styles.activeCard : styles.inactiveCard,
       ])}
+      onClick={animateAndScrollToTarget}
       role="none"
     >
       <ColumnContainer overrideStyles={styles.container}>
@@ -209,7 +216,7 @@ function InlineCommentThreadCard({
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={entityKey}
-                    onScrollSuccess={(): void => {
+                    onSuccess={(): void => {
                       inlineCommentStore.set("animatedEntityKey")(entityKey);
                       inlineCommentStore.set("animatedTextCommentID")(
                         commentThreadID

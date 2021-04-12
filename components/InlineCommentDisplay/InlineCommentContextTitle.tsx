@@ -10,18 +10,18 @@ import { ID } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 type Props = {
   commentThreadID: ID;
   entityKey: ID;
-  onScrollSuccess: () => void;
+  onSuccess: () => void;
   title: string;
 };
 
 export default function InlineCommentContextTitle({
   commentThreadID,
   entityKey,
-  onScrollSuccess,
+  onSuccess,
   title,
 }: Props): ReactElement<"div"> {
   const animateAndScrollToTarget = getScrollToTargetElFnc({
-    onSuccess: onScrollSuccess,
+    onSuccess,
     targetElement: getTargetInlineDraftEntityEl({
       commentThreadID,
       entityKey,
