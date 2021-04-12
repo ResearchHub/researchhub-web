@@ -48,6 +48,7 @@ class DiscussionEntry extends React.Component {
   }
 
   componentDidMount = async () => {
+    /* calvinhlee: why are we even setting a prop to the state to render? */
     const { data, newCard } = this.props;
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
