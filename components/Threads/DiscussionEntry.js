@@ -21,7 +21,7 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "../../config/utils";
-import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
+import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -366,6 +366,7 @@ class DiscussionEntry extends React.Component {
       paper,
       path,
       shouldShowContextTitle = true,
+      store: inlineCommentStore,
     } = this.props;
     const commentCount =
       this.state.comments.length > data.comment_count
@@ -383,7 +384,6 @@ class DiscussionEntry extends React.Component {
       contentType: "thread",
       objectId: data.id,
     };
-
     return (
       <div
         className={css(
@@ -460,7 +460,20 @@ class DiscussionEntry extends React.Component {
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={null}
-                    onSuccess={silentEmptyFnc}
+                    onScrollSuccess={() => {
+                      inlineCommentStore.set("animatedEntityKey")(null);
+                      inlineCommentStore.set("animatedTextCommentID")(
+                        commentThreadID
+                      );
+                      inlineCommentStore.set("displayableInlineComments")([
+                        {
+                          blockKey: "Blockkey-placeholder",
+                          commentThreadID,
+                          entityKey: "EntityKey-placeholder",
+                          highlightedText: contextTitle,
+                        },
+                      ]);
+                    }}
                     title={contextTitle}
                   />
                 ) : null}
@@ -737,4 +750,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DiscussionEntry);
+)(InlineCommentUnduxStore.withStore(DiscussionEntry));
