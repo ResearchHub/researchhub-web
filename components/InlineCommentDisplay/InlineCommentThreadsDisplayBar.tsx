@@ -7,11 +7,42 @@ import InlineCommentUnduxStore, {
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
 import React, { ReactElement } from "react";
-// @ts-ignore
+import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 type Props = { isShown: boolean };
 
-export default function InlineCommentThreadsDisplayBar({
+const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
+export default function InlineCommentThreadsDisplayBarWithMediaSize(
+  props: Props
+): ReactElement<"div"> {
+  const curreMediaWidth =
+    document.documentElement.clientWidth || document.body.clientWidth;
+  const shouldRenderWithSlide = curreMediaWidth <= MEDIA_WIDTH_LIMIT;
+  console.warn("shouldRenderWithSlide: ", shouldRenderWithSlide);
+  if (shouldRenderWithSlide) {
+    return (
+      <div className={css(styles.mobile)}>
+        <SlideMenu
+          right
+          width={"100%"}
+          isOpen={props.isShown}
+          styles={burgerMenuStyle}
+          customBurgerIcon={false}
+        >
+          <InlineCommentThreadsDisplayBar {...props} />
+        </SlideMenu>
+      </div>
+    );
+  } else {
+    return (
+      <div className={css(styles.inlineSticky)}>
+        <InlineCommentThreadsDisplayBar {...props} />
+      </div>
+    );
+  }
+}
+
+function InlineCommentThreadsDisplayBar({
   isShown,
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
@@ -47,6 +78,70 @@ export default function InlineCommentThreadsDisplayBar({
     </div>
   );
 }
+
+const burgerMenuStyle = {
+  bmBurgerBars: {
+    background: "#373a47",
+  },
+  bmBurgerBarsHover: {
+    background: "#a90000",
+  },
+  bmCrossButton: {
+    height: "26px",
+    width: "26px",
+    color: "#FFF",
+    display: "none",
+    visibility: "hidden",
+  },
+  bmCross: {
+    background: "#bdc3c7",
+    display: "none",
+    visibility: "hidden",
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    top: 0,
+    zIndex: 3147480000,
+    overflowY: "auto",
+    width: "85%",
+  },
+  bmMenu: {
+    background: "#fff",
+    fontSize: "1.15em",
+    overflowY: "auto",
+    width: "100%",
+  },
+  bmMorphShape: {
+    fill: "#373a47",
+  },
+  bmItemList: {
+    color: "#b8b7ad",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    overflow: "auto",
+    borderTop: "1px solid rgba(255,255,255,.2)",
+    ":focus": {
+      outline: "none",
+    },
+  },
+  bmItem: {
+    display: "inline-block",
+    margin: "15px 0 15px 0",
+    color: "#FFF",
+    ":focus": {
+      outline: "none",
+    },
+  },
+  bmOverlay: {
+    background: "rgba(0, 0, 0, 0.3)",
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+};
 
 const styles = StyleSheet.create({
   backButton: {
@@ -96,7 +191,17 @@ const styles = StyleSheet.create({
       outline: "none",
     },
   },
+  inlineSticky: {
+    position: "sticky",
+    top: 40,
+  },
   marginLeft8: {
     marginLeft: 8,
+  },
+  mobile: {
+    display: "none",
+    "@media only screen and (max-width: 1023px)": {
+      display: "block",
+    },
   },
 });
