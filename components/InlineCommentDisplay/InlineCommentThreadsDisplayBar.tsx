@@ -9,7 +9,7 @@ import InlineCommentThreadCard from "./InlineCommentThreadCard";
 import React, { ReactElement } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
-type Props = { isShown: boolean };
+type Props = { shouldShowContextTitle?: boolean };
 
 const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
 
@@ -19,32 +19,38 @@ export default function InlineCommentThreadsDisplayBarWithMediaSize(
   const curreMediaWidth =
     document.documentElement.clientWidth || document.body.clientWidth;
   const shouldRenderWithSlide = curreMediaWidth <= MEDIA_WIDTH_LIMIT;
-  console.warn("shouldRenderWithSlide: ", shouldRenderWithSlide);
+
   if (shouldRenderWithSlide) {
     return (
       <div className={css(styles.mobile)}>
         <SlideMenu
           right
           width={"100%"}
-          isOpen={props.isShown}
+          isOpen={true}
           styles={burgerMenuStyle}
           customBurgerIcon={false}
         >
-          <InlineCommentThreadsDisplayBar {...props} />
+          <InlineCommentThreadsDisplayBar
+            {...props}
+            shouldShowContextTitle={true}
+          />
         </SlideMenu>
       </div>
     );
   } else {
     return (
       <div className={css(styles.inlineSticky)}>
-        <InlineCommentThreadsDisplayBar {...props} />
+        <InlineCommentThreadsDisplayBar
+          {...props}
+          shouldShowContextTitle={false}
+        />
       </div>
     );
   }
 }
 
 function InlineCommentThreadsDisplayBar({
-  isShown,
+  shouldShowContextTitle = true,
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const displayableInlineComments = inlineCommentStore.get(
@@ -57,6 +63,7 @@ function InlineCommentThreadsDisplayBar({
     ): ReactElement<typeof InlineCommentThreadCard> => (
       <InlineCommentThreadCard
         key={inlineComment.entityKey}
+        shouldShowContextTitle={shouldShowContextTitle}
         unduxInlineComment={inlineComment}
       />
     )
