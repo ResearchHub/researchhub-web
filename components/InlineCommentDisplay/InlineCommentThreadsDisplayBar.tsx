@@ -12,6 +12,7 @@ import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 type Props = { isShown: boolean };
 
 const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
+
 export default function InlineCommentThreadsDisplayBarWithMediaSize(
   props: Props
 ): ReactElement<"div"> {
