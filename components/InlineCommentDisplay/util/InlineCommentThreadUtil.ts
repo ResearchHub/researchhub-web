@@ -23,7 +23,7 @@ function isElemntWithinViewPort(element: HTMLElement): boolean {
 export function getTargetInlineDraftEntityEl({
   commentThreadID,
   entityKey,
-}: GetTargetDraftEntityElArgs): HTMLElement | null {
+}): HTMLElement | null {
   let entityEl = document.getElementById(`inline-comment-${commentThreadID}`);
   if (entityEl == null) {
     entityEl = document.getElementById(`inline-comment-${entityKey}`);
