@@ -780,10 +780,11 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (min-width: 768px)": {
       width: "80%",
+      maxWidth: 600,
     },
     "@media only screen and (min-width: 1024px)": {
       width: "unset",
-      maxWidth: 900,
+      maxWidth: 700,
     },
   },
   contentContainer: {
