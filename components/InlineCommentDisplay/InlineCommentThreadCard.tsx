@@ -36,7 +36,6 @@ import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import DiscussionEntry from "../Threads/DiscussionEntry";
-import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 type Props = {
@@ -64,14 +63,6 @@ function InlineCommentThreadCard({
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
-  const animatedEntityKey = inlineCommentStore.get("animatedTextCommentID");
-  const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
-  const isActiveCommentCard = useMemo(
-    (): boolean =>
-      animatedTextCommentID === commentThreadID ||
-      animatedEntityKey === entityKey,
-    [animatedTextCommentID, commentThreadID, isCommentSaved]
-  );
 
   const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
     isCommentSaved
@@ -82,7 +73,6 @@ function InlineCommentThreadCard({
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
-  const [revealReply, setRevealReply] = useState<boolean>(false);
   const [shouldRefetch, setShouldRefetch] = useState<boolean>(false);
   const router = useRouter();
   const fetchedCommentData = fetchedThreadData.comments || [];
@@ -133,13 +123,9 @@ function InlineCommentThreadCard({
           commentThreadID: threadID,
         });
         inlineCommentStore.set("animatedTextCommentID")(threadID);
-        inlineCommentStore.set("displayableInlineComments")(
-          getSavedInlineCommentsGivenBlockKey({
-            blockKey,
-            editorState:
-              paperDraftStore.get("editorState") || EditorState.createEmpty(),
-          })
-        );
+        inlineCommentStore.set("displayableInlineComments")([
+          updatedInlineComment,
+        ]);
       },
       params: {
         text: text,
@@ -166,17 +152,9 @@ function InlineCommentThreadCard({
     }),
   });
 
-  const formattedHighlightTxt =
-    unduxHighlightedText != null
-      ? unduxHighlightedText
-      : fetchedThreadData.context_title || "";
-
   return (
     <div
-      className={css([
-        styles.inlineCommentThreadCard,
-        isActiveCommentCard ? styles.activeCard : styles.inactiveCard,
-      ])}
+      className={css([styles.inlineCommentThreadCard])}
       onClick={animateAndScrollToTarget}
       role="none"
     >
@@ -195,6 +173,7 @@ function InlineCommentThreadCard({
               hoverEvents={true}
               noVoteLine={true}
               discussionCount={fetchedCommentData.length}
+              shouldShowContextTitle={false}
             />
           ) : (
             <div>
@@ -211,21 +190,6 @@ function InlineCommentThreadCard({
                 noTimeStamp={true}
                 smaller={true}
               />
-              {formattedHighlightTxt ? (
-                <div className={css(styles.textWrap)}>
-                  <InlineCommentContextTitle
-                    commentThreadID={commentThreadID}
-                    entityKey={entityKey}
-                    onSuccess={(): void => {
-                      inlineCommentStore.set("animatedEntityKey")(entityKey);
-                      inlineCommentStore.set("animatedTextCommentID")(
-                        commentThreadID
-                      );
-                    }}
-                    title={formattedHighlightTxt}
-                  />
-                </div>
-              ) : null}
               <div className={css(styles.threadComposerContainer)}>
                 <InlineCommentComposer
                   isReadOnly={false}
@@ -244,24 +208,7 @@ function InlineCommentThreadCard({
   );
 }
 
-const activeCardBump = {
-  "0%": {
-    transform: "translateX(0)",
-  },
-  "100%": {
-    transform: "translateX(-12px)",
-  },
-};
-
 const styles = StyleSheet.create({
-  activeCard: {
-    // animationDuration: ".5s",
-    // animationFillMode: "forwards",
-    // animationName: [activeCardBump],
-  },
-  inactiveCard: {
-    display: "none",
-  },
   container: {
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     marginTop: 20,

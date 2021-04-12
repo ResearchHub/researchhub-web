@@ -4,7 +4,7 @@ import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
-  getSavedInlineCommentsGivenBlockKey,
+  getSavedInlineCommentsGivenBlockKeyAndThreadID,
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
@@ -82,13 +82,7 @@ function PaperDraftInlineCommentTextWrap(
       store: inlineCommentStore,
       updatedInlineComment: newInlineComment,
     });
-    const displayableComments = [
-      newInlineComment,
-      ...getSavedInlineCommentsGivenBlockKey({
-        blockKey,
-        editorState: paperDraftStore.get("editorState"),
-      }),
-    ];
+    const displayableComments = [newInlineComment];
     inlineCommentStore.set("displayableInlineComments")(displayableComments);
     setShowPopover(false);
   };
@@ -108,9 +102,10 @@ function PaperDraftInlineCommentTextWrap(
     event.stopPropagation();
     cleanupStoreAndCloseDisplay({ inlineCommentStore });
     inlineCommentStore.set("displayableInlineComments")(
-      getSavedInlineCommentsGivenBlockKey({
+      getSavedInlineCommentsGivenBlockKeyAndThreadID({
         blockKey,
         editorState: paperDraftStore.get("editorState"),
+        commentThreadID,
       })
     );
     inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
