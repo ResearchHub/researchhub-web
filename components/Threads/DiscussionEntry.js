@@ -361,10 +361,11 @@ class DiscussionEntry extends React.Component {
     const {
       data,
       data: { context_title: contextTitle, id: commentThreadID },
-      paper,
       hostname,
-      path,
       mobileView,
+      paper,
+      path,
+      shouldShowContextTitle = true,
     } = this.props;
     const commentCount =
       this.state.comments.length > data.comment_count
@@ -455,7 +456,7 @@ class DiscussionEntry extends React.Component {
                     twitterUrl={data.url}
                   />
                 </div>
-                {contextTitle ? (
+                {shouldShowContextTitle && contextTitle ? (
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={null}

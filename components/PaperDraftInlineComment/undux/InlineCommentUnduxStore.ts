@@ -82,6 +82,23 @@ export function findTargetInlineComment({
   return targetIndex > -1 ? store.get("inlineComments")[targetIndex] : null;
 }
 
+export function getInlineCommentsByEntityKey({
+  entityKey,
+  store,
+}: {
+  entityKey: ID;
+  store: InlineCommentStore;
+}): InlineComment | null {
+  return (
+    store
+      .get("inlineComments")
+      .find(
+        (inlineComment: InlineComment): boolean =>
+          inlineComment.entityKey === entityKey
+      ) || null
+  );
+}
+
 export function getSavedInlineCommentsGivenBlockKey({
   blockKey,
   editorState,
@@ -105,6 +122,54 @@ export function getSavedInlineCommentsGivenBlockKey({
             .getEntity(entityKey)
             .getData();
           if (commentThreadID != null) {
+            result.push({
+              blockKey,
+              commentThreadID,
+              entityKey,
+              highlightedText: null,
+            });
+            return true;
+          }
+        }
+      }
+      return false;
+    },
+    (_start, _end) => {}
+  );
+  return result.sort((entA, entB) => {
+    return (entA.commentThreadID || 0) < (entB.commentThreadID || 0) ? -1 : 1;
+  });
+}
+
+/* If the comment is saved in the backend, the reliable source is commentThreadID from entity */
+export function getSavedInlineCommentsGivenBlockKeyAndThreadID({
+  blockKey,
+  commentThreadID,
+  editorState,
+}: {
+  blockKey: string;
+  commentThreadID: ID;
+  editorState: EditorState;
+}): Array<InlineComment> {
+  const result: InlineComment[] = [];
+  const curreContent = editorState.getCurrentContent();
+  const targetBlock = curreContent.getBlockForKey(blockKey);
+  targetBlock.findEntityRanges(
+    (character): boolean => {
+      const entityKey = character.getEntity();
+      if (entityKey !== null) {
+        const detectableEntity = curreContent.getEntity(entityKey);
+        if (
+          detectableEntity != null &&
+          detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
+        ) {
+          const {
+            commentThreadID: entityCommentThreadID,
+          } = curreContent.getEntity(entityKey).getData();
+          if (
+            entityCommentThreadID != null &&
+            entityCommentThreadID === commentThreadID
+          ) {
             result.push({
               blockKey,
               commentThreadID,
