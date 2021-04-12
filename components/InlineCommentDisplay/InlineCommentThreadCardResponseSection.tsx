@@ -28,7 +28,6 @@ type Props = {
   commentThreadID: ID;
   currBlockKey: ID;
   isActive?: boolean;
-  setShouldRefetch: (shouldRefetch: boolean) => void;
 };
 
 function InlineCommentThreadCardResponseSection({
@@ -40,7 +39,6 @@ function InlineCommentThreadCardResponseSection({
   commentThreadID,
   currBlockKey,
   isActive = false,
-  setShouldRefetch,
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
@@ -68,7 +66,6 @@ function InlineCommentThreadCardResponseSection({
               paperDraftStore.get("editorState") || EditorState.createEmpty(),
           })
         );
-        setShouldRefetch(true);
         inlineCommentStore.set("animatedTextCommentID")(threadID);
       },
       paperID,
