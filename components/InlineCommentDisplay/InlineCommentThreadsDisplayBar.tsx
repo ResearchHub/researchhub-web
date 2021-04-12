@@ -153,13 +153,13 @@ const burgerMenuStyle = {
 
 const styles = StyleSheet.create({
   backButton: {
-    display: "flex",
     alignItems: "center",
     color: colors.BLACK(0.5),
     cursor: "pointer",
     ":hover": {
       color: colors.BLACK(1),
     },
+    display: "flex",
     textDecoration: "none",
     "@media only screen and (max-width: 1023px)": {
       paddingLeft: 8,
@@ -177,11 +177,11 @@ const styles = StyleSheet.create({
     },
   },
   header: {
-    positioin: "relative",
     alignItems: "center",
     cursor: "pointer",
     display: "flex",
     justifyContent: "flex-start",
+    positioin: "relative",
     "@media only screen and (max-width: 1023px)": {
       height: 50,
     },
@@ -192,11 +192,11 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: 1000,
     width: 400,
-    "@media only screen and (max-width: 1023px)": {
-      width: "100%",
-    },
     ":focus": {
       outline: "none",
+    },
+    "@media only screen and (max-width: 1023px)": {
+      width: "100%",
     },
   },
   inlineSticky: {
