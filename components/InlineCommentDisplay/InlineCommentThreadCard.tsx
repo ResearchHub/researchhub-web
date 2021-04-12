@@ -53,17 +53,19 @@ function InlineCommentThreadCard({
     highlightedText: unduxHighlightedText,
   },
 }: Props): ReactElement<"div"> {
-  const isCommentSaved = commentThreadID !== null;
+  const doesCommentIdExist = commentThreadID !== null;
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
 
   const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
-    isCommentSaved
+    doesCommentIdExist
   );
   const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
+  // both fetching & fetched state is needed because of antipattern of DiscussionEntry
+  const [isReadyForFetch, setIsReadyForFetch] = useState<boolean>(true);
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
@@ -71,25 +73,32 @@ function InlineCommentThreadCard({
   const fetchedCommentData = fetchedThreadData.comments || [];
 
   useEffect((): void => {
-    setIsThreadReadOnly(isCommentSaved);
+    setIsThreadReadOnly(doesCommentIdExist);
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
+    if (
+      !isCommentDataFetched &&
+      doesCommentIdExist &&
+      isReadyForFetch &&
+      paperID !== null
+    ) {
+      setIsReadyForFetch(false);
       inlineThreadFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
           setFecthedThreadData(result);
           setIsCommentDataFetched(true);
+          setIsReadyForFetch(true);
           setIsThreadReadOnly(true);
         },
         onError: (_): void => {
-          setIsCommentDataFetched(true);
+          setIsCommentDataFetched(false);
         },
       });
     }
-  }, [commentThreadID, fetchedThreadData, paperID]);
+  }, [commentThreadID, fetchedThreadData, isCommentDataFetched, paperID]);
 
   const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
@@ -149,16 +158,16 @@ function InlineCommentThreadCard({
     >
       <ColumnContainer overrideStyles={styles.container}>
         <ReactPlaceholder
-          ready={isCommentSaved ? isCommentDataFetched : true}
+          ready={
+            doesCommentIdExist ? isCommentDataFetched && isReadyForFetch : true
+          }
           showLoadingAnimation
           type={"media"}
           rows={3}
         >
           {isThreadReadOnly ? (
             <DiscussionEntry
-              data={
-                isThreadReadOnly ? fetchedThreadData : { created_by: auth.user }
-              }
+              data={fetchedThreadData}
               hoverEvents={true}
               noVoteLine={true}
               discussionCount={fetchedCommentData.length}
