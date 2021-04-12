@@ -7,7 +7,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineThreadFetchTarget } from "./api/InlineThreadFetch";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  getSavedInlineCommentsGivenBlockKey,
   ID,
   InlineComment,
   updateInlineComment,
@@ -36,6 +35,7 @@ type Props = {
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
+  shouldShowContextTitle?: boolean;
   unduxInlineComment: InlineComment;
 };
 
@@ -44,6 +44,7 @@ function InlineCommentThreadCard({
   showMessage,
   setMessage,
   openRecaptchaPrompt: _openRecaptchaPrompt,
+  shouldShowContextTitle = true,
   unduxInlineComment,
   unduxInlineComment: {
     blockKey,
@@ -161,7 +162,7 @@ function InlineCommentThreadCard({
               hoverEvents={true}
               noVoteLine={true}
               discussionCount={fetchedCommentData.length}
-              shouldShowContextTitle={false}
+              shouldShowContextTitle={shouldShowContextTitle}
             />
           ) : (
             <div>
