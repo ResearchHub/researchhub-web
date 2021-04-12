@@ -16,9 +16,9 @@ const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
 export default function InlineCommentThreadsDisplayBarWithMediaSize(
   props: Props
 ): ReactElement<"div"> {
-  const curreMediaWidth =
+  const currMediaWidth =
     document.documentElement.clientWidth || document.body.clientWidth;
-  const shouldRenderWithSlide = curreMediaWidth <= MEDIA_WIDTH_LIMIT;
+  const shouldRenderWithSlide = currMediaWidth <= MEDIA_WIDTH_LIMIT;
 
   if (shouldRenderWithSlide) {
     return (
