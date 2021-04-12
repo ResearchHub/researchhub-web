@@ -18,14 +18,7 @@ import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import { css, StyleSheet } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, {
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { EditorState } from "draft-js";
+import React, { ReactElement, useEffect, useState } from "react";
 import {
   getScrollToTargetElFnc,
   getTargetInlineDraftEntityEl,
@@ -73,7 +66,6 @@ function InlineCommentThreadCard({
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
-  const [shouldRefetch, setShouldRefetch] = useState<boolean>(false);
   const router = useRouter();
   const fetchedCommentData = fetchedThreadData.comments || [];
 
@@ -82,10 +74,7 @@ function InlineCommentThreadCard({
   }, [commentThreadID]);
 
   useEffect((): void => {
-    if (
-      shouldRefetch ||
-      (!isCommentDataFetched && isCommentSaved && paperID !== null)
-    ) {
+    if (!isCommentDataFetched && isCommentSaved && paperID !== null) {
       inlineThreadFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
@@ -93,14 +82,13 @@ function InlineCommentThreadCard({
           setFecthedThreadData(result);
           setIsCommentDataFetched(true);
           setIsThreadReadOnly(true);
-          setShouldRefetch(false);
         },
         onError: (_): void => {
           setIsCommentDataFetched(true);
         },
       });
     }
-  }, [commentThreadID, fetchedThreadData, paperID, shouldRefetch]);
+  }, [commentThreadID, fetchedThreadData, paperID]);
 
   const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
