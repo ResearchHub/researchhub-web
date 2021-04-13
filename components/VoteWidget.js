@@ -122,7 +122,7 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      if (onDownVote) {
+      if (onDownvote) {
         onDownvote(e);
       } else {
         onAfterDownvote();
