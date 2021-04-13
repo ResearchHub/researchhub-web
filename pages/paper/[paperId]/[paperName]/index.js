@@ -59,6 +59,21 @@ import {
 import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";
+const steps = [
+  {
+    target: ".first-step",
+    title: "Edit Paper Info",
+    content:
+      "Add or edit the paper information. This includes authors, publication date, hubs, and more!",
+    disableBeacon: true,
+  },
+  {
+    target: ".second-step",
+    title: "Add Paper Summary",
+    content: "Add a summary to help others understand what the paper is about.",
+    disableBeacon: true,
+  },
+];
 
 const Paper = (props) => {
   const router = useRouter();
@@ -99,26 +114,8 @@ const Paper = (props) => {
   const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
-
-  const [steps, setSteps] = useState([
-    {
-      target: ".first-step",
-      title: "Edit Paper Info",
-      content:
-        "Add or edit the paper information. This includes authors, publication date, hubs, and more!",
-      disableBeacon: true,
-    },
-    {
-      target: ".second-step",
-      title: "Add Paper Summary",
-      content:
-        "Add a summary to help others understand what the paper is about.",
-      disableBeacon: true,
-    },
-  ]);
   const [userVoteChecked, setUserVoteChecked] = useState(false);
 
-  const { hostname } = props;
   const { paperId } = router.query;
 
   const isModerator = store.getState().auth.user.moderator;
@@ -566,7 +563,7 @@ const Paper = (props) => {
               <a name="discussion">
                 <div className={css(styles.space)}>
                   <DiscussionTab
-                    hostname={hostname}
+                    hostname={props.hostname}
                     paperId={paperId}
                     paperState={paper}
                     calculatedCount={discussionCount}
