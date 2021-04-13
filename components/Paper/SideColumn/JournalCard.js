@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     minWidth: 30,
     maxWidth: 30,
     borderRadius: 4,
-    objectFit: "cover",
+    objectFit: "contain",
     marginRight: 10,
     background: "#EAEAEA",
     border: "1px solid #ededed",
