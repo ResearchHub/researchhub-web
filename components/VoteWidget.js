@@ -51,12 +51,8 @@ const VoteWidget = (props) => {
     comment,
   } = props;
 
-  const initialScore = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
-
-  const [score, setScore] = useState(initialScore);
-
   const [upvoteDisabled] = useState(
     permission.success &&
       userReputation < permission.data.UpvotePaper.minimumReputation
@@ -136,6 +132,8 @@ const VoteWidget = (props) => {
     }
   }
 
+  const displayableScore = getScore(props);
+
   return (
     <Fragment>
       <div
@@ -164,7 +162,9 @@ const VoteWidget = (props) => {
           effect="solid"
         />
         <ScorePill
-          score={promoted !== false && type === "Paper" ? promoted : score}
+          score={
+            promoted !== false && type === "Paper" ? promoted : displayableScore
+          }
           promoted={promoted}
           paper={paper}
           showPromotion={showPromotion}
