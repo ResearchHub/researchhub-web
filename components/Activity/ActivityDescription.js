@@ -11,7 +11,6 @@ const ActivityDescription = (props) => {
   const [lines, setLines] = useState(2);
   const { activity, author, contributionType, username } = props;
   const { source, paper, content_type: contentType } = activity;
-  console.log(author);
   const { id: authorId } = author;
   const paperTitle = paper["paper_title"] || paper["title"];
 
