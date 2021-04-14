@@ -31,12 +31,12 @@ function getIsReadyForNewInlineComment({
   const isGoodTimeInterval = getIsGoodTimeInterval(
     inlineCommentStore.get("lastPromptRemovedTime")
   );
-  const hasActiveCommentPrompt =
-    inlineCommentStore.get("promptedEntityKey") != null;
+  // const hasActiveCommentPrompt =
+  //   inlineCommentStore.get("promptedEntityKey") != null;
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
-    !hasActiveCommentPrompt &&
+    // !hasActiveCommentPrompt &&``
     currSelection != null &&
     !currSelection.isCollapsed()
   );
@@ -138,8 +138,9 @@ export default function PaperDraftContainer({
       });
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
-        onInlineCommentPrompt: (entityKey) =>
-          inlineCommentStore.set("promptedEntityKey")(entityKey),
+        onInlineCommentPrompt: (entityKey) => {
+          inlineCommentStore.set("promptedEntityKey")(entityKey);
+        },
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
       setEditorState(updatedEditorState);

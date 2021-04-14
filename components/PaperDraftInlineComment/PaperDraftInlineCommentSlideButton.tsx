@@ -5,8 +5,8 @@ import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
 import InlineCommentUnduxStore from "./undux/InlineCommentUnduxStore";
 import { getTargetInlineDraftEntityEl } from "../InlineCommentDisplay/util/InlineCommentThreadUtil";
 
-const BUTTON_HEIGHT = 24;
-const BUTTON_WIDTH = 24;
+export const BUTTON_HEIGHT = 24;
+export const BUTTON_WIDTH = 24;
 
 function isUndefined(str: string): boolean {
   return str === "undefined";
@@ -17,8 +17,10 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
 > | null {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
-  const shouldShowButton = promptedEntityKey != null;
-
+  const offsetTop = inlineCommentStore.get("promptedEntityOffsetTop") || 0;
+  const shouldShowButton = promptedEntityKey != null && offsetTop > 0;
+  // console.warn("promptedEntityKey: ", promptedEntityKey);
+  // console.warn("offsetTop: ", offsetTop);
   if (
     isUndefined(typeof window) ||
     isUndefined(typeof document) ||
@@ -26,16 +28,6 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   ) {
     return null;
   }
-  const htmlEntityEl = getTargetInlineDraftEntityEl({
-    commentThreadID: null,
-    entityKey: promptedEntityKey,
-  });
-  let offsetTop = 0;
-  if (shouldShowButton && htmlEntityEl != null) {
-    offsetTop = (htmlEntityEl || {}).offsetTop || 0 - BUTTON_HEIGHT / 2;
-  }
-  console.warn("promptedEntityKey: ", promptedEntityKey);
-  console.warn("offsetTop: ", offsetTop);
 
   return (
     <div
