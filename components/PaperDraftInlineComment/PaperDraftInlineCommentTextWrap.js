@@ -87,17 +87,6 @@ function PaperDraftInlineCommentTextWrap(
     setShowPopover(false);
   };
 
-  const hidePopoverAndSilence = (event) => {
-    event.stopPropagation();
-    cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    inlineCommentStore.set("silencedPromptKeys")(
-      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
-    );
-    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
-    inlineCommentStore.set("promptedEntityKey")(null);
-    setShowPopover(false);
-  };
-
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
     cleanupStoreAndCloseDisplay({ inlineCommentStore });
@@ -115,7 +104,6 @@ function PaperDraftInlineCommentTextWrap(
     <Popover
       above
       key={`Popver-${entityKey}`}
-      onOuterAction={isBeingPrompted ? hidePopoverAndSilence : () => {}}
       body={
         <span
           key={`Popver-Body-${entityKey}`}
