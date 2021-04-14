@@ -3,53 +3,52 @@ import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
   getSavedInlineCommentsGivenBlockKeyAndThreadID,
+  InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
 import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
-import { getTargetInlineDraftEntityEl } from "../InlineCommentDisplay/util/InlineCommentThreadUtil";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import Popover from "react-popover";
 import React, {
   ReactElement,
   SyntheticEvent,
   useEffect,
   useMemo,
   useState,
+  useRef,
+  RefObject,
 } from "react";
+import { BUTTON_HEIGHT } from "./PaperDraftInlineCommentSlideButton";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
-type useClickOutsideEffectArgs = {
-  entityEl: HTMLElement | null;
+type UseEffectPrepareSlideButtonArgs = {
+  inlineCommentStore: InlineCommentStore;
   isBeingPrompted: boolean;
-  isReadyToAddListener: boolean;
-  onClickOutside: (event: SyntheticEvent) => void;
-  setIsReadyToAddListener: (flag: boolean) => void;
+  setShouldInsertOffSetTop: (flag: boolean) => void;
+  shouldInsertOffSetTop: boolean;
+  textRef: RefObject<HTMLSpanElement>;
 };
 
-/* Caution: don't modify unless you know what you're doing */
-function useClickOutsideEffect({
-  entityEl,
+function useEffectPrepareSlideButton({
+  inlineCommentStore,
   isBeingPrompted,
-  isReadyToAddListener,
-  onClickOutside,
-  setIsReadyToAddListener,
-}: useClickOutsideEffectArgs) {
-  function handleClickOutside(event) {
-    if (isReadyToAddListener) {
-      setIsReadyToAddListener(false);
-    }
-    if (entityEl != null && !entityEl.contains(event.target)) {
-      document.removeEventListener("mousedown", handleClickOutside);
-      onClickOutside(event);
-    }
-  }
+  setShouldInsertOffSetTop,
+  shouldInsertOffSetTop,
+  textRef,
+}: UseEffectPrepareSlideButtonArgs): void {
   useEffect(() => {
-    if (entityEl != null && isBeingPrompted && isReadyToAddListener) {
-      document.addEventListener("mousedown", handleClickOutside);
+    if (textRef != null && shouldInsertOffSetTop && isBeingPrompted) {
+      const { offsetTop } = textRef.current || { offsetTop: 0 };
+      inlineCommentStore.set("promptedEntityOffsetTop")(
+        offsetTop - BUTTON_HEIGHT / 2
+      );
+      setShouldInsertOffSetTop(false);
     }
   }, [
-    entityEl,
+    textRef,
+    inlineCommentStore,
+    shouldInsertOffSetTop,
     isBeingPrompted,
-    isReadyToAddListener,
-    onClickOutside,
-    setIsReadyToAddListener,
+    setShouldInsertOffSetTop,
   ]);
 }
 
@@ -62,14 +61,13 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     entityKey,
   } /* Props passed down from draft-js. See documentations for decorators */
 ): ReactElement<"span"> {
-  const [isReadyToAddListener, setIsReadyToAddListener] = useState<boolean>(
+  const [shouldInsertOffSetTop, setShouldInsertOffSetTop] = useState<boolean>(
     true
   );
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
   const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
-  const silencedPromptKeys = inlineCommentStore.get("silencedPromptKeys");
   const { commentThreadID } = contentState.getEntity(entityKey).getData();
   const isCommentSavedInBackend = commentThreadID != null;
   const doesCommentExistInStore =
@@ -79,9 +77,7 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
       entityKey,
       store: inlineCommentStore,
     }) != null;
-  const isBeingPrompted =
-    inlineCommentStore.get("promptedEntityKey") === entityKey &&
-    !silencedPromptKeys.has(entityKey);
+
   const shouldTextBeHighlighted = useMemo<boolean>(
     (): boolean => doesCommentExistInStore || isCommentSavedInBackend,
     [doesCommentExistInStore, isCommentSavedInBackend]
@@ -99,24 +95,32 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
       shouldTextBeHighlighted,
     ]
   );
-  const thisEntityEl = getTargetInlineDraftEntityEl({
-    commentThreadID,
-    entityKey,
+  const isBeingPrompted =
+    inlineCommentStore.get("promptedEntityKey") === entityKey &&
+    !inlineCommentStore.get("silencedPromptKeys").has(entityKey);
+  const textRef = useRef<HTMLSpanElement>(null);
+  useEffectPrepareSlideButton({
+    inlineCommentStore,
+    isBeingPrompted,
+    setShouldInsertOffSetTop,
+    shouldInsertOffSetTop,
+    textRef,
   });
 
-  const hidePrompterAndSilence = (_event: SyntheticEvent): void => {
+  const hidePrompterAndSilence = (event: SyntheticEvent): void => {
+    event.stopPropagation;
+    console.warn("hiding");
     cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    console.warn("hiding man");
     inlineCommentStore.set("silencedPromptKeys")(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
-    console.warn("what now: ", inlineCommentStore.get("promptedEntityKey"));
   };
 
   const openCommentThreadDisplay = (event): void => {
     if (isCommentSavedInBackend) {
-      event.stopPropagation();
-      cleanupStoreAndCloseDisplay({ inlineCommentStore });
+      cleanupStoreAndCloseDisplay({
+        inlineCommentStore,
+      });
       inlineCommentStore.set("displayableInlineComments")(
         getSavedInlineCommentsGivenBlockKeyAndThreadID({
           blockKey,
@@ -128,33 +132,35 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     }
   };
 
-  useClickOutsideEffect({
-    entityEl: thisEntityEl,
-    isBeingPrompted,
-    isReadyToAddListener,
-    onClickOutside: hidePrompterAndSilence,
-    setIsReadyToAddListener,
-  });
-
   return (
-    <span
-      className={css(
-        shouldTextBeHighlighted
-          ? styles.commentTextHighLight
-          : styles.textNonHighLight,
-        isCurrentCommentTextActive ? styles.commentActiveHighlight : null
-      )}
-      id={
-        commentThreadID != null
-          ? formatTextWrapID(commentThreadID)
-          : formatTextWrapID(entityKey)
+    <Popover
+      body={<React.Fragment />}
+      children={
+        <span
+          className={css(
+            shouldTextBeHighlighted
+              ? styles.commentTextHighLight
+              : styles.textNonHighLight,
+            isCurrentCommentTextActive ? styles.commentActiveHighlight : null
+          )}
+          id={
+            commentThreadID != null
+              ? formatTextWrapID(commentThreadID)
+              : formatTextWrapID(entityKey)
+          }
+          key={`InlineCommentTextWrap-${entityKey}-${commentThreadID}`}
+          onClick={openCommentThreadDisplay}
+          ref={textRef}
+          role="none"
+        >
+          {children}
+        </span>
       }
-      key={`InlineCommentTextWrap-${entityKey}-${commentThreadID}`}
-      onClick={openCommentThreadDisplay}
-      role="none"
-    >
-      {children}
-    </span>
+      hideArrow={true}
+      isOpen={true}
+      key={`InlineCommentTextWrap-Context-${entityKey}`}
+      onOuterAction={isBeingPrompted ? hidePrompterAndSilence : silentEmptyFnc}
+    />
   );
 }
 
