@@ -106,7 +106,6 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
 
   const hidePrompterAndSilence = (_event: SyntheticEvent): void => {
     if (isBeingPrompted) {
-      console.warn("Clicked Outside: ");
       cleanupStoreAndCloseDisplay({ inlineCommentStore });
       inlineCommentStore.set("promptedEntityKey")(null);
       inlineCommentStore.set("silencedPromptKeys")(
