@@ -18,43 +18,38 @@ import React, {
 type useClickOutsideEffectArgs = {
   entityEl: HTMLElement | null;
   isBeingPrompted: boolean;
-  isReadyToRemoveListener: boolean | null;
+  isReadyToAddListener: boolean;
   onClickOutside: (event: SyntheticEvent) => void;
-  setIsReadyToRemoveListener: (flag: boolean | null) => void;
+  setIsReadyToAddListener: (flag: boolean) => void;
 };
 
 /* Caution: don't modify unless you know what you're doing */
 function useClickOutsideEffect({
   entityEl,
   isBeingPrompted,
-  isReadyToRemoveListener,
+  isReadyToAddListener,
   onClickOutside,
-  setIsReadyToRemoveListener,
+  setIsReadyToAddListener,
 }: useClickOutsideEffectArgs) {
   function handleClickOutside(event) {
-    debugger;
+    if (isReadyToAddListener) {
+      setIsReadyToAddListener(false);
+    }
     if (entityEl != null && !entityEl.contains(event.target)) {
+      document.removeEventListener("mousedown", handleClickOutside);
       onClickOutside(event);
     }
   }
   useEffect(() => {
-    if (entityEl != null) {
-      if (isBeingPrompted && isReadyToRemoveListener === null) {
-        console.warn("adding: ", entityEl);
-        entityEl.addEventListener("mousedown", handleClickOutside);
-        setIsReadyToRemoveListener(true);
-      } else if (isBeingPrompted && isReadyToRemoveListener) {
-        console.warn("removing: ", entityEl);
-        entityEl.removeEventListener("mousedown", handleClickOutside);
-        setIsReadyToRemoveListener(false);
-      }
+    if (entityEl != null && isBeingPrompted && isReadyToAddListener) {
+      document.addEventListener("mousedown", handleClickOutside);
     }
   }, [
     entityEl,
     isBeingPrompted,
-    isReadyToRemoveListener,
+    isReadyToAddListener,
     onClickOutside,
-    setIsReadyToRemoveListener,
+    setIsReadyToAddListener,
   ]);
 }
 
@@ -67,9 +62,9 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     entityKey,
   } /* Props passed down from draft-js. See documentations for decorators */
 ): ReactElement<"span"> {
-  const [isReadyToRemoveListener, setIsReadyToRemoveListener] = useState<
-    boolean | null
-  >(null);
+  const [isReadyToAddListener, setIsReadyToAddListener] = useState<boolean>(
+    true
+  );
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
@@ -87,12 +82,12 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
   const isBeingPrompted =
     inlineCommentStore.get("promptedEntityKey") === entityKey &&
     !silencedPromptKeys.has(entityKey);
-  const shouldTextBeHighlighted = useMemo(
-    () => doesCommentExistInStore || isCommentSavedInBackend,
+  const shouldTextBeHighlighted = useMemo<boolean>(
+    (): boolean => doesCommentExistInStore || isCommentSavedInBackend,
     [doesCommentExistInStore, isCommentSavedInBackend]
   );
-  const isCurrentCommentTextActive = useMemo(
-    () =>
+  const isCurrentCommentTextActive = useMemo<boolean>(
+    (): boolean =>
       shouldTextBeHighlighted &&
       (animatedTextCommentID === commentThreadID ||
         animatedEntityKey === entityKey),
@@ -121,25 +116,27 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     }
   };
 
-  const openCommentThreadDisplay = (event) => {
-    event.stopPropagation();
-    cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    inlineCommentStore.set("displayableInlineComments")(
-      getSavedInlineCommentsGivenBlockKeyAndThreadID({
-        blockKey,
-        commentThreadID,
-        editorState: paperDraftStore.get("editorState"),
-      })
-    );
-    inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+  const openCommentThreadDisplay = (event): void => {
+    if (isCommentSavedInBackend) {
+      event.stopPropagation();
+      cleanupStoreAndCloseDisplay({ inlineCommentStore });
+      inlineCommentStore.set("displayableInlineComments")(
+        getSavedInlineCommentsGivenBlockKeyAndThreadID({
+          blockKey,
+          commentThreadID,
+          editorState: paperDraftStore.get("editorState"),
+        })
+      );
+      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+    }
   };
 
   useClickOutsideEffect({
     entityEl: thisEntityEl,
     isBeingPrompted,
-    isReadyToRemoveListener,
+    isReadyToAddListener,
     onClickOutside: hidePrompterAndSilence,
-    setIsReadyToRemoveListener,
+    setIsReadyToAddListener,
   });
 
   return (
