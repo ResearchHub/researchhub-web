@@ -165,11 +165,8 @@ export function getSavedInlineCommentsGivenBlockKeyAndThreadID({
         ) {
           const {
             commentThreadID: entityCommentThreadID,
-          } = curreContent.getEntity(entityKey).getData();
-          if (
-            entityCommentThreadID != null &&
-            entityCommentThreadID === commentThreadID
-          ) {
+          } = detectableEntity.getData();
+          if (entityCommentThreadID === commentThreadID) {
             result.push({
               blockKey,
               commentThreadID,
