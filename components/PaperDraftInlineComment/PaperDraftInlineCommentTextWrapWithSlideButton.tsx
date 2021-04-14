@@ -18,9 +18,9 @@ import React, {
 type useClickOutsideEffectArgs = {
   entityEl: HTMLElement | null;
   isBeingPrompted: boolean;
-  isReadyToRemoveListener: boolean;
+  isReadyToRemoveListener: boolean | null;
   onClickOutside: (event: SyntheticEvent) => void;
-  setIsReadyToRemoveListener: (flag: boolean) => void;
+  setIsReadyToRemoveListener: (flag: boolean | null) => void;
 };
 
 /* Caution: don't modify unless you know what you're doing */
@@ -32,22 +32,21 @@ function useClickOutsideEffect({
   setIsReadyToRemoveListener,
 }: useClickOutsideEffectArgs) {
   function handleClickOutside(event) {
-    console.warn("Clicked Outside: ", entityEl);
     debugger;
     if (entityEl != null && !entityEl.contains(event.target)) {
       onClickOutside(event);
-      setIsReadyToRemoveListener(false);
     }
   }
   useEffect(() => {
     if (entityEl != null) {
-      if (isBeingPrompted && !isReadyToRemoveListener) {
-        console.warn("prompted: ", entityEl);
+      if (isBeingPrompted && isReadyToRemoveListener === null) {
+        console.warn("adding: ", entityEl);
         entityEl.addEventListener("mousedown", handleClickOutside);
         setIsReadyToRemoveListener(true);
       } else if (isBeingPrompted && isReadyToRemoveListener) {
         console.warn("removing: ", entityEl);
         entityEl.removeEventListener("mousedown", handleClickOutside);
+        setIsReadyToRemoveListener(false);
       }
     }
   }, [
@@ -68,6 +67,9 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     entityKey,
   } /* Props passed down from draft-js. See documentations for decorators */
 ): ReactElement<"span"> {
+  const [isReadyToRemoveListener, setIsReadyToRemoveListener] = useState<
+    boolean | null
+  >(null);
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
@@ -82,7 +84,9 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
       entityKey,
       store: inlineCommentStore,
     }) != null;
-
+  const isBeingPrompted =
+    inlineCommentStore.get("promptedEntityKey") === entityKey &&
+    !silencedPromptKeys.has(entityKey);
   const shouldTextBeHighlighted = useMemo(
     () => doesCommentExistInStore || isCommentSavedInBackend,
     [doesCommentExistInStore, isCommentSavedInBackend]
@@ -100,33 +104,22 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
       shouldTextBeHighlighted,
     ]
   );
-
-  const hidePrompterAndSilence = (_event: SyntheticEvent) => {
-    cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    inlineCommentStore.set("promptedEntityKey")(null);
-    inlineCommentStore.set("silencedPromptKeys")(
-      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
-    );
-    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
-  };
-
-  const isBeingPrompted =
-    inlineCommentStore.get("promptedEntityKey") === entityKey &&
-    !silencedPromptKeys.has(entityKey);
-  const [isReadyToRemoveListener, setIsReadyToRemoveListener] = useState<
-    boolean
-  >(false);
   const thisEntityEl = getTargetInlineDraftEntityEl({
     commentThreadID,
     entityKey,
   });
-  useClickOutsideEffect({
-    entityEl: thisEntityEl,
-    isBeingPrompted,
-    isReadyToRemoveListener,
-    onClickOutside: hidePrompterAndSilence,
-    setIsReadyToRemoveListener,
-  });
+
+  const hidePrompterAndSilence = (_event: SyntheticEvent): void => {
+    if (isBeingPrompted) {
+      console.warn("Clicked Outside: ");
+      cleanupStoreAndCloseDisplay({ inlineCommentStore });
+      inlineCommentStore.set("promptedEntityKey")(null);
+      inlineCommentStore.set("silencedPromptKeys")(
+        new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
+      );
+      inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
+    }
+  };
 
   const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
@@ -140,6 +133,14 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     );
     inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
   };
+
+  useClickOutsideEffect({
+    entityEl: thisEntityEl,
+    isBeingPrompted,
+    isReadyToRemoveListener,
+    onClickOutside: hidePrompterAndSilence,
+    setIsReadyToRemoveListener,
+  });
 
   return (
     <span
