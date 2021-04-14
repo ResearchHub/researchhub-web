@@ -8,6 +8,7 @@ import InlineCommentUnduxStore, {
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 const ANIMATION_DURATION = 2; /* in seconds */
 
@@ -100,10 +101,19 @@ function PaperDraftInlineCommentTextWrap(
     inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
   };
 
+  const hidePopoverAndSilence = (event) => {
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
+    inlineCommentStore.set("silencedPromptKeys")(
+      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
+    );
+    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
+    inlineCommentStore.set("promptedEntityKey")(null);
+    setShowPopover(false);
+  };
+
   return (
     <Popover
       above
-      key={`Popver-${entityKey}`}
       body={
         <span
           key={`Popver-Body-${entityKey}`}
@@ -135,6 +145,8 @@ function PaperDraftInlineCommentTextWrap(
         </span>
       }
       isOpen={showPopover}
+      key={`Popver-${entityKey}`}
+      onOuterAction={isBeingPrompted ? hidePopoverAndSilence : silentEmptyFnc}
     />
   );
 }
