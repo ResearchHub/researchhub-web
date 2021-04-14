@@ -1,6 +1,6 @@
 import { CompositeDecorator } from "draft-js";
 import { INLINE_COMMENT_MAP } from "./PaperDraftTextEditorUtil";
-import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
+import PaperDraftInlineCommentTextWrapWithSlideButton from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrapWithSlideButton";
 import WaypointSection from "../WaypointSection";
 
 export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
@@ -35,14 +35,16 @@ export function getDecorator({
   setSeenEntityKeys,
 }) {
   return new CompositeDecorator([
+    // {
+    //   component: (props) => (
+    //     <WaypointSection {...props} onSectionEnter={setActiveSection} />
+    //   ),
+    //   strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
+    // },
     {
       component: (props) => (
-        <WaypointSection {...props} onSectionEnter={setActiveSection} />
+        <PaperDraftInlineCommentTextWrapWithSlideButton {...props} />
       ),
-      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
-    },
-    {
-      component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
       strategy: findInlineCommentEntity,
     },
   ]);

@@ -27,7 +27,8 @@ export type State = {
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
   paperID: ID;
-  promptedEntityKey: ID /* used mainly for PaperDraftInlineCommentTextWrap */;
+  promptedEntityKey: ID /* TODO: calvinhlee - remove once slidebutton deployes */;
+  promptedInlineComment: InlineComment | null /* used PaperDraftInlineCommentTextWrapWithSlideButton */;
   silencedPromptKeys: Set<ID> /* entityKeys */;
 };
 export type UpdateInlineCommentArgs = {
@@ -64,6 +65,7 @@ const initialState: State = {
   lastPromptRemovedTime: null,
   paperID: null,
   promptedEntityKey: null,
+  promptedInlineComment: null,
   silencedPromptKeys: new Set(),
 };
 
@@ -149,9 +151,12 @@ export function getSavedInlineCommentsGivenBlockKeyAndThreadID({
 }: {
   blockKey: string;
   commentThreadID: ID;
-  editorState: EditorState;
+  editorState: EditorState | null;
 }): Array<InlineComment> {
   const result: InlineComment[] = [];
+  if (editorState === null) {
+    return result;
+  }
   const curreContent = editorState.getCurrentContent();
   const targetBlock = curreContent.getBlockForKey(blockKey);
   targetBlock.findEntityRanges(
