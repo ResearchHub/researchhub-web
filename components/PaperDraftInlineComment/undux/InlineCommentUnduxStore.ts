@@ -198,16 +198,19 @@ export function cleanupStoreAndCloseDisplay({
   inlineCommentStore: InlineCommentStore;
   exceptionEntityKey?: ID;
 }): void {
+  inlineCommentStore.set("animatedEntityKey")(null);
+  inlineCommentStore.set("animatedTextCommentID")(null);
+  inlineCommentStore.set("displayableInlineComments")([]);
+  inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
+  inlineCommentStore.set("promptedEntityKey")(null);
   const commentsWithThreadID = inlineCommentStore
     .get("inlineComments")
     .filter(
       (inlineComment: InlineComment): boolean =>
         inlineComment.commentThreadID != null
     );
-  inlineCommentStore.set("animatedEntityKey")(null);
-  inlineCommentStore.set("animatedTextCommentID")(null);
-  inlineCommentStore.set("displayableInlineComments")([]);
   inlineCommentStore.set("inlineComments")(commentsWithThreadID);
+  prompt;
 }
 
 export function updateInlineComment({
