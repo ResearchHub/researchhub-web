@@ -19,7 +19,7 @@ import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
 function getIsGoodTimeInterval(unixTimeInMilliSec) {
   return unixTimeInMilliSec === null
     ? true
-    : Date.now() - unixTimeInMilliSec > 500; // 300-500 millisec is ui convention
+    : Date.now() - unixTimeInMilliSec > 100; // 300-500 millisec is ui convention
 }
 
 function getIsReadyForNewInlineComment({
@@ -31,12 +31,12 @@ function getIsReadyForNewInlineComment({
   const isGoodTimeInterval = getIsGoodTimeInterval(
     inlineCommentStore.get("lastPromptRemovedTime")
   );
-  // const hasActiveCommentPrompt =
-  //   inlineCommentStore.get("promptedEntityKey") != null;
+  const hasActiveCommentPrompt =
+    inlineCommentStore.get("promptedEntityKey") != null;
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
-    // !hasActiveCommentPrompt &&``
+    !hasActiveCommentPrompt &&
     currSelection != null &&
     !currSelection.isCollapsed()
   );

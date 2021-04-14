@@ -108,15 +108,16 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
   });
 
   const hidePrompterAndSilence = (event: SyntheticEvent): void => {
-    event.stopPropagation;
-    console.warn("hiding");
+    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
     cleanupStoreAndCloseDisplay({ inlineCommentStore });
+    console.warn("hiding");
     inlineCommentStore.set("silencedPromptKeys")(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
   };
 
   const openCommentThreadDisplay = (event): void => {
+    event.preventDefault();
     if (isCommentSavedInBackend) {
       cleanupStoreAndCloseDisplay({
         inlineCommentStore,
@@ -132,6 +133,8 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     }
   };
 
+  /* CalvinhLee: Below is a little bit of a hack to avoid having to worry about various mouseEvents onHide.
+     May have to revisit this */
   return (
     <Popover
       body={<React.Fragment />}
@@ -156,8 +159,7 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
           {children}
         </span>
       }
-      hideArrow={true}
-      isOpen={true}
+      isOpen={isBeingPrompted}
       key={`InlineCommentTextWrap-Context-${entityKey}`}
       onOuterAction={isBeingPrompted ? hidePrompterAndSilence : silentEmptyFnc}
     />

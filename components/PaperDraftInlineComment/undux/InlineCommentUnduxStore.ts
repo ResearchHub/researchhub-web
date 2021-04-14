@@ -205,7 +205,6 @@ export function cleanupStoreAndCloseDisplay({
   inlineCommentStore.set("displayableInlineComments")([]);
   inlineCommentStore.set("promptedEntityKey")(null);
   inlineCommentStore.set("promptedEntityOffsetTop")(null);
-  inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
   const commentsWithThreadID = inlineCommentStore
     .get("inlineComments")
     .filter(
