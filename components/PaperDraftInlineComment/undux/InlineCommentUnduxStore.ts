@@ -27,8 +27,10 @@ export type State = {
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
   paperID: ID;
-  promptedEntityKey: ID /* TODO: calvinhlee - remove once slidebutton deployes */;
-  promptedInlineComment: InlineComment | null /* used PaperDraftInlineCommentTextWrapWithSlideButton */;
+  promptedEntityKey: ID;
+  promptedEntityOffsetTop:
+    | number
+    | null /* used PaperDraftInlineCommentTextWrapWithSlideButton */;
   silencedPromptKeys: Set<ID> /* entityKeys */;
 };
 export type UpdateInlineCommentArgs = {
@@ -65,7 +67,7 @@ const initialState: State = {
   lastPromptRemovedTime: null,
   paperID: null,
   promptedEntityKey: null,
-  promptedInlineComment: null,
+  promptedEntityOffsetTop: null,
   silencedPromptKeys: new Set(),
 };
 
@@ -201,8 +203,9 @@ export function cleanupStoreAndCloseDisplay({
   inlineCommentStore.set("animatedEntityKey")(null);
   inlineCommentStore.set("animatedTextCommentID")(null);
   inlineCommentStore.set("displayableInlineComments")([]);
-  inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
   inlineCommentStore.set("promptedEntityKey")(null);
+  inlineCommentStore.set("promptedEntityOffsetTop")(null);
+  inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
   const commentsWithThreadID = inlineCommentStore
     .get("inlineComments")
     .filter(
