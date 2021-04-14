@@ -11,6 +11,7 @@ import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDra
 import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
+import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
 import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
@@ -160,24 +161,26 @@ export default function PaperDraftContainer({
   );
 
   return (
-    <PaperDraft
-      textEditorProps={{
-        blockStyleFn: getBlockStyleFn,
-        editorState,
-        handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
-        initEditorState,
-        isInEditMode: isDraftInEditMode,
-        onChange: setEditorState,
-        setInitEditorState,
-        setIsInEditMode: setIsDraftInEditMode,
-        spellCheck: isDraftInEditMode,
-      }}
-      inlineCommentStore={inlineCommentStore}
-      isFetching={isFetching}
-      isViewerAllowedToEdit={isViewerAllowedToEdit}
-      paperDraftExists={paperDraftExists}
-      paperDraftSections={paperDraftSections}
-      paperId={paperId}
-    />
+    <PaperDraftInlineCommentRelativeWrap>
+      <PaperDraft
+        textEditorProps={{
+          blockStyleFn: getBlockStyleFn,
+          editorState,
+          handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
+          initEditorState,
+          isInEditMode: isDraftInEditMode,
+          onChange: setEditorState,
+          setInitEditorState,
+          setIsInEditMode: setIsDraftInEditMode,
+          spellCheck: isDraftInEditMode,
+        }}
+        inlineCommentStore={inlineCommentStore}
+        isFetching={isFetching}
+        isViewerAllowedToEdit={isViewerAllowedToEdit}
+        paperDraftExists={paperDraftExists}
+        paperDraftSections={paperDraftSections}
+        paperId={paperId}
+      />
+    </PaperDraftInlineCommentRelativeWrap>
   );
 }
