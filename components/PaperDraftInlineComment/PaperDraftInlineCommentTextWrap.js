@@ -21,7 +21,7 @@ function PaperDraftInlineCommentTextWrap(
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
     .has(entityKey);
-  const animatedEntityKey = inlineCommentStore.get("animatedTextCommentID");
+  const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
   const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
   const isBeingPrompted =
     inlineCommentStore.get("promptedEntityKey") === entityKey;
@@ -138,7 +138,9 @@ function PaperDraftInlineCommentTextWrap(
               : `inline-comment-${entityKey}`
           }
           key={`Popver-Child-${entityKey}`}
-          onClick={openCommentThreadDisplay}
+          onClick={
+            isCommentSavedInBackend ? openCommentThreadDisplay : silentEmptyFnc
+          }
           role="none"
         >
           {props.children}
