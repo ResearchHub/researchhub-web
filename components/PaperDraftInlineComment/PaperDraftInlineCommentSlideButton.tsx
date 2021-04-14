@@ -3,9 +3,14 @@ import React, { ReactElement, useEffect, useState } from "react";
 import colors from "../../config/themes/colors";
 import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
 import InlineCommentUnduxStore from "./undux/InlineCommentUnduxStore";
+import { getTargetInlineDraftEntityEl } from "../InlineCommentDisplay/util/InlineCommentThreadUtil";
 
 const BUTTON_HEIGHT = 24;
 const BUTTON_WIDTH = 24;
+
+function isUndefined(str: string): boolean {
+  return str === "undefined";
+}
 
 export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   "div"
@@ -13,22 +18,24 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
   const shouldShowButton = promptedEntityKey != null;
-  console.warn("promptedEntityKey: ", promptedEntityKey);
 
-  if (typeof window === "undefined") {
+  if (
+    isUndefined(typeof window) ||
+    isUndefined(typeof document) ||
+    !shouldShowButton
+  ) {
     return null;
   }
-
-  const [offsetTop, setOffsetTop] = useState<number>(0);
-  const htmlEntityEl = document.getElementById(
-    formatTextWrapID(promptedEntityKey)
-  );
-
-  useEffect((): void => {
-    if (shouldShowButton && htmlEntityEl != null) {
-      setOffsetTop((htmlEntityEl || {}).offsetTop || 0 - BUTTON_HEIGHT / 2);
-    }
-  }, [shouldShowButton, htmlEntityEl]);
+  const htmlEntityEl = getTargetInlineDraftEntityEl({
+    commentThreadID: null,
+    entityKey: promptedEntityKey,
+  });
+  let offsetTop = 0;
+  if (shouldShowButton && htmlEntityEl != null) {
+    offsetTop = (htmlEntityEl || {}).offsetTop || 0 - BUTTON_HEIGHT / 2;
+  }
+  console.warn("promptedEntityKey: ", promptedEntityKey);
+  console.warn("offsetTop: ", offsetTop);
 
   return (
     <div

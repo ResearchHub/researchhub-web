@@ -105,14 +105,12 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
   });
 
   const hidePrompterAndSilence = (_event: SyntheticEvent): void => {
-    if (isBeingPrompted) {
-      cleanupStoreAndCloseDisplay({ inlineCommentStore });
-      inlineCommentStore.set("promptedEntityKey")(null);
-      inlineCommentStore.set("silencedPromptKeys")(
-        new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
-      );
-      inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
-    }
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
+    console.warn("hiding man");
+    inlineCommentStore.set("silencedPromptKeys")(
+      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
+    );
+    console.warn("what now: ", inlineCommentStore.get("promptedEntityKey"));
   };
 
   const openCommentThreadDisplay = (event): void => {
