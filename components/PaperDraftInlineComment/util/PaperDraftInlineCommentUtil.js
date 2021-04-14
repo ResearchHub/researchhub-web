@@ -130,3 +130,7 @@ export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
   return getBlockTypesInSet(block);
 }
+
+export function formatTextWrapID(id) {
+  return `inline-comment-${id}`;
+}

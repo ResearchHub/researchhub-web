@@ -1,5 +1,6 @@
 import { SyntheticEvent } from "react";
 import { ID } from "../../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { formatTextWrapID } from "../../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 
 type GetTargetDraftEntityElArgs = {
   commentThreadID: ID;
@@ -23,10 +24,10 @@ function isElemntWithinViewPort(element: HTMLElement): boolean {
 export function getTargetInlineDraftEntityEl({
   commentThreadID,
   entityKey,
-}): HTMLElement | null {
-  let entityEl = document.getElementById(`inline-comment-${commentThreadID}`);
+}: GetTargetDraftEntityElArgs): HTMLElement | null {
+  let entityEl = document.getElementById(formatTextWrapID(commentThreadID));
   if (entityEl == null) {
-    entityEl = document.getElementById(`inline-comment-${entityKey}`);
+    entityEl = document.getElementById(formatTextWrapID(entityKey));
   }
   return entityEl;
 }
