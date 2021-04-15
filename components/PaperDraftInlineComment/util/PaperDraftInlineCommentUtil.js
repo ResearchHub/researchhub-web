@@ -72,7 +72,7 @@ function handleInlineCommentBlockToggle({
   const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
     currentContent: updatedContentWithNewEnt,
   });
-  onInlineCommentPrompt(entityKey);
+  onInlineCommentPrompt({ blockKey, entityKey });
   return updatedEditorStateWithNewEnt.getCurrentContent();
 }
 
