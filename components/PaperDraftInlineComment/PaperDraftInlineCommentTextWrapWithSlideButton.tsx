@@ -17,7 +17,6 @@ import React, {
   useRef,
   RefObject,
 } from "react";
-import { BUTTON_HEIGHT } from "./PaperDraftInlineCommentSlideButton";
 import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 type UseEffectPrepareSlideButtonArgs = {
@@ -36,11 +35,13 @@ function useEffectPrepareSlideButton({
   textRef,
 }: UseEffectPrepareSlideButtonArgs): void {
   useEffect(() => {
-    if (textRef != null && shouldInsertOffSetTop && isBeingPrompted) {
-      const { offsetTop } = textRef.current || { offsetTop: 0 };
-      inlineCommentStore.set("promptedEntityOffsetTop")(
-        offsetTop - BUTTON_HEIGHT / 2
-      );
+    if (
+      textRef != null &&
+      isBeingPrompted &&
+      inlineCommentStore.get("promptedEntityOffsetTop") == null
+    ) {
+      const { offsetTop } = textRef.current || { offsetTop: null };
+      inlineCommentStore.set("promptedEntityOffsetTop")(offsetTop);
       setShouldInsertOffSetTop(false);
     }
   }, [
