@@ -110,10 +110,10 @@ function InlineCommentThreadCard({
           ...unduxInlineComment,
           commentThreadID: threadID,
         };
-        updateInlineComment({
-          store: inlineCommentStore,
-          updatedInlineComment,
-        });
+        // updateInlineComment({
+        //   store: inlineCommentStore,
+        //   updatedInlineComment,
+        // });
         /* this will also trigger paper to save in the background */
         updateInlineThreadIdInEntity({
           entityKey,
