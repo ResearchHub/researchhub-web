@@ -1,5 +1,5 @@
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import {
-  emptyFunction,
   getIsReadyForNewInlineComment,
   getShouldSavePaperSilently,
 } from "./util/PaperDraftUtils";
@@ -79,7 +79,7 @@ export default function PaperDraftContainer({
     if (shouldSavePaperSilently) {
       savePaperSilentlyHook({
         editorState,
-        onError: (error) => emptyFunction(error),
+        onError: (error) => emptyFncWithMsg(error),
         onSuccess: () => {
           paperDraftStore.set("lastSavePaperTime")(Date.now());
           paperDraftStore.set("shouldSavePaper")(false);
