@@ -18,9 +18,8 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
   const offsetTop = inlineCommentStore.get("promptedEntityOffsetTop") || 0;
-  const shouldShowButton = promptedEntityKey != null && offsetTop > 0;
-  // console.warn("promptedEntityKey: ", promptedEntityKey);
-  // console.warn("offsetTop: ", offsetTop);
+  const shouldShowButton = (promptedEntityKey != null && offsetTop) > 0;
+
   if (
     isUndefined(typeof window) ||
     isUndefined(typeof document) ||
@@ -29,9 +28,11 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
     return null;
   }
 
+  const displayableOffsetTop = offsetTop - BUTTON_HEIGHT / 2;
+
   return (
     <div
-      style={{ top: offsetTop }}
+      style={{ top: displayableOffsetTop }}
       className={css([styles.PaperDraftInlineCommentSlideButton])}
     >
       Hi this is BUTTON
