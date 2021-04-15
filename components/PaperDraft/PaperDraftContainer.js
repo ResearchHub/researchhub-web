@@ -105,10 +105,11 @@ export default function PaperDraftContainer({
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
         onInlineCommentPrompt: ({ blockKey, entityKey }) => {
-          inlineCommentStore.set("promptedInlineComment")({
+          inlineCommentStore.set("preparingInlineComment")({
             blockKey,
             entityKey,
           });
+          inlineCommentStore.set("promptedEntityKey")(entityKey);
         },
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });

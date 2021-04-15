@@ -1,13 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  findTargetInlineComment,
   getSavedInlineCommentsGivenBlockKeyAndThreadID,
+  InlineComment,
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
 import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
-import Popover from "react-popover";
 import React, {
   ReactElement,
   SyntheticEvent,
@@ -17,7 +16,6 @@ import React, {
   useRef,
   RefObject,
 } from "react";
-import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 type UseEffectPrepareSlideButtonArgs = {
   decoratedText: string;
@@ -36,16 +34,18 @@ function useEffectPrepareSlideButton({
   shouldPrepSlideButton,
   textRef,
 }: UseEffectPrepareSlideButtonArgs): void {
-  const promptedInlineComment = inlineCommentStore.get("promptedInlineComment");
+  const preparingInlineComment = inlineCommentStore.get(
+    "preparingInlineComment"
+  );
   useEffect(() => {
     if (
       textRef != null &&
       isBeingPrompted &&
-      promptedInlineComment.offsetTop == null
+      preparingInlineComment.offsetTop == null
     ) {
       const { offsetTop } = textRef.current || { offsetTop: null };
-      inlineCommentStore.set("promptedInlineComment")({
-        ...promptedInlineComment,
+      inlineCommentStore.set("preparingInlineComment")({
+        ...preparingInlineComment,
         highlightedText: decoratedText,
         offsetTop,
       });
@@ -61,52 +61,35 @@ function useEffectPrepareSlideButton({
 }
 
 export default function PaperDraftInlineCommentTextWrapWithSlideButton(
-  {
-    blockKey,
-    children,
-    contentState,
-    decoratedText,
-    entityKey,
-  } /* Props passed down from draft-js. See documentations for decorators */
+  /* Props passed down from draft-js. See documentations for decorators */
+  { blockKey, children, contentState, decoratedText, entityKey }
 ): ReactElement<"span"> {
+  const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperDraftStore = PaperDraftStore.useStore();
+  const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
+  const displayableInlineComments = inlineCommentStore.get(
+    "displayableInlineComments"
+  );
   const [shouldPrepSlideButton, setShouldPrepSlideButton] = useState<boolean>(
     true
   );
   const textRef = useRef<HTMLSpanElement>(null);
-  const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const paperDraftStore = PaperDraftStore.useStore();
-  const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
-  const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
-  const { entityKey: promptedEntityKey } = inlineCommentStore.get(
-    "promptedInlineComment"
-  );
+
   const { commentThreadID } = contentState.getEntity(entityKey).getData();
   const isCommentSavedInBackend = commentThreadID != null;
-  const doesCommentExistInStore =
-    findTargetInlineComment({
-      blockKey,
-      commentThreadID,
-      entityKey,
-      store: inlineCommentStore,
-    }) != null;
-
-  const shouldTextBeHighlighted = useMemo<boolean>(
-    (): boolean => doesCommentExistInStore || isCommentSavedInBackend,
-    [doesCommentExistInStore, isCommentSavedInBackend]
-  );
-  const isCurrentCommentTextActive = useMemo<boolean>(
+  const isCommentBeingDisplayed = useMemo(
     (): boolean =>
-      shouldTextBeHighlighted &&
-      (animatedTextCommentID === commentThreadID ||
-        animatedEntityKey === entityKey),
-    [
-      animatedEntityKey,
-      animatedTextCommentID,
-      commentThreadID,
-      entityKey,
-      shouldTextBeHighlighted,
-    ]
+      (displayableInlineComments || []).find(
+        (inlineComment: InlineComment): boolean =>
+          inlineComment.entityKey === entityKey
+      ) != null,
+    [displayableInlineComments, entityKey]
   );
+  const shouldTextBeHighlighted = useMemo<boolean>(
+    (): boolean => isCommentBeingDisplayed || isCommentSavedInBackend,
+    [isCommentBeingDisplayed, isCommentSavedInBackend]
+  );
+
   const isBeingPrompted =
     promptedEntityKey === entityKey &&
     !inlineCommentStore.get("silencedPromptKeys").has(entityKey);
@@ -119,15 +102,7 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     textRef,
   });
 
-  const hidePrompterAndSilence = (event: SyntheticEvent): void => {
-    inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
-    cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    inlineCommentStore.set("silencedPromptKeys")(
-      new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
-    );
-  };
-
-  const openCommentThreadDisplay = (event): void => {
+  const openCommentThreadDisplay = (event: SyntheticEvent): void => {
     event.preventDefault();
     if (isCommentSavedInBackend) {
       cleanupStoreAndCloseDisplay({
@@ -140,40 +115,29 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
           editorState: paperDraftStore.get("editorState"),
         })
       );
-      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
     }
   };
 
-  /* CalvinhLee: Below is a little bit of a hack to avoid having to worry about various mouseEvents onHide.
-     May have to revisit this */
   return (
-    <Popover
-      body={<React.Fragment />}
-      children={
-        <span
-          className={css(
-            shouldTextBeHighlighted
-              ? styles.commentTextHighLight
-              : styles.textNonHighLight,
-            isCurrentCommentTextActive ? styles.commentActiveHighlight : null
-          )}
-          id={
-            commentThreadID != null
-              ? formatTextWrapID(commentThreadID)
-              : formatTextWrapID(entityKey)
-          }
-          key={`InlineCommentTextWrap-${entityKey}-${commentThreadID}`}
-          onClick={openCommentThreadDisplay}
-          ref={textRef}
-          role="none"
-        >
-          {children}
-        </span>
+    <span
+      className={css(
+        shouldTextBeHighlighted
+          ? styles.commentTextHighLight
+          : styles.textNonHighLight,
+        isCommentBeingDisplayed ? styles.commentActiveHighlight : null
+      )}
+      id={
+        commentThreadID != null
+          ? formatTextWrapID(commentThreadID)
+          : formatTextWrapID(entityKey)
       }
-      isOpen={isBeingPrompted}
-      key={`InlineCommentTextWrap-Context-${entityKey}`}
-      onOuterAction={isBeingPrompted ? hidePrompterAndSilence : silentEmptyFnc}
-    />
+      key={`InlineCommentTextWrap-${entityKey}-${commentThreadID}`}
+      onClick={openCommentThreadDisplay}
+      ref={textRef}
+      role="none"
+    >
+      {children}
+    </span>
   );
 }
 
