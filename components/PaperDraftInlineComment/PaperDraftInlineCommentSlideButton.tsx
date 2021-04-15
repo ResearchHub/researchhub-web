@@ -1,9 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement, useEffect, useState } from "react";
 import colors from "../../config/themes/colors";
-import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
 import InlineCommentUnduxStore from "./undux/InlineCommentUnduxStore";
-import { getTargetInlineDraftEntityEl } from "../InlineCommentDisplay/util/InlineCommentThreadUtil";
+import icons from "../../config/themes/icons";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
@@ -35,7 +34,7 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
       style={{ top: displayableOffsetTop }}
       className={css([styles.PaperDraftInlineCommentSlideButton])}
     >
-      Hi this is BUTTON
+      {icons.plus}
     </div>
   );
 }
@@ -46,10 +45,12 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     border: `1px solid ${colors.GREY(0.8)}`,
     borderRadius: 5,
+    color: colors.BLUE(1),
     cursor: "pointer",
     display: "flex",
     height: BUTTON_HEIGHT,
     justifyContent: "center",
+    fontSize: 16,
     padding: 8,
     position: "absolute",
     right: -55 /* arbitrary css decision based on look */,
