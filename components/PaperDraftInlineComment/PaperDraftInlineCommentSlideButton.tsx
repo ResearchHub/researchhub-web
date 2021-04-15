@@ -1,23 +1,54 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, SyntheticEvent } from "react";
 import colors from "../../config/themes/colors";
-import InlineCommentUnduxStore from "./undux/InlineCommentUnduxStore";
+import InlineCommentUnduxStore, {
+  cleanupStoreAndCloseDisplay,
+} from "./undux/InlineCommentUnduxStore";
 import icons from "../../config/themes/icons";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
 
-function isUndefined(str: string): boolean {
-  return str === "undefined";
+function isUndefined(given: any): boolean {
+  return given === "undefined" || typeof given === "undefined" || given == null;
 }
 
 export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   "div"
 > | null {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
-  const offsetTop = inlineCommentStore.get("promptedEntityOffsetTop") || 0;
-  const shouldShowButton = (promptedEntityKey != null && offsetTop) > 0;
+  const {
+    blockKey,
+    entityKey,
+    highlightedText,
+    offsetTop,
+  } = inlineCommentStore.get("promptedInlineComment");
+  const displayableOffsetTop = (offsetTop || 0) - BUTTON_HEIGHT / 2;
+  const shouldShowButton = entityKey != null && displayableOffsetTop > -1;
+
+  // const onClick = (_event: SyntheticEvent) => {
+  //   inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
+  //   cleanupStoreAndCloseDisplay({
+  //     inlineCommentStore,
+  //   });
+  //   inlineCommentStore.set("silencedPromptKeys")(
+  //     new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
+  //   );
+  //   const newInlineComment = {
+  //     blockKey,
+  //     commentThreadID,
+  //     entityKey,
+  //     highlightedText: decoratedText,
+  //     store: inlineCommentStore,
+  //   };
+  //   updateInlineComment({
+  //     store: inlineCommentStore,
+  //     updatedInlineComment: newInlineComment,
+  //   });
+  //   const displayableComments = [newInlineComment];
+  //   inlineCommentStore.set("displayableInlineComments")(displayableComments);
+  //   setShowPopover(false);
+  // };
 
   if (
     isUndefined(typeof window) ||
@@ -27,12 +58,12 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
     return null;
   }
 
-  const displayableOffsetTop = offsetTop - BUTTON_HEIGHT / 2;
-
   return (
     <div
+      className={css(styles.PaperDraftInlineCommentSlideButton)}
+      // onClick={onClick}
+      role="none"
       style={{ top: displayableOffsetTop }}
-      className={css([styles.PaperDraftInlineCommentSlideButton])}
     >
       {icons.plus}
     </div>

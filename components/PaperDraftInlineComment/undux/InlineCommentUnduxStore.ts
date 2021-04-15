@@ -18,6 +18,12 @@ export type InlineComment = {
   entityKey: string;
   highlightedText: string | null;
 };
+export type PromptedInlineComment = {
+  blockKey?: string | null;
+  entityKey?: string | null;
+  highlightedText?: string | null;
+  offsetTop?: number | null;
+};
 export type State = {
   animatedEntityKey: ID /* animatedTextCommentID should be considered first */;
   animatedTextCommentID: ID /* commentThreadID */;
@@ -27,10 +33,7 @@ export type State = {
   inlineComments: Array<InlineComment>;
   lastPromptRemovedTime: number | null;
   paperID: ID;
-  promptedEntityKey: ID;
-  promptedEntityOffsetTop:
-    | number
-    | null /* used PaperDraftInlineCommentTextWrapWithSlideButton */;
+  promptedInlineComment: PromptedInlineComment /* used PaperDraftInlineCommentTextWrapWithSlideButton */;
   silencedPromptKeys: Set<ID> /* entityKeys */;
 };
 export type UpdateInlineCommentArgs = {
@@ -66,8 +69,7 @@ const initialState: State = {
   inlineComments: [],
   lastPromptRemovedTime: null,
   paperID: null,
-  promptedEntityKey: null,
-  promptedEntityOffsetTop: null,
+  promptedInlineComment: {},
   silencedPromptKeys: new Set(),
 };
 
@@ -203,8 +205,7 @@ export function cleanupStoreAndCloseDisplay({
   inlineCommentStore.set("animatedEntityKey")(null);
   inlineCommentStore.set("animatedTextCommentID")(null);
   inlineCommentStore.set("displayableInlineComments")([]);
-  inlineCommentStore.set("promptedEntityKey")(null);
-  inlineCommentStore.set("promptedEntityOffsetTop")(null);
+  inlineCommentStore.set("promptedInlineComment")({});
   const commentsWithThreadID = inlineCommentStore
     .get("inlineComments")
     .filter(
