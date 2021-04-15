@@ -12,6 +12,7 @@ import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 const ANIMATION_DURATION = 2; /* in seconds */
 
+/* WARNING: DEPRECATED */
 function PaperDraftInlineCommentTextWrap(
   props /* prop comes in from draft-js */
 ) {

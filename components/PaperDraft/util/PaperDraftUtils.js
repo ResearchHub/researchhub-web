@@ -174,3 +174,44 @@ export const formatRawJsonToEditorState = (payload) => {
     onError("formatRawJsonToEditorState: ", error);
   }
 };
+
+export function getIsGoodTimeInterval(unixTimeInMilliSec) {
+  return unixTimeInMilliSec === null
+    ? true
+    : Date.now() - unixTimeInMilliSec > 500; // 300-500 millisec is ui convention
+}
+
+export function getIsReadyForNewInlineComment({
+  editorState,
+  inlineCommentStore,
+  isDraftInEditMode,
+}) {
+  const currSelection = editorState.getSelection();
+  const isGoodTimeInterval = getIsGoodTimeInterval(
+    inlineCommentStore.get("lastPromptRemovedTime")
+  );
+  const hasActiveCommentPrompt =
+    inlineCommentStore.get("promptedInlineComment").entityKey != null;
+  return (
+    !isDraftInEditMode &&
+    isGoodTimeInterval &&
+    !hasActiveCommentPrompt &&
+    currSelection != null &&
+    !currSelection.isCollapsed()
+  );
+}
+
+export function getShouldSavePaperSilently({
+  isDraftInEditMode,
+  paperDraftStore,
+}) {
+  const isGoodTimeInterval = getIsGoodTimeInterval(
+    paperDraftStore.get("lastSavePaperTime")
+  );
+  return (
+    !isDraftInEditMode &&
+    isGoodTimeInterval &&
+    paperDraftStore.get("paperID") != null &&
+    paperDraftStore.get("shouldSavePaper")
+  );
+}

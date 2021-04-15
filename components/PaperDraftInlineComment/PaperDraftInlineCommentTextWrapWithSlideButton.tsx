@@ -20,36 +20,43 @@ import React, {
 import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 type UseEffectPrepareSlideButtonArgs = {
+  decoratedText: string;
   inlineCommentStore: InlineCommentStore;
   isBeingPrompted: boolean;
-  setShouldInsertOffSetTop: (flag: boolean) => void;
-  shouldInsertOffSetTop: boolean;
+  setShouldPrepSlideButton: (flag: boolean) => void;
+  shouldPrepSlideButton: boolean;
   textRef: RefObject<HTMLSpanElement>;
 };
 
 function useEffectPrepareSlideButton({
+  decoratedText,
   inlineCommentStore,
   isBeingPrompted,
-  setShouldInsertOffSetTop,
-  shouldInsertOffSetTop,
+  setShouldPrepSlideButton,
+  shouldPrepSlideButton,
   textRef,
 }: UseEffectPrepareSlideButtonArgs): void {
+  const promptedInlineComment = inlineCommentStore.get("promptedInlineComment");
   useEffect(() => {
     if (
       textRef != null &&
       isBeingPrompted &&
-      inlineCommentStore.get("promptedEntityOffsetTop") == null
+      promptedInlineComment.offsetTop == null
     ) {
       const { offsetTop } = textRef.current || { offsetTop: null };
-      inlineCommentStore.set("promptedEntityOffsetTop")(offsetTop);
-      setShouldInsertOffSetTop(false);
+      inlineCommentStore.set("promptedInlineComment")({
+        ...promptedInlineComment,
+        highlightedText: decoratedText,
+        offsetTop,
+      });
+      setShouldPrepSlideButton(false);
     }
   }, [
-    textRef,
     inlineCommentStore,
-    shouldInsertOffSetTop,
     isBeingPrompted,
-    setShouldInsertOffSetTop,
+    setShouldPrepSlideButton,
+    shouldPrepSlideButton,
+    textRef,
   ]);
 }
 
@@ -62,13 +69,17 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     entityKey,
   } /* Props passed down from draft-js. See documentations for decorators */
 ): ReactElement<"span"> {
-  const [shouldInsertOffSetTop, setShouldInsertOffSetTop] = useState<boolean>(
+  const [shouldPrepSlideButton, setShouldPrepSlideButton] = useState<boolean>(
     true
   );
+  const textRef = useRef<HTMLSpanElement>(null);
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftStore.useStore();
   const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
   const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
+  const { entityKey: promptedEntityKey } = inlineCommentStore.get(
+    "promptedInlineComment"
+  );
   const { commentThreadID } = contentState.getEntity(entityKey).getData();
   const isCommentSavedInBackend = commentThreadID != null;
   const doesCommentExistInStore =
@@ -97,21 +108,20 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
     ]
   );
   const isBeingPrompted =
-    inlineCommentStore.get("promptedEntityKey") === entityKey &&
+    promptedEntityKey === entityKey &&
     !inlineCommentStore.get("silencedPromptKeys").has(entityKey);
-  const textRef = useRef<HTMLSpanElement>(null);
   useEffectPrepareSlideButton({
+    decoratedText,
     inlineCommentStore,
     isBeingPrompted,
-    setShouldInsertOffSetTop,
-    shouldInsertOffSetTop,
+    setShouldPrepSlideButton,
+    shouldPrepSlideButton,
     textRef,
   });
 
   const hidePrompterAndSilence = (event: SyntheticEvent): void => {
     inlineCommentStore.set("lastPromptRemovedTime")(Date.now());
     cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    console.warn("hiding");
     inlineCommentStore.set("silencedPromptKeys")(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
     );
