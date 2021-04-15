@@ -19,7 +19,6 @@ export default function InlineCommentThreadsDisplayBarWithMediaSize(
   const currMediaWidth =
     document.documentElement.clientWidth || document.body.clientWidth;
   const shouldRenderWithSlide = currMediaWidth <= MEDIA_WIDTH_LIMIT;
-
   if (shouldRenderWithSlide) {
     return (
       <div className={css(styles.mobile)}>
@@ -56,6 +55,7 @@ function InlineCommentThreadsDisplayBar({
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
+  // console.warn("displayableInlineComments: ", displayableInlineComments);
 
   const commentThreadCards = displayableInlineComments.map(
     (

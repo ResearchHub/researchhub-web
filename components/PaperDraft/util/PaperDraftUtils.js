@@ -191,7 +191,7 @@ export function getIsReadyForNewInlineComment({
     inlineCommentStore.get("lastPromptRemovedTime")
   );
   const hasActiveCommentPrompt =
-    inlineCommentStore.get("promptedInlineComment").entityKey != null;
+    inlineCommentStore.get("promptedEntityKey") != null;
   return (
     !isDraftInEditMode &&
     isGoodTimeInterval &&
