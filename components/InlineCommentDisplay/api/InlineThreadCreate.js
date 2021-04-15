@@ -3,7 +3,7 @@ import API from "~/config/api";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
 import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
-import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export function saveThreadToBackend({
   auth,
@@ -43,7 +43,7 @@ export function saveThreadToBackend({
       onSuccess({ threadID });
     })
     .catch((err) => {
-      emptyFunction(err);
+      emptyFncWithMsg(err);
       showMessage({ show: false });
       setMessage("Something went wrong");
       showMessage({ show: true, error: true });

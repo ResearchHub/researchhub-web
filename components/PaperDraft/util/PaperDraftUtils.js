@@ -1,5 +1,6 @@
 import { EditorState, convertFromRaw } from "draft-js";
 import { convertFromHTML } from "draft-convert";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
@@ -119,23 +120,13 @@ const formatHTMLForMarkup = (base64) => {
 };
 
 /* ------------------- EXPORTS ------------------- */
-export function emptyFunction(message) {
-  if (message == null) {
-    console.warn("emptyFunction is used. this maybe a bug");
-  } else {
-    console.warn(message);
-  }
-}
-
-export function silentEmptyFnc() {}
-
 export const formatBase64ToEditorState = (payload) => {
   const {
     base64 = "",
     currenEditorState = EditorState.createEmpty(),
     decorator = null,
-    onError = emptyFunction,
-    onSuccess = emptyFunction,
+    onError = emptyFncWithMsg,
+    onSuccess = emptyFncWithMsg,
   } = payload ?? {};
   try {
     const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
@@ -158,8 +149,8 @@ export const formatBase64ToEditorState = (payload) => {
 export const formatRawJsonToEditorState = (payload) => {
   const {
     decorator = null,
-    onError = emptyFunction,
-    onSuccess = emptyFunction,
+    onError = emptyFncWithMsg,
+    onSuccess = emptyFncWithMsg,
     rawJson /* json formatted by draftJs & saved to backend */,
   } = payload ?? {};
   try {

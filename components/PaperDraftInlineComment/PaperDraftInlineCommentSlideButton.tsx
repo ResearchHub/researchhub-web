@@ -1,27 +1,21 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, SyntheticEvent } from "react";
+import { isUndefined, nullToEmptyString } from "../../config/utils/nullchecks";
+import React, { ReactElement, SyntheticEvent, useRef } from "react";
 import colors from "../../config/themes/colors";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
 import icons from "../../config/themes/icons";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
 
-function isUndefined(given: any): boolean {
-  return given === "undefined" || typeof given === "undefined" || given == null;
-}
-
-function nullToEmptyString(given: string | undefined | null): string {
-  return given || "";
-}
-
 export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   "div"
 > | null {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const buttonRef = useRef<HTMLDivElement>(null);
+
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
   const {
     blockKey,
@@ -36,12 +30,11 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
+
   console.warn("displayableInlineComments: ", displayableInlineComments);
 
   const closeButtonAndRenderThreadCard = (event: SyntheticEvent) => {
-    // event.stopPropagation();
-    // logical ordering
-    console.warn("GET called");
+    // TODO: calvinhlee - figure out how to clear selection state
     cleanupStoreAndCloseDisplay({
       inlineCommentStore,
     });
@@ -52,10 +45,6 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
       highlightedText: nullToEmptyString(highlightedText),
       store: inlineCommentStore,
     };
-    // updateInlineComment({
-    //   store: inlineCommentStore,
-    //   updatedInlineComment: newInlineComment,
-    // });
     inlineCommentStore.set("displayableInlineComments")([newInlineComment]);
   };
 
@@ -71,6 +60,7 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
     <div
       className={css(styles.PaperDraftInlineCommentSlideButton)}
       onClick={closeButtonAndRenderThreadCard}
+      ref={buttonRef}
       style={{ top: displayableOffsetTop }}
     >
       {icons.plus}
