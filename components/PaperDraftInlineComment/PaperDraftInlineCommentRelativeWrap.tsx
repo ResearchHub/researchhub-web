@@ -20,6 +20,5 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
     width: "100%",
-    backgroundColor: "yellow",
   },
 });
