@@ -32,7 +32,6 @@ function useEffectHandleClickOutside({
   paperDraftStore: PaperDraftStore;
   shouldShowButton: boolean;
 }): void {
-  // TODO: calvinhlee - figure out how to clear selection state
   const isRefNull = buttonRef != null && buttonRef.current == null;
   function onClickOutside(event: MouseEvent) {
     // @ts-ignore
