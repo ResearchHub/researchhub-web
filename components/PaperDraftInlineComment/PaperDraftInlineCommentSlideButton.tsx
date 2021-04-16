@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     padding: 8,
     position: "absolute",
     right: -52 /* arbitrary css decision based on look */,
-    zIndex: 10000000,
+    zIndex: 1,
     width: BUTTON_WIDTH,
     ":hover": {
       backgroundColor: colors.GREY(1),

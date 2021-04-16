@@ -108,7 +108,7 @@ const burgerMenuStyle = {
   bmMenuWrap: {
     position: "fixed",
     top: 0,
-    zIndex: 3147480000,
+    zIndex: 1000,
     overflowY: "auto",
     width: "85%",
   },
