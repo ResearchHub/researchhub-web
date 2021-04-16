@@ -111,8 +111,6 @@ function InlineCommentThreadCard({
   const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
     let { paperId } = router.query;
-    /* updates discussion count on frontend UI */
-    setDiscussionCount(discussionCount + 1);
     saveThreadToBackend({
       auth,
       onSuccess: ({ threadID }: { threadID: ID }): void => {
