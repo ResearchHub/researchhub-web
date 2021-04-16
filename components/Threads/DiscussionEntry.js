@@ -21,7 +21,7 @@ import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "../../config/utils";
-import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
+import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -48,6 +48,7 @@ class DiscussionEntry extends React.Component {
   }
 
   componentDidMount = async () => {
+    /* calvinhlee: why are we even setting a prop to the state to render? */
     const { data, newCard } = this.props;
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
@@ -361,10 +362,12 @@ class DiscussionEntry extends React.Component {
     const {
       data,
       data: { context_title: contextTitle, id: commentThreadID },
-      paper,
       hostname,
-      path,
       mobileView,
+      paper,
+      path,
+      shouldShowContextTitle = true,
+      store: inlineCommentStore,
     } = this.props;
     const commentCount =
       this.state.comments.length > data.comment_count
@@ -382,7 +385,6 @@ class DiscussionEntry extends React.Component {
       contentType: "thread",
       objectId: data.id,
     };
-
     return (
       <div
         className={css(
@@ -455,11 +457,24 @@ class DiscussionEntry extends React.Component {
                     twitterUrl={data.url}
                   />
                 </div>
-                {contextTitle ? (
+                {shouldShowContextTitle && contextTitle ? (
                   <InlineCommentContextTitle
                     commentThreadID={commentThreadID}
                     entityKey={null}
-                    onSuccess={silentEmptyFnc}
+                    onScrollSuccess={() => {
+                      inlineCommentStore.set("animatedEntityKey")(null);
+                      inlineCommentStore.set("animatedTextCommentID")(
+                        commentThreadID
+                      );
+                      inlineCommentStore.set("displayableInlineComments")([
+                        {
+                          blockKey: "Blockkey-placeholder",
+                          commentThreadID,
+                          entityKey: "EntityKey-placeholder",
+                          highlightedText: contextTitle,
+                        },
+                      ]);
+                    }}
                     title={contextTitle}
                   />
                 ) : null}
@@ -736,4 +751,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DiscussionEntry);
+)(InlineCommentUnduxStore.withStore(DiscussionEntry));
