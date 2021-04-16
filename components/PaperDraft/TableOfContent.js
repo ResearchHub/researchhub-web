@@ -11,7 +11,7 @@ const TableOfContent = (props) => {
     return paperDraftSections.map((section, index) => {
       return (
         <a
-          href={`#${section}`}
+          href={`#${section.toUpperCase()}`}
           key={`paper_section_${index}`}
           className={css(styles.link)}
         >
