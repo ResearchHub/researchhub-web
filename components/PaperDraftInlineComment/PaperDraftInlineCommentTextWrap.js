@@ -4,10 +4,11 @@ import Popover from "react-popover";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   findTargetInlineComment,
-  getSavedInlineCommentsGivenBlockKey,
+  getSavedInlineCommentsGivenBlockKeyAndThreadID,
   updateInlineComment,
 } from "./undux/InlineCommentUnduxStore";
 import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { silentEmptyFnc } from "../PaperDraft/util/PaperDraftUtils";
 
 const ANIMATION_DURATION = 2; /* in seconds */
 
@@ -20,7 +21,7 @@ function PaperDraftInlineCommentTextWrap(
   const isSilenced = inlineCommentStore
     .get("silencedPromptKeys")
     .has(entityKey);
-  const animatedEntityKey = inlineCommentStore.get("animatedTextCommentID");
+  const animatedEntityKey = inlineCommentStore.get("animatedEntityKey");
   const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
   const isBeingPrompted =
     inlineCommentStore.get("promptedEntityKey") === entityKey;
@@ -82,19 +83,25 @@ function PaperDraftInlineCommentTextWrap(
       store: inlineCommentStore,
       updatedInlineComment: newInlineComment,
     });
-    const displayableComments = [
-      newInlineComment,
-      ...getSavedInlineCommentsGivenBlockKey({
-        blockKey,
-        editorState: paperDraftStore.get("editorState"),
-      }),
-    ];
+    const displayableComments = [newInlineComment];
     inlineCommentStore.set("displayableInlineComments")(displayableComments);
     setShowPopover(false);
   };
 
-  const hidePopoverAndSilence = (event) => {
+  const openCommentThreadDisplay = (event) => {
     event.stopPropagation();
+    cleanupStoreAndCloseDisplay({ inlineCommentStore });
+    inlineCommentStore.set("displayableInlineComments")(
+      getSavedInlineCommentsGivenBlockKeyAndThreadID({
+        blockKey,
+        editorState: paperDraftStore.get("editorState"),
+        commentThreadID,
+      })
+    );
+    inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
+  };
+
+  const hidePopoverAndSilence = (event) => {
     cleanupStoreAndCloseDisplay({ inlineCommentStore });
     inlineCommentStore.set("silencedPromptKeys")(
       new Set([...inlineCommentStore.get("silencedPromptKeys"), entityKey])
@@ -104,23 +111,9 @@ function PaperDraftInlineCommentTextWrap(
     setShowPopover(false);
   };
 
-  const openCommentThreadDisplay = (event) => {
-    event.stopPropagation();
-    cleanupStoreAndCloseDisplay({ inlineCommentStore });
-    inlineCommentStore.set("displayableInlineComments")(
-      getSavedInlineCommentsGivenBlockKey({
-        blockKey,
-        editorState: paperDraftStore.get("editorState"),
-      })
-    );
-    inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
-  };
-
   return (
     <Popover
       above
-      key={`Popver-${entityKey}`}
-      onOuterAction={isBeingPrompted ? hidePopoverAndSilence : () => {}}
       body={
         <span
           key={`Popver-Body-${entityKey}`}
@@ -145,13 +138,17 @@ function PaperDraftInlineCommentTextWrap(
               : `inline-comment-${entityKey}`
           }
           key={`Popver-Child-${entityKey}`}
-          onClick={openCommentThreadDisplay}
+          onClick={
+            isCommentSavedInBackend ? openCommentThreadDisplay : silentEmptyFnc
+          }
           role="none"
         >
           {props.children}
         </span>
       }
       isOpen={showPopover}
+      key={`Popver-${entityKey}`}
+      onOuterAction={isBeingPrompted ? hidePopoverAndSilence : silentEmptyFnc}
     />
   );
 }

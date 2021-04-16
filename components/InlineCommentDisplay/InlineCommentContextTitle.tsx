@@ -10,18 +10,18 @@ import { ID } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 type Props = {
   commentThreadID: ID;
   entityKey: ID;
-  onSuccess: () => void;
+  onScrollSuccess: () => void;
   title: string;
 };
 
 export default function InlineCommentContextTitle({
   commentThreadID,
   entityKey,
-  onSuccess,
+  onScrollSuccess,
   title,
 }: Props): ReactElement<"div"> {
   const animateAndScrollToTarget = getScrollToTargetElFnc({
-    onSuccess,
+    onSuccess: onScrollSuccess,
     targetElement: getTargetInlineDraftEntityEl({
       commentThreadID,
       entityKey,
@@ -41,25 +41,23 @@ export default function InlineCommentContextTitle({
 const styles = StyleSheet.create({
   headerHighlightedTextContainer: {
     alignItems: "center",
-    background: "#fff",
-    borderRadius: 4,
-    boxShadow: "rgb(0 0 0 / 10%) 2px 8px 8px",
+    borderLeft: `4px solid ${colors.GREY(1)}`,
     boxSizing: "border-box",
     display: "flex",
-    fontWeight: 500,
-    maxWidth: "100%",
     fontFamily: "CharterBT",
+    height: 24,
   },
   headerHighlightedText: {
-    backgroundColor: "rgb(204 243 221)",
     boxSizing: "border-box",
-    color: colors.BLACK(0.8),
-    fontSize: 14,
-    borderRadius: 4,
-    maxWidth: 920,
-    padding: 16,
-    textOverflow: "ellipsis",
-    width: "100%",
+    color: colors.GREY(1),
     cursor: "pointer",
+    fontSize: 16,
+    fontStyle: "italic",
+    height: 16,
+    maxWidth: 860,
+    overflow: "hidden",
+    paddingLeft: 8,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
   },
 });
