@@ -16,7 +16,9 @@ import icons from "../../config/themes/icons";
 import PaperDraftUnduxStore, {
   clearSelection,
   PaperDraftStore,
+  revertBackToSavedState,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { EditorState } from "draft-js";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
@@ -36,8 +38,9 @@ function useEffectHandleClickOutside({
   function onClickOutside(event: MouseEvent) {
     // @ts-ignore
     if (!isRefNull && !buttonRef.current.contains(event.target)) {
+      console.warn("revert");
+      revertBackToSavedState({ paperDraftStore });
       cleanupStoreAndCloseDisplay({ inlineCommentStore });
-      clearSelection({ paperDraftStore });
       document.removeEventListener("mousedown", onClickOutside);
     }
   }

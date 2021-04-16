@@ -52,8 +52,14 @@ function handleInlineCommentBlockToggle({
   onInlineCommentPrompt,
 }) {
   /* ---- Applying Entity to Draft---- */
-  const blockKey = editorState.getSelection().getStartKey();
-  const currContentState = editorState.getCurrentContent();
+  // creating entity below mutates entity directly. Copying ensures we don't get undesired sideeffects
+  const copiedEditorState = EditorState.push(
+    editorState,
+    editorState.getCurrentContent(),
+    "apply-entity"
+  );
+  const currContentState = copiedEditorState.getCurrentContent();
+  const blockKey = copiedEditorState.getSelection().getStartKey();
   currContentState.createEntity(
     INLINE_COMMENT_MAP.TYPE_KEY /* entity type key */,
     "MUTABLE",
@@ -69,7 +75,7 @@ function handleInlineCommentBlockToggle({
     editorState.getSelection(),
     entityKey
   );
-  const updatedEditorStateWithNewEnt = EditorState.set(editorState, {
+  const updatedEditorStateWithNewEnt = EditorState.set(copiedEditorState, {
     currentContent: updatedContentWithNewEnt,
   });
   onInlineCommentPrompt({ blockKey, entityKey });
