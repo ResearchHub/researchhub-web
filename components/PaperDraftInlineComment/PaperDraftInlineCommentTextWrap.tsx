@@ -80,8 +80,17 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
   const isCommentBeingDisplayed = useMemo(
     (): boolean =>
       (displayableInlineComments || []).find(
-        (inlineComment: InlineComment): boolean =>
-          inlineComment.entityKey === entityKey
+        (inlineComment: InlineComment): boolean => {
+          const {
+            commentThreadID: displayedThreadID,
+            entityKey: displayedEntityKey,
+          } = inlineComment;
+          return (
+            (commentThreadID != null &&
+              displayedThreadID === commentThreadID) ||
+            displayedEntityKey === entityKey
+          );
+        }
       ) != null,
     [displayableInlineComments, entityKey]
   );

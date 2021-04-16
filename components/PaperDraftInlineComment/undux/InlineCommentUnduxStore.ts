@@ -30,7 +30,7 @@ export type State = {
   > /* used to render InlineCommentThreadsDisplayBar */;
   lastPromptRemovedTime: number | null;
   paperID: ID;
-  preparingInlineComment: PreparingInlineComment /* used PaperDraftInlineCommentTextWrapWithSlideButton */;
+  preparingInlineComment: PreparingInlineComment /* used PaperDraftInlineCommentTextWrap */;
   promptedEntityKey: string | null;
   silencedPromptKeys: Set<ID> /* entityKeys */;
 };
