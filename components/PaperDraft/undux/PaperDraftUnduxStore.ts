@@ -1,5 +1,5 @@
 import { Store, createConnectedStore } from "undux";
-import { EditorState } from "draft-js";
+import { EditorState, SelectionState } from "draft-js";
 
 export type ID = string | number | null;
 export type PaperDraftStore = Store<State>;
@@ -18,5 +18,26 @@ const initialState: State = {
   paperID: null,
   shouldSavePaper: false,
 };
+
+export function clearSelection({
+  paperDraftStore,
+}: {
+  paperDraftStore: PaperDraftStore;
+}): void {
+  const currEditorState = paperDraftStore.get("editorState");
+  if (currEditorState != null) {
+    paperDraftStore.set("editorState")(
+      EditorState.forceSelection(
+        currEditorState,
+        currEditorState.getSelection().merge({
+          anchorOffset: 0,
+          focusOffset: 0,
+          isBackward: false,
+          hasFocus: false,
+        })
+      )
+    );
+  }
+}
 
 export default createConnectedStore(initialState);
