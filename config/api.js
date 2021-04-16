@@ -232,7 +232,7 @@ const routes = (BASE_URL) => {
     }) => {
       let url =
         targetId != null
-          ? BASE_URL + `paper/${paperId}/discussion/${targetId}`
+          ? BASE_URL + `paper/${paperId}/discussion/${targetId}/`
           : BASE_URL + `paper/${paperId}/discussion/`;
       let params = {
         querystring: {

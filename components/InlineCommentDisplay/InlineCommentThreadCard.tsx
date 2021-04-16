@@ -7,7 +7,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineThreadFetchTarget } from "./api/InlineThreadFetch";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  getSavedInlineCommentsGivenBlockKey,
   ID,
   InlineComment,
   updateInlineComment,
@@ -18,14 +17,7 @@ import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import { css, StyleSheet } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, {
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import { EditorState } from "draft-js";
+import React, { ReactElement, useEffect, useState } from "react";
 import {
   getScrollToTargetElFnc,
   getTargetInlineDraftEntityEl,
@@ -36,7 +28,6 @@ import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import DiscussionEntry from "../Threads/DiscussionEntry";
-import InlineCommentContextTitle from "./InlineCommentContextTitle";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 type Props = {
@@ -44,6 +35,7 @@ type Props = {
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
+  shouldShowContextTitle?: boolean;
   unduxInlineComment: InlineComment;
 };
 
@@ -52,6 +44,7 @@ function InlineCommentThreadCard({
   showMessage,
   setMessage,
   openRecaptchaPrompt: _openRecaptchaPrompt,
+  shouldShowContextTitle = true,
   unduxInlineComment,
   unduxInlineComment: {
     blockKey,
@@ -60,57 +53,52 @@ function InlineCommentThreadCard({
     highlightedText: unduxHighlightedText,
   },
 }: Props): ReactElement<"div"> {
-  const isCommentSaved = commentThreadID !== null;
+  const doesCommentIdExist = commentThreadID !== null;
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
-  const animatedEntityKey = inlineCommentStore.get("animatedTextCommentID");
-  const animatedTextCommentID = inlineCommentStore.get("animatedTextCommentID");
-  const isActiveCommentCard = useMemo(
-    (): boolean =>
-      animatedTextCommentID === commentThreadID ||
-      animatedEntityKey === entityKey,
-    [animatedTextCommentID, commentThreadID, isCommentSaved]
-  );
 
   const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
-    isCommentSaved
+    doesCommentIdExist
   );
   const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
+  // both fetching & fetched state is needed because of antipattern of DiscussionEntry
+  const [isReadyForFetch, setIsReadyForFetch] = useState<boolean>(true);
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
   );
-  const [revealReply, setRevealReply] = useState<boolean>(false);
-  const [shouldRefetch, setShouldRefetch] = useState<boolean>(false);
   const router = useRouter();
   const fetchedCommentData = fetchedThreadData.comments || [];
 
   useEffect((): void => {
-    setIsThreadReadOnly(isCommentSaved);
+    setIsThreadReadOnly(doesCommentIdExist);
   }, [commentThreadID]);
 
   useEffect((): void => {
     if (
-      shouldRefetch ||
-      (!isCommentDataFetched && isCommentSaved && paperID !== null)
+      !isCommentDataFetched &&
+      doesCommentIdExist &&
+      isReadyForFetch &&
+      paperID !== null
     ) {
+      setIsReadyForFetch(false);
       inlineThreadFetchTarget({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
           setFecthedThreadData(result);
           setIsCommentDataFetched(true);
+          setIsReadyForFetch(true);
           setIsThreadReadOnly(true);
-          setShouldRefetch(false);
         },
         onError: (_): void => {
-          setIsCommentDataFetched(true);
+          setIsCommentDataFetched(false);
         },
       });
     }
-  }, [commentThreadID, fetchedThreadData, paperID, shouldRefetch]);
+  }, [commentThreadID, fetchedThreadData, isCommentDataFetched, paperID]);
 
   const onSubmitThread = (text: String, plainText: String): void => {
     showMessage({ load: true, show: true });
@@ -133,13 +121,9 @@ function InlineCommentThreadCard({
           commentThreadID: threadID,
         });
         inlineCommentStore.set("animatedTextCommentID")(threadID);
-        inlineCommentStore.set("displayableInlineComments")(
-          getSavedInlineCommentsGivenBlockKey({
-            blockKey,
-            editorState:
-              paperDraftStore.get("editorState") || EditorState.createEmpty(),
-          })
-        );
+        inlineCommentStore.set("displayableInlineComments")([
+          updatedInlineComment,
+        ]);
       },
       params: {
         text: text,
@@ -166,35 +150,28 @@ function InlineCommentThreadCard({
     }),
   });
 
-  const formattedHighlightTxt =
-    unduxHighlightedText != null
-      ? unduxHighlightedText
-      : fetchedThreadData.context_title || "";
-
   return (
     <div
-      className={css([
-        styles.inlineCommentThreadCard,
-        isActiveCommentCard ? styles.activeCard : styles.inactiveCard,
-      ])}
+      className={css([styles.inlineCommentThreadCard])}
       onClick={animateAndScrollToTarget}
       role="none"
     >
       <ColumnContainer overrideStyles={styles.container}>
         <ReactPlaceholder
-          ready={isCommentSaved ? isCommentDataFetched : true}
+          ready={
+            doesCommentIdExist ? isCommentDataFetched && isReadyForFetch : true
+          }
           showLoadingAnimation
           type={"media"}
           rows={3}
         >
           {isThreadReadOnly ? (
             <DiscussionEntry
-              data={
-                isThreadReadOnly ? fetchedThreadData : { created_by: auth.user }
-              }
+              data={fetchedThreadData}
               hoverEvents={true}
               noVoteLine={true}
               discussionCount={fetchedCommentData.length}
+              shouldShowContextTitle={shouldShowContextTitle}
             />
           ) : (
             <div>
@@ -211,21 +188,6 @@ function InlineCommentThreadCard({
                 noTimeStamp={true}
                 smaller={true}
               />
-              {formattedHighlightTxt ? (
-                <div className={css(styles.textWrap)}>
-                  <InlineCommentContextTitle
-                    commentThreadID={commentThreadID}
-                    entityKey={entityKey}
-                    onSuccess={(): void => {
-                      inlineCommentStore.set("animatedEntityKey")(entityKey);
-                      inlineCommentStore.set("animatedTextCommentID")(
-                        commentThreadID
-                      );
-                    }}
-                    title={formattedHighlightTxt}
-                  />
-                </div>
-              ) : null}
               <div className={css(styles.threadComposerContainer)}>
                 <InlineCommentComposer
                   isReadOnly={false}
@@ -244,24 +206,7 @@ function InlineCommentThreadCard({
   );
 }
 
-const activeCardBump = {
-  "0%": {
-    transform: "translateX(0)",
-  },
-  "100%": {
-    transform: "translateX(-12px)",
-  },
-};
-
 const styles = StyleSheet.create({
-  activeCard: {
-    // animationDuration: ".5s",
-    // animationFillMode: "forwards",
-    // animationName: [activeCardBump],
-  },
-  inactiveCard: {
-    display: "none",
-  },
   container: {
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     marginTop: 20,

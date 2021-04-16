@@ -8,17 +8,15 @@ import Error from "next/error";
 import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
-import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 // Components
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
-import InlineCommentThreadsDisplayBar from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
+import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperPageCard from "~/components/PaperPageCard";
-import PaperPreview from "~/components/Paper/SideColumn/PaperPreview";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
@@ -424,6 +422,7 @@ const Paper = (props) => {
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComment =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
@@ -589,24 +588,9 @@ const Paper = (props) => {
               </a>
             </Waypoint>
           </div>
-          <div className={css(styles.mobile)}>
-            <SlideMenu
-              right
-              width={"100%"}
-              isOpen={shouldShowInlineComment}
-              styles={burgerMenuStyle}
-              customBurgerIcon={false}
-            >
-              <InlineCommentThreadsDisplayBar
-                isShown={shouldShowInlineComment}
-              />
-            </SlideMenu>
-          </div>
           <div className={css(styles.sidebar)}>
             {shouldShowInlineComment ? (
-              <div className={css(styles.inlineSticky)}>
-                <InlineCommentThreadsDisplayBar />
-              </div>
+              <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
               <React.Fragment>
                 <PaperSideColumn
@@ -630,70 +614,6 @@ const Paper = (props) => {
       </div>
     </div>
   );
-};
-
-const burgerMenuStyle = {
-  bmBurgerBars: {
-    background: "#373a47",
-  },
-  bmBurgerBarsHover: {
-    background: "#a90000",
-  },
-  bmCrossButton: {
-    height: "26px",
-    width: "26px",
-    color: "#FFF",
-    display: "none",
-    visibility: "hidden",
-  },
-  bmCross: {
-    background: "#bdc3c7",
-    display: "none",
-    visibility: "hidden",
-  },
-  bmMenuWrap: {
-    position: "fixed",
-    top: 0,
-    zIndex: 3147480000,
-    overflowY: "auto",
-    width: "85%",
-  },
-  bmMenu: {
-    background: "#fff",
-    fontSize: "1.15em",
-    overflowY: "auto",
-    width: "100%",
-  },
-  bmMorphShape: {
-    fill: "#373a47",
-  },
-  bmItemList: {
-    color: "#b8b7ad",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    overflow: "auto",
-    borderTop: "1px solid rgba(255,255,255,.2)",
-    ":focus": {
-      outline: "none",
-    },
-  },
-  bmItem: {
-    display: "inline-block",
-    margin: "15px 0 15px 0",
-    color: "#FFF",
-    ":focus": {
-      outline: "none",
-    },
-  },
-  bmOverlay: {
-    background: "rgba(0, 0, 0, 0.3)",
-    left: 0,
-    right: 0,
-    top: 0,
-    bottom: 0,
-  },
 };
 
 const fetchPaper = ({ paperId }) => {
@@ -829,17 +749,6 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
-
-  mobile: {
-    display: "none",
-    "@media only screen and (max-width: 1023px)": {
-      display: "block",
-    },
-  },
-  inlineSticky: {
-    position: "sticky",
-    top: 40,
-  },
   sidebar: {
     display: "table-cell",
     boxSizing: "border-box",
@@ -868,10 +777,11 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (min-width: 768px)": {
       width: "80%",
+      maxWidth: 600,
     },
     "@media only screen and (min-width: 1024px)": {
       width: "unset",
-      maxWidth: 900,
+      maxWidth: 700,
     },
   },
   contentContainer: {
