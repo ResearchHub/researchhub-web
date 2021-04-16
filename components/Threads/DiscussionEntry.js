@@ -393,7 +393,6 @@ class DiscussionEntry extends React.Component {
     return (
       <div
         className={css(
-          styles.row,
           styles.discussionCard,
           this.state.highlight && styles.highlight
         )}
@@ -426,12 +425,13 @@ class DiscussionEntry extends React.Component {
           </div>
         </div>
         <div
-          className={css(styles.column, styles.metaData)}
+          className={css(styles.column)}
           ref={(element) => (this.divRef = element)}
         >
           <div
             className={css(
               styles.highlight,
+              styles.metaData,
               this.state.highlight && styles.active
             )}
           >
@@ -534,6 +534,11 @@ class DiscussionEntry extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "100%",
+  },
   row: {
     display: "flex",
     flexDirection: "row",
@@ -545,7 +550,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    height: "calc(100%)",
+    width: "100%",
+    maxWidth: "100%",
   },
   threadline: {
     height: "100%",
@@ -606,6 +612,7 @@ const styles = StyleSheet.create({
     cursor: "default",
     justifyContent: "space-between",
     display: "table",
+    tableLayout: "fixed",
     height: "100%",
     borderSpacing: 0,
   },
