@@ -27,7 +27,9 @@ import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import DiscussionEntry from "../Threads/DiscussionEntry";
-import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import PaperDraftUnduxStore, {
+  revertBackToSavedState,
+} from "../PaperDraft/undux/PaperDraftUnduxStore";
 import { silentEmptyFnc } from "../../config/utils/nullchecks";
 
 type Props = {
@@ -182,9 +184,10 @@ function InlineCommentThreadCard({
               <div className={css(styles.threadComposerContainer)}>
                 <InlineCommentComposer
                   isReadOnly={false}
-                  onCancel={() =>
-                    cleanupStoreAndCloseDisplay({ inlineCommentStore })
-                  }
+                  onCancel={(): void => {
+                    cleanupStoreAndCloseDisplay({ inlineCommentStore });
+                    revertBackToSavedState({ paperDraftStore });
+                  }}
                   onSubmit={onSubmitThread}
                   textData={fetchedCommentData ? fetchedCommentData.text : null}
                 />
