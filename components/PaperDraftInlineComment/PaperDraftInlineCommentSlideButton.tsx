@@ -13,6 +13,10 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
 import icons from "../../config/themes/icons";
+import PaperDraftUnduxStore, {
+  clearSelection,
+  PaperDraftStore,
+} from "../PaperDraft/undux/PaperDraftUnduxStore";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
@@ -20,10 +24,12 @@ export const BUTTON_WIDTH = 24;
 function useEffectHandleClickOutside({
   buttonRef,
   inlineCommentStore,
+  paperDraftStore,
   shouldShowButton,
 }: {
   buttonRef: RefObject<HTMLDivElement>;
   inlineCommentStore: InlineCommentStore;
+  paperDraftStore: PaperDraftStore;
   shouldShowButton: boolean;
 }): void {
   // TODO: calvinhlee - figure out how to clear selection state
@@ -32,6 +38,7 @@ function useEffectHandleClickOutside({
     // @ts-ignore
     if (!isRefNull && !buttonRef.current.contains(event.target)) {
       cleanupStoreAndCloseDisplay({ inlineCommentStore });
+      clearSelection({ paperDraftStore });
       document.removeEventListener("mousedown", onClickOutside);
     }
   }
@@ -49,6 +56,7 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   "div"
 > | null {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
   const buttonRef = useRef<HTMLDivElement>(null);
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
   const {
@@ -63,7 +71,7 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
     (preparedEntityKey != null && displayableOffsetTop > -1);
 
   const closeButtonAndRenderThreadCard = (event: SyntheticEvent) => {
-    // TODO: calvinhlee - figure out how to clear selection state
+    clearSelection({ paperDraftStore });
     cleanupStoreAndCloseDisplay({
       inlineCommentStore,
     });
@@ -80,6 +88,7 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   useEffectHandleClickOutside({
     buttonRef,
     inlineCommentStore,
+    paperDraftStore,
     shouldShowButton,
   });
 
