@@ -424,7 +424,7 @@ const Paper = (props) => {
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
   return (
     <div>
-      {/* <PaperBanner paper={paper} loadingPaper={loadingPaper} />
+      <PaperBanner paper={paper} loadingPaper={loadingPaper} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -433,15 +433,15 @@ const Paper = (props) => {
         paper={paper}
         updatePaperState={updatePaperState}
         updateSummary={setSummary}
-      /> */}
-      {/* <Head
+      />
+      <Head
         title={paper.title}
         description={formatDescription()}
         socialImageUrl={socialImageUrl}
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
-      /> */}
-      {/* <Joyride
+      />
+      <Joyride
         steps={steps}
         continuous={true}
         locale={{ last: "Done" }}
@@ -456,18 +456,18 @@ const Paper = (props) => {
           props.auth.isLoggedIn &&
           !props.auth.user.upload_tutorial_complete
         }
-      /> */}
+      />
       <div className={css(styles.root)}>
-        {/* <Waypoint
+        <Waypoint
           onEnter={() => onSectionEnter(0)}
           topOffset={40}
           bottomOffset={"95%"}
         >
           <a name="main" />
-        </Waypoint> */}
+        </Waypoint>
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
-            {/* <div className={css(styles.paperPageContainer, styles.top)}>
+            <div className={css(styles.paperPageContainer, styles.top)}>
               <PaperPageCard
                 paper={paper}
                 paperId={paperId}
@@ -485,8 +485,8 @@ const Paper = (props) => {
                 doneFetchingPaper={!loadingPaper}
                 setFlag={setFlag}
               />
-            </div> */}
-            {/* <div className={css(styles.paperMetaContainerMobile)}>
+            </div>
+            <div className={css(styles.paperMetaContainerMobile)}>
               <AuthorStatsDropdown
                 authors={getAllAuthors()}
                 paper={paper}
@@ -502,8 +502,8 @@ const Paper = (props) => {
                 paperDraftSections={paperDraftSections}
                 paperDraftExists={paperDraftExists}
               />
-            </div> */}
-            {/* <div
+            </div>
+            <div
               className={css(styles.paperPageContainer, styles.noMarginLeft)}
             >
               <Waypoint
@@ -523,7 +523,7 @@ const Paper = (props) => {
                   />
                 </a>
               </Waypoint>
-            </div> */}
+            </div>
             <div
               className={css(
                 styles.paperPageContainer,
@@ -532,29 +532,29 @@ const Paper = (props) => {
                 !paperDraftExists && styles.hide
               )}
             >
-              {/* <Waypoint
+              <Waypoint
                 onEnter={() => onSectionEnter(2)}
                 topOffset={40}
                 bottomOffset={"95%"}
-              > */}
-              <a name="paper">
-                <TableOfContent
-                  paperDraftExists={paperDraftExists}
-                  paperDraftSections={paperDraftSections}
-                />
-                <PaperDraftContainer
-                  isViewerAllowedToEdit={isModerator}
-                  paperDraftExists={paperDraftExists}
-                  paperDraftSections={paperDraftSections}
-                  paperId={paperId}
-                  setActiveSection={setActiveSection}
-                  setPaperDraftExists={setPaperDraftExists}
-                  setPaperDraftSections={setPaperDraftSections}
-                />
-              </a>
-              {/* </Waypoint> */}
+              >
+                <a name="paper">
+                  <TableOfContent
+                    paperDraftExists={paperDraftExists}
+                    paperDraftSections={paperDraftSections}
+                  />
+                  <PaperDraftContainer
+                    isViewerAllowedToEdit={isModerator}
+                    paperDraftExists={paperDraftExists}
+                    paperDraftSections={paperDraftSections}
+                    paperId={paperId}
+                    setActiveSection={setActiveSection}
+                    setPaperDraftExists={setPaperDraftExists}
+                    setPaperDraftSections={setPaperDraftSections}
+                  />
+                </a>
+              </Waypoint>
             </div>
-            {/* <Waypoint
+            <Waypoint
               onEnter={() => onSectionEnter(3)}
               topOffset={40}
               bottomOffset={"95%"}
@@ -585,27 +585,27 @@ const Paper = (props) => {
                   />
                 </div>
               </a>
-            </Waypoint> */}
+            </Waypoint>
           </div>
           <div className={css(styles.sidebar)}>
             {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
               <React.Fragment>
-                {/* <PaperSideColumn
+                <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
                   hubs={paper.hubs}
                   paperId={paperId}
-                /> */}
-                {/* <PaperSections
+                />
+                <PaperSections
                   activeTab={activeTab} // for paper page tabs
                   setActiveTab={setActiveTab}
                   activeSection={activeSection} // for paper draft sections
                   setActiveSection={setActiveSection}
                   paperDraftSections={paperDraftSections}
                   paperDraftExists={paperDraftExists}
-                /> */}
+                />
               </React.Fragment>
             )}
           </div>
