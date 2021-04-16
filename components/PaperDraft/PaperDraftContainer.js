@@ -137,6 +137,7 @@ export default function PaperDraftContainer({
         textEditorProps={{
           blockStyleFn: getBlockStyleFn,
           editorState,
+          handleDrop: () => true /* disallows dragging within editor */,
           handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
           initEditorState,
           isInEditMode: isDraftInEditMode,
