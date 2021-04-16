@@ -1,21 +1,55 @@
 import { css, StyleSheet } from "aphrodite";
 import { isUndefined, nullToEmptyString } from "../../config/utils/nullchecks";
-import React, { ReactElement, SyntheticEvent, useRef } from "react";
+import React, {
+  ReactElement,
+  RefObject,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+} from "react";
 import colors from "../../config/themes/colors";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
+  InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
 import icons from "../../config/themes/icons";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
 
+function useEffectHandleClickOutside({
+  buttonRef,
+  inlineCommentStore,
+  shouldShowButton,
+}: {
+  buttonRef: RefObject<HTMLDivElement>;
+  inlineCommentStore: InlineCommentStore;
+  shouldShowButton: boolean;
+}): void {
+  // TODO: calvinhlee - figure out how to clear selection state
+  const isRefNull = buttonRef != null && buttonRef.current == null;
+  function onClickOutside(event: MouseEvent) {
+    // @ts-ignore
+    if (!isRefNull && !buttonRef.current.contains(event.target)) {
+      cleanupStoreAndCloseDisplay({ inlineCommentStore });
+      document.removeEventListener("mousedown", onClickOutside);
+    }
+  }
+  useEffect((): (() => void) => {
+    if (!isRefNull && shouldShowButton) {
+      document.addEventListener("mousedown", onClickOutside);
+    }
+    return function cleanup() {
+      document.removeEventListener("mousedown", onClickOutside);
+    };
+  }, [isRefNull, onClickOutside, shouldShowButton]);
+}
+
 export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   "div"
 > | null {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const buttonRef = useRef<HTMLDivElement>(null);
-
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
   const {
     blockKey,
@@ -27,11 +61,6 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   const shouldShowButton =
     promptedEntityKey != null ||
     (preparedEntityKey != null && displayableOffsetTop > -1);
-  const displayableInlineComments = inlineCommentStore.get(
-    "displayableInlineComments"
-  );
-
-  console.warn("displayableInlineComments: ", displayableInlineComments);
 
   const closeButtonAndRenderThreadCard = (event: SyntheticEvent) => {
     // TODO: calvinhlee - figure out how to clear selection state
@@ -47,6 +76,12 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
     };
     inlineCommentStore.set("displayableInlineComments")([newInlineComment]);
   };
+
+  useEffectHandleClickOutside({
+    buttonRef,
+    inlineCommentStore,
+    shouldShowButton,
+  });
 
   if (
     isUndefined(typeof window) ||
