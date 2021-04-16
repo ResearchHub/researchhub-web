@@ -52,7 +52,7 @@ function handleInlineCommentBlockToggle({
   onInlineCommentPrompt,
 }) {
   /* ---- Applying Entity to Draft---- */
-  // creating entity below mutates entity directly. Copying ensures we don't get undesired sideeffects
+  /* creating entity below mutates entity directly. Copying ensures we don't get undesired sideeffects */
   const copiedEditorState = EditorState.push(
     editorState,
     editorState.getCurrentContent(),
