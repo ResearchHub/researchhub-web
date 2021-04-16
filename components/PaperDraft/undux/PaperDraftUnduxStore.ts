@@ -26,6 +26,7 @@ export function clearSelection({
 }): void {
   const currEditorState = paperDraftStore.get("editorState");
   if (currEditorState != null) {
+    // omg im genius
     paperDraftStore.set("editorState")(
       EditorState.forceSelection(
         currEditorState,
