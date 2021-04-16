@@ -588,8 +588,12 @@ const Paper = (props) => {
             </Waypoint>
           </div>
           <div className={css(styles.sidebar)}>
-            {shouldShowInlineComments ? (
-              <InlineCommentThreadsDisplayBarWithMediaSize isShown />
+            {shouldShowInlineComment ? (
+              <InlineCommentThreadsDisplayBarWithMediaSize
+                isShown
+                discussionCount={discussionCount}
+                setDiscussionCount={setCount}
+              />
             ) : (
               <React.Fragment>
                 <PaperSideColumn
