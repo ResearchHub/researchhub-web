@@ -99,6 +99,8 @@ export default function PaperDraftContainer({
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
+      console.warn("SAVING: ");
+      paperDraftStore.set("savedEditorState")(editorState);
       cleanupStoreAndCloseDisplay({
         inlineCommentStore,
       });
