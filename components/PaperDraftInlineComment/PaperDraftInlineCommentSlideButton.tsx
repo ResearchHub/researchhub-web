@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 8,
     position: "absolute",
-    right: -55 /* arbitrary css decision based on look */,
+    right: -52 /* arbitrary css decision based on look */,
     zIndex: 10000000,
     width: BUTTON_WIDTH,
     ":hover": {
