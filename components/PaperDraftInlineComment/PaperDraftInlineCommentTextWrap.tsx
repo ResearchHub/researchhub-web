@@ -6,7 +6,9 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
 import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
-import PaperDraftStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import PaperDraftUnduxStore, {
+  PaperDraftStore,
+} from "../PaperDraft/undux/PaperDraftUnduxStore";
 import React, {
   ReactElement,
   SyntheticEvent,
@@ -65,7 +67,7 @@ export default function PaperDraftInlineCommentTextWrapWithSlideButton(
   { blockKey, children, contentState, decoratedText, entityKey }
 ): ReactElement<"span"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const paperDraftStore = PaperDraftStore.useStore();
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
   const promptedEntityKey = inlineCommentStore.get("promptedEntityKey");
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"

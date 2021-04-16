@@ -8,6 +8,7 @@ export type State = {
   initEditorState: EditorState | null;
   lastSavePaperTime: number | null;
   paperID: ID;
+  savedEditorState: EditorState | null /* used as a "saved" state for the editor state to get reverted back to */;
   shouldSavePaper: boolean; // trigger save paper behind the scene
 };
 
@@ -16,6 +17,7 @@ const initialState: State = {
   initEditorState: EditorState.createEmpty(),
   lastSavePaperTime: null,
   paperID: null,
+  savedEditorState: EditorState.createEmpty(),
   shouldSavePaper: false,
 };
 
@@ -26,7 +28,6 @@ export function clearSelection({
 }): void {
   const currEditorState = paperDraftStore.get("editorState");
   if (currEditorState != null) {
-    // omg im genius
     paperDraftStore.set("editorState")(
       EditorState.forceSelection(
         currEditorState,
@@ -39,6 +40,37 @@ export function clearSelection({
       )
     );
   }
+}
+
+export function clearSelectionFromState({
+  editorState,
+}: {
+  editorState: EditorState;
+}): EditorState {
+  return EditorState.forceSelection(
+    editorState,
+    editorState.getSelection().merge({
+      anchorOffset: 0,
+      focusOffset: 0,
+      isBackward: false,
+      hasFocus: false,
+    })
+  );
+}
+
+export function revertBackToSavedState({
+  paperDraftStore,
+}: {
+  paperDraftStore: PaperDraftStore;
+}): void {
+  paperDraftStore.set("editorState")(
+    clearSelectionFromState({
+      editorState:
+        paperDraftStore.get("savedEditorState") ||
+        paperDraftStore.get("editorState") ||
+        EditorState.createEmpty(),
+    })
+  );
 }
 
 export default createConnectedStore(initialState);
