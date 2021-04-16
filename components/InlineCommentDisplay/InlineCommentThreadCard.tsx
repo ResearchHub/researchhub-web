@@ -9,7 +9,6 @@ import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   ID,
   InlineComment,
-  updateInlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
 import colors from "../../config/themes/colors";
