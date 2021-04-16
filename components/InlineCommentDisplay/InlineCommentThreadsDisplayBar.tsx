@@ -9,7 +9,11 @@ import InlineCommentThreadCard from "./InlineCommentThreadCard";
 import React, { ReactElement } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
-type Props = { shouldShowContextTitle?: boolean };
+type Props = {
+  shouldShowContextTitle?: boolean;
+  discussionCount: number;
+  setDiscussionCount: (val: number) => void;
+};
 
 const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
 
@@ -49,6 +53,8 @@ export default function InlineCommentThreadsDisplayBarWithMediaSize(
 }
 
 function InlineCommentThreadsDisplayBar({
+  discussionCount = 0,
+  setDiscussionCount,
   shouldShowContextTitle = true,
 }: Props): ReactElement<"div"> {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
@@ -64,6 +70,8 @@ function InlineCommentThreadsDisplayBar({
         key={inlineComment.entityKey}
         shouldShowContextTitle={shouldShowContextTitle}
         unduxInlineComment={inlineComment}
+        discussionCount={discussionCount}
+        setDiscussionCount={setDiscussionCount}
       />
     )
   );
