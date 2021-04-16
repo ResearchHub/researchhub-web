@@ -55,7 +55,6 @@ function InlineCommentThreadsDisplayBar({
   const displayableInlineComments = inlineCommentStore.get(
     "displayableInlineComments"
   );
-  // console.warn("displayableInlineComments: ", displayableInlineComments);
 
   const commentThreadCards = displayableInlineComments.map(
     (
