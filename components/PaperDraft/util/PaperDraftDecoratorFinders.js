@@ -35,12 +35,12 @@ export function getDecorator({
   setSeenEntityKeys,
 }) {
   return new CompositeDecorator([
-    // {
-    //   component: (props) => (
-    //     <WaypointSection {...props} onSectionEnter={setActiveSection} />
-    //   ),
-    //   strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
-    // },
+    {
+      component: (props) => (
+        <WaypointSection {...props} onSectionEnter={setActiveSection} />
+      ),
+      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
+    },
     {
       component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
       strategy: findInlineCommentEntity,
