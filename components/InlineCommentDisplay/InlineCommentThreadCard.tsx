@@ -28,6 +28,7 @@ import { saveThreadToBackend } from "./api/InlineThreadCreate";
 import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import DiscussionEntry from "../Threads/DiscussionEntry";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { silentEmptyFnc } from "../../config/utils/nullchecks";
 
 type Props = {
   auth: any /* redux */;
@@ -109,17 +110,11 @@ function InlineCommentThreadCard({
           ...unduxInlineComment,
           commentThreadID: threadID,
         };
-        // updateInlineComment({
-        //   store: inlineCommentStore,
-        //   updatedInlineComment,
-        // });
-        /* this will also trigger paper to save in the background */
         updateInlineThreadIdInEntity({
           entityKey,
           paperDraftStore,
           commentThreadID: threadID,
         });
-        inlineCommentStore.set("animatedTextCommentID")(threadID);
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
         ]);
@@ -139,10 +134,7 @@ function InlineCommentThreadCard({
   };
 
   const animateAndScrollToTarget = getScrollToTargetElFnc({
-    onSuccess: (): void => {
-      inlineCommentStore.set("animatedEntityKey")(entityKey);
-      inlineCommentStore.set("animatedTextCommentID")(commentThreadID);
-    },
+    onSuccess: silentEmptyFnc,
     targetElement: getTargetInlineDraftEntityEl({
       commentThreadID,
       entityKey,

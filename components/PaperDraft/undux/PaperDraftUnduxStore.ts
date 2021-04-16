@@ -1,5 +1,5 @@
 import { Store, createConnectedStore } from "undux";
-import { EditorState, SelectionState } from "draft-js";
+import { EditorState } from "draft-js";
 
 export type ID = string | number | null;
 export type PaperDraftStore = Store<State>;
