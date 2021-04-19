@@ -420,9 +420,8 @@ const Paper = (props) => {
     activeTab !== index && setActiveTab(index);
   }
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
-  const shouldShowInlineComment =
+  const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
@@ -589,7 +588,7 @@ const Paper = (props) => {
             </Waypoint>
           </div>
           <div className={css(styles.sidebar)}>
-            {shouldShowInlineComment ? (
+            {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
               <React.Fragment>

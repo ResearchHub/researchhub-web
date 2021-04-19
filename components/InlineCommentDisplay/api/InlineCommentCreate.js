@@ -2,12 +2,12 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
-import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
+import { emptyFncWithMsg } from "~config/utils/nullchecks";
 
 export function saveCommentToBackend({
   auth,
-  onError = emptyFunction,
-  onSuccess = emptyFunction,
+  onError = emptyFncWithMsg,
+  onSuccess = emptyFncWithMsg,
   paperID,
   params,
   setMessage,

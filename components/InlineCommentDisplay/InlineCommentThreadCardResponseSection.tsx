@@ -4,10 +4,7 @@ import PaperDraftUnduxStore, {
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
 import React, { ReactElement, useEffect, useState } from "react";
 import InlineCommentComposer from "./InlineCommentComposer";
-import {
-  emptyFunction,
-  silentEmptyFnc,
-} from "../PaperDraft/util/PaperDraftUtils";
+import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   getSavedInlineCommentsGivenBlockKey,
@@ -30,6 +27,7 @@ type Props = {
   isActive?: boolean;
 };
 
+/* DEPRECATED */
 function InlineCommentThreadCardResponseSection({
   auth,
   showMessage,
@@ -56,9 +54,8 @@ function InlineCommentThreadCardResponseSection({
     showMessage({ load: true, show: true });
     saveCommentToBackend({
       auth,
-      onError: emptyFunction,
+      onError: emptyFncWithMsg,
       onSuccess: ({ threadID }: { threadID: ID }): void => {
-        inlineCommentStore.set("animatedTextCommentID")(null);
         inlineCommentStore.set("displayableInlineComments")(
           getSavedInlineCommentsGivenBlockKey({
             blockKey: String(currBlockKey),
@@ -66,7 +63,6 @@ function InlineCommentThreadCardResponseSection({
               paperDraftStore.get("editorState") || EditorState.createEmpty(),
           })
         );
-        inlineCommentStore.set("animatedTextCommentID")(threadID);
       },
       paperID,
       params: {
