@@ -1,13 +1,13 @@
-import API from "~/config/api";
-import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFunction } from "../../PaperDraft/util/PaperDraftUtils";
+import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./InlineCommentAPIConstants";
+import API from "~/config/api";
 
 /* fetches all inline comments based on paperID */
 export function inlineThreadFetchAll({
   paperId,
-  onSuccess = emptyFunction,
-  onError = emptyFunction,
+  onSuccess = emptyFncWithMsg,
+  onError = emptyFncWithMsg,
 }) {
   fetch(
     API.DISCUSSION({
@@ -31,8 +31,8 @@ export function inlineThreadFetchAll({
 export function inlineThreadFetchTarget({
   paperId,
   targetId,
-  onSuccess = emptyFunction,
-  onError = emptyFunction,
+  onSuccess = emptyFncWithMsg,
+  onError = emptyFncWithMsg,
 }) {
   fetch(
     API.DISCUSSION({

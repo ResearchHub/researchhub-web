@@ -1,4 +1,8 @@
-import { emptyFunction } from "./util/PaperDraftUtils";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import {
+  getIsReadyForNewInlineComment,
+  getShouldSavePaperSilently,
+} from "./util/PaperDraftUtils";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
@@ -11,47 +15,10 @@ import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDra
 import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
+import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
 import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
-
-function getIsGoodTimeInterval(unixTimeInMilliSec) {
-  return unixTimeInMilliSec === null
-    ? true
-    : Date.now() - unixTimeInMilliSec > 500; // 300-500 millisec is ui convention
-}
-
-function getIsReadyForNewInlineComment({
-  editorState,
-  inlineCommentStore,
-  isDraftInEditMode,
-}) {
-  const currSelection = editorState.getSelection();
-  const isGoodTimeInterval = getIsGoodTimeInterval(
-    inlineCommentStore.get("lastPromptRemovedTime")
-  );
-  const hasActiveCommentPrompt =
-    inlineCommentStore.get("promptedEntityKey") != null;
-  return (
-    !isDraftInEditMode &&
-    isGoodTimeInterval &&
-    !hasActiveCommentPrompt &&
-    currSelection != null &&
-    !currSelection.isCollapsed()
-  );
-}
-
-function getShouldSavePaperSilently({ isDraftInEditMode, paperDraftStore }) {
-  const isGoodTimeInterval = getIsGoodTimeInterval(
-    paperDraftStore.get("lastSavePaperTime")
-  );
-  return (
-    !isDraftInEditMode &&
-    isGoodTimeInterval &&
-    paperDraftStore.get("paperID") != null &&
-    paperDraftStore.get("shouldSavePaper")
-  );
-}
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 export default function PaperDraftContainer({
@@ -112,7 +79,7 @@ export default function PaperDraftContainer({
     if (shouldSavePaperSilently) {
       savePaperSilentlyHook({
         editorState,
-        onError: (error) => emptyFunction(error),
+        onError: (error) => emptyFncWithMsg(error),
         onSuccess: () => {
           paperDraftStore.set("lastSavePaperTime")(Date.now());
           paperDraftStore.set("shouldSavePaper")(false);
@@ -132,13 +99,19 @@ export default function PaperDraftContainer({
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
+      paperDraftStore.set("savedEditorState")(editorState);
       cleanupStoreAndCloseDisplay({
         inlineCommentStore,
       });
       const updatedEditorState = handleBlockStyleToggle({
         editorState,
-        onInlineCommentPrompt: (entityKey) =>
-          inlineCommentStore.set("promptedEntityKey")(entityKey),
+        onInlineCommentPrompt: ({ blockKey, entityKey }) => {
+          inlineCommentStore.set("preparingInlineComment")({
+            blockKey,
+            entityKey,
+          });
+          inlineCommentStore.set("promptedEntityKey")(entityKey);
+        },
         toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
       });
       setEditorState(updatedEditorState);
@@ -160,24 +133,27 @@ export default function PaperDraftContainer({
   );
 
   return (
-    <PaperDraft
-      textEditorProps={{
-        blockStyleFn: getBlockStyleFn,
-        editorState,
-        handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
-        initEditorState,
-        isInEditMode: isDraftInEditMode,
-        onChange: setEditorState,
-        setInitEditorState,
-        setIsInEditMode: setIsDraftInEditMode,
-        spellCheck: isDraftInEditMode,
-      }}
-      inlineCommentStore={inlineCommentStore}
-      isFetching={isFetching}
-      isViewerAllowedToEdit={isViewerAllowedToEdit}
-      paperDraftExists={paperDraftExists}
-      paperDraftSections={paperDraftSections}
-      paperId={paperId}
-    />
+    <PaperDraftInlineCommentRelativeWrap>
+      <PaperDraft
+        textEditorProps={{
+          blockStyleFn: getBlockStyleFn,
+          editorState,
+          handleDrop: () => true /* disallows dragging within editor */,
+          handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),
+          initEditorState,
+          isInEditMode: isDraftInEditMode,
+          onChange: setEditorState,
+          setInitEditorState,
+          setIsInEditMode: setIsDraftInEditMode,
+          spellCheck: isDraftInEditMode,
+        }}
+        inlineCommentStore={inlineCommentStore}
+        isFetching={isFetching}
+        isViewerAllowedToEdit={isViewerAllowedToEdit}
+        paperDraftExists={paperDraftExists}
+        paperDraftSections={paperDraftSections}
+        paperId={paperId}
+      />
+    </PaperDraftInlineCommentRelativeWrap>
   );
 }
