@@ -66,7 +66,6 @@ function InlineCommentThreadCard({
   const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
-  // both fetching & fetched state is needed because of antipattern of DiscussionEntry
   const [isReadyForFetch, setIsReadyForFetch] = useState<boolean>(true);
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
