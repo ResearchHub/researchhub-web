@@ -3,7 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const TableOfContent = (props) => {
   const { paperDraftSections, paperDraftExists } = props;

@@ -462,10 +462,6 @@ class DiscussionEntry extends React.Component {
                     commentThreadID={commentThreadID}
                     entityKey={null}
                     onScrollSuccess={() => {
-                      inlineCommentStore.set("animatedEntityKey")(null);
-                      inlineCommentStore.set("animatedTextCommentID")(
-                        commentThreadID
-                      );
                       inlineCommentStore.set("displayableInlineComments")([
                         {
                           blockKey: "Blockkey-placeholder",

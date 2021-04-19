@@ -19,7 +19,6 @@ export default function InlineCommentThreadsDisplayBarWithMediaSize(
   const currMediaWidth =
     document.documentElement.clientWidth || document.body.clientWidth;
   const shouldRenderWithSlide = currMediaWidth <= MEDIA_WIDTH_LIMIT;
-
   if (shouldRenderWithSlide) {
     return (
       <div className={css(styles.mobile)}>
@@ -109,7 +108,7 @@ const burgerMenuStyle = {
   bmMenuWrap: {
     position: "fixed",
     top: 0,
-    zIndex: 3147480000,
+    zIndex: 1000,
     overflowY: "auto",
     width: "85%",
   },
