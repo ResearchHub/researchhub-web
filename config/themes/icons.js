@@ -47,6 +47,7 @@ import {
   faUser,
   faUserEdit,
   faUserPlus,
+  faPlus as faPlusThick,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebookF,
@@ -162,6 +163,7 @@ library.add(
   faPlay,
   faPlusCircleSolid,
   faPlusSquare,
+  faPlusThick,
   faPortrait,
   faSearch,
   faShare,
@@ -321,6 +323,7 @@ const icons = {
   pinOutline: <FontAwesomeIcon icon={faThumbtackOutline} />,
   play: <FontAwesomeIcon icon={faPlay} />,
   plus: <FontAwesomeIcon icon={faPlus} />,
+  plusThick: <FontAwesomeIcon icon={faPlusThick} />,
   plusCircle: <FontAwesomeIcon icon={faPlusCircle} />,
   plusCircleSolid: <FontAwesomeIcon icon={faPlusCircleSolid} />,
   plusSquare: <FontAwesomeIcon icon={faPlusSquare} />,

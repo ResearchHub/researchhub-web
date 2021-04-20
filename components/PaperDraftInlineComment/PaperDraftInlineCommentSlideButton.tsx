@@ -1,5 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
-import { isUndefined, nullToEmptyString } from "../../config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullToEmptyString,
+} from "../../config/utils/nullchecks";
 import React, {
   ReactElement,
   RefObject,
@@ -93,8 +96,8 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   });
 
   if (
-    isUndefined(typeof window) ||
-    isUndefined(typeof document) ||
+    isNullOrUndefined(typeof window) ||
+    isNullOrUndefined(typeof document) ||
     !shouldShowButton
   ) {
     return null;
@@ -107,7 +110,7 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
       ref={buttonRef}
       style={{ top: displayableOffsetTop }}
     >
-      {icons.plus}
+      {icons.plusThick}
     </div>
   );
 }
@@ -116,12 +119,12 @@ const styles = StyleSheet.create({
   PaperDraftInlineCommentSlideButton: {
     alignItems: "center",
     backgroundColor: "#fff",
-    border: `1px solid ${colors.GREY(0.8)}`,
+    border: `2px solid ${colors.BLUE(1)}`,
     borderRadius: 5,
     color: colors.BLUE(1),
     cursor: "pointer",
     display: "flex",
-    fontSize: 16,
+    fontSize: 18,
     height: BUTTON_HEIGHT,
     justifyContent: "center",
     padding: 8,
@@ -130,7 +133,8 @@ const styles = StyleSheet.create({
     zIndex: 1,
     width: BUTTON_WIDTH,
     ":hover": {
-      backgroundColor: colors.GREY(1),
+      opacity: 0.8,
+      // backgroundColor: colors.GREY(.2),
     },
   },
 });

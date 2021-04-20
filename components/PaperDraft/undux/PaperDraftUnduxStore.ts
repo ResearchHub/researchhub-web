@@ -1,7 +1,7 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
+import { ID } from "../../../config/types/root_types";
 
-export type ID = string | number | null;
 export type PaperDraftStore = Store<State>;
 export type State = {
   editorState: EditorState | null;

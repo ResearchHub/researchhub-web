@@ -1,20 +1,19 @@
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import PaperDraftUnduxStore, {
-  ID,
-} from "../PaperDraft/undux/PaperDraftUnduxStore";
-import React, { ReactElement, useEffect, useState } from "react";
-import InlineCommentComposer from "./InlineCommentComposer";
+import { EditorState } from "draft-js";
 import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
+import { ID } from "../../config/types/root_types";
+import { MessageActions } from "../../redux/message";
+import { ModalActions } from "../../redux/modals";
+import { saveCommentToBackend } from "./api/InlineCommentCreate";
+import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
+import InlineCommentComposer from "./InlineCommentComposer";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   getSavedInlineCommentsGivenBlockKey,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import { saveCommentToBackend } from "./api/InlineCommentCreate";
-import { EditorState } from "draft-js";
-import { connect } from "react-redux";
-import { MessageActions } from "../../redux/message";
-import { ModalActions } from "../../redux/modals";
-import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
+import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
+import React, { ReactElement, useEffect, useState } from "react";
 
 type Props = {
   auth: any /* redux */;
