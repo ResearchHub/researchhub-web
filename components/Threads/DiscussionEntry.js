@@ -243,10 +243,10 @@ class DiscussionEntry extends React.Component {
   onRemove = ({ paperID, threadID, commentID, replyID }) => {
     this.setState({ removed: true });
     this.props.onRemoveSuccess({
-      paperID,
-      threadID,
       commentID,
+      paperID,
       replyID,
+      threadID,
     });
   };
 

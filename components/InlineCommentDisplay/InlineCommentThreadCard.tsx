@@ -146,15 +146,15 @@ function InlineCommentThreadCard({
   });
 
   const onRemoveSuccess = ({
-    paperID: _paperID,
-    threadID,
     commentID: _commentID,
+    paperID: _paperID,
     replyID: _replyID,
+    threadID,
   }: {
-    paperID: ID;
-    threadID: ID;
     commentID: ID;
+    paperID: ID;
     replyID: ID;
+    threadID: ID;
   }) => {
     if (
       /* currently, only threads are ones highlighted as a context title */
