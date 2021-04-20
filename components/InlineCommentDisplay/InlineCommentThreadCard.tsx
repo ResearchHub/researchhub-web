@@ -156,11 +156,11 @@ function InlineCommentThreadCard({
     commentID: ID;
     replyID: ID;
   }) => {
-    /* removes entity given entity selection & silently saves the paper in the background */
     if (
       /* currently only threads are the only ones that are highlighted */
       threadID != null
     ) {
+      /* removes entity given entity selection & silently saves the paper in the background */
       removeSavedInlineComment({ commentThreadID: threadID, paperDraftStore });
     }
   };
@@ -186,8 +186,8 @@ function InlineCommentThreadCard({
               discussionCount={fetchedCommentData.length}
               hoverEvents={true}
               noVoteLine={true}
-              shouldShowContextTitle={shouldShowContextTitle}
               onRemoveSuccess={onRemoveSuccess}
+              shouldShowContextTitle={shouldShowContextTitle}
             />
           ) : (
             <div>
