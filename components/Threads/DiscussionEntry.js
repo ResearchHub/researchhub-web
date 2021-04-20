@@ -240,8 +240,15 @@ class DiscussionEntry extends React.Component {
     this.setState({ editing: !this.state.editing });
   };
 
-  removePostUI = () => {
+  onRemove = ({ paperID, threadID, commentID, replyID }) => {
     this.setState({ removed: true });
+    console.warn("Discussion");
+    this.props.onRemoveSuccess({
+      paperID,
+      threadID,
+      commentID,
+      replyID,
+    });
   };
 
   renderComments = () => {
@@ -450,7 +457,7 @@ class DiscussionEntry extends React.Component {
                     dropDownEnabled={true}
                     // Moderator
                     metaData={metaData}
-                    onRemove={this.removePostUI}
+                    onRemove={this.onRemove}
                     // Twitter
                     twitter={data.source === "twitter"}
                     twitterUrl={data.url}

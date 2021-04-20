@@ -6,9 +6,7 @@ import InlineCommentUnduxStore, {
   InlineCommentStore,
 } from "./undux/InlineCommentUnduxStore";
 import { formatTextWrapID } from "./util/PaperDraftInlineCommentUtil";
-import PaperDraftUnduxStore, {
-  PaperDraftStore,
-} from "../PaperDraft/undux/PaperDraftUnduxStore";
+import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
 import React, {
   ReactElement,
   SyntheticEvent,

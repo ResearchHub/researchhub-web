@@ -15,3 +15,13 @@ export function nullToEmptyString(given) {
 }
 
 export function silentEmptyFnc() {}
+
+export function nullthrows<T>(
+  given: T,
+  msg: null | string | undefined = null
+): NonNullable<T> {
+  if (given == null || given == undefined || typeof given === "undefined") {
+    throw new Error(msg != null ? `nullthrows: ${msg}` : "nullthrows");
+  }
+  return given!;
+}
