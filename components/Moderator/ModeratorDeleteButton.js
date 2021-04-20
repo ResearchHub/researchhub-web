@@ -99,13 +99,19 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPage = () => {
     showLoader();
-    let { paperId } = props.metaData;
+    const { paperId, threadId, commentId, replyId } = props.metaData;
     fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Paper Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            paperID: paperId,
+            threadID: threadId,
+            commentID: commentId,
+            replyID: replyId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -121,15 +127,23 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPDF = () => {
     showLoader();
-    let { paperId } = props.metaData;
+    const { paperId, threadId, commentId, replyId } = props.metaData;
     fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        debugger;
         showSucessMessage("Paper PDF Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            paperID: paperId,
+            threadID: threadId,
+            commentID: commentId,
+            replyID: replyId,
+          });
       })
       .catch((err) => {
+        debugger;
         let message = "Something went wrong";
         if (err.message.detail) {
           message = err.message.detail;
@@ -144,12 +158,19 @@ const ModeratorDeleteButton = (props) => {
   const deletePost = () => {
     showLoader();
     let query = buildQuery();
+    const { paperId, threadId, commentId, replyId } = props.metaData;
     fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Post Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            paperID: paperId,
+            threadID: threadId,
+            commentID: commentId,
+            replyID: replyId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -179,9 +200,15 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const removeUser = () => {
-    const { authorId, setIsSuspended } = metaData;
-    const { auth, updateUser } = props;
-
+    const { auth, updateUser, metaData } = props;
+    const {
+      authorId,
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      setIsSuspended,
+    } = metaData;
     fetch(
       API.USER({ route: "censor" }),
       API.POST_CONFIG({ authorId: authorId })
@@ -198,7 +225,13 @@ const ModeratorDeleteButton = (props) => {
           });
         }
         showSucessMessage("User Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            paperID: paperId,
+            threadID: threadId,
+            commentID: commentId,
+            replyID: replyId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";

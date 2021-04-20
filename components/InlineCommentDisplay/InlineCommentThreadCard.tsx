@@ -7,7 +7,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineThreadFetchTarget } from "./api/InlineThreadFetch";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  ID,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
@@ -30,7 +29,10 @@ import DiscussionEntry from "../Threads/DiscussionEntry";
 import PaperDraftUnduxStore, {
   revertBackToSavedState,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
-import { silentEmptyFnc } from "../../config/utils/nullchecks";
+import { nullthrows, silentEmptyFnc } from "../../config/utils/nullchecks";
+import { ID } from "../../config/types/root_types";
+import { EditorState, EntityInstance } from "draft-js";
+import { INLINE_COMMENT_MAP } from "../PaperDraft/util/PaperDraftTextEditorUtil";
 
 type Props = {
   auth: any /* redux */;
@@ -142,6 +144,43 @@ function InlineCommentThreadCard({
     }),
   });
 
+  const onRemoveSuccess = ({
+    paperID,
+    threadID,
+    commentID: _commentID,
+    replyID: _replyID,
+  }: {
+    paperID: ID;
+    threadID: ID;
+    commentID: ID;
+    replyID: ID;
+  }) => {
+    const currContentState = nullthrows(
+      paperDraftStore.get("editorState"),
+      "EditorState must have been initialized"
+    ).getCurrentContent();
+    let targetEntity: EntityInstance | null = null;
+    for (const block of currContentState.getBlocksAsArray()) {
+      block.findEntityRanges((character) => {
+        const entityKey = character.getEntity();
+        const currEntity = currContentState.getEntity(entityKey);
+        if (
+          currEntity !== null &&
+          currEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY &&
+          currEntity.getData()["commentThreadID"] === threadID
+        ) {
+          targetEntity = currEntity;
+          return true;
+        }
+        return false;
+      }, silentEmptyFnc);
+      if (targetEntity != null) {
+        break;
+      }
+    }
+    console.warn("targetEntity: ", targetEntity);
+  };
+
   return (
     <div
       className={css([styles.inlineCommentThreadCard])}
@@ -160,10 +199,11 @@ function InlineCommentThreadCard({
           {isThreadReadOnly ? (
             <DiscussionEntry
               data={fetchedThreadData}
+              discussionCount={fetchedCommentData.length}
               hoverEvents={true}
               noVoteLine={true}
-              discussionCount={fetchedCommentData.length}
               shouldShowContextTitle={shouldShowContextTitle}
+              onRemoveSuccess={onRemoveSuccess}
             />
           ) : (
             <div>
@@ -172,13 +212,13 @@ function InlineCommentThreadCard({
                 data={{
                   created_by: auth.user,
                 }}
+                noTimeStamp={true}
+                smaller={true}
                 username={
                   auth.user.author_profile.first_name +
                   " " +
                   auth.user.author_profile.last_name
                 }
-                noTimeStamp={true}
-                smaller={true}
               />
               <div className={css(styles.threadComposerContainer)}>
                 <InlineCommentComposer
