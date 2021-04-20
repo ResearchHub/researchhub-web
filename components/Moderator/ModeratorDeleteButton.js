@@ -78,7 +78,7 @@ const ModeratorDeleteButton = (props) => {
           },
         });
       case "post":
-        text = "Are you sure you want to remove Hey Jey ?";
+        text = "Are you sure you want to remove this post?";
         return alert.show({
           text,
           buttonText: "Remove",
