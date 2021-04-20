@@ -204,7 +204,7 @@ export function removeSavedInlineComment({
         const contentWithClearedEnt = Modifier.applyEntity(
           currContentState,
           targetSelection,
-          null /* entityKey*/
+          null /* entityKey */
         );
         const updatedEditorState = EditorState.set(currEditorState, {
           currentContent: contentWithClearedEnt,
