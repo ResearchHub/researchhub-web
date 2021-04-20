@@ -157,10 +157,10 @@ function InlineCommentThreadCard({
     threadID: ID;
   }) => {
     if (
-      /* currently, only threads are ones highlighted as a context title */
+      /* currently, only threads are highlighted as context title */
       threadID != null
     ) {
-      /* removes entity given entity selection & silently saves the paper in the background */
+      /* removes entity given entity-selection & silently saves the paper in the background */
       removeSavedInlineComment({ commentThreadID: threadID, paperDraftStore });
     }
   };
