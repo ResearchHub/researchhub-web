@@ -1,11 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
 import colors from "../../config/themes/colors";
-import React, { ReactElement } from "react";
+import { ID } from "../../config/types/root_types";
 import {
   getScrollToTargetElFnc,
   getTargetInlineDraftEntityEl,
 } from "./util/InlineCommentThreadUtil";
-import { ID } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import React, { ReactElement } from "react";
 
 type Props = {
   commentThreadID: ID;

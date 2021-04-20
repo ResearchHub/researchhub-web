@@ -48,7 +48,6 @@ class DiscussionEntry extends React.Component {
   }
 
   componentDidMount = async () => {
-    /* calvinhlee: why are we even setting a prop to the state to render? */
     const { data, newCard } = this.props;
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
@@ -241,8 +240,14 @@ class DiscussionEntry extends React.Component {
     this.setState({ editing: !this.state.editing });
   };
 
-  removePostUI = () => {
+  onRemove = ({ paperID, threadID, commentID, replyID }) => {
     this.setState({ removed: true });
+    this.props.onRemoveSuccess({
+      commentID,
+      paperID,
+      replyID,
+      threadID,
+    });
   };
 
   renderComments = () => {
@@ -451,7 +456,7 @@ class DiscussionEntry extends React.Component {
                     dropDownEnabled={true}
                     // Moderator
                     metaData={metaData}
-                    onRemove={this.removePostUI}
+                    onRemove={this.onRemove}
                     // Twitter
                     twitter={data.source === "twitter"}
                     twitterUrl={data.url}

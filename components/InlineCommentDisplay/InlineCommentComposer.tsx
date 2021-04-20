@@ -1,5 +1,5 @@
 import { StyleSheet } from "aphrodite";
-import React, { useState } from "react";
+import React from "react";
 import TextEditor from "../TextEditor";
 
 type Props = {
