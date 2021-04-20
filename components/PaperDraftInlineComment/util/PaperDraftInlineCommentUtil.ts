@@ -23,7 +23,7 @@ function getSelectedBlockFromEditorState(editorState, selectionState = null) {
     );
 }
 
-function getBlockTypesInSet(block: ContentBlock) {
+function getBlockTypesInSet(block: ContentBlock): Set<any> {
   return block != null ? new Set(block.getType().split(" ")) : new Set();
 }
 
@@ -106,15 +106,22 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
 }
 
 /* -------- EXPORTS -------- */
+type HandleBlockStyleToggleArgs = {
+  editorState: EditorState;
+  onInlineCommentPrompt: ({
+    blockKey,
+    entityKey,
+  }: {
+    blockKey: string;
+    entityKey: string;
+  }) => void;
+  toggledStyle: string;
+};
 export function handleBlockStyleToggle({
   editorState,
   onInlineCommentPrompt,
   toggledStyle,
-}: {
-  editorState: EditorState;
-  onInlineCommentPrompt: ({ blockKey, entityKey }) => void;
-  toggledStyle: string;
-}): EditorState {
+}: HandleBlockStyleToggleArgs): EditorState {
   const isInlineCommentChange = toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY;
   const modifiedContentState = isInlineCommentChange
     ? handleInlineCommentToggle({
@@ -129,12 +136,20 @@ export function handleBlockStyleToggle({
   );
 }
 
+type UpdateInlineThreadIdInEntityArgs = {
+  entityKey: string;
+  paperDraftStore: PaperDraftStore;
+  commentThreadID: ID;
+};
 export function updateInlineThreadIdInEntity({
   entityKey,
   paperDraftStore,
   commentThreadID,
-}): void {
-  const editorState = paperDraftStore.get("editorState");
+}: UpdateInlineThreadIdInEntityArgs): void {
+  const editorState = nullthrows(
+    paperDraftStore.get("editorState"),
+    "PaperDraftStore must have editorState in order to mutate it"
+  );
   const currContentState = editorState.getCurrentContent();
   // directly mutates the entity
   currContentState.mergeEntityData(entityKey, {
@@ -143,13 +158,14 @@ export function updateInlineThreadIdInEntity({
   paperDraftStore.set("shouldSavePaper")(true);
 }
 
+type RemoveSavedInlineCommentArgs = {
+  commentThreadID: ID;
+  paperDraftStore: PaperDraftStore;
+};
 export function removeSavedInlineComment({
   commentThreadID,
   paperDraftStore,
-}: {
-  commentThreadID: ID;
-  paperDraftStore: PaperDraftStore;
-}): void {
+}: RemoveSavedInlineCommentArgs): void {
   const currEditorState = nullthrows(
     paperDraftStore.get("editorState"),
     "EditorState must have been initialized"
@@ -203,11 +219,13 @@ export function removeSavedInlineComment({
   }
 }
 
-export function getCurrSelectionBlockTypesInSet(editorState) {
+export function getCurrSelectionBlockTypesInSet(
+  editorState: EditorState
+): Set<any> {
   const block = getSelectedBlockFromEditorState(editorState);
   return getBlockTypesInSet(block);
 }
 
-export function formatTextWrapID(id) {
+export function formatTextWrapID(id: ID): string {
   return `inline-comment-${id}`;
 }
