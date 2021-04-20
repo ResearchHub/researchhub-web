@@ -1,5 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
-import { isUndefined, nullToEmptyString } from "../../config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullToEmptyString,
+} from "../../config/utils/nullchecks";
 import React, {
   ReactElement,
   RefObject,
@@ -93,8 +96,8 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
   });
 
   if (
-    isUndefined(typeof window) ||
-    isUndefined(typeof document) ||
+    isNullOrUndefined(typeof window) ||
+    isNullOrUndefined(typeof document) ||
     !shouldShowButton
   ) {
     return null;
