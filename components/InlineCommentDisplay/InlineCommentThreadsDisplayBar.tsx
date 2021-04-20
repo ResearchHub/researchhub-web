@@ -108,7 +108,7 @@ const burgerMenuStyle = {
   bmMenuWrap: {
     position: "fixed",
     top: 0,
-    zIndex: 1000,
+    zIndex: 10,
     overflowY: "auto",
     width: "85%",
   },
@@ -146,6 +146,7 @@ const burgerMenuStyle = {
     left: 0,
     right: 0,
     top: 0,
+    zIndex: 9,
     bottom: 0,
   },
 };
@@ -168,7 +169,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       top: -118,
       left: 0,
-      // width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       top: -90,

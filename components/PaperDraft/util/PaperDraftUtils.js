@@ -119,7 +119,8 @@ const formatHTMLForMarkup = (base64) => {
   return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
 };
 
-/* ------------------- EXPORTS ------------------- */
+/* ---------------------- EXPORTS ---------------------- */
+
 export const formatBase64ToEditorState = (payload) => {
   const {
     base64 = "",

@@ -1,8 +1,8 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
 import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
+import { ID } from "../../../config/types/root_types";
 
-export type ID = string | number | null;
 export type InlineCommentStore = Store<State>;
 export type FindTargetInlineCommentArg = {
   blockKey: string;
@@ -56,18 +56,18 @@ export function getSavedInlineCommentsGivenBlockKey({
   editorState: EditorState;
 }): Array<InlineComment> {
   const result: InlineComment[] = [];
-  const curreContent = editorState.getCurrentContent();
-  const targetBlock = curreContent.getBlockForKey(blockKey);
+  const currContent = editorState.getCurrentContent();
+  const targetBlock = currContent.getBlockForKey(blockKey);
   targetBlock.findEntityRanges(
     (character): boolean => {
       const entityKey = character.getEntity();
       if (entityKey !== null) {
-        const detectableEntity = curreContent.getEntity(entityKey);
+        const detectableEntity = currContent.getEntity(entityKey);
         if (
           detectableEntity != null &&
           detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
         ) {
-          const { commentThreadID } = curreContent
+          const { commentThreadID } = currContent
             .getEntity(entityKey)
             .getData();
           if (commentThreadID != null) {
@@ -104,13 +104,13 @@ export function getSavedInlineCommentsGivenBlockKeyAndThreadID({
   if (editorState === null) {
     return result;
   }
-  const curreContent = editorState.getCurrentContent();
-  const targetBlock = curreContent.getBlockForKey(blockKey);
+  const currContent = editorState.getCurrentContent();
+  const targetBlock = currContent.getBlockForKey(blockKey);
   targetBlock.findEntityRanges(
     (character): boolean => {
       const entityKey = character.getEntity();
       if (entityKey !== null) {
-        const detectableEntity = curreContent.getEntity(entityKey);
+        const detectableEntity = currContent.getEntity(entityKey);
         if (
           detectableEntity != null &&
           detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY

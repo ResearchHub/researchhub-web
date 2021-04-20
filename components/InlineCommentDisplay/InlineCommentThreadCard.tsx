@@ -7,7 +7,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import { inlineThreadFetchTarget } from "./api/InlineThreadFetch";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
-  ID,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 // Components
@@ -25,12 +24,16 @@ import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConst
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
-import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import {
+  removeSavedInlineComment,
+  updateInlineThreadIdInEntity,
+} from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import DiscussionEntry from "../Threads/DiscussionEntry";
 import PaperDraftUnduxStore, {
   revertBackToSavedState,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
 import { silentEmptyFnc } from "../../config/utils/nullchecks";
+import { ID } from "../../config/types/root_types";
 
 type Props = {
   auth: any /* redux */;
@@ -66,7 +69,6 @@ function InlineCommentThreadCard({
   const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
-  // both fetching & fetched state is needed because of antipattern of DiscussionEntry
   const [isReadyForFetch, setIsReadyForFetch] = useState<boolean>(true);
   const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
     false
@@ -143,6 +145,26 @@ function InlineCommentThreadCard({
     }),
   });
 
+  const onRemoveSuccess = ({
+    commentID: _commentID,
+    paperID: _paperID,
+    replyID: _replyID,
+    threadID,
+  }: {
+    commentID: ID;
+    paperID: ID;
+    replyID: ID;
+    threadID: ID;
+  }) => {
+    if (
+      /* currently, only threads are highlighted as context title */
+      threadID != null
+    ) {
+      /* removes entity given entity-selection & silently saves the paper in the background */
+      removeSavedInlineComment({ commentThreadID: threadID, paperDraftStore });
+    }
+  };
+
   return (
     <div
       className={css([styles.inlineCommentThreadCard])}
@@ -161,9 +183,10 @@ function InlineCommentThreadCard({
           {isThreadReadOnly ? (
             <DiscussionEntry
               data={fetchedThreadData}
+              discussionCount={fetchedCommentData.length}
               hoverEvents={true}
               noVoteLine={true}
-              discussionCount={fetchedCommentData.length}
+              onRemoveSuccess={onRemoveSuccess}
               shouldShowContextTitle={shouldShowContextTitle}
             />
           ) : (
@@ -173,13 +196,13 @@ function InlineCommentThreadCard({
                 data={{
                   created_by: auth.user,
                 }}
+                noTimeStamp={true}
+                smaller={true}
                 username={
                   auth.user.author_profile.first_name +
                   " " +
                   auth.user.author_profile.last_name
                 }
-                noTimeStamp={true}
-                smaller={true}
               />
               <div className={css(styles.threadComposerContainer)}>
                 <InlineCommentComposer
