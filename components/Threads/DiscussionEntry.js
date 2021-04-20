@@ -242,7 +242,6 @@ class DiscussionEntry extends React.Component {
 
   onRemove = ({ paperID, threadID, commentID, replyID }) => {
     this.setState({ removed: true });
-    console.warn("Discussion");
     this.props.onRemoveSuccess({
       paperID,
       threadID,

@@ -104,6 +104,8 @@ const ModeratorDeleteButton = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        debugger;
+
         showSucessMessage("Paper Successfully Removed.");
         props.onRemove &&
           props.onRemove({
@@ -114,6 +116,8 @@ const ModeratorDeleteButton = (props) => {
           });
       })
       .catch((err) => {
+        debugger;
+
         let message = "Something went wrong";
         if (err.message.detail) {
           message = err.message.detail;
@@ -164,6 +168,8 @@ const ModeratorDeleteButton = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Post Successfully Removed.");
+        debugger;
+
         props.onRemove &&
           props.onRemove({
             paperID: paperId,
@@ -173,6 +179,8 @@ const ModeratorDeleteButton = (props) => {
           });
       })
       .catch((err) => {
+        debugger;
+
         let message = "Something went wrong";
         if (err.message.detail) {
           message = err.message.detail;
@@ -216,6 +224,8 @@ const ModeratorDeleteButton = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        debugger;
+
         setIsSuspended(true);
         if (auth.user.author_profile.id === authorId) {
           updateUser({
@@ -234,6 +244,8 @@ const ModeratorDeleteButton = (props) => {
           });
       })
       .catch((err) => {
+        debugger;
+
         let message = "Something went wrong";
         if (err.message.detail) {
           message = err.message.detail;
