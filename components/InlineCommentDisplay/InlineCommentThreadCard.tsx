@@ -24,14 +24,24 @@ import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConst
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
-import { updateInlineThreadIdInEntity } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import {
+  removeSavedInlineComment,
+  updateInlineThreadIdInEntity,
+} from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import DiscussionEntry from "../Threads/DiscussionEntry";
 import PaperDraftUnduxStore, {
   revertBackToSavedState,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
 import { nullthrows, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ID } from "../../config/types/root_types";
-import { CharacterMetadata, EditorState, EntityInstance } from "draft-js";
+import {
+  CharacterMetadata,
+  ContentBlock,
+  EditorState,
+  EntityInstance,
+  Modifier,
+  SelectionState,
+} from "draft-js";
 import { INLINE_COMMENT_MAP } from "../PaperDraft/util/PaperDraftTextEditorUtil";
 
 type Props = {
@@ -145,7 +155,7 @@ function InlineCommentThreadCard({
   });
 
   const onRemoveSuccess = ({
-    paperID,
+    paperID: _paperID,
     threadID,
     commentID: _commentID,
     replyID: _replyID,
@@ -155,38 +165,13 @@ function InlineCommentThreadCard({
     commentID: ID;
     replyID: ID;
   }) => {
-    const currContentState = nullthrows(
-      paperDraftStore.get("editorState"),
-      "EditorState must have been initialized"
-    ).getCurrentContent();
-    const currBlocks = currContentState.getBlocksAsArray();
-    let targetEntity: EntityInstance | null = null;
-    debugger;
-    for (const block of currBlocks) {
-      try {
-        block.findEntityRanges((character: CharacterMetadata): boolean => {
-          const entityKey = character.getEntity();
-          if (entityKey != null) {
-            const detectableEntity = currContentState.getEntity(entityKey);
-            if (
-              detectableEntity != null &&
-              detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY &&
-              detectableEntity.getData()["commentThreadID"] === threadID
-            ) {
-              targetEntity = detectableEntity;
-              return true;
-            }
-          }
-          return false;
-        }, silentEmptyFnc);
-      } catch (e) {
-        debugger;
-      }
-      if (targetEntity != null) {
-        break;
-      }
+    /* removes entity given entity selection & silently saves the paper in the background */
+    if (
+      /* currently only threads are the only ones that are highlighted */
+      threadID != null
+    ) {
+      removeSavedInlineComment({ commentThreadID: threadID, paperDraftStore });
     }
-    console.warn("targetEntity: ", targetEntity);
   };
 
   return (
