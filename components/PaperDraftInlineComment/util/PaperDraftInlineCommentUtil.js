@@ -132,6 +132,11 @@ export function updateInlineThreadIdInEntity({
   paperDraftStore.set("shouldSavePaper")(true);
 }
 
+export function removeSavedInlineComment({
+  commentThreadID,
+  paperDraftStore,
+}) {}
+
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);
   return getBlockTypesInSet(block);
