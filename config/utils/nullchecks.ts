@@ -8,8 +8,8 @@ export function emptyFncWithMsg(
   }
 }
 
-export function isUndefined(given: any): boolean {
-  return given === "undefined" || typeof given === "undefined" || given == null;
+export function isNullOrUndefined(given: any): boolean {
+  return given == null || given === "undefined" || typeof given === "undefined";
 }
 
 export function nullToEmptyString(given: string | null | undefined): string {
@@ -22,7 +22,7 @@ export function nullthrows<T>(
   given: T,
   msg: null | string | undefined = null
 ): NonNullable<T> {
-  if (given == null || given == undefined || typeof given === "undefined") {
+  if (isNullOrUndefined(given)) {
     throw new Error(msg != null ? `nullthrows: ${msg}` : "nullthrows");
   }
   return given!;
