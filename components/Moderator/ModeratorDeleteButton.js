@@ -107,10 +107,10 @@ const ModeratorDeleteButton = (props) => {
         showSucessMessage("Paper Successfully Removed.");
         props.onRemove &&
           props.onRemove({
-            paperID: paperId,
-            threadID: threadId,
             commentID: commentId,
+            paperID: paperId,
             replyID: replyId,
+            threadID: threadId,
           });
       })
       .catch((err) => {
@@ -135,10 +135,10 @@ const ModeratorDeleteButton = (props) => {
         showSucessMessage("Paper PDF Successfully Removed.");
         props.onRemove &&
           props.onRemove({
-            paperID: paperId,
-            threadID: threadId,
             commentID: commentId,
+            paperID: paperId,
             replyID: replyId,
+            threadID: threadId,
           });
       })
       .catch((err) => {
@@ -164,10 +164,10 @@ const ModeratorDeleteButton = (props) => {
         showSucessMessage("Post Successfully Removed.");
         props.onRemove &&
           props.onRemove({
-            paperID: paperId,
-            threadID: threadId,
             commentID: commentId,
+            paperID: paperId,
             replyID: replyId,
+            threadID: threadId,
           });
       })
       .catch((err) => {
@@ -225,10 +225,10 @@ const ModeratorDeleteButton = (props) => {
         showSucessMessage("User Successfully Removed.");
         props.onRemove &&
           props.onRemove({
-            paperID: paperId,
-            threadID: threadId,
             commentID: commentId,
+            paperID: paperId,
             replyID: replyId,
+            threadID: threadId,
           });
       })
       .catch((err) => {
