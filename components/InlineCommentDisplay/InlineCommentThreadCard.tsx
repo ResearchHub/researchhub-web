@@ -157,7 +157,7 @@ function InlineCommentThreadCard({
     replyID: ID;
   }) => {
     if (
-      /* currently only threads are the only ones that are highlighted */
+      /* currently, only threads are ones highlighted as a context title */
       threadID != null
     ) {
       /* removes entity given entity selection & silently saves the paper in the background */
