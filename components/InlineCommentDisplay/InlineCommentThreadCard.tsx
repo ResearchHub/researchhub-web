@@ -32,17 +32,8 @@ import DiscussionEntry from "../Threads/DiscussionEntry";
 import PaperDraftUnduxStore, {
   revertBackToSavedState,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
-import { nullthrows, silentEmptyFnc } from "../../config/utils/nullchecks";
+import { silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ID } from "../../config/types/root_types";
-import {
-  CharacterMetadata,
-  ContentBlock,
-  EditorState,
-  EntityInstance,
-  Modifier,
-  SelectionState,
-} from "draft-js";
-import { INLINE_COMMENT_MAP } from "../PaperDraft/util/PaperDraftTextEditorUtil";
 
 type Props = {
   auth: any /* redux */;
