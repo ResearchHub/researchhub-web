@@ -105,7 +105,8 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
   });
 }
 
-/* -------- EXPORTS -------- */
+/* ---------------------- EXPORTS ---------------------- */
+
 type HandleBlockStyleToggleArgs = {
   editorState: EditorState;
   onInlineCommentPrompt: ({
@@ -117,6 +118,7 @@ type HandleBlockStyleToggleArgs = {
   }) => void;
   toggledStyle: string;
 };
+
 export function handleBlockStyleToggle({
   editorState,
   onInlineCommentPrompt,
@@ -141,6 +143,7 @@ type UpdateInlineThreadIdInEntityArgs = {
   paperDraftStore: PaperDraftStore;
   commentThreadID: ID;
 };
+
 export function updateInlineThreadIdInEntity({
   entityKey,
   paperDraftStore,
@@ -162,6 +165,7 @@ type RemoveSavedInlineCommentArgs = {
   commentThreadID: ID;
   paperDraftStore: PaperDraftStore;
 };
+
 export function removeSavedInlineComment({
   commentThreadID,
   paperDraftStore,
