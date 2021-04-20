@@ -168,7 +168,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       top: -118,
       left: 0,
-      // width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
       top: -90,
