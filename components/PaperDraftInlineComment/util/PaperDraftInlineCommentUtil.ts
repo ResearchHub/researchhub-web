@@ -54,13 +54,7 @@ function formatBlockTypes(blockTypes) {
     : blockTypes;
 }
 
-/* NOTE: This function only upserts. 
-   Deletion must be done at the Comment-UI, utilizing a direct backend-call & updating unduxStore */
-function handleInlineCommentBlockToggle({
-  editorState,
-  onInlineCommentPrompt,
-}) {
-  /* ---- Applying Entity to Draft---- */
+function handleInlineCommentToggle({ editorState, onInlineCommentPrompt }) {
   /* creating entity below mutates entity directly. Copying ensures we don't get undesired sideeffects */
   const copiedEditorState = EditorState.push(
     editorState,
@@ -123,7 +117,7 @@ export function handleBlockStyleToggle({
 }): EditorState {
   const isInlineCommentChange = toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY;
   const modifiedContentState = isInlineCommentChange
-    ? handleInlineCommentBlockToggle({
+    ? handleInlineCommentToggle({
         editorState,
         onInlineCommentPrompt,
       })
