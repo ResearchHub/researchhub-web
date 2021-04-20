@@ -31,7 +31,7 @@ import PaperDraftUnduxStore, {
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
 import { nullthrows, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ID } from "../../config/types/root_types";
-import { EditorState, EntityInstance } from "draft-js";
+import { CharacterMetadata, EditorState, EntityInstance } from "draft-js";
 import { INLINE_COMMENT_MAP } from "../PaperDraft/util/PaperDraftTextEditorUtil";
 
 type Props = {
@@ -159,21 +159,29 @@ function InlineCommentThreadCard({
       paperDraftStore.get("editorState"),
       "EditorState must have been initialized"
     ).getCurrentContent();
+    const currBlocks = currContentState.getBlocksAsArray();
     let targetEntity: EntityInstance | null = null;
-    for (const block of currContentState.getBlocksAsArray()) {
-      block.findEntityRanges((character) => {
-        const entityKey = character.getEntity();
-        const currEntity = currContentState.getEntity(entityKey);
-        if (
-          currEntity !== null &&
-          currEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY &&
-          currEntity.getData()["commentThreadID"] === threadID
-        ) {
-          targetEntity = currEntity;
-          return true;
-        }
-        return false;
-      }, silentEmptyFnc);
+    debugger;
+    for (const block of currBlocks) {
+      try {
+        block.findEntityRanges((character: CharacterMetadata): boolean => {
+          const entityKey = character.getEntity();
+          if (entityKey != null) {
+            const detectableEntity = currContentState.getEntity(entityKey);
+            if (
+              detectableEntity != null &&
+              detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY &&
+              detectableEntity.getData()["commentThreadID"] === threadID
+            ) {
+              targetEntity = detectableEntity;
+              return true;
+            }
+          }
+          return false;
+        }, silentEmptyFnc);
+      } catch (e) {
+        debugger;
+      }
       if (targetEntity != null) {
         break;
       }
