@@ -2,7 +2,16 @@ import {
   draftCssToCustomCss,
   INLINE_COMMENT_MAP,
 } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
-import { EditorState, Modifier } from "draft-js";
+import {
+  CharacterMetadata,
+  ContentBlock,
+  EditorState,
+  Modifier,
+  SelectionState,
+} from "draft-js";
+import { nullthrows } from "../../../config/utils/nullchecks";
+import { PaperDraftStore } from "../../PaperDraft/undux/PaperDraftUnduxStore";
+import { ID } from "../../../config/types/root_types";
 
 function getSelectedBlockFromEditorState(editorState, selectionState = null) {
   return editorState
@@ -14,7 +23,7 @@ function getSelectedBlockFromEditorState(editorState, selectionState = null) {
     );
 }
 
-function getBlockTypesInSet(block) {
+function getBlockTypesInSet(block: ContentBlock) {
   return block != null ? new Set(block.getType().split(" ")) : new Set();
 }
 
@@ -89,7 +98,7 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
 
   /* NOTE: Any new styling should be in custom type for consistency */
   const newBlockTypes = new Set();
-  const toggledBlockType = draftCssToCustomCss[toggledStyle] ?? toggledStyle;
+  const toggledBlockType = draftCssToCustomCss[toggledStyle] || toggledStyle;
   if (!currBlockTypes.has(toggledBlockType)) {
     newBlockTypes.add(toggledBlockType);
   }
@@ -107,22 +116,30 @@ export function handleBlockStyleToggle({
   editorState,
   onInlineCommentPrompt,
   toggledStyle,
-}) {
-  const modifiedContentState =
-    toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY
-      ? handleInlineCommentBlockToggle({
-          editorState,
-          onInlineCommentPrompt,
-        })
-      : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
-  return EditorState.push(editorState, modifiedContentState);
+}: {
+  editorState: EditorState;
+  onInlineCommentPrompt: ({ blockKey, entityKey }) => void;
+  toggledStyle: string;
+}): EditorState {
+  const isInlineCommentChange = toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY;
+  const modifiedContentState = isInlineCommentChange
+    ? handleInlineCommentBlockToggle({
+        editorState,
+        onInlineCommentPrompt,
+      })
+    : handleNonInlineCommentBlockToggle(editorState, toggledStyle);
+  return EditorState.push(
+    editorState,
+    modifiedContentState,
+    isInlineCommentChange ? "apply-entity" : "change-block-type"
+  );
 }
 
 export function updateInlineThreadIdInEntity({
   entityKey,
   paperDraftStore,
   commentThreadID,
-}) {
+}): void {
   const editorState = paperDraftStore.get("editorState");
   const currContentState = editorState.getCurrentContent();
   // directly mutates the entity
@@ -135,7 +152,62 @@ export function updateInlineThreadIdInEntity({
 export function removeSavedInlineComment({
   commentThreadID,
   paperDraftStore,
-}) {}
+}: {
+  commentThreadID: ID;
+  paperDraftStore: PaperDraftStore;
+}): void {
+  const currEditorState = nullthrows(
+    paperDraftStore.get("editorState"),
+    "EditorState must have been initialized"
+  );
+  const currContentState = currEditorState.getCurrentContent();
+  const currBlocks = currContentState.getBlocksAsArray();
+  let shouldBreakFromLoop: boolean = false,
+    targetBlock: ContentBlock | null = null;
+  for (const block of currBlocks) {
+    block.findEntityRanges(
+      (character: CharacterMetadata): boolean => {
+        const entityKey = character.getEntity();
+        if (entityKey != null) {
+          const detectableEntity = currContentState.getEntity(entityKey);
+          if (
+            detectableEntity != null &&
+            detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY &&
+            detectableEntity.getData()["commentThreadID"] === commentThreadID
+          ) {
+            targetBlock = block;
+            shouldBreakFromLoop = true;
+            return true; /* returning true triggers callback */
+          }
+        }
+        return false;
+      },
+      (start: number, end: number): void => {
+        const blockKey = nullthrows(
+          targetBlock,
+          "targetBlock must be defined by here"
+        ).getKey();
+        const targetSelection = SelectionState.createEmpty(blockKey).merge({
+          anchorOffset: start,
+          focusOffset: end,
+        });
+        const contentWithClearedEnt = Modifier.applyEntity(
+          currContentState,
+          targetSelection,
+          null /* entityKey*/
+        );
+        const updatedEditorState = EditorState.set(currEditorState, {
+          currentContent: contentWithClearedEnt,
+        });
+        paperDraftStore.set("editorState")(updatedEditorState);
+        paperDraftStore.set("shouldSavePaper")(true);
+      }
+    );
+    if (shouldBreakFromLoop) {
+      break;
+    }
+  }
+}
 
 export function getCurrSelectionBlockTypesInSet(editorState) {
   const block = getSelectedBlockFromEditorState(editorState);

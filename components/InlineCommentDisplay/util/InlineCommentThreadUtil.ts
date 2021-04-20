@@ -1,6 +1,6 @@
-import { SyntheticEvent } from "react";
-import { ID } from "../../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { ID } from "../../../config/types/root_types";
 import { formatTextWrapID } from "../../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import { SyntheticEvent } from "react";
 
 type GetTargetDraftEntityElArgs = {
   commentThreadID: ID;
