@@ -78,12 +78,15 @@ const ModeratorDeleteButton = (props) => {
           },
         });
       case "post":
-        text = "Are you sure you want to remove this post?";
+        text = "Are you sure you want to remove Hey Jey ?";
         return alert.show({
           text,
           buttonText: "Remove",
           onClick: () => {
             return deletePost();
+          },
+          containerStyle: {
+            zIndex: 11 /* 10 is InlineCommentThreadDisplayBar */,
           },
         });
       case "user":
