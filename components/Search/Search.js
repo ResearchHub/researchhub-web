@@ -72,7 +72,7 @@ export default class Search extends Component {
         route: "all",
       };
 
-      fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
+      return fetch(API.SEARCH({ search: value, config }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
@@ -183,7 +183,7 @@ export default class Search extends Component {
       case "author":
       case "crossref_paper":
       case "paper":
-        return <SearchEntry {...props} />;
+        return <SearchEntry {...props} {...result} />;
       case "hub":
         return (
           <HubSearchResult
