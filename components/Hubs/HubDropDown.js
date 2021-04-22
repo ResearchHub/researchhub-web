@@ -57,7 +57,11 @@ const HubDropDown = (props) => {
           let { id, name, hub_image, slug } = hub;
 
           return (
-            <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(slug)}`}>
+            <Link
+              href={"/hubs/[slug]"}
+              as={`/hubs/${nameToUrl(slug)}`}
+              key={`dropdown-${id}`}
+            >
               <a className={css(styles.atag)}>
                 <img
                   className={css(styles.hubImage) + " hubImage"}

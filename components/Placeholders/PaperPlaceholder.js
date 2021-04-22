@@ -9,41 +9,44 @@ import {
 } from "react-placeholder/lib/placeholders";
 
 const PaperPlaceholder = ({ color, rows }) => {
-  const placeholder = (
-    <div className={css(styles.root) + " show-loading-animation"}>
-      <RoundShape className={css(styles.round)} color={color} />
-      <div className={css(styles.placeholderContainer)}>
-        <TextBlock
-          className={css(styles.textRow)}
-          rows={1}
-          color={color}
-          style={{ width: "75%" }}
-        />
-        <TextBlock
-          className={css(styles.textRow)}
-          rows={1}
-          color={color}
-          style={{ width: "25%" }}
-        />
-        <TextBlock
-          className={css(styles.textRow)}
-          rows={1}
-          color={color}
-          style={{ width: "50%" }}
-        />
-        <RoundShape className={css(styles.authorAvatar)} color={color} />
-      </div>
-      <div className={css(styles.column)}>
-        <RectShape className={css(styles.preview)} color={color} />
-        <div className={css(styles.row)}>
-          <RectShape className={css(styles.tagImage)} color={color} />
-          <TextRow className={css(styles.tag)} color={color} />
+  const Placeholders = new Array(rows).map((el, index) => {
+    return (
+      <div
+        className={css(styles.root) + " show-loading-animation"}
+        key={`paperplaceholder-${index}`}
+      >
+        <RoundShape className={css(styles.round)} color={color} />
+        <div className={css(styles.placeholderContainer)}>
+          <TextBlock
+            className={css(styles.textRow)}
+            rows={1}
+            color={color}
+            style={{ width: "75%" }}
+          />
+          <TextBlock
+            className={css(styles.textRow)}
+            rows={1}
+            color={color}
+            style={{ width: "25%" }}
+          />
+          <TextBlock
+            className={css(styles.textRow)}
+            rows={1}
+            color={color}
+            style={{ width: "50%" }}
+          />
+          <RoundShape className={css(styles.authorAvatar)} color={color} />
+        </div>
+        <div className={css(styles.column)}>
+          <RectShape className={css(styles.preview)} color={color} />
+          <div className={css(styles.row)}>
+            <RectShape className={css(styles.tagImage)} color={color} />
+            <TextRow className={css(styles.tag)} color={color} />
+          </div>
         </div>
       </div>
-    </div>
-  );
-
-  const Placeholders = new Array(rows).fill(placeholder);
+    );
+  });
 
   return Placeholders;
 };

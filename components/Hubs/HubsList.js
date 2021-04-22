@@ -162,7 +162,7 @@ class HubsList extends React.Component {
           >
             <ReactPlaceholder
               showLoadingAnimation
-              ready={this.state.hubs && this.state.hubs.length}
+              ready={this.state.hubs && this.state.hubs.length > 0}
               customPlaceholder={
                 <HubEntryPlaceholder color="#efefef" rows={5} />
               }
