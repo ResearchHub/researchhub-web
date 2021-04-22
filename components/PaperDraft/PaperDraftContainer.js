@@ -21,12 +21,6 @@ import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
 
-function myBlockStyleFn(contentBlock) {
-  const type = contentBlock.getType();
-  console.warn("type: ", type);
-  return type;
-}
-
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 export default function PaperDraftContainer({
   isViewerAllowedToEdit,

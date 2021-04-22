@@ -73,9 +73,8 @@ const formatHTMLForMarkup = (base64) => {
   const sectionTitles = [];
   const idsToRemove = {};
 
-  // const html = decodeURIComponent(escape(window.atob(base64)));
-  // const doc = new DOMParser().parseFromString(html, "text/xml");
-  const doc = new DOMParser().parseFromString(testHTMLWithoutStyle, "text/xml");
+  const html = decodeURIComponent(escape(window.atob(base64)));
+  const doc = new DOMParser().parseFromString(html, "text/xml");
 
   const sections = [].slice.call(doc.getElementsByTagName("sec"));
 
