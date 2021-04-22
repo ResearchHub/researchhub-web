@@ -17,26 +17,28 @@ const BlockStyleControls = (props) => {
   const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperExtractorType = paperDraftStore.get("extractorType");
+  const blockButtonOptions = useMemo(
+    () => getStyleControlButtonOptions(paperExtractorType),
+    [paperExtractorType]
+  );
   const blockStyleButtons = useMemo(
     () =>
-      getStyleControlButtonOptions(paperExtractorType).map(
-        ({ label, style }) => {
-          return (
-            <StyleButton
-              isStyleActive={
-                currSelectedBlockTypes.has(style) ||
-                currSelectedBlockTypes.has(
-                  getBlockStyle(style, paperDraftStore.get("extractorType"))
-                )
-              }
-              key={label}
-              label={label}
-              onClick={onClickBlock(style)}
-              style={style}
-            />
-          );
-        }
-      ),
+      blockButtonOptions.map(({ label, style }) => {
+        return (
+          <StyleButton
+            isStyleActive={
+              currSelectedBlockTypes.has(style) ||
+              currSelectedBlockTypes.has(
+                getBlockStyle(style, paperDraftStore.get("extractorType"))
+              )
+            }
+            key={label}
+            label={label}
+            onClick={onClickBlock(style)}
+            style={style}
+          />
+        );
+      }),
     [currSelectedBlockTypes, onClickBlock]
   );
   const currentInlineStyle = editorState.getCurrentInlineStyle();

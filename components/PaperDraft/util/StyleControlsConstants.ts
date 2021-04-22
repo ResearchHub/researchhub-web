@@ -34,7 +34,8 @@ export const getStyleControlButtonOptions = (
     case CERMINE:
       return CERMINE_BLOCK_STYLE_OPTIONS;
     case ENGRAFO:
+    // TODO: calvinhlee add to this
     default:
-      return ENGRAFO_BLOCK_STYLE_OPTIONS;
+      return CERMINE_BLOCK_STYLE_OPTIONS;
   }
 };
