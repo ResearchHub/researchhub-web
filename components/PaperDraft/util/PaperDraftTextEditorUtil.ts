@@ -1,12 +1,16 @@
 import { draftCssToCustomCssCermine } from "./parse_tools/cermine";
 import { EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
 import { RichUtils } from "draft-js";
+import { ValueOf } from "../../../config/types/root_types";
 
 const { CERMINE, ENGRAFO } = EXTRACTOR_TYPE;
 
 // TODO: calvinhlee maybe remove /change this default as we go further.
-export const getBlockStyle = (style, extractorType = CERMINE) => {
-  switch (extractorType) {
+export function getBlockStyle(
+  style: any,
+  extractorType: ValueOf<typeof EXTRACTOR_TYPE>
+) {
+  switch (extractorType || CERMINE) {
     case CERMINE:
       const customCss = draftCssToCustomCssCermine[style];
       return customCss != null ? customCss : style;
@@ -14,13 +18,14 @@ export const getBlockStyle = (style, extractorType = CERMINE) => {
     default:
       return style;
   }
-};
+}
 
 // TODO: calvinhlee maybe remove /change this default as we go further.
-export const getBlockStyleFn = (extractorType = CERMINE) => (contentBlock) => {
-  const blockType = contentBlock.getType();
-  return getBlockStyle(blockType, extractorType);
-};
+export function getBlockStyleFn(extractorType) {
+  return (contentBlock) => {
+    return getBlockStyle(contentBlock.getType(), extractorType || CERMINE);
+  };
+}
 
 export const getHandleKeyCommand = ({ editorState, setEditorState }) => (
   command

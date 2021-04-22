@@ -8,7 +8,6 @@ import InlineCommentUnduxStore, {
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
-  EXTRACTOR_TYPE,
   getBlockStyleFn,
   getHandleKeyCommand,
 } from "./util/PaperDraftTextEditorUtil";
