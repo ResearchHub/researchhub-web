@@ -43,16 +43,7 @@ const JournalCard = (props) => {
             {capitalize(externalSource)}
           </span>
         )}
-        {url && (
-          <a
-            href={url}
-            target="_blank"
-            rel="noreferrer noopener"
-            className={css(styles.url) + " clamp1 url"}
-          >
-            {"View Original"}
-          </a>
-        )}
+        {url && <span>{"View Original"}</span>}
       </div>
     </a>
   );

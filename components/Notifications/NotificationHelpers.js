@@ -140,7 +140,7 @@ HyperLink.propTypes = {
 };
 
 TimeStamp.propTypes = {
-  date: PropTypes.object,
+  date: PropTypes.string,
 };
 
 ModeratorDecisionTag.propTypes = {

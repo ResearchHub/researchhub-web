@@ -193,7 +193,7 @@ class PaperPageCard extends React.Component {
           <span
             className={css(styles.metadata) + " clamp1"}
             property="datePublished"
-            datetime={paper.paper_publish_date}
+            dateTime={paper.paper_publish_date}
           >
             {this.renderPublishDate()}
           </span>
@@ -465,7 +465,8 @@ class PaperPageCard extends React.Component {
         authors.push(
           <Link
             href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/discussions`}
+            as={`/user/${author.id}/contributions`}
+            key={`authorName-${author.id}`}
           >
             <a
               href={`/user/${author.id}/discussions`}
@@ -480,7 +481,7 @@ class PaperPageCard extends React.Component {
         );
       } else {
         authors.push(
-          <span className={css(styles.rawAuthor)}>
+          <span className={css(styles.rawAuthor)} key={`rawAuthor-${i}`}>
             {`${authorName}${i < length - 1 ? "," : ""}`}
             <meta property="author" content={authorName} />
           </span>
