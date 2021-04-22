@@ -1,8 +1,11 @@
 import { EditorState, convertFromRaw } from "draft-js";
 import { convertFromHTML } from "draft-convert";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { testHTMLWithoutStyle } from "./testHTMLWithoutStyle";
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
+  console.warn("nodeName: ", nodeName);
+  console.warn("nodeClassNAme: ", node.className);
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
   }
@@ -70,8 +73,10 @@ const formatHTMLForMarkup = (base64) => {
   const sectionTitles = [];
   const idsToRemove = {};
 
-  const html = decodeURIComponent(escape(window.atob(base64)));
-  const doc = new DOMParser().parseFromString(html, "text/xml");
+  // const html = decodeURIComponent(escape(window.atob(base64)));
+  // const doc = new DOMParser().parseFromString(html, "text/xml");
+  const doc = new DOMParser().parseFromString(testHTMLWithoutStyle, "text/xml");
+
   const sections = [].slice.call(doc.getElementsByTagName("sec"));
 
   let count = 0;
@@ -81,7 +86,6 @@ const formatHTMLForMarkup = (base64) => {
 
     const titleNode = section.getElementsByTagName("title")[0];
     const lastPNode = [].slice.call(section.getElementsByTagName("p")).pop();
-
     if (!titleNode || !lastPNode) {
       return (idsToRemove[section.id] = true);
     }
@@ -130,12 +134,15 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess = emptyFncWithMsg,
   } = payload ?? {};
   try {
-    const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    const [_html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    const html = "<article-title>HI</article-title>";
+    console.warn("HTML", html);
+    // console.warn("_html", _html);
     const blocksFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
       htmlToStyle,
       htmlToEntity,
-    })(html, { flat: true });
+    })(_html, { flat: true });
     const newEditorState = EditorState.set(
       EditorState.push(currenEditorState, blocksFromHTML),
       { decorator }
