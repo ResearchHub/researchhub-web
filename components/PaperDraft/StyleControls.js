@@ -39,7 +39,7 @@ const BlockStyleControls = (props) => {
           />
         );
       }),
-    [currSelectedBlockTypes, onClickBlock]
+    [blockButtonOptions, currSelectedBlockTypes, getBlockStyle, onClickBlock]
   );
   const currentInlineStyle = editorState.getCurrentInlineStyle();
   const inlineStylebuttons = useMemo(
