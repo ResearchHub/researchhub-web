@@ -48,6 +48,7 @@ class DiscussionEntry extends React.Component {
   }
 
   componentDidMount = async () => {
+    console.log("this.props", this.props);
     const { data, newCard } = this.props;
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
@@ -391,6 +392,8 @@ class DiscussionEntry extends React.Component {
       contentType: "thread",
       objectId: data.id,
     };
+    const isInlineComment = ["block_key"] in data;
+
     return (
       <div
         className={css(
@@ -494,6 +497,7 @@ class DiscussionEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
+                    mediaOnly={isInlineComment}
                   />
                 </div>
               </Fragment>
@@ -518,6 +522,7 @@ class DiscussionEntry extends React.Component {
                 small={mobileView}
                 isRemoved={this.state.removed}
                 hideReply={data.source === "twitter"}
+                mediaOnly={isInlineComment}
               />
             </div>
           </div>
