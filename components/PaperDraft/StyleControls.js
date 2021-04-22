@@ -1,5 +1,9 @@
 import { getBlockStyle } from "./util/PaperDraftTextEditorUtil";
 import { getCurrSelectionBlockTypesInSet } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
+import {
+  getStyleControlButtonOptions,
+  INLINE_STYLE_OPTIONS,
+} from "./util/StyleControlsConstants";
 import { StyleSheet, css } from "aphrodite";
 import React, { useMemo } from "react";
 import StyleButton from "./StyleButton";
@@ -8,47 +12,37 @@ import StyleButton from "./StyleButton";
 import colors from "~/config/themes/colors";
 import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
 
-const BLOCK_TYPES = [
-  { label: "H1", style: "header-one" },
-  { label: "H2", style: "header-two" },
-  { label: "UL", style: "unordered-list-item" },
-  { label: "OL", style: "ordered-list-item" },
-];
-
-const INLINE_STYLES = [
-  { label: "Bold", style: "BOLD" },
-  { label: "Italic", style: "ITALIC" },
-  { label: "Underline", style: "UNDERLINE" },
-];
-
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
   const paperDraftStore = PaperDraftUnduxStore.useStore();
+  const paperExtractorType = paperDraftStore.get("extractorType");
   const blockStyleButtons = useMemo(
     () =>
-      BLOCK_TYPES.map(({ label, style }) => {
-        return (
-          <StyleButton
-            isStyleActive={
-              currSelectedBlockTypes.has(style) ||
-              currSelectedBlockTypes.has(
-                getBlockStyle(style, paperDraftStore.get("extractorType"))
-              )
-            }
-            key={label}
-            label={label}
-            onClick={onClickBlock(style)}
-            style={style}
-          />
-        );
-      }),
+      getStyleControlButtonOptions(paperExtractorType).map(
+        ({ label, style }) => {
+          return (
+            <StyleButton
+              isStyleActive={
+                currSelectedBlockTypes.has(style) ||
+                currSelectedBlockTypes.has(
+                  getBlockStyle(style, paperDraftStore.get("extractorType"))
+                )
+              }
+              key={label}
+              label={label}
+              onClick={onClickBlock(style)}
+              style={style}
+            />
+          );
+        }
+      ),
     [currSelectedBlockTypes, onClickBlock]
   );
   const currentInlineStyle = editorState.getCurrentInlineStyle();
   const inlineStylebuttons = useMemo(
     () =>
-      INLINE_STYLES.map(({ label, style }) => (
+      INLINE_STYLE_OPTIONS.map(({ label, style }) => (
         <StyleButton
           isStyleActive={currentInlineStyle === style}
           key={label}

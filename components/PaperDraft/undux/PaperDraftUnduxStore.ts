@@ -1,12 +1,12 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
-import { ID } from "../../../config/types/root_types";
-import { EXTRACTOR_TYPE } from "../util/PaperDraftTextEditorUtil";
+import { ID, ValueOf } from "../../../config/types/root_types";
+import { EXTRACTOR_TYPE } from "../util/PaperDraftUtilConstants";
 
 export type PaperDraftStore = Store<State>;
 export type State = {
   editorState: EditorState | null;
-  extractorType: keyof typeof EXTRACTOR_TYPE | null;
+  extractorType: ValueOf<typeof EXTRACTOR_TYPE> | null;
   initEditorState: EditorState | null;
   lastSavePaperTime: number | null;
   paperID: ID;
