@@ -138,7 +138,6 @@ class PaperDraft extends React.Component {
       paperDraftExists,
     } = this.props;
     const { isSaving } = this.state;
-    nullthrows(null);
     return (
       <ReactPlaceholder
         ready={!isFetching}
