@@ -3,8 +3,6 @@ import { convertFromHTML } from "draft-convert";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
-  console.warn("nodeName: ", nodeName);
-  console.warn("nodeClassNAme: ", node.className);
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
   }

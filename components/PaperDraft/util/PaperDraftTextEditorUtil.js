@@ -4,7 +4,8 @@ import { RichUtils } from "draft-js";
 
 const { CERMINE, ENGRAFO } = EXTRACTOR_TYPE;
 
-export const getBlockStyle = (style, extractorType = ENGRAFO) => {
+// TODO: calvinhlee maybe remove /change this default as we go further.
+export const getBlockStyle = (style, extractorType = CERMINE) => {
   switch (extractorType) {
     case CERMINE:
       const customCss = draftCssToCustomCssCermine[style];
@@ -15,7 +16,8 @@ export const getBlockStyle = (style, extractorType = ENGRAFO) => {
   }
 };
 
-export const getBlockStyleFn = (extractorType = ENGRAFO) => (contentBlock) => {
+// TODO: calvinhlee maybe remove /change this default as we go further.
+export const getBlockStyleFn = (extractorType = CERMINE) => (contentBlock) => {
   const blockType = contentBlock.getType();
   return getBlockStyle(blockType, extractorType);
 };
