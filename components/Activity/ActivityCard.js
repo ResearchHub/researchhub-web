@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { useRouter } from "next/router";
 import Ripples from "react-ripples";
 import PropTypes from "prop-types";
 import Link from "next/link";
@@ -18,6 +19,7 @@ import colors from "~/config/themes/colors";
 // };
 
 const ActivityCard = (props) => {
+  const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
 
   const { activity, last } = props;
@@ -58,24 +60,26 @@ const ActivityCard = (props) => {
     }
   };
 
+  const routeToPaperPage = (e) => {
+    router.push(
+      "/paper/[paperId]/[paperName]",
+      `/paper/${paperId}/${paperName}`
+    );
+  };
+
   if (isHidden) return null;
 
   return (
-    <Link
-      href={"/paper/[paperId]/[paperName]"}
-      as={`/paper/${paperId}/${paperName}`}
-    >
-      <a className={css(styles.link)}>
-        <Ripples className={css(styles.root)}>
-          <ActivityHeader {...props} />
-          <ActivityBody {...props} />
-          <div className={css(styles.row, last && styles.noBorderBottom)}>
-            <TimeStamp {...formatProps("timestamp")} />
-            <HubTag {...formatProps("hub")} noHubName={true} />
-          </div>
-        </Ripples>
-      </a>
-    </Link>
+    <div className={css(styles.link)}>
+      <Ripples className={css(styles.root)} onClick={routeToPaperPage}>
+        <ActivityHeader {...props} />
+        <ActivityBody {...props} />
+        <div className={css(styles.row, last && styles.noBorderBottom)}>
+          <TimeStamp {...formatProps("timestamp")} />
+          <HubTag {...formatProps("hub")} noHubName={true} />
+        </div>
+      </Ripples>
+    </div>
   );
 };
 
