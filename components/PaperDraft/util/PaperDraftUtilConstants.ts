@@ -1,5 +1,5 @@
-export const INLINE_COMMENT_MAP = {
-  TYPE_KEY: "ResearchHub-Inline-Comment", // used as Entity Identifier
+export const ENTITY_KEY_TYPES = {
+  INLINE_COMMENT: "ResearchHub-Inline-Comment", // used as Entity Identifier
 };
 
 export const EXTRACTOR_TYPE = {

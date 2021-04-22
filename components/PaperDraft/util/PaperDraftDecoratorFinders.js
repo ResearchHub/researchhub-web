@@ -1,7 +1,29 @@
 import { CompositeDecorator } from "draft-js";
-import { INLINE_COMMENT_MAP } from "./PaperDraftUtilConstants";
+import { ENTITY_KEY_TYPES } from "./PaperDraftUtilConstants";
 import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "../WaypointSection";
+
+export function findEngrafoEntity(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges((character) => {
+    const entityKey = character.getEntity();
+    return (
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() ===
+        ENTITY_KEY_TYPES.INLINE_COMMENT
+    );
+  }, callback);
+}
+
+export function findInlineCommentEntity(contentBlock, callback, contentState) {
+  contentBlock.findEntityRanges((character) => {
+    const entityKey = character.getEntity();
+    return (
+      entityKey !== null &&
+      contentState.getEntity(entityKey).getType() ===
+        ENTITY_KEY_TYPES.INLINE_COMMENT
+    );
+  }, callback);
+}
 
 export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
   return (contentBlock, callback, contentState) => {
@@ -18,32 +40,53 @@ export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
   };
 }
 
-export function findInlineCommentEntity(contentBlock, callback, contentState) {
-  contentBlock.findEntityRanges((character) => {
-    const entityKey = character.getEntity();
-    return (
-      entityKey !== null &&
-      contentState.getEntity(entityKey).getType() ===
-        INLINE_COMMENT_MAP.TYPE_KEY
-    );
-  }, callback);
-}
+const DEFAULT_DRAFT_DECORATORS = ({
+  seenEntityKeys,
+  setActiveSection,
+  setSeenEntityKeys,
+}) => [
+  {
+    component: (props) => (
+      <WaypointSection {...props} onSectionEnter={setActiveSection} />
+    ),
+    strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
+  },
+  {
+    component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
+    strategy: findInlineCommentEntity,
+  },
+];
 
 export function getDecorator({
   seenEntityKeys,
   setActiveSection,
   setSeenEntityKeys,
 }) {
-  return new CompositeDecorator([
+  return new CompositeDecorator(
+    DEFAULT_DRAFT_DECORATORS({
+      seenEntityKeys,
+      setActiveSection,
+      setSeenEntityKeys,
+    })
+  );
+}
+
+export function getDecoratorWithEngrafo({
+  seenEntityKeys,
+  setActiveSection,
+  setSeenEntityKeys,
+}) {
+  return new CompositeDecorator(
+    ...DEFAULT_DRAFT_DECORATORS({
+      seenEntityKeys,
+      setActiveSection,
+      setSeenEntityKeys,
+    }),
     {
       component: (props) => (
-        <WaypointSection {...props} onSectionEnter={setActiveSection} />
+        <EngrafoWrap {...props} onSectionEnter={setActiveSection} />
       ),
-      strategy: findWayPointEntity(seenEntityKeys, setSeenEntityKeys),
-    },
-    {
-      component: (props) => <PaperDraftInlineCommentTextWrap {...props} />,
-      strategy: findInlineCommentEntity,
-    },
-  ]);
+      strategy: findEngrafo(seenEntityKeys, setSeenEntityKeys),
+    }
+  );
 }

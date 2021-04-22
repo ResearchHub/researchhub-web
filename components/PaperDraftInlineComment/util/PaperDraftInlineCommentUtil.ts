@@ -1,5 +1,5 @@
 import { draftCssToCustomCssCermine } from "../../PaperDraft/util/parse_tools/cermine";
-import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftUtilConstants";
+import { ENTITY_KEY_TYPES } from "../../PaperDraft/util/PaperDraftUtilConstants";
 import {
   CharacterMetadata,
   ContentBlock,
@@ -46,8 +46,9 @@ function formatBlockTypes(blockTypes) {
     blockTypes.delete("paragraph");
     blockTypes.add(draftCssToCustomCssCermine.unstyled);
   }
-  return (blockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY) && blockTypes.size < 2) ||
-    (!blockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY) && blockTypes.size === 0)
+  return (blockTypes.has(ENTITY_KEY_TYPES.INLINE_COMMENT) &&
+    blockTypes.size < 2) ||
+    (!blockTypes.has(ENTITY_KEY_TYPES.INLINE_COMMENT) && blockTypes.size === 0)
     ? blockTypes.add(draftCssToCustomCssCermine.unstyled)
     : blockTypes;
 }
@@ -62,7 +63,7 @@ function handleInlineCommentToggle({ editorState, onInlineCommentPrompt }) {
   const currContentState = copiedEditorState.getCurrentContent();
   const blockKey = copiedEditorState.getSelection().getStartKey();
   currContentState.createEntity(
-    INLINE_COMMENT_MAP.TYPE_KEY /* entity type key */,
+    ENTITY_KEY_TYPES.INLINE_COMMENT /* entity type key */,
     "MUTABLE",
     /* entity meta data */
     {
@@ -123,7 +124,8 @@ export function handleBlockStyleToggle({
   onInlineCommentPrompt,
   toggledStyle,
 }: HandleBlockStyleToggleArgs): EditorState {
-  const isInlineCommentChange = toggledStyle === INLINE_COMMENT_MAP.TYPE_KEY;
+  const isInlineCommentChange =
+    toggledStyle === ENTITY_KEY_TYPES.INLINE_COMMENT;
   const modifiedContentState = isInlineCommentChange
     ? handleInlineCommentToggle({
         editorState,
@@ -185,7 +187,7 @@ export function removeSavedInlineComment({
           const detectableEntity = currContentState.getEntity(entityKey);
           if (
             detectableEntity != null &&
-            detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY &&
+            detectableEntity.getType() === ENTITY_KEY_TYPES.INLINE_COMMENT &&
             detectableEntity.getData()["commentThreadID"] === commentThreadID
           ) {
             targetBlock = block;

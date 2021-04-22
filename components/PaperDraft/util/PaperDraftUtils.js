@@ -1,43 +1,49 @@
 import { EditorState, convertFromRaw } from "draft-js";
 import { convertFromHTML } from "draft-convert";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { testHTMLWithoutStyle } from "./testHTMLWithoutStyle";
+import { EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
   }
-
+  console.warn("BLOCK NODE_CLASS: ", node.className);
   switch (nodeName) {
-    case "title":
-      if (node.className === "header") {
-        return {
-          type: "header-one",
-          data: {
-            props: node.dataset.props,
-          },
-        };
-      }
+    // case "title":
+    //   if (node.className === "header") {
+    //     return {
+    //       type: "header-one",
+    //       data: {
+    //         props: node.dataset.props,
+    //       },
+    //     };
+    //   }
+    //   return {
+    //     type: "header-two",
+    //     data: {},
+    //   };
+    // case "p":
+    //   return {
+    //     type: "paragraph",
+    //     data: {},
+    //   };
 
-      return {
-        type: "header-two",
-        data: {},
-      };
-    case "p":
-      return {
-        type: "paragraph",
-        data: {},
-      };
-
-    case "abstract":
-    case "fig":
-    case "graphic":
-    case "front":
-    case "back":
-    case "journal":
-    case "article-id":
-      return false;
+    // case "abstract":
+    // case "fig":
+    // case "graphic":
+    // case "front":
+    // case "back":
+    // case "journal":
+    // case "article-id":
+    //   return false;
     default:
-      return true;
+      const result = {
+        type: node.className,
+        data: { ...node },
+      };
+      console.warn("hitting here: ", result);
+      return result;
   }
 };
 
@@ -50,7 +56,9 @@ const htmlToStyle = (nodeName, node, currentStyle) => {
 
 const htmlToEntity = (nodeName, node, createEntity) => {
   const { className } = node;
-
+  return createEntity(EXTRACTOR_TYPE.ENGRAFO, "MUTABLE", {
+    className: node.className,
+  });
   if (
     (nodeName === "title" && className === "header") ||
     (nodeName === "p" && className === "last-paragraph")
@@ -73,11 +81,9 @@ const formatHTMLForMarkup = (base64) => {
 
   const html = decodeURIComponent(escape(window.atob(base64)));
   const doc = new DOMParser().parseFromString(html, "text/xml");
-
   const sections = [].slice.call(doc.getElementsByTagName("sec"));
 
   let count = 0;
-
   sections.forEach((section) => {
     const { parentNode } = section;
 
@@ -131,12 +137,12 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess = emptyFncWithMsg,
   } = payload ?? {};
   try {
-    const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    const [_html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
     const contentStateFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
       htmlToStyle,
       htmlToEntity,
-    })(html, { flat: true });
+    })(testHTMLWithoutStyle, { flat: false });
     const newEditorState = EditorState.set(
       EditorState.push(currenEditorState, contentStateFromHTML),
       { decorator }

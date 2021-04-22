@@ -112,7 +112,7 @@ export default function PaperDraftContainer({
           });
           inlineCommentStore.set("promptedEntityKey")(entityKey);
         },
-        toggledStyle: INLINE_COMMENT_MAP.TYPE_KEY,
+        toggledStyle: ENTITY_KEY_TYPES.INLINE_COMMENT,
       });
       setEditorState(updatedEditorState);
     }

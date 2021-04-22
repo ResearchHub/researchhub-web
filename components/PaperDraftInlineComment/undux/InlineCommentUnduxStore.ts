@@ -1,6 +1,6 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
-import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftUtilConstants";
+import { ENTITY_KEY_TYPES } from "../../PaperDraft/util/PaperDraftUtilConstants";
 import { ID } from "../../../config/types/root_types";
 
 export type InlineCommentStore = Store<State>;
@@ -65,7 +65,7 @@ export function getSavedInlineCommentsGivenBlockKey({
         const detectableEntity = currContent.getEntity(entityKey);
         if (
           detectableEntity != null &&
-          detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
+          detectableEntity.getType() === ENTITY_KEY_TYPES.INLINE_COMMENT
         ) {
           const { commentThreadID } = currContent
             .getEntity(entityKey)
@@ -113,7 +113,7 @@ export function getSavedInlineCommentsGivenBlockKeyAndThreadID({
         const detectableEntity = currContent.getEntity(entityKey);
         if (
           detectableEntity != null &&
-          detectableEntity.getType() === INLINE_COMMENT_MAP.TYPE_KEY
+          detectableEntity.getType() === ENTITY_KEY_TYPES.INLINE_COMMENT
         ) {
           const {
             commentThreadID: entityCommentThreadID,
