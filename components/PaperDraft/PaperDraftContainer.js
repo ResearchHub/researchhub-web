@@ -8,17 +8,24 @@ import InlineCommentUnduxStore, {
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
+  EXTRACTOR_TYPE,
   getBlockStyleFn,
   getHandleKeyCommand,
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
-import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
+import { INLINE_COMMENT_MAP } from "./util/PaperDraftUtilConstants";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
 import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
+
+function myBlockStyleFn(contentBlock) {
+  const type = contentBlock.getType();
+  console.warn("type: ", type);
+  return type;
+}
 
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 export default function PaperDraftContainer({
@@ -136,7 +143,8 @@ export default function PaperDraftContainer({
     <PaperDraftInlineCommentRelativeWrap>
       <PaperDraft
         textEditorProps={{
-          blockStyleFn: getBlockStyleFn,
+          // TODO: Calvinhlee. should be getting the extractor type from the backend
+          blockStyleFn: getBlockStyleFn(paperDraftStore.get("extractorType")),
           editorState,
           handleDrop: () => true /* disallows dragging within editor */,
           handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),

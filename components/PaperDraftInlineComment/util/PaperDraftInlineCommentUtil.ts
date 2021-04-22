@@ -1,7 +1,5 @@
-import {
-  draftCssToCustomCss,
-  INLINE_COMMENT_MAP,
-} from "../../PaperDraft/util/PaperDraftTextEditorUtil";
+import { draftCssToCustomCssCermine } from "../../PaperDraft/util/parse_tools/cermine";
+import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftUtilConstants";
 import {
   CharacterMetadata,
   ContentBlock,
@@ -46,11 +44,11 @@ function formatBlockTypes(blockTypes) {
   // we manually add custom unstyled css when there's no regular block style
   if (blockTypes.has("paragraph")) {
     blockTypes.delete("paragraph");
-    blockTypes.add(draftCssToCustomCss.unstyled);
+    blockTypes.add(draftCssToCustomCssCermine.unstyled);
   }
   return (blockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY) && blockTypes.size < 2) ||
     (!blockTypes.has(INLINE_COMMENT_MAP.TYPE_KEY) && blockTypes.size === 0)
-    ? blockTypes.add(draftCssToCustomCss.unstyled)
+    ? blockTypes.add(draftCssToCustomCssCermine.unstyled)
     : blockTypes;
 }
 
@@ -92,7 +90,8 @@ function handleNonInlineCommentBlockToggle(editorState, toggledStyle) {
 
   /* NOTE: Any new styling should be in custom type for consistency */
   const newBlockTypes = new Set();
-  const toggledBlockType = draftCssToCustomCss[toggledStyle] || toggledStyle;
+  const toggledBlockType =
+    draftCssToCustomCssCermine[toggledStyle] || toggledStyle;
   if (!currBlockTypes.has(toggledBlockType)) {
     newBlockTypes.add(toggledBlockType);
   }

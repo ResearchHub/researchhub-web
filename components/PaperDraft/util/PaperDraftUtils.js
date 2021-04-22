@@ -134,17 +134,14 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess = emptyFncWithMsg,
   } = payload ?? {};
   try {
-    const [_html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
-    const html = "<article-title>HI</article-title>";
-    console.warn("HTML", html);
-    // console.warn("_html", _html);
-    const blocksFromHTML = convertFromHTML({
+    const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    const contentStateFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
       htmlToStyle,
       htmlToEntity,
-    })(_html, { flat: true });
+    })(html, { flat: true });
     const newEditorState = EditorState.set(
-      EditorState.push(currenEditorState, blocksFromHTML),
+      EditorState.push(currenEditorState, contentStateFromHTML),
       { decorator }
     );
     onSuccess({ sections: sectionTitles });

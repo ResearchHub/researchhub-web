@@ -18,7 +18,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-import "~/components/Paper/Tabs/stylesheets/paper.css";
+// import "~/components/Paper/Tabs/stylesheets/paper.css";
+import "~/components/Paper/Tabs/stylesheets/engrafo_root_style.css";
 
 class PaperDraft extends React.Component {
   constructor(props) {

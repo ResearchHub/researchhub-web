@@ -1,4 +1,4 @@
-import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
+import { getBlockStyle } from "./util/PaperDraftTextEditorUtil";
 import { getCurrSelectionBlockTypesInSet } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
 import React, { useMemo } from "react";
@@ -6,6 +6,8 @@ import StyleButton from "./StyleButton";
 
 // Config
 import colors from "~/config/themes/colors";
+import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
+
 const BLOCK_TYPES = [
   { label: "H1", style: "header-one" },
   { label: "H2", style: "header-two" },
@@ -22,21 +24,25 @@ const INLINE_STYLES = [
 const BlockStyleControls = (props) => {
   const { editorState, onClickBlock, onClickInline } = props;
   const currSelectedBlockTypes = getCurrSelectionBlockTypesInSet(editorState);
-
+  const paperDraftStore = PaperDraftUnduxStore.useStore();
   const blockStyleButtons = useMemo(
     () =>
-      BLOCK_TYPES.map(({ label, style }) => (
-        <StyleButton
-          isStyleActive={
-            currSelectedBlockTypes.has(style) ||
-            currSelectedBlockTypes.has(draftCssToCustomCss[style] ?? "")
-          }
-          key={label}
-          label={label}
-          onClick={onClickBlock(style)}
-          style={style}
-        />
-      )),
+      BLOCK_TYPES.map(({ label, style }) => {
+        return (
+          <StyleButton
+            isStyleActive={
+              currSelectedBlockTypes.has(style) ||
+              currSelectedBlockTypes.has(
+                getBlockStyle(style, paperDraftStore.get("extractorType"))
+              )
+            }
+            key={label}
+            label={label}
+            onClick={onClickBlock(style)}
+            style={style}
+          />
+        );
+      }),
     [currSelectedBlockTypes, onClickBlock]
   );
   const currentInlineStyle = editorState.getCurrentInlineStyle();

@@ -1,21 +1,23 @@
+import { draftCssToCustomCssCermine } from "./parse_tools/cermine";
+import { EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
 import { RichUtils } from "draft-js";
 
-export const INLINE_COMMENT_MAP = {
-  TYPE_KEY: "ResearchHub-Inline-Comment", // used as Entity Identifier
+const { CERMINE, ENGRAFO } = EXTRACTOR_TYPE;
+
+export const getBlockStyle = (style, extractorType = ENGRAFO) => {
+  switch (extractorType) {
+    case CERMINE:
+      const customCss = draftCssToCustomCssCermine[style];
+      return customCss != null ? customCss : style;
+    case ENGRAFO:
+    default:
+      return style;
+  }
 };
 
-export const draftCssToCustomCss = {
-  "header-one": "RichEditor-h1",
-  "header-two": "RichEditor-h2",
-  paragraph: "RichEditor-p",
-  unstyled: "RichEditor-p",
-  [INLINE_COMMENT_MAP.TYPE_KEY]: INLINE_COMMENT_MAP.TYPE_KEY,
-};
-
-export const getBlockStyleFn = (block) => {
-  const blockType = block.getType();
-  const customCss = draftCssToCustomCss[blockType];
-  return customCss != null ? customCss : blockType;
+export const getBlockStyleFn = (extractorType = ENGRAFO) => (contentBlock) => {
+  const blockType = contentBlock.getType();
+  return getBlockStyle(blockType, extractorType);
 };
 
 export const getHandleKeyCommand = ({ editorState, setEditorState }) => (

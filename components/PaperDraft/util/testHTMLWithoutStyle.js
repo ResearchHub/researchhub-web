@@ -159,28 +159,11 @@ export const testHTMLWithoutStyle = `<html>
             <div class="ltx_abstract">
               <h6 class="ltx_title ltx_title_abstract">Abstract</h6>
               <p class="ltx_p">
-                Identifying novel functional protein structures is at the heart
-                of molecular engineering and molecular biology, requiring an
-                often computationally exhaustive search. We introduce the use of
-                a Deep Convolutional Generative Adversarial Network (DCGAN) to
-                classify protein structures based on their functionality by
-                encoding each sample in a grid object structure using three
-                features in each object: the generic atom type, the position
-                atom type, and its occupancy relative to a given atom. We train
-                DCGAN on 3-dimensional (3D) decoy and native protein structures
-                in order to generate and discriminate 3D protein structures. At
-                the end of our training, loss converges to a local minimum and
-                our DCGAN can annotate functional proteins robustly against
-                adversarial protein samples. In the future we hope to extend the
-                novel structures we found from the generator in our DCGAN with
-                more samples to explore more granular functionality with varying
-                functions. We hope that our effort will advance the field of
-                protein structure prediction.
+                Identifying novel functional protein structures is at the heart of molecular engineering and molecular biology, requiring an often computationally exhaustive search. We introduce the use of a Deep Convolutional Generative Adversarial Network (DCGAN) to classify protein structures based on their functionality by encoding each sample in a grid object structure using three features in each object: the generic atom type, the position atom type, and its occupancy relative to a given atom. We train DCGAN on 3-dimensional (3D) decoy and native protein structures in order to generate and discriminate 3D protein structures. At the end of our training, loss converges to a local minimum and our DCGAN can annotate functional proteins robustly against adversarial protein samples. In the future we hope to extend the novel structures we found from the generator in our DCGAN with more samples to explore more granular functionality with varying functions. We hope that our effort will advance the field of protein structure prediction.
               </p>
             </div>
             <div class="ltx_keywords">
-              Generative Adversarial Network, Protein Structure Prediction,
-              Functional Protein Generation, Machine Learning, Bioinformatics
+              Generative Adversarial Network, Protein Structure Prediction, Functional Protein Generation, Machine Learning, Bioinformatics
             </div>
             <section id="bib" class="ltx_bibliography">
               <h2 class="ltx_title ltx_title_bibliography">References</h2>
@@ -237,13 +220,7 @@ export const testHTMLWithoutStyle = `<html>
 
               <div id="S1.p1" class="ltx_para">
                 <p class="ltx_p">
-                  One of the goals of metagenomics is to identify the functions
-                  of proteins present in a given sample. Two commonly used
-                  methods to determine the protein functions are 1. to compare
-                  the amino acid sequence of a protein with the functionally
-                  annotated sequences present in protein sequence databases, 2.
-                  to compare the 3-D structure of a protein against those of the
-                  protein structure databases
+                  One of the goals of metagenomics is to identify the functions of proteins present in a given sample. Two commonly used methods to determine the protein functions are 1. to compare the amino acid sequence of a protein with the functionally annotated sequences present in protein sequence databases, 2. to compare the 3-D structure of a protein against those of the protein structure databases
                   <cite class="ltx_cite ltx_citemacro_cite">
                     [
                     <span class="ltx_ref ltx_missing_citation ltx_ref_self">
@@ -251,19 +228,12 @@ export const testHTMLWithoutStyle = `<html>
                     </span>
                     ]
                   </cite>
-                  . Thanks to the recent advances in computational tools and
-                  techniques especially applications of machine learning in the
-                  field of metagenomics, there is a growing number of
-                  annotations of proteins available.
+                  . Thanks to the recent advances in computational tools and techniques especially applications of machine learning in the field of metagenomics, there is a growing number of annotations of proteins available.
                 </p>
               </div>
               <div id="S1.p2" class="ltx_para">
                 <p class="ltx_p">
-                  The inverse problem, determining the 3-D structure of a
-                  protein for a given function, is a young field which has
-                  attracted the interest of researchers as engineering of
-                  proteins with certain functions has promising applications in
-                  biotechnology and medicine
+                  The inverse problem, determining the 3-D structure of a protein for a given function, is a young field which has attracted the interest of researchers as engineering of proteins with certain functions has promising applications in biotechnology and medicine
                   <cite class="ltx_cite ltx_citemacro_cite">
                     [
                     <span class="ltx_ref ltx_missing_citation ltx_ref_self">
@@ -271,9 +241,7 @@ export const testHTMLWithoutStyle = `<html>
                     </span>
                     ]
                   </cite>
-                  . Design of such proteins may lead to novel therapeutic agents
-                  such as custom designed signaling proteins that will allow us
-                  to give specific instructions to cells
+                  . Design of such proteins may lead to novel therapeutic agents such as custom designed signaling proteins that will allow us to give specific instructions to cells
                   <cite class="ltx_cite ltx_citemacro_cite">
                     [
                     <span class="ltx_ref ltx_missing_citation ltx_ref_self">
@@ -286,9 +254,7 @@ export const testHTMLWithoutStyle = `<html>
               </div>
               <div id="S1.p3" class="ltx_para">
                 <p class="ltx_p">
-                  To address this issue, we propose an implementation of a Deep
-                  Convolutional Generative Adversarial Network using a protein
-                  data set obtained from Protein Data Bank (PDB) database.
+                  To address this issue, we propose an implementation of a Deep Convolutional Generative Adversarial Network using a protein data set obtained from Protein Data Bank (PDB) database.
                 </p>
               </div>
               <div id="S1.p4" class="ltx_para">

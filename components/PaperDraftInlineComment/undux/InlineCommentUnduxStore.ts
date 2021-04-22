@@ -1,6 +1,6 @@
 import { Store, createConnectedStore } from "undux";
 import { EditorState } from "draft-js";
-import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftTextEditorUtil";
+import { INLINE_COMMENT_MAP } from "../../PaperDraft/util/PaperDraftUtilConstants";
 import { ID } from "../../../config/types/root_types";
 
 export type InlineCommentStore = Store<State>;
