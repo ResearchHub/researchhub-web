@@ -42,8 +42,6 @@ type Props = {
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
   shouldShowContextTitle?: boolean;
   unduxInlineComment: InlineComment;
-  discussionCount: number;
-  setDiscussionCount: (val: number) => void;
 };
 
 function InlineCommentThreadCard({
@@ -59,8 +57,6 @@ function InlineCommentThreadCard({
     entityKey,
     highlightedText: unduxHighlightedText,
   },
-  discussionCount,
-  setDiscussionCount,
 }: Props): ReactElement<"div"> {
   const doesCommentIdExist = commentThreadID !== null;
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
@@ -123,8 +119,6 @@ function InlineCommentThreadCard({
           paperDraftStore,
           commentThreadID: threadID,
         });
-        /* updates discussion count on frontend UI */
-        setDiscussionCount(discussionCount + 1);
         inlineCommentStore.set("animatedTextCommentID")(threadID);
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
