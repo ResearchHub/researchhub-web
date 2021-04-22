@@ -75,7 +75,6 @@ const styles = StyleSheet.create({
 PaperMetadata.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.node || PropTypes.string,
-  attribute: PropTypes.bool.isRequired,
 };
 
 export default PaperMetadata;

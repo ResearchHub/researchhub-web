@@ -6,6 +6,7 @@ import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
 import Link from "next/link";
 import * as moment from "dayjs";
+import { useRouter } from "next/router";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -52,6 +53,8 @@ const DiscussionPostMetadata = (props) => {
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [showDropDown, setDropDown] = useState(false);
   const [isFlagged, setFlagged] = useState(
     metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
@@ -225,16 +228,27 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
+  const routeToAuthorPage = (e) => {
+    e && e.stopPropagation();
+
+    return router.push(
+      "/user/[authorId]/[tabName]",
+      `/user/${authorProfile.id}/contributions`
+    );
+  };
+
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
-      <AuthorAvatar
-        author={authorProfile}
-        name={username}
-        disableLink={false}
-        size={smaller ? 25 : 30}
-        twitterUrl={twitterUrl}
-      />
+      <span onClick={routeToAuthorPage}>
+        <AuthorAvatar
+          author={authorProfile}
+          name={username}
+          disableLink={true}
+          size={smaller ? 25 : 30}
+          twitterUrl={twitterUrl}
+        />
+      </span>
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
           <User {...props} />

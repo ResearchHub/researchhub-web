@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
-import PropTypes from "prop-types";
-import Link from "next/link";
 
 // Components
 import AuthorAvatar from "../AuthorAvatar";
-import colors from "~/config/themes/colors";
 
 const ActivityAvatar = (props) => {
+  const router = useRouter();
+
   const { contributionType } = props;
 
   const getIconSrc = () => {
@@ -16,9 +15,18 @@ const ActivityAvatar = (props) => {
     return `/static/icons/activityFeed/${iconName}.png`;
   };
 
+  const routeToAuthorPage = (e) => {
+    e && e.stopPropagation();
+
+    return router.push(
+      "/user/[authorId]/[tabName]",
+      `/user/${authorId}/contributions`
+    );
+  };
+
   return (
-    <div className={css(styles.root)}>
-      <AuthorAvatar {...props} />
+    <div className={css(styles.root)} onClick={routeToAuthorPage}>
+      <AuthorAvatar {...props} disableLink={true} />
       <img className={css(styles.icon)} src={getIconSrc()} />
     </div>
   );
