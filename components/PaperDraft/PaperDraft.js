@@ -5,7 +5,7 @@ import { MessageActions } from "~/redux/message";
 import { StyleSheet, css } from "aphrodite";
 import React from "react";
 import ReactPlaceholder from "react-placeholder/lib";
-
+import { nullthrows } from "~/config/utils/nullchecks.ts";
 // Components
 import AbstractPlaceholder from "~/components/Placeholders/AbstractPlaceholder";
 import StyleControls from "./StyleControls";
@@ -138,6 +138,7 @@ class PaperDraft extends React.Component {
       paperDraftExists,
     } = this.props;
     const { isSaving } = this.state;
+    nullthrows(null);
     return (
       <ReactPlaceholder
         ready={!isFetching}
