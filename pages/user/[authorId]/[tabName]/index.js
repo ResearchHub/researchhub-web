@@ -99,25 +99,11 @@ const AuthorPage = (props) => {
 
   const tabs = [
     {
-      href: "contributions",
-      label: "paper submissions",
-      name: "Paper Submissions",
+      href: "discussions",
+      label: "discussions",
+      name: "Discussions",
       showCount: true,
-      count: () => author.userContributions.count,
-    },
-    {
-      href: "summaries",
-      label: "submitted summaries",
-      name: "Submitted Summaries",
-      showCount: true,
-      count: () => summaryCount,
-    },
-    {
-      href: "takeaways",
-      label: "key takeaways",
-      name: "Key Takeaways",
-      showCount: true,
-      count: () => takeawayCount,
+      count: () => author.userDiscussions.count,
     },
     {
       href: "authored-papers",
@@ -127,11 +113,11 @@ const AuthorPage = (props) => {
       count: () => author.authoredPapers.count,
     },
     {
-      href: "discussions",
-      label: "discussions",
-      name: "Discussions",
+      href: "contributions",
+      label: "paper submissions",
+      name: "Paper Submissions",
       showCount: true,
-      count: () => author.userDiscussions.count,
+      count: () => author.userContributions.count,
     },
     {
       href: "transactions",
@@ -735,7 +721,7 @@ const AuthorPage = (props) => {
   };
 
   const getOrcidId = () => {
-    return auth.user.author_profile && auth.user.author_profile.orcid_id;
+    return fetchedUser.author_profile && fetchedUser.author_profile.orcid_id;
   };
 
   const authorOrcidId = getOrcidId();
