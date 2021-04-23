@@ -2,6 +2,7 @@ import { createConnectedStore, Store } from "undux";
 import { EditorState } from "draft-js";
 import { EXTRACTOR_TYPE } from "../util/PaperDraftUtilConstants";
 import { ID, ValueOf } from "../../../config/types/root_types";
+import { nullthrows } from "../../../config/utils/nullchecks";
 
 export type PaperDraftStore = Store<State>;
 export type State = {
@@ -29,20 +30,14 @@ export function clearSelection({
 }: {
   paperDraftStore: PaperDraftStore;
 }): void {
-  const currEditorState = paperDraftStore.get("editorState");
-  if (currEditorState != null) {
-    paperDraftStore.set("editorState")(
-      EditorState.forceSelection(
-        currEditorState,
-        currEditorState.getSelection().merge({
-          anchorOffset: 0,
-          focusOffset: 0,
-          isBackward: false,
-          hasFocus: false,
-        })
-      )
-    );
-  }
+  paperDraftStore.set("editorState")(
+    clearSelectionFromState({
+      editorState: nullthrows(
+        paperDraftStore.get("editorState"),
+        "EditorState must be present for be able to clear its selection"
+      ),
+    })
+  );
 }
 
 export function clearSelectionFromState({
