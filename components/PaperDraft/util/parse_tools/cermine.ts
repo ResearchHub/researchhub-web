@@ -12,7 +12,6 @@ export function htmlToBlockForCermine({ idsToRemove, node, nodeName }) {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
     return false;
   }
-  console.warn("HI AS CERMINE");
   switch (nodeName) {
     case "title":
       if (node.className === "header") {

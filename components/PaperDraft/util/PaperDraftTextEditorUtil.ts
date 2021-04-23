@@ -39,7 +39,7 @@ export const getHandleKeyCommand = ({ editorState, setEditorState }) => (
 };
 
 export const getHandleOnTab = ({ editorState, setEditorState }) => (
-  event: React.KeyboardEvent<{}> /* equivalent to Draft's SyntheticKeyboardEvent */
+  event: React.KeyboardEvent<{}> /* DraftJS SyntheticKeyboardEvent */
 ) => {
   event && event.stopPropagation();
   setEditorState(RichUtils.onTab(event, editorState, 4));

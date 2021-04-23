@@ -24,7 +24,10 @@ const htmlToStyle = (nodeName, node, currentStyle) => {
   return currentStyle;
 };
 
-const htmlToEntity = (nodeName, node, createEntity) => {
+const htmlToEntity = ({ nodeName, node, createEntity }) => {
+  if (nodeName == null || node == null) {
+    return;
+  }
   const { className } = node;
   if (
     (nodeName === "title" && className === "header") ||
@@ -36,7 +39,7 @@ const htmlToEntity = (nodeName, node, createEntity) => {
       index: index,
     });
   } else {
-    return createEntity(EXTRACTOR_TYPE.ENGRAFO, "MUTABLE", {
+    return createEntity(ENTITY_KEY_TYPES.ENGRAFO_WRAP, "MUTABLE", {
       className,
     });
   }
@@ -63,18 +66,16 @@ const formatHTMLForMarkup = (base64) => {
 
     const title = titleNode.textContent.trim().toLowerCase();
     const paragraph = lastPNode.textContent.trim();
-
+    const { nodeName } = parentNode;
     if (
       title.length <= 1 ||
       paragraph.length <= 1 ||
-      parentNode.nodeName === "abstract" ||
-      parentNode.nodeName === "front" ||
-      parentNode.nodeName === "back"
+      ["abstract", "front", "back"].includes(nodeName)
     ) {
       return (idsToRemove[section.id] = true);
     }
 
-    if (parentNode.nodeName === "article") {
+    if (nodeName === "article") {
       const data = `${title}-${count}`;
       const header = section.children[0];
 

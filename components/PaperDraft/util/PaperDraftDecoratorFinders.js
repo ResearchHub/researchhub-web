@@ -6,9 +6,13 @@ import WaypointSection from "../WaypointSection";
 const { ENGRAFO_WRAP, INLINE_COMMENT, WAYPOINT } = ENTITY_KEY_TYPES;
 
 export function findEngrafoWarpperEntity(contentBlock, callback, contentState) {
-  console.warn("you in the right spot");
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
+    entityKey != null &&
+      console.warn(
+        "you in the right spot: ",
+        contentState.getEntity(entityKey).getType()
+      );
     return (
       entityKey !== null &&
       contentState.getEntity(entityKey).getType() === ENGRAFO_WRAP
@@ -76,7 +80,7 @@ export function getDecorator({
       : [
           ...defaultDecorator,
           {
-            component: (props) => <div>HEYHEY</div>,
+            component: (props) => <EngrafoEntityWrapper {...props} />,
             strategy: findEngrafoWarpperEntity,
           },
         ]

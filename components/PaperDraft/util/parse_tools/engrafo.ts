@@ -10,3 +10,5 @@ export function htmlToBlockForEngrafo({ idsToRemove, node, nodeName }) {
     data: {},
   };
 }
+
+export function htmlToEntity() {}
