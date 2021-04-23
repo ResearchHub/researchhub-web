@@ -373,6 +373,7 @@ class DiscussionEntry extends React.Component {
       path,
       mediaOnly,
       shouldShowContextTitle = true,
+      noVoteLine,
       store: inlineCommentStore,
     } = this.props;
     const commentCount =
@@ -414,7 +415,10 @@ class DiscussionEntry extends React.Component {
               promoted={false}
             />
             <div
-              className={css(styles.threadLineContainer)}
+              className={css(
+                styles.threadLineContainer,
+                noVoteLine && styles.hidden
+              )}
               onClick={this.toggleCommentView}
             >
               <div
@@ -518,10 +522,9 @@ class DiscussionEntry extends React.Component {
                 onClick={this.toggleCommentView}
                 onCountHover={this.toggleHover}
                 mediaOnly={mediaOnly}
-                small={mobileView}
+                small={noVoteLine}
                 isRemoved={this.state.removed}
                 hideReply={data.source === "twitter"}
-                mediaOnly={isInlineComment}
               />
             </div>
           </div>
@@ -679,7 +682,7 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  removed: {
+  hidden: {
     display: "none",
   },
   bottom: {
