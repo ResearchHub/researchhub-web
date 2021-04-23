@@ -63,6 +63,19 @@ const DiscussionPostMetadata = (props) => {
   const ellipsis = useRef();
   let isModerator = store.getState().auth.user.moderator;
   let isLoggedIn = store.getState().auth.isLoggedIn;
+  let isUserOwnInlineComment = false;
+
+  if (isLoggedIn) {
+    console.log(
+      "store.getState().auth.user.author_profile.id",
+      store.getState().auth.user.author_profile.id
+    );
+    console.log("metaData.authorId", metaData.authorId);
+    isUserOwnInlineComment =
+      store.getState().auth.user.author_profile.id === metaData.authorId;
+  }
+
+  console.log("isUserOwnInlineComment", isUserOwnInlineComment);
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -189,6 +202,7 @@ const DiscussionPostMetadata = (props) => {
                   metaData={metaData}
                   onRemove={onRemove}
                   isModerator={isModerator}
+                  forceRender={isUserOwnInlineComment}
                 />
                 <ModeratorDeleteButton
                   containerStyle={styles.dropdownItem}
