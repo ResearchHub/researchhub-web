@@ -1,4 +1,5 @@
-export const testHTMLWithoutStyle = `<html>
+export const testHTMLWithoutStyle = `
+<html>
     <body>
       <div class="ltx_page_main">
         <div class="ltx_page_content">
@@ -2319,4 +2320,5 @@ export const testHTMLWithoutStyle = `<html>
         </div>
       </div>
     </body>
-  </html>`;
+  </html>
+  `;

@@ -8,7 +8,7 @@ import {
 export function paperFetchHook({
   decorator,
   paperId,
-  paperExtractType,
+  paperExtractorType,
   setEditorState,
   setInitEditorState,
   setIsFetching,
@@ -34,7 +34,7 @@ export function paperFetchHook({
         base64: data,
         decorator,
         onSuccess: onFormatSuccess,
-        paperExtractType,
+        paperExtractorType,
       });
     }
     setInitEditorState(digestibleFormat);

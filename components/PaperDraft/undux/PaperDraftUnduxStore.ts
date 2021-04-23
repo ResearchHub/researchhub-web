@@ -17,7 +17,7 @@ export type State = {
 
 const initialState: State = {
   editorState: EditorState.createEmpty(),
-  extractorType: EXTRACTOR_TYPE.ENGRAFO,
+  extractorType: EXTRACTOR_TYPE.CERMINE,
   initEditorState: EditorState.createEmpty(),
   lastSavePaperTime: null,
   paperID: null,

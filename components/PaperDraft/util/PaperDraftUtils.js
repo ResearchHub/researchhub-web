@@ -1,13 +1,13 @@
 import { convertFromHTML } from "draft-convert";
 import { EditorState, convertFromRaw } from "draft-js";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
+import { ENTITY_KEY_TYPES, EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
 import { htmlToBlockForCermine } from "./parse_tools/cermine";
 import { htmlToBlockForEngrafo } from "./parse_tools/engrafo";
 import { testHTMLWithoutStyle } from "./testHTMLWithoutStyle";
 
-const htmlToBlock = ({ idsToRemove, node, nodeName, paperExtractType }) => {
-  switch (paperExtractType) {
+const htmlToBlock = ({ idsToRemove, node, nodeName, paperExtractorType }) => {
+  switch (paperExtractorType) {
     case EXTRACTOR_TYPE.CERMINE:
       return htmlToBlockForCermine({ nodeName, node, idsToRemove });
     case EXTRACTOR_TYPE.ENGRAFO:
@@ -103,16 +103,21 @@ export const formatBase64ToEditorState = (payload) => {
     decorator = null,
     onError = emptyFncWithMsg,
     onSuccess = emptyFncWithMsg,
-    paperExtractType,
+    paperExtractorType,
   } = payload ?? {};
   try {
-    const [_html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    // TODO: calvinhlee - modify below when done.
+    let [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    html =
+      paperExtractorType === EXTRACTOR_TYPE.CERMINE
+        ? html
+        : testHTMLWithoutStyle;
     const contentStateFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) =>
-        htmlToBlock({ idsToRemove, node, nodeName, paperExtractType }),
+        htmlToBlock({ idsToRemove, node, nodeName, paperExtractorType }),
       htmlToStyle,
       htmlToEntity,
-    })(testHTMLWithoutStyle, { flat: false });
+    })(html, { flat: true });
     const newEditorState = EditorState.set(
       EditorState.push(currenEditorState, contentStateFromHTML),
       { decorator }
@@ -120,6 +125,7 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess({ sections: sectionTitles });
     return newEditorState;
   } catch (error) {
+    debugger;
     onError("formatBase64ToEditorState: ", error);
   }
 };
@@ -155,6 +161,9 @@ export function getIsReadyForNewInlineComment({
   inlineCommentStore,
   isDraftInEditMode,
 }) {
+  if (editorState == null) {
+    return false;
+  }
   const currSelection = editorState.getSelection();
   const isGoodTimeInterval = getIsGoodTimeInterval(
     inlineCommentStore.get("lastPromptRemovedTime")

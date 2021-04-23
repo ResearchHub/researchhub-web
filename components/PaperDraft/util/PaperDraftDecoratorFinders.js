@@ -1,15 +1,17 @@
 import { CompositeDecorator } from "draft-js";
-import { ENTITY_KEY_TYPES } from "./PaperDraftUtilConstants";
+import { ENTITY_KEY_TYPES, EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
 import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "../WaypointSection";
 
+const { ENGRAFO_WRAP, INLINE_COMMENT, WAYPOINT } = ENTITY_KEY_TYPES;
+
 export function findEngrafoWarpperEntity(contentBlock, callback, contentState) {
+  console.warn("you in the right spot");
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     return (
       entityKey !== null &&
-      contentState.getEntity(entityKey).getType() ===
-        ENTITY_KEY_TYPES.ENGRAFO_WRAP
+      contentState.getEntity(entityKey).getType() === ENGRAFO_WRAP
     );
   }, callback);
 }
@@ -19,8 +21,7 @@ export function findInlineCommentEntity(contentBlock, callback, contentState) {
     const entityKey = character.getEntity();
     return (
       entityKey !== null &&
-      contentState.getEntity(entityKey).getType() ===
-        ENTITY_KEY_TYPES.INLINE_COMMENT
+      contentState.getEntity(entityKey).getType() === INLINE_COMMENT
     );
   }, callback);
 }
@@ -33,8 +34,7 @@ export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
         setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
         return (
           entityKey !== null &&
-          contentState.getEntity(entityKey).getType() ===
-            ENTITY_KEY_TYPES.WAYPOINT
+          contentState.getEntity(entityKey).getType() === WAYPOINT
         );
       }
     }, callback);
@@ -70,14 +70,13 @@ export function getDecorator({
     setActiveSection,
     setSeenEntityKeys,
   });
-
   return new CompositeDecorator(
-    paperExtractorType === CERMINE
+    paperExtractorType === EXTRACTOR_TYPE.CERMINE
       ? defaultDecorator
       : [
           ...defaultDecorator,
           {
-            component: <div>HEYHEY</div>,
+            component: (props) => <div>HEYHEY</div>,
             strategy: findEngrafoWarpperEntity,
           },
         ]

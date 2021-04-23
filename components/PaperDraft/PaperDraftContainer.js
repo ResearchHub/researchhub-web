@@ -67,9 +67,14 @@ export default function PaperDraftContainer({
         setIsFetching,
         setPaperDraftExists,
         setPaperDraftSections,
+        paperExtractorType,
       });
     },
-    [paperId] /* intentionally hard enforcing only on paperID. */
+    [
+      /* intentionally limited memoization */
+      paperExtractorType,
+      paperId,
+    ]
   );
 
   const shouldSavePaperSilently = getShouldSavePaperSilently({
