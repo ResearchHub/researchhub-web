@@ -1,5 +1,6 @@
 import { CompositeDecorator } from "draft-js";
 import { ENTITY_KEY_TYPES, EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
+import EngrafoEntityWrapper from "./parse_tools/EngrafoEntityWrap";
 import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "../WaypointSection";
 

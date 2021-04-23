@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 
-export function EngrafoEntityWrapper({
+export default function EngrafoEntityWrapper({
   /* Props passed down from draft-js. See documentations for decorators */
   blockKey,
   children,
