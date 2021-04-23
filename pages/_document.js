@@ -40,20 +40,6 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-          <link rel="stylesheet" href="index.css" type="text/css" />
-
-          <meta
-            name="keywords"
-            lang="en"
-            content="
-Generative Adversarial Network,  Protein Structure Prediction,  Functional Protein Generation,  Machine Learning,  Bioinformatics
-"
-          />
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
           {/* Google one tap */}
           <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
           <link

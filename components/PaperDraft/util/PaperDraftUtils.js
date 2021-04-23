@@ -109,6 +109,10 @@ export const formatBase64ToEditorState = (payload) => {
   try {
     // TODO: calvinhlee - modify below when done.
     let [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+    fetch("./testHTMLWithoutStyle.txt")
+      .then((response) => response.text())
+      .then((text) => (html = text));
+    debugger;
     html =
       paperExtractorType === EXTRACTOR_TYPE.CERMINE
         ? html
