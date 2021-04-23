@@ -78,7 +78,6 @@ function InlineCommentThreadCardResponseSection({
   const commentResponses =
     commentData.length > 0
       ? commentData.map((commentData, i: number) => {
-          console.log(commentData);
           return (
             <div>
               <DiscussionPostMetadata
