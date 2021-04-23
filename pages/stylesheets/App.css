@@ -28,6 +28,10 @@
   visibility: hidden;
 }
 
+.menu-wrapper--inner {
+  transform: unset !important;
+}
+
 .horizontal-menu {
   width: 105%;
 }
