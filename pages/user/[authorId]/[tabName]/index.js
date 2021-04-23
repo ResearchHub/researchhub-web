@@ -721,7 +721,7 @@ const AuthorPage = (props) => {
   };
 
   const getOrcidId = () => {
-    return fetchedUser.author_profile && fetchedUser.author_profile.orcid_id;
+    return props.user.author_profile && props.user.author_profile.orcid_id;
   };
 
   const authorOrcidId = getOrcidId();
