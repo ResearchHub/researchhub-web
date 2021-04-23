@@ -13,7 +13,7 @@ AuthorPageRedirect.getInitialProps = async (ctx) => {
   let { query, store } = ctx;
   if (!isServer()) {
     let authorProfile = store.getState().auth.user.author_profile;
-    return { redirectPath: `${authorProfile.id}/contributions` };
+    return { redirectPath: `${authorProfile.id}/discussions` };
   } else {
     let redirectPath = "contributions";
     redirect(ctx, "authorId", redirectPath);
