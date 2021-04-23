@@ -4,7 +4,7 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { ENTITY_KEY_TYPES, EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
 import { htmlToBlockForCermine } from "./parse_tools/cermine";
 import { htmlToBlockForEngrafo } from "./parse_tools/engrafo";
-import { testHTMLWithoutStyle } from "./testHTMLWithoutStyle";
+import { testHTML } from "./testHTML";
 
 const htmlToBlock = ({ idsToRemove, node, nodeName, paperExtractorType }) => {
   switch (paperExtractorType) {
@@ -109,14 +109,7 @@ export const formatBase64ToEditorState = (payload) => {
   try {
     // TODO: calvinhlee - modify below when done.
     let [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
-    fetch("./testHTMLWithoutStyle.txt")
-      .then((response) => response.text())
-      .then((text) => (html = text));
-    debugger;
-    html =
-      paperExtractorType === EXTRACTOR_TYPE.CERMINE
-        ? html
-        : testHTMLWithoutStyle;
+    html = paperExtractorType === EXTRACTOR_TYPE.CERMINE ? html : testHTML;
     const contentStateFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) =>
         htmlToBlock({ idsToRemove, node, nodeName, paperExtractorType }),
