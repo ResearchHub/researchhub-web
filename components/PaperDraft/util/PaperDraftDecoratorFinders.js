@@ -28,6 +28,7 @@ export function findInlineCommentEntity(contentBlock, callback, contentState) {
 }
 
 export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
+  console.warn("LOOKING FOR WAY POINT");
   return (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
       const entityKey = character.getEntity();

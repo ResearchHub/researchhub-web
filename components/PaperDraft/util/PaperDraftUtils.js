@@ -17,14 +17,14 @@ const htmlToBlock = ({ idsToRemove, node, nodeName, paperExtractorType }) => {
   }
 };
 
-const htmlToStyle = (nodeName, node, currentStyle) => {
+const htmlToStyle = (nodeName, _node, currentStyle) => {
   if (nodeName === "xref") {
     return currentStyle.add("ITALIC");
   }
   return currentStyle;
 };
 
-const htmlToEntity = ({ nodeName, node, createEntity }) => {
+const htmlToEntity = (nodeName, node, createEntity) => {
   if (node == null) {
     return;
   }
@@ -33,6 +33,7 @@ const htmlToEntity = ({ nodeName, node, createEntity }) => {
     (nodeName === "title" && className === "header") ||
     (nodeName === "p" && className === "last-paragraph")
   ) {
+    console.warn("creating entities");
     const [name, index] = node.dataset.props.split("-");
     return createEntity(ENTITY_KEY_TYPES.WAY_POINT, "IMMUTABLE", {
       name: name,
