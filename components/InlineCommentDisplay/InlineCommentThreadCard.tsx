@@ -186,6 +186,7 @@ function InlineCommentThreadCard({
               discussionCount={fetchedCommentData.length}
               hoverEvents={true}
               noVoteLine={true}
+              mediaOnly={true}
               onRemoveSuccess={onRemoveSuccess}
               shouldShowContextTitle={shouldShowContextTitle}
             />
