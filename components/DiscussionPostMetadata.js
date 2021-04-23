@@ -242,27 +242,15 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  const routeToAuthorPage = (e) => {
-    e && e.stopPropagation();
-
-    return router.push(
-      "/user/[authorId]/[tabName]",
-      `/user/${authorProfile.id}/contributions`
-    );
-  };
-
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
-      <span onClick={routeToAuthorPage}>
-        <AuthorAvatar
-          author={authorProfile}
-          name={username}
-          disableLink={true}
-          size={smaller ? 25 : 30}
-          twitterUrl={twitterUrl}
-        />
-      </span>
+      <AuthorAvatar
+        author={authorProfile}
+        name={username}
+        size={smaller ? 25 : 30}
+        twitterUrl={twitterUrl}
+      />
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
           <User {...props} />
