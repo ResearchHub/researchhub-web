@@ -119,7 +119,7 @@ const ActivityList = (props) => {
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
       >
         <SideColumnTitle
-          title={"Latest Activity"}
+          title={hubId ? `Latest Activity in ${hub.name}` : "Latest Activity"}
           overrideStyles={styles.title}
         />
         <RenderActiviyList data={data} />
