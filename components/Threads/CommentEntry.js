@@ -593,6 +593,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     overflow: "visible",
     display: "table",
+    tableLayout: "fixed",
     height: "100%",
     borderSpacing: 0,
     "@media only screen and (max-width: 415px)": {

@@ -452,6 +452,7 @@ const styles = StyleSheet.create({
     overflow: "visible",
     cursor: "pointer",
     display: "table",
+    tableLayout: "fixed",
     height: "100%",
     borderSpacing: 0,
     "@media only screen and (max-width: 415px)": {

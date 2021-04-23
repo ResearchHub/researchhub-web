@@ -9,7 +9,9 @@ import InlineCommentThreadCard from "./InlineCommentThreadCard";
 import React, { ReactElement } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
-type Props = { shouldShowContextTitle?: boolean };
+type Props = {
+  shouldShowContextTitle?: boolean;
+};
 
 const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
 
