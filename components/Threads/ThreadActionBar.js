@@ -167,42 +167,40 @@ class ThreadActionBar extends React.Component {
     }
     return (
       <div
+        className={css(styles.column)}
         onClick={(e) => {
           e.stopPropagation();
         }}
-        role="none"
       >
-        <div className={css(styles.column)}>
-          <div className={css(styles.row)}>
-            {!this.props.hideReply && (
-              <div
+        <div className={css(styles.row)}>
+          {!this.props.hideReply && (
+            <div
+              className={css(
+                styles.text,
+                styles.replyContainer,
+                small && styles.smallReply,
+                this.state.showReplyBox && styles.active
+              )}
+              onClick={this.toggleReplyBox}
+            >
+              <span
                 className={css(
-                  styles.text,
-                  styles.replyContainer,
-                  small && styles.smallReply,
+                  styles.replyIcon,
                   this.state.showReplyBox && styles.active
                 )}
-                onClick={this.toggleReplyBox}
+                id={"replyIcon"}
               >
-                <span
-                  className={css(
-                    styles.replyIcon,
-                    this.state.showReplyBox && styles.active
-                  )}
-                  id={"replyIcon"}
-                >
-                  {icons.commentAltEdit}
-                </span>
-                Respond
-              </div>
-            )}
-            {!this.props.hideCount && this.renderCommentCount()}
-            {this.props.toggleEdit && this.renderEditButton()}
-          </div>
-          {!this.props.hideReply && (
-            <div className={css(styles.container)}>{this.renderReplyBox()}</div>
+                {icons.commentAltEdit}
+              </span>
+              Respond
+            </div>
           )}
+          {!this.props.hideCount && this.renderCommentCount()}
+          {this.props.toggleEdit && this.renderEditButton()}
         </div>
+        {!this.props.hideReply && (
+          <div className={css(styles.container)}>{this.renderReplyBox()}</div>
+        )}
       </div>
     );
   }
