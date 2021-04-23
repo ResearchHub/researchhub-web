@@ -13,10 +13,7 @@ const AuthorCard = (props) => {
 
   if (id) {
     return (
-      <Link
-        href={"/user/[authorId]/[tabName]"}
-        as={`/user/${id}/contributions`}
-      >
+      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/discussions`}>
         <a className={css(styles.container, styles.hover)}>
           {author.profile_image ? (
             <img src={author.profile_image} className={css(styles.userImage)} />
