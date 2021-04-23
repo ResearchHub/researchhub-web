@@ -60,26 +60,24 @@ const ActivityCard = (props) => {
     }
   };
 
-  const routeToPaperPage = (e) => {
-    router.push(
-      "/paper/[paperId]/[paperName]",
-      `/paper/${paperId}/${paperName}`
-    );
-  };
-
   if (isHidden) return null;
 
   return (
-    <div className={css(styles.link)}>
-      <Ripples className={css(styles.root)} onClick={routeToPaperPage}>
-        <ActivityHeader {...props} />
-        <ActivityBody {...props} />
-        <div className={css(styles.row, last && styles.noBorderBottom)}>
-          <TimeStamp {...formatProps("timestamp")} />
-          <HubTag {...formatProps("hub")} noHubName={true} />
-        </div>
-      </Ripples>
-    </div>
+    <Link
+      href={"/paper/[paperId]/[paperName]"}
+      as={`/paper/${paperId}/${paperName}`}
+    >
+      <a className={css(styles.link)}>
+        <Ripples className={css(styles.root)}>
+          <ActivityHeader {...props} />
+          <ActivityBody {...props} />
+          <div className={css(styles.row, last && styles.noBorderBottom)}>
+            <TimeStamp {...formatProps("timestamp")} />
+            <HubTag {...formatProps("hub")} noHubName={true} />
+          </div>
+        </Ripples>
+      </a>
+    </Link>
   );
 };
 

@@ -15,18 +15,9 @@ const ActivityAvatar = (props) => {
     return `/static/icons/activityFeed/${iconName}.png`;
   };
 
-  const routeToAuthorPage = (e) => {
-    e && e.stopPropagation();
-
-    return router.push(
-      "/user/[authorId]/[tabName]",
-      `/user/${authorId}/contributions`
-    );
-  };
-
   return (
-    <div className={css(styles.root)} onClick={routeToAuthorPage}>
-      <AuthorAvatar {...props} disableLink={true} />
+    <div className={css(styles.root)}>
+      <AuthorAvatar {...props} />
       <img className={css(styles.icon)} src={getIconSrc()} />
     </div>
   );
