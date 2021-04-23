@@ -37,5 +37,10 @@ export function getInitialScope() {
 
 export function timeAgoStamp(date) {
   date = new Date(date);
+  let OneDay = new Date().getTime() + 1 * 24 * 60 * 60 * 1000;
+
+  if (OneDay > date) {
+    return null;
+  }
   return timeAgo.format(date);
 }

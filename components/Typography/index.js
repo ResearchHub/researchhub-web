@@ -14,8 +14,8 @@ export const SideColumnTitle = ({
       className={css(styles.sidecolumnHeader, overrideStyles && overrideStyles)}
     >
       <div className={css(styles.titleContainer)}>
-        {title && title}
-        <span className={css(styles.count)}>{count && count}</span>
+        {title ? title : null}
+        {count ? <span className={css(styles.count)}>{count}</span> : null}
       </div>
       {onClick && (
         <div className={css(styles.toggleButton)} onClick={onClick}>
