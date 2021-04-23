@@ -33,7 +33,8 @@ export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
         setSeenEntityKeys({ ...seenEntityKeys, [entityKey]: true });
         return (
           entityKey !== null &&
-          contentState.getEntity(entityKey).getType() === "WAYPOINT"
+          contentState.getEntity(entityKey).getType() ===
+            ENTITY_KEY_TYPES.WAYPOINT
         );
       }
     }, callback);

@@ -56,21 +56,19 @@ const htmlToStyle = (nodeName, node, currentStyle) => {
 
 const htmlToEntity = (nodeName, node, createEntity) => {
   const { className } = node;
-  return createEntity(EXTRACTOR_TYPE.ENGRAFO, "MUTABLE", {
-    className: node.className,
-  });
   if (
     (nodeName === "title" && className === "header") ||
     (nodeName === "p" && className === "last-paragraph")
   ) {
     const [name, index] = node.dataset.props.split("-");
-
-    const entity = createEntity("WAYPOINT", "IMMUTABLE", {
+    return createEntity(ENTITY_KEY_TYPES.WAY_POINT, "IMMUTABLE", {
       name: name,
       index: index,
     });
-
-    return entity;
+  } else {
+    return createEntity(EXTRACTOR_TYPE.ENGRAFO, "MUTABLE", {
+      className,
+    });
   }
 };
 

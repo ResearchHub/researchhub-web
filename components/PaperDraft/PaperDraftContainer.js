@@ -12,7 +12,7 @@ import {
   getHandleKeyCommand,
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
-import { INLINE_COMMENT_MAP } from "./util/PaperDraftUtilConstants";
+import { ENTITY_KEY_TYPES } from "./util/PaperDraftUtilConstants";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
