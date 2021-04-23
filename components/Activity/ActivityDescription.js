@@ -89,24 +89,15 @@ const ActivityDescription = (props) => {
     return ` supported (${amount} RSC) `;
   };
 
-  const routeToAuthorPage = (e) => {
-    e && e.stopPropagation();
-
-    return router.push(
-      "/user/[authorId]/[tabName]",
-      `/user/${authorId}/contributions`
-    );
-  };
-
   return (
     <ClampedText lines={lines} textStyles={styles.textContainer}>
       <span onClick={(e) => e.stopPropagation()}>
-        <span
-          className={css(styles.link, styles.text)}
-          onClick={routeToAuthorPage}
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${authorId}/contributions`}
         >
-          {username}
-        </span>
+          <a className={css(styles.link, styles.text)}>{username}</a>
+        </Link>
         <span>{renderActionString()}</span>
         <span className={css(styles.text)}>{paperTitle}</span>
       </span>
