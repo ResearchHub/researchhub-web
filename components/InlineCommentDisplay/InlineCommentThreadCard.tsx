@@ -119,7 +119,6 @@ function InlineCommentThreadCard({
           paperDraftStore,
           commentThreadID: threadID,
         });
-        inlineCommentStore.set("animatedTextCommentID")(threadID);
         inlineCommentStore.set("displayableInlineComments")([
           updatedInlineComment,
         ]);
