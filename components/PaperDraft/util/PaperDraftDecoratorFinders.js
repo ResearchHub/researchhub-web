@@ -9,11 +9,7 @@ const { ENGRAFO_WRAP, INLINE_COMMENT, WAYPOINT } = ENTITY_KEY_TYPES;
 export function findEngrafoWarpperEntity(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
-    entityKey != null &&
-      console.warn(
-        "you in the right spot: ",
-        contentState.getEntity(entityKey).getType()
-      );
+    console.warn("entityKey: ", entityKey);
     return (
       entityKey !== null &&
       contentState.getEntity(entityKey).getType() === ENGRAFO_WRAP

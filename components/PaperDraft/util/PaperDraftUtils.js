@@ -25,7 +25,7 @@ const htmlToStyle = (nodeName, node, currentStyle) => {
 };
 
 const htmlToEntity = ({ nodeName, node, createEntity }) => {
-  if (nodeName == null || node == null) {
+  if (node == null) {
     return;
   }
   const { className } = node;
@@ -38,9 +38,10 @@ const htmlToEntity = ({ nodeName, node, createEntity }) => {
       name: name,
       index: index,
     });
-  } else {
+  } else if (nodeName != null) {
+    console.warn("creating entities");
     return createEntity(ENTITY_KEY_TYPES.ENGRAFO_WRAP, "MUTABLE", {
-      className,
+      className: className || "",
     });
   }
 };
