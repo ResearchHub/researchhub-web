@@ -371,6 +371,7 @@ class DiscussionEntry extends React.Component {
       mobileView,
       paper,
       path,
+      mediaOnly,
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
@@ -513,6 +514,7 @@ class DiscussionEntry extends React.Component {
                 onSubmit={this.submitComment}
                 onClick={this.toggleCommentView}
                 onCountHover={this.toggleHover}
+                mediaOnly={mediaOnly}
                 small={mobileView}
                 isRemoved={this.state.removed}
                 hideReply={data.source === "twitter"}
