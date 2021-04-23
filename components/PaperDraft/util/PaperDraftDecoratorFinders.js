@@ -9,7 +9,6 @@ const { ENGRAFO_WRAP, INLINE_COMMENT, WAYPOINT } = ENTITY_KEY_TYPES;
 export function findEngrafoWarpperEntity(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
-    console.warn("entityKey: ", entityKey);
     return (
       entityKey !== null &&
       contentState.getEntity(entityKey).getType() === ENGRAFO_WRAP
@@ -28,7 +27,6 @@ export function findInlineCommentEntity(contentBlock, callback, contentState) {
 }
 
 export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
-  console.warn("LOOKING FOR WAY POINT");
   return (contentBlock, callback, contentState) => {
     contentBlock.findEntityRanges((character) => {
       const entityKey = character.getEntity();

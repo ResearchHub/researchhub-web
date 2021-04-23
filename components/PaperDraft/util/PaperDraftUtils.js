@@ -33,16 +33,14 @@ const htmlToEntity = (nodeName, node, createEntity) => {
     (nodeName === "title" && className === "header") ||
     (nodeName === "p" && className === "last-paragraph")
   ) {
-    console.warn("creating entities");
     const [name, index] = node.dataset.props.split("-");
     return createEntity(ENTITY_KEY_TYPES.WAY_POINT, "IMMUTABLE", {
       name: name,
       index: index,
     });
   } else if (nodeName != null) {
-    console.warn("creating entities");
-    return createEntity(ENTITY_KEY_TYPES.ENGRAFO_WRAP, "MUTABLE", {
-      className: className || "",
+    return createEntity(ENTITY_KEY_TYPES.ENGRAFO_WRAP, "IMMUTABLE", {
+      className: className,
     });
   }
 };

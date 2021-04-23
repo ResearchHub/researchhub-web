@@ -9,9 +9,8 @@ export default function EngrafoEntityWrapper({
   entityKey,
 }): ReactElement<"div"> {
   // className comes from htmlToEntity
-  console.warn("HI????");
   const { className: engrafoClassName } = contentState
     .getEntity(entityKey)
     .getData();
-  return <div className={engrafoClassName}>HJIHIHIHI</div>;
+  return <span className={engrafoClassName}>{children}</span>;
 }
