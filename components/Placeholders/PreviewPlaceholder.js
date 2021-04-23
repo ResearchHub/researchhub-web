@@ -9,7 +9,7 @@ import {
   RoundShape,
 } from "react-placeholder/lib/placeholders";
 
-const PreviewPlaceholder = ({ color, hideAnimation }) => {
+const PreviewPlaceholder = ({ color, hideAnimation, previewStyles }) => {
   var animate = " show-loading-animation";
   if (hideAnimation) {
     animate = " ";
@@ -17,7 +17,11 @@ const PreviewPlaceholder = ({ color, hideAnimation }) => {
 
   return (
     <div className={css(styles.placeholderContainer) + animate}>
-      <RectShape style={{ width: 80, height: 90 }} color={color} />
+      <RectShape
+        style={{ width: 80, height: 90 }}
+        className={css(previewStyles)}
+        color={color}
+      />
     </div>
   );
 };

@@ -570,132 +570,153 @@ class PaperPageCard extends React.Component {
         showLoadingAnimation
         customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
       >
-        <Fragment>
-          <AuthorSupportModal />
+        <div className={css(styles.mainContainer)}>
+          <div className={css(styles.main)}>
+            <AuthorSupportModal />
 
-          <div
-            className={css(
-              styles.container,
-              this.state.dropdown && styles.overflow
-            )}
-            ref={this.containerRef}
-            onMouseEnter={this.setHover}
-            onMouseLeave={this.unsetHover}
-            vocab="https://schema.org/"
-            typeof="ScholarlyArticle"
-          >
-            <ReactTooltip />
-            <meta property="description" content={paper.abstract} />
-            <meta property="commentCount" content={paper.discussion_count} />
-            <div className={css(styles.voting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={this.props.selectedVoteType}
-                isPaper={true}
-                type={"Paper"}
-                paperPage={true}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted !== false
-                    ? this.props.paper
-                    : null
-                }
-                small={true}
-              />
-              <PaperDiscussionButton
-                paper={paper}
-                discussionCount={discussionCount}
-              />
-              <div className={css(styles.divider)}></div>
-              <PaperPromotionButton paper={paper} />
-            </div>
             <div
               className={css(
-                styles.column,
-                !fetching && previews.length === 0 && styles.emptyPreview
+                styles.container,
+                this.state.dropdown && styles.overflow
               )}
-              ref={this.metaContainerRef}
+              ref={this.containerRef}
+              onMouseEnter={this.setHover}
+              onMouseLeave={this.unsetHover}
+              vocab="https://schema.org/"
+              typeof="ScholarlyArticle"
             >
-              <div className={css(styles.reverseRow)}>
-                <div
-                  className={css(
-                    styles.cardContainer,
-                    !fetching && previews.length === 0 && styles.emptyPreview
-                  )}
-                >
-                  <div className={css(styles.metaContainer)}>
-                    <div className={css(styles.titleHeader)}>
-                      <div className={css(styles.row)}>
-                        <h1 className={css(styles.title)} property={"headline"}>
-                          {paper && paper.title}
-                        </h1>
-                        <PaperPreview paperId={paper.id} />
-                      </div>
-                      <PaperMetadata
-                        label={"Paper Title"}
-                        containerStyles={styles.paperTitle}
-                        active={
-                          paper.paper_title &&
-                          removeLineBreaksInStr(paper.paper_title) !==
-                            removeLineBreaksInStr(paper.title)
-                        }
-                        value={
-                          <h3
-                            className={css(styles.metadata)}
-                            property={"name"}
+              <ReactTooltip />
+              <meta property="description" content={paper.abstract} />
+              <meta property="commentCount" content={paper.discussion_count} />
+              <div className={css(styles.voting)}>
+                <VoteWidget
+                  score={score}
+                  onUpvote={upvote}
+                  onDownvote={downvote}
+                  selected={this.props.selectedVoteType}
+                  isPaper={true}
+                  type={"Paper"}
+                  paperPage={true}
+                  promoted={this.props.paper && this.props.paper.promoted}
+                  paper={
+                    this.props.paper && this.props.paper.promoted !== false
+                      ? this.props.paper
+                      : null
+                  }
+                  small={true}
+                />
+                <PaperDiscussionButton
+                  paper={paper}
+                  discussionCount={discussionCount}
+                />
+                <div className={css(styles.divider)}></div>
+                <PaperPromotionButton paper={paper} />
+              </div>
+              <div
+                className={css(
+                  styles.column,
+                  !fetching && previews.length === 0 && styles.emptyPreview
+                )}
+                ref={this.metaContainerRef}
+              >
+                <div className={css(styles.reverseRow)}>
+                  <div
+                    className={css(
+                      styles.cardContainer,
+                      !fetching && previews.length === 0 && styles.emptyPreview
+                    )}
+                  >
+                    <div className={css(styles.metaContainer)}>
+                      <div className={css(styles.titleHeader)}>
+                        <div className={css(styles.row)}>
+                          <h1
+                            className={css(styles.title)}
+                            property={"headline"}
                           >
-                            {paper.paper_title}
-                          </h3>
-                        }
-                      />
-                    </div>
-                    <div className={css(styles.column)}>
-                      {this.renderMetadata()}
+                            {paper && paper.title}
+                          </h1>
+                        </div>
+                        <PaperMetadata
+                          label={"Paper Title"}
+                          containerStyles={styles.paperTitle}
+                          active={
+                            paper.paper_title &&
+                            removeLineBreaksInStr(paper.paper_title) !==
+                              removeLineBreaksInStr(paper.title)
+                          }
+                          value={
+                            <h3
+                              className={css(styles.metadata)}
+                              property={"name"}
+                            >
+                              {paper.paper_title}
+                            </h3>
+                          }
+                        />
+                      </div>
+                      <div className={css(styles.column)}>
+                        {this.renderMetadata()}
+                      </div>
                     </div>
                   </div>
-                </div>
-                <div className={css(styles.rightColumn, styles.mobile)}>
-                  <div className={css(styles.votingMobile)}>
-                    <VoteWidget
-                      score={score}
-                      onUpvote={upvote}
-                      onDownvote={downvote}
-                      selected={selectedVoteType}
-                      isPaper={true}
-                      horizontalView={true}
-                      type={"Paper"}
-                      paperPage={true}
-                      promoted={this.props.paper && this.props.paper.promoted}
-                      paper={
-                        this.props.paper && this.props.paper.promoted
-                          ? this.props.paper
-                          : null
-                      }
-                      showPromotion={true}
-                      small={true}
-                    />
-                    <PaperDiscussionButton
-                      paper={paper}
-                      discussionCount={discussionCount}
-                    />
-                    <PaperPromotionButton paper={paper} />
+                  <div className={css(styles.rightColumn, styles.mobile)}>
+                    <div className={css(styles.votingMobile)}>
+                      <VoteWidget
+                        score={score}
+                        onUpvote={upvote}
+                        onDownvote={downvote}
+                        selected={selectedVoteType}
+                        isPaper={true}
+                        horizontalView={true}
+                        type={"Paper"}
+                        paperPage={true}
+                        promoted={this.props.paper && this.props.paper.promoted}
+                        paper={
+                          this.props.paper && this.props.paper.promoted
+                            ? this.props.paper
+                            : null
+                        }
+                        showPromotion={true}
+                        small={true}
+                      />
+                      <PaperDiscussionButton
+                        paper={paper}
+                        discussionCount={discussionCount}
+                      />
+                      <PaperPromotionButton paper={paper} />
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
+            <div className={css(styles.bottomContainer)}>
+              <div className={css(styles.bottomRow)}>
+                {this.renderActions()}
+              </div>
+            </div>
           </div>
-          <div className={css(styles.bottomContainer)}>
-            <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
-          </div>
-        </Fragment>
+          <PaperPreview
+            paperId={paper.id}
+            previewStyles={styles.previewStyles}
+          />
+        </div>
       </ReactPlaceholder>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    display: "flex",
+  },
+  main: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  previewStyles: {
+    width: "unset",
+    height: 160,
+  },
   container: {
     width: "100%",
     display: "flex",
@@ -1111,7 +1132,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    marginBottom: 20,
+    marginTop: "auto",
     "@media only screen and (max-width: 767px)": {
       margin: 0,
     },

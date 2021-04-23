@@ -46,13 +46,18 @@ const PaperPreview = (props) => {
       <ReactPlaceholder
         ready={!fetching}
         showLoadingAnimation
-        customPlaceholder={<PreviewPlaceholder color="#efefef" />}
+        customPlaceholder={
+          <PreviewPlaceholder
+            previewStyles={props.previewStyles}
+            color="#efefef"
+          />
+        }
       >
         {figureUrls.length > 0 ? (
           <img
             src={figureUrls[0]}
             onClick={toggleLightbox}
-            className={css(styles.preview)}
+            className={css(styles.preview, props.previewStyles)}
             property="image"
           />
         ) : null}
