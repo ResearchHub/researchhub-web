@@ -3,13 +3,13 @@ import { ENTITY_KEY_TYPES } from "./PaperDraftUtilConstants";
 import PaperDraftInlineCommentTextWrap from "../../PaperDraftInlineComment/PaperDraftInlineCommentTextWrap";
 import WaypointSection from "../WaypointSection";
 
-export function findEngrafoEntity(contentBlock, callback, contentState) {
+export function findEngrafoWarpperEntity(contentBlock, callback, contentState) {
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     return (
       entityKey !== null &&
       contentState.getEntity(entityKey).getType() ===
-        ENTITY_KEY_TYPES.INLINE_COMMENT
+        ENTITY_KEY_TYPES.ENGRAFO_WRAP
     );
   }, callback);
 }
@@ -41,7 +41,8 @@ export function findWayPointEntity(seenEntityKeys, setSeenEntityKeys) {
   };
 }
 
-const DEFAULT_DRAFT_DECORATORS = ({
+// TODO: calvinhlee - maybe refact below.
+const getDefaultDecorators = ({
   seenEntityKeys,
   setActiveSection,
   setSeenEntityKeys,
@@ -59,35 +60,26 @@ const DEFAULT_DRAFT_DECORATORS = ({
 ];
 
 export function getDecorator({
+  paperExtractorType = CERMINE,
   seenEntityKeys,
   setActiveSection,
   setSeenEntityKeys,
 }) {
-  return new CompositeDecorator(
-    DEFAULT_DRAFT_DECORATORS({
-      seenEntityKeys,
-      setActiveSection,
-      setSeenEntityKeys,
-    })
-  );
-}
+  const defaultDecorator = getDefaultDecorators({
+    seenEntityKeys,
+    setActiveSection,
+    setSeenEntityKeys,
+  });
 
-export function getDecoratorWithEngrafo({
-  seenEntityKeys,
-  setActiveSection,
-  setSeenEntityKeys,
-}) {
   return new CompositeDecorator(
-    ...DEFAULT_DRAFT_DECORATORS({
-      seenEntityKeys,
-      setActiveSection,
-      setSeenEntityKeys,
-    }),
-    {
-      component: (props) => (
-        <EngrafoWrap {...props} onSectionEnter={setActiveSection} />
-      ),
-      strategy: findEngrafo(seenEntityKeys, setSeenEntityKeys),
-    }
+    paperExtractorType === CERMINE
+      ? defaultDecorator
+      : [
+          ...defaultDecorator,
+          {
+            component: <div>HEYHEY</div>,
+            strategy: findEngrafoWarpperEntity,
+          },
+        ]
   );
 }

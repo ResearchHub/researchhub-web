@@ -34,11 +34,11 @@ export default function PaperDraftContainer({
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const editorState = paperDraftStore.get("editorState");
   const initEditorState = paperDraftStore.get("initEditorState");
+  const paperExtractorType = paperDraftStore.get("extractorType");
   const setEditorState = (updatedEditorState) =>
     paperDraftStore.set("editorState")(updatedEditorState);
   const setInitEditorState = (updatedInitStore) =>
     paperDraftStore.set("initEditorState")(updatedInitStore);
-
   const [isDraftInEditMode, setIsDraftInEditMode] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
@@ -46,6 +46,7 @@ export default function PaperDraftContainer({
   const decorator = useMemo(
     () =>
       getDecorator({
+        paperExtractorType,
         seenEntityKeys,
         setActiveSection,
         setSeenEntityKeys,
@@ -137,7 +138,7 @@ export default function PaperDraftContainer({
       <PaperDraft
         textEditorProps={{
           // TODO: Calvinhlee. should be getting the extractor type from the backend
-          blockStyleFn: getBlockStyleFn(paperDraftStore.get("extractorType")),
+          blockStyleFn: getBlockStyleFn(paperExtractorType),
           editorState,
           handleDrop: () => true /* disallows dragging within editor */,
           handleKeyCommand: handleKeyCommand({ editorState, setEditorState }),

@@ -1,49 +1,19 @@
-import { EditorState, convertFromRaw } from "draft-js";
 import { convertFromHTML } from "draft-convert";
+import { EditorState, convertFromRaw } from "draft-js";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { testHTMLWithoutStyle } from "./testHTMLWithoutStyle";
 import { EXTRACTOR_TYPE } from "./PaperDraftUtilConstants";
+import { htmlToBlockForCermine } from "./parse_tools/cermine";
+import { htmlToBlockForEngrafo } from "./parse_tools/engrafo";
+import { testHTMLWithoutStyle } from "./testHTMLWithoutStyle";
 
-const htmlToBlock = (nodeName, node, idsToRemove) => {
-  if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
-    return false;
-  }
-  console.warn("BLOCK NODE_CLASS: ", node.className);
-  switch (nodeName) {
-    // case "title":
-    //   if (node.className === "header") {
-    //     return {
-    //       type: "header-one",
-    //       data: {
-    //         props: node.dataset.props,
-    //       },
-    //     };
-    //   }
-    //   return {
-    //     type: "header-two",
-    //     data: {},
-    //   };
-    // case "p":
-    //   return {
-    //     type: "paragraph",
-    //     data: {},
-    //   };
-
-    // case "abstract":
-    // case "fig":
-    // case "graphic":
-    // case "front":
-    // case "back":
-    // case "journal":
-    // case "article-id":
-    //   return false;
+const htmlToBlock = ({ idsToRemove, node, nodeName, paperExtractType }) => {
+  switch (paperExtractType) {
+    case EXTRACTOR_TYPE.CERMINE:
+      return htmlToBlockForCermine({ nodeName, node, idsToRemove });
+    case EXTRACTOR_TYPE.ENGRAFO:
+      return htmlToBlockForEngrafo({ nodeName, node, idsToRemove });
     default:
-      const result = {
-        type: node.className,
-        data: { ...node },
-      };
-      console.warn("hitting here: ", result);
-      return result;
+      return htmlToBlockForCermine({ nodeName, node, idsToRemove });
   }
 };
 
@@ -133,11 +103,13 @@ export const formatBase64ToEditorState = (payload) => {
     decorator = null,
     onError = emptyFncWithMsg,
     onSuccess = emptyFncWithMsg,
+    paperExtractType,
   } = payload ?? {};
   try {
     const [_html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
     const contentStateFromHTML = convertFromHTML({
-      htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
+      htmlToBlock: (nodeName, node) =>
+        htmlToBlock({ idsToRemove, node, nodeName, paperExtractType }),
       htmlToStyle,
       htmlToEntity,
     })(testHTMLWithoutStyle, { flat: false });
