@@ -221,14 +221,30 @@ class PaperPageCard extends React.Component {
     const metadata = this.metadata.filter((data) => data.active);
 
     return (
-      <div className={css(styles.row)}>
-        {metadata.map((props, i) => (
-          <PaperMetadata
-            key={`metadata-${i}`}
-            {...props}
-            containerStyles={i === 1 && styles.marginLeft}
-          />
-        ))}
+      <div>
+        <PaperMetadata
+          label={"Paper Title"}
+          containerStyles={styles.paperTitle}
+          active={
+            paper.paper_title &&
+            removeLineBreaksInStr(paper.paper_title) !==
+              removeLineBreaksInStr(paper.title)
+          }
+          value={
+            <h3 className={css(styles.metadata)} property={"name"}>
+              {paper.paper_title}
+            </h3>
+          }
+        />
+        <div className={css(styles.row)}>
+          {metadata.map((props, i) => (
+            <PaperMetadata
+              key={`metadata-${i}`}
+              {...props}
+              containerStyles={i === 1 && styles.marginLeft}
+            />
+          ))}
+        </div>
       </div>
     );
   };
@@ -636,23 +652,6 @@ class PaperPageCard extends React.Component {
                             {paper && paper.title}
                           </h1>
                         </div>
-                        <PaperMetadata
-                          label={"Paper Title"}
-                          containerStyles={styles.paperTitle}
-                          active={
-                            paper.paper_title &&
-                            removeLineBreaksInStr(paper.paper_title) !==
-                              removeLineBreaksInStr(paper.title)
-                          }
-                          value={
-                            <h3
-                              className={css(styles.metadata)}
-                              property={"name"}
-                            >
-                              {paper.paper_title}
-                            </h3>
-                          }
-                        />
                       </div>
                       <div className={css(styles.column)}>
                         {this.renderMetadata()}

@@ -58,6 +58,17 @@ const ActivityCard = (props) => {
     }
   };
 
+  const shouldRenderTimeStamp = () => {
+    let yesterday = new Date().getTime() - 1 * 24 * 60 * 60 * 1000;
+    let date = new Date(createdDate);
+
+    if (date < yesterday) {
+      return false;
+    }
+
+    return true;
+  };
+
   if (isHidden) return null;
 
   return (
@@ -70,8 +81,12 @@ const ActivityCard = (props) => {
           <ActivityHeader {...props} />
           <ActivityBody {...props} />
           <div className={css(styles.row, last && styles.noBorderBottom)}>
-            <TimeStamp {...formatProps("timestamp")} />
-            <HubTag {...formatProps("hub")} noHubName={true} />
+            {shouldRenderTimeStamp() ? (
+              <TimeStamp {...formatProps("timestamp")} />
+            ) : null}
+            <div className={css(styles.hubTag)}>
+              <HubTag {...formatProps("hub")} noHubName={true} />
+            </div>
           </div>
         </Ripples>
       </a>
@@ -105,6 +120,9 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 20,
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+  },
+  hubTag: {
+    marginLeft: "auto",
   },
   noBorderBottom: {
     borderBottom: "none",
