@@ -1,7 +1,8 @@
-import { useRouter } from "next/router";
+import { AUTHOR_USER_STATUS } from "./AuthorUserConstants";
+import { connect, useStore, useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useEffect, useState, useRef, Fragment } from "react";
-import { connect, useStore, useDispatch } from "react-redux";
+import { useRouter } from "next/router";
 import ReactTooltip from "react-tooltip";
 
 // Redux
@@ -82,7 +83,10 @@ const AuthorPage = (props) => {
   const [takeawayCount, setTakeawayCount] = useState(0);
   const [takeawayNext, setTakeawayNext] = useState(null);
   const [takeawaysFetched, setTakeawaysFetched] = useState(false);
-  const [isSuspended, setIsSuspended] = useState(null);
+  const [authorUserStatus, setAuthorUserStatus] = useState(
+    AUTHOR_USER_STATUS.NONE
+  );
+  const isSuspended = authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
 
   const facebookRef = useRef();
   const linkedinRef = useRef();
@@ -254,9 +258,13 @@ const AuthorPage = (props) => {
       .then((res) => {
         const authorUser = res.results[0];
         if (authorUser) {
-          setIsSuspended(authorUser.is_suspended);
+          setAuthorUserStatus(
+            authorUser.is_suspended
+              ? AUTHOR_USER_STATUS.SUSPENDED
+              : AUTHOR_USER_STATUS.EXISTS
+          );
         } else {
-          setIsSuspended(true);
+          setAuthorUserStatus(AUTHOR_USER_STATUS.NONE);
         }
       });
   }
@@ -941,7 +949,8 @@ const AuthorPage = (props) => {
             metaData={{
               authorId: router.query.authorId,
               isSuspended,
-              setIsSuspended,
+              setIsSuspended: () =>
+                setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
             }}
           />
         )}
