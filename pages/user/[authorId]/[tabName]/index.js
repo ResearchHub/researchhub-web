@@ -720,6 +720,8 @@ const AuthorPage = (props) => {
     return false;
   };
 
+  const isCurrentUserModerator = isModerator();
+
   const openUserInfoModal = () => {
     props.openUserInfoModal(true);
   };
@@ -924,11 +926,10 @@ const AuthorPage = (props) => {
             />
           </div>
         )}
-        {isModerator() && (
+        {isCurrentUserModerator && [
           <ModeratorDeleteButton
+            actionType="user"
             containerStyle={styles.moderatorButton}
-            iconStyle={styles.moderatorIcon}
-            labelStyle={styles.moderatorLabel}
             icon={
               !fetchedUser
                 ? " "
@@ -936,6 +937,9 @@ const AuthorPage = (props) => {
                 ? icons.userPlus
                 : icons.userSlash
             }
+            iconStyle={styles.moderatorIcon}
+            key="user"
+            labelStyle={styles.moderatorLabel}
             label={
               !fetchedUser ? (
                 <Loader loading={true} color={"#FFF"} size={15} />
@@ -945,18 +949,19 @@ const AuthorPage = (props) => {
                 "Ban User"
               )
             }
-            actionType={"user"}
             metaData={{
               authorId: router.query.authorId,
               isSuspended,
               setIsSuspended: () =>
                 setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
             }}
-          />
-        )}
-        {isModerator() && (
-          <div className={css(styles.editProfileButton, styles.siftButton)}>
+          />,
+          <div
+            className={css(styles.editProfileButton, styles.siftButton)}
+            key="SiftButton"
+          >
             <Button
+              customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
               label={() => (
                 <Fragment>
                   <span style={{ marginRight: 10, userSelect: "none" }}>
@@ -966,11 +971,10 @@ const AuthorPage = (props) => {
                 </Fragment>
               )}
               onClick={() => window.open(props.author.sift_link, "_blank")}
-              customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
               rippleClass={styles.rippleClass}
             />
-          </div>
-        )}
+          </div>,
+        ]}
       </div>
     );
   };
@@ -1037,7 +1041,7 @@ const AuthorPage = (props) => {
         <div
           className={css(
             styles.profileContainer,
-            isModerator() && styles.profileContainerPadding
+            isCurrentUserModerator && styles.profileContainerPadding
           )}
         >
           <div
