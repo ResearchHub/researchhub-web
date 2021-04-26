@@ -24,6 +24,11 @@ const htmlToStyle = (nodeName, _node, currentStyle) => {
   return currentStyle;
 };
 
+const textToEntity = (text, createEntity, getEntity) => {
+  console.warn("text: ", text);
+  return [];
+};
+
 const htmlToEntity = (nodeName, node, createEntity) => {
   if (node == null) {
     return;
@@ -109,13 +114,14 @@ export const formatBase64ToEditorState = (payload) => {
   try {
     // TODO: calvinhlee - modify below when done.
     let [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
-    html = paperExtractorType === EXTRACTOR_TYPE.CERMINE ? html : testHTML;
+    // html = paperExtractorType === EXTRACTOR_TYPE.CERMINE ? html : testHTML;
     const contentStateFromHTML = convertFromHTML({
       htmlToBlock: (nodeName, node) =>
         htmlToBlock({ idsToRemove, node, nodeName, paperExtractorType }),
       htmlToStyle,
       htmlToEntity,
-    })(html, { flat: true });
+      textToEntity,
+    })(html, { flat: false });
     const newEditorState = EditorState.set(
       EditorState.push(currenEditorState, contentStateFromHTML),
       { decorator }
@@ -123,7 +129,6 @@ export const formatBase64ToEditorState = (payload) => {
     onSuccess({ sections: sectionTitles });
     return newEditorState;
   } catch (error) {
-    debugger;
     onError("formatBase64ToEditorState: ", error);
   }
 };
