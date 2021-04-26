@@ -532,6 +532,13 @@ const AuthorPage = (props) => {
           >
             <UserDiscussionsTab hostname={hostname} fetching={fetching} />
           </div>
+          {/* <div
+            className={css(
+              tabName === "projects" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserProjectsTab fetching={fetching}  />
+          </div> */}
           <div
             className={css(
               tabName === "transactions" ? styles.reveal : styles.hidden
@@ -897,6 +904,11 @@ const AuthorPage = (props) => {
   const renderButtons = (view = {}) => {
     return (
       <div className={css(styles.userActions)}>
+        {/* <UserFollowButton
+          authorId={router.query.authorId}
+          authorname={`${author.first_name} ${author.last_name}`}
+        /> */}
+
         {allowEdit && (
           <div className={css(styles.editProfileButton)}>
             <Button
