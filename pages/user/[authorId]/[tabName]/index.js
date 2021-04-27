@@ -36,7 +36,11 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
-import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  filterNull,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 
 // import { followUser } from "~/config/fetch";
 import API from "~/config/api";
@@ -141,39 +145,6 @@ const AuthorPage = (props) => {
       name: "Supported Papers",
       showCount: true,
       count: () => author.promotions && author.promotions.count,
-    },
-  ];
-
-  const socialMedia = [
-    {
-      link: author.linkedin,
-      icon: icons.linkedIn,
-      nodeRef: linkedinRef,
-      dataTip: "Set LinkedIn Profile",
-      onClick: () => setEditLinkedin(true),
-      renderDropdown: () => editLinkedin && renderSocialEdit(SECTIONS.linkedin),
-      customStyles: styles.linkedin,
-      isEditing: editLinkedin,
-    },
-    {
-      link: author.twitter,
-      icon: icons.twitter,
-      nodeRef: twitterRef,
-      dataTip: "Set Twitter Profile",
-      onClick: () => setEditTwitter(true),
-      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
-      customStyles: styles.twitter,
-      isEditing: editTwitter,
-    },
-    {
-      link: author.facebook,
-      icon: icons.facebook,
-      nodeRef: facebookRef,
-      dataTip: "Set Facebook Profile",
-      onClick: () => setEditFacebook(true),
-      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
-      customStyles: styles.facebook,
-      isEditing: editFacebook,
     },
   ];
 
@@ -723,7 +694,7 @@ const AuthorPage = (props) => {
     props.user.id != null &&
     props.auth.user.id === props.user.id;
 
-  const openUserInfoModal = () => {
+  const onOpenUserInfoModal = () => {
     props.openUserInfoModal(true);
   };
 
@@ -731,56 +702,41 @@ const AuthorPage = (props) => {
     setAvatarUploadIsOpen(false);
   };
 
-  const getOrcidId = () => {
-    return props.user.author_profile && props.user.author_profile.orcid_id;
-  };
-
-  const authorOrcidId = getOrcidId();
-
-  const renderOrcid = () => {
-    if (authorOrcidId) {
-      return (
-        <a
-          className={css(styles.link, styles.socialMedia)}
-          target="_blank"
-          href={`https://orcid.org/${authorOrcidId}`}
-          data-tip={"Open Orcid Profile"}
-          rel="noreferrer noopener"
-        >
-          <img
-            src="/static/icons/orcid.png"
-            className={css(styles.orcidLogo)}
-          />
-        </a>
-      );
-    } else {
-      return (
-        <div
-          className={css(
-            styles.socialMedia,
-            styles.orcid,
-            !authorOrcidId && styles.noSocial
-          )}
-          data-tip={allowEdit ? "Connect Orcid" : null}
-        >
-          {allowEdit ? (
-            <OrcidConnectButton
-              hostname={hostname}
-              refreshProfileOnSuccess={false}
-              customLabel={"Connect ORCiD"}
-              styles={styles.orcidButton}
-              iconButton={true}
-            />
-          ) : (
-            <img
-              src="/static/icons/orcid.png"
-              className={css(styles.orcidLogo)}
-            />
-          )}
-        </div>
-      );
-    }
-  };
+  const authorOrcidId = isNullOrUndefined(props.user.author_profile)
+    ? props.user.author_profile.orcid_id
+    : null;
+  const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
+    <a
+      className={css(styles.link, styles.socialMedia)}
+      target="_blank"
+      href={`https://orcid.org/${authorOrcidId}`}
+      data-tip={"Open Orcid Profile"}
+      rel="noreferrer noopener"
+    >
+      <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
+    </a>
+  ) : (
+    <div
+      className={css(
+        styles.socialMedia,
+        styles.orcid,
+        !authorOrcidId && styles.noSocial
+      )}
+      data-tip={allowEdit ? "Connect Orcid" : null}
+    >
+      {allowEdit ? (
+        <OrcidConnectButton
+          hostname={hostname}
+          refreshProfileOnSuccess={false}
+          customLabel={"Connect ORCiD"}
+          styles={styles.orcidButton}
+          iconButton={true}
+        />
+      ) : (
+        <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
+      )}
+    </div>
+  );
 
   const authorRscBalance =
     !isNullOrUndefined(author.user) &&
@@ -815,70 +771,98 @@ const AuthorPage = (props) => {
     </div>
   );
 
-  const renderSocialMedia = () => {
-    return socialMedia.map((app) => {
-      const {
-        link,
-        icon,
-        nodeRef,
-        dataTip,
-        onClick,
-        renderDropdown,
-        customStyles,
-        isEditing,
-      } = app;
+  const socialMediaLinkButtons = [
+    {
+      link: author.linkedin,
+      icon: icons.linkedIn,
+      nodeRef: linkedinRef,
+      dataTip: "Set LinkedIn Profile",
+      onClick: () => setEditLinkedin(true),
+      renderDropdown: () => editLinkedin && renderSocialEdit(SECTIONS.linkedin),
+      customStyles: styles.linkedin,
+      isEditing: editLinkedin,
+    },
+    {
+      link: author.twitter,
+      icon: icons.twitter,
+      nodeRef: twitterRef,
+      dataTip: "Set Twitter Profile",
+      onClick: () => setEditTwitter(true),
+      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
+      customStyles: styles.twitter,
+      isEditing: editTwitter,
+    },
+    {
+      link: author.facebook,
+      icon: icons.facebook,
+      nodeRef: facebookRef,
+      dataTip: "Set Facebook Profile",
+      onClick: () => setEditFacebook(true),
+      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
+      customStyles: styles.facebook,
+      isEditing: editFacebook,
+    },
+  ].map((app, i) => {
+    const {
+      link,
+      icon,
+      nodeRef,
+      dataTip,
+      onClick,
+      renderDropdown,
+      customStyles,
+      isEditing,
+    } = app;
 
-      if (allowEdit) {
-        return (
+    if (allowEdit) {
+      return (
+        <div
+          className={css(
+            styles.editSocial,
+            !link && styles.noSocial,
+            isEditing && styles.fullOpacity
+          )}
+          data-tip={dataTip}
+          key={`social-media-${i}`}
+          ref={nodeRef}
+        >
           <div
-            className={css(
-              styles.editSocial,
-              !link && styles.noSocial,
-              isEditing && styles.fullOpacity
-            )}
-            ref={nodeRef}
-            data-tip={dataTip}
+            className={css(styles.socialMedia, customStyles)}
+            onClick={onClick}
           >
-            <div
-              className={css(styles.socialMedia, customStyles)}
-              onClick={onClick}
-            >
-              {icon}
-            </div>
-            {renderDropdown()}
+            {icon}
           </div>
-        );
-      }
-
-      if (link) {
-        return (
-          <a
-            className={css(styles.link)}
-            href={link}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <span className={css(styles.socialMedia, customStyles)}>
-              {icon}
-            </span>
-          </a>
-        );
-      } else {
-        return (
-          <div className={css(styles.editSocial, styles.noSocial)}>
-            <span className={css(styles.socialMedia, customStyles)}>
-              {icon}
-            </span>
-          </div>
-        );
-      }
-    });
-  };
+          {renderDropdown()}
+        </div>
+      );
+    } else if (!isNullOrUndefined(link)) {
+      return (
+        <a
+          className={css(styles.link)}
+          href={link}
+          key={`social-media-${i}`}
+          rel="noreferrer noopener"
+          target="_blank"
+        >
+          <span className={css(styles.socialMedia, customStyles)}>{icon}</span>
+        </a>
+      );
+    } else {
+      return (
+        <div
+          className={css(styles.editSocial, styles.noSocial)}
+          key={`social-media-${i}`}
+        >
+          <span className={css(styles.socialMedia, customStyles)}>{icon}</span>
+        </div>
+      );
+    }
+  });
 
   const userLinks = (
     <div className={css(styles.socialLinks)}>
-      {renderSocialMedia()}
-      {renderOrcid()}
+      {socialMediaLinkButtons}
+      {orcidLinkButton}
       <span
         className={css(styles.socialMedia, styles.shareLink)}
         onClick={() => setOpenShareModal(true)}
@@ -912,7 +896,7 @@ const AuthorPage = (props) => {
                   Edit Profile
                 </Fragment>
               )}
-              onClick={openUserInfoModal}
+              onClick={onOpenUserInfoModal}
               customButtonStyle={styles.editButtonCustom}
               rippleClass={styles.rippleClass}
             />
@@ -999,7 +983,7 @@ const AuthorPage = (props) => {
       {!author.description && allowEdit && (
         <span
           className={css(styles.addDescriptionText)}
-          onClick={() => openUserInfoModal()}
+          onClick={onOpenUserInfoModal}
         >
           Add description
         </span>
@@ -1044,7 +1028,7 @@ const AuthorPage = (props) => {
           >
             <div
               className={css(styles.avatarContainer)}
-              onClick={(allowEdit && openUserInfoModal) || undefined}
+              onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
               onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
               onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
               draggable={false}
