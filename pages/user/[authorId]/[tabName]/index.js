@@ -713,7 +713,7 @@ const AuthorPage = (props) => {
 
   const isCurrentUserModerator =
     Boolean(props.auth.isLoggedIn) && Boolean(props.user.moderator);
-  const isTargetUserCurrentUser =
+  const doesUserExistAndNotMe =
     props.auth.user.id != null &&
     props.user.id != null &&
     props.auth.user.id === props.user.id;
@@ -922,7 +922,7 @@ const AuthorPage = (props) => {
           </div>
         )}
         {isCurrentUserModerator && [
-          !isTargetUserCurrentUser ? (
+          !doesUserExistAndNotMe ? (
             <ModeratorDeleteButton
               actionType="user"
               containerStyle={styles.moderatorButton}
