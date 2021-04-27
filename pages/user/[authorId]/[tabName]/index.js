@@ -36,7 +36,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // import { followUser } from "~/config/fetch";
 import API from "~/config/api";
@@ -903,82 +903,84 @@ const AuthorPage = (props) => {
   };
 
   const renderButtons = (view = {}) => {
-    return (
-      <div className={css(styles.userActions)}>
-        {/* <UserFollowButton
+    /* <UserFollowButton
           authorId={router.query.authorId}
           authorname={`${author.first_name} ${author.last_name}`}
-        /> */}
-        {allowEdit && (
-          <div className={css(styles.editProfileButton)}>
-            <Button
-              label={() => (
-                <Fragment>
-                  <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.editHub}
-                  </span>
-                  Edit Profile
-                </Fragment>
-              )}
-              onClick={openUserInfoModal}
-              customButtonStyle={styles.editButtonCustom}
-              rippleClass={styles.rippleClass}
-            />
-          </div>
-        )}
-        {isCurrentUserModerator && [
-          !doesUserExistAndNotMe ? (
-            <ModeratorDeleteButton
-              actionType="user"
-              containerStyle={styles.moderatorButton}
-              icon={
-                !fetchedUser
-                  ? " "
-                  : isSuspended
-                  ? icons.userPlus
-                  : icons.userSlash
-              }
-              iconStyle={styles.moderatorIcon}
-              key="user"
-              labelStyle={styles.moderatorLabel}
-              label={
-                !fetchedUser ? (
-                  <Loader loading={true} color={"#FFF"} size={15} />
-                ) : isSuspended ? (
-                  "Reinstate User"
-                ) : (
-                  "Ban User"
-                )
-              }
-              metaData={{
-                authorId: router.query.authorId,
-                isSuspended,
-                setIsSuspended: () =>
-                  setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
-              }}
-            /> /* current user should be able to ban / reinstate themselves */
-          ) : null,
-          <div
-            className={css(styles.editProfileButton, styles.siftButton)}
-            key="SiftButton"
-          >
-            <Button
-              customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
-              label={() => (
-                <Fragment>
-                  <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.user}
-                  </span>
-                  Sift Profile
-                </Fragment>
-              )}
-              onClick={() => window.open(props.author.sift_link, "_blank")}
-              rippleClass={styles.rippleClass}
-            />
-          </div>,
-        ]}
-      </div>
-    );
+         /> */
+    const buttons = filterNull([
+      allowEdit ? (
+        <div className={css(styles.editProfileButton)} key="editButton">
+          <Button
+            label={() => (
+              <Fragment>
+                <span style={{ marginRight: 10, userSelect: "none" }}>
+                  {icons.editHub}
+                </span>
+                Edit Profile
+              </Fragment>
+            )}
+            onClick={openUserInfoModal}
+            customButtonStyle={styles.editButtonCustom}
+            rippleClass={styles.rippleClass}
+          />
+        </div>
+      ) : null,
+      isCurrentUserModerator && !doesUserExistAndNotMe ? (
+        <div className={css(styles.editProfileButton)} key="banOrReinstate">
+          <ModeratorDeleteButton
+            actionType="user"
+            containerStyle={styles.moderatorButton}
+            icon={
+              !fetchedUser
+                ? " "
+                : isSuspended
+                ? icons.userPlus
+                : icons.userSlash
+            }
+            iconStyle={styles.moderatorIcon}
+            key="user"
+            labelStyle={styles.moderatorLabel}
+            label={
+              !fetchedUser ? (
+                <Loader loading={true} color={"#FFF"} size={15} />
+              ) : isSuspended ? (
+                "Reinstate User"
+              ) : (
+                "Ban User"
+              )
+            }
+            metaData={{
+              authorId: router.query.authorId,
+              isSuspended,
+              setIsSuspended: () =>
+                setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+            }}
+          />
+        </div>
+      ) : null /* current user should be able to ban / reinstate themselves */,
+      isCurrentUserModerator ? (
+        <div
+          className={css(styles.editProfileButton, styles.siftButton)}
+          key="SiftButton"
+        >
+          <Button
+            customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
+            label={() => (
+              <Fragment>
+                <span style={{ marginRight: 10, userSelect: "none" }}>
+                  {icons.user}
+                </span>
+                Sift Profile
+              </Fragment>
+            )}
+            onClick={() => window.open(props.author.sift_link, "_blank")}
+            rippleClass={styles.rippleClass}
+          />
+        </div>
+      ) : null,
+    ]);
+
+    return <div className={css(styles.userActions)}>{buttons}</div>;
   };
 
   const authorEducationSummary =
@@ -1664,13 +1666,14 @@ const styles = StyleSheet.create({
   },
   userActions: {
     display: "flex",
+    justifyContent: "flex-start",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       width: "100%",
     },
   },
   editProfileButton: {
-    marginRight: 15,
+    marginRight: 16,
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
@@ -1678,7 +1681,6 @@ const styles = StyleSheet.create({
     },
   },
   siftButton: {
-    marginLeft: 16,
     background: colors.NAVY(1),
     borderRadius: 4,
   },
