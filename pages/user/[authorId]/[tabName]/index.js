@@ -139,11 +139,12 @@ function AuthorPage(props) {
   const [authorUserStatus, setAuthorUserStatus] = useState(
     AUTHOR_USER_STATUS.NONE
   );
-  const isSuspended = authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
-  const authorProfile = props.auth.user.author_profile;
-  const doesCurrUserHaveAuthor =
-    authorProfile != null && authorProfile.id != null;
-
+  const isAuthorUserSuspended =
+    authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
+  const authorUserID = author.user;
+  const doesAuthorHaveUser = !isNullOrUndefined(authorUserID);
+  console.warn("author: ", author);
+  console.warn("doesAuthorHaveUser: ", doesAuthorHaveUser);
   const facebookRef = useRef();
   const linkedinRef = useRef();
   const twitterRef = useRef();
@@ -238,10 +239,10 @@ function AuthorPage(props) {
   }
 
   function fetchUserPromotions() {
-    if (!author.user || !auth.isLoggedIn) return;
+    if (!authorUserID || !auth.isLoggedIn) return;
     setFetchingPromotions(true);
     return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
+      API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
@@ -290,9 +291,9 @@ function AuthorPage(props) {
 
   useEffect(() => {
     if (
-      !isNullOrUndefined(author.user) &&
+      !isNullOrUndefined(authorUserID) &&
       !isNullOrUndefined(user) &&
-      author.user === user.id
+      authorUserID === user.id
     ) {
       setAllowEdit(true);
     }
@@ -660,11 +661,11 @@ function AuthorPage(props) {
   };
 
   const isCurrentUserModerator =
-    Boolean(props.auth.isLoggedIn) && Boolean(props.user.moderator);
+    Boolean(auth.isLoggedIn) && Boolean(user.moderator);
   const doesUserExistAndNotMe =
     !isNullOrUndefined(auth.user.id) &&
-    !isNullOrUndefined(user.id) &&
-    auth.user.id === user.id;
+    !isNullOrUndefined(author.user) &&
+    props.auth.user.id === author.user;
 
   const onOpenUserInfoModal = () => {
     props.openUserInfoModal(true);
@@ -882,7 +883,7 @@ function AuthorPage(props) {
               icon={
                 !fetchedUser
                   ? " "
-                  : isSuspended
+                  : isAuthorUserSuspended
                   ? icons.userPlus
                   : icons.userSlash
               }
@@ -892,7 +893,7 @@ function AuthorPage(props) {
               label={
                 !fetchedUser ? (
                   <Loader loading={true} color={"#FFF"} size={15} />
-                ) : isSuspended ? (
+                ) : isAuthorUserSuspended ? (
                   "Reinstate User"
                 ) : (
                   "Ban User"
@@ -900,7 +901,7 @@ function AuthorPage(props) {
               }
               metaData={{
                 authorId: router.query.authorId,
-                isSuspended,
+                isSuspended: isAuthorUserSuspended,
                 setIsSuspended: () =>
                   setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
               }}
@@ -1036,6 +1037,7 @@ function AuthorPage(props) {
               {authorRscBalance}
             </div>
             {authorDescription}
+            {!doesAuthorHaveUser ? <div> HIHIHIHI </div> : null}
             {userActionButtons}
           </div>
         </div>
