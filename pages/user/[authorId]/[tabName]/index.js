@@ -89,6 +89,9 @@ const AuthorPage = (props) => {
     AUTHOR_USER_STATUS.NONE
   );
   const isSuspended = authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
+  const authorProfile = props.auth.user.author_profile;
+  const doesCurrUserHaveAuthor =
+    authorProfile != null && authorProfile.id != null;
 
   const facebookRef = useRef();
   const linkedinRef = useRef();
@@ -978,51 +981,46 @@ const AuthorPage = (props) => {
     );
   };
 
-  const renderEducationSummary = () => {
-    if (eduSummary) {
-      return (
-        <div className={css(styles.educationSummaryContainer) + " clamp2"}>
-          {(author.headline || author.education) && (
-            <div className={css(styles.educationSummary) + " clamp2"}>
-              <span className={css(styles.icon)}>{icons.graduationCap}</span>
-              {eduSummary}
-            </div>
-          )}
-        </div>
-      );
-    }
-  };
-
-  const renderDescription = () => {
-    return (
-      <div
-        className={css(
-          styles.description,
-          styles.editButtonContainer,
-          !author.description && styles.defaultDescription
-        )}
-      >
-        {!author.description && allowEdit && (
-          <span
-            className={css(styles.addDescriptionText)}
-            onClick={() => openUserInfoModal()}
-          >
-            Add description
-          </span>
-        )}
-        {!author.description && !allowEdit && (
-          <span property="description">
-            {author.description
-              ? author.description
-              : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
-          </span>
-        )}
-        {author.description && (
-          <span property="description">{author.description}</span>
+  const authorEducationSummary =
+    eduSummary != null ? (
+      <div className={css(styles.educationSummaryContainer) + " clamp2"}>
+        {(author.headline || author.education) && (
+          <div className={css(styles.educationSummary) + " clamp2"}>
+            <span className={css(styles.icon)}>{icons.graduationCap}</span>
+            {eduSummary}
+          </div>
         )}
       </div>
-    );
-  };
+    ) : null;
+
+  const authorDescription = (
+    <div
+      className={css(
+        styles.description,
+        styles.editButtonContainer,
+        !author.description && styles.defaultDescription
+      )}
+    >
+      {!author.description && allowEdit && (
+        <span
+          className={css(styles.addDescriptionText)}
+          onClick={() => openUserInfoModal()}
+        >
+          Add description
+        </span>
+      )}
+      {!author.description && !allowEdit && (
+        <span property="description">
+          {author.description
+            ? author.description
+            : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
+        </span>
+      )}
+      {author.description && (
+        <span property="description">{author.description}</span>
+      )}
+    </div>
+  );
 
   return (
     <div
@@ -1078,12 +1076,12 @@ const AuthorPage = (props) => {
               </h1>
               {renderUserLinks()}
             </div>
-            {renderEducationSummary()}
+            {authorEducationSummary}
             <div className={css(styles.reputationContainer)}>
               {renderReputation()}
               {renderRSCBalance()}
             </div>
-            {renderDescription()}
+            {authorDescription}
             {renderButtons()}
           </div>
         </div>
