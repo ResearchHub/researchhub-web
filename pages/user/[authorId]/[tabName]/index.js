@@ -48,7 +48,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import UserSummaries from "~/components/Author/Tabs/UserSummaries";
 import UserKeyTakeaways from "~/components/Author/Tabs/UserKeyTakeaways";
 
-const getTabs = (author) => [
+const getTabs = (author, transactions) => [
   {
     href: "discussions",
     label: "discussions",
@@ -433,7 +433,7 @@ function AuthorPage(props) {
       });
   };
 
-  const tabs = getTabs(author);
+  const tabs = getTabs(author, transactions);
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
