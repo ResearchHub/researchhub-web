@@ -873,13 +873,13 @@ const AuthorPage = (props) => {
     });
   };
 
-  const onUserFollow = () => {
-    followUser({ followeeId: 11, userId: 4 })
-      .then((_) => {})
-      .catch((err) => {
-        console.log("follow err: ", err);
-      });
-  };
+  // const onUserFollow = () => {
+  //   followUser({ followeeId: 11, userId: 4 })
+  //     .then((_) => {})
+  //     .catch((err) => {
+  //       console.log("follow err: ", err);
+  //     });
+  // };
 
   const renderUserLinks = () => {
     return (
@@ -904,7 +904,6 @@ const AuthorPage = (props) => {
           authorId={router.query.authorId}
           authorname={`${author.first_name} ${author.last_name}`}
         /> */}
-
         {allowEdit && (
           <div className={css(styles.editProfileButton)}>
             <Button
