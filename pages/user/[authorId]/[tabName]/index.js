@@ -846,20 +846,6 @@ function AuthorPage(props) {
     </div>
   );
 
-  const userLinks = (
-    <div className={css(styles.socialLinks)}>
-      {renderSocialMedia()}
-      {renderOrcid()}
-      <span
-        className={css(styles.socialMedia, styles.shareLink)}
-        onClick={() => setOpenShareModal(true)}
-        data-tip={"Share Profile"}
-      >
-        {icons.link}
-      </span>
-    </div>
-  );
-
   // const onUserFollow = () => {
   //   followUser({ followeeId: 11, userId: 4 })
   //     .then((_) => {})
