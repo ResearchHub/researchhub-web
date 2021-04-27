@@ -782,41 +782,38 @@ const AuthorPage = (props) => {
     }
   };
 
-  const renderRSCBalance = () => {
-    if (author.user && user) {
-      if (author.user === user.id) {
-        return (
-          <div className={css(styles.rscBalance)}>
-            <span className={css(styles.icon)}>
-              <img
-                src={"/static/icons/coin-filled.png"}
-                className={css(styles.rscIcon)}
-                alt={"researchhub-coin-icon"}
-              />
-            </span>
-            <div className={css(styles.reputationTitle)}>RSC Balance:</div>
-            <div className={css(styles.amount)}>{props.user.balance}</div>
-          </div>
-        );
-      }
-    }
-  };
-
-  const renderReputation = () => {
-    return (
-      <div className={css(styles.reputation)}>
+  const authorRscBalance =
+    !isNullOrUndefined(author.user) &&
+    !isNullOrUndefined(user) &&
+    author.user === user.id ? (
+      <div className={css(styles.rscBalance)}>
         <span className={css(styles.icon)}>
           <img
-            src={"/static/ResearchHubIcon.png"}
-            className={css(styles.rhIcon)}
-            alt={"reserachhub-icon"}
+            src="/static/icons/coin-filled.png"
+            className={css(styles.rscIcon)}
+            alt="researchhub-coin-icon"
           />
         </span>
-        <div className={css(styles.reputationTitle)}>Lifetime Reputation:</div>
-        <div className={css(styles.amount)}>{props.author.reputation}</div>
+        <div className={css(styles.reputationTitle)}>{"RSC Balance:"}</div>
+        <div className={css(styles.amount)}>{props.user.balance}</div>
       </div>
-    );
-  };
+    ) : null;
+
+  const authorReputation = (
+    <div className={css(styles.reputation)}>
+      <span className={css(styles.icon)}>
+        <img
+          src="/static/ResearchHubIcon.png"
+          className={css(styles.rhIcon)}
+          alt="reserachhub-icon"
+        />
+      </span>
+      <div className={css(styles.reputationTitle)}>
+        {"Lifetime Reputation:"}
+      </div>
+      <div className={css(styles.amount)}>{props.author.reputation}</div>
+    </div>
+  );
 
   const renderSocialMedia = () => {
     return socialMedia.map((app) => {
@@ -878,6 +875,20 @@ const AuthorPage = (props) => {
     });
   };
 
+  const userLinks = (
+    <div className={css(styles.socialLinks)}>
+      {renderSocialMedia()}
+      {renderOrcid()}
+      <span
+        className={css(styles.socialMedia, styles.shareLink)}
+        onClick={() => setOpenShareModal(true)}
+        data-tip={"Share Profile"}
+      >
+        {icons.link}
+      </span>
+    </div>
+  );
+
   // const onUserFollow = () => {
   //   followUser({ followeeId: 11, userId: 4 })
   //     .then((_) => {})
@@ -886,102 +897,84 @@ const AuthorPage = (props) => {
   //     });
   // };
 
-  const renderUserLinks = () => {
-    return (
-      <div className={css(styles.socialLinks)}>
-        {renderSocialMedia()}
-        {renderOrcid()}
-        <span
-          className={css(styles.socialMedia, styles.shareLink)}
-          onClick={() => setOpenShareModal(true)}
-          data-tip={"Share Profile"}
-        >
-          {icons.link}
-        </span>
-      </div>
-    );
-  };
-
-  const renderButtons = (view = {}) => {
-    /* <UserFollowButton
-          authorId={router.query.authorId}
-          authorname={`${author.first_name} ${author.last_name}`}
-         /> */
-    const buttons = filterNull([
-      allowEdit ? (
-        <div className={css(styles.editProfileButton)} key="editButton">
-          <Button
-            label={() => (
-              <Fragment>
-                <span style={{ marginRight: 10, userSelect: "none" }}>
-                  {icons.editHub}
-                </span>
-                Edit Profile
-              </Fragment>
-            )}
-            onClick={openUserInfoModal}
-            customButtonStyle={styles.editButtonCustom}
-            rippleClass={styles.rippleClass}
-          />
-        </div>
-      ) : null,
-      isCurrentUserModerator && !doesUserExistAndNotMe ? (
-        <div className={css(styles.editProfileButton)} key="banOrReinstate">
-          <ModeratorDeleteButton
-            actionType="user"
-            containerStyle={styles.moderatorButton}
-            icon={
-              !fetchedUser
-                ? " "
-                : isSuspended
-                ? icons.userPlus
-                : icons.userSlash
-            }
-            iconStyle={styles.moderatorIcon}
-            key="user"
-            labelStyle={styles.moderatorLabel}
-            label={
-              !fetchedUser ? (
-                <Loader loading={true} color={"#FFF"} size={15} />
-              ) : isSuspended ? (
-                "Reinstate User"
-              ) : (
-                "Ban User"
-              )
-            }
-            metaData={{
-              authorId: router.query.authorId,
-              isSuspended,
-              setIsSuspended: () =>
-                setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
-            }}
-          />
-        </div>
-      ) : null /* current user should be able to ban / reinstate themselves */,
-      isCurrentUserModerator ? (
-        <div
-          className={css(styles.editProfileButton, styles.siftButton)}
-          key="SiftButton"
-        >
-          <Button
-            customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
-            label={() => (
-              <Fragment>
-                <span style={{ marginRight: 10, userSelect: "none" }}>
-                  {icons.user}
-                </span>
-                Sift Profile
-              </Fragment>
-            )}
-            onClick={() => window.open(props.author.sift_link, "_blank")}
-            rippleClass={styles.rippleClass}
-          />
-        </div>
-      ) : null,
-    ]);
-
-    return <div className={css(styles.userActions)}>{buttons}</div>;
-  };
+  const userActionButtons = (
+    /* <UserFollowButton authorId={router.query.authorId} authorname={`${author.first_name} ${author.last_name}`} /> */
+    <div className={css(styles.userActions)}>
+      {filterNull([
+        allowEdit ? (
+          <div className={css(styles.editProfileButton)} key="editButton">
+            <Button
+              label={() => (
+                <Fragment>
+                  <span style={{ marginRight: 10, userSelect: "none" }}>
+                    {icons.editHub}
+                  </span>
+                  Edit Profile
+                </Fragment>
+              )}
+              onClick={openUserInfoModal}
+              customButtonStyle={styles.editButtonCustom}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        ) : null,
+        isCurrentUserModerator && !doesUserExistAndNotMe ? (
+          <div className={css(styles.editProfileButton)} key="banOrReinstate">
+            <ModeratorDeleteButton
+              actionType="user"
+              containerStyle={styles.moderatorButton}
+              icon={
+                !fetchedUser
+                  ? " "
+                  : isSuspended
+                  ? icons.userPlus
+                  : icons.userSlash
+              }
+              iconStyle={styles.moderatorIcon}
+              key="user"
+              labelStyle={styles.moderatorLabel}
+              label={
+                !fetchedUser ? (
+                  <Loader loading={true} color={"#FFF"} size={15} />
+                ) : isSuspended ? (
+                  "Reinstate User"
+                ) : (
+                  "Ban User"
+                )
+              }
+              metaData={{
+                authorId: router.query.authorId,
+                isSuspended,
+                setIsSuspended: () =>
+                  setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+              }}
+            />
+          </div>
+        ) : null,
+        /* current user should not be able to ban / reinstate themselves */
+        isCurrentUserModerator ? (
+          <div
+            className={css(styles.editProfileButton, styles.siftButton)}
+            key="SiftButton"
+          >
+            <Button
+              customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
+              label={() => (
+                <Fragment>
+                  <span style={{ marginRight: 10, userSelect: "none" }}>
+                    {icons.user}
+                  </span>
+                  Sift Profile
+                </Fragment>
+              )}
+              onClick={() => window.open(props.author.sift_link, "_blank")}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        ) : null,
+      ])}
+    </div>
+  );
 
   const authorEducationSummary =
     eduSummary != null ? (
@@ -1076,15 +1069,15 @@ const AuthorPage = (props) => {
               >
                 {author.first_name} {author.last_name}
               </h1>
-              {renderUserLinks()}
+              {userLinks}
             </div>
             {authorEducationSummary}
             <div className={css(styles.reputationContainer)}>
-              {renderReputation()}
-              {renderRSCBalance()}
+              {authorReputation}
+              {authorRscBalance}
             </div>
             {authorDescription}
-            {renderButtons()}
+            {userActionButtons}
           </div>
         </div>
       </ComponentWrapper>
