@@ -13,23 +13,24 @@ import { ModalActions } from "../../../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Components
+// import UserFollowButton from "~/components/Author/Tabs/UserFollowButton";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import AvatarUpload from "~/components/AvatarUpload";
+import Button from "~/components/Form/Button";
+import ClaimAuthorPopoverLabel from "./ClaimAuthorPopoverLabel";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
+import Loader from "~/components/Loader/Loader";
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
 import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
-import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
-import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
+import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
-// import UserFollowButton from "~/components/Author/Tabs/UserFollowButton";
-import Button from "~/components/Form/Button";
-import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import Loader from "~/components/Loader/Loader";
+import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
+import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 
 // Config
 import icons from "~/config/themes/icons";
@@ -139,12 +140,18 @@ function AuthorPage(props) {
   const [authorUserStatus, setAuthorUserStatus] = useState(
     AUTHOR_USER_STATUS.NONE
   );
-  const isAuthorUserSuspended =
-    authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
+
   const authorUserID = author.user;
   const doesAuthorHaveUser = !isNullOrUndefined(authorUserID);
-  console.warn("author: ", author);
-  console.warn("doesAuthorHaveUser: ", doesAuthorHaveUser);
+  const isAuthorUserSuspended =
+    authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
+  const isCurrentUserModerator =
+    Boolean(auth.isLoggedIn) && Boolean(user.moderator);
+  const doesAuthorHaveUserAndNotMe =
+    !isNullOrUndefined(auth.user.id) &&
+    doesAuthorHaveUser &&
+    auth.user.id !== authorUserID;
+
   const facebookRef = useRef();
   const linkedinRef = useRef();
   const twitterRef = useRef();
@@ -660,13 +667,6 @@ function AuthorPage(props) {
     );
   };
 
-  const isCurrentUserModerator =
-    Boolean(auth.isLoggedIn) && Boolean(user.moderator);
-  const doesUserExistAndNotMe =
-    !isNullOrUndefined(auth.user.id) &&
-    !isNullOrUndefined(author.user) &&
-    props.auth.user.id === author.user;
-
   const onOpenUserInfoModal = () => {
     props.openUserInfoModal(true);
   };
@@ -875,7 +875,7 @@ function AuthorPage(props) {
             />
           </div>
         ) : null,
-        isCurrentUserModerator && !doesUserExistAndNotMe ? (
+        isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
           <div className={css(styles.editProfileButton)} key="banOrReinstate">
             <ModeratorDeleteButton
               actionType="user"
@@ -1037,7 +1037,13 @@ function AuthorPage(props) {
               {authorRscBalance}
             </div>
             {authorDescription}
-            {!doesAuthorHaveUser ? <div> HIHIHIHI </div> : null}
+            {!doesAuthorHaveUser ? (
+              <ClaimAuthorPopoverLabel
+                auth={auth}
+                author={author}
+                user={user}
+              />
+            ) : null}
             {userActionButtons}
           </div>
         </div>
