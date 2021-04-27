@@ -1,7 +1,7 @@
 import { AUTHOR_USER_STATUS } from "./AuthorUserConstants";
 import { connect, useStore, useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, useRef, Fragment } from "react";
+import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { useRouter } from "next/router";
 import ReactTooltip from "react-tooltip";
 
@@ -48,7 +48,54 @@ import { Helpers } from "@quantfive/js-web-config";
 import UserSummaries from "~/components/Author/Tabs/UserSummaries";
 import UserKeyTakeaways from "~/components/Author/Tabs/UserKeyTakeaways";
 
-const AuthorPage = (props) => {
+const getTabs = (author) => [
+  {
+    href: "discussions",
+    label: "discussions",
+    name: "Discussions",
+    showCount: true,
+    count: () => author.userDiscussions.count,
+  },
+  {
+    href: "authored-papers",
+    label: "authored papers",
+    name: "Authored Papers",
+    showCount: true,
+    count: () => author.authoredPapers.count,
+  },
+  {
+    href: "contributions",
+    label: "paper submissions",
+    name: "Paper Submissions",
+    showCount: true,
+    count: () => author.userContributions.count,
+  },
+  {
+    href: "transactions",
+    label: "transactions",
+    name: "Transactions",
+    showCount: true,
+    count: () => transactions.count,
+  },
+  {
+    href: "boosts",
+    label: "supported papers",
+    name: "Supported Papers",
+    showCount: true,
+    count: () => author.promotions && author.promotions.count,
+  },
+];
+
+const SECTIONS = {
+  name: "name",
+  description: "description",
+  facebook: "facebook",
+  linkedin: "linkedin",
+  twitter: "twitter",
+  picture: "picture",
+};
+
+function AuthorPage(props) {
   const { auth, author, hostname, user, transactions } = props;
   const router = useRouter();
   const dispatch = useDispatch();
@@ -101,53 +148,6 @@ const AuthorPage = (props) => {
   const linkedinRef = useRef();
   const twitterRef = useRef();
 
-  const SECTIONS = {
-    name: "name",
-    description: "description",
-    facebook: "facebook",
-    linkedin: "linkedin",
-    twitter: "twitter",
-    picture: "picture",
-  };
-
-  const tabs = [
-    {
-      href: "discussions",
-      label: "discussions",
-      name: "Discussions",
-      showCount: true,
-      count: () => author.userDiscussions.count,
-    },
-    {
-      href: "authored-papers",
-      label: "authored papers",
-      name: "Authored Papers",
-      showCount: true,
-      count: () => author.authoredPapers.count,
-    },
-    {
-      href: "contributions",
-      label: "paper submissions",
-      name: "Paper Submissions",
-      showCount: true,
-      count: () => author.userContributions.count,
-    },
-    {
-      href: "transactions",
-      label: "transactions",
-      name: "Transactions",
-      showCount: true,
-      count: () => transactions.count,
-    },
-    {
-      href: "boosts",
-      label: "supported papers",
-      name: "Supported Papers",
-      showCount: true,
-      count: () => author.promotions && author.promotions.count,
-    },
-  ];
-
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
     return () => {
@@ -157,58 +157,43 @@ const AuthorPage = (props) => {
 
   useEffect(() => {
     setFetching(true);
-
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
       setFetchedUser(true); // needed for tabbar
     }
-    const authored = fetchAuthoredPapers();
-    const discussions = fetchUserDiscussions();
-    const contributions = fetchUserContributions();
-    const promotions = fetchUserPromotions();
-    const transactions = fetchUserTransactions();
-    const refetch = refetchAuthor();
-    const summaries = fetchSummaries();
-    const takeaways = fetchKeyTakeaways();
-    const suspendedState = fetchAuthorSuspended();
-
     Promise.all([
-      takeaways,
-      summaries,
-      authored,
-      discussions,
-      contributions,
-      promotions,
-      transactions,
-      suspendedState,
-      refetch,
+      fetchAuthoredPapers(),
+      fetchAuthorSuspended(),
+      fetchKeyTakeaways(),
+      fetchSummaries(),
+      fetchUserContributions(),
+      fetchUserDiscussions(),
+      fetchUserPromotions(),
+      fetchUserTransactions(),
+      refetchAuthor(),
     ]).then((_) => {
       setFetching(false);
     });
   }, [router.query.authorId]);
 
   useEffect(() => {
+    if (
+      !isNullOrUndefined(author.user) &&
+      !isNullOrUndefined(user) &&
+      author.user === user.id
+    ) {
+      setAllowEdit(true);
+    }
     setDescription(author.description);
     setName(`${author.first_name} ${author.last_name}`);
     setEduSummary(createUserSummary(author));
-
-    let social = {
+    setSocialLinks({
       facebook: author.facebook,
       linkedin: author.linkedin,
       twitter: author.twitter,
-    };
-
-    setSocialLinks(social);
-  }, [author]);
-
-  useEffect(() => {
-    if (author.user && user) {
-      if (author.user === user.id) {
-        setAllowEdit(true);
-      }
-    }
+    });
   }, [author, user]);
 
   useEffect(() => {
@@ -249,6 +234,7 @@ const AuthorPage = (props) => {
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
    */
+  /* TODO: calvinhlee - what is this function? */
   function handleOutsideClick(e) {
     if (facebookRef.current && !facebookRef.current.contains(e.target)) {
       setEditFacebook(false);
@@ -449,6 +435,7 @@ const AuthorPage = (props) => {
       });
   };
 
+  const tabs = getTabs(author);
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
@@ -539,7 +526,6 @@ const AuthorPage = (props) => {
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
-
     if (section === SECTIONS.name) {
       action = () => {
         saveName();
@@ -555,13 +541,12 @@ const AuthorPage = (props) => {
         saveProfilePicture(picture);
       };
     }
-
     return (
       <button
         className={css(styles.button, styles.saveButton)}
         onClick={action}
       >
-        Save
+        {"Save"}
       </button>
     );
   };
@@ -587,51 +572,41 @@ const AuthorPage = (props) => {
     } else if (section === SECTIONS.twitter) {
       changes.twitter = change;
     }
-
     setEditFacebook(false);
     setEditLinkedin(false);
     setEditTwitter(false);
-
     await dispatch(
       AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
     );
   };
 
   const saveName = async () => {
-    let splitName = name.split(" ");
-    let first_name = null;
-    let last_name = null;
-    if (splitName.length >= 1) {
-      first_name = splitName[0];
-    }
-    if (splitName.length >= 2) {
-      last_name = splitName[1];
-    }
-
-    let changes = {
-      first_name,
-      last_name,
-    };
-
+    const splitName = name.split(" ");
     await dispatch(
-      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+      AuthorActions.saveAuthorChanges({
+        changes: {
+          first_name: splitName.length >= 1 ? splitName[0] : null,
+          last_name: splitName.length >= 2 ? splitName[1] : null,
+        },
+        authorId: author.id,
+      })
     );
   };
 
   const saveDescription = async () => {
-    let changes = {
-      description,
-    };
-
     await dispatch(
-      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+      AuthorActions.saveAuthorChanges({
+        changes: {
+          description,
+        },
+        authorId: author.id,
+      })
     );
   };
 
   const onSocialLinkChange = (e, social) => {
-    let newSocialLinks = { ...socialLinks };
+    const newSocialLinks = { ...socialLinks };
     newSocialLinks[social] = e.target.value;
-
     setSocialLinks(newSocialLinks);
   };
 
@@ -702,7 +677,7 @@ const AuthorPage = (props) => {
     setAvatarUploadIsOpen(false);
   };
 
-  const authorOrcidId = isNullOrUndefined(props.user.author_profile)
+  const authorOrcidId = !isNullOrUndefined(props.user.author_profile)
     ? props.user.author_profile.orcid_id
     : null;
   const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
@@ -960,17 +935,20 @@ const AuthorPage = (props) => {
     </div>
   );
 
-  const authorEducationSummary =
-    eduSummary != null ? (
-      <div className={css(styles.educationSummaryContainer) + " clamp2"}>
-        {(author.headline || author.education) && (
-          <div className={css(styles.educationSummary) + " clamp2"}>
-            <span className={css(styles.icon)}>{icons.graduationCap}</span>
-            {eduSummary}
-          </div>
-        )}
-      </div>
-    ) : null;
+  const authorEducationSummary = useMemo(
+    () =>
+      eduSummary != null ? (
+        <div className={css(styles.educationSummaryContainer) + " clamp2"}>
+          {(author.headline || author.education) && (
+            <div className={css(styles.educationSummary) + " clamp2"}>
+              <span className={css(styles.icon)}>{icons.graduationCap}</span>
+              {eduSummary}
+            </div>
+          )}
+        </div>
+      ) : null,
+    [eduSummary]
+  );
 
   const authorDescription = (
     <div
@@ -1090,7 +1068,7 @@ const AuthorPage = (props) => {
       />
     </div>
   );
-};
+}
 
 AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
   const { host } = absoluteUrl(req);
