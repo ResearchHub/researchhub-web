@@ -1,4 +1,5 @@
 import React, { ReactElement } from "react";
+import ResearchHubPopover from "../../../../components/ResearchHubPopover";
 
 type Props = {
   auth: any;
@@ -11,5 +12,12 @@ export default function ClaimAuthorPopoverLabel({
   author,
   user,
 }: Props): ReactElement<"div"> {
-  return <div>HIHIHIHIHI</div>;
+  return (
+    <div>
+      <ResearchHubPopover
+        contentRenderer={({ close, open, visible }) => <>HI THIS IS BODY</>}
+        targetElement={<div>Hello, click me</div>}
+      />
+    </div>
+  );
 }
