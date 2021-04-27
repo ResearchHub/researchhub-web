@@ -711,16 +711,12 @@ const AuthorPage = (props) => {
     );
   };
 
-  const isModerator = () => {
-    if (props.auth.isLoggedIn) {
-      if (props.user.moderator) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const isCurrentUserModerator = isModerator();
+  const isCurrentUserModerator =
+    Boolean(props.auth.isLoggedIn) && Boolean(props.user.moderator);
+  const isTargetUserCurrentUser =
+    props.auth.user.id != null &&
+    props.user.id != null &&
+    props.auth.user.id === props.user.id;
 
   const openUserInfoModal = () => {
     props.openUserInfoModal(true);
@@ -927,35 +923,37 @@ const AuthorPage = (props) => {
           </div>
         )}
         {isCurrentUserModerator && [
-          <ModeratorDeleteButton
-            actionType="user"
-            containerStyle={styles.moderatorButton}
-            icon={
-              !fetchedUser
-                ? " "
-                : isSuspended
-                ? icons.userPlus
-                : icons.userSlash
-            }
-            iconStyle={styles.moderatorIcon}
-            key="user"
-            labelStyle={styles.moderatorLabel}
-            label={
-              !fetchedUser ? (
-                <Loader loading={true} color={"#FFF"} size={15} />
-              ) : isSuspended ? (
-                "Reinstate User"
-              ) : (
-                "Ban User"
-              )
-            }
-            metaData={{
-              authorId: router.query.authorId,
-              isSuspended,
-              setIsSuspended: () =>
-                setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
-            }}
-          />,
+          !isTargetUserCurrentUser ? (
+            <ModeratorDeleteButton
+              actionType="user"
+              containerStyle={styles.moderatorButton}
+              icon={
+                !fetchedUser
+                  ? " "
+                  : isSuspended
+                  ? icons.userPlus
+                  : icons.userSlash
+              }
+              iconStyle={styles.moderatorIcon}
+              key="user"
+              labelStyle={styles.moderatorLabel}
+              label={
+                !fetchedUser ? (
+                  <Loader loading={true} color={"#FFF"} size={15} />
+                ) : isSuspended ? (
+                  "Reinstate User"
+                ) : (
+                  "Ban User"
+                )
+              }
+              metaData={{
+                authorId: router.query.authorId,
+                isSuspended,
+                setIsSuspended: () =>
+                  setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+              }}
+            /> /* current user should be able to ban / reinstate themselves */
+          ) : null,
           <div
             className={css(styles.editProfileButton, styles.siftButton)}
             key="SiftButton"

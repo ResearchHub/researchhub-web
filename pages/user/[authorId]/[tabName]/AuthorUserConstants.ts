@@ -1,6 +1,6 @@
 export const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
-  NONE: "NONE" /* User associated Author does not exist */,
+  NONE: "NONE" /* Author does not have an existing User */,
   SPAMMER: "SPAMMER",
   SUSPENDED: "SUSPENDED",
 };
