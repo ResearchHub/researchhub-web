@@ -155,6 +155,116 @@ function AuthorPage(props) {
     };
   });
 
+  async function fetchAuthoredPapers() {
+    await dispatch(
+      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
+    );
+    let papers = store.getState().author.authoredPapers.papers;
+    return checkUserVotes(papers, "authored");
+  }
+
+  function fetchAuthorSuspended() {
+    return fetch(
+      API.USER({ authorId: router.query.authorId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        const authorUser = res.results[0];
+        if (authorUser) {
+          setAuthorUserStatus(
+            authorUser.is_suspended
+              ? AUTHOR_USER_STATUS.SUSPENDED
+              : AUTHOR_USER_STATUS.EXISTS
+          );
+        } else {
+          setAuthorUserStatus(AUTHOR_USER_STATUS.NONE);
+        }
+      });
+  }
+
+  function fetchKeyTakeaways(next) {
+    const querystring = {
+      created_by__author_profile: router.query.authorId,
+    };
+    return fetch(
+      next ? next : API.KEY_TAKEAWAY({ querystring }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setKeyTakeaways([...keyTakeaways, ...res.results]);
+        setTakeawayCount(res.count);
+        setTakeawayNext(res.next);
+        setTakeawaysFetched(true);
+      });
+  }
+
+  function fetchSummaries(next) {
+    return fetch(
+      next
+        ? next
+        : API.SUMMARY({ proposed_by__author_profile: router.query.authorId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setSummaries([...summaries, ...res.results]);
+        setSummaryCount(res.count);
+        setSummaryNext(res.next);
+        setSummariesFetched(true);
+      });
+  }
+
+  async function fetchUserContributions() {
+    await dispatch(
+      AuthorActions.getUserContributions({
+        authorId: router.query.authorId,
+      })
+    );
+    return checkUserVotes(
+      store.getState().author.userContributions.contributions,
+      "contributions"
+    );
+  }
+
+  function fetchUserDiscussions() {
+    return dispatch(
+      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
+    );
+  }
+
+  function fetchUserPromotions() {
+    if (!author.user || !auth.isLoggedIn) return;
+    setFetchingPromotions(true);
+    return fetch(
+      API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        await dispatch(
+          AuthorActions.updateAuthorByKey({
+            key: "promotions",
+            value: res,
+            prevState: store.getState().author,
+          })
+        );
+        setFetchingPromotions(false);
+      });
+  }
+
+  function fetchUserTransactions() {
+    if (!auth.isLoggedIn) return;
+    return dispatch(
+      TransactionActions.getWithdrawals(1, store.getState().transactions)
+    );
+  }
+
   useEffect(() => {
     setFetching(true);
     async function refetchAuthor() {
@@ -209,31 +319,6 @@ function AuthorPage(props) {
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
-  function fetchAuthorSuspended() {
-    return fetch(
-      API.USER({ authorId: router.query.authorId }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        const authorUser = res.results[0];
-        if (authorUser) {
-          setAuthorUserStatus(
-            authorUser.is_suspended
-              ? AUTHOR_USER_STATUS.SUSPENDED
-              : AUTHOR_USER_STATUS.EXISTS
-          );
-        } else {
-          setAuthorUserStatus(AUTHOR_USER_STATUS.NONE);
-        }
-      });
-  }
-
-  /**
-   * When we click anywhere outside of the dropdown, close it
-   * @param { Event } e -- javascript event
-   */
   /* TODO: calvinhlee - what is this function? */
   function handleOutsideClick(e) {
     if (facebookRef.current && !facebookRef.current.contains(e.target)) {
@@ -245,58 +330,6 @@ function AuthorPage(props) {
     if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
     }
-  }
-
-  async function fetchAuthoredPapers() {
-    await dispatch(
-      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
-    );
-    let papers = store.getState().author.authoredPapers.papers;
-    return checkUserVotes(papers, "authored");
-  }
-
-  function fetchUserDiscussions() {
-    return dispatch(
-      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
-    );
-  }
-
-  async function fetchUserContributions() {
-    await dispatch(
-      AuthorActions.getUserContributions({
-        authorId: router.query.authorId,
-      })
-    );
-    let contributions = store.getState().author.userContributions.contributions;
-    return checkUserVotes(contributions, "contributions");
-  }
-
-  function fetchUserTransactions() {
-    if (!auth.isLoggedIn) return;
-    return dispatch(
-      TransactionActions.getWithdrawals(1, store.getState().transactions)
-    );
-  }
-
-  function fetchUserPromotions() {
-    if (!author.user || !auth.isLoggedIn) return;
-    setFetchingPromotions(true);
-    return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (res) => {
-        await dispatch(
-          AuthorActions.updateAuthorByKey({
-            key: "promotions",
-            value: res,
-            prevState: store.getState().author,
-          })
-        );
-        setFetchingPromotions(false);
-      });
   }
 
   const onMouseEnter = (section) => {
@@ -397,41 +430,6 @@ function AuthorPage(props) {
             })
           );
         }
-      });
-  };
-
-  const fetchSummaries = (next) => {
-    return fetch(
-      next
-        ? next
-        : API.SUMMARY({ proposed_by__author_profile: router.query.authorId }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setSummaries([...summaries, ...res.results]);
-        setSummaryCount(res.count);
-        setSummaryNext(res.next);
-        setSummariesFetched(true);
-      });
-  };
-
-  const fetchKeyTakeaways = (next) => {
-    let querystring = {
-      created_by__author_profile: router.query.authorId,
-    };
-    return fetch(
-      next ? next : API.KEY_TAKEAWAY({ querystring }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setKeyTakeaways([...keyTakeaways, ...res.results]);
-        setTakeawayCount(res.count);
-        setTakeawayNext(res.next);
-        setTakeawaysFetched(true);
       });
   };
 
@@ -552,10 +550,10 @@ function AuthorPage(props) {
   };
 
   const saveSocial = async (section) => {
-    let changes = {};
-    let change = socialLinks[section];
-    let http = "http://";
-    let https = "https://";
+    const changes = {};
+    const change = socialLinks[section];
+    const http = "http://";
+    const https = "https://";
     if (!change) {
       return;
     }
@@ -585,8 +583,8 @@ function AuthorPage(props) {
     await dispatch(
       AuthorActions.saveAuthorChanges({
         changes: {
-          first_name: splitName.length >= 1 ? splitName[0] : null,
-          last_name: splitName.length >= 2 ? splitName[1] : null,
+          first_name: splitName.length > 0 ? splitName[0] : null,
+          last_name: splitName.length > 1 ? splitName[1] : null,
         },
         authorId: author.id,
       })
@@ -611,33 +609,32 @@ function AuthorPage(props) {
   };
 
   const saveProfilePicture = async (picture) => {
-    let changes = new FormData();
     let byteCharacters;
-
-    if (picture.split(",")[0].indexOf("base64") >= 0)
+    if (picture.split(",")[0].indexOf("base64") >= 0) {
       byteCharacters = atob(picture.split(",")[1]);
-    else byteCharacters = unescape(picture.split(",")[1]);
+    } else {
+      byteCharacters = unescape(picture.split(",")[1]);
+    }
 
-    let byteNumbers = new Array(byteCharacters.length);
+    const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
-    let byteArray = new Uint8Array(byteNumbers);
+    const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: "image/jpg" });
 
+    const changes = new FormData();
     changes.append("profile_image", blob);
 
-    let authorReturn = await dispatch(
+    const authorReturn = await dispatch(
       AuthorActions.saveAuthorChanges({
         changes,
         authorId: author.id,
         file: true,
       })
     );
-
-    let { updateUser, user } = props;
+    const { updateUser, user } = props;
     updateUser({ ...user, author_profile: authorReturn.payload });
-
     closeAvatarModal();
   };
 
@@ -665,8 +662,8 @@ function AuthorPage(props) {
   const isCurrentUserModerator =
     Boolean(props.auth.isLoggedIn) && Boolean(props.user.moderator);
   const doesUserExistAndNotMe =
-    props.auth.user.id != null &&
-    props.user.id != null &&
+    !isNullOrUndefined(props.auth.user.id) &&
+    !isNullOrUndefined(props.user.id) &&
     props.auth.user.id === props.user.id;
 
   const onOpenUserInfoModal = () => {
