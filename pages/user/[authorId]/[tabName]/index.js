@@ -36,6 +36,8 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+
 // import { followUser } from "~/config/fetch";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -714,9 +716,9 @@ const AuthorPage = (props) => {
   const isCurrentUserModerator =
     Boolean(props.auth.isLoggedIn) && Boolean(props.user.moderator);
   const doesUserExistAndNotMe =
-    props.auth.user.id != null &&
-    props.user.id != null &&
-    props.auth.user.id === props.user.id;
+    !isNullOrUndefined(auth.user.id) &&
+    !isNullOrUndefined(user.id) &&
+    auth.user.id === user.id;
 
   const openUserInfoModal = () => {
     props.openUserInfoModal(true);
