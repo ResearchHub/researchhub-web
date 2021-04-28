@@ -22,8 +22,12 @@ export function nullthrows<T>(
   given: T,
   msg: null | string | undefined = null
 ): NonNullable<T> {
-  if (isNullOrUndefined(given)) {
-    throw new Error(msg != null ? `nullthrows: ${msg}` : "nullthrows");
+  try {
+    if (isNullOrUndefined(given)) {
+      throw new Error(msg != null ? `nullthrows: ${msg}` : "nullthrows");
+    }
+  } catch (error) {
+    emptyFncWithMsg(error);
   }
   return given!;
 }
