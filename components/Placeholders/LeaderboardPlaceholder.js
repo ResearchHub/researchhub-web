@@ -8,6 +8,7 @@ const LeaderboardPlaceholder = ({ color, rows = 1 }) => {
     return (
       <div
         className={css(styles.placeholderContainer) + " show-loading-animation"}
+        key={`leaderboardPlaceholder-${i}-${rows}`}
       >
         <div className={css(styles.row)}>
           <RoundShape className={css(styles.round)} color={color} />

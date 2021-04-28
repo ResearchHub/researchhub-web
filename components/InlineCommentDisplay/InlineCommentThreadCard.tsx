@@ -227,7 +227,6 @@ function InlineCommentThreadCard({
 const styles = StyleSheet.create({
   container: {
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    marginTop: 20,
     width: "100%",
     padding: "20px 15px",
     minHeight: 100,
@@ -238,7 +237,10 @@ const styles = StyleSheet.create({
   cursurPointer: {
     cursor: "pointer",
   },
-  inlineCommentThreadCard: { cursor: "pointer" },
+  inlineCommentThreadCard: {
+    cursor: "pointer",
+    overflow: "auto",
+  },
   responseSectionWarp: {},
   threadComposerContainer: {
     alignItems: "center",

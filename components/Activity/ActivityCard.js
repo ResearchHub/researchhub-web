@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { useRouter } from "next/router";
 import Ripples from "react-ripples";
 import PropTypes from "prop-types";
 import Link from "next/link";
@@ -18,6 +19,7 @@ import colors from "~/config/themes/colors";
 // };
 
 const ActivityCard = (props) => {
+  const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
 
   const { activity, last } = props;

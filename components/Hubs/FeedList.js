@@ -96,14 +96,13 @@ class FeedList extends React.Component {
       const { label, icon, href, as } = feed;
 
       return (
-        <Fragment>
+        <Fragment key={`${label}-${i}`}>
           <Ripples
             className={css(
               styles.listItem,
               i === activeFeed && styles.activeListItem,
               i === 1 && styles.lastItem
             )}
-            key={`${label}-${i}`}
             onClick={() => this.onClick({ href, as }, i)}
           >
             <div className={css(styles.link)}>

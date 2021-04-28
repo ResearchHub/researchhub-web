@@ -6,6 +6,7 @@ import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
 import Link from "next/link";
 import * as moment from "dayjs";
+import { useRouter } from "next/router";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -52,6 +53,8 @@ const DiscussionPostMetadata = (props) => {
   const alert = useAlert();
   const store = useStore();
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [showDropDown, setDropDown] = useState(false);
   const [isFlagged, setFlagged] = useState(
     metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
@@ -60,6 +63,13 @@ const DiscussionPostMetadata = (props) => {
   const ellipsis = useRef();
   let isModerator = store.getState().auth.user.moderator;
   let isLoggedIn = store.getState().auth.isLoggedIn;
+  let isUserOwnInlineComment = false;
+
+  if (isLoggedIn) {
+    isUserOwnInlineComment = metaData
+      ? store.getState().auth.user.author_profile.id === metaData.authorId
+      : true;
+  }
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -186,6 +196,7 @@ const DiscussionPostMetadata = (props) => {
                   metaData={metaData}
                   onRemove={onRemove}
                   isModerator={isModerator}
+                  forceRender={isUserOwnInlineComment}
                 />
                 <ModeratorDeleteButton
                   containerStyle={styles.dropdownItem}
@@ -231,7 +242,6 @@ const DiscussionPostMetadata = (props) => {
       <AuthorAvatar
         author={authorProfile}
         name={username}
-        disableLink={false}
         size={smaller ? 25 : 30}
         twitterUrl={twitterUrl}
       />
@@ -427,6 +437,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    width: "100%",
   },
   firstRow: {
     display: "flex",
@@ -468,6 +479,7 @@ const styles = StyleSheet.create({
   },
   smallerTimestamp: {
     fontSize: 12,
+    marginRight: 8,
   },
   twitterTag: {
     color: "unset",
@@ -605,10 +617,7 @@ const styles = StyleSheet.create({
     color: colors.RED(),
   },
   dropdownContainer: {
-    display: "flex",
-    alignItems: "center",
-    position: "absolute",
-    right: 0,
+    marginLeft: "auto",
   },
   dropdownIcon: {
     fontSize: 20,

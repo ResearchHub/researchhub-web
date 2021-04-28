@@ -251,7 +251,15 @@ class DiscussionEntry extends React.Component {
   };
 
   renderComments = () => {
-    let { data, hostname, path, discussionCount, setCount, paper } = this.props;
+    let {
+      data,
+      hostname,
+      path,
+      discussionCount,
+      setCount,
+      paper,
+      mediaOnly,
+    } = this.props;
     let comments = this.state.comments;
 
     if (comments.length > 0) {
@@ -268,6 +276,7 @@ class DiscussionEntry extends React.Component {
             mobileView={this.props.mobileView}
             discussionCount={discussionCount}
             setCount={setCount}
+            mediaOnly={mediaOnly}
           />
         );
       });
@@ -373,6 +382,7 @@ class DiscussionEntry extends React.Component {
       path,
       mediaOnly,
       shouldShowContextTitle = true,
+      noVoteLine,
       store: inlineCommentStore,
     } = this.props;
     const commentCount =
@@ -391,6 +401,8 @@ class DiscussionEntry extends React.Component {
       contentType: "thread",
       objectId: data.id,
     };
+    const isInlineComment = ["block_key"] in data;
+
     return (
       <div
         className={css(
@@ -412,7 +424,10 @@ class DiscussionEntry extends React.Component {
               promoted={false}
             />
             <div
-              className={css(styles.threadLineContainer)}
+              className={css(
+                styles.threadLineContainer,
+                noVoteLine && styles.hidden
+              )}
               onClick={this.toggleCommentView}
             >
               <div
@@ -494,6 +509,7 @@ class DiscussionEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
+                    mediaOnly={isInlineComment}
                   />
                 </div>
               </Fragment>
@@ -515,7 +531,7 @@ class DiscussionEntry extends React.Component {
                 onClick={this.toggleCommentView}
                 onCountHover={this.toggleHover}
                 mediaOnly={mediaOnly}
-                small={mobileView}
+                small={noVoteLine}
                 isRemoved={this.state.removed}
                 hideReply={data.source === "twitter"}
               />
@@ -675,7 +691,7 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  removed: {
+  hidden: {
     display: "none",
   },
   bottom: {

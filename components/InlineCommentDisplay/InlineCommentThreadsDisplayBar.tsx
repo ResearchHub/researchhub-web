@@ -13,7 +13,7 @@ type Props = {
   shouldShowContextTitle?: boolean;
 };
 
-const MEDIA_WIDTH_LIMIT = 1023; /* arbitary iPad size */
+const MEDIA_WIDTH_LIMIT = 1199; /* arbitary iPad size */
 
 export default function InlineCommentThreadsDisplayBarWithMediaSize(
   props: Props
@@ -183,8 +183,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     positioin: "relative",
-    "@media only screen and (max-width: 1023px)": {
-      height: 50,
+    marginBottom: 16,
+    "@media only screen and (max-width: 1199px)": {
+      // height: 50,
+      padding: 16,
     },
   },
   inlineCommentThreadsDisplayBar: {
@@ -196,7 +198,7 @@ const styles = StyleSheet.create({
     ":focus": {
       outline: "none",
     },
-    "@media only screen and (max-width: 1023px)": {
+    "@media only screen and (max-width: 1199px)": {
       width: "100%",
     },
   },
@@ -209,7 +211,7 @@ const styles = StyleSheet.create({
   },
   mobile: {
     display: "none",
-    "@media only screen and (max-width: 1023px)": {
+    "@media only screen and (max-width: 1199px)": {
       display: "block",
     },
   },
