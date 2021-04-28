@@ -393,7 +393,7 @@ class CommentEntry extends React.Component {
   };
 
   renderReplies = () => {
-    let { data, hostname, path, comment, paper } = this.props;
+    let { data, hostname, path, comment, paper, mediaOnly } = this.props;
     let replies =
       this.state.replies.length < 1
         ? this.props.comment.replies
@@ -410,13 +410,21 @@ class CommentEntry extends React.Component {
           paper={paper}
           mobileView={this.props.mobileView}
           onReplySubmitCallback={this.onReplySubmitCallback}
+          mediaOnly={mediaOnly}
         />
       );
     });
   };
 
   render() {
-    const { data, hostname, comment, mobileView, paper } = this.props;
+    const {
+      data,
+      hostname,
+      comment,
+      mobileView,
+      paper,
+      mediaOnly,
+    } = this.props;
     let threadId = comment.id;
     let commentCount =
       this.state.replies.length > comment.reply_count
@@ -498,6 +506,7 @@ class CommentEntry extends React.Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsComments}
                     textStyles={styles.commentEditor}
+                    mediaOnly={mediaOnly}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -508,6 +517,7 @@ class CommentEntry extends React.Component {
                     onClick={this.toggleReplyView}
                     onSubmit={this.submitReply}
                     small={true}
+                    mediaOnly={mediaOnly}
                     showChildrenState={this.state.revealReply}
                     onCountHover={this.toggleHover}
                     isRemoved={this.state.removed}

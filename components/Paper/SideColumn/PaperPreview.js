@@ -12,7 +12,7 @@ import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import { fetchPaperFigures } from "~/config/fetch";
 
 const PaperPreview = (props) => {
-  const { paperId } = props;
+  const { paperId, columnOverrideStyles } = props;
   const [slideIndex, setSlideIndex] = useState(1);
   const [figureUrls, setFigureUrls] = useState([]);
   const [lightbox, setLightbox] = useState(false);
@@ -39,9 +39,11 @@ const PaperPreview = (props) => {
 
   return (
     <ColumnContainer
-      overrideStyles={
-        !fetching && !figureUrls.length ? styles.hidden : styles.container
-      }
+      overrideStyles={[
+        !fetching && !figureUrls.length ? styles.hidden : styles.container,
+        columnOverrideStyles,
+        fetching && styles.fetching,
+      ]}
     >
       <ReactPlaceholder
         ready={!fetching}
@@ -84,6 +86,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
+  },
+  fetching: {
+    border: "none",
   },
   hidden: {
     display: "none",
