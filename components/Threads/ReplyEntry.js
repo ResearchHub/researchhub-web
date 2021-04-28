@@ -314,7 +314,7 @@ class ReplyEntry extends React.Component {
   };
 
   render() {
-    const { hostname, mobileView, reply, paper } = this.props;
+    const { hostname, mobileView, reply, paper, mediaOnly } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -384,6 +384,7 @@ class ReplyEntry extends React.Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsReply}
                     textStyles={styles.commentEditor}
+                    mediaOnly={mediaOnly}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -399,6 +400,7 @@ class ReplyEntry extends React.Component {
                     initialValue={this.formatQuoteBlock()}
                     hasHeader={true}
                     hideCount={true}
+                    mediaOnly={mediaOnly}
                   />
                 </div>
               </Fragment>

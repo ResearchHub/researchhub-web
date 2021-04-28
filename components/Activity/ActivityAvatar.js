@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
+import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
-import PropTypes from "prop-types";
-import Link from "next/link";
 
 // Components
 import AuthorAvatar from "../AuthorAvatar";
-import colors from "~/config/themes/colors";
 
 const ActivityAvatar = (props) => {
+  const router = useRouter();
+
   const { contributionType } = props;
 
   const getIconSrc = () => {

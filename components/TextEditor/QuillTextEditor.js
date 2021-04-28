@@ -299,7 +299,6 @@ class Editor extends React.Component {
             <button className="ql-link"></button>
             <button className="ql-image" />
             <button className="ql-video"></button>
-            {/* <button class="ql-clean"></button> */}
           </span>
         ) : (
           <Fragment>
@@ -317,7 +316,7 @@ class Editor extends React.Component {
               <button className="ql-blockquote"></button>
               <button className="ql-code-block"></button>
               <button className="ql-strike"></button>
-              <select class="ql-background"></select>
+              <select className="ql-background"></select>
             </span>
             <span className="ql-formats">
               <button className="ql-list" value="ordered" />
@@ -330,7 +329,6 @@ class Editor extends React.Component {
               <button className="ql-link"></button>
               <button className="ql-image" />
               <button className="ql-video"></button>
-              {/* <button class="ql-clean"></button> */}
             </span>
           </Fragment>
         )}
@@ -360,6 +358,7 @@ class Editor extends React.Component {
               onClick={this.onCancel}
               label={"Cancel"}
               size={props.smallToolBar && "med"}
+              rippleClass={styles.ripples}
               customButtonStyle={
                 props.smallToolBar
                   ? toolbarStyles.smallButton
@@ -770,16 +769,16 @@ const toolbarStyles = StyleSheet.create({
   },
   smallButton: {
     height: 37,
-    width: 126,
-    minWidth: 126,
     fontSize: 15,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    // marginRight: 20,
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+  },
+  ripples: {
+    flex: 1,
   },
   divider: {
     width: 10,

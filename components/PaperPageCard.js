@@ -193,7 +193,7 @@ class PaperPageCard extends React.Component {
           <span
             className={css(styles.metadata) + " clamp1"}
             property="datePublished"
-            datetime={paper.paper_publish_date}
+            dateTime={paper.paper_publish_date}
           >
             {this.renderPublishDate()}
           </span>
@@ -481,7 +481,8 @@ class PaperPageCard extends React.Component {
         authors.push(
           <Link
             href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/discussions`}
+            as={`/user/${author.id}/contributions`}
+            key={`authorName-${author.id}`}
           >
             <a
               href={`/user/${author.id}/discussions`}
@@ -496,7 +497,7 @@ class PaperPageCard extends React.Component {
         );
       } else {
         authors.push(
-          <span className={css(styles.rawAuthor)}>
+          <span className={css(styles.rawAuthor)} key={`rawAuthor-${i}`}>
             {`${authorName}${i < length - 1 ? "," : ""}`}
             <meta property="author" content={authorName} />
           </span>
@@ -694,10 +695,13 @@ class PaperPageCard extends React.Component {
               </div>
             </div>
           </div>
-          <PaperPreview
-            paperId={paper.id}
-            previewStyles={styles.previewStyles}
-          />
+          <div className={css(styles.previewBox)}>
+            <PaperPreview
+              paperId={paper.id}
+              previewStyles={styles.previewStyles}
+              columnOverrideStyles={styles.columnOverrideStyles}
+            />
+          </div>
         </div>
       </ReactPlaceholder>
     );
@@ -711,10 +715,11 @@ const styles = StyleSheet.create({
   main: {
     display: "flex",
     flexDirection: "column",
+    marginRight: 16,
   },
   previewStyles: {
-    width: "unset",
-    height: 160,
+    width: "100%",
+    height: "100%",
   },
   container: {
     width: "100%",
@@ -730,6 +735,15 @@ const styles = StyleSheet.create({
   },
   overflow: {
     overflow: "visible",
+  },
+  previewBox: {
+    marginLeft: "auto",
+    minWidth: 140,
+    maxWidth: "20%",
+  },
+  columnOverrideStyles: {
+    width: "100%",
+    height: "100%",
   },
   previewContainer: {
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
@@ -812,7 +826,6 @@ const styles = StyleSheet.create({
     padding: 0,
     margin: 0,
     display: "flex",
-    paddingRight: 10,
 
     "@media only screen and (max-width: 760px)": {
       fontSize: 24,
@@ -951,7 +964,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 0,
     left: -70,
-    "@media only screen and (max-width: 768px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },

@@ -13,6 +13,7 @@ const HubEntryPlaceholder = ({ color, rows }) => {
         className={
           css(styles.root, i === 0 && styles.first) + " show-loading-animation"
         }
+        key={`hubEntryPlaceholder-${i}-${rows}`}
       >
         <div className={css(styles.container)}>
           <RectShape className={css(styles.imagePlaceholder)} />

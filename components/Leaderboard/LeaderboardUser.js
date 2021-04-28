@@ -26,7 +26,7 @@ const LeaderboardUser = (props) => {
             <AuthorAvatar
               author={authorProfile}
               name={name}
-              disableLink={false}
+              disableLink={true}
               size={35}
             />
             <div className={css(styles.name) + " clamp1"}>{name}</div>
