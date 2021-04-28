@@ -10,9 +10,7 @@ type Props = {
 };
 
 export default function ClaimAuthorPopoverLabel({
-  auth: _auth,
   author,
-  user: _user,
 }: Props): ReactElement<"div"> {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const { first_name: authorFirstName, last_name: authorLastName } = author;
