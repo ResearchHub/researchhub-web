@@ -1685,11 +1685,6 @@
   "resolved" "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.11.tgz"
   "version" "1.0.0-next.11"
 
-"@popperjs/core@^2.0.0", "@popperjs/core@^2.6.0":
-  "integrity" "sha512-VZMYa7+fXHdwIq1TDhSXoVmSPEGM/aa+6Aiq3nVVJ9bXr24zScr+NlKFKC3iPljA7ho/GAZr+d2jOf5GIRC30Q=="
-  "resolved" "https://registry.npmjs.org/@popperjs/core/-/core-2.9.2.tgz"
-  "version" "2.9.2"
-
 "@quantfive/js-web-config@^1.0.8":
   "integrity" "sha512-ICD0fhjCO4HYQ1B/FWGyQ/vx3St+Ie/NYy0mZaqGF9NVYqpkUSByn1iuy8v3oJoqFbMw4yO+eqLWgdaI6rb/1Q=="
   "resolved" "https://registry.npmjs.org/@quantfive/js-web-config/-/js-web-config-1.0.8.tgz"
@@ -2025,22 +2020,6 @@
   "version" "13.0.7"
   dependencies:
     "@types/yargs-parser" "*"
-
-"@varld/outside-click@^0.1.1":
-  "integrity" "sha512-yWcrSazRZNMRKDoWvz/GWGw81pNQttXqg71OLBCBwOVxPXhZ37x6l5oCg4Y4n6Z39AgRC4KtVua+SbCfqeFmvQ=="
-  "resolved" "https://registry.npmjs.org/@varld/outside-click/-/outside-click-0.1.1.tgz"
-  "version" "0.1.1"
-
-"@varld/popover@^0.1.0":
-  "integrity" "sha512-5a1iiBF4w9EPNMdXRWoFhz4ZSTqFS3uspouqGeNI1dylLXtBsWoLA6UCBDJXqqqEaOfqXvpExlziWjVGhjxc6w=="
-  "resolved" "https://registry.npmjs.org/@varld/popover/-/popover-0.1.0.tgz"
-  "version" "0.1.0"
-  dependencies:
-    "@popperjs/core" "^2.6.0"
-    "@varld/outside-click" "^0.1.1"
-    "goober" "^2.0.30"
-    "react-popper" "^2.2.4"
-    "use-delayed" "^0.1.0"
 
 "@webassemblyjs/ast@1.9.0":
   "integrity" "sha512-C6wW5L+b7ogSDVqymbkkvuW9kruN//YisMED04xzeBBqjHa2FYnmvOlS6Xj68xWQRgWvI9cIglsjFowH/RJyEA=="
@@ -3550,7 +3529,7 @@
     "cssnano-preset-simple" "1.2.0"
     "postcss" "^7.0.32"
 
-"csstype@^2.2.0", "csstype@^2.5.7", "csstype@^2.6.2", "csstype@^2.6.7":
+"csstype@^2.2.0", "csstype@^2.5.7", "csstype@^2.6.7":
   "resolved" "https://registry.npmjs.org/csstype/-/csstype-2.6.8.tgz"
   "version" "2.6.8"
 
@@ -4653,11 +4632,6 @@
   "integrity" "sha512-WOBp/EEGUiIsJSp7wcv/y6MO+lV9UoncWqxuFfm8eBwzWNgyfBd6Gz+IeKQ9jCmyhoH99g15M3T+QaVHFjizVA=="
   "resolved" "https://registry.npmjs.org/globals/-/globals-11.12.0.tgz"
   "version" "11.12.0"
-
-"goober@^2.0.30":
-  "integrity" "sha512-wgj5C7IJX2+MyHZ4TgOA+hLL1mCDW+jGorQ5KCMLF1ofE9gQkfbo1s8txIrzIsAX65XRTm0qaipolId2KMYUkw=="
-  "resolved" "https://registry.npmjs.org/goober/-/goober-2.0.37.tgz"
-  "version" "2.0.37"
 
 "graceful-fs@^4.1.11", "graceful-fs@^4.1.15", "graceful-fs@^4.1.2", "graceful-fs@^4.1.6", "graceful-fs@^4.2.0":
   "resolved" "https://registry.npmjs.org/graceful-fs/-/graceful-fs-4.2.3.tgz"
@@ -7208,11 +7182,6 @@
     "file-selector" "^0.1.12"
     "prop-types" "^15.7.2"
 
-"react-fast-compare@^3.0.1":
-  "integrity" "sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA=="
-  "resolved" "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.0.tgz"
-  "version" "3.2.0"
-
 "react-floater@^0.7.2":
   "resolved" "https://registry.npmjs.org/react-floater/-/react-floater-0.7.2.tgz"
   "version" "0.7.2"
@@ -7358,14 +7327,6 @@
     "lodash.throttle" "^3.0.3"
     "prop-types" "^15.5.10"
 
-"react-popper@^2.2.4":
-  "integrity" "sha512-kxGkS80eQGtLl18+uig1UIf9MKixFSyPxglsgLBxlYnyDf65BiY9B3nZSc6C9XUNDgStROB0fMQlTEz1KxGddw=="
-  "resolved" "https://registry.npmjs.org/react-popper/-/react-popper-2.2.5.tgz"
-  "version" "2.2.5"
-  dependencies:
-    "react-fast-compare" "^3.0.1"
-    "warning" "^4.0.2"
-
 "react-progressbar@^1.4.6":
   "integrity" "sha1-A/XOnM83eLFY0ZKkV2hFU/rn3bc="
   "resolved" "https://registry.npmjs.org/react-progressbar/-/react-progressbar-1.4.6.tgz"
@@ -7453,6 +7414,11 @@
   "resolved" "https://registry.npmjs.org/react-tagsinput/-/react-tagsinput-3.19.0.tgz"
   "version" "3.19.0"
 
+"react-tiny-popover@^6.0.5":
+  "integrity" "sha512-na6ZghMy5kqTPFSATb1pdSHO+/MikZvUxNk+zjXlz+gMXgiaOVuik5AiC5Oyj4yHpPf0nxoOmVQOmOmuDob6+A=="
+  "resolved" "https://registry.npmjs.org/react-tiny-popover/-/react-tiny-popover-6.0.5.tgz"
+  "version" "6.0.5"
+
 "react-toggle@^4.1.1":
   "integrity" "sha512-+wXlMcSpg8SmnIXauMaZiKpR+r2wp2gMUteroejp2UTSqGTVvZLN+m9EhMzFARBKEw7KpQOwzCyfzeHeAndQGw=="
   "resolved" "https://registry.npmjs.org/react-toggle/-/react-toggle-4.1.1.tgz"
@@ -7494,7 +7460,7 @@
     "prop-types" "^15.0.0"
     "react-is" "^16.6.3"
 
-"react@*", "react@^0.14 || ^15 || ^16", "react@^0.14.0 || ^15.0.0 || ^16", "react@^0.14.0 || ^15.0.0 || ^16.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0", "react@^15.0.0 || ^16.0.0", "react@^15.0.1", "react@^15.0.2|| ^16.0.0-rc || ^16.0.0", "react@^15.3.0 || ^16.0.0", "react@^15.6.2 || ^16.0", "react@^16.0.0", "react@^16.0.0 || ^15.0.0 || ^0.14.0", "react@^16.10.1", "react@^16.3.0", "react@^16.6.0", "react@^16.8.0", "react@^16.8.0 || ^17", "react@^16.8.1", "react@^16.8.3", "react@^16.8.5", "react@^16.9.0", "react@^16.x", "react@>= 16.8", "react@>= 16.8.0", "react@>=^16.0.0", "react@>=0.14.0", "react@>=0.14.0 <17.0.0", "react@>=0.14.9", "react@>=15.0.0", "react@>=16", "react@>=16.0.0", "react@>=16.3.0", "react@>=16.4.1", "react@>=16.6.0", "react@>=16.x", "react@~15 || ~16", "react@0.14.x || ^15.0.1 || ^16.2.0", "react@15.x.x || 16.x.x", "react@16.x":
+"react@*", "react@^0.14 || ^15 || ^16", "react@^0.14.0 || ^15.0.0 || ^16", "react@^0.14.0 || ^15.0.0 || ^16.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0", "react@^0.14.9 || ^15.3.0 || ^16.0.0-rc || ^16.0", "react@^15.0.0 || ^16.0.0", "react@^15.0.1", "react@^15.0.2|| ^16.0.0-rc || ^16.0.0", "react@^15.3.0 || ^16.0.0", "react@^15.6.2 || ^16.0", "react@^16.0.0", "react@^16.0.0 || ^15.0.0 || ^0.14.0", "react@^16.10.1", "react@^16.3.0", "react@^16.6.0", "react@^16.8.0", "react@^16.8.1", "react@^16.8.3", "react@^16.8.5", "react@^16.9.0", "react@^16.x", "react@>= 16.8", "react@>= 16.8.0", "react@>=^16.0.0", "react@>=0.14.0", "react@>=0.14.0 <17.0.0", "react@>=0.14.9", "react@>=15.0.0", "react@>=16.0.0", "react@>=16.3.0", "react@>=16.4.1", "react@>=16.6.0", "react@>=16.x", "react@~15 || ~16", "react@0.14.x || ^15.0.1 || ^16.2.0", "react@15.x.x || 16.x.x", "react@16.x":
   "resolved" "https://registry.npmjs.org/react/-/react-16.12.0.tgz"
   "version" "16.12.0"
   dependencies:
@@ -7947,6 +7913,7 @@
   "version" "5.7.1"
 
 "semver@^6.0.0":
+  "integrity" "sha512-b39TBaTSfV6yBrapU89p5fKekE2m/NwnDocOVruQFS1/veMgdzuPcnOM34M6CwxW8jH/lxEa5rBoDeUwu5HHTw=="
   "resolved" "https://registry.npmjs.org/semver/-/semver-6.3.0.tgz"
   "version" "6.3.0"
 
@@ -8211,10 +8178,12 @@
   "version" "0.5.7"
 
 "source-map@^0.5.6":
+  "integrity" "sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w="
   "resolved" "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz"
   "version" "0.5.7"
 
 "source-map@^0.5.7":
+  "integrity" "sha1-igOdLRAh0i0eoUyA2OpGi6LvP8w="
   "resolved" "https://registry.npmjs.org/source-map/-/source-map-0.5.7.tgz"
   "version" "0.5.7"
 
@@ -8292,8 +8261,9 @@
     "tweetnacl" "~0.14.0"
 
 "ssri@^6.0.1":
-  "resolved" "https://registry.npmjs.org/ssri/-/ssri-6.0.1.tgz"
-  "version" "6.0.1"
+  "integrity" "sha512-cepbSq/neFK7xB6A50KHN0xHDotYzq58wWCa5LeWqnPrHG8GzfEjO/4O8kpmcGW+oaxkvhEJCWgbgNk4/ZV93Q=="
+  "resolved" "https://registry.npmjs.org/ssri/-/ssri-6.0.2.tgz"
+  "version" "6.0.2"
   dependencies:
     "figgy-pudding" "^3.5.1"
 
@@ -8883,11 +8853,6 @@
     "punycode" "1.3.2"
     "querystring" "0.2.0"
 
-"use-delayed@^0.1.0":
-  "integrity" "sha512-z8whfQV4ZttiOrk73wGwhJ5NXRSB0lroQRGJYEAf5nQ+qdod5hwEY9U3EHaWHp8aVWlEoP1RVbLiQQd+LJB+gQ=="
-  "resolved" "https://registry.npmjs.org/use-delayed/-/use-delayed-0.1.0.tgz"
-  "version" "0.1.0"
-
 "use-memo-one@^1.1.1":
   "integrity" "sha512-oFfsyun+bP7RX8X2AskHNTxu+R3QdE/RC5IefMbqptmACAA/gfol1KDD5KRzPsGMa62sWxGZw+Ui43u6x4ddoQ=="
   "resolved" "https://registry.npmjs.org/use-memo-one/-/use-memo-one-1.1.1.tgz"
@@ -8949,7 +8914,7 @@
   "resolved" "https://registry.npmjs.org/wait-for-expect/-/wait-for-expect-3.0.1.tgz"
   "version" "3.0.1"
 
-"warning@^4.0.2", "warning@^4.0.3":
+"warning@^4.0.3":
   "resolved" "https://registry.npmjs.org/warning/-/warning-4.0.3.tgz"
   "version" "4.0.3"
   dependencies:
