@@ -1,20 +1,43 @@
-import { Popover } from "@varld/popover";
-import React, { ReactElement, ReactNode } from "react";
-
-type contentRendererArgs = {
-  close: () => void;
-  open: boolean;
-  visible: boolean;
-};
+import { ArrowContainer, Popover } from "react-tiny-popover";
+import React, { Fragment, ReactElement } from "react";
+import { isNullOrUndefined } from "../config/utils/nullchecks";
 
 type Props = {
-  contentRenderer: (contentRendererArgs) => ReactElement;
-  targetElement: ReactElement;
+  isOpen: boolean;
+  popoverContent: ReactElement;
+  setIsPopoverOpen: (flag: boolean) => void;
+  targetContent: ReactElement;
 };
 
 export default function ResearchHubPopover({
-  contentRenderer,
-  targetElement,
-}: Props): ReactElement<typeof Popover> {
-  return <Popover popover={contentRenderer}>{targetElement}</Popover>;
+  isOpen,
+  popoverContent,
+  setIsPopoverOpen,
+  targetContent,
+}: Props): ReactElement<typeof Fragment | typeof Popover> {
+  if (isNullOrUndefined(typeof window)) {
+    return <Fragment />;
+  }
+  return (
+    <Popover
+      content={({ position, childRect, popoverRect }) => (
+        <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
+          arrowClassName="popover-arrow"
+          arrowColor={"#fff"}
+          arrowSize={10}
+          childRect={childRect}
+          className="popover-arrow-container"
+          popoverRect={popoverRect}
+          position={position}
+        >
+          {popoverContent}
+        </ArrowContainer>
+      )}
+      isOpen={isOpen}
+      onClickOutside={(): void => setIsPopoverOpen(false)}
+      positions={["top"]} // preferred positions by priority
+    >
+      {targetContent}
+    </Popover>
+  );
 }
