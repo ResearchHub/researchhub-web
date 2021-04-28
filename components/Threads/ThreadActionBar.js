@@ -165,6 +165,8 @@ class ThreadActionBar extends React.Component {
         </Fragment>
       );
     }
+    const commentCount = this.renderCommentCount()
+    const editButton = this.renderEditButton()
     return (
       <div
         className={css(styles.column)}
@@ -195,8 +197,8 @@ class ThreadActionBar extends React.Component {
               Respond
             </div>
           )}
-          {!this.props.hideCount && this.renderCommentCount()}
-          {this.props.toggleEdit && this.renderEditButton()}
+          {!this.props.hideCount && commentCount}
+          {this.props.toggleEdit && editButton}
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
