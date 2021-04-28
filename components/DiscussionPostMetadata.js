@@ -66,8 +66,9 @@ const DiscussionPostMetadata = (props) => {
   let isUserOwnInlineComment = false;
 
   if (isLoggedIn) {
-    isUserOwnInlineComment =
-      store.getState().auth.user.author_profile.id === metaData.authorId;
+    isUserOwnInlineComment = metaData
+      ? store.getState().auth.user.author_profile.id === metaData.authorId
+      : true;
   }
 
   useEffect(() => {
@@ -436,6 +437,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    width: "100%",
   },
   firstRow: {
     display: "flex",
@@ -477,6 +479,7 @@ const styles = StyleSheet.create({
   },
   smallerTimestamp: {
     fontSize: 12,
+    marginRight: 8,
   },
   twitterTag: {
     color: "unset",
@@ -614,10 +617,7 @@ const styles = StyleSheet.create({
     color: colors.RED(),
   },
   dropdownContainer: {
-    display: "flex",
-    alignItems: "center",
-    position: "absolute",
-    right: 0,
+    marginLeft: "auto",
   },
   dropdownIcon: {
     fontSize: 20,

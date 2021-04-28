@@ -251,7 +251,15 @@ class DiscussionEntry extends React.Component {
   };
 
   renderComments = () => {
-    let { data, hostname, path, discussionCount, setCount, paper } = this.props;
+    let {
+      data,
+      hostname,
+      path,
+      discussionCount,
+      setCount,
+      paper,
+      mediaOnly,
+    } = this.props;
     let comments = this.state.comments;
 
     if (comments.length > 0) {
@@ -268,6 +276,7 @@ class DiscussionEntry extends React.Component {
             mobileView={this.props.mobileView}
             discussionCount={discussionCount}
             setCount={setCount}
+            mediaOnly={mediaOnly}
           />
         );
       });

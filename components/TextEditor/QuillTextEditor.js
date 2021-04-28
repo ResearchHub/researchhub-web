@@ -358,6 +358,7 @@ class Editor extends React.Component {
               onClick={this.onCancel}
               label={"Cancel"}
               size={props.smallToolBar && "med"}
+              rippleClass={styles.ripples}
               customButtonStyle={
                 props.smallToolBar
                   ? toolbarStyles.smallButton
@@ -768,8 +769,6 @@ const toolbarStyles = StyleSheet.create({
   },
   smallButton: {
     height: 37,
-    width: 120,
-    minWidth: 120,
     fontSize: 15,
     display: "flex",
     justifyContent: "center",
@@ -777,6 +776,9 @@ const toolbarStyles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+  },
+  ripples: {
+    flex: 1,
   },
   divider: {
     width: 10,
