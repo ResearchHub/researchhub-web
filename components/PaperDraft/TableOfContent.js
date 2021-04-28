@@ -5,8 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
 const TableOfContent = (props) => {
-  const { paperDraftSections, paperDraftExists } = props;
-
+  const { paperDraftSections = [], paperDraftExists } = props;
   const renderContent = () => {
     return paperDraftSections.map((section, index) => {
       return (
