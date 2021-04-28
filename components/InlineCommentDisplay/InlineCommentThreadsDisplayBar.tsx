@@ -183,6 +183,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     positioin: "relative",
+    marginBottom: 16,
     "@media only screen and (max-width: 1199px)": {
       // height: 50,
       padding: 16,
