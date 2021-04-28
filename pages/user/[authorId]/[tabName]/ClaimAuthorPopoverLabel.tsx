@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import ResearchHubPopover from "../../../../components/ResearchHubPopover";
-import colors from "../../../../config/themes/colors";
 import icons from "../../../../config/themes/icons";
 
 type Props = {
@@ -11,9 +10,9 @@ type Props = {
 };
 
 export default function ClaimAuthorPopoverLabel({
-  auth,
+  auth: _auth,
   author,
-  user,
+  user: _user,
 }: Props): ReactElement<"div"> {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const { first_name: authorFirstName, last_name: authorLastName } = author;
