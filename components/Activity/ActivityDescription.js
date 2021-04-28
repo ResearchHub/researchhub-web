@@ -2,12 +2,14 @@ import React, { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import Link from "next/link";
+import { useRouter } from "next/router";
 
 import { ClampedText } from "~/components/Typography";
 
 import colors from "~/config/themes/colors";
 
 const ActivityDescription = (props) => {
+  const router = useRouter();
   const [lines, setLines] = useState(2);
   const { activity, author, contributionType, username } = props;
   const { source, paper, content_type: contentType } = activity;
@@ -94,9 +96,7 @@ const ActivityDescription = (props) => {
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${authorId}/discussions`}
         >
-          <a className={css(styles.link)}>
-            <span className={css(styles.text)}>{username}</span>
-          </a>
+          <a className={css(styles.link, styles.text)}>{username}</a>
         </Link>
         <span>{renderActionString()}</span>
         <span className={css(styles.text)}>{paperTitle}</span>

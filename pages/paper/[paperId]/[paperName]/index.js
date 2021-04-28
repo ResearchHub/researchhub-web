@@ -736,10 +736,15 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (min-width: 768px)": {
       display: "flex",
+      marginTop: 16,
+      width: "90%",
     },
     "@media only screen and (min-width: 1024px)": {
-      width: "80%",
+      width: "100%",
       display: "table",
+    },
+    "@media only screen and (min-width: 1200px)": {
+      width: "80%",
     },
   },
   desktop: {

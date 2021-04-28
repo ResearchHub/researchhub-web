@@ -71,17 +71,6 @@ const AuthorPage = (props) => {
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
 
-  // Summary constants
-  const [summaries, setSummaries] = useState([]);
-  const [summaryCount, setSummaryCount] = useState(0);
-  const [summaryNext, setSummaryNext] = useState(null);
-  const [summariesFetched, setSummariesFetched] = useState(false);
-
-  // KT Constants
-  const [keyTakeaways, setKeyTakeaways] = useState([]);
-  const [takeawayCount, setTakeawayCount] = useState(0);
-  const [takeawayNext, setTakeawayNext] = useState(null);
-  const [takeawaysFetched, setTakeawaysFetched] = useState(false);
   const [isSuspended, setIsSuspended] = useState(null);
 
   const facebookRef = useRef();
@@ -190,13 +179,9 @@ const AuthorPage = (props) => {
     const promotions = fetchUserPromotions();
     const transactions = fetchUserTransactions();
     const refetch = refetchAuthor();
-    const summaries = fetchSummaries();
-    const takeaways = fetchKeyTakeaways();
     const suspendedState = fetchAuthorSuspended();
 
     Promise.all([
-      takeaways,
-      summaries,
       authored,
       discussions,
       contributions,
@@ -430,41 +415,6 @@ const AuthorPage = (props) => {
       });
   };
 
-  const fetchSummaries = (next) => {
-    return fetch(
-      next
-        ? next
-        : API.SUMMARY({ proposed_by__author_profile: router.query.authorId }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setSummaries([...summaries, ...res.results]);
-        setSummaryCount(res.count);
-        setSummaryNext(res.next);
-        setSummariesFetched(true);
-      });
-  };
-
-  const fetchKeyTakeaways = (next) => {
-    let querystring = {
-      created_by__author_profile: router.query.authorId,
-    };
-    return fetch(
-      next ? next : API.KEY_TAKEAWAY({ querystring }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setKeyTakeaways([...keyTakeaways, ...res.results]);
-        setTakeawayCount(res.count);
-        setTakeawayNext(res.next);
-        setTakeawaysFetched(true);
-      });
-  };
-
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
@@ -479,30 +429,6 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.tabMeta)}>
           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-          <div
-            className={css(
-              tabName === "takeaways" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserKeyTakeaways
-              fetched={takeawaysFetched}
-              fetchItems={fetchKeyTakeaways}
-              items={keyTakeaways}
-              itemsNext={takeawayNext}
-            />
-          </div>
-          <div
-            className={css(
-              tabName === "summaries" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserSummaries
-              fetchSummaries={fetchSummaries}
-              summaries={summaries}
-              summaryNext={summaryNext}
-              summariesFetched={summariesFetched}
-            />
-          </div>
           <div
             className={css(
               tabName === "contributions" ? styles.reveal : styles.hidden

@@ -16,14 +16,19 @@ const ColumnHubs = (props) => {
     const { hubs } = props;
 
     return (hubs || []).map((hub, i) => (
-      <HubCard hub={hub} index={i} last={i === hubs.length - 1} />
+      <HubCard
+        hub={hub}
+        index={i}
+        last={i === hubs.length - 1}
+        key={`hubCard-${hub.id}`}
+      />
     ));
   };
 
   return (
     <ReactPlaceholder
       showLoadingAnimation
-      ready={hubs}
+      ready={hubs && hubs.length > 0}
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
     >
       <div>

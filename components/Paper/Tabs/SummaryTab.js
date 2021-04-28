@@ -639,7 +639,7 @@ class SummaryTab extends React.Component {
 
     return (
       <ReactPlaceholder
-        ready={paper && paper.id}
+        ready={paper && "id" in paper}
         showLoadingAnimation
         customPlaceholder={
           <div style={{ paddingTop: 30, width: "100%" }}>
