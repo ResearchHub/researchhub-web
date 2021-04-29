@@ -8,7 +8,7 @@
     "sentry": "node ./scripts/sentry.js",
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
-    "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=production -t researchhub-web .",
+    "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
     "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
     "deploy": "./scripts/deploy/production.sh deploy",
     "staging": "./scripts/deploy/staging.sh deploy",
