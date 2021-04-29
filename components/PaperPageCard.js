@@ -719,6 +719,7 @@ const styles = StyleSheet.create({
   },
   previewStyles: {
     width: "100%",
+    height: "unset",
   },
   container: {
     width: "100%",
