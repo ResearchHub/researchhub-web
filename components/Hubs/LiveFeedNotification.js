@@ -1037,6 +1037,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
+    wordBreak: "break-word",
   },
   username: {
     color: "#000",
