@@ -3,6 +3,7 @@ import * as shims from "./shims";
 import API from "~/config/api";
 import * as utils from "../utils";
 import { sendAmpEvent } from "~/config/fetch";
+import { doesNotExist } from "~/config/utils";
 
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
@@ -336,6 +337,19 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
   };
 }
 
+export function updateThreadCount({ type = "INCREMENT", count }) {
+  return (dispatch, getState) => {
+    const increment = type === "INCREMENT" ? 1 : -1;
+    const threadCount = !doesNotExist(count)
+      ? count
+      : getState().discussion.threadCount + increment;
+
+    const action = actions.setUpdateThreadCount(threadCount || 0);
+
+    return dispatch(action);
+  };
+}
+
 const DiscussionActions = {
   fetchThread,
   fetchThreadPending: actions.setThreadPending,
@@ -357,6 +371,7 @@ const DiscussionActions = {
   postUpvotePending: () => actions.setPostVotePending(true),
   postDownvote,
   postDownvotePending: () => actions.setPostVotePending(false),
+  updateThreadCount,
 };
 
 export default DiscussionActions;

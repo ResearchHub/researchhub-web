@@ -164,23 +164,24 @@ class DiscussionEntry extends React.Component {
   };
 
   submitComment = async (text, plain_text, callback) => {
-    let {
+    const {
       data,
       postComment,
       postCommentPending,
-      discussionCount,
-      setCount,
+      updateThreadCount,
     } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    const { id: discussionThreadId, paper: paperId } = data;
+
     postCommentPending();
     await postComment(paperId, discussionThreadId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
-      let newComment = { ...this.props.discussion.postedComment };
-      newComment.highlight = true;
-      let comments = [...this.state.comments, newComment];
+      const newComment = {
+        ...this.props.discussion.postedComment,
+        highlight: true,
+      };
+      const comments = [...this.state.comments, newComment];
       data.comments = comments;
-      setCount && setCount(discussionCount + 1);
+      updateThreadCount({});
       this.setState(
         {
           comments,
@@ -196,21 +197,21 @@ class DiscussionEntry extends React.Component {
   };
 
   saveEditsThread = async (text, plain_text, callback) => {
-    let {
+    const {
       data,
       updateThread,
       updateThreadPending,
       showMessage,
       setMessage,
     } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    const { id: discussionThreadId, paper: paperId } = data;
 
-    let body = {
+    const body = {
       text,
       plain_text,
       paper: paperId,
     };
+
     updateThreadPending();
     await updateThread(paperId, discussionThreadId, body);
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
@@ -241,8 +242,10 @@ class DiscussionEntry extends React.Component {
   };
 
   onRemove = ({ paperID, threadID, commentID, replyID }) => {
+    const { updateThreadCount, onRemoveSuccess } = this.props;
     this.setState({ removed: true });
-    this.props.onRemoveSuccess({
+    updateThreadCount({ type: "DECREMENT" });
+    onRemoveSuccess({
       commentID,
       paperID,
       replyID,
@@ -251,18 +254,10 @@ class DiscussionEntry extends React.Component {
   };
 
   renderComments = () => {
-    let {
-      data,
-      hostname,
-      path,
-      discussionCount,
-      setCount,
-      paper,
-      mediaOnly,
-    } = this.props;
-    let comments = this.state.comments;
+    const { data, hostname, path, paper, mediaOnly } = this.props;
+    const { comments } = this.state;
 
-    if (comments.length > 0) {
+    if (comments.length) {
       return comments.map((comment, i) => {
         return (
           <CommentEntry
@@ -274,8 +269,6 @@ class DiscussionEntry extends React.Component {
             paper={paper}
             index={i}
             mobileView={this.props.mobileView}
-            discussionCount={discussionCount}
-            setCount={setCount}
             mediaOnly={mediaOnly}
           />
         );
@@ -375,9 +368,17 @@ class DiscussionEntry extends React.Component {
   render() {
     const {
       data,
-      data: { context_title: contextTitle, id: commentThreadID },
+      data: {
+        context_title: contextTitle,
+        id: commentThreadID,
+        created_date: date,
+        title,
+        source,
+        text,
+        plain_text,
+        comment_count,
+      },
       hostname,
-      mobileView,
       paper,
       path,
       mediaOnly,
@@ -386,12 +387,10 @@ class DiscussionEntry extends React.Component {
       store: inlineCommentStore,
     } = this.props;
     const commentCount =
-      this.state.comments.length > data.comment_count
+      this.state.comments.length > comment_count
         ? this.state.comments.length
-        : data.comment_count;
-    const date = data.created_date;
-    const title = data.title;
-    const body = data.source === "twitter" ? data.plain_text : data.text;
+        : comment_count;
+    const body = source === "twitter" ? plain_text : text;
     const username = createUsername(data);
     const metaData = {
       authorId: data.created_by.author_profile.id,
@@ -767,6 +766,7 @@ const mapDispatchToProps = {
   postDownvote: DiscussionActions.postDownvote,
   updateThread: DiscussionActions.updateThread,
   updateThreadPending: DiscussionActions.updateThreadPending,
+  updateThreadCount: DiscussionActions.updateThreadCount,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };

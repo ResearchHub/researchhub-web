@@ -107,9 +107,6 @@ const Paper = (props) => {
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(props.paper && props.paper.userVote)
   );
-  const [discussionCount, setCount] = useState(
-    calculateCommentCount(props.paper)
-  );
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
   const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
@@ -176,10 +173,6 @@ const Paper = (props) => {
     }
   }, [props.auth.isLoggedIn]);
 
-  useEffect(() => {
-    setCount(calculateCommentCount(paper));
-  }, [paper.discussionSource]);
-
   function fetchPaper({ paperId }) {
     setLoadingPaper(true);
     return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
@@ -191,7 +184,6 @@ const Paper = (props) => {
         setScore(getNestedValue(currPaper, ["score"], 0));
         setFlag(currPaper.user_flag);
         setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount(currPaper));
         setPaper(currPaper);
         setSummary(currPaper.summary || {});
         checkUserVote(currPaper);
@@ -218,7 +210,6 @@ const Paper = (props) => {
               summary_low_quality,
               userVote: userVote,
             };
-
             setPaper(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
@@ -477,7 +468,6 @@ const Paper = (props) => {
                 upvote={upvote}
                 downvote={downvote}
                 selectedVoteType={selectedVoteType}
-                discussionCount={discussionCount}
                 shareUrl={process.browser && window.location.href}
                 isModerator={isModerator}
                 isSubmitter={isSubmitter}
@@ -1071,14 +1061,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   top: {
-    // paddingBottom: 0,
     minHeight: 208,
     "@media only screen and (max-width: 767px)": {
       borderBottom: "none",
     },
   },
   bottom: {
-    // borderTop: "none",
     paddingTop: 0,
   },
   componentWrapper: {
@@ -1100,6 +1088,7 @@ const mapStateToProps = (state) => ({
   vote: state.vote,
   auth: state.auth,
   user: state.auth.user,
+  paper: state.paper,
 });
 
 const mapDispatchToProps = {

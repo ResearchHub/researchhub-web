@@ -19,6 +19,9 @@ import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
+import DiscussionCount from "./Paper/PaperDiscussionCount";
+
+// redux
 import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
@@ -672,10 +675,7 @@ class PaperPageCard extends React.Component {
                         showPromotion={true}
                         small={true}
                       />
-                      <PaperDiscussionButton
-                        paper={paper}
-                        discussionCount={discussionCount}
-                      />
+                      <PaperDiscussionButton paper={paper} />
                       <PaperPromotionButton paper={paper} />
                     </div>
                   </div>

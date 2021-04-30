@@ -264,26 +264,25 @@ class CommentEntry extends React.Component {
   };
 
   submitReply = async (text, plain_text, callback) => {
-    let {
-      data,
-      comment,
+    const {
+      data: { paper: paperId, id: discussionThreadId },
+      comment: { id: commentId },
       postReply,
       postReplyPending,
-      discussionCount,
-      setCount,
+      updateThreadCount,
     } = this.props;
-    let paperId = data.paper;
-    let discussionThreadId = data.id;
-    let commentId = comment.id;
+
     postReplyPending();
     await postReply(paperId, discussionThreadId, commentId, text, plain_text);
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       callback && callback();
-      let newReply = { ...this.props.discussion.postedReply };
-      newReply.highlight = true;
-      let replies = [...this.state.replies, newReply];
+      const newReply = {
+        ...this.props.discussion.postedReply,
+        highlight: true,
+      };
+      const replies = [...this.state.replies, newReply];
       comment.replies = replies;
-      setCount && setCount(discussionCount + 1);
+      updateThreadCount({});
       this.setState({
         revealReply: true,
         replies,
@@ -380,12 +379,11 @@ class CommentEntry extends React.Component {
   };
 
   onReplySubmitCallback = () => {
-    let { comment, setCount, discussion, discussionCount } = this.props;
-    let newReply = { ...discussion.postedReply };
-    newReply.highlight = true;
-    let replies = [...this.state.replies, newReply];
-    comment.replies = replies;
-    setCount && setCount(discussionCount + 1);
+    const { comment, updateThreadCount, discussion } = this.props;
+    const newReply = { ...discussion.postedReply, highlight: true };
+    const replies = [...this.state.replies, newReply];
+    comment["replies"] = replies;
+    updateThreadCount({});
     this.setState({
       revealReply: true,
       replies,
@@ -393,7 +391,7 @@ class CommentEntry extends React.Component {
   };
 
   renderReplies = () => {
-    let { data, hostname, path, comment, paper, mediaOnly } = this.props;
+    const { data, hostname, path, comment, paper, mediaOnly } = this.props;
     let replies =
       this.state.replies.length < 1
         ? this.props.comment.replies
@@ -425,12 +423,11 @@ class CommentEntry extends React.Component {
       paper,
       mediaOnly,
     } = this.props;
-    let threadId = comment.id;
+    const { id: threadId, created_date: date } = comment;
     let commentCount =
       this.state.replies.length > comment.reply_count
         ? this.state.replies.length
         : comment.reply_count;
-    let date = comment.created_date;
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
@@ -751,6 +748,7 @@ const mapDispatchToProps = {
   updateCommentPending: DiscussionActions.updateCommentPending,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  updateThreadCount: DiscussionActions.updateThreadCount,
 };
 
 export default connect(
