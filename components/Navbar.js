@@ -288,13 +288,13 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        <Search
+        {/* <Search
           searchClass={styles.mobileSearch}
           inputClass={styles.inputClass}
           searchIconClass={styles.searchIconClass}
           dropdownClass={styles.dropdownClass}
           afterSearchClick={toggleSideMenu}
-        />
+        /> */}
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
@@ -442,7 +442,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search />
+        {/* <Search /> */}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
