@@ -740,6 +740,10 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     minWidth: 140,
     maxWidth: "20%",
+
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   columnOverrideStyles: {
     width: "100%",
