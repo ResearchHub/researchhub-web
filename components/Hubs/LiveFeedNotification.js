@@ -284,7 +284,7 @@ class LiveFeedNotification extends React.Component {
                 comment,
               </a>
             </Link>
-            <em>{plainText && plainText}</em>
+            <em>{plainText && this.truncateComment(plainText)}</em>
             {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
@@ -332,7 +332,7 @@ class LiveFeedNotification extends React.Component {
                 comment,
               </a>
             </Link>
-            <em>{commentTip && commentTip}</em>
+            <em>{commentTip && this.truncateComment(commentTip)}</em>
             {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
@@ -380,7 +380,7 @@ class LiveFeedNotification extends React.Component {
                 reply,
               </a>
             </Link>
-            <em>{replyTip && replyTip}</em>
+            <em>{replyTip && this.truncateComment(replyTip)}</em>
             {" in "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
@@ -649,6 +649,13 @@ class LiveFeedNotification extends React.Component {
       return title.slice(0, 90) + "...";
     }
     return title;
+  };
+
+  truncateComment = (comment) => {
+    if (comment && comment.length >= 300) {
+      return comment.slice(0, 300) + "...";
+    }
+    return comment;
   };
 
   toggleDropdown = (e) => {
@@ -1037,6 +1044,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
+    wordBreak: "break-word",
   },
   username: {
     color: "#000",
