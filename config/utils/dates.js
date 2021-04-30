@@ -26,6 +26,14 @@ export function formatPublishedDate(momentDate, removeText) {
   }
 }
 
+export function formatUploadedDate(momentDate, removeText) {
+  if (removeText) {
+    return formatDateStandard(momentDate);
+  } else {
+    return `Date Added: ${formatDateStandard(momentDate)}`;
+  }
+}
+
 export function getInitialScope() {
   return {
     start: moment()
