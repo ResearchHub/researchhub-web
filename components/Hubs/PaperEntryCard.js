@@ -24,7 +24,7 @@ import {
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { formatPaperSlug } from "~/config/utils";
-import { formatPublishedDate } from "~/config/utils/dates";
+import { formatUploadedDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
@@ -70,6 +70,7 @@ const PaperEntryCard = (props) => {
     slug,
     paper_type,
     url,
+    uploaded_date,
   } = paper || null;
 
   let vote_type = 0;
@@ -489,27 +490,20 @@ const PaperEntryCard = (props) => {
   };
 
   const renderMetadata = (mobile = false) => {
-    if (
-      paper_publish_date ||
-      (raw_authors && raw_authors.length) ||
-      uploaded_by
-    ) {
+    if (uploaded_date || (raw_authors && raw_authors.length) || uploaded_by) {
       return (
         <div className={css(styles.metadataRow)}>
-          {renderPublishDate(mobile)}
+          {renderUploadedDate(mobile)}
           {renderRawAuthors(mobile)}
         </div>
       );
     }
   };
 
-  const renderPublishDate = (mobile) => {
-    if (paper_publish_date) {
+  const renderUploadedDate = (mobile) => {
+    if (uploaded_date) {
       function _convertDate() {
-        return formatPublishedDate(
-          transformDate(paper.paper_publish_date),
-          mobile
-        );
+        return formatUploadedDate(transformDate(paper.uploaded_date), mobile);
       }
 
       if (!mobile) {
