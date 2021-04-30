@@ -95,6 +95,10 @@ const DiscussionTab = (props) => {
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
+  }, []);
+
+  useEffect(() => {
+    fetchDiscussionThreads(false, true);
   }, [filter, showTwitterComments]);
 
   function handleWindowResize() {
