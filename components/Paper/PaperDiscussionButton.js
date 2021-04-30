@@ -1,15 +1,17 @@
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
 
 import numeral from "numeral";
 import colors from "~/config/themes/colors";
 import { PaperDiscussionIcon } from "~/config/themes/icons";
 
-const PaperDiscussionButton = ({ discussionCount, paper }) => {
+const PaperDiscussionButton = ({ discussion, paper }) => {
+  const { threadCount } = discussion;
   const [hover, setHover] = useState(false);
 
   const getCount = () => {
-    return numeral(discussionCount).format("0a");
+    return numeral(threadCount).format("0a");
   };
 
   return (
@@ -24,9 +26,7 @@ const PaperDiscussionButton = ({ discussionCount, paper }) => {
         <PaperDiscussionIcon color={hover && colors.NEW_BLUE()} />
       </span>
       <span
-        className={
-          css(styles.count, !discussionCount && styles.hide) + " count"
-        }
+        className={css(styles.count, !threadCount && styles.hide) + " count"}
       >
         {getCount()}
       </span>
@@ -69,4 +69,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaperDiscussionButton;
+const mapStateToProps = (state) => ({
+  discussion: state.discussion,
+});
+
+export default connect(mapStateToProps)(PaperDiscussionButton);

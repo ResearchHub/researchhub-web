@@ -16,12 +16,14 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import DiscussionCount from "~/components/Paper/PaperDiscussionCount";
 
 // Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 import { PaperActions } from "~/redux/paper";
+import DiscussionActions from "~/redux/discussion";
 
 // Config
 import API from "~/config/api";
@@ -38,14 +40,14 @@ const DiscussionTab = (props) => {
     question: discussionScaffoldInitialValue,
   };
 
-  let {
+  const {
     hostname,
     paper,
     calculatedCount,
-    setCount,
     discussionRef,
     getThreads,
     paperId,
+    updateThreadCount,
   } = props;
 
   // TODO: move to config
@@ -131,8 +133,6 @@ const DiscussionTab = (props) => {
                       path={t.path}
                       newCard={transition && i === 0} //conditions when a new card is made
                       mobileView={mobileView}
-                      discussionCount={calculatedCount}
-                      setCount={setCount}
                       paper={props.paperState}
                     />
                   );
@@ -170,16 +170,16 @@ const DiscussionTab = (props) => {
   };
 
   const save = (text, plain_text) => {
-    let { paperId } = router.query;
+    const { paperId } = router.query;
     props.showMessage({ load: true, show: true });
 
-    let param = {
+    const param = {
       text: text,
       paper: paperId,
       plain_text: plain_text,
     };
 
-    let config = API.POST_CONFIG(param);
+    const config = API.POST_CONFIG(param);
 
     return fetch(API.DISCUSSION({ paperId, twitter: null }), config)
       .then(Helpers.checkStatus)
@@ -209,7 +209,7 @@ const DiscussionTab = (props) => {
             is_removed: resp.is_removed,
           },
         };
-        props.setCount(props.calculatedCount + 1);
+        updateThreadCount({});
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
         sendAmpEvent(payload);
@@ -268,11 +268,12 @@ const DiscussionTab = (props) => {
       loadMore,
       twitter: showTwitterComments,
     });
-    const threads = res.payload.threads;
+    const { threads, threadCount } = res.payload;
     setFetching(false);
     setLoading(false);
     setThreads(threads);
     setFormattedThreads(formatThreads(threads, basePath));
+    updateThreadCount({ count: threadCount });
   };
 
   const renderAddDiscussion = () => {
@@ -359,6 +360,7 @@ const DiscussionTab = (props) => {
         cancel={cancel}
         save={save}
       />
+
       {calculatedCount > 0 ? (
         <div
           className={css(
@@ -380,7 +382,7 @@ const DiscussionTab = (props) => {
                 ) : showTwitterComments ? (
                   calculateCount()
                 ) : (
-                  props.calculatedCount
+                  <DiscussionCount />
                 )}
               </span>
               {/* <div className={css(styles.tabRow)}>
@@ -467,7 +469,7 @@ const DiscussionTab = (props) => {
                     type="beat"
                   />
                 ) : (
-                  props.calculatedCount
+                  <DiscussionCount />
                 )}
               </span>
               {/* <div className={css(styles.tabRow)}>
@@ -970,6 +972,7 @@ const mapDispatchToProps = {
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
   getThreads: PaperActions.getThreads,
+  updateThreadCount: DiscussionActions.updateThreadCount,
 };
 
 export default connect(

@@ -21,6 +21,7 @@ import {
   getTargetInlineDraftEntityEl,
 } from "./util/InlineCommentThreadUtil";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
+import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
@@ -46,6 +47,7 @@ type Props = {
 
 function InlineCommentThreadCard({
   auth,
+  updateThreadCount,
   showMessage,
   setMessage,
   openRecaptchaPrompt: _openRecaptchaPrompt,
@@ -114,6 +116,7 @@ function InlineCommentThreadCard({
           ...unduxInlineComment,
           commentThreadID: threadID,
         };
+        updateThreadCount({ type: "INCREMENT" });
         updateInlineThreadIdInEntity({
           entityKey,
           paperDraftStore,
@@ -294,6 +297,7 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
+  updateThreadCount: DiscussionActions.updateThreadCount,
 };
 
 export default connect(
