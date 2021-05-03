@@ -25,7 +25,7 @@ class CommentEntry extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      revealReply: false,
+      revealReply: true,
       hovered: false,
       collapsed: false,
       score: 0,
@@ -635,9 +635,6 @@ const styles = StyleSheet.create({
     height: "100%",
     boxSizing: "border-box",
     width: "100%",
-    "@media only screen and (max-width: 415px)": {
-      width: "calc(100% - 35px)",
-    },
   },
   highlight: {
     width: "100%",

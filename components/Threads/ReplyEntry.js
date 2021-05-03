@@ -487,9 +487,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     display: "table-cell",
     height: "100%",
-    "@media only screen and (max-width: 415px)": {
-      width: "calc(100% - 35px)",
-    },
   },
   highlight: {
     // display: 'flex',
