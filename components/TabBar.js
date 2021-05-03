@@ -66,7 +66,8 @@ const TabBar = (props) => {
             itemStyle={{ border: "none", highlight: "none", outline: "none" }}
             hideSingleArrow={true}
             onSelect={onSelect}
-            selected={selected}
+            wheel={false}
+            selected={"nav-link-discussions"}
             scrollToSelected={true}
           />
         </ReactPlaceholder>
