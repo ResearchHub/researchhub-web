@@ -6,8 +6,7 @@ import numeral from "numeral";
 import colors from "~/config/themes/colors";
 import { PaperDiscussionIcon } from "~/config/themes/icons";
 
-const PaperDiscussionButton = ({ discussion, paper }) => {
-  const { threadCount } = discussion;
+const PaperDiscussionButton = ({ threadCount, paper }) => {
   const [hover, setHover] = useState(false);
 
   const getCount = () => {
@@ -70,7 +69,7 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  discussion: state.discussion,
+  threadCount: state.paper.threadCount,
 });
 
 export default connect(mapStateToProps)(PaperDiscussionButton);

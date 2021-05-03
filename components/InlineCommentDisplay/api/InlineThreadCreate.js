@@ -7,10 +7,12 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export function saveThreadToBackend({
   auth,
+  threads,
   onSuccess,
   params,
   setMessage,
   showMessage,
+  updateThreads,
 }) {
   fetch(
     API.DISCUSSION({
@@ -39,8 +41,8 @@ export function saveThreadToBackend({
         },
       };
       sendAmpEvent(ampEventPayload);
-
-      onSuccess({ threadID });
+      updateThreads([...threads, resp]);
+      onSuccess(resp);
     })
     .catch((err) => {
       emptyFncWithMsg(err);

@@ -34,6 +34,7 @@ export function inlineThreadFetchTarget({
   onSuccess = emptyFncWithMsg,
   onError = emptyFncWithMsg,
 }) {
+  console.log("paperId", paperId, "targetId", "targetId");
   fetch(
     API.DISCUSSION({
       paperId,
@@ -44,7 +45,8 @@ export function inlineThreadFetchTarget({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((data) => {
+    .then((res) => {
+      const data = formatData(res);
       try {
         onSuccess(data);
       } catch (error) {
@@ -52,4 +54,11 @@ export function inlineThreadFetchTarget({
       }
     })
     .catch(onError);
+}
+
+function formatData(data) {
+  if (results in data) {
+    return results.pop();
+  }
+  return data;
 }

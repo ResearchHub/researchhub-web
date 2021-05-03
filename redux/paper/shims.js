@@ -7,9 +7,6 @@ export const paper = (paper) => {
     tagline: paper.tagline,
     discussion: {
       count: paper.discussion ? paper.discussion.count : null,
-      // threads: paper.discussion
-      //   ? paper.discussion.threads
-      //   : [],
       filter:
         paper.discussion && paper.discussion.filter
           ? paper.discussion.filter
@@ -93,63 +90,13 @@ export const vote = (vote) => {
 };
 
 export function transformThreads(threads) {
-  return threads.map((thread) => {
-    if (thread.transform) {
-      return thread;
-    }
-    if (thread.source === "twitter") {
-      return {
-        id: thread.id,
-        commentCount: thread.comment_count,
-        comments: transformComments(thread.comments),
-        createdBy: thread.external_metadata
-          ? {
-              authorProfile: {
-                first_name: thread.external_metadata.username,
-                last_name: "",
-                profile_image: thread.external_metadata.picture,
-              },
-            }
-          : {},
-        url: thread.external_metadata ? thread.external_metadata.url : "",
-        createdDate: transformDate(thread.created_date),
-        ipAddress: thread.ip_address,
-        isPublic: thread.is_public,
-        isRemoved: thread.is_removed,
-        paper: thread.paper,
-        plainText: thread.plain_text,
-        score: thread.score,
-        source: thread.source,
-        sourceId: thread.source_id,
-        text: thread.text,
-        updatedDate: thread.updated_date,
-        userFlag: thread.user_flag,
-        userVote: thread.user_vote,
-        username: thread.username,
-        wasEdited: thread.wasEdited,
-        transform: true,
-      };
-    }
-    if (thread.created_by) {
-      return {
-        id: thread.id,
-        title: thread.title,
-        text: thread.text,
-        paper: thread.paper,
-        commentCount: thread.comment_count,
-        createdBy: transformUser(thread.created_by),
-        createdDate: transformDate(thread.created_date),
-        isPublic: thread.is_public,
-        score: thread.score,
-        userVote: transformVote(thread.user_vote),
-        comments: transformComments(thread.comments),
-        isRemoved: thread.is_removed,
-        userFlag: thread.user_flag,
-        transform: true,
-      };
-    } else {
-      return thread;
-    }
+  return threads.map((thread, index) => {
+    return {
+      ...thread,
+      comments: transformComments(thread.comments),
+      threadIndex: index,
+      type: "thread",
+    };
   });
 }
 
@@ -171,63 +118,17 @@ function transformEdit(edit) {
 }
 
 export function transformComments(comments) {
-  return comments.map((comment) => {
-    return transformComment(comment);
+  return comments.map((comment, index) => {
+    return transformComment(comment, index);
   });
 }
 
-export function transformComment(comment) {
-  if (comment.transform) {
-    return comment;
-  }
-  if (comment.source === "twitter") {
-    return {
-      id: comment.id,
-      replyCount: comment.reply_count,
-      replies: transformReplies(comment.replies),
-      createdBy: comment.external_metadata
-        ? {
-            authorProfile: {
-              first_name: comment.external_metadata.username,
-              last_name: "",
-              profile_image: comment.external_metadata.picture,
-            },
-          }
-        : {},
-      url: comment.external_metadata ? comment.external_metadata.url : "",
-      createdDate: transformDate(comment.created_date),
-      ipAddress: comment.ip_address,
-      isPublic: comment.is_public,
-      isRemoved: comment.is_removed,
-      paper: comment.paper_id,
-      parent: comment.parent,
-      plainText: comment.plain_text,
-      score: comment.score,
-      source: comment.source,
-      sourceId: comment.source_id,
-      text: comment.text,
-      updatedDate: comment.updated_date,
-      userFlag: comment.user_flag,
-      userVote: comment.user_vote,
-      username: comment.username,
-      wasEdited: comment.wasEdited,
-      transform: true,
-    };
-  }
+export function transformComment(comment, index) {
   return {
-    id: comment.id,
-    text: comment.text,
-    thread: comment.parent,
-    createdBy: transformUser(comment.created_by),
-    createdDate: comment.created_date,
-    score: comment.score,
-    userVote: transformVote(comment.user_vote),
+    ...comment,
     replies: transformReplies(comment.replies),
-    replyCount: comment.reply_count,
-    thread: comment.thread,
-    isRemoved: comment.is_removed,
-    userFlag: comment.user_flag,
-    transform: true,
+    commentIndex: index,
+    type: "comment",
   };
 }
 
@@ -235,8 +136,8 @@ function transformReplies(replies) {
   return (
     replies &&
     replies
-      .map((reply) => {
-        return transformReply(reply);
+      .map((reply, index) => {
+        return transformReply(reply, index);
       })
       .sort((a, b) => {
         if (a.createdDate < b.createdDate) {
@@ -249,17 +150,32 @@ function transformReplies(replies) {
   );
 }
 
-export function transformReply(reply) {
+export function transformReply(reply, index) {
   return {
-    id: reply.id,
-    text: reply.text,
-    comment: reply.parent,
-    createdBy: transformUser(reply.created_by),
-    createdDate: reply.created_date,
-    score: reply.score,
-    userVote: transformVote(reply.user_vote),
-    thread: reply.thread,
-    isRemoved: reply.is_removed,
-    userFlag: reply.user_flag,
+    ...reply,
+    replyIndex: index,
+    type: "reply",
   };
+}
+
+export function getTotalDiscussionCount(threads) {
+  let count = 0;
+
+  threads.forEach((thread) => {
+    !thread["is_removed"] && count++;
+    const comments = thread["comments"];
+    if (comments && comments.length) {
+      comments.forEach((comment) => {
+        !comment["is_removed"] && count++;
+        const replies = comment["replies"];
+        if (replies && replies.length) {
+          replies.forEach((reply) => {
+            !reply["is_removed"] && count++;
+          });
+        }
+      });
+    }
+  });
+
+  return count;
 }

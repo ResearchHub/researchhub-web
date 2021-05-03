@@ -170,9 +170,3 @@ export function setPostVoteSuccess(vote) {
     payload: { donePosting: true, success: true, vote },
   };
 }
-export function setUpdateThreadCount(threadCount) {
-  return {
-    type: types.UPDATE_DISCUSSION_COUNT,
-    payload: { threadCount },
-  };
-}

@@ -1088,7 +1088,6 @@ const mapStateToProps = (state) => ({
   vote: state.vote,
   auth: state.auth,
   user: state.auth.user,
-  paper: state.paper,
 });
 
 const mapDispatchToProps = {
@@ -1097,7 +1096,6 @@ const mapDispatchToProps = {
   setUploadingPaper: AuthActions.setUploadingPaper,
   getLimitations: LimitationsActions.getLimitations,
   updatePaperState: PaperActions.updatePaperState,
-  getThreads: PaperActions.getThreads,
   getBullets: BulletActions.getBullets,
 };
 

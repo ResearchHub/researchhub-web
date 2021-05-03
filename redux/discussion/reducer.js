@@ -25,7 +25,6 @@ const DiscussionReducer = (state = initialState, action) => {
     case types.UPDATE_REPLY_PENDING:
     case types.UPDATE_REPLY_FAILURE:
     case types.UPDATE_REPLY_SUCCESS:
-    case types.UPDATE_DISCUSSION_COUNT:
       return {
         ...state,
         ...action.payload,

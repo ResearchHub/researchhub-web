@@ -31,3 +31,12 @@ export const GET_THREADS = "@@paper/GET_THREADS";
 export const UPDATE_PAPER_STATE = "@@paper/UPDATE_PAPER_STATE";
 
 export const GET_TWITTER_THREADS = "@@paper/GET_TWITTER_THREADS";
+
+export const UPDATE_THREADS = "@@paper/UPDATE_THREADS";
+export const UPDATE_THREAD_STATE = "@@paper/UPDATE_THREAD_STATE";
+export const UPDATE_COMMENT_STATE = "@@paper/UPDATE_COMMENT_STATE";
+export const UPDATE_REPLY_STATE = "@@paper/UPDATE_REPLY_STATE";
+export const PAGINATE_DISCUSSION_BY_TYPE =
+  "@@paper/PAGINATE_DISCUSSION_BY_TYPE";
+
+export const UPDATE_THREAD_COUNT = "@@paper/UPDATE_THREAD";

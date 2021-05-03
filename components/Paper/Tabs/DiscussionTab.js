@@ -43,11 +43,11 @@ const DiscussionTab = (props) => {
   const {
     hostname,
     paper,
-    calculatedCount,
-    discussionRef,
     getThreads,
     paperId,
     updateThreadCount,
+    threads, // paper redux
+    updateThreads, // paper redux action
   } = props;
 
   // TODO: move to config
@@ -68,9 +68,6 @@ const DiscussionTab = (props) => {
 
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
-  const [formattedThreads, setFormattedThreads] = useState(
-    formatThreads(paper.threads, basePath)
-  );
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
   const [expandComments, setExpandComments] = useState(false);
@@ -78,21 +75,17 @@ const DiscussionTab = (props) => {
   const [editorDormant, setEditorDormant] = useState(false);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
   const [mobileView, setMobileView] = useState(false);
-  const [threads, setThreads] = useState([]);
   const [filter, setFilter] = useState("-score");
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [page, setPage] = useState(1);
-  const [showTwitterComments, toggleTwitterComments] = useState(false);
-  const [fetching, setFetching] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
   const [focus, setFocus] = useState(false);
 
+  const doThreadsExist = threads.length > 0;
+
   useEffect(() => {
-    handleWindowResize();
-    window.addEventListener("resize", handleWindowResize);
-    return () => {
-      window.removeEventListener("resize", handleWindowResize);
-    };
-  }, []);
+    fetchDiscussionThreads(false);
+  }, [paperId]);
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
@@ -111,48 +104,29 @@ const DiscussionTab = (props) => {
   }
 
   function renderThreads(threads = []) {
-    if (!Array.isArray(threads)) {
-      threads = [];
-    }
-
-    if (!expandComments) {
-      threads = threads.slice(0, 2);
-    }
-
     return (
       <div className={css(styles.placeholderContainer)}>
         <div className={css(styles.placeholder)}>
           <ReactPlaceholder
-            ready={!fetching}
+            ready={!isFetching}
             showLoadingAnimation
             customPlaceholder={<PaperPlaceholder color="#efefef" />}
           >
-            {threads.length > 0
-              ? threads.map((t, i) => {
-                  return (
-                    <DiscussionEntry
-                      key={`thread-${t.data.id}`}
-                      data={t.data}
-                      hostname={hostname}
-                      hoverEvents={true}
-                      path={t.path}
-                      newCard={transition && i === 0} //conditions when a new card is made
-                      mobileView={mobileView}
-                      paper={props.paperState}
-                    />
-                  );
-                })
-              : showTwitterComments && (
-                  <span className={css(styles.box, styles.emptyStateBox)}>
-                    <span className={css(styles.icon, styles.twitterIcon)}>
-                      {icons.twitter}
-                    </span>
-                    <h2 className={css(styles.noSummaryTitle)}>
-                      There are no tweets {mobileView && "\n"}for this paper
-                      yet.
-                    </h2>
-                  </span>
-                )}
+            {doThreadsExist &&
+              threads.map((thread, i) => {
+                const { id } = thread;
+                return (
+                  <DiscussionEntry
+                    key={`thread-${id}`}
+                    data={thread}
+                    hostname={hostname}
+                    hoverEvents={true}
+                    path={basePath + id}
+                    isNewCard={transition && i === 0} //conditions when a new card is made
+                    paper={props.paperState}
+                  />
+                );
+              })}
           </ReactPlaceholder>
         </div>
       </div>
@@ -174,9 +148,48 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
+  const showStateMessage = (state = "pending") => {
+    const { showMessage, setMessage } = props;
+
+    showMessage({ show: false });
+
+    if (state === "success") {
+      setMessage("Successfully Saved!");
+      return showMessage({ show: true });
+    }
+
+    if (state === "error") {
+      setMessage("Something went wrong");
+      return showMessage({ show: true, error: true });
+    }
+
+    return showMessage({ load: true, show: true });
+  };
+
+  const postAMPEvent = (discussion) => {
+    const { checkUserFirstTime, getUser } = props;
+
+    const AMP_ANALYTIC_PAYLOAD = {
+      event_type: "create_thread",
+      time: +new Date(),
+      user_id: props.auth.user
+        ? props.auth.user.id && props.auth.user.id
+        : null,
+      insert_id: `thread_${discussion.id}`,
+      event_properties: {
+        interaction: "Post Thread",
+        paper: paperId,
+        is_removed: discussion.is_removed,
+      },
+    };
+
+    sendAmpEvent(AMP_ANALYTIC_PAYLOAD);
+    checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal); // check if first
+    getUser(); // get user's updated balance & state
+  };
+
   const save = (text, plain_text) => {
     const { paperId } = router.query;
-    props.showMessage({ load: true, show: true });
 
     const param = {
       text: text,
@@ -186,80 +199,29 @@ const DiscussionTab = (props) => {
 
     const config = API.POST_CONFIG(param);
 
+    showStateMessage("pending");
     return fetch(API.DISCUSSION({ paperId, twitter: null }), config)
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((resp) => {
-        props.showMessage({ show: false });
-        props.setMessage("Successfully Saved!");
-        props.showMessage({ show: true });
-        // update state & redux
-        let newDiscussion = { ...resp };
-        setThreads([newDiscussion, ...threads]);
-        let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-        setFormattedThreads([formattedDiscussion, ...formattedThreads]);
-        cancel();
-
-        // amp events
-        let payload = {
-          event_type: "create_thread",
-          time: +new Date(),
-          user_id: props.auth.user
-            ? props.auth.user.id && props.auth.user.id
-            : null,
-          insert_id: `thread_${resp.id}`,
-          event_properties: {
-            interaction: "Post Thread",
-            paper: paperId,
-            is_removed: resp.is_removed,
-          },
-        };
-        updateThreadCount({});
-        props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-        props.getUser();
-        sendAmpEvent(payload);
+      .then((newDiscussion) => {
+        showStateMessage("success");
+        updateThreads([newDiscussion, ...threads]);
+        postAMPEvent(newDiscussion);
+        cancel(); // closes discussion editor after post
       })
       .catch((err) => {
-        if (err.response.status === 429) {
-          props.showMessage({ show: false });
+        console.log("err", err);
+        const { response } = err;
+        if (response && response.status === 429) {
+          showMessage({ show: false });
           return props.openRecaptchaPrompt(true);
         }
-        props.showMessage({ show: false });
-        props.setMessage("Something went wrong");
-        props.showMessage({ show: true, error: true });
+        showStateMessage("error");
       });
   };
 
-  const createFormattedDiscussion = (newDiscussion) => {
-    if (newDiscussion.key) return;
-    let discussionObject = {
-      data: newDiscussion,
-      key: newDiscussion.id,
-      path: `/paper/${newDiscussion.paper}/discussion/${newDiscussion.id}`,
-    };
-    return discussionObject;
-  };
-
-  const calculateCount = () => {
-    let count = paper.threadCount;
-    return count;
-  };
-
-  const calculateHiddenCount = () => {
-    let hiddenCount = 0;
-    for (const thread of formattedThreads.slice(2)) {
-      hiddenCount +=
-        1 +
-        thread.data.comments.length +
-        thread.data.comments
-          .map((comment) => comment.replies.length)
-          .reduce((a, b) => a + b, 0);
-    }
-    return hiddenCount;
-  };
-
   const handleInput = (id, value) => {
-    let newDiscussion = { ...discussion };
+    const newDiscussion = { ...discussion };
     newDiscussion[id] = value;
     setDiscussion(newDiscussion);
   };
@@ -271,27 +233,22 @@ const DiscussionTab = (props) => {
   };
 
   const fetchDiscussionThreads = async (loadMore = false, isFilter = false) => {
-    if (loading) {
+    if (isLoading) {
       return;
     }
-    if (isFilter) {
-      setFetching(true);
-    }
-    setLoading(true);
+
+    setIsFetching(true);
+    setIsLoading(true);
     const currentPaper = props.paper;
-    const res = await getThreads({
+    await getThreads({
       paperId: paperId,
       paper: currentPaper,
       filter,
       loadMore,
-      twitter: showTwitterComments,
+      twitter: false,
     });
-    const { threads, threadCount } = res.payload;
-    setFetching(false);
-    setLoading(false);
-    setThreads(threads);
-    setFormattedThreads(formatThreads(threads, basePath));
-    updateThreadCount({ count: threadCount });
+    setIsFetching(false);
+    setIsLoading(false);
   };
 
   const renderAddDiscussion = () => {
@@ -299,14 +256,14 @@ const DiscussionTab = (props) => {
       <div
         className={css(
           styles.box,
-          !fetching && threads.length < 1 && styles.emptyStateBox
+          !isFetching && !doThreadsExist && styles.emptyStateBox
         )}
         onClick={() => {
           setShowEditor(true);
           setFocus(true);
         }}
       >
-        {threads.length < 1 && (
+        {!doThreadsExist && (
           <Fragment>
             <span className={css(styles.icon)}>{icons.comments}</span>
             <h2 className={css(styles.noSummaryTitle)}>
@@ -318,18 +275,18 @@ const DiscussionTab = (props) => {
           </Fragment>
         )}
         <PermissionNotificationWrapper
+          modalMessage="create a discussion thread"
+          permissionKey="CreateDiscussionThread"
+          loginRequired={true}
           onClick={() => {
             setShowEditor(true);
             setFocus(true);
           }}
-          modalMessage="create a discussion thread"
-          permissionKey="CreateDiscussionThread"
-          loginRequired={true}
         >
           <button
             className={css(
               styles.addDiscussionButton,
-              threads.length > 0 && styles.plainButton
+              doThreadsExist && styles.plainButton
             )}
           >
             Add Comment
@@ -379,7 +336,7 @@ const DiscussionTab = (props) => {
         save={save}
       />
 
-      {calculatedCount > 0 ? (
+      {doThreadsExist ? (
         <div
           className={css(
             styles.threadsContainer,
@@ -390,69 +347,14 @@ const DiscussionTab = (props) => {
             <h3 className={css(styles.discussionTitle)}>
               Comments
               <span className={css(styles.discussionCount)}>
-                {fetching ? (
-                  <Loader
-                    loading={true}
-                    size={2}
-                    color={"rgba(36, 31, 58, 0.5)"}
-                    type="beat"
-                  />
-                ) : showTwitterComments ? (
-                  calculateCount()
-                ) : (
-                  <DiscussionCount />
-                )}
+                <DiscussionCount isFetching={isFetching} />
               </span>
-              {!showEditor && !showTwitterComments && renderAddDiscussion()}
-              {/* <div className={css(styles.tabRow)}>
-                <div
-                  className={css(
-                    styles.tab,
-                    !showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(false)}
-                >
-                  Comments
-                </div>
-                <div
-                  className={css(
-                    styles.tab,
-                    showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(true)}
-                >
-                  Tweets
-                </div>
-              </div> */}
             </h3>
-            <div className={css(styles.filterContainer)}>
-              <div className={css(styles.filterSelect)}>
-                <FormSelect
-                  id={"thread-filter"}
-                  options={filterOptions}
-                  defaultValue={filterOptions[2]}
-                  placeholder={"Sort Threads"}
-                  onChange={handleFilterChange}
-                  containerStyle={styles.overrideFormSelect}
-                  inputStyle={{
-                    minHeight: "unset",
-                    padding: 0,
-                    backgroundColor: "#FFF",
-                    fontSize: 14,
-                    width: 150,
-                    "@media only screen and (max-width: 415px)": {
-                      fontSize: 12,
-                    },
-                  }}
-                />
-              </div>
-            </div>
+            {!showEditor && renderAddDiscussion()}
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
-              {showEditor &&
-                !showTwitterComments &&
-                renderDiscussionTextEditor()}
+              {showEditor && renderDiscussionTextEditor()}
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
@@ -501,43 +403,12 @@ const DiscussionTab = (props) => {
             <div className={css(styles.discussionTitle)}>
               Comments
               <span className={css(styles.discussionCount)}>
-                {fetching ? (
-                  <Loader
-                    loading={true}
-                    size={2}
-                    color={"rgba(36, 31, 58, 0.5)"}
-                    type="beat"
-                  />
-                ) : (
-                  <DiscussionCount />
-                )}
+                <DiscussionCount isFetching={isFetching} />
               </span>
-              {/* <div className={css(styles.tabRow)}>
-                <div
-                  className={css(
-                    styles.tab,
-                    !showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(false)}
-                >
-                  Comments
-                </div>
-                <div
-                  className={css(
-                    styles.tab,
-                    showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(true)}
-                >
-                  Tweets
-                </div>
-              </div> */}
             </div>
           </div>
-          {showEditor
-            ? !showTwitterComments && renderDiscussionTextEditor()
-            : !showTwitterComments && renderAddDiscussion()}
-          {renderThreads(formattedThreads, hostname)}
+          {showEditor ? renderDiscussionTextEditor() : renderAddDiscussion()}
+          {renderThreads(threads, hostname)}
         </div>
       )}
     </Fragment>
@@ -549,16 +420,6 @@ function formatBasePath(path) {
     return path;
   }
   return path + "/";
-}
-
-function formatThreads(threads, basePath) {
-  return threads.map((thread) => {
-    return {
-      key: thread.id,
-      data: thread,
-      path: basePath + thread.id,
-    };
-  });
 }
 
 var styles = StyleSheet.create({
@@ -1013,6 +874,7 @@ const stylesEditor = StyleSheet.create({
 const mapStateToProps = (state) => ({
   auth: state.auth,
   paper: state.paper,
+  threads: state.paper.threads,
 });
 
 const mapDispatchToProps = {
@@ -1022,7 +884,9 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
+  // TODO: move everything to PaperActions (?)
   getThreads: PaperActions.getThreads,
+  updateThreads: PaperActions.updateThreads,
   updateThreadCount: DiscussionActions.updateThreadCount,
 };
 

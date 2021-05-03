@@ -204,13 +204,17 @@ class ReplyEntry extends React.Component {
     let commentId = comment.id;
 
     postReplyPending();
-    await postReply(paperId, discussionThreadId, commentId, text, plain_text);
-    if (this.props.discussion.donePosting && this.props.discussion.success) {
-      callback && callback();
-      this.props.onReplySubmitCallback();
-    } else {
-      callback && callback();
-    }
+    postReply(paperId, discussionThreadId, commentId, text, plain_text).then(
+      ({ payload }) => {
+        const { donePosting, success, postedReply } = payload;
+        if (donePosting && success) {
+          callback && callback();
+          this.props.onReplySubmitCallback(postedReply);
+        } else {
+          callback && callback();
+        }
+      }
+    );
   };
 
   saveEditsReply = async (text, plain_text, callback) => {

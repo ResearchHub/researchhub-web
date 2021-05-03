@@ -18,8 +18,10 @@ import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
 
 // Redux
-import DiscussionActions from "../../redux/discussion";
+import DiscussionActions, { updateThread } from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
+import { PaperActions } from "~/redux/paper";
+
 import { createUsername } from "../../config/utils";
 import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 
@@ -30,7 +32,6 @@ class DiscussionEntry extends React.Component {
     super(props);
     this.state = {
       revealComment: true,
-      comments: [],
       hovered: false,
       score: 0,
       selectedVoteType: "",
@@ -48,16 +49,14 @@ class DiscussionEntry extends React.Component {
   }
 
   componentDidMount = async () => {
-    const { data, newCard } = this.props;
-    const comments = data.comments || [];
+    const { data, isNewCard } = this.props;
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
       {
-        comments,
         score: data.score,
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
-        highlight: newCard,
+        highlight: isNewCard,
         removed: this.props.data.is_removed,
         canEdit:
           data.source !== "twitter"
@@ -65,11 +64,9 @@ class DiscussionEntry extends React.Component {
             : false,
       },
       () => {
-        newCard &&
+        isNewCard &&
           setTimeout(() => {
-            this.setState({ highlight: false }, () => {
-              this.props.newCard = false;
-            });
+            this.setState({ highlight: false });
           }, 10000);
       }
     );
@@ -78,11 +75,11 @@ class DiscussionEntry extends React.Component {
   componentDidUpdate = async (prevProps, prevState) => {
     this.handleVoteTypeUpdate(prevProps);
     if (prevProps.auth !== this.props.auth) {
-      let { data } = this.props;
+      const { data, auth } = this.props;
       this.setState({
         canEdit:
           data.source !== "twitter"
-            ? this.props.auth.user.id === data.created_by.id
+            ? auth.user.id === data.created_by.id
             : false,
       });
     }
@@ -135,26 +132,37 @@ class DiscussionEntry extends React.Component {
         fetching: true,
       },
       () => {
-        let { data } = this.props;
-        let discussionThreadId = data.id;
-        let paperId = data.paper;
-        let page = this.state.page;
+        const { page, next } = this.state;
+        const { data, updateThreadState } = this.props;
+        const {
+          id: discussionThreadId,
+          paper: paperId,
+          threadIndex,
+          comment_count,
+        } = data;
 
-        fetch(
-          API.THREAD_COMMENT(paperId, discussionThreadId, page),
-          API.GET_CONFIG()
-        )
+        const ENDPOINT = next
+          ? next
+          : API.THREAD_COMMENT(paperId, discussionThreadId, page);
+
+        fetch(ENDPOINT, API.GET_CONFIG())
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
+            const { next, results } = res;
+            const updatedThread = {
+              ...data,
+              comments: [...data.comments, ...results],
+            };
+            updateThreadState(updatedThread, { threadIndex });
             this.setState({
-              comments: [...this.state.comments, ...res.results],
               page: this.state.page + 1,
+              next,
               fetching: false,
             });
           })
           .catch((err) => {
-            let { setMessage, showMessage } = this.props;
+            const { setMessage, showMessage } = this.props;
             setMessage("Hm something went wrong");
             showMessage({ show: true, error: true, clickoff: true });
             this.setState({ fetching: false });
@@ -168,32 +176,35 @@ class DiscussionEntry extends React.Component {
       data,
       postComment,
       postCommentPending,
-      updateThreadCount,
+      updateThreadState,
     } = this.props;
-    const { id: discussionThreadId, paper: paperId } = data;
+    const { id: discussionThreadId, paper: paperId, comment_count } = data;
 
     postCommentPending();
-    await postComment(paperId, discussionThreadId, text, plain_text);
-    if (this.props.discussion.donePosting && this.props.discussion.success) {
-      const newComment = {
-        ...this.props.discussion.postedComment,
-        highlight: true,
-      };
-      const comments = [...this.state.comments, newComment];
-      data.comments = comments;
-      updateThreadCount({});
-      this.setState(
-        {
-          comments,
-          revealComment: true,
-        },
-        () => {
-          callback && callback();
+    postComment(paperId, discussionThreadId, text, plain_text)
+      .then(({ payload }) => {
+        const { donePosting, success, postedComment } = payload;
+        if (donePosting && success) {
+          postedComment["highlight"] = true;
+          updateThreadState({
+            ...data,
+            comments: [...data.comments, postedComment],
+            comment_count: comment_count + 1,
+          });
+          return this.setState(
+            {
+              revealComment: true,
+            },
+            () => {
+              callback && callback();
+            }
+          );
         }
-      );
-    } else {
-      callback && callback();
-    }
+        return callback && callback();
+      })
+      .catch((err) => {
+        callback && callback();
+      });
   };
 
   saveEditsThread = async (text, plain_text, callback) => {
@@ -213,16 +224,22 @@ class DiscussionEntry extends React.Component {
     };
 
     updateThreadPending();
-    await updateThread(paperId, discussionThreadId, body);
-    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
-      setMessage("Post successfully updated!");
-      showMessage({ show: true });
-      callback();
-      this.setState({ editing: false });
-    } else {
-      setMessage("Something went wrong");
-      showMessage({ show: true, error: true });
-    }
+    updateThread(paperId, discussionThreadId, body)
+      .then(({ payload }) => {
+        const { doneUpdating, success } = payload;
+        if (doneUpdating && success) {
+          setMessage("Post successfully updated!");
+          showMessage({ show: true });
+          this.setState({ editing: false });
+        } else {
+          setMessage("Something went wrong");
+          showMessage({ show: true, error: true });
+        }
+      })
+      .catch((err) => {
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
+      });
   };
 
   toggleCommentView = (e) => {
@@ -255,33 +272,31 @@ class DiscussionEntry extends React.Component {
 
   renderComments = () => {
     const { data, hostname, path, paper, mediaOnly } = this.props;
-    const { comments } = this.state;
+    const { comments } = data;
 
-    if (comments.length) {
-      return comments.map((comment, i) => {
-        return (
-          <CommentEntry
-            data={data}
-            hostname={hostname}
-            path={path}
-            key={`comment_${comment.id}`}
-            comment={comment}
-            paper={paper}
-            index={i}
-            mobileView={this.props.mobileView}
-            mediaOnly={mediaOnly}
-          />
-        );
-      });
-    }
+    return comments.map((comment, i) => {
+      return (
+        <CommentEntry
+          data={data}
+          hostname={hostname}
+          path={path}
+          key={`comment_${comment.id}`}
+          comment={comment}
+          paper={paper}
+          mediaOnly={mediaOnly}
+        />
+      );
+    });
   };
 
   renderViewMore = () => {
-    if (this.state.comments.length < this.props.data.commentCount) {
-      let fetching = this.state.fetching;
-      let totalCount = this.props.data.commentCount;
-      let currentCount = this.state.comments.length;
-      let fetchCount =
+    const { data } = this.props;
+    const { comments, comment_count: totalCount } = data;
+    const { fetching } = this.state;
+    const currentCount = comments.length;
+
+    if (currentCount < totalCount) {
+      const fetchCount =
         totalCount - currentCount >= 10 ? 10 : totalCount - currentCount;
       return (
         <div className={css(styles.viewMoreContainer)}>
@@ -301,9 +316,8 @@ class DiscussionEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, postUpvote, postUpvotePending } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    const { data, postUpvote, postUpvotePending } = this.props;
+    const { id: discussionThreadId, paper: paperId } = data;
 
     postUpvotePending();
 
@@ -313,9 +327,8 @@ class DiscussionEntry extends React.Component {
   };
 
   downvote = async () => {
-    let { data, postDownvote, postDownvotePending } = this.props;
-    let discussionThreadId = data.id;
-    let paperId = data.paper;
+    const { data, postDownvote, postDownvotePending } = this.props;
+    const { id: discussionThreadId, paper: paperId } = data;
 
     postDownvotePending();
 
@@ -376,7 +389,9 @@ class DiscussionEntry extends React.Component {
         source,
         text,
         plain_text,
-        comment_count,
+        comment_count: commentCount,
+        created_by,
+        comments,
       },
       hostname,
       paper,
@@ -386,14 +401,10 @@ class DiscussionEntry extends React.Component {
       noVoteLine,
       store: inlineCommentStore,
     } = this.props;
-    const commentCount =
-      this.state.comments.length > comment_count
-        ? this.state.comments.length
-        : comment_count;
     const body = source === "twitter" ? plain_text : text;
     const username = createUsername(data);
     const metaData = {
-      authorId: data.created_by.author_profile.id,
+      authorId: created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
       userFlag: data.user_flag,
@@ -752,7 +763,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   discussion: state.discussion,
-  // paper: state.paper,
+  threads: state.paper.threads,
   vote: state.vote,
   auth: state.auth,
 });
@@ -766,9 +777,11 @@ const mapDispatchToProps = {
   postDownvote: DiscussionActions.postDownvote,
   updateThread: DiscussionActions.updateThread,
   updateThreadPending: DiscussionActions.updateThreadPending,
+  //switch this out
   updateThreadCount: DiscussionActions.updateThreadCount,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
+  updateThreadState: PaperActions.updateThreadState,
 };
 
 export default connect(

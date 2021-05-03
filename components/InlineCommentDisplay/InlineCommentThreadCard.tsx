@@ -21,7 +21,7 @@ import {
   getTargetInlineDraftEntityEl,
 } from "./util/InlineCommentThreadUtil";
 import { INLINE_COMMENT_DISCUSSION_URI_SOUCE } from "./api/InlineCommentAPIConstants";
-import DiscussionActions from "../../redux/discussion";
+import { PaperActions } from "../../redux/paper";
 import { MessageActions } from "../../redux/message";
 import { ModalActions } from "../../redux/modals";
 import { saveThreadToBackend } from "./api/InlineThreadCreate";
@@ -47,7 +47,8 @@ type Props = {
 
 function InlineCommentThreadCard({
   auth,
-  updateThreadCount,
+  threads,
+  updateThreads,
   showMessage,
   setMessage,
   openRecaptchaPrompt: _openRecaptchaPrompt,
@@ -68,7 +69,7 @@ function InlineCommentThreadCard({
   const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
     doesCommentIdExist
   );
-  const [fetchedThreadData, setFecthedThreadData] = useState<any>({
+  const [fetchedThreadData, setFetchedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
   const [isReadyForFetch, setIsReadyForFetch] = useState<boolean>(true);
@@ -94,7 +95,7 @@ function InlineCommentThreadCard({
         paperId: paperID,
         targetId: commentThreadID,
         onSuccess: (result: any): void => {
-          setFecthedThreadData(result);
+          setFetchedThreadData(result);
           setIsCommentDataFetched(true);
           setIsReadyForFetch(true);
           setIsThreadReadOnly(true);
@@ -111,12 +112,12 @@ function InlineCommentThreadCard({
     let { paperId } = router.query;
     saveThreadToBackend({
       auth,
+      threads,
       onSuccess: ({ threadID }: { threadID: ID }): void => {
         const updatedInlineComment = {
           ...unduxInlineComment,
           commentThreadID: threadID,
         };
-        updateThreadCount({ type: "INCREMENT" });
         updateInlineThreadIdInEntity({
           entityKey,
           paperDraftStore,
@@ -137,6 +138,7 @@ function InlineCommentThreadCard({
       },
       setMessage,
       showMessage,
+      updateThreads,
     });
   };
 
@@ -289,15 +291,16 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ auth }: any) => ({
+const mapStateToProps = ({ auth, paper }: any) => ({
   auth,
+  threads: paper.threads,
 });
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
-  updateThreadCount: DiscussionActions.updateThreadCount,
+  updateThreads: PaperActions.updateThreads,
 };
 
 export default connect(

@@ -117,8 +117,10 @@ export const PaperActions = {
     }
 
     return (dispatch, getState) => {
-      let endpoint = loadMore
-        ? paper.nextDiscussion
+      const currPaper = getState().paper;
+      const { nextDiscussion } = currPaper;
+      const API_ENDPOINT = loadMore
+        ? nextDiscussion
         : API.DISCUSSION({
             paperId,
             filter,
@@ -126,26 +128,25 @@ export const PaperActions = {
             progress: false,
             twitter,
           });
-      return fetch(endpoint, API.GET_CONFIG())
+      return fetch(API_ENDPOINT, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          const currPaper = getState().paper;
-          let discussion = { ...currPaper.discussion };
-          let source = twitter ? "twitter" : "researchhub";
-
-          let threads = [...res.results];
-          discussion.source = source;
-          if (loadMore) {
-            threads = [...currPaper.threads, ...res.results];
-          }
+          const discussion = {
+            ...currPaper.discussion,
+            source: twitter ? "twitter" : "researchhub",
+          };
+          const threads = loadMore
+            ? [...currPaper.threads, ...res.results]
+            : res.results;
+          const threadCount = shims.getTotalDiscussionCount(threads);
 
           return dispatch({
             type: types.GET_THREADS,
             payload: {
-              discussion: currPaper.discussion,
-              threads: threads,
-              threadCount: res.count,
+              discussion,
+              threads: shims.transformThreads(threads),
+              threadCount,
               nextDiscussion: res.next,
             },
           });
@@ -403,6 +404,86 @@ export const PaperActions = {
         type: types.UPDATE_PAPER_STATE,
         payload: {
           [key]: value,
+        },
+      });
+    };
+  },
+
+  /**
+   * Updates threads in reducer
+   * @param { Array } newThreads - updated threads state
+   */
+  updateThreads: (newThreads) => {
+    return (dispatch) => {
+      const threads = shims.transformThreads(newThreads);
+      const threadCount = shims.getTotalDiscussionCount(newThreads);
+      return dispatch({
+        type: types.UPDATE_THREADS,
+        payload: {
+          threads,
+          threadCount,
+        },
+      });
+    };
+  },
+  /**
+   * Updates thread in threads list
+   * @param { Object } newThread - updated thread object
+   */
+  updateThreadState: (newThread) => {
+    const { threadIndex } = newThread;
+    return (dispatch, getState) => {
+      const threads = [...getState().paper.threads];
+      threads[threadIndex] = newThread;
+      const threadCount = shims.getTotalDiscussionCount(threads);
+
+      return dispatch({
+        type: types.UPDATE_THREAD_STATE,
+        payload: {
+          threads: shims.transformThreads(threads),
+          threadCount,
+        },
+      });
+    };
+  },
+  /**
+   * Updates comment in coments list
+   * @param {*} newComment
+   * @param {*} indexes
+   */
+  updateCommentState: (newComment, indexes) => {
+    const { threadIndex, commentIndex } = indexes;
+    return (dispatch, getState) => {
+      const threads = [...getState().paper.threads];
+      threads[threadIndex]["comments"][commentIndex] = newComment;
+      const threadCount = shims.getTotalDiscussionCount(threads);
+
+      return dispatch({
+        type: types.UPDATE_COMMENT_STATE,
+        payload: {
+          threads: shims.transformThreads(threads),
+          threadCount,
+        },
+      });
+    };
+  },
+  updateReplyState: (newReply, indexes) => {
+    const { threadIndex, commentIndex } = indexes;
+
+    //TODO: edit, delete, add
+  },
+  paginateDiscussionByType: (nextEndpoint, metadata) => {},
+  updateThreadCount: ({ type = "INCREMENT", count }) => {
+    return (dispatch, getState) => {
+      const increment = type === "INCREMENT" ? 1 : -1;
+      const threadCount = !doesNotExist(count)
+        ? count
+        : getState().paper.threadCount + increment;
+
+      return dispatch({
+        type: types.UPDATE_THREAD_COUNT,
+        payload: {
+          threadCount,
         },
       });
     };
