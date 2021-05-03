@@ -26,7 +26,7 @@ const points = [
     key: 1,
     title: "Collaborative",
     text:
-      "Academic research is too siloed today. ResearchHub encourages academics and \n non- academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
+      "Academic research is too siloed today. ResearchHub encourages academics and \n non-academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
     icon: (
       <span draggable={false} style={{ color: colors.YELLOW(1) }}>
         {icons.starHalf}
@@ -373,6 +373,9 @@ class Index extends React.Component {
                   outline: "none",
                 }}
                 hideSingleArrow={true}
+                wheel={false}
+                selected={"item-1"}
+                scrollToSelected={true}
               />
             </div>
           </div>
