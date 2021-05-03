@@ -101,6 +101,7 @@ function InlineCommentThreadCard({
           setIsThreadReadOnly(true);
         },
         onError: (_): void => {
+          console.log("err", _);
           setIsCommentDataFetched(false);
         },
       });

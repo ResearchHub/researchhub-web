@@ -768,8 +768,7 @@ const mapDispatchToProps = {
   updateCommentPending: DiscussionActions.updateCommentPending,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
-  //TODO: remove
-  updateThreadCount: DiscussionActions.updateThreadCount,
+  updateThreadCount: PaperActions.updateThreadCount,
   updateCommentState: PaperActions.updateCommentState,
 };
 

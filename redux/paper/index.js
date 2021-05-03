@@ -469,10 +469,7 @@ export const PaperActions = {
   },
   updateReplyState: (newReply, indexes) => {
     const { threadIndex, commentIndex } = indexes;
-
-    //TODO: edit, delete, add
   },
-  paginateDiscussionByType: (nextEndpoint, metadata) => {},
   updateThreadCount: ({ type = "INCREMENT", count }) => {
     return (dispatch, getState) => {
       const increment = type === "INCREMENT" ? 1 : -1;

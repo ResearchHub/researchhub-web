@@ -777,11 +777,10 @@ const mapDispatchToProps = {
   postDownvote: DiscussionActions.postDownvote,
   updateThread: DiscussionActions.updateThread,
   updateThreadPending: DiscussionActions.updateThreadPending,
-  //switch this out
-  updateThreadCount: DiscussionActions.updateThreadCount,
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
   updateThreadState: PaperActions.updateThreadState,
+  updateThreadCount: PaperActions.updateThreadCount,
 };
 
 export default connect(

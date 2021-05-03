@@ -37,12 +37,11 @@ const PaperReducer = (state = defaultPaperState, action) => {
     case types.CLEAR_POSTED_PAPER:
     case types.UPDATE_PAPER_STATE:
     case types.GET_TWITTER_THREADS:
-    // NEW ADDITION
     case types.UPDATE_THREADS:
     case types.UPDATE_THREAD_STATE:
     case types.UPDATE_COMMENT_STATE:
     case types.UPDATE_REPLY_STATE:
-    case types.PAGINATE_DISCUSSION_BY_TYPE:
+    case types.UPDATE_THREAD_COUNT:
       return {
         ...state,
         ...action.payload,
