@@ -96,8 +96,8 @@ const Navbar = (props) => {
       key: "explore",
     },
     {
-      label: "Settings",
-      icon: "cog",
+      label: "Account",
+      icon: "portrait",
       key: "settings",
     },
   ];
@@ -124,9 +124,23 @@ const Navbar = (props) => {
         icon: "user",
       },
       {
-        label: "Profile Settings",
+        label: "Settings",
         route: {
           href: "/user/settings",
+        },
+        icon: "cog",
+      },
+      {
+        label: "Refer a Friend",
+        route: {
+          href: "/referral",
+        },
+        icon: "asterisk",
+      },
+      {
+        label: "Logout",
+        onClick: () => {
+          signout({ walletLink });
         },
         icon: "signOut",
       },
