@@ -38,6 +38,8 @@ import { ID } from "../../config/types/root_types";
 
 type Props = {
   auth: any /* redux */;
+  threads: any /* redux */;
+  updateThreads: any;
   showMessage: any /* redux */;
   setMessage: any /* redux function to set a message */;
   openRecaptchaPrompt: any /* redux function to open recaptcha */;
@@ -101,7 +103,6 @@ function InlineCommentThreadCard({
           setIsThreadReadOnly(true);
         },
         onError: (_): void => {
-          console.log("err", _);
           setIsCommentDataFetched(false);
         },
       });
