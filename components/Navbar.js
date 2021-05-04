@@ -92,12 +92,10 @@ const Navbar = (props) => {
   const menuTabsUpper = [
     {
       label: "Explore ResearchHub",
-      icon: "compass",
       key: "explore",
     },
     {
       label: "Account",
-      icon: "portrait",
       key: "settings",
     },
   ];
@@ -280,12 +278,7 @@ const Navbar = (props) => {
         <Collapsible
           trigger={
             <div className={css(styles.trigger)}>
-              <div>
-                <span className={css(styles.tabIcon)} aria-hidden="true">
-                  {icons[tab.icon]}
-                </span>
-                {tab.label}
-              </div>
+              <div>{tab.label}</div>
               <span className={css(styles.chevronDown)}>
                 {icons.chevronDownLeft}
               </span>
@@ -638,10 +631,6 @@ const styles = StyleSheet.create({
   },
   loginContainer: {
     width: "100%",
-  },
-  tabIcon: {
-    marginRight: 8,
-    color: "#787c7e",
   },
   googleLoginButton: {
     margin: 0,
