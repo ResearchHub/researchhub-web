@@ -903,7 +903,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "space-between",
   },
-  metaDataPreview: {},
+  metaDataPreview: {
+    "@media only screen and (min-width: 768px)": {
+      marginRight: 8,
+    },
+  },
   hide: {
     display: "none",
   },
