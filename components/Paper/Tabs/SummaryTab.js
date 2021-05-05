@@ -736,6 +736,7 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     fontFamily: "CharterBT",
     whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",
