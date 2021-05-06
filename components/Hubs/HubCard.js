@@ -293,6 +293,9 @@ class HubCard extends React.Component {
               </div>
             </div>
           </div>
+          <div className={css(styles.hubTitleMobile)}>
+            <div className={css(styles.hubNameMobile)}>{hub.name}</div>
+          </div>
           <Link
             href="/hubs/[slug]"
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
@@ -331,6 +334,14 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       zoom: 0.7,
     },
+    "@media only screen and (max-width: 767px)": {
+      width: "185px",
+      height: "150px",
+      marginTop: 12,
+      marginBottom: 12,
+      marginLeft: 9,
+      marginRight: 9,
+    },
   },
   hubCard: {
     fontSize: "16px",
@@ -338,6 +349,9 @@ const styles = StyleSheet.create({
     borderRadius: "8px",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
     marginBottom: 50,
+    "@media only screen and (max-width: 767px)": {
+      boxShadow: "none",
+    },
   },
   removed: {
     display: "none",
@@ -348,16 +362,49 @@ const styles = StyleSheet.create({
     height: "128px",
     objectFit: "cover",
     pointerEvents: "none",
+    "@media only screen and (max-width: 767px)": {
+      borderRadius: "8px",
+      width: "185px",
+      height: "150px",
+    },
   },
   hubInfo: {
     boxSizing: "border-box",
     padding: "0 15px",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  hubTitleMobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "block",
+      position: "relative",
+      bottom: 74,
+      height: "70px",
+      borderRadius: "0 0 8px 8px",
+      background:
+        "linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.5))",
+    },
+  },
+  hubNameMobile: {
+    position: "relative",
+    top: 44,
+    left: 10,
+    color: "#fff",
+    fontSize: 15,
+    textTransform: "capitalize",
+    fontWeight: 500,
+    wordBreak: "break-word",
   },
   hubTitle: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "10px 0 0 0",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   hubName: {
     fontSize: 18,
