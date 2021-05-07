@@ -325,22 +325,13 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    "@media only screen and (max-width: 415px)": {
-      zoom: 0.9,
-    },
-    "@media only screen and (max-width: 376px)": {
-      zoom: 0.8,
-    },
-    "@media only screen and (max-width: 321px)": {
-      zoom: 0.7,
-    },
     "@media only screen and (max-width: 767px)": {
-      width: "185px",
-      height: "150px",
-      marginTop: 12,
-      marginBottom: 12,
-      marginLeft: 9,
-      marginRight: 9,
+      width: "42.5vmin",
+      height: "42.5vmin",
+      marginTop: "2.5vmin",
+      marginBottom: "2.5vmin",
+      marginLeft: "2.5vmin",
+      marginRight: "2.5vmin",
     },
   },
   hubCard: {
@@ -348,8 +339,9 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     borderRadius: "8px",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
-    marginBottom: 50,
     "@media only screen and (max-width: 767px)": {
+      width: "42.5vmin",
+      height: "42.5vmin",
       boxShadow: "none",
     },
   },
@@ -364,8 +356,8 @@ const styles = StyleSheet.create({
     pointerEvents: "none",
     "@media only screen and (max-width: 767px)": {
       borderRadius: "8px",
-      width: "185px",
-      height: "150px",
+      width: "42.5vmin",
+      height: "42.5vmin",
     },
   },
   hubInfo: {
@@ -380,19 +372,20 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "block",
       position: "relative",
-      bottom: 74,
-      height: "70px",
+      bottom: 104,
+      height: "100px",
       borderRadius: "0 0 8px 8px",
       background:
         "linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.5))",
     },
   },
   hubNameMobile: {
-    position: "relative",
-    top: 44,
-    left: 10,
+    position: "absolute",
+    bottom: "1.5vmin",
+    left: "2vmin",
+    width: "38vmin",
     color: "#fff",
-    fontSize: 15,
+    fontSize: "3.5vw",
     textTransform: "capitalize",
     fontWeight: 500,
     wordBreak: "break-word",
