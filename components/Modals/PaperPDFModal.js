@@ -15,11 +15,7 @@ const PaperPDFModal = (props) => {
   const { paper, paperId, modals, openPaperPDFModal } = props;
   const [paperPDF, setPaperPDF] = useState(getPaperPDF(paper));
 
-  useEffect(() => setPaperPDF(getPaperPDF(paper)), [
-    paper,
-    paperId,
-    modals.openPaperPDFModal,
-  ]);
+  useEffect(() => setPaperPDF(getPaperPDF(paper)), [paper, paperId]);
 
   function getPaperPDF(paper) {
     const { file, pdf_url } = paper;
