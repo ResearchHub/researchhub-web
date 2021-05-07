@@ -324,9 +324,10 @@ const styles = StyleSheet.create({
     justifyContent: "left",
     paddingLeft: 10,
     paddingRight: 10,
-    marginBottom: 40,
+    marginBottom: 30,
     "@media only screen and (max-width: 767px)": {
-      justifyContent: "center",
+      paddingLeft: 0,
+      paddingRight: 0,
     },
   },
   trendingIcon: {
