@@ -12,17 +12,8 @@ import { ModalActions } from "~/redux/modals";
 import { convertHttpToHttps } from "~/config/utils";
 
 const PaperPDFModal = (props) => {
-  const { paper, paperId, modals, openPaperPDFModal } = props;
-  const [paperPDF, setPaperPDF] = useState(getPaperPDF(paper));
-
-  useEffect(() => setPaperPDF(getPaperPDF(paper)), [paper, paperId]);
-
-  function getPaperPDF(paper) {
-    const { file, pdf_url } = paper;
-    const paperFile = file || pdf_url;
-
-    return paperFile ? convertHttpToHttps(paperFile) : null;
-  }
+  const { paper, modals, openPaperPDFModal } = props;
+  const { file, pdf_url } = paper;
 
   function closeModal() {
     /**
@@ -48,7 +39,12 @@ const PaperPDFModal = (props) => {
           onClick={closeModal}
           alt="Close Button"
         />
-        <iframe src={paperPDF} height={"95%"} width={"100%"} frameBorder="0" />
+        <iframe
+          src={convertHttpToHttps(file || pdf_url)}
+          height={"95%"}
+          width={"100%"}
+          frameBorder="0"
+        />
       </div>
     </BaseModal>
   );

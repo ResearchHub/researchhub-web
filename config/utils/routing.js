@@ -49,7 +49,7 @@ export function absoluteUrl(req, setLocalhost) {
   };
 }
 
-export function convertHttpToHttps(url) {
+export function convertHttpToHttps(url = "") {
   return url.replace(/^http:\/\//i, "https://");
 }
 
