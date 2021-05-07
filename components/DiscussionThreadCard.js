@@ -344,6 +344,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 18,
     whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
     color: "rgb(78, 76, 95)",
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
