@@ -316,9 +316,7 @@ export const ModalActions = {
     };
   },
   openPaperPDFModal: (openModal) => {
-    return (dispatch, getState) => {
-      const modals = getState().modals;
-
+    return (dispatch) => {
       return dispatch({
         type: ModalConstants.PAPER_PDF_MODAL_TOGGLE,
         payload: {

@@ -21,12 +21,14 @@ const PaperPDFModal = (props) => {
     const { file, pdf_url } = paper;
     const paperFile = file || pdf_url;
 
-    return paperFile ? convertHttpToHttps(paperFile) : closeModal();
+    return paperFile ? convertHttpToHttps(paperFile) : null;
   }
 
   function closeModal() {
-    document.body.style.overflow = "scroll";
-    return openPaperPDFModal(false);
+    if (process.browser) {
+      document.body.style.overflow = "scroll";
+    }
+    return openPaperPDFModal && openPaperPDFModal(false);
   }
 
   return (
