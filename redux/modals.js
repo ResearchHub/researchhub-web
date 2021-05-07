@@ -316,10 +316,8 @@ export const ModalActions = {
     };
   },
   openPaperPDFModal: (openModal) => {
-    console.log("redux", openModal);
     return (dispatch, getState) => {
       const modals = getState().modals;
-      console.log("modals", modals);
 
       return dispatch({
         type: ModalConstants.PAPER_PDF_MODAL_TOGGLE,
