@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
-import FsLightbox from "fslightbox-react";
 
 // Component
 import ColumnContainer from "./ColumnContainer";
-import Button from "~/components/Form/Button";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
+
+// Redux
+import { ModalActions } from "~/redux/modals";
 
 // Config
 import { fetchPaperFigures } from "~/config/fetch";
 
-const PaperPreview = (props) => {
-  const { paperId, columnOverrideStyles } = props;
-  const [slideIndex, setSlideIndex] = useState(1);
+const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
+  const dispatch = useDispatch();
   const [figureUrls, setFigureUrls] = useState([]);
-  const [lightbox, setLightbox] = useState(false);
   const [fetching, setFetching] = useState(true);
 
   useEffect(() => {
@@ -33,8 +33,9 @@ const PaperPreview = (props) => {
     }
   };
 
-  const toggleLightbox = () => {
-    setLightbox(!lightbox);
+  const openPaperPDFModal = (e) => {
+    e && e.stopPropagation();
+    return dispatch(ModalActions.openPaperPDFModal(true));
   };
 
   return (
@@ -49,28 +50,15 @@ const PaperPreview = (props) => {
         ready={!fetching}
         showLoadingAnimation
         customPlaceholder={
-          <PreviewPlaceholder
-            previewStyles={props.previewStyles}
-            color="#efefef"
-          />
+          <PreviewPlaceholder previewStyles={previewStyles} color="#efefef" />
         }
       >
-        {figureUrls.length > 0 ? (
-          <img
-            src={figureUrls[0]}
-            onClick={toggleLightbox}
-            className={css(styles.preview, props.previewStyles)}
-            property="image"
-          />
-        ) : null}
-        {figureUrls.length > 0 ? (
-          <FsLightbox
-            toggler={lightbox}
-            type="image"
-            sources={figureUrls}
-            slide={slideIndex}
-          />
-        ) : null}
+        <img
+          src={figureUrls[0]}
+          onClick={openPaperPDFModal}
+          className={css(styles.preview, previewStyles)}
+          property="image"
+        />
       </ReactPlaceholder>
     </ColumnContainer>
   );

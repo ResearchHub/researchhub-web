@@ -25,6 +25,7 @@ import PaperBanner from "~/components/Paper/PaperBanner.js";
 import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
+import PaperPDFModal from "~/components/Modals/PaperPDFModal";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -434,6 +435,7 @@ const Paper = (props) => {
         updatePaperState={updatePaperState}
         updateSummary={setSummary}
       />
+      <PaperPDFModal paperId={paperId} paper={paper} />
       <Head
         title={paper.title}
         description={formatDescription()}
