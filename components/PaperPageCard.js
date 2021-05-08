@@ -241,7 +241,7 @@ class PaperPageCard extends React.Component {
             <PaperMetadata
               key={`metadata-${i}`}
               {...props}
-              containerStyles={i === 1 && styles.marginLeft}
+              containerStyles={i === 0 && styles.marginRight}
             />
           ))}
         </div>
@@ -711,11 +711,13 @@ class PaperPageCard extends React.Component {
 const styles = StyleSheet.create({
   mainContainer: {
     display: "flex",
+    width: "100%",
   },
   main: {
     display: "flex",
     flexDirection: "column",
     marginRight: 16,
+    width: "100%",
   },
   previewStyles: {
     width: "100%",
@@ -1092,7 +1094,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
-    "@media only screen and (max-width: 767px)": {
+    flexWrap: "wrap",
+    "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
     },
   },
@@ -1104,10 +1107,10 @@ const styles = StyleSheet.create({
       flexDirection: "column-reverse",
     },
   },
-  marginLeft: {
-    marginLeft: 40,
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: 0,
+  marginRight: {
+    marginRight: 40,
+    "@media only screen and (max-width: 1023px)": {
+      marginRight: 0,
     },
   },
   rightColumn: {
