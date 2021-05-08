@@ -43,9 +43,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     marginRight: 15,
-    "@media only screen and (max-width: 768px)": {
+    "@media only screen and (max-width: 1023px)": {
       width: 90,
-      minWidth: 90,
     },
   },
   label: {
