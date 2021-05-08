@@ -396,7 +396,9 @@ class PaperPageCard extends React.Component {
           }
 
           return (
-            <span className={css(styles.marginRight)}>{action.button}</span>
+            <span className={css(styles.actionButtonMargin)}>
+              {action.button}
+            </span>
           );
         })}
       </div>
@@ -1060,7 +1062,7 @@ const styles = StyleSheet.create({
       color: colors.RED(),
     },
   },
-  marginRight: {
+  actionButtonMargin: {
     marginRight: 10,
   },
   moderatorIcon: {
