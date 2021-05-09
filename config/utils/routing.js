@@ -50,7 +50,7 @@ export function absoluteUrl(req, setLocalhost) {
 }
 
 export function convertHttpToHttps(url = "") {
-  return url.replace(/^http:\/\//i, "https://");
+  return url ? url.replace(/^http:\/\//i, "https://") : "";
 }
 
 export function openExternalLink(url) {
