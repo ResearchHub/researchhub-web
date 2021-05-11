@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
     },
   },
   hubCard: {
+    position: "relative",
     fontSize: "16px",
     color: "#241F3A",
     borderRadius: "8px",
