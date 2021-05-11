@@ -430,7 +430,8 @@ const Navbar = (props) => {
       <div
         className={css(
           styles.navbarContainer,
-          router.route === "/paper/[paperId]/[paperName]" &&
+          (router.route === "/paper/[paperId]/[paperName]" ||
+            router.route === "/hubs") &&
             styles.unstickyNavbar
         )}
       >
