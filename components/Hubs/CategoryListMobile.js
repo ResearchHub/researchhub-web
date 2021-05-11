@@ -31,7 +31,7 @@ const Tab = ({ text, selected }) => {
   );
 };
 
-export const Menu = (list, selected) =>
+export const Menu = (list, selected, setActiveCategory) =>
   list.map((el) => {
     const name = el.category_name;
     return <Tab text={name} key={name} selected={selected} />;
@@ -71,12 +71,36 @@ class CategoryListMobile extends React.Component {
   };
 
   onSelect = (key) => {
-    this.setState({ selected: key });
+    this.props.setActiveCategory(key);
+    setTimeout(() => {
+      this.props.activeCategory !== key && this.props.setActiveCategory(key);
+      this._menu && this._menu.scrollTo(key);
+    }, 20);
   };
 
+  componentDidUpdate(prevProps) {
+    if (this.props.activeCategory !== prevProps.activeCategory) {
+      const {
+        categories,
+        selected,
+        activeCategory,
+        setActiveCategory,
+      } = this.props;
+      if (categories[activeCategory]) {
+        let key = categories[activeCategory].category_name;
+        this._menu && this._menu.scrollTo(key);
+      }
+    }
+  }
+
   render() {
-    const { categories, selected } = this.props;
-    let menu = Menu(categories, selected);
+    const {
+      categories,
+      selected,
+      activeCategory,
+      setActiveCategory,
+    } = this.props;
+    let menu = Menu(categories, selected, setActiveCategory);
     return (
       <div className={css(styles.container)}>
         <ScrollMenu
@@ -92,8 +116,7 @@ class CategoryListMobile extends React.Component {
           hideSingleArrow={true}
           onSelect={this.onSelect}
           wheel={false}
-          selected={"Trending"}
-          scrollToSelected={true}
+          ref={(el) => (this._menu = el)}
         />
       </div>
     );
