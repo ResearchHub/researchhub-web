@@ -11,6 +11,7 @@ import Message from "~/components/Loader/Message";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
+import CategoryListMobile from "~/components/Hubs/CategoryListMobile";
 import HubCard from "~/components/Hubs/HubCard";
 
 // Config
@@ -235,6 +236,13 @@ class Index extends React.Component {
               <span className={css(styles.title)}>Hubs</span>
               {this.renderAddHubButton()}
             </div>
+            <div className={css(styles.stickyComponent)}>
+              <CategoryListMobile
+                categories={categories}
+                activeCategory={activeCategory}
+                setActiveCategory={this.setActiveCategory}
+              />
+            </div>
             <div
               className={css(
                 styles.hubsContainer,
@@ -287,11 +295,28 @@ const styles = StyleSheet.create({
     maxWidth: 265,
     width: "18%",
     position: "sticky",
-    top: 79,
+    top: -15,
     minHeight: "100vh",
     marginLeft: 20,
     "@media only screen and (max-width: 767px)": {
       display: "none",
+    },
+  },
+  stickyComponent: {
+    display: "none",
+    height: 0,
+    marginTop: -25,
+    marginBottom: 20,
+    "@media only screen and (max-width: 767px)": {
+      // top: 65,
+      top: -2,
+      position: "sticky",
+      backgroundColor: "#FFF",
+      zIndex: 3,
+      display: "flex",
+      height: "unset",
+      width: "100vw",
+      boxSizing: "border-box",
     },
   },
   content: {
@@ -314,8 +339,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     cursor: "default",
     userSelect: "none",
-    paddingTop: 90,
-    marginTop: -90,
+    paddingTop: 18,
+    marginTop: -18,
+    "@media only screen and (max-width: 767px)": {
+      paddingTop: 60,
+      marginTop: -60,
+    },
   },
   grid: {
     display: "flex",
