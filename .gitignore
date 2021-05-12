@@ -13,8 +13,11 @@
 /dist
 /.next
 
-#deploy scripts
+# deploy & configs
+/config/constants.js
 /scripts/deploy
+Dockerrun.aws.json.production
+Dockerrun.aws.json.staging
 
 # misc
 .DS_Store
