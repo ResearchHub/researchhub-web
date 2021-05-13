@@ -31,6 +31,7 @@ class Index extends React.Component {
       hubsByCategory: {},
       finishedLoading: false,
       activeCategory: 0,
+      clickedTab: false,
       scrollDirection: "down",
     };
     this.state = {
@@ -56,6 +57,7 @@ class Index extends React.Component {
         hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
         finishedLoading: true,
         activeCategory: 0,
+        clickedTab: false,
       });
       showMessage({ show: false });
     }
@@ -76,6 +78,10 @@ class Index extends React.Component {
       );
     }
   }
+
+  setClickedTab = (clickedTab) => {
+    this.setState({ clickedTab });
+  };
 
   setActiveCategory = (activeCategory, onLeave) => {
     const { categories, finishedLoading } = this.state;
@@ -211,7 +217,12 @@ class Index extends React.Component {
   };
 
   render() {
-    const { finishedLoading, categories, activeCategory } = this.state;
+    const {
+      finishedLoading,
+      categories,
+      activeCategory,
+      clickedTab,
+    } = this.state;
 
     return (
       <div className={css(styles.row, styles.body)}>
@@ -241,6 +252,8 @@ class Index extends React.Component {
                 categories={categories}
                 activeCategory={activeCategory}
                 setActiveCategory={this.setActiveCategory}
+                clickedTab={clickedTab}
+                setClickedTab={this.setClickedTab}
               />
             </div>
             <div

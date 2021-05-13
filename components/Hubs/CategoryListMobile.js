@@ -10,34 +10,48 @@ import ScrollMenu from "react-horizontal-scrolling-menu";
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 
-const Tab = ({ text, selected }) => {
-  let isSelected = false;
+const Tab = ({ text, index, activeCategory }) => {
+  let isActive = false;
   let classNames = [styles.tab];
   let slug = text.toLowerCase().replace(/\s/g, "-");
 
-  if (selected) {
-    isSelected = true;
-    classNames.push(styles.selected);
+  if (index == activeCategory) {
+    isActive = true;
+    classNames.push(styles.active);
   }
 
   return (
     <Link href={`#${slug}`} scroll={false}>
       <div
-        className={css(classNames) + ` menu-item ${isSelected ? "active" : ""}`}
+        className={css(classNames) + ` menu-item ${isActive ? "active" : ""}`}
       >
-        <div className={css(styles.link)}>{text}</div>
+        <div className={css(styles.link)}>
+          {text === "Trending" ? (
+            <span>
+              {text}
+              <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+            </span>
+          ) : (
+            text
+          )}
+        </div>
       </div>
     </Link>
   );
 };
 
-export const Menu = (list, selected, setActiveCategory) =>
-  list.map((el) => {
+export const Menu = (list, activeCategory) =>
+  list.map((el, index) => {
     const name = el.category_name;
-    return <Tab text={name} key={name} selected={selected} />;
+    return (
+      <Tab
+        key={index}
+        text={name}
+        index={index}
+        activeCategory={activeCategory}
+      />
+    );
   });
-
-const selected = "Trending";
 
 export const NavigationArrow = ({ icon, direction, customStyles }) => {
   const classNames = [styles.arrowContainer];
@@ -66,41 +80,27 @@ class CategoryListMobile extends React.Component {
     };
   }
 
-  state = {
-    selected,
-  };
-
   onSelect = (key) => {
-    this.props.setActiveCategory(key);
+    this._menu && this._menu.scrollTo(key);
+    this.props.setClickedTab(true);
     setTimeout(() => {
-      this.props.activeCategory !== key && this.props.setActiveCategory(key);
-      this._menu && this._menu.scrollTo(key);
+      this.props.setClickedTab(false);
+      this.props.setActiveCategory(key);
     }, 20);
   };
 
   componentDidUpdate(prevProps) {
     if (this.props.activeCategory !== prevProps.activeCategory) {
-      const {
-        categories,
-        selected,
-        activeCategory,
-        setActiveCategory,
-      } = this.props;
-      if (categories[activeCategory]) {
-        let key = categories[activeCategory].category_name;
-        this._menu && this._menu.scrollTo(key);
+      const { categories, activeCategory, clickedTab } = this.props;
+      if (categories[activeCategory] && !clickedTab) {
+        this._menu && this._menu.scrollTo(activeCategory.toString());
       }
     }
   }
 
   render() {
-    const {
-      categories,
-      selected,
-      activeCategory,
-      setActiveCategory,
-    } = this.props;
-    let menu = Menu(categories, selected, setActiveCategory);
+    const { categories, activeCategory, setActiveCategory } = this.props;
+    let menu = Menu(categories, activeCategory);
     return (
       <div className={css(styles.container)}>
         <ScrollMenu
@@ -167,10 +167,6 @@ const styles = StyleSheet.create({
     color: "rgba(36, 31, 58, .5)",
     fontWeight: 500,
     padding: "1rem",
-    ":hover": {
-      color: colors.PURPLE(1),
-      cursor: "pointer",
-    },
     "@media only screen and (min-width: 768px)": {
       marginRight: 28,
     },
@@ -179,17 +175,20 @@ const styles = StyleSheet.create({
     textAlign: "center",
     whiteSpace: "pre",
     textDecoration: "none",
-    textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
   },
-  selected: {
+  active: {
     color: colors.PURPLE(1),
     borderBottom: "solid 3px",
     borderColor: colors.PURPLE(1),
+  },
+  trendingIcon: {
+    color: "#FF6D00",
+    marginLeft: 5,
   },
 });
 
