@@ -1,8 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useCallback, useState } from "react";
+import React, { Fragment, ReactElement, useCallback, useState } from "react";
 import ResearchHubPopover from "../../../../components/ResearchHubPopover";
 import icons from "../../../../config/themes/icons";
-import { AuthorClaimData } from "AuthorClaimModal";
+import AuthorClaimModal, { AuthorClaimDataProps } from "./AuthorClaimModal";
+import colors from "../../../../config/themes/colors";
 
 type Props = {
   auth: any;
@@ -14,63 +15,68 @@ export default function ClaimAuthorPopoverLabel({
   auth,
   author,
   user,
-}: Props): ReactElement<"div"> {
+}: Props): ReactElement<typeof Fragment> {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
-  const [claimModalState, setClaimModalState] = useState<{
-    data: AuthorClaimData;
-    isOpen: boolean;
-  }>({ isOpen: false, data: null });
+  const [claimModalState, setClaimModalState] = useState<AuthorClaimDataProps>({
+    auth,
+    author,
+    isOpen: false,
+    user,
+  });
   const { first_name: authorFirstName, last_name: authorLastName } = author;
 
   const handleClaimButtonClick = useCallback((): void => {
-    setClaimModalState({ data: { auth, author, user }, isOpen: true });
+    setClaimModalState({ auth, author, isOpen: true, user });
     setIsPopoverOpen(false);
   }, [setIsPopoverOpen]);
 
   return (
-    <div className={css(styles.claimAuthorPopoverLabel)}>
-      <span className={css(styles.popoverLabelText)}>
-        {"Unclaimed profile"}
-      </span>
-      <ResearchHubPopover
-        isOpen={isPopoverOpen}
-        popoverContent={
-          <div className={css(styles.popoverBodyContent)}>
-            <div className={css(styles.bodyTextWrap)}>
-              <div className={css(styles.bodyHeader)}>
-                {`Are you ${authorFirstName} ${authorLastName}? `}
-                <img
-                  className={css(styles.headerCoinIcon)}
-                  src={"/static/icons/coin-filled.png"}
-                  alt="RSC Coin"
-                />
+    <Fragment>
+      <AuthorClaimModal {...claimModalState} />
+      <div className={css(styles.claimAuthorPopoverLabel)}>
+        <span className={css(styles.popoverLabelText)}>
+          {"Unclaimed profile"}
+        </span>
+        <ResearchHubPopover
+          isOpen={isPopoverOpen}
+          popoverContent={
+            <div className={css(styles.popoverBodyContent)}>
+              <div className={css(styles.bodyTextWrap)}>
+                <div className={css(styles.bodyHeader)}>
+                  {`Are you ${authorFirstName} ${authorLastName}? `}
+                  <img
+                    className={css(styles.headerCoinIcon)}
+                    src={"/static/icons/coin-filled.png"}
+                    alt="RSC Coin"
+                  />
+                </div>
+                <div className={css(styles.bodySubheader)}>
+                  {"Claim your profile and receive 1000 RSC"}
+                </div>
               </div>
-              <div className={css(styles.bodySubheader)}>
-                {"Claim your profile and receive 1000 RSC"}
+              <div
+                className={css(styles.claimProfileButton)}
+                role="button"
+                onClick={handleClaimButtonClick}
+              >
+                {"Claim Profile"}
               </div>
             </div>
-            <div
-              className={css(styles.claimProfileButton)}
-              role="button"
-              onClick={handleClaimButtonClick}
+          }
+          setIsPopoverOpen={setIsPopoverOpen}
+          targetContent={
+            <span
+              className={css(styles.popoverIcon)}
+              onClick={() => {
+                setIsPopoverOpen(!isPopoverOpen);
+              }}
             >
-              {"Claim Profile"}
-            </div>
-          </div>
-        }
-        setIsPopoverOpen={setIsPopoverOpen}
-        targetContent={
-          <span
-            className={css(styles.popoverIcon)}
-            onClick={() => {
-              setIsPopoverOpen(!isPopoverOpen);
-            }}
-          >
-            {icons.exclamationCircle}
-          </span>
-        }
-      />
-    </div>
+              {icons.exclamationCircle}
+            </span>
+          }
+        />
+      </div>
+    </Fragment>
   );
 }
 
@@ -113,6 +119,9 @@ const styles = StyleSheet.create({
     minHeight: 30,
     justifyContent: "center",
     width: 286,
+    ":hover": {
+      backgroundColor: colors.NAVY(1),
+    },
   },
   headerCoinIcon: {
     height: 18,
