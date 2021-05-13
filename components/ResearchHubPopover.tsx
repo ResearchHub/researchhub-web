@@ -21,7 +21,7 @@ export default function ResearchHubPopover({
   return (
     <Popover
       content={({ position, childRect, popoverRect }) => (
-        <ArrowContainer
+        <ArrowContainer // if you'd like an arrow, you can import the ArrowContainer!
           arrowClassName="popover-arrow"
           arrowColor={"#fff"}
           arrowSize={10}
