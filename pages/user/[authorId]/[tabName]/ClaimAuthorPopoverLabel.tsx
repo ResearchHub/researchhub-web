@@ -1,7 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useCallback, useState } from "react";
 import ResearchHubPopover from "../../../../components/ResearchHubPopover";
 import icons from "../../../../config/themes/icons";
+import { AuthorClaimData } from "AuthorClaimModal";
 
 type Props = {
   auth: any;
@@ -10,10 +11,22 @@ type Props = {
 };
 
 export default function ClaimAuthorPopoverLabel({
+  auth,
   author,
+  user,
 }: Props): ReactElement<"div"> {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
+  const [claimModalState, setClaimModalState] = useState<{
+    data: AuthorClaimData;
+    isOpen: boolean;
+  }>({ isOpen: false, data: null });
   const { first_name: authorFirstName, last_name: authorLastName } = author;
+
+  const handleClaimButtonClick = useCallback((): void => {
+    setClaimModalState({ data: { auth, author, user }, isOpen: true });
+    setIsPopoverOpen(false);
+  }, [setIsPopoverOpen]);
+
   return (
     <div className={css(styles.claimAuthorPopoverLabel)}>
       <span className={css(styles.popoverLabelText)}>
@@ -36,7 +49,11 @@ export default function ClaimAuthorPopoverLabel({
                 {"Claim your profile and receive 1000 RSC"}
               </div>
             </div>
-            <div className={css(styles.claimProfileButton)} role="none">
+            <div
+              className={css(styles.claimProfileButton)}
+              role="button"
+              onClick={handleClaimButtonClick}
+            >
               {"Claim Profile"}
             </div>
           </div>
