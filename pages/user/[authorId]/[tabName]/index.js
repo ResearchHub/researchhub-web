@@ -1,6 +1,7 @@
+import { AUTHOR_USER_STATUS } from "./AuthorUserConstants";
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, useRef, Fragment } from "react";
+import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
 
@@ -15,46 +16,94 @@ import { MessageActions } from "~/redux/message";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import AvatarUpload from "~/components/AvatarUpload";
+import Button from "~/components/Form/Button";
+import ClaimAuthorPopoverLabel from "./ClaimAuthorPopoverLabel";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
+import Loader from "~/components/Loader/Loader";
+import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
 import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
-import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
-import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
+import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
-import UserFollowButton from "~/components/Author/Tabs/UserFollowButton";
-import Button from "~/components/Form/Button";
-import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import Loader from "~/components/Loader/Loader";
+import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
+import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
-import { followUser } from "~/config/fetch";
+import {
+  filterNull,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
+
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import UserSummaries from "~/components/Author/Tabs/UserSummaries";
-import UserKeyTakeaways from "~/components/Author/Tabs/UserKeyTakeaways";
 
-const AuthorPage = (props) => {
+const SECTIONS = {
+  name: "name",
+  description: "description",
+  facebook: "facebook",
+  linkedin: "linkedin",
+  twitter: "twitter",
+  picture: "picture",
+};
+
+const getTabs = (author, transactions) => [
+  {
+    href: "discussions",
+    label: "discussions",
+    name: "Discussions",
+    showCount: true,
+    count: () => author.userDiscussions.count,
+  },
+  {
+    href: "authored-papers",
+    label: "authored papers",
+    name: "Authored Papers",
+    showCount: true,
+    count: () => author.authoredPapers.count,
+  },
+  {
+    href: "contributions",
+    label: "paper submissions",
+    name: "Paper Submissions",
+    showCount: true,
+    count: () => author.userContributions.count,
+  },
+  {
+    href: "transactions",
+    label: "transactions",
+    name: "Transactions",
+    showCount: true,
+    count: () => transactions.count,
+  },
+  {
+    href: "boosts",
+    label: "supported papers",
+    name: "Supported Papers",
+    showCount: true,
+    count: () => author.promotions && author.promotions.count,
+  },
+];
+
+function AuthorPage(props) {
   const { auth, author, hostname, user, transactions } = props;
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
   const { tabName } = router.query;
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
-
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
-
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
@@ -65,97 +114,29 @@ const AuthorPage = (props) => {
   const [name, setName] = useState("");
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
-
   // FetchingState
   const [fetching, setFetching] = useState(true);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
+  // KT Constants
+  const [authorUserStatus, setAuthorUserStatus] = useState(
+    AUTHOR_USER_STATUS.NONE
+  );
 
-  const [isSuspended, setIsSuspended] = useState(null);
+  const authorUserID = author.user;
+  const doesAuthorHaveUser = !isNullOrUndefined(authorUserID);
+  const isAuthorUserSuspended =
+    authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
+  const isCurrentUserModerator =
+    Boolean(auth.isLoggedIn) && Boolean(user.moderator);
+  const doesAuthorHaveUserAndNotMe =
+    !isNullOrUndefined(auth.user.id) &&
+    doesAuthorHaveUser &&
+    auth.user.id !== authorUserID;
 
   const facebookRef = useRef();
   const linkedinRef = useRef();
   const twitterRef = useRef();
-
-  const SECTIONS = {
-    name: "name",
-    description: "description",
-    facebook: "facebook",
-    linkedin: "linkedin",
-    twitter: "twitter",
-    picture: "picture",
-  };
-
-  const tabs = [
-    {
-      href: "discussions",
-      label: "discussions",
-      name: "Discussions",
-      showCount: true,
-      count: () => author.userDiscussions.count,
-    },
-    {
-      href: "authored-papers",
-      label: "authored papers",
-      name: "Authored Papers",
-      showCount: true,
-      count: () => author.authoredPapers.count,
-    },
-    {
-      href: "contributions",
-      label: "paper submissions",
-      name: "Paper Submissions",
-      showCount: true,
-      count: () => author.userContributions.count,
-    },
-    {
-      href: "transactions",
-      label: "transactions",
-      name: "Transactions",
-      showCount: true,
-      count: () => transactions.count,
-    },
-    {
-      href: "boosts",
-      label: "supported papers",
-      name: "Supported Papers",
-      showCount: true,
-      count: () => author.promotions && author.promotions.count,
-    },
-  ];
-
-  const socialMedia = [
-    {
-      link: author.linkedin,
-      icon: icons.linkedIn,
-      nodeRef: linkedinRef,
-      dataTip: "Set LinkedIn Profile",
-      onClick: () => setEditLinkedin(true),
-      renderDropdown: () => editLinkedin && renderSocialEdit(SECTIONS.linkedin),
-      customStyles: styles.linkedin,
-      isEditing: editLinkedin,
-    },
-    {
-      link: author.twitter,
-      icon: icons.twitter,
-      nodeRef: twitterRef,
-      dataTip: "Set Twitter Profile",
-      onClick: () => setEditTwitter(true),
-      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
-      customStyles: styles.twitter,
-      isEditing: editTwitter,
-    },
-    {
-      link: author.facebook,
-      icon: icons.facebook,
-      nodeRef: facebookRef,
-      dataTip: "Set Facebook Profile",
-      onClick: () => setEditFacebook(true),
-      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
-      customStyles: styles.facebook,
-      isEditing: editFacebook,
-    },
-  ];
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -164,56 +145,118 @@ const AuthorPage = (props) => {
     };
   });
 
+  async function fetchAuthoredPapers() {
+    await dispatch(
+      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
+    );
+    let papers = store.getState().author.authoredPapers.papers;
+    return checkUserVotes(papers, "authored");
+  }
+
+  function fetchAuthorSuspended() {
+    return fetch(
+      API.USER({ authorId: router.query.authorId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        const authorUser = res.results[0];
+        if (authorUser) {
+          setAuthorUserStatus(
+            authorUser.is_suspended
+              ? AUTHOR_USER_STATUS.SUSPENDED
+              : AUTHOR_USER_STATUS.EXISTS
+          );
+        } else {
+          setAuthorUserStatus(AUTHOR_USER_STATUS.NONE);
+        }
+      });
+  }
+
+  async function fetchUserContributions() {
+    await dispatch(
+      AuthorActions.getUserContributions({
+        authorId: router.query.authorId,
+      })
+    );
+    return checkUserVotes(
+      store.getState().author.userContributions.contributions,
+      "contributions"
+    );
+  }
+
+  function fetchUserDiscussions() {
+    return dispatch(
+      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
+    );
+  }
+
+  function fetchUserPromotions() {
+    if (!authorUserID || !auth.isLoggedIn) return;
+    setFetchingPromotions(true);
+    return fetch(
+      API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        await dispatch(
+          AuthorActions.updateAuthorByKey({
+            key: "promotions",
+            value: res,
+            prevState: store.getState().author,
+          })
+        );
+        setFetchingPromotions(false);
+      });
+  }
+
+  function fetchUserTransactions() {
+    if (!auth.isLoggedIn) return;
+    return dispatch(
+      TransactionActions.getWithdrawals(1, store.getState().transactions)
+    );
+  }
+
   useEffect(() => {
     setFetching(true);
-
     async function refetchAuthor() {
       await dispatch(
         AuthorActions.getAuthor({ authorId: router.query.authorId })
       );
       setFetchedUser(true); // needed for tabbar
     }
-    const authored = fetchAuthoredPapers();
-    const discussions = fetchUserDiscussions();
-    const contributions = fetchUserContributions();
-    const promotions = fetchUserPromotions();
-    const transactions = fetchUserTransactions();
-    const refetch = refetchAuthor();
-    const suspendedState = fetchAuthorSuspended();
-
     Promise.all([
-      authored,
-      discussions,
-      contributions,
-      promotions,
-      transactions,
-      suspendedState,
-      refetch,
+      fetchAuthoredPapers(),
+      fetchAuthorSuspended(),
+      fetchUserContributions(),
+      fetchUserDiscussions(),
+      fetchUserPromotions(),
+      fetchUserTransactions(),
+      refetchAuthor(),
     ]).then((_) => {
       setFetching(false);
     });
   }, [router.query.authorId]);
 
   useEffect(() => {
+    if (
+      !isNullOrUndefined(authorUserID) &&
+      !isNullOrUndefined(user) &&
+      authorUserID === user.id
+    ) {
+      setAllowEdit(true);
+    }
     setDescription(author.description);
-    setName(`${author.first_name} ${author.last_name}`);
     setEduSummary(createUserSummary(author));
-
-    let social = {
+    setName(`${author.first_name} ${author.last_name}`);
+    setSocialLinks({
       facebook: author.facebook,
       linkedin: author.linkedin,
       twitter: author.twitter,
-    };
-
-    setSocialLinks(social);
-  }, [author]);
-
-  useEffect(() => {
-    if (author.user && user) {
-      if (author.user === user.id) {
-        setAllowEdit(true);
-      }
-    }
+    });
   }, [author, user]);
 
   useEffect(() => {
@@ -229,27 +272,7 @@ const AuthorPage = (props) => {
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
-  function fetchAuthorSuspended() {
-    return fetch(
-      API.USER({ authorId: router.query.authorId }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        const authorUser = res.results[0];
-        if (authorUser) {
-          setIsSuspended(authorUser.is_suspended);
-        } else {
-          setIsSuspended(true);
-        }
-      });
-  }
-
-  /**
-   * When we click anywhere outside of the dropdown, close it
-   * @param { Event } e -- javascript event
-   */
+  /* TODO: calvinhlee - what is this function? */
   function handleOutsideClick(e) {
     if (facebookRef.current && !facebookRef.current.contains(e.target)) {
       setEditFacebook(false);
@@ -260,62 +283,6 @@ const AuthorPage = (props) => {
     if (linkedinRef.current && !linkedinRef.current.contains(e.target)) {
       setEditLinkedin(false);
     }
-  }
-
-  async function fetchAuthoredPapers() {
-    await dispatch(
-      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
-    );
-    let papers = store.getState().author.authoredPapers.papers;
-    return checkUserVotes(papers, "authored");
-  }
-
-  function fetchUserDiscussions() {
-    return dispatch(
-      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
-    );
-  }
-
-  async function fetchUserContributions() {
-    await dispatch(
-      AuthorActions.getUserContributions({
-        authorId: router.query.authorId,
-      })
-    );
-    let contributions = store.getState().author.userContributions.contributions;
-    return checkUserVotes(contributions, "contributions");
-  }
-
-  function fetchUserTransactions() {
-    if (!auth.isLoggedIn) return;
-    return dispatch(
-      TransactionActions.getWithdrawals(1, store.getState().transactions)
-    );
-  }
-
-  function fetchUserPromotions() {
-    if (!author.user || !auth.isLoggedIn) return;
-
-    if (author.user !== auth.user.id) {
-      return;
-    }
-    setFetchingPromotions(true);
-    return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: author.user }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (res) => {
-        await dispatch(
-          AuthorActions.updateAuthorByKey({
-            key: "promotions",
-            value: res,
-            prevState: store.getState().author,
-          })
-        );
-        setFetchingPromotions(false);
-      });
   }
 
   const onMouseEnter = (section) => {
@@ -419,6 +386,8 @@ const AuthorPage = (props) => {
       });
   };
 
+  const tabs = getTabs(author, transactions);
+
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
@@ -427,61 +396,50 @@ const AuthorPage = (props) => {
     }
   };
 
-  const renderTabContent = () => {
-    return (
-      // render all tab content on the dom, but only show if selected
-      <ComponentWrapper>
-        <div className={css(styles.tabMeta)}>
-          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-          <div
-            className={css(
-              tabName === "contributions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserContributionsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "authored-papers" ? styles.reveal : styles.hidden
-            )}
-          >
-            <AuthoredPapersTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "discussions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-          </div>
-          {/* <div
-            className={css(
-              tabName === "projects" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserProjectsTab fetching={fetching}  />
-          </div> */}
-          <div
-            className={css(
-              tabName === "transactions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserTransactionsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "boosts" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserPromotionsTab
-              fetching={fetchingPromotions}
-              activeTab={tabName === "boosts"}
-            />
-          </div>
+  const tabContents = (
+    // render all tab content on the dom, but only show if selected
+    <ComponentWrapper>
+      <div className={css(styles.tabMeta)}>
+        <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+        <div
+          className={css(
+            tabName === "contributions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserContributionsTab fetching={fetching} />
         </div>
-      </ComponentWrapper>
-    );
-  };
+        <div
+          className={css(
+            tabName === "authored-papers" ? styles.reveal : styles.hidden
+          )}
+        >
+          <AuthoredPapersTab fetching={fetching} />
+        </div>
+        <div
+          className={css(
+            tabName === "discussions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+        </div>
+        <div
+          className={css(
+            tabName === "transactions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserTransactionsTab fetching={fetching} />
+        </div>
+        <div
+          className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
+        >
+          <UserPromotionsTab
+            fetching={fetchingPromotions}
+            activeTab={tabName === "boosts"}
+          />
+        </div>
+      </div>
+    </ComponentWrapper>
+  );
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
@@ -513,10 +471,10 @@ const AuthorPage = (props) => {
   };
 
   const saveSocial = async (section) => {
-    let changes = {};
-    let change = socialLinks[section];
-    let http = "http://";
-    let https = "https://";
+    const changes = {};
+    const change = socialLinks[section];
+    const http = "http://";
+    const https = "https://";
     if (!change) {
       return;
     }
@@ -544,72 +502,63 @@ const AuthorPage = (props) => {
   };
 
   const saveName = async () => {
-    let splitName = name.split(" ");
-    let first_name = null;
-    let last_name = null;
-    if (splitName.length >= 1) {
-      first_name = splitName[0];
-    }
-    if (splitName.length >= 2) {
-      last_name = splitName[1];
-    }
-
-    let changes = {
-      first_name,
-      last_name,
-    };
-
+    const splitName = name.split(" ");
     await dispatch(
-      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+      AuthorActions.saveAuthorChanges({
+        changes: {
+          first_name: splitName.length > 0 ? splitName[0] : null,
+          last_name: splitName.length > 1 ? splitName[1] : null,
+        },
+        authorId: author.id,
+      })
     );
   };
 
   const saveDescription = async () => {
-    let changes = {
-      description,
-    };
-
     await dispatch(
-      AuthorActions.saveAuthorChanges({ changes, authorId: author.id })
+      AuthorActions.saveAuthorChanges({
+        changes: {
+          description,
+        },
+        authorId: author.id,
+      })
     );
   };
 
   const onSocialLinkChange = (e, social) => {
-    let newSocialLinks = { ...socialLinks };
+    const newSocialLinks = { ...socialLinks };
     newSocialLinks[social] = e.target.value;
-
     setSocialLinks(newSocialLinks);
   };
 
   const saveProfilePicture = async (picture) => {
-    let changes = new FormData();
     let byteCharacters;
-
-    if (picture.split(",")[0].indexOf("base64") >= 0)
+    if (picture.split(",")[0].indexOf("base64") >= 0) {
       byteCharacters = atob(picture.split(",")[1]);
-    else byteCharacters = unescape(picture.split(",")[1]);
+    } else {
+      byteCharacters = unescape(picture.split(",")[1]);
+    }
 
-    let byteNumbers = new Array(byteCharacters.length);
+    const byteNumbers = new Array(byteCharacters.length);
     for (let i = 0; i < byteCharacters.length; i++) {
       byteNumbers[i] = byteCharacters.charCodeAt(i);
     }
-    let byteArray = new Uint8Array(byteNumbers);
+    const byteArray = new Uint8Array(byteNumbers);
     const blob = new Blob([byteArray], { type: "image/jpg" });
 
+    const changes = new FormData();
     changes.append("profile_image", blob);
 
-    let authorReturn = await dispatch(
+    const authorReturn = await dispatch(
       AuthorActions.saveAuthorChanges({
         changes,
         authorId: author.id,
         file: true,
       })
     );
-
-    let { updateUser, user } = props;
+    const { updateUser, user } = props;
     updateUser({ ...user, author_profile: authorReturn.payload });
-
-    closeAvatarModal();
+    onCloseAvatarModal();
   };
 
   const renderSocialEdit = (social) => {
@@ -633,204 +582,200 @@ const AuthorPage = (props) => {
     );
   };
 
-  const isModerator = () => {
-    if (props.auth.isLoggedIn) {
-      if (props.user.moderator) {
-        return true;
-      }
-    }
-    return false;
-  };
-
-  const openUserInfoModal = () => {
+  const onOpenUserInfoModal = () => {
     props.openUserInfoModal(true);
   };
 
-  const closeAvatarModal = () => {
+  const onCloseAvatarModal = () => {
     setAvatarUploadIsOpen(false);
   };
 
-  const getOrcidId = () => {
-    return props.user.author_profile && props.user.author_profile.orcid_id;
-  };
+  const authorOrcidId = !isNullOrUndefined(props.user.author_profile)
+    ? props.user.author_profile.orcid_id
+    : null;
 
-  const authorOrcidId = getOrcidId();
+  const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
+    <a
+      className={css(styles.link, styles.socialMedia)}
+      target="_blank"
+      href={`https://orcid.org/${authorOrcidId}`}
+      data-tip={"Open Orcid Profile"}
+      rel="noreferrer noopener"
+    >
+      <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
+    </a>
+  ) : (
+    <div
+      className={css(
+        styles.socialMedia,
+        styles.orcid,
+        !authorOrcidId && styles.noSocial
+      )}
+      data-tip={allowEdit ? "Connect Orcid" : null}
+    >
+      {allowEdit ? (
+        <OrcidConnectButton
+          hostname={hostname}
+          refreshProfileOnSuccess={false}
+          customLabel={"Connect ORCiD"}
+          styles={styles.orcidButton}
+          iconButton={true}
+        />
+      ) : (
+        <img src="/static/icons/orcid.png" className={css(styles.orcidLogo)} />
+      )}
+    </div>
+  );
 
-  const renderOrcid = () => {
-    if (authorOrcidId) {
+  const authorRscBalance =
+    !isNullOrUndefined(author.user) &&
+    !isNullOrUndefined(user) &&
+    author.user === user.id ? (
+      <div className={css(styles.rscBalance)}>
+        <span className={css(styles.icon)}>
+          <img
+            src="/static/icons/coin-filled.png"
+            className={css(styles.rscIcon)}
+            alt="researchhub-coin-icon"
+          />
+        </span>
+        <div className={css(styles.reputationTitle)}>{"RSC Balance:"}</div>
+        <div className={css(styles.amount)}>{props.user.balance}</div>
+      </div>
+    ) : null;
+
+  const authorReputation = (
+    <div className={css(styles.reputation)}>
+      <span className={css(styles.icon)}>
+        <img
+          src="/static/ResearchHubIcon.png"
+          className={css(styles.rhIcon)}
+          alt="reserachhub-icon"
+        />
+      </span>
+      <div className={css(styles.reputationTitle)}>
+        {"Lifetime Reputation:"}
+      </div>
+      <div className={css(styles.amount)}>{props.author.reputation}</div>
+    </div>
+  );
+
+  const socialMediaLinkButtons = [
+    {
+      link: author.linkedin,
+      icon: icons.linkedIn,
+      nodeRef: linkedinRef,
+      dataTip: "Set LinkedIn Profile",
+      onClick: () => setEditLinkedin(true),
+      renderDropdown: () => editLinkedin && renderSocialEdit(SECTIONS.linkedin),
+      customStyles: styles.linkedin,
+      isEditing: editLinkedin,
+    },
+    {
+      link: author.twitter,
+      icon: icons.twitter,
+      nodeRef: twitterRef,
+      dataTip: "Set Twitter Profile",
+      onClick: () => setEditTwitter(true),
+      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
+      customStyles: styles.twitter,
+      isEditing: editTwitter,
+    },
+    {
+      link: author.facebook,
+      icon: icons.facebook,
+      nodeRef: facebookRef,
+      dataTip: "Set Facebook Profile",
+      onClick: () => setEditFacebook(true),
+      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
+      customStyles: styles.facebook,
+      isEditing: editFacebook,
+    },
+  ].map((app, i) => {
+    const {
+      link,
+      icon,
+      nodeRef,
+      dataTip,
+      onClick,
+      renderDropdown,
+      customStyles,
+      isEditing,
+    } = app;
+
+    if (allowEdit) {
+      return (
+        <div
+          className={css(
+            styles.editSocial,
+            !link && styles.noSocial,
+            isEditing && styles.fullOpacity
+          )}
+          data-tip={dataTip}
+          key={`social-media-${i}`}
+          ref={nodeRef}
+        >
+          <div
+            className={css(styles.socialMedia, customStyles)}
+            onClick={onClick}
+          >
+            {icon}
+          </div>
+          {renderDropdown()}
+        </div>
+      );
+    } else if (!isNullOrUndefined(link)) {
       return (
         <a
-          className={css(styles.link, styles.socialMedia)}
-          target="_blank"
-          href={`https://orcid.org/${authorOrcidId}`}
-          data-tip={"Open Orcid Profile"}
+          className={css(styles.link)}
+          href={link}
+          key={`social-media-${i}`}
           rel="noreferrer noopener"
+          target="_blank"
         >
-          <img
-            src="/static/icons/orcid.png"
-            className={css(styles.orcidLogo)}
-          />
+          <span className={css(styles.socialMedia, customStyles)}>{icon}</span>
         </a>
       );
     } else {
       return (
         <div
-          className={css(
-            styles.socialMedia,
-            styles.orcid,
-            !authorOrcidId && styles.noSocial
-          )}
-          data-tip={allowEdit ? "Connect Orcid" : null}
+          className={css(styles.editSocial, styles.noSocial)}
+          key={`social-media-${i}`}
         >
-          {allowEdit ? (
-            <OrcidConnectButton
-              hostname={hostname}
-              refreshProfileOnSuccess={false}
-              customLabel={"Connect ORCiD"}
-              styles={styles.orcidButton}
-              iconButton={true}
-            />
-          ) : (
-            <img
-              src="/static/icons/orcid.png"
-              className={css(styles.orcidLogo)}
-            />
-          )}
+          <span className={css(styles.socialMedia, customStyles)}>{icon}</span>
         </div>
       );
     }
-  };
+  });
 
-  const renderRSCBalance = () => {
-    if (author.user && user) {
-      if (author.user === user.id) {
-        return (
-          <div className={css(styles.rscBalance)}>
-            <span className={css(styles.icon)}>
-              <img
-                src={"/static/icons/coin-filled.png"}
-                className={css(styles.rscIcon)}
-                alt={"researchhub-coin-icon"}
-              />
-            </span>
-            <div className={css(styles.reputationTitle)}>RSC Balance:</div>
-            <div className={css(styles.amount)}>{props.user.balance}</div>
-          </div>
-        );
-      }
-    }
-  };
+  const userLinks = (
+    <div className={css(styles.socialLinks)}>
+      {socialMediaLinkButtons}
+      {orcidLinkButton}
+      <span
+        className={css(styles.socialMedia, styles.shareLink)}
+        onClick={() => setOpenShareModal(true)}
+        data-tip={"Share Profile"}
+      >
+        {icons.link}
+      </span>
+    </div>
+  );
 
-  const renderReputation = () => {
-    return (
-      <div className={css(styles.reputation)}>
-        <span className={css(styles.icon)}>
-          <img
-            src={"/static/ResearchHubIcon.png"}
-            className={css(styles.rhIcon)}
-            alt={"reserachhub-icon"}
-          />
-        </span>
-        <div className={css(styles.reputationTitle)}>Lifetime Reputation:</div>
-        <div className={css(styles.amount)}>{props.author.reputation}</div>
-      </div>
-    );
-  };
+  // const onUserFollow = () => {
+  //   followUser({ followeeId: 11, userId: 4 })
+  //     .then((_) => {})
+  //     .catch((err) => {
+  //       console.log("follow err: ", err);
+  //     });
+  // };
 
-  const renderSocialMedia = () => {
-    return socialMedia.map((app) => {
-      const {
-        link,
-        icon,
-        nodeRef,
-        dataTip,
-        onClick,
-        renderDropdown,
-        customStyles,
-        isEditing,
-      } = app;
-
-      if (allowEdit) {
-        return (
-          <div
-            className={css(
-              styles.editSocial,
-              !link && styles.noSocial,
-              isEditing && styles.fullOpacity
-            )}
-            ref={nodeRef}
-            data-tip={dataTip}
-          >
-            <div
-              className={css(styles.socialMedia, customStyles)}
-              onClick={onClick}
-            >
-              {icon}
-            </div>
-            {renderDropdown()}
-          </div>
-        );
-      }
-
-      if (link) {
-        return (
-          <a
-            className={css(styles.link)}
-            href={link}
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <span className={css(styles.socialMedia, customStyles)}>
-              {icon}
-            </span>
-          </a>
-        );
-      } else {
-        return (
-          <div className={css(styles.editSocial, styles.noSocial)}>
-            <span className={css(styles.socialMedia, customStyles)}>
-              {icon}
-            </span>
-          </div>
-        );
-      }
-    });
-  };
-
-  const onUserFollow = () => {
-    followUser({ followeeId: 11, userId: 4 })
-      .then((_) => {})
-      .catch((err) => {
-        console.log("follow err: ", err);
-      });
-  };
-
-  const renderUserLinks = () => {
-    return (
-      <div className={css(styles.socialLinks)}>
-        {renderSocialMedia()}
-        {renderOrcid()}
-        <span
-          className={css(styles.socialMedia, styles.shareLink)}
-          onClick={() => setOpenShareModal(true)}
-          data-tip={"Share Profile"}
-        >
-          {icons.link}
-        </span>
-      </div>
-    );
-  };
-
-  const renderButtons = (view = {}) => {
-    return (
-      <div className={css(styles.userActions)}>
-        {/* <UserFollowButton
-          authorId={router.query.authorId}
-          authorname={`${author.first_name} ${author.last_name}`}
-        /> */}
-
-        {allowEdit && (
-          <div className={css(styles.editProfileButton)}>
+  const userActionButtons = (
+    /* <UserFollowButton authorId={router.query.authorId} authorname={`${author.first_name} ${author.last_name}`} /> */
+    <div className={css(styles.userActions)}>
+      {filterNull([
+        allowEdit ? (
+          <div className={css(styles.editProfileButton)} key="editButton">
             <Button
               label={() => (
                 <Fragment>
@@ -840,44 +785,53 @@ const AuthorPage = (props) => {
                   Edit Profile
                 </Fragment>
               )}
-              onClick={openUserInfoModal}
+              onClick={onOpenUserInfoModal}
               customButtonStyle={styles.editButtonCustom}
               rippleClass={styles.rippleClass}
             />
           </div>
-        )}
-        {isModerator() && (
-          <ModeratorDeleteButton
-            containerStyle={styles.moderatorButton}
-            iconStyle={styles.moderatorIcon}
-            labelStyle={styles.moderatorLabel}
-            icon={
-              !fetchedUser
-                ? " "
-                : isSuspended
-                ? icons.userPlus
-                : icons.userSlash
-            }
-            label={
-              !fetchedUser ? (
-                <Loader loading={true} color={"#FFF"} size={15} />
-              ) : isSuspended ? (
-                "Reinstate User"
-              ) : (
-                "Ban User"
-              )
-            }
-            actionType={"user"}
-            metaData={{
-              authorId: router.query.authorId,
-              isSuspended,
-              setIsSuspended,
-            }}
-          />
-        )}
-        {isModerator() && (
-          <div className={css(styles.editProfileButton, styles.siftButton)}>
+        ) : null,
+        isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
+          <div className={css(styles.editProfileButton)} key="banOrReinstate">
+            <ModeratorDeleteButton
+              actionType="user"
+              containerStyle={styles.moderatorButton}
+              icon={
+                !fetchedUser
+                  ? " "
+                  : isAuthorUserSuspended
+                  ? icons.userPlus
+                  : icons.userSlash
+              }
+              iconStyle={styles.moderatorIcon}
+              key="user"
+              labelStyle={styles.moderatorLabel}
+              label={
+                !fetchedUser ? (
+                  <Loader loading={true} color={"#FFF"} size={15} />
+                ) : isAuthorUserSuspended ? (
+                  "Reinstate User"
+                ) : (
+                  "Ban User"
+                )
+              }
+              metaData={{
+                authorId: router.query.authorId,
+                isSuspended: isAuthorUserSuspended,
+                setIsSuspended: () =>
+                  setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+              }}
+            />
+          </div>
+        ) : null,
+        /* current user should not be able to ban / reinstate themselves */
+        isCurrentUserModerator ? (
+          <div
+            className={css(styles.editProfileButton, styles.siftButton)}
+            key="SiftButton"
+          >
             <Button
+              customButtonStyle={styles.editButtonCustom}
               label={() => (
                 <Fragment>
                   <span style={{ marginRight: 10, userSelect: "none" }}>
@@ -887,18 +841,17 @@ const AuthorPage = (props) => {
                 </Fragment>
               )}
               onClick={() => window.open(props.author.sift_link, "_blank")}
-              customButtonStyle={[styles.editButtonCustom, styles.siftCustom]}
               rippleClass={styles.rippleClass}
             />
           </div>
-        )}
-      </div>
-    );
-  };
+        ) : null,
+      ])}
+    </div>
+  );
 
-  const renderEducationSummary = () => {
-    if (eduSummary) {
-      return (
+  const authorEducationSummary = useMemo(
+    () =>
+      eduSummary != null ? (
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
           {(author.headline || author.education) && (
             <div className={css(styles.educationSummary) + " clamp2"}>
@@ -907,40 +860,38 @@ const AuthorPage = (props) => {
             </div>
           )}
         </div>
-      );
-    }
-  };
+      ) : null,
+    [eduSummary]
+  );
 
-  const renderDescription = () => {
-    return (
-      <div
-        className={css(
-          styles.description,
-          styles.editButtonContainer,
-          !author.description && styles.defaultDescription
-        )}
-      >
-        {!author.description && allowEdit && (
-          <span
-            className={css(styles.addDescriptionText)}
-            onClick={() => openUserInfoModal()}
-          >
-            Add description
-          </span>
-        )}
-        {!author.description && !allowEdit && (
-          <span property="description">
-            {author.description
-              ? author.description
-              : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
-          </span>
-        )}
-        {author.description && (
-          <span property="description">{author.description}</span>
-        )}
-      </div>
-    );
-  };
+  const authorDescription = (
+    <div
+      className={css(
+        styles.description,
+        styles.editButtonContainer,
+        !author.description && styles.defaultDescription
+      )}
+    >
+      {!author.description && allowEdit && (
+        <span
+          className={css(styles.addDescriptionText)}
+          onClick={onOpenUserInfoModal}
+        >
+          Add description
+        </span>
+      )}
+      {!author.description && !allowEdit && (
+        <span property="description">
+          {author.description
+            ? author.description
+            : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
+        </span>
+      )}
+      {author.description && (
+        <span property="description">{author.description}</span>
+      )}
+    </div>
+  );
 
   return (
     <div
@@ -958,7 +909,7 @@ const AuthorPage = (props) => {
         <div
           className={css(
             styles.profileContainer,
-            isModerator() && styles.profileContainerPadding
+            isCurrentUserModerator && styles.profileContainerPadding
           )}
         >
           <div
@@ -969,7 +920,7 @@ const AuthorPage = (props) => {
           >
             <div
               className={css(styles.avatarContainer)}
-              onClick={(allowEdit && openUserInfoModal) || undefined}
+              onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
               onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
               onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
               draggable={false}
@@ -994,15 +945,22 @@ const AuthorPage = (props) => {
               >
                 {author.first_name} {author.last_name}
               </h1>
-              {renderUserLinks()}
+              {userLinks}
             </div>
-            {renderEducationSummary()}
+            {authorEducationSummary}
             <div className={css(styles.reputationContainer)}>
-              {renderReputation()}
-              {renderRSCBalance()}
+              {authorReputation}
+              {authorRscBalance}
             </div>
-            {renderDescription()}
-            {renderButtons()}
+            {authorDescription}
+            {!doesAuthorHaveUser ? (
+              <ClaimAuthorPopoverLabel
+                auth={auth}
+                author={author}
+                user={user}
+              />
+            ) : null}
+            {userActionButtons}
           </div>
         </div>
       </ComponentWrapper>
@@ -1016,7 +974,7 @@ const AuthorPage = (props) => {
         fetching={fetching}
         showTabBar={fetchedUser}
       />
-      <div className={css(styles.contentContainer)}>{renderTabContent()}</div>
+      <div className={css(styles.contentContainer)}>{tabContents}</div>
       <ShareModal
         close={() => setOpenShareModal(false)}
         isOpen={openShareModal}
@@ -1025,13 +983,13 @@ const AuthorPage = (props) => {
       />
       <AvatarUpload
         isOpen={avatarUploadIsOpen}
-        closeModal={closeAvatarModal}
+        closeModal={onCloseAvatarModal}
         saveButton={renderSaveButton}
         section={SECTIONS.picture}
       />
     </div>
   );
-};
+}
 
 AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
   const { host } = absoluteUrl(req);
@@ -1584,13 +1542,14 @@ const styles = StyleSheet.create({
   },
   userActions: {
     display: "flex",
+    justifyContent: "flex-start",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       width: "100%",
     },
   },
   editProfileButton: {
-    marginRight: 15,
+    marginRight: 16,
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
@@ -1598,7 +1557,6 @@ const styles = StyleSheet.create({
     },
   },
   siftButton: {
-    marginLeft: 16,
     background: colors.NAVY(1),
     borderRadius: 4,
   },
