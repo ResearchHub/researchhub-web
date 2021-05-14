@@ -5,6 +5,8 @@ import FormInput from "../../../../../components/Form/FormInput";
 import Loader from "../../../../../components/Loader/Loader.js";
 import Modal from "react-modal";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
+import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
+import { nullthrows } from "../../../../../config/utils/nullchecks";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -38,28 +40,21 @@ function validateFormField(fieldID: string, value: any): boolean {
 }
 
 export default function AuthorClaimModal({
+  auth,
   author,
   isOpen,
   setIsOpen,
   user,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-  const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    eduEmail: null,
-  });
   const [formErrors, setFormErrors] = useState<FormError>({
     eduEmail: false,
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
+    eduEmail: null,
+  });
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-  const handleValidationAndSubmit = (e: SyntheticEvent): void => {
-    e.preventDefault();
-    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
-      setShouldDisplayError(true);
-    } else {
-      setShouldDisplayError(false);
-      // TODO: calvinhlee - write post call here.
-    }
-  };
+
   const handleOnChangeFields = (fieldID: string, value: string): void => {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
@@ -67,6 +62,29 @@ export default function AuthorClaimModal({
       [fieldID]: validateFormField(fieldID, value),
     });
   };
+
+  const handleValidationAndSubmit = (e: SyntheticEvent): void => {
+    e.preventDefault();
+    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
+      setShouldDisplayError(true);
+    } else {
+      setShouldDisplayError(false);
+      setIsSubmitting(true);
+      createAuthorClaimCase({
+        eduEmail: mutableFormFields.eduEmail,
+        onError: (): void => {
+          setIsSubmitting(false);
+        },
+        onSuccess: (): void => {
+          setIsSubmitting(false);
+          setIsOpen(false);
+        },
+        targetAuthorID: author.id,
+        userID: auth.user.id,
+      });
+    }
+  };
+
   return (
     <Modal
       children={
