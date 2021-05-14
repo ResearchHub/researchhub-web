@@ -1950,6 +1950,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-modal@^3.12.0":
+  "integrity" "sha512-UnHu/YO73NZLwqFpju/c0tqiswR0UHIfeO16rkfLVJUIMfQsl7X0CBm99H5XXgBMe/PgtQ/Rkud72iuRBr1TeA=="
+  "resolved" "https://registry.npmjs.org/@types/react-modal/-/react-modal-3.12.0.tgz"
+  "version" "3.12.0"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-popover@^0.5.3":
   "integrity" "sha512-xfmnFHRKMXtGdWuSwEg4XiHxODKlN/bPEXfretBpojI7cNoeAtnmpyTmFk4UNcO+ys3W2SOsMXzcaqCNPyYP2g=="
   "resolved" "https://registry.npmjs.org/@types/react-popover/-/react-popover-0.5.3.tgz"
