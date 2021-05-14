@@ -13,6 +13,7 @@ import VoteWidget from "../VoteWidget";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
 import PaperJournalTag from "../Paper/PaperJournalTag";
+import PaperUserAvatars from "../Paper/PaperUserAvatars";
 
 // Utility
 import {
@@ -23,7 +24,7 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug, getUsersFromPaper } from "~/config/utils";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
@@ -125,26 +126,35 @@ const PaperEntryCard = (props) => {
   }
 
   function renderUploadedBy() {
+    const users = getUsersFromPaper(paper);
+
+    if (users && users.length) {
+      return (
+        <div className={css(styles.journalTagContainer)}>
+          <PaperUserAvatars users={users} />
+        </div>
+      );
+    }
+
+    const onFallback = (externalSource) => {
+      if (externalSource && externalSource !== "doi") {
+        return (
+          <div className={css(styles.uploadedBy)}>
+            <span className={css(styles.capitalize, styles.externalSource)}>
+              {externalSource}
+            </span>
+          </div>
+        );
+      }
+      return null;
+    };
+
     return (
       <div className={css(styles.journalTagContainer)}>
         <PaperJournalTag
           url={url}
           externalSource={external_source}
-          onFallback={(externalSource) => {
-            if (externalSource && externalSource !== "doi") {
-              return (
-                <div className={css(styles.uploadedBy)}>
-                  <span
-                    className={css(styles.capitalize, styles.externalSource)}
-                  >
-                    {externalSource}
-                  </span>
-                </div>
-              );
-            }
-
-            return null;
-          }}
+          onFallback={onFallback}
         />
       </div>
     );
