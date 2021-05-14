@@ -28,7 +28,7 @@ export const getJournalFromURL = (url) => {
  *
  * @param { Object } paper - Paper JSON
  */
-export const getUsersFromPaper = (paper) => {
+export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
   if (!paper) return []; // short circuit
   const { authors, uploaded_by, discussion } = paper;
 
@@ -64,5 +64,9 @@ export const getUsersFromPaper = (paper) => {
     }
   });
 
-  return users.slice(0, 6); // return 5
+  if (filterFunc) {
+    return users.filter(filterFunc).slice(0, limit);
+  }
+
+  return users.slice(0, limit);
 };
