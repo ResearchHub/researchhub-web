@@ -328,10 +328,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "42.5vmin",
       height: "42.5vmin",
-      marginTop: "2.5vmin",
-      marginBottom: "2.5vmin",
-      marginLeft: "2.5vmin",
-      marginRight: "2.5vmin",
+      margin: "2.5vmin",
     },
   },
   hubCard: {
@@ -343,7 +340,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "42.5vmin",
       height: "42.5vmin",
-      boxShadow: "none",
     },
   },
   removed: {
@@ -356,9 +352,9 @@ const styles = StyleSheet.create({
     objectFit: "cover",
     pointerEvents: "none",
     "@media only screen and (max-width: 767px)": {
-      borderRadius: "8px",
       width: "42.5vmin",
       height: "42.5vmin",
+      borderRadius: "8px",
     },
   },
   hubInfo: {
