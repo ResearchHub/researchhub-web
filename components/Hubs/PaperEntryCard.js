@@ -24,13 +24,17 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPaperSlug, getUsersFromPaper } from "~/config/utils";
+import {
+  formatPaperSlug,
+  getUsersFromPaper,
+  getJournalFromURL,
+  formatJournalName,
+} from "~/config/utils";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import AuthorAvatar from "../AuthorAvatar";
 
 const PaperEntryCard = (props) => {
   const {
@@ -125,8 +129,8 @@ const PaperEntryCard = (props) => {
     onClick && onClick();
   }
 
-  function renderUploadedBy() {
-    const users = getUsersFromPaper(paper);
+  function renderContributers() {
+    const users = getUsersFromPaper(paper, (user) => user.profile_image);
 
     if (users && users.length) {
       return (
@@ -135,29 +139,23 @@ const PaperEntryCard = (props) => {
         </div>
       );
     }
+  }
 
-    const onFallback = (externalSource) => {
-      if (externalSource && externalSource !== "doi") {
-        return (
-          <div className={css(styles.uploadedBy)}>
-            <span className={css(styles.capitalize, styles.externalSource)}>
-              {externalSource}
-            </span>
+  function renderJournalName(mobile) {
+    if (external_source) {
+      return (
+        <div className={css(styles.metadataContainer, styles.authorContainer)}>
+          <div
+            className={
+              css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
+              " clamp1"
+            }
+          >
+            Journal: {external_source}
           </div>
-        );
-      }
-      return null;
-    };
-
-    return (
-      <div className={css(styles.journalTagContainer)}>
-        <PaperJournalTag
-          url={url}
-          externalSource={external_source}
-          onFallback={onFallback}
-        />
-      </div>
-    );
+        </div>
+      );
+    }
   }
 
   /**
@@ -370,7 +368,7 @@ const PaperEntryCard = (props) => {
   };
 
   const renderHubTags = () => {
-    if (hubs && hubs.length > 0) {
+    if (hubs && hubs.length) {
       return (
         <div className={css(styles.tags)}>
           {hubs.map(
@@ -505,6 +503,7 @@ const PaperEntryCard = (props) => {
         <div className={css(styles.metadataRow)}>
           {renderUploadedDate(mobile)}
           {renderRawAuthors(mobile)}
+          {renderJournalName(mobile)}
         </div>
       );
     }
@@ -626,13 +625,13 @@ const PaperEntryCard = (props) => {
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
-            {mobileOnly(renderUploadedBy())}
+            {mobileOnly(renderContributers())}
           </div>
           {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
-            {desktopOnly(renderUploadedBy())}
+            {desktopOnly(renderContributers())}
           </div>
           {desktopOnly(
             <div className={css(styles.row)}>
@@ -783,6 +782,7 @@ const styles = StyleSheet.create({
     maxWidth: 180,
     color: "#C1C1CF",
     fontSize: 14,
+    marginRight: 10,
   },
   summary: {
     width: "100%",

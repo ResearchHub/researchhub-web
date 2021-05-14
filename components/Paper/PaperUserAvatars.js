@@ -15,7 +15,7 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
 
       if (!user.profile_image) {
         // default avatar image need padding for alignment
-        classNames.push(styles.default);
+        classNames.push(index === 0 ? styles.default : styles.hidden);
       }
 
       const avatarStyle = {};
@@ -23,14 +23,14 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
       if (index > 0) {
         // style used to have overlapping UI
         avatarStyle.position = "absolute";
-        avatarStyle.left = -10 * index;
-        avatarStyle.zIndex = index;
+        avatarStyle.left = -10;
+        avatarStyle.zIndex = 3 * index;
       }
 
       return (
         <div className={css(classNames)}>
           <span style={avatarStyle}>
-            <AuthorAvatar author={user} size={25} />
+            <AuthorAvatar author={user} size={28} />
           </span>
         </div>
       );
@@ -54,6 +54,9 @@ const styles = StyleSheet.create({
   },
   default: {
     paddingBottom: 5,
+  },
+  hidden: {
+    display: "none",
   },
 });
 
