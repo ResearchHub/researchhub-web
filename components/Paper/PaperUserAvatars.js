@@ -5,18 +5,23 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { getUsersFromPaper } from "~/config/utils";
 
-const PaperUserAvatars = ({ paper, users }) => {
+const PaperUserAvatars = ({ paper, users = [] }) => {
+  // if users is not provided, we find users from paper object
+  const paperContributers = paper ? getUsersFromPaper(papers) : users;
+
   const renderUserAvatars = () => {
-    return users.map((user, index) => {
+    return paperContributers.map((user, index) => {
       const classNames = [styles.avatarContainer];
 
       if (!user.profile_image) {
+        // default avatar image need padding for alignment
         classNames.push(styles.default);
       }
 
       const avatarStyle = {};
 
       if (index > 0) {
+        // style used to have overlapping UI
         avatarStyle.position = "absolute";
         avatarStyle.left = -10 * index;
         avatarStyle.zIndex = index;
