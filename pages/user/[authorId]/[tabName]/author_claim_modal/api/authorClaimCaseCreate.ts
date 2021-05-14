@@ -48,7 +48,6 @@ export function createAuthorClaimCase({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response: any): void => {
-      console.warn(response);
       onSuccess();
     })
     .catch((err) => {
