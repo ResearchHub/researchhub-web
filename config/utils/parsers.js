@@ -22,3 +22,47 @@ export const getJournalFromURL = (url) => {
   }
   return null;
 };
+
+/**
+ * Returns author objects from paper object
+ *
+ * @param { Object } paper - Paper JSON
+ */
+export const getUsersFromPaper = (paper) => {
+  if (!paper) return []; // short circuit
+  const { authors, uploaded_by, discussion } = paper;
+
+  const seenUsers = {};
+  const users = [];
+
+  // add authors
+  (authors || []).forEach((author) => {
+    if (!seenUsers[author.id]) {
+      users.push(author);
+      seenUsers[author.id] = true;
+    }
+  });
+
+  // add uploader
+  if (uploaded_by) {
+    const { author_profile: uploader } = uploaded_by;
+    if (!seenUsers[uploader.id]) {
+      users.push(uploader);
+      seenUsers[uploader.id] = true;
+    }
+  }
+
+  // add discussion users
+  (discussion || []).forEach((comment) => {
+    const {
+      created_by: { author_profile: commenter },
+    } = comment;
+
+    if (!seenUsers[commenter.id]) {
+      users.push(commenter);
+      seenUsers[commenter.id] = true;
+    }
+  });
+
+  return users.slice(0, 6); // return 5
+};
