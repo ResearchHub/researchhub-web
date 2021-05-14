@@ -1,7 +1,8 @@
 import { authenticateToken } from "./api/authorClaimValidateToken";
 import { css, StyleSheet } from "aphrodite";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getPageBody } from "./util";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { VALIDATION_STATE } from "./constants";
 
 export default function AuthorClaimValidation() {
@@ -14,7 +15,13 @@ export default function AuthorClaimValidation() {
     validationState,
   ]);
 
-  const onValidationError = useCallback(() => {});
+  const onValidationError = useCallback(
+    ({ error, validationState }) => {
+      emptyFncWithMsg(error);
+      setValidationState(validationState);
+    },
+    [setValidationState]
+  );
 
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search || "");
@@ -23,7 +30,7 @@ export default function AuthorClaimValidation() {
       setValidationState(VALIDATION_STATE.REQUEST_NOT_FOUND);
     } else if (validationState === VALIDATION_STATE.LOADING) {
       authenticateToken({
-        onError,
+        onError: onValidationError,
         onSuccess: () => setValidationState(VALIDATION_STATE.VALIDATED),
         token,
       });
