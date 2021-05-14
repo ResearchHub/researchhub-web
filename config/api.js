@@ -188,6 +188,7 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+<<<<<<< HEAD
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
       BASE_URL + `author_claim_token_validation/`,
@@ -197,6 +198,16 @@ const routes = (BASE_URL) => {
         : BASE_URL + `moderators/author_claim_case/`,
     MODERATORS_AUTHOR_CLAIM_CASE_COUNT: () =>
       BASE_URL + "moderators/author_claim_case/counts/",
+=======
+    AUTHOR_CLAIM_CASE: () => {
+      return BASE_URL + `author_claim_case/`;
+    },
+
+    AUTHOR_CLAIM_TOKEN_VALIDATION: () => {
+      return BASE_URL + `author_claim_token_validation/`;
+    },
+
+>>>>>>> f250b426 (validation is working)
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
