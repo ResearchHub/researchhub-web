@@ -2,11 +2,10 @@ import { css, StyleSheet } from "aphrodite";
 import Button from "../../../../../components/Form/Button";
 import colors from "../../../../../config/themes/colors";
 import FormInput from "../../../../../components/Form/FormInput";
-import Loader from "../../../../../components/Loader/Loader.js";
+import Loader from "../../../../../components/Loader/Loader";
 import Modal from "react-modal";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
 import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
-import { nullthrows } from "../../../../../config/utils/nullchecks";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -135,7 +134,7 @@ export default function AuthorClaimModal({
                   ) : (
                     <Loader
                       size={8}
-                      loading={true}
+                      loading
                       containerStyle={modalBodyStyles.loaderStyle}
                       color="#fff"
                     />
