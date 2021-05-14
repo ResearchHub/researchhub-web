@@ -3,15 +3,16 @@ import { ClipLoader, DotLoader, BeatLoader } from "react-spinners";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 
-const Loader = ({
-  loading,
-  color,
-  size,
-  sizeUnit,
-  loaderStyle,
-  containerStyle,
-  type,
-}) => {
+const Loader = (props) => {
+  const {
+    loading,
+    color,
+    size,
+    sizeUnit,
+    loaderStyle,
+    containerStyle,
+    type,
+  } = props;
   const spinner = (type) => {
     switch (type) {
       case "dot":
