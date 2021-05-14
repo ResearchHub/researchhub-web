@@ -2,7 +2,9 @@ import { css, StyleSheet } from "aphrodite";
 import React, { Fragment, ReactElement, useCallback, useState } from "react";
 import ResearchHubPopover from "../../../../components/ResearchHubPopover";
 import icons from "../../../../config/themes/icons";
-import AuthorClaimModal, { AuthorClaimDataProps } from "./AuthorClaimModal";
+import AuthorClaimModal, {
+  AuthorClaimDataProps,
+} from "./author_claim_modal/AuthorClaimModal";
 import colors from "../../../../config/themes/colors";
 
 type Props = {
@@ -17,22 +19,23 @@ export default function ClaimAuthorPopoverLabel({
   user,
 }: Props): ReactElement<typeof Fragment> {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
-  const [claimModalState, setClaimModalState] = useState<AuthorClaimDataProps>({
-    auth,
-    author,
-    isOpen: false,
-    user,
-  });
+  const [isClaimModalOpen, setIsClaimModalOpen] = useState<boolean>(false);
   const { first_name: authorFirstName, last_name: authorLastName } = author;
 
   const handleClaimButtonClick = useCallback((): void => {
-    setClaimModalState({ auth, author, isOpen: true, user });
+    setIsClaimModalOpen(!isClaimModalOpen);
     setIsPopoverOpen(false);
   }, [setIsPopoverOpen]);
 
   return (
     <Fragment>
-      <AuthorClaimModal {...claimModalState} />
+      <AuthorClaimModal
+        auth={auth}
+        author={author}
+        isOpen={isClaimModalOpen}
+        setIsOpen={setIsClaimModalOpen}
+        user={user}
+      />
       <div className={css(styles.claimAuthorPopoverLabel)}>
         <span className={css(styles.popoverLabelText)}>
           {"Unclaimed profile"}
