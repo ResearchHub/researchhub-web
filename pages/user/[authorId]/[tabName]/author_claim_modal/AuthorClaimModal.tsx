@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import Button from "../../../../../components/Form/Button";
 import colors from "../../../../../config/themes/colors";
 import FormInput from "../../../../../components/Form/FormInput";
+import Loader from "../../../../../components/Loader/Loader.js";
 import Modal from "react-modal";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
 
@@ -48,6 +49,7 @@ export default function AuthorClaimModal({
   const [formErrors, setFormErrors] = useState<FormError>({
     eduEmail: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const handleValidationAndSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
@@ -96,6 +98,7 @@ export default function AuthorClaimModal({
             />
             <FormInput
               containerStyle={modalBodyStyles.containerStyle}
+              disable={isSubmitting}
               id="eduEmail"
               label="Your .edu email address"
               labelStyle={modalBodyStyles.labelStyle}
@@ -105,15 +108,26 @@ export default function AuthorClaimModal({
               required
             />
             <div>
-              {/* @ts-ignore Button type is setup not correctly */}
               <Button
                 customButtonStyle={modalBodyStyles.buttonStyle}
-                label="Request"
+                disable={isSubmitting}
+                label={
+                  !isSubmitting ? (
+                    "Request"
+                  ) : (
+                    <Loader
+                      size={8}
+                      loading={true}
+                      containerStyle={modalBodyStyles.loaderStyle}
+                      color="#fff"
+                    />
+                  )
+                }
                 type="submit"
               />
-              {/* @ts-ignore Button type is setup not correctly */}
               <Button
                 customButtonStyle={modalBodyStyles.cancelButtonStyle}
+                disabled={isSubmitting}
                 label="Cancel"
                 onClick={(e: SyntheticEvent): void => {
                   e.preventDefault();
@@ -169,6 +183,9 @@ const modalBodyStyles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 13,
     },
+  },
+  loaderStyle: {
+    display: "unset",
   },
   modalBody: {
     alignItems: "center",
