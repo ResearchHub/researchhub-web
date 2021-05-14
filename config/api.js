@@ -187,6 +187,10 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    AUTHOR_CLAIM_CASE: () => {
+      return BASE_URL + `author_claim_case/`;
+    },
+
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
