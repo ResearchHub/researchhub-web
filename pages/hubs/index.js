@@ -249,10 +249,10 @@ class Index extends React.Component {
             </div>
             <div className={css(styles.stickyComponent)}>
               <CategoryListMobile
-                categories={categories}
                 activeCategory={activeCategory}
-                setActiveCategory={this.setActiveCategory}
+                categories={categories}
                 clickedTab={clickedTab}
+                setActiveCategory={this.setActiveCategory}
                 setClickedTab={this.setClickedTab}
               />
             </div>
