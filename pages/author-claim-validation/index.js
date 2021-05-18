@@ -28,7 +28,6 @@ export default function AuthorClaimValidation() {
     if (isNullOrUndefined(token) || token.length < 1) {
       setValidationState(VALIDATION_STATE.REQUEST_NOT_FOUND);
     } else if (isNullOrUndefined(validationState)) {
-      console.warn("calling");
       setValidationState(VALIDATION_STATE.LOADING);
       authenticateToken({
         onError: onValidationError,
