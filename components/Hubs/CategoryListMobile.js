@@ -9,11 +9,13 @@ import icons from "~/config/themes/icons";
 
 const Tab = ({ text, index, activeCategory }) => {
   const isActive = index === activeCategory;
-  const classNames = [styles.tab, isActive ? styles.active : null];
   return (
     <Link href={`#${text.toLowerCase().replace(/\s/g, "-")}`} scroll={false}>
       <div
-        className={css(classNames) + ` menu-item ${isActive ? "active" : ""}`}
+        className={
+          css([styles.tab, isActive ? styles.active : null]) +
+          ` menu-item ${isActive ? "active" : ""}`
+        }
       >
         <div className={css(styles.link)}>
           {text === "Trending" ? (
