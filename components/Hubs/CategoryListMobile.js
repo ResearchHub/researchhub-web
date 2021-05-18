@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { useRef, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -30,7 +30,7 @@ const Tab = ({ text, index, activeCategory }) => {
   );
 };
 
-export const Menu = (list, activeCategory) =>
+const Menu = (list, activeCategory) =>
   list.map((el, index) => {
     const name = el.category_name;
     return (
@@ -43,7 +43,7 @@ export const Menu = (list, activeCategory) =>
     );
   });
 
-export const NavigationArrow = ({ icon, direction, customStyles }) => {
+const NavigationArrow = ({ icon, direction, customStyles }) => {
   const classNames = [
     styles.arrowContainer,
     direction === "left" ? styles.arrowLeft : styles.arrowRight,
@@ -52,59 +52,52 @@ export const NavigationArrow = ({ icon, direction, customStyles }) => {
   return <div className={css(classNames)}>{icon}</div>;
 };
 
-class CategoryListMobile extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      categories:
-        this.props.categories && this.props.categories.results
-          ? this.props.categories.results
-          : [],
-    };
-  }
+const CategoryListMobile = (props) => {
+  const {
+    categories,
+    activeCategory,
+    setActiveCategory,
+    clickedTab,
+    setClickedTab,
+  } = props;
+  const menu = Menu(categories, activeCategory);
+  const menuRef = useRef();
 
-  onSelect = (key) => {
-    this._menu && this._menu.scrollTo(key);
-    this.props.setClickedTab(true);
+  useEffect(() => {
+    if (!clickedTab) {
+      menuRef.current && menuRef.current.scrollTo(activeCategory.toString());
+    }
+  }, [activeCategory]);
+
+  const onSelect = (key) => {
+    menuRef.current && menuRef.current.scrollTo(key);
+    setClickedTab(true);
     setTimeout(() => {
-      this.props.setClickedTab(false);
-      this.props.setActiveCategory(key);
+      setClickedTab(false);
+      setActiveCategory(parseInt(key));
     }, 20);
   };
 
-  componentDidUpdate(prevProps) {
-    if (this.props.activeCategory !== prevProps.activeCategory) {
-      const { categories, activeCategory, clickedTab } = this.props;
-      if (categories[activeCategory] && !clickedTab) {
-        this._menu && this._menu.scrollTo(activeCategory.toString());
-      }
-    }
-  }
-
-  render() {
-    const { categories, activeCategory, setActiveCategory } = this.props;
-    let menu = Menu(categories, activeCategory);
-    return (
-      <div className={css(styles.container)}>
-        <ScrollMenu
-          data={menu}
-          arrowLeft={
-            <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
-          }
-          arrowRight={
-            <NavigationArrow icon={icons.chevronRight} direction={"right"} />
-          }
-          menuStyle={styles.tabContainer}
-          itemStyle={{ border: "none", highlight: "none", outline: "none" }}
-          hideSingleArrow={true}
-          onSelect={this.onSelect}
-          wheel={false}
-          ref={(el) => (this._menu = el)}
-        />
-      </div>
-    );
-  }
-}
+  return (
+    <div className={css(styles.container)}>
+      <ScrollMenu
+        ref={menuRef}
+        data={menu}
+        arrowLeft={
+          <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+        }
+        arrowRight={
+          <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+        }
+        menuStyle={styles.tabContainer}
+        itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+        hideSingleArrow={true}
+        onSelect={onSelect}
+        wheel={false}
+      />
+    </div>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
