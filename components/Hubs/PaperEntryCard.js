@@ -28,7 +28,6 @@ import {
   formatPaperSlug,
   getUsersFromPaper,
   getJournalFromURL,
-  formatJournalName,
 } from "~/config/utils";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
@@ -142,16 +141,22 @@ const PaperEntryCard = (props) => {
   }
 
   function renderJournalName(mobile) {
-    if (external_source) {
+    if (external_source || url) {
+      const source = external_source ? external_source : getJournalFromURL(url);
+
       return (
         <div className={css(styles.metadataContainer, styles.authorContainer)}>
           <div
             className={
-              css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
-              " clamp1"
+              css(
+                styles.metadataClamp,
+                styles.metadata,
+                styles.removeMargin,
+                styles.capitalize
+              ) + " clamp1"
             }
           >
-            Journal: {external_source}
+            Journal: {source}
           </div>
         </div>
       );
@@ -841,6 +846,9 @@ const styles = StyleSheet.create({
   },
   removeMargin: {
     marginLeft: 0,
+  },
+  capitalize: {
+    // textTransform: "capitalize"
   },
   authors: {
     marginLeft: 0,
