@@ -44,8 +44,7 @@ export function inlineThreadFetchTarget({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((res) => {
-      const data = formatData(res); // res JSON changes when >= 10 comments
+    .then((data) => {
       try {
         onSuccess(data);
       } catch (error) {
@@ -53,11 +52,4 @@ export function inlineThreadFetchTarget({
       }
     })
     .catch(onError);
-}
-
-function formatData(data) {
-  if ("results" in data) {
-    return data.results.pop();
-  }
-  return data;
 }

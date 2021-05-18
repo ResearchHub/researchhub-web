@@ -141,9 +141,8 @@ class DiscussionEntry extends React.Component {
           comment_count,
         } = data;
 
-        const ENDPOINT = next
-          ? next
-          : API.THREAD_COMMENT(paperId, discussionThreadId, page);
+        const ENDPOINT =
+          next || API.THREAD_COMMENT(paperId, discussionThreadId, page);
 
         fetch(ENDPOINT, API.GET_CONFIG())
           .then(Helpers.checkStatus)

@@ -208,11 +208,9 @@ class ReplyEntry extends React.Component {
       ({ payload }) => {
         const { donePosting, success, postedReply } = payload;
         if (donePosting && success) {
-          callback && callback();
           this.props.onReplySubmitCallback(postedReply);
-        } else {
-          callback && callback();
         }
+        callback && callback();
       }
     );
   };

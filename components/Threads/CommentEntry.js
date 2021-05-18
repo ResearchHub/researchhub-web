@@ -138,18 +138,18 @@ class CommentEntry extends React.Component {
       },
       () => {
         const { data, comment, updateCommentState } = this.props;
-        const { page, next } = this.state;
         const { id: discussionThreadId, paper: paperId } = data;
         const { replies, id: commentId } = comment;
+        const { page, next } = this.state;
 
-        const ENDPOINT = next
-          ? next
-          : API.THREAD_COMMENT_REPLY(
-              paperId,
-              discussionThreadId,
-              commentId,
-              page
-            );
+        const ENDPOINT =
+          next ||
+          API.THREAD_COMMENT_REPLY(
+            paperId,
+            discussionThreadId,
+            commentId,
+            page
+          );
 
         fetch(ENDPOINT, API.GET_CONFIG())
           .then(Helpers.checkStatus)
