@@ -321,7 +321,6 @@ const styles = StyleSheet.create({
     marginTop: -25,
     marginBottom: 20,
     "@media only screen and (max-width: 767px)": {
-      // top: 65,
       top: -2,
       position: "sticky",
       backgroundColor: "#FFF",

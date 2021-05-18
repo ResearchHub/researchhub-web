@@ -4,24 +4,14 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 
-// Component
-
-// Config
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const Tab = ({ text, index, activeCategory }) => {
-  let isActive = false;
-  let classNames = [styles.tab];
-  let slug = text.toLowerCase().replace(/\s/g, "-");
-
-  if (index == activeCategory) {
-    isActive = true;
-    classNames.push(styles.active);
-  }
-
+  let isActive = index === activeCategory;
+  let classNames = [styles.tab, isActive ? styles.active : null];
   return (
-    <Link href={`#${slug}`} scroll={false}>
+    <Link href={`#${text.toLowerCase().replace(/\s/g, "-")}`} scroll={false}>
       <div
         className={css(classNames) + ` menu-item ${isActive ? "active" : ""}`}
       >
@@ -54,18 +44,11 @@ export const Menu = (list, activeCategory) =>
   });
 
 export const NavigationArrow = ({ icon, direction, customStyles }) => {
-  const classNames = [styles.arrowContainer];
-
-  if (direction === "left") {
-    classNames.push(styles.arrowLeft);
-  } else {
-    classNames.push(styles.arrowRight);
-  }
-
-  if (customStyles) {
-    classNames.push(customStyles);
-  }
-
+  const classNames = [
+    styles.arrowContainer,
+    direction === "left" ? styles.arrowLeft : styles.arrowRight,
+    customStyles ? customStyles : null,
+  ];
   return <div className={css(classNames)}>{icon}</div>;
 };
 
