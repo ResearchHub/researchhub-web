@@ -30,7 +30,7 @@ export const getJournalFromURL = (url) => {
  */
 export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
   if (!paper) return []; // short circuit
-  const { authors, uploaded_by, discussion } = paper;
+  const { authors, uploaded_by, discussion_users } = paper;
 
   const seenUsers = {};
   const users = [];
@@ -53,10 +53,8 @@ export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
   }
 
   // add discussion users
-  (discussion || []).forEach((comment) => {
-    const {
-      created_by: { author_profile: commenter },
-    } = comment;
+  (discussion_users || []).forEach((discussionUser) => {
+    const { author_profile: commenter } = discussionUser;
 
     if (!seenUsers[commenter.id]) {
       users.push(commenter);
