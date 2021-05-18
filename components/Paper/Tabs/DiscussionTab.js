@@ -169,14 +169,6 @@ const DiscussionTab = (props) => {
     setPage(1);
   };
 
-  const expand = () => {
-    setExpandComments(true);
-  };
-
-  const collapse = () => {
-    setExpandComments(false);
-  };
-
   const cancel = () => {
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
@@ -458,13 +450,19 @@ const DiscussionTab = (props) => {
           {props.calculatedCount > 2 ? (
             expandComments ? (
               <div className={css(styles.expandDiv)}>
-                <button className={css(styles.expandButton)} onClick={collapse}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(false)}
+                >
                   See Fewer Comments
                 </button>
               </div>
             ) : (
               <div className={css(styles.expandDiv)}>
-                <button className={css(styles.expandButton)} onClick={expand}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(true)}
+                >
                   View All Comments ({props.calculatedCount})
                 </button>
               </div>
