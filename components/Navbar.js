@@ -557,7 +557,7 @@ const Navbar = (props) => {
           >
             <Button
               customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-              label={"Add Paper"}
+              label={"New Post +"}
               hideRipples={true}
             />
           </PermissionNotificationWrapper>
