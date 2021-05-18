@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 // Component
 import BaseModal from "./BaseModal";
 import Button from "~/components/Form/Button";
+import LargeList from "~/components/Form/LargeList";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -60,6 +61,7 @@ class NewPostModal extends React.Component {
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title)}>{"Select your post type"}</div>
           </div>
+          <LargeList selectMany={true} items={["a", "b", "c"]}></LargeList>
           <form className={css(styles.form)} onSubmit={this.saveAndCloseModal}>
             <div className={css(styles.buttonContainer)}>
               <Button
@@ -80,7 +82,7 @@ const styles = StyleSheet.create({
   modalStyle: {
     maxHeight: "95vh",
     overflowY: "scroll",
-    width: 600,
+    width: 625,
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
