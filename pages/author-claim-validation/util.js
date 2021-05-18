@@ -39,7 +39,7 @@ export const getPageBody = (validationState) => {
     case VALIDATION_STATE.VALIDATED:
       return (
         <div className={css(styles.pageBody)}>
-          <div>{"You have successfully authenciated your request"}</div>
+          <div>{"You have successfully authenciated your request! "}</div>
           <div>
             {"ResearchHub team will now review your author claim request"}
           </div>

@@ -1,5 +1,6 @@
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
+import { VALIDATION_STATE } from "../constants";
 import API from "~/config/api";
 
 export function authenticateToken({
@@ -10,12 +11,10 @@ export function authenticateToken({
   fetch(API.AUTHOR_CLAIM_TOKEN_VALIDATION(), API.POST_CONFIG({ token }))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((response) => {
-      console.warn("response: ", response);
+    .then((_response) => {
       onSuccess();
     })
     .catch((err) => {
-      console.warn("err: ", err);
-      onError(err);
+      onError({ err, validationState: VALIDATION_STATE.REQUEST_NOT_FOUND });
     });
 }
