@@ -8,8 +8,8 @@ import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const Tab = ({ text, index, activeCategory }) => {
-  let isActive = index === activeCategory;
-  let classNames = [styles.tab, isActive ? styles.active : null];
+  const isActive = index === activeCategory;
+  const classNames = [styles.tab, isActive ? styles.active : null];
   return (
     <Link href={`#${text.toLowerCase().replace(/\s/g, "-")}`} scroll={false}>
       <div
@@ -44,20 +44,25 @@ const Menu = (list, activeCategory) =>
   });
 
 const NavigationArrow = ({ icon, direction, customStyles }) => {
-  const classNames = [
-    styles.arrowContainer,
-    direction === "left" ? styles.arrowLeft : styles.arrowRight,
-    customStyles ? customStyles : null,
-  ];
-  return <div className={css(classNames)}>{icon}</div>;
+  return (
+    <div
+      className={css([
+        styles.arrowContainer,
+        direction === "left" ? styles.arrowLeft : styles.arrowRight,
+        customStyles ? customStyles : null,
+      ])}
+    >
+      {icon}
+    </div>
+  );
 };
 
 const CategoryListMobile = (props) => {
   const {
-    categories,
     activeCategory,
-    setActiveCategory,
+    categories,
     clickedTab,
+    setActiveCategory,
     setClickedTab,
   } = props;
   const menu = Menu(categories, activeCategory);
@@ -81,18 +86,18 @@ const CategoryListMobile = (props) => {
   return (
     <div className={css(styles.container)}>
       <ScrollMenu
-        ref={menuRef}
-        data={menu}
         arrowLeft={
           <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
         }
         arrowRight={
           <NavigationArrow icon={icons.chevronRight} direction={"right"} />
         }
-        menuStyle={styles.tabContainer}
-        itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+        data={menu}
         hideSingleArrow={true}
+        itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+        menuStyle={styles.tabContainer}
         onSelect={onSelect}
+        ref={menuRef}
         wheel={false}
       />
     </div>
