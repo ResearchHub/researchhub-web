@@ -11,7 +11,7 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
 
   const renderUserAvatars = () => {
     return paperContributers.map((user, index) => {
-      const classNames = [styles.avatarContainer];
+      const classNames = [styles.root];
 
       if (!user.profile_image) {
         // default avatar image need padding for alignment
@@ -22,16 +22,14 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
 
       if (index > 0) {
         // style used to have overlapping UI
-        avatarStyle.position = "absolute";
-        avatarStyle.left = -10;
-        avatarStyle.zIndex = 3 * index;
+        avatarStyle.marginLeft = -11;
       }
 
       return (
         <div className={css(classNames)}>
-          <span style={avatarStyle}>
+          <div style={avatarStyle}>
             <AuthorAvatar author={user} size={28} />
-          </span>
+          </div>
         </div>
       );
     });
@@ -45,12 +43,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-  },
-  avatarContainer: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    position: "relative",
   },
   default: {
     paddingBottom: 5,
