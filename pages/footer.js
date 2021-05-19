@@ -101,6 +101,15 @@ class Footer extends React.Component {
                 <span className={css(styles.logo)}>{icons.reddit}</span>
               </div>
             </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://github.com/ResearchHub"
+            >
+              <div className={css(styles.social)}>
+                <span className={css(styles.logo)}>{icons.github}</span>
+              </div>
+            </a>
           </div>
           <Link href={"/about/tos"} as={"/about/tos"}>
             <a className={css(styles.link)}>
