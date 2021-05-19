@@ -28,10 +28,6 @@ class NewPostModal extends React.Component {
     };
   }
 
-  componentDidMount = () => {
-    console.log("new post modal props", this.props);
-  };
-
   saveAndCloseModal = (e) => {
     e && e.preventDefault();
     this.props.openNewPostModal(false);
@@ -61,7 +57,29 @@ class NewPostModal extends React.Component {
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title)}>{"Select your post type"}</div>
           </div>
-          <LargeList selectMany={true} items={["a", "b", "c"]}></LargeList>
+          <LargeList selectMany={false} style={styles.list} onChange={() => {}}>
+            <Media
+              header={"Upload a Paper"}
+              description={
+                "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly."
+              }
+              imgSrc={"/static/icons/uploadPaper.png"}
+            />
+            <Media
+              header={"Ask a Question or Start a Discussion"}
+              description={
+                "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome."
+              }
+              imgSrc={"/static/icons/askQuestion.png"}
+            />
+            <Media
+              header={"Publish a Research Project"}
+              description={
+                "Publish lab notes, original research, metastudies, etc."
+              }
+              imgSrc={"/static/icons/publishProject.png"}
+            />
+          </LargeList>
           <form className={css(styles.form)} onSubmit={this.saveAndCloseModal}>
             <div className={css(styles.buttonContainer)}>
               <Button
@@ -78,11 +96,65 @@ class NewPostModal extends React.Component {
   }
 }
 
+function Media({ header, description, imgSrc }) {
+  return (
+    <div className={css(styles.mediaContainer)}>
+      <div className={css(styles.mediaContent)}>
+        <div className={css(styles.mediaHeader)}> {header} </div>
+        <div className={css(styles.mediaDescription)}> {description} </div>
+      </div>
+      <div className={css(styles.mediaImgBox)}>
+        <img src={imgSrc} className={css(styles.mediaImg)} draggable={false} />
+      </div>
+    </div>
+  );
+}
+
 const styles = StyleSheet.create({
+  list: {
+    width: "544px",
+    margin: "31px",
+  },
+  mediaContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignSelf: "stretch",
+  },
+  mediaContent: {
+    display: "flex",
+    flexDirection: "column",
+    width: "373px",
+  },
+  mediaHeader: {
+    display: "flex",
+    fontSize: "14px",
+    fontWeight: 500,
+    fontSize: "18px",
+    lineHeight: "21px",
+    color: "#241F3A",
+  },
+  mediaDescription: {
+    display: "flex",
+    fontWeight: "normal",
+    fontSize: "14px",
+    lineHeight: "22px",
+    color: "#241F3A",
+    opacity: 0.7,
+  },
+  mediaImgBox: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    width: "75px",
+    height: "75px",
+    borderRadius: "4px",
+    backgroundColor: "rgba(57, 113, 255, 0.07)",
+  },
+  mediaImg: {},
   modalStyle: {
     maxHeight: "95vh",
-    overflowY: "scroll",
-    width: 625,
+    // overflowY: "scroll",
+    width: "625px",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
@@ -109,72 +181,6 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "relative",
   },
-  avatarContainer: {
-    width: 120,
-    height: 120,
-    cursor: "pointer",
-    position: "relative",
-    borderRadius: "50%",
-    marginTop: 5,
-  },
-  border: {
-    border: "2px solid #F1F1F1",
-  },
-  profilePictureHover: {
-    width: 120,
-    height: 60,
-    borderRadius: "0 0 100px 100px",
-    display: "flex",
-    justifyContent: "center",
-    paddingTop: 5,
-    boxSizing: "border-box",
-    position: "absolute",
-    background: "rgba(0, 0, 0, .3)",
-    color: "#fff",
-    bottom: 0,
-  },
-  titleHeader: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    width: "100%",
-    paddingTop: 30,
-    paddingBottom: 10,
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-      alignItems: "center",
-    },
-  },
-  column: {
-    display: "flex",
-    flexDirection: "column",
-    width: "100%",
-    marginLeft: 30,
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: 0,
-    },
-  },
-  formInputContainer: {
-    position: "relative",
-    width: "100%",
-    marginBottom: 15,
-  },
-  formInput: {
-    padding: 0,
-    margin: 0,
-
-    width: "100%",
-  },
-
-  formTextAreaContainer: {
-    marginTop: 10,
-  },
-  formTextArea: {
-    minHeight: 100,
-  },
-  marginBottom: {
-    marginBottom: 24,
-  },
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
@@ -190,55 +196,6 @@ const styles = StyleSheet.create({
   },
   rippleClass: {
     width: "100%",
-  },
-  button: {
-    width: 126,
-    height: 45,
-    border: "1px solid",
-    borderColor: colors.BLUE(),
-    borderRadius: 4,
-    fontSize: 15,
-    outline: "none",
-    cursor: "pointer",
-  },
-  infoIcon: {
-    cursor: "pointer",
-    marginLeft: 5,
-  },
-  addmoreButton: {
-    fontSize: 14,
-    color: colors.BLUE(),
-    marginTop: 5,
-    marginBottom: 10,
-    width: "max-content",
-    cursor: "pointer",
-    float: "right",
-    ":hover": {
-      textDecoration: "underline",
-    },
-  },
-  universityContainer: {
-    padding: 0,
-    margin: 0,
-    marginBottom: 10,
-    width: "100%",
-  },
-  isPublicContainer: {
-    position: "absolute",
-    right: 0,
-    // top: 0,
-    bottom: -40,
-    display: "flex",
-    alignItems: "center",
-  },
-  isPublicLabel: {
-    color: colors.BLACK(0.5),
-    fontSize: 14,
-    marginRight: 8,
-    fontWeight: 400,
-  },
-  activeLabel: {
-    color: colors.BLUE(),
   },
   closeButton: {
     height: 12,
@@ -256,11 +213,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     boxSizing: "border-box",
-  },
-  left: {
-    textAlign: "left",
-    alignItems: "left",
-    width: "100%",
   },
   title: {
     fontWeight: "500",
