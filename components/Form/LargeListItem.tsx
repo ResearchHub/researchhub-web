@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { ReactChildren, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
 import CheckBox from "~/components/Form/CheckBox";
+
+type LargeListItemProps = {
+  checkboxSquare: boolean;
+  active: boolean;
+  id?: string;
+  onChange?: Function;
+  children: ReactChildren;
+};
 
 export default function LargeListItem({
   checkboxSquare,
@@ -10,7 +18,7 @@ export default function LargeListItem({
   id,
   onChange,
   children,
-}) {
+}: LargeListItemProps) {
   return (
     <div className={css(styles.largeListItem)}>
       <div className={css(styles.checkboxAligner)}>
