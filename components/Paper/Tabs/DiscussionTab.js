@@ -71,6 +71,7 @@ const DiscussionTab = (props) => {
   );
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
+  const [expandComments, setExpandComments] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
   const [editorDormant, setEditorDormant] = useState(false);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
@@ -110,6 +111,14 @@ const DiscussionTab = (props) => {
   function renderThreads(threads = []) {
     if (!Array.isArray(threads)) {
       threads = [];
+    }
+
+    if (!expandComments && threads.length > 0) {
+      if (threads[0].data.comment_count > 0) {
+        threads = threads.slice(0, 1);
+      } else {
+        threads = threads.slice(0, 2);
+      }
     }
 
     return (
@@ -368,7 +377,7 @@ const DiscussionTab = (props) => {
         >
           <div className={css(styles.header)}>
             <h3 className={css(styles.discussionTitle)}>
-              Discussion
+              Comments
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -438,6 +447,27 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
+          {props.calculatedCount > 2 ? (
+            expandComments ? (
+              <div className={css(styles.expandDiv)}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(false)}
+                >
+                  See Fewer Comments
+                </button>
+              </div>
+            ) : (
+              <div className={css(styles.expandDiv)}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(true)}
+                >
+                  View All Comments ({props.calculatedCount})
+                </button>
+              </div>
+            )
+          ) : null}
           {props.paper.nextDiscussion && !fetching && (
             <div className={css(styles.buttonContainer)}>
               {loading ? (
@@ -457,7 +487,7 @@ const DiscussionTab = (props) => {
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Discussion
+              Comments
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -657,6 +687,22 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 767px)": {
       marginTop: 5,
+    },
+  },
+  expandDiv: {
+    textAlign: "center",
+  },
+  expandButton: {
+    marginTop: 10,
+    cursor: "pointer",
+    border: "none",
+    color: colors.BLUE(1),
+    background: "unset",
+    fontSize: 14,
+    ":hover": {
+      backgroundColor: "#FFF",
+      color: colors.PURPLE(),
+      textDecoration: "underline",
     },
   },
   pencilIcon: {
