@@ -16,10 +16,9 @@ const Index = (props) => {
   const router = useRouter();
   const { uploadPaperTitle, type } = router.query;
 
-  useEffect(() => {
-    props.openNewPostModal(true);
-    console.log("showing new post modal", props);
-  }, []);
+  // useEffect(() => {
+  //   props.openNewPostModal(true);
+  // }, []);
 
   return (
     <Fragment>

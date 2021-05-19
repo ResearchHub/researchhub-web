@@ -381,6 +381,10 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
+  function openNewPostModal() {
+    props.openNewPostModal(true);
+  }
+
   const burgerMenuStyle = {
     bmBurgerBars: {
       background: "#373a47",
@@ -588,6 +592,7 @@ const Navbar = (props) => {
               customButtonStyle={{ ...styles.button, ...styles.addPaper }}
               label={"New Post +"}
               hideRipples={true}
+              onClick={openNewPostModal}
             />
           </PermissionNotificationWrapper>
         </div>
@@ -987,6 +992,7 @@ const mapDispatchToProps = {
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   openWithdrawalModal: ModalActions.openWithdrawalModal,
+  openNewPostModal: ModalActions.openNewPostModal,
   openSignUpModal: ModalActions.openSignUpModal,
   updateUser: AuthActions.updateUser,
 };
