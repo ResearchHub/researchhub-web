@@ -56,6 +56,7 @@ import {
   faSlack,
   faTwitter,
   faReddit,
+  faGithub,
 } from "@fortawesome/fontawesome-free-brands";
 import {
   faArrowToBottom,
@@ -301,6 +302,7 @@ const icons = {
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
   flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
+  github: <FontAwesomeIcon icon={faGithub} />,
   globe: <FontAwesomeIcon icon={faGlobeAmericas} />,
   graduationCap: <FontAwesomeIcon icon={faGraduationCap} />,
   home: <FontAwesomeIcon icon={faHome} />,
