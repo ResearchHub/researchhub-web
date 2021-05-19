@@ -78,6 +78,7 @@ const CategoryListMobile = (props) => {
 
   const onSelect = (key) => {
     menuRef.current && menuRef.current.scrollTo(key);
+    // TODO: [clickedTab] - [workaround to fix scrolling bug when jumping past multiple Waypoints instantly]
     setClickedTab(true);
     setTimeout(() => {
       setClickedTab(false);
