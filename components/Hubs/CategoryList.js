@@ -104,7 +104,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
-    textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
     boxSizing: "border-box",
