@@ -3,6 +3,7 @@ import {
   isNullOrUndefined,
   nullToEmptyString,
 } from "../../config/utils/nullchecks";
+import { connect } from "react-redux";
 import React, {
   ReactElement,
   RefObject,
@@ -21,6 +22,7 @@ import PaperDraftUnduxStore, {
   PaperDraftStore,
   revertBackToSavedState,
 } from "../PaperDraft/undux/PaperDraftUnduxStore";
+import { ModalActions } from "../../redux/modals";
 
 export const BUTTON_HEIGHT = 24;
 export const BUTTON_WIDTH = 24;
@@ -55,9 +57,10 @@ function useEffectHandleClickOutside({
   }, [isRefNull, onClickOutside, shouldShowButton]);
 }
 
-export default function PaperDraftInlineCommentSlideButton(): ReactElement<
-  "div"
-> | null {
+function PaperDraftInlineCommentSlideButton({
+  isLoggedIn,
+  openLoginModal,
+}): ReactElement<"div"> | null {
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const buttonRef = useRef<HTMLDivElement>(null);
@@ -74,6 +77,10 @@ export default function PaperDraftInlineCommentSlideButton(): ReactElement<
     (preparedEntityKey != null && displayableOffsetTop > -1);
 
   const closeButtonAndRenderThreadCard = (event: SyntheticEvent) => {
+    if (!isLoggedIn) {
+      openLoginModal(true, "Please sign in with Google to add a comment.");
+      return;
+    }
     clearSelection({ paperDraftStore });
     cleanupStoreAndCloseDisplay({
       inlineCommentStore,
@@ -138,3 +145,17 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+// TODO: Change this to useSelector
+const mapStateToProps = (state) => ({
+  isLoggedIn: state.auth.isLoggedIn,
+});
+
+const mapDispatchToProps = {
+  openLoginModal: ModalActions.openLoginModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperDraftInlineCommentSlideButton);
