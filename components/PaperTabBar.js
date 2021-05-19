@@ -27,13 +27,13 @@ const PaperTabBar = (props) => {
   function getPaperTabs() {
     const paperTabs = [
       { href: "main", label: "main" },
+      { href: "comments", label: "comments" },
       { href: "abstract", label: "abstract" },
-      { href: "discussion", label: "discussion" },
       { href: "paper pdf", label: "Paper PDF" },
     ];
 
     if (paperDraftExists) {
-      paperTabs.splice(2, 0, { href: "paper", label: "paper" });
+      paperTabs.splice(3, 0, { href: "paper", label: "paper" });
     }
 
     return paperTabs;
