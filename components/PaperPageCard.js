@@ -722,8 +722,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   previewStyles: {
-    width: "100%",
-    height: "unset",
+    // alignSelf: "stretch",
+    // height: "100%",
+    // width: "100%",
+    // height: "unset",
   },
   container: {
     width: "100%",
@@ -742,7 +744,14 @@ const styles = StyleSheet.create({
   },
   previewBox: {
     marginLeft: "auto",
-    minWidth: 140,
+    display: "flex",
+    alignItems: "stretch",
+    // minWidth: 140,
+    // overflowY: "hidden",
+    // height: "10px",
+    // alignSelf: "stretch",
+    // height: "100%",
+
     maxWidth: "20%",
 
     "@media only screen and (max-width: 767px)": {
@@ -1152,7 +1161,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-end",
+    alignItems: "flex-end", // TODO: look into this
     marginTop: "auto",
     "@media only screen and (max-width: 767px)": {
       margin: 0,
