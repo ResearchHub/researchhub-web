@@ -1,8 +1,8 @@
 import { connect, useStore } from "react-redux";
-import React, { useEffect, ReactElement } from "react";
-import { useRouter } from "next/router";
-
 import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import { useRouter } from "next/router";
+import AuthorClaimCaseDashboard from "./AuthorClaimCaseDashboard";
+import React, { ReactElement, useEffect } from "react";
 
 function useEffectCheckCredentials(reduxStore: any): void {
   const auth = reduxStore.getState().auth;
@@ -23,14 +23,16 @@ function useEffectCheckCredentials(reduxStore: any): void {
   }, [isCurrUserMod, isLoggedIn, isReadyToCheck]);
 }
 
-function AuthorClaimCaseDashboard(): ReactElement<"div"> {
+function AuthorClaimCaseDashboardIndex(): ReactElement<
+  typeof AuthorClaimCaseDashboard
+> {
   const reduxStore = useStore();
   useEffectCheckCredentials(reduxStore);
-  return <div>Hi this is author claim dashboard</div>;
+  return <AuthorClaimCaseDashboard />;
 }
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
-export default connect(mapStateToProps)(AuthorClaimCaseDashboard);
+export default connect(mapStateToProps)(AuthorClaimCaseDashboardIndex);
