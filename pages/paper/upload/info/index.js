@@ -10,15 +10,14 @@ import NewPostModal from "~/components/Modals/NewPostModal";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
-import ComponentWrapper from "../../../../components/ComponentWrapper";
 
-const Index = (props) => {
+function Index(props) {
   const router = useRouter();
   const { uploadPaperTitle, type } = router.query;
 
-  // useEffect(() => {
-  //   props.openNewPostModal(true);
-  // }, []);
+  useEffect(() => {
+    props.openNewPostModal(true);
+  }, []);
 
   return (
     <Fragment>
@@ -27,7 +26,7 @@ const Index = (props) => {
       <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} />
     </Fragment>
   );
-};
+}
 
 const mapStateToProps = (state) => ({});
 
@@ -39,5 +38,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(Index);
-
-// export default Index;
