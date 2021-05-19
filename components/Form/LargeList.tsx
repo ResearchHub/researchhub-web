@@ -1,15 +1,22 @@
-import React, { useState } from "react";
+import React, { ReactChildren, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
 import LargeListItem from "~/components/Form/LargeListItem";
+
+type LargeListProps = {
+  selectMany: boolean;
+  customListStyle: StyleSheet;
+  onChange?: Function;
+  children: ReactChildren;
+};
 
 export default function LargeList({
   selectMany,
   customListStyle,
   onChange,
   children,
-}) {
+}: LargeListProps) {
   let [isActives, setIsActives] = useState(children.map(() => false));
 
   const renderListItem = (item, index) => {
