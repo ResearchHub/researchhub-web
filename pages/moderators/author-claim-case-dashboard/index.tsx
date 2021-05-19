@@ -18,7 +18,6 @@ function useEffectCheckCredentials(reduxStore: any): void {
   useEffect(() => {
     if (isReadyToCheck && (!isCurrUserMod || !isLoggedIn)) {
       // sending back inappropriate user to home
-      console.warn("push away!!!");
       router.push("/");
     }
   }, [isCurrUserMod, isLoggedIn, isReadyToCheck]);
