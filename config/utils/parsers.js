@@ -55,6 +55,9 @@ export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
   // add discussion users
   (discussion_users || []).forEach((discussionUser) => {
     const { author_profile: commenter } = discussionUser;
+    // console.log("seenUser", seenUsers);
+    // console.log("commentr", commenter);
+    // console.log("commentrid", commenter.id)
 
     if (!seenUsers[commenter.id]) {
       users.push(commenter);
