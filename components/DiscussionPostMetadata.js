@@ -1,5 +1,5 @@
 import { Fragment, useState, useEffect, useRef } from "react";
-import { useStore, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
@@ -48,10 +48,13 @@ const DiscussionPostMetadata = (props) => {
     hideHeadline,
     containerStyle,
     noTimeStamp,
+    isModerator,
+    isLoggedIn,
+    currentAuthorId,
   } = props;
 
   const alert = useAlert();
-  const store = useStore();
+  // const store = useStore();
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -61,13 +64,11 @@ const DiscussionPostMetadata = (props) => {
   );
   const dropdown = useRef();
   const ellipsis = useRef();
-  let isModerator = store.getState().auth.user.moderator;
-  let isLoggedIn = store.getState().auth.isLoggedIn;
   let isUserOwnInlineComment = false;
 
   if (isLoggedIn) {
     isUserOwnInlineComment = metaData
-      ? store.getState().auth.user.author_profile.id === metaData.authorId
+      ? currentAuthorId === metaData.authorId
       : true;
   }
 
@@ -96,7 +97,10 @@ const DiscussionPostMetadata = (props) => {
   const promptFlagConfirmation = () => {
     if (!isLoggedIn) {
       dispatch(
-        ModalActions.openLoginModal(true, "Please sign in Google to continue.")
+        ModalActions.openLoginModal(
+          true,
+          "Please sign in with Google to continue."
+        )
       );
     } else {
       return alert.show({
@@ -660,4 +664,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionPostMetadata;
+// TODO: Change this to useSelector
+const mapStateToProps = ({ auth }) => ({
+  isLoggedIn: auth.isLoggedIn,
+  isModerator: auth.user.moderator,
+  currentAuthorId:
+    auth.user && auth.user.author_profile ? auth.user.author_profile.id : null,
+});
+
+export default connect(mapStateToProps)(DiscussionPostMetadata);
