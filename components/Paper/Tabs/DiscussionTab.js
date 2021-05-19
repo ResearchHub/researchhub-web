@@ -113,12 +113,8 @@ const DiscussionTab = (props) => {
       threads = [];
     }
 
-    if (!expandComments && threads.length > 0) {
-      if (threads[0].data.comment_count > 0) {
-        threads = threads.slice(0, 1);
-      } else {
-        threads = threads.slice(0, 2);
-      }
+    if (!expandComments) {
+      threads = threads.slice(0, 2);
     }
 
     return (
@@ -247,6 +243,19 @@ const DiscussionTab = (props) => {
   const calculateCount = () => {
     let count = paper.threadCount;
     return count;
+  };
+
+  const calculateHiddenCount = () => {
+    let hiddenCount = 0;
+    for (const thread of formattedThreads.slice(2)) {
+      hiddenCount +=
+        1 +
+        thread.data.comments.length +
+        thread.data.comments
+          .map((comment) => comment.replies.length)
+          .reduce((a, b) => a + b, 0);
+    }
+    return hiddenCount;
   };
 
   const handleInput = (id, value) => {
@@ -392,6 +401,7 @@ const DiscussionTab = (props) => {
                   props.calculatedCount
                 )}
               </span>
+              {!showEditor && !showTwitterComments && renderAddDiscussion()}
               {/* <div className={css(styles.tabRow)}>
                 <div
                   className={css(
@@ -413,7 +423,28 @@ const DiscussionTab = (props) => {
                 </div>
               </div> */}
             </h3>
-            {!showEditor && !showTwitterComments && renderAddDiscussion()}
+            <div className={css(styles.filterContainer)}>
+              <div className={css(styles.filterSelect)}>
+                <FormSelect
+                  id={"thread-filter"}
+                  options={filterOptions}
+                  defaultValue={filterOptions[2]}
+                  placeholder={"Sort Threads"}
+                  onChange={handleFilterChange}
+                  containerStyle={styles.overrideFormSelect}
+                  inputStyle={{
+                    minHeight: "unset",
+                    padding: 0,
+                    backgroundColor: "#FFF",
+                    fontSize: 14,
+                    width: 150,
+                    "@media only screen and (max-width: 415px)": {
+                      fontSize: 12,
+                    },
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
@@ -421,33 +452,9 @@ const DiscussionTab = (props) => {
                 !showTwitterComments &&
                 renderDiscussionTextEditor()}
             </div>
-            <div className={css(styles.rowContainer)}>
-              <div className={css(styles.filterContainer)}>
-                <div className={css(styles.filterSelect)}>
-                  <FormSelect
-                    id={"thread-filter"}
-                    options={filterOptions}
-                    defaultValue={filterOptions[2]}
-                    placeholder={"Sort Threads"}
-                    onChange={handleFilterChange}
-                    containerStyle={styles.overrideFormSelect}
-                    inputStyle={{
-                      minHeight: "unset",
-                      padding: 0,
-                      backgroundColor: "#FFF",
-                      fontSize: 14,
-                      width: 150,
-                      "@media only screen and (max-width: 415px)": {
-                        fontSize: 12,
-                      },
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {props.calculatedCount > 2 ? (
+          {formattedThreads.length > 2 ? (
             expandComments ? (
               <div className={css(styles.expandDiv)}>
                 <button
@@ -463,7 +470,8 @@ const DiscussionTab = (props) => {
                   className={css(styles.expandButton)}
                   onClick={() => setExpandComments(true)}
                 >
-                  View All Comments ({props.calculatedCount})
+                  View {calculateHiddenCount()} More Comment
+                  {calculateHiddenCount() === 1 ? "" : "s"}
                 </button>
               </div>
             )
@@ -581,7 +589,6 @@ var styles = StyleSheet.create({
     backgroundColor: "#FFF",
 
     "@media only screen and (max-width: 415px)": {
-      width: "100%",
       fontSize: 16,
       marginBottom: 0,
     },
@@ -657,7 +664,7 @@ var styles = StyleSheet.create({
   },
   addDiscussionButton: {
     border: "1px solid",
-    padding: "8px 32px",
+    padding: "6px 16px",
     color: "#fff",
     background: colors.PURPLE(1),
     fontSize: 16,
@@ -668,9 +675,6 @@ var styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
   },
   plainButton: {
     marginTop: 0,
@@ -678,15 +682,11 @@ var styles = StyleSheet.create({
     height: "unset",
     color: "rgba(26, 31, 58, 0.6)",
     background: "unset",
-    padding: "3px 0px 3px 5px",
     fontSize: 14,
     ":hover": {
       backgroundColor: "#FFF",
       color: colors.PURPLE(),
       textDecoration: "underline",
-    },
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 5,
     },
   },
   expandDiv: {
@@ -881,6 +881,7 @@ var styles = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: "#FFF",
     width: "unset",
+    minHeight: 0,
   },
   filterContainer: {
     display: "flex",
