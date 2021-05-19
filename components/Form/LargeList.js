@@ -36,9 +36,10 @@ export default function LargeList({
     );
   };
 
+  const wrappedChildren = children.map(renderListItem);
   return (
     <div className={css(styles.largeList, customListStyle)}>
-      {children.map(renderListItem)}
+      {wrappedChildren}
     </div>
   );
 }

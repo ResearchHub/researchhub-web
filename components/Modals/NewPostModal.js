@@ -20,7 +20,7 @@ class NewPostModal extends React.Component {
     super(props);
 
     this.initialState = {
-      mobileView: false,
+      mobileView: false, // TODO: ?
     };
 
     this.state = {
@@ -57,7 +57,11 @@ class NewPostModal extends React.Component {
           <div className={css(styles.titleContainer)}>
             <div className={css(styles.title)}>{"Select your post type"}</div>
           </div>
-          <LargeList selectMany={false} style={styles.list} onChange={() => {}}>
+          <LargeList
+            selectMany={false}
+            customListStyle={styles.list}
+            onChange={() => {}}
+          >
             <Media
               header={"Upload a Paper"}
               description={
