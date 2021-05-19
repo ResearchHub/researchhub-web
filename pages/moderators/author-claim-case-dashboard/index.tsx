@@ -13,7 +13,7 @@ function useEffectCheckCredentials(reduxStore: any): void {
     !isNullOrUndefined(user) &&
     !isNullOrUndefined(user.id);
   const isCurrUserMod = isReadyToCheck ? Boolean(user.moderator) : false;
-  const isLoggedIn = !Boolean(auth.isLoggedIn);
+  const isLoggedIn = Boolean(auth.isLoggedIn);
   const router = useRouter();
   useEffect(() => {
     if (isReadyToCheck && (!isCurrUserMod || !isLoggedIn)) {
