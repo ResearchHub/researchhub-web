@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
     width: 80,
     height: 90,
     objectFit: "contain",
+    // overflowY: "hidden"
   },
   buttonContainer: {
     width: "100%",
