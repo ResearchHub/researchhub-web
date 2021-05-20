@@ -12,7 +12,7 @@ import { ModalActions } from "~/redux/modals";
 import { convertHttpToHttps } from "~/config/utils";
 
 const PaperPDFModal = (props) => {
-  const { paper, modals, openPaperPDFModal } = props;
+  const { paper, modals, openPaperPDFModal, onClose } = props;
   const { file, pdf_url } = paper;
 
   function closeModal() {
@@ -23,6 +23,13 @@ const PaperPDFModal = (props) => {
     if (process.browser) {
       document.body.style.overflow = "scroll";
     }
+
+    /**
+     * it is helpful to have onClose callback since there
+     * may be many PaperPDFModal's rendered, but modals.openPaperPDFModal is only a single boolean
+     * and cannot specify which one is open */
+    onClose && onClose();
+
     return openPaperPDFModal && openPaperPDFModal(false);
   }
 
