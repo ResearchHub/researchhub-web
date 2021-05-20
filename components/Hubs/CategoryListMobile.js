@@ -113,6 +113,9 @@ const styles = StyleSheet.create({
     width: "95%",
     justifyContent: "flex-start",
     boxSizing: "border-box",
+    background: "#FCFCFC",
+    borderBottom: "1.5px solid #F0F0F0",
+    borderTop: "1.5px solid #F0F0F0",
   },
   tabContainer: {
     display: "flex",
