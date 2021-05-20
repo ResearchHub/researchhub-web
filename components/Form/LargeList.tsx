@@ -6,13 +6,15 @@ import LargeListItem from "~/components/Form/LargeListItem";
 
 type LargeListProps = {
   selectMany: boolean;
+  useLargeHitbox: boolean;
   customListStyle: StyleSheet;
   onChange?: Function;
   children: ReactChildren;
 };
 
 export default function LargeList({
-  selectMany,
+  selectMany, // Allow selection of many items
+  useLargeHitbox,
   customListStyle,
   onChange,
   children,
@@ -23,7 +25,8 @@ export default function LargeList({
     return (
       <LargeListItem
         checkboxSquare={selectMany}
-        active={isActives[index]}
+        useLargeHitbox={useLargeHitbox}
+        isActive={isActives[index]}
         id={`largeListItem-${index}`}
         onChange={(id, value) => {
           // id of LargeListItem/Checkbox, new value
@@ -35,7 +38,7 @@ export default function LargeList({
           }
           changed[index] = value;
           setIsActives(changed);
-          onChange && onChange(isActives, index, value, id); // Send information about the state change
+          onChange && onChange({ isActives, index, value, id }); // Send information about the state change
         }}
       >
         {item}

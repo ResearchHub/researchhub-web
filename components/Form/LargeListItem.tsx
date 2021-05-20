@@ -6,7 +6,8 @@ import CheckBox from "~/components/Form/CheckBox";
 
 type LargeListItemProps = {
   checkboxSquare: boolean;
-  active: boolean;
+  isActive: boolean;
+  useLargeHitbox?: boolean;
   id?: string;
   onChange?: Function;
   children: ReactChildren;
@@ -14,19 +15,35 @@ type LargeListItemProps = {
 
 export default function LargeListItem({
   checkboxSquare,
-  active,
+  isActive,
+  useLargeHitbox,
   id,
   onChange,
   children,
 }: LargeListItemProps) {
+  let handleClick;
+  if (useLargeHitbox) {
+    handleClick = (e) => {
+      let state = !isActive;
+      onChange && onChange(id, state);
+    };
+  } else {
+    /** LargeListItem doesn't handle the click, but rather CheckBox */
+
+    handleClick = (e) => {};
+  }
+
   return (
-    <div className={css(styles.largeListItem)}>
+    <div
+      className={css(styles.largeListItem, useLargeHitbox && styles.clickable)}
+      onClick={handleClick}
+    >
       <div className={css(styles.checkboxAligner)}>
         <CheckBox
           isSquare={checkboxSquare}
-          active={active}
+          active={isActive}
           id={id}
-          onChange={onChange}
+          onChange={!useLargeHitbox && onChange} // If not using large hitbox, checkbox handles click
         />
       </div>
       {children}
@@ -45,6 +62,10 @@ const styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     margin: "5px 0px",
     padding: "20px",
+  },
+  clickable: {
+    cursor: "pointer",
+    userSelect: "none",
   },
   checkboxAligner: {
     display: "flex",
