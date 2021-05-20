@@ -505,28 +505,11 @@ const Paper = (props) => {
                 paperDraftExists={paperDraftExists}
               />
             </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(1)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <a name="discussion">
-                <div className={css(styles.space)}>
-                  <DiscussionTab
-                    hostname={props.hostname}
-                    paperId={paperId}
-                    paperState={paper}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                  />
-                </div>
-              </a>
-            </Waypoint>
             <div
               className={css(styles.paperPageContainer, styles.noMarginLeft)}
             >
               <Waypoint
-                onEnter={() => onSectionEnter(2)}
+                onEnter={() => onSectionEnter(1)}
                 topOffset={40}
                 bottomOffset={"95%"}
               >
@@ -543,6 +526,23 @@ const Paper = (props) => {
                 </a>
               </Waypoint>
             </div>
+            <Waypoint
+              onEnter={() => onSectionEnter(2)}
+              topOffset={40}
+              bottomOffset={"95%"}
+            >
+              <a name="discussion">
+                <div className={css(styles.space)}>
+                  <DiscussionTab
+                    hostname={props.hostname}
+                    paperId={paperId}
+                    paperState={paper}
+                    calculatedCount={discussionCount}
+                    setCount={setCount}
+                  />
+                </div>
+              </a>
+            </Waypoint>
             <div
               className={css(
                 styles.paperPageContainer,
