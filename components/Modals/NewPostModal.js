@@ -59,6 +59,7 @@ class NewPostModal extends React.Component {
           </div>
           <LargeList
             selectMany={false}
+            useLargeHitbox={true}
             customListStyle={styles.list}
             onChange={() => {}}
           >
