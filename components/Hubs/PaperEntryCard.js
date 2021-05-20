@@ -11,7 +11,6 @@ import VoteWidget from "../VoteWidget";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
 import PaperJournalTag from "../Paper/PaperJournalTag";
-import PaperUserAvatars from "../Paper/PaperUserAvatars";
 import PaperPDFModal from "~/components/Modals/PaperPDFModal";
 
 // Utility
