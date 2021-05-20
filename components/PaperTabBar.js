@@ -27,8 +27,8 @@ const PaperTabBar = (props) => {
   function getPaperTabs() {
     const paperTabs = [
       { href: "main", label: "main" },
-      { href: "comments", label: "comments" },
       { href: "abstract", label: "abstract" },
+      { href: "comments", label: "comments" },
       { href: "paper pdf", label: "Paper PDF" },
     ];
 
