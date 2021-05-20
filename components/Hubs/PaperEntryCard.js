@@ -3,9 +3,7 @@ import Link from "next/link";
 import Router from "next/router";
 import { connect, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Carousel from "nuka-carousel";
 import Ripples from "react-ripples";
-import FsLightbox from "fslightbox-react";
 import ReactTooltip from "react-tooltip";
 
 // Components
@@ -13,7 +11,11 @@ import VoteWidget from "../VoteWidget";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
 import PaperJournalTag from "../Paper/PaperJournalTag";
+<<<<<<< HEAD
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
+=======
+import PaperPDFModal from "~/components/Modals/PaperPDFModal";
+>>>>>>> Added PDF preview when clicking Paper Entry Card in feed
 
 // Utility
 import {
@@ -34,6 +36,11 @@ import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+<<<<<<< HEAD
+=======
+import AuthorAvatar from "../AuthorAvatar";
+import { ModalActions } from "~/redux/modals";
+>>>>>>> Added PDF preview when clicking Paper Entry Card in feed
 
 const PaperEntryCard = (props) => {
   const {
@@ -79,8 +86,14 @@ const PaperEntryCard = (props) => {
 
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
-  const [lightbox, toggleLightbox] = useState(false);
-  const [slideIndex, setSlideIndex] = useState(1);
+
+  /**
+   * Whether or not THIS PaperPDFModal is open.
+   * There may be many PaperPDFModal components on the page, but
+   * modals.openPaperPDFModal is only a single boolean. So all cards
+   * must only render their PaperPDFModal component if requested */
+  const [isPreviewing, setIsPreviewing] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false); // Hub dropdown
   const [previews] = useState(
     configurePreview([
@@ -291,6 +304,13 @@ const PaperEntryCard = (props) => {
     );
   };
 
+  const openPaperPDFModal = (e) => {
+    e && e.preventDefault();
+    e && e.stopPropagation();
+    setIsPreviewing(true);
+    props.openPaperPDFModal(true);
+  };
+
   const renderContent = () => {
     if (bullet_points && bullet_points.length > 0) {
       return (
@@ -330,36 +350,20 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <div
-            className={css(styles.preview)}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleLightbox(!lightbox);
-            }}
-          >
-            <Carousel
-              afterSlide={(slideIndex) => setSlideIndex(slideIndex + 1)}
-              renderBottomCenterControls={null}
-              renderCenterLeftControls={null}
-              renderCenterRightControls={null}
-              wrapAround={true}
-              enableKeyboardControls={true}
-            >
-              {previews.map((preview, i) => {
-                if (preview && i == 0) {
-                  return (
-                    <img
-                      src={preview.file}
-                      className={css(carousel.image)}
-                      key={`preview_${preview.file}`}
-                      alt={`Paper Preview Page ${i + 1}`}
-                      loading="lazy"
-                    />
-                  );
-                }
-              })}
-            </Carousel>
+          {isPreviewing && (
+            <PaperPDFModal
+              paper={paper}
+              onClose={() => setIsPreviewing(false)}
+            />
+          )}
+          <div className={css(styles.preview)}>
+            <img
+              src={previews[0].file}
+              className={css(carousel.image)}
+              key={`preview_${previews[0].file}`}
+              alt={`Paper Preview Page 1`}
+              onClick={openPaperPDFModal}
+            />
           </div>
         </div>
       );
@@ -601,16 +605,6 @@ const PaperEntryCard = (props) => {
       onClick={navigateToPage}
     >
       <ReactTooltip />
-      {figures.length > 0 && (
-        <div onClick={(e) => e.stopPropagation()}>
-          <FsLightbox
-            toggler={lightbox}
-            type="image"
-            sources={[...figures]}
-            slide={slideIndex}
-          />
-        </div>
-      )}
       {desktopOnly(renderVoteWidget())}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
@@ -1119,6 +1113,7 @@ const mapDispatchToProps = {
   postUpvote: PaperActions.postUpvote,
   postDownvote: PaperActions.postDownvote,
   updatePaperState: PaperActions.updatePaperState,
+  openPaperPDFModal: ModalActions.openPaperPDFModal,
 };
 
 export default connect(
