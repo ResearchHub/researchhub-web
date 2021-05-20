@@ -722,10 +722,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   previewStyles: {
-    // alignSelf: "stretch",
-    // height: "100%",
+    // img tag
     // width: "100%",
     // height: "unset",
+    // height: "100%",
+    // width: "100%",
+    // maxHeight: "100%",
   },
   container: {
     width: "100%",
@@ -746,7 +748,9 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     alignItems: "stretch",
+
     // minWidth: 140,
+
     // overflowY: "hidden",
     // height: "10px",
     // alignSelf: "stretch",
