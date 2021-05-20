@@ -82,10 +82,15 @@ const styles = StyleSheet.create({
     display: "none",
   },
   preview: {
-    width: 80,
+    width: 120,
     height: 90,
     objectFit: "contain",
-    // overflowY: "hidden"
+
+    // maxWidth: "100%",
+    // maxHeight: "100%",
+
+    // width: "100%",
+    // objectFit: "contain",
   },
   buttonContainer: {
     width: "100%",
