@@ -215,7 +215,7 @@ class HubCard extends React.Component {
               this.openEditHubModal();
             }}
           >
-            <span className={css(styles.editIcon)}>{icons.editHub}</span>
+            <span>{icons.editHub}</span>
           </button>
         );
       }
@@ -233,7 +233,7 @@ class HubCard extends React.Component {
               this.removeHubConfirmation();
             }}
           >
-            <span className={css(styles.deleteIcon)}>{icons.trash}</span>
+            <span>{icons.trash}</span>
           </button>
         );
       }
@@ -476,9 +476,6 @@ const styles = StyleSheet.create({
     ":hover": {
       opacity: 1,
     },
-  },
-  editIcon: {
-    marginLeft: 1,
   },
   deleteButton: {
     height: 30,
