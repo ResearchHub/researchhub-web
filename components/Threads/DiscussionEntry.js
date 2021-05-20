@@ -170,7 +170,7 @@ class DiscussionEntry extends React.Component {
     );
   };
 
-  submitComment = async (text, plain_text, callback) => {
+  submitComment = async (text, plain_text, closeTextEditor) => {
     const {
       data,
       postComment,
@@ -190,23 +190,18 @@ class DiscussionEntry extends React.Component {
             comments: [...data.comments, postedComment],
             comment_count: comment_count + 1,
           });
-          return this.setState(
-            {
-              revealComment: true,
-            },
-            () => {
-              callback && callback();
-            }
-          );
+          return this.setState({
+            revealComment: true,
+          });
         }
-        return callback && callback();
+        return closeTextEditor && closeTextEditor();
       })
       .catch((err) => {
-        callback && callback();
+        closeTextEditor && closeTextEditor();
       });
   };
 
-  saveEditsThread = async (text, plain_text, callback) => {
+  saveEditsThread = async (text, plain_text) => {
     const {
       data,
       updateThread,

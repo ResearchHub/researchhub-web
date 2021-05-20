@@ -273,7 +273,7 @@ class CommentEntry extends React.Component {
     }
   };
 
-  submitReply = async (text, plain_text, callback) => {
+  submitReply = async (text, plain_text, closeTextEditor) => {
     const {
       data: { paper: paperId, id: discussionThreadId, threadIndex },
       comment,
@@ -296,7 +296,7 @@ class CommentEntry extends React.Component {
           updateCommentState(newCommentState, { threadIndex, commentIndex });
           this.setState({ revealReply: true });
         }
-        callback && callback();
+        closeTextEditor && closeTextEditor();
       })
       .catch((err) => {
         console.log("err", err);
