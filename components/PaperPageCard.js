@@ -222,21 +222,37 @@ class PaperPageCard extends React.Component {
 
     return (
       <div>
-        <PaperMetadata
-          label={"Paper Title"}
-          containerStyles={styles.paperTitle}
-          active={
-            paper.paper_title &&
-            removeLineBreaksInStr(paper.paper_title) !==
-              removeLineBreaksInStr(paper.title)
-          }
-          value={
-            <h3 className={css(styles.metadata)} property={"name"}>
-              {paper.paper_title}
-            </h3>
-          }
-        />
         <div className={css(styles.row)}>
+          <PaperMetadata
+            label={"Paper Title"}
+            containerStyles={styles.paperTitle}
+            active={
+              paper.paper_title &&
+              removeLineBreaksInStr(paper.paper_title) !==
+                removeLineBreaksInStr(paper.title)
+            }
+            value={
+              <h3 className={css(styles.metadata)} property={"name"}>
+                {paper.paper_title}
+              </h3>
+            }
+          />
+        </div>
+        <div className={css(styles.row)}>
+          {/* <PaperMetadata
+            label={"Paper Title"}
+            containerStyles={styles.paperTitle}
+            active={
+              paper.paper_title &&
+              removeLineBreaksInStr(paper.paper_title) !==
+                removeLineBreaksInStr(paper.title)
+            }
+            value={
+              <h3 className={css(styles.metadata)} property={"name"}>
+                {paper.paper_title}
+              </h3>
+            }
+          /> */}
           {metadata.map((props, i) => (
             <PaperMetadata
               key={`metadata-${i}`}
@@ -1110,6 +1126,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     flexWrap: "wrap",
+
+    /**
+     * Set the width of the Label ("Paper Title:", "Published:") to align text, but only do so
+     * to the first element on each row. This selector is equivalent to row > "first child". */
+    ":nth-child(1n) > *:nth-child(1) > div": {
+      minWidth: 80,
+    },
+
     "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
     },
