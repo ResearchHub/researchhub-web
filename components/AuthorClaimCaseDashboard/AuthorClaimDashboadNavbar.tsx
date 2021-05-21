@@ -1,14 +1,42 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement } from "react";
-import colors from "../../config/themes/colors";
+import React, { ReactElement, useMemo, useState } from "react";
+import AuthorClaimDashboadNavbarButton from "./AuthorClaimDashboadNavbarButton";
 
+type ButtonConfig = {
+  label: string;
+  id: string;
+};
+type NavButton = ReactElement<typeof AuthorClaimDashboadNavbarButton>;
 type Props = {
   innerElWidth: number;
 };
 
+const buttonConfigs: Array<ButtonConfig> = [
+  { label: "Open", id: "open" },
+  { label: "Closed", id: "closed" },
+];
+
 export default function AuthorClaimDashbaordNavbar({
   innerElWidth,
 }: Props): ReactElement<"div"> {
+  const [activeButtonID, setActiveButtonID] = useState("open");
+  const navButtons = useMemo(
+    (): Array<NavButton> =>
+      buttonConfigs.map(
+        ({ label, id }: ButtonConfig): NavButton => (
+          <AuthorClaimDashboadNavbarButton
+            isActive={activeButtonID === id}
+            key={id}
+            label={label}
+            onClick={(): void => {
+              setActiveButtonID(id);
+            }}
+          />
+        )
+      ),
+    [activeButtonID]
+  );
+
   return (
     <div className={css(styles.authorClaimDashbaordNavbar)}>
       <div
@@ -16,7 +44,7 @@ export default function AuthorClaimDashbaordNavbar({
         style={{ width: innerElWidth }}
       >
         <div className={css(styles.header)}>Author-Claim Requests</div>
-        <div className={css(styles.navRow)}>Buttons go Here</div>
+        <div className={css(styles.navRow)}>{navButtons}</div>
       </div>
     </div>
   );
