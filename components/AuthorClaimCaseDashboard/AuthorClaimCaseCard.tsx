@@ -1,9 +1,10 @@
-import { css, StyleSheet } from "aphrodite";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
+import { css, StyleSheet } from "aphrodite";
+import { formatDate } from "../../scripts/createSitemap.js";
 import { ID, ValueOf } from "../../config/types/root_types";
-import React, { ReactElement, useState } from "react";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
+import React, { ReactElement, useState } from "react";
 
 export type AuthorClaimCase = {
   caseID: ID;
@@ -23,7 +24,7 @@ type Props = {
 
 export default function AuthorClaimCaseCard({
   allowedActions,
-  authorClaimCase,
+  authorClaimCase: { requestorEmail, requestorName },
   cardWidth,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
@@ -44,12 +45,20 @@ export default function AuthorClaimCaseCard({
             !isCollapsed && styles.borderBottom
           )}
         >
-          <div className={css(styles.cardMainSection)}>name</div>
-          <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            email
+          <div className={css(styles.cardMainSection)}>
+            <img
+              className={css(styles.requestorFaceImg)}
+              src={
+                "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c"
+              }
+            />
+            <span className={css(styles.requestorName)}>{requestorName}</span>
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            date
+            {requestorEmail}
+          </div>
+          <div className={css(styles.cardMainSection, styles.fontGrey)}>
+            {Date.now()}
           </div>
           <div className={css(styles.cardMainSection)}>buttons</div>
         </div>
@@ -117,6 +126,16 @@ const styles = StyleSheet.create({
   },
   fontGrey: {
     color: colors.GREY(1),
+  },
+  requestorFaceImg: {
+    borderRadius: "50%",
+    height: 40,
+    marginRight: 12,
+    width: 40,
+  },
+  requestorName: {
+    fontSize: 18,
+    fontWeight: 400,
   },
   requestorSubInfo: {
     marginBottom: 8,
