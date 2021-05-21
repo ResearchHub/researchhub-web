@@ -111,7 +111,8 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 72,
     justifyContent: "center",
-    width: 52,
+    marginLeft: 12,
+    width: 36,
   },
   fontGrey: {
     color: colors.GREY(1),
