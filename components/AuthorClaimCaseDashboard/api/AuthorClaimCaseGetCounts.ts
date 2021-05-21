@@ -19,11 +19,14 @@ export function getCaseCounts({
   fetch(API.MODERATORS_AUTHOR_CLAIM_CASE_COUNT(), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((response: any) =>
+    .then((response: any) => {
+      const formattedResult = response.map((caseData) => {
+        const { target_author } = caseData;
+      });
       onSuccess({
         CLOSED: response.closed_count || 0,
         OPEN: response.open_count || 0,
-      })
-    )
+      });
+    })
     .catch((e) => onError(e));
 }
