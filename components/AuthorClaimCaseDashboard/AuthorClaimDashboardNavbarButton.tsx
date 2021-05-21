@@ -9,8 +9,8 @@ type Props = {
   onClick: () => void;
 };
 
-export default function AuthorClaimDashboadNavbarButton({
-  count = 0,
+export default function AuthorClaimDashboardNavbarButton({
+  count = 2,
   label,
   isActive,
   onClick,
@@ -18,7 +18,7 @@ export default function AuthorClaimDashboadNavbarButton({
   return (
     <div
       className={css(
-        styles.authorClaimDashboadNavbarButton,
+        styles.authorClaimDashboardNavbarButton,
         isActive && styles.isButtonActive
       )}
       onClick={onClick}
@@ -31,7 +31,7 @@ export default function AuthorClaimDashboadNavbarButton({
 }
 
 const styles = StyleSheet.create({
-  authorClaimDashboadNavbarButton: {
+  authorClaimDashboardNavbarButton: {
     alignItems: "center",
     boxSizing: "border-box",
     color: "##241F3A",
@@ -53,9 +53,10 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     color: "#241F3A",
     display: "flex",
-    height: 40,
+    height: 20,
     justifyContent: "center",
-    marginLeft: 16,
-    width: 40,
+    marginLeft: 12,
+    fontSize: 12,
+    width: 32,
   },
 });
