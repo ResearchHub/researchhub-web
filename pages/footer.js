@@ -75,6 +75,16 @@ class Footer extends React.Component {
             <a
               target="_blank"
               className={css(styles.link)}
+              href="https://joyce-researchhub.medium.com/"
+              rel="noreferrer noopener"
+            >
+              <div className={css(styles.social)}>
+                <span className={css(styles.logo)}>{icons.medium}</span>
+              </div>
+            </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
               href="https://join.slack.com/t/researchhub-community/shared_invite/zt-iqred46f-f0j0M6_ZxtliD~UszPyWEQ"
               rel="noreferrer noopener"
             >
