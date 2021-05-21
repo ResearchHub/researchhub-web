@@ -9,7 +9,7 @@ export const AUTHOR_CLAIM_STATUS = {
 };
 
 export const AUTHOR_CLAIM_STATUS_LABEL = {
-  APPOVED: "Approved",
+  APPROVED: "Approved",
   CLOSED: "Closed",
   DENIED: "Denied",
   INITIATED: "Initiated",
