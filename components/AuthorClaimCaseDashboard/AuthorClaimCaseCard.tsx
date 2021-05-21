@@ -1,6 +1,5 @@
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
-import { formatDate } from "../../scripts/createSitemap.js";
 import { ID, ValueOf } from "../../config/types/root_types";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
