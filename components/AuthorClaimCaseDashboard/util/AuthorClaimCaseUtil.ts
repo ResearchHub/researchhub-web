@@ -1,7 +1,7 @@
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 import { ValueOf } from "../../../config/types/root_types";
 
-const { APPROVED, DENIED, OPEN, CLOSED, NULLIFIED } = AUTHOR_CLAIM_STATUS;
+const { APPROVED, DENIED, OPEN } = AUTHOR_CLAIM_STATUS;
 
 export const getCardAllowedActions = (
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>
