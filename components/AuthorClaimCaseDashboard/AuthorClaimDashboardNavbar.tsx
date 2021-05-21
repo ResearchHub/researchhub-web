@@ -5,14 +5,14 @@ import {
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { ValueOf } from "../../config/types/root_types";
-import AuthorClaimDashboadNavbarButton from "./AuthorClaimDashboadNavbarButton";
+import AuthorClaimDashboardNavbarButton from "./AuthorClaimDashboardNavbarButton";
 import React, { ReactElement, useMemo, useState } from "react";
 
 type ButtonConfig = {
   label: ValueOf<typeof AUTHOR_CLAIM_STATUS_LABEL>;
   id: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
 };
-type NavButton = ReactElement<typeof AuthorClaimDashboadNavbarButton>;
+type NavButton = ReactElement<typeof AuthorClaimDashboardNavbarButton>;
 type Props = {
   innerElWidth: number;
 };
@@ -23,19 +23,19 @@ const buttonConfigs: Array<ButtonConfig> = [
   { label: AUTHOR_CLAIM_STATUS_LABEL.CLOSED, id: AUTHOR_CLAIM_STATUS.CLOSED },
 ];
 
-export default function AuthorClaimDashbaordNavbar({
+export default function AuthorClaimDashboardNavbar({
   innerElWidth,
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const [activeButtonID, setActiveButtonID] = useState(
-    AUTHOR_CLAIM_STATUS.OPEN
+    router.query.case_status || AUTHOR_CLAIM_STATUS_LABEL.OPEN
   );
 
   const navButtons = useMemo(
     (): Array<NavButton> =>
       buttonConfigs.map(
         ({ label, id }: ButtonConfig): NavButton => (
-          <AuthorClaimDashboadNavbarButton
+          <AuthorClaimDashboardNavbarButton
             isActive={activeButtonID === id}
             key={id}
             label={label}
@@ -53,7 +53,7 @@ export default function AuthorClaimDashbaordNavbar({
   );
 
   return (
-    <div className={css(styles.authorClaimDashbaordNavbar)}>
+    <div className={css(styles.authorClaimDashboardNavbar)}>
       <div
         className={css(styles.innerElementWrap)}
         style={{ width: innerElWidth }}
@@ -70,7 +70,7 @@ export default function AuthorClaimDashbaordNavbar({
 }
 
 const styles = StyleSheet.create({
-  authorClaimDashbaordNavbar: {
+  authorClaimDashboardNavbar: {
     alignItems: "flex-end",
     backgroundColor: "#FFF",
     display: "flex",
