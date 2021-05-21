@@ -1,7 +1,7 @@
 import { connect, useStore } from "react-redux";
 import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { useRouter } from "next/router";
-import AuthorClaimCaseDashboard from "./AuthorClaimCaseDashboard";
+import AuthorClaimCaseDashboard from "../../../components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
 import React, { ReactElement, useEffect } from "react";
 
 function useEffectCheckCredentials(reduxStore: any): void {
