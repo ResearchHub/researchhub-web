@@ -2,11 +2,9 @@ import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
 import { INNER_EL_WIDTH } from "./AuthorClaimCaseDashboard";
 import { useRouter, NextRouter } from "next/router";
+import { nullthrows } from "../../config/utils/nullchecks";
 import AuthorClaimCaseCard, { AuthorClaimCase } from "./AuthorClaimCaseCard";
 import React, { useEffect, ReactElement, useState } from "react";
-import { nullthrows } from "../../config/utils/nullchecks";
-import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { ValueOf } from "../../config/types/root_types";
 
 const useEffectHandleCaseFetch = (
   currRouter: NextRouter,
@@ -48,7 +46,6 @@ export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
   const caseCards = claimCases.map(
     (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => (
       <AuthorClaimCaseCard
-        allowedActions={getCardAllowedActions(claimCase.caseStatus)}
         authorClaimCase={claimCase}
         cardWidth={INNER_EL_WIDTH}
         key={`author-claim-case-card-${nullthrows(claimCase.caseID)}`}
