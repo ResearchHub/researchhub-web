@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     alignItems: "flex-start",
-    margin: "5px 0",
+    marginBottom: "5px",
     "@media only screen and (max-width: 768px)": {
       width: "100%",
       boxSizing: "border-box",
