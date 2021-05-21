@@ -4,23 +4,14 @@ import {
 } from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { ID, ValueOf } from "../../config/types/root_types";
+import { ValueOf } from "../../config/types/root_types";
 import { silentEmptyFnc } from "../../config/utils/nullchecks";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
-
-export type AuthorClaimCase = {
-  caseID: ID;
-  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | string;
-  requestorID: ID;
-  requestorEmail: string;
-  requestorName: string;
-  targetAuthorID: ID;
-  targetAuthorName: string;
-};
+import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -29,11 +20,9 @@ type Props = {
 
 export default function AuthorClaimCaseCard({
   authorClaimCase: {
-    caseID,
-    caseStatus,
-    requestorEmail,
-    requestorName,
-    targetAuthorName,
+    case: { id: caseID, status: caseStatus },
+    requestor: { id: requestorID, email: requestorEmail, name: requestorName },
+    targetAuthor: { id: targetAuthorID, name: targetAuthorName },
   },
   cardWidth,
 }: Props): ReactElement<"div"> {
