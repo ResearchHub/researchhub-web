@@ -3,8 +3,9 @@ import { ID, ValueOf } from "../../config/types/root_types";
 import React, { ReactElement, useState } from "react";
 
 export type AuthorClaimCase = {
+  caseID: ID;
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | string;
-  requestID: ID;
+  requestorID: ID;
   requestorEmail: string;
   requestorName: string;
   targetAuthorID: ID;
