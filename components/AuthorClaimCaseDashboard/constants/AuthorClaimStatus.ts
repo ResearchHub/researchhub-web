@@ -1,3 +1,8 @@
+export const AUTHOR_CLAIM_ACTION_LABEL = {
+  APPROVED: "Approve",
+  DENIED: "Reject",
+};
+
 export const AUTHOR_CLAIM_STATUS = {
   APPROVED: "APPROVED",
   CLOSED: "CLOSED",
