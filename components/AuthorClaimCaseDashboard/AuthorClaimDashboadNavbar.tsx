@@ -1,10 +1,16 @@
+import {
+  AUTHOR_CLAIM_STATUS_LABEL,
+  AUTHOR_CLAIM_STATUS,
+} from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useMemo, useState } from "react";
+import { useRouter } from "next/router";
+import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimDashboadNavbarButton from "./AuthorClaimDashboadNavbarButton";
+import React, { ReactElement, useMemo, useState } from "react";
 
 type ButtonConfig = {
-  label: string;
-  id: string;
+  label: ValueOf<typeof AUTHOR_CLAIM_STATUS_LABEL>;
+  id: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
 };
 type NavButton = ReactElement<typeof AuthorClaimDashboadNavbarButton>;
 type Props = {
@@ -12,14 +18,18 @@ type Props = {
 };
 
 const buttonConfigs: Array<ButtonConfig> = [
-  { label: "Open", id: "open" },
-  { label: "Closed", id: "closed" },
+  /* logical ordering */
+  { label: AUTHOR_CLAIM_STATUS_LABEL.OPEN, id: AUTHOR_CLAIM_STATUS.OPEN },
+  { label: AUTHOR_CLAIM_STATUS_LABEL.CLOSED, id: AUTHOR_CLAIM_STATUS.CLOSED },
 ];
 
 export default function AuthorClaimDashbaordNavbar({
   innerElWidth,
 }: Props): ReactElement<"div"> {
-  const [activeButtonID, setActiveButtonID] = useState("open");
+  const [activeButtonID, setActiveButtonID] = useState(
+    AUTHOR_CLAIM_STATUS.OPEN
+  );
+  const router = useRouter();
   const navButtons = useMemo(
     (): Array<NavButton> =>
       buttonConfigs.map(
@@ -30,11 +40,15 @@ export default function AuthorClaimDashbaordNavbar({
             label={label}
             onClick={(): void => {
               setActiveButtonID(id);
+              router.push({
+                pathname: router.pathname,
+                query: { case_status: id },
+              });
             }}
           />
         )
       ),
-    [activeButtonID]
+    [activeButtonID, router]
   );
 
   return (
