@@ -1,6 +1,8 @@
+import { css, StyleSheet } from "aphrodite";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { ID, ValueOf } from "../../config/types/root_types";
 import React, { ReactElement, useState } from "react";
+import colors from "../../config/themes/colors";
 
 export type AuthorClaimCase = {
   caseID: ID;
@@ -24,5 +26,25 @@ export default function AuthorClaimCaseCard({
   cardWidth,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
-  return <div style={{ width: cardWidth }}>This is card</div>;
+  return (
+    <div
+      className={css(styles.authorClaimCaseCard)}
+      onClick={(): void => setIsCollapsed(false)}
+      role="none"
+      style={{ width: cardWidth }}
+    >
+      <div>This is card</div>
+      {!isCollapsed ? <div> This cardBody </div> : null}
+    </div>
+  );
 }
+
+const styles = StyleSheet.create({
+  authorClaimCaseCard: {
+    backgroundColor: "#FFF",
+    border: `1px solid ${colors.GREY(0.5)}`,
+    borderRadius: 4,
+    marginBottom: 16,
+    minHeight: 100,
+  },
+});
