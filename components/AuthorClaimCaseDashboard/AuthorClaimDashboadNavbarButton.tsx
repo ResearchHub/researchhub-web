@@ -33,13 +33,15 @@ export default function AuthorClaimDashboadNavbarButton({
 const styles = StyleSheet.create({
   authorClaimDashboadNavbarButton: {
     alignItems: "center",
+    boxSizing: "border-box",
     color: "##241F3A",
     cursor: "pointer",
     display: "flex",
+    fontSize: 18,
+    height: 60,
     justifyContent: "center",
     padding: 8,
     width: 136,
-    fontSize: 18,
   },
   isButtonActive: {
     borderBottom: `2px solid ${colors.BLUE(1)}`,
