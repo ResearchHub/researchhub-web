@@ -44,12 +44,13 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     marginRight: 15,
     "@media only screen and (max-width: 1023px)": {
-      width: 90,
+      minWidth: 80, // Align items when the screen is small and each PaperMetadata is on a new line
     },
   },
   label: {
     fontSize: 16,
     fontWeight: 500,
+    whiteSpace: "nowrap",
     color: colors.BLACK(),
     margin: 0,
     "@media only screen and (max-width: 415px)": {
