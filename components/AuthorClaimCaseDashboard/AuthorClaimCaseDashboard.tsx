@@ -3,11 +3,13 @@ import React, { ReactElement } from "react";
 import AuthorClaimCaseContainer from "./AuthorClaimCaseContainer";
 import AuthorClaimDashbaordNavbar from "./AuthorClaimDashboadNavbar";
 
+export const INNER_EL_WIDTH = 1276;
+
 export default function AuthorClaimCaseDashboard(): ReactElement<"div"> {
   return (
-    <div className={css(styles.AuthorClaimCaseContainer)}>
-      <AuthorClaimDashbaordNavbar />
-      <div className={css(styles.CaseContinaerWrap)}>
+    <div className={css(styles.authorClaimCaseDashboard)}>
+      <AuthorClaimDashbaordNavbar innerElWidth={INNER_EL_WIDTH} />
+      <div className={css(styles.caseContinaerWrap)}>
         <AuthorClaimCaseContainer />
       </div>
     </div>
@@ -15,15 +17,15 @@ export default function AuthorClaimCaseDashboard(): ReactElement<"div"> {
 }
 
 const styles = StyleSheet.create({
-  AuthorClaimCaseContainer: {
+  authorClaimCaseDashboard: {
     alignItems: "center",
-    backgroundColor: "F2F2F2",
+    backgroundColor: "#F2F2F2",
     display: "flex",
     flexDirection: "column",
-    height: "100%",
+    height: "100vh",
     width: "100%",
   },
-  CaseContinaerWrap: {
+  caseContinaerWrap: {
     marginTop: 16,
   },
 });
