@@ -1,6 +1,6 @@
 import {
+  AUTHOR_CLAIM_ACTION_LABEL,
   AUTHOR_CLAIM_STATUS,
-  AUTHOR_CLAIM_STATUS_LABEL,
 } from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
 import { ValueOf } from "../../config/types/root_types";
@@ -22,7 +22,7 @@ export default function AuthorClaimCaseCardActionButton({
   actionType,
   onClick,
 }: Props): ReactElement<"div"> {
-  const buttonLabel = AUTHOR_CLAIM_STATUS_LABEL[actionType];
+  const buttonLabel = AUTHOR_CLAIM_ACTION_LABEL[actionType];
   return (
     <div
       className={css(
