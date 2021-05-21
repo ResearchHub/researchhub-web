@@ -6,7 +6,8 @@ import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimDashboardNavbarButton from "./AuthorClaimDashboardNavbarButton";
-import React, { ReactElement, useMemo, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import { getCaseCounts, Counts } from "./api/AuthorClaimCaseGetCounts";
 
 type ButtonConfig = {
   label: ValueOf<typeof AUTHOR_CLAIM_STATUS_LABEL>;
@@ -23,19 +24,32 @@ const buttonConfigs: Array<ButtonConfig> = [
   { label: AUTHOR_CLAIM_STATUS_LABEL.CLOSED, id: AUTHOR_CLAIM_STATUS.CLOSED },
 ];
 
+const useEffectFetchCounts = (setCounts: (counts: Counts) => void): void => {
+  useEffect((): void => {
+    getCaseCounts({ onSuccess: setCounts });
+  }, [setCounts]);
+};
+
 export default function AuthorClaimDashboardNavbar({
   innerElWidth,
 }: Props): ReactElement<"div"> {
   const router = useRouter();
+  const [counts, setCounts] = useState<Counts>({
+    CLOSED: 0,
+    OPEN: 0,
+  });
   const [activeButtonID, setActiveButtonID] = useState(
     router.query.case_status || AUTHOR_CLAIM_STATUS_LABEL.OPEN
   );
+
+  useEffectFetchCounts(setCounts);
 
   const navButtons = useMemo(
     (): Array<NavButton> =>
       buttonConfigs.map(
         ({ label, id }: ButtonConfig): NavButton => (
           <AuthorClaimDashboardNavbarButton
+            count={counts[id]}
             isActive={activeButtonID === id}
             key={id}
             label={label}
@@ -49,7 +63,7 @@ export default function AuthorClaimDashboardNavbar({
           />
         )
       ),
-    [activeButtonID, router]
+    [activeButtonID, counts, router]
   );
 
   return (
