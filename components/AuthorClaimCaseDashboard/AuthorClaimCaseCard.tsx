@@ -110,10 +110,11 @@ export default function AuthorClaimCaseCard({
 
 const styles = StyleSheet.create({
   authorClaimCaseCard: {
-    display: "flex",
+    cursor: "pointer",
     backgroundColor: "#FFF",
     border: `1px solid ${colors.GREY(0.5)}`,
     borderRadius: 4,
+    display: "flex",
     fontFamily: "Roboto",
     marginBottom: 16,
     minHeight: 72,
