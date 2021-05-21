@@ -55,10 +55,10 @@ export default function AuthorClaimCaseCard({
         </div>
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
-            <div className={css(styles.requestorSubInfo)}>
-              User Profile Info
+            <div className={css(styles.requestorSubInfo, styles.fontGrey)}>
+              Claiming Author
             </div>
-            <div> Target Author Info </div>
+            <div> Author Name </div>
           </div>
         ) : null}
       </div>
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
   cardSubmain: {
     display: "flex",
     flexDirection: "column",
+    fontSize: 16,
     height: 72,
     justifyContent: "center",
     width: "100%",
@@ -118,6 +119,6 @@ const styles = StyleSheet.create({
     color: colors.GREY(1),
   },
   requestorSubInfo: {
-    fontSize: 16,
+    marginBottom: 8,
   },
 });
