@@ -53,6 +53,7 @@ import {
 import {
   faFacebookF,
   faLinkedinIn,
+  faMedium,
   faSlack,
   faTwitter,
   faReddit,
@@ -180,6 +181,7 @@ library.add(
   faUserPlus,
   faFacebookF,
   faLinkedinIn,
+  faMedium,
   faReddit,
   faSlack,
   faTwitter,
@@ -313,6 +315,7 @@ const icons = {
   live: <FontAwesomeIcon icon={faBell} />,
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
   manage: <FontAwesomeIcon icon={faTasksAlt} />,
+  medium: <FontAwesomeIcon icon={faMedium} />,
   minus: <FontAwesomeIcon icon={faMinus} />,
   minusCircle: <FontAwesomeIcon icon={faMinusCircle} />,
   mousePointer: <FontAwesomeIcon icon={faMousePointer} />,
