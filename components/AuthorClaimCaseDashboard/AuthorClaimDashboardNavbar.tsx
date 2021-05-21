@@ -47,7 +47,11 @@ export default function AuthorClaimDashboardNavbar({
     router.query.case_status || AUTHOR_CLAIM_STATUS_LABEL.OPEN
   );
 
+<<<<<<< HEAD
   useEffectFetchCounts(lastFetchTime, setCounts);
+=======
+  useEffectFetchCounts(setCounts);
+>>>>>>> b7a15f22 (count done)
 
   const navButtons = useMemo(
     (): Array<NavButton> =>
