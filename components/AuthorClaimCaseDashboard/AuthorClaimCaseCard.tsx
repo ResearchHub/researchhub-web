@@ -1,9 +1,16 @@
-import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
+import {
+  AUTHOR_CLAIM_STATUS,
+  AUTHOR_CLAIM_STATUS_LABEL,
+} from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
+import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
 import { ID, ValueOf } from "../../config/types/root_types";
+import { silentEmptyFnc } from "../../config/utils/nullchecks";
+import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
+import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 
 export type AuthorClaimCase = {
   caseID: ID;
@@ -16,17 +23,44 @@ export type AuthorClaimCase = {
 };
 
 type Props = {
-  allowedActions: Array<ValueOf<typeof AUTHOR_CLAIM_STATUS>>;
   authorClaimCase: AuthorClaimCase;
   cardWidth: number | string;
 };
 
 export default function AuthorClaimCaseCard({
-  allowedActions,
-  authorClaimCase: { requestorEmail, requestorName },
+  authorClaimCase: {
+    caseID,
+    caseStatus,
+    requestorEmail,
+    requestorName,
+    targetAuthorName,
+  },
   cardWidth,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const actionLabels = useMemo(() => {
+    return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
+      getCardAllowedActions(caseStatus).map(
+        (
+          actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>
+        ): ReactElement<typeof AuthorClaimCaseCardActionButton> => (
+          <AuthorClaimCaseCardActionButton
+            actionType={actionType}
+            key={`actionbutton-case-${caseID}-button-${actionType}`}
+            onClick={(event: SyntheticEvent) => {
+              event.stopPropagation(); /* prevents card collapse */
+              silentEmptyFnc();
+            }}
+          />
+        )
+      )
+    ) : (
+      <AuthorClaimCaseCardStatusLabel
+        label={AUTHOR_CLAIM_STATUS_LABEL[caseStatus]}
+      />
+    );
+  }, [caseStatus]);
+
   return (
     <div
       className={css(styles.authorClaimCaseCard)}
@@ -59,14 +93,14 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
             {Date.now()}
           </div>
-          <div className={css(styles.cardMainSection)}>buttons</div>
+          <div className={css(styles.cardMainSection)}>{actionLabels}</div>
         </div>
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
             <div className={css(styles.requestorSubInfo, styles.fontGrey)}>
               Claiming Author
             </div>
-            <div> Author Name </div>
+            <div> {targetAuthorName} </div>
           </div>
         ) : null}
       </div>
