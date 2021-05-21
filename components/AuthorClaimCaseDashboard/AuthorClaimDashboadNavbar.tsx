@@ -43,7 +43,11 @@ export default function AuthorClaimDashbaordNavbar({
         className={css(styles.innerElementWrap)}
         style={{ width: innerElWidth }}
       >
-        <div className={css(styles.header)}>Author-Claim Requests</div>
+        <div className={css(styles.header)}>
+          <span className={css(styles.headerText)}>
+            {"Author-Claim Requests"}
+          </span>
+        </div>
         <div className={css(styles.navRow)}>{navButtons}</div>
       </div>
     </div>
@@ -67,6 +71,9 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     height: "100%",
   },
+  headerText: {
+    marginTop: 24,
+  },
   innerElementWrap: {
     boxSizing: "border-box",
     display: "flex",
@@ -76,7 +83,7 @@ const styles = StyleSheet.create({
   navRow: {
     alignItems: "center",
     display: "flex",
-    height: 88,
+    height: 60,
     width: "100%",
   },
 });
