@@ -16,11 +16,11 @@ const useEffectHandleCaseFetch = (
   const queriedStatus = AUTHOR_CLAIM_STATUS[currRouter.query.case_status];
   useEffect((): void => {
     // TODO: calvinhlee - hook up backend fetch here.
-    console.warn("QUERYING FOR: ", queriedStatus);
     setClaimCases([
       {
         caseStatus: queriedStatus,
-        requestID: 1,
+        caseID: 1,
+        requestorID: 1,
         requestorEmail: "calvinhlee@berkeley.edu",
         requestorName: "Calvin Lee",
         targetAuthorID: 4,
@@ -28,7 +28,8 @@ const useEffectHandleCaseFetch = (
       },
       {
         caseStatus: queriedStatus,
-        requestID: 1,
+        caseID: 2,
+        requestorID: 2,
         requestorEmail: "calvinhlee@berkeley.edu",
         requestorName: "Calvin Lee",
         targetAuthorID: 3,
@@ -50,22 +51,24 @@ export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
         allowedActions={getCardAllowedActions(claimCase.caseStatus)}
         authorClaimCase={claimCase}
         cardWidth={INNER_EL_WIDTH}
-        key={`author-claim-case-card-${nullthrows(claimCase.requestID)}`}
+        key={`author-claim-case-card-${nullthrows(claimCase.caseID)}`}
       />
     )
   );
-  return <div className={css(styles.authorClaimCaseContainer)}></div>;
+
+  return (
+    <div className={css(styles.authorClaimCaseContainer)}>{caseCards}</div>
+  );
 }
 
 const styles = StyleSheet.create({
   authorClaimCaseContainer: {
     alignItems: "center",
-    backgroundColor: "red",
     display: "flex",
     flexDirection: "column",
     height: "100%",
     justifyContent: "center",
-    paddingTop: 36,
+    paddingTop: 24,
     width: "100%",
   },
 });
