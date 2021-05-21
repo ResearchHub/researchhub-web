@@ -26,10 +26,11 @@ const buttonConfigs: Array<ButtonConfig> = [
 export default function AuthorClaimDashbaordNavbar({
   innerElWidth,
 }: Props): ReactElement<"div"> {
+  const router = useRouter();
   const [activeButtonID, setActiveButtonID] = useState(
     AUTHOR_CLAIM_STATUS.OPEN
   );
-  const router = useRouter();
+
   const navButtons = useMemo(
     (): Array<NavButton> =>
       buttonConfigs.map(
@@ -59,7 +60,7 @@ export default function AuthorClaimDashbaordNavbar({
       >
         <div className={css(styles.header)}>
           <span className={css(styles.headerText)}>
-            {"Author-Claim Requests"}
+            {"Author Claim Requests"}
           </span>
         </div>
         <div className={css(styles.navRow)}>{navButtons}</div>
