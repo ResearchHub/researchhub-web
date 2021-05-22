@@ -22,13 +22,13 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
 
       if (index > 0) {
         // style used to have overlapping UI
-        avatarStyle.marginLeft = -11;
+        avatarStyle.marginLeft = -8;
       }
 
       return (
         <div className={css(classNames)}>
           <div style={avatarStyle}>
-            <AuthorAvatar author={user} size={28} />
+            <AuthorAvatar author={user} size={28} border="2px solid #F1F1F1" />
           </div>
         </div>
       );
