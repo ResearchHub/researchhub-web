@@ -43,7 +43,7 @@ const PaperSections = (props) => {
     const maintabs = [
       { name: "Main", index: 0 },
       { name: "Abstract", index: 1 },
-      { name: "Discussion", index: 2 },
+      { name: "Comments", index: 2 },
       { name: "Paper PDF", index: 3 },
     ];
 
@@ -62,7 +62,7 @@ const PaperSections = (props) => {
       switch (name) {
         case "Main":
         case "Abstract":
-        case "Discussion":
+        case "Comments":
         case "Paper PDF":
         case "Paper":
           return true;
