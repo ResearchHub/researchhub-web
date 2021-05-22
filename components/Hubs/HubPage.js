@@ -888,6 +888,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
+    "@media only screen and (max-width: 767px)": {
+      padding: "0px 8px",
+    },
   },
   mainfeed: {
     minHeight: "inherit",
