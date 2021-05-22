@@ -158,14 +158,16 @@ const PaperEntryCard = (props) => {
       const source = external_source ? external_source : getJournalFromURL(url);
 
       return (
-        <div className={css(styles.metadataContainer, styles.authorContainer)}>
+        <div className={css(styles.metadataContainer)}>
+          <span className={css(styles.desktop)}>{"|"}</span>
           <div
             className={
               css(
                 styles.metadataClamp,
                 styles.metadata,
                 styles.removeMargin,
-                styles.capitalize
+                styles.capitalize,
+                styles.authors
               ) + " clamp1"
             }
           >
@@ -447,6 +449,7 @@ const PaperEntryCard = (props) => {
           <div
             className={css(styles.metadataContainer, styles.authorContainer)}
           >
+            <span className={css(styles.desktop)}>{"|"}</span>
             <span
               className={
                 css(styles.clampMetadata, styles.metadata, styles.authors) +
@@ -761,27 +764,27 @@ const styles = StyleSheet.create({
   },
   metadataRow: {
     display: "flex",
-    alignItems: "flex-start",
+    alignItems: "center",
+    color: "#C1C1CF",
     width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
+      alignItems: "flex-start",
     },
   },
   metadataContainer: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginBottom: 5,
+    // marginBottom: 5,
   },
   publishContainer: {
-    marginRight: 10,
+    marginRight: 6,
   },
   authorContainer: {},
   clampMetadata: {
     maxWidth: 180,
-    color: "#C1C1CF",
     fontSize: 14,
-    marginRight: 10,
   },
   summary: {
     width: "100%",
@@ -832,7 +835,6 @@ const styles = StyleSheet.create({
   },
   metadata: {
     fontSize: 13,
-    color: colors.BLACK(0.5),
     marginLeft: 7,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -845,8 +847,14 @@ const styles = StyleSheet.create({
     // textTransform: "capitalize"
   },
   authors: {
-    marginLeft: 0,
+    marginLeft: 6,
+    marginRight: 6,
     maxWidth: "100%",
+
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 0,
+      marginRight: 0,
+    },
   },
   discussion: {
     cursor: "pointer",
