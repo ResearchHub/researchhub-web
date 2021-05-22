@@ -188,6 +188,10 @@ const styles = StyleSheet.create({
   socials: {
     marginRight: 24,
     display: "flex",
+
+    "@media only screen and (max-width: 300px)": {
+      marginBottom: 16,
+    },
   },
   logo: {
     color: "#282936",
@@ -223,6 +227,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
     marginTop: 10,
   },
   researchHubLogo: {
