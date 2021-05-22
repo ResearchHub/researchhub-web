@@ -526,6 +526,23 @@ const Paper = (props) => {
                 </a>
               </Waypoint>
             </div>
+            <Waypoint
+              onEnter={() => onSectionEnter(2)}
+              topOffset={40}
+              bottomOffset={"95%"}
+            >
+              <a name="discussion">
+                <div className={css(styles.space)}>
+                  <DiscussionTab
+                    hostname={props.hostname}
+                    paperId={paperId}
+                    paperState={paper}
+                    calculatedCount={discussionCount}
+                    setCount={setCount}
+                  />
+                </div>
+              </a>
+            </Waypoint>
             <div
               className={css(
                 styles.paperPageContainer,
@@ -535,7 +552,7 @@ const Paper = (props) => {
               )}
             >
               <Waypoint
-                onEnter={() => onSectionEnter(2)}
+                onEnter={() => onSectionEnter(3)}
                 topOffset={40}
                 bottomOffset={"95%"}
               >
@@ -556,23 +573,6 @@ const Paper = (props) => {
                 </a>
               </Waypoint>
             </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(3)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <a name="discussion">
-                <div className={css(styles.space)}>
-                  <DiscussionTab
-                    hostname={props.hostname}
-                    paperId={paperId}
-                    paperState={paper}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                  />
-                </div>
-              </a>
-            </Waypoint>
             <Waypoint
               onEnter={() => onSectionEnter(4)}
               topOffset={40}
