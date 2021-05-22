@@ -84,7 +84,19 @@ const Navbar = (props) => {
     { label: "Home", route: "/", icon: "home" },
     { label: "Hubs", route: "/hubs", icon: "hub" },
     { label: "About", route: "/about", icon: "info-circle" },
-    { label: "Help", route: "/help", icon: "help" },
+    {
+      label: "Blog",
+      route: "",
+      link: "https://joyce-researchhub.medium.com/",
+      icon: "medium",
+    },
+    {
+      label: "Help",
+      route: "",
+      link:
+        "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      icon: "help",
+    },
     { label: "Live", route: "/live", icon: "live" },
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
   ];
@@ -111,7 +123,19 @@ const Navbar = (props) => {
       { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
       { label: "Live", route: "/live", icon: "live" },
       { label: "About", route: "/about", icon: "info-circle" },
-      { label: "Help", route: "/help", icon: "help" },
+      {
+        label: "Help",
+        route: "",
+        link:
+          "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        icon: "help",
+      },
+      {
+        label: "Blog",
+        route: "",
+        link: "https://joyce-researchhub.medium.com/",
+        icon: "medium",
+      },
     ],
     settings: [
       {
@@ -150,7 +174,7 @@ const Navbar = (props) => {
       if (tab.icon === "home") {
         return null;
       }
-      if (tab.label === "Help") {
+      if (tab.link) {
         return (
           <div
             key={index}
@@ -162,9 +186,7 @@ const Navbar = (props) => {
           >
             <a
               className={css(styles.tabLink)}
-              href={
-                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
-              }
+              href={tab.link}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -219,14 +241,12 @@ const Navbar = (props) => {
 
   function renderCollapsible(tabs) {
     return tabs.map((tab, index) => {
-      if (tab.label === "Help") {
+      if (tab.link) {
         return (
           <div className={css(styles.menuItem)} key={`navbar_tab_${index}`}>
             <a
               className={css(styles.menuItem, styles.noMargin)}
-              href={
-                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
-              }
+              href={tab.link}
               target="_blank"
               rel="noreferrer noopener"
             >
