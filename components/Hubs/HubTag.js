@@ -27,7 +27,7 @@ const HubTag = ({
         className={css(styles.tag, overrideStyle && overrideStyle)}
         key={`tag-${name}-${Math.random()}`}
       >
-        <span className={css(styles.label) + " clamp1"}>{name && name}</span>
+        <span className={css(styles.label)}>{name && name}</span>
       </div>
     );
   } else {
@@ -60,7 +60,7 @@ const HubTag = ({
                         styles.label,
                         gray && styles.grayLabel,
                         labelStyle && labelStyle
-                      ) + " clamp1 hubLabel"
+                      ) + " hubLabel"
                     }
                   >
                     {name && name}
@@ -105,6 +105,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
+    overflow: "hidden",
     marginLeft: 6,
   },
   hubImage: {
