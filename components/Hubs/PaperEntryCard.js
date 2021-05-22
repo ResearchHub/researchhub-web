@@ -11,6 +11,7 @@ import VoteWidget from "../VoteWidget";
 import HubTag from "./HubTag";
 import HubDropDown from "./HubDropDown";
 import PaperJournalTag from "../Paper/PaperJournalTag";
+import PaperUserAvatars from "../Paper/PaperUserAvatars";
 import PaperPDFModal from "~/components/Modals/PaperPDFModal";
 
 // Utility
@@ -22,7 +23,11 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPaperSlug } from "~/config/utils";
+import {
+  formatPaperSlug,
+  getUsersFromPaper,
+  getJournalFromURL,
+} from "~/config/utils";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 import { PaperActions } from "~/redux/paper";
@@ -130,30 +135,39 @@ const PaperEntryCard = (props) => {
     onClick && onClick();
   }
 
-  function renderUploadedBy() {
-    return (
-      <div className={css(styles.journalTagContainer)}>
-        <PaperJournalTag
-          url={url}
-          externalSource={external_source}
-          onFallback={(externalSource) => {
-            if (externalSource && externalSource !== "doi") {
-              return (
-                <div className={css(styles.uploadedBy)}>
-                  <span
-                    className={css(styles.capitalize, styles.externalSource)}
-                  >
-                    {externalSource}
-                  </span>
-                </div>
-              );
-            }
+  function renderContributers() {
+    const users = getUsersFromPaper(paper, (user) => user.profile_image);
 
-            return null;
-          }}
-        />
-      </div>
-    );
+    if (users && users.length) {
+      return (
+        <div className={css(styles.journalTagContainer)}>
+          <PaperUserAvatars users={users} />
+        </div>
+      );
+    }
+  }
+
+  function renderJournalName(mobile) {
+    if (external_source || url) {
+      const source = external_source ? external_source : getJournalFromURL(url);
+
+      return (
+        <div className={css(styles.metadataContainer, styles.authorContainer)}>
+          <div
+            className={
+              css(
+                styles.metadataClamp,
+                styles.metadata,
+                styles.removeMargin,
+                styles.capitalize
+              ) + " clamp1"
+            }
+          >
+            Journal: {source}
+          </div>
+        </div>
+      );
+    }
   }
 
   /**
@@ -357,7 +371,7 @@ const PaperEntryCard = (props) => {
   };
 
   const renderHubTags = () => {
-    if (hubs && hubs.length > 0) {
+    if (hubs && hubs.length) {
       return (
         <div className={css(styles.tags)}>
           {hubs.map(
@@ -492,6 +506,7 @@ const PaperEntryCard = (props) => {
         <div className={css(styles.metadataRow)}>
           {renderUploadedDate(mobile)}
           {renderRawAuthors(mobile)}
+          {renderJournalName(mobile)}
         </div>
       );
     }
@@ -603,13 +618,13 @@ const PaperEntryCard = (props) => {
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
-            {mobileOnly(renderUploadedBy())}
+            {mobileOnly(renderContributers())}
           </div>
           {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
-            {desktopOnly(renderUploadedBy())}
+            {desktopOnly(renderContributers())}
           </div>
           {desktopOnly(
             <div className={css(styles.row)}>
@@ -760,6 +775,7 @@ const styles = StyleSheet.create({
     maxWidth: 180,
     color: "#C1C1CF",
     fontSize: 14,
+    marginRight: 10,
   },
   summary: {
     width: "100%",
@@ -818,6 +834,9 @@ const styles = StyleSheet.create({
   },
   removeMargin: {
     marginLeft: 0,
+  },
+  capitalize: {
+    // textTransform: "capitalize"
   },
   authors: {
     marginLeft: 0,

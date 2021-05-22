@@ -22,3 +22,52 @@ export const getJournalFromURL = (url) => {
   }
   return null;
 };
+
+/**
+ * Returns author objects from paper object
+ *
+ * @param { Object } paper - Paper JSON
+ */
+export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
+  if (!paper) return []; // short circuit
+  const { authors, uploaded_by, discussion_users } = paper;
+
+  const seenUsers = {};
+  const users = [];
+
+  // add authors
+  (authors || []).forEach((author) => {
+    if (!seenUsers[author.id]) {
+      users.push(author);
+      seenUsers[author.id] = true;
+    }
+  });
+
+  // add uploader
+  if (uploaded_by) {
+    const { author_profile: uploader } = uploaded_by;
+    if (!seenUsers[uploader.id]) {
+      users.push(uploader);
+      seenUsers[uploader.id] = true;
+    }
+  }
+
+  // add discussion users
+  (discussion_users || []).forEach((discussionUser) => {
+    const { author_profile: commenter } = discussionUser;
+    // console.log("seenUser", seenUsers);
+    // console.log("commentr", commenter);
+    // console.log("commentrid", commenter.id)
+
+    if (!seenUsers[commenter.id]) {
+      users.push(commenter);
+      seenUsers[commenter.id] = true;
+    }
+  });
+
+  if (filterFunc) {
+    return users.filter(filterFunc).slice(0, limit);
+  }
+
+  return users.slice(0, limit);
+};
