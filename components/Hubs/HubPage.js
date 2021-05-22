@@ -890,6 +890,9 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 767px)": {
       padding: "0px 8px",
+      maxWidth: 550,
+      display: "block",
+      minWidth: "unset",
     },
   },
   mainfeed: {
@@ -904,19 +907,6 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 990px)": {
       width: "100%",
-    },
-    "@media only screen and (min-width: 900px)": {
-      // paddingLeft: 25,
-      // paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      // paddingLeft: 30,
-      // paddingRight: 50,
-    },
-
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
     },
     "@media only screen and (max-width: 415px)": {
       padding: 0,
