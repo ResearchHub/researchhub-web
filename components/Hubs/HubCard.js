@@ -215,7 +215,7 @@ class HubCard extends React.Component {
               this.openEditHubModal();
             }}
           >
-            <span className={css(styles.editIcon)}>{icons.editHub}</span>
+            <span>{icons.editHub}</span>
           </button>
         );
       }
@@ -233,7 +233,7 @@ class HubCard extends React.Component {
               this.removeHubConfirmation();
             }}
           >
-            <span className={css(styles.deleteIcon)}>{icons.trash}</span>
+            <span>{icons.trash}</span>
           </button>
         );
       }
@@ -293,6 +293,9 @@ class HubCard extends React.Component {
               </div>
             </div>
           </div>
+          <div className={css(styles.hubTitleMobile)}>
+            <div className={css(styles.hubNameMobile)}>{hub.name}</div>
+          </div>
           <Link
             href="/hubs/[slug]"
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
@@ -322,22 +325,22 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    "@media only screen and (max-width: 415px)": {
-      zoom: 0.9,
-    },
-    "@media only screen and (max-width: 376px)": {
-      zoom: 0.8,
-    },
-    "@media only screen and (max-width: 321px)": {
-      zoom: 0.7,
+    "@media only screen and (max-width: 767px)": {
+      width: "42.5vmin",
+      height: "42.5vmin",
+      margin: "2.5vmin",
     },
   },
   hubCard: {
+    position: "relative",
     fontSize: "16px",
     color: "#241F3A",
     borderRadius: "8px",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
-    marginBottom: 50,
+    "@media only screen and (max-width: 767px)": {
+      width: "42.5vmin",
+      height: "42.5vmin",
+    },
   },
   removed: {
     display: "none",
@@ -348,16 +351,50 @@ const styles = StyleSheet.create({
     height: "128px",
     objectFit: "cover",
     pointerEvents: "none",
+    "@media only screen and (max-width: 767px)": {
+      width: "42.5vmin",
+      height: "42.5vmin",
+      borderRadius: "8px",
+    },
   },
   hubInfo: {
     boxSizing: "border-box",
     padding: "0 15px",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  hubTitleMobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "block",
+      position: "relative",
+      bottom: 104,
+      height: "100px",
+      borderRadius: "0 0 8px 8px",
+      background:
+        "linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.5))",
+    },
+  },
+  hubNameMobile: {
+    position: "absolute",
+    bottom: "1.5vmin",
+    left: "2vmin",
+    width: "38vmin",
+    color: "#fff",
+    fontSize: "3.5vw",
+    textTransform: "capitalize",
+    fontWeight: 500,
+    wordBreak: "break-word",
   },
   hubTitle: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "10px 0 0 0",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   hubName: {
     fontSize: 18,
@@ -439,9 +476,6 @@ const styles = StyleSheet.create({
     ":hover": {
       opacity: 1,
     },
-  },
-  editIcon: {
-    marginLeft: 1,
   },
   deleteButton: {
     height: 30,
