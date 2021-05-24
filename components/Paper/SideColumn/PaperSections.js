@@ -48,14 +48,14 @@ const PaperSections = (props) => {
     ];
 
     if (paperDraftExists) {
-      maintabs.splice(2, 0, { name: "Paper", index: 2 });
+      maintabs.splice(3, 0, { name: "Paper", index: 3 });
       maintabs.forEach((section, i) => {
         section.index = i;
       });
     }
 
     if (paperDraftSections && paperDraftSections.length) {
-      maintabs.splice(3, 0, ...paperDraftSections);
+      maintabs.splice(4, 0, ...paperDraftSections);
     }
 
     const isMainTab = (name) => {
