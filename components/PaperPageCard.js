@@ -749,8 +749,10 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     flexDirection: "column",
-    maxWidth: "10vh", // Width needs to be relative to box's height anyway, so use vh trick.
-    // height: "100%",
+    // aspectRatio: "3 / 4",
+    // maxWidth: "10vh", // Width needs to be relative to box's height anyway, so use vh trick.
+    // maxWidth: "120px",
+    maxWidth: "15%",
 
     // alignItems: "center",
     // alignItems: "stretch",
