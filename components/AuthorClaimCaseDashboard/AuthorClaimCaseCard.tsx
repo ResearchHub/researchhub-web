@@ -5,8 +5,9 @@ import {
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { silentEmptyFnc } from "../../config/utils/nullchecks";
+import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ValueOf } from "../../config/types/root_types";
+import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import colors from "../../config/themes/colors";
@@ -44,7 +45,10 @@ export default function AuthorClaimCaseCard({
             key={`actionbutton-case-${caseID}-button-${actionType}`}
             onClick={(event: SyntheticEvent) => {
               event.stopPropagation(); /* prevents card collapse */
-              silentEmptyFnc();
+              updateCaseStatus({
+                payload: { caseID, updateStatus: actionType },
+                onSuccess: emptyFncWithMsg,
+              });
             }}
           />
         )
