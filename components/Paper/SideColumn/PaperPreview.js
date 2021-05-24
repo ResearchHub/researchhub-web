@@ -62,6 +62,14 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
       </ReactPlaceholder>
     </ColumnContainer>
   );
+  // return (
+  //   <img
+  //     src={figureUrls[0]}
+  //     onClick={openPaperPDFModal}
+  //     className={css(styles.preview, previewStyles)}
+  //     property="image"
+  //   />
+  // );
 };
 
 const styles = StyleSheet.create({
@@ -82,15 +90,25 @@ const styles = StyleSheet.create({
     display: "none",
   },
   preview: {
+    // width: 100,
+    // width: "100%",
+    // height: "100%",
+    // height: "120px",
+
     width: 120,
-    height: 90,
+    height: 140,
     objectFit: "contain",
 
     // maxWidth: "100%",
     // maxHeight: "100%",
 
     // width: "100%",
-    // objectFit: "contain",
+    // objectFit: "cover",
+    // alignSelf: "center",
+    // flex: "1",
+    // minHeight: 0,
+    // maxWidth: "100%",
+    // maxHeight: "100%",
   },
   buttonContainer: {
     width: "100%",
