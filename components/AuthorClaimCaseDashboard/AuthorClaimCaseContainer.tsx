@@ -1,56 +1,50 @@
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
+import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
+import { getCases } from "./api/AuthorClaimCaseGetCases";
 import { INNER_EL_WIDTH } from "./AuthorClaimCaseDashboard";
-import { useRouter, NextRouter } from "next/router";
 import { nullthrows } from "../../config/utils/nullchecks";
-import AuthorClaimCaseCard, { AuthorClaimCase } from "./AuthorClaimCaseCard";
+import { useRouter, NextRouter } from "next/router";
+import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
 import React, { useEffect, ReactElement, useState } from "react";
 
-const useEffectHandleCaseFetch = (
-  currRouter: NextRouter,
-  setClaimCases: React.Dispatch<React.SetStateAction<AuthorClaimCase[]>>
-): void => {
+const useEffectHandleCaseFetch = ({
+  currRouter,
+  setClaimCases,
+}: {
+  currRouter: NextRouter;
+  setClaimCases: React.Dispatch<React.SetStateAction<AuthorClaimCase[]>>;
+}): void => {
   // @ts-ignore url-status is implicitly set with the constant
   const queriedStatus = AUTHOR_CLAIM_STATUS[currRouter.query.case_status];
   useEffect((): void => {
-    // TODO: calvinhlee - hook up backend fetch here.
-    setClaimCases([
-      {
-        caseStatus: queriedStatus,
-        caseID: 1,
-        requestorID: 1,
-        requestorEmail: "calvinhlee@berkeley.edu",
-        requestorName: "Calvin Lee",
-        targetAuthorID: 4,
-        targetAuthorName: "Calvin YOYO Lee",
-      },
-      {
-        caseStatus: queriedStatus,
-        caseID: 2,
-        requestorID: 2,
-        requestorEmail: "calvinhlee@berkeley.edu",
-        requestorName: "Calvin Lee",
-        targetAuthorID: 3,
-        targetAuthorName: "Calvin YOYO Lee",
-      },
-    ]);
-  }, [queriedStatus]);
+    getCases({
+      caseStatus: queriedStatus,
+      onSuccess: setClaimCases,
+    });
+  }, [queriedStatus, setClaimCases]);
 };
 
 export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
   const router = useRouter();
   const [claimCases, setClaimCases] = useState<Array<AuthorClaimCase>>([]);
+  useEffectHandleCaseFetch({
+    currRouter: router,
+    setClaimCases,
+  });
 
-  useEffectHandleCaseFetch(router, setClaimCases);
-
+  console.warn("CLAIM CASES: ", claimCases);
   const caseCards = claimCases.map(
-    (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => (
-      <AuthorClaimCaseCard
-        authorClaimCase={claimCase}
-        cardWidth={INNER_EL_WIDTH}
-        key={`author-claim-case-card-${nullthrows(claimCase.caseID)}`}
-      />
-    )
+    (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => {
+      const caseID = claimCase.caseData.id || Date.now();
+      return (
+        <AuthorClaimCaseCard
+          authorClaimCase={claimCase}
+          cardWidth={INNER_EL_WIDTH}
+          key={`author-claim-case-card-${caseID}`}
+        />
+      );
+    }
   );
 
   return (
