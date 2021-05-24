@@ -16,6 +16,7 @@ type ButtonConfig = {
 type NavButton = ReactElement<typeof AuthorClaimDashboardNavbarButton>;
 type Props = {
   innerElWidth: number;
+  lastFetchTime: number;
 };
 
 const buttonConfigs: Array<ButtonConfig> = [
@@ -24,14 +25,18 @@ const buttonConfigs: Array<ButtonConfig> = [
   { label: AUTHOR_CLAIM_STATUS_LABEL.CLOSED, id: AUTHOR_CLAIM_STATUS.CLOSED },
 ];
 
-const useEffectFetchCounts = (setCounts: (counts: Counts) => void): void => {
+const useEffectFetchCounts = (
+  lastFetchTime,
+  setCounts: (counts: Counts) => void
+): void => {
   useEffect((): void => {
     getCaseCounts({ onSuccess: setCounts });
-  }, [setCounts]);
+  }, [lastFetchTime, setCounts]);
 };
 
 export default function AuthorClaimDashboardNavbar({
   innerElWidth,
+  lastFetchTime,
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const [counts, setCounts] = useState<Counts>({
@@ -42,7 +47,7 @@ export default function AuthorClaimDashboardNavbar({
     router.query.case_status || AUTHOR_CLAIM_STATUS_LABEL.OPEN
   );
 
-  useEffectFetchCounts(setCounts);
+  useEffectFetchCounts(lastFetchTime, setCounts);
 
   const navButtons = useMemo(
     (): Array<NavButton> =>
