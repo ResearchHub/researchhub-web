@@ -113,14 +113,12 @@ const styles = StyleSheet.create({
     // width: "100%",
     // height: "100%",
     // height: "120px",
-
     // width: 120,
     // height: 180,
     // height: "inherit",
     // width: "100%",
-    height: "100%",
-    objectFit: "contain",
-
+    // height: "100%",
+    // objectFit: "fill",
     // flex: "1 1 0px",
     // width: "120px",
     // objectFit: "contain",
@@ -128,10 +126,8 @@ const styles = StyleSheet.create({
     // height: "100%",
     // overflowY: "hidden",
     // overflowX: "hidden",
-
     // maxWidth: "100%",
     // maxHeight: "100%",
-
     // width: "100%",
     // objectFit: "cover",
     // alignSelf: "center",
