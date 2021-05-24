@@ -664,7 +664,7 @@ var styles = StyleSheet.create({
   },
   addDiscussionButton: {
     border: "1px solid",
-    padding: "6px 16px",
+    marginLeft: 10,
     color: "#fff",
     background: colors.PURPLE(1),
     fontSize: 16,
@@ -845,7 +845,6 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginBottom: 20,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
@@ -868,6 +867,7 @@ var styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 500,
     marginLeft: 15,
+    marginTop: 3,
   },
   rowContainer: {
     width: "100%",
@@ -886,6 +886,9 @@ var styles = StyleSheet.create({
   filterContainer: {
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 15,
+    },
   },
   filterSelect: {
     width: 150,
@@ -958,8 +961,8 @@ var styles = StyleSheet.create({
     backgroundColor: colors.BLUE(0.11),
     color: colors.BLUE(),
   },
-  placholder: {
-    width: "100%",
+  placeholderContainer: {
+    marginTop: 15,
   },
 });
 
