@@ -87,7 +87,7 @@ const Navbar = (props) => {
     {
       label: "Blog",
       route: "",
-      link: "https://joyce-researchhub.medium.com/",
+      link: "https://medium.com/researchhub",
       icon: "medium",
     },
     {
@@ -133,7 +133,7 @@ const Navbar = (props) => {
       {
         label: "Blog",
         route: "",
-        link: "https://joyce-researchhub.medium.com/",
+        link: "https://medium.com/researchhub",
         icon: "medium",
       },
     ],
