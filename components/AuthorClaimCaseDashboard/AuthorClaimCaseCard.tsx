@@ -17,13 +17,16 @@ import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 type Props = {
   authorClaimCase: AuthorClaimCase;
   cardWidth: number | string;
+  setLastFetchTime: Function;
 };
 
 export default function AuthorClaimCaseCard({
   authorClaimCase,
   cardWidth,
+  setLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { caseData, requestor, targetAuthor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
@@ -42,12 +45,17 @@ export default function AuthorClaimCaseCard({
         ): ReactElement<typeof AuthorClaimCaseCardActionButton> => (
           <AuthorClaimCaseCardActionButton
             actionType={actionType}
+            isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
             onClick={(event: SyntheticEvent) => {
               event.stopPropagation(); /* prevents card collapse */
+              setIsSubmitting(true);
               updateCaseStatus({
                 payload: { caseID, updateStatus: actionType },
-                onSuccess: emptyFncWithMsg,
+                onSuccess: () => {
+                  setIsSubmitting(false);
+                  setLastFetchTime(Date.now());
+                },
               });
             }}
           />
