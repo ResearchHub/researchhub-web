@@ -16,6 +16,11 @@ type Props = {
   setLastFetchTime: Function;
 };
 
+type Props = {
+  lastFetchTime: number;
+  setLastFetchTime: Function;
+};
+
 const useEffectHandleCaseFetch = ({
   currRouter,
   lastFetchTime,
