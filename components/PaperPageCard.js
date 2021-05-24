@@ -748,13 +748,13 @@ const styles = StyleSheet.create({
   previewBox: {
     marginLeft: "auto",
     display: "flex",
-
     flexDirection: "column",
+    maxWidth: "10vh", // Width needs to be relative to box's height anyway, so use vh trick.
     // height: "100%",
 
     // alignItems: "center",
     // alignItems: "stretch",
-    // justifyContent: "stretch",
+    // justifyContent: "center",
     // alignSelf: "stretch",
 
     // minWidth: 140,
