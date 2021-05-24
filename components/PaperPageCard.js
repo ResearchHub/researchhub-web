@@ -701,7 +701,6 @@ class PaperPageCard extends React.Component {
             />
           </div>
         </div>
-
         <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
         </div>
@@ -749,8 +748,13 @@ const styles = StyleSheet.create({
   previewBox: {
     marginLeft: "auto",
     display: "flex",
+
+    flexDirection: "column",
+    // height: "100%",
+
     // alignItems: "center",
-    alignItems: "stretch",
+    // alignItems: "stretch",
+    // justifyContent: "stretch",
     // alignSelf: "stretch",
 
     // minWidth: 140,
@@ -762,7 +766,7 @@ const styles = StyleSheet.create({
 
     // maxWidth: "20%",
     // maxWidth: "140px",
-    maxHeight: "100%",
+    // maxHeight: "100%",
     // height: "inherit",
 
     "@media only screen and (max-width: 767px)": {
