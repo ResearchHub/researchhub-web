@@ -9,6 +9,7 @@ import colors from "../../config/themes/colors";
 
 type Props = {
   actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
+  isDisabled: boolean;
   onClick: (event: SyntheticEvent) => void;
 };
 
@@ -20,6 +21,7 @@ const getButtonStyle = (actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>) => {
 
 export default function AuthorClaimCaseCardActionButton({
   actionType,
+  isDisabled,
   onClick,
 }: Props): ReactElement<"div"> {
   const buttonLabel = AUTHOR_CLAIM_ACTION_LABEL[actionType];
@@ -27,7 +29,8 @@ export default function AuthorClaimCaseCardActionButton({
     <div
       className={css(
         styles.authorClaimCaseCardActionButton,
-        getButtonStyle(actionType)
+        getButtonStyle(actionType),
+        isDisabled ? styles.disableButton : null
       )}
       onClick={onClick}
       role="button"
@@ -56,5 +59,10 @@ const styles = StyleSheet.create({
   buttonDisapprove: {
     backgroundColor: "#FFF",
     border: `1px solid ${colors.NEW_BLUE(1)}`,
+  },
+  disableButton: {
+    backgroundColor: colors.GREY(1),
+    border: "none",
+    cursor: "wait",
   },
 });
