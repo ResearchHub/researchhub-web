@@ -770,10 +770,12 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
+    flex: 1,
     // marginBottom: 5,
   },
   publishContainer: {
     marginRight: 6,
+    flex: "unset",
   },
   authorContainer: {},
   clampMetadata: {
