@@ -33,7 +33,6 @@ export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
     setClaimCases,
   });
 
-  console.warn("CLAIM CASES: ", claimCases);
   const caseCards = claimCases.map(
     (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => {
       const caseID = claimCase.caseData.id || Date.now();
