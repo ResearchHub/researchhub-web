@@ -75,7 +75,7 @@ class Footer extends React.Component {
             <a
               target="_blank"
               className={css(styles.link)}
-              href="https://joyce-researchhub.medium.com/"
+              href="https://medium.com/researchhub"
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
