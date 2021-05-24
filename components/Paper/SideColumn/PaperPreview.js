@@ -38,30 +38,31 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
     return dispatch(ModalActions.openPaperPDFModal(true));
   };
 
-  // return (
-  //   <ColumnContainer
-  //     overrideStyles={[
-  //       !fetching && !figureUrls.length ? styles.hidden : styles.container,
-  //       columnOverrideStyles,
-  //       fetching && styles.fetching,
-  //     ]}
-  //   >
-  //     <ReactPlaceholder
-  //       ready={!fetching}
-  //       showLoadingAnimation
-  //       customPlaceholder={
-  //         <PreviewPlaceholder previewStyles={previewStyles} color="#efefef" />
-  //       }
-  //     >
-  //       <img
-  //         src={figureUrls[0]}
-  //         onClick={openPaperPDFModal}
-  //         className={css(styles.preview, previewStyles)}
-  //         property="image"
-  //       />
-  //     </ReactPlaceholder>
-  //   </ColumnContainer>
-  // );
+  return (
+    <ColumnContainer
+      overrideStyles={[
+        !fetching && !figureUrls.length ? styles.hidden : styles.container,
+        columnOverrideStyles,
+        fetching && styles.fetching,
+        styles.preview,
+      ]}
+    >
+      <ReactPlaceholder
+        ready={!fetching}
+        showLoadingAnimation
+        customPlaceholder={
+          <PreviewPlaceholder previewStyles={previewStyles} color="#efefef" />
+        }
+      >
+        <img
+          src={figureUrls[0]}
+          onClick={openPaperPDFModal}
+          className={css(styles.preview, previewStyles)}
+          property="image"
+        />
+      </ReactPlaceholder>
+    </ColumnContainer>
+  );
   // return (
   //   <img
   //     src={figureUrls[0]}
@@ -71,13 +72,13 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
   //   />
   // );
 
-  return (
-    <div className={css(styles.preview)}>
-      test test test test test test test test test test test test test test test
-      test test test test test test test test test test test test test test test
-      test test test test test test test test test test test
-    </div>
-  );
+  // return (
+  //   <div className={css(styles.preview)}>
+  //     test test test test test test test test test test test test test test test
+  //     test test test test test test test test test test test test test test test
+  //     test test test test test test test test test test test
+  //   </div>
+  // );
 };
 
 const styles = StyleSheet.create({
@@ -106,11 +107,12 @@ const styles = StyleSheet.create({
     // width: 120,
     // height: 140,
     // height: "inherit",
-    // objectFit: "contain",
+    objectFit: "contain",
 
     flex: "1 1 0px",
     width: "100px",
-    overflowY: "auto",
+    overflowY: "hidden",
+    overflowX: "hidden",
 
     // maxWidth: "100%",
     // maxHeight: "100%",
