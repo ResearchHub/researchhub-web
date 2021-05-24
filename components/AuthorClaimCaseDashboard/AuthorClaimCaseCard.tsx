@@ -2,16 +2,16 @@ import {
   AUTHOR_CLAIM_STATUS,
   AUTHOR_CLAIM_STATUS_LABEL,
 } from "./constants/AuthorClaimStatus";
+import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { ValueOf } from "../../config/types/root_types";
 import { silentEmptyFnc } from "../../config/utils/nullchecks";
+import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
-import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -19,14 +19,20 @@ type Props = {
 };
 
 export default function AuthorClaimCaseCard({
-  authorClaimCase: {
-    case: { id: caseID, status: caseStatus },
-    requestor: { id: requestorID, email: requestorEmail, name: requestorName },
-    targetAuthor: { id: targetAuthorID, name: targetAuthorName },
-  },
+  authorClaimCase,
   cardWidth,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const { caseData, requestor, targetAuthor } = authorClaimCase || {};
+  const { createdDate, id: caseID, status: caseStatus } = caseData || {};
+  const {
+    name: requestorName,
+    profileImg: requestorFaceImg,
+    providedEmail,
+    requestorAuthorID,
+  } = requestor || {};
+  const { id: targetAuthorID, name: targetAuthorName } = targetAuthor || {};
+
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -70,17 +76,15 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardMainSection)}>
             <img
               className={css(styles.requestorFaceImg)}
-              src={
-                "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c"
-              }
+              src={requestorFaceImg}
             />
             <span className={css(styles.requestorName)}>{requestorName}</span>
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            {requestorEmail}
+            {providedEmail}
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            {Date.now()}
+            {createdDate.split("T")[0]}
           </div>
           <div className={css(styles.cardMainSection)}>{actionLabels}</div>
         </div>

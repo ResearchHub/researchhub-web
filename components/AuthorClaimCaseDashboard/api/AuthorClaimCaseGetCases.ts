@@ -5,11 +5,10 @@ import { ID, ValueOf } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 
 export type Requestor = {
-  email: string;
-  providedEmail: string;
-  id: ID;
-  profileImg: string;
   name: string;
+  profileImg: string;
+  providedEmail: string;
+  requestorAuthorID: ID;
 };
 
 export type TargetAuthor = {
@@ -17,15 +16,15 @@ export type TargetAuthor = {
   name: string;
 };
 
-export type Case = {
-  created_date: string;
+export type CaseData = {
+  createdDate: string;
   id: ID;
   status: string;
-  updated_date: string;
+  updatedDate: string;
 };
 
 export type AuthorClaimCase = {
-  case: Case;
+  caseData: CaseData;
   targetAuthor: TargetAuthor;
   requestor: Requestor;
 };
@@ -47,6 +46,54 @@ export function getCases({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((response: any): void => onSuccess())
+    .then((response: any): void => {
+      const formattedResponse = (response || []).map(
+        (caseData: any): AuthorClaimCase => {
+          console.warn(caseData);
+          const {
+            created_date,
+            id,
+            provided_email,
+            requestor,
+            status,
+            target_author,
+            updated_date,
+          } = caseData;
+          const {
+            id: targetAuthorID,
+            first_name: tAuthorFirstName,
+            last_name: tAuthorLastName,
+          } = target_author || {};
+          const {
+            id: requestorID,
+            author_profile: {
+              id: requestorAuthorID,
+              profile_image: requestorProfileImg,
+              first_name: requestorFirstName,
+              last_name: requestorLastName,
+            },
+          } = requestor || {};
+          return {
+            caseData: {
+              createdDate: created_date,
+              id,
+              status,
+              updatedDate: updated_date,
+            },
+            targetAuthor: {
+              id: targetAuthorID,
+              name: `${tAuthorFirstName} ${tAuthorLastName}`,
+            },
+            requestor: {
+              name: `${requestorFirstName} ${requestorLastName}`,
+              profileImg: requestorProfileImg,
+              providedEmail: provided_email,
+              requestorAuthorID: requestorID,
+            },
+          };
+        }
+      );
+      onSuccess(formattedResponse);
+    })
     .catch((e) => onError(e));
 }
