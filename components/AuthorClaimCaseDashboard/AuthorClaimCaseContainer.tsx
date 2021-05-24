@@ -8,11 +8,18 @@ import { useRouter, NextRouter } from "next/router";
 import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
 import React, { useEffect, ReactElement, useState } from "react";
 
+type Props = {
+  lastFetchTime: number;
+  setLastFetchTime: Function;
+};
+
 const useEffectHandleCaseFetch = ({
   currRouter,
+  lastFetchTime,
   setClaimCases,
 }: {
   currRouter: NextRouter;
+  lastFetchTime: number;
   setClaimCases: React.Dispatch<React.SetStateAction<AuthorClaimCase[]>>;
 }): void => {
   // @ts-ignore url-status is implicitly set with the constant
@@ -22,13 +29,17 @@ const useEffectHandleCaseFetch = ({
       caseStatus: queriedStatus,
       onSuccess: setClaimCases,
     });
-  }, [queriedStatus, setClaimCases]);
+  }, [lastFetchTime, queriedStatus, setClaimCases]);
 };
 
-export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
+export default function AuthorClaimCaseContainer({
+  lastFetchTime,
+  setLastFetchTime,
+}: Props): ReactElement<"div"> {
   const router = useRouter();
   const [claimCases, setClaimCases] = useState<Array<AuthorClaimCase>>([]);
   useEffectHandleCaseFetch({
+    lastFetchTime,
     currRouter: router,
     setClaimCases,
   });
@@ -41,6 +52,7 @@ export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
           authorClaimCase={claimCase}
           cardWidth={INNER_EL_WIDTH}
           key={`author-claim-case-card-${caseID}`}
+          setLastFetchTime={setLastFetchTime}
         />
       );
     }
