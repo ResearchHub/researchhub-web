@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 const ColumnContainer = (props) => {
-  const { overrideStyles } = props;
+  const { overrideStyles, onClick } = props;
 
   return (
-    <div className={css(styles.root, overrideStyles && overrideStyles)}>
+    <div
+      className={css(styles.root, overrideStyles && overrideStyles)}
+      onClick={onClick}
+    >
       {props.children}
     </div>
   );

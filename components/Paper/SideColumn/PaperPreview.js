@@ -12,6 +12,7 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import { fetchPaperFigures } from "~/config/fetch";
+import { absoluteUrl } from "../../../config/utils";
 
 const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
   const dispatch = useDispatch();
@@ -44,8 +45,8 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
         !fetching && !figureUrls.length ? styles.hidden : styles.container,
         columnOverrideStyles,
         fetching && styles.fetching,
-        styles.preview,
       ]}
+      onClick={openPaperPDFModal}
     >
       <ReactPlaceholder
         ready={!fetching}
@@ -56,10 +57,12 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
       >
         <img
           src={figureUrls[0]}
-          onClick={openPaperPDFModal}
           className={css(styles.preview, previewStyles)}
           property="image"
         />
+        {/* <div className={css(styles.preview)}>
+        test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test 
+        </div> */}
       </ReactPlaceholder>
     </ColumnContainer>
   );
@@ -88,6 +91,13 @@ const styles = StyleSheet.create({
     width: "unset",
     marginLeft: "auto",
 
+    display: "flex",
+    flex: "1 1 0px",
+    // width: "120px",
+    overflowY: "hidden", // trims bottom
+    overflowX: "hidden",
+    justifyContent: "center",
+
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -105,14 +115,19 @@ const styles = StyleSheet.create({
     // height: "120px",
 
     // width: 120,
-    // height: 140,
+    // height: 180,
     // height: "inherit",
+    // width: "100%",
+    height: "100%",
     objectFit: "contain",
 
-    flex: "1 1 0px",
-    width: "100px",
-    overflowY: "hidden",
-    overflowX: "hidden",
+    // flex: "1 1 0px",
+    // width: "120px",
+    // objectFit: "contain",
+    // maxWidth: "120px",
+    // height: "100%",
+    // overflowY: "hidden",
+    // overflowX: "hidden",
 
     // maxWidth: "100%",
     // maxHeight: "100%",
