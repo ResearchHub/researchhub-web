@@ -49,7 +49,6 @@ export function getCases({
     .then((response: any): void => {
       const formattedResponse = (response || []).map(
         (caseData: any): AuthorClaimCase => {
-          console.warn(caseData);
           const {
             created_date,
             id,
