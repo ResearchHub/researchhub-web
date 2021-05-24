@@ -692,11 +692,6 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={css(styles.bottomContainer)}>
-              <div className={css(styles.bottomRow)}>
-                {this.renderActions()}
-              </div>
-            </div>
           </div>
           <div className={css(styles.previewBox)}>
             <PaperPreview
@@ -705,6 +700,10 @@ class PaperPageCard extends React.Component {
               columnOverrideStyles={styles.columnOverrideStyles}
             />
           </div>
+        </div>
+
+        <div className={css(styles.bottomContainer)}>
+          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
         </div>
       </ReactPlaceholder>
     );
@@ -715,6 +714,8 @@ const styles = StyleSheet.create({
   mainContainer: {
     display: "flex",
     width: "100%",
+
+    // height: "200px",
   },
   main: {
     display: "flex",
@@ -748,7 +749,9 @@ const styles = StyleSheet.create({
   previewBox: {
     marginLeft: "auto",
     display: "flex",
+    // alignItems: "center",
     alignItems: "stretch",
+    // alignSelf: "stretch",
 
     // minWidth: 140,
 
@@ -757,7 +760,10 @@ const styles = StyleSheet.create({
     // alignSelf: "stretch",
     // height: "100%",
 
-    maxWidth: "20%",
+    // maxWidth: "20%",
+    // maxWidth: "140px",
+    maxHeight: "100%",
+    // height: "inherit",
 
     "@media only screen and (max-width: 767px)": {
       display: "none",
