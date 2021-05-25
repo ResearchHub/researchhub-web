@@ -1,12 +1,12 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import Router from "next/router";
 
 // Component
 import BaseModal from "./BaseModal";
 import Button from "~/components/Form/Button";
 import LargeList from "~/components/Form/LargeList";
-
 // Redux
 import { ModalActions } from "~/redux/modals";
 
@@ -15,11 +15,35 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
+const items = [
+  {
+    header: "Upload a Paper",
+    description:
+      "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
+    imgSrc: "/static/icons/uploadPaper.png",
+    route: "/paper/upload/info0",
+  },
+  {
+    header: "Ask a Question or Start a Discussion",
+    description:
+      "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome.",
+    imgSrc: "/static/icons/askQuestion.png",
+    route: "/paper/upload/info1",
+  },
+  {
+    header: "Publish a Research Project",
+    description: "Publish lab notes, original research, metastudies, etc.",
+    imgSrc: "/static/icons/publishProject.png",
+    route: "/paper/upload/info2",
+  },
+];
+
 class NewPostModal extends React.Component {
   constructor(props) {
     super(props);
 
     this.initialState = {
+      selected: 0,
       mobileView: false, // TODO: ?
     };
 
@@ -34,8 +58,28 @@ class NewPostModal extends React.Component {
     // this.saveAuthorChanges(null, true);
   };
 
+  handleChange = ({ index }) => {
+    this.setState({
+      selected: index,
+    });
+  };
+
+  handleContinue = () => {
+    const route = items[this.state.selected].route;
+    Router.push(route, route);
+
+    this.saveAndCloseModal();
+  };
+
   render() {
     const { modals } = this.props;
+    const options = items.map((option) => (
+      <Media
+        header={option.header}
+        description={option.description}
+        imgSrc={option.imgSrc}
+      />
+    ));
     return (
       <BaseModal
         isOpen={modals.openNewPostModal}
@@ -59,43 +103,19 @@ class NewPostModal extends React.Component {
           </div>
           <LargeList
             selectMany={false}
-            defaults={[0]}
+            defaults={[this.state.selected]}
             useLargeHitbox={true}
             customListStyle={styles.list}
-            onChange={() => {}}
+            onChange={this.handleChange}
           >
-            <Media
-              header={"Upload a Paper"}
-              description={
-                "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly."
-              }
-              imgSrc={"/static/icons/uploadPaper.png"}
-            />
-            <Media
-              header={"Ask a Question or Start a Discussion"}
-              description={
-                "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome."
-              }
-              imgSrc={"/static/icons/askQuestion.png"}
-            />
-            <Media
-              header={"Publish a Research Project"}
-              description={
-                "Publish lab notes, original research, metastudies, etc."
-              }
-              imgSrc={"/static/icons/publishProject.png"}
-            />
+            {options}
           </LargeList>
-          <form className={css(styles.form)} onSubmit={this.saveAndCloseModal}>
-            <div className={css(styles.buttonContainer)}>
-              <Button
-                label={"Continue"}
-                customButtonStyle={styles.buttonCustomStyle}
-                rippleClass={styles.rippleClass}
-                type={"submit"}
-              />
-            </div>
-          </form>
+          <Button
+            label={"Continue"}
+            customButtonStyle={styles.buttonCustomStyle}
+            rippleClass={styles.rippleClass}
+            onClick={this.handleContinue}
+          />
         </div>
       </BaseModal>
     );
