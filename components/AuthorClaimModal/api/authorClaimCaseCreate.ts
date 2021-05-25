@@ -1,8 +1,8 @@
-import API from "../../../../../../config/api";
+import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFncWithMsg } from "../../../../../../config/utils/nullchecks";
-import { ID } from "../../../../../../config/types/root_types";
-import { nullthrows } from "../../../../../../config/utils/nullchecks";
+import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
+import { ID } from "../../../config/types/root_types";
+import { nullthrows } from "../../../config/utils/nullchecks";
 
 type Args = {
   eduEmail: string | null;

@@ -1,11 +1,11 @@
+import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
-import Button from "../../../../../components/Form/Button";
-import colors from "../../../../../config/themes/colors";
-import FormInput from "../../../../../components/Form/FormInput";
-import Loader from "../../../../../components/Loader/Loader";
+import Button from "../Form/Button";
+import colors from "../../config/themes/colors";
+import FormInput from "../Form/FormInput";
+import Loader from "../Loader/Loader";
 import Modal from "react-modal";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
-import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 
 export type AuthorClaimDataProps = {
   auth: any;
