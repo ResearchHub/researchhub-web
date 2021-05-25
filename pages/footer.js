@@ -121,16 +121,18 @@ class Footer extends React.Component {
               </div>
             </a>
           </div>
-          <Link href={"/about/tos"} as={"/about/tos"}>
-            <a className={css(styles.link)}>
-              <div className={css(styles.tab)}>Terms of Service</div>
-            </a>
-          </Link>
-          <Link href={"/about/privacy"} as={"/about/privacy"}>
-            <a className={css(styles.link)}>
-              <div className={css(styles.tab)}>Privacy Policy</div>
-            </a>
-          </Link>
+          <div className={css(styles.legalFooter)}>
+            <Link href={"/about/tos"} as={"/about/tos"}>
+              <a className={css(styles.link)}>
+                <div className={css(styles.tab)}>Terms of Service</div>
+              </a>
+            </Link>
+            <Link href={"/about/privacy"} as={"/about/privacy"}>
+              <a className={css(styles.link)}>
+                <div className={css(styles.tab)}>Privacy Policy</div>
+              </a>
+            </Link>
+          </div>
         </div>
       </footer>
     );
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
   },
   imgTab: {
     display: "flex",
+    flex: 1,
 
     "@media only screen and (max-width: 767px)": {
       width: "100%",
@@ -189,14 +192,17 @@ const styles = StyleSheet.create({
     marginRight: 24,
     display: "flex",
 
-    "@media only screen and (max-width: 300px)": {
+    "@media only screen and (max-width: 767px)": {
       marginBottom: 16,
     },
+  },
+  legalFooter: {
+    display: "flex",
   },
   logo: {
     color: "#282936",
     fontSize: "1.1em",
-    marginTop: 3,
+    // marginTop: 3,
   },
   ccby: {
     color: "#fff",
