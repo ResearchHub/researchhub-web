@@ -1,60 +1,91 @@
-import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
+import {
+  AUTHOR_CLAIM_STATUS,
+  AUTHOR_CLAIM_STATUS_LABEL,
+} from "./constants/AuthorClaimStatus";
+import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
+import { getCases } from "./api/AuthorClaimCaseGetCases";
 import { INNER_EL_WIDTH } from "./AuthorClaimCaseDashboard";
 import { useRouter, NextRouter } from "next/router";
-import { nullthrows } from "../../config/utils/nullchecks";
-import AuthorClaimCaseCard, { AuthorClaimCase } from "./AuthorClaimCaseCard";
-import React, { useEffect, ReactElement, useState } from "react";
+import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
+import React, { useEffect, ReactElement, useState, Fragment } from "react";
+import colors from "../../config/themes/colors";
 
-const useEffectHandleCaseFetch = (
-  currRouter: NextRouter,
-  setClaimCases: React.Dispatch<React.SetStateAction<AuthorClaimCase[]>>
-): void => {
+type Props = {
+  lastFetchTime: number;
+  setLastFetchTime: Function;
+};
+
+const useEffectHandleCaseFetch = ({
+  currRouter,
+  lastFetchTime,
+  setClaimCases,
+  setIsPageLoading,
+}: {
+  currRouter: NextRouter;
+  lastFetchTime: number;
+  setClaimCases: React.Dispatch<React.SetStateAction<AuthorClaimCase[]>>;
+  setIsPageLoading: Function;
+}): void => {
   // @ts-ignore url-status is implicitly set with the constant
   const queriedStatus = AUTHOR_CLAIM_STATUS[currRouter.query.case_status];
   useEffect((): void => {
-    // TODO: calvinhlee - hook up backend fetch here.
-    setClaimCases([
-      {
-        caseStatus: queriedStatus,
-        caseID: 1,
-        requestorID: 1,
-        requestorEmail: "calvinhlee@berkeley.edu",
-        requestorName: "Calvin Lee",
-        targetAuthorID: 4,
-        targetAuthorName: "Calvin YOYO Lee",
+    setIsPageLoading(true);
+    getCases({
+      caseStatus: queriedStatus,
+      onSuccess: (response): void => {
+        setClaimCases(response);
+        setIsPageLoading(false);
       },
-      {
-        caseStatus: queriedStatus,
-        caseID: 2,
-        requestorID: 2,
-        requestorEmail: "calvinhlee@berkeley.edu",
-        requestorName: "Calvin Lee",
-        targetAuthorID: 3,
-        targetAuthorName: "Calvin YOYO Lee",
+      onError: (): void => {
+        setIsPageLoading(false);
       },
-    ]);
-  }, [queriedStatus]);
+    });
+  }, [lastFetchTime, queriedStatus, setClaimCases]);
 };
 
-export default function AuthorClaimCaseContainer(): ReactElement<"div"> {
+export default function AuthorClaimCaseContainer({
+  lastFetchTime,
+  setLastFetchTime,
+}: Props): ReactElement<"div"> {
   const router = useRouter();
   const [claimCases, setClaimCases] = useState<Array<AuthorClaimCase>>([]);
-
-  useEffectHandleCaseFetch(router, setClaimCases);
+  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
+  useEffectHandleCaseFetch({
+    lastFetchTime,
+    currRouter: router,
+    setClaimCases,
+    setIsPageLoading,
+  });
 
   const caseCards = claimCases.map(
-    (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => (
-      <AuthorClaimCaseCard
-        authorClaimCase={claimCase}
-        cardWidth={INNER_EL_WIDTH}
-        key={`author-claim-case-card-${nullthrows(claimCase.caseID)}`}
-      />
-    )
+    (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => {
+      const caseID = claimCase.caseData.id || Date.now();
+      return (
+        <AuthorClaimCaseCard
+          authorClaimCase={claimCase}
+          cardWidth={INNER_EL_WIDTH}
+          key={`author-claim-case-card-${caseID}`}
+          setLastFetchTime={setLastFetchTime}
+        />
+      );
+    }
   );
 
+  // @ts-ignore url-status is implicitly set with the constant
+  const caseStatusLabel = AUTHOR_CLAIM_STATUS_LABEL[router.query.case_status];
   return (
-    <div className={css(styles.authorClaimCaseContainer)}>{caseCards}</div>
+    <div className={css(styles.authorClaimCaseContainer)}>
+      {isPageLoading ? (
+        <Fragment />
+      ) : caseCards.length > 0 ? (
+        caseCards
+      ) : (
+        <div
+          className={css(styles.noCaseFound)}
+        >{`No ${caseStatusLabel} Cases Found`}</div>
+      )}
+    </div>
   );
 }
 
@@ -66,6 +97,15 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "center",
     paddingTop: 24,
+    width: "100%",
+  },
+  noCaseFound: {
+    alignContent: "center",
+    color: colors.GREY(1),
+    display: "flex",
+    fontSize: 24,
+    height: "100%",
+    justifyContent: "center",
     width: "100%",
   },
 });

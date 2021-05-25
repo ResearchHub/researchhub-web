@@ -2,42 +2,41 @@ import {
   AUTHOR_CLAIM_STATUS,
   AUTHOR_CLAIM_STATUS_LABEL,
 } from "./constants/AuthorClaimStatus";
+import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { ID, ValueOf } from "../../config/types/root_types";
-import { silentEmptyFnc } from "../../config/utils/nullchecks";
+import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
+import { ValueOf } from "../../config/types/root_types";
+import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 
-export type AuthorClaimCase = {
-  caseID: ID;
-  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | string;
-  requestorID: ID;
-  requestorEmail: string;
-  requestorName: string;
-  targetAuthorID: ID;
-  targetAuthorName: string;
-};
-
 type Props = {
   authorClaimCase: AuthorClaimCase;
   cardWidth: number | string;
+  setLastFetchTime: Function;
 };
 
 export default function AuthorClaimCaseCard({
-  authorClaimCase: {
-    caseID,
-    caseStatus,
-    requestorEmail,
-    requestorName,
-    targetAuthorName,
-  },
+  authorClaimCase,
   cardWidth,
+  setLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { caseData, requestor, targetAuthor } = authorClaimCase || {};
+  const { createdDate, id: caseID, status: caseStatus } = caseData || {};
+  const {
+    name: requestorName,
+    profileImg: requestorFaceImg,
+    providedEmail,
+    requestorAuthorID,
+  } = requestor || {};
+  const { id: targetAuthorID, name: targetAuthorName } = targetAuthor || {};
+
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -46,10 +45,18 @@ export default function AuthorClaimCaseCard({
         ): ReactElement<typeof AuthorClaimCaseCardActionButton> => (
           <AuthorClaimCaseCardActionButton
             actionType={actionType}
+            isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
             onClick={(event: SyntheticEvent) => {
               event.stopPropagation(); /* prevents card collapse */
-              silentEmptyFnc();
+              setIsSubmitting(true);
+              updateCaseStatus({
+                payload: { caseID, updateStatus: actionType },
+                onSuccess: () => {
+                  setIsSubmitting(false);
+                  setLastFetchTime(Date.now());
+                },
+              });
             }}
           />
         )
@@ -81,17 +88,15 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardMainSection)}>
             <img
               className={css(styles.requestorFaceImg)}
-              src={
-                "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c"
-              }
+              src={requestorFaceImg}
             />
             <span className={css(styles.requestorName)}>{requestorName}</span>
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            {requestorEmail}
+            {providedEmail}
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            {Date.now()}
+            {createdDate.split("T")[0]}
           </div>
           <div className={css(styles.cardMainSection)}>{actionLabels}</div>
         </div>

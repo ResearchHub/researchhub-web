@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function AuthorClaimDashboardNavbarButton({
-  count = 2,
+  count = 0,
   label,
   isActive,
   onClick,
