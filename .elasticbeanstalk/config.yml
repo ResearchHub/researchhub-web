@@ -1,4 +1,6 @@
 branch-defaults:
+  authorClaim/8:
+    environment: staging-web
   development:
     environment: production2
     group_suffix: null
@@ -8,6 +10,10 @@ branch-defaults:
     environment: production2
   support-author:
     environment: staging-web
+environment-defaults:
+  production2:
+    branch: master
+    repository: origin
 global:
   application_name: researchhub-web
   branch: null
@@ -18,7 +24,7 @@ global:
   instance_profile: null
   platform_name: null
   platform_version: null
-  profile: researchhub
+  profile: eb-cli
   repository: null
   sc: git
   workspace_type: Application
