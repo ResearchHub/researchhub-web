@@ -231,7 +231,7 @@ class PaperPageCard extends React.Component {
             />
           ))}
         </div>
-        <div className={css(styles.row)}>
+        <div className={css(styles.row, styles.lastRow)}>
           <PaperMetadata
             label={"Paper Title"}
             active={
@@ -692,7 +692,13 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
+            <div className={css(styles.bottomContainer)}>
+              <div className={css(styles.bottomRow)}>
+                {this.renderActions()}
+              </div>
+            </div>
           </div>
+
           <div className={css(styles.previewBox)}>
             <PaperPreview
               paperId={paper.id}
@@ -701,9 +707,9 @@ class PaperPageCard extends React.Component {
             />
           </div>
         </div>
-        <div className={css(styles.bottomContainer)}>
+        {/* <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
-        </div>
+        </div> */}
       </ReactPlaceholder>
     );
   }
@@ -715,12 +721,14 @@ const styles = StyleSheet.create({
     width: "100%",
 
     // height: "200px",
+    // paddingBottom: 20,
   },
   main: {
     display: "flex",
     flexDirection: "column",
     marginRight: 16,
     width: "100%",
+    // marginBottom: 20,
   },
   previewStyles: {
     // img tag
@@ -751,8 +759,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     // aspectRatio: "3 / 4",
     // maxWidth: "10vh", // Width needs to be relative to box's height anyway, so use vh trick.
-    // maxWidth: "120px",
-    maxWidth: "15%",
+    maxWidth: "120px",
+    // maxWidth: "18%",
+    // maxWidth: "140px",
+    // maxWidth: "20%",
 
     // alignItems: "center",
     // alignItems: "stretch",
@@ -1119,6 +1129,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
+    // minHeight: 25,
     flexWrap: "wrap",
 
     /**
@@ -1131,6 +1142,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
     },
+  },
+  lastRow: {
+    // marginBottom: 20,
   },
   reverseRow: {
     display: "flex",
