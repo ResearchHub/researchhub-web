@@ -94,7 +94,11 @@ const styles = StyleSheet.create({
   hidden: {
     display: "none",
   },
-  preview: {},
+  preview: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+  },
   buttonContainer: {
     width: "100%",
     display: "flex",
