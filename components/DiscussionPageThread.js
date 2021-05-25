@@ -122,7 +122,7 @@ const Thread = (props) => {
               selected={selectedVoteType}
               styles={styles.voteWidget}
               score={score}
-              horizontalView={true}
+              horizontalView={false}
               onUpvote={upvote}
               onDownvote={downvote}
               type={"discussion"}
