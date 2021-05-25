@@ -759,8 +759,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     // aspectRatio: "3 / 4",
     // maxWidth: "10vh", // Width needs to be relative to box's height anyway, so use vh trick.
-    maxWidth: "120px",
-    // maxWidth: "18%",
+    // maxWidth: "120px",
+    // maxWidth: "calc(attr(height))",
+    maxWidth: "18%",
     // maxWidth: "140px",
     // maxWidth: "20%",
 
