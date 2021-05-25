@@ -1,4 +1,3 @@
-import { AUTHOR_USER_STATUS } from "./AuthorUserConstants";
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -17,7 +16,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import AvatarUpload from "~/components/AvatarUpload";
 import Button from "~/components/Form/Button";
-import ClaimAuthorPopoverLabel from "./ClaimAuthorPopoverLabel";
+import ClaimAuthorPopoverLabel from "../../../../components/ClaimAuthorPopoverLabel";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
 import Loader from "~/components/Loader/Loader";
@@ -44,6 +43,13 @@ import {
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+
+const AUTHOR_USER_STATUS = {
+  EXISTS: "EXISTS",
+  NONE: "NONE" /* Author does not have an existing User */,
+  SPAMMER: "SPAMMER",
+  SUSPENDED: "SUSPENDED",
+};
 
 const SECTIONS = {
   name: "name",

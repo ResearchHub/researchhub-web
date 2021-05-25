@@ -1,7 +1,9 @@
+import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
-import Button from "../../../../../components/Form/Button";
-import colors from "../../../../../config/themes/colors";
-import FormInput from "../../../../../components/Form/FormInput";
+import Button from "../Form/Button";
+import colors from "../../config/themes/colors";
+import FormInput from "../Form/FormInput";
+import Loader from "../Loader/Loader";
 import Modal from "react-modal";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
 
@@ -23,7 +25,11 @@ type FormError = {
 
 function validateEmail(email: string): boolean {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+  const splitted = email.split(".");
+  return (
+    re.test(String(email).toLowerCase()) &&
+    splitted[splitted.length - 1] === ".edu"
+  );
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -37,27 +43,21 @@ function validateFormField(fieldID: string, value: any): boolean {
 }
 
 export default function AuthorClaimModal({
+  auth,
   author,
   isOpen,
   setIsOpen,
   user,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-  const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    eduEmail: null,
-  });
   const [formErrors, setFormErrors] = useState<FormError>({
     eduEmail: false,
   });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
+    eduEmail: null,
+  });
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-  const handleValidationAndSubmit = (e: SyntheticEvent): void => {
-    e.preventDefault();
-    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
-      setShouldDisplayError(true);
-    } else {
-      setShouldDisplayError(false);
-      // TODO: calvinhlee - write post call here.
-    }
-  };
+
   const handleOnChangeFields = (fieldID: string, value: string): void => {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
@@ -65,6 +65,29 @@ export default function AuthorClaimModal({
       [fieldID]: validateFormField(fieldID, value),
     });
   };
+
+  const handleValidationAndSubmit = (e: SyntheticEvent): void => {
+    e.preventDefault();
+    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
+      setShouldDisplayError(true);
+    } else {
+      setShouldDisplayError(false);
+      setIsSubmitting(true);
+      createAuthorClaimCase({
+        eduEmail: mutableFormFields.eduEmail,
+        onError: (): void => {
+          setIsSubmitting(false);
+        },
+        onSuccess: (): void => {
+          setIsSubmitting(false);
+          setIsOpen(false);
+        },
+        targetAuthorID: author.id,
+        userID: auth.user.id,
+      });
+    }
+  };
+
   return (
     <Modal
       children={
@@ -96,6 +119,7 @@ export default function AuthorClaimModal({
             />
             <FormInput
               containerStyle={modalBodyStyles.containerStyle}
+              disable={isSubmitting}
               id="eduEmail"
               label="Your .edu email address"
               labelStyle={modalBodyStyles.labelStyle}
@@ -105,15 +129,26 @@ export default function AuthorClaimModal({
               required
             />
             <div>
-              {/* @ts-ignore Button type is setup not correctly */}
               <Button
                 customButtonStyle={modalBodyStyles.buttonStyle}
-                label="Request"
+                disable={isSubmitting}
+                label={
+                  !isSubmitting ? (
+                    "Request"
+                  ) : (
+                    <Loader
+                      size={8}
+                      loading
+                      containerStyle={modalBodyStyles.loaderStyle}
+                      color="#fff"
+                    />
+                  )
+                }
                 type="submit"
               />
-              {/* @ts-ignore Button type is setup not correctly */}
               <Button
                 customButtonStyle={modalBodyStyles.cancelButtonStyle}
+                disabled={isSubmitting}
                 label="Cancel"
                 onClick={(e: SyntheticEvent): void => {
                   e.preventDefault();
@@ -169,6 +204,9 @@ const modalBodyStyles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 13,
     },
+  },
+  loaderStyle: {
+    display: "unset",
   },
   modalBody: {
     alignItems: "center",
