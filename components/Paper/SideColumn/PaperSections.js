@@ -90,7 +90,7 @@ const PaperSections = (props) => {
             onClick={() => handleClick(index)}
           >
             <div className={css(styles.name) + " clamp1"}>{name}</div>
-            {paperDraftExists && index === 2 && (
+            {paperDraftExists && index === 3 && (
               <div
                 className={css(styles.button)}
                 onClick={(e) => {
