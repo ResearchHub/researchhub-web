@@ -109,9 +109,10 @@ const styles = StyleSheet.create({
     display: "none",
   },
   preview: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
     // width: 100,
-    // width: "100%",
-    // height: "100%",
     // height: "120px",
     // width: 120,
     // height: 180,
@@ -121,7 +122,7 @@ const styles = StyleSheet.create({
     // objectFit: "fill",
     // flex: "1 1 0px",
     // width: "120px",
-    // objectFit: "contain",
+
     // maxWidth: "120px",
     // height: "100%",
     // overflowY: "hidden",
