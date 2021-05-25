@@ -1,11 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { Fragment, ReactElement, useCallback, useState } from "react";
-import ResearchHubPopover from "../../../../components/ResearchHubPopover";
-import icons from "../../../../config/themes/icons";
-import AuthorClaimModal, {
-  AuthorClaimDataProps,
-} from "./author_claim_modal/AuthorClaimModal";
-import colors from "../../../../config/themes/colors";
+import ResearchHubPopover from "./ResearchHubPopover";
+import icons from "../config/themes/icons";
+import AuthorClaimModal from "./AuthorClaimModal/AuthorClaimModal";
+import colors from "../config/themes/colors";
 
 type Props = {
   auth: any;
@@ -54,7 +52,7 @@ export default function ClaimAuthorPopoverLabel({
                   />
                 </div>
                 <div className={css(styles.bodySubheader)}>
-                  {"Claim your profile and receive 1000 RSC"}
+                  {"Claim your profile and receive up to 1000 RSC"}
                 </div>
               </div>
               <div
