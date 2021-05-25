@@ -7,13 +7,9 @@ import Router from "next/router";
 import BaseModal from "./BaseModal";
 import Button from "~/components/Form/Button";
 import LargeList from "~/components/Form/LargeList";
+import Media from "~/components/Media";
 // Redux
 import { ModalActions } from "~/redux/modals";
-
-// Config
-import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 const items = [
   {
@@ -55,7 +51,6 @@ class NewPostModal extends React.Component {
   saveAndCloseModal = (e) => {
     e && e.preventDefault();
     this.props.openNewPostModal(false);
-    // this.saveAuthorChanges(null, true);
   };
 
   handleChange = ({ index }) => {
@@ -122,61 +117,11 @@ class NewPostModal extends React.Component {
   }
 }
 
-function Media({ header, description, imgSrc }) {
-  return (
-    <div className={css(styles.mediaContainer)}>
-      <div className={css(styles.mediaContent)}>
-        <div className={css(styles.mediaHeader)}> {header} </div>
-        <div className={css(styles.mediaDescription)}> {description} </div>
-      </div>
-      <div className={css(styles.mediaImgBox)}>
-        <img src={imgSrc} className={css(styles.mediaImg)} draggable={false} />
-      </div>
-    </div>
-  );
-}
-
 const styles = StyleSheet.create({
   list: {
     width: "544px",
     margin: "31px",
   },
-  mediaContainer: {
-    display: "flex",
-    flexDirection: "row",
-    alignSelf: "stretch",
-  },
-  mediaContent: {
-    display: "flex",
-    flexDirection: "column",
-    width: "373px",
-  },
-  mediaHeader: {
-    display: "flex",
-    fontSize: "14px",
-    fontWeight: 500,
-    fontSize: "18px",
-    lineHeight: "21px",
-    color: "#241F3A",
-  },
-  mediaDescription: {
-    display: "flex",
-    fontWeight: "normal",
-    fontSize: "14px",
-    lineHeight: "22px",
-    color: "#241F3A",
-    opacity: 0.7,
-  },
-  mediaImgBox: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "75px",
-    height: "75px",
-    borderRadius: "4px",
-    backgroundColor: "rgba(57, 113, 255, 0.07)",
-  },
-  mediaImg: {},
   modalStyle: {
     maxHeight: "95vh",
     // overflowY: "scroll",
@@ -206,12 +151,6 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
     position: "relative",
-  },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    background: "#FFF",
-    zIndex: 2,
   },
   buttonCustomStyle: {
     padding: 16,
