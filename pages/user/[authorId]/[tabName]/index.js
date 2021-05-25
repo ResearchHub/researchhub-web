@@ -1,4 +1,3 @@
-import { AUTHOR_USER_STATUS } from "./AuthorUserConstants";
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
@@ -44,6 +43,13 @@ import {
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+
+const AUTHOR_USER_STATUS = {
+  EXISTS: "EXISTS",
+  NONE: "NONE" /* Author does not have an existing User */,
+  SPAMMER: "SPAMMER",
+  SUSPENDED: "SUSPENDED",
+};
 
 const SECTIONS = {
   name: "name",
