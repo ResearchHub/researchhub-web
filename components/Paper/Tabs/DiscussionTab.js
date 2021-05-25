@@ -845,12 +845,10 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
+    marginBottom: 15,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-    },
-    "@media only screen and (max-width: 415px)": {
-      marginBottom: 10,
     },
   },
   discussionTitle: {
