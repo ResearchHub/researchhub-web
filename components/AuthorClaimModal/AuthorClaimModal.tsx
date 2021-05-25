@@ -1,12 +1,11 @@
+import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
-import Button from "../../../../../components/Form/Button";
-import colors from "../../../../../config/themes/colors";
-import FormInput from "../../../../../components/Form/FormInput";
-import Loader from "../../../../../components/Loader/Loader.js";
+import Button from "../Form/Button";
+import colors from "../../config/themes/colors";
+import FormInput from "../Form/FormInput";
+import Loader from "../Loader/Loader";
 import Modal from "react-modal";
 import React, { ReactElement, SyntheticEvent, useState } from "react";
-import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
-import { nullthrows } from "../../../../../config/utils/nullchecks";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -26,7 +25,11 @@ type FormError = {
 
 function validateEmail(email: string): boolean {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+  const splitted = email.split(".");
+  return (
+    re.test(String(email).toLowerCase()) &&
+    splitted[splitted.length - 1] === ".edu"
+  );
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -135,7 +138,7 @@ export default function AuthorClaimModal({
                   ) : (
                     <Loader
                       size={8}
-                      loading={true}
+                      loading
                       containerStyle={modalBodyStyles.loaderStyle}
                       color="#fff"
                     />
