@@ -379,6 +379,10 @@ const styles = StyleSheet.create({
   },
   readbutton: {
     marginRight: 15,
+
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   mobileReadButton: {
     // marginRight: 20,
