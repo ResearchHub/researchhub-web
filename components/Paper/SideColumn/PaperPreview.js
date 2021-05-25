@@ -60,28 +60,9 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
           className={css(styles.preview, previewStyles)}
           property="image"
         />
-        {/* <div className={css(styles.preview)}>
-        test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test test 
-        </div> */}
       </ReactPlaceholder>
     </ColumnContainer>
   );
-  // return (
-  //   <img
-  //     src={figureUrls[0]}
-  //     onClick={openPaperPDFModal}
-  //     className={css(styles.preview, previewStyles)}
-  //     property="image"
-  //   />
-  // );
-
-  // return (
-  //   <div className={css(styles.preview)}>
-  //     test test test test test test test test test test test test test test test
-  //     test test test test test test test test test test test test test test test
-  //     test test test test test test test test test test test
-  //   </div>
-  // );
 };
 
 const styles = StyleSheet.create({
@@ -93,8 +74,7 @@ const styles = StyleSheet.create({
 
     display: "flex",
     flex: "1 1 0px",
-    // width: "120px",
-    overflowY: "hidden", // trims bottom
+    overflowY: "hidden",
     overflowX: "hidden",
     justifyContent: "center",
 
@@ -108,34 +88,7 @@ const styles = StyleSheet.create({
   hidden: {
     display: "none",
   },
-  preview: {
-    // width: 100,
-    // width: "100%",
-    // height: "100%",
-    // height: "120px",
-    // width: 120,
-    // height: 180,
-    // height: "inherit",
-    // width: "100%",
-    // height: "100%",
-    // objectFit: "fill",
-    // flex: "1 1 0px",
-    // width: "120px",
-    // objectFit: "contain",
-    // maxWidth: "120px",
-    // height: "100%",
-    // overflowY: "hidden",
-    // overflowX: "hidden",
-    // maxWidth: "100%",
-    // maxHeight: "100%",
-    // width: "100%",
-    // objectFit: "cover",
-    // alignSelf: "center",
-    // flex: "1",
-    // minHeight: 0,
-    // maxWidth: "100%",
-    // maxHeight: "100%",
-  },
+  preview: {},
   buttonContainer: {
     width: "100%",
     display: "flex",
