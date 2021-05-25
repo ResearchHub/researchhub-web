@@ -735,7 +735,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     flexDirection: "column",
-    maxWidth: "18%",
+    maxWidth: "8em",
 
     "@media only screen and (max-width: 767px)": {
       display: "none",
