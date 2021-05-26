@@ -42,19 +42,36 @@ function validateEmail(email: string): boolean {
   );
 }
 
-function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
-  switch (fieldID) {
-    case "eduEmail":
-      return typeof value === "string" && validateEmail(value);
-    default:
-      return result;
-  }
-}
+// function validateFormField(fieldID: string, value: any): boolean {
+//   let result: boolean = true;
+//   switch (fieldID) {
+//     case "eduEmail":
+//       return typeof value === "string" && validateEmail(value);
+//     default:
+//       return result;
+//   }
+// }
 
 class AuthorClaimModal extends React.Component {
   constructor(props) {
     super(props);
+
+    this.state = {
+      eduEmail: "",
+    };
+
+    // Temporary
+    const isSubmitting = false;
+    const shouldDisplayError = false;
+    const onEmailChange = (fieldID: string, value: string): void => {
+      this.setState({
+        eduEmail: value,
+      });
+      // setFormErrors({
+      //   ...formErrors,
+      //   [fieldID]: validateFormField(fieldID, value),
+      // });
+    };
 
     this.prompts = [
       // First Prompt (0)
@@ -74,8 +91,41 @@ class AuthorClaimModal extends React.Component {
         <div className={css(styles.titleContainer)}>
           <div className={css(styles.title)}>{"Enter your .edu email"}</div>
         </div>
+        <form
+          encType="multipart/form-data"
+          className={css(styles.form)}
+          onSubmit={this.handleContinue}
+        >
+          <FormInput
+            containerStyle={modalBodyStyles.containerStyle}
+            disable={isSubmitting}
+            id="eduEmail"
+            label="Email"
+            labelStyle={modalBodyStyles.labelStyle}
+            inputStyle={shouldDisplayError && modalBodyStyles.error}
+            onChange={onEmailChange}
+            placeholder="Academic .edu email address"
+            required
+          />
+          <div className={css(styles.buttonContainer)}>
+            <Button
+              label="Verify Email"
+              type="Submit"
+              customButtonStyle={styles.buttonCustomStyle}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        </form>
+      </Fragment>,
+      // Third Prompt (2)
+      <Fragment>
+        <div className={css(styles.titleContainer)}>
+          <div className={css(styles.title)}>{"Thank you!"}</div>
+        </div>
+        Your request has been submitted. We will send you an email confirmation
+        with a link to verify your identity.
         <Button
-          label={"Next"}
+          label={"Got It"}
           customButtonStyle={styles.buttonCustomStyle}
           rippleClass={styles.rippleClass}
           onClick={this.handleContinue}
@@ -84,26 +134,42 @@ class AuthorClaimModal extends React.Component {
     ];
   }
 
+  handleValidationAndSubmit = (e) => {
+    e.preventDefault();
+
+    createAuthorClaimCase({
+      eduEmail: mutableFormFields.eduEmail,
+      onError: (): void => {
+        setIsSubmitting(false);
+      },
+      onSuccess: (): void => {
+        setIsSubmitting(false);
+        setIsOpen(false);
+      },
+      targetAuthorID: author.id,
+      userID: auth.user.id,
+    });
+  };
+
   saveAndCloseModal = (e) => {
     e && e.preventDefault();
     this.props.openAuthorClaimModal(false);
   };
 
-  handleChange = ({ index }) => {
-    this.setState({
-      selected: index,
-    });
-  };
-
-  handleContinue = () => {
+  handleContinue = (e) => {
+    // Advance to next step
+    e && e.preventDefault();
     const { openAuthorClaimModal, step } = this.props;
-    openAuthorClaimModal(true, step + 1);
-    console.log(step);
+    if (step + 1 < this.prompts.length) {
+      openAuthorClaimModal(true, step + 1);
+    } else {
+      openAuthorClaimModal(false, step);
+    }
   };
 
   render() {
     const { modals, step } = this.props;
-    console.log(modals, step, this.prompts);
+
     return (
       <BaseModal
         isOpen={modals.openAuthorClaimModal}
@@ -265,69 +331,69 @@ export default connect(
 //   );
 // }
 
-// const modalBodyStyles = StyleSheet.create({
-//   buttonStyle: {
-//     height: 45,
-//     width: 140,
-//   },
-//   cancelButtonStyle: {
-//     backgroundColor: colors.RED(1),
-//     height: 45,
-//     marginLeft: 16,
-//     width: 140,
-//     ":hover": {
-//       backgroundColor: colors.RED(1),
-//     },
-//   },
-//   containerStyle: {
-//     "@media only screen and (max-width: 665px)": {
-//       width: 380,
-//     },
-//     "@media only screen and (max-width: 415px)": {
-//       width: 338,
-//     },
-//     "@media only screen and (max-width: 321px)": {
-//       width: 270,
-//       marginBottom: 5,
-//     },
-//   },
-//   error: {
-//     border: `1px solid ${colors.RED(1)}`,
-//   },
-//   form: {
-//     alignItems: "center",
-//     display: "flex",
-//     flexDirection: "column",
-//     justifyContent: "flex-start",
-//   },
-//   labelStyle: {
-//     "@media only screen and (max-width: 321px)": {
-//       fontSize: 13,
-//     },
-//   },
-//   loaderStyle: {
-//     display: "unset",
-//   },
-//   modalBody: {
-//     alignItems: "center",
-//     backgroundColor: "#fff",
-//     border: `1px solid ${colors.GREY(1)}`,
-//     borderRadius: 4,
-//     display: "flex",
-//     justifyContent: "center",
-//     width: 640,
-//     padding: "16px 0",
-//     "@media only screen and (max-width: 665px)": {
-//       width: 420,
-//     },
-//     "@media only screen and (max-width: 415px)": {
-//       width: 360,
-//     },
-//     "@media only screen and (max-width: 321px)": {
-//       width: 320,
-//     },
-//   },
-// });
+const modalBodyStyles = StyleSheet.create({
+  buttonStyle: {
+    height: 45,
+    width: 140,
+  },
+  cancelButtonStyle: {
+    backgroundColor: colors.RED(1),
+    height: 45,
+    marginLeft: 16,
+    width: 140,
+    ":hover": {
+      backgroundColor: colors.RED(1),
+    },
+  },
+  containerStyle: {
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+      marginBottom: 5,
+    },
+  },
+  error: {
+    border: `1px solid ${colors.RED(1)}`,
+  },
+  form: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 13,
+    },
+  },
+  loaderStyle: {
+    display: "unset",
+  },
+  modalBody: {
+    alignItems: "center",
+    backgroundColor: "#fff",
+    border: `1px solid ${colors.GREY(1)}`,
+    borderRadius: 4,
+    display: "flex",
+    justifyContent: "center",
+    width: 640,
+    padding: "16px 0",
+    "@media only screen and (max-width: 665px)": {
+      width: 420,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 360,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 320,
+    },
+  },
+});
 
 // const customModalStyle = {
 //   content: {
@@ -379,6 +445,12 @@ const styles = StyleSheet.create({
   form: {
     width: "100%",
     position: "relative",
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    background: "#FFF",
+    zIndex: 2,
   },
   buttonCustomStyle: {
     padding: 16,
