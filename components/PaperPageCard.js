@@ -360,6 +360,20 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
+        active: true,
+        button: (
+          <span data-tip={"Support Paper"}>
+            <PaperPromotionButton paper={paper} style={styles.actionIcon} />
+            {/* <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            /> */}
+          </span>
+        ),
+      },
+      {
         active: !isModerator && !isSubmitter,
         button: (
           <span data-tip={"Flag Paper"}>
@@ -625,12 +639,12 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                <PaperDiscussionButton
+                {/* <PaperDiscussionButton
                   paper={paper}
                   discussionCount={discussionCount}
                 />
                 <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} />
+                <PaperPromotionButton paper={paper} /> */}
               </div>
               <div
                 className={css(
@@ -692,11 +706,6 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={css(styles.bottomContainer)}>
-              <div className={css(styles.bottomRow)}>
-                {this.renderActions()}
-              </div>
-            </div>
           </div>
 
           <div className={css(styles.previewBox)}>
@@ -706,6 +715,10 @@ class PaperPageCard extends React.Component {
               columnOverrideStyles={styles.columnOverrideStyles}
             />
           </div>
+        </div>
+        <div className={css(styles.bottomContainer)}>
+          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
+          <div className={css(styles.downloadPDF)}>Download PDF</div>
         </div>
       </ReactPlaceholder>
     );
@@ -743,7 +756,8 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     flexDirection: "column",
-    maxWidth: "8em",
+    maxWidth: "140px",
+    minHeight: "140px",
 
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -1174,6 +1188,7 @@ const styles = StyleSheet.create({
       // display: "none",
     },
   },
+  downloadPDF: {},
   hubsRow: {},
   flexendRow: {
     justifyContent: "flex-end",
