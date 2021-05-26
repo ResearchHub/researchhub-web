@@ -15,42 +15,15 @@ import BaseModal from "../Modals/BaseModal";
 // Redux
 import { ModalActions } from "../../redux/modals";
 
-// export type AuthorClaimDataProps = {
-//   auth: any;
-//   author: any;
-//   isOpen: boolean;
-//   : Function; // TODO: redux dispatcher?
-//   modals: any; // TODO: Object?
-//   setIsOpen: (flag: boolean) => void;
-//   user: any;
-// };
-
-// type FormFields = {
-//   eduEmail: null | string;
-// };
-
-// type FormError = {
-//   eduEmail: boolean;
-// };
-
 function validateEmail(email: string): boolean {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const splitted = email.split(".");
-  return (
-    re.test(String(email).toLowerCase()) &&
-    splitted[splitted.length - 1] === ".edu"
-  );
+  // const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  // const splitted = email.split(".");
+  // return (
+  //   re.test(String(email).toLowerCase()) &&
+  //   splitted[splitted.length - 1] === ".edu"
+  // );
+  return true;
 }
-
-// function validateFormField(fieldID: string, value: any): boolean {
-//   let result: boolean = true;
-//   switch (fieldID) {
-//     case "eduEmail":
-//       return typeof value === "string" && validateEmail(value);
-//     default:
-//       return result;
-//   }
-// }
 
 class AuthorClaimModal extends React.Component {
   constructor(props) {
@@ -75,80 +48,88 @@ class AuthorClaimModal extends React.Component {
 
     this.prompts = [
       // First Prompt (0)
-      <Fragment>
-        <div className={css(styles.titleContainer)}>
-          <div className={css(styles.title)}>{"Author Claiming Steps"}</div>
+      <div className={css(verifStyles.rootContainer)}>
+        <div className={css(verifStyles.titleContainer)}>
+          <div className={css(verifStyles.title)}>
+            {"Enter your .edu email"}
+          </div>
         </div>
-        <Button
-          label={"Next"}
-          customButtonStyle={styles.buttonCustomStyle}
-          rippleClass={styles.rippleClass}
-          onClick={this.handleContinue}
-        />
-      </Fragment>,
-      // Second Prompt (1)
-      <Fragment>
-        <div className={css(styles.titleContainer)}>
-          <div className={css(styles.title)}>{"Enter your .edu email"}</div>
+        <div className={css(verifStyles.subTextContainer)}>
+          <div className={css(verifStyles.subText)}>
+            Verify your .edu email address
+          </div>
         </div>
         <form
           encType="multipart/form-data"
-          className={css(styles.form)}
-          onSubmit={this.handleContinue}
+          className={css(verifStyles.form)}
+          onSubmit={this.handleValidationAndSubmit}
         >
           <FormInput
             containerStyle={modalBodyStyles.containerStyle}
             disable={isSubmitting}
             id="eduEmail"
             label="Email"
-            labelStyle={modalBodyStyles.labelStyle}
-            inputStyle={shouldDisplayError && modalBodyStyles.error}
+            labelStyle={verifStyles.labelStyle}
+            // inputStyle={shouldDisplayError && modalBodyStyles.error}
             onChange={onEmailChange}
             placeholder="Academic .edu email address"
             required
           />
-          <div className={css(styles.buttonContainer)}>
+          <div className={css(verifStyles.buttonContainer)}>
             <Button
               label="Verify Email"
               type="Submit"
-              customButtonStyle={styles.buttonCustomStyle}
-              rippleClass={styles.rippleClass}
+              customButtonStyle={verifStyles.buttonCustomStyle}
+              rippleClass={verifStyles.rippleClass}
             />
           </div>
         </form>
-      </Fragment>,
-      // Third Prompt (2)
-      <Fragment>
-        <div className={css(styles.titleContainer)}>
-          <div className={css(styles.title)}>{"Thank you!"}</div>
-        </div>
-        Your request has been submitted. We will send you an email confirmation
-        with a link to verify your identity.
-        <Button
-          label={"Got It"}
-          customButtonStyle={styles.buttonCustomStyle}
-          rippleClass={styles.rippleClass}
-          onClick={this.handleContinue}
+      </div>,
+      // Second Prompt (1)
+      <div className={css(successStyles.rootContainer)}>
+        <img
+          src={"/static/icons/success2.png"}
+          className={css(successStyles.successImg)}
+          draggable={false}
         />
-      </Fragment>,
+        <div className={css(successStyles.titleContainer)}>
+          <div className={css(successStyles.title)}>{"Thank you!"}</div>
+        </div>
+        <div className={css(successStyles.subTextContainer)}>
+          <div className={css(successStyles.subText)}>
+            Your request has been submitted. We will send you an email
+            confirmation with a link to verify your identity.
+          </div>
+        </div>
+        <div className={css(successStyles.buttonContainer)}>
+          <Button
+            label={"Got It"}
+            customButtonStyle={successStyles.buttonCustomStyle}
+            rippleClass={successStyles.rippleClass}
+            onClick={this.handleContinue}
+          />
+        </div>
+      </div>,
     ];
   }
 
   handleValidationAndSubmit = (e) => {
-    e.preventDefault();
+    e && e.preventDefault();
 
-    createAuthorClaimCase({
-      eduEmail: mutableFormFields.eduEmail,
-      onError: (): void => {
-        setIsSubmitting(false);
-      },
-      onSuccess: (): void => {
-        setIsSubmitting(false);
-        setIsOpen(false);
-      },
-      targetAuthorID: author.id,
-      userID: auth.user.id,
-    });
+    const { author, auth } = this.props;
+
+    if (validateEmail(this.state.eduEmail)) {
+      createAuthorClaimCase({
+        eduEmail: this.state.eduEmail,
+        onError: (): void => {},
+        onSuccess: (): void => {
+          this.handleContinue();
+        },
+        targetAuthorID: author.id,
+        userID: auth.user.id,
+      });
+    } else {
+    }
   };
 
   saveAndCloseModal = (e) => {
@@ -160,10 +141,10 @@ class AuthorClaimModal extends React.Component {
     // Advance to next step
     e && e.preventDefault();
     const { openAuthorClaimModal, step } = this.props;
-    if (step + 1 < this.prompts.length) {
-      openAuthorClaimModal(true, step + 1);
-    } else {
+    if (step >= this.prompts.length - 1) {
       openAuthorClaimModal(false, step);
+    } else {
+      openAuthorClaimModal(true, step + 1);
     }
   };
 
@@ -175,21 +156,19 @@ class AuthorClaimModal extends React.Component {
         isOpen={modals.openAuthorClaimModal}
         closeModal={this.saveAndCloseModal}
         modalStyle={styles.modalStyle}
-        title={"Select your post type"}
-        textAlign={"left"}
+        title="Select your post type"
+        textAlign="left"
         removeDefault={true}
         modalContentStyle={styles.modalContentStyles}
       >
-        <div className={css(styles.rootContainer)}>
-          <img
-            src={"/static/icons/close.png"}
-            className={css(styles.closeButton)}
-            onClick={this.saveAndCloseModal}
-            draggable={false}
-            alt="Close Button"
-          />
-          {this.prompts[step]}
-        </div>
+        <img
+          src="/static/icons/close.png"
+          className={css(styles.closeButton)}
+          onClick={this.saveAndCloseModal}
+          draggable={false}
+          alt="Close Button"
+        />
+        {this.prompts[step]}
       </BaseModal>
     );
   }
@@ -207,129 +186,6 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps
 )(AuthorClaimModal);
-
-// function _AuthorClaimModal({
-//   auth,
-//   author,
-//   isOpen,
-//   setIsOpen,
-//   user,
-// }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-//   const [formErrors, setFormErrors] = useState<FormError>({
-//     eduEmail: false,
-//   });
-//   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-//   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-//     eduEmail: null,
-//   });
-//   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-
-//   const handleOnChangeFields = (fieldID: string, value: string): void => {
-//     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
-//     setFormErrors({
-//       ...formErrors,
-//       [fieldID]: validateFormField(fieldID, value),
-//     });
-//   };
-
-//   const handleValidationAndSubmit = (e: SyntheticEvent): void => {
-//     e.preventDefault();
-//     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
-//       setShouldDisplayError(true);
-//     } else {
-//       setShouldDisplayError(false);
-//       setIsSubmitting(true);
-//       createAuthorClaimCase({
-//         eduEmail: mutableFormFields.eduEmail,
-//         onError: (): void => {
-//           setIsSubmitting(false);
-//         },
-//         onSuccess: (): void => {
-//           setIsSubmitting(false);
-//           setIsOpen(false);
-//         },
-//         targetAuthorID: author.id,
-//         userID: auth.user.id,
-//       });
-//     }
-//   };
-
-//   return (
-//     <Modal
-//       children={
-//         <div className={css(modalBodyStyles.modalBody)}>
-//           <form
-//             encType="multipart/form-data"
-//             className={css(modalBodyStyles.form)}
-//             onSubmit={handleValidationAndSubmit}
-//           >
-//             <FormInput
-//               containerStyle={modalBodyStyles.containerStyle}
-//               disabled
-//               id="user_name"
-//               label="Your name"
-//               labelStyle={modalBodyStyles.labelStyle}
-//               placeholder="your name"
-//               required
-//               value={`${user.first_name} ${user.last_name}`}
-//             />
-//             <FormInput
-//               containerStyle={modalBodyStyles.containerStyle}
-//               disabled
-//               id="author_name"
-//               label="Claiming author's name"
-//               labelStyle={modalBodyStyles.labelStyle}
-//               placeholder="academic email address"
-//               required
-//               value={`${author.first_name} ${author.last_name}`}
-//             />
-//             <FormInput
-//               containerStyle={modalBodyStyles.containerStyle}
-//               disable={isSubmitting}
-//               id="eduEmail"
-//               label="Your .edu email address"
-//               labelStyle={modalBodyStyles.labelStyle}
-//               inputStyle={shouldDisplayError && modalBodyStyles.error}
-//               onChange={handleOnChangeFields}
-//               placeholder="academic email address"
-//               required
-//             />
-//             <div>
-//               <Button
-//                 customButtonStyle={modalBodyStyles.buttonStyle}
-//                 disable={isSubmitting}
-//                 label={
-//                   !isSubmitting ? (
-//                     "Request"
-//                   ) : (
-//                     <Loader
-//                       size={8}
-//                       loading
-//                       containerStyle={modalBodyStyles.loaderStyle}
-//                       color="#fff"
-//                     />
-//                   )
-//                 }
-//                 type="submit"
-//               />
-//               <Button
-//                 customButtonStyle={modalBodyStyles.cancelButtonStyle}
-//                 disabled={isSubmitting}
-//                 label="Cancel"
-//                 onClick={(e: SyntheticEvent): void => {
-//                   e.preventDefault();
-//                   setIsOpen(false);
-//                 }}
-//               />
-//             </div>
-//           </form>
-//         </div>
-//       }
-//       isOpen={isOpen}
-//       style={customModalStyle}
-//     />
-//   );
-// }
 
 const modalBodyStyles = StyleSheet.create({
   buttonStyle: {
@@ -395,27 +251,7 @@ const modalBodyStyles = StyleSheet.create({
   },
 });
 
-// const customModalStyle = {
-//   content: {
-//     alignItems: "center",
-//     backgroundColor: "transparent",
-//     display: "flex",
-//     justifyContent: "center",
-//     left: 0,
-//     maxHeight: "80%",
-//     overflow: "auto",
-//     width: "100%",
-//   },
-//   overlay: {
-//     zIndex: 2,
-//   },
-// };
-
 const styles = StyleSheet.create({
-  list: {
-    width: "544px",
-    margin: "31px",
-  },
   modalStyle: {
     maxHeight: "95vh",
     // overflowY: "scroll",
@@ -424,13 +260,31 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
+  rippleClass: {
+    width: "100%",
+  },
+  closeButton: {
+    height: 12,
+    width: 12,
+    position: "absolute",
+    top: 6,
+    right: 0,
+    padding: 16,
+    cursor: "pointer",
+  },
+  modalContentStyles: {
+    padding: 0,
+  },
+});
+
+const verifStyles = StyleSheet.create({
   rootContainer: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 30,
+    padding: "51px 90px 40px 90px",
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
@@ -438,30 +292,37 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       overflowY: "auto",
     },
-    "@media only screen and (max-width: 767px)": {
-      padding: 16,
-    },
   },
   form: {
-    width: "100%",
+    width: "auto",
     position: "relative",
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontWeight: 500,
+      fontSize: "14px",
+      lineHeight: "16px",
+      color: "#241F3A",
+    },
   },
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
-    background: "#FFF",
+    width: "auto",
     zIndex: 2,
+    marginTop: 40,
   },
   buttonCustomStyle: {
-    padding: 16,
-    width: "100%",
+    padding: "18px 21px",
+    width: "258px",
+    height: "55px",
+    fontSize: "16px",
+    lineHeight: "19px",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
     },
   },
-  rippleClass: {
-    width: "100%",
-  },
+  rippleClass: {},
   closeButton: {
     height: 12,
     width: 12,
@@ -478,6 +339,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     textAlign: "center",
     boxSizing: "border-box",
+    marginBottom: "7px",
   },
   title: {
     fontWeight: "500",
@@ -502,11 +364,124 @@ const styles = StyleSheet.create({
       width: 280,
     },
   },
-  modalContentStyles: {
-    padding: 25,
-    overflowX: "hidden",
-    "@media only screen and (max-width: 415px)": {
-      padding: 25,
+  subTextContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    textAlign: "center",
+    boxSizing: "border-box",
+  },
+  subText: {
+    fontWeight: "normal",
+    fontSize: "16px",
+    lineHeight: "22px",
+
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    color: "#241F3A",
+    opacity: 0.8,
+  },
+  modalContentStyles: {},
+});
+
+const successStyles = StyleSheet.create({
+  rootContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: "46px 90px 40px 90px",
+    borderRadius: 5,
+    transition: "all ease-in-out 0.4s",
+    boxSizing: "border-box",
+    width: "100%",
+    "@media only screen and (min-width: 768px)": {
+      overflowY: "auto",
     },
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    width: "auto",
+    zIndex: 2,
+    marginTop: 25,
+  },
+  buttonCustomStyle: {
+    padding: "18px 21px",
+    width: "258px",
+    height: "55px",
+    fontSize: "16px",
+    lineHeight: "19px",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
+  },
+  rippleClass: {},
+  closeButton: {
+    height: 12,
+    width: 12,
+    position: "absolute",
+    top: 6,
+    right: 0,
+    padding: 16,
+    cursor: "pointer",
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    textAlign: "center",
+    boxSizing: "border-box",
+    marginBottom: "7px",
+  },
+  title: {
+    fontWeight: "500",
+    height: 30,
+    width: "100%",
+    fontSize: 26,
+    color: "#232038",
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
+  },
+  subTextContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    textAlign: "center",
+    boxSizing: "border-box",
+  },
+  subText: {
+    fontWeight: "normal",
+    fontSize: "16px",
+    lineHeight: "22px",
+
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    color: "#241F3A",
+    opacity: 0.8,
+  },
+  modalContentStyles: {},
+  successImg: {
+    marginBottom: 25,
   },
 });
