@@ -72,10 +72,10 @@ const PaperSections = (props) => {
     };
 
     const isPaperSectionActive = (index) => {
-      const offset = 3;
+      const offset = 4;
 
       return (
-        paperDraftExists && activeTab === 2 && activeSection == index - offset
+        paperDraftExists && activeTab === 3 && activeSection == index - offset
       );
     };
 
@@ -90,7 +90,7 @@ const PaperSections = (props) => {
             onClick={() => handleClick(index)}
           >
             <div className={css(styles.name) + " clamp1"}>{name}</div>
-            {paperDraftExists && index === 2 && (
+            {paperDraftExists && index === 3 && (
               <div
                 className={css(styles.button)}
                 onClick={(e) => {
