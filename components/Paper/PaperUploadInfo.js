@@ -729,6 +729,7 @@ class PaperUploadInfo extends React.Component {
                   placeholder="Enter DOI of paper"
                   id={"doi"}
                   value={form.doi}
+                  required={true}
                   containerStyle={styles.doiInput}
                   labelStyle={styles.labelStyle}
                   onChange={this.handleInputChange}
@@ -760,6 +761,7 @@ class PaperUploadInfo extends React.Component {
                 placeholder="Enter DOI of paper"
                 id={"doi"}
                 value={form.doi}
+                required={true}
                 containerStyle={styles.doiInput}
                 labelStyle={styles.labelStyle}
                 onChange={this.handleInputChange}
