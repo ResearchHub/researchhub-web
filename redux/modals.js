@@ -7,6 +7,7 @@ import API from "~/config/api";
 
 export const ModalConstants = {
   UPLOAD_PAPER_MODAL_TOGGLE: "@@modal/UPLOAD_PAPER_MODAL_TOGGLE",
+  AUTHOR_CLAIM_MODAL_TOGGLE: "@@modal/AUTHOR_CLAIM_MODAL_TOGGLE",
   ADD_AUTHOR_MODAL_TOGGLE: "@@modal/ADD_AUTHOR_MODAL_TOGGLE",
   LOGIN_MODAL_TOGGLE: "@@modal/LOGIN_MODAL_TOGGLE",
   PERMISSION_NOTIFICATION_MODAL_TOGGLE:
@@ -47,6 +48,17 @@ export const ModalActions = {
           uploadPaperModal: {
             suggestedPapers,
           },
+        },
+      });
+    };
+  },
+  openAuthorClaimModal: (openModal, step = 0) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.AUTHOR_CLAIM_MODAL_TOGGLE,
+        payload: {
+          openAuthorClaimModal: openModal,
+          authorClaimStep: step,
         },
       });
     };
@@ -333,6 +345,8 @@ export const ModalActions = {
 
 const defaultModalState = {
   openUploadPaperModal: false,
+  openAuthorClaimModal: false,
+  authorClaimStep: 0,
   openAddAuthorModal: false,
   openLoginModal: false,
   openPermissionNotificationModal: false,
@@ -387,6 +401,7 @@ const defaultModalState = {
 const ModalReducer = (state = defaultModalState, action) => {
   switch (action.type) {
     case ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE:
+    case ModalConstants.AUTHOR_CLAIM_MODAL_TOGGLE:
     case ModalConstants.ADD_AUTHOR_MODAL_TOGGLE:
     case ModalConstants.LOGIN_MODAL_TOGGLE:
     case ModalConstants.PERMISSION_NOTIFICATION_MODAL_TOGGLE:
