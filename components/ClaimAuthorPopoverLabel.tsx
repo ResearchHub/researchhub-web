@@ -5,15 +5,21 @@ import icons from "../config/themes/icons";
 import AuthorClaimModal from "./AuthorClaimModal/AuthorClaimModal";
 import colors from "../config/themes/colors";
 
+// Redux
+import { connect } from "react-redux";
+import { ModalActions } from "../redux/modals";
+
 type Props = {
   auth: any;
   author: any;
+  openAuthorClaimModal: any;
   user: any;
 };
 
-export default function ClaimAuthorPopoverLabel({
+function ClaimAuthorPopoverLabel({
   auth,
   author,
+  openAuthorClaimModal,
   user,
 }: Props): ReactElement<typeof Fragment> {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
@@ -21,19 +27,14 @@ export default function ClaimAuthorPopoverLabel({
   const { first_name: authorFirstName, last_name: authorLastName } = author;
 
   const handleClaimButtonClick = useCallback((): void => {
+    openAuthorClaimModal(true, 0);
     setIsClaimModalOpen(!isClaimModalOpen);
     setIsPopoverOpen(false);
   }, [setIsPopoverOpen]);
 
   return (
     <Fragment>
-      <AuthorClaimModal
-        auth={auth}
-        author={author}
-        isOpen={isClaimModalOpen}
-        setIsOpen={setIsClaimModalOpen}
-        user={user}
-      />
+      <AuthorClaimModal auth={auth} author={author} user={user} />
       <div className={css(styles.claimAuthorPopoverLabel)}>
         <span className={css(styles.popoverLabelText)}>
           {"Unclaimed profile"}
@@ -80,6 +81,17 @@ export default function ClaimAuthorPopoverLabel({
     </Fragment>
   );
 }
+
+const mapStateToProps = (state) => ({});
+
+const mapDispatchToProps = {
+  openAuthorClaimModal: ModalActions.openAuthorClaimModal,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ClaimAuthorPopoverLabel);
 
 const styles = StyleSheet.create({
   bodyHeader: {
