@@ -56,37 +56,33 @@ class AuthorClaimModal extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      step: props.step,
-    };
+    this.prompts = [
+      // First Prompt (0)
+      <Fragment>
+        <div className={css(styles.titleContainer)}>
+          <div className={css(styles.title)}>{"Author Claiming Steps"}</div>
+        </div>
+        <Button
+          label={"Next"}
+          customButtonStyle={styles.buttonCustomStyle}
+          rippleClass={styles.rippleClass}
+          onClick={this.handleContinue}
+        />
+      </Fragment>,
+      // Second Prompt (1)
+      <Fragment>
+        <div className={css(styles.titleContainer)}>
+          <div className={css(styles.title)}>{"Enter your .edu email"}</div>
+        </div>
+        <Button
+          label={"Next"}
+          customButtonStyle={styles.buttonCustomStyle}
+          rippleClass={styles.rippleClass}
+          onClick={this.handleContinue}
+        />
+      </Fragment>,
+    ];
   }
-
-  prompts = [
-    // First Prompt (0)
-    <Fragment>
-      <div className={css(styles.titleContainer)}>
-        <div className={css(styles.title)}>{"Author Claiming Steps"}</div>
-      </div>
-      <Button
-        label={"Next"}
-        customButtonStyle={styles.buttonCustomStyle}
-        rippleClass={styles.rippleClass}
-        onClick={this.handleContinue}
-      />
-    </Fragment>,
-    // Second Prompt (1)
-    <Fragment>
-      <div className={css(styles.titleContainer)}>
-        <div className={css(styles.title)}>{"Enter your .edu email"}</div>
-      </div>
-      <Button
-        label={"Next"}
-        customButtonStyle={styles.buttonCustomStyle}
-        rippleClass={styles.rippleClass}
-        onClick={this.handleContinue}
-      />
-    </Fragment>,
-  ];
 
   saveAndCloseModal = (e) => {
     e && e.preventDefault();
@@ -100,14 +96,13 @@ class AuthorClaimModal extends React.Component {
   };
 
   handleContinue = () => {
-    this.setState((prev) => ({
-      step: prev.step + 1,
-    }));
+    const { openAuthorClaimModal, step } = this.props;
+    openAuthorClaimModal(true, step + 1);
+    console.log(step);
   };
 
   render() {
-    const { modals } = this.props;
-    const { step } = this.state;
+    const { modals, step } = this.props;
     console.log(modals, step, this.prompts);
     return (
       <BaseModal
