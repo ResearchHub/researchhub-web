@@ -456,13 +456,29 @@ const DiscussionTab = (props) => {
           {renderThreads(formattedThreads, hostname)}
           {formattedThreads.length > 2 ? (
             expandComments ? (
-              <div className={css(styles.expandDiv)}>
-                <button
-                  className={css(styles.expandButton)}
-                  onClick={() => setExpandComments(false)}
-                >
-                  See Fewer Comments
-                </button>
+              <div>
+                {props.paper.nextDiscussion && !fetching && (
+                  <div className={css(styles.buttonContainer)}>
+                    {loading ? (
+                      <Loader loading={true} size={10} type="beat" />
+                    ) : (
+                      <Ripples
+                        className={css(styles.loadMoreButton)}
+                        onClick={() => fetchDiscussionThreads(true)}
+                      >
+                        Load More
+                      </Ripples>
+                    )}
+                  </div>
+                )}
+                <div className={css(styles.expandDiv)}>
+                  <button
+                    className={css(styles.expandButton)}
+                    onClick={() => setExpandComments(false)}
+                  >
+                    See Fewer Comments
+                  </button>
+                </div>
               </div>
             ) : (
               <div className={css(styles.expandDiv)}>
@@ -476,20 +492,6 @@ const DiscussionTab = (props) => {
               </div>
             )
           ) : null}
-          {props.paper.nextDiscussion && !fetching && (
-            <div className={css(styles.buttonContainer)}>
-              {loading ? (
-                <Loader loading={true} size={10} type="beat" />
-              ) : (
-                <Ripples
-                  className={css(styles.loadMoreButton)}
-                  onClick={() => fetchDiscussionThreads(true)}
-                >
-                  Load More
-                </Ripples>
-              )}
-            </div>
-          )}
         </div>
       ) : (
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
@@ -921,6 +923,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     color: colors.BLUE(),
     cursor: "pointer",
+    marginBottom: 10,
     ":hover": {
       color: "#FFF",
       backgroundColor: colors.BLUE(),
