@@ -77,18 +77,16 @@ export default function AuthorClaimDashboardNavbar({
 
   return (
     <div className={css(styles.authorClaimDashboardNavbar)}>
-      <div className={css(styles.navbarBodyWidthMatchWrap)}>
-        <div
-          className={css(styles.innerElementWrap)}
-          style={{ width: innerElWidth }}
-        >
-          <div className={css(styles.header)}>
-            <span className={css(styles.headerText)}>
-              {"Author Claim Requests"}
-            </span>
-          </div>
-          <div className={css(styles.navRow)}>{navButtons}</div>
+      <div
+        className={css(styles.innerElementWrap)}
+        style={{ width: innerElWidth }}
+      >
+        <div className={css(styles.header)}>
+          <span className={css(styles.headerText)}>
+            {"Author Claim Requests"}
+          </span>
         </div>
+        <div className={css(styles.navRow)}>{navButtons}</div>
       </div>
     </div>
   );
@@ -127,8 +125,7 @@ const styles = StyleSheet.create({
     height: 60,
     width: "100%",
   },
-  navbarBodyWidthMatchWrap: {
-    maxWidth: "90%",
-    width: "100%",
-  },
+  // navbarBodyWidthMatchWrap: {
+  //   width: "100%",
+  // },
 });
