@@ -8,8 +8,6 @@ import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
 import * as Sentry from "@sentry/browser";
-
-// Components
 import HubTag from "~/components/Hubs/HubTag";
 import VoteWidget from "~/components/VoteWidget";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
@@ -21,11 +19,7 @@ import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
-
-// redux
 import { ModalActions } from "~/redux/modals";
-
-// Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
@@ -222,20 +216,6 @@ class PaperPageCard extends React.Component {
 
     return (
       <div>
-        <PaperMetadata
-          label={"Paper Title"}
-          containerStyles={styles.paperTitle}
-          active={
-            paper.paper_title &&
-            removeLineBreaksInStr(paper.paper_title) !==
-              removeLineBreaksInStr(paper.title)
-          }
-          value={
-            <h3 className={css(styles.metadata)} property={"name"}>
-              {paper.paper_title}
-            </h3>
-          }
-        />
         <div className={css(styles.row)}>
           {metadata.map((props, i) => (
             <PaperMetadata
@@ -244,6 +224,21 @@ class PaperPageCard extends React.Component {
               containerStyles={i === 0 && styles.marginRight}
             />
           ))}
+        </div>
+        <div className={css(styles.row, styles.lastRow)}>
+          <PaperMetadata
+            label={"Paper Title"}
+            active={
+              paper.paper_title &&
+              removeLineBreaksInStr(paper.paper_title) !==
+                removeLineBreaksInStr(paper.title)
+            }
+            value={
+              <h3 className={css(styles.metadata)} property={"name"}>
+                {paper.paper_title}
+              </h3>
+            }
+          />
         </div>
       </div>
     );
@@ -355,6 +350,23 @@ class PaperPageCard extends React.Component {
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
               iconStyle={styles.moderatorIcon}
             />
+          </span>
+        ),
+      },
+      {
+        active: true,
+        button: (
+          <span data-tip={"Support Paper"}>
+            {/* <PaperPromotionButton
+              paper={paper}
+              customStyle={styles.actionIcon}
+            /> */}
+            {/* <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            /> */}
           </span>
         ),
       },
@@ -624,12 +636,12 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                <PaperDiscussionButton
+                {/* <PaperDiscussionButton
                   paper={paper}
                   discussionCount={discussionCount}
                 />
                 <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} />
+                <PaperPromotionButton paper={paper} /> */}
               </div>
               <div
                 className={css(
@@ -695,8 +707,10 @@ class PaperPageCard extends React.Component {
               <div className={css(styles.bottomRow)}>
                 {this.renderActions()}
               </div>
+              <div className={css(styles.downloadPDF)}></div>
             </div>
           </div>
+
           <div className={css(styles.previewBox)}>
             <PaperPreview
               paperId={paper.id}
@@ -721,10 +735,7 @@ const styles = StyleSheet.create({
     marginRight: 16,
     width: "100%",
   },
-  previewStyles: {
-    width: "100%",
-    height: "unset",
-  },
+  previewStyles: {},
   container: {
     width: "100%",
     display: "flex",
@@ -742,8 +753,10 @@ const styles = StyleSheet.create({
   },
   previewBox: {
     marginLeft: "auto",
-    minWidth: 140,
-    maxWidth: "20%",
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: "140px",
+    minHeight: "140px",
 
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -847,10 +860,7 @@ const styles = StyleSheet.create({
   },
   titleHeader: {
     marginTop: 5,
-    marginBottom: 15,
-  },
-  paperTitle: {
-    margin: "8px 0 0",
+    marginBottom: 23,
   },
   subtitle: {
     color: "#241F3A",
@@ -1096,11 +1106,21 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
+    // minHeight: 25,
     flexWrap: "wrap",
+
+    /**
+     * Set the width of the Label ("Paper Title:", "Published:") to align text, but only do so
+     * to the first element on each row. This selector is equivalent to row > "first child". */
+    ":nth-child(1n) > *:nth-child(1) > div": {
+      minWidth: 80,
+    },
+
     "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
     },
   },
+  lastRow: {},
   reverseRow: {
     display: "flex",
     alignItems: "flex-start",
@@ -1167,6 +1187,7 @@ const styles = StyleSheet.create({
       // display: "none",
     },
   },
+  downloadPDF: {},
   hubsRow: {},
   flexendRow: {
     justifyContent: "flex-end",
