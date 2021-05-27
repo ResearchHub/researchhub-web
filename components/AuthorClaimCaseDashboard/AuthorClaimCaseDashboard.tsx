@@ -30,9 +30,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100vh",
+    overflow: "auto",
     width: "100%",
   },
   caseContinaerWrap: {
+    boxSizing: "border-box",
     marginTop: 16,
+    width: "100%",
   },
 });
