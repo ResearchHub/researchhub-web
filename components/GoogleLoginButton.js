@@ -22,7 +22,7 @@ const GoogleLoginButton = (props) => {
   useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
-    if (!auth.isLoggedIn && auth.authChecked) {
+    if (!auth.isLoggedIn && auth.authChecked && google) {
       google.accounts.id.initialize({
         client_id: GOOGLE_CLIENT_ID,
         callback: handleYolo,
