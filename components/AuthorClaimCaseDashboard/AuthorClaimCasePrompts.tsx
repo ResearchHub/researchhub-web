@@ -8,7 +8,7 @@ import colors from "../../config/themes/colors";
 
 export default {
   acceptRejectUser: (
-    acceptReject: "accept" | "reject",
+    verb: "accept" | "reject",
     handleContinue,
     handleSelect,
     requestorFaceImg,
@@ -19,7 +19,7 @@ export default {
     <div className={css(acceptRejectStyles.rootContainer)}>
       <div className={css(acceptRejectStyles.titleContainer)}>
         <div className={css(acceptRejectStyles.title)}>
-          {`Are you sure you want to ${acceptReject} the following user?`}
+          {`Are you sure you want to ${verb} the following user?`}
         </div>
       </div>
       <div className={css(acceptRejectStyles.userMediaContianer)}>
@@ -33,7 +33,7 @@ export default {
           </span>
         </div>
       </div>
-      {acceptReject === "reject" && (
+      {verb === "reject" && (
         <div className={css(acceptRejectStyles.checkboxContainer)}>
           <CheckBox
             active={isSpammer}
@@ -47,7 +47,7 @@ export default {
       )}
       <div className={css(acceptRejectStyles.buttonContainer)}>
         <Button
-          label={`${acceptReject} User`}
+          label={`${verb} User`}
           disabled={isSubmitting}
           customButtonStyle={acceptRejectStyles.buttonCustomStyle}
           rippleClass={acceptRejectStyles.rippleClass}
