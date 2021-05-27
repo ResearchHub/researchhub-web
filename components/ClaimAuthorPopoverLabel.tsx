@@ -30,6 +30,7 @@ export default function ClaimAuthorPopoverLabel({
       <AuthorClaimModal
         auth={auth}
         author={author}
+        firstPrompt="rejectUser"
         isOpen={isClaimModalOpen}
         setIsOpen={setIsClaimModalOpen}
         user={user}
