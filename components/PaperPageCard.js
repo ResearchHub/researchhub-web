@@ -370,10 +370,10 @@ class PaperPageCard extends React.Component {
         active: true,
         button: (
           <span data-tip={"Support Paper"}>
-            <PaperPromotionButton
+            {/* <PaperPromotionButton
               paper={paper}
               customStyle={styles.actionIcon}
-            />
+            /> */}
             {/* <FlagButton
               paperId={paper.id}
               flagged={flagged}
@@ -716,6 +716,12 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
+            <div className={css(styles.bottomContainer)}>
+              <div className={css(styles.bottomRow)}>
+                {this.renderActions()}
+              </div>
+              <div className={css(styles.downloadPDF)}></div>
+            </div>
           </div>
 
           <div className={css(styles.previewBox)}>
@@ -726,10 +732,6 @@ class PaperPageCard extends React.Component {
               columnOverrideStyles={styles.columnOverrideStyles}
             />
           </div>
-        </div>
-        <div className={css(styles.bottomContainer)}>
-          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
-          <div className={css(styles.downloadPDF)}>Download PDF</div>
         </div>
       </ReactPlaceholder>
     );
