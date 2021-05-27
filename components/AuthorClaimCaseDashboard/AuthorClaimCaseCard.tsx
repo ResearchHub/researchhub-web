@@ -6,6 +6,7 @@ import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
+import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetAuthorSection";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
@@ -31,7 +32,6 @@ export default function AuthorClaimCaseCard({
     providedEmail,
     requestorAuthorID,
   } = requestor || {};
-  const { id: targetAuthorID, name: targetAuthorName } = targetAuthor || {};
 
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
@@ -84,7 +84,14 @@ export default function AuthorClaimCaseCard({
               className={css(styles.requestorFaceImg)}
               src={requestorFaceImg}
             />
-            <span className={css(styles.requestorName)}>{requestorName}</span>
+            <a
+              className={css(styles.link)}
+              href={`/user/${requestorAuthorID}`}
+              onClick={(e: SyntheticEvent) => e.stopPropagation()}
+              target="__blank"
+            >
+              <span className={css(styles.requestorName)}>{requestorName}</span>
+            </a>
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
             {providedEmail}
@@ -98,10 +105,9 @@ export default function AuthorClaimCaseCard({
         </div>
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
-            <div className={css(styles.requestorSubInfo, styles.fontGrey)}>
-              Claiming Author
-            </div>
-            <div> {targetAuthorName} </div>
+            <AuthorClaimCaseCardTargetAuthorSection
+              targetAuthor={targetAuthor}
+            />
           </div>
         ) : null}
       </div>
@@ -159,14 +165,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
-  cardSubmain: {
-    display: "flex",
-    flexDirection: "column",
-    fontSize: 16,
-    height: 72,
-    justifyContent: "center",
-    width: "100%",
-  },
   chevronWrap: {
     alignItems: "center",
     color: "#787c7e",
@@ -189,7 +187,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
   },
-  requestorSubInfo: {
-    marginBottom: 8,
+  cardSubmain: {
+    display: "flex",
+    flexDirection: "column",
+    fontSize: 16,
+    minHeight: 72,
+    justifyContent: "center",
+    width: "100%",
+    margin: "16px 0 8px",
+  },
+  link: {
+    color: colors.BLUE(1),
+    textDecoration: "none",
   },
 });
