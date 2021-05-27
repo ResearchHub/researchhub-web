@@ -2,8 +2,6 @@ import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
-import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
