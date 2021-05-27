@@ -45,7 +45,7 @@ export default function AuthorClaimCaseCard({
         ): ReactElement<typeof AuthorClaimCaseCardActionButton> => (
           <AuthorClaimCaseCardActionButton
             actionType={actionType}
-            // isDisabled={isSubmitting}
+            isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
             onClick={() => {
               console.log(actionType);

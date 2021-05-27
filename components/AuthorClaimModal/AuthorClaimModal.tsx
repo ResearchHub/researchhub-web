@@ -1,9 +1,9 @@
 import BaseModal from "../Modals/BaseModal";
-import prompts from "./AuthorClaimModalPrompts";
-import Modal from "react-modal";
-import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
-import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
+import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
+import Modal from "react-modal";
+import prompts from "./AuthorClaimModalPrompts";
+import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -21,16 +21,6 @@ function validateEmail(email: string): boolean {
     re.test(String(email).toLowerCase()) &&
     splitted[splitted.length - 1] === ".edu"
   );
-}
-
-function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
-  switch (fieldID) {
-    case "eduEmail":
-      return typeof value === "string" && validateEmail(value);
-    default:
-      return result;
-  }
 }
 
 export default function AuthorClaimModal({
@@ -110,13 +100,6 @@ export default function AuthorClaimModal({
 }
 
 const customModalStyle = StyleSheet.create({
-  modalStyle: {
-    maxHeight: "95vh",
-    width: "625px",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-  },
   closeButton: {
     height: 12,
     width: 12,
@@ -125,5 +108,12 @@ const customModalStyle = StyleSheet.create({
     right: 0,
     padding: 16,
     cursor: "pointer",
+  },
+  modalStyle: {
+    maxHeight: "95vh",
+    width: "625px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
 });
