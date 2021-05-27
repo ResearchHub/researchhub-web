@@ -22,16 +22,20 @@ const GoogleLoginButton = (props) => {
   useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
-    if (!auth.isLoggedIn && auth.authChecked) {
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleYolo,
-      });
-      google.accounts.id.prompt((notification) => {
-        console.log(notification);
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        }
-      });
+    try {
+      if (!auth.isLoggedIn && auth.authChecked) {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleYolo,
+        });
+        google.accounts.id.prompt((notification) => {
+          console.log(notification);
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          }
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
