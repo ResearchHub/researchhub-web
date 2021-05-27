@@ -8,8 +8,6 @@ import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
 import * as Sentry from "@sentry/browser";
-
-// Components
 import HubTag from "~/components/Hubs/HubTag";
 import VoteWidget from "~/components/VoteWidget";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
@@ -21,11 +19,7 @@ import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
-
-// redux
 import { ModalActions } from "~/redux/modals";
-
-// Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
@@ -233,7 +227,7 @@ class PaperPageCard extends React.Component {
         </div>
         <div className={css(styles.row, styles.lastRow)}>
           <PaperMetadata
-            label="Paper Title"
+            label={"Paper Title"}
             active={
               paper.paper_title &&
               removeLineBreaksInStr(paper.paper_title) !==
@@ -356,6 +350,23 @@ class PaperPageCard extends React.Component {
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
               iconStyle={styles.moderatorIcon}
             />
+          </span>
+        ),
+      },
+      {
+        active: true,
+        button: (
+          <span data-tip={"Support Paper"}>
+            {/* <PaperPromotionButton
+              paper={paper}
+              customStyle={styles.actionIcon}
+            /> */}
+            {/* <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            /> */}
           </span>
         ),
       },
@@ -625,12 +636,12 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                <PaperDiscussionButton
+                {/* <PaperDiscussionButton
                   paper={paper}
                   discussionCount={discussionCount}
                 />
                 <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} />
+                <PaperPromotionButton paper={paper} /> */}
               </div>
               <div
                 className={css(
@@ -696,6 +707,7 @@ class PaperPageCard extends React.Component {
               <div className={css(styles.bottomRow)}>
                 {this.renderActions()}
               </div>
+              <div className={css(styles.downloadPDF)}></div>
             </div>
           </div>
 
@@ -743,7 +755,8 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     flexDirection: "column",
-    maxWidth: "8em", // Set width relative to parent's height. Since em's are relative to height, this will work.
+    maxWidth: "140px",
+    minHeight: "140px",
 
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -1107,9 +1120,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
   },
-  lastRow: {
-    // marginBottom: 20,
-  },
+  lastRow: {},
   reverseRow: {
     display: "flex",
     alignItems: "flex-start",
@@ -1161,7 +1172,7 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "flex-end", // TODO: look into this
+    alignItems: "flex-end",
     marginTop: "auto",
     "@media only screen and (max-width: 767px)": {
       margin: 0,
@@ -1176,6 +1187,7 @@ const styles = StyleSheet.create({
       // display: "none",
     },
   },
+  downloadPDF: {},
   hubsRow: {},
   flexendRow: {
     justifyContent: "flex-end",

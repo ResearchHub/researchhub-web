@@ -2,15 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
-
-// Component
 import ColumnContainer from "./ColumnContainer";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
-
-// Redux
 import { ModalActions } from "~/redux/modals";
-
-// Config
 import { fetchPaperFigures } from "~/config/fetch";
 import { absoluteUrl } from "../../../config/utils";
 
@@ -74,7 +68,7 @@ const styles = StyleSheet.create({
 
     display: "flex",
     flex: "1 1 0px",
-    overflowY: "hidden", // trims bottom
+    overflowY: "hidden",
     overflowX: "hidden",
     justifyContent: "center",
 
