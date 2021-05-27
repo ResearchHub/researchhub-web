@@ -3,6 +3,7 @@ import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
+import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
@@ -10,7 +11,7 @@ import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetA
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
-import AuthorClaimModal from "../AuthorClaimModal/AuthorClaimModal";
+import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -36,20 +37,6 @@ export default function AuthorClaimCaseCard({
     requestorAuthorID,
   } = requestor || {};
 
-  const handleAcceptReject = (actionType) => {
-    return (event: SyntheticEvent) => {
-      event.stopPropagation(); /* prevents card collapse */
-      setIsSubmitting(true);
-      updateCaseStatus({
-        payload: { caseID, updateStatus: actionType },
-        onSuccess: () => {
-          setIsSubmitting(false);
-          setLastFetchTime(Date.now());
-        },
-      });
-    };
-  };
-
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -62,7 +49,7 @@ export default function AuthorClaimCaseCard({
             key={`actionbutton-case-${caseID}-button-${actionType}`}
             onClick={() => {
               console.log(actionType);
-              actionType === "APPROVED"
+              actionType === AUTHOR_CLAIM_STATUS.APPROVED
                 ? setIsAcceptModalOpen(true)
                 : setIsRejectModalOpen(true);
             }}
@@ -81,21 +68,23 @@ export default function AuthorClaimCaseCard({
       role="none"
       style={{ width: cardWidth }}
     >
-      <AuthorClaimModal
+      <AuthorClaimCaseModal
+        caseID={caseID}
+        firstPrompt="approveUser"
         requestorName={requestorName}
         profileImg={requestorFaceImg}
-        handleAcceptReject={handleAcceptReject("APPROVED")}
-        firstPrompt="acceptUser"
         isOpen={isAcceptModalOpen}
         setIsOpen={setIsAcceptModalOpen}
+        setLastFetchTime={setLastFetchTime}
       />
-      <AuthorClaimModal
+      <AuthorClaimCaseModal
+        caseID={caseID}
+        firstPrompt="rejectUser"
         requestorName={requestorName}
         profileImg={requestorFaceImg}
-        handleAcceptReject={handleAcceptReject("DENIED")}
-        firstPrompt="rejectUser"
         isOpen={isRejectModalOpen}
         setIsOpen={setIsRejectModalOpen}
+        setLastFetchTime={setLastFetchTime}
       />
       <div className={css(styles.chevronWrap)}>
         {isCollapsed ? icons.chevronDown : icons.chevronUp}

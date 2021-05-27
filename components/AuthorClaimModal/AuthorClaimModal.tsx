@@ -6,24 +6,12 @@ import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
 
 export type AuthorClaimDataProps = {
-  auth?: any;
-  author?: any;
-  firstPrompt: "enterEmail" | "success" | "rejectUser" | "acceptUser"; // TODO: temporary. move rejectUser + acceptUser into separate modal
+  auth: any;
+  author: any;
+  firstPrompt: "enterEmail" | "success";
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
-  user?: any;
-  // For accept/reject claim case
-  requestorName?: string;
-  profileImg?: string;
-  handleAcceptReject?: Function;
-};
-
-type FormFields = {
-  eduEmail: null | string;
-};
-
-type FormError = {
-  eduEmail: boolean;
+  user: any;
 };
 
 function validateEmail(email: string): boolean {
@@ -52,15 +40,10 @@ export default function AuthorClaimModal({
   isOpen,
   setIsOpen,
   user,
-  // For accept/reject claim
-  requestorName,
-  profileImg,
-  handleAcceptReject,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
   let [promptName, setPromptName] = useState<string>(firstPrompt);
   let [eduEmail, setEduEmail] = useState<string>("");
-  let [isSpammer, setIsSpammer] = useState<boolean>(false); // For reject claim case modal
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // TODO: display loader animation
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
 
   const onEmailChange = (fieldID: string, value: string): void => {
@@ -86,15 +69,6 @@ export default function AuthorClaimModal({
     });
   };
 
-  const handleCheckboxSelect = (id, value) => {
-    setIsSpammer(value);
-  };
-
-  const handleAcceptRejectClick = (e: SyntheticEvent) => {
-    handleAcceptReject && handleAcceptReject(e);
-    closeModal(e);
-  };
-
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setIsOpen(false);
@@ -104,21 +78,6 @@ export default function AuthorClaimModal({
     const argsForPrompts = {
       enterEmail: [handleValidationAndSubmit, isSubmitting, onEmailChange],
       success: [closeModal],
-      acceptUser: [
-        "accept",
-        handleAcceptRejectClick,
-        handleCheckboxSelect,
-        profileImg,
-        requestorName,
-      ],
-      rejectUser: [
-        "reject",
-        handleAcceptRejectClick,
-        handleCheckboxSelect,
-        profileImg,
-        requestorName,
-        isSpammer,
-      ],
     };
     const args = argsForPrompts[promptName];
     if (args) {
