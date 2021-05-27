@@ -13,6 +13,7 @@ import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
+import AuthorClaimModal from "../AuthorClaimModal/AuthorClaimModal";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -27,6 +28,8 @@ export default function AuthorClaimCaseCard({
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState<boolean>(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = useState<boolean>(false);
   const { caseData, requestor, targetAuthor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
@@ -36,6 +39,20 @@ export default function AuthorClaimCaseCard({
     requestorAuthorID,
   } = requestor || {};
   const { id: targetAuthorID, name: targetAuthorName } = targetAuthor || {};
+
+  const handleAcceptReject = (actionType) => {
+    return (event: SyntheticEvent) => {
+      event.stopPropagation(); /* prevents card collapse */
+      setIsSubmitting(true);
+      updateCaseStatus({
+        payload: { caseID, updateStatus: actionType },
+        onSuccess: () => {
+          setIsSubmitting(false);
+          setLastFetchTime(Date.now());
+        },
+      });
+    };
+  };
 
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
@@ -47,17 +64,7 @@ export default function AuthorClaimCaseCard({
             actionType={actionType}
             isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
-            onClick={(event: SyntheticEvent) => {
-              event.stopPropagation(); /* prevents card collapse */
-              setIsSubmitting(true);
-              updateCaseStatus({
-                payload: { caseID, updateStatus: actionType },
-                onSuccess: () => {
-                  setIsSubmitting(false);
-                  setLastFetchTime(Date.now());
-                },
-              });
-            }}
+            onClick={() => setIsModalOpen(true)}
           />
         )
       )
@@ -75,6 +82,22 @@ export default function AuthorClaimCaseCard({
       role="none"
       style={{ width: cardWidth }}
     >
+      <AuthorClaimModal
+        requestorName={requestorName}
+        profileImg={requestorFaceImg}
+        handleAcceptReject={handleAcceptReject}
+        firstPrompt="acceptUser"
+        isOpen={isAcceptModalOpen}
+        setIsOpen={setIsAcceptModalOpen}
+      />
+      <AuthorClaimModal
+        requestorName={requestorName}
+        profileImg={requestorFaceImg}
+        handleAcceptReject={handleAcceptReject}
+        firstPrompt="rejectUser"
+        isOpen={isRejectModalOpen}
+        setIsOpen={setIsRejectModalOpen}
+      />
       <div className={css(styles.chevronWrap)}>
         {isCollapsed ? icons.chevronDown : icons.chevronUp}
       </div>
