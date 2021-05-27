@@ -10,6 +10,7 @@ import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 // Components
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
+import CheckBox from "../Form/CheckBox";
 import BaseModal from "../Modals/BaseModal";
 
 // Redux
@@ -103,9 +104,33 @@ class AuthorClaimModal extends React.Component {
         </div>
         <div className={css(successStyles.buttonContainer)}>
           <Button
-            label={"Got It"}
+            label="Got It"
             customButtonStyle={successStyles.buttonCustomStyle}
             rippleClass={successStyles.rippleClass}
+            onClick={this.handleContinue}
+          />
+        </div>
+      </div>,
+      // Temporary Reject User Prompt
+      <div className={css(rejectStyles.rootContainer)}>
+        <div className={css(rejectStyles.titleContainer)}>
+          <div className={css(rejectStyles.title)}>
+            Are you sure you want to reject the following user?
+          </div>
+        </div>
+        <div className={css(rejectStyles.userMediaContianer)}></div>
+        <div className={css(rejectStyles.checkboxContainer)}>
+          <CheckBox
+            active={false}
+            isSquare={true}
+            label="Mark this user as spammer"
+          />
+        </div>
+        <div className={css(rejectStyles.buttonContainer)}>
+          <Button
+            label="Reject User"
+            customButtonStyle={rejectStyles.buttonCustomStyle}
+            rippleClass={rejectStyles.rippleClass}
             onClick={this.handleContinue}
           />
         </div>
@@ -484,4 +509,121 @@ const successStyles = StyleSheet.create({
   successImg: {
     marginBottom: 25,
   },
+});
+
+const rejectStyles = StyleSheet.create({
+  userMediaContianer: {
+    width: "525px",
+    height: "110px",
+    background: "#FAFAFA",
+    border: "1.5px solid #F0F0F0",
+    boxSizing: "border-box",
+    borderRadius: "4px",
+  },
+  rootContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    padding: "40px 50px",
+    borderRadius: 5,
+    transition: "all ease-in-out 0.4s",
+    boxSizing: "border-box",
+    width: "100%",
+    "@media only screen and (min-width: 768px)": {
+      overflowY: "auto",
+    },
+  },
+  form: {
+    width: "auto",
+    position: "relative",
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 321px)": {
+      fontWeight: 500,
+      fontSize: "14px",
+      lineHeight: "16px",
+      color: "#241F3A",
+    },
+  },
+  buttonContainer: {
+    display: "flex",
+    justifyContent: "center",
+    width: "auto",
+    zIndex: 2,
+    marginTop: 40,
+  },
+  buttonCustomStyle: {
+    padding: "18px 21px",
+    width: "258px",
+    height: "55px",
+    fontSize: "16px",
+    lineHeight: "19px",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
+  },
+  rippleClass: {},
+  closeButton: {
+    height: 12,
+    width: 12,
+    position: "absolute",
+    top: 6,
+    right: 0,
+    padding: 16,
+    cursor: "pointer",
+  },
+  titleContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    textAlign: "center",
+    boxSizing: "border-box",
+    marginBottom: "7px",
+  },
+  title: {
+    fontWeight: 500,
+    height: 30,
+    width: "100%",
+    fontSize: 26,
+    color: "#232038",
+    "@media only screen and (max-width: 557px)": {
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
+  },
+  subTextContainer: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+    textAlign: "center",
+    boxSizing: "border-box",
+  },
+  subText: {
+    fontWeight: "normal",
+    fontSize: "16px",
+    lineHeight: "22px",
+
+    display: "flex",
+    alignItems: "center",
+    textAlign: "center",
+    color: "#241F3A",
+    opacity: 0.8,
+  },
+  modalContentStyles: {},
 });
