@@ -5,9 +5,6 @@ import Button from "../Form/Button";
 import Loader from "../Loader/Loader";
 import colors from "../../config/themes/colors";
 
-// TODO: temporary
-import claimCasePrompts from "./AuthorClaimCasePrompts";
-
 export default {
   enterEmail: (handleValidationAndSubmit, isSubmitting, onEmailChange) => (
     <div className={css(verifStyles.rootContainer)}>
@@ -84,8 +81,6 @@ export default {
       </div>
     </div>
   ),
-  acceptUser: claimCasePrompts.acceptRejectUser,
-  rejectUser: claimCasePrompts.acceptRejectUser,
 };
 const verifStyles = StyleSheet.create({
   rootContainer: {
