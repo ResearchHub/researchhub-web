@@ -707,9 +707,6 @@ class PaperPageCard extends React.Component {
             />
           </div>
         </div>
-        {/* <div className={css(styles.bottomContainer)}>
-          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
-        </div> */}
       </ReactPlaceholder>
     );
   }
@@ -719,25 +716,14 @@ const styles = StyleSheet.create({
   mainContainer: {
     display: "flex",
     width: "100%",
-
-    // height: "200px",
-    // paddingBottom: 20,
   },
   main: {
     display: "flex",
     flexDirection: "column",
     marginRight: 16,
     width: "100%",
-    // marginBottom: 20,
   },
-  previewStyles: {
-    // img tag
-    // width: "100%",
-    // height: "unset",
-    // height: "100%",
-    // width: "100%",
-    // maxHeight: "100%",
-  },
+  previewStyles: {},
   container: {
     width: "100%",
     display: "flex",
@@ -757,30 +743,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     flexDirection: "column",
-    // aspectRatio: "3 / 4",
-    // maxWidth: "10vh", // Width needs to be relative to box's height anyway, so use vh trick.
-    // maxWidth: "140px",
     maxWidth: "8em", // Set width relative to parent's height. Since em's are relative to height, this will work.
-    // maxWidth: "15%",
-    // maxWidth: "140px",
-    // maxWidth: "20%",
-
-    // alignItems: "center",
-    // alignItems: "stretch",
-    // justifyContent: "center",
-    // alignSelf: "stretch",
-
-    // minWidth: 140,
-
-    // overflowY: "hidden",
-    // height: "10px",
-    // alignSelf: "stretch",
-    // height: "100%",
-
-    // maxWidth: "20%",
-    // maxWidth: "140px",
-    // maxHeight: "100%",
-    // height: "inherit",
 
     "@media only screen and (max-width: 767px)": {
       display: "none",
