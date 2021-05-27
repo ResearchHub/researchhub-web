@@ -6,12 +6,12 @@ import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
 
 export type AuthorClaimDataProps = {
-  auth: any;
-  author: any;
+  auth?: any;
+  author?: any;
   firstPrompt: "enterEmail" | "success" | "rejectUser" | "acceptUser"; // TODO: temporary. move rejectUser + acceptUser into separate modal
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
-  user: any;
+  user?: any;
   // For accept/reject claim case
   requestorName?: string;
   profileImg?: string;
@@ -27,15 +27,12 @@ type FormError = {
 };
 
 function validateEmail(email: string): boolean {
-  // TODO: this regex does not seem to capture .edu emails
-
-  // const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  // const splitted = email.split(".");
-  // return (
-  //   re.test(String(email).toLowerCase()) &&
-  //   splitted[splitted.length - 1] === ".edu"
-  // );
-  return true;
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const splitted = email.split(".");
+  return (
+    re.test(String(email).toLowerCase()) &&
+    splitted[splitted.length - 1] === ".edu"
+  );
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -93,13 +90,8 @@ export default function AuthorClaimModal({
     setIsSpammer(value);
   };
 
-  const handleAccept = (e: SyntheticEvent) => {
-    // Accept Claim case
-  };
-
-  const handleReject = (e: SyntheticEvent) => {
-    // Reject Claim case
-    e && e.preventDefault();
+  const handleAcceptRejectClick = (e: SyntheticEvent) => {
+    handleAcceptReject && handleAcceptReject(e);
     closeModal(e);
   };
 
@@ -112,8 +104,21 @@ export default function AuthorClaimModal({
     const argsForPrompts = {
       enterEmail: [handleValidationAndSubmit, isSubmitting, onEmailChange],
       success: [closeModal],
-      acceptUser: ["accept", handleAccept, handleCheckboxSelect],
-      rejectUser: ["reject", handleReject, handleCheckboxSelect, isSpammer],
+      acceptUser: [
+        "accept",
+        handleAcceptRejectClick,
+        handleCheckboxSelect,
+        profileImg,
+        requestorName,
+      ],
+      rejectUser: [
+        "reject",
+        handleAcceptRejectClick,
+        handleCheckboxSelect,
+        profileImg,
+        requestorName,
+        isSpammer,
+      ],
     };
     const args = argsForPrompts[promptName];
     if (args) {
