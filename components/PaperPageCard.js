@@ -336,6 +336,19 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
+        active: !isSubmitter,
+        button: (
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
+        ),
+      },
+      {
         active: isModerator || isSubmitter,
         button: (
           <span
@@ -349,19 +362,6 @@ class PaperPageCard extends React.Component {
               icon={paper.is_removed ? icons.plus : icons.minus}
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
               iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: !isModerator && !isSubmitter,
-        button: (
-          <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
             />
           </span>
         ),
