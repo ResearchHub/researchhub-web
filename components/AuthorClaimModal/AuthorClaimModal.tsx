@@ -8,9 +8,14 @@ import { css, StyleSheet } from "aphrodite";
 export type AuthorClaimDataProps = {
   auth: any;
   author: any;
+  firstPrompt: "enterEmail" | "success" | "rejectUser" | "acceptUser"; // TODO: temporary. move rejectUser + acceptUser into separate modal
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
   user: any;
+  // For accept/reject claim case
+  requestorName?: string;
+  profileImg?: string;
+  handleAcceptReject?: Function;
 };
 
 type FormFields = {
@@ -46,12 +51,18 @@ function validateFormField(fieldID: string, value: any): boolean {
 export default function AuthorClaimModal({
   auth,
   author,
+  firstPrompt,
   isOpen,
   setIsOpen,
   user,
+  // For accept/reject claim
+  requestorName,
+  profileImg,
+  handleAcceptReject,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-  let [promptName, setPromptName] = useState<string>("enterEmail");
+  let [promptName, setPromptName] = useState<string>(firstPrompt);
   let [eduEmail, setEduEmail] = useState<string>("");
+  let [isSpammer, setIsSpammer] = useState<boolean>(false); // For reject claim case modal
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // TODO: display loader animation
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
 
@@ -78,6 +89,20 @@ export default function AuthorClaimModal({
     });
   };
 
+  const handleCheckboxSelect = (id, value) => {
+    setIsSpammer(value);
+  };
+
+  const handleAccept = (e: SyntheticEvent) => {
+    // Accept Claim case
+  };
+
+  const handleReject = (e: SyntheticEvent) => {
+    // Reject Claim case
+    e && e.preventDefault();
+    closeModal(e);
+  };
+
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setIsOpen(false);
@@ -87,6 +112,8 @@ export default function AuthorClaimModal({
     const argsForPrompts = {
       enterEmail: [handleValidationAndSubmit, isSubmitting, onEmailChange],
       success: [closeModal],
+      acceptUser: ["accept", handleAccept, handleCheckboxSelect],
+      rejectUser: ["reject", handleReject, handleCheckboxSelect, isSpammer],
     };
     const args = argsForPrompts[promptName];
     if (args) {
