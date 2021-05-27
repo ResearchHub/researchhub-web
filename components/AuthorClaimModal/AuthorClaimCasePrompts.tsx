@@ -11,7 +11,10 @@ export default {
     acceptReject: "accept" | "reject",
     handleContinue,
     handleSelect,
-    isSpammer
+    requestorFaceImg,
+    requestorName,
+    isSubmitting: boolean,
+    isSpammer = false
   ) => (
     <div className={css(acceptRejectStyles.rootContainer)}>
       <div className={css(acceptRejectStyles.titleContainer)}>
@@ -19,8 +22,18 @@ export default {
           {`Are you sure you want to ${acceptReject} the following user?`}
         </div>
       </div>
-      <div className={css(acceptRejectStyles.userMediaContianer)}></div>
-      {acceptReject && (
+      <div className={css(acceptRejectStyles.userMediaContianer)}>
+        <div className={css(acceptRejectStyles.requestorContainer)}>
+          <img
+            className={css(acceptRejectStyles.requestorFaceImg)}
+            src={requestorFaceImg}
+          />
+          <span className={css(acceptRejectStyles.requestorName)}>
+            {requestorName}
+          </span>
+        </div>
+      </div>
+      {acceptReject === "reject" && (
         <div className={css(acceptRejectStyles.checkboxContainer)}>
           <CheckBox
             active={isSpammer}
@@ -35,6 +48,7 @@ export default {
       <div className={css(acceptRejectStyles.buttonContainer)}>
         <Button
           label={`${acceptReject} User`}
+          disabled={isSubmitting}
           customButtonStyle={acceptRejectStyles.buttonCustomStyle}
           rippleClass={acceptRejectStyles.rippleClass}
           onClick={handleContinue}
@@ -46,6 +60,9 @@ export default {
 
 const acceptRejectStyles = StyleSheet.create({
   userMediaContianer: {
+    display: "flex",
+    justifyContent: "center",
+    flexDirection: "column",
     width: "525px",
     height: "110px",
     background: "#FAFAFA",
@@ -53,7 +70,24 @@ const acceptRejectStyles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: "4px",
 
-    marginTop: 32,
+    marginTop: 52,
+  },
+  requestorContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  requestorFaceImg: {
+    borderRadius: "50%",
+    height: 60,
+    marginRight: 20,
+    width: 60,
+  },
+  requestorName: {
+    fontWeight: 500,
+    fontSize: "18px",
+    lineHeight: "21px",
+    color: "#241F3A",
   },
   checkboxContainer: {
     display: "flex",
