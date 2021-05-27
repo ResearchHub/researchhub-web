@@ -284,7 +284,7 @@ class WithdrawalModal extends React.Component {
 
     if (amount < 5000) {
       showMessage({ show: false });
-      setMessage("Withdrawal amount must be at least 100 RSC");
+      setMessage("Withdrawal amount must be at least 5000 RSC");
       showMessage({ show: true, error: true });
       return;
     }
@@ -581,7 +581,7 @@ class WithdrawalModal extends React.Component {
           inputStyles={[styles.fullWidth]}
           placeholder={"Enter the withdrawal amount (min. 5000 RSC)"}
           required={true}
-          minValue={5000}
+          // minValue={5000}
           value={amount}
           onChange={this.handleAmountInput}
         />
