@@ -5,7 +5,6 @@ import {
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ValueOf } from "../../config/types/root_types";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
@@ -62,9 +61,7 @@ export default function AuthorClaimCaseCard({
         )
       )
     ) : (
-      <AuthorClaimCaseCardStatusLabel
-        label={AUTHOR_CLAIM_STATUS_LABEL[caseStatus]}
-      />
+      <AuthorClaimCaseCardStatusLabel status={caseStatus} />
     );
   }, [caseStatus]);
 
@@ -95,10 +92,12 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
             {providedEmail}
           </div>
-          <div className={css(styles.cardMainSection, styles.fontGrey)}>
+          <div className={css(styles.cardSmallerMainSection, styles.fontGrey)}>
             {createdDate.split("T")[0]}
           </div>
-          <div className={css(styles.cardMainSection)}>{actionLabels}</div>
+          <div className={css(styles.cardSmallerMainSection)}>
+            {actionLabels}
+          </div>
         </div>
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
@@ -123,14 +122,16 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     marginBottom: 16,
     minHeight: 72,
+    maxWidth: "90%",
   },
   borderBottom: {
     borderBottom: `1px solid ${colors.GREY(0.5)}`,
   },
   cardMain: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     padding: "0px 16px",
     width: "100%",
   },
@@ -139,11 +140,26 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 72,
     justifyContent: "flex-start",
+    overflow: "hidden",
     paddingRight: 16,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     width: "24%",
+  },
+  cardSmallerMainSection: {
+    alignItems: "center",
+    display: "flex",
+    height: 72,
+    justifyContent: "flex-start",
+    overflow: "hidden",
+    paddingRight: 16,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    width: "15%",
   },
   cardMainSectionWrap: {
     display: "flex",
+    justifyContent: "space-between",
     width: "100%",
   },
   cardSubmain: {
