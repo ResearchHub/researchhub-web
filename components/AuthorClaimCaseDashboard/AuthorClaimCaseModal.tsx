@@ -7,12 +7,12 @@ import { css, StyleSheet } from "aphrodite";
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 
 export type AuthorClaimCaseProps = {
+  caseID: any;
   firstPrompt: "approveUser" | "rejectUser";
   isOpen: boolean;
-  setIsOpen: (flag: boolean) => void;
-  requestorName: string;
   profileImg: string;
-  caseID: any;
+  requestorName: string;
+  setIsOpen: (flag: boolean) => void;
   setLastFetchTime: Function;
 };
 
@@ -20,14 +20,14 @@ export default function AuthorClaimModal({
   caseID,
   firstPrompt,
   isOpen,
-  setIsOpen,
-  requestorName,
   profileImg,
+  requestorName,
+  setIsOpen,
   setLastFetchTime,
 }: AuthorClaimCaseProps): ReactElement<typeof Modal> {
   let [promptName, setPromptName] = useState<string>(firstPrompt);
-  let [isSpammer, setIsSpammer] = useState<boolean>(false); // For reject claim case modal
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // TODO: display loader animation
+  let [isSpammer, setIsSpammer] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
 
   const handleCheckboxSelect = (id, value) => {
@@ -39,7 +39,7 @@ export default function AuthorClaimModal({
       event.stopPropagation(); /* prevents card collapse */
       setIsSubmitting(true);
       updateCaseStatus({
-        payload: { caseID, updateStatus: actionType },
+        payload: { caseID, updateStatus: actionType }, // Note: "Mark As Spammer" not implemented yet.
         onSuccess: () => {
           setIsSubmitting(false);
           setLastFetchTime(Date.now());
@@ -97,13 +97,6 @@ export default function AuthorClaimModal({
 }
 
 const customModalStyle = StyleSheet.create({
-  modalStyle: {
-    maxHeight: "95vh",
-    width: "625px",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-  },
   closeButton: {
     height: 12,
     width: 12,
@@ -112,5 +105,12 @@ const customModalStyle = StyleSheet.create({
     right: 0,
     padding: 16,
     cursor: "pointer",
+  },
+  modalStyle: {
+    maxHeight: "95vh",
+    width: "625px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
 });
