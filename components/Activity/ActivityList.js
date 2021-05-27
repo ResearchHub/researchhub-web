@@ -136,10 +136,6 @@ const ActivityList = (props) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 20,
-    position: "sticky",
-    top: 100,
-    overflowY: "scroll",
-    maxHeight: "100vh",
     borderRadius: 4,
   },
   renderList: {
@@ -147,7 +143,6 @@ const styles = StyleSheet.create({
       "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
   },
   title: {
-    // position: "sticky",
     top: 0,
     padding: "15px 20px 10px 20px",
     zIndex: 2,
