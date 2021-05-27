@@ -2,16 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
-
-// Component
 import ColumnContainer from "./ColumnContainer";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
-
-// Redux
 import { ModalActions } from "~/redux/modals";
-
-// Config
 import { fetchPaperFigures } from "~/config/fetch";
+import { absoluteUrl } from "../../../config/utils";
 
 const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
   const dispatch = useDispatch();
@@ -45,6 +40,7 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
         columnOverrideStyles,
         fetching && styles.fetching,
       ]}
+      onClick={openPaperPDFModal}
     >
       <ReactPlaceholder
         ready={!fetching}
@@ -55,7 +51,6 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
       >
         <img
           src={figureUrls[0]}
-          onClick={openPaperPDFModal}
           className={css(styles.preview, previewStyles)}
           property="image"
         />
@@ -71,6 +66,12 @@ const styles = StyleSheet.create({
     width: "unset",
     marginLeft: "auto",
 
+    display: "flex",
+    flex: "1 1 0px",
+    overflowY: "hidden",
+    overflowX: "hidden",
+    justifyContent: "center",
+
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -82,8 +83,8 @@ const styles = StyleSheet.create({
     display: "none",
   },
   preview: {
-    width: 80,
-    height: 90,
+    width: "100%",
+    height: "100%",
     objectFit: "contain",
   },
   buttonContainer: {
