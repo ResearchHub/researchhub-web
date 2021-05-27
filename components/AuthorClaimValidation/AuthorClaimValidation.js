@@ -42,7 +42,7 @@ export default function AuthorClaimValidation() {
 
 const styles = StyleSheet.create({
   authorClaimValidation: {
-    height: "100%",
+    height: "100vh",
     padding: 16,
     width: "100%",
   },
