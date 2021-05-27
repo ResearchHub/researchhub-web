@@ -233,7 +233,7 @@ class PaperPageCard extends React.Component {
         </div>
         <div className={css(styles.row, styles.lastRow)}>
           <PaperMetadata
-            label={"Paper Title"}
+            label="Paper Title"
             active={
               paper.paper_title &&
               removeLineBreaksInStr(paper.paper_title) !==
