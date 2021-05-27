@@ -12,6 +12,9 @@ export type Requestor = {
 };
 
 export type TargetAuthor = {
+  description: string;
+  education: any;
+  headline: any;
   id: ID;
   name: string;
 };
@@ -59,8 +62,11 @@ export function getCases({
             updated_date,
           } = caseData;
           const {
-            id: targetAuthorID,
+            description: tAuthorDescription,
+            education: tAuthorEducation,
             first_name: tAuthorFirstName,
+            headline: tAuthorHeadline,
+            id: tAuthorID,
             last_name: tAuthorLastName,
           } = target_author || {};
           const {
@@ -80,7 +86,10 @@ export function getCases({
               updatedDate: updated_date,
             },
             targetAuthor: {
-              id: targetAuthorID,
+              description: tAuthorDescription,
+              education: tAuthorEducation,
+              headline: tAuthorHeadline,
+              id: tAuthorID,
               name: `${tAuthorFirstName} ${tAuthorLastName}`,
             },
             requestor: {
