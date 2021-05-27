@@ -4,9 +4,9 @@ import {
 } from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
 import { ValueOf } from "../../config/types/root_types";
-import React, { ReactElement } from "react";
-import icons from "../../config/themes/icons";
 import colors from "../../config/themes/colors";
+import icons from "../../config/themes/icons";
+import React, { ReactElement } from "react";
 
 type Props = {
   status: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
@@ -54,6 +54,9 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     width: 144,
   },
+  green: {
+    color: colors.GREEN(1),
+  },
   icon: {
     width: 18,
     marginRight: 8,
@@ -65,9 +68,6 @@ const styles = StyleSheet.create({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     fontSize: 16,
-  },
-  green: {
-    color: colors.GREEN(1),
   },
   red: {
     color: colors.RED(1),
