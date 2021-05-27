@@ -58,9 +58,14 @@ export default function AuthorClaimCaseCard({
         ): ReactElement<typeof AuthorClaimCaseCardActionButton> => (
           <AuthorClaimCaseCardActionButton
             actionType={actionType}
-            isDisabled={isSubmitting}
+            // isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => {
+              console.log(actionType);
+              actionType === "APPROVED"
+                ? setIsAcceptModalOpen(true)
+                : setIsRejectModalOpen(true);
+            }}
           />
         )
       )
@@ -79,7 +84,7 @@ export default function AuthorClaimCaseCard({
       <AuthorClaimModal
         requestorName={requestorName}
         profileImg={requestorFaceImg}
-        handleAcceptReject={handleAcceptReject}
+        handleAcceptReject={handleAcceptReject("APPROVED")}
         firstPrompt="acceptUser"
         isOpen={isAcceptModalOpen}
         setIsOpen={setIsAcceptModalOpen}
@@ -87,7 +92,7 @@ export default function AuthorClaimCaseCard({
       <AuthorClaimModal
         requestorName={requestorName}
         profileImg={requestorFaceImg}
-        handleAcceptReject={handleAcceptReject}
+        handleAcceptReject={handleAcceptReject("DENIED")}
         firstPrompt="rejectUser"
         isOpen={isRejectModalOpen}
         setIsOpen={setIsRejectModalOpen}
