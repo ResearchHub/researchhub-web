@@ -370,7 +370,10 @@ class PaperPageCard extends React.Component {
         active: true,
         button: (
           <span data-tip={"Support Paper"}>
-            <PaperPromotionButton paper={paper} style={styles.actionIcon} />
+            <PaperPromotionButton
+              paper={paper}
+              customStyle={styles.actionIcon}
+            />
             {/* <FlagButton
               paperId={paper.id}
               flagged={flagged}

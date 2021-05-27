@@ -11,7 +11,11 @@ import numeral from "numeral";
 import colors from "~/config/themes/colors";
 import { PaperPromotionIcon } from "~/config/themes/icons";
 
-const PaperPromotionButton = ({ paper, openPaperTransactionModal }) => {
+const PaperPromotionButton = ({
+  customStyle,
+  paper,
+  openPaperTransactionModal,
+}) => {
   const [hover, setHover] = useState(false);
 
   const { promoted, score } = paper;
@@ -35,7 +39,7 @@ const PaperPromotionButton = ({ paper, openPaperTransactionModal }) => {
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        <span className={css(styles.icon)}>
+        <span className={css(styles.icon, customStyle)}>
           <PaperPromotionIcon
             color={hover && colors.ORANGE()}
             emptyState={!getCount()}
@@ -58,7 +62,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    paddingRight: 17,
+    // paddingRight: 17,
     ":hover .count": {
       color: colors.BLACK(),
     },
