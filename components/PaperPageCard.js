@@ -336,6 +336,19 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
+        active: !isSubmitter,
+        button: (
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
+        ),
+      },
+      {
         active: isModerator || isSubmitter,
         button: (
           <span
@@ -349,36 +362,6 @@ class PaperPageCard extends React.Component {
               icon={paper.is_removed ? icons.plus : icons.minus}
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
               iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <span data-tip={"Support Paper"}>
-            {/* <PaperPromotionButton
-              paper={paper}
-              customStyle={styles.actionIcon}
-            /> */}
-            {/* <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
-            /> */}
-          </span>
-        ),
-      },
-      {
-        active: !isModerator && !isSubmitter,
-        button: (
-          <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
             />
           </span>
         ),
@@ -636,12 +619,8 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                {/* <PaperDiscussionButton
-                  paper={paper}
-                  discussionCount={discussionCount}
-                />
                 <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} /> */}
+                <PaperPromotionButton paper={paper} />
               </div>
               <div
                 className={css(
