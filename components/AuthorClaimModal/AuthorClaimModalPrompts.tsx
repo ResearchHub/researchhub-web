@@ -1,9 +1,9 @@
-import React from "react";
+import Button from "../Form/Button";
+import colors from "../../config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
 import FormInput from "../Form/FormInput";
-import Button from "../Form/Button";
 import Loader from "../Loader/Loader";
-import colors from "../../config/themes/colors";
+import React from "react";
 
 export default {
   enterEmail: (handleValidationAndSubmit, isSubmitting, onEmailChange) => (
