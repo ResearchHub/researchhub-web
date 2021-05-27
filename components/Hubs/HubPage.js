@@ -351,7 +351,11 @@ class HubPage extends React.Component {
     if (page) {
       as += `?page=${page}`;
     }
-    Router.push(href, as, { shallow: true });
+
+    const { filterBy } = this.state;
+    if (filterBy.href) {
+      Router.push(href, as, { shallow: true });
+    }
   };
 
   formatLink = () => {
@@ -641,6 +645,10 @@ class HubPage extends React.Component {
           href: "pulled-papers",
           label: "Pulled Papers",
           disableScope: true,
+        },
+        {
+          value: "user-uploaded",
+          label: "User Uploaded",
         }
       );
     }
