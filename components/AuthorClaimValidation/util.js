@@ -9,39 +9,50 @@ export const getPageBody = (validationState) => {
     case VALIDATION_STATE.DENIED_TOO_MANY_ATTEMPS:
       return (
         <div className={css(styles.pageBody)}>
-          <span>
+          <div className={css(styles.textRow)}>
             {
-              "Looks like this request was invalidated due to too many attempts. Please make a new request"
+              "Looks like this request was invalidated due to too many attempts."
             }
-          </span>
+          </div>
+          <div className={css(styles.textRow)}>
+            {"Please make a new request"}
+          </div>
         </div>
       );
     case VALIDATION_STATE.DENIED_WRONG_USER:
       return (
         <div className={css(styles.pageBody)}>
-          <span>
+          <div className={css(styles.textRow)}>
+            {"Looks like you're logged in as a different account."}
+          </div>
+          <div className={css(styles.textRow)}>
             {
-              "Looks like you're logged in as a different account. Please make sure you are logged in with ResearchHub account that you've made this request with."
+              "Please make sure you are logged in with ResearchHub account that you've made this request with."
             }
-          </span>
+          </div>
         </div>
       );
     case VALIDATION_STATE.REQUEST_NOT_FOUND:
       return (
         <div className={css(styles.pageBody)}>
-          <span>
+          <div className={css(styles.textRow)}>
+            {"We are unable to find this request."}
+          </div>
+          <div className={css(styles.textRow)}>
             {
-              "We are unable to find this request. Please make sure to only use link that's provided by the email that ResearchHub sent you"
+              "Please make sure to only use links that are provided by ResearchHub."
             }
-          </span>
+          </div>
         </div>
       );
     case VALIDATION_STATE.VALIDATED:
       return (
         <div className={css(styles.pageBody)}>
-          <div>{"You have successfully authenciated your request! "}</div>
-          <div>
-            {"ResearchHub team will now review your author claim request"}
+          <div className={css(styles.textRow)}>
+            {"You have successfully authenciated your request! "}
+          </div>
+          <div className={css(styles.textRow)}>
+            {"ResearchHub team will now review your author claim request."}
           </div>
         </div>
       );
@@ -49,10 +60,14 @@ export const getPageBody = (validationState) => {
     default:
       return (
         <div className={css(styles.pageBody)}>
-          <span className={css(styles.marginRight8)}>
-            <Loader color={colors.BLUE(1)} loading size={16} />
-          </span>
-          <span>{" Please be patient while we authenticate your request"}</span>
+          <div className={css(styles.textRow)}>
+            <span className={css(styles.marginRight8)}>
+              <Loader color={colors.BLUE(1)} loading size={16} />
+            </span>
+            <span>
+              {" Please be patient while we authenticate your request."}
+            </span>
+          </div>
         </div>
       );
   }
@@ -63,10 +78,17 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   pageBody: {
+    alignItems: "center",
     display: "flex",
+    flexDirection: "column",
     height: "100%",
-    justifyContent: "center",
+    paddingTop: 24,
     width: "100%",
-    fontSize: 16,
+  },
+  textRow: {
+    display: "flex",
+    fontSize: 20,
+    height: 32,
+    marginBottom: 4,
   },
 });
