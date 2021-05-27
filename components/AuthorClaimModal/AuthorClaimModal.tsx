@@ -1,11 +1,9 @@
+import BaseModal from "../Modals/BaseModal";
+import prompts from "./AuthorClaimModalPrompts";
+import Modal from "react-modal";
+import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
-import Button from "../Form/Button";
-import colors from "../../config/themes/colors";
-import FormInput from "../Form/FormInput";
-import Loader from "../Loader/Loader";
-import Modal from "react-modal";
-import React, { ReactElement, SyntheticEvent, useState } from "react";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -24,12 +22,15 @@ type FormError = {
 };
 
 function validateEmail(email: string): boolean {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const splitted = email.split(".");
-  return (
-    re.test(String(email).toLowerCase()) &&
-    splitted[splitted.length - 1] === ".edu"
-  );
+  // TODO: this regex does not seem to capture .edu emails
+
+  // const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  // const splitted = email.split(".");
+  // return (
+  //   re.test(String(email).toLowerCase()) &&
+  //   splitted[splitted.length - 1] === ".edu"
+  // );
+  return true;
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -49,198 +50,89 @@ export default function AuthorClaimModal({
   setIsOpen,
   user,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-  const [formErrors, setFormErrors] = useState<FormError>({
-    eduEmail: false,
-  });
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    eduEmail: null,
-  });
+  let [promptName, setPromptName] = useState<string>("enterEmail");
+  let [eduEmail, setEduEmail] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false); // TODO: display loader animation
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
 
-  const handleOnChangeFields = (fieldID: string, value: string): void => {
-    setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
-    setFormErrors({
-      ...formErrors,
-      [fieldID]: validateFormField(fieldID, value),
-    });
+  const onEmailChange = (fieldID: string, value: string): void => {
+    setEduEmail(value);
+    // TODO: hide or set/display form errors
   };
 
   const handleValidationAndSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
-    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
-      setShouldDisplayError(true);
+    // TODO: hide or set/display form errors
+    setIsSubmitting(true);
+    createAuthorClaimCase({
+      eduEmail,
+      onError: (): void => {
+        setIsSubmitting(false);
+      },
+      onSuccess: (): void => {
+        setIsSubmitting(false);
+        setPromptName("success");
+      },
+      targetAuthorID: author.id,
+      userID: auth.user.id,
+    });
+  };
+
+  const closeModal = (e: SyntheticEvent): void => {
+    e && e.preventDefault();
+    setIsOpen(false);
+  };
+
+  const getPrompt = (promptName) => {
+    const argsForPrompts = {
+      enterEmail: [handleValidationAndSubmit, isSubmitting, onEmailChange],
+      success: [closeModal],
+    };
+    const args = argsForPrompts[promptName];
+    if (args) {
+      return prompts[promptName](...args);
     } else {
-      setShouldDisplayError(false);
-      setIsSubmitting(true);
-      createAuthorClaimCase({
-        eduEmail: mutableFormFields.eduEmail,
-        onError: (): void => {
-          setIsSubmitting(false);
-        },
-        onSuccess: (): void => {
-          setIsSubmitting(false);
-          setIsOpen(false);
-        },
-        targetAuthorID: author.id,
-        userID: auth.user.id,
-      });
+      return null;
     }
   };
 
   return (
-    <Modal
+    <BaseModal
       children={
-        <div className={css(modalBodyStyles.modalBody)}>
-          <form
-            encType="multipart/form-data"
-            className={css(modalBodyStyles.form)}
-            onSubmit={handleValidationAndSubmit}
-          >
-            <FormInput
-              containerStyle={modalBodyStyles.containerStyle}
-              disabled
-              id="user_name"
-              label="Your name"
-              labelStyle={modalBodyStyles.labelStyle}
-              placeholder="your name"
-              required
-              value={`${user.first_name} ${user.last_name}`}
-            />
-            <FormInput
-              containerStyle={modalBodyStyles.containerStyle}
-              disabled
-              id="author_name"
-              label="Claiming author's name"
-              labelStyle={modalBodyStyles.labelStyle}
-              placeholder="academic email address"
-              required
-              value={`${author.first_name} ${author.last_name}`}
-            />
-            <FormInput
-              containerStyle={modalBodyStyles.containerStyle}
-              disable={isSubmitting}
-              id="eduEmail"
-              label="Your .edu email address"
-              labelStyle={modalBodyStyles.labelStyle}
-              inputStyle={shouldDisplayError && modalBodyStyles.error}
-              onChange={handleOnChangeFields}
-              placeholder="academic email address"
-              required
-            />
-            <div>
-              <Button
-                customButtonStyle={modalBodyStyles.buttonStyle}
-                disable={isSubmitting}
-                label={
-                  !isSubmitting ? (
-                    "Request"
-                  ) : (
-                    <Loader
-                      size={8}
-                      loading
-                      containerStyle={modalBodyStyles.loaderStyle}
-                      color="#fff"
-                    />
-                  )
-                }
-                type="submit"
-              />
-              <Button
-                customButtonStyle={modalBodyStyles.cancelButtonStyle}
-                disabled={isSubmitting}
-                label="Cancel"
-                onClick={(e: SyntheticEvent): void => {
-                  e.preventDefault();
-                  setIsOpen(false);
-                }}
-              />
-            </div>
-          </form>
-        </div>
+        <Fragment>
+          <img
+            src="/static/icons/close.png"
+            className={css(customModalStyle.closeButton)}
+            onClick={closeModal}
+            draggable={false}
+            alt="Close Button"
+          />
+          {getPrompt(promptName)}
+        </Fragment>
       }
+      closeModal={closeModal}
       isOpen={isOpen}
-      style={customModalStyle}
+      modalStyle={customModalStyle.modalStyle}
+      removeDefault={true}
     />
   );
 }
 
-const modalBodyStyles = StyleSheet.create({
-  buttonStyle: {
-    height: 45,
-    width: 140,
-  },
-  cancelButtonStyle: {
-    backgroundColor: colors.RED(1),
-    height: 45,
-    marginLeft: 16,
-    width: 140,
-    ":hover": {
-      backgroundColor: colors.RED(1),
+const customModalStyle = StyleSheet.create({
+  modalStyle: {
+    maxHeight: "95vh",
+    width: "625px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
     },
   },
-  containerStyle: {
-    "@media only screen and (max-width: 665px)": {
-      width: 380,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
-      marginBottom: 5,
-    },
-  },
-  error: {
-    border: `1px solid ${colors.RED(1)}`,
-  },
-  form: {
-    alignItems: "center",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-  },
-  labelStyle: {
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 13,
-    },
-  },
-  loaderStyle: {
-    display: "unset",
-  },
-  modalBody: {
-    alignItems: "center",
-    backgroundColor: "#fff",
-    border: `1px solid ${colors.GREY(1)}`,
-    borderRadius: 4,
-    display: "flex",
-    justifyContent: "center",
-    width: 640,
-    padding: "16px 0",
-    "@media only screen and (max-width: 665px)": {
-      width: 420,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 360,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 320,
-    },
+  closeButton: {
+    height: 12,
+    width: 12,
+    position: "absolute",
+    top: 6,
+    right: 0,
+    padding: 16,
+    cursor: "pointer",
   },
 });
-
-const customModalStyle = {
-  content: {
-    alignItems: "center",
-    backgroundColor: "transparent",
-    display: "flex",
-    justifyContent: "center",
-    left: 0,
-    maxHeight: "80%",
-    overflow: "auto",
-    width: "100%",
-  },
-  overlay: {
-    zIndex: 2,
-  },
-};
