@@ -1,65 +1,28 @@
-import BaseModal from "../Modals/BaseModal";
-import { css, StyleSheet } from "aphrodite";
-import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
-import Modal from "react-modal";
 import AuthorClaimPromptEmail from "./AuthorClaimPromptEmail";
 import AuthorClaimPromptSuccess from "./AuthorClaimPromptSuccess";
+import BaseModal from "../Modals/BaseModal";
+import Modal from "react-modal";
 import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { css, StyleSheet } from "aphrodite";
 
 export type AuthorClaimDataProps = {
   auth: any;
   author: any;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
-  user: any;
 };
-
-function validateEmail(email: string): boolean {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const splitted = email.split(".");
-  return (
-    re.test(String(email).toLowerCase()) &&
-    splitted[splitted.length - 1] === ".edu"
-  );
-}
 
 export default function AuthorClaimModal({
   auth,
   author,
   isOpen,
   setIsOpen,
-  user,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-  let [promptName, setPromptName] = useState<string>("enterEmail");
-  let [eduEmail, setEduEmail] = useState<string>("");
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-
-  const onEmailChange = (fieldID: string, value: string): void => {
-    setEduEmail(value);
-    // TODO: briansantoso - hide or set/display form errors
-  };
-
-  const handleValidationAndSubmit = (e: SyntheticEvent): void => {
-    e.preventDefault();
-    // TODO:  briansantoso - hide or set/display form errors
-    setIsSubmitting(true);
-    createAuthorClaimCase({
-      eduEmail,
-      onError: (): void => {
-        setIsSubmitting(false);
-      },
-      onSuccess: (): void => {
-        setIsSubmitting(false);
-        setPromptName("success");
-      },
-      targetAuthorID: author.id,
-      userID: auth.user.id,
-    });
-  };
+  const [openModalType, setOpenModalType] = useState<string>("enterEmail");
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
+    setOpenModalType("enterEmail");
     setIsOpen(false);
   };
 
@@ -68,9 +31,9 @@ export default function AuthorClaimModal({
       case "enterEmail":
         return (
           <AuthorClaimPromptEmail
-            handleValidationAndSubmit={handleValidationAndSubmit}
-            isSubmitting={isSubmitting}
-            onEmailChange={onEmailChange}
+            onSuccess={() => setOpenModalType("success")}
+            targetAuthorID={author.id}
+            userID={auth.user.id}
           />
         );
       case "success":
@@ -80,18 +43,19 @@ export default function AuthorClaimModal({
     }
   };
 
+  const modalBody = getPrompt(openModalType);
   return (
     <BaseModal
       children={
         <Fragment>
           <img
-            src="/static/icons/close.png"
-            className={css(customModalStyle.closeButton)}
-            onClick={closeModal}
-            draggable={false}
             alt="Close Button"
+            className={css(customModalStyle.closeButton)}
+            draggable={false}
+            onClick={closeModal}
+            src="/static/icons/close.png"
           />
-          {getPrompt(promptName)}
+          {modalBody}
         </Fragment>
       }
       closeModal={closeModal}

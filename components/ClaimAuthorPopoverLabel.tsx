@@ -32,7 +32,6 @@ export default function ClaimAuthorPopoverLabel({
         author={author}
         isOpen={isClaimModalOpen}
         setIsOpen={setIsClaimModalOpen}
-        user={user}
       />
       <div className={css(styles.claimAuthorPopoverLabel)}>
         <span className={css(styles.popoverLabelText)}>

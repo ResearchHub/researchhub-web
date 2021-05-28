@@ -1,5 +1,4 @@
 import Button from "../Form/Button";
-import colors from "../../config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
 import React from "react";
 
@@ -91,19 +90,17 @@ const successStyles = StyleSheet.create({
     marginBottom: "7px",
   },
   title: {
-    fontWeight: "500",
+    fontWeight: 500,
     height: 30,
     width: "100%",
     fontSize: 26,
     color: "#232038",
     "@media only screen and (max-width: 557px)": {
       fontSize: 24,
+      width: 380,
     },
     "@media only screen and (max-width: 725px)": {
       width: 450,
-    },
-    "@media only screen and (max-width: 557px)": {
-      width: 380,
     },
     "@media only screen and (max-width: 415px)": {
       width: 300,
