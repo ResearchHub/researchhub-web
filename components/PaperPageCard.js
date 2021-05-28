@@ -620,7 +620,7 @@ class PaperPageCard extends React.Component {
                   small={true}
                 />
                 <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} />
+                <PaperPromotionButton paper={paper} /> */}
               </div>
               <div
                 className={css(
