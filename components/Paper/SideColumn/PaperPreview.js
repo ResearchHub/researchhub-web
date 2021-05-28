@@ -8,7 +8,12 @@ import { ModalActions } from "~/redux/modals";
 import { fetchPaperFigures } from "~/config/fetch";
 import { absoluteUrl } from "../../../config/utils";
 
-const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
+const PaperPreview = ({
+  paper,
+  paperId,
+  previewStyles,
+  columnOverrideStyles,
+}) => {
   const dispatch = useDispatch();
   const [figureUrls, setFigureUrls] = useState([]);
   const [fetching, setFetching] = useState(true);
@@ -30,7 +35,14 @@ const PaperPreview = ({ paperId, previewStyles, columnOverrideStyles }) => {
 
   const openPaperPDFModal = (e) => {
     e && e.stopPropagation();
-    return dispatch(ModalActions.openPaperPDFModal(true));
+    const { file, pdf_url } = paper;
+
+    /**
+     * We only open the pdf modal if we have a valid url
+     */
+    if (file || pdf_url) {
+      return dispatch(ModalActions.openPaperPDFModal(true));
+    }
   };
 
   return (
