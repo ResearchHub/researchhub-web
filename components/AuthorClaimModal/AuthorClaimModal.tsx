@@ -2,7 +2,8 @@ import BaseModal from "../Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
 import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import Modal from "react-modal";
-import prompts from "./AuthorClaimModalPrompts";
+import AuthorClaimPromptEmail from "./AuthorClaimPromptEmail";
+import AuthorClaimPromptSuccess from "./AuthorClaimPromptSuccess";
 import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 
 export type AuthorClaimDataProps = {
@@ -38,12 +39,12 @@ export default function AuthorClaimModal({
 
   const onEmailChange = (fieldID: string, value: string): void => {
     setEduEmail(value);
-    // TODO: hide or set/display form errors
+    // TODO: briansantoso - hide or set/display form errors
   };
 
   const handleValidationAndSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
-    // TODO: hide or set/display form errors
+    // TODO:  briansantoso - hide or set/display form errors
     setIsSubmitting(true);
     createAuthorClaimCase({
       eduEmail,
@@ -65,15 +66,19 @@ export default function AuthorClaimModal({
   };
 
   const getPrompt = (promptName) => {
-    const argsForPrompts = {
-      enterEmail: [handleValidationAndSubmit, isSubmitting, onEmailChange],
-      success: [closeModal],
-    };
-    const args = argsForPrompts[promptName];
-    if (args) {
-      return prompts[promptName](...args);
-    } else {
-      return null;
+    switch (promptName) {
+      case "enterEmail":
+        return (
+          <AuthorClaimPromptEmail
+            handleValidationAndSubmit={handleValidationAndSubmit}
+            isSubmitting={isSubmitting}
+            onEmailChange={onEmailChange}
+          />
+        );
+      case "success":
+        return <AuthorClaimPromptSuccess handleContinue={closeModal} />;
+      default:
+        return null;
     }
   };
 
