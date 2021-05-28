@@ -1,4 +1,4 @@
-import { AUTHOR_USER_STATUS } from "./AuthorUserConstants";
+import { AUTHOR_USER_STATUS } from "../../../../components/AuthorClaimCaseDashboard/constants/AuthorClaimStatus";
 import { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";

@@ -27,7 +27,6 @@ export default function AuthorClaimModal({
   setLastFetchTime,
   setOpenModalType,
 }: AuthorClaimCaseProps): ReactElement<typeof Modal> {
-  let [isSpammer, setIsSpammer] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const createAcceptReject = (actionType) => {
@@ -50,8 +49,9 @@ export default function AuthorClaimModal({
     setOpenModalType("");
   };
 
-  const verbCapital = AUTHOR_CLAIM_ACTION_LABEL[openModalType];
-  const verb = verbCapital ? verbCapital.toLowerCase() : "";
+  const verb = openModalType
+    ? AUTHOR_CLAIM_ACTION_LABEL[openModalType].toLowerCase()
+    : "";
 
   return (
     <BaseModal
@@ -151,26 +151,6 @@ const acceptRejectStyles = StyleSheet.create({
     lineHeight: "21px",
     color: "#241F3A",
   },
-  checkboxContainer: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "flex-start",
-
-    marginTop: 22,
-  },
-  checkboxLabel: {
-    fontWeight: "normal",
-    fontSize: "16px",
-    lineHeight: "22px",
-
-    display: "flex",
-    alignItems: "center",
-    textAlign: "center",
-    color: "#241F3A",
-    opacity: 0.8,
-
-    marginLeft: 16,
-  },
   rootContainer: {
     display: "flex",
     flexDirection: "column",
@@ -257,25 +237,6 @@ const acceptRejectStyles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       width: 280,
     },
-  },
-  subTextContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-    textAlign: "center",
-    boxSizing: "border-box",
-  },
-  subText: {
-    fontWeight: "normal",
-    fontSize: "16px",
-    lineHeight: "22px",
-
-    display: "flex",
-    alignItems: "center",
-    textAlign: "center",
-    color: "#241F3A",
-    opacity: 0.8,
   },
   modalContentStyles: {},
 });

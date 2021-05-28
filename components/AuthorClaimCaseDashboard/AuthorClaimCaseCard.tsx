@@ -72,14 +72,6 @@ export default function AuthorClaimCaseCard({
         setOpenModalType={setOpenModalType}
         setLastFetchTime={setLastFetchTime}
       />
-      <AuthorClaimCaseModal
-        caseID={caseID}
-        requestorName={requestorName}
-        profileImg={requestorFaceImg}
-        openModalType={openModalType}
-        setOpenModalType={setOpenModalType}
-        setLastFetchTime={setLastFetchTime}
-      />
       <div className={css(styles.chevronWrap)}>
         {isCollapsed ? icons.chevronDown : icons.chevronUp}
       </div>
