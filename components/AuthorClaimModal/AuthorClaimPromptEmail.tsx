@@ -1,21 +1,90 @@
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
+import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
 import { css, StyleSheet } from "aphrodite";
 import FormInput from "../Form/FormInput";
+import { ID } from "../../config/types/root_types";
 import Loader from "../Loader/Loader";
-import React from "react";
+import React, { SyntheticEvent, useState } from "react";
 
 export type AuthorClaimPromptEmailProps = {
-  handleValidationAndSubmit: Function;
-  isSubmitting: boolean;
-  onEmailChange: Function;
+  onSuccess: Function;
+  targetAuthorID: ID;
+  userID: ID;
 };
 
+type FormFields = {
+  eduEmail: null | string;
+};
+
+type FormError = {
+  eduEmail: boolean;
+};
+
+function validateEmail(email: string): boolean {
+  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const splitted = email.split(".");
+  return (
+    re.test(String(email).toLowerCase()) &&
+    splitted[splitted.length - 1] === "edu"
+  );
+}
+
+function validateFormField(fieldID: string, value: any): boolean {
+  let result: boolean = true;
+  switch (fieldID) {
+    case "eduEmail":
+      return typeof value === "string" && validateEmail(value);
+    default:
+      return result;
+  }
+}
+
 export default function AuthorClaimPromptEmail({
-  handleValidationAndSubmit,
-  isSubmitting,
-  onEmailChange,
+  onSuccess,
+  targetAuthorID,
+  userID,
 }: AuthorClaimPromptEmailProps) {
+  const [formErrors, setFormErrors] = useState<FormError>({
+    eduEmail: false,
+  });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
+    eduEmail: null,
+  });
+  const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
+
+  const handleOnChangeFields = (fieldID: string, value: string): void => {
+    setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
+    setFormErrors({
+      ...formErrors,
+      [fieldID]: validateFormField(fieldID, value),
+    });
+    setShouldDisplayError(false);
+  };
+
+  const handleValidationAndSubmit = (e: SyntheticEvent): void => {
+    e.preventDefault();
+    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
+      setShouldDisplayError(true);
+    } else {
+      setShouldDisplayError(false);
+      setIsSubmitting(true);
+      createAuthorClaimCase({
+        eduEmail: mutableFormFields.eduEmail,
+        onError: (): void => {
+          setIsSubmitting(false);
+        },
+        onSuccess: (): void => {
+          setIsSubmitting(false);
+          onSuccess();
+        },
+        targetAuthorID,
+        userID,
+      });
+    }
+  };
+
   return (
     <div className={css(verifStyles.rootContainer)}>
       <div className={css(verifStyles.titleContainer)}>
@@ -37,8 +106,8 @@ export default function AuthorClaimPromptEmail({
           id="eduEmail"
           label="Email"
           labelStyle={verifStyles.labelStyle}
-          // inputStyle={shouldDisplayError && modalBodyStyles.error}
-          onChange={onEmailChange}
+          inputStyle={shouldDisplayError && modalBodyStyles.error}
+          onChange={handleOnChangeFields}
           placeholder="Academic .edu email address"
           required
         />
@@ -132,19 +201,17 @@ const verifStyles = StyleSheet.create({
     marginBottom: "7px",
   },
   title: {
-    fontWeight: "500",
+    fontWeight: 500,
     height: 30,
     width: "100%",
     fontSize: 26,
     color: "#232038",
     "@media only screen and (max-width: 557px)": {
       fontSize: 24,
+      width: 380,
     },
     "@media only screen and (max-width: 725px)": {
       width: 450,
-    },
-    "@media only screen and (max-width: 557px)": {
-      width: 380,
     },
     "@media only screen and (max-width: 415px)": {
       width: 300,
@@ -191,5 +258,8 @@ const modalBodyStyles = StyleSheet.create({
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
+  },
+  loaderStyle: {
+    display: "unset",
   },
 });
