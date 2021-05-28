@@ -9,7 +9,6 @@ import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 export type AuthorClaimDataProps = {
   auth: any;
   author: any;
-  firstPrompt: "enterEmail" | "success";
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
   user: any;
@@ -27,12 +26,11 @@ function validateEmail(email: string): boolean {
 export default function AuthorClaimModal({
   auth,
   author,
-  firstPrompt,
   isOpen,
   setIsOpen,
   user,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> {
-  let [promptName, setPromptName] = useState<string>(firstPrompt);
+  let [promptName, setPromptName] = useState<string>("enterEmail");
   let [eduEmail, setEduEmail] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
