@@ -26,8 +26,9 @@ export default function AuthorClaimCaseCard({
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [isAcceptModalOpen, setIsAcceptModalOpen] = useState<boolean>(false);
-  const [isRejectModalOpen, setIsRejectModalOpen] = useState<boolean>(false);
+  const [openModalType, setOpenModalType] = useState<
+    ValueOf<typeof AUTHOR_CLAIM_STATUS>
+  >("");
   const { caseData, requestor, targetAuthor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
@@ -47,12 +48,7 @@ export default function AuthorClaimCaseCard({
             actionType={actionType}
             isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
-            onClick={() => {
-              console.log(actionType);
-              actionType === AUTHOR_CLAIM_STATUS.APPROVED
-                ? setIsAcceptModalOpen(true)
-                : setIsRejectModalOpen(true);
-            }}
+            onClick={() => setOpenModalType(actionType)}
           />
         )
       )
@@ -70,20 +66,18 @@ export default function AuthorClaimCaseCard({
     >
       <AuthorClaimCaseModal
         caseID={caseID}
-        firstPrompt="approveUser"
         requestorName={requestorName}
         profileImg={requestorFaceImg}
-        isOpen={isAcceptModalOpen}
-        setIsOpen={setIsAcceptModalOpen}
+        openModalType={openModalType}
+        setOpenModalType={setOpenModalType}
         setLastFetchTime={setLastFetchTime}
       />
       <AuthorClaimCaseModal
         caseID={caseID}
-        firstPrompt="rejectUser"
         requestorName={requestorName}
         profileImg={requestorFaceImg}
-        isOpen={isRejectModalOpen}
-        setIsOpen={setIsRejectModalOpen}
+        openModalType={openModalType}
+        setOpenModalType={setOpenModalType}
         setLastFetchTime={setLastFetchTime}
       />
       <div className={css(styles.chevronWrap)}>
