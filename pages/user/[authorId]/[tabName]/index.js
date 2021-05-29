@@ -72,6 +72,8 @@ const AuthorPage = (props) => {
   const [fetchedUser, setFetchedUser] = useState(false);
 
   const [isSuspended, setIsSuspended] = useState(null);
+  const [isProbableSpammer, setIsProbableSpammer] = useState(null);
+  const [authorSuspendedFetched, setAuthorSuspendedFetched] = useState(null);
 
   const facebookRef = useRef();
   const linkedinRef = useRef();
@@ -238,8 +240,10 @@ const AuthorPage = (props) => {
       .then(Helpers.parseJSON)
       .then((res) => {
         const authorUser = res.results[0];
+        setAuthorSuspendedFetched(true);
         if (authorUser) {
           setIsSuspended(authorUser.is_suspended);
+          setIsProbableSpammer(authorUser.probable_spammer);
         } else {
           setIsSuspended(true);
         }
@@ -854,14 +858,14 @@ const AuthorPage = (props) => {
             icon={
               !fetchedUser
                 ? " "
-                : isSuspended
+                : isSuspended || isProbableSpammer
                 ? icons.userPlus
                 : icons.userSlash
             }
             label={
-              !fetchedUser ? (
+              !authorSuspendedFetched ? (
                 <Loader loading={true} color={"#FFF"} size={15} />
-              ) : isSuspended ? (
+              ) : isSuspended || isProbableSpammer ? (
                 "Reinstate User"
               ) : (
                 "Ban User"
@@ -870,8 +874,11 @@ const AuthorPage = (props) => {
             actionType={"user"}
             metaData={{
               authorId: router.query.authorId,
-              isSuspended,
-              setIsSuspended,
+              isSuspended: isProbableSpammer || isSuspended,
+              setIsSuspended: (bool) => {
+                setIsSuspended(bool);
+                setIsProbableSpammer(bool);
+              },
             }}
           />
         )}
