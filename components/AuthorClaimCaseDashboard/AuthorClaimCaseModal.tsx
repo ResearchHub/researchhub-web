@@ -223,12 +223,10 @@ const acceptRejectStyles = StyleSheet.create({
     color: "#232038",
     "@media only screen and (max-width: 557px)": {
       fontSize: 24,
+      width: 380,
     },
     "@media only screen and (max-width: 725px)": {
       width: 450,
-    },
-    "@media only screen and (max-width: 557px)": {
-      width: 380,
     },
     "@media only screen and (max-width: 415px)": {
       width: 300,
