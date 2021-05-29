@@ -78,7 +78,12 @@ const UserStateBanner = (props) => {
     if (user.probable_spammer) {
       return (
         <Fragment>
-          <span>We've seen low quality content posted from your account.</span>
+          <span>
+            We’ve noticed suspicious activity from your account.
+            <br />
+            If you believe this to be a mistake, please contact us at
+            hello@researchhub.com so we can investigate.
+          </span>
         </Fragment>
       );
     }
