@@ -17,20 +17,20 @@ const items = [
     description:
       "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
     imgSrc: "/static/icons/uploadPaper.png",
-    route: "/paper/upload/info0",
+    route: "/paper/upload/info",
   },
   {
     header: "Ask a Question or Start a Discussion",
     description:
       "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
-    route: "/paper/upload/info1",
+    route: "/paper/upload/info",
   },
   {
     header: "Publish a Research Project",
     description: "Publish lab notes, original research, metastudies, etc.",
     imgSrc: "/static/icons/publishProject.png",
-    route: "/paper/upload/info2",
+    route: "/paper/upload/info",
   },
 ];
 
@@ -75,6 +75,8 @@ class NewPostModal extends React.Component {
         imgSrc={option.imgSrc}
       />
     ));
+
+    console.log(modals.openNewPostModal);
     return (
       <BaseModal
         isOpen={modals.openNewPostModal}
