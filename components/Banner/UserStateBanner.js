@@ -78,11 +78,13 @@ const UserStateBanner = (props) => {
     if (user.probable_spammer) {
       return (
         <Fragment>
-          <span>
-            We’ve noticed suspicious activity from your account.
-            <br />
-            If you believe this to be a mistake, please contact us at
-            hello@researchhub.com so we can investigate.
+          <span style={{ maxWidth: 600 }}>
+            We’ve noticed suspicious activity from your account. If you believe
+            this to be a mistake, please contact us at{" "}
+            <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
+              hello@researchhub.com
+            </a>{" "}
+            so we can investigate.
           </span>
         </Fragment>
       );
