@@ -6,8 +6,6 @@ import { connect } from "react-redux";
 import Head from "~/components/Head";
 import PaperUploadInfo from "~/components/Paper/PaperUploadInfo";
 
-import NewPostModal from "~/components/Modals/NewPostModal";
-
 // Redux
 import { ModalActions } from "~/redux/modals";
 
@@ -15,14 +13,9 @@ function Index(props) {
   const router = useRouter();
   const { uploadPaperTitle, type } = router.query;
 
-  useEffect(() => {
-    props.openNewPostModal(true);
-  }, []);
-
   return (
     <Fragment>
       <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
-      <NewPostModal />
       <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} />
     </Fragment>
   );
