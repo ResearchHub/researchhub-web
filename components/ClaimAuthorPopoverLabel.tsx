@@ -84,14 +84,12 @@ const styles = StyleSheet.create({
   bodyHeader: {
     alignItems: "center",
     display: "flex",
-    fontFamily: "Montserrat",
     fontSize: 16,
     fontWeight: 600,
     marginBottom: 8,
   },
   bodySubheader: {
     color: "#272727",
-    fontFamily: "Poppins",
     fontSize: 14,
     marginBottom: 16,
   },
@@ -148,7 +146,6 @@ const styles = StyleSheet.create({
   },
   popoverIcon: { cursor: "pointer" },
   popoverLabelText: {
-    fontFamily: "Roboto",
     fontSize: 16,
     fontStyle: "normal",
     fontWeight: 500,
