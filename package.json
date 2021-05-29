@@ -44,6 +44,7 @@
     "babel-plugin-transform-imports": "^2.0.0",
     "ckeditor5-eln-build": "file:./ckeditor5/ckeditor5-eln",
     "ckeditor5-simple-build": "file:./ckeditor5/ckeditor5-simple",
+    "ckeditor5-custom-build": "file:./ckeditor5",
     "dayjs": "^1.10.3",
     "diff": "^4.0.1",
     "draft-convert": "^2.1.10",
