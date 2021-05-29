@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement, useState } from "react";
 import AuthorClaimCaseContainer from "./AuthorClaimCaseContainer";
 import AuthorClaimDashboardNavbar from "./AuthorClaimDashboardNavbar";
+import Head from "../Head";
 
 export const INNER_EL_WIDTH = 1276;
 
@@ -13,6 +14,7 @@ export default function AuthorClaimCaseDashboard(): ReactElement<"div"> {
         innerElWidth={INNER_EL_WIDTH}
         lastFetchTime={lastFetchTime}
       />
+      <Head />
       <div className={css(styles.caseContinaerWrap)}>
         <AuthorClaimCaseContainer
           lastFetchTime={lastFetchTime}

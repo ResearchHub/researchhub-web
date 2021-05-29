@@ -48,11 +48,16 @@ export const getPageBody = (validationState) => {
     case VALIDATION_STATE.VALIDATED:
       return (
         <div className={css(styles.pageBody)}>
+          <img
+            src={"/static/icons/success2.png"}
+            className={css(styles.successImg)}
+            draggable={false}
+          />
           <div className={css(styles.textRow)}>
-            {"You have successfully authenciated your request! "}
+            {"You have successfully authenticated your email address!"}
           </div>
           <div className={css(styles.textRow)}>
-            {"ResearchHub team will now review your author claim request."}
+            {"The ResearchHub team will now review your author claim request."}
           </div>
         </div>
       );
@@ -76,6 +81,9 @@ export const getPageBody = (validationState) => {
 const styles = StyleSheet.create({
   marginRight8: {
     marginRight: 8,
+  },
+  successImg: {
+    marginBottom: 25,
   },
   pageBody: {
     alignItems: "center",
