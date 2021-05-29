@@ -20,6 +20,7 @@
     "eb:deploy": "./scripts/deploy/eb-deploy.sh"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^3.0.2",
     "@elastic/apm-rum": "^5.6.0",
     "@fortawesome/fontawesome-free-brands": "^5.1.0-3",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
@@ -39,6 +40,7 @@
     "@zeit/next-source-maps": "^0.0.3",
     "aphrodite": "^2.4.0",
     "babel-plugin-transform-imports": "^2.0.0",
+    "ckeditor5-custom-build": "file:./ckeditor5",
     "dayjs": "^1.10.3",
     "diff": "^4.0.1",
     "draft-convert": "^2.1.10",
