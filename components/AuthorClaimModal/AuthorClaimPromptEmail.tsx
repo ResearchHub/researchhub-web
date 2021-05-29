@@ -105,6 +105,7 @@ export default function AuthorClaimPromptEmail({
           disable={isSubmitting}
           id="eduEmail"
           label="Email"
+          type="email"
           labelStyle={verifStyles.labelStyle}
           inputStyle={shouldDisplayError && modalBodyStyles.error}
           onChange={handleOnChangeFields}
