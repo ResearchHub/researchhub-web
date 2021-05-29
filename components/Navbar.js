@@ -31,12 +31,14 @@ import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import UserStateBanner from "./Banner/UserStateBanner";
 import OrcidConnectModal from "./Modals/OrcidConnectModal";
+import NewPostModal from "~/components/Modals/NewPostModal";
 
 // Styles
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -562,16 +564,24 @@ const Navbar = (props) => {
             )}
           </div>
           <PermissionNotificationWrapper
-            onClick={onAddPaperClick}
-            modalMessage="upload a paper"
+            onClick={openNewPostModal}
+            modalMessage="create a new post"
             loginRequired={true}
             permissionKey="CreatePaper"
           >
             <Button
               customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-              label={"New Post +"}
+              label={
+                <div>
+                  <span> New Post </span>{" "}
+                  <FontAwesomeIcon
+                    style={{ fontSize: "1.2em", marginLeft: 4 }}
+                    icon={["fal", "plus"]}
+                  />
+                </div>
+              }
               hideRipples={true}
-              onClick={openNewPostModal}
+              // onClick={openNewPostModal}
             />
           </PermissionNotificationWrapper>
         </div>
@@ -580,6 +590,7 @@ const Navbar = (props) => {
         </div>
       </div>
       <UserStateBanner />
+      <NewPostModal />
     </Fragment>
   );
 };
