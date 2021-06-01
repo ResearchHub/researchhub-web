@@ -703,15 +703,18 @@ class PaperPageCard extends React.Component {
             </div>
           </div>
 
-          <div className={css(styles.previewBox)}>
-            <PaperPreview
-              paper={paper}
-              paperId={paper.id}
-              previewStyles={styles.previewStyles}
-              columnOverrideStyles={styles.columnOverrideStyles}
-              onLoad={(success) => this.setState({ previewAvailable: success })}
-            />
-          </div>
+          {
+            <div className={css(styles.previewBox)}>
+              <PaperPreview
+                paperId={paper.id}
+                previewStyles={styles.previewBox}
+                columnOverrideStyles={styles.columnOverrideStyles}
+                onLoad={(success) =>
+                  this.setState({ previewAvailable: success })
+                }
+              />
+            </div>
+          }
         </div>
         <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
@@ -784,6 +787,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     maxWidth: "140px",
+    // width: "140px",
     minHeight: "140px",
 
     "@media only screen and (max-width: 767px)": {
