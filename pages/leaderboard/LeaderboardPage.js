@@ -248,6 +248,7 @@ class Index extends React.Component {
   };
 
   componentDidMount() {
+    let { getHubs } = this.props;
     if (!this.props.hubs.hubs.length) {
       getHubs();
     }
