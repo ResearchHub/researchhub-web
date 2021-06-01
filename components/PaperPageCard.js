@@ -43,7 +43,7 @@ class PaperPageCard extends React.Component {
     super(props);
     this.state = {
       previews: [],
-      figureUrls: [],
+      previewAvailable: false,
       hovered: false,
       toggleLightbox: true,
       fetching: false,
@@ -595,7 +595,7 @@ class PaperPageCard extends React.Component {
       discussionCount,
     } = this.props;
 
-    const { fetching, previews, figureUrls } = this.state;
+    const { fetching, previews, previewAvailable } = this.state;
 
     return (
       <ReactPlaceholder
@@ -712,6 +712,7 @@ class PaperPageCard extends React.Component {
               paperId={paper.id}
               previewStyles={styles.previewStyles}
               columnOverrideStyles={styles.columnOverrideStyles}
+              onLoad={(success) => this.setState({ previewAvailable: success })}
             />
           </div>
         </div>
@@ -741,7 +742,11 @@ class PaperPageCard extends React.Component {
                 onClick={this.downloadPDF}
                 customButtonStyle={[styles.downloadActionIcon]}
               /> */}
-              <DownloadPDFButton paper={paper} />
+              <DownloadPDFButton
+                paper={paper}
+                showing={previewAvailable}
+                style={styles.hideOnSmall}
+              />
             </div>
           </div>
         </div>
@@ -784,6 +789,11 @@ const styles = StyleSheet.create({
     maxWidth: "140px",
     minHeight: "140px",
 
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  hideOnSmall: {
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1199,11 +1209,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    // marginTop: "auto",
     marginTop: 20,
-    "@media only screen and (max-width: 767px)": {
-      margin: 0,
-    },
   },
   bottomRow: {
     maxWidth: "100%",
