@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   preview: {
-    width: "100%",
+    width: "140px",
     height: "100%",
     objectFit: "contain",
   },
