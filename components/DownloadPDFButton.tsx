@@ -1,22 +1,32 @@
 import Button from "./Form/Button";
-import React, { Fragment } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { DownloadIcon } from "../config/themes/icons";
+import React, { ReactElement } from "react";
 import colors from "../config/themes/colors";
+import { DownloadIcon } from "../config/themes/icons";
+import { StyleSheet, css } from "aphrodite";
 
-export default function DownloadPDFButton({ paper, style, showing }) {
+type DownloadPDFButtonProps = {
+  paper: any;
+  showing: boolean;
+  style: StyleSheet;
+};
+
+export default function DownloadPDFButton({
+  paper,
+  showing,
+  style,
+}: DownloadPDFButtonProps): ReactElement<"div"> | null {
+  if (!showing) {
+    return null;
+  }
+
   const downloadPDF = () => {
     let file = paper.file;
     window.open(file, "_blank");
   };
 
-  if (!showing) {
-    return null;
-  }
-
   const label = () => (
     <div className={css(styles.labelContainer)}>
-      <DownloadIcon />
+      <DownloadIcon style={styles.downloadIcon} />
       <span className={css(styles.labelText)}>Download PDF</span>
     </div>
   );
@@ -32,9 +42,6 @@ export default function DownloadPDFButton({ paper, style, showing }) {
 
 const styles = StyleSheet.create({
   downloadButton: {
-    // fontFamily: "Roboto",
-    // fontStyle: "normal",
-    // fontWeight: "normal",
     width: "138px",
     height: "30px",
     padding: "2px 12px",
@@ -48,6 +55,7 @@ const styles = StyleSheet.create({
       borderColor: "#3E43E8",
     },
   },
+  downloadIcon: {},
   labelText: {
     fontSize: "14px",
     lineHeight: "26px",
