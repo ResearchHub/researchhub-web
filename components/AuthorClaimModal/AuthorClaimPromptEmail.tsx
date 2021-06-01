@@ -105,7 +105,7 @@ export default function AuthorClaimPromptEmail({
           labelStyle={verifStyles.labelStyle}
           inputStyle={shouldDisplayError && modalBodyStyles.error}
           onChange={handleOnChangeFields}
-          placeholder="Academic .edu email address"
+          placeholder="Your email address"
           required
         />
         <div className={css(verifStyles.buttonContainer)}>
