@@ -9,7 +9,10 @@ import { ModalActions } from "~/redux/modals";
 
 import numeral from "numeral";
 import colors from "~/config/themes/colors";
-import { PaperPromotionIcon } from "~/config/themes/icons";
+import {
+  PaperPromotionIcon,
+  PaperPromotionIconLarge,
+} from "~/config/themes/icons";
 
 const PaperPromotionButton = ({
   customStyle,
@@ -40,10 +43,9 @@ const PaperPromotionButton = ({
         onMouseLeave={() => setHover(false)}
       >
         <span className={css(styles.icon, customStyle)}>
-          <PaperPromotionIcon
-            color={hover && colors.ORANGE()}
-            emptyState={!getCount()}
-          />
+          <div className={css(styles.offset)}>
+            <PaperPromotionIconLarge color={hover && colors.ORANGE()} />
+          </div>
         </span>
         <span
           className={css(styles.count, !promoted && styles.hide) + " count"}
@@ -76,6 +78,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  offset: {
+    transform: "translate(8.5px, -3px)",
   },
   count: {
     fontSize: 13,

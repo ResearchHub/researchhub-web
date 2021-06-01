@@ -17,10 +17,12 @@ import ShareAction from "~/components/ShareAction";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FlagButton from "~/components/FlagButton";
 import ActionButton from "~/components/ActionButton";
+import Button from "~/components/Form/Button";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
+import DownloadPDFButton from "~/components/DownloadPDFButton";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -156,10 +158,10 @@ class PaperPageCard extends React.Component {
     Router.push(href, as);
   };
 
-  downloadPDF = () => {
-    let file = this.props.paper.file;
-    window.open(file, "_blank");
-  };
+  // downloadPDF = () => {
+  //   let file = this.props.paper.file;
+  //   window.open(file, "_blank");
+  // };
 
   setHover = () => {
     !this.state.hovered && this.setState({ hovered: true });
@@ -309,22 +311,22 @@ class PaperPageCard extends React.Component {
           />
         ),
       },
-      {
-        active: paper && paper.file,
-        button: (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={this.downloadPDF}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Download PDF"}
-            >
-              {icons.arrowToBottom}
-            </span>
-          </Ripples>
-        ),
-      },
+      // {
+      //   active: paper && paper.file,
+      //   button: (
+      //     <Ripples
+      //       className={css(styles.actionIcon, styles.downloadActionIcon)}
+      //       onClick={this.downloadPDF}
+      //     >
+      //       <span
+      //         className={css(styles.downloadIcon)}
+      //         data-tip={"Download PDF"}
+      //       >
+      //         {icons.arrowToBottom}
+      //       </span>
+      //     </Ripples>
+      //   ),
+      // },
       {
         active: paper && paper.url && (paper && !paper.file),
         button: (
@@ -342,6 +344,30 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
+        active: true,
+        button: (
+          <span data-tip={"Support Paper"}>
+            <PaperPromotionButton
+              paper={paper}
+              customStyle={styles.actionIcon}
+            />
+          </span>
+        ),
+      },
+      {
+        active: !isSubmitter,
+        button: (
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
+        ),
+      },
+      {
         active: isModerator || isSubmitter,
         button: (
           <span
@@ -355,36 +381,6 @@ class PaperPageCard extends React.Component {
               icon={paper.is_removed ? icons.plus : icons.minus}
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
               iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: true,
-        button: (
-          <span data-tip={"Support Paper"}>
-            {/* <PaperPromotionButton
-              paper={paper}
-              customStyle={styles.actionIcon}
-            /> */}
-            {/* <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
-            /> */}
-          </span>
-        ),
-      },
-      {
-        active: !isModerator && !isSubmitter,
-        button: (
-          <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
             />
           </span>
         ),
@@ -709,12 +705,6 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={css(styles.bottomContainer)}>
-              <div className={css(styles.bottomRow)}>
-                {this.renderActions()}
-              </div>
-              <div className={css(styles.downloadPDF)}></div>
-            </div>
           </div>
 
           <div className={css(styles.previewBox)}>
@@ -723,6 +713,36 @@ class PaperPageCard extends React.Component {
               previewStyles={styles.previewStyles}
               columnOverrideStyles={styles.columnOverrideStyles}
             />
+          </div>
+        </div>
+        <div className={css(styles.bottomContainer)}>
+          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
+          <div className={css(styles.downloadPDFContainer)}>
+            <div className={css(styles.downloadPDFWrapper)}>
+              {/* <Ripples
+                className={css(styles.downloadActionIcon)}
+                onClick={this.downloadPDF}
+              >
+                <span
+                  className={css(styles.downloadIcon)}
+                  data-tip={"Download PDF"}
+                >
+                  {icons.arrowToBottom}
+                  Download PDF
+                </span>
+              </Ripples> */}
+              {/* <Button
+                label={() => {
+                  return <Fragment>
+                    {icons.arrowToBottom}
+                    Download PDF
+                  </Fragment>
+                }}
+                onClick={this.downloadPDF}
+                customButtonStyle={[styles.downloadActionIcon]}
+              /> */}
+              <DownloadPDFButton paper={paper} />
+            </div>
           </div>
         </div>
       </ReactPlaceholder>
@@ -1179,7 +1199,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    marginTop: "auto",
+    // marginTop: "auto",
+    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       margin: 0,
     },
@@ -1188,12 +1209,19 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       // display: "none",
     },
   },
-  downloadPDF: {},
+  downloadPDFContainer: {
+    display: "flex",
+    alignSelf: "flex-end",
+    width: "140px",
+    height: "32px",
+    justifyContent: "center",
+    alignItems: "center", // Center vertically
+    // maxWidth: "140px",
+  },
   hubsRow: {},
   flexendRow: {
     justifyContent: "flex-end",
