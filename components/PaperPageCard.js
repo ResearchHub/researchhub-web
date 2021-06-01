@@ -692,6 +692,7 @@ class PaperPageCard extends React.Component {
 
           <div className={css(styles.previewBox)}>
             <PaperPreview
+              paper={paper}
               paperId={paper.id}
               previewStyles={styles.previewStyles}
               columnOverrideStyles={styles.columnOverrideStyles}
