@@ -1,27 +1,31 @@
 import Button from "./Form/Button";
 import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import icons from "../config/themes/icons";
+import { DownloadIcon } from "../config/themes/icons";
 import colors from "../config/themes/colors";
 
-export default function DownloadPDFButton({ paper }) {
+export default function DownloadPDFButton({ paper, style, showing }) {
   const downloadPDF = () => {
     let file = paper.file;
     window.open(file, "_blank");
   };
 
+  if (!showing) {
+    return null;
+  }
+
   const label = () => (
-    <Fragment>
-      {icons.arrowToBottom}
+    <div className={css(styles.labelContainer)}>
+      <DownloadIcon />
       <span className={css(styles.labelText)}>Download PDF</span>
-    </Fragment>
+    </div>
   );
 
   return (
     <Button
       label={label}
       onClick={downloadPDF}
-      customButtonStyle={[styles.downloadButton]}
+      customButtonStyle={[styles.downloadButton, style]}
     />
   );
 }
@@ -49,5 +53,9 @@ const styles = StyleSheet.create({
     lineHeight: "26px",
     marginLeft: "6px",
     color: "#FFFFFF",
+  },
+  labelContainer: {
+    display: "flex",
+    alignItems: "center",
   },
 });
