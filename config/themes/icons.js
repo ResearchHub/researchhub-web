@@ -548,59 +548,6 @@ export const PaperPromotionIcon = ({ color, emptyState }) => {
 };
 
 export function PaperPromotionIconLarge({ color }) {
-  // return (
-  //   <svg
-  //     width="27"
-  //     height="34"
-  //     viewBox="0 0 27 34"
-  //     fill="none"
-  //     xmlns="http://www.w3.org/2000/svg"
-  //   >
-  //     <path
-  //       fill-rule="evenodd"
-  //       clip-rule="evenodd"
-  //       d="M4.34406 7.18799C3.97782 7.18799 3.68092 7.47899 3.68092 7.83796C3.68092 8.19694 3.97782 8.48794 4.34406 8.48794H4.86321V11.9253L0.313369 18.9636C-0.0242333 19.4905 -0.0890862 19.9418 0.118969 20.3173C0.327024 20.6931 0.750675 20.881 1.38983 20.881H11.8104C12.4494 20.881 12.873 20.6931 13.0809 20.3173C13.2891 19.9418 13.2243 19.4906 12.8867 18.9637L8.33657 11.9254V8.48794H8.85343C9.21968 8.48794 9.51657 8.19694 9.51657 7.83796C9.51657 7.47899 9.21967 7.18799 8.85343 7.18799H4.34406ZM6.02364 8.48794H7.18133V12.2553L7.36217 12.5305L9.52184 15.6399H3.68618L5.84277 12.5305L6.02364 12.2553V8.48794Z"
-  //       fill={color ? color : "#241F3A"}
-  //       fill-opacity="0.35"
-  //     />
-  //     <rect
-  //       x="1.89062"
-  //       y="3.22119"
-  //       width="2.57732"
-  //       height="2.52903"
-  //       rx="1.26452"
-  //       fill={color ? color : "#241F3A"}
-  //       fill-opacity="0.35"
-  //     />
-  //     <rect
-  //       x="8.29688"
-  //       y="3.22119"
-  //       width="2.57732"
-  //       height="2.52903"
-  //       rx="1.26452"
-  //       fill={color ? color : "#241F3A"}
-  //       fill-opacity="0.35"
-  //     />
-  //     <rect
-  //       x="5.42578"
-  //       width="1.98822"
-  //       height="1.95097"
-  //       rx="0.975484"
-  //       fill={color ? color : "#241F3A"}
-  //       fill-opacity="0.35"/
-  //     >
-  //     <circle
-  //       cx="19"
-  //       cy="26"
-  //       r="8"
-  //       fill="#3971FF"
-  //     />
-  //     <path
-  //       d="M18.5 25.5V23C18.5 22.7239 18.7239 22.5 19 22.5C19.2761 22.5 19.5 22.7239 19.5 23V25.5H22C22.2761 25.5 22.5 25.7239 22.5 26C22.5 26.2761 22.2761 26.5 22 26.5H19.5V29C19.5 29.2761 19.2761 29.5 19 29.5C18.7239 29.5 18.5 29.2761 18.5 29V26.5H16C15.7239 26.5 15.5 26.2761 15.5 26C15.5 25.7239 15.7239 25.5 16 25.5H18.5Z"
-  //       fill="white"
-  //     />
-  //   </svg>
-  // );
   return (
     <svg
       width="30"
@@ -652,6 +599,16 @@ export function PaperPromotionIconLarge({ color }) {
   );
 }
 
+export function DownloadIcon({ style }) {
+  return (
+    <img
+      className={css(styles.iconDownload, style && style)}
+      src={"/static/icons/download.png"}
+      alt="Download"
+    />
+  );
+}
+
 const styles = StyleSheet.create({
   logo: {
     height: 40,
@@ -662,6 +619,9 @@ const styles = StyleSheet.create({
   },
   iconRSC: {
     height: 15,
+  },
+  iconDownload: {
+    height: 16,
   },
 });
 
