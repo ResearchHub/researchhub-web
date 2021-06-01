@@ -6,19 +6,13 @@ import { StyleSheet, css } from "aphrodite";
 
 type DownloadPDFButtonProps = {
   paper: any;
-  showing: boolean;
   style: StyleSheet;
 };
 
 export default function DownloadPDFButton({
   paper,
-  showing,
   style,
 }: DownloadPDFButtonProps): ReactElement<"div"> | null {
-  if (!showing) {
-    return null;
-  }
-
   const downloadPDF = () => {
     let file = paper.file;
     window.open(file, "_blank");
