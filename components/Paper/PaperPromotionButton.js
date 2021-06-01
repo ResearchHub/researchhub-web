@@ -64,7 +64,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    // paddingRight: 17,
     ":hover .count": {
       color: colors.BLACK(),
     },
@@ -73,8 +72,6 @@ const styles = StyleSheet.create({
     },
   },
   icon: {
-    width: 25,
-    height: 25,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
