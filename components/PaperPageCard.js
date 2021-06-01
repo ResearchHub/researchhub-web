@@ -1,38 +1,42 @@
+import * as Sentry from "@sentry/browser";
+import * as moment from "dayjs";
+import Link from "next/link";
+import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
+import Router from "next/router";
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import * as moment from "dayjs";
-import Router from "next/router";
-import Link from "next/link";
-import Ripples from "react-ripples";
-import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder/lib";
-import * as Sentry from "@sentry/browser";
+
+// Components
+import ActionButton from "~/components/ActionButton";
+import AuthorAvatar from "~/components/AuthorAvatar";
+import Button from "~/components/Form/Button";
+import DownloadPDFButton from "~/components/DownloadPDFButton";
+import FlagButton from "~/components/FlagButton";
 import HubTag from "~/components/Hubs/HubTag";
-import VoteWidget from "~/components/VoteWidget";
+import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
+import PaperMetadata from "./Paper/PaperMetadata";
+import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import FlagButton from "~/components/FlagButton";
-import ActionButton from "~/components/ActionButton";
-import Button from "~/components/Form/Button";
-import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
-import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPromotionButton from "./Paper/PaperPromotionButton";
-import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
-import DownloadPDFButton from "~/components/DownloadPDFButton";
+import VoteWidget from "~/components/VoteWidget";
 
 // redux
 import { ModalActions } from "~/redux/modals";
-import colors from "~/config/themes/colors";
+
+// Config
 import API from "~/config/api";
-import icons from "~/config/themes/icons";
-import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
-import { formatPublishedDate } from "~/config/utils/dates";
-import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "../redux/message";
+import { formatPublishedDate } from "~/config/utils/dates";
+import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -153,11 +157,6 @@ class PaperPageCard extends React.Component {
     let as = `/paper/upload/info/${paperId}`;
     Router.push(href, as);
   };
-
-  // downloadPDF = () => {
-  //   let file = this.props.paper.file;
-  //   window.open(file, "_blank");
-  // };
 
   setHover = () => {
     !this.state.hovered && this.setState({ hovered: true });
@@ -307,22 +306,6 @@ class PaperPageCard extends React.Component {
           />
         ),
       },
-      // {
-      //   active: paper && paper.file,
-      //   button: (
-      //     <Ripples
-      //       className={css(styles.actionIcon, styles.downloadActionIcon)}
-      //       onClick={this.downloadPDF}
-      //     >
-      //       <span
-      //         className={css(styles.downloadIcon)}
-      //         data-tip={"Download PDF"}
-      //       >
-      //         {icons.arrowToBottom}
-      //       </span>
-      //     </Ripples>
-      //   ),
-      // },
       {
         active: paper && paper.url && (paper && !paper.file),
         button: (
@@ -634,12 +617,11 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                {/* <PaperDiscussionButton
+                <div className={css(styles.divider)}></div>
+                <PaperDiscussionButton
                   paper={paper}
                   discussionCount={discussionCount}
                 />
-                <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} /> */}
               </div>
               <div
                 className={css(
@@ -720,28 +702,6 @@ class PaperPageCard extends React.Component {
           <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
           <div className={css(styles.downloadPDFContainer)}>
             <div className={css(styles.downloadPDFWrapper)}>
-              {/* <Ripples
-                className={css(styles.downloadActionIcon)}
-                onClick={this.downloadPDF}
-              >
-                <span
-                  className={css(styles.downloadIcon)}
-                  data-tip={"Download PDF"}
-                >
-                  {icons.arrowToBottom}
-                  Download PDF
-                </span>
-              </Ripples> */}
-              {/* <Button
-                label={() => {
-                  return <Fragment>
-                    {icons.arrowToBottom}
-                    Download PDF
-                  </Fragment>
-                }}
-                onClick={this.downloadPDF}
-                customButtonStyle={[styles.downloadActionIcon]}
-              /> */}
               <DownloadPDFButton
                 paper={paper}
                 showing={previewAvailable}
@@ -787,7 +747,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     maxWidth: "140px",
-    // width: "140px",
     minHeight: "140px",
 
     "@media only screen and (max-width: 767px)": {
@@ -1143,7 +1102,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
-    // minHeight: 25,
     flexWrap: "wrap",
 
     /**
@@ -1210,7 +1168,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    marginTop: 20,
+    marginTop: 15,
   },
   bottomRow: {
     maxWidth: "100%",
@@ -1227,7 +1185,6 @@ const styles = StyleSheet.create({
     height: "32px",
     justifyContent: "center",
     alignItems: "center", // Center vertically
-    // maxWidth: "140px",
   },
   hubsRow: {},
   flexendRow: {

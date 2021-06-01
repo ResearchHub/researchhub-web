@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     cursor: "pointer",
     paddingRight: 17,
-    paddingTop: 15,
     textDecoration: "unset",
     ":hover .count": {
       color: colors.BLACK(),
