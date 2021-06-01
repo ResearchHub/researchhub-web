@@ -23,11 +23,7 @@ type FormError = {
 
 function validateEmail(email: string): boolean {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  const splitted = email.split(".");
-  return (
-    re.test(String(email).toLowerCase()) &&
-    splitted[splitted.length - 1] === "edu"
-  );
+  return re.test(String(email).toLowerCase());
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -88,11 +84,11 @@ export default function AuthorClaimPromptEmail({
   return (
     <div className={css(verifStyles.rootContainer)}>
       <div className={css(verifStyles.titleContainer)}>
-        <div className={css(verifStyles.title)}>Enter your .edu email</div>
+        <div className={css(verifStyles.title)}>Enter your email</div>
       </div>
       <div className={css(verifStyles.subTextContainer)}>
         <div className={css(verifStyles.subText)}>
-          Verify your .edu email address
+          Verify your email address
         </div>
       </div>
       <form
