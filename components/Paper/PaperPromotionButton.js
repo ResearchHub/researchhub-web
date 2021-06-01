@@ -1,18 +1,14 @@
-import { Fragment, useState } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-
-// redux
-import { ModalActions } from "~/redux/modals";
-
-import numeral from "numeral";
 import colors from "~/config/themes/colors";
+import numeral from "numeral";
+import { Fragment, useState } from "react";
+import { ModalActions } from "~/redux/modals";
 import {
   PaperPromotionIcon,
   PaperPromotionIconLarge,
 } from "~/config/themes/icons";
+import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
 
 const PaperPromotionButton = ({
   customStyle,
