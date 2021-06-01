@@ -47,7 +47,7 @@ export default function AuthorClaimModal({
   return (
     <BaseModal
       children={
-        <Fragment>
+        <div className={css(customModalStyle.bodyZIndex)}>
           <img
             alt="Close Button"
             className={css(customModalStyle.closeButton)}
@@ -56,7 +56,7 @@ export default function AuthorClaimModal({
             src="/static/icons/close.png"
           />
           {modalBody}
-        </Fragment>
+        </div>
       }
       closeModal={closeModal}
       isOpen={isOpen}
@@ -82,5 +82,8 @@ const customModalStyle = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
+  },
+  bodyZIndex: {
+    zIndex: 15 /* default overlay index is 11 */,
   },
 });
