@@ -17,7 +17,7 @@ export default function DownloadPDFButton({
     window.open(file, "_blank");
   };
 
-  const label = () => (
+  const label = (
     <div className={css(styles.labelContainer)}>
       <DownloadIcon style={styles.downloadIcon} />
       <span className={css(styles.labelText)}>Download PDF</span>

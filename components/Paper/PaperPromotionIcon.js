@@ -1,3 +1,10 @@
+/**
+ * NOTE: code is originally from PaperPromotionButton. Logic is copied from there
+ * and is likely to be buggy (see: getCount, promoted is both boolean & number?).
+ * The feature (showing # supports on left column) is likely temporary, so remove
+ * or revise if needed @briansantoso
+ */
+
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
 import numeral from "numeral";
