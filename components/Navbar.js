@@ -20,6 +20,7 @@ import FirstVoteModal from "../components/Modals/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import NewPostModal from "./Modals/NewPostModal";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
@@ -31,7 +32,6 @@ import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import UserStateBanner from "./Banner/UserStateBanner";
 import OrcidConnectModal from "./Modals/OrcidConnectModal";
-import NewPostModal from "~/components/Modals/NewPostModal";
 
 // Styles
 import colors from "~/config/themes/colors";
@@ -81,6 +81,7 @@ const Navbar = (props) => {
 
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
+  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
 
   const tabData = [
     { label: "Home", route: "/", icon: "home" },
@@ -363,10 +364,6 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  function openNewPostModal() {
-    props.openNewPostModal(true);
-  }
-
   const burgerMenuStyle = {
     bmBurgerBars: {
       background: "#373a47",
@@ -564,7 +561,7 @@ const Navbar = (props) => {
             )}
           </div>
           <PermissionNotificationWrapper
-            onClick={openNewPostModal}
+            onClick={() => setIsNewPostModalOpen(true)}
             modalMessage="create a new post"
             loginRequired={true}
             permissionKey="CreatePaper"
@@ -581,7 +578,6 @@ const Navbar = (props) => {
                 </div>
               }
               hideRipples={true}
-              // onClick={openNewPostModal}
             />
           </PermissionNotificationWrapper>
         </div>
@@ -590,7 +586,10 @@ const Navbar = (props) => {
         </div>
       </div>
       <UserStateBanner />
-      <NewPostModal />
+      <NewPostModal
+        isOpen={isNewPostModalOpen}
+        setIsOpen={setIsNewPostModalOpen}
+      />
     </Fragment>
   );
 };
@@ -982,7 +981,6 @@ const mapDispatchToProps = {
   signout: AuthActions.signout,
   openUploadPaperModal: ModalActions.openUploadPaperModal,
   openWithdrawalModal: ModalActions.openWithdrawalModal,
-  openNewPostModal: ModalActions.openNewPostModal,
   openSignUpModal: ModalActions.openSignUpModal,
   updateUser: AuthActions.updateUser,
 };
