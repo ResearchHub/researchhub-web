@@ -70,22 +70,26 @@ export default function AskQuesitonForm() {
     <div className={css(styles.rootContainer)}>
       <form>
         <FormSelect
-          label="Choose a hub"
           containerStyle={styles.chooseHub}
+          id="hub"
+          inputStyle={shouldDisplayError && styles.error}
+          label="Choose a hub"
+          labelStyle={styles.labelStyle}
+          onChange={handleOnChangeFields}
           required={true}
         />
         <FormInput
-          label="Title"
-          required={true}
-          id="title"
           containerStyle={styles.titleInputContainer}
-          labelStyle={styles.labelStyle}
+          id="title"
           inputStyle={shouldDisplayError && styles.error}
+          label="Title"
+          labelStyle={styles.labelStyle}
           onChange={handleOnChangeFields}
           placeholder="Title"
+          required={true}
         />
-        {/* <FormTextArea label="Text" /> */}
-        <MyEditor />
+        <FormTextArea label="Text" />
+        {/* <MyEditor /> */}
         <div className={css(styles.buttonsContainer)}>
           <Button
             isWhite={true}
