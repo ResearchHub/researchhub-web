@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 // Component
 import Head from "~/components/Head";
 import PaperUploadInfo from "~/components/Paper/PaperUploadInfo";
+import AskQuestionForm from "~/components/Paper/AskQuestionForm";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -16,7 +17,8 @@ function Index(props) {
   return (
     <Fragment>
       <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
-      <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} />
+      {/* <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} /> */}
+      <AskQuestionForm />
     </Fragment>
   );
 }
