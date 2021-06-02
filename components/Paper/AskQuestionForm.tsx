@@ -4,17 +4,19 @@ import Button from "../Form/Button";
 import FormSelect from "../Form/FormSelect";
 import { StyleSheet, css } from "aphrodite";
 import FormTextArea from "../Form/FormTextArea";
+import { MyEditor } from "../CKEditor/MyEditor";
 
 export default function AskQuesitonForm() {
   let [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  // Choose a Hub
+  const handleSaveDraft = () => {
+    setIsSubmitting(true);
+  };
 
-  // Title
+  const handlePost = () => {
+    setIsSubmitting(true);
+  };
 
-  // Text
-
-  // Save Draft, Post
   return (
     <div className={css(styles.rootContainer)}>
       <form>
@@ -28,19 +30,23 @@ export default function AskQuesitonForm() {
           required={true}
           containerStyle={styles.titleInputContainer}
         />
-        <FormTextArea label="Text" />
+        {/* <FormTextArea label="Text" /> */}
+        <MyEditor />
         <div className={css(styles.buttonsContainer)}>
           <Button
             isWhite={true}
             label="Save Draft"
             disabled={isSubmitting}
             customButtonStyle={styles.buttonStyle}
+            onClick={handleSaveDraft}
           />
+          <span className={css(styles.buttonSpacer)} />
           <Button
             isWhite={false}
             label="Post"
             disabled={isSubmitting}
             customButtonStyle={styles.buttonStyle}
+            onClick={handlePost}
           />
         </div>
       </form>
@@ -64,8 +70,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     marginTop: "42px",
   },
-  buttonStyle: {
-    marginLeft: "31px",
+  buttonSpacer: {
+    width: "31px",
   },
   chooseHub: {
     width: "468px",
