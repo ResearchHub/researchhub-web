@@ -1,6 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { MyEditor } from "~/components/CKEditor/MyEditor";
+import { ELNEditor } from "~/components/CKEditor/ELNEditor";
+import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 
 class Index extends React.Component {
   constructor(props) {
@@ -13,7 +14,7 @@ class Index extends React.Component {
   render() {
     return (
       <div className={css(styles.page)}>
-        <MyEditor />
+        <ELNEditor />
       </div>
     );
   }
