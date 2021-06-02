@@ -1,6 +1,6 @@
 (function(e) {
-  const a = (e["ast"] = e["ast"] || {});
-  a.dictionary = Object.assign(a.dictionary || {}, {
+  const i = (e["ast"] = e["ast"] || {});
+  i.dictionary = Object.assign(i.dictionary || {}, {
     "%0 of %1": "",
     Aquamarine: "",
     Black: "",
@@ -10,6 +10,7 @@
     Cancel: "Encaboxar",
     "Centered image": "",
     "Change image text alternative": "",
+    Code: "",
     "Dim grey": "",
     Downloadable: "",
     "Dropdown toolbar": "",
@@ -20,9 +21,12 @@
     "Full size image": "Imaxen a tamañu completu",
     Green: "",
     Grey: "",
+    "Image resize list": "",
     "Image toolbar": "",
     "image widget": "complementu d'imaxen",
+    Insert: "",
     "Insert image": "",
+    "Insert image via URL": "",
     Italic: "Cursiva",
     "Left aligned image": "",
     "Light blue": "",
@@ -35,10 +39,14 @@
     "Open in a new tab": "",
     "Open link in new tab": "",
     Orange: "",
+    Original: "",
     Previous: "",
     Purple: "",
     Red: "",
     Redo: "Refacer",
+    "Resize image": "",
+    "Resize image to %0": "",
+    "Resize image to the original size": "",
     "Rich Text Editor": "Editor de testu arriquecíu",
     "Rich Text Editor, %0": "Editor de testu arriquecíu, %0",
     "Right aligned image": "",
@@ -50,11 +58,13 @@
     Turquoise: "",
     Undo: "Desfacer",
     Unlink: "Desenllazar",
+    Update: "",
+    "Update image URL": "",
     "Upload failed": "",
     White: "",
     Yellow: "",
   });
-  a.getPluralForm = function(e) {
+  i.getPluralForm = function(e) {
     return e != 1;
   };
 })(window.CKEDITOR_TRANSLATIONS || (window.CKEDITOR_TRANSLATIONS = {}));
