@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: 30,
+    padding: 40,
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
