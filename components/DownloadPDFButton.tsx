@@ -4,7 +4,7 @@ import colors from "../config/themes/colors";
 import { DownloadIcon } from "../config/themes/icons";
 import { StyleSheet, css } from "aphrodite";
 
-type DownloadPDFButtonProps = {
+export type DownloadPDFButtonProps = {
   paper: any;
   style: StyleSheet;
 };
