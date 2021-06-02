@@ -1,7 +1,10 @@
 (function(e) {
-  const a = (e["az"] = e["az"] || {});
-  a.dictionary = Object.assign(a.dictionary || {}, {
+  const i = (e["az"] = e["az"] || {});
+  i.dictionary = Object.assign(i.dictionary || {}, {
     "%0 of %1": "%1-dən %0",
+    "Align center": "Mərkəzə düzləndir",
+    "Align left": "Soldan düzləndir",
+    "Align right": "Sağdan düzləndir",
     Aquamarine: "Akvamarin",
     Black: "Qara",
     "Block quote": "Sitat bloku",
@@ -12,6 +15,7 @@
     "Centered image": "Mərkəzə düzləndir",
     "Change image text alternative": "Alternativ mətni redaktə et",
     "Choose heading": "Başlıqı seç",
+    Code: "Kod",
     Column: "Sütun",
     "Decrease indent": "Boş yeri kiçilt",
     "Delete column": "Sütunları sil",
@@ -35,13 +39,17 @@
     "Heading 4": "Başlıq 4",
     "Heading 5": "Başlıq 5",
     "Heading 6": "Başlıq 6",
+    "Horizontal line": "Üfüqi xətt",
+    "Image resize list": "",
     "Image toolbar": "Şəkil paneli",
     "image widget": "Şəkil vidgetı",
     "Increase indent": "Boş yeri böyüt",
+    Insert: "",
     "Insert code block": "Kod blokunu əlavə et",
     "Insert column left": "Sola sütun əlavə et",
     "Insert column right": "Sağa sütun əlavə et",
     "Insert image": "Şəkili əlavə et",
+    "Insert image via URL": "",
     "Insert media": "Media əlavə ed",
     "Insert paragraph after block": "",
     "Insert paragraph before block": "",
@@ -49,6 +57,7 @@
     "Insert row below": "Yuxarıya sətir əlavə et",
     "Insert table": "Cədvəli əlavə et",
     Italic: "Maili",
+    Justify: "Eninə görə",
     "Left aligned image": "Soldan düzləndir",
     "Light blue": "Açıq mavi",
     "Light green": "Açıq yaşıl",
@@ -67,6 +76,7 @@
     "Open in a new tab": "Yeni pəncərədə aç",
     "Open link in new tab": "Linki yeni pəncərədə aç",
     Orange: "Narıncı",
+    Original: "",
     Paragraph: "Abzas",
     "Paste the media URL in the input.": "Media URL-ni xanaya əlavə edin",
     "Plain text": "Sadə mətn",
@@ -74,11 +84,15 @@
     Purple: "Bənövşəyi",
     Red: "Qırmızı",
     Redo: "Təkrar et",
+    "Resize image": "",
+    "Resize image to %0": "",
+    "Resize image to the original size": "",
     "Rich Text Editor": "Rich Text Redaktoru",
     "Rich Text Editor, %0": "Rich Text Redaktoru, %0",
     "Right aligned image": "Sağdan düzləndir",
     Row: "Sətir",
     Save: "Yadda saxla",
+    "Saving changes": "Dəyişikliklər saxlanılır",
     "Select column": "",
     "Select row": "",
     "Show more items": "Daha çox əşyanı göstərin",
@@ -86,6 +100,8 @@
     "Split cell horizontally": "Xanaları üfüqi böl",
     "Split cell vertically": "Xanaları şaquli böl",
     "Table toolbar": "Cədvəl paneli",
+    "Text alignment": "Mətn düzləndirməsi",
+    "Text alignment toolbar": "Mətnin düzləndirmə paneli",
     "Text alternative": "Alternativ mətn",
     "The URL must not be empty.": "URL boş olmamalıdır.",
     "This link has no URL": "Bu linkdə URL yoxdur",
@@ -95,13 +111,15 @@
     Turquoise: "Firuzəyi",
     Undo: "İmtina et",
     Unlink: "Linki sil",
+    Update: "",
+    "Update image URL": "",
     "Upload failed": "Şəkili serverə yüklə",
     "Upload in progress": "Yüklənir",
     White: "Ağ",
     "Widget toolbar": "Vidgetin paneli",
     Yellow: "Sarı",
   });
-  a.getPluralForm = function(e) {
+  i.getPluralForm = function(e) {
     return e != 1;
   };
 })(window.CKEDITOR_TRANSLATIONS || (window.CKEDITOR_TRANSLATIONS = {}));
