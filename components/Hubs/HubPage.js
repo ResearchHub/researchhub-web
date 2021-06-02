@@ -351,7 +351,11 @@ class HubPage extends React.Component {
     if (page) {
       as += `?page=${page}`;
     }
-    Router.push(href, as, { shallow: true });
+
+    const { filterBy } = this.state;
+    if (filterBy.href) {
+      Router.push(href, as, { shallow: true });
+    }
   };
 
   formatLink = () => {
@@ -641,6 +645,10 @@ class HubPage extends React.Component {
           href: "pulled-papers",
           label: "Pulled Papers",
           disableScope: true,
+        },
+        {
+          value: "user-uploaded",
+          label: "User Uploaded",
         }
       );
     }
@@ -888,6 +896,12 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
+    "@media only screen and (max-width: 767px)": {
+      padding: "0px 8px",
+      maxWidth: 550,
+      display: "block",
+      minWidth: "unset",
+    },
   },
   mainfeed: {
     minHeight: "inherit",
@@ -901,19 +915,6 @@ var styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 990px)": {
       width: "100%",
-    },
-    "@media only screen and (min-width: 900px)": {
-      // paddingLeft: 25,
-      // paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      // paddingLeft: 30,
-      // paddingRight: 50,
-    },
-
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
     },
     "@media only screen and (max-width: 415px)": {
       padding: 0,

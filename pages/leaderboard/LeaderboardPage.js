@@ -25,6 +25,7 @@ import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Head from "~/components/Head";
 import HeadComponent from "../../components/Head";
 import SideColumn from "~/components/Home/SideColumn";
+import { HubActions } from "../../redux/hub";
 
 const filterOptions = [
   {
@@ -247,6 +248,10 @@ class Index extends React.Component {
   };
 
   componentDidMount() {
+    let { getHubs } = this.props;
+    if (!this.props.hubs.hubs.length) {
+      getHubs();
+    }
     let byOptions = this.setHubs(this.props.hubs.hubs);
     let type = decodeURIComponent(Router.router.query.type);
     let hub = decodeURIComponent(Router.router.query.hub);
@@ -1396,7 +1401,11 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
 });
 
+const mapDispatchToProps = {
+  getHubs: HubActions.getHubs,
+};
+
 export default connect(
   mapStateToProps,
-  null
+  mapDispatchToProps
 )(Index);

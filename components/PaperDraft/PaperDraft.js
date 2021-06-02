@@ -172,7 +172,7 @@ class PaperDraft extends React.Component {
           </div>
           <PaperDraftEventCaptureWrap
             shouldAllowKeyEvents={true}
-            shouldAllowMouseEvents={isLoggedIn}
+            shouldAllowMouseEvents={true}
           >
             <div
               style={{

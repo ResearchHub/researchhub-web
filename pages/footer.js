@@ -75,7 +75,17 @@ class Footer extends React.Component {
             <a
               target="_blank"
               className={css(styles.link)}
-              href="https://join.slack.com/t/researchhub-community/shared_invite/zt-iqred46f-f0j0M6_ZxtliD~UszPyWEQ"
+              href="https://medium.com/researchhub"
+              rel="noreferrer noopener"
+            >
+              <div className={css(styles.social)}>
+                <span className={css(styles.logo)}>{icons.medium}</span>
+              </div>
+            </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://join.slack.com/t/researchhub-community/shared_invite/zt-oytw02om-w1cQc2Kcjs7vg3tZHqt9Ww"
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
@@ -101,17 +111,28 @@ class Footer extends React.Component {
                 <span className={css(styles.logo)}>{icons.reddit}</span>
               </div>
             </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://github.com/ResearchHub"
+            >
+              <div className={css(styles.social)}>
+                <span className={css(styles.logo)}>{icons.github}</span>
+              </div>
+            </a>
           </div>
-          <Link href={"/about/tos"} as={"/about/tos"}>
-            <a className={css(styles.link)}>
-              <div className={css(styles.tab)}>Terms of Service</div>
-            </a>
-          </Link>
-          <Link href={"/about/privacy"} as={"/about/privacy"}>
-            <a className={css(styles.link)}>
-              <div className={css(styles.tab)}>Privacy Policy</div>
-            </a>
-          </Link>
+          <div className={css(styles.legalFooter)}>
+            <Link href={"/about/tos"} as={"/about/tos"}>
+              <a className={css(styles.link)}>
+                <div className={css(styles.tab)}>Terms of Service</div>
+              </a>
+            </Link>
+            <Link href={"/about/privacy"} as={"/about/privacy"}>
+              <a className={css(styles.link)}>
+                <div className={css(styles.tab)}>Privacy Policy</div>
+              </a>
+            </Link>
+          </div>
         </div>
       </footer>
     );
@@ -137,6 +158,7 @@ const styles = StyleSheet.create({
   },
   imgTab: {
     display: "flex",
+    flex: 1,
 
     "@media only screen and (max-width: 767px)": {
       width: "100%",
@@ -169,11 +191,18 @@ const styles = StyleSheet.create({
   socials: {
     marginRight: 24,
     display: "flex",
+
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 16,
+    },
+  },
+  legalFooter: {
+    display: "flex",
   },
   logo: {
     color: "#282936",
     fontSize: "1.1em",
-    marginTop: 3,
+    // marginTop: 3,
   },
   ccby: {
     color: "#fff",
@@ -204,6 +233,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
     marginTop: 10,
   },
   researchHubLogo: {

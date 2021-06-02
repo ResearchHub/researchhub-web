@@ -53,9 +53,11 @@ import {
 import {
   faFacebookF,
   faLinkedinIn,
+  faMedium,
   faSlack,
   faTwitter,
   faReddit,
+  faGithub,
 } from "@fortawesome/fontawesome-free-brands";
 import {
   faArrowToBottom,
@@ -180,6 +182,7 @@ library.add(
   faUserPlus,
   faFacebookF,
   faLinkedinIn,
+  faMedium,
   faReddit,
   faSlack,
   faTwitter,
@@ -301,6 +304,7 @@ const icons = {
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
   flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
+  github: <FontAwesomeIcon icon={faGithub} />,
   globe: <FontAwesomeIcon icon={faGlobeAmericas} />,
   graduationCap: <FontAwesomeIcon icon={faGraduationCap} />,
   home: <FontAwesomeIcon icon={faHome} />,
@@ -313,6 +317,7 @@ const icons = {
   live: <FontAwesomeIcon icon={faBell} />,
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
   manage: <FontAwesomeIcon icon={faTasksAlt} />,
+  medium: <FontAwesomeIcon icon={faMedium} />,
   minus: <FontAwesomeIcon icon={faMinus} />,
   minusCircle: <FontAwesomeIcon icon={faMinusCircle} />,
   mousePointer: <FontAwesomeIcon icon={faMousePointer} />,
