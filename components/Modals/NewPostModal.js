@@ -24,13 +24,13 @@ const items = [
     description:
       "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
-    route: "/paper/upload/info",
+    route: "/paper/upload/question",
   },
   {
     header: "Publish a Research Project",
     description: "Publish lab notes, original research, metastudies, etc.",
     imgSrc: "/static/icons/publishProject.png",
-    route: "/paper/upload/info",
+    route: "/paper/upload/project",
   },
 ];
 
@@ -40,7 +40,6 @@ class NewPostModal extends React.Component {
 
     this.initialState = {
       selected: 0,
-      mobileView: false, // TODO: ?
     };
 
     this.state = {
