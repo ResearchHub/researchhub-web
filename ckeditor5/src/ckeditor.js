@@ -3,17 +3,25 @@
  * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
  */
 import ClassicEditor from "@ckeditor/ckeditor5-editor-classic/src/classiceditor.js";
+import Alignment from "@ckeditor/ckeditor5-alignment/src/alignment.js";
+import AutoImage from "@ckeditor/ckeditor5-image/src/autoimage.js";
 import Autoformat from "@ckeditor/ckeditor5-autoformat/src/autoformat.js";
+import Autolink from "@ckeditor/ckeditor5-link/src/autolink.js";
+import Autosave from "@ckeditor/ckeditor5-autosave/src/autosave.js";
 import BlockQuote from "@ckeditor/ckeditor5-block-quote/src/blockquote.js";
 import Bold from "@ckeditor/ckeditor5-basic-styles/src/bold.js";
 import CloudServices from "@ckeditor/ckeditor5-cloud-services/src/cloudservices.js";
+import Code from "@ckeditor/ckeditor5-basic-styles/src/code.js";
 import CodeBlock from "@ckeditor/ckeditor5-code-block/src/codeblock.js";
 import EasyImage from "@ckeditor/ckeditor5-easy-image/src/easyimage.js";
 import Essentials from "@ckeditor/ckeditor5-essentials/src/essentials.js";
 import ExportToPDF from "@ckeditor/ckeditor5-export-pdf/src/exportpdf.js";
 import Heading from "@ckeditor/ckeditor5-heading/src/heading.js";
+import HorizontalLine from "@ckeditor/ckeditor5-horizontal-line/src/horizontalline.js";
 import Image from "@ckeditor/ckeditor5-image/src/image.js";
 import ImageCaption from "@ckeditor/ckeditor5-image/src/imagecaption.js";
+import ImageInsert from "@ckeditor/ckeditor5-image/src/imageinsert.js";
+import ImageResize from "@ckeditor/ckeditor5-image/src/imageresize.js";
 import ImageStyle from "@ckeditor/ckeditor5-image/src/imagestyle.js";
 import ImageToolbar from "@ckeditor/ckeditor5-image/src/imagetoolbar.js";
 import ImageUpload from "@ckeditor/ckeditor5-image/src/imageupload.js";
@@ -39,17 +47,25 @@ class Editor extends ClassicEditor {}
 
 // Plugins to include in the build.
 Editor.builtinPlugins = [
+  Alignment,
+  AutoImage,
   Autoformat,
+  Autolink,
+  Autosave,
   BlockQuote,
   Bold,
   CloudServices,
+  Code,
   CodeBlock,
   EasyImage,
   Essentials,
   ExportToPDF,
   Heading,
+  HorizontalLine,
   Image,
   ImageCaption,
+  ImageInsert,
+  ImageResize,
   ImageStyle,
   ImageToolbar,
   ImageUpload,
