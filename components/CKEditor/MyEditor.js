@@ -1,13 +1,28 @@
 import React, { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 
+// Components
+import Button from "~/components/Form/Button";
+
+// Config
+import API from "~/config/api";
+
 export function MyEditor() {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
+  const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, Editor } = editorRef.current || {};
 
   const sidebarElementRef = useRef();
   const presenceListElementRef = useRef();
+
+  function saveData(data) {
+    console.log("saveData: " + data);
+  }
+
+  function manualSaveData(data) {
+    console.log("manualSaveData: " + data);
+  }
 
   const editorConfiguration = {
     toolbar: [
@@ -56,6 +71,11 @@ export function MyEditor() {
     presenceList: {
       container: presenceListElementRef.current,
     },
+    autosave: {
+      save(editor) {
+        return saveData(editor.getData());
+      },
+    },
   };
 
   useEffect(() => {
@@ -102,6 +122,7 @@ export function MyEditor() {
           <CKEditor
             onReady={(editor) => {
               console.log("Editor is ready to use!", editor);
+              setEditorInstance(editor);
 
               // Switch between inline and sidebar annotations according to the window size.
               const boundRefreshDisplayMode = refreshDisplayMode.bind(
@@ -130,17 +151,23 @@ export function MyEditor() {
   };
 
   return (
-    <div className={css(styles.test)}>
-      <div className="centered">
-        <div className="row-presence">
-          <div ref={presenceListElementRef} className="presence"></div>
-        </div>
-        {renderEditor()}
+    <div className="centered">
+      <div className="row-presence">
+        <div ref={presenceListElementRef} className="presence"></div>
+      </div>
+      {renderEditor()}
+      <div
+        className={css(styles.saveButton)}
+        onClick={() => manualSaveData(editorInstance.getData())}
+      >
+        <Button isWhite={false} label={"Save"} hideRipples={true} />
       </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
-  test: {},
+  saveButton: {
+    marginTop: 15,
+  },
 });
