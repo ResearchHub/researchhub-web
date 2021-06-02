@@ -48291,12 +48291,10 @@
         }
         _setupDropMarker() {
           const t = this.editor;
-          t.conversion
-            .for("editingDowncast")
-            .markerToHighlight({
-              model: "drop-target",
-              view: { classes: ["ck-clipboard-drop-target-range"] },
-            });
+          t.conversion.for("editingDowncast").markerToHighlight({
+            model: "drop-target",
+            view: { classes: ["ck-clipboard-drop-target-range"] },
+          });
           t.conversion.for("editingDowncast").markerToElement({
             model: "drop-target",
             view: (e, { writer: n }) => {
@@ -53277,13 +53275,11 @@
           }
         }
         _addDefaultH1Conversion(t) {
-          t.conversion
-            .for("upcast")
-            .elementToElement({
-              model: "heading1",
-              view: "h1",
-              converterPriority: hd["default"].get("low") + 1,
-            });
+          t.conversion.for("upcast").elementToElement({
+            model: "heading1",
+            view: "h1",
+            converterPriority: hd["default"].get("low") + 1,
+          });
         }
       }
       function CT(t) {
@@ -54999,12 +54995,10 @@
               }
             })
           );
-          t.conversion
-            .for("upcast")
-            .attributeToAttribute({
-              view: { name: "figure", styles: { width: /.+/ } },
-              model: { key: "width", value: (t) => t.getStyle("width") },
-            });
+          t.conversion.for("upcast").attributeToAttribute({
+            view: { name: "figure", styles: { width: /.+/ } },
+            model: { key: "width", value: (t) => t.getStyle("width") },
+          });
         }
       }
       const ID = {
@@ -55839,18 +55833,14 @@
           t.conversion
             .for("dataDowncast")
             .attributeToElement({ model: "linkHref", view: Qy });
-          t.conversion
-            .for("editingDowncast")
-            .attributeToElement({
-              model: "linkHref",
-              view: (t, e) => Qy(Xy(t), e),
-            });
-          t.conversion
-            .for("upcast")
-            .elementToAttribute({
-              view: { name: "a", attributes: { href: true } },
-              model: { key: "linkHref", value: (t) => t.getAttribute("href") },
-            });
+          t.conversion.for("editingDowncast").attributeToElement({
+            model: "linkHref",
+            view: (t, e) => Qy(Xy(t), e),
+          });
+          t.conversion.for("upcast").elementToAttribute({
+            view: { name: "a", attributes: { href: true } },
+            model: { key: "linkHref", value: (t) => t.getAttribute("href") },
+          });
           t.commands.add("link", new gI(t));
           t.commands.add("unlink", new mI(t));
           const e = tx(t.t, ex(t.config.get("link.decorators")));
@@ -55902,12 +55892,10 @@
                 }
               },
             });
-            e.conversion
-              .for("upcast")
-              .elementToAttribute({
-                view: { name: "a", attributes: i.get(t.id).attributes },
-                model: { key: t.id },
-              });
+            e.conversion.for("upcast").elementToAttribute({
+              view: { name: "a", attributes: i.get(t.id).attributes },
+              model: { key: t.id },
+            });
           });
         }
         _enableInsertContentSelectionAttributesFixer() {
@@ -56339,24 +56327,20 @@
           this._balloon = t.plugins.get(Ik);
           this._createToolbarLinkButton();
           this._enableUserBalloonInteractions();
-          t.conversion
-            .for("editingDowncast")
-            .markerToHighlight({
-              model: VI,
-              view: { classes: ["ck-fake-link-selection"] },
-            });
-          t.conversion
-            .for("editingDowncast")
-            .markerToElement({
-              model: VI,
-              view: {
-                name: "span",
-                classes: [
-                  "ck-fake-link-selection",
-                  "ck-fake-link-selection_collapsed",
-                ],
-              },
-            });
+          t.conversion.for("editingDowncast").markerToHighlight({
+            model: VI,
+            view: { classes: ["ck-fake-link-selection"] },
+          });
+          t.conversion.for("editingDowncast").markerToElement({
+            model: VI,
+            view: {
+              name: "span",
+              classes: [
+                "ck-fake-link-selection",
+                "ck-fake-link-selection_collapsed",
+              ],
+            },
+          });
         }
         destroy() {
           super.destroy();
@@ -75565,14 +75549,12 @@
         }
         ["_setPendingAction"]() {
           const { t: t } = this["editor"]["locale"];
-          this["_pendingAction"] = this["editor"]["plugins"]
-            ["get"](jg)
-            ["add"](
-              t({
-                string: "Sending data to the server.",
-                id: "PENDING_ACTION_SENDING_DATA",
-              })
-            );
+          this["_pendingAction"] = this["editor"]["plugins"]["get"](jg)["add"](
+            t({
+              string: "Sending data to the server.",
+              id: "PENDING_ACTION_SENDING_DATA",
+            })
+          );
         }
         ["_clearPendingAction"]() {
           this["_pendingAction"] &&
@@ -75979,15 +75961,13 @@
                   : null;
               },
             }),
-            t[GV("0x5")]
-              [GV("0x3f")](GV("0x8"))
-              [GV("0x3e")]({
-                view: { name: GV("0x4e"), attribute: { id: /^\w/ } },
-                model: (t, { writer: e }) =>
-                  e[GV("0x33")](GV("0x41"), {
-                    "data-name": GV("0x31") + t["getAttribute"]("id"),
-                  }),
-              }),
+            t[GV("0x5")][GV("0x3f")](GV("0x8"))[GV("0x3e")]({
+              view: { name: GV("0x4e"), attribute: { id: /^\w/ } },
+              model: (t, { writer: e }) =>
+                e[GV("0x33")](GV("0x41"), {
+                  "data-name": GV("0x31") + t["getAttribute"]("id"),
+                }),
+            }),
             t[GV("0x5")]
               [GV("0x3f")](GV("0x8"))
               [GV("0x3c")]({ view: GV("0x4e") });
@@ -83469,13 +83449,11 @@
               for (const t of a) e["unwrap"](t);
               return i;
             }),
-            t["conversion"]
-              ["for"]("editingDowncast")
-              ["markerToHighlight"]({
-                model: "suggestion:formatBlock:tablePasteCell",
-                view: l,
-                converterPriority: "high",
-              }),
+            t["conversion"]["for"]("editingDowncast")["markerToHighlight"]({
+              model: "suggestion:formatBlock:tablePasteCell",
+              view: l,
+              converterPriority: "high",
+            }),
             t["conversion"]["for"]("dataDowncast")["markerToHighlight"]({
               model: "suggestion:formatBlock:tablePasteCell",
               view: (t, e) => {
@@ -83828,18 +83806,16 @@
               { priority: "highest" }
             );
           }),
-            t["conversion"]
-              ["for"]("dataDowncast")
-              ["markerToData"]({
-                model: "suggestion",
-                view: (t, e) =>
-                  e["options"]["showSuggestionHighlights"]
-                    ? null
-                    : {
-                        group: "suggestion",
-                        name: t["substr"]("suggestion"["length"] + 1),
-                      },
-              }),
+            t["conversion"]["for"]("dataDowncast")["markerToData"]({
+              model: "suggestion",
+              view: (t, e) =>
+                e["options"]["showSuggestionHighlights"]
+                  ? null
+                  : {
+                      group: "suggestion",
+                      name: t["substr"]("suggestion"["length"] + 1),
+                    },
+            }),
             t["conversion"]["for"]("upcast")["elementToElement"]({
               view: {
                 name: "suggestion",
@@ -87243,13 +87219,11 @@
           i.for("upcast").add(lK("td"));
           i.for("upcast").add(lK("th"));
           i.for("editingDowncast").add(gK());
-          t.conversion
-            .for("editingDowncast")
-            .elementToElement({
-              model: "paragraph",
-              view: bK,
-              converterPriority: "high",
-            });
+          t.conversion.for("editingDowncast").elementToElement({
+            model: "paragraph",
+            view: bK,
+            converterPriority: "high",
+          });
           i.attributeToAttribute({ model: "colspan", view: "colspan" });
           i.attributeToAttribute({ model: "rowspan", view: "rowspan" });
           i.for("editingDowncast").add(mK());

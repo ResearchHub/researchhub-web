@@ -2983,7 +2983,10 @@ cipher-base@^1.0.0, cipher-base@^1.0.1, cipher-base@^1.0.3:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-"ckeditor5-custom-build@file:./ckeditor5":
+"ckeditor5-eln-build@file:./ckeditor5/ckeditor5-eln":
+  version "0.0.1"
+
+"ckeditor5-simple-build@file:./ckeditor5/ckeditor5-simple":
   version "0.0.1"
 
 class-utils@^0.3.5:
