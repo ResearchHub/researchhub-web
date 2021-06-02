@@ -7,10 +7,7 @@ import Head from "~/components/Head";
 import PaperUploadInfo from "~/components/Paper/PaperUploadInfo";
 import AskQuestionForm from "~/components/Paper/AskQuestionForm";
 
-// Redux
-import { ModalActions } from "~/redux/modals";
-
-function Index(props) {
+export default function Index() {
   const router = useRouter();
   const { uploadPaperTitle, type } = router.query;
 
@@ -22,14 +19,3 @@ function Index(props) {
     </Fragment>
   );
 }
-
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {
-  openNewPostModal: ModalActions.openNewPostModal,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
