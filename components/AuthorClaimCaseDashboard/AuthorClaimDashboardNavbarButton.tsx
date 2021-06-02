@@ -58,6 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 12,
     fontSize: 12,
-    width: 32,
+    minWidth: 32,
   },
 });
