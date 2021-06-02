@@ -705,7 +705,10 @@ class PaperPageCard extends React.Component {
           <div className={css(styles.downloadPDFContainer)}>
             <div className={css(styles.downloadPDFWrapper)}>
               {previewAvailable && (
-                <DownloadPDFButton paper={paper} style={styles.hideOnSmall} />
+                <DownloadPDFButton
+                  file={paper.file}
+                  style={styles.hideOnSmall}
+                />
               )}
             </div>
           </div>

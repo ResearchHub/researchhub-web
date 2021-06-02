@@ -5,16 +5,15 @@ import { DownloadIcon } from "../config/themes/icons";
 import { StyleSheet, css } from "aphrodite";
 
 export type DownloadPDFButtonProps = {
-  paper: any;
+  file: string;
   style: StyleSheet;
 };
 
 export default function DownloadPDFButton({
-  paper,
+  file,
   style,
 }: DownloadPDFButtonProps): ReactElement<"div"> | null {
   const downloadPDF = () => {
-    let file = paper.file;
     window.open(file, "_blank");
   };
 
