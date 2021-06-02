@@ -1,6 +1,6 @@
 (function(e) {
-  const n = (e["bg"] = e["bg"] || {});
-  n.dictionary = Object.assign(n.dictionary || {}, {
+  const i = (e["bg"] = e["bg"] || {});
+  i.dictionary = Object.assign(i.dictionary || {}, {
     "Block quote": "Цитат",
     Bold: "Удебелен",
     "Bulleted List": "Водещи символи",
@@ -8,6 +8,7 @@
     "Centered image": "",
     "Change image text alternative": "",
     "Choose heading": "Избери заглавие",
+    Code: "",
     Column: "Колона",
     "Decrease indent": "Намали отстъпа",
     "Delete column": "Изтриване на колона",
@@ -25,12 +26,15 @@
     "Heading 4": "Заглавие 4",
     "Heading 5": "Заглавие 5",
     "Heading 6": "Заглавие 6",
+    "Image resize list": "",
     "Image toolbar": "",
     "image widget": "Компонент за изображение",
     "Increase indent": "Увеличи отстъпа",
+    Insert: "",
     "Insert column left": "Вмъкни колона отляво",
     "Insert column right": "Вмъкни колона отдясно",
     "Insert image": "Вмъкни изображение",
+    "Insert image via URL": "",
     "Insert media": "Вмъкни медия",
     "Insert row above": "Вмъкни ред отгоре",
     "Insert row below": "Вмъкни ред отдолу",
@@ -49,10 +53,14 @@
     "Numbered List": "Номериране",
     "Open in a new tab": "Отваряне в нов раздел",
     "Open link in new tab": "Отваряне на линк в нов раздел",
+    Original: "",
     Paragraph: "Параграф",
     "Paste the media URL in the input.":
       "Постави медииния уеб адрес във входа.",
     Redo: "Повтори",
+    "Resize image": "",
+    "Resize image to %0": "",
+    "Resize image to the original size": "",
     "Right aligned image": "",
     Row: "Ред",
     Save: "Запазване",
@@ -70,10 +78,12 @@
       "Полезен съвет: Постави уеб адреса в съдържанието, за да вградите по-бързо.",
     Undo: "Отмени",
     Unlink: "Премахване на линка",
+    Update: "",
+    "Update image URL": "",
     "Upload failed": "",
     "Upload in progress": "Качването е в процес",
   });
-  n.getPluralForm = function(e) {
+  i.getPluralForm = function(e) {
     return e != 1;
   };
 })(window.CKEDITOR_TRANSLATIONS || (window.CKEDITOR_TRANSLATIONS = {}));
