@@ -7,7 +7,7 @@ import Button from "~/components/Form/Button";
 // Config
 import API from "~/config/api";
 
-export function MyEditor() {
+export function ELNEditor() {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
@@ -82,7 +82,7 @@ export function MyEditor() {
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("ckeditor5-custom-build/build/ckeditor").Editor,
+      Editor: require("ckeditor5-eln-build/build/ckeditor").Editor,
     };
     setEditorLoaded(true);
     return () => {
