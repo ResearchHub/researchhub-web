@@ -55,6 +55,7 @@ export function MyEditor() {
       "comment",
       "|",
       "trackChanges",
+      "mathType",
     ],
     cloudServices: {
       tokenUrl:
@@ -156,11 +157,13 @@ export function MyEditor() {
         <div ref={presenceListElementRef} className="presence"></div>
       </div>
       {renderEditor()}
-      <div
-        className={css(styles.saveButton)}
-        onClick={() => manualSaveData(editorInstance.getData())}
-      >
-        <Button isWhite={false} label={"Save"} hideRipples={true} />
+      <div className={css(styles.saveButton)}>
+        <Button
+          isWhite={false}
+          label={"Save"}
+          hideRipples={true}
+          onClick={() => manualSaveData(editorInstance.getData())}
+        />
       </div>
     </div>
   );
