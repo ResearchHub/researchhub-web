@@ -1,6 +1,6 @@
 (function(e) {
-  const t = (e["th"] = e["th"] || {});
-  t.dictionary = Object.assign(t.dictionary || {}, {
+  const i = (e["th"] = e["th"] || {});
+  i.dictionary = Object.assign(i.dictionary || {}, {
     "%0 of %1": "",
     Aquamarine: "พลอยสีฟ้า",
     Black: "สีดำ",
@@ -31,13 +31,17 @@
     "Heading 4": "",
     "Heading 5": "",
     "Heading 6": "",
+    "Horizontal line": "เส้นแนวนอน",
+    "Image resize list": "",
     "Image toolbar": "เครื่องมือรูปภาพ",
     "image widget": "วิดเจ็ตรูปภาพ",
     "Increase indent": "เพิ่มการเยื้อง",
+    Insert: "",
     "Insert code block": "เพิ่มโค้ดบล็อก",
     "Insert column left": "แทรกคอลัมน์ทางซ้าย",
     "Insert column right": "แทรกคอลัมน์ทางขวา",
     "Insert image": "แทรกรูป",
+    "Insert image via URL": "",
     "Insert paragraph after block": "",
     "Insert paragraph before block": "",
     "Insert row above": "แทรกส่วนหัวด้านบน",
@@ -54,17 +58,22 @@
     "Merge cells": "ผสานเซลล์",
     Next: "",
     Orange: "สีส้ม",
+    Original: "",
     Paragraph: "ย่อหน้า",
     "Plain text": "ข้อความธรรมดา",
     Previous: "",
     Purple: "สีม่วง",
     Red: "สีแดง",
     Redo: "ทำซ้ำ",
+    "Resize image": "",
+    "Resize image to %0": "",
+    "Resize image to the original size": "",
     "Rich Text Editor": "",
     "Rich Text Editor, %0": "",
     "Right aligned image": "จัดแนวภาพขวา",
     Row: "แถว",
     Save: "บันทึก",
+    "Saving changes": "บันทึกการเปลี่ยนแปลง<br>",
     "Select column": "",
     "Select row": "",
     "Show more items": "",
@@ -75,13 +84,15 @@
     "Text alternative": "ข้อความเมื่อไม่พบรูป",
     Turquoise: "สีเขียวขุ่น",
     Undo: "ย้อนกลับ",
+    Update: "",
+    "Update image URL": "",
     "Upload failed": "อัปโหลดไม่สำเร็จ",
     "Upload in progress": "กำลังดำเนินการอัปโหลด",
     White: "สีขาว",
     "Widget toolbar": "แถมเครื่องมือวิดเจ็ต",
     Yellow: "สีเหลือง",
   });
-  t.getPluralForm = function(e) {
+  i.getPluralForm = function(e) {
     return 0;
   };
 })(window.CKEDITOR_TRANSLATIONS || (window.CKEDITOR_TRANSLATIONS = {}));
