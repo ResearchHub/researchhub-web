@@ -9,7 +9,7 @@ import { fetchPaperFigures } from "~/config/fetch";
 import { absoluteUrl } from "../../../config/utils";
 
 const PaperPreview = ({
-  paperId,
+  paper,
   previewStyles,
   columnOverrideStyles,
   onLoad,
@@ -20,12 +20,12 @@ const PaperPreview = ({
 
   useEffect(() => {
     fetchFigures();
-  }, [paperId]);
+  }, [paper.id]);
 
   const fetchFigures = () => {
-    if (paperId) {
+    if (paper.id) {
       setFetching(true);
-      return fetchPaperFigures(paperId).then((res) => {
+      return fetchPaperFigures(paper.id).then((res) => {
         const { data } = res;
         const figureUrls = data.map((preview) => preview.file);
         setFigureUrls(figureUrls);
