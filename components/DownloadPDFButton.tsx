@@ -12,7 +12,7 @@ export type DownloadPDFButtonProps = {
 export default function DownloadPDFButton({
   file,
   style,
-}: DownloadPDFButtonProps): ReactElement<"div"> | null {
+}: DownloadPDFButtonProps): ReactElement<"div"> {
   const downloadPDF = () => {
     window.open(file, "_blank");
   };
