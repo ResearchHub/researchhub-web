@@ -20,6 +20,7 @@ import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
+import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
@@ -617,6 +618,7 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
+                <PaperPromotionIcon paper={paper} />
                 <div className={css(styles.divider)}></div>
                 <PaperDiscussionButton
                   paper={paper}
