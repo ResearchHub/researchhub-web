@@ -1,21 +1,13 @@
-import { Fragment, useState } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-
-// redux
-import { ModalActions } from "~/redux/modals";
-
-import numeral from "numeral";
 import colors from "~/config/themes/colors";
+import numeral from "numeral";
+import { Fragment, useState } from "react";
+import { ModalActions } from "~/redux/modals";
 import { PaperPromotionIcon as Icon } from "~/config/themes/icons";
+import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
 
-const PaperPromotionIcon = ({
-  customStyle,
-  paper,
-  openPaperTransactionModal,
-}) => {
+function PaperPromotionIcon({ customStyle, openPaperTransactionModal, paper }) {
   const [hover, setHover] = useState(false);
 
   const { promoted, score } = paper;
@@ -26,6 +18,10 @@ const PaperPromotionIcon = ({
     return numeral(promoted - score).format("0a");
   };
 
+  const numPromotions = getCount();
+  if (!numPromotions) {
+    return null;
+  }
   return (
     <PermissionNotificationWrapper
       modalMessage="support paper"
@@ -40,17 +36,13 @@ const PaperPromotionIcon = ({
         onMouseLeave={() => setHover(false)}
       >
         <span className={css(styles.icon, customStyle)}>
-          <Icon color={hover && colors.ORANGE()} emptyState={!getCount()} />
+          <Icon color={hover && colors.ORANGE()} emptyState={false} />
         </span>
-        <span
-          className={css(styles.count, !promoted && styles.hide) + " count"}
-        >
-          {getCount()}
-        </span>
+        <span className={css(styles.count) + " count"}>{numPromotions}</span>
       </div>
     </PermissionNotificationWrapper>
   );
-};
+}
 
 const styles = StyleSheet.create({
   root: {
@@ -58,8 +50,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+    width: 48,
     cursor: "pointer",
-    // paddingRight: 17,
     ":hover .count": {
       color: colors.BLACK(),
     },
