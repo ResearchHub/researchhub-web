@@ -168,7 +168,6 @@ function AuthorPage(props) {
       .then(Helpers.parseJSON)
       .then((res) => {
         const authorUser = res.results[0];
-        setAuthorSuspendedFetched(true);
         if (authorUser) {
           setAuthorUserStatus(
             authorUser.is_suspended
