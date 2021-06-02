@@ -1,7 +1,10 @@
 (function(e) {
-  const a = (e["ro"] = e["ro"] || {});
-  a.dictionary = Object.assign(a.dictionary || {}, {
+  const i = (e["ro"] = e["ro"] || {});
+  i.dictionary = Object.assign(i.dictionary || {}, {
     "%0 of %1": "%0 din %1",
+    "Align center": "Aliniază la centru",
+    "Align left": "Aliniază la stânga",
+    "Align right": "Aliniază la dreapta",
     Aquamarine: "Acvamarin",
     Black: "Negru",
     "Block quote": "Bloc citat",
@@ -12,6 +15,7 @@
     "Centered image": "Imagine aliniată pe centru",
     "Change image text alternative": "Schimbă textul alternativ al imaginii",
     "Choose heading": "Alege titlu",
+    Code: "Cod",
     Column: "Coloană",
     "Decrease indent": "Micșorează indent",
     "Delete column": "Șterge coloană",
@@ -35,12 +39,15 @@
     "Heading 4": "Titlu 4",
     "Heading 5": "Titlu 5",
     "Heading 6": "Titlu 6",
+    "Image resize list": "",
     "Image toolbar": "Bară imagine",
     "image widget": "widget imagine",
     "Increase indent": "Mărește indent",
+    Insert: "",
     "Insert column left": "Inserează coloană la stânga",
     "Insert column right": "Inserează coloană la dreapta",
     "Insert image": "Inserează imagine",
+    "Insert image via URL": "",
     "Insert media": "Inserează media",
     "Insert paragraph after block": "",
     "Insert paragraph before block": "",
@@ -48,6 +55,7 @@
     "Insert row below": "Inserează rând dedesubt",
     "Insert table": "Inserează tabel",
     Italic: "Cursiv",
+    Justify: "Aliniază stânga-dreapta",
     "Left aligned image": "Imagine aliniată la stânga",
     "Light blue": "Albastru deschis",
     "Light green": "Verde deschis",
@@ -66,17 +74,22 @@
     "Open in a new tab": "Deschide în tab nou",
     "Open link in new tab": "Deschide link în tab nou",
     Orange: "Portocaliu",
+    Original: "",
     Paragraph: "Paragraf",
     "Paste the media URL in the input.": "Adaugă URL-ul media in input.",
     Previous: "Înapoi",
     Purple: "Violet",
     Red: "Roșu",
     Redo: "Revenire",
+    "Resize image": "",
+    "Resize image to %0": "",
+    "Resize image to the original size": "",
     "Rich Text Editor": "Editor de text",
     "Rich Text Editor, %0": "Editor de text, %0",
     "Right aligned image": "Imagine aliniată la dreapta",
     Row: "Rând",
     Save: "Salvare",
+    "Saving changes": "Se salvează modificările",
     "Select column": "",
     "Select row": "",
     "Show more items": "",
@@ -84,6 +97,8 @@
     "Split cell horizontally": "Scindează celula pe orizontală",
     "Split cell vertically": "Scindează celula pe verticală",
     "Table toolbar": "Bară tabel",
+    "Text alignment": "Aliniere text",
+    "Text alignment toolbar": "Bara aliniere text",
     "Text alternative": "Text alternativ",
     "The URL must not be empty.": "URL-ul nu trebuie să fie gol.",
     "This link has no URL": "Acest link nu are niciun URL",
@@ -93,13 +108,15 @@
     Turquoise: "Turcoaz",
     Undo: "Anulare",
     Unlink: "Șterge link",
+    Update: "",
+    "Update image URL": "",
     "Upload failed": "Încărcare eșuată",
     "Upload in progress": "Încărcare în curs",
     White: "Alb",
     "Widget toolbar": "Bară widget",
     Yellow: "Galben",
   });
-  a.getPluralForm = function(e) {
+  i.getPluralForm = function(e) {
     return e == 1 ? 0 : e % 100 > 19 || (e % 100 == 0 && e != 0) ? 2 : 1;
   };
 })(window.CKEDITOR_TRANSLATIONS || (window.CKEDITOR_TRANSLATIONS = {}));

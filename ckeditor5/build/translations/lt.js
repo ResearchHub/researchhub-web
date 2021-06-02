@@ -1,7 +1,10 @@
-(function(e) {
-  const i = (e["lt"] = e["lt"] || {});
-  i.dictionary = Object.assign(i.dictionary || {}, {
+(function(i) {
+  const e = (i["lt"] = i["lt"] || {});
+  e.dictionary = Object.assign(e.dictionary || {}, {
     "%0 of %1": "",
+    "Align center": "Centruoti",
+    "Align left": "Lygiuoti į kairę",
+    "Align right": "Lygiuoti į dešinę",
     Aquamarine: "Aquamarine",
     Black: "Juoda",
     "Block quote": "Citata",
@@ -12,6 +15,7 @@
     "Centered image": "Vaizdas centre",
     "Change image text alternative": "Pakeisti vaizdo alternatyvųjį tekstą",
     "Choose heading": "Pasirinkite antraštę",
+    Code: "Kodas",
     Column: "Stulpelis",
     "Decrease indent": "Sumažinti atitraukimą",
     "Delete column": "Ištrinti stulpelį",
@@ -35,17 +39,21 @@
     "Heading 4": "Antraštė 4",
     "Heading 5": "Antraštė 5",
     "Heading 6": "Antraštė 6",
+    "Image resize list": "",
     "Image toolbar": "",
     "image widget": "vaizdų valdiklis",
     "Increase indent": "Padidinti atitraukimą",
+    Insert: "",
     "Insert column left": "Įterpti stulpelį kairėje",
     "Insert column right": "Įterpti stulpelį dešinėje",
     "Insert image": "Įterpti vaizdą",
+    "Insert image via URL": "",
     "Insert media": "Įterpkite media",
     "Insert row above": "Įterpti eilutę aukščiau",
     "Insert row below": "Įterpti eilutę žemiau",
     "Insert table": "Įterpti lentelę",
     Italic: "Kursyvas",
+    Justify: "Lygiuoti per visą plotį",
     "Left aligned image": "Vaizdas kairėje",
     "Light blue": "Šviesiai mėlyna",
     "Light green": "Šviesiai žalia",
@@ -64,6 +72,7 @@
     "Open in a new tab": "",
     "Open link in new tab": "Atidaryti nuorodą naujame skirtuke",
     Orange: "Oranžinė",
+    Original: "",
     Paragraph: "Paragrafas",
     "Paste the media URL in the input.":
       "Įklijuokite media URL adresą į įvedimo lauką.",
@@ -71,11 +80,15 @@
     Purple: "Violetinė",
     Red: "Raudona",
     Redo: "Pirmyn",
+    "Resize image": "",
+    "Resize image to %0": "",
+    "Resize image to the original size": "",
     "Rich Text Editor": "Raiškiojo teksto redaktorius",
     "Rich Text Editor, %0": "Raiškiojo teksto redaktorius, %0",
     "Right aligned image": "Vaizdas dešinėje",
     Row: "Eilutė",
     Save: "Išsaugoti",
+    "Saving changes": "Pakeitimai saugomi",
     "Select column": "",
     "Select row": "",
     "Show more items": "",
@@ -83,6 +96,8 @@
     "Split cell horizontally": "Padalinti langelį horizontaliai",
     "Split cell vertically": "Padalinti langelį vertikaliai",
     "Table toolbar": "",
+    "Text alignment": "Teksto lygiavimas",
+    "Text alignment toolbar": "",
     "Text alternative": "Alternatyvusis tekstas",
     "The URL must not be empty.": "URL negali būti tuščias.",
     "This link has no URL": "Ši nuorda neturi URL",
@@ -92,17 +107,19 @@
     Turquoise: "Turkio",
     Undo: "Atgal",
     Unlink: "Pašalinti nuorodą",
+    Update: "",
+    "Update image URL": "",
     "Upload failed": "Įkelti nepavyko",
     "Upload in progress": "Įkelima",
     White: "Balta",
     Yellow: "Geltona",
   });
-  i.getPluralForm = function(e) {
-    return e % 10 == 1 && (e % 100 > 19 || e % 100 < 11)
+  e.getPluralForm = function(i) {
+    return i % 10 == 1 && (i % 100 > 19 || i % 100 < 11)
       ? 0
-      : e % 10 >= 2 && e % 10 <= 9 && (e % 100 > 19 || e % 100 < 11)
+      : i % 10 >= 2 && i % 10 <= 9 && (i % 100 > 19 || i % 100 < 11)
       ? 1
-      : e % 1 != 0
+      : i % 1 != 0
       ? 2
       : 3;
   };
