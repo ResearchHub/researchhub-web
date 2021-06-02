@@ -3,6 +3,7 @@
   t.dictionary = Object.assign(t.dictionary || {}, {
     Bold: "Калын",
     Cancel: "",
+    Code: "Код",
     Italic: "",
     Redo: "Кабатла",
     Save: "Сакла",

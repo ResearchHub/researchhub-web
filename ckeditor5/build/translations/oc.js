@@ -3,6 +3,7 @@
   a.dictionary = Object.assign(a.dictionary || {}, {
     Bold: "Gras",
     Cancel: "Anullar",
+    Code: "",
     Italic: "Italica",
     Save: "Enregistrar",
   });
