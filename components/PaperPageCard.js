@@ -618,12 +618,12 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                <PaperPromotionIcon paper={paper} />
-                <div className={css(styles.divider)}></div>
                 <PaperDiscussionButton
                   paper={paper}
                   discussionCount={discussionCount}
                 />
+                <div className={css(styles.divider)}></div>
+                <PaperPromotionIcon paper={paper} />
               </div>
               <div
                 className={css(

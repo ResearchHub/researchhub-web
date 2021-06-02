@@ -12,18 +12,10 @@ import { connect } from "react-redux";
 
 const PaperPromotionButton = ({
   customStyle,
-  paper,
   openPaperTransactionModal,
+  paper,
 }) => {
   const [hover, setHover] = useState(false);
-
-  const { promoted, score } = paper;
-
-  const getCount = () => {
-    if (typeof promoted === "boolean") return 0;
-
-    return numeral(promoted - score).format("0a");
-  };
 
   return (
     <PermissionNotificationWrapper
@@ -43,11 +35,6 @@ const PaperPromotionButton = ({
             <PaperPromotionIconLarge color={hover && colors.ORANGE()} />
           </div>
         </span>
-        <span
-          className={css(styles.count, !promoted && styles.hide) + " count"}
-        >
-          {getCount()}
-        </span>
       </div>
     </PermissionNotificationWrapper>
   );
@@ -60,9 +47,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    ":hover .count": {
-      color: colors.BLACK(),
-    },
     "@media only screen and (min-width: 0px) and (max-width: 767px)": {
       paddingRight: 0,
     },
@@ -74,14 +58,6 @@ const styles = StyleSheet.create({
   },
   offset: {
     transform: "translate(8.5px, -3px)",
-  },
-  count: {
-    fontSize: 13,
-    fontWeight: "bold",
-    marginLeft: 4,
-  },
-  hide: {
-    display: "none",
   },
 });
 
