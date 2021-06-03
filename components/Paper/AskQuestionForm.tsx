@@ -4,7 +4,7 @@ import Button from "../Form/Button";
 import FormSelect from "../Form/FormSelect";
 import { StyleSheet, css } from "aphrodite";
 import FormTextArea from "../Form/FormTextArea";
-import { MyEditor } from "../CKEditor/MyEditor";
+import { SimpleEditor } from "../CKEditor/SimpleEditor";
 import colors from "../../config/themes/colors";
 
 type FormFields = {
@@ -88,8 +88,8 @@ export default function AskQuesitonForm() {
           placeholder="Title"
           required={true}
         />
-        <FormTextArea label="Text" />
-        {/* <MyEditor /> */}
+        {/* <FormTextArea label="Text" /> */}
+        <SimpleEditor />
         <div className={css(styles.buttonsContainer)}>
           <Button
             isWhite={true}
