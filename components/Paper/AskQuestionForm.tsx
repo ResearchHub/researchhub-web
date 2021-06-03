@@ -84,7 +84,6 @@ export default function AskQuestionForm() {
   };
 
   const handlePost = (e: SyntheticEvent) => {
-    console.log(mutableFormFields);
     e.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
@@ -115,7 +114,7 @@ export default function AskQuestionForm() {
           inputStyle={shouldDisplayError && formErrors.hub && styles.error}
           isMulti={false}
           label="Choose a hub"
-          labelStyle={styles.labelStyle}
+          labelStyle={styles.label}
           menu={styles.dropDown}
           onChange={handleOnChangeFields}
           options={suggestedHubs}
@@ -133,16 +132,17 @@ export default function AskQuestionForm() {
           id="title"
           inputStyle={shouldDisplayError && formErrors.title && styles.error}
           label="Title"
-          labelStyle={styles.labelStyle}
+          labelStyle={styles.label}
           onChange={handleOnChangeFields}
           placeholder="Title"
           required
         />
-        <div className={css(styles.editorLabel)}>Text</div>
         <SimpleEditor
           id="text"
           initialData={mutableFormFields.text}
           onChange={handleOnChangeFields}
+          label="Text"
+          labelStyle={styles.label}
         />
         <div className={css(styles.buttonsContainer)}>
           <Button
@@ -170,46 +170,42 @@ const styles = StyleSheet.create({
   rootContainer: {
     display: "flex",
     flexDirection: "column",
-    maxWidth: "951px",
+    alignSelf: "stretch",
     background: "#FFFFFF",
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "24px 50px 49px 50px",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
   },
   buttonsContainer: {
     width: "auto",
     display: "flex",
     justifyContent: "flex-end",
     marginTop: "42px",
+    "@media only screen and (max-width: 767px)": {
+      width: "auto",
+      justifyContent: "center",
+    },
   },
   buttonSpacer: {
-    width: "31px",
+    width: "100%",
+    maxWidth: "31px",
   },
   chooseHub: {
-    width: "468px",
+    width: "100%",
+    maxWidth: "468px",
     height: "55px",
+    marginBottom: "21px",
   },
   titleInputContainer: {
     width: "auto",
+    maxWidth: "851px",
     height: "55px",
+    marginBottom: "35px",
   },
-  labelStyle: {
-    "@media only screen and (max-width: 321px)": {
-      fontWeight: 500,
-      fontSize: "14px",
-      lineHeight: "16px",
-      color: "#241F3A",
-    },
-  },
-  editorLabel: {
+  label: {
     fontWeight: 500,
-    marginBottom: 10,
-    color: "#232038",
-    display: "flex",
-    justifyContent: "flex-start",
+    fontSize: "19px",
+    lineHeight: "21px",
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
@@ -220,4 +216,5 @@ const styles = StyleSheet.create({
   dropDown: {
     zIndex: 999,
   },
+  buttonStyle: {},
 });
