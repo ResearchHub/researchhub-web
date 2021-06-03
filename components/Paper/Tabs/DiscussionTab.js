@@ -46,6 +46,7 @@ const DiscussionTab = (props) => {
     discussionRef,
     getThreads,
     paperId,
+    isCollapsible,
   } = props;
 
   // TODO: move to config
@@ -113,7 +114,7 @@ const DiscussionTab = (props) => {
       threads = [];
     }
 
-    if (!expandComments) {
+    if (!expandComments && isCollapsible) {
       threads = threads.slice(0, 2);
     }
 
@@ -453,7 +454,7 @@ const DiscussionTab = (props) => {
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {formattedThreads.length > 2 ? (
+          {formattedThreads.length > 2 && isCollapsible ? (
             expandComments ? (
               <div>
                 {props.paper.nextDiscussion && !fetching && (
@@ -490,7 +491,24 @@ const DiscussionTab = (props) => {
                 </button>
               </div>
             )
-          ) : null}
+          ) : (
+            <div>
+              {props.paper.nextDiscussion && !fetching && (
+                <div className={css(styles.buttonContainer)}>
+                  {loading ? (
+                    <Loader loading={true} size={10} type="beat" />
+                  ) : (
+                    <Ripples
+                      className={css(styles.loadMoreButton)}
+                      onClick={() => fetchDiscussionThreads(true)}
+                    >
+                      Load More
+                    </Ripples>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       ) : (
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>

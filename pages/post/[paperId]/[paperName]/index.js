@@ -505,27 +505,6 @@ const Paper = (props) => {
                 paperDraftExists={paperDraftExists}
               />
             </div>
-            <div
-              className={css(styles.paperPageContainer, styles.noMarginLeft)}
-            >
-              <Waypoint
-                onEnter={() => onSectionEnter(1)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <a name="abstract">
-                  <SummaryTab
-                    paperId={paperId}
-                    paper={paper}
-                    summary={summary}
-                    updatePaperState={updatePaperState}
-                    updateSummary={setSummary}
-                    loadingSummary={loadingSummary}
-                    userVoteChecked={userVoteChecked}
-                  />
-                </a>
-              </Waypoint>
-            </div>
             <Waypoint
               onEnter={() => onSectionEnter(2)}
               topOffset={40}
@@ -539,78 +518,11 @@ const Paper = (props) => {
                     paperState={paper}
                     calculatedCount={discussionCount}
                     setCount={setCount}
-                    isCollapsible={true}
+                    isCollapsible={false}
                   />
                 </div>
               </a>
             </Waypoint>
-            <div
-              className={css(
-                styles.paperPageContainer,
-                styles.bottom,
-                styles.noMarginLeft,
-                !paperDraftExists && styles.hide
-              )}
-            >
-              <Waypoint
-                onEnter={() => onSectionEnter(3)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <a name="paper">
-                  <TableOfContent
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                  />
-                  <PaperDraftContainer
-                    isViewerAllowedToEdit={isModerator}
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                    paperId={paperId}
-                    setActiveSection={setActiveSection}
-                    setPaperDraftExists={setPaperDraftExists}
-                    setPaperDraftSections={setPaperDraftSections}
-                  />
-                </a>
-              </Waypoint>
-            </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(4)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <a name="paper pdf">
-                <div className={css(styles.paperTabContainer)}>
-                  <PaperTab
-                    paperId={paperId}
-                    paper={paper}
-                    isModerator={isModerator}
-                  />
-                </div>
-              </a>
-            </Waypoint>
-          </div>
-          <div className={css(styles.sidebar)}>
-            {shouldShowInlineComments ? (
-              <InlineCommentThreadsDisplayBarWithMediaSize isShown />
-            ) : (
-              <React.Fragment>
-                <PaperSideColumn
-                  authors={getAllAuthors()}
-                  paper={paper}
-                  hubs={paper.hubs}
-                  paperId={paperId}
-                />
-                <PaperSections
-                  activeTab={activeTab} // for paper page tabs
-                  setActiveTab={setActiveTab}
-                  activeSection={activeSection} // for paper draft sections
-                  setActiveSection={setActiveSection}
-                  paperDraftSections={paperDraftSections}
-                  paperDraftExists={paperDraftExists}
-                />
-              </React.Fragment>
-            )}
           </div>
         </div>
       </div>
