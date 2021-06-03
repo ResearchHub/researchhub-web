@@ -3,8 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 
 export type SimpleEditorProps = {
   id: string;
-  onChange: (fieldID: string, value: string) => void;
   initialData: string;
+  onChange: (fieldID: string, value: string) => void;
 };
 
 export function SimpleEditor({ id, onChange, initialData }: SimpleEditorProps) {
@@ -50,10 +50,10 @@ export function SimpleEditor({ id, onChange, initialData }: SimpleEditorProps) {
     <Fragment>
       {editorLoaded && (
         <CKEditor
-          onReady={setEditorInstance}
           onChange={(event, editor) => {
             onChange(id, editor.getData());
           }}
+          onReady={setEditorInstance}
           editor={Editor}
           config={editorConfiguration}
           data={initialData}
