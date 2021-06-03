@@ -30,24 +30,27 @@ function PaperPromotionIcon({ customStyle, openPaperTransactionModal, paper }) {
     return null;
   }
   return (
-    <PermissionNotificationWrapper
-      modalMessage="support paper"
-      onClick={() => openPaperTransactionModal(true)}
-      loginRequired={true}
-      hideRipples={true}
-    >
-      <div
-        data-tip={"Support Paper"}
-        className={css(styles.root)}
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
+    <Fragment>
+      <div className={css(styles.divider)}></div>
+      <PermissionNotificationWrapper
+        modalMessage="support paper"
+        onClick={() => openPaperTransactionModal(true)}
+        loginRequired={true}
+        hideRipples={true}
       >
-        <span className={css(styles.icon, customStyle)}>
-          <Icon color={hover && colors.ORANGE()} emptyState={false} />
-        </span>
-        <span className={css(styles.count) + " count"}>{numPromotions}</span>
-      </div>
-    </PermissionNotificationWrapper>
+        <div
+          data-tip={"Support Paper"}
+          className={css(styles.root)}
+          onMouseEnter={() => setHover(true)}
+          onMouseLeave={() => setHover(false)}
+        >
+          <span className={css(styles.icon, customStyle)}>
+            <Icon color={hover && colors.ORANGE()} emptyState={false} />
+          </span>
+          <span className={css(styles.count) + " count"}>{numPromotions}</span>
+        </div>
+      </PermissionNotificationWrapper>
+    </Fragment>
   );
 }
 
@@ -80,6 +83,11 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  divider: {
+    width: 44,
+    border: "1px solid #E8E8F2",
+    margin: "15px 0",
   },
 });
 
