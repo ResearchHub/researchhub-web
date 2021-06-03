@@ -6,7 +6,10 @@ import { css, StyleSheet } from "aphrodite";
 export default function Index() {
   return (
     <Fragment>
-      <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
+      <Head
+        title={`Ask a Question`}
+        description="Ask a Question to ResearchHub"
+      />
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Ask a Question</div>
