@@ -546,6 +546,69 @@ export const PaperPromotionIcon = ({ color, emptyState }) => {
     </svg>
   );
 };
+
+export function PaperPromotionIconLarge({ color }) {
+  return (
+    <svg
+      width="30"
+      height="30"
+      viewBox="0 0 30 30"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M4.34406 16.188C3.97782 16.188 3.68092 16.479 3.68092 16.838C3.68092 17.1969 3.97782 17.4879 4.34406 17.4879H4.86321V20.9253L0.313369 27.9636C-0.0242333 28.4905 -0.0890862 28.9418 0.118969 29.3173C0.327024 29.6931 0.750675 29.881 1.38983 29.881H11.8104C12.4494 29.881 12.873 29.6931 13.0809 29.3173C13.2891 28.9418 13.2243 28.4906 12.8867 27.9637L8.33657 20.9254V17.4879H8.85343C9.21968 17.4879 9.51657 17.1969 9.51657 16.838C9.51657 16.479 9.21967 16.188 8.85343 16.188H4.34406ZM6.02364 17.4879H7.18133V21.2553L7.36217 21.5305L9.52184 24.6399H3.68618L5.84277 21.5305L6.02364 21.2553V17.4879Z"
+        fill={color ? color : "#241F3A"}
+        fill-opacity="0.35"
+      />
+      <rect
+        x="1.89062"
+        y="12.2212"
+        width="2.57732"
+        height="2.52903"
+        rx="1.26452"
+        fill={color ? color : "#241F3A"}
+        fill-opacity="0.35"
+      />
+      <rect
+        x="8.29688"
+        y="12.2212"
+        width="2.57732"
+        height="2.52903"
+        rx="1.26452"
+        fill={color ? color : "#241F3A"}
+        fill-opacity="0.35"
+      />
+      <rect
+        x="5.4248"
+        y="9"
+        width="1.98822"
+        height="1.95097"
+        rx="0.975484"
+        fill={color ? color : "#241F3A"}
+        fill-opacity="0.35"
+      />
+      <circle cx="22" cy="8" r="8" fill="#3971FF" />
+      <path
+        d="M21.5 7.5V5C21.5 4.72386 21.7239 4.5 22 4.5C22.2761 4.5 22.5 4.72386 22.5 5V7.5H25C25.2761 7.5 25.5 7.72386 25.5 8C25.5 8.27614 25.2761 8.5 25 8.5H22.5V11C22.5 11.2761 22.2761 11.5 22 11.5C21.7239 11.5 21.5 11.2761 21.5 11V8.5H19C18.7239 8.5 18.5 8.27614 18.5 8C18.5 7.72386 18.7239 7.5 19 7.5H21.5Z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
+export function DownloadIcon({ style }) {
+  return (
+    <img
+      className={css(styles.iconDownload, style && style)}
+      src={"/static/icons/download.png"}
+      alt="Download"
+    />
+  );
+}
+
 const styles = StyleSheet.create({
   logo: {
     height: 40,
@@ -556,6 +619,9 @@ const styles = StyleSheet.create({
   },
   iconRSC: {
     height: 15,
+  },
+  iconDownload: {
+    height: 16,
   },
 });
 
