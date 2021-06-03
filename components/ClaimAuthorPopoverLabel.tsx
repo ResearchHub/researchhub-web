@@ -52,6 +52,7 @@ export default function ClaimAuthorPopoverLabel({
                   {"Claim your profile and receive 1000 RSC"}
                 </div>
               </div>
+              {/* @ts-ignore */}
               <PermissionNotificationWrapper
                 onClick={handleClaimButtonClick}
                 modalMessage="claim this author profile"
