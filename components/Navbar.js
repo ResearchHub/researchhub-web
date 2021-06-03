@@ -37,7 +37,10 @@ import OrcidConnectModal from "./Modals/OrcidConnectModal";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
+
+// Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
+import killswitch from "~/config/killswitch/killswitch";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -316,7 +319,7 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        <AlgoliaSearch />
+        {killswitch("search") && <AlgoliaSearch />}
         {/* <Search
           searchClass={styles.mobileSearch}
           inputClass={styles.inputClass}
@@ -472,7 +475,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <AlgoliaSearch />
+        {killswitch("search") && <AlgoliaSearch />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
