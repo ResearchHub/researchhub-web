@@ -30,8 +30,8 @@ function validateFormField(fieldID: string, value: any): boolean {
 
 export default function AskQuesitonForm() {
   const [formErrors, setFormErrors] = useState<FormError>({
-    title: false,
-    hub: false,
+    title: true,
+    hub: true,
   });
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
     title: null,
@@ -47,7 +47,8 @@ export default function AskQuesitonForm() {
 
   const handlePost = (e: SyntheticEvent) => {
     e.preventDefault();
-    if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
+    console.log(formErrors, mutableFormFields);
+    if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
     } else {
       setShouldDisplayError(false);
@@ -60,7 +61,7 @@ export default function AskQuesitonForm() {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
       ...formErrors,
-      [fieldID]: validateFormField(fieldID, value),
+      [fieldID]: !validateFormField(fieldID, value),
     });
     setShouldDisplayError(false);
   };
@@ -71,7 +72,7 @@ export default function AskQuesitonForm() {
         <FormSelect
           containerStyle={styles.chooseHub}
           id="hub"
-          inputStyle={shouldDisplayError && styles.error}
+          inputStyle={shouldDisplayError && formErrors.hub && styles.error}
           label="Choose a hub"
           labelStyle={styles.labelStyle}
           onChange={handleOnChangeFields}
@@ -80,7 +81,7 @@ export default function AskQuesitonForm() {
         <FormInput
           containerStyle={styles.titleInputContainer}
           id="title"
-          inputStyle={shouldDisplayError && styles.error}
+          inputStyle={shouldDisplayError && formErrors.title && styles.error}
           label="Title"
           labelStyle={styles.labelStyle}
           onChange={handleOnChangeFields}
@@ -115,7 +116,7 @@ const styles = StyleSheet.create({
   rootContainer: {
     display: "flex",
     flexDirection: "column",
-    width: "951px",
+    maxWidth: "951px",
     background: "#FFFFFF",
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
