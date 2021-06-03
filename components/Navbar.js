@@ -336,12 +336,18 @@ const Navbar = (props) => {
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
         ) : (
-          <Button
-            label={"Add Paper"}
+          <PermissionNotificationWrapper
             onClick={addPaperModal}
-            hideRipples={true}
-            customButtonStyle={[styles.addPaperButton]}
-          />
+            modalMessage="upload a paper"
+            loginRequired={true}
+            permissionKey="CreatePaper"
+          >
+            <Button
+              label={"Add Paper"}
+              hideRipples={true}
+              customButtonStyle={[styles.addPaperButton]}
+            />
+          </PermissionNotificationWrapper>
         )}
       </Fragment>
     );
