@@ -565,10 +565,10 @@ const Navbar = (props) => {
             <Button
               customButtonStyle={{ ...styles.button, ...styles.addPaper }}
               label={
-                <div>
+                <div className={css(styles.newPostLabel)}>
                   <span> New Post </span>{" "}
                   <FontAwesomeIcon
-                    style={{ fontSize: "1.2em", marginLeft: 4 }}
+                    style={{ fontSize: "1.2em", marginLeft: 6 }}
                     icon={["fal", "plus"]}
                   />
                 </div>
@@ -660,6 +660,10 @@ const styles = StyleSheet.create({
       justifyContent: "space-between",
       height: 66,
     },
+  },
+  newPostLabel: {
+    display: "flex",
+    alignItems: "center",
   },
   unstickyNavbar: {
     position: "initial",
