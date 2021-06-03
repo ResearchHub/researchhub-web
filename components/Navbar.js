@@ -15,12 +15,10 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "../components/Form/Button";
 import FirstVoteModal from "../components/Modals/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import NewPostModal from "./Modals/NewPostModal";
+import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
@@ -38,7 +36,6 @@ import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { RHLogo } from "~/config/themes/icons";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -81,7 +78,6 @@ const Navbar = (props) => {
 
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
-  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
 
   const tabData = [
     { label: "Home", route: "/", icon: "home" },
@@ -214,10 +210,6 @@ const Navbar = (props) => {
     setOpenMenu(!openMenu);
   }
 
-  function onAddPaperClick() {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
-  }
-
   function toggleSideMenu() {
     setSideMenu(!sideMenu);
   }
@@ -329,11 +321,9 @@ const Navbar = (props) => {
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
         ) : (
-          <Button
-            label={"Add Paper"}
-            onClick={addPaperModal}
-            hideRipples={true}
+          <NewPostButton
             customButtonStyle={[styles.addPaperButton]}
+            onClick={() => setSideMenu(!sideMenu)}
           />
         )}
       </Fragment>
@@ -372,11 +362,6 @@ const Navbar = (props) => {
         <div className={css(styles.divider)}></div>
       </div>
     );
-  }
-
-  function addPaperModal() {
-    Router.push(`/paper/upload/info`);
-    setSideMenu(!sideMenu);
   }
 
   function openWithdrawalModal() {
@@ -581,36 +566,15 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <PermissionNotificationWrapper
-            onClick={() => setIsNewPostModalOpen(true)}
-            modalMessage="create a new post"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-              label={
-                <div className={css(styles.newPostLabel)}>
-                  <span> New Post </span>{" "}
-                  <FontAwesomeIcon
-                    style={{ fontSize: "1.2em", marginLeft: 6 }}
-                    icon={["fal", "plus"]}
-                  />
-                </div>
-              }
-              hideRipples={true}
-            />
-          </PermissionNotificationWrapper>
+          <NewPostButton
+            customButtonStyle={{ ...styles.button, ...styles.newPost }}
+          />
         </div>
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
         </div>
       </div>
       <UserStateBanner />
-      <NewPostModal
-        isOpen={isNewPostModalOpen}
-        setIsOpen={setIsNewPostModalOpen}
-      />
     </Fragment>
   );
 };
@@ -635,10 +599,6 @@ const styles = StyleSheet.create({
       justifyContent: "space-between",
       height: 66,
     },
-  },
-  newPostLabel: {
-    display: "flex",
-    alignItems: "center",
   },
   unstickyNavbar: {
     position: "initial",
@@ -825,7 +785,7 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  addPaper: {
+  newPost: {
     background: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
     color: "#fff",

@@ -51,8 +51,8 @@ export default function AskQuestionForm() {
     title: "",
   });
   const [suggestedHubs, setSuggestedHubs] = useState([]);
-  let [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-  let [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   // From ./PaperUploadInfo.js
   const getHubs = () => {
@@ -109,7 +109,7 @@ export default function AskQuestionForm() {
       <form>
         <FormSelect
           containerStyle={styles.chooseHub}
-          error={shouldDisplayError && `Please select a hub`}
+          error={shouldDisplayError && formErrors.hub && `Please select a hub`}
           errorStyle={styles.errorText}
           id="hub"
           inputStyle={shouldDisplayError && formErrors.hub && styles.error}
@@ -126,6 +126,7 @@ export default function AskQuestionForm() {
           containerStyle={styles.titleInputContainer}
           error={
             shouldDisplayError &&
+            formErrors.title &&
             `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
           }
           errorStyle={styles.errorText}
@@ -174,6 +175,9 @@ const styles = StyleSheet.create({
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "24px 50px 49px 50px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   buttonsContainer: {
     width: "auto",
