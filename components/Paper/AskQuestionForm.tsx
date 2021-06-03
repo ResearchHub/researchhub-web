@@ -1,14 +1,16 @@
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import React, { SyntheticEvent, useState } from "react";
+import React, { SyntheticEvent, useEffect, useState } from "react";
 import colors from "../../config/themes/colors";
 import { SimpleEditor } from "../CKEditor/SimpleEditor";
 import { StyleSheet, css } from "aphrodite";
+import API from "../../config/api";
+import { Helpers } from "@quantfive/js-web-config";
 
 type FormFields = {
   title: null | string;
-  hub: null | string;
+  hub: null | object;
 };
 
 type FormError = {
@@ -28,7 +30,7 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export default function AskQuesitonForm() {
+export default function AskQuestionForm() {
   const [formErrors, setFormErrors] = useState<FormError>({
     title: true,
     hub: true,
@@ -37,8 +39,32 @@ export default function AskQuesitonForm() {
     title: null,
     hub: null,
   });
-  const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
+  const [suggestedHubs, setSuggestedHubs] = useState([]);
+  let [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   let [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
+  // From ./PaperUploadInfo.js
+  const getHubs = () => {
+    fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        let hubs = resp.results
+          .map((hub, index) => {
+            return {
+              ...hub,
+              value: hub.id,
+              label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
+            };
+          })
+          .sort((a, b) => {
+            return a.label.localeCompare(b.label);
+          });
+        setSuggestedHubs(hubs);
+      });
+  };
+
+  useEffect(getHubs, []);
 
   const handleSaveDraft = (e: SyntheticEvent) => {
     e.preventDefault();
@@ -46,8 +72,8 @@ export default function AskQuesitonForm() {
   };
 
   const handlePost = (e: SyntheticEvent) => {
+    console.log(mutableFormFields);
     e.preventDefault();
-    console.log(formErrors, mutableFormFields);
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
     } else {
@@ -76,7 +102,10 @@ export default function AskQuesitonForm() {
           label="Choose a hub"
           labelStyle={styles.labelStyle}
           onChange={handleOnChangeFields}
+          placeholder="Search Hubs"
           required
+          isMulti={false}
+          options={suggestedHubs}
         />
         <FormInput
           containerStyle={styles.titleInputContainer}
