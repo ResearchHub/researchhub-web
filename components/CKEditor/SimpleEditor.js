@@ -66,26 +66,14 @@ export function SimpleEditor() {
             onChange={(event, editor) => console.log({ event, editor })}
             editor={Editor}
             config={editorConfiguration}
-            data={"hello world"}
+            data={""}
           />
         )}
       </div>
     );
   };
 
-  return (
-    <div className="centered">
-      {renderEditor()}
-      <div className={css(styles.saveButton)}>
-        <Button
-          isWhite={false}
-          label={"Save"}
-          hideRipples={true}
-          onClick={() => manualSaveData(editorInstance.getData())}
-        />
-      </div>
-    </div>
-  );
+  return <div className="centered">{renderEditor()}</div>;
 }
 
 const styles = StyleSheet.create({
