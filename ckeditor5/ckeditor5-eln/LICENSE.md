@@ -1,20 +1,21 @@
-# Software License Agreement
+Software License Agreement
+==========================
 
 Copyright (c) 2014-2021, CKSource - Frederico Knabben. All rights reserved.
 
 Online builder code samples are licensed under the terms of the MIT License (see Appendix A):
 
-    http://en.wikipedia.org/wiki/MIT_License
+	http://en.wikipedia.org/wiki/MIT_License
 
 CKEditor 5 collaboration features are only available under a commercial license. [Contact us](https://ckeditor.com/contact/) for more details.
 
 Free 30-days trials of CKEditor 5 collaboration features are available:
+ * https://ckeditor.com/collaboration/ - Real-time collaboration (with all features).
+ * https://ckeditor.com/collaboration/comments/ - Inline comments feature (without real-time collaborative editing).
+ * https://ckeditor.com/collaboration/track-changes/ - Track changes feature (without real-time collaborative editing).
 
-- https://ckeditor.com/collaboration/ - Real-time collaboration (with all features).
-- https://ckeditor.com/collaboration/comments/ - Inline comments feature (without real-time collaborative editing).
-- https://ckeditor.com/collaboration/track-changes/ - Track changes feature (without real-time collaborative editing).
-
-## Trademarks
+Trademarks
+----------
 
 CKEditor is a trademark of CKSource - Frederico Knabben. All other brand
 and product names are trademarks, registered trademarks or service
@@ -22,7 +23,8 @@ marks of their respective holders.
 
 ---
 
-## Appendix A: The MIT License
+Appendix A: The MIT License
+---------------------------
 
 The MIT License (MIT)
 
