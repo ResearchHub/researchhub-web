@@ -1,11 +1,10 @@
-import React, { SyntheticEvent, useState } from "react";
-import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
+import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import { StyleSheet, css } from "aphrodite";
-import FormTextArea from "../Form/FormTextArea";
-import { SimpleEditor } from "../CKEditor/SimpleEditor";
+import React, { SyntheticEvent, useState } from "react";
 import colors from "../../config/themes/colors";
+import { SimpleEditor } from "../CKEditor/SimpleEditor";
+import { StyleSheet, css } from "aphrodite";
 
 type FormFields = {
   title: null | string;
@@ -76,7 +75,7 @@ export default function AskQuesitonForm() {
           label="Choose a hub"
           labelStyle={styles.labelStyle}
           onChange={handleOnChangeFields}
-          required={true}
+          required
         />
         <FormInput
           containerStyle={styles.titleInputContainer}
@@ -86,24 +85,24 @@ export default function AskQuesitonForm() {
           labelStyle={styles.labelStyle}
           onChange={handleOnChangeFields}
           placeholder="Title"
-          required={true}
+          required
         />
-        {/* <FormTextArea label="Text" /> */}
+        <div className={css(styles.editorLabel)}>Text</div>
         <SimpleEditor />
         <div className={css(styles.buttonsContainer)}>
           <Button
+            customButtonStyle={styles.buttonStyle}
+            disabled={isSubmitting}
             isWhite={true}
             label="Save Draft"
-            disabled={isSubmitting}
-            customButtonStyle={styles.buttonStyle}
             onClick={handleSaveDraft}
           />
           <span className={css(styles.buttonSpacer)} />
           <Button
+            customButtonStyle={styles.buttonStyle}
+            disabled={isSubmitting}
             isWhite={false}
             label="Post"
-            disabled={isSubmitting}
-            customButtonStyle={styles.buttonStyle}
             onClick={handlePost}
           />
         </div>
@@ -146,6 +145,13 @@ const styles = StyleSheet.create({
       lineHeight: "16px",
       color: "#241F3A",
     },
+  },
+  editorLabel: {
+    fontWeight: 500,
+    marginBottom: 10,
+    color: "#232038",
+    display: "flex",
+    justifyContent: "flex-start",
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
