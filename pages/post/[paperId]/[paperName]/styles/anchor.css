@@ -1,0 +1,19 @@
+:target:before {
+  content: "";
+  display: block;
+  height: 5px; /* fixed header height*/
+  margin: -5px 0 0; /* negative fixed header height */
+}
+
+@media only screen and (max-width: 767px) {
+  :target:before {
+    content: "";
+    display: block;
+    height: 130px; /* fixed header height*/
+    margin: -130px 0 0; /* negative fixed header height */
+  }
+  #takeaway:before {
+    height: 160px; /* fixed header height*/
+    margin: -160px 0 0; /* negative fixed header height */
+  }
+}
