@@ -9,22 +9,31 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 type FormFields = {
-  title: null | string;
+  title: string;
   hub: null | object;
+  text: string;
 };
 
 type FormError = {
   title: boolean;
   hub: boolean;
+  text: boolean;
 };
+
+const MIN_TITLE_LENGTH = 1;
+const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
   let result: boolean = true;
   switch (fieldID) {
     case "title":
-      return !!value && value.length <= 250; // title exists (and is not empty string)
+      return (
+        value.length >= MIN_TITLE_LENGTH && value.length <= MAX_TITLE_LENGTH
+      );
     case "hub":
       return !!value; // TODO: briansantoso - check that hub is a real hub
+    case "text":
+      return false;
     default:
       return result;
   }
@@ -34,10 +43,12 @@ export default function AskQuestionForm() {
   const [formErrors, setFormErrors] = useState<FormError>({
     title: true,
     hub: true,
+    text: false,
   });
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    title: null,
+    title: "",
     hub: null,
+    text: "",
   });
   const [suggestedHubs, setSuggestedHubs] = useState([]);
   let [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
@@ -69,6 +80,7 @@ export default function AskQuestionForm() {
   const handleSaveDraft = (e: SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    // TODO: briansantoso - hookup to backend
   };
 
   const handlePost = (e: SyntheticEvent) => {
@@ -97,6 +109,8 @@ export default function AskQuestionForm() {
       <form>
         <FormSelect
           containerStyle={styles.chooseHub}
+          error={shouldDisplayError && `Please select a hub`}
+          errorStyle={styles.errorText}
           id="hub"
           inputStyle={shouldDisplayError && formErrors.hub && styles.error}
           label="Choose a hub"
@@ -109,6 +123,11 @@ export default function AskQuestionForm() {
         />
         <FormInput
           containerStyle={styles.titleInputContainer}
+          error={
+            shouldDisplayError &&
+            `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
+          }
+          errorStyle={styles.errorText}
           id="title"
           inputStyle={shouldDisplayError && formErrors.title && styles.error}
           label="Title"
@@ -118,7 +137,11 @@ export default function AskQuestionForm() {
           required
         />
         <div className={css(styles.editorLabel)}>Text</div>
-        <SimpleEditor />
+        <SimpleEditor
+          id="text"
+          onChange={handleOnChangeFields}
+          initialData={mutableFormFields.text}
+        />
         <div className={css(styles.buttonsContainer)}>
           <Button
             customButtonStyle={styles.buttonStyle}
@@ -185,5 +208,8 @@ const styles = StyleSheet.create({
   },
   error: {
     border: `1px solid ${colors.RED(1)}`,
+  },
+  errorText: {
+    marginTop: "5px",
   },
 });
