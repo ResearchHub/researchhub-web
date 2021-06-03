@@ -1,13 +1,26 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
+import colors from "../../config/themes/colors";
 
 export type SimpleEditorProps = {
   id: string;
   initialData: string;
+  containerStyle: any;
+  label: string;
+  labelStyle: any;
   onChange: (fieldID: string, value: string) => void;
+  required: boolean;
 };
 
-export function SimpleEditor({ id, onChange, initialData }: SimpleEditorProps) {
+export function SimpleEditor({
+  id,
+  containerStyle,
+  onChange,
+  initialData,
+  label,
+  labelStyle,
+  required,
+}: SimpleEditorProps) {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
@@ -48,17 +61,52 @@ export function SimpleEditor({ id, onChange, initialData }: SimpleEditorProps) {
 
   return (
     <Fragment>
-      {editorLoaded && (
-        <CKEditor
-          onChange={(event, editor) => {
-            onChange(id, editor.getData());
-          }}
-          onReady={setEditorInstance}
-          editor={Editor}
-          config={editorConfiguration}
-          data={initialData}
-        />
-      )}
+      <div className={css(containerStyle)}>
+        {label && (
+          <div
+            className={css(
+              styles.inputLabel,
+              styles.text,
+              labelStyle && labelStyle,
+              !label && styles.hide
+            )}
+          >
+            {label && label}
+            {required && <div className={css(styles.asterick)}>*</div>}
+          </div>
+        )}
+        {editorLoaded && (
+          <CKEditor
+            onChange={(event, editor) => {
+              onChange(id, editor.getData());
+            }}
+            onReady={setEditorInstance}
+            editor={Editor}
+            config={editorConfiguration}
+            data={initialData}
+          />
+        )}
+      </div>
     </Fragment>
   );
 }
+
+const styles = StyleSheet.create({
+  asterick: {
+    color: colors.BLUE(1),
+  },
+  inputLabel: {
+    fontWeight: 500,
+    marginBottom: 10,
+    color: "#232038",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+  },
+  hide: {
+    display: "none",
+  },
+});
