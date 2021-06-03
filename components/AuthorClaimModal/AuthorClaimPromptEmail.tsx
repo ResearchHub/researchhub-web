@@ -84,11 +84,16 @@ export default function AuthorClaimPromptEmail({
   return (
     <div className={css(verifStyles.rootContainer)}>
       <div className={css(verifStyles.titleContainer)}>
-        <div className={css(verifStyles.title)}>Enter your email</div>
+        <div className={css(verifStyles.title)}>Enter your Academic Email</div>
       </div>
       <div className={css(verifStyles.subTextContainer)}>
         <div className={css(verifStyles.subText)}>
-          Verify your email address
+          We will send you an email to verify your academic email address. Use
+          the one that's openly available under your previous publications.
+          <br />
+          <br />
+          After you verify your email, we will manually review your request to
+          ensure that it's you!
         </div>
       </div>
       <form
