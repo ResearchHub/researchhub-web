@@ -3,8 +3,8 @@ import Button from "../Form/Button";
 import Modal from "react-modal";
 import React, { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
-import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
+import Link from "next/link";
 
 const items = [
   {
@@ -46,8 +46,6 @@ export default function NewPostModal({
   };
 
   const handleContinue = (e: SyntheticEvent): void => {
-    const { route } = items[selected];
-    Router.push(route, route);
     closeModal(e);
   };
 
@@ -87,7 +85,11 @@ export default function NewPostModal({
             <div className={css(styles.buttonContainer)}>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
-                label={"Continue"}
+                label={
+                  <Link href={items[selected].route}>
+                    <div className={css(styles.buttonLabel)}>Continue</div>
+                  </Link>
+                }
                 onClick={handleContinue}
                 rippleClass={styles.rippleClass}
               />
@@ -117,6 +119,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
+  },
+  buttonLabel: {
+    width: "100%",
+    height: "100%",
   },
   rootContainer: {
     display: "flex",
