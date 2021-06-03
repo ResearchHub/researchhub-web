@@ -25,7 +25,7 @@ const PaperPromotionButton = ({
       hideRipples={true}
     >
       <div
-        data-tip={"Support Paper"}
+        data-tip="Support Paper"
         className={css(styles.root)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
