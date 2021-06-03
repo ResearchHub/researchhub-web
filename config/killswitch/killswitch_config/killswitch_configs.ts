@@ -13,6 +13,11 @@ const KillswtichConfigs: SwitchConfigs = {
     prod: false,
     staging: false,
   },
+  search: {
+    dev: false,
+    prod: false,
+    staging: false,
+  },
 };
 
 export default KillswtichConfigs;
