@@ -85,6 +85,7 @@ export default function NewPostModal({
             <div className={css(styles.buttonContainer)}>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
+                customLabelStyle={styles.buttonLabel}
                 label={
                   <Link href={items[selected].route}>
                     <div className={css(styles.buttonLabel)}>Continue</div>
@@ -121,6 +122,9 @@ const styles = StyleSheet.create({
     },
   },
   buttonLabel: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     width: "100%",
     height: "100%",
   },
@@ -149,7 +153,7 @@ const styles = StyleSheet.create({
   buttonCustomStyle: {
     width: "180px",
     height: "50px",
-    padding: "16px",
+    // padding: "16px",
     "@media only screen and (max-width: 415px)": {
       width: "100%",
     },
