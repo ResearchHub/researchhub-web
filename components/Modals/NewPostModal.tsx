@@ -143,9 +143,6 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       overflowY: "auto",
     },
-    "@media only screen and (max-width: 767px)": {
-      padding: 16,
-    },
   },
   form: {
     width: "100%",
