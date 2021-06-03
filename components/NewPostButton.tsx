@@ -1,9 +1,14 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
 import NewPostModal from "./Modals/NewPostModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";
+
+export type NewPostButtonProps = {
+  customButtonStyle: StyleSheet;
+  onClick: (e: SyntheticEvent) => void;
+};
 
 export default function NewPostButton({ customButtonStyle, onClick }) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
