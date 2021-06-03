@@ -42,11 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BLUE(),
     borderColor: colors.BLUE(),
     borderRadius: "4px",
-    ":hover": {
-      backgroundColor: "#3E43E8",
-      color: "#fff",
-      borderColor: "#3E43E8",
-    },
   },
   downloadIcon: {},
   labelText: {

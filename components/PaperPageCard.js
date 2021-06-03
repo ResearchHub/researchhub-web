@@ -618,11 +618,6 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                <PaperDiscussionButton
-                  paper={paper}
-                  discussionCount={discussionCount}
-                />
-                <div className={css(styles.divider)}></div>
                 <PaperPromotionIcon paper={paper} />
               </div>
               <div
@@ -736,11 +731,6 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "visible",
     boxSizing: "border-box",
-  },
-  divider: {
-    width: 44,
-    border: "1px solid #E8E8F2",
-    margin: "15px 0",
   },
   overflow: {
     overflow: "visible",
