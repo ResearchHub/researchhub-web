@@ -9,15 +9,15 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 type FormFields = {
-  title: string;
   hub: null | object;
   text: string;
+  title: string;
 };
 
 type FormError = {
-  title: boolean;
   hub: boolean;
   text: boolean;
+  title: boolean;
 };
 
 const MIN_TITLE_LENGTH = 1;
@@ -41,14 +41,14 @@ function validateFormField(fieldID: string, value: any): boolean {
 
 export default function AskQuestionForm() {
   const [formErrors, setFormErrors] = useState<FormError>({
-    title: true,
     hub: true,
     text: false,
+    title: true,
   });
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    title: "",
     hub: null,
     text: "",
+    title: "",
   });
   const [suggestedHubs, setSuggestedHubs] = useState([]);
   let [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
@@ -113,14 +113,14 @@ export default function AskQuestionForm() {
           errorStyle={styles.errorText}
           id="hub"
           inputStyle={shouldDisplayError && formErrors.hub && styles.error}
+          isMulti={false}
           label="Choose a hub"
           labelStyle={styles.labelStyle}
+          menu={styles.dropDown}
           onChange={handleOnChangeFields}
+          options={suggestedHubs}
           placeholder="Search Hubs"
           required
-          isMulti={false}
-          options={suggestedHubs}
-          menu={styles.dropDown}
         />
         <FormInput
           containerStyle={styles.titleInputContainer}
@@ -140,8 +140,8 @@ export default function AskQuestionForm() {
         <div className={css(styles.editorLabel)}>Text</div>
         <SimpleEditor
           id="text"
-          onChange={handleOnChangeFields}
           initialData={mutableFormFields.text}
+          onChange={handleOnChangeFields}
         />
         <div className={css(styles.buttonsContainer)}>
           <Button
