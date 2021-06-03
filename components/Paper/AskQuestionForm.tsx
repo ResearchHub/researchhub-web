@@ -120,6 +120,7 @@ export default function AskQuestionForm() {
           required
           isMulti={false}
           options={suggestedHubs}
+          menu={styles.dropDown}
         />
         <FormInput
           containerStyle={styles.titleInputContainer}
@@ -211,5 +212,8 @@ const styles = StyleSheet.create({
   },
   errorText: {
     marginTop: "5px",
+  },
+  dropDown: {
+    zIndex: 999,
   },
 });
