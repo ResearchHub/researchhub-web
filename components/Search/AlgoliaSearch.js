@@ -17,7 +17,7 @@ const AlgoliaSearch = () => {
       <AlgoliaAutocomplete
         getSources={({ query }) => [
           {
-            sourceId: "products",
+            sourceId: "papers",
             getItems() {
               return getAlgoliaResults({
                 searchClient,
