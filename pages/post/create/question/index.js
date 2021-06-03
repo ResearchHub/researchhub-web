@@ -38,11 +38,15 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: "30px",
     lineHeight: "38px",
-    width: "100%",
     marginBottom: "30px",
   },
   content: {
     display: "flex",
+    width: "100%",
+    maxWidth: "951px",
     flexDirection: "column",
+    "@media only screen and (max-width: 767px)": {
+      alignItems: "center",
+    },
   },
 });
