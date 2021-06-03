@@ -22,6 +22,7 @@ import LoginModal from "../components/Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
+import AlgoliaSearch from "./Search/AlgoliaSearch";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
@@ -315,6 +316,7 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
+        <AlgoliaSearch />
         {/* <Search
           searchClass={styles.mobileSearch}
           inputClass={styles.inputClass}
@@ -470,7 +472,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {/* <Search /> */}
+        <AlgoliaSearch />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
