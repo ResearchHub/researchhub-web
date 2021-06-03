@@ -66,8 +66,8 @@ class FormInput extends React.Component {
           <div
             className={css(
               styles.inputLabel,
-              labelStyle && labelStyle,
               styles.text,
+              labelStyle && labelStyle,
               !label && styles.hide
             )}
           >
@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   inputLabel: {
-    fontWeight: "500",
+    fontWeight: 500,
     marginBottom: 10,
     color: "#232038",
     display: "flex",
