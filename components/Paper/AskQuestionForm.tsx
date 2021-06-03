@@ -22,7 +22,7 @@ function validateFormField(fieldID: string, value: any): boolean {
   let result: boolean = true;
   switch (fieldID) {
     case "title":
-      return !!value; // title exists (and is not empty string)
+      return !!value && value.length <= 250; // title exists (and is not empty string)
     case "hub":
       return !!value; // TODO: briansantoso - check that hub is a real hub
     default:
