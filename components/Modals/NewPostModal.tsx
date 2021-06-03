@@ -19,7 +19,7 @@ const items = [
     description:
       "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
-    route: "/post/create",
+    route: "/post/create/question",
   },
   {
     header: "Publish a Research Project",
