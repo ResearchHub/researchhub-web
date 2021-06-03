@@ -193,6 +193,11 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
           labelStyle={styles.label}
           onChange={handleOnChangeFields}
         />
+<<<<<<< HEAD
+=======
+        {/* <FormTextArea label="Text" /> */}
+        <SimpleEditor />
+>>>>>>> c48d4215 (Ask a question page)
         <div className={css(styles.buttonsContainer)}>
           {/* @ts-ignore */}
           <Button
