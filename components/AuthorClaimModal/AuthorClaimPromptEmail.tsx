@@ -117,6 +117,7 @@ export default function AuthorClaimPromptEmail({
           <Button
             label={
               isSubmitting ? (
+                // @ts-ignore
                 <Loader
                   size={8}
                   loading
