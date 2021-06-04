@@ -28,9 +28,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "97%",
     padding: 16,
-    ":hover": {
-      backgroundColor: colors.GREY(0.1),
-    },
+    backgroundColor: colors.GREY(0.1),
   },
   postCreatedBy: {
     display: "flex",
