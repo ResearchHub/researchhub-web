@@ -2,16 +2,6 @@ import React, { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 
-export type SimpleEditorProps = {
-  containerStyle: any;
-  id: string;
-  initialData: string;
-  label?: string;
-  labelStyle?: any;
-  onChange: (fieldID: string, value: string) => void;
-  required?: boolean;
-};
-
 export function SimpleEditor({
   id,
   containerStyle,
@@ -20,7 +10,7 @@ export function SimpleEditor({
   label,
   labelStyle,
   required,
-}: SimpleEditorProps) {
+}) {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
@@ -52,13 +42,10 @@ export function SimpleEditor({
   };
 
   useEffect(() => {
-    console.log(editorRef);
-    if (!editorRef.current) {
-      editorRef.current = {
-        CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-        Editor: require("ckeditor5-simple-build/build/ckeditor").Editor,
-      };
-    }
+    editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      Editor: require("ckeditor5-simple-build/build/ckeditor").Editor,
+    };
     setEditorLoaded(true);
   }, []);
 
