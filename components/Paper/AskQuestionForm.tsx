@@ -145,10 +145,10 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
         />
         <SimpleEditor
           id="text"
-          initialData={"\n\n\n\n"}
-          onChange={handleOnChangeFields}
+          initialData={mutableFormFields.text}
           label="Text"
           labelStyle={styles.label}
+          onChange={handleOnChangeFields}
         />
         <div className={css(styles.buttonsContainer)}>
           <Button
@@ -176,10 +176,7 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(
-  mapStateToProps
-  // mapDispatchToProps
-)(AskQuestionForm);
+export default connect(mapStateToProps)(AskQuestionForm);
 
 const styles = StyleSheet.create({
   rootContainer: {
@@ -191,8 +188,6 @@ const styles = StyleSheet.create({
     borderRadius: "3px",
     padding: "24px 50px 49px 50px",
     minWidth: 0,
-    // maxWidth: "800px",
-    // width: "auto",
   },
   buttonsContainer: {
     width: "auto",

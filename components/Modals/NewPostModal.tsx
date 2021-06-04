@@ -1,10 +1,10 @@
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
+import Link from "next/link";
 import Modal from "react-modal";
 import React, { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 
 const items = [
   {

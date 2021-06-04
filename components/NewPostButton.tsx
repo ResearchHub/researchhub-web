@@ -22,7 +22,9 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
       >
         <Button
           customButtonStyle={customButtonStyle}
+          hideRipples={true}
           label={
+            // isLink prop does not allow onClick to trigger on link click
             <div className={css(styles.newPostLabel)}>
               <span> New Post </span>{" "}
               <FontAwesomeIcon
@@ -31,7 +33,6 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
               />
             </div>
           }
-          hideRipples={true}
           onClick={onClick}
         />
       </PermissionNotificationWrapper>
