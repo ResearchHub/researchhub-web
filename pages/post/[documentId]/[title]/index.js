@@ -58,6 +58,7 @@ import {
   getAuthorName,
 } from "~/config/utils/";
 import * as shims from "~/redux/paper/shims";
+import PostCard from "../../../../components/PostCard";
 
 const isServer = () => typeof window === "undefined";
 const steps = [
@@ -423,6 +424,8 @@ const Paper = (props) => {
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+
+  console.log(paper);
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
@@ -470,7 +473,7 @@ const Paper = (props) => {
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              <PaperPageCard
+              <PostCard
                 paper={paper}
                 paperId={paperId}
                 score={score}
@@ -556,57 +559,11 @@ Paper.getInitialProps = async (ctx) => {
 
   // Fetch data from external API
   let props = {};
-  let paper;
-  let paperSlug;
+  let post = await fetch(API.SHOW_POST({ postId: query.documentId })).then(
+    helpers.parseJSON
+  );
 
-  try {
-    paper = await fetchPaper({ paperId: query.paperId });
-  } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-    // if paper doesnot exist
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  if (!paper) {
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  paperSlug = paper.slug;
-  let fetchedPaper = true;
-
-  if (paperSlug !== query.paperName) {
-    // redirect paper if paperName does not match slug
-    let paperName = paperSlug
-      ? paperSlug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
-
-    if (paperName === query.paperName) {
-      // catch multiple redirect when slug does not exist
-      props = { hostname, paper, fetchedPaper };
-      return props;
-    }
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
-
-    res.writeHead(301, { Location: redirectPath });
-    res.end();
-    props = {
-      hostname,
-      paper,
-      redirectPath,
-      paperName,
-      paperSlug,
-      paperName: query.paperName,
-    };
-    return props;
-  }
-  props = { hostname, paper, fetchedPaper };
+  props = { hostname, paper: post };
   return props;
 };
 
