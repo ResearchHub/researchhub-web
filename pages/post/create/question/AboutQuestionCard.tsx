@@ -59,7 +59,9 @@ const styles = StyleSheet.create({
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "24px 21px",
-    alignSelf: "stretch",
+    alignSelf: "flex-end",
+    justifySelf: "stretch",
+    maxHeight: 455,
   },
   aboutTitle: {
     display: "flex",
@@ -85,6 +87,7 @@ const styles = StyleSheet.create({
     lineHeight: "21px",
     color: "#000000",
     marginTop: 24,
+    cursor: "pointer",
   },
   collapsibleContent: {
     fontStyle: "normal",
