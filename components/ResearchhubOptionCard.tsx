@@ -3,20 +3,20 @@ import { StyleSheet, css } from "aphrodite";
 import CheckBox from "./Form/CheckBox";
 
 export type ResearchhubOptionCardProps = {
-  header: string;
   description: string;
+  header: string;
   imgSrc: string;
-  isCheckboxSquare: boolean;
   isActive: boolean;
+  isCheckboxSquare: boolean;
   onSelect: Function;
 };
 
 export default function ResearchhubOptionCard({
-  header,
   description,
+  header,
   imgSrc,
-  isCheckboxSquare,
   isActive,
+  isCheckboxSquare,
   onSelect,
 }: ResearchhubOptionCardProps): ReactElement<"div"> {
   return (

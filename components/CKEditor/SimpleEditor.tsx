@@ -3,13 +3,13 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 
 export type SimpleEditorProps = {
+  containerStyle: any;
   id: string;
   initialData: string;
-  containerStyle: any;
-  label: string;
-  labelStyle: any;
+  label?: string;
+  labelStyle?: any;
   onChange: (fieldID: string, value: string) => void;
-  required: boolean;
+  required?: boolean;
 };
 
 export function SimpleEditor({
