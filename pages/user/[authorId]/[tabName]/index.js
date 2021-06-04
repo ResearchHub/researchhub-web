@@ -22,6 +22,7 @@ import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
+import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
@@ -89,6 +90,12 @@ const AuthorPage = (props) => {
   };
 
   const tabs = [
+    {
+      href: "posts",
+      label: "posts",
+      name: "Posts",
+      showCount: false,
+    },
     {
       href: "discussions",
       label: "discussions",
@@ -437,6 +444,11 @@ const AuthorPage = (props) => {
       <ComponentWrapper>
         <div className={css(styles.tabMeta)}>
           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+          <div
+            className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
+          >
+            <UserPostsTab fetching={fetching} />
+          </div>
           <div
             className={css(
               tabName === "contributions" ? styles.reveal : styles.hidden
