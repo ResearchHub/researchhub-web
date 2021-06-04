@@ -8,7 +8,7 @@ import numeral from "numeral";
 import { MessageActions } from "~/redux/message";
 
 // Components
-import Highlight from "~/components/Search/Highlight";
+import Highlight from "~/components/Search/AlgoliaHighlight";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -487,13 +487,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {
-  showMessage: MessageActions.showMessage,
-  setMessage: MessageActions.setMessage,
-};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchEntry);
+export default SearchEntry;
