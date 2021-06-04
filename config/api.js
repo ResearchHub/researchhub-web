@@ -649,6 +649,9 @@ const routes = (BASE_URL) => {
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
+    SHOW_POST: ({ postId }) => {
+      return BASE_URL + `post/${postId}/`;
+    },
     GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
       let url = BASE_URL + "events/forward_event/";
       if (ignorePaper) {
