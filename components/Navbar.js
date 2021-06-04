@@ -15,11 +15,10 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "../components/Form/Button";
 import FirstVoteModal from "../components/Modals/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
@@ -211,10 +210,6 @@ const Navbar = (props) => {
     setOpenMenu(!openMenu);
   }
 
-  function onAddPaperClick() {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
-  }
-
   function toggleSideMenu() {
     setSideMenu(!sideMenu);
   }
@@ -326,11 +321,9 @@ const Navbar = (props) => {
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
         ) : (
-          <Button
-            label={"Add Paper"}
-            onClick={addPaperModal}
-            hideRipples={true}
-            customButtonStyle={[styles.addPaperButton]}
+          <NewPostButton
+            customButtonStyle={[styles.button]}
+            onClick={() => setSideMenu(!sideMenu)}
           />
         )}
       </Fragment>
@@ -369,11 +362,6 @@ const Navbar = (props) => {
         <div className={css(styles.divider)}></div>
       </div>
     );
-  }
-
-  function addPaperModal() {
-    Router.push(`/paper/upload/info`);
-    setSideMenu(!sideMenu);
   }
 
   function openWithdrawalModal() {
@@ -578,18 +566,9 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <PermissionNotificationWrapper
-            onClick={onAddPaperClick}
-            modalMessage="upload a paper"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-              label={"Add Paper"}
-              hideRipples={true}
-            />
-          </PermissionNotificationWrapper>
+          <NewPostButton
+            customButtonStyle={{ ...styles.button, ...styles.newPost }}
+          />
         </div>
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
@@ -743,7 +722,7 @@ const styles = StyleSheet.create({
     },
     // width: 210,
   },
-  addPaperButton: {
+  newPostButton: {
     width: "100%",
     height: 50,
 
@@ -806,7 +785,7 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  addPaper: {
+  newPost: {
     background: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
     color: "#fff",

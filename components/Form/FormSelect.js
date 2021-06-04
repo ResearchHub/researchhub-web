@@ -126,8 +126,8 @@ class FormSelect extends React.Component {
         <div
           className={css(
             styles.inputLabel,
-            labelStyle && labelStyle,
             styles.text,
+            labelStyle && labelStyle,
             !label && styles.hide
           )}
         >
