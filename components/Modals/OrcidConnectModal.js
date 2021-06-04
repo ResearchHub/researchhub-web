@@ -34,7 +34,6 @@ class OrcidConnectModal extends React.Component {
 
   loginCallback = () => {
     this.closeModal();
-    document.body.style.overflow = "scroll";
   };
 
   render() {
