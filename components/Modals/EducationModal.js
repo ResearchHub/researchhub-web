@@ -128,9 +128,6 @@ const EducationModal = (props) => {
 
   function closeModal() {
     props.openEducationModal(false);
-    if (document.body.style) {
-      document.body.style.overflow = "auto";
-    }
   }
 
   return (
