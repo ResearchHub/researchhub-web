@@ -3,13 +3,15 @@ import Router from "next/router";
 import Error from "next/error";
 import Loader from "~/components/Loader/Loader";
 import { formatPaperSlug } from "~/config/utils";
+import API from "~/config/api";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
+import helpers from "@quantfive/js-web-config/helpers";
 
 function Paper(props) {
   // TODO: Does this need to be a dynamic route or hard refresh?
-  if (props.error || props.paper.status === 404) {
+  if (props.error) {
     return <Error statusCode={404} />;
   }
 
@@ -24,19 +26,14 @@ function Paper(props) {
 
 Paper.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
-  await store.dispatch(PaperActions.getPaper(query.paperId));
-  const paper = store.getState().paper;
-  if (paper.status === 404) {
-    res.statusCode = 404;
-    return { error: true, paper: store.getState().paper };
-  }
-  const paperName = paper.slug
-    ? paper.slug
-    : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+  let post = await fetch(API.SHOW_POST({ postId: query.documentId })).then(
+    helpers.parseJSON
+  );
+  const name = formatPaperSlug(post.title);
 
-  const redirectPath = `/paper/${paper.id}/${paperName}`;
+  const redirectPath = `/post/${query.documentId}/${name}`;
 
-  return { redirectPath, paper };
+  return { redirectPath, post };
 };
 
 export default Paper;
