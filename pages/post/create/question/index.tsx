@@ -14,9 +14,10 @@ export default function Index() {
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Ask a Question</div>
+          <AboutQuestionCard isOpen={false} customStyle={styles.cardOnTop} />
           <div className={css(styles.row)}>
             <AskQuestionForm />
-            <AboutQuestionCard />
+            <AboutQuestionCard isOpen={true} customStyle={styles.cardOnSide} />
           </div>
         </div>
       </div>
@@ -28,9 +29,8 @@ const styles = StyleSheet.create({
   background: {
     backgroundColor: "#FCFCFC",
     display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
+    justifyContent: "center",
+    alignItems: "flex-start",
     scrollBehavior: "smooth",
     position: "relative",
     minHeight: "100vh",
@@ -43,19 +43,39 @@ const styles = StyleSheet.create({
     fontSize: "30px",
     lineHeight: "38px",
     marginBottom: "30px",
-  },
-  content: {
-    display: "flex",
-    // width: "100%",
-    // maxWidth: "1278px",
-    // maxWidth: "951px",
-    flexDirection: "column",
     "@media only screen and (max-width: 767px)": {
       alignItems: "center",
     },
   },
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    minWidth: 0,
+  },
   row: {
     display: "flex",
-    flexWrap: "wrap-reverse",
+    flexWrap: "wrap",
+    alignItems: "flex-start",
+    // flexWrap: "wrap-reverse",
+  },
+  cardOnTop: {
+    display: "none",
+    "@media only screen and (max-width: 1209px)": {
+      /* 1209px is cutoff when AboutQuestionCard no longer fits on the side and must go to top */
+      display: "flex",
+      flexDirection: "column",
+      paddingLeft: 50,
+      minWidth: 0,
+    },
+  },
+  cardOnSide: {
+    width: "100%",
+    maxWidth: "297px",
+    marginLeft: "30px",
+    maxHeight: 455,
+    "@media only screen and (max-width: 1209px)": {
+      /* 1209px is cutoff when AboutQuestionCard has room to fit on the side */
+      display: "none",
+    },
   },
 });
