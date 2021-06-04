@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React, { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 import CheckBox from "./Form/CheckBox";
