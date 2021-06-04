@@ -1,15 +1,11 @@
-import React, { Fragment, useState } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { ELNEditor } from "~/components/CKEditor/ELNEditor";
-import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 
 class Index extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {};
   }
-
-  componentDidMount() {}
 
   render() {
     return (
