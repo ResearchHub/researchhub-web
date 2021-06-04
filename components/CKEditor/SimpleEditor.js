@@ -1,21 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
+import colors from "../../config/themes/colors";
 
-// Components
-import Button from "~/components/Form/Button";
-
-// Config
-import API from "~/config/api";
-
-export function SimpleEditor() {
+export function SimpleEditor({
+  id,
+  containerStyle,
+  onChange,
+  initialData,
+  label,
+  labelStyle,
+  required,
+}) {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, Editor } = editorRef.current || {};
-
-  function manualSaveData(data) {
-    console.log("manualSaveData: " + data);
-  }
 
   const editorConfiguration = {
     toolbar: [
@@ -48,48 +47,65 @@ export function SimpleEditor() {
       Editor: require("ckeditor5-simple-build/build/ckeditor").Editor,
     };
     setEditorLoaded(true);
-    return () => {
-      //window.removeEventListener("resize", boundRefreshDisplayMode);
-      //window.removeEventListener("beforeunload", boundCheckPendingActions);
-    };
   }, []);
 
-  const renderEditor = () => {
-    return (
-      <div className="row row-editor">
+  return (
+    <Fragment>
+      <div className={css(containerStyle)}>
+        {label && (
+          <div
+            className={css(
+              styles.inputLabel,
+              styles.text,
+              labelStyle && labelStyle,
+              !label && styles.hide
+            )}
+          >
+            {label && label}
+            {required && <div className={css(styles.asterick)}>*</div>}
+          </div>
+        )}
         {editorLoaded && (
           <CKEditor
+            onChange={(event, editor) => {
+              onChange(id, editor.getData());
+            }}
             onReady={(editor) => {
-              console.log("Editor is ready to use!", editor);
+              editor.editing.view.change((writer) => {
+                writer.setStyle(
+                  "height",
+                  "200px",
+                  editor.editing.view.document.getRoot()
+                );
+              });
               setEditorInstance(editor);
             }}
-            onChange={(event, editor) => console.log({ event, editor })}
             editor={Editor}
             config={editorConfiguration}
-            data={"hello world"}
+            data={initialData}
           />
         )}
       </div>
-    );
-  };
-
-  return (
-    <div className="centered">
-      {renderEditor()}
-      <div className={css(styles.saveButton)}>
-        <Button
-          isWhite={false}
-          label={"Save"}
-          hideRipples={true}
-          onClick={() => manualSaveData(editorInstance.getData())}
-        />
-      </div>
-    </div>
+    </Fragment>
   );
 }
 
 const styles = StyleSheet.create({
-  saveButton: {
-    marginTop: 15,
+  asterick: {
+    color: colors.BLUE(1),
+  },
+  inputLabel: {
+    fontWeight: 500,
+    marginBottom: 10,
+    color: "#232038",
+    display: "flex",
+    justifyContent: "flex-start",
+  },
+  text: {
+    fontFamily: "Roboto",
+    fontSize: 16,
+  },
+  hide: {
+    display: "none",
   },
 });
