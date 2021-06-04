@@ -8,6 +8,7 @@ import { StyleSheet, css } from "aphrodite";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { connect } from "react-redux";
+import { Router, useRouter } from "next/router";
 
 type FormFields = {
   hub: null | object;
@@ -45,6 +46,7 @@ export type AskQuestionFormProps = {
 };
 
 function AskQuestionForm({ user }: AskQuestionFormProps) {
+  const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
     hub: true,
     text: false,
@@ -86,24 +88,26 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
     sendPost(true)
-      .then() // TODO: briansantoso - display success, redirect user elsewhere
+      .then(onSuccess(true))
       .catch((err) => setIsSubmitting(false));
   };
 
   const handlePost = (e: SyntheticEvent) => {
-    console.log(mutableFormFields, user);
     e.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
-      console.log(formErrors);
     } else {
       setShouldDisplayError(false);
       setIsSubmitting(true);
 
       sendPost(false)
-        .then() // TODO: briansantoso - redirect to page with question
+        .then(onSuccess(false))
         .catch((err) => setIsSubmitting(false));
     }
+  };
+
+  const onSuccess = (draft: boolean): ((value: any) => void) => {
+    return () => router.push(`/user/${user.id}/posts`);
   };
 
   const sendPost = (draft: boolean) => {
@@ -119,13 +123,9 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       renderable_text: "",
       full_src: mutableFormFields.text,
     };
-    console.log("sending...", params);
     return fetch(API.RESEARCHHUB_POSTS(), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((response) => {
-        console.log("response: ", response);
-      });
+      .then(Helpers.parseJSON);
   };
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {
