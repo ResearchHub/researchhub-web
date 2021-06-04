@@ -7,6 +7,7 @@ import { SimpleEditor } from "../CKEditor/SimpleEditor";
 import { StyleSheet, css } from "aphrodite";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { connect } from "react-redux";
 
 type FormFields = {
   hub: null | object;
@@ -39,7 +40,11 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export default function AskQuestionForm() {
+export type AskQuestionFormProps = {
+  user: any;
+};
+
+function AskQuestionForm({ user }: AskQuestionFormProps) {
   const [formErrors, setFormErrors] = useState<FormError>({
     hub: true,
     text: false,
@@ -84,6 +89,7 @@ export default function AskQuestionForm() {
   };
 
   const handlePost = (e: SyntheticEvent) => {
+    console.log(mutableFormFields, user);
     e.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
@@ -139,7 +145,7 @@ export default function AskQuestionForm() {
         />
         <SimpleEditor
           id="text"
-          initialData={mutableFormFields.text}
+          initialData={"\n\n\n\n"}
           onChange={handleOnChangeFields}
           label="Text"
           labelStyle={styles.label}
@@ -165,6 +171,15 @@ export default function AskQuestionForm() {
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+export default connect(
+  mapStateToProps
+  // mapDispatchToProps
+)(AskQuestionForm);
 
 const styles = StyleSheet.create({
   rootContainer: {
