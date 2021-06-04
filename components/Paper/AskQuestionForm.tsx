@@ -86,7 +86,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
     // TODO: briansantoso - hookup to backend
-    sendPost(true);
+    sendPost(true).catch((err) => setIsSubmitting(false));
   };
 
   const handlePost = (e: SyntheticEvent) => {
@@ -100,7 +100,9 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       setIsSubmitting(true);
       // TODO: briansantso - hookup to backend
 
-      sendPost(false);
+      sendPost(false)
+        .then()
+        .catch((err) => setIsSubmitting(false));
     }
   };
 
@@ -118,7 +120,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       full_src: mutableFormFields.text,
     };
     console.log("sending...", params);
-    fetch(API.RESEARCHHUB_POSTS(), API.POST_CONFIG(params))
+    return fetch(API.RESEARCHHUB_POSTS(), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((response) => {
