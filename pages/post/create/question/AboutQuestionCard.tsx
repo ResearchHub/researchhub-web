@@ -2,9 +2,9 @@ import React, { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Collapsible from "../../../../components/Form/Collapsible";
 
-export default function AboutQuestionCard() {
+export default function AboutQuestionCard({ isOpen, customStyle }) {
   return (
-    <div className={css(styles.aboutContainer)}>
+    <div className={css(styles.aboutContainer, customStyle)}>
       <div className={css(styles.aboutTitle)}>
         <img
           src={"/static/ResearchHubIcon.png"}
@@ -20,7 +20,7 @@ export default function AboutQuestionCard() {
         triggerClassName={css(styles.maxWidth)}
         triggerOpenedClassName={css(styles.maxWidth)}
         contentInnerClassName={css(styles.collapsibleContent)}
-        open={true}
+        open={isOpen}
         trigger="What can you post here?"
       >
         <ol className={css(styles.orderedList)}>
@@ -35,7 +35,7 @@ export default function AboutQuestionCard() {
         triggerClassName={css(styles.maxWidth)}
         triggerOpenedClassName={css(styles.maxWidth)}
         contentInnerClassName={css(styles.collapsibleContent)}
-        open={true}
+        open={isOpen}
         trigger="Guidelines"
       >
         <ul className={css(styles.orderedList)}>
@@ -52,16 +52,10 @@ const styles = StyleSheet.create({
   aboutContainer: {
     display: "flex",
     flexDirection: "column",
-    width: "100%",
-    maxWidth: "297px",
-    marginLeft: "30px",
     background: "#FFFFFF",
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "24px 21px",
-    alignSelf: "flex-end",
-    justifySelf: "stretch",
-    maxHeight: 455,
   },
   aboutTitle: {
     display: "flex",
