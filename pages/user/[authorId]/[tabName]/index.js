@@ -26,6 +26,9 @@ import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
+import UserPostsTab from "~/components/Author/Tabs/UserPosts";
+import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
+import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
@@ -143,6 +146,92 @@ function AuthorPage(props) {
   const facebookRef = useRef();
   const linkedinRef = useRef();
   const twitterRef = useRef();
+
+  const SECTIONS = {
+    name: "name",
+    description: "description",
+    facebook: "facebook",
+    linkedin: "linkedin",
+    twitter: "twitter",
+    picture: "picture",
+  };
+
+  const tabs = [
+    {
+      href: "posts",
+      label: "posts",
+      name: "Posts",
+      showCount: false,
+    },
+    {
+      href: "discussions",
+      label: "discussions",
+      name: "Discussions",
+      showCount: true,
+      count: () => author.userDiscussions.count,
+    },
+    {
+      href: "authored-papers",
+      label: "authored papers",
+      name: "Authored Papers",
+      showCount: true,
+      count: () => author.authoredPapers.count,
+    },
+    {
+      href: "contributions",
+      label: "paper submissions",
+      name: "Paper Submissions",
+      showCount: true,
+      count: () => author.userContributions.count,
+    },
+    {
+      href: "transactions",
+      label: "transactions",
+      name: "Transactions",
+      showCount: true,
+      count: () => transactions.count,
+    },
+    {
+      href: "boosts",
+      label: "supported papers",
+      name: "Supported Papers",
+      showCount: true,
+      count: () => author.promotions && author.promotions.count,
+    },
+  ];
+
+  const socialMedia = [
+    {
+      link: author.linkedin,
+      icon: icons.linkedIn,
+      nodeRef: linkedinRef,
+      dataTip: "Set LinkedIn Profile",
+      onClick: () => setEditLinkedin(true),
+      renderDropdown: () => editLinkedin && renderSocialEdit(SECTIONS.linkedin),
+      customStyles: styles.linkedin,
+      isEditing: editLinkedin,
+    },
+    {
+      link: author.twitter,
+      icon: icons.twitter,
+      nodeRef: twitterRef,
+      dataTip: "Set Twitter Profile",
+      onClick: () => setEditTwitter(true),
+      renderDropdown: () => editTwitter && renderSocialEdit(SECTIONS.twitter),
+      customStyles: styles.twitter,
+      isEditing: editTwitter,
+    },
+    {
+      link: author.facebook,
+      icon: icons.facebook,
+      nodeRef: facebookRef,
+      dataTip: "Set Facebook Profile",
+      onClick: () => setEditFacebook(true),
+      renderDropdown: () => editFacebook && renderSocialEdit(SECTIONS.facebook),
+      customStyles: styles.facebook,
+      isEditing: editFacebook,
+    },
+  ];
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
