@@ -108,7 +108,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
   };
 
   const onSuccess = (draft: boolean): ((value: any) => void) => {
-    return () => router.push(`/user/${user.id}/posts`);
+    return () => router.push(`/user/${user.author_profile.id}/posts`);
   };
 
   const sendPost = (draft: boolean) => {
