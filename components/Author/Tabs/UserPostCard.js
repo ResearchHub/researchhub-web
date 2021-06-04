@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import colors from "../../../config/themes/colors";
 
 export default function UserPostCard(props) {
-  console.warn("CARDPROPS: ", props);
   const {
     created_by: {
       author_profile: { profile_image: creatorImg, first_name, last_name },
