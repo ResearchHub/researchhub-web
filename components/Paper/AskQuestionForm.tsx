@@ -190,6 +190,9 @@ const styles = StyleSheet.create({
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "24px 50px 49px 50px",
+    minWidth: 0,
+    // maxWidth: "800px",
+    // width: "auto",
   },
   buttonsContainer: {
     width: "auto",
