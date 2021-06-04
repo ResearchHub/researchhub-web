@@ -112,16 +112,17 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
 
   const sendPost = (draft: boolean) => {
     const params = {
-      title: mutableFormFields.title,
-      hubs: mutableFormFields.hub ? [mutableFormFields.hub.id] : [],
-      created_by: user.id,
-      is_public: !draft,
       admins: null,
+      created_by: user.id,
+      document_type: "DISCUSSION",
       editors: null,
-      viewers: null,
+      full_src: mutableFormFields.text,
+      hubs: mutableFormFields.hub ? [mutableFormFields.hub.id] : [],
+      is_public: !draft,
       preview_img: null,
       renderable_text: "",
-      full_src: mutableFormFields.text,
+      title: mutableFormFields.title,
+      viewers: null,
     };
     return fetch(API.RESEARCHHUB_POSTS(), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
