@@ -80,7 +80,16 @@ export function SimpleEditor({
             onChange={(event, editor) => {
               onChange(id, editor.getData());
             }}
-            onReady={setEditorInstance}
+            onReady={(editor) => {
+              editor.editing.view.change((writer) => {
+                writer.setStyle(
+                  "height",
+                  "200px",
+                  editor.editing.view.document.getRoot()
+                );
+              });
+              setEditorInstance(editor);
+            }}
             editor={Editor}
             config={editorConfiguration}
             data={initialData}
