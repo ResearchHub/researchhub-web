@@ -340,7 +340,7 @@ const Navbar = (props) => {
           renderMenuLoginButtons(isLoggedIn)
         ) : (
           <NewPostButton
-            customButtonStyle={[styles.addPaperButton]}
+            customButtonStyle={[styles.button]}
             onClick={() => setSideMenu(!sideMenu)}
           />
         )}
@@ -742,7 +742,7 @@ const styles = StyleSheet.create({
     },
     // width: 210,
   },
-  addPaperButton: {
+  newPostButton: {
     width: "100%",
     height: 50,
 
