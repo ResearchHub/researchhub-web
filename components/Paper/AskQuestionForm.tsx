@@ -85,8 +85,9 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
   const handleSaveDraft = (e: SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // TODO: briansantoso - hookup to backend
-    sendPost(true).catch((err) => setIsSubmitting(false));
+    sendPost(true)
+      .then() // TODO: briansantoso - display success, redirect user elsewhere
+      .catch((err) => setIsSubmitting(false));
   };
 
   const handlePost = (e: SyntheticEvent) => {
@@ -98,10 +99,9 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     } else {
       setShouldDisplayError(false);
       setIsSubmitting(true);
-      // TODO: briansantso - hookup to backend
 
       sendPost(false)
-        .then()
+        .then() // TODO: briansantoso - redirect to page with question
         .catch((err) => setIsSubmitting(false));
     }
   };
@@ -129,7 +129,6 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
   };
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {
-    console.log(fieldID, value);
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
       ...formErrors,
