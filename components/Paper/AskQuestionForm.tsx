@@ -34,7 +34,7 @@ function validateFormField(fieldID: string, value: any): boolean {
     case "hub":
       return !!value; // TODO: briansantoso - check that hub is a real hub
     case "text":
-      return false;
+      return true;
     default:
       return result;
   }
@@ -86,6 +86,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
     // TODO: briansantoso - hookup to backend
+    sendPost(true);
   };
 
   const handlePost = (e: SyntheticEvent) => {
@@ -93,14 +94,40 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     e.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
+      console.log(formErrors);
     } else {
       setShouldDisplayError(false);
       setIsSubmitting(true);
       // TODO: briansantso - hookup to backend
+
+      sendPost(false);
     }
   };
 
+  const sendPost = (draft: boolean) => {
+    const params = {
+      title: mutableFormFields.title,
+      hubs: mutableFormFields.hub ? [mutableFormFields.hub.id] : [],
+      created_by: user.id,
+      is_public: !draft,
+      admins: null,
+      editors: null,
+      viewers: null,
+      preview_img: null,
+      renderable_text: "",
+      full_src: mutableFormFields.text,
+    };
+    console.log("sending...", params);
+    fetch(API.RESEARCHHUB_POSTS(), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((response) => {
+        console.log("response: ", response);
+      });
+  };
+
   const handleOnChangeFields = (fieldID: string, value: string): void => {
+    console.log(fieldID, value);
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
       ...formErrors,
