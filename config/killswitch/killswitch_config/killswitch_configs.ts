@@ -14,7 +14,7 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: false,
   },
   search: {
-    dev: false,
+    dev: true,
     prod: false,
     staging: false,
   },
