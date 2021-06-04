@@ -24,7 +24,7 @@ function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
       .catch(() => {
         setIsFetching(false);
       });
-  }, [setIsFetching, setPosts, userID]);
+  }, [userID]);
 }
 
 function UserPosts(props) {
@@ -37,7 +37,7 @@ function UserPosts(props) {
   useEffectFetchUserPosts({ setIsFetching, setPosts, userID: user.id });
   return (
     <ReactPlaceholder
-      ready={isFetching}
+      ready={!isFetching}
       showLoadingAnimation
       customPlaceholder={<PaperPlaceholder color="#efefef" />}
     >
