@@ -28,34 +28,27 @@ export function ELNEditor() {
     toolbar: [
       "heading",
       "|",
-      "fontsize",
-      "fontfamily",
-      "|",
       "bold",
       "italic",
       "underline",
       "strikethrough",
-      "removeFormat",
-      "highlight",
       "|",
-      "alignment",
+      "blockquote",
+      "codeBlock",
+      "insertTable",
+      "mathType",
       "|",
       "numberedList",
       "bulletedList",
+      "outdent",
+      "indent",
       "|",
       "link",
-      "blockquote",
       "imageUpload",
-      "insertTable",
       "mediaEmbed",
       "|",
-      "undo",
-      "redo",
-      "|",
       "comment",
-      "|",
       "trackChanges",
-      "mathType",
     ],
     cloudServices: {
       tokenUrl:
@@ -118,12 +111,20 @@ export function ELNEditor() {
 
   const renderEditor = () => {
     return (
-      <div className="row row-editor">
+      <div className={css(styles.editor)}>
         {editorLoaded && (
           <CKEditor
             onReady={(editor) => {
               console.log("Editor is ready to use!", editor);
               setEditorInstance(editor);
+
+              editor.editing.view.change((writer) => {
+                writer.setStyle(
+                  "height",
+                  "1200px",
+                  editor.editing.view.document.getRoot()
+                );
+              });
 
               // Switch between inline and sidebar annotations according to the window size.
               const boundRefreshDisplayMode = refreshDisplayMode.bind(
@@ -153,7 +154,7 @@ export function ELNEditor() {
 
   return (
     <div className="centered">
-      <div className="row-presence">
+      <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
       </div>
       {renderEditor()}
@@ -170,7 +171,15 @@ export function ELNEditor() {
 }
 
 const styles = StyleSheet.create({
+  presenceList: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  editor: {
+    width: "90vw",
+  },
   saveButton: {
     marginTop: 15,
+    marginBottom: 15,
   },
 });
