@@ -70,6 +70,10 @@ export default function ClaimAuthorPopoverLabel({
           setIsPopoverOpen={setIsPopoverOpen}
           targetContent={
             <div
+              className={css(styles.popoverTarget)}
+              onMouseEnter={() => {
+                setIsPopoverOpen(!isPopoverOpen);
+              }}
               onClick={() => {
                 setIsPopoverOpen(!isPopoverOpen);
               }}
@@ -111,9 +115,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     marginBottom: 16,
-    cursor: "pointer",
     color: colors.NEW_BLUE(1),
     // borderBottom: '',
+  },
+  popoverTarget: {
+    cursor: "pointer",
   },
   claimProfileButton: {
     alignItems: "center",
