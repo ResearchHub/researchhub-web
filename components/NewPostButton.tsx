@@ -14,12 +14,14 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
   return (
     <Fragment>
+      {/* @ts-ignore */}
       <PermissionNotificationWrapper
         onClick={() => setIsNewPostModalOpen(true)}
         modalMessage="create a new post"
         loginRequired={true}
         permissionKey="CreatePaper"
       >
+        {/* @ts-ignore */}
         <Button
           customButtonStyle={customButtonStyle}
           hideRipples={true}
