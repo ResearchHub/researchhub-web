@@ -2,7 +2,15 @@ import React, { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Collapsible from "../../../../components/Form/Collapsible";
 
-export default function AboutQuestionCard({ isOpen, customStyle }) {
+export type AboutQuestionCardProps = {
+  customStyle: any;
+  isOpen: boolean;
+};
+
+export default function AboutQuestionCard({
+  customStyle,
+  isOpen,
+}: AboutQuestionCardProps) {
   return (
     <div className={css(styles.aboutContainer, customStyle)}>
       <div className={css(styles.aboutTitle)}>
@@ -16,14 +24,12 @@ export default function AboutQuestionCard({ isOpen, customStyle }) {
       </div>
       <Collapsible
         className={css(styles.collapsibleSection)}
-        openedClassName={css(styles.collapsibleSection, styles.sectionOpened)}
-        triggerClassName={css(styles.maxWidth)}
-        triggerOpenedClassName={css(styles.maxWidth)}
         contentInnerClassName={css(styles.collapsibleContent)}
         open={isOpen}
+        openedClassName={css(styles.collapsibleSection)}
         trigger="What can you post here?"
       >
-        <ol className={css(styles.orderedList)}>
+        <ol>
           <li>Ask a question</li>
           <li>Start Discussion about a certain topic</li>
           <li>Post a relevant photo to a hub</li>
@@ -31,14 +37,12 @@ export default function AboutQuestionCard({ isOpen, customStyle }) {
       </Collapsible>
       <Collapsible
         className={css(styles.collapsibleSection)}
-        openedClassName={css(styles.collapsibleSection, styles.sectionOpened)}
-        triggerClassName={css(styles.maxWidth)}
-        triggerOpenedClassName={css(styles.maxWidth)}
         contentInnerClassName={css(styles.collapsibleContent)}
         open={isOpen}
+        openedClassName={css(styles.collapsibleSection)}
         trigger="Guidelines"
       >
-        <ul className={css(styles.orderedList)}>
+        <ul>
           <li>Ask a question</li>
           <li>Start Discussion about a certain topic</li>
           <li>Post a relevant photo to a hub</li>
