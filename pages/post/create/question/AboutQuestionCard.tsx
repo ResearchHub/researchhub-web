@@ -88,11 +88,11 @@ const styles = StyleSheet.create({
     cursor: "pointer",
   },
   collapsibleContent: {
+    marginLeft: "3px",
     fontStyle: "normal",
     fontWeight: "normal",
     fontSize: "16px",
-    lineheight: "26px",
+    lineHeight: "26px",
     color: "#241F3A",
-    marginLeft: "3px",
   },
 });
