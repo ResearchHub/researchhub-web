@@ -14,10 +14,9 @@ export default function Index() {
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Ask a Question</div>
-          <AskQuestionForm />
           <div className={css(styles.row)}>
-            {/* <AskQuestionForm /> */}
-            {/* <AboutQuestionCard /> */}
+            <AskQuestionForm />
+            <AboutQuestionCard />
           </div>
         </div>
       </div>
@@ -47,9 +46,9 @@ const styles = StyleSheet.create({
   },
   content: {
     display: "flex",
-    width: "100%",
+    // width: "100%",
     // maxWidth: "1278px",
-    maxWidth: "951px",
+    // maxWidth: "951px",
     flexDirection: "column",
     "@media only screen and (max-width: 767px)": {
       alignItems: "center",
@@ -57,5 +56,6 @@ const styles = StyleSheet.create({
   },
   row: {
     display: "flex",
+    flexWrap: "wrap-reverse",
   },
 });
