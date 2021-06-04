@@ -67,6 +67,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        /* @ts-ignore */
         let hubs = resp.results
           .map((hub, index) => {
             return {
@@ -107,7 +108,6 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
   };
 
   const onSuccess = (draft: boolean): ((value: any) => void) => {
-    console.log(user);
     return () => router.push(`/user/${user.author_profile.id}/posts`);
   };
 
@@ -118,6 +118,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       document_type: "DISCUSSION",
       editors: null,
       full_src: mutableFormFields.text,
+      /* @ts-ignore */
       hubs: mutableFormFields.hub ? [mutableFormFields.hub.id] : [],
       is_public: !draft,
       preview_img: null,
@@ -173,6 +174,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
           placeholder="Title"
           required
         />
+        {/* @ts-ignore */}
         <SimpleEditor
           id="text"
           initialData={mutableFormFields.text}
@@ -181,6 +183,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
           onChange={handleOnChangeFields}
         />
         <div className={css(styles.buttonsContainer)}>
+          {/* @ts-ignore */}
           <Button
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
@@ -189,6 +192,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
             onClick={handleSaveDraft}
           />
           <span className={css(styles.buttonSpacer)} />
+          {/* @ts-ignore */}
           <Button
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
