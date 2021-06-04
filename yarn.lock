@@ -1900,6 +1900,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-modal@^3.12.0":
+  version "3.12.0"
+  resolved "https://registry.npmjs.org/@types/react-modal/-/react-modal-3.12.0.tgz"
+  integrity sha512-UnHu/YO73NZLwqFpju/c0tqiswR0UHIfeO16rkfLVJUIMfQsl7X0CBm99H5XXgBMe/PgtQ/Rkud72iuRBr1TeA==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-popover@^0.5.3":
   version "0.5.3"
   resolved "https://registry.npmjs.org/@types/react-popover/-/react-popover-0.5.3.tgz"
@@ -7125,6 +7132,11 @@ react-spring@^8.0.27:
 react-tagsinput@^3.19.0:
   version "3.19.0"
   resolved "https://registry.npmjs.org/react-tagsinput/-/react-tagsinput-3.19.0.tgz"
+
+react-tiny-popover@^6.0.5:
+  version "6.0.5"
+  resolved "https://registry.npmjs.org/react-tiny-popover/-/react-tiny-popover-6.0.5.tgz"
+  integrity sha512-na6ZghMy5kqTPFSATb1pdSHO+/MikZvUxNk+zjXlz+gMXgiaOVuik5AiC5Oyj4yHpPf0nxoOmVQOmOmuDob6+A==
 
 react-toggle@^4.1.1:
   version "4.1.1"

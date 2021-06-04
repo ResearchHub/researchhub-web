@@ -2,6 +2,7 @@ import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
 import { doesNotExist } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -187,6 +188,15 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
+    AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
+      BASE_URL + `author_claim_token_validation/`,
+    MODERATORS_AUTHOR_CLAIM: ({ case_status }) =>
+      !isNullOrUndefined(case_status)
+        ? BASE_URL + `moderators/author_claim_case/?case_status=${case_status}`
+        : BASE_URL + `moderators/author_claim_case/`,
+    MODERATORS_AUTHOR_CLAIM_CASE_COUNT: () =>
+      BASE_URL + "moderators/author_claim_case/counts/",
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
