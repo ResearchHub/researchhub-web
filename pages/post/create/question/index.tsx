@@ -1,8 +1,8 @@
-import AskQuestionForm from "~/components/Paper/AskQuestionForm";
-import Head from "~/components/Head";
+import AboutQuestionCard from "./AboutQuestionCard";
+import AskQuestionForm from "../../../../components/Paper/AskQuestionForm";
+import Head from "../../../../components/Head";
 import React, { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
-import AboutQuestionCard from "./AboutQuestionCard";
 
 export default function Index() {
   return (
@@ -14,10 +14,10 @@ export default function Index() {
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Ask a Question</div>
-          <AboutQuestionCard isOpen={false} customStyle={styles.cardOnTop} />
+          <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
           <div className={css(styles.row)}>
             <AskQuestionForm />
-            <AboutQuestionCard isOpen={true} customStyle={styles.cardOnSide} />
+            <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
           </div>
         </div>
       </div>
