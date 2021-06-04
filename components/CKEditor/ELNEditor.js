@@ -73,13 +73,10 @@ export function ELNEditor() {
   };
 
   useEffect(() => {
-    console.log(editorRef);
-    if (!editorRef.current) {
-      editorRef.current = {
-        CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-        Editor: require("ckeditor5-eln-build/build/ckeditor").Editor,
-      };
-    }
+    editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      Editor: require("ckeditor5-eln-build/build/ckeditor").Editor,
+    };
     setEditorLoaded(true);
     return () => {
       //window.removeEventListener("resize", boundRefreshDisplayMode);

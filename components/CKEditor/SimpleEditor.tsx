@@ -24,7 +24,10 @@ export function SimpleEditor({
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
-  const { CKEditor, Editor } = editorRef.current || {};
+  const { CKEditor, Editor } = editorRef.current || {
+    CKEditor: null,
+    Editor: null,
+  };
 
   const editorConfiguration = {
     toolbar: [
@@ -52,13 +55,10 @@ export function SimpleEditor({
   };
 
   useEffect(() => {
-    console.log(editorRef);
-    if (!editorRef.current) {
-      editorRef.current = {
-        CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-        Editor: require("ckeditor5-simple-build/build/ckeditor").Editor,
-      };
-    }
+    editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      Editor: require("ckeditor5-simple-build/build/ckeditor").Editor,
+    };
     setEditorLoaded(true);
   }, []);
 
