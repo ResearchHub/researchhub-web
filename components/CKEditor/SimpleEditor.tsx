@@ -24,7 +24,10 @@ export function SimpleEditor({
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
-  const { CKEditor, Editor } = editorRef.current || {};
+  const { CKEditor, Editor } = editorRef.current || {
+    CKEditor: null,
+    Editor: null,
+  };
 
   const editorConfiguration = {
     toolbar: [
