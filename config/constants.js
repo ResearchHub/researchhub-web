@@ -64,5 +64,5 @@ Conclusion: What conclusion did the paper reach?
 
 Significance: What does this paper make possible in the world, and what should be tried from here?`;
 
-export const ALGOLIA_APP_ID = "OEYPUJXFJD";
-export const ALGOLIA_API_KEY = "2fde8d6a814ada26be93f7f744315e52";
+export const ALGOLIA_APP_ID = "EG6XJS648K";
+export const ALGOLIA_API_KEY = "9c80d20b4a02404482bb2cf79e1f2272";

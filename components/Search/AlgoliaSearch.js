@@ -1,9 +1,10 @@
 import React from "react";
 import { css, StyleSheet } from "aphrodite";
 import algoliasearch from "algoliasearch/lite";
-import { InstantSearch, SearchBox } from "react-instantsearch-dom";
+import { InstantSearch } from "react-instantsearch-dom";
 // import "./algolia.css";
 import AlgoliaSearchResults from "~/components/Search/AlgoliaSearchResults";
+import AlgoliaSearchInput from "~/components/Search/AlgoliaSearchInput";
 
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY } from "~/config/constants";
 import colors from "~/config/themes/colors";
@@ -22,17 +23,17 @@ class AlgoliaSearch extends React.Component {
     document.addEventListener("click", this.handleEvent);
   }
 
+  componentWillUnmount() {
+    clearTimeout(this.dropdownTimeout);
+    document.removeEventListener("click", this.handleEvent);
+  }
+
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.showDropdown !== this.props.showDropdown) {
       this.setState({
         showDropdown: this.props.showDropdown,
       });
     }
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.dropdownTimeout);
-    document.removeEventListener("click", this.handleEvent);
   }
 
   handleEvent = (e) => {
@@ -46,9 +47,12 @@ class AlgoliaSearch extends React.Component {
     }
   };
 
-  handleSearch = (e) => {
-    const query = e.target.value;
-    this.setState({ showDropdown: query ? true : false });
+  handleSearch = (query) => {
+    if (query && !this.state.showDropdown) {
+      this.setState({ showDropdown: true });
+    } else if (!query && this.state.showDropdown) {
+      this.setState({ showDropdown: false });
+    }
   };
 
   onResultClick = (e) => {
@@ -69,11 +73,12 @@ class AlgoliaSearch extends React.Component {
           indexName={`papers_${process.env.NODE_ENV}`}
           searchClient={searchClient}
         >
-          <SearchBox
-            placeholder="Search..."
+          <AlgoliaSearchInput
             onChange={this.handleSearch}
             onReset={() => this.setState({ showDropdown: false })}
+            delay={500}
           />
+
           {this.state.showDropdown && (
             <div
               className={css(styles.searchDropdown, this.props.dropdownClass)}
