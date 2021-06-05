@@ -2320,6 +2320,13 @@ ajv@^6.1.0, ajv@^6.10.2, ajv@^6.12.4, ajv@^6.5.5:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+algoliasearch-helper@^3.4.3:
+  version "3.4.4"
+  resolved "https://registry.yarnpkg.com/algoliasearch-helper/-/algoliasearch-helper-3.4.4.tgz#f2eb46bc4d2f6fed82c7201b8ac4ce0a1988ae67"
+  integrity sha512-OjyVLjykaYKCMxxRMZNiwLp8CS310E0qAeIY2NaublcmLAh8/SL19+zYHp7XCLtMem2ZXwl3ywMiA32O9jszuw==
+  dependencies:
+    events "^1.1.1"
+
 algoliasearch@^4.9.1:
   version "4.9.1"
   resolved "https://registry.yarnpkg.com/algoliasearch/-/algoliasearch-4.9.1.tgz#1fa8ece3f9808e465226176b88b953801c2274e0"
@@ -4144,6 +4151,11 @@ eventemitter3@^2.0.3:
   version "2.0.3"
   resolved "https://registry.npmjs.org/eventemitter3/-/eventemitter3-2.0.3.tgz"
   integrity sha1-teEHm1n7XhuidxwKmTvgYKWMmbo=
+
+events@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/events/-/events-1.1.1.tgz#9ebdb7635ad099c70dcc4c2a1f5004288e8bd924"
+  integrity sha1-nr23Y1rQmccNzEwqH1AEKI6L2SQ=
 
 events@^3.0.0:
   version "3.1.0"
@@ -7033,6 +7045,11 @@ react-dropzone@^10.1.9:
     file-selector "^0.1.12"
     prop-types "^15.7.2"
 
+react-fast-compare@^3.0.0:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
+  integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
+
 react-floater@^0.7.2:
   version "0.7.2"
   resolved "https://registry.npmjs.org/react-floater/-/react-floater-0.7.2.tgz"
@@ -7095,6 +7112,28 @@ react-input-autosize@^2.2.2:
   resolved "https://registry.npmjs.org/react-input-autosize/-/react-input-autosize-2.2.2.tgz"
   dependencies:
     prop-types "^15.5.8"
+
+react-instantsearch-core@^6.11.0:
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/react-instantsearch-core/-/react-instantsearch-core-6.11.0.tgz#103fd4dd14c0e057fdde88e32bf419497b1fb55e"
+  integrity sha512-RE5pPuSL5e3+wgMl+QLY+MgyqgNXBrfppqk3podOXTdWpQ5VdaXVrpeWVcmFJlRRKPLJI6RGqCiHVRTaGt1HVw==
+  dependencies:
+    "@babel/runtime" "^7.1.2"
+    algoliasearch-helper "^3.4.3"
+    prop-types "^15.6.2"
+    react-fast-compare "^3.0.0"
+
+react-instantsearch-dom@^6.11.0:
+  version "6.11.0"
+  resolved "https://registry.yarnpkg.com/react-instantsearch-dom/-/react-instantsearch-dom-6.11.0.tgz#8e319e7a2fab98051978c9ba3b2eb25747bdd354"
+  integrity sha512-OXbP3OuT52HAoCbQiPxPAL9q/Lm5pm+eRx8TMKB2kcf6fQzc+L7RMy7fveuMENcmBks+vdD2+G7DGM8oVv9etg==
+  dependencies:
+    "@babel/runtime" "^7.1.2"
+    algoliasearch-helper "^3.4.3"
+    classnames "^2.2.5"
+    prop-types "^15.6.2"
+    react-fast-compare "^3.0.0"
+    react-instantsearch-core "^6.11.0"
 
 react-is@16.13.1, react-is@^16.6.3, react-is@^16.8.1:
   version "16.13.1"
@@ -8491,6 +8530,11 @@ unbox-primitive@^1.0.0:
     has-bigints "^1.0.1"
     has-symbols "^1.0.2"
     which-boxed-primitive "^1.0.2"
+
+underscore@^1.13.1:
+  version "1.13.1"
+  resolved "https://registry.yarnpkg.com/underscore/-/underscore-1.13.1.tgz#0c1c6bd2df54b6b69f2314066d65b6cde6fcf9d1"
+  integrity sha512-hzSoAVtJF+3ZtiFX0VgfFPHEDRm7Y/QPjGyNo4TVdnDTdft3tr8hEkD25a1jC+TjTuE7tkHGKkhwCgs9dgBB2g==
 
 undux@^5.2.0:
   version "5.2.0"
