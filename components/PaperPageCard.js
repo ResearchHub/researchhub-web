@@ -308,22 +308,6 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
-        active: paper && paper.url && (paper && !paper.file),
-        button: (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={() => openExternalLink(paper.url)}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Open in External Link"}
-            >
-              {icons.externalLink}
-            </span>
-          </Ripples>
-        ),
-      },
-      {
         active: true,
         button: (
           <span data-tip={"Support Paper"}>
@@ -368,16 +352,19 @@ class PaperPageCard extends React.Component {
       {
         active: isModerator,
         button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={"Remove Page & Ban User"}
-          >
-            <ActionButton
-              isModerator={isModerator}
-              paperId={paper.id}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
+          <>
+            <ReactTooltip />
+            <span
+              className={css(styles.actionIcon, styles.moderatorAction)}
+              data-tip={"Remove Page & Ban User"}
+            >
+              <ActionButton
+                isModerator={isModerator}
+                paperId={paper.id}
+                iconStyle={styles.moderatorIcon}
+              />
+            </span>
+          </>
         ),
       },
     ].filter((action) => action.active);

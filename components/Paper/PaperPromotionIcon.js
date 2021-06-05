@@ -45,7 +45,7 @@ function PaperPromotionIcon({ customStyle, openPaperTransactionModal, paper }) {
           onMouseLeave={() => setHover(false)}
         >
           <span className={css(styles.icon, customStyle)}>
-            <Icon color={hover && colors.ORANGE()} emptyState={false} />
+            <Icon color={hover && "rgb(36, 31, 58)"} emptyState={false} />
           </span>
           <span className={css(styles.count) + " count"}>{numPromotions}</span>
         </div>
