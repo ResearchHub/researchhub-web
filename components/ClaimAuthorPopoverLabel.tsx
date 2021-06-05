@@ -4,6 +4,7 @@ import ResearchHubPopover from "./ResearchHubPopover";
 import icons from "../config/themes/icons";
 import AuthorClaimModal from "./AuthorClaimModal/AuthorClaimModal";
 import colors from "../config/themes/colors";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 type Props = {
   auth: any;
@@ -32,12 +33,8 @@ export default function ClaimAuthorPopoverLabel({
         author={author}
         isOpen={isClaimModalOpen}
         setIsOpen={setIsClaimModalOpen}
-        user={user}
       />
       <div className={css(styles.claimAuthorPopoverLabel)}>
-        <span className={css(styles.popoverLabelText)}>
-          {"Unclaimed profile"}
-        </span>
         <ResearchHubPopover
           isOpen={isPopoverOpen}
           popoverContent={
@@ -52,28 +49,42 @@ export default function ClaimAuthorPopoverLabel({
                   />
                 </div>
                 <div className={css(styles.bodySubheader)}>
-                  {"Claim your profile and receive up to 1000 RSC"}
+                  {"Claim your profile and receive 1000 RSC"}
                 </div>
               </div>
-              <div
-                className={css(styles.claimProfileButton)}
-                role="button"
+              {/* @ts-ignore */}
+              <PermissionNotificationWrapper
                 onClick={handleClaimButtonClick}
+                modalMessage="claim this author profile"
+                loginRequired={true}
               >
-                {"Claim Profile"}
-              </div>
+                <button
+                  className={css(styles.claimProfileButton)}
+                  role="button"
+                >
+                  {"Claim Profile"}
+                </button>
+              </PermissionNotificationWrapper>
             </div>
           }
           setIsPopoverOpen={setIsPopoverOpen}
           targetContent={
-            <span
-              className={css(styles.popoverIcon)}
+            <div
+              className={css(styles.popoverTarget)}
+              onMouseEnter={() => {
+                setIsPopoverOpen(!isPopoverOpen);
+              }}
               onClick={() => {
                 setIsPopoverOpen(!isPopoverOpen);
               }}
             >
-              {icons.exclamationCircle}
-            </span>
+              <span className={css(styles.popoverLabelText)}>
+                {`Are you ${author.first_name}? Claim your profile`}
+              </span>
+              <span className={css(styles.popoverIcon)}>
+                {icons.exclamationCircle}
+              </span>
+            </div>
           }
         />
       </div>
@@ -85,14 +96,12 @@ const styles = StyleSheet.create({
   bodyHeader: {
     alignItems: "center",
     display: "flex",
-    fontFamily: "Montserrat",
     fontSize: 16,
     fontWeight: 600,
     marginBottom: 8,
   },
   bodySubheader: {
     color: "#272727",
-    fontFamily: "Poppins",
     fontSize: 14,
     marginBottom: 16,
   },
@@ -106,10 +115,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     marginBottom: 16,
-    width: 175,
+    color: colors.NEW_BLUE(1),
+    // borderBottom: '',
+  },
+  popoverTarget: {
+    cursor: "pointer",
   },
   claimProfileButton: {
     alignItems: "center",
+    border: "none",
     backgroundColor: "#3971FF",
     borderRadius: 4,
     color: "#fff",
@@ -149,11 +163,10 @@ const styles = StyleSheet.create({
   },
   popoverIcon: { cursor: "pointer" },
   popoverLabelText: {
-    fontFamily: "Roboto",
     fontSize: 16,
     fontStyle: "normal",
     fontWeight: 500,
     letterSpacing: 0,
-    marginRight: 4,
+    marginRight: 8,
   },
 });

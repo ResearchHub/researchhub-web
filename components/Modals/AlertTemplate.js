@@ -5,14 +5,7 @@ import { modalStyles } from "~/config/themes/styles";
 import Ripples from "react-ripples";
 
 const AlertTemplate = ({ style, options, message, close }) => {
-  if (document.body.style) {
-    document.body.style.overflow = "hidden";
-  }
-
   function closeAlert() {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     close();
   }
 
@@ -53,9 +46,6 @@ const AlertTemplate = ({ style, options, message, close }) => {
           <Ripples
             className={css(styles.button)}
             onClick={() => {
-              if (document.body.style) {
-                document.body.style.overflow = "scroll";
-              }
               message.onClick && message.onClick();
               close();
             }}

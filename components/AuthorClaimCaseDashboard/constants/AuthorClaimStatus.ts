@@ -22,3 +22,10 @@ export const AUTHOR_CLAIM_STATUS_LABEL = {
   NULLIFIED: "Nullified",
   OPEN: "Open",
 };
+
+export const AUTHOR_USER_STATUS = {
+  EXISTS: "EXISTS",
+  NONE: "NONE" /* Author does not have an existing User */,
+  SPAMMER: "SPAMMER",
+  SUSPENDED: "SUSPENDED",
+};

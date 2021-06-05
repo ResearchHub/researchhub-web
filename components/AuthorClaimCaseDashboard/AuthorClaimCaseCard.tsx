@@ -1,18 +1,15 @@
-import {
-  AUTHOR_CLAIM_STATUS,
-  AUTHOR_CLAIM_STATUS_LABEL,
-} from "./constants/AuthorClaimStatus";
+import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { emptyFncWithMsg, silentEmptyFnc } from "../../config/utils/nullchecks";
 import { ValueOf } from "../../config/types/root_types";
-import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
+import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetAuthorSection";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
+import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -27,6 +24,9 @@ export default function AuthorClaimCaseCard({
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [openModalType, setOpenModalType] = useState<
+    ValueOf<typeof AUTHOR_CLAIM_STATUS>
+  >("");
   const { caseData, requestor, targetAuthor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
@@ -35,7 +35,6 @@ export default function AuthorClaimCaseCard({
     providedEmail,
     requestorAuthorID,
   } = requestor || {};
-  const { id: targetAuthorID, name: targetAuthorName } = targetAuthor || {};
 
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
@@ -47,24 +46,12 @@ export default function AuthorClaimCaseCard({
             actionType={actionType}
             isDisabled={isSubmitting}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
-            onClick={(event: SyntheticEvent) => {
-              event.stopPropagation(); /* prevents card collapse */
-              setIsSubmitting(true);
-              updateCaseStatus({
-                payload: { caseID, updateStatus: actionType },
-                onSuccess: () => {
-                  setIsSubmitting(false);
-                  setLastFetchTime(Date.now());
-                },
-              });
-            }}
+            onClick={() => setOpenModalType(actionType)}
           />
         )
       )
     ) : (
-      <AuthorClaimCaseCardStatusLabel
-        label={AUTHOR_CLAIM_STATUS_LABEL[caseStatus]}
-      />
+      <AuthorClaimCaseCardStatusLabel status={caseStatus} />
     );
   }, [caseStatus]);
 
@@ -75,6 +62,14 @@ export default function AuthorClaimCaseCard({
       role="none"
       style={{ width: cardWidth }}
     >
+      <AuthorClaimCaseModal
+        caseID={caseID}
+        requestorName={requestorName}
+        profileImg={requestorFaceImg}
+        openModalType={openModalType}
+        setOpenModalType={setOpenModalType}
+        setLastFetchTime={setLastFetchTime}
+      />
       <div className={css(styles.chevronWrap)}>
         {isCollapsed ? icons.chevronDown : icons.chevronUp}
       </div>
@@ -90,22 +85,30 @@ export default function AuthorClaimCaseCard({
               className={css(styles.requestorFaceImg)}
               src={requestorFaceImg}
             />
-            <span className={css(styles.requestorName)}>{requestorName}</span>
+            <a
+              className={css(styles.link)}
+              href={`/user/${requestorAuthorID}`}
+              onClick={(e: SyntheticEvent) => e.stopPropagation()}
+              target="__blank"
+            >
+              <span className={css(styles.requestorName)}>{requestorName}</span>
+            </a>
           </div>
           <div className={css(styles.cardMainSection, styles.fontGrey)}>
             {providedEmail}
           </div>
-          <div className={css(styles.cardMainSection, styles.fontGrey)}>
+          <div className={css(styles.cardSmallerMainSection, styles.fontGrey)}>
             {createdDate.split("T")[0]}
           </div>
-          <div className={css(styles.cardMainSection)}>{actionLabels}</div>
+          <div className={css(styles.cardSmallerMainSection)}>
+            {actionLabels}
+          </div>
         </div>
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
-            <div className={css(styles.requestorSubInfo, styles.fontGrey)}>
-              Claiming Author
-            </div>
-            <div> {targetAuthorName} </div>
+            <AuthorClaimCaseCardTargetAuthorSection
+              targetAuthor={targetAuthor}
+            />
           </div>
         ) : null}
       </div>
@@ -123,14 +126,16 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     marginBottom: 16,
     minHeight: 72,
+    maxWidth: "90%",
   },
   borderBottom: {
     borderBottom: `1px solid ${colors.GREY(0.5)}`,
   },
   cardMain: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     padding: "0px 16px",
     width: "100%",
   },
@@ -139,19 +144,26 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 72,
     justifyContent: "flex-start",
+    overflow: "hidden",
     paddingRight: 16,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
     width: "24%",
+  },
+  cardSmallerMainSection: {
+    alignItems: "center",
+    display: "flex",
+    height: 72,
+    justifyContent: "flex-start",
+    overflow: "hidden",
+    paddingRight: 16,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    width: "15%",
   },
   cardMainSectionWrap: {
     display: "flex",
-    width: "100%",
-  },
-  cardSubmain: {
-    display: "flex",
-    flexDirection: "column",
-    fontSize: 16,
-    height: 72,
-    justifyContent: "center",
+    justifyContent: "space-between",
     width: "100%",
   },
   chevronWrap: {
@@ -176,7 +188,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
   },
-  requestorSubInfo: {
-    marginBottom: 8,
+  cardSubmain: {
+    display: "flex",
+    flexDirection: "column",
+    fontSize: 16,
+    minHeight: 72,
+    justifyContent: "center",
+    width: "100%",
+    margin: "16px 0 8px",
+  },
+  link: {
+    color: colors.BLUE(1),
+    textDecoration: "none",
   },
 });

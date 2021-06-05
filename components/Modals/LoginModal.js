@@ -44,7 +44,6 @@ class LoginModal extends React.Component {
     await googleLogin(response).then((_) => {
       getUser().then((_) => {
         this.closeModal();
-        document.body.style.overflow = "scroll";
       });
     });
 

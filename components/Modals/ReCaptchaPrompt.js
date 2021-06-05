@@ -57,7 +57,6 @@ class ReCaptchaPrompt extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        document.body.style.overflow = "scroll";
         this.props.openRecaptchaPrompt(false);
       });
   };
