@@ -78,20 +78,7 @@ class UploadPaperModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     modalActions.openUploadPaperModal(false);
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
-
-  enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
   };
 
   renderSearchResults = () => {

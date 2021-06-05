@@ -72,7 +72,6 @@ class UserInfoModal extends React.Component {
 
   closeModal = () => {
     this.props.openUserInfoModal(false);
-    document.body.style.overflow = "scroll";
   };
 
   saveAndCloseModal = () => {

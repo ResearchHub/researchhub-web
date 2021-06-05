@@ -38,10 +38,11 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     fontSize: 18,
-    height: 60,
-    justifyContent: "center",
-    padding: 8,
-    width: 136,
+    height: 44,
+    justifyContent: "flex-start",
+    padding: "4px 0",
+    marginRight: 24,
+    width: 80,
   },
   isButtonActive: {
     borderBottom: `2px solid ${colors.BLUE(1)}`,
@@ -57,6 +58,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 12,
     fontSize: 12,
-    width: 32,
+    minWidth: 32,
   },
 });

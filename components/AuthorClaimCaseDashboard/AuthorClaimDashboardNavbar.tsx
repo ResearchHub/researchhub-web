@@ -93,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end",
     backgroundColor: "#FFF",
     display: "flex",
-    height: 172,
+    minHeight: 120,
     justifyContent: "center",
     width: "100%",
   },
@@ -113,6 +113,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
+    maxWidth: "90%",
   },
   navRow: {
     alignItems: "center",

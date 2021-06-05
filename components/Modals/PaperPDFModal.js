@@ -17,14 +17,6 @@ const PaperPDFModal = (props) => {
 
   function closeModal() {
     /**
-     * In BaseModal, we disable/enable scroll in the background when modals is open/closed.
-     * This is to ensure the correct scroll behavior on desktop and mobile.
-     * In this component we're using a custom close button, so we need to have this to reenable scroll in the onClose. */
-    if (process.browser) {
-      document.body.style.overflow = "scroll";
-    }
-
-    /**
      * it is helpful to have onClose callback since there
      * may be many PaperPDFModal's rendered, but modals.openPaperPDFModal is only a single boolean
      * and cannot specify which one is open */
