@@ -20,11 +20,6 @@ const SignUpModal = (props) => {
 
   function closeModal() {
     dispatch(ModalActions.openSignUpModal(false));
-    enableParentScroll();
-  }
-
-  function enableParentScroll() {
-    document.body.style.overflow = "scroll";
   }
 
   function renderDivider() {

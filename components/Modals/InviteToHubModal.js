@@ -63,7 +63,6 @@ class InviteToHubModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     openInviteToHubModal(false);
   };
 
@@ -84,18 +83,6 @@ class InviteToHubModal extends React.Component {
       return;
     }
     this.setState({ email: value });
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
-
-  enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
   };
 
   sendInvites = () => {
@@ -153,7 +140,6 @@ class InviteToHubModal extends React.Component {
         shouldCloseOnOverlayClick={true}
         onRequestClose={this.closeModal}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
           <img

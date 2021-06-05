@@ -65,7 +65,6 @@ class AddAuthorModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     modalActions.openAddAuthorModal(false);
   };
 
@@ -92,22 +91,6 @@ class AddAuthorModal extends React.Component {
     this.closeModal();
   };
 
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "hidden";
-    }
-  };
-
-  enableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
-  };
-
   render() {
     let {
       first_name,
@@ -128,7 +111,6 @@ class AddAuthorModal extends React.Component {
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
           <img
