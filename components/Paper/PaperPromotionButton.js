@@ -1,26 +1,21 @@
-import { Fragment, useState } from "react";
-import { connect } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-
-// redux
-import { ModalActions } from "~/redux/modals";
-
-import numeral from "numeral";
 import colors from "~/config/themes/colors";
-import { PaperPromotionIcon } from "~/config/themes/icons";
+import numeral from "numeral";
+import { Fragment, useState } from "react";
+import { ModalActions } from "~/redux/modals";
+import {
+  PaperPromotionIcon,
+  PaperPromotionIconLarge,
+} from "~/config/themes/icons";
+import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
 
-const PaperPromotionButton = ({ paper, openPaperTransactionModal }) => {
+const PaperPromotionButton = ({
+  customStyle,
+  openPaperTransactionModal,
+  paper,
+}) => {
   const [hover, setHover] = useState(false);
-
-  const { promoted, score } = paper;
-
-  const getCount = () => {
-    if (typeof promoted === "boolean") return 0;
-
-    return numeral(promoted - score).format("0a");
-  };
 
   return (
     <PermissionNotificationWrapper
@@ -30,21 +25,15 @@ const PaperPromotionButton = ({ paper, openPaperTransactionModal }) => {
       hideRipples={true}
     >
       <div
-        data-tip={"Support Paper"}
+        data-tip="Support Paper"
         className={css(styles.root)}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
       >
-        <span className={css(styles.icon)}>
-          <PaperPromotionIcon
-            color={hover && colors.ORANGE()}
-            emptyState={!getCount()}
-          />
-        </span>
-        <span
-          className={css(styles.count, !promoted && styles.hide) + " count"}
-        >
-          {getCount()}
+        <span className={css(styles.icon, customStyle)}>
+          <div className={css(styles.offset)}>
+            <PaperPromotionIconLarge color={hover && colors.ORANGE()} />
+          </div>
         </span>
       </div>
     </PermissionNotificationWrapper>
@@ -58,28 +47,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     cursor: "pointer",
-    paddingRight: 17,
-    ":hover .count": {
-      color: colors.BLACK(),
-    },
     "@media only screen and (min-width: 0px) and (max-width: 767px)": {
       paddingRight: 0,
     },
   },
   icon: {
-    width: 25,
-    height: 25,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
   },
-  count: {
-    fontSize: 13,
-    fontWeight: "bold",
-    marginLeft: 4,
-  },
-  hide: {
-    display: "none",
+  offset: {
+    transform: "translate(8.5px, -3px)",
   },
 });
 
