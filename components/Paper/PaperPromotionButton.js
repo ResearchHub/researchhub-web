@@ -32,7 +32,7 @@ const PaperPromotionButton = ({
       >
         <span className={css(styles.icon, customStyle)}>
           <div className={css(styles.offset)}>
-            <PaperPromotionIconLarge color={hover && colors.ORANGE()} />
+            <PaperPromotionIconLarge color={hover && "rgb(36, 31, 58)"} />
           </div>
         </span>
       </div>
