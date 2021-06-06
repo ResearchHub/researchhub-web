@@ -60,24 +60,19 @@ const AlgoliaInfiniteResults = ({
 const Hit = (props) => {
   const { hit, indexName, firstOfItsType, onClickCallBack } = props;
 
-  const _formatProps = () => {
+  // FIXME: Kobe, 06/06, Building props is for backwards compatibility.
+  // This can be removed once Algolia is a fully integrated solution.
+  const buildPropsForSearchEntry = () => {
     const result = {
       ...hit,
       meta: { highlight: null },
       indexName: "paper",
+      hubs: hit.paper_hubs,
+      authors: hit.authors_str,
     };
 
-    // const indexName = 'paper'
-    // const props = {
-    //   indexName,
-    //   result: Object.assign({}, item, {meta: {}}),
-    //   clearSearch: () => 'meow',
-    //   firstOfItsType: false,
-    //   query: query,
-    // };
-
-    if (indexName === "author") {
-      result.score = hit.author_score;
+    if (result._highlightResult) {
+      result._highlightResult.authors = result._highlightResult.authors_str;
     }
 
     return { result, indexName, firstOfItsType, onClickCallBack };
@@ -85,7 +80,7 @@ const Hit = (props) => {
 
   return (
     <div className={css(styles.hit)}>
-      <SearchEntry {..._formatProps()} />
+      <SearchEntry {...buildPropsForSearchEntry()} />
     </div>
   );
 };
