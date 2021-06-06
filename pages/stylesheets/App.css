@@ -32,6 +32,11 @@
   visibility: hidden;
 }
 
+.menu-wrapper--inner {
+  width: 990000px !important;
+  white-space: unset !important;
+}
+
 .horizontal-menu {
   width: 105%;
 }
