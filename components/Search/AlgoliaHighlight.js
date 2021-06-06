@@ -1,7 +1,7 @@
 import { connectHighlight } from "react-instantsearch-dom";
 import { css, StyleSheet } from "aphrodite";
 
-const AlgoliaHighlight = ({ result, highlight, attribute, hit, styles }) => {
+const AlgoliaHighlight = ({ result, highlight, attribute, className }) => {
   const parsedHit = highlight({
     highlightProperty: "_highlightResult",
     attribute,
@@ -9,7 +9,7 @@ const AlgoliaHighlight = ({ result, highlight, attribute, hit, styles }) => {
   });
 
   return (
-    <span className={css(styles && styles)}>
+    <span className={className}>
       {parsedHit.map((part, index) =>
         part.isHighlighted ? (
           <mark key={index}>{part.value}</mark>
