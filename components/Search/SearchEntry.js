@@ -81,7 +81,11 @@ class SearchEntry extends React.Component {
               <Highlight result={result} attribute={"title"} />
             </span>
             {authors && authors.length > 0 ? (
-              <Highlight result={result} attribute={"authors"} />
+              <Highlight
+                className={css(styles.authors)}
+                result={result}
+                attribute={"authors"}
+              />
             ) : (
               <div className={css(styles.authors)}>No attributed author</div>
             )}
