@@ -1,6 +1,6 @@
 import { connectHighlight } from "react-instantsearch-dom";
-import { css, StyleSheet } from "aphrodite";
 import { get } from "lodash";
+import PropTypes from "prop-types";
 
 const AlgoliaHighlight = ({ result, highlight, attribute, className }) => {
   const snippet = get(result, `_snippetResult[${attribute}]`);
@@ -27,6 +27,13 @@ const AlgoliaHighlight = ({ result, highlight, attribute, className }) => {
       )}
     </span>
   );
+};
+
+AlgoliaHighlight.propTypes = {
+  result: PropTypes.object.isRequired,
+  highlight: PropTypes.func.isRequired,
+  attribute: PropTypes.string.isRequired,
+  className: PropTypes.string,
 };
 
 export default connectHighlight(AlgoliaHighlight);

@@ -4,7 +4,6 @@ import algoliasearch from "algoliasearch/lite";
 import { InstantSearch } from "react-instantsearch-dom";
 import AlgoliaSearchResults from "~/components/Search/AlgoliaSearchResults";
 import AlgoliaSearchBox from "~/components/Search/AlgoliaSearchBox";
-
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY } from "~/config/constants";
 import colors from "~/config/themes/colors";
 
@@ -77,7 +76,6 @@ class AlgoliaSearch extends React.Component {
             onChange={this.handleSearch}
             mobile={mobile}
             onReset={() => this.setState({ showDropdown: false })}
-            delay={500}
           />
 
           {this.state.showDropdown && (
@@ -88,7 +86,7 @@ class AlgoliaSearch extends React.Component {
               )}
               ref={(ref) => (this.scrollParent = ref)}
             >
-              <AlgoliaSearchResults onClickCallBack={this.onResultClick} />
+              <AlgoliaSearchResults handleResultClick={this.onResultClick} />
             </div>
           )}
         </InstantSearch>
