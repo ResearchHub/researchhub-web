@@ -87,9 +87,6 @@ const AuthorSupportModal = (props) => {
   }
 
   function closeModal() {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     props.openAuthorSupportModal(false);
     setPage(2); //1
     setActivePayment(null);

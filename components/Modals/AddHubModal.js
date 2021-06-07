@@ -138,9 +138,6 @@ class AddHubModal extends React.Component {
 
   closeModal = () => {
     this.props.openAddHubModal(false);
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   render() {

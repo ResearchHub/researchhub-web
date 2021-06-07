@@ -1,41 +1,50 @@
+import * as Sentry from "@sentry/browser";
+import * as moment from "dayjs";
+import Link from "next/link";
+import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
+import Router from "next/router";
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import * as moment from "dayjs";
-import Router from "next/router";
-import Link from "next/link";
-import Ripples from "react-ripples";
-import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder/lib";
-import * as Sentry from "@sentry/browser";
+
+// Components
+import ActionButton from "~/components/ActionButton";
+import AuthorAvatar from "~/components/AuthorAvatar";
+import Button from "~/components/Form/Button";
+import DownloadPDFButton from "~/components/DownloadPDFButton";
+import FlagButton from "~/components/FlagButton";
 import HubTag from "~/components/Hubs/HubTag";
-import VoteWidget from "~/components/VoteWidget";
+import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
+import PaperMetadata from "./Paper/PaperMetadata";
+import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import PaperPromotionButton from "./Paper/PaperPromotionButton";
+import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import FlagButton from "~/components/FlagButton";
-import ActionButton from "~/components/ActionButton";
-import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
-import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPromotionButton from "./Paper/PaperPromotionButton";
-import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
+import VoteWidget from "~/components/VoteWidget";
+
+// redux
 import { ModalActions } from "~/redux/modals";
-import colors from "~/config/themes/colors";
+
+// Config
 import API from "~/config/api";
-import icons from "~/config/themes/icons";
-import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
-import { formatPublishedDate } from "~/config/utils/dates";
-import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "../redux/message";
+import { formatPublishedDate } from "~/config/utils/dates";
+import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       previews: [],
-      figureUrls: [],
+      previewAvailable: false,
       hovered: false,
       toggleLightbox: true,
       fetching: false,
@@ -148,11 +157,6 @@ class PaperPageCard extends React.Component {
     let href = "/paper/upload/info/[paperId]";
     let as = `/paper/upload/info/${paperId}`;
     Router.push(href, as);
-  };
-
-  downloadPDF = () => {
-    let file = this.props.paper.file;
-    window.open(file, "_blank");
   };
 
   setHover = () => {
@@ -304,35 +308,14 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
-        active: paper && paper.file,
+        active: true,
         button: (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={this.downloadPDF}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Download PDF"}
-            >
-              {icons.arrowToBottom}
-            </span>
-          </Ripples>
-        ),
-      },
-      {
-        active: paper && paper.url && (paper && !paper.file),
-        button: (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={() => openExternalLink(paper.url)}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Open in External Link"}
-            >
-              {icons.externalLink}
-            </span>
-          </Ripples>
+          <span data-tip={"Support Paper"}>
+            <PaperPromotionButton
+              paper={paper}
+              customStyle={styles.actionIcon}
+            />
+          </span>
         ),
       },
       {
@@ -369,16 +352,19 @@ class PaperPageCard extends React.Component {
       {
         active: isModerator,
         button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={"Remove Page & Ban User"}
-          >
-            <ActionButton
-              isModerator={isModerator}
-              paperId={paper.id}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
+          <>
+            <ReactTooltip />
+            <span
+              className={css(styles.actionIcon, styles.moderatorAction)}
+              data-tip={"Remove Page & Ban User"}
+            >
+              <ActionButton
+                isModerator={isModerator}
+                paperId={paper.id}
+                iconStyle={styles.moderatorIcon}
+              />
+            </span>
+          </>
         ),
       },
     ].filter((action) => action.active);
@@ -576,7 +562,7 @@ class PaperPageCard extends React.Component {
       discussionCount,
     } = this.props;
 
-    const { fetching, previews, figureUrls } = this.state;
+    const { fetching, previews, previewAvailable } = this.state;
 
     return (
       <ReactPlaceholder
@@ -619,8 +605,7 @@ class PaperPageCard extends React.Component {
                   }
                   small={true}
                 />
-                <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} />
+                <PaperPromotionIcon paper={paper} />
               </div>
               <div
                 className={css(
@@ -682,21 +667,32 @@ class PaperPageCard extends React.Component {
                 </div>
               </div>
             </div>
-            <div className={css(styles.bottomContainer)}>
-              <div className={css(styles.bottomRow)}>
-                {this.renderActions()}
-              </div>
-              <div className={css(styles.downloadPDF)}></div>
-            </div>
           </div>
 
-          <div className={css(styles.previewBox)}>
-            <PaperPreview
-              paper={paper}
-              paperId={paper.id}
-              previewStyles={styles.previewStyles}
-              columnOverrideStyles={styles.columnOverrideStyles}
-            />
+          {
+            <div className={css(styles.previewBox)}>
+              <PaperPreview
+                paper={paper}
+                previewStyles={styles.previewBox}
+                columnOverrideStyles={styles.columnOverrideStyles}
+                onLoad={(success) =>
+                  this.setState({ previewAvailable: success })
+                }
+              />
+            </div>
+          }
+        </div>
+        <div className={css(styles.bottomContainer)}>
+          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
+          <div className={css(styles.downloadPDFContainer)}>
+            <div className={css(styles.downloadPDFWrapper)}>
+              {previewAvailable && (
+                <DownloadPDFButton
+                  file={paper.file}
+                  style={styles.hideOnSmall}
+                />
+              )}
+            </div>
           </div>
         </div>
       </ReactPlaceholder>
@@ -723,11 +719,6 @@ const styles = StyleSheet.create({
     overflow: "visible",
     boxSizing: "border-box",
   },
-  divider: {
-    width: 44,
-    border: "1px solid #E8E8F2",
-    margin: "15px 0",
-  },
   overflow: {
     overflow: "visible",
   },
@@ -738,6 +729,11 @@ const styles = StyleSheet.create({
     maxWidth: "140px",
     minHeight: "140px",
 
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  hideOnSmall: {
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1086,7 +1082,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
-    // minHeight: 25,
     flexWrap: "wrap",
 
     /**
@@ -1153,21 +1148,24 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    marginTop: "auto",
-    "@media only screen and (max-width: 767px)": {
-      margin: 0,
-    },
+    marginTop: 15,
   },
   bottomRow: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       // display: "none",
     },
   },
-  downloadPDF: {},
+  downloadPDFContainer: {
+    display: "flex",
+    alignSelf: "flex-end",
+    width: "140px",
+    height: "32px",
+    justifyContent: "center",
+    alignItems: "center", // Center vertically
+  },
   hubsRow: {},
   flexendRow: {
     justifyContent: "flex-end",

@@ -34,13 +34,14 @@ import UserStateBanner from "./Banner/UserStateBanner";
 import OrcidConnectModal from "./Modals/OrcidConnectModal";
 
 // Styles
-import colors from "~/config/themes/colors";
-import icons, { voteWidgetIcons } from "~/config/themes/icons";
+import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { RHLogo } from "~/config/themes/icons";
 
 // Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import killswitch from "~/config/killswitch/killswitch";
+import colors from "~/config/themes/colors";
+import icons, { voteWidgetIcons } from "~/config/themes/icons";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -54,7 +55,9 @@ const Navbar = (props) => {
     auth,
     updateUser,
   } = props;
-
+  const isUserModerator = !isNullOrUndefined(user)
+    ? Boolean(user.moderator)
+    : false;
   let dropdown;
   let avatar;
 
@@ -103,6 +106,13 @@ const Navbar = (props) => {
     },
     { label: "Live", route: "/live", icon: "live" },
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
+    isUserModerator
+      ? {
+          label: "Moderators",
+          route: "/moderators/author-claim-case-dashboard",
+          icon: "info-circle",
+        }
+      : null,
   ];
 
   const menuTabsUpper = [
@@ -174,7 +184,7 @@ const Navbar = (props) => {
   };
 
   function renderTabs() {
-    let tabs = tabData.map((tab, index) => {
+    let tabs = filterNull(tabData).map((tab, index) => {
       if (tab.icon === "home") {
         return null;
       }
@@ -236,9 +246,6 @@ const Navbar = (props) => {
     }
     if (props.modals.openUploadPaperModal) {
       props.openUploadPaperModal(false);
-      if (document.body.style) {
-        document.body.style.overflow = "scroll";
-      }
     }
     toggleSideMenu();
   }
@@ -331,12 +338,18 @@ const Navbar = (props) => {
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
         ) : (
-          <Button
-            label={"Add Paper"}
+          <PermissionNotificationWrapper
             onClick={addPaperModal}
-            hideRipples={true}
-            customButtonStyle={[styles.addPaperButton]}
-          />
+            modalMessage="upload a paper"
+            loginRequired={true}
+            permissionKey="CreatePaper"
+          >
+            <Button
+              label={"Add Paper"}
+              hideRipples={true}
+              customButtonStyle={[styles.addPaperButton]}
+            />
+          </PermissionNotificationWrapper>
         )}
       </Fragment>
     );
@@ -385,56 +398,6 @@ const Navbar = (props) => {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
-
-  const burgerMenuStyle = {
-    bmBurgerBars: {
-      background: "#373a47",
-    },
-    bmBurgerBarsHover: {
-      background: "#a90000",
-    },
-    bmCrossButton: {
-      height: "26px",
-      width: "26px",
-      color: "#FFF",
-    },
-    bmCross: {
-      background: "#bdc3c7",
-    },
-    bmMenuWrap: {
-      position: "fixed",
-      width: "100%",
-      zIndex: 3147480000,
-      height: "unset",
-    },
-    bmMenu: {
-      background: "rgba(55, 58, 70, 1)",
-      fontSize: "1.15em",
-      padding: "2.5em .6em 32px",
-    },
-    bmMorphShape: {
-      fill: "#373a47",
-    },
-    bmItemList: {
-      color: "#b8b7ad",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-      height: "100%",
-      overflow: "auto",
-      borderTop: "1px solid rgba(255,255,255,.2)",
-      paddingTop: 16,
-    },
-    bmItem: {
-      display: "inline-block",
-      margin: "15px 0 15px 0",
-      color: "#FFF",
-    },
-    bmOverlay: {
-      background: "rgba(0, 0, 0, 0.3)",
-    },
-  };
 
   return (
     <Fragment>
@@ -603,6 +566,56 @@ const Navbar = (props) => {
       <UserStateBanner />
     </Fragment>
   );
+};
+
+const burgerMenuStyle = {
+  bmBurgerBars: {
+    background: "#373a47",
+  },
+  bmBurgerBarsHover: {
+    background: "#a90000",
+  },
+  bmCrossButton: {
+    height: "26px",
+    width: "26px",
+    color: "#FFF",
+  },
+  bmCross: {
+    background: "#bdc3c7",
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    width: "100%",
+    zIndex: 3147480000,
+    height: "unset",
+  },
+  bmMenu: {
+    background: "rgba(55, 58, 70, 1)",
+    fontSize: "1.15em",
+    padding: "2.5em .6em 32px",
+  },
+  bmMorphShape: {
+    fill: "#373a47",
+  },
+  bmItemList: {
+    color: "#b8b7ad",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    height: "100%",
+    overflow: "auto",
+    borderTop: "1px solid rgba(255,255,255,.2)",
+    paddingTop: 16,
+  },
+  bmItem: {
+    display: "inline-block",
+    margin: "15px 0 15px 0",
+    color: "#FFF",
+  },
+  bmOverlay: {
+    background: "rgba(0, 0, 0, 0.3)",
+  },
 };
 
 const styles = StyleSheet.create({

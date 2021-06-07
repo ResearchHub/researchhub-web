@@ -71,26 +71,9 @@ class BaseModal extends React.Component {
         this.setState({
           ...this.initialState,
         });
-        this.enableParentScroll();
         this.props.closeModal && this.props.closeModal();
       }, 200);
     });
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "hidden";
-    }
-  };
-
-  enableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   getMobileState = () => {
@@ -142,7 +125,6 @@ class BaseModal extends React.Component {
             : true
         }
         style={this.getOverlayStyle()}
-        onAfterOpen={this.disableParentScroll}
         ariaHideApp={false}
       >
         <div

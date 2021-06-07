@@ -18,6 +18,10 @@
   box-shadow: none !important;
 }
 
+.ReactModal__Body--open {
+  overflow-y: hidden;
+}
+
 /* REACT-HORIZONTAL-SCROLL-MENU */
 
 .scroll-menu-arrow {
@@ -26,6 +30,11 @@
 
 .scroll-menu-arrow--disabled {
   visibility: hidden;
+}
+
+.menu-wrapper--inner {
+  width: 990000px !important;
+  white-space: unset !important;
 }
 
 .horizontal-menu {

@@ -33,9 +33,6 @@ const AddDiscussionModal = (props) => {
 
   function cancel() {
     props.cancel && props.cancel();
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     props.openAddDiscussionModal(false);
   }
 
