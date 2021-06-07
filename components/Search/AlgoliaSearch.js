@@ -2,9 +2,8 @@ import React from "react";
 import { css, StyleSheet } from "aphrodite";
 import algoliasearch from "algoliasearch/lite";
 import { InstantSearch } from "react-instantsearch-dom";
-// import "./algolia.css";
 import AlgoliaSearchResults from "~/components/Search/AlgoliaSearchResults";
-import AlgoliaSearchInput from "~/components/Search/AlgoliaSearchInput";
+import AlgoliaSearchBox from "~/components/Search/AlgoliaSearchBox";
 
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY } from "~/config/constants";
 import colors from "~/config/themes/colors";
@@ -73,7 +72,7 @@ class AlgoliaSearch extends React.Component {
           indexName={`papers_${process.env.NODE_ENV}`}
           searchClient={searchClient}
         >
-          <AlgoliaSearchInput
+          <AlgoliaSearchBox
             onChange={this.handleSearch}
             onReset={() => this.setState({ showDropdown: false })}
             delay={500}
