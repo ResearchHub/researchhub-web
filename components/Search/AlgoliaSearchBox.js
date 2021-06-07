@@ -4,9 +4,12 @@ import { debounce } from "underscore";
 import { css, StyleSheet } from "aphrodite";
 import icons from "~/config/themes/icons";
 
-const AlgoliaSearchBox = ({ refine, delay, onChange }) => {
+const AlgoliaSearchBox = ({ refine, delay, onChange, mobile }) => {
   const [currentQuery, setCurrentQuery] = useState("");
 
+  // README: Optimization to ensure Algolia isn't called too often.
+  // Removing this may result in Algolia being hit on every key stroke which
+  // may put us over quota.
   const doSearch = useCallback(debounce((value) => refine(value), delay), []);
 
   const handleChange = (event) => {
@@ -20,12 +23,19 @@ const AlgoliaSearchBox = ({ refine, delay, onChange }) => {
   return (
     <div className={css(styles.searchBox)}>
       <input
-        className={css(styles.searchInput)}
+        className={css(
+          styles.searchInput,
+          mobile && styles.searchInputForMobile
+        )}
         value={currentQuery}
         onChange={handleChange}
         placeholder="Search..."
       />
-      <span className={css(styles.searchIcon)}>{icons.search}</span>
+      <span
+        className={css(styles.searchIcon, mobile && styles.searchIconForMobile)}
+      >
+        {icons.search}
+      </span>
     </div>
   );
 };
@@ -56,12 +66,29 @@ const styles = StyleSheet.create({
       },
     },
   },
+  searchInputForMobile: {
+    padding: 16,
+    marginBottom: 0,
+    outline: "none",
+    boxShadow: "none",
+    ":focus": {
+      border: 0,
+      ":hover": {
+        boxShadow: "none",
+      },
+    },
+  },
   searchIcon: {
     position: "absolute",
     right: 10,
     top: 10,
     cursor: "text",
     opacity: 0.4,
+  },
+  searchIconForMobile: {
+    right: 14,
+    top: 14,
+    opacity: 0.8,
   },
 });
 

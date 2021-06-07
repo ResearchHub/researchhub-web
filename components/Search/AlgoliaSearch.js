@@ -63,9 +63,10 @@ class AlgoliaSearch extends React.Component {
 
   render() {
     const { mobile } = this.props;
+
     return (
       <div
-        className={css(styles.search, mobile && styles.searchMobile)}
+        className={css(styles.search, mobile && styles.searchForMobile)}
         ref={this.ref}
       >
         <InstantSearch
@@ -74,13 +75,17 @@ class AlgoliaSearch extends React.Component {
         >
           <AlgoliaSearchBox
             onChange={this.handleSearch}
+            mobile={mobile}
             onReset={() => this.setState({ showDropdown: false })}
             delay={500}
           />
 
           {this.state.showDropdown && (
             <div
-              className={css(styles.searchDropdown, this.props.dropdownClass)}
+              className={css(
+                styles.searchDropdown,
+                mobile && styles.searchDropdownForMobile
+              )}
               ref={(ref) => (this.scrollParent = ref)}
             >
               <AlgoliaSearchResults onClickCallBack={this.onResultClick} />
@@ -109,12 +114,16 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  searchMobile: {
+  searchForMobile: {
+    margin: "0 auto",
+    marginBottom: 15,
+    "@media only screen and (max-width: 1024px)": {
+      display: "flex",
+    },
     "@media only screen and (max-width: 760px)": {
       display: "flex",
       borderRadius: 10,
       maxWidth: "unset",
-      marginBottom: 15,
     },
   },
   searchDropdown: {
@@ -135,6 +144,11 @@ const styles = StyleSheet.create({
       maxHeight: "80vh",
       top: 57,
     },
+  },
+  searchDropdownForMobile: {
+    top: 40,
+    width: "100%",
+    minWidth: "unset",
   },
 });
 

@@ -80,15 +80,18 @@ const Hit = (props) => {
   };
 
   return (
-    <div className={css(styles.hit)}>
+    <div className={css(styles.searchResults)}>
       <SearchEntry {...buildPropsForSearchEntry()} />
     </div>
   );
 };
 
 const styles = StyleSheet.create({
-  hit: {
+  searchResults: {
     borderBottom: "1.5px solid #EDEDED",
+    top: 40,
+    width: "100%",
+    minWidth: "unset",
   },
   button: {
     display: "flex",
