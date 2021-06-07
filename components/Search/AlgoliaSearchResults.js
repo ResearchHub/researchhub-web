@@ -1,30 +1,32 @@
 import { css, StyleSheet } from "aphrodite";
 import { connectInfiniteHits } from "react-instantsearch-dom";
-import SearchEntry from "~/components/Search/SearchEntry";
+import AlgoliaHit from "~/components/Search/AlgoliaHit";
+import PropTypes from "prop-types";
 
 const AlgoliaInfiniteResults = ({
   hits,
   hasMore,
   refineNext,
-  onClickCallBack,
+  handleResultClick,
 }) => {
   const renderResults = () => {
     if (!hits.length) {
       return renderEmptyState();
     }
 
-    let prevType;
-    return hits.map((hit, i) => {
-      return (
-        <Hit
-          hit={hit}
-          indexName={`paper`}
-          firstOfItsType={hit.__position === 1}
-          onClickCallBack={onClickCallBack}
-          key={hit.objectID}
-        />
-      );
-    });
+    return (
+      <div className={css(styles.searchResults)}>
+        {hits.map((hit, i) => (
+          <AlgoliaHit
+            hit={hit}
+            indexName={`paper`}
+            firstOfItsType={hit.__position === 1}
+            handleResultClick={handleResultClick}
+            key={hit.objectID}
+          />
+        ))}
+      </div>
+    );
   };
 
   const renderEmptyState = () => {
@@ -35,7 +37,7 @@ const AlgoliaInfiniteResults = ({
         </h3>
         <img
           src={"/static/icons/search-empty.png"}
-          className={css(styles.logo)}
+          className={css(styles.emptyImg)}
         />
       </div>
     );
@@ -46,42 +48,13 @@ const AlgoliaInfiniteResults = ({
       {renderResults()}
       {hasMore && (
         <button
-          className={css(styles.button)}
+          className={css(styles.loadMoreBtn)}
           disabled={!hasMore}
           onClick={refineNext}
         >
           Load More Results
         </button>
       )}
-    </div>
-  );
-};
-
-const Hit = (props) => {
-  const { hit, indexName, firstOfItsType, onClickCallBack } = props;
-
-  // FIXME: Kobe, 06/06, Building props is for backwards compatibility.
-  // This can be removed once Algolia is a fully integrated solution.
-  const buildPropsForSearchEntry = () => {
-    const result = {
-      ...hit,
-      meta: { highlight: null },
-      indexName: "paper",
-      hubs: hit.paper_hubs,
-      authors: hit.authors_str,
-    };
-
-    if (result._highlightResult) {
-      result._highlightResult.authors = result._highlightResult.authors_str;
-      result._snippetResult.authors = result._snippetResult.authors_str;
-    }
-
-    return { result, indexName, firstOfItsType, onClickCallBack };
-  };
-
-  return (
-    <div className={css(styles.searchResults)}>
-      <SearchEntry {...buildPropsForSearchEntry()} />
     </div>
   );
 };
@@ -93,7 +66,7 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: "unset",
   },
-  button: {
+  loadMoreBtn: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -120,11 +93,16 @@ const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 18,
   },
-  logo: {
+  emptyImg: {
     height: 60,
   },
 });
 
-const AlgoliaSearchResults = connectInfiniteHits(AlgoliaInfiniteResults);
+AlgoliaInfiniteResults.propTypes = {
+  hits: PropTypes.array.isRequired,
+  hasMore: PropTypes.bool.isRequired,
+  refineNext: PropTypes.func.isRequired,
+  handleResultClick: PropTypes.func,
+};
 
-export default AlgoliaSearchResults;
+export default connectInfiniteHits(AlgoliaInfiniteResults);
