@@ -652,9 +652,6 @@ const styles = StyleSheet.create({
       display: "flex",
     },
   },
-  searchIconClass: {
-    top: 7,
-  },
   loginContainer: {
     width: "100%",
   },
