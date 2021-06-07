@@ -73,6 +73,7 @@ const Hit = (props) => {
 
     if (result._highlightResult) {
       result._highlightResult.authors = result._highlightResult.authors_str;
+      result._snippetResult.authors = result._snippetResult.authors_str;
     }
 
     return { result, indexName, firstOfItsType, onClickCallBack };

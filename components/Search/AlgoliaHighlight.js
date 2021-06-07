@@ -1,9 +1,17 @@
 import { connectHighlight } from "react-instantsearch-dom";
 import { css, StyleSheet } from "aphrodite";
+import { get } from "lodash";
 
 const AlgoliaHighlight = ({ result, highlight, attribute, className }) => {
+  const snippet = get(result, `_snippetResult[${attribute}]`);
+
+  const highlightProperty =
+    snippet && snippet.matchLevel !== "none"
+      ? "_snippetResult"
+      : "_highlightResult";
+
   const parsedHit = highlight({
-    highlightProperty: "_highlightResult",
+    highlightProperty,
     attribute,
     hit: result,
   });
@@ -12,9 +20,15 @@ const AlgoliaHighlight = ({ result, highlight, attribute, className }) => {
     <span className={className}>
       {parsedHit.map((part, index) =>
         part.isHighlighted ? (
-          <mark key={index}>{part.value}</mark>
+          <mark
+            dangerouslySetInnerHTML={{ __html: part.value }}
+            key={index}
+          ></mark>
         ) : (
-          <span key={index}>{part.value}</span>
+          <span
+            dangerouslySetInnerHTML={{ __html: part.value }}
+            key={index}
+          ></span>
         )
       )}
     </span>

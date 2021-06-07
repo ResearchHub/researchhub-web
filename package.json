@@ -55,6 +55,7 @@
     "js-sha3": "^0.8.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.6.2",
+    "lodash": "^4.17.21",
     "next": "^9.5.3",
     "next-compose-plugins": "^2.2.0",
     "next-redux-wrapper": "^4.0.0",
