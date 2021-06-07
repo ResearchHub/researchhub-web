@@ -31,3 +31,7 @@ export function nullthrows<T>(
   }
   return given!;
 }
+
+export function filterNull(arr: Array<any>): Array<any> {
+  return arr.filter((el: any): boolean => el != null);
+}
