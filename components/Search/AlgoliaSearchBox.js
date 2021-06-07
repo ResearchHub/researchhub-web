@@ -1,10 +1,16 @@
-import React, { useState, useCallback } from "react";
-import { InstantSearch, Hits, connectSearchBox } from "react-instantsearch-dom";
+import { useState, useCallback } from "react";
+import { connectSearchBox } from "react-instantsearch-dom";
 import { debounce } from "underscore";
 import { css, StyleSheet } from "aphrodite";
 import icons from "~/config/themes/icons";
+import PropTypes from "prop-types";
 
-const AlgoliaSearchBox = ({ refine, delay, onChange, mobile }) => {
+const AlgoliaSearchBox = ({
+  refine,
+  onChange,
+  delay = 500,
+  mobile = false,
+}) => {
   const [currentQuery, setCurrentQuery] = useState("");
 
   // README: Optimization to ensure Algolia isn't called too often.
@@ -91,5 +97,12 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
 });
+
+AlgoliaSearchBox.propTypes = {
+  refine: PropTypes.func.isRequired,
+  delay: PropTypes.number,
+  onChange: PropTypes.func.isRequired,
+  mobile: PropTypes.bool,
+};
 
 export default connectSearchBox(AlgoliaSearchBox);
