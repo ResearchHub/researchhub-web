@@ -1,4 +1,4 @@
-import React from "react";
+import { useState, useEffect, useRef } from "react";
 import { css, StyleSheet } from "aphrodite";
 import algoliasearch from "algoliasearch/lite";
 import { InstantSearch } from "react-instantsearch-dom";
@@ -6,94 +6,72 @@ import AlgoliaSearchResults from "~/components/Search/AlgoliaSearchResults";
 import AlgoliaSearchBox from "~/components/Search/AlgoliaSearchBox";
 import { ALGOLIA_APP_ID, ALGOLIA_API_KEY } from "~/config/constants";
 import colors from "~/config/themes/colors";
+import PropTypes from "prop-types";
+import { get } from "lodash";
 
 const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
 
-class AlgoliaSearch extends React.Component {
-  dropdownTimeout = -1;
-  ref = React.createRef();
+const AlgoliaSearch = ({ mobile }) => {
+  const dropdownRef = useRef(null);
+  const [shouldShowDropdown, setShouldShowDropdown] = useState(false);
 
-  state = {
-    showDropdown: this.props.showDropdown,
-  };
+  const handleBackgroundClick = (e) => {
+    const dropdownEl = get(dropdownRef, "current");
 
-  componentDidMount() {
-    document.addEventListener("click", this.handleEvent);
-  }
-
-  componentWillUnmount() {
-    clearTimeout(this.dropdownTimeout);
-    document.removeEventListener("click", this.handleEvent);
-  }
-
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.showDropdown !== this.props.showDropdown) {
-      this.setState({
-        showDropdown: this.props.showDropdown,
-      });
-    }
-  }
-
-  handleEvent = (e) => {
-    if (this.state.showDropdown && this.ref.current) {
-      if (this.ref.current.contains(e.target) === false) {
-        this.dropdownTimeout = setTimeout(
-          this.setState({ showDropdown: false }),
-          500
-        );
-      }
+    if (dropdownEl && !dropdownEl.contains(e.target)) {
+      setShouldShowDropdown(false);
     }
   };
 
-  handleSearch = (query) => {
-    if (query && !this.state.showDropdown) {
-      this.setState({ showDropdown: true });
-    } else if (!query && this.state.showDropdown) {
-      this.setState({ showDropdown: false });
+  const handleResultClick = (e) => {
+    setShouldShowDropdown(false);
+  };
+
+  const handleSearch = (query) => {
+    if (query && !shouldShowDropdown) {
+      setShouldShowDropdown(true);
+    } else if (!query && shouldShowDropdown) {
+      setShouldShowDropdown(false);
     }
   };
 
-  onResultClick = (e) => {
-    e && e.stopPropagation();
-    this.props.afterSearchClick
-      ? this.props.afterSearchClick()
-      : this.setState({ showDropdown: false });
-  };
+  useEffect(() => {
+    document.addEventListener("click", handleBackgroundClick);
 
-  render() {
-    const { mobile } = this.props;
+    return () => {
+      document.removeEventListener("click", handleBackgroundClick);
+    };
+  }, []);
 
-    return (
-      <div
-        className={css(styles.search, mobile && styles.searchForMobile)}
-        ref={this.ref}
+  return (
+    <div
+      className={css(styles.search, mobile && styles.searchForMobile)}
+      ref={dropdownRef}
+    >
+      <InstantSearch
+        indexName={`papers_${process.env.NODE_ENV}`}
+        searchClient={searchClient}
       >
-        <InstantSearch
-          indexName={`papers_${process.env.NODE_ENV}`}
-          searchClient={searchClient}
-        >
-          <AlgoliaSearchBox
-            onChange={this.handleSearch}
-            mobile={mobile}
-            onReset={() => this.setState({ showDropdown: false })}
-          />
+        <AlgoliaSearchBox
+          onChange={handleSearch}
+          mobile={mobile}
+          onReset={() => setShouldShowDropdown(false)}
+        />
 
-          {this.state.showDropdown && (
-            <div
-              className={css(
-                styles.searchDropdown,
-                mobile && styles.searchDropdownForMobile
-              )}
-              ref={(ref) => (this.scrollParent = ref)}
-            >
-              <AlgoliaSearchResults handleResultClick={this.onResultClick} />
-            </div>
-          )}
-        </InstantSearch>
-      </div>
-    );
-  }
-}
+        {shouldShowDropdown && (
+          <div
+            className={css(
+              styles.searchDropdown,
+              mobile && styles.searchDropdownForMobile
+            )}
+          >
+            <AlgoliaSearchResults handleResultClick={handleResultClick} />
+          </div>
+        )}
+      </InstantSearch>
+    </div>
+  );
+};
 
 const styles = StyleSheet.create({
   search: {
@@ -149,5 +127,9 @@ const styles = StyleSheet.create({
     minWidth: "unset",
   },
 });
+
+AlgoliaSearch.propTypes = {
+  mobile: PropTypes.bool,
+};
 
 export default AlgoliaSearch;
