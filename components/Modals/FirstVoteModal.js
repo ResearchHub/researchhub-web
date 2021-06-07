@@ -76,13 +76,6 @@ const FirstVoteModal = (props) => {
     setRecycle(true);
     toggleReveal(false);
     toggleButton(false);
-    enableParentScroll();
-  }
-
-  function enableParentScroll() {
-    if (document.body.style) {
-      document.body.style.overflow = "auto";
-    }
   }
 
   function openLinkInTab(e) {

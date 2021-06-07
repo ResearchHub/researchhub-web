@@ -10,9 +10,9 @@ import { absoluteUrl } from "../../../config/utils";
 
 const PaperPreview = ({
   paper,
-  paperId,
   previewStyles,
   columnOverrideStyles,
+  onLoad,
 }) => {
   const dispatch = useDispatch();
   const [figureUrls, setFigureUrls] = useState([]);
@@ -20,14 +20,16 @@ const PaperPreview = ({
 
   useEffect(() => {
     fetchFigures();
-  }, [paperId]);
+  }, [paper.id]);
 
   const fetchFigures = () => {
-    if (paperId) {
+    if (paper.id) {
       setFetching(true);
-      return fetchPaperFigures(paperId).then((res) => {
+      return fetchPaperFigures(paper.id).then((res) => {
         const { data } = res;
-        setFigureUrls(data.map((preview) => preview.file));
+        const figureUrls = data.map((preview) => preview.file);
+        setFigureUrls(figureUrls);
+        onLoad(!!figureUrls.length);
         setFetching(false);
       });
     }
@@ -95,9 +97,10 @@ const styles = StyleSheet.create({
     display: "none",
   },
   preview: {
-    width: "100%",
+    width: "140px",
     height: "100%",
     objectFit: "contain",
+    // overflowY: "hidden"
   },
   buttonContainer: {
     width: "100%",
