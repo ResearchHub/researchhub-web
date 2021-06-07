@@ -20,15 +20,9 @@ const AlgoliaHighlight = ({ result, highlight, attribute, className }) => {
     <span className={className}>
       {parsedHit.map((part, index) =>
         part.isHighlighted ? (
-          <mark
-            dangerouslySetInnerHTML={{ __html: part.value }}
-            key={index}
-          ></mark>
+          <mark key={index}>{part.value}</mark>
         ) : (
-          <span
-            dangerouslySetInnerHTML={{ __html: part.value }}
-            key={index}
-          ></span>
+          <span key={index}>{part.value}</span>
         )
       )}
     </span>
