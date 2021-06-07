@@ -82,7 +82,7 @@ class SearchEntry extends React.Component {
             </span>
             {authors && authors.length > 0 ? (
               <Highlight
-                className={css(styles.authors)}
+                className={`${css(styles.authors)} clamp1`}
                 result={result}
                 attribute={"authors"}
               />
