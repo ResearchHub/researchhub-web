@@ -319,7 +319,7 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {killswitch("search") && <AlgoliaSearch />}
+        {killswitch("search") && <AlgoliaSearch mobile={true} />}
         {/* <Search
           searchClass={styles.mobileSearch}
           inputClass={styles.inputClass}
