@@ -15,6 +15,7 @@ const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
 const AlgoliaSearch = ({ mobile }) => {
   const dropdownRef = useRef(null);
   const [shouldShowDropdown, setShouldShowDropdown] = useState(false);
+  const papersIndex = `papers_${getCurrServerEnv()}`;
 
   const handleBackgroundClick = (e) => {
     const dropdownEl = get(dropdownRef, "current");
@@ -49,10 +50,7 @@ const AlgoliaSearch = ({ mobile }) => {
       className={css(styles.search, mobile && styles.searchForMobile)}
       ref={dropdownRef}
     >
-      <InstantSearch
-        indexName={`papers_${getCurrServerEnv()}`}
-        searchClient={searchClient}
-      >
+      <InstantSearch indexName={papersIndex} searchClient={searchClient}>
         <AlgoliaSearchBox
           onChange={handleSearch}
           mobile={mobile}
