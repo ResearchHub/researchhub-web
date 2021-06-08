@@ -1,12 +1,18 @@
-import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, useState } from "react";
-import colors from "../../../config/themes/colors";
-import Ripples from "react-ripples";
-import Link from "next/link";
-import DesktopOnly from "../../DesktopOnly";
-import MobileOnly from "../../MobileOnly";
-import ResponsvePostVoteWidget from "./ResponsivePostVoteWidget";
 import AuthorAvatar from "../../AuthorAvatar";
+import DesktopOnly from "../../DesktopOnly";
+import Link from "next/link";
+import MobileOnly from "../../MobileOnly";
+import React, { Fragment, SyntheticEvent, useState } from "react";
+import ResponsvePostVoteWidget from "./ResponsivePostVoteWidget";
+import Ripples from "react-ripples";
+import colors from "../../../config/themes/colors";
+import { css, StyleSheet } from "aphrodite";
+import {
+  UPVOTE,
+  DOWNVOTE,
+  UPVOTE_ENUM,
+  DOWNVOTE_ENUM,
+} from "../../../config/constants";
 
 export type UserPostCardProps = {
   created_by: any;
@@ -29,6 +35,16 @@ export default function UserPostCard(props: UserPostCardProps) {
     style,
     title,
   } = props;
+
+  const [voteState, setVoteState] = useState<string | null>(
+    null /* TODO: briansantoso - get user's vote on post */
+  );
+  const [voteCount, setVoteCount] = useState<number>(
+    0 /* TODO: briansantoso - get post vote count*/
+  );
+  // const setVoteState = (value: string) => {
+  //   _setVoteState(value);
+  // };
 
   const creatorName = first_name + " " + last_name;
   const slug = title.toLowerCase().replace(/\s/g, "-");
@@ -79,27 +95,40 @@ export default function UserPostCard(props: UserPostCardProps) {
 
   // TODO: briansantoso - implement voting when ready
   const score = 0;
-  const onUpvote = () => {};
-  const onDownvote = () => {};
-  const selected = false;
+  const onVoteType = (voteType) => {
+    return (e: SyntheticEvent) => {
+      e.stopPropagation();
+      if (voteState === voteType) {
+        /**
+         * Deselect
+         * NOTE: This will never be called with the current implementation of
+         * VoteWidget, because it disables the onVote/onDownvote callback
+         * if the button is already selected.
+         */
+        setVoteState(null);
+      } else {
+        setVoteState(voteType);
+      }
+    };
+  };
 
   const desktopVoteWidget = (
     <ResponsvePostVoteWidget
-      isSelected={selected}
       onDesktop
-      onDownvote={onDownvote}
-      onUpvote={onUpvote}
+      onDownvote={onVoteType(DOWNVOTE)}
+      onUpvote={onVoteType(UPVOTE)}
       score={score}
+      voteState={voteState}
     />
   );
 
   const mobileVoteWidget = (
     <ResponsvePostVoteWidget
       onDesktop={false}
+      onDownvote={onVoteType(DOWNVOTE)}
+      onUpvote={onVoteType(UPVOTE)}
       score={score}
-      onUpvote={onUpvote}
-      onDownvote={onDownvote}
-      isSelected={selected}
+      voteState={voteState}
     />
   );
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
