@@ -1,3 +1,9 @@
+/**
+ * Although the <Responsive /> component handles both DesktopOnly
+ * and MobileOnly components dynamically, we have these
+ * individual components for syntactic convenience.
+ */
+
 import { css, StyleSheet } from "aphrodite";
 
 export type MobileOnlyProps = {

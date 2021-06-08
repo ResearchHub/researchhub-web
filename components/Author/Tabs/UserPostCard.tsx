@@ -3,30 +3,29 @@ import React, { Fragment, useState } from "react";
 import colors from "../../../config/themes/colors";
 import Ripples from "react-ripples";
 import Link from "next/link";
-import VoteWidget from "../../VoteWidget";
-import { vote } from "../../../redux/discussion/shims";
 import DesktopOnly from "../../DesktopOnly";
 import MobileOnly from "../../MobileOnly";
-import Responsive from "../../Responsive";
 import ResponsvePostVoteWidget from "./ResponsivePostVoteWidget";
+import AuthorAvatar from "../../AuthorAvatar";
 
 export type UserPostCardProps = {
   created_by: any;
-  title: string;
   preview_img: string;
   renderable_text: string;
   style: StyleSheet;
+  title: string;
 };
 
 export default function UserPostCard(props: UserPostCardProps) {
   const {
     created_by: {
-      author_profile: { profile_image: creatorImg, first_name, last_name },
+      author_profile: { first_name, last_name },
     },
-    title,
+    created_by: { author_profile: author },
     preview_img: previewImg,
     renderable_text: renderableText,
     style,
+    title,
   } = props;
 
   const creatorName = first_name + " " + last_name;
@@ -71,7 +70,7 @@ export default function UserPostCard(props: UserPostCardProps) {
 
   const creatorTag = (
     <div className={css(styles.postCreatedBy)}>
-      <img className={css(styles.creatorImg)} src={creatorImg} />
+      <AuthorAvatar author={author} size={28} border="2px solid #F1F1F1" />
       <span className={css(styles.creatorName)}>{creatorName}</span>
     </div>
   );
@@ -80,6 +79,7 @@ export default function UserPostCard(props: UserPostCardProps) {
     <div className={css(styles.summary) + " clamp2"}>{renderableText}</div>
   );
 
+  // TODO: briansantoso - implement voting when ready
   const score = 0;
   const onUpvote = () => {};
   const onDownvote = () => {};
@@ -87,15 +87,13 @@ export default function UserPostCard(props: UserPostCardProps) {
 
   const desktopVoteWidget = (
     <ResponsvePostVoteWidget
-      onDesktop
-      score={score}
-      onUpvote={onUpvote}
-      onDownvote={onDownvote}
       isSelected={selected}
+      onDesktop
+      onDownvote={onDownvote}
+      onUpvote={onUpvote}
+      score={score}
     />
   );
-  const desktopMainTitle = <DesktopOnly> {mainTitle} </DesktopOnly>;
-  const desktopCreatorTag = <DesktopOnly> {creatorTag} </DesktopOnly>;
 
   const mobileVoteWidget = (
     <ResponsvePostVoteWidget
@@ -106,50 +104,39 @@ export default function UserPostCard(props: UserPostCardProps) {
       isSelected={selected}
     />
   );
-  const mobileMainTitle = <MobileOnly> {mainTitle} </MobileOnly>;
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
 
   return (
     <Ripples className={css(styles.userPostCard, style && style)}>
-      {/* {desktopOnly(renderVoteWidget())} */}
       {desktopVoteWidget}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {/* {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderPreregistrationTag())}
-              {desktopOnly(renderMainTitle())} */}
               {mobileVoteWidget}
-              {desktopMainTitle}
+              <DesktopOnly> {mainTitle} </DesktopOnly>;
             </div>
-            {/* {mobileOnly(renderMainTitle())}
-            {desktopOnly(renderMetadata())}
-            {mobileOnly(renderMetadata())}
-            {renderContent()}
-            {mobileOnly(renderContributers())} */}
-            {mobileMainTitle}
+            <MobileOnly> {mainTitle} </MobileOnly>
             {summary}
             {mobileCreatorTag}
           </div>
-          {/* {desktopOnly(renderPreview())} */}
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
-            {/* {desktopOnly(renderContributers())} */}
-            {desktopCreatorTag}
+            <DesktopOnly> {creatorTag} </DesktopOnly>
           </div>
-          {/* {desktopOnly(
+          <DesktopOnly>
             <div className={css(styles.row)}>
-              {renderPreregistrationTag()}
-              {renderHubTags()}
+              {/* TODO: briansantoso - Hub tags go here */}
             </div>
-          )} */}
+          </DesktopOnly>
         </div>
-        <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-          {/* {renderHubTags()} */}
-        </div>
+        <MobileOnly>
+          <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+            {/* TODO: briansantoso - Hub tags go here */}
+          </div>
+        </MobileOnly>
       </div>
     </Ripples>
   );
@@ -181,17 +168,18 @@ const styles = StyleSheet.create({
   postCreatedBy: {
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 8,
+    },
   },
   postContent: {},
-  creatorImg: {
-    borderRadius: "50%",
-    height: 28,
-    marginRight: 12,
-    width: 28,
-  },
   creatorName: {
     fontSize: 18,
     fontWeight: 400,
+    marginLeft: 8,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 16,
+    },
   },
   image: {
     objectFit: "contain",
