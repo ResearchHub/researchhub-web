@@ -1,8 +1,14 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { useState } from "react";
+import React, { Fragment, useState } from "react";
 import colors from "../../../config/themes/colors";
 import Ripples from "react-ripples";
 import Link from "next/link";
+import VoteWidget from "../../VoteWidget";
+import { vote } from "../../../redux/discussion/shims";
+import DesktopOnly from "../../DesktopOnly";
+import MobileOnly from "../../MobileOnly";
+import Responsive from "../../Responsive";
+import ResponsvePostVoteWidget from "./ResponsivePostVoteWidget";
 
 export type UserPostCardProps = {
   created_by: any;
@@ -27,7 +33,7 @@ export default function UserPostCard(props: UserPostCardProps) {
 
   const mainTitle = (
     <Link
-      href={""} // TODO: - briansantoso set link
+      href={""} // TODO: - briansantoso set link once post page has been implemented
       as={""}
     >
       <a
@@ -74,9 +80,39 @@ export default function UserPostCard(props: UserPostCardProps) {
     <div className={css(styles.summary) + " clamp2"}>{renderableText}</div>
   );
 
+  const score = 0;
+  const onUpvote = () => {};
+  const onDownvote = () => {};
+  const selected = false;
+
+  const desktopVoteWidget = (
+    <ResponsvePostVoteWidget
+      onDesktop
+      score={score}
+      onUpvote={onUpvote}
+      onDownvote={onDownvote}
+      isSelected={selected}
+    />
+  );
+  const desktopMainTitle = <DesktopOnly> {mainTitle} </DesktopOnly>;
+  const desktopCreatorTag = <DesktopOnly> {creatorTag} </DesktopOnly>;
+
+  const mobileVoteWidget = (
+    <ResponsvePostVoteWidget
+      onDesktop={false}
+      score={score}
+      onUpvote={onUpvote}
+      onDownvote={onDownvote}
+      isSelected={selected}
+    />
+  );
+  const mobileMainTitle = <MobileOnly> {mainTitle} </MobileOnly>;
+  const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
+
   return (
     <Ripples className={css(styles.userPostCard, style && style)}>
       {/* {desktopOnly(renderVoteWidget())} */}
+      {desktopVoteWidget}
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
@@ -84,22 +120,25 @@ export default function UserPostCard(props: UserPostCardProps) {
               {/* {mobileOnly(renderVoteWidget(true))}
               {mobileOnly(renderPreregistrationTag())}
               {desktopOnly(renderMainTitle())} */}
-              {mainTitle}
+              {mobileVoteWidget}
+              {desktopMainTitle}
             </div>
             {/* {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
             {mobileOnly(renderContributers())} */}
+            {mobileMainTitle}
             {summary}
+            {mobileCreatorTag}
           </div>
           {/* {desktopOnly(renderPreview())} */}
-          {previewImgComponent}
+          <DesktopOnly> {previewImgComponent} </DesktopOnly>
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
             {/* {desktopOnly(renderContributers())} */}
-            {creatorTag}
+            {desktopCreatorTag}
           </div>
           {/* {desktopOnly(
             <div className={css(styles.row)}>
@@ -153,11 +192,6 @@ const styles = StyleSheet.create({
   creatorName: {
     fontSize: 18,
     fontWeight: 400,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: 500,
-    color: "rgb(36, 31, 58)",
   },
   image: {
     objectFit: "contain",
