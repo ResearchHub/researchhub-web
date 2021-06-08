@@ -104,6 +104,7 @@
     "redux": "^4.0.4",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
+    "remove-markdown": "^0.3.0",
     "slate": "^0.47.8",
     "slate-html-serializer": "^0.8.13",
     "slate-react": "^0.22.9",
