@@ -1,21 +1,21 @@
-export type ENV = "dev" | "prod" | "staging";
+export type ENV = "development" | "production" | "staging";
 export type SwitchConfigs = {
   [application: string]: {
-    dev?: boolean;
-    prod?: boolean;
+    development?: boolean;
+    production?: boolean;
     staging?: boolean;
   };
 };
 
 const KillswtichConfigs: SwitchConfigs = {
   authorClaim: {
-    dev: true,
-    prod: false,
+    development: true,
+    production: false,
     staging: false,
   },
   search: {
-    dev: true,
-    prod: false,
+    development: true,
+    production: false,
     staging: true,
   },
 };
