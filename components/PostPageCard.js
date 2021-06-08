@@ -30,7 +30,7 @@ import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
 
-class PaperPageCard extends React.Component {
+class PostPageCard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -335,52 +335,52 @@ class PaperPageCard extends React.Component {
           </Ripples>
         ),
       },
-      {
-        active: !isSubmitter,
-        button: (
-          <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: isModerator || isSubmitter,
-        button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
-          >
-            <ActionButton
-              isModerator={true}
-              paperId={paper.id}
-              restore={paper.is_removed}
-              icon={paper.is_removed ? icons.plus : icons.minus}
-              onAction={paper.is_removed ? this.restorePaper : this.removePaper}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: isModerator,
-        button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={"Remove Page & Ban User"}
-          >
-            <ActionButton
-              isModerator={isModerator}
-              paperId={paper.id}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
+      //{
+      //  active: !isSubmitter,
+      //  button: (
+      //    <span data-tip={"Flag Paper"}>
+      //      <FlagButton
+      //        paperId={paper.id}
+      //        flagged={flagged}
+      //        setFlag={setFlag}
+      //        style={styles.actionIcon}
+      //      />
+      //    </span>
+      //  ),
+      //},
+      //{
+      //  active: isModerator || isSubmitter,
+      //  button: (
+      //    <span
+      //      className={css(styles.actionIcon, styles.moderatorAction)}
+      //      data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
+      //    >
+      //      <ActionButton
+      //        isModerator={true}
+      //        paperId={paper.id}
+      //        restore={paper.is_removed}
+      //        icon={paper.is_removed ? icons.plus : icons.minus}
+      //        onAction={paper.is_removed ? this.restorePaper : this.removePaper}
+      //        iconStyle={styles.moderatorIcon}
+      //      />
+      //    </span>
+      //  ),
+      //},
+      //{
+      //  active: isModerator,
+      //  button: (
+      //    <span
+      //      className={css(styles.actionIcon, styles.moderatorAction)}
+      //      data-tip={"Remove Page & Ban User"}
+      //    >
+      //      <ActionButton
+      //        isModerator={isModerator}
+      //        paperId={paper.id}
+      //        iconStyle={styles.moderatorIcon}
+      //      />
+      //    </span>
+      //  ),
+      //},
     ].filter((action) => action.active);
 
     return (
@@ -566,140 +566,123 @@ class PaperPageCard extends React.Component {
   };
 
   render() {
-    const {
-      paper,
-      score,
-      upvote,
-      downvote,
-      selectedVoteType,
-      doneFetchingPaper,
-      discussionCount,
-    } = this.props;
+    const { post, score, upvote, downvote, selectedVoteType } = this.props;
 
     const { fetching, previews, figureUrls } = this.state;
 
     return (
-      <ReactPlaceholder
-        ready={doneFetchingPaper}
-        showLoadingAnimation
-        customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
-      >
-        <div className={css(styles.mainContainer)}>
-          <div className={css(styles.main)}>
-            <AuthorSupportModal />
+      <div className={css(styles.mainContainer)}>
+        <div className={css(styles.main)}>
+          <AuthorSupportModal />
 
+          <div
+            className={css(
+              styles.container,
+              this.state.dropdown && styles.overflow
+            )}
+            ref={this.containerRef}
+            onMouseEnter={this.setHover}
+            onMouseLeave={this.unsetHover}
+            vocab="https://schema.org/"
+            typeof="ScholarlyArticle"
+          >
+            <ReactTooltip />
+            <meta property="description" content={post.title} />
+            <meta property="commentCount" content={post.discussion_count} />
+            <div className={css(styles.voting)}>
+              <VoteWidget
+                score={score}
+                onUpvote={upvote}
+                onDownvote={downvote}
+                selected={this.props.selectedVoteType}
+                isPaper={true}
+                type={"Paper"}
+                paperPage={true}
+                promoted={this.props.paper && this.props.paper.promoted}
+                paper={
+                  this.props.paper && this.props.paper.promoted !== false
+                    ? this.props.paper
+                    : null
+                }
+                small={true}
+              />
+              <div className={css(styles.divider)}></div>
+            </div>
             <div
               className={css(
-                styles.container,
-                this.state.dropdown && styles.overflow
+                styles.column,
+                !fetching && previews.length === 0 && styles.emptyPreview
               )}
-              ref={this.containerRef}
-              onMouseEnter={this.setHover}
-              onMouseLeave={this.unsetHover}
-              vocab="https://schema.org/"
-              typeof="ScholarlyArticle"
+              ref={this.metaContainerRef}
             >
-              <ReactTooltip />
-              <meta property="description" content={paper.abstract} />
-              <meta property="commentCount" content={paper.discussion_count} />
-              <div className={css(styles.voting)}>
-                <VoteWidget
-                  score={score}
-                  onUpvote={upvote}
-                  onDownvote={downvote}
-                  selected={this.props.selectedVoteType}
-                  isPaper={true}
-                  type={"Paper"}
-                  paperPage={true}
-                  promoted={this.props.paper && this.props.paper.promoted}
-                  paper={
-                    this.props.paper && this.props.paper.promoted !== false
-                      ? this.props.paper
-                      : null
-                  }
-                  small={true}
-                />
-                <div className={css(styles.divider)}></div>
-                <PaperPromotionButton paper={paper} />
-              </div>
-              <div
-                className={css(
-                  styles.column,
-                  !fetching && previews.length === 0 && styles.emptyPreview
-                )}
-                ref={this.metaContainerRef}
-              >
-                <div className={css(styles.reverseRow)}>
-                  <div
-                    className={css(
-                      styles.cardContainer,
-                      !fetching && previews.length === 0 && styles.emptyPreview
-                    )}
-                  >
-                    <div className={css(styles.metaContainer)}>
-                      <div className={css(styles.titleHeader)}>
-                        <div className={css(styles.row)}>
-                          <h1
-                            className={css(styles.title)}
-                            property={"headline"}
-                          >
-                            {paper && paper.title}
-                          </h1>
-                        </div>
+              <div className={css(styles.reverseRow)}>
+                <div
+                  className={css(
+                    styles.cardContainer,
+                    !fetching && previews.length === 0 && styles.emptyPreview
+                  )}
+                >
+                  <div className={css(styles.metaContainer)}>
+                    <div className={css(styles.titleHeader)}>
+                      <div className={css(styles.row)}>
+                        <h1 className={css(styles.title)} property={"headline"}>
+                          {post && post.title}
+                        </h1>
                       </div>
-                      <div className={css(styles.column)}>
-                        {this.renderMetadata()}
-                      </div>
+                    </div>
+                    <div className={css(styles.column)}>
+                      {/*this.renderMetadata()*/}
                     </div>
                   </div>
-                  <div className={css(styles.rightColumn, styles.mobile)}>
-                    <div className={css(styles.votingMobile)}>
-                      <VoteWidget
-                        score={score}
-                        onUpvote={upvote}
-                        onDownvote={downvote}
-                        selected={selectedVoteType}
-                        isPaper={true}
-                        horizontalView={true}
-                        type={"Paper"}
-                        paperPage={true}
-                        promoted={this.props.paper && this.props.paper.promoted}
-                        paper={
-                          this.props.paper && this.props.paper.promoted
-                            ? this.props.paper
-                            : null
-                        }
-                        showPromotion={true}
-                        small={true}
-                      />
-                      <PaperDiscussionButton
-                        paper={paper}
-                        discussionCount={discussionCount}
-                      />
-                      <PaperPromotionButton paper={paper} />
-                    </div>
+                </div>
+                <div className={css(styles.rightColumn, styles.mobile)}>
+                  <div className={css(styles.votingMobile)}>
+                    <VoteWidget
+                      score={score}
+                      onUpvote={upvote}
+                      onDownvote={downvote}
+                      selected={selectedVoteType}
+                      isPaper={true}
+                      horizontalView={true}
+                      type={"Paper"}
+                      paperPage={true}
+                      promoted={this.props.paper && this.props.paper.promoted}
+                      paper={
+                        this.props.paper && this.props.paper.promoted
+                          ? this.props.paper
+                          : null
+                      }
+                      showPromotion={true}
+                      small={true}
+                    />
+                    {/*<PaperDiscussionButton
+                      paper={paper}
+                      discussionCount={discussionCount}
+                    />
+                    <PaperPromotionButton paper={paper} />*/}
                   </div>
                 </div>
               </div>
             </div>
-            <div className={css(styles.bottomContainer)}>
-              <div className={css(styles.bottomRow)}>
-                {this.renderActions()}
-              </div>
-              <div className={css(styles.downloadPDF)}></div>
-            </div>
           </div>
-
-          <div className={css(styles.previewBox)}>
-            <PaperPreview
-              paper={paper}
-              paperId={paper.id}
-              previewStyles={styles.previewStyles}
-              columnOverrideStyles={styles.columnOverrideStyles}
-            />
+          <div className={css(styles.bodyContainer)}>
+            {post.renderable_text}
+          </div>
+          <div className={css(styles.bottomContainer)}>
+            <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
+            <div className={css(styles.downloadPDF)}></div>
           </div>
         </div>
-      </ReactPlaceholder>
+
+        {/*<div className={css(styles.previewBox)}>
+          <PaperPreview
+            paper={paper}
+            paperId={paper.id}
+            previewStyles={styles.previewStyles}
+            columnOverrideStyles={styles.columnOverrideStyles}
+          />
+        </div>*/}
+      </div>
     );
   }
 }
@@ -1148,6 +1131,16 @@ const styles = StyleSheet.create({
   left: {
     marginRight: 20,
   },
+  bodyContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginTop: 0,
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+    },
+  },
   bottomContainer: {
     width: "100%",
     display: "flex",
@@ -1394,4 +1387,4 @@ const mapDispatchToProps = {
 export default connect(
   null,
   mapDispatchToProps
-)(PaperPageCard);
+)(PostPageCard);
