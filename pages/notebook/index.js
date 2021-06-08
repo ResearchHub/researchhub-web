@@ -10,7 +10,7 @@ class Index extends React.Component {
   render() {
     return (
       <div className={css(styles.page)}>
-        <SimpleEditor />
+        <ELNEditor />
       </div>
     );
   }
