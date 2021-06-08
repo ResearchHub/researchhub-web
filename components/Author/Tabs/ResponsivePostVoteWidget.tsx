@@ -4,19 +4,19 @@ import Responsive from "../../Responsive";
 import VoteWidget from "../../VoteWidget";
 
 export type ResponsvePostVoteWidgetProps = {
-  onDesktop: boolean;
-  onUpvote: Function;
-  onDownvote: Function;
   isSelected: boolean;
+  onDesktop: boolean;
+  onDownvote: Function;
+  onUpvote: Function;
   score: number;
 };
 
 export default function ResponsvePostVoteWidget({
-  onUpvote,
-  onDownvote,
   isSelected,
-  score,
   onDesktop,
+  onDownvote,
+  onUpvote,
+  score,
 }: ResponsvePostVoteWidgetProps) {
   return (
     <Responsive desktopOnly={onDesktop}>
@@ -26,14 +26,14 @@ export default function ResponsvePostVoteWidget({
           onClick={(e) => e.stopPropagation()}
         >
           <VoteWidget
-            score={score}
-            onUpvote={onUpvote}
+            horizontalView={!onDesktop}
             onDownvote={onDownvote}
+            onUpvote={onUpvote}
+            promoted={false}
+            score={score}
             selected={isSelected}
             styles={styles.voteWidget}
             type="Discussion"
-            promoted={false}
-            horizontalView={!onDesktop}
           />
         </span>
       </div>
