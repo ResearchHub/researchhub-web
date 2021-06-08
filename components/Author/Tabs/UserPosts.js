@@ -32,7 +32,11 @@ function UserPosts(props) {
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
   const postCards = posts.map((post, index) => (
-    <UserPostCard {...post} key={post.id || index} />
+    <UserPostCard
+      {...post}
+      key={post.id || index}
+      style={styles.customUserPostCard}
+    />
   ));
   useEffectFetchUserPosts({ setIsFetching, setPosts, userID: user.id });
   return (
@@ -45,6 +49,17 @@ function UserPosts(props) {
     </ReactPlaceholder>
   );
 }
+
+const styles = StyleSheet.create({
+  customUserPostCard: {
+    border: 0,
+    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    marginBottom: 0,
+    marginTop: 0,
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+});
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
