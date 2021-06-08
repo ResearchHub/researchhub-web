@@ -8,6 +8,7 @@ import { ALGOLIA_APP_ID, ALGOLIA_API_KEY } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import PropTypes from "prop-types";
 import { get } from "lodash";
+import { getCurrServerEnv } from "~/config/utils";
 
 const searchClient = algoliasearch(ALGOLIA_APP_ID, ALGOLIA_API_KEY);
 
@@ -49,7 +50,7 @@ const AlgoliaSearch = ({ mobile }) => {
       ref={dropdownRef}
     >
       <InstantSearch
-        indexName={`papers_${process.env.NODE_ENV}`}
+        indexName={`papers_${getCurrServerEnv()}`}
         searchClient={searchClient}
       >
         <AlgoliaSearchBox
