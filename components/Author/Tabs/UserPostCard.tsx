@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     maxWidth: "unset",
   },
   previewColumn: {
-    paddingBottom: 10,
+    // paddingBottom: 10,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
       alignItems: "center",
