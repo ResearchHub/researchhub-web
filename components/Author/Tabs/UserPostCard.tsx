@@ -14,6 +14,7 @@ export type UserPostCardProps = {
 
 export default function UserPostCard(props: UserPostCardProps) {
   const {
+    unified_document_id,
     created_by: {
       author_profile: { profile_image: creatorImg, first_name, last_name },
     },
@@ -24,21 +25,17 @@ export default function UserPostCard(props: UserPostCardProps) {
   } = props;
 
   const creatorName = first_name + " " + last_name;
+  const slug = title.toLowerCase().replace(/\s/g, "-");
 
   const mainTitle = (
-    <Link
-      href={""} // TODO: - briansantoso set link
-      as={""}
+    <a
+      className={css(styles.link)}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
-      <a
-        className={css(styles.link)}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <span className={css(styles.title)}>{title}</span>
-      </a>
-    </Link>
+      <span className={css(styles.title)}>{title}</span>
+    </a>
   );
 
   let previewImgComponent;
@@ -77,41 +74,52 @@ export default function UserPostCard(props: UserPostCardProps) {
   return (
     <Ripples className={css(styles.userPostCard, style && style)}>
       {/* {desktopOnly(renderVoteWidget())} */}
-      <div className={css(styles.container)}>
-        <div className={css(styles.rowContainer)}>
-          <div className={css(styles.column, styles.metaData)}>
-            <div className={css(styles.topRow)}>
-              {/* {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderPreregistrationTag())}
-              {desktopOnly(renderMainTitle())} */}
-              {mainTitle}
-            </div>
-            {/* {mobileOnly(renderMainTitle())}
-            {desktopOnly(renderMetadata())}
-            {mobileOnly(renderMetadata())}
-            {renderContent()}
-            {mobileOnly(renderContributers())} */}
-            {summary}
-          </div>
-          {/* {desktopOnly(renderPreview())} */}
-          {previewImgComponent}
-        </div>
-        <div className={css(styles.bottomBar)}>
+      <Link
+        href={{
+          pathname: "/post/[documentId]/[title]",
+          query: {
+            documentId: `${unified_document_id}`,
+            title: `${slug}`,
+          },
+        }}
+        as={`/post/${unified_document_id}/${slug}`}
+      >
+        <div className={css(styles.container)}>
           <div className={css(styles.rowContainer)}>
-            {/* {desktopOnly(renderContributers())} */}
-            {creatorTag}
-          </div>
-          {/* {desktopOnly(
-            <div className={css(styles.row)}>
-              {renderPreregistrationTag()}
-              {renderHubTags()}
+            <div className={css(styles.column, styles.metaData)}>
+              <div className={css(styles.topRow)}>
+                {/* {mobileOnly(renderVoteWidget(true))}
+                {mobileOnly(renderPreregistrationTag())}
+                {desktopOnly(renderMainTitle())} */}
+                {mainTitle}
+              </div>
+              {/* {mobileOnly(renderMainTitle())}
+              {desktopOnly(renderMetadata())}
+              {mobileOnly(renderMetadata())}
+              {renderContent()}
+              {mobileOnly(renderContributers())} */}
+              {summary}
             </div>
-          )} */}
+            {/* {desktopOnly(renderPreview())} */}
+            {previewImgComponent}
+          </div>
+          <div className={css(styles.bottomBar)}>
+            <div className={css(styles.rowContainer)}>
+              {/* {desktopOnly(renderContributers())} */}
+              {creatorTag}
+            </div>
+            {/* {desktopOnly(
+              <div className={css(styles.row)}>
+                {renderPreregistrationTag()}
+                {renderHubTags()}
+              </div>
+            )} */}
+          </div>
+          <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+            {/* {renderHubTags()} */}
+          </div>
         </div>
-        <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-          {/* {renderHubTags()} */}
-        </div>
-      </div>
+      </Link>
     </Ripples>
   );
 }
