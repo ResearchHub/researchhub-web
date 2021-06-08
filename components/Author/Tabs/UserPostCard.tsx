@@ -18,6 +18,7 @@ export type UserPostCardProps = {
 
 export default function UserPostCard(props: UserPostCardProps) {
   const {
+    unified_document_id,
     created_by: {
       author_profile: { first_name, last_name },
     },
@@ -29,21 +30,17 @@ export default function UserPostCard(props: UserPostCardProps) {
   } = props;
 
   const creatorName = first_name + " " + last_name;
+  const slug = title.toLowerCase().replace(/\s/g, "-");
 
   const mainTitle = (
-    <Link
-      href={""} // TODO: - briansantoso set link once post page has been implemented
-      as={""}
+    <a
+      className={css(styles.link)}
+      onClick={(e) => {
+        e.stopPropagation();
+      }}
     >
-      <a
-        className={css(styles.link)}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <span className={css(styles.title)}>{title}</span>
-      </a>
-    </Link>
+      <span className={css(styles.title)}>{title}</span>
+    </a>
   );
 
   let previewImgComponent;
@@ -109,35 +106,46 @@ export default function UserPostCard(props: UserPostCardProps) {
   return (
     <Ripples className={css(styles.userPostCard, style && style)}>
       {desktopVoteWidget}
-      <div className={css(styles.container)}>
-        <div className={css(styles.rowContainer)}>
-          <div className={css(styles.column, styles.metaData)}>
-            <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
-              <DesktopOnly> {mainTitle} </DesktopOnly>;
-            </div>
-            <MobileOnly> {mainTitle} </MobileOnly>
-            {summary}
-            {mobileCreatorTag}
-          </div>
-          <DesktopOnly> {previewImgComponent} </DesktopOnly>
-        </div>
-        <div className={css(styles.bottomBar)}>
+      <Link
+        href={{
+          pathname: "/post/[documentId]/[title]",
+          query: {
+            documentId: `${unified_document_id}`,
+            title: `${slug}`,
+          },
+        }}
+        as={`/post/${unified_document_id}/${slug}`}
+      >
+        <div className={css(styles.container)}>
           <div className={css(styles.rowContainer)}>
-            <DesktopOnly> {creatorTag} </DesktopOnly>
+            <div className={css(styles.column, styles.metaData)}>
+              <div className={css(styles.topRow)}>
+                {mobileVoteWidget}
+                <DesktopOnly> {mainTitle} </DesktopOnly>
+              </div>
+              <MobileOnly> {mainTitle} </MobileOnly>
+              {summary}
+              {mobileCreatorTag}
+            </div>
+            <DesktopOnly> {previewImgComponent} </DesktopOnly>
           </div>
-          <DesktopOnly>
-            <div className={css(styles.row)}>
+          <div className={css(styles.bottomBar)}>
+            <div className={css(styles.rowContainer)}>
+              <DesktopOnly> {creatorTag} </DesktopOnly>
+            </div>
+            <DesktopOnly>
+              <div className={css(styles.row)}>
+                {/* TODO: briansantoso - Hub tags go here */}
+              </div>
+            </DesktopOnly>
+          </div>
+          <MobileOnly>
+            <div className={css(styles.bottomBar, styles.mobileHubTags)}>
               {/* TODO: briansantoso - Hub tags go here */}
             </div>
-          </DesktopOnly>
+          </MobileOnly>
         </div>
-        <MobileOnly>
-          <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* TODO: briansantoso - Hub tags go here */}
-          </div>
-        </MobileOnly>
-      </div>
+      </Link>
     </Ripples>
   );
 }

@@ -16,7 +16,7 @@ import Head from "~/components/Head";
 import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
 import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperPageCard from "~/components/PaperPageCard";
+import PostPageCard from "~/components/PostPageCard";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
@@ -28,16 +28,13 @@ import TableOfContent from "~/components/PaperDraft/TableOfContent";
 import PaperPDFModal from "~/components/Modals/PaperPDFModal";
 
 // Redux
+import helpers from "@quantfive/js-web-config/helpers";
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import VoteActions from "~/redux/vote";
 import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
-
-// Undux
-import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxStore";
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
@@ -76,15 +73,15 @@ const steps = [
   },
 ];
 
-const Paper = (props) => {
+const Post = (props) => {
   const router = useRouter();
   if (props.error) {
     return <Error statusCode={404} />;
   }
 
   if (props.redirectPath && typeof window !== "undefined") {
-    // updates the [paperName] without refetching data
-    router.replace("/paper/[paperId]/[paperName]", props.redirectPath, {
+    // updates the [documentId] without refetching data
+    router.replace("/post/[documentId]/[title]", props.redirectPath, {
       shallow: true,
     });
   }
@@ -92,17 +89,9 @@ const Paper = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
 
-  const [paper, setPaper] = useState(
-    (props.paper && shims.paper(props.paper)) || {}
-  );
-  const [summary, setSummary] = useState(
-    (props.paper && props.paper.summary) || {}
-  );
+  const [post, setPost] = useState(props.post || {});
+
   const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
-
-  const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
-  const [loadingSummary, setLoadingSummary] = useState(true);
-
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(props.paper && props.paper.userVote)
@@ -111,122 +100,26 @@ const Paper = (props) => {
     calculateCommentCount(props.paper)
   );
 
-  const [paperDraftExists, setPaperDraftExists] = useState(false);
-  const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
-  const [activeSection, setActiveSection] = useState(0); // paper draft sections
-  const [activeTab, setActiveTab] = useState(0); // sections for paper page
-  const [userVoteChecked, setUserVoteChecked] = useState(false);
-
-  const { paperId } = router.query;
-
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+    post.created_by && post.created_by.id === props.auth.user.id;
 
-  let summaryVoteChecked = false;
-
-  useEffect(() => {
-    const summaryId = summary.id;
-    if (summaryId && !summaryVoteChecked) {
-      checkSummaryVote({ summaryId: summaryId }).then((res) => {
-        const summaryUserVote = res[summaryId];
-        summaryVoteChecked = true;
-
-        let summary = {
-          ...paper.summary,
-          user_vote: summaryUserVote,
-        };
-
-        if (summaryUserVote) {
-          summary.score = summaryUserVote.score || 0;
-          summary.promoted = summaryUserVote.promoted;
-        }
-        setSummary(summary);
-        setLoadingSummary(false);
-      });
-    }
-    setLoadingSummary(false);
-  }, [summary.id, props.auth.isLoggedIn]);
+  //useEffect(() => {
+  //  fetch(API.RESEARCHHUB_POSTS({ documentId: query.documentId }))
+  //    .then(Helpers.checkStatus)
+  //    .then(Helpers.parseJSON)
+  //    .then((data) => {
+  //      setPost(data);
+  //    });
+  //}, [props.post]);
 
   useEffect(() => {
-    setPaper(props.paper ? shims.paper(props.paper) : {});
-  }, [props.paper]);
+    setPost(props.post);
+  }, [props.post]);
 
   useEffect(() => {
-    if (!props.fetchedPaper) {
-      fetchPaper({ paperId });
-    } else {
-      checkUserVote();
-    }
-    if (document.getElementById("structuredData")) {
-      let script = document.getElementById("structuredData");
-      script.textContext = formatStructuredData();
-    } else {
-      let script = document.createElement("script");
-      script.setAttribute("type", "application/ld+json");
-      script.setAttribute("id", "structuredData");
-      script.textContext = formatStructuredData();
-      document.head.appendChild(script);
-    }
-  }, [paperId]);
-
-  useEffect(() => {
-    if (Object.keys(paper).length !== 0) {
-      checkUserVote();
-    }
-  }, [props.auth.isLoggedIn]);
-
-  useEffect(() => {
-    setCount(calculateCommentCount(paper));
-  }, [paper.discussionSource]);
-
-  function fetchPaper({ paperId }) {
-    setLoadingPaper(true);
-    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        setLoadingPaper(false);
-        const currPaper = shims.paper(resp);
-        setScore(getNestedValue(currPaper, ["score"], 0));
-        setFlag(currPaper.user_flag);
-        setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount(currPaper));
-        setPaper(currPaper);
-        setSummary(currPaper.summary || {});
-        checkUserVote(currPaper);
-        return currPaper;
-      })
-      .catch((error) => {
-        console.log(error);
-        Sentry.captureException(error);
-      });
-  }
-
-  function checkUserVote(paperState = paper) {
-    if (props.auth.isLoggedIn && props.auth.user) {
-      return checkUserVotesOnPapers({ paperIds: [paperId] }).then(
-        (userVotes) => {
-          const userVote = userVotes[paperId];
-
-          if (userVote) {
-            const { bullet_low_quality, summary_low_quality } = userVote;
-
-            const updatedPaper = {
-              ...paperState,
-              bullet_low_quality,
-              summary_low_quality,
-              userVote: userVote,
-            };
-
-            setPaper(updatedPaper);
-            setSelectedVoteType(updatedPaper.userVote.vote_type);
-          }
-          return setUserVoteChecked(true);
-        }
-      );
-    }
-  }
+    setCount(calculateCommentCount(post));
+  }, [post.discussionSource]);
 
   async function upvote() {
     dispatch(VoteActions.postUpvotePending());
@@ -283,58 +176,21 @@ const Paper = (props) => {
     setPaper({ ...paper, is_removed: true });
   };
 
-  function onJoyrideComplete(joyrideState) {
-    let { auth, updateUser, setUploadingPaper } = props;
-    if (
-      joyrideState.status === "finished" &&
-      joyrideState.lifecycle === "complete"
-    ) {
-      fetch(
-        API.USER({ userId: auth.user.id }),
-        API.PATCH_CONFIG({ upload_tutorial_complete: true })
-      )
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then(() => {
-          updateUser({ upload_tutorial_complete: true });
-          setUploadingPaper(false);
-        });
-    }
-  }
-
-  function calculateCommentCount(paper) {
+  function calculateCommentCount(post) {
     let discussionCount = 0;
-    if (paper) {
-      discussionCount = paper.discussion_count;
+    if (post) {
+      discussionCount = post.discussion_count;
     }
     return discussionCount;
   }
 
   function formatDescription() {
-    const { abstract, tagline } = paper;
+    const { title } = post;
 
-    if (!paper) return "";
+    if (!post) return "";
 
-    if (paper.summary) {
-      const { summary, summary_plain_text } = paper.summary;
-
-      if (summary_plain_text) {
-        return summary_plain_text;
-      }
-
-      if (summary) {
-        return isQuillDelta(summary)
-          ? convertDeltaToText(summary)
-          : convertToEditorValue(summary).document.text;
-      }
-    }
-
-    if (abstract) {
-      return abstract;
-    }
-
-    if (tagline) {
-      return tagline;
+    if (post.title) {
+      return post.title;
     }
 
     return "";
@@ -382,235 +238,51 @@ const Paper = (props) => {
     return data;
   }
 
-  let socialImageUrl = paper.metatagImage;
+  let socialImageUrl = post.metatagImage;
 
   if (!socialImageUrl) {
-    socialImageUrl = paper.first_preview && paper.first_preview.file;
+    socialImageUrl = post.preview_img && post.preview_img.file;
   }
 
-  function updatePaperState(newState) {
-    setPaper(newState);
+  function updatePostState(newState) {
+    setPost(newState);
   }
 
-  function getAllAuthors() {
-    const { authors, raw_authors } = paper;
-    const seen = {};
+  const slug = post.title.toLowerCase().replace(/\s/g, "-");
 
-    const allAuthors = [];
-
-    if (authors && authors.length) {
-      authors.forEach((author) => {
-        seen[getAuthorName(author)] = true;
-        allAuthors.push(author);
-      });
-    }
-
-    if (raw_authors && raw_authors.length) {
-      raw_authors.forEach((author) => {
-        if (!seen[getAuthorName(author)]) {
-          seen[getAuthorName(author)] = true;
-          allAuthors.push(author);
-        }
-      });
-    }
-
-    return allAuthors;
-  }
-
-  function onSectionEnter(index) {
-    activeTab !== index && setActiveTab(index);
-  }
-  const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
-  const shouldShowInlineComments =
-    inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
   return (
     <div>
-      <PaperBanner paper={paper} loadingPaper={loadingPaper} />
-      <PaperTransactionModal
-        paper={paper}
-        updatePaperState={updatePaperState}
-      />
-      <PaperFeatureModal
-        paper={paper}
-        updatePaperState={updatePaperState}
-        updateSummary={setSummary}
-      />
-      <PaperPDFModal paperId={paperId} paper={paper} />
       <Head
-        title={paper.title}
+        title={post.title}
         description={formatDescription()}
         socialImageUrl={socialImageUrl}
-        noindex={paper.is_removed || paper.is_removed_by_user}
-        canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
-      />
-      <Joyride
-        steps={steps}
-        continuous={true}
-        locale={{ last: "Done" }}
-        styles={{
-          options: {
-            primaryColor: colors.BLUE(1),
-          },
-        }}
-        callback={onJoyrideComplete}
-        run={
-          props.auth.uploadingPaper &&
-          props.auth.isLoggedIn &&
-          !props.auth.user.upload_tutorial_complete
-        }
+        noindex={post.is_removed || post.is_removed_by_user}
+        canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
       />
       <div className={css(styles.root)}>
-        <Waypoint
-          onEnter={() => onSectionEnter(0)}
-          topOffset={40}
-          bottomOffset={"95%"}
-        >
-          <a name="main" />
-        </Waypoint>
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              <PaperPageCard
-                paper={paper}
-                paperId={paperId}
+              <PostPageCard
+                post={post}
                 score={score}
                 upvote={upvote}
                 downvote={downvote}
                 selectedVoteType={selectedVoteType}
-                discussionCount={discussionCount}
-                shareUrl={process.browser && window.location.href}
-                isModerator={isModerator}
-                isSubmitter={isSubmitter}
-                flagged={flagged}
-                restorePaper={restorePaper}
-                removePaper={removePaper}
-                doneFetchingPaper={!loadingPaper}
-                setFlag={setFlag}
               />
             </div>
-            <div className={css(styles.paperMetaContainerMobile)}>
-              <AuthorStatsDropdown
-                authors={getAllAuthors()}
-                paper={paper}
-                hubs={paper.hubs}
-                paperId={paperId}
-              />
-            </div>
-            <div className={css(styles.stickyComponent)}>
-              <PaperTabBar
-                paperId={paperId}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                paperDraftSections={paperDraftSections}
-                paperDraftExists={paperDraftExists}
-              />
-            </div>
-            <div
-              className={css(styles.paperPageContainer, styles.noMarginLeft)}
-            >
-              <Waypoint
-                onEnter={() => onSectionEnter(1)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <a name="abstract">
-                  <SummaryTab
-                    paperId={paperId}
-                    paper={paper}
-                    summary={summary}
-                    updatePaperState={updatePaperState}
-                    updateSummary={setSummary}
-                    loadingSummary={loadingSummary}
-                    userVoteChecked={userVoteChecked}
-                  />
-                </a>
-              </Waypoint>
-            </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(2)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <a name="discussion">
-                <div className={css(styles.space)}>
-                  <DiscussionTab
-                    hostname={props.hostname}
-                    paperId={paperId}
-                    paperState={paper}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                    isCollapsible={true}
-                  />
-                </div>
-              </a>
-            </Waypoint>
-            <div
-              className={css(
-                styles.paperPageContainer,
-                styles.bottom,
-                styles.noMarginLeft,
-                !paperDraftExists && styles.hide
-              )}
-            >
-              <Waypoint
-                onEnter={() => onSectionEnter(3)}
-                topOffset={40}
-                bottomOffset={"95%"}
-              >
-                <a name="paper">
-                  <TableOfContent
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                  />
-                  <PaperDraftContainer
-                    isViewerAllowedToEdit={isModerator}
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                    paperId={paperId}
-                    setActiveSection={setActiveSection}
-                    setPaperDraftExists={setPaperDraftExists}
-                    setPaperDraftSections={setPaperDraftSections}
-                  />
-                </a>
-              </Waypoint>
-            </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(4)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <a name="paper pdf">
-                <div className={css(styles.paperTabContainer)}>
-                  <PaperTab
-                    paperId={paperId}
-                    paper={paper}
-                    isModerator={isModerator}
-                  />
-                </div>
-              </a>
-            </Waypoint>
-          </div>
-          <div className={css(styles.sidebar)}>
-            {shouldShowInlineComments ? (
-              <InlineCommentThreadsDisplayBarWithMediaSize isShown />
-            ) : (
-              <React.Fragment>
-                <PaperSideColumn
-                  authors={getAllAuthors()}
-                  paper={paper}
-                  hubs={paper.hubs}
-                  paperId={paperId}
+            <a name="discussion">
+              <div className={css(styles.space)}>
+                <DiscussionTab
+                  hostname={props.hostname}
+                  postId={post.id}
+                  postState={post}
+                  calculatedCount={discussionCount}
+                  setCount={setCount}
+                  isCollapsible={false}
                 />
-                <PaperSections
-                  activeTab={activeTab} // for paper page tabs
-                  setActiveTab={setActiveTab}
-                  activeSection={activeSection} // for paper draft sections
-                  setActiveSection={setActiveSection}
-                  paperDraftSections={paperDraftSections}
-                  paperDraftExists={paperDraftExists}
-                />
-              </React.Fragment>
-            )}
+              </div>
+            </a>
           </div>
         </div>
       </div>
@@ -618,94 +290,20 @@ const Paper = (props) => {
   );
 };
 
-const fetchPaper = ({ paperId }) => {
-  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((resp) => {
-      return resp;
-    })
-    .catch((error) => {
-      console.log(error);
-      Sentry.captureException(error);
-    });
-};
-
-Paper.getInitialProps = async (ctx) => {
+Post.getInitialProps = async (ctx) => {
   const { req, store, query, res } = ctx;
   const { host } = absoluteUrl(req);
   const hostname = host;
 
-  if (!isServer()) {
-    return {
-      hostname,
-    };
-  }
-
   // Fetch data from external API
   let props = {};
-  let paper;
-  let paperSlug;
+  let posts = await fetch(
+    API.RESEARCHHUB_POSTS({ documentId: query.documentId })
+  ).then(helpers.parseJSON);
+  const post = posts[0];
 
-  try {
-    paper = await fetchPaper({ paperId: query.paperId });
-  } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-    // if paper doesnot exist
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  if (!paper) {
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  paperSlug = paper.slug;
-  let fetchedPaper = true;
-
-  if (paperSlug !== query.paperName) {
-    // redirect paper if paperName does not match slug
-    let paperName = paperSlug
-      ? paperSlug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
-
-    if (paperName === query.paperName) {
-      // catch multiple redirect when slug does not exist
-      props = { hostname, paper, fetchedPaper };
-      return props;
-    }
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
-
-    res.writeHead(301, { Location: redirectPath });
-    res.end();
-    props = {
-      hostname,
-      paper,
-      redirectPath,
-      paperName,
-      paperSlug,
-      paperName: query.paperName,
-    };
-    return props;
-  }
-  props = { hostname, paper, fetchedPaper };
+  props = { hostname, post };
   return props;
-};
-
-const PaperIndexWithUndux = (props) => {
-  return (
-    <PaperDraftUnduxStore.Container>
-      <InlineCommentUnduxStore.Container>
-        <Paper {...props} />
-      </InlineCommentUnduxStore.Container>
-    </PaperDraftUnduxStore.Container>
-  );
 };
 
 const styles = StyleSheet.create({
@@ -1116,4 +714,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(PaperIndexWithUndux);
+)(Post);

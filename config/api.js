@@ -113,10 +113,18 @@ const routes = (BASE_URL) => {
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
-    RESEARCHHUB_POSTS: (created_by) =>
-      created_by != null
-        ? `${BASE_URL}researchhub_posts/?created_by=${created_by}`
-        : `${BASE_URL}researchhub_posts/`,
+    RESEARCHHUB_POSTS: ({ created_by, documentId }) => {
+      let url = BASE_URL + "researchhub_posts/";
+      let params = {
+        querystring: {
+          created_by,
+          documentId,
+        },
+      };
+      url = prepURL(url, params);
+
+      return url;
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({ search, config, page, size, external_source = true }) => {
       let url = BASE_URL + "search/";
