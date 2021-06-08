@@ -1,22 +1,22 @@
-import { css, StyleSheet } from "aphrodite";
 import React from "react";
 import Responsive from "../../Responsive";
 import VoteWidget from "../../VoteWidget";
+import { css, StyleSheet } from "aphrodite";
 
 export type ResponsvePostVoteWidgetProps = {
-  isSelected: boolean;
   onDesktop: boolean;
   onDownvote: Function;
   onUpvote: Function;
   score: number;
+  voteState: string | null;
 };
 
 export default function ResponsvePostVoteWidget({
-  isSelected,
   onDesktop,
   onDownvote,
   onUpvote,
   score,
+  voteState,
 }: ResponsvePostVoteWidgetProps) {
   return (
     <Responsive desktopOnly={onDesktop}>
@@ -31,9 +31,9 @@ export default function ResponsvePostVoteWidget({
             onUpvote={onUpvote}
             promoted={false}
             score={score}
-            selected={isSelected}
             styles={styles.voteWidget}
             type="Discussion"
+            selected={voteState}
           />
         </span>
       </div>

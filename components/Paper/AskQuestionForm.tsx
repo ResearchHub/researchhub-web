@@ -1,15 +1,15 @@
+import API from "../../config/api";
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
 import React, { SyntheticEvent, useEffect, useState } from "react";
 import colors from "../../config/themes/colors";
+import removeMd from "remove-markdown";
+import { Helpers } from "@quantfive/js-web-config";
+import { Router, useRouter } from "next/router";
 import { SimpleEditor } from "../CKEditor/SimpleEditor";
 import { StyleSheet, css } from "aphrodite";
-import API from "../../config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import { connect } from "react-redux";
-import { Router, useRouter } from "next/router";
-import removeMd from "remove-markdown";
 
 type FormFields = {
   hub: null | object;
