@@ -39,6 +39,12 @@ export function SimpleEditor({
       "imageUpload",
       "mediaEmbed",
     ],
+    cloudServices: {
+      tokenUrl:
+        "https://80957.cke-cs.com/token/dev/960c0bc0e3d16e2cd7f0526fa9839a08285b35601de07963c52090da8bf6",
+      uploadUrl: "https://80957.cke-cs.com/easyimage/upload/",
+      webSocketUrl: "wss://80957.cke-cs.com/ws",
+    },
   };
 
   useEffect(() => {
