@@ -14,11 +14,12 @@ export type UserPostCardProps = {
   renderable_text: string;
   style: StyleSheet;
   title: string;
+  unified_document_id;
 };
 
 export default function UserPostCard(props: UserPostCardProps) {
   const {
-    unified_document_id,
+    unified_document_id: unifiedDocumentId,
     created_by: {
       author_profile: { first_name, last_name },
     },
@@ -110,11 +111,11 @@ export default function UserPostCard(props: UserPostCardProps) {
         href={{
           pathname: "/post/[documentId]/[title]",
           query: {
-            documentId: `${unified_document_id}`,
+            documentId: `${unifiedDocumentId}`,
             title: `${slug}`,
           },
         }}
-        as={`/post/${unified_document_id}/${slug}`}
+        as={`/post/${unifiedDocumentId}/${slug}`}
       >
         <div className={css(styles.container)}>
           <div className={css(styles.rowContainer)}>
