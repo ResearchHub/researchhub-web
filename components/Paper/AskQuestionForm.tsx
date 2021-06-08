@@ -118,8 +118,12 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     }
   };
 
-  const onSuccess = (draft: boolean): ((value: any) => void) => {
-    return () => router.push(`/user/${user.author_profile.id}/posts`);
+  const onSuccess = (isDraft: boolean): ((value: any) => void) => {
+    return (response) => {
+      const { unified_document_id, title } = response;
+      const slug = title.toLowerCase().replace(/\s/g, "-");
+      router.push(`/post/${unified_document_id}/${slug}`);
+    };
   };
 
   const sendPost = (draft: boolean) => {
