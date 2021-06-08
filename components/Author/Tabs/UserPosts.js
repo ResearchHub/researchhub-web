@@ -10,7 +10,7 @@ import UserPostCard from "./UserPostCard";
 function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
   useEffect(() => {
     setIsFetching(true);
-    fetch(API.RESEARCHHUB_POSTS(userID), API.GET_CONFIG())
+    fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {

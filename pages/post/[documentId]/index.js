@@ -6,7 +6,6 @@ import { formatPaperSlug } from "~/config/utils";
 import API from "~/config/api";
 
 // Redux
-import { PaperActions } from "~/redux/paper";
 import helpers from "@quantfive/js-web-config/helpers";
 
 function Paper(props) {
@@ -26,12 +25,13 @@ function Paper(props) {
 
 Paper.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
-  let post = await fetch(API.SHOW_POST({ postId: query.documentId })).then(
-    helpers.parseJSON
-  );
-  const name = formatPaperSlug(post.title);
+  let posts = await fetch(
+    API.RESEARCHHUB_POSTS({ documentId: query.documentId })
+  ).then(helpers.parseJSON);
+  const post = posts[0];
+  const title = formatPaperSlug(post.title);
 
-  const redirectPath = `/post/${query.documentId}/${name}`;
+  const redirectPath = `/post/${query.documentId}/${title}`;
 
   return { redirectPath, post };
 };
