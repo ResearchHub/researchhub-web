@@ -9,6 +9,7 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { connect } from "react-redux";
 import { Router, useRouter } from "next/router";
+import removeMd from "remove-markdown";
 
 type FormFields = {
   hub: null | object;
@@ -41,9 +42,19 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
+function firstImageFromMarkdown(text: string): string | null {
+  // https://stackoverflow.com/questions/26024796/what-type-of-regexp-would-i-need-to-extract-image-url-from-markdown
+  const match = text.match(/!\[.*?\]\((.*?)\)/);
+  return match ? match[1] : null;
+}
+
 export type AskQuestionFormProps = {
   user: any;
 };
+
+function markdownToPlaintext(text: string): string {
+  return removeMd(text).replace(/&nbsp;/g, " ");
+}
 
 function AskQuestionForm({ user }: AskQuestionFormProps) {
   const router = useRouter();
@@ -121,8 +132,8 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       /* @ts-ignore */
       hubs: mutableFormFields.hub ? [mutableFormFields.hub.id] : [],
       is_public: !draft,
-      preview_img: null,
-      renderable_text: "",
+      preview_img: firstImageFromMarkdown(mutableFormFields.text),
+      renderable_text: markdownToPlaintext(mutableFormFields.text),
       title: mutableFormFields.title,
       viewers: null,
     };
