@@ -203,7 +203,12 @@ const Index = (props) => {
   };
 
   const saveUserInformation = () => {
-    onboardingFormBtnRef.current.click();
+    onboardingFormBtnRef.current
+      ? onboardingFormBtnRef.current.click()
+      : console.warn(
+          "No ref provided to OnboardForm. Profile changes not saved."
+        );
+
     navigateHome();
   };
 

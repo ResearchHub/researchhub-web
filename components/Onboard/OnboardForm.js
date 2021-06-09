@@ -203,7 +203,7 @@ class OnboardForm extends React.Component {
       headline: this.state.headline,
     };
 
-    return fetch(
+    fetch(
       API.AUTHOR({ authorId: this.props.author.id }),
       API.PATCH_CONFIG(params)
     )
@@ -658,11 +658,11 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-const A = connect(
+const WrappedComponent = connect(
   mapStateToProps,
   mapDispatchToProps
 )(OnboardForm);
 
-const B = React.forwardRef((props, ref) => <A {...props} submitBtnRef={ref} />);
-
-export default B;
+export default React.forwardRef((props, ref) => (
+  <WrappedComponent {...props} submitBtnRef={ref} />
+));
