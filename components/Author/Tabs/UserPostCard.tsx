@@ -39,12 +39,9 @@ export default function UserPostCard(props: UserPostCardProps) {
   const [voteState, setVoteState] = useState<string | null>(
     null /* TODO: briansantoso - get user's vote on post */
   );
-  const [voteCount, setVoteCount] = useState<number>(
+  const [score, setScore] = useState<number>(
     0 /* TODO: briansantoso - get post vote count*/
   );
-  // const setVoteState = (value: string) => {
-  //   _setVoteState(value);
-  // };
 
   const creatorName = first_name + " " + last_name;
   const slug = title.toLowerCase().replace(/\s/g, "-");
@@ -93,9 +90,9 @@ export default function UserPostCard(props: UserPostCardProps) {
     <div className={css(styles.summary) + " clamp2"}>{renderableText}</div>
   );
 
-  // TODO: briansantoso - implement voting when ready
-  const score = 0;
-  const onVoteType = (voteType) => {
+  // TODO: briansantoso - integrate with backend when ready
+  const createVoteHandler = (voteType) => {
+    const increment = { [UPVOTE]: 1, [DOWNVOTE]: -1 }[voteType];
     return (e: SyntheticEvent) => {
       e.stopPropagation();
       if (voteState === voteType) {
@@ -106,8 +103,17 @@ export default function UserPostCard(props: UserPostCardProps) {
          * if the button is already selected.
          */
         setVoteState(null);
+        setScore(score - increment); // Undo the vote
       } else {
         setVoteState(voteType);
+        if (voteState === UPVOTE || voteState === DOWNVOTE) {
+          // If post was already upvoted / downvoted by user, then voting
+          // oppoistely will reverse the score by twice as much
+          setScore(score + increment * 2);
+        } else {
+          // User has not voted, so regular vote
+          setScore(score + increment);
+        }
       }
     };
   };
@@ -115,8 +121,8 @@ export default function UserPostCard(props: UserPostCardProps) {
   const desktopVoteWidget = (
     <ResponsvePostVoteWidget
       onDesktop
-      onDownvote={onVoteType(DOWNVOTE)}
-      onUpvote={onVoteType(UPVOTE)}
+      onDownvote={createVoteHandler(DOWNVOTE)}
+      onUpvote={createVoteHandler(UPVOTE)}
       score={score}
       voteState={voteState}
     />
@@ -125,8 +131,8 @@ export default function UserPostCard(props: UserPostCardProps) {
   const mobileVoteWidget = (
     <ResponsvePostVoteWidget
       onDesktop={false}
-      onDownvote={onVoteType(DOWNVOTE)}
-      onUpvote={onVoteType(UPVOTE)}
+      onDownvote={createVoteHandler(DOWNVOTE)}
+      onUpvote={createVoteHandler(UPVOTE)}
       score={score}
       voteState={voteState}
     />
@@ -332,7 +338,6 @@ const styles = StyleSheet.create({
     maxWidth: "unset",
   },
   previewColumn: {
-    // paddingBottom: 10,
     "@media only screen and (max-width: 767px)": {
       justifyContent: "center",
       alignItems: "center",
@@ -349,6 +354,15 @@ const styles = StyleSheet.create({
     marginTop: 5,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
+    },
+  },
+  row: {
+    display: "flex",
+    alignItems: "center",
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      height: "unset",
+      alignItems: "flex-start",
     },
   },
 });
