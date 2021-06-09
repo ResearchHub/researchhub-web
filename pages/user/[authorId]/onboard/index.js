@@ -203,7 +203,7 @@ const Index = (props) => {
   };
 
   const saveUserInformation = () => {
-    const saveButton = formRef.current.buttonRef.current;
+    const saveButton = formRef.current;
     saveButton.click();
     navigateHome();
   };
@@ -288,7 +288,7 @@ const Index = (props) => {
           </div>
         );
       case 2:
-        return <OnboardForm forwardedRef={formRef} />;
+        return <OnboardForm submitRef={formRef} />;
       case 3:
         return (
           <VerificationForm
