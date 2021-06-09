@@ -428,7 +428,7 @@ class OnboardForm extends React.Component {
             section={"pictures"}
           />
           <div className={css(styles.buttonContainer)}>
-            <button type="submit" ref={this.buttonRef} />
+            <button type="submit" ref={this.props.submitRef} />
           </div>
         </form>
       </div>
