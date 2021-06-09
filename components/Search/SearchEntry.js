@@ -32,13 +32,19 @@ class SearchEntry extends React.Component {
    */
   handleClick = () => {
     const { indexName, result, clearSearch, onClickCallBack } = this.props;
-    const { id, slug, paper } = result;
+    const { objectID, slug, paper } = result;
     const paperSlug = slug ? slug : formatPaperSlug(result.title);
     clearSearch && clearSearch();
     if (indexName === "author") {
-      Router.push("/user/[authorId]/[tabName]", `/user/${id}/discussions`);
+      Router.push(
+        "/user/[authorId]/[tabName]",
+        `/user/${objectID}/discussions`
+      );
     } else if (indexName === "paper") {
-      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
+      Router.push(
+        "/paper/[paperId]/[paperName]",
+        `/paper/${objectID}/${paperSlug}`
+      );
     }
     onClickCallBack && onClickCallBack();
   };
