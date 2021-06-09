@@ -64,7 +64,7 @@ const Index = (props) => {
     });
   }, [page]);
 
-  let formRef = useRef();
+  let onboardingFormBtnRef = useRef();
   let verificationFormRef = useRef();
 
   const formatStep = () => {
@@ -203,8 +203,7 @@ const Index = (props) => {
   };
 
   const saveUserInformation = () => {
-    const saveButton = formRef.current.buttonRef.current;
-    saveButton.click();
+    onboardingFormBtnRef.current.click();
     navigateHome();
   };
 
@@ -288,7 +287,7 @@ const Index = (props) => {
           </div>
         );
       case 2:
-        return <OnboardForm forwardedRef={formRef} />;
+        return <OnboardForm ref={onboardingFormBtnRef} />;
       case 3:
         return (
           <VerificationForm

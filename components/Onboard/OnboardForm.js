@@ -39,8 +39,6 @@ class OnboardForm extends React.Component {
         this.props.author.education.length - 1,
       mainIndex: 0,
     };
-
-    this.buttonRef = React.createRef();
   }
 
   componentDidMount = async () => {
@@ -205,7 +203,7 @@ class OnboardForm extends React.Component {
       headline: this.state.headline,
     };
 
-    fetch(
+    return fetch(
       API.AUTHOR({ authorId: this.props.author.id }),
       API.PATCH_CONFIG(params)
     )
@@ -428,7 +426,7 @@ class OnboardForm extends React.Component {
             section={"pictures"}
           />
           <div className={css(styles.buttonContainer)}>
-            <button type="submit" ref={this.buttonRef} />
+            <button type="submit" ref={this.props.submitBtnRef} />
           </div>
         </form>
       </div>
@@ -660,7 +658,11 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
+const A = connect(
   mapStateToProps,
   mapDispatchToProps
 )(OnboardForm);
+
+const B = React.forwardRef((props, ref) => <A {...props} submitBtnRef={ref} />);
+
+export default B;
