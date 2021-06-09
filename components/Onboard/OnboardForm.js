@@ -39,8 +39,6 @@ class OnboardForm extends React.Component {
         this.props.author.education.length - 1,
       mainIndex: 0,
     };
-
-    this.buttonRef = React.createRef();
   }
 
   componentDidMount = async () => {
