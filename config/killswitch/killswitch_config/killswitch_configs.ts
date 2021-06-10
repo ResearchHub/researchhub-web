@@ -21,7 +21,7 @@ const KillswtichConfigs: SwitchConfigs = {
   elasticSearch: {
     development: true,
     staging: true,
-    production: false,
+    production: true,
   },
 };
 
