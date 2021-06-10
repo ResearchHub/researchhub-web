@@ -8,13 +8,13 @@ import ColumnJournal from "./ColumnJournal";
 import colors from "~/config/themes/colors";
 
 const PaperSideColumn = (props) => {
-  const { paper, paperId, authors, hubs, customStyle } = props;
+  const { paper, paperId, authors, hubs, customStyle, isPost } = props;
 
   return (
     <div className={css(styles.root, customStyle && customStyle)}>
       <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
       <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
-      <ColumnJournal paper={paper} paperId={paperId} />
+      {!isPost && <ColumnJournal paper={paper} paperId={paperId} />}
     </div>
   );
 };
