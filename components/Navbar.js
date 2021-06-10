@@ -21,7 +21,8 @@ import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
-import Search from "./Search/Search";
+// import Search from "./Search/DEPRECATED__Search";
+import AlgoliaSearch from "./Search/AlgoliaSearch";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
@@ -35,7 +36,10 @@ import OrcidConnectModal from "./Modals/OrcidConnectModal";
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { RHLogo } from "~/config/themes/icons";
+
+// Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
+import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 
@@ -322,6 +326,7 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
+        {killswitch("search") && <AlgoliaSearch mobile={true} />}
         {/* <Search
           searchClass={styles.mobileSearch}
           inputClass={styles.inputClass}
@@ -433,7 +438,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {/* <Search /> */}
+        {killswitch("search") && <AlgoliaSearch />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -659,9 +664,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1024px)": {
       display: "flex",
     },
-  },
-  searchIconClass: {
-    top: 7,
   },
   loginContainer: {
     width: "100%",
