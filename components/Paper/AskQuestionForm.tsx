@@ -196,6 +196,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
           label="Text"
           labelStyle={styles.label}
           onChange={handleOnChangeFields}
+          containerStyle={styles.editor}
         />
         <div className={css(styles.buttonsContainer)}>
           {/* @ts-ignore */}
@@ -279,4 +280,8 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
   buttonStyle: {},
+  editor: {
+    maxWidth: "720px",
+    width: "100%",
+  },
 });
