@@ -6,7 +6,7 @@ import Ripples from "react-ripples";
 // Config
 import colors from "../../config/themes/colors";
 
-const Button = ({
+function Button({
   type,
   label,
   isWhite,
@@ -21,7 +21,7 @@ const Button = ({
   customIconStyle,
   hideRipples,
   rippleClass,
-}) => {
+}) {
   if (isLink) {
     let { href, linkAs, query } = isLink;
     return (
@@ -102,7 +102,7 @@ const Button = ({
     }
     return button;
   }
-};
+}
 
 const styles = StyleSheet.create({
   button: {

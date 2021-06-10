@@ -21,12 +21,12 @@ const items = [
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
   },
-  {
-    header: "Publish a Research Project",
-    description: "Publish lab notes, original research, metastudies, etc.",
-    imgSrc: "/static/icons/publishProject.png",
-    route: "/notebook",
-  },
+  // {
+  //   header: "Publish a Research Project",
+  //   description: "Publish lab notes, original research, metastudies, etc.",
+  //   imgSrc: "/static/icons/publishProject.png",
+  //   route: "/notebook",
+  // },
 ];
 
 export type NewPostModalProps = {
@@ -110,7 +110,6 @@ export default function NewPostModal({
 
 const styles = StyleSheet.create({
   list: {
-    width: "544px",
     margin: "31px",
     display: "flex",
     flexDirection: "column",
@@ -118,7 +117,6 @@ const styles = StyleSheet.create({
   },
   modalStyle: {
     maxHeight: "95vh",
-    width: "625px",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
