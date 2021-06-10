@@ -21,7 +21,7 @@ import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
-// import Search from "./Search/DEPRECATED__Search";
+import Search from "./Search/Search";
 import AlgoliaSearch from "./Search/AlgoliaSearch";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
@@ -326,14 +326,16 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {killswitch("search") && <AlgoliaSearch mobile={true} />}
-        {/* <Search
-          searchClass={styles.mobileSearch}
-          inputClass={styles.inputClass}
-          searchIconClass={styles.searchIconClass}
-          dropdownClass={styles.dropdownClass}
-          afterSearchClick={toggleSideMenu}
-        /> */}
+        {killswitch("algoliaSearch") && <AlgoliaSearch mobile={true} />}
+        {killswitch("elasticSearch") && (
+          <Search
+            searchClass={styles.mobileSearch}
+            inputClass={styles.inputClass}
+            searchIconClass={styles.searchIconClass}
+            dropdownClass={styles.dropdownClass}
+            afterSearchClick={toggleSideMenu}
+          />
+        )}
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
@@ -438,7 +440,8 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {killswitch("search") && <AlgoliaSearch />}
+        {killswitch("algoliaSearch") && <AlgoliaSearch />}
+        {killswitch("elasticSearch") && <Search />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
