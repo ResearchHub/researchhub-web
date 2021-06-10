@@ -248,6 +248,12 @@ const Post = (props) => {
     setPost(newState);
   }
 
+  function getAllAuthors() {
+    const { created_by } = post;
+    const allAuthors = [created_by.author_profile];
+    return allAuthors;
+  }
+
   const slug = post.title.toLowerCase().replace(/\s/g, "-");
 
   return (
@@ -283,6 +289,15 @@ const Post = (props) => {
                 />
               </div>
             </a>
+          </div>
+          <div className={css(styles.sidebar)}>
+            <PaperSideColumn
+              authors={getAllAuthors()}
+              paper={post}
+              hubs={post.hubs}
+              paperId={post.id}
+              isPost={true}
+            />
           </div>
         </div>
       </div>
