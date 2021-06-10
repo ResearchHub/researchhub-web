@@ -8,7 +8,7 @@ import numeral from "numeral";
 import { MessageActions } from "~/redux/message";
 
 // Components
-import Highlight from "~/components/Search/Highlight";
+import Highlight from "~/components/Search/AlgoliaHighlight";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -32,13 +32,19 @@ class SearchEntry extends React.Component {
    */
   handleClick = () => {
     const { indexName, result, clearSearch, onClickCallBack } = this.props;
-    const { id, slug, paper } = result;
+    const { objectID, slug, paper } = result;
     const paperSlug = slug ? slug : formatPaperSlug(result.title);
     clearSearch && clearSearch();
     if (indexName === "author") {
-      Router.push("/user/[authorId]/[tabName]", `/user/${id}/discussions`);
+      Router.push(
+        "/user/[authorId]/[tabName]",
+        `/user/${objectID}/discussions`
+      );
     } else if (indexName === "paper") {
-      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
+      Router.push(
+        "/paper/[paperId]/[paperName]",
+        `/paper/${objectID}/${paperSlug}`
+      );
     }
     onClickCallBack && onClickCallBack();
   };
@@ -81,7 +87,11 @@ class SearchEntry extends React.Component {
               <Highlight result={result} attribute={"title"} />
             </span>
             {authors && authors.length > 0 ? (
-              <Highlight result={result} attribute={"authors"} />
+              <Highlight
+                className={`${css(styles.authors)} clamp1`}
+                result={result}
+                attribute={"authors"}
+              />
             ) : (
               <div className={css(styles.authors)}>No attributed author</div>
             )}
@@ -487,13 +497,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {
-  showMessage: MessageActions.showMessage,
-  setMessage: MessageActions.setMessage,
-};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchEntry);
+export default SearchEntry;
