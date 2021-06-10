@@ -217,13 +217,14 @@ const ModeratorDeleteButton = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setIsSuspended(true);
+        setIsSuspended && setIsSuspended(true);
         if (auth.user.author_profile.id === authorId) {
-          updateUser({
-            ...auth.user,
-            is_suspended: true,
-            probable_spammer: true,
-          });
+          updateUser &&
+            updateUser({
+              ...auth.user,
+              is_suspended: true,
+              probable_spammer: true,
+            });
         }
         showSucessMessage("User Successfully Removed.");
         props.onRemove &&
