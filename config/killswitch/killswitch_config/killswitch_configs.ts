@@ -10,13 +10,18 @@ export type SwitchConfigs = {
 const KillswtichConfigs: SwitchConfigs = {
   authorClaim: {
     development: true,
-    production: false,
     staging: false,
-  },
-  search: {
-    development: true,
     production: false,
+  },
+  algoliaSearch: {
+    development: false,
+    staging: false,
+    production: false,
+  },
+  elasticSearch: {
+    development: true,
     staging: true,
+    production: false,
   },
 };
 
