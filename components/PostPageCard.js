@@ -29,6 +29,7 @@ import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
+import ReactMarkdown from "react-markdown";
 
 class PostPageCard extends React.Component {
   constructor(props) {
@@ -666,7 +667,7 @@ class PostPageCard extends React.Component {
             </div>
           </div>
           <div className={css(styles.bodyContainer)}>
-            {post.renderable_text}
+            <ReactMarkdown>{post.full_markdown}</ReactMarkdown>
           </div>
           <div className={css(styles.bottomContainer)}>
             <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
@@ -1133,13 +1134,6 @@ const styles = StyleSheet.create({
   },
   bodyContainer: {
     width: "100%",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginTop: 0,
-    "@media only screen and (max-width: 767px)": {
-      margin: 0,
-    },
   },
   bottomContainer: {
     width: "100%",
