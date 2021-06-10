@@ -79,7 +79,7 @@ export function SimpleEditor({
             onReady={(editor) => {
               editor.editing.view.change((writer) => {
                 writer.setStyle(
-                  "height",
+                  "min-height",
                   "200px",
                   editor.editing.view.document.getRoot()
                 );
@@ -89,6 +89,7 @@ export function SimpleEditor({
             editor={Editor}
             config={editorConfiguration}
             data={initialData}
+            className={css(styles.editor)}
           />
         )}
       </div>
