@@ -36,9 +36,6 @@ class ContentSupportModal extends React.Component {
   closeModal = () => {
     this.props.openContentSupportModal(false, { data: {}, metaData: {} });
     this.setState({ ...this.initialState });
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   handleAmount = (e) => {

@@ -65,9 +65,6 @@ class DndModal extends React.Component {
 
   closeModal = () => {
     this.props.openDndModal(false, {});
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     this.setState({
       ...this.initialState,
     });

@@ -3,12 +3,15 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Router from "next/router";
 import numeral from "numeral";
+import killswitch from "~/config/killswitch/killswitch";
 
 // Redux
 import { MessageActions } from "~/redux/message";
 
 // Components
-import Highlight from "~/components/Search/Highlight";
+const Highlight = killswitch("algoliaSearch")
+  ? require("~/components/Search/AlgoliaHighlight").default
+  : require("~/components/Search/Highlight").default;
 
 // Config
 import colors from "../../config/themes/colors";
@@ -81,7 +84,11 @@ class SearchEntry extends React.Component {
               <Highlight result={result} attribute={"title"} />
             </span>
             {authors && authors.length > 0 ? (
-              <Highlight result={result} attribute={"authors"} />
+              <Highlight
+                className={`${css(styles.authors)} clamp1`}
+                result={result}
+                attribute={"authors"}
+              />
             ) : (
               <div className={css(styles.authors)}>No attributed author</div>
             )}
@@ -487,13 +494,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({});
-
-const mapDispatchToProps = {
-  showMessage: MessageActions.showMessage,
-  setMessage: MessageActions.setMessage,
-};
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SearchEntry);
+export default SearchEntry;

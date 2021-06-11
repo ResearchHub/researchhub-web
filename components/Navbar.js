@@ -21,6 +21,7 @@ import LoginModal from "../components/Modals/LoginModal";
 import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
+import AlgoliaSearch from "./Search/AlgoliaSearch";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
@@ -32,10 +33,14 @@ import UserStateBanner from "./Banner/UserStateBanner";
 import OrcidConnectModal from "./Modals/OrcidConnectModal";
 
 // Styles
+import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { RHLogo } from "~/config/themes/icons";
+
+// Config
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
-import { RHLogo } from "~/config/themes/icons";
-import { ROUTES as WS_ROUTES } from "~/config/ws";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -49,7 +54,9 @@ const Navbar = (props) => {
     auth,
     updateUser,
   } = props;
-
+  const isUserModerator = !isNullOrUndefined(user)
+    ? Boolean(user.moderator)
+    : false;
   let dropdown;
   let avatar;
 
@@ -98,6 +105,13 @@ const Navbar = (props) => {
     },
     { label: "Live", route: "/live", icon: "live" },
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
+    isUserModerator
+      ? {
+          label: "Moderators",
+          route: "/moderators/author-claim-case-dashboard",
+          icon: "info-circle",
+        }
+      : null,
   ];
 
   const menuTabsUpper = [
@@ -169,7 +183,7 @@ const Navbar = (props) => {
   };
 
   function renderTabs() {
-    let tabs = tabData.map((tab, index) => {
+    let tabs = filterNull(tabData).map((tab, index) => {
       if (tab.icon === "home") {
         return null;
       }
@@ -227,9 +241,6 @@ const Navbar = (props) => {
     }
     if (props.modals.openUploadPaperModal) {
       props.openUploadPaperModal(false);
-      if (document.body.style) {
-        document.body.style.overflow = "scroll";
-      }
     }
     toggleSideMenu();
   }
@@ -310,13 +321,16 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {/* <Search
-          searchClass={styles.mobileSearch}
-          inputClass={styles.inputClass}
-          searchIconClass={styles.searchIconClass}
-          dropdownClass={styles.dropdownClass}
-          afterSearchClick={toggleSideMenu}
-        /> */}
+        {killswitch("algoliaSearch") && <AlgoliaSearch mobile={true} />}
+        {killswitch("elasticSearch") && (
+          <Search
+            searchClass={styles.mobileSearch}
+            inputClass={styles.inputClass}
+            searchIconClass={styles.searchIconClass}
+            dropdownClass={styles.dropdownClass}
+            afterSearchClick={toggleSideMenu}
+          />
+        )}
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
@@ -369,56 +383,6 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  const burgerMenuStyle = {
-    bmBurgerBars: {
-      background: "#373a47",
-    },
-    bmBurgerBarsHover: {
-      background: "#a90000",
-    },
-    bmCrossButton: {
-      height: "26px",
-      width: "26px",
-      color: "#FFF",
-    },
-    bmCross: {
-      background: "#bdc3c7",
-    },
-    bmMenuWrap: {
-      position: "fixed",
-      width: "100%",
-      zIndex: 3147480000,
-      height: "unset",
-    },
-    bmMenu: {
-      background: "rgba(55, 58, 70, 1)",
-      fontSize: "1.15em",
-      padding: "2.5em .6em 32px",
-    },
-    bmMorphShape: {
-      fill: "#373a47",
-    },
-    bmItemList: {
-      color: "#b8b7ad",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-      height: "100%",
-      overflow: "auto",
-      borderTop: "1px solid rgba(255,255,255,.2)",
-      paddingTop: 16,
-    },
-    bmItem: {
-      display: "inline-block",
-      margin: "15px 0 15px 0",
-      color: "#FFF",
-    },
-    bmOverlay: {
-      background: "rgba(0, 0, 0, 0.3)",
-    },
-  };
-
   return (
     <Fragment>
       <Menu
@@ -458,7 +422,8 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {/* <Search /> */}
+        {killswitch("algoliaSearch") && <AlgoliaSearch />}
+        {killswitch("elasticSearch") && <Search />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -579,6 +544,56 @@ const Navbar = (props) => {
   );
 };
 
+const burgerMenuStyle = {
+  bmBurgerBars: {
+    background: "#373a47",
+  },
+  bmBurgerBarsHover: {
+    background: "#a90000",
+  },
+  bmCrossButton: {
+    height: "26px",
+    width: "26px",
+    color: "#FFF",
+  },
+  bmCross: {
+    background: "#bdc3c7",
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    width: "100%",
+    zIndex: 3147480000,
+    height: "unset",
+  },
+  bmMenu: {
+    background: "rgba(55, 58, 70, 1)",
+    fontSize: "1.15em",
+    padding: "2.5em .6em 32px",
+  },
+  bmMorphShape: {
+    fill: "#373a47",
+  },
+  bmItemList: {
+    color: "#b8b7ad",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    height: "100%",
+    overflow: "auto",
+    borderTop: "1px solid rgba(255,255,255,.2)",
+    paddingTop: 16,
+  },
+  bmItem: {
+    display: "inline-block",
+    margin: "15px 0 15px 0",
+    color: "#FFF",
+  },
+  bmOverlay: {
+    background: "rgba(0, 0, 0, 0.3)",
+  },
+};
+
 const styles = StyleSheet.create({
   navbarContainer: {
     width: "100%",
@@ -625,9 +640,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1024px)": {
       display: "flex",
     },
-  },
-  searchIconClass: {
-    top: 7,
   },
   loginContainer: {
     width: "100%",

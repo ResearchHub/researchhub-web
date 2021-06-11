@@ -72,7 +72,6 @@ class BaseModal extends React.Component {
         this.setState({
           ...this.initialState,
         });
-        this.enableParentScroll();
         this.props.closeModal && this.props.closeModal();
       }, 200);
     });
