@@ -210,12 +210,11 @@ class Notification extends React.Component {
             showLoadingAnimation
             customPlaceholder={<NotificationPlaceholder color="#efefef" />}
           >
-            {this.renderNotifications()}
-            {/* {this.props.notifications && this.props.notifications.length ? (
+            {this.props.notifications && this.props.notifications.length ? (
               this.renderNotifications()
             ) : (
               <div className={css(styles.emptyState)}>No Notifications</div>
-            )} */}
+            )}
           </ReactPlaceholder>
         </div>
       </div>

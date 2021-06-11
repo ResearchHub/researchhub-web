@@ -185,12 +185,7 @@ class WithdrawalModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     openWithdrawalModal(false);
-  };
-
-  enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
   };
 
   openTransactionConfirmation = (url) => {

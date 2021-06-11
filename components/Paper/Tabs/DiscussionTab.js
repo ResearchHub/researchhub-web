@@ -171,7 +171,6 @@ const DiscussionTab = (props) => {
     setEditorDormant(true);
     setShowEditor(false);
     setFocus(false);
-    document.body.style.overflow = "scroll";
     props.openAddDiscussionModal(false);
   };
 

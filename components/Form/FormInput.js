@@ -104,6 +104,7 @@ class FormInput extends React.Component {
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
+          autoCapitalize="off"
           autoComplete={autoComplete}
           onSearch={onSearch && onSearch}
         />
