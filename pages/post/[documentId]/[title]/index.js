@@ -105,7 +105,7 @@ const Post = (props) => {
     post.created_by && post.created_by.id === props.auth.user.id;
 
   //useEffect(() => {
-  //  fetch(API.RESEARCHHUB_POSTS({ documentId: query.documentId }))
+  //  fetch(API.RESEARCHHUB_POSTS({ document_id: query.documentId }))
   //    .then(Helpers.checkStatus)
   //    .then(Helpers.parseJSON)
   //    .then((data) => {
@@ -313,9 +313,9 @@ Post.getInitialProps = async (ctx) => {
   // Fetch data from external API
   let props = {};
   let posts = await fetch(
-    API.RESEARCHHUB_POSTS({ documentId: query.documentId })
+    API.RESEARCHHUB_POSTS({ document_id: query.documentId })
   ).then(helpers.parseJSON);
-  const post = posts[0];
+  const post = posts.results[0];
 
   props = { hostname, post };
   return props;
