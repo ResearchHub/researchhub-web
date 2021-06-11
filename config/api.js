@@ -446,11 +446,11 @@ const routes = (BASE_URL) => {
     },
     RH_POST_UPVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}research_hub_posts/${postId}/up_vote`;
+      return `${BASE_URL}researchhub_posts/${postId}/upvote/`;
     },
     RH_POST_DOWNVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}research_hub_posts/${postId}/down_vote`;
+      return `${BASE_URL}researchhub_posts/${postId}/downvote`;
     },
     UPVOTE: (paperId, threadId, commentId, replyId) => {
       let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
