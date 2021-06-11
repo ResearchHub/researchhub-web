@@ -28,12 +28,14 @@ export type UserPostCardProps = {
   renderable_text: string;
   style: StyleSheet;
   title: string;
-  unified_document_id;
+  unified_document_id: number;
+  id: number;
 };
 
 function UserPostCard(props: UserPostCardProps) {
   const {
     unified_document_id: unifiedDocumentId,
+    id,
     created_by: {
       author_profile: { first_name, last_name },
     },
@@ -122,7 +124,15 @@ function UserPostCard(props: UserPostCardProps) {
       [DOWNVOTE]: {
         increment: -1,
         handlePending: postDownvotePending,
-        handleVote: postDownvote,
+        handleVote: async (postId) => {
+          const response = await fetch(
+            API.RH_POST_UPVOTE(postId),
+            API.POST_CONFIG()
+          ).catch((err) => console.log(err));
+
+          console.log(response);
+          return response;
+        },
       },
     };
 
@@ -136,6 +146,7 @@ function UserPostCard(props: UserPostCardProps) {
       // handlePending();
       // await handleVote(paperId, discussionThreadId, commentId);
       // await handleVote(unifiedDocumentId);
+      await handleVote(id);
 
       if (voteState === voteType) {
         /**
