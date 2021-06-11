@@ -15,6 +15,8 @@ import {
 } from "../../../config/constants";
 import { connect } from "react-redux";
 import DiscussionActions from "../../../redux/discussion";
+import API from "../../../config/api";
+// import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
   created_by: any;
@@ -102,11 +104,20 @@ function UserPostCard(props: UserPostCardProps) {
 
   // TODO: briansantoso - integrate with backend when ready
   const createVoteHandler = (voteType) => {
+    // TODO: briansantoso - does voting require redux?
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
         handlePending: postUpvotePending,
-        handleVote: postUpvote,
+        handleVote: async (unifiedDocumentId) => {
+          const response = await fetch(
+            API.RH_POST_UPVOTE(unifiedDocumentId),
+            API.POST_CONFIG()
+          ).catch((err) => console.log(err));
+
+          console.log(response);
+          return response;
+        },
       },
       [DOWNVOTE]: {
         increment: -1,
@@ -120,8 +131,9 @@ function UserPostCard(props: UserPostCardProps) {
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
 
-      // TODO: briansantoso - hook up to backend when ready
-      handlePending();
+      // TODO: briansantoso - does voting require redux?
+
+      // handlePending();
       // await handleVote(paperId, discussionThreadId, commentId);
       await handleVote(unifiedDocumentId);
 
