@@ -109,9 +109,9 @@ function UserPostCard(props: UserPostCardProps) {
       [UPVOTE]: {
         increment: 1,
         handlePending: postUpvotePending,
-        handleVote: async (unifiedDocumentId) => {
+        handleVote: async (postId) => {
           const response = await fetch(
-            API.RH_POST_UPVOTE(unifiedDocumentId),
+            API.RH_POST_UPVOTE(postId),
             API.POST_CONFIG()
           ).catch((err) => console.log(err));
 
@@ -135,7 +135,7 @@ function UserPostCard(props: UserPostCardProps) {
 
       // handlePending();
       // await handleVote(paperId, discussionThreadId, commentId);
-      await handleVote(unifiedDocumentId);
+      // await handleVote(unifiedDocumentId);
 
       if (voteState === voteType) {
         /**
