@@ -444,7 +444,14 @@ const routes = (BASE_URL) => {
 
       return url + "user_vote/";
     },
-
+    RH_POST_UPVOTE: (unifiedDocumentId) => {
+      // New post types, such as Question
+      return `${BASE_URL}research_hub_posts/${unifiedDocumentId}/up_vote`;
+    },
+    RH_POST_DOWNVOTE: (unifiedDocumentId) => {
+      // New post types, such as Question
+      return `${BASE_URL}research_hub_posts/${unifiedDocumentId}/down_vote`;
+    },
     UPVOTE: (paperId, threadId, commentId, replyId) => {
       let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
 
