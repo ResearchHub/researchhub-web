@@ -26,9 +26,9 @@ function Paper(props) {
 Paper.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
   let posts = await fetch(
-    API.RESEARCHHUB_POSTS({ documentId: query.documentId })
+    API.RESEARCHHUB_POSTS({ document_id: query.documentId })
   ).then(helpers.parseJSON);
-  const post = posts[0];
+  const post = posts.results[0];
   const title = formatPaperSlug(post.title);
 
   const redirectPath = `/post/${query.documentId}/${title}`;
