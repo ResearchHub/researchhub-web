@@ -39,8 +39,6 @@ class OnboardForm extends React.Component {
         this.props.author.education.length - 1,
       mainIndex: 0,
     };
-
-    this.buttonRef = React.createRef();
   }
 
   componentDidMount = async () => {
@@ -72,7 +70,6 @@ class OnboardForm extends React.Component {
 
   closeModal = () => {
     this.props.openUserInfoModal(false);
-    document.body.style.overflow = "scroll";
   };
 
   saveAndCloseModal = () => {
@@ -429,7 +426,7 @@ class OnboardForm extends React.Component {
             section={"pictures"}
           />
           <div className={css(styles.buttonContainer)}>
-            <button type="submit" ref={this.buttonRef} />
+            <button type="submit" ref={this.props.submitRef} />
           </div>
         </form>
       </div>

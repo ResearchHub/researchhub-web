@@ -104,7 +104,7 @@ const ActivityList = (props) => {
       .then((nextData) => {
         const { results } = nextData;
         setData({
-          ...data,
+          ...nextData,
           results: [...data.results, ...results],
         });
         setIsLoadingNext(false);
