@@ -21,8 +21,11 @@ import API from "../../../config/api";
 
 export type UserPostCardProps = {
   created_by: any;
+<<<<<<< HEAD
   hubs: any[];
   id: number;
+=======
+>>>>>>> fd43e41d (removed redux)
   preview_img: string;
   renderable_text: string;
   score: number;
@@ -38,8 +41,11 @@ export default function UserPostCard(props: UserPostCardProps) {
       author_profile: { first_name, last_name },
     },
     created_by: { author_profile: author },
+<<<<<<< HEAD
     hubs,
     id,
+=======
+>>>>>>> fd43e41d (removed redux)
     preview_img: previewImg,
     renderable_text: renderableText,
     score: initialScore,
@@ -134,11 +140,29 @@ export default function UserPostCard(props: UserPostCardProps) {
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        getUrl: API.RH_POST_UPVOTE,
+        handlePending: () => {},
+        handleVote: async (postId) => {
+          const response = await fetch(
+            API.RH_POST_UPVOTE(postId),
+            API.POST_CONFIG()
+          ).catch((err) => console.log(err));
+
+          console.log(response);
+          return response;
+        },
       },
       [DOWNVOTE]: {
         increment: -1,
-        getUrl: API.RH_POST_DOWNVOTE,
+        handlePending: () => {},
+        handleVote: async (postId) => {
+          const response = await fetch(
+            API.RH_POST_UPVOTE(postId),
+            API.POST_CONFIG()
+          ).catch((err) => console.log(err));
+
+          console.log(response);
+          return response;
+        },
       },
     };
 
