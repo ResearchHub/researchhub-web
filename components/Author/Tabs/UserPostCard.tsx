@@ -13,17 +13,11 @@ import {
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../../../config/constants";
-import { connect } from "react-redux";
-import DiscussionActions from "../../../redux/discussion";
 import API from "../../../config/api";
 // import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
   created_by: any;
-  postUpvotePending: Function;
-  postUpvote: Function;
-  postDownvotePending: Function;
-  postDownvote: Function;
   preview_img: string;
   renderable_text: string;
   style: StyleSheet;
@@ -32,7 +26,7 @@ export type UserPostCardProps = {
   id: number;
 };
 
-function UserPostCard(props: UserPostCardProps) {
+export default function UserPostCard(props: UserPostCardProps) {
   const {
     unified_document_id: unifiedDocumentId,
     id,
@@ -40,10 +34,6 @@ function UserPostCard(props: UserPostCardProps) {
       author_profile: { first_name, last_name },
     },
     created_by: { author_profile: author },
-    postUpvotePending,
-    postUpvote,
-    postDownvotePending,
-    postDownvote,
     preview_img: previewImg,
     renderable_text: renderableText,
     style,
@@ -110,7 +100,7 @@ function UserPostCard(props: UserPostCardProps) {
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        handlePending: postUpvotePending,
+        handlePending: () => {},
         handleVote: async (postId) => {
           const response = await fetch(
             API.RH_POST_UPVOTE(postId),
@@ -123,7 +113,7 @@ function UserPostCard(props: UserPostCardProps) {
       },
       [DOWNVOTE]: {
         increment: -1,
-        handlePending: postDownvotePending,
+        handlePending: () => {},
         handleVote: async (postId) => {
           const response = await fetch(
             API.RH_POST_UPVOTE(postId),
@@ -244,24 +234,6 @@ function UserPostCard(props: UserPostCardProps) {
     </Ripples>
   );
 }
-
-const mapStateToProps = (state) => ({
-  // discussion: state.discussion,
-  // vote: state.vote,
-  // auth: state.auth,
-});
-
-const mapDispatchToProps = {
-  postUpvotePending: DiscussionActions.postUpvotePending,
-  postUpvote: DiscussionActions.postUpvote,
-  postDownvotePending: DiscussionActions.postDownvotePending,
-  postDownvote: DiscussionActions.postDownvote,
-};
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserPostCard);
 
 /**
  * Styles taken from PaperEntryCard.js
