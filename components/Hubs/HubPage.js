@@ -744,9 +744,7 @@ class HubPage extends React.Component {
                 // selectedTab={router.query.tabName}
                 selectedTab={"all"}
                 dynamic_href={"/[tabName]"}
-                // author={author}
-                // authorId={router.query.authorId}
-                // user={user}
+                linkAs={(href) => `/${href}`}
                 // fetching={fetching}
                 fetching={false}
                 // showTabBar={fetchedUser}

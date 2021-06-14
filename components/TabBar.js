@@ -16,20 +16,15 @@ import colors, { paperTabColors } from "~/config/themes/colors";
 
 const TabBar = (props) => {
   const {
-    /*author,*/
-
     dynamic_href,
     linkAs, // format route according to dynamic_href
-    formatTabs,
     fetching,
     showTabBar,
     selectedTab,
   } = props;
   const [selected, setSelected] = useState(selectedTab);
   const menuRef = useRef();
-  const tabs = props.tabs
-    .map((tab) => formatTabs(tab, props))
-    .filter((tab) => tab && tab);
+  const tabs = props.tabs.filter((tab) => tab && tab);
 
   useEffect(() => {
     menuRef.current && menuRef.current.scrollTo(selected);
@@ -45,7 +40,6 @@ const TabBar = (props) => {
           dynamicHref={dynamic_href}
           linkAs={linkAs}
           fetching={fetching}
-          // authorId={author && author.id}
         />
       );
     }
@@ -102,20 +96,8 @@ export const NavigationArrow = ({ icon, direction, customStyles }) => {
   return <div className={css(classNames)}>{icon}</div>;
 };
 
-// function formatTabs(tab, props) {
-//   if (tab.label === "transactions" || tab.label === "supported papers") {
-//     const { user, author } = props;
-//     if (author.user !== user.id) {
-//       return;
-//     }
-//   }
-
-//   tab.key = `nav-link-${tab.href}`;
-//   return tab;
-// }
-
 const Tab = (props) => {
-  const { tab, selected, dynamicHref, linkAs, fetching /*authorId*/ } = props;
+  const { tab, selected, dynamicHref, linkAs, fetching } = props;
   const { href, label, showCount, count } = tab;
   let isSelected = false;
   let classNames = [styles.tab];
@@ -128,7 +110,6 @@ const Tab = (props) => {
   return (
     <Link
       href={dynamicHref}
-      // as={`/user/${authorId}/${href}`}
       as={linkAs(href)}
       shallow={true}
       replace={true}
