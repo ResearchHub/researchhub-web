@@ -15,7 +15,7 @@ function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
       .then(Helpers.parseJSON)
       .then((data) => {
         try {
-          console.log(data.results);
+          console.log(data.results, userID);
           setPosts(data.results);
           setIsFetching(false);
         } catch (error) {
