@@ -22,6 +22,7 @@ import MobileFeedTabs from "../Home/MobileFeedTabs";
 import Button from "../Form/Button";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import ActivityList from "~/components/Activity/ActivityList";
+import TabBar from "~/components/TabBar";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -43,6 +44,27 @@ import { filterOptions, scopeOptions } from "~/config/utils/options";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
+
+const tabs = [
+  {
+    href: "all",
+    label: "all",
+    name: "All",
+    showCount: false,
+  },
+  {
+    href: "papers", // TODO: briansantoso - update route name
+    label: "papers",
+    name: "Papers",
+    showCount: false,
+  },
+  {
+    href: "questions",
+    label: "questions", // TODO: briansantoso - update route name
+    name: "Questions",
+    showCount: false,
+  },
+];
 
 class HubPage extends React.Component {
   constructor(props) {
@@ -716,6 +738,19 @@ class HubPage extends React.Component {
                     onUnsubscribe={this.onUnsubscribe}
                   />
                 }
+              />
+              <TabBar
+                tabs={tabs}
+                // selectedTab={router.query.tabName}
+                selectedTab={"all"}
+                dynamic_href={"/[tabName]"}
+                // author={author}
+                // authorId={router.query.authorId}
+                // user={user}
+                // fetching={fetching}
+                fetching={false}
+                // showTabBar={fetchedUser}
+                showTabBar={true}
               />
               <div>
                 {(this.state.papers.length > 0 && sampleFeed) ||

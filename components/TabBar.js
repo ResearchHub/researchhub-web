@@ -15,7 +15,16 @@ import icons from "~/config/themes/icons";
 import colors, { paperTabColors } from "~/config/themes/colors";
 
 const TabBar = (props) => {
-  const { dynamic_href, fetching, showTabBar, selectedTab } = props;
+  const {
+    /*author,*/
+
+    dynamic_href,
+    linkAs, // format route according to dynamic_href
+    formatTabs,
+    fetching,
+    showTabBar,
+    selectedTab,
+  } = props;
   const [selected, setSelected] = useState(selectedTab);
   const menuRef = useRef();
   const tabs = props.tabs
@@ -34,8 +43,9 @@ const TabBar = (props) => {
           key={tab.href}
           selected={selectedTab}
           dynamicHref={dynamic_href}
+          linkAs={linkAs}
           fetching={fetching}
-          authorId={props.author.id}
+          // authorId={author && author.id}
         />
       );
     }
@@ -92,20 +102,20 @@ export const NavigationArrow = ({ icon, direction, customStyles }) => {
   return <div className={css(classNames)}>{icon}</div>;
 };
 
-function formatTabs(tab, props) {
-  if (tab.label === "transactions" || tab.label === "supported papers") {
-    const { user, author } = props;
-    if (author.user !== user.id) {
-      return;
-    }
-  }
+// function formatTabs(tab, props) {
+//   if (tab.label === "transactions" || tab.label === "supported papers") {
+//     const { user, author } = props;
+//     if (author.user !== user.id) {
+//       return;
+//     }
+//   }
 
-  tab.key = `nav-link-${tab.href}`;
-  return tab;
-}
+//   tab.key = `nav-link-${tab.href}`;
+//   return tab;
+// }
 
 const Tab = (props) => {
-  const { tab, selected, dynamicHref, fetching, authorId } = props;
+  const { tab, selected, dynamicHref, linkAs, fetching /*authorId*/ } = props;
   const { href, label, showCount, count } = tab;
   let isSelected = false;
   let classNames = [styles.tab];
@@ -118,7 +128,8 @@ const Tab = (props) => {
   return (
     <Link
       href={dynamicHref}
-      as={`/user/${authorId}/${href}`}
+      // as={`/user/${authorId}/${href}`}
+      as={linkAs(href)}
       shallow={true}
       replace={true}
       scroll={false}

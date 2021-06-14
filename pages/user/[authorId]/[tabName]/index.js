@@ -986,9 +986,22 @@ function AuthorPage(props) {
         tabs={tabs}
         selectedTab={router.query.tabName}
         dynamic_href={"/user/[authorId]/[tabName]"}
-        author={author}
-        authorId={router.query.authorId}
-        user={user}
+        linkAs={(href) => `/user/${author.id}/${href}`}
+        formatTabs={(tab) => {
+          if (
+            tab.label === "transactions" ||
+            tab.label === "supported papers"
+          ) {
+            if (author.user !== user.id) {
+              return;
+            }
+          }
+          tab.key = `nav-link-${tab.href}`;
+          return tab;
+        }}
+        // author={author}
+        // authorId={router.query.authorId}
+        // user={user}
         fetching={fetching}
         showTabBar={fetchedUser}
       />
