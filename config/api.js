@@ -461,7 +461,7 @@ const routes = (BASE_URL) => {
     },
     RH_POST_DOWNVOTE: (postId) => {
       // New post types, such as Question
-      return `${BASE_URL}researchhub_posts/${postId}/downvote`;
+      return `${BASE_URL}researchhub_posts/${postId}/downvote/`;
     },
     UPVOTE: (paperId, threadId, commentId, replyId) => {
       let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
