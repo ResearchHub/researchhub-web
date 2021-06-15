@@ -7,6 +7,20 @@ export const DOWNVOTE = "downvote";
 export const UPVOTE_ENUM = 1;
 export const DOWNVOTE_ENUM = 2;
 
+export const userVoteToConstant = (userVote) => {
+  if (userVote) {
+    switch (userVote.vote_type) {
+      case UPVOTE_ENUM:
+        return UPVOTE;
+      case DOWNVOTE_ENUM:
+        return DOWNVOTE;
+      default:
+        return null;
+    }
+  }
+  return null;
+};
+
 export const DIGEST_FREQUENCY = {
   Daily: 1440,
   "Every 3 Hours": 180,
