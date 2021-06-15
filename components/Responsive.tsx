@@ -1,13 +1,13 @@
 import { css, StyleSheet } from "aphrodite";
 
 export type ResponsiveProps = {
-  desktopOnly: boolean;
+  onDesktop: boolean;
   children?: any;
 };
 
-export default function Responsive({ desktopOnly, children }: ResponsiveProps) {
+export default function Responsive({ onDesktop, children }: ResponsiveProps) {
   return (
-    <div className={css(desktopOnly ? styles.desktop : styles.mobile)}>
+    <div className={css(onDesktop ? styles.desktop : styles.mobile)}>
       {children}
     </div>
   );

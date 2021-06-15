@@ -19,7 +19,7 @@ export default function ResponsvePostVoteWidget({
   voteState,
 }: ResponsvePostVoteWidgetProps) {
   return (
-    <Responsive desktopOnly={onDesktop}>
+    <Responsive onDesktop={onDesktop}>
       <div className={css(styles.column)}>
         <span
           className={css(styles.voting)}
