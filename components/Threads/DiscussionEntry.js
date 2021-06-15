@@ -775,4 +775,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InlineCommentUnduxStore.withStore(DiscussionEntry));
+)(DiscussionEntry);

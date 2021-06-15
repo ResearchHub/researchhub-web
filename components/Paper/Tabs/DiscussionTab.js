@@ -45,8 +45,11 @@ const DiscussionTab = (props) => {
     setCount,
     discussionRef,
     getThreads,
+    getPostThreads,
     paperId,
     isCollapsible,
+    post,
+    postId,
   } = props;
 
   // TODO: move to config
@@ -278,19 +281,35 @@ const DiscussionTab = (props) => {
       setFetching(true);
     }
     setLoading(true);
-    const currentPaper = props.paper;
-    const res = await getThreads({
-      paperId: paperId,
-      paper: currentPaper,
-      filter,
-      loadMore,
-      twitter: showTwitterComments,
-    });
-    const threads = res.payload.threads;
-    setFetching(false);
-    setLoading(false);
-    setThreads(threads);
-    setFormattedThreads(formatThreads(threads, basePath));
+    if (paperId) {
+      const currentPaper = props.paper;
+      const res = await getThreads({
+        paperId: paperId,
+        paper: currentPaper,
+        filter,
+        loadMore,
+        twitter: showTwitterComments,
+      });
+      const threads = res.payload.threads;
+      setFetching(false);
+      setLoading(false);
+      setThreads(threads);
+      setFormattedThreads(formatThreads(threads, basePath));
+    } else {
+      const currentPost = post;
+      const res = await getPostThreads({
+        postId: postId,
+        post: currentPost,
+        filter,
+        loadMore,
+        twitter: showTwitterComments,
+      });
+      const threads = res.payload.threads;
+      setFetching(false);
+      setLoading(false);
+      setThreads(threads);
+      setFormattedThreads(formatThreads(threads, basePath));
+    }
   };
 
   const renderAddDiscussion = () => {
@@ -1038,6 +1057,7 @@ const mapDispatchToProps = {
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
   getThreads: PaperActions.getThreads,
+  getPostThreads: PaperActions.getPostThreads,
 };
 
 export default connect(
