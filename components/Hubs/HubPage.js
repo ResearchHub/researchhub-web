@@ -53,13 +53,13 @@ const tabs = [
     showCount: false,
   },
   {
-    href: "papers", // TODO: briansantoso - update route name
+    href: "all", // TODO: briansantoso - update route name
     label: "papers",
     name: "Papers",
     showCount: false,
   },
   {
-    href: "questions",
+    href: "all",
     label: "questions", // TODO: briansantoso - update route name
     name: "Questions",
     showCount: false,
@@ -741,14 +741,15 @@ class HubPage extends React.Component {
               />
               <TabBar
                 tabs={tabs}
-                // selectedTab={router.query.tabName}
-                selectedTab={"all"}
+                // selectedTab={Router.query.tabName}
+                selectedTab={"all"} // TODO - change based on query
                 dynamic_href={"/[tabName]"}
                 linkAs={(href) => `/${href}`}
-                // fetching={fetching}
                 fetching={false}
-                // showTabBar={fetchedUser}
                 showTabBar={true}
+                customStyle={styles.tabBar}
+                customTabStyle={styles.tab}
+                fancyScroll={false}
               />
               <div>
                 {(this.state.papers.length > 0 && sampleFeed) ||
@@ -848,6 +849,14 @@ class HubPage extends React.Component {
 }
 
 var styles = StyleSheet.create({
+  tabBar: {
+    display: "flex",
+    justifyContent: "flex-start",
+    background: "rgba(0, 0, 0, 0)",
+  },
+  tab: {
+    padding: "0.5rem 1rem",
+  },
   column: {
     display: "flex",
     flexDirection: "column",

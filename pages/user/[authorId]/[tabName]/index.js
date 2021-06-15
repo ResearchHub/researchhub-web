@@ -989,6 +989,7 @@ function AuthorPage(props) {
         linkAs={(href) => `/user/${author.id}/${href}`}
         fetching={fetching}
         showTabBar={fetchedUser}
+        fancyScroll={true}
       />
       <div className={css(styles.contentContainer)}>{tabContents}</div>
       <ShareModal

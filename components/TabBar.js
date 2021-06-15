@@ -21,6 +21,9 @@ const TabBar = (props) => {
     fetching,
     showTabBar,
     selectedTab,
+    customStyle,
+    customTabStyle,
+    fancyScroll,
   } = props;
   const [selected, setSelected] = useState(selectedTab);
   const menuRef = useRef();
@@ -40,6 +43,7 @@ const TabBar = (props) => {
           dynamicHref={dynamic_href}
           linkAs={linkAs}
           fetching={fetching}
+          customTabStyle={customTabStyle}
         />
       );
     }
@@ -50,32 +54,39 @@ const TabBar = (props) => {
   };
 
   return (
-    <div className={css(styles.container)}>
-      <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <ReactPlaceholder
-          ready={showTabBar}
-          showLoadingAnimation
-          customPlaceholder={<TabBarPlaceholder color={"#EFEFEF"} />}
-        >
-          <ScrollMenu
-            ref={menuRef}
-            data={menu}
-            arrowLeft={
-              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
-            }
-            arrowRight={
-              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
-            }
-            menuStyle={styles.tabContainer}
-            itemStyle={{ border: "none", highlight: "none", outline: "none" }}
-            hideSingleArrow={true}
-            onSelect={onSelect}
-            wheel={false}
-            selected={"nav-link-discussions"}
-            scrollToSelected={true}
-          />
-        </ReactPlaceholder>
-      </ComponentWrapper>
+    <div className={css(styles.container, customStyle)}>
+      {fancyScroll ? (
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <ReactPlaceholder
+            ready={showTabBar}
+            showLoadingAnimation
+            customPlaceholder={<TabBarPlaceholder color={"#EFEFEF"} />}
+          >
+            <ScrollMenu
+              ref={menuRef}
+              data={menu}
+              arrowLeft={
+                <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+              }
+              arrowRight={
+                <NavigationArrow
+                  icon={icons.chevronRight}
+                  direction={"right"}
+                />
+              }
+              menuStyle={styles.tabContainer}
+              itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+              hideSingleArrow={true}
+              onSelect={onSelect}
+              wheel={false}
+              selected={"nav-link-discussions"}
+              scrollToSelected={true}
+            />
+          </ReactPlaceholder>
+        </ComponentWrapper>
+      ) : (
+        menu
+      )}
     </div>
   );
 };
@@ -97,12 +108,20 @@ export const NavigationArrow = ({ icon, direction, customStyles }) => {
 };
 
 const Tab = (props) => {
-  const { tab, selected, dynamicHref, linkAs, fetching } = props;
+  const {
+    tab,
+    selected,
+    dynamicHref,
+    linkAs,
+    fetching,
+    customTabStyle,
+  } = props;
   const { href, label, showCount, count } = tab;
   let isSelected = false;
-  let classNames = [styles.tab];
+  let classNames = [styles.tab, customTabStyle];
 
-  if (selected) {
+  console.log(selected, tab.label);
+  if (selected === tab.label) {
     isSelected = true;
     classNames.push(styles.selected);
   }
@@ -168,6 +187,11 @@ const UIStyling = (props) => {
 };
 
 const styles = StyleSheet.create({
+  unselected: {
+    border: "none",
+    highlight: "none",
+    outline: "none",
+  },
   componentWrapper: {
     display: "flex",
     justifyContent: "center",
