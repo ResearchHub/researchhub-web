@@ -37,7 +37,7 @@ import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
 
 // Config
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import {
   absoluteUrl,
   getNestedValue,
@@ -91,11 +91,12 @@ const Post = (props) => {
 
   const [post, setPost] = useState(props.post || {});
 
-  const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+  // const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
-  const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(props.paper && props.paper.userVote)
-  );
+  // const [selectedVoteType, setSelectedVoteType] = useState(
+  //   getVoteType(props.paper && props.paper.userVote)
+  // );
+
   const [discussionCount, setCount] = useState(
     calculateCommentCount(props.paper)
   );
@@ -104,14 +105,14 @@ const Post = (props) => {
   const isSubmitter =
     post.created_by && post.created_by.id === props.auth.user.id;
 
-  //useEffect(() => {
+  // useEffect(() => {
   //  fetch(API.RESEARCHHUB_POSTS({ document_id: query.documentId }))
   //    .then(Helpers.checkStatus)
   //    .then(Helpers.parseJSON)
   //    .then((data) => {
   //      setPost(data);
   //    });
-  //}, [props.post]);
+  // }, [props.post]);
 
   useEffect(() => {
     setPost(props.post);
@@ -121,52 +122,17 @@ const Post = (props) => {
     setCount(calculateCommentCount(post));
   }, [post.discussionSource]);
 
-  async function upvote() {
-    dispatch(VoteActions.postUpvotePending());
-    await dispatch(VoteActions.postUpvote(paperId));
-    updateWidgetUI();
-  }
+  // async function upvote() {
+  //   dispatch(VoteActions.postUpvotePending());
+  //   await dispatch(VoteActions.postUpvote(paperId));
+  //   updateWidgetUI();
+  // }
 
-  async function downvote() {
-    dispatch(VoteActions.postDownvotePending());
-    await dispatch(VoteActions.postDownvote(paperId));
-    updateWidgetUI();
-  }
-
-  function updateWidgetUI() {
-    const voteResult = store.getState().vote;
-    const success = voteResult.success;
-    const vote = getNestedValue(voteResult, ["vote"], false);
-
-    if (success) {
-      const voteType = vote.voteType;
-      if (voteType === UPVOTE) {
-        setScore(selectedVoteType === DOWNVOTE ? score + 2 : score + 1);
-        if (paper.promoted !== false) {
-          setPaper({
-            ...paper,
-            promoted:
-              selectedVoteType === UPVOTE
-                ? paper.promoted + 2
-                : paper.promoted + 1,
-          });
-        }
-        setSelectedVoteType(UPVOTE);
-      } else if (voteType === DOWNVOTE) {
-        setScore(selectedVoteType === UPVOTE ? score - 2 : score - 1);
-        if (paper.promoted !== false) {
-          setPaper({
-            ...paper,
-            promoted:
-              selectedVoteType === UPVOTE
-                ? paper.promoted - 2
-                : paper.promoted - 1,
-          });
-        }
-        setSelectedVoteType(DOWNVOTE);
-      }
-    }
-  }
+  // async function downvote() {
+  //   dispatch(VoteActions.postDownvotePending());
+  //   await dispatch(VoteActions.postDownvote(paperId));
+  //   updateWidgetUI();
+  // }
 
   const restorePaper = () => {
     setPaper({ ...paper, is_removed: false });
@@ -269,13 +235,7 @@ const Post = (props) => {
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
-              <PostPageCard
-                post={post}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selectedVoteType={selectedVoteType}
-              />
+              <PostPageCard post={post} />
             </div>
             <a name="discussion">
               <div className={css(styles.space)}>
@@ -318,6 +278,7 @@ Post.getInitialProps = async (ctx) => {
   const post = posts.results[0];
 
   props = { hostname, post };
+
   return props;
 };
 
