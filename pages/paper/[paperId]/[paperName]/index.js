@@ -535,6 +535,7 @@ const Paper = (props) => {
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={props.hostname}
+                    documentType={"paper"}
                     paperId={paperId}
                     paperState={paper}
                     calculatedCount={discussionCount}

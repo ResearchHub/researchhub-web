@@ -241,6 +241,7 @@ const Post = (props) => {
               <div className={css(styles.space)}>
                 <DiscussionTab
                   hostname={props.hostname}
+                  documentType={"post"}
                   post={post}
                   postId={post.id}
                   calculatedCount={discussionCount}
