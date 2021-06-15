@@ -247,15 +247,24 @@ const routes = (BASE_URL) => {
       isRemoved,
       page,
       paperId,
+      postId,
       progress,
       source,
       targetId,
       twitter,
     }) => {
-      let url =
-        targetId != null
-          ? BASE_URL + `paper/${paperId}/discussion/${targetId}/`
-          : BASE_URL + `paper/${paperId}/discussion/`;
+      let url;
+      if (postId != null) {
+        url =
+          targetId != null
+            ? BASE_URL + `post/${postId}/discussion/${targetId}/`
+            : BASE_URL + `post/${postId}/discussion/`;
+      } else {
+        url =
+          targetId != null
+            ? BASE_URL + `paper/${paperId}/discussion/${targetId}/`
+            : BASE_URL + `paper/${paperId}/discussion/`;
+      }
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
