@@ -1,5 +1,7 @@
 import AuthorAvatar from "../../AuthorAvatar";
 import DesktopOnly from "../../DesktopOnly";
+import HubDropDown from "../../Hubs/HubDropDown";
+import HubTag from "../../Hubs/HubTag";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
 import React, { Fragment, SyntheticEvent, useState } from "react";
@@ -18,16 +20,34 @@ import API from "../../../config/api";
 
 export type UserPostCardProps = {
   created_by: any;
+  hubs: any[];
   preview_img: string;
   renderable_text: string;
+  score: number;
   style: StyleSheet;
   title: string;
   unified_document_id: number;
+  user_vote: any; // TODO: briansantoso - define type for user_vote
   id: number;
+};
+
+const userVoteToConstant = (userVote: any): string | null => {
+  if (userVote) {
+    switch (userVote.vote_type) {
+      case UPVOTE_ENUM:
+        return UPVOTE;
+      case DOWNVOTE_ENUM:
+        return DOWNVOTE;
+      default:
+        return null;
+    }
+  }
+  return null;
 };
 
 export default function UserPostCard(props: UserPostCardProps) {
   const {
+    hubs,
     unified_document_id: unifiedDocumentId,
     id,
     created_by: {
@@ -36,16 +56,17 @@ export default function UserPostCard(props: UserPostCardProps) {
     created_by: { author_profile: author },
     preview_img: previewImg,
     renderable_text: renderableText,
+    score: initialScore,
     style,
     title,
+    user_vote: userVote,
   } = props;
 
   const [voteState, setVoteState] = useState<string | null>(
-    null /* TODO: briansantoso - get user's vote on post */
+    userVoteToConstant(userVote)
   );
-  const [score, setScore] = useState<number>(
-    0 /* TODO: briansantoso - get post vote count*/
-  );
+  const [score, setScore] = useState<number>(initialScore);
+  const [isHubsOpen, setIsHubsOpen] = useState(false);
 
   const creatorName = first_name + " " + last_name;
   const slug = title.toLowerCase().replace(/\s/g, "-");
@@ -86,12 +107,40 @@ export default function UserPostCard(props: UserPostCardProps) {
   const creatorTag = (
     <div className={css(styles.postCreatedBy)}>
       <AuthorAvatar author={author} size={28} border="2px solid #F1F1F1" />
-      <span className={css(styles.creatorName)}>{creatorName}</span>
+      {/* <span className={css(styles.creatorName)}>{creatorName}</span> */}
     </div>
   );
 
   const summary = (
     <div className={css(styles.summary) + " clamp2"}>{renderableText}</div>
+  );
+
+  const hubTags = (
+    <div className={css(styles.tags)}>
+      {hubs.map(
+        (tag, index) =>
+          tag &&
+          index < 3 && (
+            // @ts-ignore
+            <HubTag
+              key={`hub_${index}`}
+              tag={tag}
+              last={index === hubs.length - 1}
+              labelStyle={
+                hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+              }
+            />
+          )
+      )}
+      {hubs.length > 3 && (
+        <HubDropDown
+          hubs={hubs}
+          labelStyle={styles.hubLabel}
+          isOpen={isHubsOpen}
+          setIsOpen={setIsHubsOpen}
+        />
+      )}
+    </div>
   );
 
   // TODO: briansantoso - integrate with backend when ready
@@ -116,7 +165,7 @@ export default function UserPostCard(props: UserPostCardProps) {
         handlePending: () => {},
         handleVote: async (postId) => {
           const response = await fetch(
-            API.RH_POST_UPVOTE(postId),
+            API.RH_POST_DOWNVOTE(postId),
             API.POST_CONFIG()
           ).catch((err) => console.log(err));
 
@@ -130,13 +179,6 @@ export default function UserPostCard(props: UserPostCardProps) {
 
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
-
-      // TODO: briansantoso - does voting require redux?
-
-      // handlePending();
-      // await handleVote(paperId, discussionThreadId, commentId);
-      // await handleVote(unifiedDocumentId);
-      await handleVote(id);
 
       if (voteState === voteType) {
         /**
@@ -158,6 +200,8 @@ export default function UserPostCard(props: UserPostCardProps) {
           setScore(score + increment);
         }
       }
+
+      await handleVote(id);
     };
   };
 
@@ -215,12 +259,14 @@ export default function UserPostCard(props: UserPostCardProps) {
             <DesktopOnly>
               <div className={css(styles.row)}>
                 {/* TODO: briansantoso - Hub tags go here */}
+                {hubTags}
               </div>
             </DesktopOnly>
           </div>
           <MobileOnly>
             <div className={css(styles.bottomBar, styles.mobileHubTags)}>
               {/* TODO: briansantoso - Hub tags go here */}
+              {hubTags}
             </div>
           </MobileOnly>
         </div>
@@ -400,6 +446,35 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       height: "unset",
       alignItems: "flex-start",
+    },
+  },
+  hubLabel: {
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+      flexWrap: "unset",
+    },
+  },
+  smallerHubLabel: {
+    maxWidth: 150,
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+      flexWrap: "unset",
+    },
+  },
+  tags: {
+    display: "flex",
+    justifyContent: "flex-end",
+    alignItems: "center",
+    flexWrap: "wrap-reverse",
+    marginLeft: "auto",
+    width: "max-content",
+    "@media only screen and (max-width: 970px)": {
+      flexWrap: "wrap",
+    },
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+      padding: 0,
+      width: "fit-content",
     },
   },
 });
