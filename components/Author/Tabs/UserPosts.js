@@ -29,7 +29,7 @@ function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
 }
 
 function UserPosts(props) {
-  const { user, fetching } = props;
+  const { author, user, fetching } = props;
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
   const postCards = posts.map((post, index) => (
@@ -39,7 +39,8 @@ function UserPosts(props) {
       style={styles.customUserPostCard}
     />
   ));
-  useEffectFetchUserPosts({ setIsFetching, setPosts, userID: user.id });
+
+  useEffectFetchUserPosts({ setIsFetching, setPosts, userID: author.user });
   return (
     <ReactPlaceholder
       ready={!isFetching}
