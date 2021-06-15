@@ -13,23 +13,37 @@ import {
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../../../config/constants";
+import { connect } from "react-redux";
+import DiscussionActions from "../../../redux/discussion";
+import API from "../../../config/api";
+// import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
   created_by: any;
+  postUpvotePending: Function;
+  postUpvote: Function;
+  postDownvotePending: Function;
+  postDownvote: Function;
   preview_img: string;
   renderable_text: string;
   style: StyleSheet;
   title: string;
-  unified_document_id;
+  unified_document_id: number;
+  id: number;
 };
 
-export default function UserPostCard(props: UserPostCardProps) {
+function UserPostCard(props: UserPostCardProps) {
   const {
     unified_document_id: unifiedDocumentId,
+    id,
     created_by: {
       author_profile: { first_name, last_name },
     },
     created_by: { author_profile: author },
+    postUpvotePending,
+    postUpvote,
+    postDownvotePending,
+    postDownvote,
     preview_img: previewImg,
     renderable_text: renderableText,
     style,
@@ -92,9 +106,48 @@ export default function UserPostCard(props: UserPostCardProps) {
 
   // TODO: briansantoso - integrate with backend when ready
   const createVoteHandler = (voteType) => {
-    const increment = { [UPVOTE]: 1, [DOWNVOTE]: -1 }[voteType];
-    return (e: SyntheticEvent) => {
+    // TODO: briansantoso - does voting require redux?
+    const voteStrategies = {
+      [UPVOTE]: {
+        increment: 1,
+        handlePending: postUpvotePending,
+        handleVote: async (postId) => {
+          const response = await fetch(
+            API.RH_POST_UPVOTE(postId),
+            API.POST_CONFIG()
+          ).catch((err) => console.log(err));
+
+          console.log(response);
+          return response;
+        },
+      },
+      [DOWNVOTE]: {
+        increment: -1,
+        handlePending: postDownvotePending,
+        handleVote: async (postId) => {
+          const response = await fetch(
+            API.RH_POST_UPVOTE(postId),
+            API.POST_CONFIG()
+          ).catch((err) => console.log(err));
+
+          console.log(response);
+          return response;
+        },
+      },
+    };
+
+    const { increment, handlePending, handleVote } = voteStrategies[voteType];
+
+    return async (e: SyntheticEvent) => {
       e.stopPropagation();
+
+      // TODO: briansantoso - does voting require redux?
+
+      // handlePending();
+      // await handleVote(paperId, discussionThreadId, commentId);
+      // await handleVote(unifiedDocumentId);
+      await handleVote(id);
+
       if (voteState === voteType) {
         /**
          * Deselect
@@ -185,6 +238,24 @@ export default function UserPostCard(props: UserPostCardProps) {
     </Ripples>
   );
 }
+
+const mapStateToProps = (state) => ({
+  // discussion: state.discussion,
+  // vote: state.vote,
+  // auth: state.auth,
+});
+
+const mapDispatchToProps = {
+  postUpvotePending: DiscussionActions.postUpvotePending,
+  postUpvote: DiscussionActions.postUpvote,
+  postDownvotePending: DiscussionActions.postDownvotePending,
+  postDownvote: DiscussionActions.postDownvote,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserPostCard);
 
 /**
  * Styles taken from PaperEntryCard.js
