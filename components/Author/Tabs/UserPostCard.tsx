@@ -5,7 +5,7 @@ import HubTag from "../../Hubs/HubTag";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
 import React, { Fragment, SyntheticEvent, useState } from "react";
-import ResponsvePostVoteWidget from "./ResponsivePostVoteWidget";
+import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import colors from "../../../config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
@@ -21,6 +21,7 @@ import API from "../../../config/api";
 export type UserPostCardProps = {
   created_by: any;
   hubs: any[];
+  id: number;
   preview_img: string;
   renderable_text: string;
   score: number;
@@ -28,7 +29,6 @@ export type UserPostCardProps = {
   title: string;
   unified_document_id: number;
   user_vote: any; // TODO: briansantoso - define type for user_vote
-  id: number;
 };
 
 const userVoteToConstant = (userVote: any): string | null => {
@@ -47,18 +47,18 @@ const userVoteToConstant = (userVote: any): string | null => {
 
 export default function UserPostCard(props: UserPostCardProps) {
   const {
-    hubs,
-    unified_document_id: unifiedDocumentId,
-    id,
     created_by: {
       author_profile: { first_name, last_name },
     },
     created_by: { author_profile: author },
+    hubs,
+    id,
     preview_img: previewImg,
     renderable_text: renderableText,
     score: initialScore,
     style,
     title,
+    unified_document_id: unifiedDocumentId,
     user_vote: userVote,
   } = props;
 
@@ -143,39 +143,28 @@ export default function UserPostCard(props: UserPostCardProps) {
     </div>
   );
 
-  // TODO: briansantoso - integrate with backend when ready
   const createVoteHandler = (voteType) => {
-    // TODO: briansantoso - does voting require redux?
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        handlePending: () => {},
-        handleVote: async (postId) => {
-          const response = await fetch(
-            API.RH_POST_UPVOTE(postId),
-            API.POST_CONFIG()
-          ).catch((err) => console.log(err));
-
-          console.log(response);
-          return response;
-        },
+        getUrl: API.RH_POST_UPVOTE,
       },
       [DOWNVOTE]: {
         increment: -1,
-        handlePending: () => {},
-        handleVote: async (postId) => {
-          const response = await fetch(
-            API.RH_POST_DOWNVOTE(postId),
-            API.POST_CONFIG()
-          ).catch((err) => console.log(err));
-
-          console.log(response);
-          return response;
-        },
+        getUrl: API.RH_POST_DOWNVOTE,
       },
     };
 
-    const { increment, handlePending, handleVote } = voteStrategies[voteType];
+    const { increment, getUrl } = voteStrategies[voteType];
+
+    const handleVote = async (postId) => {
+      const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
+        (err) => console.log(err)
+      );
+
+      console.log(response);
+      return response;
+    };
 
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
@@ -206,7 +195,7 @@ export default function UserPostCard(props: UserPostCardProps) {
   };
 
   const desktopVoteWidget = (
-    <ResponsvePostVoteWidget
+    <ResponsivePostVoteWidget
       onDesktop
       onDownvote={createVoteHandler(DOWNVOTE)}
       onUpvote={createVoteHandler(UPVOTE)}
@@ -216,7 +205,7 @@ export default function UserPostCard(props: UserPostCardProps) {
   );
 
   const mobileVoteWidget = (
-    <ResponsvePostVoteWidget
+    <ResponsivePostVoteWidget
       onDesktop={false}
       onDownvote={createVoteHandler(DOWNVOTE)}
       onUpvote={createVoteHandler(UPVOTE)}
