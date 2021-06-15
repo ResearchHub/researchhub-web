@@ -152,6 +152,50 @@ export const PaperActions = {
         });
     };
   },
+  getPostThreads: ({
+    postId,
+    post,
+    filter,
+    twitter,
+    page,
+    loadMore = false,
+  }) => {
+    if (post === null || post === undefined) {
+      return;
+    }
+
+    return (dispatch, getState) => {
+      let endpoint = loadMore
+        ? post.nextDiscussion
+        : API.DISCUSSION({
+            postId,
+            filter,
+            page: 1,
+            progress: false,
+            twitter,
+          });
+      return fetch(endpoint, API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          const currPost = getState().post;
+
+          let threads = [...res.results];
+          if (loadMore) {
+            threads = [...currPost.threads, ...res.results];
+          }
+
+          return dispatch({
+            type: types.GET_THREADS,
+            payload: {
+              threads: threads,
+              threadCount: res.count,
+              nextDiscussion: res.next,
+            },
+          });
+        });
+    };
+  },
   getUserVote: (paperId) => {
     return async (dispatch) => {
       const response = await fetch(
