@@ -14,6 +14,7 @@ import {
   DOWNVOTE,
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
+  userVoteToConstant,
 } from "../../../config/constants";
 import API from "../../../config/api";
 // import { handleCatch } from "../../../config/utils";
@@ -29,20 +30,6 @@ export type UserPostCardProps = {
   title: string;
   unified_document_id: number;
   user_vote: any; // TODO: briansantoso - define type for user_vote
-};
-
-const userVoteToConstant = (userVote: any): string | null => {
-  if (userVote) {
-    switch (userVote.vote_type) {
-      case UPVOTE_ENUM:
-        return UPVOTE;
-      case DOWNVOTE_ENUM:
-        return DOWNVOTE;
-      default:
-        return null;
-    }
-  }
-  return null;
 };
 
 export default function UserPostCard(props: UserPostCardProps) {
