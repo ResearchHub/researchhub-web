@@ -123,7 +123,6 @@ const routes = (BASE_URL) => {
         },
       };
       url = prepURL(url, params);
-      console.log("URL", url);
       return url;
     },
     SIGNOUT: BASE_URL + "auth/logout/",
