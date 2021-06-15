@@ -17,41 +17,38 @@ import {
   userVoteToConstant,
 } from "../../../config/constants";
 import API from "../../../config/api";
+import { connect } from "react-redux";
 // import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
   created_by: any;
-<<<<<<< HEAD
   hubs: any[];
   id: number;
-=======
->>>>>>> fd43e41d (removed redux)
   preview_img: string;
   renderable_text: string;
   score: number;
   style: StyleSheet;
   title: string;
   unified_document_id: number;
+  user: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
 };
 
-export default function UserPostCard(props: UserPostCardProps) {
+function UserPostCard(props: UserPostCardProps) {
   const {
     created_by: {
       author_profile: { first_name, last_name },
     },
     created_by: { author_profile: author },
-<<<<<<< HEAD
     hubs,
     id,
-=======
->>>>>>> fd43e41d (removed redux)
     preview_img: previewImg,
     renderable_text: renderableText,
     score: initialScore,
     style,
     title,
     unified_document_id: unifiedDocumentId,
+    user,
     user_vote: userVote,
   } = props;
 
@@ -140,29 +137,11 @@ export default function UserPostCard(props: UserPostCardProps) {
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        handlePending: () => {},
-        handleVote: async (postId) => {
-          const response = await fetch(
-            API.RH_POST_UPVOTE(postId),
-            API.POST_CONFIG()
-          ).catch((err) => console.log(err));
-
-          console.log(response);
-          return response;
-        },
+        getUrl: API.RH_POST_UPVOTE,
       },
       [DOWNVOTE]: {
         increment: -1,
-        handlePending: () => {},
-        handleVote: async (postId) => {
-          const response = await fetch(
-            API.RH_POST_UPVOTE(postId),
-            API.POST_CONFIG()
-          ).catch((err) => console.log(err));
-
-          console.log(response);
-          return response;
-        },
+        getUrl: API.RH_POST_DOWNVOTE,
       },
     };
 
@@ -179,6 +158,12 @@ export default function UserPostCard(props: UserPostCardProps) {
 
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
+
+      console.log(user);
+      if (user && user.author_profile.id === author.id) {
+        console.log("Not logged in or Attempted to vote own post");
+        return;
+      }
 
       if (voteState === voteType) {
         /**
@@ -228,50 +213,40 @@ export default function UserPostCard(props: UserPostCardProps) {
 
   return (
     <Ripples className={css(styles.userPostCard, style && style)}>
-      {/* {desktopOnly(renderVoteWidget())} */}
+      {desktopVoteWidget}
       <Link
         href={{
           pathname: "/post/[documentId]/[title]",
           query: {
-            documentId: `${unifiedDocumentId}`,
+            documentId: `${id}`,
             title: `${slug}`,
           },
         }}
-        as={`/post/${unifiedDocumentId}/${slug}`}
+        as={`/post/${id}/${slug}`}
       >
         <div className={css(styles.container)}>
           <div className={css(styles.rowContainer)}>
             <div className={css(styles.column, styles.metaData)}>
               <div className={css(styles.topRow)}>
-                {/* {mobileOnly(renderVoteWidget(true))}
-                {mobileOnly(renderPreregistrationTag())}
-                {desktopOnly(renderMainTitle())} */}
-                {mainTitle}
+                {mobileVoteWidget}
+                <DesktopOnly> {mainTitle} </DesktopOnly>
               </div>
-              {/* {mobileOnly(renderMainTitle())}
-              {desktopOnly(renderMetadata())}
-              {mobileOnly(renderMetadata())}
-              {renderContent()}
-              {mobileOnly(renderContributers())} */}
+              <MobileOnly> {mainTitle} </MobileOnly>
               {summary}
+              {mobileCreatorTag}
             </div>
-            {/* {desktopOnly(renderPreview())} */}
-            {previewImgComponent}
+            <DesktopOnly> {previewImgComponent} </DesktopOnly>
           </div>
           <div className={css(styles.bottomBar)}>
             <div className={css(styles.rowContainer)}>
-              {/* {desktopOnly(renderContributers())} */}
-              {creatorTag}
+              <DesktopOnly> {creatorTag} </DesktopOnly>
             </div>
-            {/* {desktopOnly(
+            <DesktopOnly>
               <div className={css(styles.row)}>
                 {/* TODO: briansantoso - Hub tags go here */}
                 {hubTags}
               </div>
-            )} */}
-          </div>
-          <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* {renderHubTags()} */}
+            </DesktopOnly>
           </div>
           <MobileOnly>
             <div className={css(styles.bottomBar, styles.mobileHubTags)}>
@@ -284,6 +259,17 @@ export default function UserPostCard(props: UserPostCardProps) {
     </Ripples>
   );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserPostCard);
 
 /**
  * Styles taken from PaperEntryCard.js
