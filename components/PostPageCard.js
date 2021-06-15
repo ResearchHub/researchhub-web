@@ -268,7 +268,7 @@ class PostPageCard extends React.Component {
   };
 
   renderActions = () => {
-    const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const { post, isModerator, flagged, setFlag, isSubmitter } = this.props;
 
     const actionButtons = [
       {
@@ -294,7 +294,7 @@ class PostPageCard extends React.Component {
           <ShareAction
             addRipples={true}
             title={"Share this paper"}
-            subtitle={paper && paper.title}
+            subtitle={post && post.title}
             url={this.props.shareUrl}
             customButton={
               <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
@@ -305,83 +305,65 @@ class PostPageCard extends React.Component {
         ),
       },
       {
-        active: paper && paper.file,
+        active: true,
         button: (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={this.downloadPDF}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Download PDF"}
-            >
-              {icons.arrowToBottom}
-            </span>
-          </Ripples>
+          <span data-tip={"Support Paper"}>
+            <PaperPromotionButton
+              paper={post}
+              customStyle={styles.actionIcon}
+            />
+          </span>
         ),
       },
       {
-        active: paper && paper.url && (paper && !paper.file),
+        active: !isSubmitter,
         button: (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={() => openExternalLink(paper.url)}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Open in External Link"}
-            >
-              {icons.externalLink}
-            </span>
-          </Ripples>
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={post.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
         ),
       },
-      //{
-      //  active: !isSubmitter,
-      //  button: (
-      //    <span data-tip={"Flag Paper"}>
-      //      <FlagButton
-      //        paperId={paper.id}
-      //        flagged={flagged}
-      //        setFlag={setFlag}
-      //        style={styles.actionIcon}
-      //      />
-      //    </span>
-      //  ),
-      //},
-      //{
-      //  active: isModerator || isSubmitter,
-      //  button: (
-      //    <span
-      //      className={css(styles.actionIcon, styles.moderatorAction)}
-      //      data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
-      //    >
-      //      <ActionButton
-      //        isModerator={true}
-      //        paperId={paper.id}
-      //        restore={paper.is_removed}
-      //        icon={paper.is_removed ? icons.plus : icons.minus}
-      //        onAction={paper.is_removed ? this.restorePaper : this.removePaper}
-      //        iconStyle={styles.moderatorIcon}
-      //      />
-      //    </span>
-      //  ),
-      //},
-      //{
-      //  active: isModerator,
-      //  button: (
-      //    <span
-      //      className={css(styles.actionIcon, styles.moderatorAction)}
-      //      data-tip={"Remove Page & Ban User"}
-      //    >
-      //      <ActionButton
-      //        isModerator={isModerator}
-      //        paperId={paper.id}
-      //        iconStyle={styles.moderatorIcon}
-      //      />
-      //    </span>
-      //  ),
-      //},
+      {
+        active: isModerator || isSubmitter,
+        button: (
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
+          >
+            <ActionButton
+              isModerator={true}
+              paperId={post.id}
+              restore={post.is_removed}
+              icon={post.is_removed ? icons.plus : icons.minus}
+              onAction={post.is_removed ? this.restorePaper : this.removePaper}
+              iconStyle={styles.moderatorIcon}
+            />
+          </span>
+        ),
+      },
+      {
+        active: isModerator,
+        button: (
+          <>
+            <ReactTooltip />
+            <span
+              className={css(styles.actionIcon, styles.moderatorAction)}
+              data-tip={"Remove Page & Ban User"}
+            >
+              <ActionButton
+                isModerator={isModerator}
+                paperId={post.id}
+                iconStyle={styles.moderatorIcon}
+              />
+            </span>
+          </>
+        ),
+      },
     ].filter((action) => action.active);
 
     return (
@@ -607,7 +589,6 @@ class PostPageCard extends React.Component {
                 }
                 small={true}
               />
-              <div className={css(styles.divider)}></div>
             </div>
             <div
               className={css(
@@ -1133,7 +1114,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   bodyContainer: {
-    width: "100%",
+    wordBreak: "break-word",
   },
   bottomContainer: {
     width: "100%",
