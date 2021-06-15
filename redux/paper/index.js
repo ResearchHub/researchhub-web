@@ -153,7 +153,7 @@ export const PaperActions = {
     };
   },
   getPostThreads: ({
-    postId,
+    documentId,
     post,
     filter,
     twitter,
@@ -168,7 +168,7 @@ export const PaperActions = {
       let endpoint = loadMore
         ? post.nextDiscussion
         : API.DISCUSSION({
-            postId,
+            documentId,
             filter,
             page: 1,
             progress: false,
