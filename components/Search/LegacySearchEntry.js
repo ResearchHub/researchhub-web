@@ -11,7 +11,7 @@ import { MessageActions } from "~/redux/message";
 // Components
 const Highlight = killswitch("algoliaSearch")
   ? require("~/components/Search/AlgoliaHighlight").default
-  : require("~/components/Search/Highlight").default;
+  : require("~/components/Search/LegacyHighlight").default;
 
 // Config
 import colors from "../../config/themes/colors";

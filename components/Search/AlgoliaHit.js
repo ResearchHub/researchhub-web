@@ -1,4 +1,4 @@
-import SearchEntry from "~/components/Search/SearchEntry";
+import LegacySearchEntry from "~/components/Search/LegacySearchEntry";
 import PropTypes from "prop-types";
 
 const AlgoliaHit = ({
@@ -31,7 +31,7 @@ const AlgoliaHit = ({
     };
   };
 
-  return <SearchEntry {...buildPropsForSearchEntry()} />;
+  return <LegacySearchEntry {...buildPropsForSearchEntry()} />;
 };
 
 AlgoliaHit.propTypes = {
