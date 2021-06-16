@@ -98,7 +98,7 @@ const Post = (props) => {
   // );
 
   const [discussionCount, setCount] = useState(
-    calculateCommentCount(props.paper)
+    calculateCommentCount(props.post)
   );
 
   const isModerator = store.getState().auth.user.moderator;
@@ -241,8 +241,9 @@ const Post = (props) => {
               <div className={css(styles.space)}>
                 <DiscussionTab
                   hostname={props.hostname}
+                  documentType={"post"}
+                  post={post}
                   postId={post.id}
-                  postState={post}
                   calculatedCount={discussionCount}
                   setCount={setCount}
                   isCollapsible={false}

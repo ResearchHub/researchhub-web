@@ -246,6 +246,7 @@ const routes = (BASE_URL) => {
       isRemoved,
       page,
       paperId,
+      documentId,
       progress,
       source,
       targetId,
@@ -253,8 +254,12 @@ const routes = (BASE_URL) => {
     }) => {
       let url =
         targetId != null
-          ? BASE_URL + `paper/${paperId}/discussion/${targetId}/`
-          : BASE_URL + `paper/${paperId}/discussion/`;
+          ? BASE_URL +
+            (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+            `/discussion/${targetId}/`
+          : BASE_URL +
+            (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+            `/discussion/`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
@@ -327,8 +332,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT: (paperId, threadId, page) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
+    THREAD_COMMENT: (paperId, documentId, threadId, page) => {
+      let url =
+        `${BASE_URL}` +
+        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `/discussion/${threadId}/comment/`;
 
       if (typeof page === "number") {
         url += `?page=${page}`;
@@ -337,8 +345,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT_REPLY: (paperId, threadId, commentId, page) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply/`;
+    THREAD_COMMENT_REPLY: (paperId, documentId, threadId, commentId, page) => {
+      let url =
+        `${BASE_URL}` +
+        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `/discussion/${threadId}/comment/${commentId}/reply/`;
 
       if (typeof page === "number") {
         url += `?page=${page}`;
