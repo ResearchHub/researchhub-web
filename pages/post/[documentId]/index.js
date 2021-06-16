@@ -26,7 +26,8 @@ function Paper(props) {
 Paper.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
   let posts = await fetch(
-    API.RESEARCHHUB_POSTS({ document_id: query.documentId })
+    API.RESEARCHHUB_POSTS({ document_id: query.documentId }),
+    API.GET_CONFIG()
   ).then(helpers.parseJSON);
   const post = posts.results[0];
   const title = formatPaperSlug(post.title);
