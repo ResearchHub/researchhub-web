@@ -68,10 +68,10 @@ export function fetchComments(paperId, threadId, page) {
   };
 }
 
-export function postComment(paperId, threadId, text, plain_text) {
+export function postComment(paperId, documentId, threadId, text, plain_text) {
   return async (dispatch, getState) => {
     const response = await fetch(
-      API.THREAD_COMMENT(paperId, threadId),
+      API.THREAD_COMMENT(paperId, documentId, threadId),
       API.POST_CONFIG({
         text,
         parent: threadId,
