@@ -3,7 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 import InfiniteScroll from "react-infinite-scroller";
 
-import SearchEntry from "./SearchEntry";
+import LegacySearchEntry from "./LegacySearchEntry";
 import HubSearchResult from "../HubSearchResult";
 import Loader from "~/components/Loader/Loader";
 
@@ -183,7 +183,7 @@ export default class Search extends Component {
       case "author":
       case "crossref_paper":
       case "paper":
-        return <SearchEntry {...props} {...result} />;
+        return <LegacySearchEntry {...props} {...result} />;
       case "hub":
         return (
           <HubSearchResult
