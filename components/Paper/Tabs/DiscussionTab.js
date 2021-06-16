@@ -144,6 +144,7 @@ const DiscussionTab = (props) => {
                       discussionCount={calculatedCount}
                       setCount={setCount}
                       paper={props.paperState}
+                      post={props.post}
                     />
                   );
                 })
