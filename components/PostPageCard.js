@@ -30,6 +30,7 @@ import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
 import ReactMarkdown from "react-markdown";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 
 class PostPageCard extends React.Component {
   constructor(props) {
@@ -43,6 +44,8 @@ class PostPageCard extends React.Component {
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
+      voteState: userVoteToConstant(props.post.userVote),
+      score: props.post.score,
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
@@ -549,9 +552,79 @@ class PostPageCard extends React.Component {
   };
 
   render() {
-    const { post, score, upvote, downvote, selectedVoteType } = this.props;
+    const { post } = this.props;
 
     const { fetching, previews, figureUrls } = this.state;
+
+    const createVoteHandler = (voteType) => {
+      const voteStrategies = {
+        [UPVOTE]: {
+          increment: 1,
+          getUrl: API.RH_POST_UPVOTE,
+        },
+        [DOWNVOTE]: {
+          increment: -1,
+          getUrl: API.RH_POST_DOWNVOTE,
+        },
+      };
+
+      const { increment, getUrl } = voteStrategies[voteType];
+
+      const handleVote = async (postId) => {
+        const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
+          (err) => console.log(err)
+        );
+
+        console.log(response);
+        return response;
+      };
+
+      return async (e) => {
+        e.stopPropagation();
+
+        if (this.state.voteState === voteType) {
+          /**
+           * Deselect
+           * NOTE: This will never be called with the current implementation of
+           * VoteWidget, because it disables the onVote/onDownvote callback
+           * if the button is already selected.
+           */
+          this.setState((prev) => ({
+            voteState: null,
+            score: prev.score - increment, // Undo the vote
+          }));
+        } else {
+          this.setState({ voteState: voteType });
+          if (
+            this.state.voteState === UPVOTE ||
+            this.state.voteState === DOWNVOTE
+          ) {
+            // If post was already upvoted / downvoted by user, then voting
+            // oppoistely will reverse the score by twice as much
+            this.setState((prev) => ({ score: prev.score + increment * 2 }));
+          } else {
+            // User has not voted, so regular vote
+            this.setState((prev) => ({ score: prev.score + increment }));
+          }
+        }
+
+        await handleVote(post.id);
+      };
+    };
+    const onUpvote = createVoteHandler(UPVOTE);
+    const onDownvote = createVoteHandler(DOWNVOTE);
+    const voteWidget = (
+      <VoteWidget
+        score={this.state.score}
+        onUpvote={onUpvote}
+        onDownvote={onDownvote}
+        selected={this.state.voteState}
+        type="Discussion"
+        paperPage={true}
+        small={true}
+      />
+    );
+    console.log(this.state.score, this.state.voteState);
 
     return (
       <div className={css(styles.mainContainer)}>
@@ -573,22 +646,8 @@ class PostPageCard extends React.Component {
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
             <div className={css(styles.voting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={this.props.selectedVoteType}
-                isPaper={true}
-                type={"Paper"}
-                paperPage={true}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted !== false
-                    ? this.props.paper
-                    : null
-                }
-                small={true}
-              />
+              {voteWidget}
+              <div className={css(styles.divider)}></div>
             </div>
             <div
               className={css(
@@ -619,7 +678,8 @@ class PostPageCard extends React.Component {
                 </div>
                 <div className={css(styles.rightColumn, styles.mobile)}>
                   <div className={css(styles.votingMobile)}>
-                    <VoteWidget
+                    {voteWidget}
+                    {/* <VoteWidget
                       score={score}
                       onUpvote={upvote}
                       onDownvote={downvote}
@@ -636,7 +696,7 @@ class PostPageCard extends React.Component {
                       }
                       showPromotion={true}
                       small={true}
-                    />
+                    /> */}
                     {/*<PaperDiscussionButton
                       paper={paper}
                       discussionCount={discussionCount}
