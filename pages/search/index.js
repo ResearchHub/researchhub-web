@@ -4,10 +4,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import parseUrl from "parse-url";
 import { keys, has } from "underscore";
 
-if (typeof window !== "undefined") {
-  window.parseUrl = parseUrl;
-}
-
 const Index = (props) => {
   const FILTERS = {
     papers: ["hub", "start_date", "end_date", "post_type"],
@@ -30,10 +26,13 @@ const Index = (props) => {
     return params;
   };
 
-  const queryParams = getParamsForSearch({
-    entity: "papers",
-    url: window.location.href,
-  });
+  let queryParams = {};
+  if (typeof window !== "undefined") {
+    const queryParams = getParamsForSearch({
+      entity: "papers",
+      url: window.location.href,
+    });
+  }
 
   const config = {
     route: "all",
