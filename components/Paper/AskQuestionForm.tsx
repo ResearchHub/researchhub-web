@@ -12,13 +12,13 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
 type FormFields = {
-  hub: null | object;
+  hubs: any[];
   text: string;
   title: string;
 };
 
 type FormError = {
-  hub: boolean;
+  hubs: boolean;
   text: boolean;
   title: boolean;
 };
@@ -33,8 +33,8 @@ function validateFormField(fieldID: string, value: any): boolean {
       return (
         value.length >= MIN_TITLE_LENGTH && value.length <= MAX_TITLE_LENGTH
       );
-    case "hub":
-      return !!value; // TODO: briansantoso - check that hub is a real hub
+    case "hubs":
+      return value && value.length > 0;
     case "text":
       return true;
     default:
@@ -59,12 +59,12 @@ function markdownToPlaintext(text: string): string {
 function AskQuestionForm({ user }: AskQuestionFormProps) {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
-    hub: true,
+    hubs: true,
     text: false,
     title: true,
   });
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
-    hub: null,
+    hubs: [],
     text: "",
     title: "",
   });
@@ -134,13 +134,14 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       editors: null,
       full_src: mutableFormFields.text,
       /* @ts-ignore */
-      hubs: mutableFormFields.hub ? [mutableFormFields.hub.id] : [],
+      hubs: mutableFormFields.hubs.map((hub) => hub.id),
       is_public: !draft,
       preview_img: firstImageFromMarkdown(mutableFormFields.text),
       renderable_text: markdownToPlaintext(mutableFormFields.text),
       title: mutableFormFields.title,
       viewers: null,
     };
+
     return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
@@ -160,11 +161,11 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       <form>
         <FormSelect
           containerStyle={styles.chooseHub}
-          error={shouldDisplayError && formErrors.hub && `Please select a hub`}
+          error={shouldDisplayError && formErrors.hubs && `Please select a hub`}
           errorStyle={styles.errorText}
-          id="hub"
-          inputStyle={shouldDisplayError && formErrors.hub && styles.error}
-          isMulti={false}
+          id="hubs"
+          inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
+          isMulti={true}
           label="Choose a hub"
           labelStyle={styles.label}
           menu={styles.dropDown}
@@ -256,7 +257,7 @@ const styles = StyleSheet.create({
   chooseHub: {
     width: "100%",
     maxWidth: "468px",
-    height: "55px",
+    minHeight: "55px",
     marginBottom: "21px",
   },
   titleInputContainer: {
