@@ -613,9 +613,6 @@ class PostPageCard extends React.Component {
     };
     const onUpvote = createVoteHandler(UPVOTE);
     const onDownvote = createVoteHandler(DOWNVOTE);
-
-    console.log(post);
-
     const voteWidget = (
       <VoteWidget
         score={this.state.score}
@@ -649,22 +646,8 @@ class PostPageCard extends React.Component {
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
             <div className={css(styles.voting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={this.props.selectedVoteType}
-                isPaper={true}
-                type={"Paper"}
-                paperPage={true}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted !== false
-                    ? this.props.paper
-                    : null
-                }
-                small={true}
-              />
+              {voteWidget}
+              <div className={css(styles.divider)}></div>
             </div>
             <div
               className={css(
