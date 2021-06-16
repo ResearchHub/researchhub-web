@@ -271,6 +271,7 @@ class DiscussionEntry extends React.Component {
       setCount,
       paper,
       mediaOnly,
+      post,
     } = this.props;
     let comments = this.state.comments;
 
@@ -289,6 +290,7 @@ class DiscussionEntry extends React.Component {
             discussionCount={discussionCount}
             setCount={setCount}
             mediaOnly={mediaOnly}
+            post={post}
           />
         );
       });

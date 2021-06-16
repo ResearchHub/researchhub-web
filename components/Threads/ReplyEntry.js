@@ -198,13 +198,25 @@ class ReplyEntry extends React.Component {
       showMessage,
       discussionCount,
       setCount,
+      post,
     } = this.props;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let discussionThreadId = data.id;
     let commentId = comment.id;
 
     postReplyPending();
-    await postReply(paperId, discussionThreadId, commentId, text, plain_text);
+    await postReply(
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      text,
+      plain_text
+    );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       callback && callback();
       this.props.onReplySubmitCallback();
