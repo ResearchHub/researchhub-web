@@ -165,10 +165,17 @@ export function fetchReplies(paperId, threadId, commentId, page) {
   };
 }
 
-export function postReply(paperId, threadId, commentId, text, plain_text) {
+export function postReply(
+  paperId,
+  documentId,
+  threadId,
+  commentId,
+  text,
+  plain_text
+) {
   return async (dispatch, getState) => {
     const response = await fetch(
-      API.THREAD_COMMENT_REPLY(paperId, threadId, commentId),
+      API.THREAD_COMMENT_REPLY(paperId, documentId, threadId, commentId),
       API.POST_CONFIG({
         text,
         parent: commentId,
