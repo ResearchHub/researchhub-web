@@ -1,11 +1,12 @@
-import { connect } from "react-redux";
-import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import React, { useEffect, useState } from "react";
 import ReactPlaceholder from "react-placeholder";
 import UserPostCard from "./UserPostCard";
+import colors from "~/config/themes/colors";
+import { Helpers } from "@quantfive/js-web-config";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 
 function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
   useEffect(() => {
@@ -31,13 +32,24 @@ function UserPosts(props) {
   const { author, user, fetching } = props;
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
-  const postCards = posts.map((post, index) => (
-    <UserPostCard
-      {...post}
-      key={post.id || index}
-      style={styles.customUserPostCard}
-    />
-  ));
+  let postCards;
+  if (posts.length > 0) {
+    postCards = posts.map((post, index) => (
+      <UserPostCard
+        {...post}
+        key={post.id || index}
+        style={styles.customUserPostCard}
+      />
+    ));
+  } else {
+    postCards = (
+      <div className={css(styles.box)}>
+        <h2 className={css(styles.noContent)}>
+          User has not authored any posts
+        </h2>
+      </div>
+    );
+  }
 
   useEffectFetchUserPosts({ setIsFetching, setPosts, userID: author.user });
   return (
@@ -59,6 +71,16 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingTop: 24,
     paddingBottom: 24,
+  },
+  noContent: {
+    color: colors.BLACK(1),
+    fontSize: 20,
+    fontWeight: 500,
+    textAlign: "center",
+    "@media only screen and (max-width: 415px)": {
+      width: 280,
+      fontSize: 16,
+    },
   },
 });
 
