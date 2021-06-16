@@ -8,7 +8,7 @@ import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
 
 const Index = (props) => {
-  return <HubPage home={true} {...props} />;
+  return null;
 };
 
 Index.getInitialProps = async (ctx) => {
