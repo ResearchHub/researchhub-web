@@ -631,6 +631,9 @@ class PostPageCard extends React.Component {
     };
     const onUpvote = createVoteHandler(UPVOTE);
     const onDownvote = createVoteHandler(DOWNVOTE);
+
+    console.log(post);
+
     const voteWidget = (
       <VoteWidget
         score={this.state.score}
@@ -695,32 +698,7 @@ class PostPageCard extends React.Component {
                   </div>
                 </div>
                 <div className={css(styles.rightColumn, styles.mobile)}>
-                  <div className={css(styles.votingMobile)}>
-                    {voteWidget}
-                    {/* <VoteWidget
-                      score={score}
-                      onUpvote={upvote}
-                      onDownvote={downvote}
-                      selected={selectedVoteType}
-                      isPaper={true}
-                      horizontalView={true}
-                      type={"Paper"}
-                      paperPage={true}
-                      promoted={this.props.paper && this.props.paper.promoted}
-                      paper={
-                        this.props.paper && this.props.paper.promoted
-                          ? this.props.paper
-                          : null
-                      }
-                      showPromotion={true}
-                      small={true}
-                    /> */}
-                    {/*<PaperDiscussionButton
-                      paper={paper}
-                      discussionCount={discussionCount}
-                    />
-                    <PaperPromotionButton paper={paper} />*/}
-                  </div>
+                  <div className={css(styles.votingMobile)}>{voteWidget}</div>
                 </div>
               </div>
             </div>
