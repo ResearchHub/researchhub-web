@@ -30,6 +30,10 @@ import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
+import LegacySearch from "./Search/LegacySearch";
+import AlgoliaSearch from "./Search/AlgoliaSearch";
+// import SectionBountyModal from "../components/Modals/SectionBountyModal";
+import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
@@ -325,8 +329,8 @@ const Navbar = (props) => {
     return (
       <Fragment>
         {killswitch("algoliaSearch") && <AlgoliaSearch mobile={true} />}
-        {killswitch("elasticSearch") && (
-          <Search
+        {killswitch("legacySearch") && (
+          <LegacySearch
             searchClass={styles.mobileSearch}
             inputClass={styles.inputClass}
             searchIconClass={styles.searchIconClass}
@@ -448,7 +452,7 @@ const Navbar = (props) => {
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
         {killswitch("algoliaSearch") && <AlgoliaSearch />}
-        {killswitch("elasticSearch") && <Search />}
+        {killswitch("legacySearch") && <LegacySearch />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
