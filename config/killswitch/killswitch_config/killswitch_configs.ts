@@ -18,7 +18,12 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: false,
     production: false,
   },
-  elasticSearch: {
+  legacySearch: {
+    development: true,
+    staging: true,
+    production: false,
+  },
+  searchResults: {
     development: true,
     staging: true,
     production: false,
