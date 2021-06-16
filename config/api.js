@@ -346,8 +346,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT_REPLY: (paperId, threadId, commentId, page) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply/`;
+    THREAD_COMMENT_REPLY: (paperId, documentId, threadId, commentId, page) => {
+      let url =
+        `${BASE_URL}` +
+        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `/discussion/${threadId}/comment/${commentId}/reply/`;
 
       if (typeof page === "number") {
         url += `?page=${page}`;
