@@ -65,6 +65,13 @@ const SECTIONS = {
 
 const getTabs = (author, transactions) => [
   {
+    href: "posts",
+    label: "posts",
+    name: "Posts",
+    showCount: true,
+    count: () => author.num_posts,
+  },
+  {
     href: "discussions",
     label: "discussions",
     name: "Discussions",
