@@ -613,6 +613,9 @@ class PostPageCard extends React.Component {
     };
     const onUpvote = createVoteHandler(UPVOTE);
     const onDownvote = createVoteHandler(DOWNVOTE);
+
+    console.log(post);
+
     const voteWidget = (
       <VoteWidget
         score={this.state.score}
