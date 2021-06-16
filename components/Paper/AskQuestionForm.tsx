@@ -282,7 +282,9 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {},
   editor: {
-    maxWidth: "720px",
-    width: "100%",
+    width: "720px",
+    "@media only screen and (max-width: 900px)": {
+      width: "80vw",
+    },
   },
 });

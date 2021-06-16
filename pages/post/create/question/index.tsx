@@ -35,6 +35,10 @@ const styles = StyleSheet.create({
     position: "relative",
     minHeight: "100vh",
     paddingTop: "45px",
+    "@media only screen and (max-width: 1209px)": {
+      marginRight: "5vw",
+      marginLeft: "5vw",
+    },
   },
   title: {
     display: "flex",
@@ -64,8 +68,8 @@ const styles = StyleSheet.create({
       /* 1209px is cutoff when AboutQuestionCard no longer fits on the side and must go to top */
       display: "flex",
       flexDirection: "column",
-      paddingLeft: 50,
       minWidth: 0,
+      marginBottom: 30,
     },
   },
   cardOnSide: {
