@@ -232,7 +232,7 @@ const Navbar = (props) => {
     let { href, as } = route;
     if (href) {
       if (href === "/user/[authorId]/[tabName]") {
-        Router.push(href, `/user/${user.author_profile.id}/discussions`);
+        Router.push(href, `/user/${user.author_profile.id}/posts`);
       } else {
         Router.push(href, as);
       }
