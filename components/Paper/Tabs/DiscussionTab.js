@@ -246,7 +246,6 @@ const DiscussionTab = (props) => {
 
       let config = API.POST_CONFIG(param);
 
-      console.log(config);
       return fetch(API.DISCUSSION({ documentId, twitter: null }), config)
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
