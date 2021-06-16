@@ -114,12 +114,12 @@ const routes = (BASE_URL) => {
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
-    RESEARCHHUB_POSTS: ({ created_by, document_id }) => {
+    RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
       let url = BASE_URL + "researchhub_posts/";
       let params = {
         querystring: {
           created_by,
-          document_id,
+          post_id,
         },
       };
       url = prepURL(url, params);
