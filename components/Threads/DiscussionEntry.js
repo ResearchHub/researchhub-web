@@ -170,11 +170,22 @@ class DiscussionEntry extends React.Component {
       postCommentPending,
       discussionCount,
       setCount,
+      post,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     postCommentPending();
-    await postComment(paperId, discussionThreadId, text, plain_text);
+    await postComment(
+      paperId,
+      documentId,
+      discussionThreadId,
+      text,
+      plain_text
+    );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
@@ -260,6 +271,7 @@ class DiscussionEntry extends React.Component {
       setCount,
       paper,
       mediaOnly,
+      post,
     } = this.props;
     let comments = this.state.comments;
 
@@ -278,6 +290,7 @@ class DiscussionEntry extends React.Component {
             discussionCount={discussionCount}
             setCount={setCount}
             mediaOnly={mediaOnly}
+            post={post}
           />
         );
       });
@@ -775,4 +788,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InlineCommentUnduxStore.withStore(DiscussionEntry));
+)(DiscussionEntry);
