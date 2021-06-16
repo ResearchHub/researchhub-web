@@ -467,7 +467,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "table",
     tableLayout: "fixed",
-    height: "100%",
+    height: "1%",
     borderSpacing: 0,
     "@media only screen and (max-width: 415px)": {
       justifyContent: "space-between",
