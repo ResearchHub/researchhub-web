@@ -126,11 +126,11 @@ const routes = (BASE_URL) => {
       return url;
     },
     SIGNOUT: BASE_URL + "auth/logout/",
-    SEARCH: ({ search, config, page, size, external_source = true }) => {
+    SEARCH: ({ queryParams, config, page, size, external_source = true }) => {
       let url = BASE_URL + "search/";
       let params = {
         querystring: {
-          search,
+          ...queryParams,
           page,
           size,
           external_source,
