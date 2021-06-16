@@ -19,8 +19,8 @@ const KillswtichConfigs: SwitchConfigs = {
     production: false,
   },
   legacySearch: {
-    development: true,
-    staging: true,
+    development: false,
+    staging: false,
     production: false,
   },
   searchResults: {

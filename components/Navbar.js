@@ -32,6 +32,7 @@ import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import LegacySearch from "./Search/LegacySearch";
 import AlgoliaSearch from "./Search/AlgoliaSearch";
+import Search from "./Search/Search";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
@@ -451,6 +452,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
+        {killswitch("searchResults") && <Search />}
         {killswitch("algoliaSearch") && <AlgoliaSearch />}
         {killswitch("legacySearch") && <LegacySearch />}
         <div className={css(styles.actions)}>
