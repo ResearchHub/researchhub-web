@@ -120,9 +120,9 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
 
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
-      const { unified_document_id, title } = response;
+      const { id, title } = response;
       const slug = title.toLowerCase().replace(/\s/g, "-");
-      router.push(`/post/${unified_document_id}/${slug}`);
+      router.push(`/post/${id}/${slug}`);
     };
   };
 
