@@ -232,15 +232,11 @@ export default connect(mapStateToProps)(AskQuestionForm);
 const styles = StyleSheet.create({
   rootContainer: {
     display: "flex",
-    flexDirection: "row",
-    justifyContent: "center",
+    flexDirection: "column",
     background: "#FFFFFF",
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
-    paddingTop: "20px",
-    paddingBottom: "30px",
-    paddingLeft: "40px",
-    paddingRight: "40px",
+    padding: "20px 40px 30px 40px",
     "@media only screen and (max-width: 1209px)": {
       paddingLeft: "5vw",
       paddingRight: "5vw",
