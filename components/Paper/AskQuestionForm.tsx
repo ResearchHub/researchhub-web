@@ -232,19 +232,25 @@ export default connect(mapStateToProps)(AskQuestionForm);
 const styles = StyleSheet.create({
   rootContainer: {
     display: "flex",
-    flexDirection: "column",
-    alignSelf: "stretch",
+    flexDirection: "row",
+    justifyContent: "center",
     background: "#FFFFFF",
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
-    padding: "24px 50px 49px 50px",
-    minWidth: 0,
+    paddingTop: "20px",
+    paddingBottom: "30px",
+    paddingLeft: "40px",
+    paddingRight: "40px",
+    "@media only screen and (max-width: 1209px)": {
+      paddingLeft: "5vw",
+      paddingRight: "5vw",
+    },
   },
   buttonsContainer: {
     width: "auto",
     display: "flex",
     justifyContent: "flex-end",
-    marginTop: "42px",
+    marginTop: "30px",
     "@media only screen and (max-width: 767px)": {
       width: "auto",
       justifyContent: "center",
