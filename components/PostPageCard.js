@@ -49,6 +49,9 @@ class PostPageCard extends React.Component {
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
+
+    this.onUpvote = this.createVoteHandler(UPVOTE);
+    this.onDownvote = this.createVoteHandler(DOWNVOTE);
   }
 
   componentWillUnmount() {
@@ -548,83 +551,93 @@ class PostPageCard extends React.Component {
     );
   };
 
+  createVoteHandler = (voteType) => {
+    const { post } = this.props;
+    const voteStrategies = {
+      [UPVOTE]: {
+        increment: 1,
+        getUrl: API.RH_POST_UPVOTE,
+      },
+      [DOWNVOTE]: {
+        increment: -1,
+        getUrl: API.RH_POST_DOWNVOTE,
+      },
+    };
+
+    const { increment, getUrl } = voteStrategies[voteType];
+
+    const handleVote = async (postId) => {
+      const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
+        (err) => console.log(err)
+      );
+
+      console.log(response);
+      return response;
+    };
+
+    return async (e) => {
+      e.stopPropagation();
+
+      const {
+        user,
+        post: {
+          created_by: { author_profile: author },
+        },
+      } = this.props;
+
+      if (user && user.author_profile.id === author.id) {
+        console.log("Not logged in or Attempted to vote own post");
+        return;
+      }
+
+      if (this.state.voteState === voteType) {
+        /**
+         * Deselect
+         * NOTE: This will never be called with the current implementation of
+         * VoteWidget, because it disables the onVote/onDownvote callback
+         * if the button is already selected.
+         */
+        this.setState((prev) => ({
+          voteState: null,
+          score: prev.score - increment, // Undo the vote
+        }));
+      } else {
+        this.setState({ voteState: voteType });
+        if (
+          this.state.voteState === UPVOTE ||
+          this.state.voteState === DOWNVOTE
+        ) {
+          // If post was already upvoted / downvoted by user, then voting
+          // oppoistely will reverse the score by twice as much
+          this.setState((prev) => ({ score: prev.score + increment * 2 }));
+        } else {
+          // User has not voted, so regular vote
+          this.setState((prev) => ({ score: prev.score + increment }));
+        }
+      }
+
+      await handleVote(post.id);
+    };
+  };
+
   render() {
     const { post } = this.props;
 
     const { fetching, previews, figureUrls } = this.state;
-
-    const createVoteHandler = (voteType) => {
-      const voteStrategies = {
-        [UPVOTE]: {
-          increment: 1,
-          getUrl: API.RH_POST_UPVOTE,
-        },
-        [DOWNVOTE]: {
-          increment: -1,
-          getUrl: API.RH_POST_DOWNVOTE,
-        },
-      };
-
-      const { increment, getUrl } = voteStrategies[voteType];
-
-      const handleVote = async (postId) => {
-        const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
-          (err) => console.log(err)
-        );
-
-        console.log(response);
-        return response;
-      };
-
-      return async (e) => {
-        e.stopPropagation();
-
-        if (this.state.voteState === voteType) {
-          /**
-           * Deselect
-           * NOTE: This will never be called with the current implementation of
-           * VoteWidget, because it disables the onVote/onDownvote callback
-           * if the button is already selected.
-           */
-          this.setState((prev) => ({
-            voteState: null,
-            score: prev.score - increment, // Undo the vote
-          }));
-        } else {
-          this.setState({ voteState: voteType });
-          if (
-            this.state.voteState === UPVOTE ||
-            this.state.voteState === DOWNVOTE
-          ) {
-            // If post was already upvoted / downvoted by user, then voting
-            // oppoistely will reverse the score by twice as much
-            this.setState((prev) => ({ score: prev.score + increment * 2 }));
-          } else {
-            // User has not voted, so regular vote
-            this.setState((prev) => ({ score: prev.score + increment }));
-          }
-        }
-
-        await handleVote(post.id);
-      };
-    };
-    const onUpvote = createVoteHandler(UPVOTE);
-    const onDownvote = createVoteHandler(DOWNVOTE);
 
     console.log(post);
 
     const voteWidget = (
       <VoteWidget
         score={this.state.score}
-        onUpvote={onUpvote}
-        onDownvote={onDownvote}
+        onUpvote={this.onUpvote}
+        onDownvote={this.onDownvote}
         selected={this.state.voteState}
         type="Discussion"
         paperPage={true}
         small={true}
       />
     );
-    console.log(this.state.score, this.state.voteState);
 
     return (
       <div className={css(styles.mainContainer)}>
@@ -1384,6 +1397,10 @@ const carousel = StyleSheet.create({
   },
 });
 
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
 const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
   openAuthorSupportModal: ModalActions.openAuthorSupportModal,
@@ -1392,6 +1409,6 @@ const mapDispatchToProps = {
 };
 
 export default connect(
-  null,
+  mapStateToProps,
   mapDispatchToProps
 )(PostPageCard);
