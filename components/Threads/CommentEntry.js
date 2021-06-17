@@ -198,27 +198,35 @@ class CommentEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, comment, postUpvote, postUpvotePending } = this.props;
+    let { data, comment, postUpvote, postUpvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let commentId = comment.id;
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId, commentId);
+    await postUpvote(paperId, documentId, discussionThreadId, commentId);
 
     this.updateWidgetUI();
   };
 
   downvote = async () => {
-    let { data, comment, postDownvote, postDownvotePending } = this.props;
+    let { data, comment, postDownvote, postDownvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let commentId = comment.id;
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId, commentId);
+    await postDownvote(paperId, documentId, discussionThreadId, commentId);
 
     this.updateWidgetUI();
   };

@@ -115,15 +115,32 @@ class ReplyEntry extends React.Component {
   };
 
   upvote = async () => {
-    const { data, comment, reply, postUpvote, postUpvotePending } = this.props;
+    const {
+      data,
+      comment,
+      reply,
+      postUpvote,
+      postUpvotePending,
+      post,
+    } = this.props;
     const discussionThreadId = data.id;
     const paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     const commentId = comment.id;
     const replyId = reply.id;
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId, commentId, replyId);
+    await postUpvote(
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      replyId
+    );
 
     this.updateWidgetUI();
   };
@@ -135,15 +152,26 @@ class ReplyEntry extends React.Component {
       reply,
       postDownvote,
       postDownvotePending,
+      post,
     } = this.props;
     const discussionThreadId = data.id;
     const paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     const commentId = comment.id;
     const replyId = reply.id;
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId, commentId, replyId);
+    await postDownvote(
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      replyId
+    );
 
     this.updateWidgetUI();
   };
