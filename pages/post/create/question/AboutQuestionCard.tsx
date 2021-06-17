@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Collapsible from "../../../../components/Form/Collapsible";
+import icons from "../../../../config/themes/icons";
 
 export type AboutQuestionCardProps = {
   customStyle: any;
@@ -27,7 +28,14 @@ export default function AboutQuestionCard({
         contentInnerClassName={css(styles.collapsibleContent)}
         open={isOpen}
         openedClassName={css(styles.collapsibleSection)}
-        trigger="What can you post here?"
+        trigger={
+          <div>
+            What can you post here?
+            <span className={css(styles.chevronDown)}>
+              {icons.chevronDownLeft}
+            </span>
+          </div>
+        }
       >
         <ol>
           <li>Ask a question</li>
@@ -40,7 +48,14 @@ export default function AboutQuestionCard({
         contentInnerClassName={css(styles.collapsibleContent)}
         open={isOpen}
         openedClassName={css(styles.collapsibleSection)}
-        trigger="Guidelines"
+        trigger={
+          <div>
+            Guidelines
+            <span className={css(styles.chevronDown)}>
+              {icons.chevronDownLeft}
+            </span>
+          </div>
+        }
       >
         <ul>
           <li>Ask a question</li>
@@ -94,5 +109,8 @@ const styles = StyleSheet.create({
     fontSize: "16px",
     lineHeight: "26px",
     color: "#241F3A",
+  },
+  chevronDown: {
+    marginLeft: 5,
   },
 });
