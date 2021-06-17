@@ -313,14 +313,20 @@ class CommentEntry extends React.Component {
       updateCommentPending,
       showMessage,
       setMessage,
+      post,
     } = this.props;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let discussionThreadId = data.id;
     let commentId = comment.id;
 
     updateCommentPending();
     await updateComment(
       paperId,
+      documentId,
       discussionThreadId,
       commentId,
       text,
