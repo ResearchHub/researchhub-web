@@ -156,7 +156,13 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
           );
         }
       }),
-    [documents, paginationInfo.page]
+    [
+      documents,
+      paginationInfo.page,
+      docTypeFilter,
+      subFilters.filterBy,
+      subFilters.scope,
+    ]
   );
 
   return (
