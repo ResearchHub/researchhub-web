@@ -466,7 +466,7 @@ const Navbar = (props) => {
                   >
                     <Link
                       href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${user.author_profile.id}/discussions`}
+                      as={`/user/${user.author_profile.id}/posts`}
                     >
                       <div className={css(styles.option)}>
                         <span
