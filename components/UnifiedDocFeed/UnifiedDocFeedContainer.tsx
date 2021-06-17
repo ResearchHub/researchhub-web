@@ -7,12 +7,14 @@ import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
+import { filterOptions, scopeOptions } from "../../config/utils/options";
+import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 
 const useCallbackFetchFeed = ({
-  currFilter,
+  filter,
   setIsPageLoading,
 }: {
-  currFilter: string;
+  filter: string;
   setIsPageLoading: Function;
 }): void => {
   const filters = useEffect((): void => {
@@ -31,12 +33,14 @@ const getFilterFromRouter = (router: NextRouter): string => {
 
 export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
   const router = useRouter();
-  const [currFilter, setCurrFilter] = useState<string>(
-    getFilterFromRouter(router)
-  );
+  const [filter, setFilter] = useState<string>(getFilterFromRouter(router));
+  const [subFilters, setSubFilters] = useState({
+    filterBy: filterOptions[0],
+    scope: scopeOptions[0],
+  });
   const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
 
-  useCallbackFetchFeed({ currFilter, setIsPageLoading });
+  useCallbackFetchFeed({ filter, setIsPageLoading });
 
   const filterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
@@ -44,11 +48,11 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
         const filterValue = UnifiedDocFilters[filterKey];
         return (
           <UnifiedDocFeedFilterButton
-            isActive={currFilter === filterValue}
+            isActive={filter === filterValue}
             key={filterKey}
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
-              setCurrFilter(filterValue);
+              setFilter(filterValue);
               router.push({
                 pathname: router.pathname,
                 query: { filter: filterValue },
@@ -58,11 +62,30 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
         );
       }
     );
-  }, [currFilter]);
+  }, [filter]);
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <div className={css(styles.buttonGroup)}>{filterButtons}</div>
+      <div className={css(styles.buttonGroup)}>
+        <div className={css(styles.mainFilters)}>{filterButtons}</div>
+        <div className={css(styles.subFilters)}>
+          <UnifiedDocFeedSubFilters
+            onSubFilterSelect={(_type: string, filterBy: any): void => {
+              setSubFilters({
+                filterBy,
+                scope: subFilters.scope,
+              });
+            }}
+            onScopeSelect={(_type: string, scope) => {
+              setSubFilters({
+                filterBy: subFilters.filterBy,
+                scope,
+              });
+            }}
+            subFilters={subFilters}
+          />
+        </div>
+      </div>
       <div>Hi this is UnifiedDocFeedContainer</div>
     </div>
   );
@@ -90,6 +113,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: 120,
+    justifyContent: "space-between",
     width: "100%",
+  },
+  mainFilters: {
+    alignItems: "center",
+    display: "flex",
+    height: "inherit",
+  },
+  subFilters: {
+    alignItems: "center",
+    display: "flex",
+    height: "inherit",
   },
 });
