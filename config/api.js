@@ -471,14 +471,26 @@ const routes = (BASE_URL) => {
       // New post types, such as Question
       return `${BASE_URL}researchhub_posts/${postId}/downvote/`;
     },
-    UPVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
+    UPVOTE: (paperId, documentId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "upvote/";
     },
 
-    DOWNVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
+    DOWNVOTE: (paperId, documentId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "downvote/";
     },
