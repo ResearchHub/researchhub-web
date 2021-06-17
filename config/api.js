@@ -451,6 +451,33 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    GET_UNIFIED_DOCS: ({
+      externalSource,
+      hubId,
+      ordering,
+      page = 1,
+      slug,
+      subscribedHubs,
+      timePeriod,
+      type, // docType
+    }) => {
+      const url =
+        BASE_URL + "researchhub_unified_documents/get_unified_documents/";
+      const params = {
+        querystring: {
+          end_date__lte: timePeriod.end,
+          external_source: externalSource,
+          hub_id: hubId,
+          ordering,
+          page,
+          slug,
+          start_date__gte: timePeriod.start,
+          subscribed_hubs: subscribedHubs,
+          type,
+        },
+      };
+      return prepURL(url, params);
+    },
     HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
     HUB_UNSUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/unsubscribe/`,
     INVITE_TO_HUB: ({ hubId }) => {

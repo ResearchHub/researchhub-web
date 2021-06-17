@@ -1,6 +1,7 @@
-import { fetchPaperFeed } from "../../../config/fetch";
+import { fetchUnifiedDocFeed } from "../../../config/fetch";
 import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
+import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 
 const calculateScope = (scope) => {
   const result = {
@@ -40,31 +41,39 @@ const calculateScope = (scope) => {
 };
 
 export default function fetchUnifiedDocs({
-  filter,
+  docTypeFilter,
   subFilters,
   onSuccess,
   onError,
   page,
 }) {
   const { filterBy, scope } = subFilters;
+  /* PARAMS is: 
+    { 
+      externalSource,
+      hubId,
+      ordering,
+      page,
+      slug,
+      subscribedHubs,
+      timePeriod,
+      type, // docType
+    }
+  */
   const PARAMS = {
-    timePeriod: calculateScope(scope),
     ordering: filterBy.value,
     page,
+    timePeriod: calculateScope(scope),
+    type: docTypeFilter,
   };
 
-  fetchPaperFeed(PARAMS)
+  fetchUnifiedDocFeed(PARAMS)
     .then((res) => {
       const { count, next, results } = res;
-      const papers = results.data;
       onSuccess({
         count,
-        next,
-        papers,
-        papersLoading: false,
-        doneFetching: true,
-        noResults: results.no_results,
-        feedType: results.feed_type,
+        hasMore: !isNullOrUndefined(next),
+        documents: results,
       });
     })
     .catch((err) => {
