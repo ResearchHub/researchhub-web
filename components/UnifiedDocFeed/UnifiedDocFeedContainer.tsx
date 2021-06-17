@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined, nullthrows } from "../../config/utils/nullchecks";
 import { NextRouter, useRouter } from "next/router";
 import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
@@ -6,7 +7,6 @@ import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
-import { ValueOf } from "../../config/types/root_types";
 
 const useCallbackFetchFeed = ({
   currFilter,
@@ -20,11 +20,19 @@ const useCallbackFetchFeed = ({
   });
 };
 
+const getFilterFromRouter = (router: NextRouter): string => {
+  const filter = router.query.filter;
+  return isNullOrUndefined(filter)
+    ? UnifiedDocFilters.ALL
+    : Array.isArray(filter)
+    ? nullthrows(filter[0])
+    : nullthrows(filter);
+};
+
 export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
   const router = useRouter();
   const [currFilter, setCurrFilter] = useState<string>(
-    // @ts-ignore - below has to be a string
-    router.query.filter || UnifiedDocFilters.ALL
+    getFilterFromRouter(router)
   );
   const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
 
