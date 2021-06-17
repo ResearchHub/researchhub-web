@@ -40,11 +40,13 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
 
   const filterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
-      (filterKey): ReactElement<typeof UnifiedDocFeedFilterButton> => {
+      (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         const filterValue = UnifiedDocFilters[filterKey];
         return (
           <UnifiedDocFeedFilterButton
+            isActive={currFilter === filterValue}
             key={filterKey}
+            label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
               setCurrFilter(filterValue);
               router.push({
@@ -52,8 +54,6 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
                 query: { filter: filterValue },
               });
             }}
-            isActive={currFilter === filterValue}
-            label={UnifiedDocFilterLabels[filterKey]}
           />
         );
       }
@@ -63,7 +63,7 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       <div className={css(styles.buttonGroup)}>{filterButtons}</div>
-      <div>HI this is UnifiedDocFeedContainer</div>
+      <div>Hi this is UnifiedDocFeedContainer</div>
     </div>
   );
 }
