@@ -22,7 +22,7 @@ export default function UnifiedDocFeedFilterButton({
       onClick={onClick}
       role="button"
     >
-      <div>{label}</div>
+      {label}
     </div>
   );
 }
@@ -31,15 +31,16 @@ const styles = StyleSheet.create({
   unifiedDocFeedFilterButton: {
     alignItems: "center",
     boxSizing: "border-box",
-    color: "##241F3A",
+    color: "#241F3A",
     cursor: "pointer",
     display: "flex",
     fontSize: 18,
     height: 44,
-    justifyContent: "flex-start",
+    justifyContent: "center",
     padding: "4px 0",
     marginRight: 24,
-    width: 80,
+    width: 44,
+    borderBottom: "2px solid transparent",
   },
   isButtonActive: {
     borderBottom: `2px solid ${colors.BLUE(1)}`,
