@@ -44,7 +44,7 @@ class PostPageCard extends React.Component {
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
-      voteState: userVoteToConstant(props.post.userVote),
+      voteState: userVoteToConstant(props.post.user_vote),
       score: props.post.score,
     };
     this.containerRef = React.createRef();
