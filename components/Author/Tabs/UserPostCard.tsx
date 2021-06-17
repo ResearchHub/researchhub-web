@@ -17,6 +17,7 @@ import {
   userVoteToConstant,
 } from "../../../config/constants";
 import API from "../../../config/api";
+import { connect } from "react-redux";
 // import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
@@ -29,10 +30,11 @@ export type UserPostCardProps = {
   style: StyleSheet;
   title: string;
   unified_document_id: number;
+  user: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
 };
 
-export default function UserPostCard(props: UserPostCardProps) {
+function UserPostCard(props: UserPostCardProps) {
   const {
     created_by: {
       author_profile: { first_name, last_name },
@@ -46,6 +48,7 @@ export default function UserPostCard(props: UserPostCardProps) {
     style,
     title,
     unified_document_id: unifiedDocumentId,
+    user,
     user_vote: userVote,
   } = props;
 
@@ -156,6 +159,12 @@ export default function UserPostCard(props: UserPostCardProps) {
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
 
+      console.log(user);
+      if (user && user.author_profile.id === author.id) {
+        console.log("Not logged in or Attempted to vote own post");
+        return;
+      }
+
       if (voteState === voteType) {
         /**
          * Deselect
@@ -250,6 +259,17 @@ export default function UserPostCard(props: UserPostCardProps) {
     </Ripples>
   );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+const mapDispatchToProps = {};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(UserPostCard);
 
 /**
  * Styles taken from PaperEntryCard.js
