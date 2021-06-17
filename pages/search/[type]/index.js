@@ -2,21 +2,26 @@ import HubPage from "~/components/Hubs/HubPage";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import parseUrl from "parse-url";
+import { useRouter } from "next/router";
 import { keys, has } from "underscore";
+import Link from "next/link";
+import Error from "next/error";
 
 const Index = (props) => {
+  const router = useRouter();
+
   const FILTERS = {
-    papers: ["hub", "start_date", "end_date", "post_type"],
+    papers: ["hub", "start_date", "end_date", "post_type", "query"],
     hubs: [],
     users: [],
   };
 
-  const getParamsForSearch = ({ entity, url }) => {
+  const getParamsForSearch = ({ entityType, url }) => {
     const parsedUrl = parseUrl(url);
     const params = {};
 
-    for (let i = 0; i < FILTERS[entity].length; i++) {
-      const whiteListedFilter = FILTERS[entity][i];
+    for (let i = 0; i < FILTERS[entityType].length; i++) {
+      const whiteListedFilter = FILTERS[entityType][i];
 
       if (has(parsedUrl.query, whiteListedFilter)) {
         params[whiteListedFilter] = parsedUrl.query[whiteListedFilter];
@@ -28,14 +33,14 @@ const Index = (props) => {
 
   let queryParams = {};
   if (typeof window !== "undefined") {
-    const queryParams = getParamsForSearch({
-      entity: "papers",
+    queryParams = getParamsForSearch({
+      entityType: router.query.type,
       url: window.location.href,
     });
   }
 
   const config = {
-    route: "all",
+    route: "",
   };
 
   fetch(API.SEARCH({ queryParams, config }), API.GET_CONFIG())
@@ -45,7 +50,19 @@ const Index = (props) => {
       console.log(resp);
     });
 
-  return null;
+  return (
+    <div>
+      <Link href="/search/papers">
+        <a>Papers</a>
+      </Link>
+      <Link href="/search/authors">
+        <a>Authors</a>
+      </Link>
+      <Link href="/search/hubs">
+        <a>Hubs</a>
+      </Link>
+    </div>
+  );
 };
 
 export async function getServerSideProps(context) {

@@ -3,14 +3,15 @@ import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
+import { get } from "lodash";
 
 const Search = ({}) => {
   const router = useRouter();
-  const [query, setQuery] = useState("");
+  const [query, setQuery] = useState(get(router, "query.query") || "");
 
   const handleSearch = () => {
     router.push({
-      pathname: "/search",
+      pathname: "/search/papers",
       query: { query },
     });
   };
@@ -24,6 +25,8 @@ const Search = ({}) => {
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
+
+  useEffect(() => {}, []);
 
   return (
     <div className={css(styles.search)}>
