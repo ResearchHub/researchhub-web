@@ -645,10 +645,7 @@ class PostPageCard extends React.Component {
             <ReactTooltip />
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
-            <div className={css(styles.voting)}>
-              {voteWidget}
-              <div className={css(styles.divider)}></div>
-            </div>
+            <div className={css(styles.voting)}>{voteWidget}</div>
             <div
               className={css(
                 styles.column,
