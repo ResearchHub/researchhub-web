@@ -17,10 +17,7 @@ const LeaderboardUser = (props) => {
   } = props;
   return (
     <div className={css(styles.container)}>
-      <Link
-        href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorId}/discussions`}
-      >
+      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/posts`}>
         <a className={css(styles.link)}>
           <div className={css(styles.nameRow, userClass)}>
             <AuthorAvatar
