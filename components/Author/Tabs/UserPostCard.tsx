@@ -209,11 +209,11 @@ export default function UserPostCard(props: UserPostCardProps) {
         href={{
           pathname: "/post/[documentId]/[title]",
           query: {
-            documentId: `${unifiedDocumentId}`,
+            documentId: `${id}`,
             title: `${slug}`,
           },
         }}
-        as={`/post/${unifiedDocumentId}/${slug}`}
+        as={`/post/${id}/${slug}`}
       >
         <div className={css(styles.container)}>
           <div className={css(styles.rowContainer)}>
