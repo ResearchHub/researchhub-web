@@ -231,8 +231,14 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    PAPER_CHAIN: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    PAPER_CHAIN: (paperId, documentId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url;
     },
@@ -308,8 +314,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD: (paperId, threadId) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/`;
+    THREAD: (paperId, documentId, threadId) => {
+      let url =
+        `${BASE_URL}` +
+        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `/discussion/${threadId}/`;
 
       return url;
     },
@@ -450,7 +459,7 @@ const routes = (BASE_URL) => {
     },
 
     USER_VOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
 
       return url + "user_vote/";
     },
@@ -462,14 +471,26 @@ const routes = (BASE_URL) => {
       // New post types, such as Question
       return `${BASE_URL}researchhub_posts/${postId}/downvote/`;
     },
-    UPVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    UPVOTE: (paperId, documentId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "upvote/";
     },
 
-    DOWNVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    DOWNVOTE: (paperId, documentId, threadId, commentId, replyId) => {
+      let url = buildPaperChainUrl(
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "downvote/";
     },
@@ -561,7 +582,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     FLAG_POST: ({ paperId, threadId, commentId, replyId }) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
 
       return url + "flag/";
     },
@@ -572,7 +593,7 @@ const routes = (BASE_URL) => {
       return BASE_URL + `paper/${paperId}/censor_pdf/`;
     },
     CENSOR_POST: ({ paperId, threadId, commentId, replyId }) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
 
       return url + "censor/";
     },
@@ -740,8 +761,16 @@ const routes = (BASE_URL) => {
     SUPPORT: BASE_URL + "support/",
   };
 
-  function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
-    let url = `${BASE_URL}paper/${paperId}/`;
+  function buildPaperChainUrl(
+    paperId,
+    documentId,
+    threadId,
+    commentId,
+    replyId
+  ) {
+    let url =
+      `${BASE_URL}` +
+      (paperId != null ? `paper/${paperId}/` : `post/${documentId}/`);
 
     if (!doesNotExist(threadId)) {
       url += `discussion/${threadId}/`;

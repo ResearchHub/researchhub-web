@@ -213,9 +213,14 @@ class DiscussionEntry extends React.Component {
       updateThreadPending,
       showMessage,
       setMessage,
+      post,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
 
     let body = {
       text,
@@ -223,7 +228,7 @@ class DiscussionEntry extends React.Component {
       paper: paperId,
     };
     updateThreadPending();
-    await updateThread(paperId, discussionThreadId, body);
+    await updateThread(paperId, documentId, discussionThreadId, body);
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
       setMessage("Post successfully updated!");
       showMessage({ show: true });
@@ -322,25 +327,33 @@ class DiscussionEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, postUpvote, postUpvotePending } = this.props;
+    let { data, postUpvote, postUpvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId);
+    await postUpvote(paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI(this.props.voteResult);
   };
 
   downvote = async () => {
-    let { data, postDownvote, postDownvotePending } = this.props;
+    let { data, postDownvote, postDownvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId);
+    await postDownvote(paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI();
   };
