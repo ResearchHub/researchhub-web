@@ -1,25 +1,63 @@
 import { css, StyleSheet } from "aphrodite";
-import { isNullOrUndefined, nullthrows } from "../../config/utils/nullchecks";
+import { filterOptions, scopeOptions } from "../../config/utils/options";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "../../config/utils/nullchecks";
 import { NextRouter, useRouter } from "next/router";
+import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
+import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
-import { filterOptions, scopeOptions } from "../../config/utils/options";
-import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 
-const useCallbackFetchFeed = ({
-  filter,
-  setIsPageLoading,
-}: {
+type PaginationInfo = {
+  count: number;
+  hasMore: Boolean;
+  isLoading: Boolean;
+  page: number;
+};
+
+type UseEffectFetchFeedArgs = {
   filter: string;
-  setIsPageLoading: Function;
-}): void => {
-  const filters = useEffect((): void => {
-    // make fetch call here.
-  });
+  paginationInfo: PaginationInfo;
+  setDocuments: Function;
+  setPaginationInfo: Function;
+  subFilters: any;
+};
+
+const useEffectFetchFeed = ({
+  filter,
+  paginationInfo,
+  setDocuments,
+  setPaginationInfo,
+  subFilters,
+}: UseEffectFetchFeedArgs): void => {
+  const onSuccess = ({ count, next, documents }) => {
+    setDocuments(documents);
+    setPaginationInfo({
+      ...paginationInfo,
+      count,
+      hasMore: next,
+      isLoading: false,
+    });
+  };
+  const onError = (error: Error): void => {
+    emptyFncWithMsg(error);
+    setPaginationInfo({
+      ...paginationInfo,
+      hasMore: false,
+      isLoading: false,
+    });
+  };
+  useEffect((): void => {
+    // @ts-ignore legacy fetch code
+    fetchUnifiedDocs({ filter, subFilters, onSuccess, onError });
+  }, [filter, subFilters, paginationInfo]);
 };
 
 const getFilterFromRouter = (router: NextRouter): string => {
@@ -38,9 +76,24 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-  const [isPageLoading, setIsPageLoading] = useState<boolean>(true);
+  const [documents, setDocuments] = useState([]);
 
-  useCallbackFetchFeed({ filter, setIsPageLoading });
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
+    count: 0,
+    hasMore: false,
+    isLoading: true,
+    page: 1,
+  });
+
+  useEffectFetchFeed({
+    filter,
+    paginationInfo,
+    setDocuments,
+    setPaginationInfo,
+    subFilters,
+  });
+
+  console.warn("DOCUMENTS: ", documents);
 
   const filterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
