@@ -3,6 +3,7 @@ import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import API from "~/config/api";
+import helpers from "@quantfive/js-web-config/helpers";
 
 // import { AUTH_TOKEN } from "~/config/constants";
 // import nookies from "nookies";
@@ -47,6 +48,42 @@ const calculateScope = (scope) => {
   return scope;
 };
 
+const fetchUserVote = (documents) => {
+  let postIds = [];
+  let paperIds = [];
+  for (let i = 0; i < documents.length; i++) {
+    let curDoc = documents[i];
+    if (curDoc.document_type === "PAPER") {
+      paperIds.push(curDoc.documents.id);
+    } else {
+      postIds.push(curDoc.documents[0].id);
+    }
+  }
+
+  return fetch(
+    API.CHECK_USER_VOTE_DOCUMENTS({ postIds, paperIds }),
+    API.GET_CONFIG()
+  )
+    .then(helpers.checkStatus)
+    .then(helpers.parseJSON)
+    .then((res) => {
+      let newDocs = [...documents];
+
+      for (let i = 0; i < newDocs.length; i++) {
+        let curDoc = newDocs[i];
+        if (curDoc.document_type === "PAPER") {
+          let docId = curDoc.documents.id;
+          curDoc.documents.user_vote = res.papers[docId];
+        } else {
+          let docId = curDoc.documents[0].id;
+          curDoc.documents[0].user_vote = res.posts[docId];
+        }
+      }
+
+      return newDocs;
+    });
+};
+
 export default function fetchUnifiedDocs({
   docTypeFilter,
   hubID,
@@ -77,12 +114,13 @@ export default function fetchUnifiedDocs({
   };
 
   fetchUnifiedDocFeed(PARAMS)
-    .then((res) => {
+    .then(async (res) => {
       const { count, next, results } = res;
+      let docs = await fetchUserVote(results);
       onSuccess({
         count,
         hasMore: !isNullOrUndefined(next),
-        documents: results,
+        documents: docs,
       });
     })
     .catch((err) => {
