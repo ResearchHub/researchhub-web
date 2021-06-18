@@ -25,11 +25,14 @@ export default function DownloadPDFButton({
   );
 
   return (
-    <Button
-      label={label}
-      onClick={downloadPDF}
-      customButtonStyle={[styles.downloadButton, style]}
-    />
+    <>
+      {/* @ts-ignore */}
+      <Button
+        label={label}
+        onClick={downloadPDF}
+        customButtonStyle={[styles.downloadButton, style]}
+      />
+    </>
   );
 }
 

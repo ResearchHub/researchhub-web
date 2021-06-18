@@ -36,10 +36,7 @@ export type UserPostCardProps = {
 
 function UserPostCard(props: UserPostCardProps) {
   const {
-    created_by: {
-      author_profile: { first_name, last_name },
-    },
-    created_by: { author_profile: author },
+    created_by,
     hubs,
     id,
     preview_img: previewImg,
@@ -51,6 +48,14 @@ function UserPostCard(props: UserPostCardProps) {
     user,
     user_vote: userVote,
   } = props;
+
+  if (created_by == null) {
+    return null;
+  }
+
+  const {
+    author_profile: { first_name, last_name, author },
+  } = created_by;
 
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
@@ -96,7 +101,11 @@ function UserPostCard(props: UserPostCardProps) {
 
   const creatorTag = (
     <div className={css(styles.postCreatedBy)}>
-      <AuthorAvatar author={author} size={28} border="2px solid #F1F1F1" />
+      <AuthorAvatar
+        author={created_by.author_profile}
+        size={28}
+        border="2px solid #F1F1F1"
+      />
       {/* <span className={css(styles.creatorName)}>{creatorName}</span> */}
     </div>
   );
@@ -152,15 +161,13 @@ function UserPostCard(props: UserPostCardProps) {
         (err) => console.log(err)
       );
 
-      console.log(response);
       return response;
     };
 
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
 
-      console.log(user);
-      if (user && user.author_profile.id === author.id) {
+      if (user && user.author_profile.id === created_by.author_profile.id) {
         console.log("Not logged in or Attempted to vote own post");
         return;
       }

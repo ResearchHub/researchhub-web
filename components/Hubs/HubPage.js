@@ -22,6 +22,7 @@ import MobileFeedTabs from "../Home/MobileFeedTabs";
 import Button from "../Form/Button";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import ActivityList from "~/components/Activity/ActivityList";
+import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -40,6 +41,7 @@ import {
 } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import killswitch from "~/config/killswitch/killswitch";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -666,7 +668,7 @@ class HubPage extends React.Component {
         ? auth.isLoggedIn
         : this.props.loggedIn
       : this.props.loggedIn;
-
+    const shouldShowUnifiedDoc = killswitch("unifiedDocumentFeed");
     return (
       <Fragment>
         <MobileFeedTabs
@@ -697,16 +699,13 @@ class HubPage extends React.Component {
                 />
               </div>
             </div>
-            <div className={css(styles.column, styles.mainfeed)}>
-              <MainHeader
-                {...this.props}
-                {...this.state}
-                title={this.formatMainHeader()}
+            {shouldShowUnifiedDoc ? (
+              <UnifiedDocFeedContainer
+                feed={feed}
+                home={this.props.home}
                 hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
-                scopeOptions={scopeOptions}
-                filterOptions={filterOptions}
-                onScopeSelect={this.onScopeSelect}
-                onFilterSelect={this.onFilterSelect}
+                hubState={hubState}
+                hub={hub}
                 subscribeButton={
                   <SubscribeButton
                     {...this.props}
@@ -717,81 +716,105 @@ class HubPage extends React.Component {
                   />
                 }
               />
-              <div>
-                {(this.state.papers.length > 0 && sampleFeed) ||
-                !hasSubscribed ? (
-                  <div
-                    className={css(styles.bannerContainer)}
-                    id="create-feed-banner"
-                  >
-                    <CreateFeedBanner />
-                  </div>
-                ) : null}
-              </div>
-              <div className={css(styles.infiniteScroll)}>
-                <ReactPlaceholder
-                  ready={this.state.doneFetching}
-                  showLoadingAnimation
-                  customPlaceholder={
-                    <PaperPlaceholder
-                      color="#efefef"
-                      rows={3}
-                      style={{ width: "100%" }}
+            ) : (
+              <div className={css(styles.column, styles.mainfeed)}>
+                <MainHeader
+                  {...this.props}
+                  {...this.state}
+                  title={this.formatMainHeader()}
+                  hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+                  scopeOptions={scopeOptions}
+                  filterOptions={filterOptions}
+                  onScopeSelect={this.onScopeSelect}
+                  onFilterSelect={this.onFilterSelect}
+                  subscribeButton={
+                    <SubscribeButton
+                      {...this.props}
+                      {...this.state}
+                      onClick={() => this.setState({ transition: true })}
+                      onSubscribe={this.onSubscribe}
+                      onUnsubscribe={this.onUnsubscribe}
                     />
                   }
-                >
-                  {this.state.papers.length > 0 ? (
-                    <div>
-                      <div
-                        className={css(
-                          styles.feedPapers,
-                          sampleFeed && styles.sampleFeed
-                        )}
-                      >
-                        {sampleFeed && (
-                          <Fragment>
-                            <div className={css(styles.blur)} />
-                            <Button
-                              isLink={
-                                loggedIn
-                                  ? {
-                                      href: `/user/${auth.user.author_profile.id}/onboard`,
-                                      query: {
-                                        selectHubs: true,
-                                      },
-                                    }
-                                  : {
-                                      href: "/all",
-                                      linkAs: "/all",
-                                    }
-                              }
-                              hideRipples={true}
-                              label={
-                                loggedIn ? "Generate My Hubs" : "View All Hubs"
-                              }
-                              customButtonStyle={styles.allFeedButton}
-                            />
-                          </Fragment>
-                        )}
-                        {this.state.papers.map((paper, i) => (
-                          <PaperEntryCard
-                            key={`${paper.id}-${i}`}
-                            paper={paper}
-                            index={i}
-                            hubName={hubName}
-                            voteCallback={this.voteCallback}
-                            vote={paper.user_vote}
-                          />
-                        ))}
-                      </div>
-                      {!sampleFeed && this.renderLoadMoreButton()}
+                />
+                <div>
+                  {(this.state.papers.length > 0 && sampleFeed) ||
+                  !hasSubscribed ? (
+                    <div
+                      className={css(styles.bannerContainer)}
+                      id="create-feed-banner"
+                    >
+                      <CreateFeedBanner />
                     </div>
-                  ) : (
-                    <EmpytFeedScreen activeFeed={this.state.feed} />
-                  )}
-                </ReactPlaceholder>
+                  ) : null}
+                </div>
+                <div className={css(styles.infiniteScroll)}>
+                  <ReactPlaceholder
+                    ready={this.state.doneFetching}
+                    showLoadingAnimation
+                    customPlaceholder={
+                      <PaperPlaceholder
+                        color="#efefef"
+                        rows={3}
+                        style={{ width: "100%" }}
+                      />
+                    }
+                  >
+                    {this.state.papers.length > 0 ? (
+                      <div>
+                        <div
+                          className={css(
+                            styles.feedPapers,
+                            sampleFeed && styles.sampleFeed
+                          )}
+                        >
+                          {sampleFeed && (
+                            <Fragment>
+                              <div className={css(styles.blur)} />
+                              <Button
+                                isLink={
+                                  loggedIn
+                                    ? {
+                                        href: `/user/${auth.user.author_profile.id}/onboard`,
+                                        query: {
+                                          selectHubs: true,
+                                        },
+                                      }
+                                    : {
+                                        href: "/all",
+                                        linkAs: "/all",
+                                      }
+                                }
+                                hideRipples={true}
+                                label={
+                                  loggedIn
+                                    ? "Generate My Hubs"
+                                    : "View All Hubs"
+                                }
+                                customButtonStyle={styles.allFeedButton}
+                              />
+                            </Fragment>
+                          )}
+                          {this.state.papers.map((paper, i) => (
+                            <PaperEntryCard
+                              key={`${paper.id}-${i}`}
+                              paper={paper}
+                              index={i}
+                              hubName={hubName}
+                              voteCallback={this.voteCallback}
+                              vote={paper.user_vote}
+                            />
+                          ))}
+                        </div>
+                        {!sampleFeed && this.renderLoadMoreButton()}
+                      </div>
+                    ) : (
+                      <EmpytFeedScreen activeFeed={this.state.feed} />
+                    )}
+                  </ReactPlaceholder>
+                </div>
               </div>
-            </div>
+            )}
             <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.rightSidebarContainer)}>
                 <ActivityList
@@ -886,13 +909,14 @@ var styles = StyleSheet.create({
   body: {
     width: "100%",
     height: "100%",
-    display: "table",
-    minWidth: "100vw",
+    marginTop: 28,
+    // display: "table",
+    // minWidth: "100vw",
     borderSpacing: "20px 0px",
+    alignItems: "flex-start",
     boxSizing: "border-box",
-    "@media only screen and (min-width: 1920px)": {
-      maxWidth: 1920,
-    },
+    paddingLeft: 16,
+    paddingRight: 16,
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
@@ -908,7 +932,7 @@ var styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     maxWidth: 1200,
-    display: "table-cell",
+    // display: "table-cell",
     flexDirection: "column",
     "@media only screen and (min-width: 1920px)": {
       minWidth: 1200,
@@ -934,12 +958,12 @@ var styles = StyleSheet.create({
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   sidebar: {
-    display: "table-cell",
+    // display: "table-cell",
     paddingBottom: 30,
     // "@media only screen and (min-width: 1920px)": {
     //   minWidth: 280,
     // },
-    "@media only screen and (max-width: 990px)": {
+    "@media only screen and (max-width: 1199px)": {
       display: "none",
     },
   },
