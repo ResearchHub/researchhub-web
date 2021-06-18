@@ -339,11 +339,11 @@ const DiscussionTab = (props) => {
       setFetching(true);
     }
     setLoading(true);
-    if (paperId) {
-      const currentPaper = props.paper;
-      const res = await getThreads({
-        paperId: paperId,
-        paper: currentPaper,
+    if (postId) {
+      const currentPost = post;
+      const res = await getPostThreads({
+        documentId: postId,
+        post: currentPost,
         filter,
         loadMore,
         twitter: showTwitterComments,
@@ -353,11 +353,11 @@ const DiscussionTab = (props) => {
       setLoading(false);
       setThreads(threads);
       setFormattedThreads(formatThreads(threads, basePath));
-    } else {
-      const currentPost = post;
-      const res = await getPostThreads({
-        documentId: postId,
-        post: currentPost,
+    } else if (paperId) {
+      const currentPaper = props.paper;
+      const res = await getThreads({
+        paperId: paperId,
+        paper: currentPaper,
         filter,
         loadMore,
         twitter: showTwitterComments,
@@ -479,26 +479,6 @@ const DiscussionTab = (props) => {
                 )}
               </span>
               {!showEditor && !showTwitterComments && renderAddDiscussion()}
-              {/* <div className={css(styles.tabRow)}>
-                <div
-                  className={css(
-                    styles.tab,
-                    !showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(false)}
-                >
-                  Comments
-                </div>
-                <div
-                  className={css(
-                    styles.tab,
-                    showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(true)}
-                >
-                  Tweets
-                </div>
-              </div> */}
             </h3>
             <div className={css(styles.filterContainer)}>
               <div className={css(styles.filterSelect)}>
@@ -601,7 +581,7 @@ const DiscussionTab = (props) => {
                     type="beat"
                   />
                 ) : (
-                  props.calculatedCount
+                  ""
                 )}
               </span>
               {/* <div className={css(styles.tabRow)}>

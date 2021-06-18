@@ -29,7 +29,7 @@ export default function AboutQuestionCard({
         open={isOpen}
         openedClassName={css(styles.collapsibleSection)}
         trigger={
-          <div>
+          <div className={css(styles.trigger)}>
             What can you post here?
             <span className={css(styles.chevronDown)}>
               {icons.chevronDownLeft}
@@ -49,7 +49,7 @@ export default function AboutQuestionCard({
         open={isOpen}
         openedClassName={css(styles.collapsibleSection)}
         trigger={
-          <div>
+          <div className={css(styles.trigger)}>
             Guidelines
             <span className={css(styles.chevronDown)}>
               {icons.chevronDownLeft}
@@ -58,9 +58,10 @@ export default function AboutQuestionCard({
         }
       >
         <ul>
-          <li>Ask a question</li>
-          <li>Start Discussion about a certain topic</li>
-          <li>Post a relevant photo to a hub</li>
+          <li>Be civil</li>
+          <li>Ask great questions / start great discussions</li>
+          <li>Offer suggestions and corrections</li>
+          <li> Back up your claims by linking to related work</li>
         </ul>
       </Collapsible>
     </div>
@@ -111,6 +112,9 @@ const styles = StyleSheet.create({
     color: "#241F3A",
   },
   chevronDown: {
-    marginLeft: 5,
+    marginLeft: "auto",
+  },
+  trigger: {
+    display: "flex",
   },
 });

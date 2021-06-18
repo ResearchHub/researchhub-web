@@ -8,7 +8,7 @@ import API from "~/config/api";
 // Redux
 import helpers from "@quantfive/js-web-config/helpers";
 
-function Paper(props) {
+function Post(props) {
   // TODO: Does this need to be a dynamic route or hard refresh?
   if (props.error) {
     return <Error statusCode={404} />;
@@ -23,7 +23,7 @@ function Paper(props) {
   );
 }
 
-Paper.getInitialProps = async (ctx) => {
+Post.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
   let posts = await fetch(
     API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
@@ -37,4 +37,4 @@ Paper.getInitialProps = async (ctx) => {
   return { redirectPath, post };
 };
 
-export default Paper;
+export default Post;
