@@ -221,6 +221,19 @@ function UnifiedDocFeedContainer({
               paper={document.documents}
               index={i}
               vote={document.user_vote}
+              voteCallback={(index, curPaper) => {
+                let newDocument = {
+                  ...document,
+                };
+                newDocument.documents.user_vote = curPaper.user_vote;
+                newDocument.documents.score = curPaper.score;
+
+                let newDocuments = [...documents];
+
+                newDocuments[index] = newDocument;
+
+                setDocuments(newDocuments);
+              }}
             />
           );
         } else {

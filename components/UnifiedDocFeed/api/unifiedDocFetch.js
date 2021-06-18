@@ -81,6 +81,9 @@ const fetchUserVote = (documents) => {
       }
 
       return newDocs;
+    })
+    .catch((_) => {
+      return documents;
     });
 };
 
