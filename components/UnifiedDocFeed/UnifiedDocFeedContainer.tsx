@@ -19,6 +19,7 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import UserPostCard from "../Author/Tabs/UserPostCard";
 import colors from "../../config/themes/colors";
 import Loader from "../Loader/Loader";
+import { capitalize } from "../../config/utils";
 
 type PaginationInfo = {
   count: number;
@@ -72,7 +73,7 @@ const useEffectFetchFeed = ({
 };
 
 const getFilterFromRouter = (router: NextRouter): string => {
-  const docType = router.query.docType;
+  const docType = router.query.type;
   return isNullOrUndefined(docType)
     ? UnifiedDocFilters.ALL
     : Array.isArray(docType)
@@ -80,7 +81,13 @@ const getFilterFromRouter = (router: NextRouter): string => {
     : nullthrows(docType);
 };
 
-export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
+export default function UnifiedDocFeedContainer({
+  feed,
+  home,
+  hubName,
+  hub,
+  subscribeButton,
+}): ReactElement<"div"> {
   const router = useRouter();
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -99,6 +106,43 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
     page: 1,
   });
   const { hasMore, isLoadingMore } = paginationInfo;
+
+  const formatMainHeader = () => {
+    const { filterBy } = subFilters;
+
+    if (feed === 0) {
+      return "My Hubs";
+    }
+
+    const isHomePage = home;
+    let prefix = "";
+    switch (filterBy.value) {
+      case "removed":
+        prefix = "Removed";
+        break;
+      case "hot":
+        prefix = "Trending";
+        break;
+      case "top_rated":
+        prefix = "Top";
+        break;
+      case "newest":
+        prefix = "Newest";
+        break;
+      case "most_discussed":
+        prefix = "Most Discussed";
+        break;
+      case "pulled-papers":
+        prefix = "Pulled";
+        break;
+    }
+
+    if (isHomePage) {
+      return `${prefix} on ResearchHub`;
+    }
+
+    return `${capitalize(hubName)}`;
+  };
 
   useEffectFetchFeed({
     documents,
@@ -120,16 +164,19 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
               setDocTypeFilter(filterValue);
-              router.push({
-                pathname: router.pathname,
-                query: { docType: filterValue },
-              });
+              router.push(
+                {
+                  pathname: router.pathname,
+                  query: { ...router.query, type: filterValue },
+                },
+                router.pathname + `?type=${filterValue}`
+              );
             }}
           />
         );
       }
     );
-  }, [docTypeFilter]);
+  }, [docTypeFilter, router]);
 
   const documentCards = useMemo(
     () =>
@@ -167,8 +214,13 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
+      <div className={css(styles.titleContainer)}>
+        <h1 className={css(styles.title) + " clamp2"}>{formatMainHeader()}</h1>
+        {home ? null : (
+          <div className={css(styles.subscribeContainer)}>
+            {hub && subscribeButton}
+          </div>
+        )}
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
             onSubFilterSelect={(_type: string, filterBy: any): void => {
@@ -186,6 +238,9 @@ export default function UnifiedDocFeedContainer(): ReactElement<"div"> {
             subFilters={subFilters}
           />
         </div>
+      </div>
+      <div className={css(styles.buttonGroup)}>
+        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
       {documentCards}
       <div className={css(styles.loadMoreWrap)}>
@@ -221,25 +276,24 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    maxWidth: 1200,
     width: "100%",
-    "@media only screen and (min-width: 1920px)": {
-      minWidth: 1200,
+    "@media only screen and (min-width: 1200px)": {
+      paddingLeft: 50,
+      paddingRight: 50,
     },
     "@media only screen and (max-width: 990px)": {
       width: "100%",
     },
     "@media only screen and (max-width: 415px)": {
-      padding: 0,
       width: "100%",
     },
   },
   buttonGroup: {
     alignItems: "center",
     display: "flex",
-    height: 120,
     justifyContent: "space-between",
     width: "100%",
+    marginTop: 16,
   },
   mainFilters: {
     alignItems: "center",
@@ -250,6 +304,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: "inherit",
+    marginLeft: "auto",
+
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      marginTop: 16,
+    },
   },
   customUserPostCard: {
     border: 0,
@@ -258,6 +318,48 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingTop: 24,
     paddingBottom: 24,
+  },
+  titleContainer: {
+    display: "flex",
+    alignItems: "center",
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
+  },
+  title: {
+    color: "#241F3A",
+    // width: "100%",
+    fontWeight: 400,
+    fontSize: 30,
+    padding: 0,
+    margin: 0,
+    textOverflow: "ellipsis",
+
+    "@media only screen and (max-width: 1149px)": {
+      fontSize: 30,
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 25,
+      textAlign: "center",
+      justifyContent: "center",
+      whiteSpace: "pre-wrap",
+      wordBreak: "normal",
+      display: "flex",
+    },
+    "@media only screen and (max-width: 416px)": {
+      fontSize: 25,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 20,
+    },
+  },
+  subscribeContainer: {
+    marginLeft: 16,
+    minWidth: 100,
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   loadMoreButton: {
     fontSize: 14,
