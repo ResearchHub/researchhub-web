@@ -47,7 +47,6 @@ class BaseModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
   }
 
   updateDimensions = () => {
@@ -110,14 +109,6 @@ class BaseModal extends React.Component {
 
   render() {
     let { isOpen } = this.props;
-
-    // isOpen is single source of truth, so it should
-    // be only one deciding parent scroll
-    if (isOpen) {
-      this.disableParentScroll();
-    } else {
-      this.enableParentScroll();
-    }
 
     return (
       <Modal
