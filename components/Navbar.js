@@ -41,6 +41,7 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -381,6 +382,10 @@ const Navbar = (props) => {
   function openWithdrawalModal() {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
+  }
+
+  function openNewPostModal() {
+    props.openNewPostModal(true);
   }
 
   return (

@@ -47,7 +47,6 @@ class BaseModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
   }
 
   updateDimensions = () => {
@@ -75,30 +74,6 @@ class BaseModal extends React.Component {
         this.props.closeModal && this.props.closeModal();
       }, 200);
     });
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    try {
-      if (document.body.style) {
-        document.body.style.overflow = "hidden";
-      }
-    } catch {
-      /* document not defined */
-    }
-  };
-
-  enableParentScroll = () => {
-    try {
-      if (document.body.style) {
-        document.body.style.overflow = "scroll";
-      }
-    } catch {
-      /* document not defined */
-    }
   };
 
   getMobileState = () => {
@@ -134,14 +109,6 @@ class BaseModal extends React.Component {
 
   render() {
     let { isOpen } = this.props;
-
-    // isOpen is single source of truth, so it should
-    // be only one deciding parent scroll
-    if (isOpen) {
-      this.disableParentScroll();
-    } else {
-      this.enableParentScroll();
-    }
 
     return (
       <Modal
