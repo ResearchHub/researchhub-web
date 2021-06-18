@@ -51,6 +51,7 @@ const DiscussionPostMetadata = (props) => {
     isModerator,
     isLoggedIn,
     currentAuthorId,
+    postId,
   } = props;
 
   const alert = useAlert();
@@ -119,7 +120,6 @@ const DiscussionPostMetadata = (props) => {
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
     let { paperId, threadId, commentId, replyId, postId } = metaData;
-    debugger;
     console.log(metaData);
     let config = isFlagged
       ? API.DELETE_CONFIG()
@@ -189,7 +189,9 @@ const DiscussionPostMetadata = (props) => {
             </div>
             {showDropDown && (
               <div className={css(styles.dropdown)} ref={dropdown}>
-                {threadPath && <ExpandButton {...props} />}
+                {!metaData.postId && threadPath ? (
+                  <ExpandButton {...props} />
+                ) : null}
                 {threadPath && renderShareButton()}
                 <FlagButton
                   {...props}
