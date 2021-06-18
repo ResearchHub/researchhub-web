@@ -201,13 +201,14 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
         />
         <div className={css(styles.buttonsContainer)}>
           {/* @ts-ignore */}
-          <Button
+          {/* TODO: briansantoso - add back Save Draft button when needed */}
+          {/* <Button
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
             isWhite={true}
             label="Save Draft"
             onClick={handleSaveDraft}
-          />
+          /> */}
           <span className={css(styles.buttonSpacer)} />
           {/* @ts-ignore */}
           <Button
