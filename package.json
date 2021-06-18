@@ -17,7 +17,8 @@
     "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging",
     "sitemap": "node scripts/createSitemap.js",
     "sitemap-index": "node scripts/createSitemapIndex.js",
-    "eb:deploy": "./scripts/deploy/eb-deploy.sh"
+    "eb:deploy": "./scripts/deploy/eb-deploy.sh",
+    "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^3.0.2",
