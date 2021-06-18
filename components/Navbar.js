@@ -38,13 +38,10 @@ import { RHLogo } from "~/config/themes/icons";
 
 // Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-<<<<<<< HEAD
 import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-=======
->>>>>>> db64587b (NewPostButton.tsx)
 
 const Navbar = (props) => {
   const router = useRouter();
