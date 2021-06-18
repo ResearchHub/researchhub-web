@@ -101,7 +101,11 @@ function UserPostCard(props: UserPostCardProps) {
 
   const creatorTag = (
     <div className={css(styles.postCreatedBy)}>
-      <AuthorAvatar author={author} size={28} border="2px solid #F1F1F1" />
+      <AuthorAvatar
+        author={created_by.author_profile}
+        size={28}
+        border="2px solid #F1F1F1"
+      />
       {/* <span className={css(styles.creatorName)}>{creatorName}</span> */}
     </div>
   );
@@ -164,8 +168,7 @@ function UserPostCard(props: UserPostCardProps) {
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
 
-      console.log(user);
-      if (user && user.author_profile.id === author.id) {
+      if (user && user.author_profile.id === created_by.author_profile.id) {
         console.log("Not logged in or Attempted to vote own post");
         return;
       }
