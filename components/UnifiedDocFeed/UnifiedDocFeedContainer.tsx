@@ -123,7 +123,7 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-  const [documents, setDocuments] = useState([]);
+  const [documents, setDocuments] = useState<any>([]);
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     count: 0,

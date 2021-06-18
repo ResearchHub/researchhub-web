@@ -114,6 +114,7 @@ export default function AuthorClaimPromptEmail({
           required
         />
         <div className={css(verifStyles.buttonContainer)}>
+          {/* @ts-ignore */}
           <Button
             label={
               isSubmitting ? (
