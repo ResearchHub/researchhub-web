@@ -797,6 +797,37 @@ const routes = (BASE_URL) => {
       }
       return url + query;
     },
+
+    CHECK_USER_VOTE_DOCUMENTS: ({ paperIds = [], postIds = [] }) => {
+      let url = BASE_URL + "researchhub_unified_documents/check_user_vote/";
+      let query;
+      if (paperIds.length) {
+        query = `?paper_ids=`;
+
+        paperIds.forEach((id, i) => {
+          query += id;
+          if (i < paperIds.length - 1) {
+            query += ",";
+          }
+        });
+      }
+
+      if (postIds.length) {
+        if (query) {
+          query += `&post_ids=`;
+        } else {
+          query = `?post_ids=`;
+        }
+
+        postIds.forEach((id, i) => {
+          query += id;
+          if (i < postIds.length - 1) {
+            query += ",";
+          }
+        });
+      }
+      return url + query;
+    },
     SUPPORT: BASE_URL + "support/",
   };
 
