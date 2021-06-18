@@ -571,7 +571,6 @@ class PostPageCard extends React.Component {
         (err) => console.log(err)
       );
 
-      console.log(response);
       return response;
     };
 
