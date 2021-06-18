@@ -76,6 +76,12 @@ const useEffectFetchFeed = ({
     });
   };
   useEffect((): void => {
+    setPaginationInfo({
+      ...paginationInfo,
+      isLoading: true,
+      hasMore: paginationInfo.page !== 1,
+      isLoadingMore: false,
+    });
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
