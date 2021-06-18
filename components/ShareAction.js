@@ -16,7 +16,6 @@ const ShareAction = (props) => {
   }
 
   function closeShareModal() {
-    debugger
     setModalIsOpen(false);
   }
 
