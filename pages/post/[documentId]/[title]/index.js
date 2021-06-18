@@ -73,6 +73,20 @@ const steps = [
   },
 ];
 
+function useEffectFetchPost({ post, setPost, query }) {
+  useEffect(() => {
+    fetch(
+      API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data) => {
+        setPost(data.results[0]);
+      });
+  }, [post]);
+}
+
 const Post = (props) => {
   const router = useRouter();
   if (props.error) {
@@ -90,6 +104,7 @@ const Post = (props) => {
   const store = useStore();
 
   const [post, setPost] = useState(props.post || {});
+  useEffectFetchPost({ post: props.post, setPost, query: props.query });
 
   // const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
@@ -103,24 +118,15 @@ const Post = (props) => {
 
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
-    post.created_by && post.created_by.id === props.auth.user.id;
-
-  // useEffect(() => {
-  //  fetch(API.RESEARCHHUB_POSTS({ post_id: query.documentId }))
-  //    .then(Helpers.checkStatus)
-  //    .then(Helpers.parseJSON)
-  //    .then((data) => {
-  //      setPost(data);
-  //    });
-  // }, [props.post]);
+    post && post.created_by && post.created_by.id === props.auth.user.id;
 
   useEffect(() => {
     setPost(props.post);
   }, [props.post]);
 
-  useEffect(() => {
-    setCount(calculateCommentCount(post));
-  }, [post.discussionSource]);
+  //useEffect(() => {
+  //  setCount(calculateCommentCount(post));
+  //}, [post.discussionSource]);
 
   // async function upvote() {
   //   dispatch(VoteActions.postUpvotePending());
@@ -204,10 +210,10 @@ const Post = (props) => {
     return data;
   }
 
-  let socialImageUrl = post.metatagImage;
+  let socialImageUrl = post && post.metatagImage;
 
   if (!socialImageUrl) {
-    socialImageUrl = post.preview_img && post.preview_img.file;
+    socialImageUrl = post && post.preview_img && post.preview_img.file;
   }
 
   function updatePostState(newState) {
@@ -216,70 +222,69 @@ const Post = (props) => {
 
   function getAllAuthors() {
     const { created_by } = post;
-    const allAuthors = [created_by.author_profile];
+    let allAuthors = [];
+    if (post.created_by) {
+      allAuthors = [created_by.author_profile];
+    }
     return allAuthors;
   }
 
-  const slug = post.title.toLowerCase().replace(/\s/g, "-");
+  const slug =
+    post && post.title && post.title.toLowerCase().replace(/\s/g, "-");
 
-  return (
-    <div>
-      <Head
-        title={post.title}
-        description={formatDescription()}
-        socialImageUrl={socialImageUrl}
-        noindex={post.is_removed || post.is_removed_by_user}
-        canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
-      />
-      <div className={css(styles.root)}>
-        <div className={css(styles.container)}>
-          <div className={css(styles.main)}>
-            <div className={css(styles.paperPageContainer, styles.top)}>
-              <PostPageCard post={post} />
-            </div>
-            <a name="discussion">
-              <div className={css(styles.space)}>
-                <DiscussionTab
-                  hostname={props.hostname}
-                  documentType={"post"}
-                  post={post}
-                  postId={post.id}
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  isCollapsible={false}
-                />
+  if (post) {
+    return (
+      <div>
+        <Head
+          title={post.title}
+          description={formatDescription()}
+          socialImageUrl={socialImageUrl}
+          noindex={post.is_removed || post.is_removed_by_user}
+          canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
+        />
+        <div className={css(styles.root)}>
+          <div className={css(styles.container)}>
+            <div className={css(styles.main)}>
+              <div className={css(styles.paperPageContainer, styles.top)}>
+                <PostPageCard post={post} />
               </div>
-            </a>
-          </div>
-          <div className={css(styles.sidebar)}>
-            <PaperSideColumn
-              authors={getAllAuthors()}
-              paper={post}
-              hubs={post.hubs}
-              paperId={post.id}
-              isPost={true}
-            />
+              <a name="discussion">
+                <div className={css(styles.space)}>
+                  <DiscussionTab
+                    hostname={props.hostname}
+                    documentType={"post"}
+                    post={post}
+                    postId={post.id}
+                    calculatedCount={discussionCount}
+                    setCount={setCount}
+                    isCollapsible={false}
+                  />
+                </div>
+              </a>
+            </div>
+            <div className={css(styles.sidebar)}>
+              <PaperSideColumn
+                authors={getAllAuthors()}
+                paper={post}
+                hubs={post.hubs}
+                paperId={post.id}
+                isPost={true}
+              />
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return null;
+  }
 };
 
 Post.getInitialProps = async (ctx) => {
   const { req, store, query, res } = ctx;
   const { host } = absoluteUrl(req);
   const hostname = host;
-
-  // Fetch data from external API
-  let props = {};
-  let posts = await fetch(
-    API.RESEARCHHUB_POSTS({ post_id: query.documentId })
-  ).then(helpers.parseJSON);
-  const post = posts.results[0];
-
-  props = { hostname, post };
-
+  const props = { hostname, query };
   return props;
 };
 
