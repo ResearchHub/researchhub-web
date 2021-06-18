@@ -669,7 +669,7 @@ class HubPage extends React.Component {
         : this.props.loggedIn
       : this.props.loggedIn;
     const shouldShowUnifiedDoc = killswitch("unifiedDocumentFeed");
-
+    console.warn("HUBSTATE: ", hubState);
     return (
       <Fragment>
         <MobileFeedTabs
@@ -705,6 +705,7 @@ class HubPage extends React.Component {
                 feed={feed}
                 home={this.props.home}
                 hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+                hubState={hubState}
                 hub={hub}
                 subscribeButton={
                   <SubscribeButton
