@@ -67,7 +67,7 @@ const TabBar = (props) => {
             hideSingleArrow={true}
             onSelect={onSelect}
             wheel={false}
-            selected={"nav-link-discussions"}
+            selected={selected}
             scrollToSelected={true}
           />
         </ReactPlaceholder>
