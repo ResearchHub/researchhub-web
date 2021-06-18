@@ -8,12 +8,14 @@ export default function Index() {
   return (
     <Fragment>
       <Head
-        title={`Ask a Question`}
-        description="Ask a Question to ResearchHub"
+        title={`New Post`}
+        description="Ask a Question or Start a Discussion on ResearchHub"
       />
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
-          <div className={css(styles.title)}>Ask a Question</div>
+          <div className={css(styles.title)}>
+            Ask a Question or Start a Discussion
+          </div>
           <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
           <div className={css(styles.row)}>
             <AskQuestionForm />
