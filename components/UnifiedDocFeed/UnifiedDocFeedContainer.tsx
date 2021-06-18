@@ -126,7 +126,7 @@ function UnifiedDocFeedContainer({
     isLoadingMore: false,
     page: 1,
   });
-  const { hasMore, isLoadingMore } = paginationInfo;
+  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
 
   const formatMainHeader = () => {
     const { filterBy } = subFilters;
@@ -201,6 +201,7 @@ function UnifiedDocFeedContainer({
       }
     );
   }, [docTypeFilter, router]);
+
   const documentCards = useMemo(
     () =>
       documents.map((document: any, i: number): ReactElement<
@@ -234,7 +235,7 @@ function UnifiedDocFeedContainer({
       subFilters.scope,
     ]
   );
-
+  const onInitialLoad = page === 1 && isLoading;
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       <div className={css(styles.titleContainer)}>
@@ -265,9 +266,27 @@ function UnifiedDocFeedContainer({
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
-      {documentCards}
+      {onInitialLoad ? (
+        <div className={css(styles.initSpinnerWrap)}>
+          <Loader
+            key={"authored-loader"}
+            loading={true}
+            size={25}
+            color={colors.BLUE()}
+          />
+        </div>
+      ) : (
+        documentCards
+      )}
       <div className={css(styles.loadMoreWrap)}>
-        {hasMore ? (
+        {isLoadingMore ? (
+          <Loader
+            key={"authored-loader"}
+            loading={true}
+            size={25}
+            color={colors.BLUE()}
+          />
+        ) : hasMore ? (
           <Ripples
             className={css(styles.loadMoreButton)}
             onClick={(): void =>
@@ -281,13 +300,6 @@ function UnifiedDocFeedContainer({
           >
             Load More
           </Ripples>
-        ) : isLoadingMore ? (
-          <Loader
-            key={"authored-loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
         ) : null}
       </div>
     </div>
@@ -415,5 +427,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     margin: "8px 0 16px",
+  },
+  initSpinnerWrap: {
+    alignContent: "center",
+    display: "flex",
+    height: 50,
+    justifyContent: "center",
+    width: "100%",
   },
 });
