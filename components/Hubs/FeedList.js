@@ -145,7 +145,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     boxSizing: "border-box",
     width: "100%",
-    marginTop: 30,
   },
   hubsListContainer: {
     height: "100%",

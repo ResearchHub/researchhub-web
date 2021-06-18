@@ -125,8 +125,7 @@ class HubsList extends React.Component {
             href={{
               pathname: "/hubs/[slug]",
               query: {
-                name: `${hub.name}`,
-
+                // name: `${hub.name}`,
                 slug: `${encodeURIComponent(hub.slug)}`,
               },
             }}

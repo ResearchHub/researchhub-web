@@ -117,6 +117,12 @@ export const fetchPaperFeed = async (PARAMS, authToken = null) => {
     .then(Helpers.parseJSON);
 };
 
+export const fetchUnifiedDocFeed = async (PARAMS, authToken = null) => {
+  return await fetch(API.GET_UNIFIED_DOCS(PARAMS), API.GET_CONFIG(authToken))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const fetchLeaderboard = async (PARAMS) => {
   fetch(API.LEADERBOARD(PARAMS), API.GET_CONFIG())
     .then(Helpers.checkStatus)

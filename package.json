@@ -17,9 +17,11 @@
     "start:staging": "docker run -it -p 3010:3000 researchhub-web-staging",
     "sitemap": "node scripts/createSitemap.js",
     "sitemap-index": "node scripts/createSitemapIndex.js",
-    "eb:deploy": "./scripts/deploy/eb-deploy.sh"
+    "eb:deploy": "./scripts/deploy/eb-deploy.sh",
+    "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^3.0.2",
     "@algolia/autocomplete-theme-classic": "^1.1.0",
     "@ckeditor/ckeditor5-react": "^3.0.2",
     "@elastic/apm-rum": "^5.6.0",
@@ -136,8 +138,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged",
-      "pre-push": "yarn run test"
+      "pre-commit": "pretty-quick --staged"
     }
   },
   "browser": {

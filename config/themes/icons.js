@@ -102,6 +102,7 @@ import {
   faFlag as faFlagOutline,
   faStar as faStarOutline,
   faWallet,
+  faPlus as faPlusReg,
 } from "@fortawesome/pro-regular-svg-icons";
 import {
   faBook,
@@ -134,9 +135,12 @@ import {
   faTrophy,
   faUser as faSimpleUser,
   faUserCircle,
+  faPlus as faPlusDuo,
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faPlusReg,
+  faPlusDuo,
   faAngleLeft,
   faAngleRight,
   faArrowRight,
