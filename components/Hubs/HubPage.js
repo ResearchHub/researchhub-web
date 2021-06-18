@@ -669,7 +669,6 @@ class HubPage extends React.Component {
         : this.props.loggedIn
       : this.props.loggedIn;
     const shouldShowUnifiedDoc = killswitch("unifiedDocumentFeed");
-    console.warn("HUBSTATE: ", hubState);
     return (
       <Fragment>
         <MobileFeedTabs
