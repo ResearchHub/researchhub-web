@@ -176,7 +176,7 @@ export default function UnifiedDocFeedContainer({
         );
       }
     );
-  }, [docTypeFilter]);
+  }, [docTypeFilter, router]);
 
   const documentCards = useMemo(
     () =>
