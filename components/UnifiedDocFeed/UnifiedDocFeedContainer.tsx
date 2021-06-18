@@ -20,6 +20,7 @@ import UserPostCard from "../Author/Tabs/UserPostCard";
 import colors from "../../config/themes/colors";
 import Loader from "../Loader/Loader";
 import { capitalize } from "../../config/utils";
+import { connect } from "react-redux";
 
 type PaginationInfo = {
   count: number;
@@ -30,8 +31,11 @@ type PaginationInfo = {
 };
 
 type UseEffectFetchFeedArgs = {
-  documents: any;
   docTypeFilter: string;
+  documents: any;
+  hub: any;
+  hubState: any;
+  router: NextRouter;
   paginationInfo: PaginationInfo;
   setDocuments: Function;
   setPaginationInfo: Function;
@@ -39,13 +43,19 @@ type UseEffectFetchFeedArgs = {
 };
 
 const useEffectFetchFeed = ({
-  documents: currDocuments,
   docTypeFilter,
+  documents: currDocuments,
+  hub,
+  hubState,
+  router,
   paginationInfo,
   setDocuments,
   setPaginationInfo,
   subFilters,
 }: UseEffectFetchFeedArgs): void => {
+  const shouldGetSubScribed =
+    router.pathname === "all" || router.pathname === "all/";
+  console.warn("PATH: ", router.pathname);
   const onSuccess = ({ count, hasMore, documents }) => {
     paginationInfo.isLoadingMore
       ? setDocuments([...currDocuments, ...documents])
@@ -68,8 +78,18 @@ const useEffectFetchFeed = ({
   };
   useEffect((): void => {
     // @ts-ignore legacy fetch code
-    fetchUnifiedDocs({ docTypeFilter, subFilters, onSuccess, onError });
-  }, [docTypeFilter, subFilters, paginationInfo.page]);
+    fetchUnifiedDocs({
+      docTypeFilter,
+      hubID: shouldGetSubScribed
+        ? hubState.subscribedHubs.map((hub) => hub.id)
+        : isNullOrUndefined(hub)
+        ? null
+        : hub.id,
+      onError,
+      onSuccess,
+      subFilters,
+    });
+  }, [docTypeFilter, subFilters, paginationInfo.page, hub]);
 };
 
 const getFilterFromRouter = (router: NextRouter): string => {
@@ -81,13 +101,16 @@ const getFilterFromRouter = (router: NextRouter): string => {
     : nullthrows(docType);
 };
 
-export default function UnifiedDocFeedContainer({
+function UnifiedDocFeedContainer({
+  auth, // redux
   feed,
   home,
   hubName,
-  hub,
+  hub, // selected hub
+  hubState, // hub data of current user
   subscribeButton,
 }): ReactElement<"div"> {
+  console.warn("HUB? ", hub);
   const router = useRouter();
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -145,8 +168,11 @@ export default function UnifiedDocFeedContainer({
   };
 
   useEffectFetchFeed({
-    documents,
     docTypeFilter,
+    documents,
+    hub,
+    hubState,
+    router,
     paginationInfo,
     setDocuments,
     setPaginationInfo,
@@ -177,7 +203,7 @@ export default function UnifiedDocFeedContainer({
       }
     );
   }, [docTypeFilter, router]);
-
+  console.warn("DOCUMENTS: ", documents);
   const documentCards = useMemo(
     () =>
       documents.map((document: any, i: number): ReactElement<
@@ -270,6 +296,12 @@ export default function UnifiedDocFeedContainer({
     </div>
   );
 }
+
+const mapStateToProps = (state: any) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(UnifiedDocFeedContainer);
 
 const styles = StyleSheet.create({
   unifiedDocFeedContainer: {
