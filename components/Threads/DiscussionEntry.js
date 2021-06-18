@@ -256,10 +256,11 @@ class DiscussionEntry extends React.Component {
     this.setState({ editing: !this.state.editing });
   };
 
-  onRemove = ({ paperID, threadID, commentID, replyID }) => {
+  onRemove = ({ paperID, threadID, commentID, replyID, postID }) => {
     this.setState({ removed: true });
     this.props.onRemoveSuccess &&
       this.props.onRemoveSuccess({
+        postID,
         commentID,
         paperID,
         replyID,
@@ -407,6 +408,7 @@ class DiscussionEntry extends React.Component {
       mobileView,
       paper,
       path,
+      post,
       mediaOnly,
       shouldShowContextTitle = true,
       noVoteLine,
@@ -424,6 +426,7 @@ class DiscussionEntry extends React.Component {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
+      postId: post.id,
       userFlag: data.user_flag,
       contentType: "thread",
       objectId: data.id,
@@ -494,6 +497,7 @@ class DiscussionEntry extends React.Component {
                     data={data}
                     date={date}
                     paper={paper}
+                    post={post}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}
