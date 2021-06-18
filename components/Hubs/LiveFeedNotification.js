@@ -701,11 +701,14 @@ class LiveFeedNotification extends React.Component {
     let { showMessage, setMessage } = this.props;
     showMessage({ load: true, show: true });
     let metaData = this.formatMetaData();
-    let { paperId, threadId, commentId, replyId } = metaData;
+    let { paperId, threadId, commentId, replyId, postId } = metaData;
     let config = this.state.userFlag
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
-    fetch(API.FLAG_POST({ paperId, threadId, commentId, replyId }), config)
+    fetch(
+      API.FLAG_POST({ paperId, threadId, commentId, replyId, postId }),
+      config
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {

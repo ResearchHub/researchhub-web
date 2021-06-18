@@ -625,8 +625,6 @@ class PostPageCard extends React.Component {
 
     const { fetching, previews, figureUrls } = this.state;
 
-    console.log(post);
-
     const voteWidget = (
       <VoteWidget
         score={this.state.score}
