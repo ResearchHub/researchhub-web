@@ -701,7 +701,21 @@ class HubPage extends React.Component {
               </div>
             </div>
             {shouldShowUnifiedDoc ? (
-              <UnifiedDocFeedContainer />
+              <UnifiedDocFeedContainer
+                feed={feed}
+                home={this.props.home}
+                hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+                hub={hub}
+                subscribeButton={
+                  <SubscribeButton
+                    {...this.props}
+                    {...this.state}
+                    onClick={() => this.setState({ transition: true })}
+                    onSubscribe={this.onSubscribe}
+                    onUnsubscribe={this.onUnsubscribe}
+                  />
+                }
+              />
             ) : (
               <div className={css(styles.column, styles.mainfeed)}>
                 <MainHeader
@@ -895,13 +909,14 @@ var styles = StyleSheet.create({
   body: {
     width: "100%",
     height: "100%",
-    display: "table",
-    minWidth: "100vw",
+    marginTop: 28,
+    // display: "table",
+    // minWidth: "100vw",
     borderSpacing: "20px 0px",
+    alignItems: "flex-start",
     boxSizing: "border-box",
-    "@media only screen and (min-width: 1920px)": {
-      maxWidth: 1920,
-    },
+    paddingLeft: 16,
+    paddingRight: 16,
     "@media only screen and (max-width: 990px)": {
       padding: "0px 20px",
     },
@@ -917,7 +932,7 @@ var styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     maxWidth: 1200,
-    display: "table-cell",
+    // display: "table-cell",
     flexDirection: "column",
     "@media only screen and (min-width: 1920px)": {
       minWidth: 1200,
@@ -943,12 +958,12 @@ var styles = StyleSheet.create({
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   sidebar: {
-    display: "table-cell",
+    // display: "table-cell",
     paddingBottom: 30,
     // "@media only screen and (min-width: 1920px)": {
     //   minWidth: 280,
     // },
-    "@media only screen and (max-width: 990px)": {
+    "@media only screen and (max-width: 1199px)": {
       display: "none",
     },
   },

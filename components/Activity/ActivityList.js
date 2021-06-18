@@ -135,7 +135,6 @@ const ActivityList = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
     borderRadius: 4,
   },
   renderList: {
