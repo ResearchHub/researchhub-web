@@ -73,7 +73,7 @@ const useEffectFetchFeed = ({
 };
 
 const getFilterFromRouter = (router: NextRouter): string => {
-  const docType = router.query.docType;
+  const docType = router.query.type;
   return isNullOrUndefined(docType)
     ? UnifiedDocFilters.ALL
     : Array.isArray(docType)
@@ -164,10 +164,13 @@ export default function UnifiedDocFeedContainer({
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
               setDocTypeFilter(filterValue);
-              router.push({
-                pathname: router.pathname,
-                query: { docType: filterValue },
-              });
+              router.push(
+                {
+                  pathname: router.pathname,
+                  query: { ...router.query, type: filterValue },
+                },
+                router.pathname + `?type=${filterValue}`
+              );
             }}
           />
         );
