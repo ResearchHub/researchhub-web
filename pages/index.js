@@ -5,7 +5,6 @@ import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import nookies from "nookies";
 import { AUTH_TOKEN } from "../config/constants";
-
 const isServer = () => typeof window === "undefined";
 
 const Index = (props) => {
