@@ -2,6 +2,11 @@ import { fetchUnifiedDocFeed } from "../../../config/fetch";
 import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+// import { AUTH_TOKEN } from "~/config/constants";
+// import nookies from "nookies";
+
+// const cookies = nookies.get(ctx);
+// const authToken = cookies[AUTH_TOKEN];
 
 const calculateScope = (scope) => {
   const result = {
@@ -42,10 +47,11 @@ const calculateScope = (scope) => {
 
 export default function fetchUnifiedDocs({
   docTypeFilter,
-  subFilters,
-  onSuccess,
+  hubID,
   onError,
+  onSuccess,
   page,
+  subFilters,
 }) {
   const { filterBy, scope } = subFilters;
   /* PARAMS is: 
@@ -61,6 +67,7 @@ export default function fetchUnifiedDocs({
     }
   */
   const PARAMS = {
+    hubId: hubID,
     ordering: filterBy.value,
     page,
     timePeriod: calculateScope(scope),
