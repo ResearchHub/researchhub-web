@@ -45,7 +45,7 @@ const MobileFeedTabs = (props) => {
 const styles = StyleSheet.create({
   tabs: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 1199px)": {
       width: "100%",
       display: "flex",
     },

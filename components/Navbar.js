@@ -107,7 +107,7 @@ const Navbar = (props) => {
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
     isUserModerator
       ? {
-          label: "Moderators",
+          label: "Mods",
           route: "/moderators/author-claim-case-dashboard",
           icon: "info-circle",
         }
