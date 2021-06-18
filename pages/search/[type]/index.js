@@ -1,17 +1,23 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "~/config/constants";
+import FormSelect from "~/components/Form/FormSelect";
 
 import Link from "next/link";
 import Error from "next/error";
-import { pick, keys } from "underscore";
+import { pick, keys, isString, isArray } from "underscore";
 import { useRouter } from "next/router";
 
 import { get } from "lodash";
 import nookies from "nookies";
+import parseUrl from "parse-url";
+
+if (typeof window !== "undefined") {
+  window.parseUrl = parseUrl;
+}
 
 const SEARCH_TYPES = {
-  paper: ["hub", "start_date", "end_date", "post_type", "query"],
+  paper: ["hubs", "start_date", "end_date", "post_type", "query"],
   hub: [],
   author: [],
 };
@@ -43,7 +49,49 @@ const Index = ({ resp }) => {
     </Link>
   ));
 
-  return <div>{htmlLinks}</div>;
+  const handleFilterClick = (filterId, appliedValues) => {
+    router.push({
+      pathname: "/search/[type]",
+      query: {
+        ...router.query,
+        [`${filterId}`]: (appliedValues || []).map((v) => v.value),
+      },
+    });
+  };
+
+  const availOpts = resp.aggregations.hubs.buckets.map((b) => ({
+    label: `${b.key} (${b.doc_count})`,
+    value: b.key,
+  }));
+
+  let selectedHubs = [];
+  if (isArray(router.query.hubs)) {
+    selectedHubs = router.query.hubs;
+  } else if (isString(router.query.hubs)) {
+    selectedHubs = [router.query.hubs];
+  }
+
+  const selectedValues = selectedHubs.map((v) => ({ label: v, value: v }));
+
+  return (
+    <div>
+      <FormSelect
+        id={"hubs"}
+        options={availOpts}
+        containerStyle={null}
+        inputStyle={null}
+        onChange={handleFilterClick}
+        isSearchable={true}
+        placeholder={"Hubs"}
+        value={selectedValues}
+        isMulti={true}
+        multiTagStyle={null}
+        multiTagLabelStyle={null}
+        isClearable={true}
+      />
+      {htmlLinks}
+    </div>
+  );
 };
 
 Index.getInitialProps = async (ctx) => {
