@@ -696,7 +696,7 @@ class PostPageCard extends React.Component {
             <ReactMarkdown>{post.full_markdown}</ReactMarkdown>
           </div>
           <div className={css(styles.bottomContainer)}>
-            <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
+            {/*<div className={css(styles.bottomRow)}>{this.renderActions()}</div>*/}
             <div className={css(styles.downloadPDF)}></div>
           </div>
         </div>

@@ -601,7 +601,7 @@ const DiscussionTab = (props) => {
                     type="beat"
                   />
                 ) : (
-                  props.calculatedCount
+                  ""
                 )}
               </span>
               {/* <div className={css(styles.tabRow)}>
