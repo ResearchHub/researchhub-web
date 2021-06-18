@@ -325,8 +325,8 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 50,
-      paddingRight: 50,
+      paddingLeft: 28,
+      paddingRight: 28,
     },
     "@media only screen and (max-width: 990px)": {
       width: "100%",
