@@ -36,10 +36,7 @@ export type UserPostCardProps = {
 
 function UserPostCard(props: UserPostCardProps) {
   const {
-    created_by: {
-      author_profile: { first_name, last_name },
-    },
-    created_by: { author_profile: author },
+    created_by,
     hubs,
     id,
     preview_img: previewImg,
@@ -51,6 +48,14 @@ function UserPostCard(props: UserPostCardProps) {
     user,
     user_vote: userVote,
   } = props;
+
+  if (created_by == null) {
+    return null;
+  }
+
+  const {
+    author_profile: { first_name, last_name, author },
+  } = created_by;
 
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
