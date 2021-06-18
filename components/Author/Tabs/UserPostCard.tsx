@@ -161,7 +161,6 @@ function UserPostCard(props: UserPostCardProps) {
         (err) => console.log(err)
       );
 
-      console.log(response);
       return response;
     };
 
