@@ -109,7 +109,6 @@ function UnifiedDocFeedContainer({
   hubState, // hub data of current user
   subscribeButton,
 }): ReactElement<"div"> {
-  console.warn("HUB? ", hub);
   const router = useRouter();
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -202,7 +201,6 @@ function UnifiedDocFeedContainer({
       }
     );
   }, [docTypeFilter, router]);
-  console.warn("DOCUMENTS: ", documents);
   const documentCards = useMemo(
     () =>
       documents.map((document: any, i: number): ReactElement<
@@ -325,6 +323,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     marginTop: 16,
+    marginBottom: 16,
   },
   mainFilters: {
     alignItems: "center",
@@ -343,12 +342,12 @@ const styles = StyleSheet.create({
     },
   },
   customUserPostCard: {
-    border: 0,
-    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    marginBottom: 0,
-    marginTop: 0,
-    paddingTop: 24,
-    paddingBottom: 24,
+    // border: 0,
+    // borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    marginBottom: 5,
+    marginTop: 5,
+    // paddingTop: 24,
+    // paddingBottom: 24,
   },
   titleContainer: {
     display: "flex",
