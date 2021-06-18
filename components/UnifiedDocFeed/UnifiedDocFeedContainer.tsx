@@ -55,7 +55,6 @@ const useEffectFetchFeed = ({
 }: UseEffectFetchFeedArgs): void => {
   const shouldGetSubScribed =
     router.pathname === "all" || router.pathname === "all/";
-  console.warn("PATH: ", router.pathname);
   const onSuccess = ({ count, hasMore, documents }) => {
     paginationInfo.isLoadingMore
       ? setDocuments([...currDocuments, ...documents])
