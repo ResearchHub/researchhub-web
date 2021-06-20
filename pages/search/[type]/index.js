@@ -8,16 +8,19 @@ import Error from "next/error";
 import { pick, keys, isString, isArray } from "underscore";
 import { useRouter } from "next/router";
 
-import { get } from "lodash";
+import { get, upperFirst } from "lodash";
 import nookies from "nookies";
 import parseUrl from "parse-url";
 
-if (typeof window !== "undefined") {
-  window.parseUrl = parseUrl;
-}
-
 const SEARCH_TYPES = {
-  paper: ["hubs", "start_date", "end_date", "post_type", "query"],
+  paper: [
+    "query",
+    "hubs",
+    "publish_date__gte",
+    "publish_date__lte",
+    "publish_date",
+    "post_type",
+  ],
   hub: [],
   author: [],
 };
@@ -30,10 +33,6 @@ const getAllowedSearchFilters = ({ searchType, queryParams }) => {
 };
 
 const Index = ({ resp }) => {
-  console.log(resp);
-
-  // console.log(JSON.stringify(resp, null, 2));
-
   const router = useRouter();
   const searchType = get(router, "query.type");
 
@@ -49,12 +48,16 @@ const Index = ({ resp }) => {
     </Link>
   ));
 
-  const handleFilterClick = (filterId, appliedValues) => {
+  const handleFilterClick = (filterId, selectedOpts) => {
+    if (!isArray(selectedOpts)) {
+      selectedOpts = [selectedOpts];
+    }
+
     router.push({
       pathname: "/search/[type]",
       query: {
         ...router.query,
-        [`${filterId}`]: (appliedValues || []).map((v) => v.value),
+        [`${filterId}`]: (selectedOpts || []).map((v) => v.value),
       },
     });
   };
@@ -70,8 +73,24 @@ const Index = ({ resp }) => {
   } else if (isString(router.query.hubs)) {
     selectedHubs = [router.query.hubs];
   }
-
   const selectedValues = selectedHubs.map((v) => ({ label: v, value: v }));
+
+  const availDateOpts = [
+    { label: "Last year", value: "last_year" },
+    { label: "Last five years", value: "last_five_years" },
+  ];
+  let selectedPublishDate = null;
+  if (router.query.publish_date) {
+    switch (router.query.publish_date) {
+      case "last_year":
+        selectedPublishDate = { value: "last_year", label: "Last year" };
+      case "last_five_years":
+        selectedPublishDate = {
+          value: "last_five_years",
+          label: "Last five years",
+        };
+    }
+  }
 
   return (
     <div>
@@ -85,6 +104,20 @@ const Index = ({ resp }) => {
         placeholder={"Hubs"}
         value={selectedValues}
         isMulti={true}
+        multiTagStyle={null}
+        multiTagLabelStyle={null}
+        isClearable={true}
+      />
+      <FormSelect
+        id={"publish_date"}
+        options={availDateOpts}
+        containerStyle={null}
+        inputStyle={null}
+        onChange={handleFilterClick}
+        isSearchable={true}
+        placeholder={"Date Published"}
+        value={selectedPublishDate}
+        isMulti={false}
         multiTagStyle={null}
         multiTagLabelStyle={null}
         isClearable={true}
