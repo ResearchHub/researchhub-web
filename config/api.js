@@ -140,9 +140,6 @@ const routes = (BASE_URL) => {
         },
       };
 
-      console.log(params);
-      console.log(url);
-
       url = prepURL(url, params);
 
       return url;
