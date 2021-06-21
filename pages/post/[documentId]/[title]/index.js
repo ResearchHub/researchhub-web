@@ -248,6 +248,15 @@ const Post = (props) => {
               <div className={css(styles.paperPageContainer, styles.top)}>
                 <PostPageCard post={post} />
               </div>
+              <div className={css(styles.paperMetaContainerMobile)}>
+                <AuthorStatsDropdown
+                  authors={getAllAuthors()}
+                  paper={post}
+                  hubs={post.hubs}
+                  paperId={post.id}
+                  isPost={true}
+                />
+              </div>
               <a name="discussion">
                 <div className={css(styles.space)}>
                   <DiscussionTab
@@ -543,6 +552,7 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
+      borderBottom: "1px solid #F0F0F0",
     },
   },
   stickyComponent: {
