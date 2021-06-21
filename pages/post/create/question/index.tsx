@@ -8,6 +8,11 @@ import { css, StyleSheet } from "aphrodite";
 
 export default function Index() {
   const router = useRouter();
+  useEffect(() => {
+    if (!killswitch("newPostTypes")) {
+      router.push("/all");
+    }
+  }, []);
   if (killswitch("newPostTypes")) {
     return (
       <Fragment>
@@ -33,7 +38,6 @@ export default function Index() {
       </Fragment>
     );
   } else {
-    // router.push("all");
     return null;
   }
 }
