@@ -24,7 +24,7 @@ const KillswtichConfigs: SwitchConfigs = {
     production: false,
   },
   newPostTypes: {
-    development: false,
+    development: true,
     staging: true,
     production: true,
   },
