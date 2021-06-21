@@ -624,13 +624,14 @@ class PostPageCard extends React.Component {
 
     const { fetching, previews, figureUrls } = this.state;
 
-    const voteWidget = (
+    const voteWidget = (horizontalView) => (
       <VoteWidget
         score={this.state.score}
         onUpvote={this.onUpvote}
         onDownvote={this.onDownvote}
         selected={this.state.voteState}
-        type="Discussion"
+        horizontalView={horizontalView}
+        type={"Discussion"}
         paperPage={true}
         small={true}
       />
@@ -655,7 +656,7 @@ class PostPageCard extends React.Component {
             <ReactTooltip />
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
-            <div className={css(styles.voting)}>{voteWidget}</div>
+            <div className={css(styles.voting)}>{voteWidget(false)}</div>
             <div
               className={css(
                 styles.column,
@@ -684,7 +685,12 @@ class PostPageCard extends React.Component {
                   </div>
                 </div>
                 <div className={css(styles.rightColumn, styles.mobile)}>
-                  <div className={css(styles.votingMobile)}>{voteWidget}</div>
+                  <div className={css(styles.votingMobile)}>
+                    {voteWidget(true)}
+                    <PaperDiscussionButton
+                      discussionCount={post.discussion_count}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
