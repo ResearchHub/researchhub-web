@@ -422,11 +422,15 @@ class DiscussionEntry extends React.Component {
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
     const username = createUsername(data);
+    let postId;
+    if (post) {
+      postId = post.id;
+    }
     const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
-      postId: post.id,
+      postId: postId,
       userFlag: data.user_flag,
       contentType: "thread",
       objectId: data.id,

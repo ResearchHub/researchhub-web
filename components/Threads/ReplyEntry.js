@@ -77,6 +77,10 @@ class ReplyEntry extends React.Component {
 
   formatMetaData = () => {
     let { data, comment, reply, post } = this.props;
+    let postId;
+    if (post) {
+      postId = post.id;
+    }
     return {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
@@ -86,7 +90,7 @@ class ReplyEntry extends React.Component {
       userFlag: reply.userFlag,
       contentType: "reply",
       objectId: reply.id,
-      postId: post.id,
+      postId: postId,
     };
   };
 

@@ -353,6 +353,10 @@ class CommentEntry extends React.Component {
 
   formatMetaData = () => {
     let { data, comment, post } = this.props;
+    let postId;
+    if (post) {
+      postId = post.id;
+    }
     return {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
@@ -361,7 +365,7 @@ class CommentEntry extends React.Component {
       comment: comment.user_flag,
       contentType: "comment",
       objectId: comment.id,
-      postId: post.id,
+      postId: postId,
     };
   };
 
