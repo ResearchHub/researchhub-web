@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { filterOptions, scopeOptions } from "../../config/utils/options";
 import {
   emptyFncWithMsg,
+  filterNull,
   isNullOrUndefined,
   nullthrows,
 } from "../../config/utils/nullchecks";
@@ -27,8 +28,9 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import UserPostCard from "../Author/Tabs/UserPostCard";
 import colors from "../../config/themes/colors";
 import Loader from "../Loader/Loader";
-import { capitalize } from "../../config/utils";
 import { connect } from "react-redux";
+import { ID } from "../../config/types/root_types";
+import { formatMainHeader } from "./UnifiedDocFeedUtil";
 
 type PaginationInfo = {
   count: number;
@@ -50,6 +52,8 @@ type UseEffectFetchFeedArgs = {
   subFilters: any;
 };
 
+type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
+
 const useEffectFetchFeed = ({
   docTypeFilter,
   documents: currDocuments,
@@ -61,8 +65,12 @@ const useEffectFetchFeed = ({
   setPaginationInfo,
   subFilters,
 }: UseEffectFetchFeedArgs): void => {
-  const shouldGetSubScribed =
-    router.pathname === "all" || router.pathname === "all/";
+  const currPathname = router.pathname;
+  const shouldGetSubscribed = useMemo<Boolean>(
+    (): Boolean => ["all", "all/"].includes(currPathname),
+    [currPathname]
+  );
+
   const onSuccess = ({ count, hasMore, documents }) => {
     paginationInfo.isLoadingMore
       ? setDocuments([...currDocuments, ...documents])
@@ -83,26 +91,21 @@ const useEffectFetchFeed = ({
       isLoading: false,
     });
   };
+
   useEffect((): void => {
-    setPaginationInfo({
-      ...paginationInfo,
-      isLoading: true,
-      hasMore: paginationInfo.page !== 1,
-      isLoadingMore: false,
-    });
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
-      hubID: shouldGetSubScribed
-        ? hubState.subscribedHubs.map((hub) => hub.id)
+      hubID: shouldGetSubscribed
+        ? hubState.subscribedHubs.map((hub: any): ID => hub.id)
         : isNullOrUndefined(hub)
         ? null
-        : hub.id,
+        : [hub.id],
       onError,
       onSuccess,
       subFilters,
     });
-  }, [docTypeFilter, subFilters, paginationInfo.page, hub]);
+  }, [currPathname, docTypeFilter, hub, paginationInfo.page, subFilters]);
 };
 
 const getFilterFromRouter = (router: NextRouter): string => {
@@ -117,7 +120,7 @@ const getFilterFromRouter = (router: NextRouter): string => {
 function UnifiedDocFeedContainer({
   auth, // redux
   feed,
-  home,
+  home: isHomePage,
   hubName,
   hub, // selected hub
   hubState, // hub data of current user
@@ -128,12 +131,11 @@ function UnifiedDocFeedContainer({
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
+  const [documents, setDocuments] = useState<any>([]);
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-  const [documents, setDocuments] = useState<any>([]);
-
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     count: 0,
     hasMore: false,
@@ -143,42 +145,24 @@ function UnifiedDocFeedContainer({
   });
   const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
 
-  const formatMainHeader = () => {
-    const { filterBy } = subFilters;
-
-    if (feed === 0) {
-      return "My Hubs";
-    }
-
-    const isHomePage = home;
-    let prefix = "";
-    switch (filterBy.value) {
-      case "removed":
-        prefix = "Removed";
-        break;
-      case "hot":
-        prefix = "Trending";
-        break;
-      case "top_rated":
-        prefix = "Top";
-        break;
-      case "newest":
-        prefix = "Newest";
-        break;
-      case "most_discussed":
-        prefix = "Most Discussed";
-        break;
-      case "pulled-papers":
-        prefix = "Pulled";
-        break;
-    }
-
-    if (isHomePage) {
-      return `${prefix} on ResearchHub`;
-    }
-
-    return `${capitalize(hubName)}`;
-  };
+  const hasSubscribed = useMemo(
+    (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
+    [auth.authChecked, hubState.subscribedHubs]
+  );
+  const onInitialLoad = useMemo((): Boolean => page === 1 && isLoading, [
+    page,
+    isLoading,
+  ]);
+  const formattedMainHeader = useMemo(
+    (): string =>
+      formatMainHeader({
+        feed,
+        filterBy: subFilters.filterBy,
+        hubName,
+        isHomePage,
+      }),
+    [feed, subFilters.filterBy, hubName, isHomePage]
+  );
 
   useEffectFetchFeed({
     docTypeFilter,
@@ -218,60 +202,53 @@ function UnifiedDocFeedContainer({
   }, [docTypeFilter, router]);
 
   const documentCards = useMemo(
-    () =>
-      documents.map((document: any, i: number): ReactElement<
-        typeof PaperEntryCard
-      > | null => {
-        const { document_type } = document;
-        if (document_type === "PAPER") {
-          return (
-            <PaperEntryCard
-              key={`${document.id}-${i}`}
-              paper={document.documents}
-              index={i}
-              vote={document.user_vote}
-              voteCallback={(index, curPaper) => {
-                let newDocument = {
-                  ...document,
-                };
-                newDocument.documents.user_vote = curPaper.user_vote;
-                newDocument.documents.score = curPaper.score;
+    (): Array<UnifiedCard> =>
+      filterNull(documents).map(
+        (document: any, arrIndex: number): UnifiedCard => {
+          console.warn("HI");
+          const isPaperCard = document.document_type === "PAPER";
+          const docID = document.id;
+          if (isPaperCard) {
+            return (
+              <PaperEntryCard
+                key={`Paper-${docID}-${arrIndex}`}
+                paper={document.documents}
+                index={arrIndex}
+                vote={document.user_vote}
+                voteCallback={(index: number, currPaper: any): void => {
+                  let newDocument = {
+                    ...document,
+                  };
+                  newDocument.documents.user_vote = currPaper.user_vote;
+                  newDocument.documents.score = currPaper.score;
 
-                let newDocuments = [...documents];
+                  let newDocuments = [...documents];
 
-                newDocuments[index] = newDocument;
+                  newDocuments[index] = newDocument;
 
-                setDocuments(newDocuments);
-              }}
-            />
-          );
-        } else {
-          return (
-            <UserPostCard
-              {...document.documents[0]}
-              key={`${document.id}-${i}`}
-              style={styles.customUserPostCard}
-            />
-          );
+                  setDocuments(newDocuments);
+                }}
+              />
+            );
+          } else {
+            return (
+              <UserPostCard
+                {...document.documents[0]}
+                key={`Post-${docID}-${arrIndex}`}
+                style={styles.customUserPostCard}
+              />
+            );
+          }
         }
-      }),
-    [
-      documents,
-      paginationInfo.page,
-      docTypeFilter,
-      subFilters.filterBy,
-      subFilters.scope,
-    ]
+      ),
+    [documents, docTypeFilter, paginationInfo, subFilters]
   );
 
-  const hasSubscribed = auth.authChecked && hubState.subscribedHubs.length > 0;
-
-  const onInitialLoad = page === 1 && isLoading;
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title) + " clamp2"}>{formatMainHeader()}</h1>
-        {home ? null : (
+        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+        {isHomePage ? null : (
           <div className={css(styles.subscribeContainer)}>
             {hub && subscribeButton}
           </div>
@@ -355,7 +332,7 @@ function UnifiedDocFeedContainer({
             onClick={(): void =>
               setPaginationInfo({
                 ...paginationInfo,
-                isLoading: true,
+                isLoading: false,
                 isLoadingMore: true,
                 page: paginationInfo.page + 1,
               })
