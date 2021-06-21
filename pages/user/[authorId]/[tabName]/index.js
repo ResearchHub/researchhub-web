@@ -62,8 +62,17 @@ const SECTIONS = {
   picture: "picture",
 };
 
-const getTabs = (author, transactions) => {
-  let tabs = [
+const getTabs = (author, transactions) =>
+  filterNull([
+    killswitch("newPostTypes")
+      ? {
+          href: "posts",
+          label: "posts",
+          name: "Posts",
+          showCount: true,
+          count: () => author.num_posts,
+        }
+      : null,
     {
       href: "discussions",
       label: "discussions",
@@ -99,21 +108,7 @@ const getTabs = (author, transactions) => {
       showCount: true,
       count: () => author.promotions && author.promotions.count,
     },
-  ];
-  if (killswitch("newPostTypes")) {
-    tabs = [
-      {
-        href: "posts",
-        label: "posts",
-        name: "Posts",
-        showCount: true,
-        count: () => author.num_posts,
-      },
-      ...tabs,
-    ];
-  }
-  return tabs;
-};
+  ]);
 
 function AuthorPage(props) {
   const { auth, author, hostname, user, transactions } = props;
