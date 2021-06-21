@@ -8,12 +8,13 @@ import { css, StyleSheet } from "aphrodite";
 
 export default function Index() {
   const router = useRouter();
+  const enableNewPostTypes = killswitch("newPostTypes");
   useEffect(() => {
-    if (!killswitch("newPostTypes")) {
+    if (!enableNewPostTypes) {
       router.push("/all");
     }
-  }, []);
-  if (killswitch("newPostTypes")) {
+  }, [enableNewPostTypes, router.pathname]);
+  if (enableNewPostTypes) {
     return (
       <Fragment>
         <Head
