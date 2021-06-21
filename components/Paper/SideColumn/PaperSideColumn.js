@@ -4,6 +4,8 @@ import { StyleSheet, css } from "aphrodite";
 import ColumnAuthors from "./ColumnAuthors";
 import ColumnHubs from "./ColumnHubs";
 import ColumnJournal from "./ColumnJournal";
+import ColumnSubmitter from "./ColumnSubmitter";
+import ColumnContributors from "./ColumnContributors";
 
 import colors from "~/config/themes/colors";
 

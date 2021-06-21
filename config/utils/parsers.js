@@ -71,3 +71,37 @@ export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
 
   return users.slice(0, limit);
 };
+
+/**
+ * Returns uploader objects from paper object
+ *
+ * @param { Object } paper - Paper JSON
+ */
+export const getUploaderFromPaper = (paper) => {
+  if (!paper) {
+    return null;
+  }
+  const { uploaded_by } = paper;
+  if (uploaded_by) {
+    return uploaded_by.author_profile;
+  } else {
+    return null;
+  }
+};
+
+/**
+ * Returns discussion user objects from paper object
+ *
+ * @param { Object } paper - Paper JSON
+ */
+export const getDiscussionUsersFromPaper = (paper, limit = 3) => {
+  if (!paper) {
+    return [];
+  }
+  const { discussion_users } = paper;
+  if (discussion_users) {
+    return discussion_users.author_profile;
+  } else {
+    return [];
+  }
+};
