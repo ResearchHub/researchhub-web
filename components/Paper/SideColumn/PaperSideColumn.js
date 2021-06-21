@@ -15,6 +15,8 @@ const PaperSideColumn = (props) => {
       <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
       <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
       <ColumnJournal paper={paper} paperId={paperId} />
+      <ColumnSubmitter paper={paper} />
+      <ColumnContributors paper={paper} />
     </div>
   );
 };
