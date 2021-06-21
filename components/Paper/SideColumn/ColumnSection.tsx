@@ -22,7 +22,6 @@ function ColumnSection({ items, paper, sectionTitle }: ColumnSectionProps) {
       <div>
         {paper && (paper.url || paper.external_source) && (
           <Fragment>
-            {/* @ts-ignore */}
             <SideColumnTitle
               title={sectionTitle}
               overrideStyles={styles.title}
