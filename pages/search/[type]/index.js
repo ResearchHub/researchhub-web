@@ -2,6 +2,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "~/config/constants";
 import FormSelect from "~/components/Form/FormSelect";
+import { filterOptions } from "~/config/utils/options";
 
 import Link from "next/link";
 import Error from "next/error";
@@ -16,14 +17,22 @@ const SEARCH_TYPES = {
   paper: [
     "query",
     "hubs",
-    "publish_date__gte",
-    "publish_date__lte",
-    "publish_date",
+    "paper_publish_date__gte",
+    "paper_publish_date__lte",
+    "paper_publish_date",
     "post_type",
   ],
   hub: [],
   author: [],
 };
+
+const sortOpts = [
+  {
+    value: "relevance",
+    label: "Relevance",
+  },
+  ...filterOptions,
+];
 
 const isAllowedSearchEntityType = (type) => SEARCH_TYPES.hasOwnProperty(type);
 
@@ -48,7 +57,7 @@ const Index = ({ resp }) => {
     </Link>
   ));
 
-  const handleFilterClick = (filterId, selectedOpts) => {
+  const handleFilterSelect = (filterId, selectedOpts) => {
     if (!isArray(selectedOpts)) {
       selectedOpts = [selectedOpts];
     }
@@ -59,6 +68,23 @@ const Index = ({ resp }) => {
         ...router.query,
         [`${filterId}`]: (selectedOpts || []).map((v) => v.value),
       },
+    });
+  };
+
+  const handleSortSelect = (sortId, selectedOpt) => {
+    let query = {
+      ...router.query,
+    };
+
+    delete query["sort_by"];
+
+    if (selectedOpt.value !== "relevance") {
+      query["sort_by"] = selectedOpt.value;
+    }
+
+    router.push({
+      pathname: "/search/[type]",
+      query,
     });
   };
 
@@ -80,8 +106,8 @@ const Index = ({ resp }) => {
     { label: "Last five years", value: "last_five_years" },
   ];
   let selectedPublishDate = null;
-  if (router.query.publish_date) {
-    switch (router.query.publish_date) {
+  if (router.query.paper_publish_date) {
+    switch (router.query.paper_publish_date) {
       case "last_year":
         selectedPublishDate = { value: "last_year", label: "Last year" };
       case "last_five_years":
@@ -99,7 +125,7 @@ const Index = ({ resp }) => {
         options={availOpts}
         containerStyle={null}
         inputStyle={null}
-        onChange={handleFilterClick}
+        onChange={handleFilterSelect}
         isSearchable={true}
         placeholder={"Hubs"}
         value={selectedValues}
@@ -108,12 +134,28 @@ const Index = ({ resp }) => {
         multiTagLabelStyle={null}
         isClearable={true}
       />
+
       <FormSelect
-        id={"publish_date"}
+        id={"sortBy"}
+        options={sortOpts}
+        value={null}
+        containerStyle={null}
+        inputStyle={{
+          fontWeight: 500,
+          minHeight: "unset",
+          backgroundColor: "#FFF",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+        onChange={handleSortSelect}
+        isSearchable={false}
+      />
+      <FormSelect
+        id={"paper_publish_date"}
         options={availDateOpts}
         containerStyle={null}
         inputStyle={null}
-        onChange={handleFilterClick}
+        onChange={handleFilterSelect}
         isSearchable={true}
         placeholder={"Date Published"}
         value={selectedPublishDate}
@@ -122,6 +164,7 @@ const Index = ({ resp }) => {
         multiTagLabelStyle={null}
         isClearable={true}
       />
+
       {htmlLinks}
     </div>
   );
@@ -135,6 +178,10 @@ Index.getInitialProps = async (ctx) => {
     searchType: ctx.query.type,
     queryParams: ctx.query,
   });
+
+  console.log("+++++++++++");
+  console.log(filters);
+  console.log("+++++++++++");
 
   const config = {
     route: "all",
