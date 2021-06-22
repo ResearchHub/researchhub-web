@@ -88,10 +88,12 @@ const Index = ({ resp }) => {
     });
   };
 
-  const availOpts = resp.aggregations.hubs.buckets.map((b) => ({
-    label: `${b.key} (${b.doc_count})`,
-    value: b.key,
-  }));
+  const availFacetOpts = get(resp, "facets._filter_hubs.hubs.buckets", []).map(
+    (b) => ({
+      label: `${b.key} (${b.doc_count})`,
+      value: b.key,
+    })
+  );
 
   let selectedHubs = [];
   if (isArray(router.query.hubs)) {
@@ -122,7 +124,7 @@ const Index = ({ resp }) => {
     <div>
       <FormSelect
         id={"hubs"}
-        options={availOpts}
+        options={availFacetOpts}
         containerStyle={null}
         inputStyle={null}
         onChange={handleFilterSelect}
@@ -179,15 +181,19 @@ Index.getInitialProps = async (ctx) => {
     queryParams: ctx.query,
   });
 
-  console.log("+++++++++++");
-  console.log(filters);
-  console.log("+++++++++++");
+  let facet = [];
+  if (ctx.query.type.indexOf("paper") >= 0) {
+    facet = ["hubs"];
+  }
 
   const config = {
-    route: "all",
+    route: ctx.query.type,
   };
 
-  return fetch(API.SEARCH({ filters, config }), API.GET_CONFIG(authToken))
+  return fetch(
+    API.SEARCH({ filters, facet, config }),
+    API.GET_CONFIG(authToken)
+  )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
