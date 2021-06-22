@@ -6,11 +6,14 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "../../config/utils/nullchecks";
+import { formatMainHeader } from "./UnifiedDocFeedUtil";
+import { ID } from "../../config/types/root_types";
 import { NextRouter, useRouter } from "next/router";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
+import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import Button from "../Form/Button";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
@@ -21,16 +24,13 @@ import React, {
   useMemo,
   useState,
 } from "react";
-import Ripples from "react-ripples";
+import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
+import Ripples from "react-ripples";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import UserPostCard from "../Author/Tabs/UserPostCard";
-import colors from "../../config/themes/colors";
-import Loader from "../Loader/Loader";
 import { connect } from "react-redux";
-import { ID } from "../../config/types/root_types";
-import { formatMainHeader } from "./UnifiedDocFeedUtil";
 
 type PaginationInfo = {
   count: number;
@@ -72,6 +72,7 @@ const useEffectFetchFeed = ({
   );
 
   const onSuccess = ({ count, hasMore, documents }) => {
+    // debugger;
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
       : setUnifiedDocuments(documents);
@@ -93,9 +94,6 @@ const useEffectFetchFeed = ({
   };
 
   useEffect((): void => {
-    console.warn("FETCHING NOW:", docTypeFilter);
-    console.warn("paginationInfo: ", paginationInfo);
-    console.warn("hubState.subscribedHubs: ", hubState.subscribedHubs);
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
@@ -106,6 +104,7 @@ const useEffectFetchFeed = ({
         : null,
       onError,
       onSuccess,
+      page: paginationInfo.page,
       subFilters,
     });
   }, [currPathname, docTypeFilter, hub, paginationInfo.page, subFilters]);
@@ -121,7 +120,7 @@ const getFilterFromRouter = (router: NextRouter): string => {
 };
 
 function UnifiedDocFeedContainer({
-  auth, 
+  auth,
   feed,
   home: isHomePage,
   hub, // selected hub
@@ -191,6 +190,12 @@ function UnifiedDocFeedContainer({
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
               setDocTypeFilter(filterValue);
+              setPaginationInfo({
+                ...paginationInfo,
+                page: 1,
+                isLoading: true,
+                isLoadingMore: false,
+              });
               router.push(
                 {
                   pathname: router.pathname,
@@ -205,7 +210,6 @@ function UnifiedDocFeedContainer({
     );
   }, [docTypeFilter, router]);
 
-  console.warn("DOCUMENTS: ", unifiedDocuments);
   const documentCards = useMemo(
     (): Array<UnifiedCard> =>
       filterNull(unifiedDocuments).map(
@@ -213,7 +217,6 @@ function UnifiedDocFeedContainer({
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
           if (isPaperCard) {
-            console.warn("PAPERS");
             return (
               <PaperEntryCard
                 index={arrIndex}
@@ -233,7 +236,6 @@ function UnifiedDocFeedContainer({
               />
             );
           } else {
-            console.warn("POSTS");
             return (
               <UserPostCard
                 {...uniDoc.documents[0]}
