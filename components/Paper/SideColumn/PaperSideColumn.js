@@ -14,7 +14,12 @@ const PaperSideColumn = (props) => {
 
   return (
     <div className={css(styles.root, customStyle && customStyle)}>
-      <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
+      <ColumnAuthors
+        title={`Author Detail${authors.length > 1 ? "s" : ""}`}
+        paper={paper}
+        authors={authors}
+        paperId={paperId}
+      />
       <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
       <ColumnJournal paper={paper} paperId={paperId} />
       <ColumnSubmitter paper={paper} />

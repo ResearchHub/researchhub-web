@@ -91,7 +91,7 @@ class ColumnAuthors extends React.Component {
   };
 
   render() {
-    const { paper, authors } = this.props;
+    const { paper, authors, title } = this.props;
     const { ready, pages, page } = this.state;
 
     return (
@@ -103,10 +103,7 @@ class ColumnAuthors extends React.Component {
         <div>
           {paper && authors.length > 0 && (
             <Fragment>
-              <SideColumnTitle
-                title={`Author Detail${authors.length > 1 ? "s" : ""}`}
-                overrideStyles={styles.title}
-              />
+              <SideColumnTitle title={title} overrideStyles={styles.title} />
               <div className={css(styles.authors)}>
                 {this.renderAuthorCards()}
                 {pages > page && (

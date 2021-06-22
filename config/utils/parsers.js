@@ -99,9 +99,8 @@ export const getDiscussionUsersFromPaper = (paper, limit = 3) => {
     return [];
   }
   const { discussion_users } = paper;
-  if (discussion_users) {
-    return discussion_users.author_profile;
-  } else {
-    return [];
-  }
+  const discussors = (discussion_users || []).map(
+    (user) => user.author_profile
+  );
+  return discussors.slice(0, limit);
 };
