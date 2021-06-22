@@ -25,8 +25,9 @@ const prepFilters = (filters) => {
  * Function to prep the URL for querystring / url
  * @param { String } url -- the URL we want to manipulate
  * @param { Object } params -- params for querystring
+ * @param { String } arrayParamSeparator -- seperator for array values
  */
-const prepURL = (url, params) => {
+const prepURL = (url, params, arrayParamSeparator = ",") => {
   let { querystring, rest, filters } = params;
 
   let qs = "";
@@ -48,8 +49,13 @@ const prepURL = (url, params) => {
 
     let currentKey = querystringKeys[i];
     let value = querystring[currentKey];
+
     if (value !== null && value !== undefined) {
-      qs += `${currentKey}=${value}&`;
+      if (Array.isArray(value) && arrayParamSeparator === "&") {
+        qs += value.map((v) => `${currentKey}=${v}`).join("&") + "&";
+      } else {
+        qs += `${currentKey}=${value}&`;
+      }
     }
   }
 
@@ -126,7 +132,14 @@ const routes = (BASE_URL) => {
       return url;
     },
     SIGNOUT: BASE_URL + "auth/logout/",
-    SEARCH: ({ filters, config, page, size, external_source = true }) => {
+    SEARCH: ({
+      filters,
+      config,
+      page,
+      size,
+      facet = [],
+      external_source = true,
+    }) => {
       let url = BASE_URL + "search/";
       let params = {
         querystring: {
@@ -134,13 +147,14 @@ const routes = (BASE_URL) => {
           page,
           size,
           external_source,
+          facet,
         },
         rest: {
           route: config.route,
         },
       };
 
-      url = prepURL(url, params);
+      url = prepURL(url, params, "&");
 
       return url;
     },
