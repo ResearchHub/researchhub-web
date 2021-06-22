@@ -263,6 +263,9 @@ function UnifiedDocFeedContainer({
       subFilters.scope,
     ]
   );
+
+  const hasSubscribed = auth.authChecked && hubState.subscribedHubs.length > 0;
+
   const onInitialLoad = page === 1 && isLoading;
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -294,12 +297,13 @@ function UnifiedDocFeedContainer({
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
-      {/* TODO: briansantoso - hide banner when user has subscribed to at least one hub already */}
-      <div>
-        <div className={css(styles.bannerContainer)} id="create-feed-banner">
-          <CreateFeedBanner />
+      {!hasSubscribed && (
+        <div>
+          <div className={css(styles.bannerContainer)} id="create-feed-banner">
+            <CreateFeedBanner />
+          </div>
         </div>
-      </div>
+      )}
       {onInitialLoad ? (
         <div className={css(styles.initSpinnerWrap)}>
           <Loader
@@ -311,25 +315,29 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          <div className={css(styles.blur)} />
-          <Button
-            isLink={
-              isLoggedIn
-                ? {
-                    href: `/user/${auth.user.author_profile.user}/onboard`,
-                    query: {
-                      selectHubs: true,
-                    },
-                  }
-                : {
-                    href: "/all",
-                    linkAs: "/all",
-                  }
-            }
-            hideRipples={true}
-            label={isLoggedIn ? "Generate My Hubs" : "View All Hubs"}
-            customButtonStyle={styles.allFeedButton}
-          />
+          {!hasSubscribed && (
+            <Fragment>
+              <div className={css(styles.blur)} />
+              <Button
+                isLink={
+                  isLoggedIn
+                    ? {
+                        href: `/user/${auth.user.author_profile.id}/onboard`,
+                        query: {
+                          selectHubs: true,
+                        },
+                      }
+                    : {
+                        href: "/all",
+                        linkAs: "/all",
+                      }
+                }
+                hideRipples={true}
+                label={isLoggedIn ? "Generate My Hubs" : "View All Hubs"}
+                customButtonStyle={styles.allFeedButton}
+              />
+            </Fragment>
+          )}
           {documentCards}
         </div>
       )}
@@ -363,6 +371,8 @@ function UnifiedDocFeedContainer({
 
 const mapStateToProps = (state: any) => ({
   auth: state.auth,
+  hubState: state.hubs,
+  allHubs: state.hubs.hubs,
   isLoggedIn: state.auth.isLoggedIn,
 });
 
