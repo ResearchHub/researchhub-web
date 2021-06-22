@@ -106,6 +106,7 @@ export default function fetchUnifiedDocs({
   onError,
   onSuccess,
   page,
+  subscribedHubs,
   subFilters,
 }) {
   const { filterBy, scope } = subFilters;
@@ -125,10 +126,10 @@ export default function fetchUnifiedDocs({
     hubId: hubID,
     ordering: filterBy.value,
     page,
+    subscribedHubs,
     timePeriod: calculateTimeScope(scope),
     type: docTypeFilter,
   };
-  console.warn("PARAMS: ", PARAMS);
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
       const { count, next, results: fetchedUnifiedDocs } = res;
