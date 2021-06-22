@@ -8,27 +8,52 @@ import Link from "next/link";
 import Error from "next/error";
 import { pick, keys, isString, isArray } from "underscore";
 import { useRouter } from "next/router";
+import * as moment from "dayjs";
 
 import { get, upperFirst } from "lodash";
 import nookies from "nookies";
 import parseUrl from "parse-url";
 
 const SEARCH_TYPES = {
-  paper: [
-    "query",
-    "hubs",
-    "paper_publish_date__gte",
-    "paper_publish_date__lte",
-    "paper_publish_date",
-    "post_type",
-  ],
+  paper: ["search", "hubs", "publish_date__gte", "post_type"],
   hub: [],
   author: [],
 };
 
+const TIME_FILTER_OPTS = [
+  {
+    value: moment()
+      .startOf("day")
+      .format("YYYY-MM-DD"),
+    label: "Today",
+  },
+  {
+    value: moment()
+      .startOf("week")
+      .format("YYYY-MM-DD"),
+    label: "This Week",
+  },
+  {
+    value: moment()
+      .startOf("month")
+      .format("YYYY-MM-DD"),
+    label: "This Month",
+  },
+  {
+    value: moment()
+      .startOf("year")
+      .format("YYYY-MM-DD"),
+    label: "This Year",
+  },
+  {
+    value: null,
+    label: "All Time",
+  },
+];
+
 const sortOpts = [
   {
-    value: "relevance",
+    value: null,
     label: "Relevance",
   },
   ...filterOptions,
@@ -61,17 +86,27 @@ const Index = ({ resp }) => {
     </Link>
   ));
 
-  const handleFilterSelect = (filterId, selectedOpts) => {
-    if (!isArray(selectedOpts)) {
-      selectedOpts = [selectedOpts];
+  const getSelectedTimeOpt = () => {
+    const urlParam = get(router, "query.publish_date__gte", null);
+    return TIME_FILTER_OPTS.find((opt) => opt.value === urlParam);
+  };
+
+  const handleFilterSelect = (filterId, selected) => {
+    let query = {
+      ...router.query,
+    };
+
+    if (isArray(selected)) {
+      query[filterId] = selected.map((v) => v.value);
+    } else if (!selected || !selected.value) {
+      delete query[filterId];
+    } else {
+      query[filterId] = selected.value;
     }
 
     router.push({
       pathname: "/search/[type]",
-      query: {
-        ...router.query,
-        [`${filterId}`]: (selectedOpts || []).map((v) => v.value),
-      },
+      query,
     });
   };
 
@@ -107,23 +142,6 @@ const Index = ({ resp }) => {
   }
   const selectedValues = selectedHubs.map((v) => ({ label: v, value: v }));
 
-  const availDateOpts = [
-    { label: "Last year", value: "last_year" },
-    { label: "Last five years", value: "last_five_years" },
-  ];
-  let selectedPublishDate = null;
-  if (router.query.paper_publish_date) {
-    switch (router.query.paper_publish_date) {
-      case "last_year":
-        selectedPublishDate = { value: "last_year", label: "Last year" };
-      case "last_five_years":
-        selectedPublishDate = {
-          value: "last_five_years",
-          label: "Last five years",
-        };
-    }
-  }
-
   return (
     <div>
       <FormSelect
@@ -157,14 +175,14 @@ const Index = ({ resp }) => {
         isSearchable={false}
       />
       <FormSelect
-        id={"paper_publish_date"}
-        options={availDateOpts}
+        id={"publish_date__gte"}
+        options={TIME_FILTER_OPTS}
         containerStyle={null}
         inputStyle={null}
         onChange={handleFilterSelect}
         isSearchable={true}
         placeholder={"Date Published"}
-        value={selectedPublishDate}
+        value={getSelectedTimeOpt()}
         isMulti={false}
         multiTagStyle={null}
         multiTagLabelStyle={null}
