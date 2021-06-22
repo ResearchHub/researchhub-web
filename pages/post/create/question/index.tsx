@@ -17,15 +17,10 @@ export default function Index() {
   if (enableNewPostTypes) {
     return (
       <Fragment>
-        <Head
-          title={`New Post`}
-          description="Ask a Question or Start a Discussion on ResearchHub"
-        />
+        <Head title={`New Post`} description="Create a Post on ResearchHub" />
         <div className={css(styles.background)}>
           <div className={css(styles.content)}>
-            <div className={css(styles.title)}>
-              Ask a Question or Start a Discussion
-            </div>
+            <div className={css(styles.title)}>Create a Post</div>
             <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
             <div className={css(styles.row)}>
               <AskQuestionForm />
