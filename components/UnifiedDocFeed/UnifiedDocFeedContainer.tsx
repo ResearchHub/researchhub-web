@@ -42,28 +42,28 @@ type PaginationInfo = {
 
 type UseEffectFetchFeedArgs = {
   docTypeFilter: string;
-  documents: any;
   hub: any;
   hubState: any;
-  router: NextRouter;
   paginationInfo: PaginationInfo;
-  setDocuments: Function;
+  router: NextRouter;
   setPaginationInfo: Function;
+  setUnifiedDocuments: Function;
   subFilters: any;
+  unifiedDocuments: any;
 };
 
 type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
 
 const useEffectFetchFeed = ({
   docTypeFilter,
-  documents: currDocuments,
   hub,
   hubState,
-  router,
   paginationInfo,
-  setDocuments,
+  router,
   setPaginationInfo,
+  setUnifiedDocuments,
   subFilters,
+  unifiedDocuments: currDocuments,
 }: UseEffectFetchFeedArgs): void => {
   const currPathname = router.pathname;
   const shouldGetSubscribed = useMemo<Boolean>(
@@ -73,8 +73,8 @@ const useEffectFetchFeed = ({
 
   const onSuccess = ({ count, hasMore, documents }) => {
     paginationInfo.isLoadingMore
-      ? setDocuments([...currDocuments, ...documents])
-      : setDocuments(documents);
+      ? setUnifiedDocuments([...currDocuments, ...documents])
+      : setUnifiedDocuments(documents);
     setPaginationInfo({
       ...paginationInfo,
       count,
@@ -93,14 +93,17 @@ const useEffectFetchFeed = ({
   };
 
   useEffect((): void => {
+    console.warn("FETCHING NOW:", docTypeFilter);
+    console.warn("paginationInfo: ", paginationInfo);
+    console.warn("hubState.subscribedHubs: ", hubState.subscribedHubs);
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
       hubID: shouldGetSubscribed
-        ? hubState.subscribedHubs.map((hub: any): ID => hub.id)
-        : isNullOrUndefined(hub)
-        ? null
-        : [hub.id],
+        ? filterNull(hubState.subscribedHubs).map((hub: any): ID => hub.id)
+        : !isNullOrUndefined(hub)
+        ? [hub.id]
+        : null,
       onError,
       onSuccess,
       subFilters,
@@ -118,11 +121,11 @@ const getFilterFromRouter = (router: NextRouter): string => {
 };
 
 function UnifiedDocFeedContainer({
-  auth, // redux
+  auth, 
   feed,
   home: isHomePage,
-  hubName,
   hub, // selected hub
+  hubName,
   hubState, // hub data of current user
   isLoggedIn,
   subscribeButton,
@@ -131,7 +134,6 @@ function UnifiedDocFeedContainer({
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
-  const [documents, setDocuments] = useState<any>([]);
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
@@ -143,12 +145,14 @@ function UnifiedDocFeedContainer({
     isLoadingMore: false,
     page: 1,
   });
-  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
+  const [unifiedDocuments, setUnifiedDocuments] = useState<any>([]);
 
+  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
+  const { filterBy } = subFilters;
   const onInitialLoad = useMemo((): Boolean => page === 1 && isLoading, [
     page,
     isLoading,
@@ -157,23 +161,23 @@ function UnifiedDocFeedContainer({
     (): string =>
       formatMainHeader({
         feed,
-        filterBy: subFilters.filterBy,
+        filterBy,
         hubName,
         isHomePage,
       }),
-    [feed, subFilters.filterBy, hubName, isHomePage]
+    [hubName, feed, filterBy, isHomePage]
   );
 
   useEffectFetchFeed({
     docTypeFilter,
-    documents,
     hub,
     hubState,
-    router,
     paginationInfo,
-    setDocuments,
+    router,
     setPaginationInfo,
+    setUnifiedDocuments,
     subFilters,
+    unifiedDocuments,
   });
 
   const docTypeFilterButtons = useMemo(() => {
@@ -201,39 +205,38 @@ function UnifiedDocFeedContainer({
     );
   }, [docTypeFilter, router]);
 
+  console.warn("DOCUMENTS: ", unifiedDocuments);
   const documentCards = useMemo(
     (): Array<UnifiedCard> =>
-      filterNull(documents).map(
-        (document: any, arrIndex: number): UnifiedCard => {
-          console.warn("HI");
-          const isPaperCard = document.document_type === "PAPER";
-          const docID = document.id;
+      filterNull(unifiedDocuments).map(
+        (uniDoc: any, arrIndex: number): UnifiedCard => {
+          const isPaperCard = uniDoc.document_type === "PAPER";
+          const docID = uniDoc.id;
           if (isPaperCard) {
+            console.warn("PAPERS");
             return (
               <PaperEntryCard
-                key={`Paper-${docID}-${arrIndex}`}
-                paper={document.documents}
                 index={arrIndex}
-                vote={document.user_vote}
-                voteCallback={(index: number, currPaper: any): void => {
-                  let newDocument = {
-                    ...document,
-                  };
-                  newDocument.documents.user_vote = currPaper.user_vote;
-                  newDocument.documents.score = currPaper.score;
-
-                  let newDocuments = [...documents];
-
-                  newDocuments[index] = newDocument;
-
-                  setDocuments(newDocuments);
+                key={`Paper-${docID}-${arrIndex}`}
+                paper={uniDoc.documents}
+                vote={uniDoc.user_vote}
+                voteCallback={(arrIndex: number, currPaper: any): void => {
+                  const [currUniDoc, newUniDocs] = [
+                    { ...uniDoc },
+                    [...unifiedDocuments],
+                  ];
+                  currUniDoc.documents.user_vote = currPaper.user_vote;
+                  currUniDoc.documents.score = currPaper.score;
+                  newUniDocs[arrIndex] = currUniDoc;
+                  setUnifiedDocuments(newUniDocs);
                 }}
               />
             );
           } else {
+            console.warn("POSTS");
             return (
               <UserPostCard
-                {...document.documents[0]}
+                {...uniDoc.documents[0]}
                 key={`Post-${docID}-${arrIndex}`}
                 style={styles.customUserPostCard}
               />
@@ -241,7 +244,7 @@ function UnifiedDocFeedContainer({
           }
         }
       ),
-    [documents, docTypeFilter, paginationInfo, subFilters]
+    [docTypeFilter, paginationInfo, subFilters, unifiedDocuments]
   );
 
   return (
