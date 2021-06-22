@@ -8,7 +8,7 @@ import { fetchURL } from "~/config/fetch";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 import Ripples from "react-ripples";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Error from "next/error";
@@ -92,17 +92,26 @@ const Index = ({ currentSearchResponse }) => {
   const currentSearchType = get(router, "query.type");
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [nextResultsUrl, setNextResultsUrl] = useState(
-    get(currentSearchResponse, "next")
-  );
-  const [results, setResults] = useState(
-    get(currentSearchResponse, "results", [])
-  );
+  const [nextResultsUrl, setNextResultsUrl] = useState(null);
+  const [numOfHits, setNumOfHIts] = useState(0);
+  const [results, setResults] = useState([]);
+
+  useEffect(() => {
+    setResults(get(currentSearchResponse, "results"));
+    setNextResultsUrl(get(currentSearchResponse, "next"));
+    setNumOfHIts(get(currentSearchResponse, "count"));
+  }, [currentSearchResponse]);
 
   const loadMoreResults = () => {
-    fetchURL(nextResultsUrl).then((res) => {
-      setResults([...results, ...res.results]);
-    });
+    setIsLoadingMore(true);
+
+    fetchURL(nextResultsUrl)
+      .then((res) => {
+        setResults([...results, ...res.results]);
+      })
+      .finally(() => {
+        setIsLoadingMore(false);
+      });
   };
 
   const getSelectedDropdownValue = ({ forKey }) => {
@@ -141,7 +150,7 @@ const Index = ({ currentSearchResponse }) => {
       <Link href={`/search/${type}`} key={type}>
         {type === currentSearchType ? (
           <a>
-            {type + "s"} [{get(currentSearchResponse, "count", "")}]
+            {type + "s"} [{numOfHits}]
           </a>
         ) : (
           <a>{type + "s"}</a>
@@ -246,6 +255,7 @@ const Index = ({ currentSearchResponse }) => {
           <PaperEntryCard
             paper={paper}
             index={index}
+            key={paper.id}
             voteCallback={() => null}
           />
         );
