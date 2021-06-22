@@ -43,17 +43,21 @@ const getAllowedSearchFilters = ({ searchType, queryParams }) => {
 
 const Index = ({ resp }) => {
   const router = useRouter();
-  const searchType = get(router, "query.type");
+  const currentSearchType = get(router, "query.type");
 
-  if (!isAllowedSearchEntityType(searchType)) {
+  if (!isAllowedSearchEntityType(currentSearchType)) {
     return <Error statusCode={404} />;
   }
 
   const htmlLinks = keys(SEARCH_TYPES).map((type) => (
     <Link href={`/search/${type}`} key={type}>
-      <a>
-        {type + "s"} [{get(resp, `${type}_count`, "")}]
-      </a>
+      {type === currentSearchType ? (
+        <a>
+          {type + "s"} [{get(resp, "count", "")}]
+        </a>
+      ) : (
+        <a>{type + "s"}</a>
+      )}
     </Link>
   ));
 
