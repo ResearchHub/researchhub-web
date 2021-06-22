@@ -508,10 +508,12 @@ const NotificationEntry = (props) => {
             {paper_official_title && truncateText(paper_official_title)}
           </a>
         </Link>
-        <span className={css(styles.timestamp)}>
-          <span className={css(styles.timestampDivider)}>•</span>
-          {timeAgoStamp(created_date)}
-        </span>
+        {created_date ? (
+          <span className={css(styles.timestamp)}>
+            <span className={css(styles.timestampDivider)}>•</span>
+            {timeAgoStamp(created_date)}
+          </span>
+        ) : null}
       </div>
     );
   };
