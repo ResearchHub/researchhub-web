@@ -46,7 +46,10 @@ const calculateTimeScope = (scope) => {
   return scope;
 };
 
-const fetchUserVote = (unifiedDocs) => {
+const fetchUserVote = (unifiedDocs, isLoggedIn) => {
+  if (!isLoggedIn) {
+    return unifiedDocs;
+  }
   const [paperIds, postIds] = [[], []];
   unifiedDocs.forEach(({ documents, document_type }) => {
     if (document_type === "PAPER") {
@@ -81,7 +84,7 @@ const fetchUserVote = (unifiedDocs) => {
           } else if (isPaper) {
             return {
               ...currUniDoc,
-              documents: { ...relatedDocs, user_vote: res.paper[uniDocId] },
+              documents: { ...relatedDocs, user_vote: res.papers[uniDocId] },
             };
           } else {
             return {
@@ -103,6 +106,7 @@ const fetchUserVote = (unifiedDocs) => {
 export default function fetchUnifiedDocs({
   docTypeFilter,
   hubID,
+  isLoggedIn,
   onError,
   onSuccess,
   page,
@@ -133,11 +137,14 @@ export default function fetchUnifiedDocs({
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
       const { count, next, results: fetchedUnifiedDocs } = res;
-      const docs = await fetchUserVote(filterNull(fetchedUnifiedDocs));
+      const voteFormattedDocs = await fetchUserVote(
+        filterNull(fetchedUnifiedDocs),
+        isLoggedIn
+      );
       onSuccess({
         count,
         hasMore: !isNullOrUndefined(next),
-        documents: docs,
+        documents: voteFormattedDocs,
       });
     })
     .catch((err) => {
