@@ -11,7 +11,15 @@ import {
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import Button from "../Form/Button";
+import CreateFeedBanner from "../Home/CreateFeedBanner";
+import React, {
+  Fragment,
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import Ripples from "react-ripples";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
@@ -113,6 +121,7 @@ function UnifiedDocFeedContainer({
   hubName,
   hub, // selected hub
   hubState, // hub data of current user
+  isLoggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
   const router = useRouter();
@@ -285,6 +294,12 @@ function UnifiedDocFeedContainer({
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
+      {/* TODO: briansantoso - hide banner when user has subscribed to at least one hub already */}
+      <div>
+        <div className={css(styles.bannerContainer)} id="create-feed-banner">
+          <CreateFeedBanner />
+        </div>
+      </div>
       {onInitialLoad ? (
         <div className={css(styles.initSpinnerWrap)}>
           <Loader
@@ -295,7 +310,28 @@ function UnifiedDocFeedContainer({
           />
         </div>
       ) : (
-        documentCards
+        <div className={css(styles.feedPosts)}>
+          <div className={css(styles.blur)} />
+          <Button
+            isLink={
+              isLoggedIn
+                ? {
+                    href: `/user/${auth.user.author_profile.user}/onboard`,
+                    query: {
+                      selectHubs: true,
+                    },
+                  }
+                : {
+                    href: "/all",
+                    linkAs: "/all",
+                  }
+            }
+            hideRipples={true}
+            label={isLoggedIn ? "Generate My Hubs" : "View All Hubs"}
+            customButtonStyle={styles.allFeedButton}
+          />
+          {documentCards}
+        </div>
       )}
       <div className={css(styles.loadMoreWrap)}>
         {isLoadingMore ? (
@@ -327,6 +363,7 @@ function UnifiedDocFeedContainer({
 
 const mapStateToProps = (state: any) => ({
   auth: state.auth,
+  isLoggedIn: state.auth.isLoggedIn,
 });
 
 export default connect(mapStateToProps)(UnifiedDocFeedContainer);
@@ -453,5 +490,37 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: "center",
     width: "100%",
+  },
+  bannerContainer: {
+    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
+    },
+  },
+  blur: {
+    background:
+      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
+    height: "100%",
+    position: "absolute",
+    zIndex: 3,
+    top: 0,
+    width: "100%",
+  },
+  allFeedButton: {
+    position: "absolute",
+    bottom: 100,
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 3,
+    cursor: "pointer",
+    boxSizing: "border-box",
+    width: "unset",
+    padding: "0px 15px",
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
+  },
+  feedPosts: {
+    position: "relative",
+    minHeight: 200,
   },
 });
