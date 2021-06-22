@@ -43,7 +43,7 @@ type PaginationInfo = {
 type UseEffectFetchFeedArgs = {
   docTypeFilter: string;
   hub: any;
-  hubState: any;
+  isLoggedIn: Boolean;
   paginationInfo: PaginationInfo;
   router: NextRouter;
   setPaginationInfo: Function;
@@ -57,7 +57,7 @@ type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
 const useEffectFetchFeed = ({
   docTypeFilter,
   hub: selectedHub,
-  hubState,
+  isLoggedIn,
   paginationInfo,
   router,
   setPaginationInfo,
@@ -99,6 +99,7 @@ const useEffectFetchFeed = ({
         !shouldGetSubscribed && !isNullOrUndefined(selectedHub)
           ? selectedHub.id
           : null,
+      isLoggedIn,
       onError,
       onSuccess,
       page: paginationInfo.page,
@@ -124,7 +125,7 @@ const getFilterFromRouter = (router: NextRouter): string => {
 };
 
 function UnifiedDocFeedContainer({
-  auth,
+  auth, // redux
   feed,
   home: isHomePage,
   hub, // selected hub
@@ -174,7 +175,7 @@ function UnifiedDocFeedContainer({
   useEffectFetchFeed({
     docTypeFilter,
     hub,
-    hubState,
+    isLoggedIn: auth.isLoggedIn,
     paginationInfo,
     router,
     setPaginationInfo,
