@@ -56,7 +56,7 @@ type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
 
 const useEffectFetchFeed = ({
   docTypeFilter,
-  hub,
+  hub: selectedHub,
   hubState,
   paginationInfo,
   router,
@@ -67,10 +67,11 @@ const useEffectFetchFeed = ({
 }: UseEffectFetchFeedArgs): void => {
   const currPathname = router.pathname;
   const shouldGetSubscribed = useMemo<Boolean>(
-    (): Boolean => ["all", "all/"].includes(currPathname),
+    (): Boolean =>
+      !["all", "all/", "hubs", "hubs/"].includes(currPathname.split("/")[1]),
     [currPathname]
   );
-
+  console.warn("currPathname: ", currPathname);
   const onSuccess = ({ count, hasMore, documents }) => {
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
@@ -92,21 +93,32 @@ const useEffectFetchFeed = ({
     });
   };
 
+  const subscribedHubIDs = filterNull(hubState.subscribedHubs).map(
+    (hub: any): ID => hub.id
+  );
+  console.warn("shouldGetSubscribed: ", shouldGetSubscribed);
   useEffect((): void => {
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
-      hubID: shouldGetSubscribed
-        ? filterNull(hubState.subscribedHubs).map((hub: any): ID => hub.id)
-        : !isNullOrUndefined(hub)
-        ? [hub.id]
-        : null,
+      hubID:
+        shouldGetSubscribed && subscribedHubIDs.length > 0
+          ? subscribedHubIDs
+          : !isNullOrUndefined(selectedHub)
+          ? [selectedHub.id]
+          : null,
       onError,
       onSuccess,
       page: paginationInfo.page,
       subFilters,
     });
-  }, [currPathname, docTypeFilter, hub, paginationInfo.page, subFilters]);
+  }, [
+    currPathname,
+    docTypeFilter,
+    selectedHub,
+    paginationInfo.page,
+    subFilters,
+  ]);
 };
 
 const getFilterFromRouter = (router: NextRouter): string => {

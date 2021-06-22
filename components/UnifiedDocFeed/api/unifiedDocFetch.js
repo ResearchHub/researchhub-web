@@ -128,6 +128,7 @@ export default function fetchUnifiedDocs({
     timePeriod: calculateTimeScope(scope),
     type: docTypeFilter,
   };
+  console.warn("PARAMS: ", PARAMS);
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
       const { count, next, results: fetchedUnifiedDocs } = res;
