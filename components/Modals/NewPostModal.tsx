@@ -15,9 +15,9 @@ const items = [
     route: "/paper/upload/info",
   },
   {
-    header: "Ask a Question or Start a Discussion",
+    header: "Create a Post",
     description:
-      "All discussions must be scientific in nature. Ideas, theories, questions to the community are all welcome.",
+      "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
   },
