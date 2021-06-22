@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 // NPM Components
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Plain from "slate-plain-serializer";
-import { isAndroid, isMobile } from "react-device-detect";
 var isAndroidJS = false;
 if (process.browser) {
   const ua = navigator.userAgent.toLowerCase();

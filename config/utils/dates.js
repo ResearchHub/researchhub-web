@@ -44,6 +44,8 @@ export function getInitialScope() {
 }
 
 export function timeAgoStamp(date) {
-  date = new Date(date);
-  return timeAgo.format(date);
+  let formatDate = new Date(date);
+  if (!isNaN(formatDate)) {
+    return timeAgo.format(formatDate);
+  }
 }

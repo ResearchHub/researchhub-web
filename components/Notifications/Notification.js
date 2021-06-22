@@ -226,6 +226,7 @@ class Notification extends React.Component {
     return this.state.notifications.map((notification, index) => {
       const action = this.formatAction(notification);
 
+      // console.log(action);
       if (action) {
         return (
           <NotificationEntry

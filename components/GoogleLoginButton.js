@@ -49,7 +49,10 @@ const GoogleLoginButton = (props) => {
         getUser().then((userAction) => {
           props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
-          if (!userAction.user.has_seen_orcid_connect_modal) {
+          if (
+            userAction.user &&
+            !userAction.user.has_seen_orcid_connect_modal
+          ) {
             const payload = {
               event_type: "user_signup",
               time: +new Date(),
