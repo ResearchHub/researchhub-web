@@ -1,5 +1,6 @@
 import { fetchUnifiedDocFeed } from "../../../config/fetch";
 import {
+  emptyFncWithMsg,
   filterNull,
   isNullOrUndefined,
 } from "../../../config/utils/nullchecks";
@@ -8,7 +9,7 @@ import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
 
-const calculateScope = (scope) => {
+const calculateTimeScope = (scope) => {
   const result = {
     start: 0,
     end: 0,
@@ -55,6 +56,10 @@ const fetchUserVote = (unifiedDocs) => {
       documents.length > 0 && postIds.push(documents[0].id);
     }
   });
+  if (paperIds.length < 1 && postIds.length < 1) {
+    emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
+    return unifiedDocs;
+  }
   return fetch(
     API.CHECK_USER_VOTE_DOCUMENTS({ postIds, paperIds }),
     API.GET_CONFIG()
@@ -90,6 +95,7 @@ const fetchUserVote = (unifiedDocs) => {
       );
     })
     .catch((error) => {
+      emptyFncWithMsg(error);
       return unifiedDocs;
     });
 };
@@ -119,14 +125,13 @@ export default function fetchUnifiedDocs({
     hubId: hubID,
     ordering: filterBy.value,
     page,
-    timePeriod: calculateScope(scope),
+    timePeriod: calculateTimeScope(scope),
     type: docTypeFilter,
   };
-
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
-      const { count, next, results: unifiedDocs } = res;
-      const docs = await fetchUserVote(filterNull(unifiedDocs));
+      const { count, next, results: fetchedUnifiedDocs } = res;
+      const docs = await fetchUserVote(filterNull(fetchedUnifiedDocs));
       onSuccess({
         count,
         hasMore: !isNullOrUndefined(next),
