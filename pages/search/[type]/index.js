@@ -2,7 +2,6 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "~/config/constants";
 import FormSelect from "~/components/Form/FormSelect";
-import { filterOptions } from "~/config/utils/options";
 
 import Link from "next/link";
 import Error from "next/error";
@@ -15,9 +14,9 @@ import nookies from "nookies";
 import parseUrl from "parse-url";
 
 const SEARCH_TYPES = {
-  paper: ["search", "hubs", "publish_date__gte", "post_type"],
-  hub: [],
-  author: [],
+  paper: ["search", "hubs", "publish_date__gte", "post_type", "ordering"],
+  hub: ["ordering"],
+  author: ["ordering"],
 };
 
 const TIME_FILTER_OPTS = [
@@ -51,12 +50,27 @@ const TIME_FILTER_OPTS = [
   },
 ];
 
-const sortOpts = [
+const SORT_OPTS = [
   {
     value: null,
     label: "Relevance",
   },
-  ...filterOptions,
+  {
+    value: "-hot",
+    label: "Trending",
+  },
+  {
+    value: "-popularity",
+    label: "Top Rated",
+  },
+  {
+    value: "-publish_date",
+    label: "Newest",
+  },
+  {
+    value: "-discussion_count",
+    label: "Most Discussed",
+  },
 ];
 
 const isAllowedSearchEntityType = (type) => SEARCH_TYPES.hasOwnProperty(type);
@@ -86,9 +100,16 @@ const Index = ({ resp }) => {
     </Link>
   ));
 
-  const getSelectedTimeOpt = () => {
-    const urlParam = get(router, "query.publish_date__gte", null);
-    return TIME_FILTER_OPTS.find((opt) => opt.value === urlParam);
+  const getSelectedDropdownValue = ({ forKey }) => {
+    const urlParam = get(router, `query.${forKey}`, null);
+
+    if (forKey === "publish_date__gte") {
+      return TIME_FILTER_OPTS.find((opt) => opt.value === urlParam);
+    } else if (forKey === "ordering") {
+      return SORT_OPTS.find((opt) => opt.value === urlParam);
+    }
+
+    return null;
   };
 
   const handleFilterSelect = (filterId, selected) => {
@@ -110,22 +131,22 @@ const Index = ({ resp }) => {
     });
   };
 
-  const handleSortSelect = (sortId, selectedOpt) => {
-    let query = {
-      ...router.query,
-    };
-
-    delete query["sort_by"];
-
-    if (selectedOpt.value !== "relevance") {
-      query["sort_by"] = selectedOpt.value;
-    }
-
-    router.push({
-      pathname: "/search/[type]",
-      query,
-    });
-  };
+  //   const handleSortSelect = (sortId, selectedOpt) => {
+  //     let query = {
+  //       ...router.query,
+  //     };
+  //
+  //     delete query["sort_by"];
+  //
+  //     if (selectedOpt.value !== "relevance") {
+  //       query["sort_by"] = selectedOpt.value;
+  //     }
+  //
+  //     router.push({
+  //       pathname: "/search/[type]",
+  //       query,
+  //     });
+  //   };
 
   const availFacetOpts = get(resp, "facets._filter_hubs.hubs.buckets", []).map(
     (b) => ({
@@ -158,22 +179,6 @@ const Index = ({ resp }) => {
         multiTagLabelStyle={null}
         isClearable={true}
       />
-
-      <FormSelect
-        id={"sortBy"}
-        options={sortOpts}
-        value={null}
-        containerStyle={null}
-        inputStyle={{
-          fontWeight: 500,
-          minHeight: "unset",
-          backgroundColor: "#FFF",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-        onChange={handleSortSelect}
-        isSearchable={false}
-      />
       <FormSelect
         id={"publish_date__gte"}
         options={TIME_FILTER_OPTS}
@@ -182,13 +187,27 @@ const Index = ({ resp }) => {
         onChange={handleFilterSelect}
         isSearchable={true}
         placeholder={"Date Published"}
-        value={getSelectedTimeOpt()}
+        value={getSelectedDropdownValue({ forKey: "publish_date__gte" })}
         isMulti={false}
         multiTagStyle={null}
         multiTagLabelStyle={null}
         isClearable={true}
       />
-
+      <FormSelect
+        id={"ordering"}
+        options={SORT_OPTS}
+        value={getSelectedDropdownValue({ forKey: "ordering" })}
+        containerStyle={null}
+        inputStyle={{
+          fontWeight: 500,
+          minHeight: "unset",
+          backgroundColor: "#FFF",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+        onChange={handleFilterSelect}
+        isSearchable={false}
+      />
       {htmlLinks}
     </div>
   );
