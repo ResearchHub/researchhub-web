@@ -2,7 +2,13 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "~/config/constants";
 import FormSelect from "~/components/Form/FormSelect";
+import colors from "~/config/themes/colors";
+import Loader from "~/components/Loader/Loader";
+import { fetchURL } from "~/config/fetch";
 
+import Ripples from "react-ripples";
+import { useState } from "react";
+import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Error from "next/error";
 import { pick, keys, isString, isArray } from "underscore";
@@ -80,25 +86,23 @@ const getAllowedSearchFilters = ({ searchType, queryParams }) => {
   return pick(queryParams, ...allowedFilters);
 };
 
-const Index = ({ resp }) => {
+const Index = ({ currentSearchResponse }) => {
   const router = useRouter();
   const currentSearchType = get(router, "query.type");
 
-  if (!isAllowedSearchEntityType(currentSearchType)) {
-    return <Error statusCode={404} />;
-  }
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [nextResultsUrl, setNextResultsUrl] = useState(
+    get(currentSearchResponse, "next")
+  );
+  const [results, setResults] = useState(
+    get(currentSearchResponse, "results", [])
+  );
 
-  const htmlLinks = keys(SEARCH_TYPES).map((type) => (
-    <Link href={`/search/${type}`} key={type}>
-      {type === currentSearchType ? (
-        <a>
-          {type + "s"} [{get(resp, "count", "")}]
-        </a>
-      ) : (
-        <a>{type + "s"}</a>
-      )}
-    </Link>
-  ));
+  const loadMoreResults = () => {
+    fetchURL(nextResultsUrl).then((res) => {
+      setResults([...results, ...res.results]);
+    });
+  };
 
   const getSelectedDropdownValue = ({ forKey }) => {
     const urlParam = get(router, `query.${forKey}`, null);
@@ -131,29 +135,52 @@ const Index = ({ resp }) => {
     });
   };
 
-  //   const handleSortSelect = (sortId, selectedOpt) => {
-  //     let query = {
-  //       ...router.query,
-  //     };
-  //
-  //     delete query["sort_by"];
-  //
-  //     if (selectedOpt.value !== "relevance") {
-  //       query["sort_by"] = selectedOpt.value;
-  //     }
-  //
-  //     router.push({
-  //       pathname: "/search/[type]",
-  //       query,
-  //     });
-  //   };
+  const renderEntityTabs = () => {
+    return keys(SEARCH_TYPES).map((type) => (
+      <Link href={`/search/${type}`} key={type}>
+        {type === currentSearchType ? (
+          <a>
+            {type + "s"} [{get(currentSearchResponse, "count", "")}]
+          </a>
+        ) : (
+          <a>{type + "s"}</a>
+        )}
+      </Link>
+    ));
+  };
 
-  const availFacetOpts = get(resp, "facets._filter_hubs.hubs.buckets", []).map(
-    (b) => ({
-      label: `${b.key} (${b.doc_count})`,
-      value: b.key,
-    })
-  );
+  const renderLoadMoreButton = () => {
+    if (nextResultsUrl !== null) {
+      return (
+        <div className={css(styles.buttonContainer)}>
+          {!isLoadingMore ? (
+            <Ripples
+              className={css(styles.loadMoreButton)}
+              onClick={loadMoreResults}
+            >
+              Load More Papers
+            </Ripples>
+          ) : (
+            <Loader
+              key={"paperLoader"}
+              loading={true}
+              size={25}
+              color={colors.BLUE()}
+            />
+          )}
+        </div>
+      );
+    }
+  };
+
+  const availFacetOpts = get(
+    currentSearchResponse,
+    "facets._filter_hubs.hubs.buckets",
+    []
+  ).map((b) => ({
+    label: `${b.key} (${b.doc_count})`,
+    value: b.key,
+  }));
 
   let selectedHubs = [];
   if (isArray(router.query.hubs)) {
@@ -162,6 +189,10 @@ const Index = ({ resp }) => {
     selectedHubs = [router.query.hubs];
   }
   const selectedValues = selectedHubs.map((v) => ({ label: v, value: v }));
+
+  if (!isAllowedSearchEntityType(currentSearchType)) {
+    return <Error statusCode={404} />;
+  }
 
   return (
     <div>
@@ -208,7 +239,8 @@ const Index = ({ resp }) => {
         onChange={handleFilterSelect}
         isSearchable={false}
       />
-      {htmlLinks}
+      {renderEntityTabs()}
+      {renderLoadMoreButton()}
     </div>
   );
 };
@@ -237,21 +269,42 @@ Index.getInitialProps = async (ctx) => {
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((resp) => {
-      //       const initial = keys(SEARCH_TYPES).reduce((map, k) => { map[k] = []; return map } , {})
-      //
-      //       const hitsByIdxMap = resp.results.reduce((map, hit) => {
-      //         const idx = get(hit,"meta.index", "undefined");
-      //         if (!map[idx]) {
-      //           map[idx] = []
-      //         }
-      //
-      //         map[idx].push(hit);
-      //         return map
-      //       }, initial);
-
-      return { resp };
+    .then((currentSearchResponse) => {
+      return { currentSearchResponse };
     });
 };
+
+const styles = StyleSheet.create({
+  buttonContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 25,
+    height: 45,
+    "@media only screen and (max-width: 768px)": {
+      marginTop: 15,
+      marginBottom: 15,
+    },
+  },
+  loadMoreButton: {
+    fontSize: 14,
+    border: `1px solid ${colors.BLUE()}`,
+    boxSizing: "border-box",
+    borderRadius: 4,
+    height: 45,
+    width: 155,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    userSelect: "none",
+    ":hover": {
+      color: "#FFF",
+      backgroundColor: colors.BLUE(),
+    },
+  },
+});
 
 export default Index;
