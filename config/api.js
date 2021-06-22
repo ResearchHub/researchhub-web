@@ -51,6 +51,8 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
     let value = querystring[currentKey];
 
     if (value !== null && value !== undefined) {
+      // When & is used as a separator, key=val is repeated as many
+      // times as array elems per W3C spec.
       if (Array.isArray(value) && arrayParamSeparator === "&") {
         qs += value.map((v) => `${currentKey}=${v}`).join("&") + "&";
       } else {
