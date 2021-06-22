@@ -26,6 +26,7 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
         modalMessage="create a new post"
         loginRequired={true}
         permissionKey="CreatePaper"
+        styling={styles.rippleClass}
       >
         {/* @ts-ignore */}
         <Button
@@ -58,5 +59,8 @@ const styles = StyleSheet.create({
   newPostLabel: {
     display: "flex",
     alignItems: "center",
+  },
+  rippleClass: {
+    width: "100%",
   },
 });

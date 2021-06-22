@@ -337,7 +337,7 @@ const Navbar = (props) => {
           renderMenuLoginButtons(isLoggedIn)
         ) : (
           <NewPostButton
-            customButtonStyle={[styles.button]}
+            customButtonStyle={[styles.newPostButton]}
             onClick={() => setSideMenu(!sideMenu)}
           />
         )}
