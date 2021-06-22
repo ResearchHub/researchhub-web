@@ -12,7 +12,7 @@ const Search = ({}) => {
   const handleSearch = () => {
     router.push({
       pathname: "/search/paper",
-      query: { query },
+      query: { search: query },
     });
   };
 
