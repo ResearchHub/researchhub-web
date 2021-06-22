@@ -67,11 +67,9 @@ const useEffectFetchFeed = ({
 }: UseEffectFetchFeedArgs): void => {
   const currPathname = router.pathname;
   const shouldGetSubscribed = useMemo<Boolean>(
-    (): Boolean =>
-      !["all", "all/", "hubs", "hubs/"].includes(currPathname.split("/")[1]),
+    (): Boolean => ["", "/"].includes(currPathname),
     [currPathname]
   );
-  console.warn("currPathname: ", currPathname);
   const onSuccess = ({ count, hasMore, documents }) => {
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
@@ -93,23 +91,18 @@ const useEffectFetchFeed = ({
     });
   };
 
-  const subscribedHubIDs = filterNull(hubState.subscribedHubs).map(
-    (hub: any): ID => hub.id
-  );
-  console.warn("shouldGetSubscribed: ", shouldGetSubscribed);
   useEffect((): void => {
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
       hubID:
-        shouldGetSubscribed && subscribedHubIDs.length > 0
-          ? subscribedHubIDs
-          : !isNullOrUndefined(selectedHub)
-          ? [selectedHub.id]
+        !shouldGetSubscribed && !isNullOrUndefined(selectedHub)
+          ? selectedHub.id
           : null,
       onError,
       onSuccess,
       page: paginationInfo.page,
+      subscribedHubs: shouldGetSubscribed,
       subFilters,
     });
   }, [
