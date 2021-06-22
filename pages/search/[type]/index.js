@@ -5,6 +5,7 @@ import FormSelect from "~/components/Form/FormSelect";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 import { fetchURL } from "~/config/fetch";
+import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 import Ripples from "react-ripples";
 import { useState } from "react";
@@ -240,6 +241,15 @@ const Index = ({ currentSearchResponse }) => {
         isSearchable={false}
       />
       {renderEntityTabs()}
+      {results.map((paper, index) => {
+        return (
+          <PaperEntryCard
+            paper={paper}
+            index={index}
+            voteCallback={() => null}
+          />
+        );
+      })}
       {renderLoadMoreButton()}
     </div>
   );
