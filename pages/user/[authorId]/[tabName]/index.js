@@ -75,8 +75,8 @@ const getTabs = (author, transactions) =>
       : null,
     {
       href: "discussions",
-      label: "discussions",
-      name: "Discussions",
+      label: "comments",
+      name: "Comments",
       showCount: true,
       count: () => author.userDiscussions.count,
     },
