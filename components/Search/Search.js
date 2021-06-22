@@ -7,7 +7,7 @@ import { get } from "lodash";
 
 const Search = ({}) => {
   const router = useRouter();
-  const [query, setQuery] = useState(get(router, "query.query") || "");
+  const [query, setQuery] = useState(get(router, "query.search") || "");
 
   const handleSearch = () => {
     router.push({
