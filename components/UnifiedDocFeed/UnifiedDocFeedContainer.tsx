@@ -72,7 +72,6 @@ const useEffectFetchFeed = ({
   );
 
   const onSuccess = ({ count, hasMore, documents }) => {
-    // debugger;
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
       : setUnifiedDocuments(documents);

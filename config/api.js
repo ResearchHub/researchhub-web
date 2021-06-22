@@ -826,7 +826,6 @@ const routes = (BASE_URL) => {
           }
         });
       }
-      debugger;
       return url + query;
     },
     SUPPORT: BASE_URL + "support/",
