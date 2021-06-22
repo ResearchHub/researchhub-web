@@ -1,5 +1,8 @@
 import { fetchUnifiedDocFeed } from "../../../config/fetch";
-import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import {
+  filterNull,
+  isNullOrUndefined,
+} from "../../../config/utils/nullchecks";
 import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
@@ -42,17 +45,16 @@ const calculateScope = (scope) => {
   return scope;
 };
 
-const fetchUserVote = (documents) => {
+const fetchUserVote = (unifiedDocs) => {
   const [paperIds, postIds] = [[], []];
-  documents.forEach((currDoc) => {
-    if (currDoc.document_type === "PAPER") {
-      paperIds.push(currDoc.documents.id);
+  unifiedDocs.forEach(({ documents, document_type }) => {
+    if (document_type === "PAPER") {
+      paperIds.push(documents.id);
     } else {
       // below assumes we are only getting the first version of post
-      postIds.push(currDoc.documents[0].id);
+      documents.length > 0 && postIds.push(documents[0].id);
     }
   });
-
   return fetch(
     API.CHECK_USER_VOTE_DOCUMENTS({ postIds, paperIds }),
     API.GET_CONFIG()
@@ -60,21 +62,35 @@ const fetchUserVote = (documents) => {
     .then(helpers.checkStatus)
     .then(helpers.parseJSON)
     .then((res) => {
-      const newDocs = [...documents];
-      documents.forEach((currDoc) => {
-        const isPaper = currDoc.document_type === "PAPER";
-        const docId = isPaper ? currDoc.documents.id : currDoc.documents[0].id;
-        if (isPaper) {
-          currDoc.documents.user_vote = res.papers[docId];
-        } else {
-          currDoc.documents[0].user_vote = res.posts[docId];
-        }
-      });
-
-      return newDocs;
+      return filterNull(
+        unifiedDocs.map((currUniDoc) => {
+          const isPaper = currUniDoc.document_type === "PAPER";
+          const relatedDocs = currUniDoc.documents;
+          const uniDocId = isPaper
+            ? relatedDocs.id
+            : relatedDocs.length > 0
+            ? relatedDocs[0].id
+            : null;
+          if (uniDocId == null) {
+            return null;
+          } else if (isPaper) {
+            return {
+              ...currUniDoc,
+              documents: { ...relatedDocs, user_vote: res.paper[uniDocId] },
+            };
+          } else {
+            return {
+              ...currUniDoc,
+              documents: [
+                { ...relatedDocs[0], user_vote: res.posts[uniDocId] },
+              ],
+            };
+          }
+        })
+      );
     })
-    .catch((_) => {
-      return documents;
+    .catch((error) => {
+      return unifiedDocs;
     });
 };
 
@@ -109,8 +125,8 @@ export default function fetchUnifiedDocs({
 
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
-      const { count, next, results } = res;
-      let docs = await fetchUserVote(results);
+      const { count, next, results: unifiedDocs } = res;
+      const docs = await fetchUserVote(filterNull(unifiedDocs));
       onSuccess({
         count,
         hasMore: !isNullOrUndefined(next),
