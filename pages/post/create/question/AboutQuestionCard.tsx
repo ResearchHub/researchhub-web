@@ -37,11 +37,33 @@ export default function AboutQuestionCard({
           </div>
         }
       >
-        <ol>
-          <li>Ask a question</li>
-          <li>Start Discussion about a certain topic</li>
-          <li>Post a relevant photo to a hub</li>
-        </ol>
+        <ul>
+          <li>Ask a scientific question</li>
+          <li>Share a theory or hypothesis</li>
+          <li>Publish a research output</li>
+        </ul>
+      </Collapsible>
+      <Collapsible
+        className={css(styles.collapsibleSection)}
+        contentInnerClassName={css(styles.collapsibleContent)}
+        open={isOpen}
+        openedClassName={css(styles.collapsibleSection)}
+        trigger={
+          <div className={css(styles.trigger)}>
+            What counts as research output?
+            <span className={css(styles.chevronDown)}>
+              {icons.chevronDownLeft}
+            </span>
+          </div>
+        }
+      >
+        <ul>
+          <li>Research posters</li>
+          <li>Conference proceedings</li>
+          <li>Experimental datasets</li>
+          <li>Peer-reviews</li>
+          <li>Unfinished works in progress</li>
+        </ul>
       </Collapsible>
       <Collapsible
         className={css(styles.collapsibleSection)}
@@ -59,9 +81,8 @@ export default function AboutQuestionCard({
       >
         <ul>
           <li>Be civil</li>
-          <li>Ask great questions / start great discussions</li>
           <li>Offer suggestions and corrections</li>
-          <li> Back up your claims by linking to related work</li>
+          <li>Back up your claims by linking to relevant sources</li>
         </ul>
       </Collapsible>
     </div>
@@ -101,7 +122,6 @@ const styles = StyleSheet.create({
     lineHeight: "21px",
     color: "#000000",
     marginTop: 24,
-    cursor: "pointer",
   },
   collapsibleContent: {
     marginLeft: "3px",
@@ -116,5 +136,6 @@ const styles = StyleSheet.create({
   },
   trigger: {
     display: "flex",
+    cursor: "pointer",
   },
 });

@@ -208,8 +208,8 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
             isWhite={true}
             label="Save Draft"
             onClick={handleSaveDraft}
-          /> */}
-          <span className={css(styles.buttonSpacer)} />
+          />
+          <span className={css(styles.buttonSpacer)} /> */}
           {/* @ts-ignore */}
           <Button
             customButtonStyle={styles.buttonStyle}
@@ -283,7 +283,14 @@ const styles = StyleSheet.create({
   dropDown: {
     zIndex: 999,
   },
-  buttonStyle: {},
+  buttonStyle: {
+    width: "160px",
+    height: "50px",
+    "@media only screen and (max-width: 415px)": {
+      width: "160px",
+      height: "50px",
+    },
+  },
   editor: {
     width: "720px",
     "@media only screen and (max-width: 900px)": {
