@@ -85,7 +85,12 @@ class UserDiscussionsTab extends React.Component {
 
     const discussions = author.userDiscussions.discussions.map(
       (discussion, index) => {
-        let path = `/paper/${discussion.paper}/${discussion.paper_slug}/${discussion.id}`;
+        let path;
+        if (discussion.paper) {
+          path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
+        } else {
+          path = `/post/${discussion.post}`;
+        }
         return (
           <div
             className={css(
@@ -99,6 +104,7 @@ class UserDiscussionsTab extends React.Component {
               hostname={hostname}
               path={path}
               paperId={discussion.paper}
+              postId={discussion.post}
               key={`discThread-${discussion.id}-${index}`}
               mobileView={this.props.mobileView}
             />
