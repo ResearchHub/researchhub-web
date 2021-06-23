@@ -55,6 +55,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: "373px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   mediaHeader: {
     display: "flex",
@@ -72,6 +75,9 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     marginTop: "10px",
     width: "373px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
   },
   mediaImgBox: {
     display: "flex",
@@ -81,6 +87,7 @@ const styles = StyleSheet.create({
     height: "75px",
     borderRadius: "4px",
     backgroundColor: "rgba(57, 113, 255, 0.07)",
+    marginLeft: "25px",
   },
   mediaImg: {},
   largeListItem: {
