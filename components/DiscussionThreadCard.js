@@ -24,18 +24,14 @@ import {
 } from "~/config/utils/serializers";
 import { createUsername } from "../config/utils";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
-
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
-  let { paperId } = router.query;
-  if (props.paperId) {
-    paperId = props.paperId;
-  }
-
-  const { hostname, hoverEvents, path, mobileView } = props;
+  const { hostname, hoverEvents, paperId, path, postId, mobileView } = props;
+  const DYNAMIC_HREF = paperId
+    ? "/paper/[paperId]/[paperName]"
+    : "/post/[postId]";
 
   const data = getNestedValue(props, ["data"]);
 
@@ -126,7 +122,7 @@ const DiscussionThreadCard = (props) => {
                   type={"discussion"}
                 />
                 <span className={css(styles.mobileReadButton)}>
-                  <ReadButton threadPath={path} />
+                  <ReadButton {...props} threadPath={path} />
                 </span>
               </div>
               <DiscussionPostMetadata
@@ -194,7 +190,7 @@ const DiscussionThreadCard = (props) => {
                 }}
               />
               <div className={css(styles.readbutton)}>
-                <ReadButton threadPath={path} />
+                <ReadButton {...props} threadPath={path} />
               </div>
             </Fragment>
           }
@@ -247,7 +243,10 @@ const Body = (props) => {
 };
 
 const ReadButton = (props) => {
-  const { threadPath } = props;
+  const { paperId, postId, threadPath } = props;
+  const DYNAMIC_HREF = paperId
+    ? "/paper/[paperId]/[paperName]"
+    : "/post/[postId]";
   return (
     <ClientLinkWrapper
       dynamicHref={DYNAMIC_HREF}
