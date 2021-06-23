@@ -91,9 +91,9 @@ const SearchResults = ({ initialResults }) => {
   }, [router.query]);
 
   useEffect(() => {
-    setResults(get(initialResults, "results"));
-    setNextResultsUrl(get(initialResults, "next"));
-    setNumOfHits(get(initialResults, "count"));
+    setResults(get(initialResults, "results", []));
+    setNextResultsUrl(get(initialResults, "next", null));
+    setNumOfHits(get(initialResults, "count", 0));
   }, [initialResults]);
 
   const loadMoreResults = () => {
