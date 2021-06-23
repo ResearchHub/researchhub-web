@@ -77,6 +77,7 @@ const SearchResults = ({ initialResults }) => {
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(0);
   const [results, setResults] = useState([]);
+  const [facetValuesForHub, setFacetValuesForHub] = useState([]);
 
   const [selectedHubs, setSelectedHubs] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState(null);
@@ -94,6 +95,9 @@ const SearchResults = ({ initialResults }) => {
     setResults(get(initialResults, "results", []));
     setNextResultsUrl(get(initialResults, "next", null));
     setNumOfHits(get(initialResults, "count", 0));
+    setFacetValuesForHub(
+      get(initialResults, "facets._filter_hubs.hubs.buckets", [])
+    );
   }, [initialResults]);
 
   const loadMoreResults = () => {
@@ -104,6 +108,7 @@ const SearchResults = ({ initialResults }) => {
         setResults([...results, ...res.results]);
         setNextResultsUrl(res.next);
         setNumOfHits(res.count);
+        setFacetValuesForHub(get(res, "facets._filter_hubs.hubs.buckets", []));
       })
       .finally(() => {
         setIsLoadingMore(false);
@@ -190,15 +195,10 @@ const SearchResults = ({ initialResults }) => {
     }
   };
 
-  const availFacetOpts = get(
-    initialResults,
-    "facets._filter_hubs.hubs.buckets",
-    []
-  ).map((b) => ({
-    label: `${b.key} (${b.doc_count})`,
-    value: b.key,
+  const facetValueOpts = facetValuesForHub.map((f) => ({
+    label: `${f.key} (${f.doc_count})`,
+    value: f.key,
   }));
-
   const entityTabsHtml = renderEntityTabs();
   const loadMoreBtn = renderLoadMoreButton();
 
@@ -206,7 +206,7 @@ const SearchResults = ({ initialResults }) => {
     <div>
       <FormSelect
         id={"hubs"}
-        options={availFacetOpts}
+        options={facetValueOpts}
         containerStyle={null}
         inputStyle={null}
         onChange={handleFilterSelect}
