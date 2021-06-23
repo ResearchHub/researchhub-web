@@ -102,6 +102,8 @@ const SearchResults = ({ initialResults }) => {
     fetchURL(nextResultsUrl)
       .then((res) => {
         setResults([...results, ...res.results]);
+        setNextResultsUrl(res.next);
+        setNumOfHits(res.count);
       })
       .finally(() => {
         setIsLoadingMore(false);
