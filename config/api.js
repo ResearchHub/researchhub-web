@@ -139,6 +139,8 @@ const routes = (BASE_URL) => {
       config,
       page,
       size,
+      // Facets specified will have their values returned
+      // alongside counts in the search response.
       facet = [],
       external_source = true,
     }) => {
