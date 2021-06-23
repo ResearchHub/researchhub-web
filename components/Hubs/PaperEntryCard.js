@@ -38,7 +38,6 @@ import { ModalActions } from "~/redux/modals";
 import { isEmpty } from "underscore";
 
 const PaperEntryCard = (props) => {
-  console.log(props.paper);
   const {
     paper,
     index,
