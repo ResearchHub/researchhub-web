@@ -96,6 +96,18 @@ const Index = ({ currentSearchResponse }) => {
   const [numOfHits, setNumOfHIts] = useState(0);
   const [results, setResults] = useState([]);
 
+  const [selectedHubs, setSelectedHubs] = useState([]);
+  const [selectedTimeRange, setSelectedTimeRange] = useState(null);
+  const [selectedSortOrder, setSelectedSortOrder] = useState(null);
+
+  useEffect(() => {
+    setSelectedHubs(getSelectedFacetValues({ forKey: "hubs" }));
+    setSelectedTimeRange(
+      getSelectedDropdownValue({ forKey: "publish_date__gte" })
+    );
+    setSelectedSortOrder(getSelectedDropdownValue({ forKey: "ordering" }));
+  }, [router.query]);
+
   useEffect(() => {
     setResults(get(currentSearchResponse, "results"));
     setNextResultsUrl(get(currentSearchResponse, "next"));
@@ -124,6 +136,17 @@ const Index = ({ currentSearchResponse }) => {
     }
 
     return null;
+  };
+
+  const getSelectedFacetValues = ({ forKey }) => {
+    let selected = [];
+    if (isArray(router.query[forKey])) {
+      selected = router.query[forKey];
+    } else if (isString(router.query[forKey])) {
+      selected = [router.query[forKey]];
+    }
+
+    return selected.map((v) => ({ label: v, value: v }));
   };
 
   const handleFilterSelect = (filterId, selected) => {
@@ -192,17 +215,12 @@ const Index = ({ currentSearchResponse }) => {
     value: b.key,
   }));
 
-  let selectedHubs = [];
-  if (isArray(router.query.hubs)) {
-    selectedHubs = router.query.hubs;
-  } else if (isString(router.query.hubs)) {
-    selectedHubs = [router.query.hubs];
-  }
-  const selectedValues = selectedHubs.map((v) => ({ label: v, value: v }));
-
   if (!isAllowedSearchEntityType(currentSearchType)) {
     return <Error statusCode={404} />;
   }
+
+  const entityTabsHtml = renderEntityTabs();
+  const loadMoreBtn = renderLoadMoreButton();
 
   return (
     <div>
@@ -214,7 +232,7 @@ const Index = ({ currentSearchResponse }) => {
         onChange={handleFilterSelect}
         isSearchable={true}
         placeholder={"Hubs"}
-        value={selectedValues}
+        value={selectedHubs}
         isMulti={true}
         multiTagStyle={null}
         multiTagLabelStyle={null}
@@ -228,7 +246,7 @@ const Index = ({ currentSearchResponse }) => {
         onChange={handleFilterSelect}
         isSearchable={true}
         placeholder={"Date Published"}
-        value={getSelectedDropdownValue({ forKey: "publish_date__gte" })}
+        value={selectedTimeRange}
         isMulti={false}
         multiTagStyle={null}
         multiTagLabelStyle={null}
@@ -237,19 +255,13 @@ const Index = ({ currentSearchResponse }) => {
       <FormSelect
         id={"ordering"}
         options={SORT_OPTS}
-        value={getSelectedDropdownValue({ forKey: "ordering" })}
+        value={selectedSortOrder}
         containerStyle={null}
-        inputStyle={{
-          fontWeight: 500,
-          minHeight: "unset",
-          backgroundColor: "#FFF",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
+        inputStyle={null}
         onChange={handleFilterSelect}
         isSearchable={false}
       />
-      {renderEntityTabs()}
+      {entityTabsHtml}
       {results.map((paper, index) => {
         return (
           <PaperEntryCard
@@ -260,7 +272,7 @@ const Index = ({ currentSearchResponse }) => {
           />
         );
       })}
-      {renderLoadMoreButton()}
+      {loadMoreBtn}
     </div>
   );
 };
