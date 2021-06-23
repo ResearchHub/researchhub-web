@@ -139,8 +139,12 @@ const styles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
-    "@media only screen and (min-width: 768px)": {
+    "@media only screen and (max-width: 767px)": {
       overflowY: "auto",
+      padding: "40px 10px",
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: "40px 0px",
     },
   },
   form: {
@@ -148,11 +152,11 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   buttonCustomStyle: {
-    width: "180px",
+    width: "160px",
     height: "50px",
-    // padding: "16px",
     "@media only screen and (max-width: 415px)": {
-      width: "100%",
+      width: "160px",
+      height: "50px",
     },
   },
   buttonContainer: {
@@ -186,19 +190,8 @@ const styles = StyleSheet.create({
     width: "100%",
     fontSize: "26px",
     color: "#232038",
-    "@media only screen and (max-width: 557px)": {
-      fontSize: "24px",
-      width: "380px",
-    },
-    "@media only screen and (max-width: 725px)": {
-      width: "450px",
-    },
     "@media only screen and (max-width: 415px)": {
-      width: "300px",
-      fontSize: "22px",
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: "280px",
+      fontSize: "24px",
     },
   },
   modalContentStyles: {
