@@ -4,6 +4,7 @@ import Button from "../Form/Button";
 import React, { Fragment, ReactElement, useMemo } from "react";
 import { ID } from "../../config/types/root_types";
 import { isNullOrUndefined } from "../../config/utils/nullchecks";
+import { useRouter } from "next/router";
 
 type Props = {
   auth: any;
@@ -16,11 +17,15 @@ function FeedBlurWithButton(
   props: Props
 ): ReactElement<typeof Fragment> | null {
   const { auth, currentAuthorId, hubState, isLoggedIn } = props;
+  const router = useRouter();
+
+  const isOnAllHubsTab = ["", "/"].includes(router.pathname);
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  return !hasSubscribed || !isLoggedIn ? (
+
+  return (!hasSubscribed || !isLoggedIn) && isOnAllHubsTab ? (
     <Fragment>
       <div className={css(styles.blur)} />
       <Button
