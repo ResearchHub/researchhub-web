@@ -3,7 +3,7 @@ import Responsive from "../../Responsive";
 import VoteWidget from "../../VoteWidget";
 import { css, StyleSheet } from "aphrodite";
 
-export type ResponsvePostVoteWidgetProps = {
+export type ResponsivePostVoteWidgetProps = {
   onDesktop: boolean;
   onDownvote: Function;
   onUpvote: Function;
@@ -11,13 +11,13 @@ export type ResponsvePostVoteWidgetProps = {
   voteState: string | null;
 };
 
-export default function ResponsvePostVoteWidget({
+export default function ResponsivePostVoteWidget({
   onDesktop,
   onDownvote,
   onUpvote,
   score,
   voteState,
-}: ResponsvePostVoteWidgetProps) {
+}: ResponsivePostVoteWidgetProps) {
   return (
     <Responsive onDesktop={onDesktop}>
       <div className={css(styles.column)}>
