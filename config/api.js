@@ -141,7 +141,7 @@ const routes = (BASE_URL) => {
       size,
       // Facets specified will have their values returned
       // alongside counts in the search response.
-      facet = [],
+      facets = [],
       external_source = true,
     }) => {
       let url = BASE_URL + "search/";
@@ -151,7 +151,7 @@ const routes = (BASE_URL) => {
           page,
           size,
           external_source,
-          facet,
+          facet: facets,
         },
         rest: {
           route: config.route,
