@@ -5,6 +5,7 @@ import {
   filterNull,
   isNullOrUndefined,
   nullthrows,
+  silentEmptyFnc,
 } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { ID } from "../../config/types/root_types";
@@ -152,6 +153,7 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>([]);
 
   const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
+  console.warn("hasMore: ", hasMore);
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
@@ -329,26 +331,30 @@ function UnifiedDocFeedContainer({
         </div>
       )}
       <div className={css(styles.loadMoreWrap)}>
-        {isLoadingMore ? (
-          <Loader
-            key={"authored-loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
-        ) : hasMore ? (
+        {hasMore ? (
           <Ripples
             className={css(styles.loadMoreButton)}
             onClick={(): void =>
-              setPaginationInfo({
-                ...paginationInfo,
-                isLoading: false,
-                isLoadingMore: true,
-                page: paginationInfo.page + 1,
-              })
+              isLoadingMore
+                ? silentEmptyFnc()
+                : setPaginationInfo({
+                    ...paginationInfo,
+                    isLoading: false,
+                    isLoadingMore: true,
+                    page: paginationInfo.page + 1,
+                  })
             }
           >
-            Load More
+            {isLoadingMore ? (
+              <Loader
+                key={"authored-loader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />
+            ) : (
+              "Load More"
+            )}
           </Ripples>
         ) : null}
       </div>
