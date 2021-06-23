@@ -266,12 +266,26 @@ function UnifiedDocFeedContainer({
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
             onSubFilterSelect={(_type: string, filterBy: any): void => {
+              setPaginationInfo({
+                ...paginationInfo,
+                hasMore: false,
+                isLoading: true,
+                isLoadingMore: false,
+                page: 1,
+              });
               setSubFilters({
                 filterBy,
                 scope: subFilters.scope,
               });
             }}
             onScopeSelect={(_type: string, scope) => {
+              setPaginationInfo({
+                ...paginationInfo,
+                hasMore: false,
+                isLoading: true,
+                isLoadingMore: false,
+                page: 1,
+              });
               setSubFilters({
                 filterBy: subFilters.filterBy,
                 scope,
