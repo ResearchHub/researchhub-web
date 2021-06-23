@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     minWidth: 0,
+    marginBottom: "60px",
   },
   row: {
     display: "flex",
@@ -89,7 +90,6 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: "297px",
     marginLeft: "30px",
-    maxHeight: 455,
     "@media only screen and (max-width: 1209px)": {
       /* 1209px is cutoff when AboutQuestionCard has room to fit on the side */
       display: "none",
