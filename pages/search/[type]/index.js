@@ -11,8 +11,6 @@ import { useRouter } from "next/router";
 import { get } from "lodash";
 import nookies from "nookies";
 
-const isAllowedSearchEntityType = (type) => searchTypes.hasOwnProperty(type);
-
 const getAllowedSearchFilters = ({ searchType, queryParams }) => {
   const allowedFilters = get(searchTypes, `${searchType}`, []);
   return pick(queryParams, ...allowedFilters);
@@ -22,22 +20,22 @@ const getAllowedSearchFilters = ({ searchType, queryParams }) => {
 // alongside counts in the search response.
 const getFacetsToAggregate = (query = {}) => {
   let facet = [];
-  if (query.type.indexOf("paper") >= 0) {
+  if (query.type === "paper") {
     facet = ["hubs"];
   }
 
   return facet;
 };
 
-const Index = ({ searchResultsResponse }) => {
+const Index = ({ serverResponse, hasError }) => {
   const router = useRouter();
   const currentSearchType = get(router, "query.type");
 
-  if (!isAllowedSearchEntityType(currentSearchType)) {
-    return <Error statusCode={404} />;
+  if (hasError) {
+    return <Error statusCode={500} />;
   }
 
-  return <SearchResults initialResults={searchResultsResponse} />;
+  return <SearchResults initialResults={serverResponse} />;
 };
 
 Index.getInitialProps = async (ctx) => {
@@ -49,25 +47,29 @@ Index.getInitialProps = async (ctx) => {
     queryParams: ctx.query,
   });
 
-  const facet = getFacetsToAggregate(ctx.query);
+  const facets = getFacetsToAggregate(ctx.query);
 
   const config = {
     route: ctx.query.type,
   };
 
   return fetch(
-    API.SEARCH({ filters, facet, config }),
+    API.SEARCH({ filters, facets, config }),
     API.GET_CONFIG(authToken)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((searchResultsResponse) => {
-      return { searchResultsResponse };
+    .then((serverResponse) => {
+      return { serverResponse };
+    })
+    .catch((serverError) => {
+      return { hasError: true };
     });
 };
 
 Index.propTypes = {
-  searchResultsResponse: PropTypes.object,
+  serverResponse: PropTypes.object,
+  hasError: PropTypes.bool,
 };
 
 export default Index;
