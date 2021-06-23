@@ -7,11 +7,14 @@ import { css, StyleSheet } from "aphrodite";
 import killswitch from "../config/killswitch/killswitch";
 
 export type NewPostButtonProps = {
-  customButtonStyle: StyleSheet;
-  onClick: (e: SyntheticEvent) => void;
+  customButtonStyle?: StyleSheet;
+  onClick?: (e: SyntheticEvent) => void;
 };
 
-export default function NewPostButton({ customButtonStyle, onClick }) {
+export default function NewPostButton({
+  customButtonStyle,
+  onClick,
+}: NewPostButtonProps) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
 
   if (!killswitch("newPostTypes")) {
@@ -30,7 +33,7 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
       >
         {/* @ts-ignore */}
         <Button
-          customButtonStyle={customButtonStyle}
+          customButtonStyle={customButtonStyle && customButtonStyle}
           hideRipples={true}
           label={
             // isLink prop does not allow onClick to trigger on link click
@@ -44,7 +47,7 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
               <span> New Post </span>{" "}
             </div>
           }
-          onClick={onClick}
+          onClick={onClick && onClick}
         />
       </PermissionNotificationWrapper>
       <NewPostModal
