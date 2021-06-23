@@ -47,9 +47,6 @@ const calculateTimeScope = (scope) => {
 };
 
 const fetchUserVote = (unifiedDocs, isLoggedIn) => {
-  if (!isLoggedIn) {
-    return unifiedDocs;
-  }
   const [paperIds, postIds] = [[], []];
   unifiedDocs.forEach(({ documents, document_type }) => {
     if (document_type === "PAPER") {
