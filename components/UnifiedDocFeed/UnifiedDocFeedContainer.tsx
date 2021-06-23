@@ -129,6 +129,10 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const router = useRouter();
+  const isOnAllHubsTab = useMemo<Boolean>(
+    (): Boolean => ["", "/"].includes(router.pathname),
+    [router.pathname]
+  );
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
@@ -297,36 +301,39 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          {!hasSubscribed ? <FeedBlurWithButton /> : null}
+          <FeedBlurWithButton />
           {documentCards}
         </div>
       )}
-      <div className={css(styles.loadMoreWrap)}>
-        {isLoadingMore ? (
-          <Loader
-            key={"authored-loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
-        ) : hasMore && isLoggedIn ? (
-          <Ripples
-            className={css(styles.loadMoreButton)}
-            onClick={(): void =>
-              isLoadingMore
-                ? silentEmptyFnc()
-                : setPaginationInfo({
-                    ...paginationInfo,
-                    isLoading: false,
-                    isLoadingMore: true,
-                    page: paginationInfo.page + 1,
-                  })
-            }
-          >
-            {"Load More"}
-          </Ripples>
-        ) : null}
-      </div>
+      {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
+      {!isLoggedIn && isOnAllHubsTab ? null : (
+        <div className={css(styles.loadMoreWrap)}>
+          {isLoadingMore ? (
+            <Loader
+              key={"authored-loader"}
+              loading={true}
+              size={25}
+              color={colors.BLUE()}
+            />
+          ) : hasMore ? (
+            <Ripples
+              className={css(styles.loadMoreButton)}
+              onClick={(): void =>
+                isLoadingMore
+                  ? silentEmptyFnc()
+                  : setPaginationInfo({
+                      ...paginationInfo,
+                      isLoading: false,
+                      isLoadingMore: true,
+                      page: paginationInfo.page + 1,
+                    })
+              }
+            >
+              {"Load More"}
+            </Ripples>
+          ) : null}
+        </div>
+      )}
     </div>
   );
 }
