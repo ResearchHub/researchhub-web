@@ -298,6 +298,13 @@ const degrees = [
   },
 ];
 
+const searchTypes = {
+  paper: ["search", "hubs", "publish_date__gte", "post_type", "ordering"],
+  hub: ["ordering"],
+  author: ["ordering"],
+  post: ["ordering"],
+};
+
 export {
   degrees,
   months,
@@ -307,4 +314,5 @@ export {
   cslFields,
   filterOptions,
   scopeOptions,
+  searchTypes,
 };
