@@ -8,7 +8,6 @@ import {
   silentEmptyFnc,
 } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { ID } from "../../config/types/root_types";
 import { NextRouter, useRouter } from "next/router";
 import {
   UnifiedDocFilterLabels,
@@ -16,15 +15,8 @@ import {
 } from "./constants/UnifiedDocFilters";
 import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
-import Button from "../Form/Button";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
-import React, {
-  Fragment,
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
@@ -32,6 +24,7 @@ import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import UserPostCard from "../Author/Tabs/UserPostCard";
 import { connect } from "react-redux";
+import FeedBlurWithButton from "./FeedBlurWithButton";
 
 type PaginationInfo = {
   count: number;
@@ -153,7 +146,6 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>([]);
 
   const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
-  console.warn("hasMore: ", hasMore);
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
@@ -199,9 +191,10 @@ function UnifiedDocFeedContainer({
               setDocTypeFilter(filterValue);
               setPaginationInfo({
                 ...paginationInfo,
-                page: 1,
+                hasMore: false,
                 isLoading: true,
                 isLoadingMore: false,
+                page: 1,
               });
               router.push(
                 {
@@ -304,34 +297,19 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          {!hasSubscribed ? (
-            <Fragment>
-              <div className={css(styles.blur)} />
-              <Button
-                isLink={
-                  isLoggedIn
-                    ? {
-                        href: `/user/${auth.user.author_profile.id}/onboard`,
-                        query: {
-                          selectHubs: true,
-                        },
-                      }
-                    : {
-                        href: "/all",
-                        linkAs: "/all",
-                      }
-                }
-                hideRipples={true}
-                label={isLoggedIn ? "Generate My Hubs" : "View All Hubs"}
-                customButtonStyle={styles.allFeedButton}
-              />
-            </Fragment>
-          ) : null}
+          {!hasSubscribed ? <FeedBlurWithButton /> : null}
           {documentCards}
         </div>
       )}
       <div className={css(styles.loadMoreWrap)}>
-        {hasMore ? (
+        {isLoadingMore ? (
+          <Loader
+            key={"authored-loader"}
+            loading={true}
+            size={25}
+            color={colors.BLUE()}
+          />
+        ) : hasMore && isLoggedIn ? (
           <Ripples
             className={css(styles.loadMoreButton)}
             onClick={(): void =>
@@ -345,16 +323,7 @@ function UnifiedDocFeedContainer({
                   })
             }
           >
-            {isLoadingMore ? (
-              <Loader
-                key={"authored-loader"}
-                loading={true}
-                size={25}
-                color={colors.BLUE()}
-              />
-            ) : (
-              "Load More"
-            )}
+            {"Load More"}
           </Ripples>
         ) : null}
       </div>
@@ -500,27 +469,6 @@ const styles = StyleSheet.create({
       padding: 0,
       width: "100%",
     },
-  },
-  blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
-    height: "100%",
-    position: "absolute",
-    zIndex: 3,
-    top: 0,
-    width: "100%",
-  },
-  allFeedButton: {
-    position: "absolute",
-    bottom: 100,
-    left: "50%",
-    transform: "translateX(-50%)",
-    zIndex: 3,
-    cursor: "pointer",
-    boxSizing: "border-box",
-    width: "unset",
-    padding: "0px 15px",
-    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
   },
   feedPosts: {
     position: "relative",
