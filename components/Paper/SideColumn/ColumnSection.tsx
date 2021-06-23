@@ -26,7 +26,7 @@ function ColumnSection({ items, paper, sectionTitle }: ColumnSectionProps) {
               title={sectionTitle}
               overrideStyles={styles.title}
             />
-            {items}
+            <div className={css(styles.sectionItems)}>{items}</div>
           </Fragment>
         )}
       </div>
@@ -40,6 +40,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       margin: "15px 0 5px",
     },
+  },
+  sectionItems: {
+    paddingLeft: 5,
   },
 });
 

@@ -2,6 +2,7 @@ import AuthorCard from "./AuthorCard";
 import ColumnAuthors from "./ColumnAuthors";
 import ColumnSection from "./ColumnSection";
 import PaperUserAvatars from "../../Paper/PaperUserAvatars";
+import { StyleSheet } from "aphrodite";
 import {
   getDiscussionUsersFromPaper,
   getAuthorName,
@@ -12,32 +13,24 @@ export default function ColumnContributors({ paper }) {
   if (discussors.length === 0) {
     return null;
   }
-  // TODO: briansantoso - implement user list similar to github contributors
-  // const discussorCards = discussors.map((user, index) => {
-  //   const name = getAuthorName(user);
-  //   const cardKey = `${name}-discussor-${index}`;
-  //   return <AuthorCard author={user} name={name} key={cardKey} />;
-  // });
-  // return (
-  //   <ColumnSection
-  //     items={discussorCards}
-  //     paper={paper}
-  //     sectionTitle="Contributors"
-  //   />
-  // );
-  // return (
-  //   <ColumnAuthors
-  //     title="Contributors"
-  //     paper={paper}
-  //     authors={discussors}
-  //     paperId={paper.id}
-  //   />
-  // );
   return (
     <ColumnSection
-      items={[<PaperUserAvatars users={discussors} />]}
+      items={[
+        <PaperUserAvatars
+          users={discussors}
+          customStyle={styles.avatarsContainer}
+        />,
+      ]}
       paper={paper}
       sectionTitle="Contributors"
     />
   );
 }
+
+const styles = StyleSheet.create({
+  avatarsContainer: {
+    display: "flex",
+    justifyContent: "flex-start",
+    paddingLeft: 17,
+  },
+});
