@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { Fragment, SyntheticEvent, useState } from "react";
+import React, { Fragment, SyntheticEvent, useEffect, useState } from "react";
 import Button from "./Form/Button";
 import NewPostModal from "./Modals/NewPostModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
@@ -13,6 +13,8 @@ export type NewPostButtonProps = {
 
 export default function NewPostButton({ customButtonStyle, onClick }) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
+  const [loadIcon, setLoadIcon] = useState(false);
+  useEffect(() => setLoadIcon(true), []);
 
   if (!killswitch("newPostTypes")) {
     return null;
@@ -35,7 +37,7 @@ export default function NewPostButton({ customButtonStyle, onClick }) {
           label={
             // isLink prop does not allow onClick to trigger on link click
             <div className={css(styles.newPostLabel)}>
-              {process.browser ? (
+              {loadIcon ? (
                 <FontAwesomeIcon
                   style={{ fontSize: "1.5em", marginRight: 8 }}
                   icon={["far", "plus"]}
