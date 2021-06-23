@@ -3,6 +3,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import SearchResults from "~/components/Search/SearchResults";
 import { searchTypes } from "~/config/utils/options";
+import killswitch from "~/config/killswitch/killswitch";
 
 import PropTypes from "prop-types";
 import Error from "next/error";
@@ -52,6 +53,10 @@ Index.getInitialProps = async (ctx) => {
   const config = {
     route: ctx.query.type,
   };
+
+  if (!killswitch("searchResults")) {
+    return { hasError: true };
+  }
 
   return fetch(
     API.SEARCH({ filters, facets, config }),
