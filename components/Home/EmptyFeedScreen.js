@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
-
+import NewPostButton from "../NewPostButton";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
@@ -28,10 +28,10 @@ const EmpytFeedScreen = (props) => {
           alt="Empty State Icon"
         />
         <span className={css(styles.emptyPlaceholderText)}>
-          There are no academic papers found for this criteria.
+          There are no posts found for this criteria
         </span>
         <span className={css(styles.emptyPlaceholderSubtitle)}>
-          Click ‘Upload paper’ button to upload a PDF
+          Click ‘New Post’ button to create a post
         </span>
         <PermissionNotificationWrapper
           onClick={navigateToPaperUploadPage}
@@ -39,7 +39,8 @@ const EmpytFeedScreen = (props) => {
           loginRequired={true}
           permissionKey="CreatePaper"
         >
-          <Button label={"Upload Paper"} hideRipples={true} />
+          {/* <Button label={"Upload Paper"} hideRipples={true} /> */}
+          <NewPostButton />
         </PermissionNotificationWrapper>
       </Fragment>
     );
