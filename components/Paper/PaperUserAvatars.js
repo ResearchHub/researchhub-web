@@ -5,7 +5,8 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { getUsersFromPaper } from "~/config/utils";
 
-const PaperUserAvatars = ({ paper, users = [] }) => {
+const PaperUserAvatars = (props) => {
+  const { paper, users = [], customStyle } = props;
   // if users is not provided, we find users from paper object
   const paperContributers = paper ? getUsersFromPaper(papers) : users;
 
@@ -35,7 +36,9 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
     });
   };
 
-  return <div className={css(styles.root)}>{renderUserAvatars()}</div>;
+  return (
+    <div className={css(styles.root, customStyle)}>{renderUserAvatars()}</div>
+  );
 };
 
 const styles = StyleSheet.create({

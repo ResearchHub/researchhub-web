@@ -1,6 +1,7 @@
 import AuthorCard from "./AuthorCard";
 import ColumnAuthors from "./ColumnAuthors";
 import ColumnSection from "./ColumnSection";
+import PaperUserAvatars from "../../Paper/PaperUserAvatars";
 import {
   getDiscussionUsersFromPaper,
   getAuthorName,
@@ -24,12 +25,19 @@ export default function ColumnContributors({ paper }) {
   //     sectionTitle="Contributors"
   //   />
   // );
+  // return (
+  //   <ColumnAuthors
+  //     title="Contributors"
+  //     paper={paper}
+  //     authors={discussors}
+  //     paperId={paper.id}
+  //   />
+  // );
   return (
-    <ColumnAuthors
-      title="Contributors"
+    <ColumnSection
+      items={[<PaperUserAvatars users={discussors} />]}
       paper={paper}
-      authors={discussors}
-      paperId={paper.id}
+      sectionTitle="Contributors"
     />
   );
 }
