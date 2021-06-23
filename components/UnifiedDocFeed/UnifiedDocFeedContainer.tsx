@@ -16,6 +16,7 @@ import {
 import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
+import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
@@ -302,7 +303,7 @@ function UnifiedDocFeedContainer({
       ) : (
         <div className={css(styles.feedPosts)}>
           <FeedBlurWithButton />
-          {documentCards}
+          {documentCards.length > 0 ? documentCards : <EmptyFeedScreen />}
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
