@@ -33,15 +33,9 @@ const EmpytFeedScreen = (props) => {
         <span className={css(styles.emptyPlaceholderSubtitle)}>
           Click ‘New Post’ button to create a post
         </span>
-        <PermissionNotificationWrapper
-          onClick={navigateToPaperUploadPage}
-          modalMessage="upload a paper"
-          loginRequired={true}
-          permissionKey="CreatePaper"
-        >
-          {/* <Button label={"Upload Paper"} hideRipples={true} /> */}
+        <div className={css(styles.row)}>
           <NewPostButton />
-        </PermissionNotificationWrapper>
+        </div>
       </Fragment>
     );
   };
@@ -55,6 +49,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+  },
+  row: {
+    display: "flex",
+    justifyContent: "center",
   },
   emptyPlaceholderImage: {
     width: 400,
