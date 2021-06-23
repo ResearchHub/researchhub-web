@@ -297,13 +297,13 @@ function UnifiedDocFeedContainer({
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
-      {!hasSubscribed && (
+      {!hasSubscribed ? (
         <div>
           <div className={css(styles.bannerContainer)} id="create-feed-banner">
             <CreateFeedBanner />
           </div>
         </div>
-      )}
+      ) : null}
       {onInitialLoad ? (
         <div className={css(styles.initSpinnerWrap)}>
           <Loader
@@ -315,7 +315,7 @@ function UnifiedDocFeedContainer({
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
-          {!hasSubscribed && (
+          {!hasSubscribed ? (
             <Fragment>
               <div className={css(styles.blur)} />
               <Button
@@ -337,7 +337,7 @@ function UnifiedDocFeedContainer({
                 customButtonStyle={styles.allFeedButton}
               />
             </Fragment>
-          )}
+          ) : null}
           {documentCards}
         </div>
       )}
