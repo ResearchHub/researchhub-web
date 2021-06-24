@@ -26,7 +26,7 @@ const KillswtichConfigs: SwitchConfigs = {
   newPostTypes: {
     development: true,
     staging: true,
-    production: true,
+    production: false,
   },
   unifiedDocumentFeed: {
     development: true,
