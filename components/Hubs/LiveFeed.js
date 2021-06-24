@@ -232,6 +232,7 @@ class LiveFeed extends React.Component {
           </div>
         );
       } else {
+        console.log("Notifications", currentHubNotifications);
         return currentHubNotifications.map((notification, i) => {
           return (
             <LiveFeedNotification
