@@ -198,27 +198,35 @@ class CommentEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, comment, postUpvote, postUpvotePending } = this.props;
+    let { data, comment, postUpvote, postUpvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let commentId = comment.id;
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId, commentId);
+    await postUpvote(paperId, documentId, discussionThreadId, commentId);
 
     this.updateWidgetUI();
   };
 
   downvote = async () => {
-    let { data, comment, postDownvote, postDownvotePending } = this.props;
+    let { data, comment, postDownvote, postDownvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let commentId = comment.id;
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId, commentId);
+    await postDownvote(paperId, documentId, discussionThreadId, commentId);
 
     this.updateWidgetUI();
   };
@@ -271,12 +279,24 @@ class CommentEntry extends React.Component {
       postReplyPending,
       discussionCount,
       setCount,
+      post,
     } = this.props;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let discussionThreadId = data.id;
     let commentId = comment.id;
     postReplyPending();
-    await postReply(paperId, discussionThreadId, commentId, text, plain_text);
+    await postReply(
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      text,
+      plain_text
+    );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       callback && callback();
       let newReply = { ...this.props.discussion.postedReply };
@@ -301,14 +321,20 @@ class CommentEntry extends React.Component {
       updateCommentPending,
       showMessage,
       setMessage,
+      post,
     } = this.props;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     let discussionThreadId = data.id;
     let commentId = comment.id;
 
     updateCommentPending();
     await updateComment(
       paperId,
+      documentId,
       discussionThreadId,
       commentId,
       text,
@@ -326,7 +352,11 @@ class CommentEntry extends React.Component {
   };
 
   formatMetaData = () => {
-    let { data, comment } = this.props;
+    let { data, comment, post } = this.props;
+    let postId;
+    if (post) {
+      postId = post.id;
+    }
     return {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
@@ -335,6 +365,7 @@ class CommentEntry extends React.Component {
       comment: comment.user_flag,
       contentType: "comment",
       objectId: comment.id,
+      postId: postId,
     };
   };
 
@@ -393,7 +424,7 @@ class CommentEntry extends React.Component {
   };
 
   renderReplies = () => {
-    let { data, hostname, path, comment, paper, mediaOnly } = this.props;
+    let { data, hostname, path, comment, paper, mediaOnly, post } = this.props;
     let replies =
       this.state.replies.length < 1
         ? this.props.comment.replies
@@ -411,6 +442,7 @@ class CommentEntry extends React.Component {
           mobileView={this.props.mobileView}
           onReplySubmitCallback={this.onReplySubmitCallback}
           mediaOnly={mediaOnly}
+          post={post}
         />
       );
     });

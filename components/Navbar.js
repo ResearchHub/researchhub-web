@@ -15,11 +15,10 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "../components/Form/Button";
 import FirstVoteModal from "../components/Modals/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import AlgoliaSearch from "./Search/AlgoliaSearch";
@@ -42,6 +41,7 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -108,7 +108,7 @@ const Navbar = (props) => {
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
     isUserModerator
       ? {
-          label: "Moderators",
+          label: "Mods",
           route: "/moderators/author-claim-case-dashboard",
           icon: "info-circle",
         }
@@ -225,10 +225,6 @@ const Navbar = (props) => {
     setOpenMenu(!openMenu);
   }
 
-  function onAddPaperClick() {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
-  }
-
   function toggleSideMenu() {
     setSideMenu(!sideMenu);
   }
@@ -237,7 +233,7 @@ const Navbar = (props) => {
     let { href, as } = route;
     if (href) {
       if (href === "/user/[authorId]/[tabName]") {
-        Router.push(href, `/user/${user.author_profile.id}/discussions`);
+        Router.push(href, `/user/${user.author_profile.id}/posts`);
       } else {
         Router.push(href, as);
       }
@@ -340,18 +336,10 @@ const Navbar = (props) => {
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
         ) : (
-          <PermissionNotificationWrapper
-            onClick={addPaperModal}
-            modalMessage="upload a paper"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              label={"Add Paper"}
-              hideRipples={true}
-              customButtonStyle={[styles.addPaperButton]}
-            />
-          </PermissionNotificationWrapper>
+          <NewPostButton
+            customButtonStyle={[styles.newPostButton]}
+            onClick={() => setSideMenu(!sideMenu)}
+          />
         )}
       </Fragment>
     );
@@ -391,14 +379,13 @@ const Navbar = (props) => {
     );
   }
 
-  function addPaperModal() {
-    Router.push(`/paper/upload/info`);
-    setSideMenu(!sideMenu);
-  }
-
   function openWithdrawalModal() {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
+  }
+
+  function openNewPostModal() {
+    props.openNewPostModal(true);
   }
 
   return (
@@ -484,7 +471,7 @@ const Navbar = (props) => {
                   >
                     <Link
                       href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${user.author_profile.id}/discussions`}
+                      as={`/user/${user.author_profile.id}/posts`}
                     >
                       <div className={css(styles.option)}>
                         <span
@@ -549,18 +536,9 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <PermissionNotificationWrapper
-            onClick={onAddPaperClick}
-            modalMessage="upload a paper"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-              label={"Add Paper"}
-              hideRipples={true}
-            />
-          </PermissionNotificationWrapper>
+          <NewPostButton
+            customButtonStyle={{ ...styles.button, ...styles.newPost }}
+          />
         </div>
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
@@ -761,7 +739,7 @@ const styles = StyleSheet.create({
     },
     // width: 210,
   },
-  addPaperButton: {
+  newPostButton: {
     width: "100%",
     height: 50,
 
@@ -824,7 +802,7 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  addPaper: {
+  newPost: {
     background: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
     color: "#fff",

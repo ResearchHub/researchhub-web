@@ -312,11 +312,11 @@ const AuthorSupportModal = (props) => {
             </div>
             {/* <Link
                 href={"/user/[authorId]/[tabName]"}
-                as={`/user/${props.author.id}/discussions`}
+                as={`/user/${props.author.id}/posts`}
               >
                 <a
                   href={"/user/[authorId]/[tabName]"}
-                  as={`/user/${props.author.id}/discussions`}
+                  as={`/user/${props.author.id}/posts`}
                   className={css(styles.transactionHashLink, styles.marginLeft)}
                 >
                   Click to go back to{" "}

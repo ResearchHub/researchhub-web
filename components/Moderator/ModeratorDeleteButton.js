@@ -102,7 +102,7 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPage = () => {
     showLoader();
-    const { paperId, threadId, commentId, replyId } = props.metaData;
+    const { paperId, threadId, commentId, replyId, postId } = props.metaData;
     fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -112,6 +112,7 @@ const ModeratorDeleteButton = (props) => {
           props.onRemove({
             commentID: commentId,
             paperID: paperId,
+            postID: postId,
             replyID: replyId,
             threadID: threadId,
           });
@@ -159,7 +160,7 @@ const ModeratorDeleteButton = (props) => {
   const deletePost = () => {
     showLoader();
     let query = buildQuery();
-    const { paperId, threadId, commentId, replyId } = props.metaData;
+    const { paperId, threadId, commentId, replyId, postId } = props.metaData;
     fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -169,6 +170,7 @@ const ModeratorDeleteButton = (props) => {
           props.onRemove({
             commentID: commentId,
             paperID: paperId,
+            postID: postId,
             replyID: replyId,
             threadID: threadId,
           });
@@ -205,6 +207,7 @@ const ModeratorDeleteButton = (props) => {
     const {
       authorId,
       paperId,
+      postId,
       threadId,
       commentId,
       replyId,
@@ -231,6 +234,7 @@ const ModeratorDeleteButton = (props) => {
           props.onRemove({
             commentID: commentId,
             paperID: paperId,
+            postID: postId,
             replyID: replyId,
             threadID: threadId,
           });
@@ -270,8 +274,12 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const buildQuery = () => {
-    let { paperId, threadId, commentId, replyId } = props.metaData;
+    let { paperId, threadId, commentId, replyId, postId } = props.metaData;
     let query = {};
+
+    if (!doesNotExist(postId)) {
+      query.postId = postId;
+    }
 
     if (!doesNotExist(paperId)) {
       query.paperId = paperId;

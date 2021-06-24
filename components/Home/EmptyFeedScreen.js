@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
-
+import NewPostButton from "../NewPostButton";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
@@ -28,19 +28,14 @@ const EmpytFeedScreen = (props) => {
           alt="Empty State Icon"
         />
         <span className={css(styles.emptyPlaceholderText)}>
-          There are no academic papers found for this criteria.
+          There are no posts found for this criteria
         </span>
         <span className={css(styles.emptyPlaceholderSubtitle)}>
-          Click ‘Upload paper’ button to upload a PDF
+          Click ‘New Post’ button to create a post
         </span>
-        <PermissionNotificationWrapper
-          onClick={navigateToPaperUploadPage}
-          modalMessage="upload a paper"
-          loginRequired={true}
-          permissionKey="CreatePaper"
-        >
-          <Button label={"Upload Paper"} hideRipples={true} />
-        </PermissionNotificationWrapper>
+        <div className={css(styles.row)}>
+          <NewPostButton />
+        </div>
       </Fragment>
     );
   };
@@ -54,6 +49,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+  },
+  row: {
+    display: "flex",
+    justifyContent: "center",
   },
   emptyPlaceholderImage: {
     width: 400,

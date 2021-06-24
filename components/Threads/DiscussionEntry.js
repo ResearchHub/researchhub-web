@@ -170,11 +170,22 @@ class DiscussionEntry extends React.Component {
       postCommentPending,
       discussionCount,
       setCount,
+      post,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
     postCommentPending();
-    await postComment(paperId, discussionThreadId, text, plain_text);
+    await postComment(
+      paperId,
+      documentId,
+      discussionThreadId,
+      text,
+      plain_text
+    );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
@@ -202,9 +213,14 @@ class DiscussionEntry extends React.Component {
       updateThreadPending,
       showMessage,
       setMessage,
+      post,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
 
     let body = {
       text,
@@ -212,7 +228,7 @@ class DiscussionEntry extends React.Component {
       paper: paperId,
     };
     updateThreadPending();
-    await updateThread(paperId, discussionThreadId, body);
+    await updateThread(paperId, documentId, discussionThreadId, body);
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
       setMessage("Post successfully updated!");
       showMessage({ show: true });
@@ -240,10 +256,11 @@ class DiscussionEntry extends React.Component {
     this.setState({ editing: !this.state.editing });
   };
 
-  onRemove = ({ paperID, threadID, commentID, replyID }) => {
+  onRemove = ({ paperID, threadID, commentID, replyID, postID }) => {
     this.setState({ removed: true });
     this.props.onRemoveSuccess &&
       this.props.onRemoveSuccess({
+        postID,
         commentID,
         paperID,
         replyID,
@@ -260,6 +277,7 @@ class DiscussionEntry extends React.Component {
       setCount,
       paper,
       mediaOnly,
+      post,
     } = this.props;
     let comments = this.state.comments;
 
@@ -278,6 +296,7 @@ class DiscussionEntry extends React.Component {
             discussionCount={discussionCount}
             setCount={setCount}
             mediaOnly={mediaOnly}
+            post={post}
           />
         );
       });
@@ -309,25 +328,33 @@ class DiscussionEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, postUpvote, postUpvotePending } = this.props;
+    let { data, postUpvote, postUpvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId);
+    await postUpvote(paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI(this.props.voteResult);
   };
 
   downvote = async () => {
-    let { data, postDownvote, postDownvotePending } = this.props;
+    let { data, postDownvote, postDownvotePending, post } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (post != null) {
+      documentId = post.id;
+    }
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId);
+    await postDownvote(paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI();
   };
@@ -381,6 +408,7 @@ class DiscussionEntry extends React.Component {
       mobileView,
       paper,
       path,
+      post,
       mediaOnly,
       shouldShowContextTitle = true,
       noVoteLine,
@@ -394,10 +422,15 @@ class DiscussionEntry extends React.Component {
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
     const username = createUsername(data);
+    let postId;
+    if (post) {
+      postId = post.id;
+    }
     const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
+      postId: postId,
       userFlag: data.user_flag,
       contentType: "thread",
       objectId: data.id,
@@ -468,6 +501,7 @@ class DiscussionEntry extends React.Component {
                     data={data}
                     date={date}
                     paper={paper}
+                    post={post}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}
@@ -775,4 +809,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(InlineCommentUnduxStore.withStore(DiscussionEntry));
+)(DiscussionEntry);
