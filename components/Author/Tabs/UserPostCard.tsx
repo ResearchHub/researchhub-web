@@ -3,6 +3,7 @@ import DesktopOnly from "../../DesktopOnly";
 import HubDropDown from "../../Hubs/HubDropDown";
 import HubTag from "../../Hubs/HubTag";
 import Link from "next/link";
+import Router from "next/router";
 import MobileOnly from "../../MobileOnly";
 import React, { Fragment, SyntheticEvent, useState } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
@@ -67,14 +68,16 @@ function UserPostCard(props: UserPostCardProps) {
   const slug = title.toLowerCase().replace(/\s/g, "-");
 
   const mainTitle = (
-    <a
-      className={css(styles.link)}
-      onClick={(e) => {
-        e.stopPropagation();
-      }}
-    >
-      <span className={css(styles.title)}>{title}</span>
-    </a>
+    <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
+      <a
+        className={css(styles.link)}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <span className={css(styles.title)}>{title && title}</span>
+      </a>
+    </Link>
   );
 
   let previewImgComponent;
@@ -218,51 +221,51 @@ function UserPostCard(props: UserPostCardProps) {
   );
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
 
+  const navigateToPage = (e) => {
+    if (e.metaKey || e.ctrlKey) {
+      window.open(`/post/${id}/${slug}`, "_blank");
+    } else {
+      Router.push("/post/[documentId]/[title]", `/post/${id}/${slug}`);
+    }
+  };
+
   return (
-    <Ripples className={css(styles.userPostCard, style && style)}>
+    <Ripples
+      className={css(styles.userPostCard, style && style)}
+      onClick={navigateToPage}
+    >
       {desktopVoteWidget}
-      <Link
-        href={{
-          pathname: "/post/[documentId]/[title]",
-          query: {
-            documentId: `${id}`,
-            title: `${slug}`,
-          },
-        }}
-        as={`/post/${id}/${slug}`}
-      >
-        <div className={css(styles.container)}>
+      <div className={css(styles.container)}>
+        <div className={css(styles.rowContainer)}>
+          <div className={css(styles.column, styles.metaData)}>
+            <div className={css(styles.topRow)}>
+              {mobileVoteWidget}
+              <DesktopOnly> {mainTitle} </DesktopOnly>
+            </div>
+            <MobileOnly> {mainTitle} </MobileOnly>
+            {summary}
+            {mobileCreatorTag}
+          </div>
+          <DesktopOnly> {previewImgComponent} </DesktopOnly>
+        </div>
+        <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
-            <div className={css(styles.column, styles.metaData)}>
-              <div className={css(styles.topRow)}>
-                {mobileVoteWidget}
-                <DesktopOnly> {mainTitle} </DesktopOnly>
-              </div>
-              <MobileOnly> {mainTitle} </MobileOnly>
-              {summary}
-              {mobileCreatorTag}
-            </div>
-            <DesktopOnly> {previewImgComponent} </DesktopOnly>
+            <DesktopOnly> {creatorTag} </DesktopOnly>
           </div>
-          <div className={css(styles.bottomBar)}>
-            <div className={css(styles.rowContainer)}>
-              <DesktopOnly> {creatorTag} </DesktopOnly>
-            </div>
-            <DesktopOnly>
-              <div className={css(styles.row)}>
-                {/* TODO: briansantoso - Hub tags go here */}
-                {hubTags}
-              </div>
-            </DesktopOnly>
-          </div>
-          <MobileOnly>
-            <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+          <DesktopOnly>
+            <div className={css(styles.row)}>
               {/* TODO: briansantoso - Hub tags go here */}
               {hubTags}
             </div>
-          </MobileOnly>
+          </DesktopOnly>
         </div>
-      </Link>
+        <MobileOnly>
+          <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+            {/* TODO: briansantoso - Hub tags go here */}
+            {hubTags}
+          </div>
+        </MobileOnly>
+      </div>
     </Ripples>
   );
 }
