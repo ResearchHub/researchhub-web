@@ -2,27 +2,20 @@ import AboutQuestionCard from "./AboutQuestionCard";
 import AskQuestionForm from "../../../../components/Paper/AskQuestionForm";
 import Head from "../../../../components/Head";
 import React, { Fragment, useEffect } from "react";
-import { useRouter } from "next/router";
 import killswitch from "../../../../config/killswitch/killswitch";
-import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
+import { useRequireLogin } from "../../../../config/utils/hooks";
+import { useRouter } from "next/router";
 
 export type NewPostProps = {
   auth: any;
 };
 
-function useEffectRequireLogin(router, auth) {
-  useEffect(() => {
-    if (auth.authChecked && !auth.isLoggedIn) {
-      router.push("/all");
-    }
-  }, [auth.authChecked, auth.isLoggedIn]);
-}
-
 function Index({ auth }: NewPostProps) {
   const router = useRouter();
   const enableNewPostTypes = killswitch("newPostTypes");
-  useEffectRequireLogin(router, auth);
+  useRequireLogin(auth, router, "/all");
   useEffect(() => {
     if (!enableNewPostTypes) {
       router.push("/all");
