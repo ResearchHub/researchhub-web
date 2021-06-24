@@ -8,19 +8,28 @@ import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
 export type NewPostProps = {
-  isLoggedIn: boolean;
+  auth: any;
 };
 
-function Index({ isLoggedIn }: NewPostProps) {
-  const router = useRouter();
-  const enableNewPostTypes = killswitch("newPostTypes");
+function useEffectRequireLogin(router, auth) {
   useEffect(() => {
-    if (!(enableNewPostTypes && isLoggedIn)) {
+    if (auth.authChecked && !auth.isLoggedIn) {
       router.push("/all");
     }
-  }, [enableNewPostTypes, isLoggedIn, router.pathname]);
+  }, [auth.authChecked, auth.isLoggedIn]);
+}
 
-  if (enableNewPostTypes && isLoggedIn) {
+function Index({ auth }: NewPostProps) {
+  const router = useRouter();
+  const enableNewPostTypes = killswitch("newPostTypes");
+  useEffectRequireLogin(router, auth);
+  useEffect(() => {
+    if (!enableNewPostTypes) {
+      router.push("/all");
+    }
+  }, [enableNewPostTypes, router.pathname]);
+
+  if (enableNewPostTypes) {
     return (
       <Fragment>
         <Head title={`New Post`} description="Create a Post on ResearchHub" />
@@ -45,7 +54,7 @@ function Index({ isLoggedIn }: NewPostProps) {
 }
 
 const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.auth.isLoggedIn,
+  auth: state.auth,
 });
 
 export default connect(mapStateToProps)(Index);
