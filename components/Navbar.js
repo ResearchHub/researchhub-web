@@ -14,23 +14,25 @@ import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
 // Components
+// import SectionBountyModal from "../components/Modals/SectionBountyModal";
+import AlgoliaSearch from "./Search/AlgoliaSearch";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import Button from "../components/Form/Button";
+import DndModal from "../components/Modals/DndModal";
 import FirstVoteModal from "../components/Modals/FirstVoteModal";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import LoginModal from "../components/Modals/LoginModal";
 import NewPostButton from "./NewPostButton";
-import Reputation from "./Reputation";
-import Search from "./Search/Search";
-import AlgoliaSearch from "./Search/AlgoliaSearch";
-// import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import WithdrawalModal from "../components/Modals/WithdrawalModal";
-import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import Notification from "./Notifications/Notification";
-import DndModal from "../components/Modals/DndModal";
+import OrcidConnectModal from "./Modals/OrcidConnectModal";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
+import Reputation from "./Reputation";
+import Search from "./Search/Search";
+import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";
-import OrcidConnectModal from "./Modals/OrcidConnectModal";
+import WithdrawalModal from "../components/Modals/WithdrawalModal";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -384,8 +386,10 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  function openNewPostModal() {
-    props.openNewPostModal(true);
+  function addPaperModal(e) {
+    e.preventDefault();
+    Router.push(`/paper/upload/info`);
+    setSideMenu(!sideMenu);
   }
 
   return (
@@ -528,7 +532,7 @@ const Navbar = (props) => {
                     >
                       <span className={css(styles.profileIcon)}>
                         {icons.signOut}
-                      </span>{" "}
+                      </span>
                       <span>Logout</span>
                     </div>
                   </div>
@@ -536,9 +540,24 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <NewPostButton
-            customButtonStyle={{ ...styles.button, ...styles.newPost }}
-          />
+          {!killswitch("newPostTypes") ? (
+            <PermissionNotificationWrapper
+              onClick={addPaperModal}
+              modalMessage="upload a paper"
+              loginRequired={true}
+              permissionKey="CreatePaper"
+            >
+              <Button
+                label={"Add Paper"}
+                hideRipples={true}
+                customButtonStyle={[styles.addPaperButton]}
+              />
+            </PermissionNotificationWrapper>
+          ) : (
+            <NewPostButton
+              customButtonStyle={{ ...styles.button, ...styles.newPost }}
+            />
+          )}
         </div>
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
