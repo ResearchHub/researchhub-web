@@ -223,7 +223,7 @@ const Navbar = (props) => {
     return tabs;
   }
 
-  function toggleMenu() {
+  function toggleMenu(e) {
     setOpenMenu(!openMenu);
   }
 
@@ -337,6 +337,19 @@ const Navbar = (props) => {
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
+        ) : !killswitch("newPostTypes") ? (
+          <PermissionNotificationWrapper
+            onClick={addPaperModal}
+            modalMessage="upload a paper"
+            loginRequired={true}
+            permissionKey="CreatePaper"
+          >
+            <Button
+              label={"Add Paper"}
+              hideRipples={true}
+              customButtonStyle={[styles.addPaperButton]}
+            />
+          </PermissionNotificationWrapper>
         ) : (
           <NewPostButton
             customButtonStyle={[styles.newPostButton]}
@@ -387,9 +400,13 @@ const Navbar = (props) => {
   }
 
   function addPaperModal(e) {
-    e.preventDefault();
+    e.stopPropagation();
     Router.push(`/paper/upload/info`);
     setSideMenu(!sideMenu);
+  }
+
+  function onAddPaperClick() {
+    Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
   return (
@@ -542,15 +559,15 @@ const Navbar = (props) => {
           </div>
           {!killswitch("newPostTypes") ? (
             <PermissionNotificationWrapper
-              onClick={addPaperModal}
+              onClick={onAddPaperClick}
               modalMessage="upload a paper"
               loginRequired={true}
               permissionKey="CreatePaper"
             >
               <Button
+                customButtonStyle={{ ...styles.button, ...styles.addPaper }}
                 label={"Add Paper"}
                 hideRipples={true}
-                customButtonStyle={[styles.addPaperButton]}
               />
             </PermissionNotificationWrapper>
           ) : (
