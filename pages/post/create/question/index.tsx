@@ -5,16 +5,18 @@ import React, { Fragment, useEffect } from "react";
 import { useRouter } from "next/router";
 import killswitch from "../../../../config/killswitch/killswitch";
 import { css, StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
 
-export default function Index() {
+function Index({ isLoggedIn }) {
   const router = useRouter();
   const enableNewPostTypes = killswitch("newPostTypes");
   useEffect(() => {
-    if (!enableNewPostTypes) {
+    if (!(enableNewPostTypes && isLoggedIn)) {
       router.push("/all");
     }
-  }, [enableNewPostTypes, router.pathname]);
-  if (enableNewPostTypes) {
+  }, [enableNewPostTypes, isLoggedIn, router.pathname]);
+
+  if (enableNewPostTypes && isLoggedIn) {
     return (
       <Fragment>
         <Head title={`New Post`} description="Create a Post on ResearchHub" />
@@ -37,6 +39,12 @@ export default function Index() {
     return null;
   }
 }
+
+const mapStateToProps = (state: any) => ({
+  isLoggedIn: state.auth.isLoggedIn,
+});
+
+export default connect(mapStateToProps)(Index);
 
 const styles = StyleSheet.create({
   background: {
