@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
-import Ripples from "react-ripples";
-import PropTypes from "prop-types";
 import Link from "next/link";
+import PropTypes from "prop-types";
+import React, { useState, useEffect } from "react";
+import Ripples from "react-ripples";
 
 // Components
 import TextEditor from "~/components/TextEditor"; // QuillTextEditor
@@ -19,6 +20,7 @@ import colors from "~/config/themes/colors";
 // };
 
 const ActivityCard = (props) => {
+  // TODO: calvinhlee - need to capture posts as well
   const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
 
@@ -31,7 +33,7 @@ const ActivityCard = (props) => {
   } = activity;
 
   const { id: paperId, slug: paperName, hubs } = paper;
-
+  const { id: sourceID, paper_title: sourcePaperTitle } = source;
   useEffect(() => {
     checkIsRemoved();
   });
@@ -72,11 +74,13 @@ const ActivityCard = (props) => {
   };
 
   if (isHidden) return null;
-
+  const resolvedPaperID = paperId || sourceID;
+  const resolvedPaperName = paperName || sourcePaperTitle || "";
+  if (isNullOrUndefined(resolvedPaperID)) return null;
   return (
     <Link
       href={"/paper/[paperId]/[paperName]"}
-      as={`/paper/${paperId}/${paperName}`}
+      as={`/paper/${resolvedPaperID}/${resolvedPaperName}`}
     >
       <a className={css(styles.link)}>
         <Ripples className={css(styles.root)}>
