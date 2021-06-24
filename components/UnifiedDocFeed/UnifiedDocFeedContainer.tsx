@@ -128,6 +128,7 @@ function UnifiedDocFeedContainer({
   hubState, // hub data of current user
   isLoggedIn,
   subscribeButton,
+  loggedIn,
 }): ReactElement<"div"> {
   const router = useRouter();
   const isOnAllHubsTab = useMemo<Boolean>(
@@ -301,7 +302,7 @@ function UnifiedDocFeedContainer({
       {!hasSubscribed ? (
         <div>
           <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            <CreateFeedBanner />
+            <CreateFeedBanner loggedIn={loggedIn} />
           </div>
         </div>
       ) : null}
