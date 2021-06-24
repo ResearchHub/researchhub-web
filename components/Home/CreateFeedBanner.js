@@ -30,6 +30,7 @@ const removeUserBanner = () => {
 };
 
 const CreateFeedBanner = (props) => {
+  const { loggedIn } = props;
   const [remove, setRemove] = useState(removeUserBanner());
   const buttonRef = useRef();
 
@@ -128,7 +129,7 @@ const CreateFeedBanner = (props) => {
     );
   };
 
-  if (remove) {
+  if (remove || loggedIn) {
     return null;
   }
 

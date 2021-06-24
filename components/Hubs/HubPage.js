@@ -706,6 +706,7 @@ class HubPage extends React.Component {
                 hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
                 hubState={hubState}
                 hub={hub}
+                loggedIn={this.props.loggedIn}
                 subscribeButton={
                   <SubscribeButton
                     {...this.props}
