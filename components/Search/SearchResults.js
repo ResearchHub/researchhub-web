@@ -127,6 +127,26 @@ const SearchResults = ({ initialResults }) => {
     return null;
   };
 
+  const parseIfHighlighted = ({ searchResult, attribute }) => {
+    const highlight = get(searchResult, `highlight.${attribute}`, [])[0];
+
+    if (!highlight) {
+      return searchResult[attribute];
+    }
+
+    const parts = highlight.split(/(<mark>[^<]+<\/mark>)/);
+    const parsedString = parts.map((part) => {
+      if (part.includes("<mark>")) {
+        let replaced = part.replace("<mark>", "");
+        replaced = replaced.replace("</mark>", "");
+        return <span className={css(styles.highlight)}>{replaced}</span>;
+      }
+      return <span>{part}</span>;
+    });
+
+    return parsedString;
+  };
+
   const getSelectedFacetValues = ({ forKey }) => {
     let selected = [];
     if (isArray(router.query[forKey])) {
@@ -243,6 +263,15 @@ const SearchResults = ({ initialResults }) => {
       />
       {entityTabsHtml}
       {results.map((paper, index) => {
+        paper.abstract = parseIfHighlighted({
+          searchResult: paper,
+          attribute: "abstract",
+        });
+        paper.title = parseIfHighlighted({
+          searchResult: paper,
+          attribute: "title",
+        });
+
         return (
           <PaperEntryCard
             paper={paper}
@@ -258,6 +287,9 @@ const SearchResults = ({ initialResults }) => {
 };
 
 const styles = StyleSheet.create({
+  highlight: {
+    backgroundColor: "yellow",
+  },
   buttonContainer: {
     width: "100%",
     display: "flex",
