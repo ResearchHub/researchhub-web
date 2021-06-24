@@ -43,6 +43,34 @@ const HubDropDown = (props) => {
     setIsOpen(!isOpen);
   };
 
+  const dropdownComponent = hubs.map((hub, i) => {
+    let { id, name, hub_image, slug } = hub;
+
+    return (
+      <Link
+        href={"/hubs/[slug]"}
+        as={`/hubs/${nameToUrl(slug)}`}
+        key={`dropdown-${id}`}
+      >
+        <a className={css(styles.atag)}>
+          <img
+            className={css(styles.hubImage) + " hubImage"}
+            src={
+              hub_image ? hub_image : "/static/background/hub-placeholder.svg"
+            }
+            alt={name}
+          />
+          <span
+            key={`hub_dropdown${id}`}
+            className={css(styles.listItem) + " clamp1"}
+          >
+            {name}
+          </span>
+        </a>
+      </Link>
+    );
+  });
+
   return (
     <div
       className={css(styles.container)}
@@ -53,35 +81,7 @@ const HubDropDown = (props) => {
         {icons.ellipsisH}
       </div>
       <div className={css(styles.dropdown, isOpen && styles.open)}>
-        {hubs.map((hub, i) => {
-          let { id, name, hub_image, slug } = hub;
-
-          return (
-            <Link
-              href={"/hubs/[slug]"}
-              as={`/hubs/${nameToUrl(slug)}`}
-              key={`dropdown-${id}`}
-            >
-              <a className={css(styles.atag)}>
-                <img
-                  className={css(styles.hubImage) + " hubImage"}
-                  src={
-                    hub_image
-                      ? hub_image
-                      : "/static/background/hub-placeholder.svg"
-                  }
-                  alt={name}
-                />
-                <span
-                  key={`hub_dropdown${id}`}
-                  className={css(styles.listItem) + " clamp1"}
-                >
-                  {name}
-                </span>
-              </a>
-            </Link>
-          );
-        })}
+        {dropdownComponent}
       </div>
     </div>
   );
@@ -96,7 +96,6 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     minWidth: 200,
-    zIndex: 3,
     top: 20,
     right: -5,
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
@@ -106,7 +105,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     boxSizing: "border-box",
     opacity: 0,
-    zIndex: -100,
     userSelect: "none",
     pointerEvents: "none",
     display: "flex",
