@@ -51,6 +51,7 @@ const DiscussionPostMetadata = (props) => {
     isModerator,
     isLoggedIn,
     currentAuthorId,
+    postId,
   } = props;
 
   const alert = useAlert();
@@ -118,11 +119,15 @@ const DiscussionPostMetadata = (props) => {
 
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId } = metaData;
+    let { paperId, threadId, commentId, replyId, postId } = metaData;
+    console.log(metaData);
     let config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
-    fetch(API.FLAG_POST({ paperId, threadId, commentId, replyId }), config)
+    return fetch(
+      API.FLAG_POST({ paperId, threadId, commentId, replyId, postId }),
+      config
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -133,7 +138,7 @@ const DiscussionPostMetadata = (props) => {
         setFlagged(!isFlagged);
       })
       .catch((err) => {
-        if (err.response.status === 429) {
+        if (err.response && err.response.status === 429) {
           dispatch(MessageActions.showMessage({ show: false }));
           return dispatch(ModalActions.openRecaptchaPrompt(true));
         }
@@ -184,7 +189,9 @@ const DiscussionPostMetadata = (props) => {
             </div>
             {showDropDown && (
               <div className={css(styles.dropdown)} ref={dropdown}>
-                {threadPath && <ExpandButton {...props} />}
+                {!metaData.postId && threadPath ? (
+                  <ExpandButton {...props} />
+                ) : null}
                 {threadPath && renderShareButton()}
                 <FlagButton
                   {...props}
@@ -290,11 +297,8 @@ const User = (props) => {
   }
 
   return (
-    <Link
-      href={"/user/[authorId]/[tabName]"}
-      as={`/user/${authorId}/discussions`}
-    >
-      <a href={`/user/${authorId}/discussions`} className={css(styles.atag)}>
+    <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/posts`}>
+      <a href={`/user/${authorId}/posts`} className={css(styles.atag)}>
         <div
           className={css(
             styles.userContainer,

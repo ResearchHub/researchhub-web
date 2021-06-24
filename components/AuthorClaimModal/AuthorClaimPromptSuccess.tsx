@@ -26,6 +26,7 @@ export default function AuthorClaimPromptSuccess({
         </div>
       </div>
       <div className={css(successStyles.buttonContainer)}>
+        {/* @ts-ignore */}
         <Button
           label="Got It"
           customButtonStyle={successStyles.buttonCustomStyle}

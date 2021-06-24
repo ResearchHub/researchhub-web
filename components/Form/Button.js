@@ -6,22 +6,22 @@ import Ripples from "react-ripples";
 // Config
 import colors from "../../config/themes/colors";
 
-const Button = (props) => {
+function Button(props) {
   const {
-    customButtonStyle,
-    customIconStyle,
-    customLabelStyle,
-    disabled,
-    hideRipples,
-    icon,
-    isLink,
-    isWhite,
+    type,
     label,
+    isWhite,
+    size, // size is a enum; type string: ['small', 'med', 'big']
+    disabled,
+    isLink,
+    customButtonStyle,
+    customLabelStyle,
     onClick,
     onSubmit,
+    icon,
+    customIconStyle,
+    hideRipples,
     rippleClass,
-    size, // size is a enum; type string: ['small', 'med', 'big']
-    type,
   } = props;
   if (isLink) {
     let { href, linkAs, query } = isLink;
@@ -103,7 +103,7 @@ const Button = (props) => {
     }
     return button;
   }
-};
+}
 
 const styles = StyleSheet.create({
   button: {

@@ -131,7 +131,7 @@ const PaperEntryCard = (props) => {
     e && e.stopPropagation();
     let { author_profile } = uploaded_by;
     let authorId = author_profile && author_profile.id;
-    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/discussions`);
+    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/posts`);
     onClick && onClick();
   }
 
@@ -177,31 +177,26 @@ const PaperEntryCard = (props) => {
   async function onUpvote(e) {
     e.stopPropagation();
     let curPaper = { ...paper };
-    await postUpvote(curPaper.id);
-    let userVote = store.getState().paper.userVote;
-    if (
-      userVote.doneFetching &&
-      userVote.success &&
-      userVote.vote.voteType === "upvote"
-    ) {
-      if (curPaper.user_vote) {
-        curPaper.score += 2;
-        if (curPaper.promoted) {
-          curPaper.promoted += 2;
-        }
-      } else {
-        curPaper.score += 1;
-        if (curPaper.promoted) {
-          curPaper.promoted += 1;
-        }
+    if (curPaper.user_vote) {
+      curPaper.score += 2;
+      if (curPaper.promoted) {
+        curPaper.promoted += 2;
       }
-      curPaper.user_vote = {
-        vote_type: UPVOTE_ENUM,
-      };
-      selected = UPVOTE;
-
-      voteCallback && voteCallback(index, curPaper);
+    } else {
+      curPaper.score += 1;
+      if (curPaper.promoted) {
+        curPaper.promoted += 1;
+      }
     }
+    curPaper.user_vote = {
+      vote_type: UPVOTE_ENUM,
+    };
+    selected = UPVOTE;
+
+    voteCallback && voteCallback(index, curPaper);
+
+    postUpvote(curPaper.id);
+    let userVote = store.getState().paper.userVote;
   }
 
   /**
@@ -210,32 +205,27 @@ const PaperEntryCard = (props) => {
    */
   async function onDownvote(e) {
     e.stopPropagation();
-    let curPaper = { ...paper };
-    await postDownvote(curPaper.id);
     let userVote = store.getState().paper.userVote;
-    if (
-      userVote.doneFetching &&
-      userVote.success &&
-      userVote.vote.voteType === "downvote"
-    ) {
-      if (curPaper.user_vote) {
-        curPaper.score -= 2;
-        if (curPaper.promoted !== false) {
-          curPaper.promoted -= 2;
-        }
-      } else {
-        curPaper.score -= 1;
-        if (curPaper.promoted !== false) {
-          curPaper.promoted -= 1;
-        }
+    let curPaper = { ...paper };
+    if (curPaper.user_vote) {
+      curPaper.score -= 2;
+      if (curPaper.promoted !== false) {
+        curPaper.promoted -= 2;
       }
-      curPaper.user_vote = {
-        vote_type: DOWNVOTE_ENUM,
-      };
-      selected = DOWNVOTE;
-
-      voteCallback(index, curPaper);
+    } else {
+      curPaper.score -= 1;
+      if (curPaper.promoted !== false) {
+        curPaper.promoted -= 1;
+      }
     }
+    curPaper.user_vote = {
+      vote_type: DOWNVOTE_ENUM,
+    };
+    selected = DOWNVOTE;
+
+    voteCallback && voteCallback(index, curPaper);
+
+    postDownvote(curPaper.id);
   }
 
   function postEvent() {
@@ -651,8 +641,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     cursor: "pointer",
     border: "1px solid #EDEDED",
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 5,
+    marginBottom: 5,
     borderRadius: 3,
     overflow: "hidden",
     ":hover": {

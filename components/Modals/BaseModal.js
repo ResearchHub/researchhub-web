@@ -108,7 +108,8 @@ class BaseModal extends React.Component {
   };
 
   render() {
-    let { enableScroll } = this.props;
+    let { isOpen } = this.props;
+
     return (
       <Modal
         isOpen={this.props.isOpen}

@@ -27,6 +27,7 @@ import TabBar from "~/components/TabBar";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserInfoModal from "~/components/Modals/UserInfoModal";
+import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 
@@ -35,6 +36,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
+import killswitch from "~/config/killswitch/killswitch";
 import {
   filterNull,
   isNullOrUndefined,
@@ -60,43 +62,53 @@ const SECTIONS = {
   picture: "picture",
 };
 
-const getTabs = (author, transactions) => [
-  {
-    href: "discussions",
-    label: "discussions",
-    name: "Discussions",
-    showCount: true,
-    count: () => author.userDiscussions.count,
-  },
-  {
-    href: "authored-papers",
-    label: "authored papers",
-    name: "Authored Papers",
-    showCount: true,
-    count: () => author.authoredPapers.count,
-  },
-  {
-    href: "contributions",
-    label: "paper submissions",
-    name: "Paper Submissions",
-    showCount: true,
-    count: () => author.userContributions.count,
-  },
-  {
-    href: "transactions",
-    label: "transactions",
-    name: "Transactions",
-    showCount: true,
-    count: () => transactions.count,
-  },
-  {
-    href: "boosts",
-    label: "supported papers",
-    name: "Supported Papers",
-    showCount: true,
-    count: () => author.promotions && author.promotions.count,
-  },
-];
+const getTabs = (author, transactions) =>
+  filterNull([
+    killswitch("newPostTypes")
+      ? {
+          href: "posts",
+          label: "posts",
+          name: "Posts",
+          showCount: true,
+          count: () => author.num_posts,
+        }
+      : null,
+    {
+      href: "discussions",
+      label: "comments",
+      name: "Comments",
+      showCount: true,
+      count: () => author.userDiscussions.count,
+    },
+    {
+      href: "authored-papers",
+      label: "authored papers",
+      name: "Authored Papers",
+      showCount: true,
+      count: () => author.authoredPapers.count,
+    },
+    {
+      href: "contributions",
+      label: "paper submissions",
+      name: "Paper Submissions",
+      showCount: true,
+      count: () => author.userContributions.count,
+    },
+    {
+      href: "transactions",
+      label: "transactions",
+      name: "Transactions",
+      showCount: true,
+      count: () => transactions.count,
+    },
+    {
+      href: "boosts",
+      label: "supported papers",
+      name: "Supported Papers",
+      showCount: true,
+      count: () => author.promotions && author.promotions.count,
+    },
+  ]);
 
 function AuthorPage(props) {
   const { auth, author, hostname, user, transactions } = props;
@@ -407,6 +419,11 @@ function AuthorPage(props) {
     <ComponentWrapper>
       <div className={css(styles.tabMeta)}>
         <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+        <div
+          className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
+        >
+          <UserPostsTab fetching={fetching} />
+        </div>
         <div
           className={css(
             tabName === "contributions" ? styles.reveal : styles.hidden
