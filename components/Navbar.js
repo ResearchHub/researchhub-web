@@ -400,7 +400,6 @@ const Navbar = (props) => {
   }
 
   function addPaperModal(e) {
-    e.stopPropagation();
     Router.push(`/paper/upload/info`);
     setSideMenu(!sideMenu);
   }
