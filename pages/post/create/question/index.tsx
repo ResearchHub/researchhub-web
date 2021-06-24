@@ -7,7 +7,11 @@ import killswitch from "../../../../config/killswitch/killswitch";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
-function Index({ isLoggedIn }) {
+export type NewPostProps = {
+  isLoggedIn: boolean;
+};
+
+function Index({ isLoggedIn }: NewPostProps) {
   const router = useRouter();
   const enableNewPostTypes = killswitch("newPostTypes");
   useEffect(() => {
