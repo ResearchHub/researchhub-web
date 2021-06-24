@@ -89,11 +89,12 @@ const filterOptions = [
     disableScope: true,
     href: "newest",
   },
-  {
-    value: "most_discussed",
-    label: "Most Discussed",
-    href: "most-discussed",
-  },
+  // TODO: calvinhlee - temporarily disabled to prevent DB issues.
+  // {
+  //   value: "most_discussed",
+  //   label: "Most Discussed",
+  //   href: "most-discussed",
+  // },
 ];
 
 const scopeOptions = [
