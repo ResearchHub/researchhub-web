@@ -24,12 +24,12 @@ const KillswtichConfigs: SwitchConfigs = {
     production: false,
   },
   newPostTypes: {
-    development: false,
+    development: true,
     staging: true,
     production: false,
   },
   unifiedDocumentFeed: {
-    development: false,
+    development: true,
     staging: true,
     production: false,
   },
