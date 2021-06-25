@@ -15,6 +15,7 @@ const LeaderboardUser = (props) => {
     userClass,
     repClass,
   } = props;
+
   return (
     <div className={css(styles.container)}>
       <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/posts`}>
@@ -28,11 +29,9 @@ const LeaderboardUser = (props) => {
             />
             <div className={css(styles.name) + " clamp1"}>{name}</div>
             {props.extraInfo}
-            {reputation && (
-              <div className={css(styles.rep, repClass)}>
-                {numeral(reputation).format("0,0")}
-              </div>
-            )}
+            <div className={css(styles.rep, repClass)}>
+              {numeral(reputation ? reputation : 0).format("0,0")}
+            </div>
           </div>
         </a>
       </Link>
