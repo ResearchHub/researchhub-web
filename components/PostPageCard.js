@@ -351,7 +351,7 @@ class PostPageCard extends React.Component {
         ),
       },
       {
-        active: true,
+        active: false,
         button: (
           <ShareAction
             addRipples={true}
