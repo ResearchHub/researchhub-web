@@ -173,7 +173,7 @@ class PostPageCard extends React.Component {
     const { postBody } = this.state;
 
     const params = {
-      prev_version_id: post.id,
+      post_id: post.id,
       created_by: this.props.user.id,
       document_type: "DISCUSSION",
       full_src: postBody,
@@ -330,11 +330,17 @@ class PostPageCard extends React.Component {
   };
 
   renderActions = () => {
-    const { post, isModerator, flagged, setFlag, isSubmitter } = this.props;
-
+    const {
+      post,
+      isModerator,
+      flagged,
+      setFlag,
+      isSubmitter,
+      user,
+    } = this.props;
     const actionButtons = [
       {
-        active: true,
+        active: post.created_by && user.id === post.created_by.id,
         button: (
           <PermissionNotificationWrapper
             modalMessage="edit post"
