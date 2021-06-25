@@ -1,23 +1,17 @@
-import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Router from "next/router";
 import Link from "next/link";
-import Ripples from "react-ripples";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder/lib";
 import * as Sentry from "@sentry/browser";
 import HubTag from "~/components/Hubs/HubTag";
 import VoteWidget from "~/components/VoteWidget";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import FlagButton from "~/components/FlagButton";
-import ActionButton from "~/components/ActionButton";
-import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import Button from "~/components/Form/Button";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
@@ -28,8 +22,9 @@ import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
-import PaperPreview from "./Paper/SideColumn/PaperPreview";
 import ReactMarkdown from "react-markdown";
+import removeMd from "remove-markdown";
+import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 
 class PostPageCard extends React.Component {
@@ -46,6 +41,8 @@ class PostPageCard extends React.Component {
       boostHover: false,
       voteState: userVoteToConstant(props.post.user_vote),
       score: props.post.score,
+      showPostEditor: false,
+      postBody: this.props.post.full_markdown,
     };
     this.containerRef = React.createRef();
     this.metaContainerRef = React.createRef();
@@ -149,12 +146,64 @@ class PostPageCard extends React.Component {
     this.setState({ showAllHubs: !this.state.showAllHubs });
   };
 
-  navigateToEditPaperInfo = (e) => {
-    e && e.stopPropagation();
-    let paperId = this.props.paperId;
-    let href = "/paper/upload/info/[paperId]";
-    let as = `/paper/upload/info/${paperId}`;
-    Router.push(href, as);
+  firstImageFromMarkdown = (text) => {
+    // https://stackoverflow.com/questions/26024796/what-type-of-regexp-would-i-need-to-extract-image-url-from-markdown
+    const match = text.match(/!\[.*?\]\((.*?)\)/);
+    return match ? match[1] : null;
+  };
+
+  markdownToPlaintext = (text) => {
+    return removeMd(text).replace(/&nbsp;/g, " ");
+  };
+
+  toggleShowPostEditor = () => {
+    ReactTooltip.hide();
+    this.setState({ showPostEditor: !this.state.showPostEditor });
+  };
+
+  sendPost = () => {
+    const { post } = this.props;
+    const { postBody } = this.state;
+
+    const params = {
+      post_id: post.id,
+      created_by: this.props.user.id,
+      document_type: "DISCUSSION",
+      full_src: postBody,
+      /* @ts-ignore */
+      preview_img: this.firstImageFromMarkdown(postBody),
+      renderable_text: this.markdownToPlaintext(postBody),
+      title: post.title,
+    };
+
+    this.toggleShowPostEditor();
+
+    return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+  };
+
+  renderPostEditor = () => {
+    return (
+      <>
+        <SimpleEditor
+          id="text"
+          initialData={this.state.postBody}
+          labelStyle={styles.label}
+          onChange={(id, editorData) => this.setState({ postBody: editorData })}
+          containerStyle={styles.editor}
+        />
+        <div className={css(styles.editButtonRow)}>
+          <Button
+            isWhite={true}
+            label={"Cancel"}
+            onClick={this.toggleShowPostEditor}
+            size={"small"}
+          />
+          <Button label={"Save"} onClick={this.sendPost} size={"small"} />
+        </div>
+      </>
+    );
   };
 
   downloadPDF = () => {
@@ -274,21 +323,28 @@ class PostPageCard extends React.Component {
   };
 
   renderActions = () => {
-    const { post, isModerator, flagged, setFlag, isSubmitter } = this.props;
-
+    const {
+      post,
+      isModerator,
+      flagged,
+      setFlag,
+      isSubmitter,
+      user,
+    } = this.props;
     const actionButtons = [
       {
-        active: true,
+        active: post.created_by && user.id === post.created_by.id,
         button: (
           <PermissionNotificationWrapper
-            modalMessage="edit papers"
-            onClick={this.navigateToEditPaperInfo}
+            modalMessage="edit post"
+            onClick={this.toggleShowPostEditor}
             permissionKey="UpdatePaper"
             loginRequired={true}
             hideRipples={true}
             styling={styles.borderRadius}
           >
-            <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
+            <ReactTooltip />
+            <div className={css(styles.actionIcon)} data-tip={"Edit Post"}>
               {icons.pencil}
             </div>
           </PermissionNotificationWrapper>
@@ -299,77 +355,77 @@ class PostPageCard extends React.Component {
         button: (
           <ShareAction
             addRipples={true}
-            title={"Share this paper"}
+            title={"Share this post"}
             subtitle={post && post.title}
             url={this.props.shareUrl}
             customButton={
-              <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
+              <div className={css(styles.actionIcon)} data-tip={"Share Post"}>
                 {icons.shareAlt}
               </div>
             }
           />
         ),
       },
-      {
-        active: true,
-        button: (
-          <span data-tip={"Support Paper"}>
-            <PaperPromotionButton
-              paper={post}
-              customStyle={styles.actionIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: !isSubmitter,
-        button: (
-          <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={post.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: isModerator || isSubmitter,
-        button: (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
-          >
-            <ActionButton
-              isModerator={true}
-              paperId={post.id}
-              restore={post.is_removed}
-              icon={post.is_removed ? icons.plus : icons.minus}
-              onAction={post.is_removed ? this.restorePaper : this.removePaper}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        ),
-      },
-      {
-        active: isModerator,
-        button: (
-          <>
-            <ReactTooltip />
-            <span
-              className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={"Remove Page & Ban User"}
-            >
-              <ActionButton
-                isModerator={isModerator}
-                paperId={post.id}
-                iconStyle={styles.moderatorIcon}
-              />
-            </span>
-          </>
-        ),
-      },
+      //{
+      //  active: true,
+      //  button: (
+      //    <span data-tip={"Support Post"}>
+      //      <PaperPromotionButton
+      //        paper={post}
+      //        customStyle={styles.actionIcon}
+      //      />
+      //    </span>
+      //  ),
+      //},
+      //{
+      //  active: !isSubmitter,
+      //  button: (
+      //    <span data-tip={"Flag Post"}>
+      //      <FlagButton
+      //        paperId={post.id}
+      //        flagged={flagged}
+      //        setFlag={setFlag}
+      //        style={styles.actionIcon}
+      //      />
+      //    </span>
+      //  ),
+      //},
+      //{
+      //  active: isModerator || isSubmitter,
+      //  button: (
+      //    <span
+      //      className={css(styles.actionIcon, styles.moderatorAction)}
+      //      data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
+      //    >
+      //      <ActionButton
+      //        isModerator={true}
+      //        paperId={post.id}
+      //        restore={post.is_removed}
+      //        icon={post.is_removed ? icons.plus : icons.minus}
+      //        onAction={post.is_removed ? this.restorePaper : this.removePaper}
+      //        iconStyle={styles.moderatorIcon}
+      //      />
+      //    </span>
+      //  ),
+      //},
+      //{
+      //  active: isModerator,
+      //  button: (
+      //    <>
+      //      <ReactTooltip />
+      //      <span
+      //        className={css(styles.actionIcon, styles.moderatorAction)}
+      //        data-tip={"Remove Page & Ban User"}
+      //      >
+      //        <ActionButton
+      //          isModerator={isModerator}
+      //          paperId={post.id}
+      //          iconStyle={styles.moderatorIcon}
+      //        />
+      //      </span>
+      //    </>
+      //  ),
+      //},
     ].filter((action) => action.active);
 
     return (
@@ -621,8 +677,7 @@ class PostPageCard extends React.Component {
 
   render() {
     const { post } = this.props;
-
-    const { fetching, previews, figureUrls } = this.state;
+    const { postBody, fetching, previews, figureUrls } = this.state;
 
     const voteWidget = (horizontalView) => (
       <VoteWidget
@@ -696,11 +751,19 @@ class PostPageCard extends React.Component {
             </div>
           </div>
           <div className={css(styles.bodyContainer)}>
-            <ReactMarkdown>{post.full_markdown}</ReactMarkdown>
-          </div>
-          <div className={css(styles.bottomContainer)}>
-            {/*<div className={css(styles.bottomRow)}>{this.renderActions()}</div>*/}
-            <div className={css(styles.downloadPDF)}></div>
+            {this.state.showPostEditor ? (
+              this.renderPostEditor()
+            ) : (
+              <>
+                <ReactMarkdown>{postBody}</ReactMarkdown>
+                <div className={css(styles.bottomContainer)}>
+                  <div className={css(styles.bottomRow)}>
+                    {this.renderActions()}
+                  </div>
+                  <div className={css(styles.downloadPDF)}></div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
@@ -1162,6 +1225,7 @@ const styles = StyleSheet.create({
     marginRight: 20,
   },
   bodyContainer: {
+    width: "100%",
     wordBreak: "break-word",
   },
   bottomContainer: {
@@ -1348,6 +1412,11 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       height: 15,
     },
+  },
+  editButtonRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: 10,
   },
 });
 
