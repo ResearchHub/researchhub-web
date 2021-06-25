@@ -29,9 +29,11 @@ const LeaderboardUser = (props) => {
             />
             <div className={css(styles.name) + " clamp1"}>{name}</div>
             {props.extraInfo}
-            <div className={css(styles.rep, repClass)}>
-              {numeral(reputation ? reputation : 0).format("0,0")}
-            </div>
+            {reputation ? (
+              <div className={css(styles.rep, repClass)}>
+                {numeral(reputation).format("0,0")}
+              </div>
+            ) : null}
           </div>
         </a>
       </Link>
