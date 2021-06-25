@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
       display: "table",
     },
     "@media only screen and (min-width: 1200px)": {
-      width: "80%",
+      width: "90%",
     },
   },
   desktop: {
