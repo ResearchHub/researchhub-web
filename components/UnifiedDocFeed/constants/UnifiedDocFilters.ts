@@ -6,6 +6,6 @@ export const UnifiedDocFilters = {
 
 export const UnifiedDocFilterLabels = {
   ALL: "All",
-  PAPER: "Paper",
+  PAPER: "Papers",
   POSTS: "Posts",
 };
