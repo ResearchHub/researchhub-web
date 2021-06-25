@@ -1,12 +1,9 @@
-import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Router from "next/router";
 import Link from "next/link";
-import Ripples from "react-ripples";
 import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder/lib";
 import * as Sentry from "@sentry/browser";
 import HubTag from "~/components/Hubs/HubTag";
 import VoteWidget from "~/components/VoteWidget";
@@ -14,11 +11,7 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import ShareAction from "~/components/ShareAction";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "~/components/Form/Button";
-import FlagButton from "~/components/FlagButton";
-import ActionButton from "~/components/ActionButton";
-import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
@@ -29,7 +22,6 @@ import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
-import PaperPreview from "./Paper/SideColumn/PaperPreview";
 import ReactMarkdown from "react-markdown";
 import removeMd from "remove-markdown";
 import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
@@ -165,6 +157,7 @@ class PostPageCard extends React.Component {
   };
 
   toggleShowPostEditor = () => {
+    ReactTooltip.hide();
     this.setState({ showPostEditor: !this.state.showPostEditor });
   };
 
@@ -350,6 +343,7 @@ class PostPageCard extends React.Component {
             hideRipples={true}
             styling={styles.borderRadius}
           >
+            <ReactTooltip />
             <div className={css(styles.actionIcon)} data-tip={"Edit Post"}>
               {icons.pencil}
             </div>
