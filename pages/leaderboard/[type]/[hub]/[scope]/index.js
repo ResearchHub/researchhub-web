@@ -18,12 +18,16 @@ const fetchHub = (slug) => {
 class Index extends React.Component {
   static async getInitialProps({ store, isServer, query }) {
     let slug = query.slug;
-    let hub = await fetchHub(slug);
-    return { hub };
+    let hub = null;
+    if (slug) {
+      hub = await fetchHub(slug);
+    }
+    return { hub, slug };
   }
 
   render() {
-    const { hub } = this.props;
+    const { hub, slug } = this.props;
+    console.log(slug);
     return <LeaderboardPage hub={hub} />;
   }
 }
