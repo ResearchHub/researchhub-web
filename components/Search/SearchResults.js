@@ -52,11 +52,11 @@ const sortOpts = [
     label: "Relevance",
   },
   {
-    value: "-hot",
+    value: "-hot_score",
     label: "Trending",
   },
   {
-    value: "-popularity",
+    value: "-score",
     label: "Top Rated",
   },
   {
@@ -271,6 +271,29 @@ const SearchResults = ({ initialResults }) => {
           searchResult: paper,
           attribute: "title",
         });
+        paper.promoted = false;
+
+        // WIP MESS
+        //         console.log('paper.raw_authors.length', paper.raw_authors.length);
+        //
+        //
+        //         const highlight = get(paper, `highlight["raw_authors.full_name"]`, [])[0] || '';
+        //         let highlighWithoutMarks = highlight.replace('<mark>', '').replace('</mark>', '');
+        //         let final = [];
+        //
+        //
+        //         if (!highlight) {
+        //           final = paper.raw_authors
+        //         }
+        //         else {
+        //           for (let i = 0; i < paper.raw_authors.length; i++) {
+        //             console.log('highlighWithoutMarks', highlighWithoutMarks);
+        //             console.log('paper.raw_authors[i].full_name', paper.raw_authors[i].full_name);
+        //             if (paper.raw_authors[i].full_name.indexOf(highlighWithoutMarks) > -1) {
+        //               console.log('YES');
+        //             }
+        //           }
+        //         }
 
         return (
           <PaperEntryCard
