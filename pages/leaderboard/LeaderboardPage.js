@@ -81,8 +81,6 @@ class Index extends React.Component {
       };
     }
 
-    console.log(defaultBy);
-
     this.state = {
       items: [],
       hubId: null,
@@ -509,7 +507,6 @@ class Index extends React.Component {
    * Renders the entry for the sidebar
    */
   renderSidebarEntry = () => {
-    console.log(this.state);
     return this.items.map((item, i) => {
       const { name, icon, id } = item;
       return (

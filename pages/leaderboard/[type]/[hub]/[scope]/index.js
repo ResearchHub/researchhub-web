@@ -27,7 +27,6 @@ class Index extends React.Component {
 
   render() {
     const { hub, slug } = this.props;
-    console.log(slug);
     return <LeaderboardPage hub={hub} />;
   }
 }
