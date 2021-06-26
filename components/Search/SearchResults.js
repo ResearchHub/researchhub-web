@@ -14,6 +14,7 @@ import { useRouter } from "next/router";
 import { get } from "lodash";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
+import Select, { components } from "react-select";
 
 const timeFilterOpts = [
   {
@@ -177,6 +178,22 @@ const SearchResults = ({ initialResults }) => {
     });
   };
 
+  const handleRemoveSelected = ({ optToRemove, dropdownKey }) => {
+    let updatedQuery = { ...router.query };
+    if (dropdownKey === "hubs") {
+      const newValue = selectedHubs
+        .filter((h) => h.value !== optToRemove.value)
+        .map((h) => h.value);
+
+      updatedQuery[dropdownKey] = newValue;
+    }
+
+    router.push({
+      pathname: "/search/[type]",
+      query: updatedQuery,
+    });
+  };
+
   const renderEntityTabs = () => {
     return keys(searchTypes).map((type) => (
       <Link href={`/search/${type}`} key={type}>
@@ -237,6 +254,7 @@ const SearchResults = ({ initialResults }) => {
         multiTagStyle={null}
         multiTagLabelStyle={null}
         isClearable={true}
+        showCountInsteadOfLabels={true}
       />
       <FormSelect
         id={"publish_date__gte"}
@@ -261,6 +279,35 @@ const SearchResults = ({ initialResults }) => {
         onChange={handleFilterSelect}
         isSearchable={false}
       />
+      <div className={css(styles.badgeList)}>
+        {selectedHubs.map((opt) => {
+          return (
+            <div className={css(styles.badge)}>
+              <div className={css(styles.badgeLabel)}>{opt.label}</div>
+              <div
+                className={css(styles.badgeRemove)}
+                onClick={() =>
+                  handleRemoveSelected({
+                    optToRemove: opt,
+                    dropdownKey: "hubs",
+                  })
+                }
+              >
+                <svg
+                  height="14"
+                  width="14"
+                  viewBox="0 0 20 20"
+                  aria-hidden="true"
+                  focusable="false"
+                  class="css-6q0nyr-Svg"
+                >
+                  <path d="M14.348 14.849c-0.469 0.469-1.229 0.469-1.697 0l-2.651-3.030-2.651 3.029c-0.469 0.469-1.229 0.469-1.697 0-0.469-0.469-0.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-0.469-0.469-0.469-1.228 0-1.697s1.228-0.469 1.697 0l2.652 3.031 2.651-3.031c0.469-0.469 1.228-0.469 1.697 0s0.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c0.469 0.469 0.469 1.229 0 1.698z"></path>
+                </svg>
+              </div>
+            </div>
+          );
+        })}
+      </div>
       {entityTabsHtml}
       {results.map((paper, index) => {
         paper.abstract = parseIfHighlighted({
@@ -310,6 +357,45 @@ const SearchResults = ({ initialResults }) => {
 };
 
 const styles = StyleSheet.create({
+  badgeList: {
+    alignItems: "center",
+    flex: 1,
+    flexWrap: "wrap",
+    padding: "2px 8px",
+    position: "relative",
+    overflow: "hidden",
+    boxSizing: "border-box",
+    display: "flex",
+    textTransform: "capitalize",
+  },
+  badge: {
+    display: "flex",
+    margin: "2px",
+    minWidth: "0",
+    boxSizing: "border-box",
+    backgroundColor: "#edeefe",
+    borderRadius: "2px",
+  },
+  badgeLabel: {
+    borderRadius: "2px",
+    color: colors.BLUE(),
+    fontSize: "85%",
+    overflow: "hidden",
+    padding: "3px",
+    paddingLeft: "6px",
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    boxSizing: "border-box",
+  },
+  badgeRemove: {
+    display: "flex",
+    paddingLeft: "4px",
+    paddingRight: "4px",
+    boxSizing: "border-box",
+    alignItems: "center",
+    borderRadius: "2px",
+    cursor: "pointer",
+  },
   highlight: {
     backgroundColor: "yellow",
   },
