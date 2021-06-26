@@ -1,13 +1,35 @@
 import React from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";
 import makeAnimated from "react-select/animated";
+import { get } from "lodash";
 
 // Config
 import * as Options from "../../config/utils/options";
 import colors from "../../config/themes/colors";
 
 const animatedComponents = makeAnimated();
+
+// Will display count of selected options instead
+// of listing each individual option label.
+const CustomCountValueContainer = ({ children, getValue, ...props }) => {
+  var length = getValue().length;
+  const label = get(props, "selectProps.placeholder", "");
+
+  return (
+    <components.ValueContainer {...props}>
+      {!props.selectProps.menuIsOpen && (
+        <div>
+          <span>{label}</span>
+          {length > 0 && (
+            <span className={css(styles.countBadge)}>{length}</span>
+          )}
+        </div>
+      )}
+      {React.cloneElement(children[1])}
+    </components.ValueContainer>
+  );
+};
 
 class FormSelect extends React.Component {
   constructor(props) {
@@ -43,7 +65,16 @@ class FormSelect extends React.Component {
       singleValue,
       defaultValue,
       maxMenuHeight,
+      showCountInsteadOfLabels,
     } = this.props;
+
+    const configuredComponents = {
+      animatedComponents,
+    };
+
+    if (showCountInsteadOfLabels) {
+      configuredComponents.ValueContainer = CustomCountValueContainer;
+    }
 
     const formatStyle = (styleObject) => {
       if (!styleObject) {
@@ -135,7 +166,7 @@ class FormSelect extends React.Component {
           {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <Select
-          components={animatedComponents}
+          components={{ ...configuredComponents }}
           options={options && options}
           onChange={(option) => this.handleOnChange(id, option)}
           styles={colorStyles}
@@ -172,6 +203,13 @@ const styles = StyleSheet.create({
     color: "#232038",
     display: "flex",
     justifyContent: "flex-start",
+  },
+  countBadge: {
+    backgroundColor: "#edeefe",
+    borderRadius: 20,
+    color: colors.BLUE(),
+    padding: "3px 8px",
+    marginLeft: 10,
   },
   input: {
     display: "flex",
