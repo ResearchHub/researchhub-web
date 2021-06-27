@@ -1,3 +1,14 @@
+import * as moment from "dayjs";
+import Ripples from "react-ripples";
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { keys, isString, isArray } from "underscore";
+import { get } from "lodash";
+import { StyleSheet, css } from "aphrodite";
+import PropTypes from "prop-types";
+import Select, { components } from "react-select";
+
 import { searchTypes } from "~/config/utils/options";
 import colors from "~/config/themes/colors";
 import { fetchURL } from "~/config/fetch";
@@ -5,17 +16,7 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
-
-import * as moment from "dayjs";
-import Ripples from "react-ripples";
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { keys, isString, isArray } from "underscore";
-import { useRouter } from "next/router";
-import { get } from "lodash";
-import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import Select, { components } from "react-select";
+import ComponentWrapper from "../../components/ComponentWrapper";
 
 const timeFilterOpts = [
   {
@@ -271,13 +272,13 @@ const SearchResults = ({ initialResults }) => {
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
   return (
-    <div>
+    <ComponentWrapper>
       <div className={css(styles.filters)}>
         <FormSelect
           id={"hubs"}
           options={facetValueOpts}
-          containerStyle={styles.containerStyle}
-          inputStyle={styles.dropdown}
+          containerStyle={styles.dropdownContainer}
+          inputStyle={styles.dropdownInput}
           onChange={handleFilterSelect}
           isSearchable={true}
           placeholder={"Hubs"}
@@ -291,8 +292,8 @@ const SearchResults = ({ initialResults }) => {
         <FormSelect
           id={"publish_date__gte"}
           options={timeFilterOpts}
-          containerStyle={styles.containerStyle}
-          inputStyle={styles.dropdown}
+          containerStyle={styles.dropdownContainer}
+          inputStyle={styles.dropdownInput}
           onChange={handleFilterSelect}
           isSearchable={true}
           placeholder={"Date Published"}
@@ -306,14 +307,14 @@ const SearchResults = ({ initialResults }) => {
           id={"ordering"}
           options={sortOpts}
           value={selectedSortOrder}
-          containerStyle={styles.containerStyle}
-          inputStyle={styles.dropdown}
+          containerStyle={styles.dropdownContainer}
+          inputStyle={styles.dropdownInput}
           onChange={handleFilterSelect}
           isSearchable={false}
         />
       </div>
 
-      <div className={css(styles.selectedFiltersList)}>
+      <div className={css(styles.appliedFilters)}>
         {selectedHubs.map((opt) =>
           renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
         )}
@@ -335,7 +336,8 @@ const SearchResults = ({ initialResults }) => {
         )}
       </div>
 
-      {entityTabsHtml}
+      {/* OFF in V1 entityTabsHtml */}
+
       {results.map((paper, index) => {
         paper.abstract = parseIfHighlighted({
           searchResult: paper,
@@ -379,7 +381,7 @@ const SearchResults = ({ initialResults }) => {
         );
       })}
       {loadMoreBtn}
-    </div>
+    </ComponentWrapper>
   );
 };
 
@@ -387,42 +389,52 @@ const styles = StyleSheet.create({
   filters: {
     display: "flex",
   },
-  containerStyle: {
+  dropdownContainer: {
     width: 250,
+    minHeight: "unset",
   },
-  dropdown: {
+  dropdownInput: {
     width: 200,
   },
-  selectedFiltersList: {
+  appliedFilters: {
     alignItems: "center",
     flex: 1,
     flexWrap: "wrap",
-    padding: "2px 8px",
+    padding: "2px 2px",
     position: "relative",
     overflow: "hidden",
     boxSizing: "border-box",
     display: "flex",
     textTransform: "capitalize",
+    marginBottom: 20,
   },
   badge: {
     display: "flex",
-    margin: "2px",
+    margin: "0px 10px 0px 0",
     minWidth: "0",
     boxSizing: "border-box",
     backgroundColor: "#edeefe",
     borderRadius: "2px",
     color: colors.BLUE(),
     cursor: "pointer",
+    padding: "5px 8px",
+    ":hover": {
+      border: "1px solid",
+      margin: "-1px 9px -1px -1px",
+    },
   },
   badgeLabel: {
     borderRadius: "2px",
     fontSize: "85%",
     overflow: "hidden",
-    padding: "3px",
-    paddingLeft: "6px",
+    padding: "3px 3px 3px 6px",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     boxSizing: "border-box",
+    fontSize: 12,
+    fontWeight: 500,
+    letterSpacing: 1,
+    textTransform: "uppercase",
   },
   badgeRemove: {
     display: "flex",
