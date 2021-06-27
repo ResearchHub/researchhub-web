@@ -272,7 +272,7 @@ const SearchResults = ({ initialResults }) => {
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
   return (
-    <ComponentWrapper>
+    <ComponentWrapper overrideStyle={styles.componentWrapper}>
       <div className={css(styles.filters)}>
         <FormSelect
           id={"hubs"}
@@ -307,23 +307,26 @@ const SearchResults = ({ initialResults }) => {
           id={"ordering"}
           options={sortOpts}
           value={selectedSortOrder}
-          containerStyle={styles.dropdownContainer}
+          containerStyle={[
+            styles.dropdownContainer,
+            styles.dropdownContainerForSort,
+          ]}
           inputStyle={styles.dropdownInput}
           onChange={handleFilterSelect}
           isSearchable={false}
         />
       </div>
 
-      <div className={css(styles.appliedFilters)}>
-        {selectedHubs.map((opt) =>
-          renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
-        )}
-        {selectedTimeRange.value &&
-          renderAppliedFilterBadge({
-            opt: selectedTimeRange,
-            dropdownKey: "publish_date__gte",
-          })}
-        {hasAppliedFilters && (
+      {hasAppliedFilters && (
+        <div className={css(styles.appliedFilters)}>
+          {selectedHubs.map((opt) =>
+            renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
+          )}
+          {selectedTimeRange.value &&
+            renderAppliedFilterBadge({
+              opt: selectedTimeRange,
+              dropdownKey: "publish_date__gte",
+            })}
           <div
             className={css(styles.badge, styles.clearFiltersBtn)}
             onClick={handleClearAll}
@@ -333,8 +336,8 @@ const SearchResults = ({ initialResults }) => {
               <CloseIcon />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* OFF in V1 entityTabsHtml */}
 
@@ -386,12 +389,22 @@ const SearchResults = ({ initialResults }) => {
 };
 
 const styles = StyleSheet.create({
+  componentWrapper: {
+    marginTop: 40,
+  },
   filters: {
     display: "flex",
+    marginBottom: 20,
   },
   dropdownContainer: {
     width: 250,
     minHeight: "unset",
+    marginTop: 0,
+    marginBottom: 0,
+  },
+  dropdownContainerForSort: {
+    width: 200,
+    marginLeft: "auto",
   },
   dropdownInput: {
     width: 200,
