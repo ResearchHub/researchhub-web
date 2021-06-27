@@ -272,44 +272,47 @@ const SearchResults = ({ initialResults }) => {
 
   return (
     <div>
-      <FormSelect
-        id={"hubs"}
-        options={facetValueOpts}
-        containerStyle={null}
-        inputStyle={null}
-        onChange={handleFilterSelect}
-        isSearchable={true}
-        placeholder={"Hubs"}
-        value={selectedHubs}
-        isMulti={true}
-        multiTagStyle={null}
-        multiTagLabelStyle={null}
-        isClearable={true}
-        showCountInsteadOfLabels={true}
-      />
-      <FormSelect
-        id={"publish_date__gte"}
-        options={timeFilterOpts}
-        containerStyle={null}
-        inputStyle={null}
-        onChange={handleFilterSelect}
-        isSearchable={true}
-        placeholder={"Date Published"}
-        value={selectedTimeRange}
-        isMulti={false}
-        multiTagStyle={null}
-        multiTagLabelStyle={null}
-        isClearable={true}
-      />
-      <FormSelect
-        id={"ordering"}
-        options={sortOpts}
-        value={selectedSortOrder}
-        containerStyle={null}
-        inputStyle={null}
-        onChange={handleFilterSelect}
-        isSearchable={false}
-      />
+      <div className={css(styles.filters)}>
+        <FormSelect
+          id={"hubs"}
+          options={facetValueOpts}
+          containerStyle={styles.containerStyle}
+          inputStyle={styles.dropdown}
+          onChange={handleFilterSelect}
+          isSearchable={true}
+          placeholder={"Hubs"}
+          value={selectedHubs}
+          isMulti={true}
+          multiTagStyle={null}
+          multiTagLabelStyle={null}
+          isClearable={true}
+          showCountInsteadOfLabels={true}
+        />
+        <FormSelect
+          id={"publish_date__gte"}
+          options={timeFilterOpts}
+          containerStyle={styles.containerStyle}
+          inputStyle={styles.dropdown}
+          onChange={handleFilterSelect}
+          isSearchable={true}
+          placeholder={"Date Published"}
+          value={selectedTimeRange}
+          isMulti={false}
+          multiTagStyle={null}
+          multiTagLabelStyle={null}
+          isClearable={true}
+        />
+        <FormSelect
+          id={"ordering"}
+          options={sortOpts}
+          value={selectedSortOrder}
+          containerStyle={styles.containerStyle}
+          inputStyle={styles.dropdown}
+          onChange={handleFilterSelect}
+          isSearchable={false}
+        />
+      </div>
+
       <div className={css(styles.selectedFiltersList)}>
         {selectedHubs.map((opt) =>
           renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
@@ -331,6 +334,7 @@ const SearchResults = ({ initialResults }) => {
           </div>
         )}
       </div>
+
       {entityTabsHtml}
       {results.map((paper, index) => {
         paper.abstract = parseIfHighlighted({
@@ -380,6 +384,15 @@ const SearchResults = ({ initialResults }) => {
 };
 
 const styles = StyleSheet.create({
+  filters: {
+    display: "flex",
+  },
+  containerStyle: {
+    width: 250,
+  },
+  dropdown: {
+    width: 200,
+  },
   selectedFiltersList: {
     alignItems: "center",
     flex: 1,
