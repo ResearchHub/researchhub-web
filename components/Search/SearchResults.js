@@ -4,6 +4,7 @@ import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
+import { CloseIcon } from "~/config/themes/icons";
 
 import * as moment from "dayjs";
 import Ripples from "react-ripples";
@@ -178,15 +179,29 @@ const SearchResults = ({ initialResults }) => {
     });
   };
 
-  const handleRemoveSelected = ({ optToRemove, dropdownKey }) => {
+  const handleRemoveSelected = ({ opt, dropdownKey }) => {
     let updatedQuery = { ...router.query };
     if (dropdownKey === "hubs") {
       const newValue = selectedHubs
-        .filter((h) => h.value !== optToRemove.value)
+        .filter((h) => h.value !== opt.value)
         .map((h) => h.value);
 
       updatedQuery[dropdownKey] = newValue;
     }
+
+    router.push({
+      pathname: "/search/[type]",
+      query: updatedQuery,
+    });
+  };
+
+  const handleClearAll = () => {
+    const updatedQuery = {
+      ...router.query,
+    };
+
+    delete updatedQuery["publish_date__gte"];
+    delete updatedQuery["hubs"];
 
     router.push({
       pathname: "/search/[type]",
@@ -232,12 +247,28 @@ const SearchResults = ({ initialResults }) => {
     }
   };
 
+  const renderAppliedFilterBadge = ({ opt, dropdownKey }) => {
+    return (
+      <div
+        className={css(styles.badge)}
+        onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+      >
+        <div className={css(styles.badgeLabel)}>{opt.label}</div>
+        <div className={css(styles.badgeRemove)}>
+          <CloseIcon />
+        </div>
+      </div>
+    );
+  };
+
   const facetValueOpts = facetValuesForHub.map((f) => ({
     label: `${f.key} (${f.doc_count})`,
     value: f.key,
   }));
   const entityTabsHtml = renderEntityTabs();
   const loadMoreBtn = renderLoadMoreButton();
+  const hasAppliedFilters =
+    selectedHubs.length || get(selectedTimeRange, "value");
 
   return (
     <div>
@@ -279,34 +310,26 @@ const SearchResults = ({ initialResults }) => {
         onChange={handleFilterSelect}
         isSearchable={false}
       />
-      <div className={css(styles.badgeList)}>
-        {selectedHubs.map((opt) => {
-          return (
-            <div className={css(styles.badge)}>
-              <div className={css(styles.badgeLabel)}>{opt.label}</div>
-              <div
-                className={css(styles.badgeRemove)}
-                onClick={() =>
-                  handleRemoveSelected({
-                    optToRemove: opt,
-                    dropdownKey: "hubs",
-                  })
-                }
-              >
-                <svg
-                  height="14"
-                  width="14"
-                  viewBox="0 0 20 20"
-                  aria-hidden="true"
-                  focusable="false"
-                  class="css-6q0nyr-Svg"
-                >
-                  <path d="M14.348 14.849c-0.469 0.469-1.229 0.469-1.697 0l-2.651-3.030-2.651 3.029c-0.469 0.469-1.229 0.469-1.697 0-0.469-0.469-0.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-0.469-0.469-0.469-1.228 0-1.697s1.228-0.469 1.697 0l2.652 3.031 2.651-3.031c0.469-0.469 1.228-0.469 1.697 0s0.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c0.469 0.469 0.469 1.229 0 1.698z"></path>
-                </svg>
-              </div>
+      <div className={css(styles.selectedFiltersList)}>
+        {selectedHubs.map((opt) =>
+          renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
+        )}
+        {selectedTimeRange.value &&
+          renderAppliedFilterBadge({
+            opt: selectedTimeRange,
+            dropdownKey: "publish_date__gte",
+          })}
+        {hasAppliedFilters && (
+          <div
+            className={css(styles.badge, styles.clearFiltersBtn)}
+            onClick={handleClearAll}
+          >
+            <div className={css(styles.badgeLabel)}>CLEAR ALL</div>
+            <div className={css(styles.badgeRemove)}>
+              <CloseIcon />
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
       {entityTabsHtml}
       {results.map((paper, index) => {
@@ -357,7 +380,7 @@ const SearchResults = ({ initialResults }) => {
 };
 
 const styles = StyleSheet.create({
-  badgeList: {
+  selectedFiltersList: {
     alignItems: "center",
     flex: 1,
     flexWrap: "wrap",
@@ -375,10 +398,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     backgroundColor: "#edeefe",
     borderRadius: "2px",
+    color: colors.BLUE(),
+    cursor: "pointer",
   },
   badgeLabel: {
     borderRadius: "2px",
-    color: colors.BLUE(),
     fontSize: "85%",
     overflow: "hidden",
     padding: "3px",
@@ -394,7 +418,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     alignItems: "center",
     borderRadius: "2px",
-    cursor: "pointer",
   },
   highlight: {
     backgroundColor: "yellow",
@@ -410,6 +433,14 @@ const styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
+  },
+  clearFiltersBtn: {
+    backgroundColor: "none",
+    color: colors.RED(),
+    fontSize: 12,
+  },
+  clearFiltersX: {
+    color: colors.RED(),
   },
   loadMoreButton: {
     fontSize: 14,
