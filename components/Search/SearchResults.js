@@ -82,8 +82,8 @@ const SearchResults = ({ initialResults }) => {
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
 
   const [selectedHubs, setSelectedHubs] = useState([]);
-  const [selectedTimeRange, setSelectedTimeRange] = useState(null);
-  const [selectedSortOrder, setSelectedSortOrder] = useState(null);
+  const [selectedTimeRange, setSelectedTimeRange] = useState({});
+  const [selectedSortOrder, setSelectedSortOrder] = useState({});
 
   useEffect(() => {
     setSelectedHubs(getSelectedFacetValues({ forKey: "hubs" }));
@@ -252,6 +252,7 @@ const SearchResults = ({ initialResults }) => {
       <div
         className={css(styles.badge)}
         onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+        key={`${dropdownKey}-${opt.value}`}
       >
         <div className={css(styles.badgeLabel)}>{opt.label}</div>
         <div className={css(styles.badgeRemove)}>
@@ -267,8 +268,7 @@ const SearchResults = ({ initialResults }) => {
   }));
   const entityTabsHtml = renderEntityTabs();
   const loadMoreBtn = renderLoadMoreButton();
-  const hasAppliedFilters =
-    selectedHubs.length || get(selectedTimeRange, "value");
+  const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
   return (
     <div>
