@@ -3,19 +3,14 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import SearchResults from "~/components/Search/SearchResults";
 import { searchTypes } from "~/config/utils/options";
+import { pickAllowedSearchFiltersFor } from "~/config/utils";
 import killswitch from "~/config/killswitch/killswitch";
 
 import PropTypes from "prop-types";
 import Error from "next/error";
-import { pick } from "underscore";
 import { useRouter } from "next/router";
 import { get } from "lodash";
 import nookies from "nookies";
-
-const getAllowedSearchFilters = ({ searchType, queryParams }) => {
-  const allowedFilters = get(searchTypes, `${searchType}`, []);
-  return pick(queryParams, ...allowedFilters);
-};
 
 // Facets specified will have their values returned
 // alongside counts in the search response.
@@ -43,9 +38,9 @@ Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
 
-  const filters = getAllowedSearchFilters({
+  const filters = pickAllowedSearchFiltersFor({
     searchType: ctx.query.type,
-    queryParams: ctx.query,
+    query: ctx.query,
   });
 
   const facets = getFacetsToAggregate(ctx.query);
