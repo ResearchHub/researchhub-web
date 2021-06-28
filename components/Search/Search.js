@@ -10,9 +10,14 @@ const Search = ({}) => {
   const [query, setQuery] = useState(get(router, "query.search") || "");
 
   const handleSearch = () => {
+    const queryParams = {
+      ...router.query,
+      search: query,
+    };
+
     router.push({
       pathname: "/search/paper",
-      query: { search: query },
+      query: queryParams,
     });
   };
 
