@@ -260,7 +260,7 @@ const Post = (props) => {
                   isPost={true}
                 />
               </div>
-              <a name="discussion">
+              <a name="comments">
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={props.hostname}

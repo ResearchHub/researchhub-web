@@ -531,7 +531,7 @@ const Paper = (props) => {
               topOffset={40}
               bottomOffset={"95%"}
             >
-              <a name="discussion">
+              <a name="comments">
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={props.hostname}
