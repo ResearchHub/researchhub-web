@@ -25,15 +25,30 @@ const ActivityCard = (props) => {
   const [isHidden, setIsHidden] = useState(false);
 
   const { activity, last } = props;
+
+  console.log("Activity", activity);
+  console.log("Last", last);
+
+  // const {
+  //   paper,
+  //   source,
+  //   created_date: createdDate,
+  //   contribution_type: contributionType,
+  // } = activity;
+
+  // const { id: paperId, slug: paperName, hubs } = paper;
+  // const { id: sourceID, paper_title: sourcePaperTitle } = source;
+
   const {
-    paper,
-    source,
-    created_date: createdDate,
-    contribution_type: contributionType,
+    id: paperId /* TODO: briansantoso - rename */,
+    source: {
+      hubs,
+      id: sourceID,
+      paper_title: sourcePaperTitle,
+      slug: paperName,
+    },
   } = activity;
 
-  const { id: paperId, slug: paperName, hubs } = paper;
-  const { id: sourceID, paper_title: sourcePaperTitle } = source;
   useEffect(() => {
     checkIsRemoved();
   });
