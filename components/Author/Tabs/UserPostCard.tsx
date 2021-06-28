@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 3,
-    overflow: "hidden",
+    overflow: "visible",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
