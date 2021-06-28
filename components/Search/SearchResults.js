@@ -227,7 +227,7 @@ const SearchResults = ({ initialResults }) => {
   const renderLoadMoreButton = () => {
     if (nextResultsUrl !== null) {
       return (
-        <div className={css(styles.buttonContainer)}>
+        <div className={css(styles.loadMore)}>
           {!isLoadingMore ? (
             <Ripples
               className={css(styles.loadMoreButton)}
@@ -408,6 +408,7 @@ const styles = StyleSheet.create({
   },
   dropdownInput: {
     width: 200,
+    minHeight: "unset",
   },
   appliedFilters: {
     alignItems: "center",
@@ -460,12 +461,13 @@ const styles = StyleSheet.create({
   highlight: {
     backgroundColor: "yellow",
   },
-  buttonContainer: {
+  loadMore: {
     width: "100%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     marginTop: 25,
+    marginBottom: 25,
     height: 45,
     "@media only screen and (max-width: 768px)": {
       marginTop: 15,
