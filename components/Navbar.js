@@ -15,7 +15,6 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import AlgoliaSearch from "./Search/AlgoliaSearch";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "../components/Form/Button";
 import DndModal from "../components/Modals/DndModal";
@@ -32,9 +31,7 @@ import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import LegacySearch from "./Search/LegacySearch";
 import AlgoliaSearch from "./Search/AlgoliaSearch";
-import Search from "./Search/Search";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
