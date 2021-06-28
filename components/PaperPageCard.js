@@ -652,11 +652,7 @@ class PaperPageCard extends React.Component {
                         showPromotion={true}
                         small={true}
                       />
-                      <PaperDiscussionButton
-                        paper={paper}
-                        discussionCount={discussionCount}
-                      />
-                      <PaperPromotionButton paper={paper} />
+                      <PaperPromotionIcon paper={paper} />
                     </div>
                   </div>
                 </div>
