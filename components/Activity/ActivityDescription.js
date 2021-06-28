@@ -14,7 +14,11 @@ const ActivityDescription = (props) => {
   const { activity, author, contributionType, username } = props;
   const { source, paper, content_type: contentType } = activity;
   const { id: authorId } = author;
+<<<<<<< HEAD
   const { postTitle } = getActivityMetadata(activity);
+=======
+  const paperTitle = source["paper_title"] || source["title"];
+>>>>>>> 26c30101 (live feed post comments working)
 
   const updateClampStyle = (amount) => {
     if (amount !== lines) {
