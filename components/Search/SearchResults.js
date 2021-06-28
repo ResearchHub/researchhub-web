@@ -285,8 +285,18 @@ const SearchResults = ({ initialResults }) => {
   const loadMoreBtn = renderLoadMoreButton();
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
+  if (numOfHits === 0) {
+    return (
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        nope
+      </ComponentWrapper>
+    );
+  }
+
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
+      {/* OFF for v1 entityTabsHtml */}
+      <div className={css(styles.resultCount)}>{numOfHits} results found.</div>
       <div className={css(styles.filters)}>
         <FormSelect
           id={"hubs"}
@@ -353,8 +363,6 @@ const SearchResults = ({ initialResults }) => {
         </div>
       )}
 
-      {/* OFF in V1 entityTabsHtml */}
-
       {results.map((paper, index) => {
         paper.abstract = parseIfHighlighted({
           searchResult: paper,
@@ -405,6 +413,10 @@ const SearchResults = ({ initialResults }) => {
 const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
+  },
+  resultCount: {
+    color: colors.GREY(),
+    marginBottom: 20,
   },
   filters: {
     display: "flex",
