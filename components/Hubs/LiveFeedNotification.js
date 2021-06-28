@@ -147,6 +147,8 @@ class LiveFeedNotification extends React.Component {
     let plainText =
       notification.thread_plain_text && notification.thread_plain_text;
 
+    let href, route;
+    const { parent_content_type } = notification;
     switch (notificationType) {
       case "bullet_point":
         return (
@@ -269,8 +271,6 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "thread":
-        let href, route;
-        const { parent_content_type } = notification;
         if (parent_content_type === "paper") {
           href = "/paper/[paperId]/[paperName]";
           route = `/paper/${paperId}/${slug}#comments`;
@@ -366,6 +366,13 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "reply":
+        if (parent_content_type === "paper") {
+          href = "/paper/[paperId]/[paperName]";
+          route = `/paper/${paperId}/${slug}#comments`;
+        } else if (parent_content_type === "post") {
+          href = "/post/[postId]/[postName]";
+          route = `/post/${paperId}/${slug}#comments`;
+        }
         var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
@@ -381,10 +388,7 @@ class LiveFeedNotification extends React.Component {
               </a>
             </Link>{" "}
             left a{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
-              as={`/paper/${paperId}/${title}/${threadId}`}
-            >
+            <Link href={href} as={route}>
               <a
                 className={css(styles.link)}
                 data-tip={replyTip}
@@ -395,10 +399,7 @@ class LiveFeedNotification extends React.Component {
             </Link>
             <em>{replyTip && this.truncateComment(replyTip)}</em>
             {" in "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
+            <Link href={href} as={route}>
               <a
                 className={css(styles.paper)}
                 data-tip={threadTip}

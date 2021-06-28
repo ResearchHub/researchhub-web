@@ -26,9 +26,6 @@ const ActivityCard = (props) => {
 
   const { activity, last } = props;
 
-  console.log("Activity", activity);
-  console.log("Last", last);
-
   // const {
   //   paper,
   //   source,
