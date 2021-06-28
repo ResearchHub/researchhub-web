@@ -14,7 +14,7 @@ const ActivityDescription = (props) => {
   const { activity, author, contributionType, username } = props;
   const { source, paper, content_type: contentType } = activity;
   const { id: authorId } = author;
-  const paperTitle = paper["paper_title"] || paper["title"];
+  const paperTitle = source["paper_title"] || source["title"];
 
   const updateClampStyle = (amount) => {
     if (amount !== lines) {
