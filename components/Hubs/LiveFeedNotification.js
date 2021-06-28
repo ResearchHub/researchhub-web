@@ -74,7 +74,12 @@ class LiveFeedNotification extends React.Component {
   handleClickNavigation = (e) => {
     e && e.stopPropagation();
     let { notification } = this.props;
-    let { content_type, paper_id, thread_id } = notification;
+    let {
+      content_type,
+      parent_content_type,
+      paper_id,
+      thread_id,
+    } = notification;
     let type = content_type;
 
     let paperId = paper_id;
@@ -93,8 +98,13 @@ class LiveFeedNotification extends React.Component {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}`;
     } else if (type === "thread" || type === "comment" || type === "reply") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${slug}#comments`;
+      if (parent_content_type === "paper") {
+        href = "/paper/[paperId]/[paperName]";
+        route = `/paper/${paperId}/${slug}#comments`;
+      } else if (parent_content_type === "post") {
+        href = "/post/[postId]/[postName]";
+        route = `/post/${paperId}/${slug}#comments`;
+      }
     } else if (type === "bullet_point") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}#takeaways`;
@@ -259,6 +269,15 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "thread":
+        let href, route;
+        const { parent_content_type } = notification;
+        if (parent_content_type === "paper") {
+          href = "/paper/[paperId]/[paperName]";
+          route = `/paper/${paperId}/${slug}#comments`;
+        } else if (parent_content_type === "post") {
+          href = "/post/[postId]/[postName]";
+          route = `/post/${paperId}/${slug}#comments`;
+        }
         return (
           <div className={css(styles.message)}>
             <Link
@@ -273,10 +292,7 @@ class LiveFeedNotification extends React.Component {
               </a>
             </Link>{" "}
             left a{" "}
-            <Link
-              href="/paper/[paperId]/[paperName]"
-              as={`/paper/${paperId}/${title}#comments`}
-            >
+            <Link href={href} as={`${route}#comments`}>
               <a
                 className={css(styles.link)}
                 onClick={(e) => e.stopPropagation()}
@@ -286,10 +302,7 @@ class LiveFeedNotification extends React.Component {
             </Link>
             <em>{plainText && this.truncateComment(plainText)}</em>
             {" in "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
+            <Link href={href} as={route}>
               <a
                 className={css(styles.paper)}
                 data-tip={paperTip}

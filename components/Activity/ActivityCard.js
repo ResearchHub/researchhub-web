@@ -40,14 +40,18 @@ const ActivityCard = (props) => {
   // const { id: sourceID, paper_title: sourcePaperTitle } = source;
 
   const {
+    contribution_type: contributionType,
+    created_date: createdDate,
     id: paperId /* TODO: briansantoso - rename */,
-    source: {
-      hubs,
-      id: sourceID,
-      paper_title: sourcePaperTitle,
-      slug: paperName,
-    },
+    source,
   } = activity;
+
+  const {
+    hubs,
+    id: sourceID,
+    paper_title: sourcePaperTitle,
+    slug: paperName,
+  } = source;
 
   useEffect(() => {
     checkIsRemoved();
@@ -69,7 +73,7 @@ const ActivityCard = (props) => {
           removeIcon: true,
         };
       case "hub":
-        const hub = hubs.length && hubs[0]; // we only show one hub tag (first)
+        const hub = hubs && hubs.length && hubs[0]; // we only show one hub tag (first)
         return {
           tag: hub,
           last: true,
@@ -106,7 +110,9 @@ const ActivityCard = (props) => {
               <TimeStamp {...formatProps("timestamp")} />
             ) : null}
             <div className={css(styles.hubTag)}>
-              <HubTag {...formatProps("hub")} noHubName={true} />
+              {hubs ? (
+                <HubTag {...formatProps("hub")} noHubName={true} />
+              ) : null}
             </div>
           </div>
         </Ripples>
