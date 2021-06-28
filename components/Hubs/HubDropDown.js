@@ -12,7 +12,7 @@ import icons from "~/config/themes/icons";
 import { nameToUrl } from "~/config/constants";
 
 const HubDropDown = (props) => {
-  let { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
+  const { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
   let dropdown; // holds ref for dropdown
 
   /**
