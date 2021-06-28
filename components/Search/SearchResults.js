@@ -20,30 +20,35 @@ import ComponentWrapper from "../../components/ComponentWrapper";
 
 const timeFilterOpts = [
   {
-    value: moment()
+    valueForApi: moment()
       .startOf("day")
       .format("YYYY-MM-DD"),
+    value: "today",
     label: "Today",
   },
   {
-    value: moment()
+    valueForApi: moment()
       .startOf("week")
       .format("YYYY-MM-DD"),
+    value: "this-week",
     label: "This Week",
   },
   {
-    value: moment()
+    valueForApi: moment()
       .startOf("month")
       .format("YYYY-MM-DD"),
+    value: "this-month",
     label: "This Month",
   },
   {
-    value: moment()
+    valueForApi: moment()
       .startOf("year")
       .format("YYYY-MM-DD"),
+    value: "this-year",
     label: "This Year",
   },
   {
+    valueForApi: null,
     value: null,
     label: "All Time",
   },
@@ -122,7 +127,7 @@ const SearchResults = ({ initialResults }) => {
     const urlParam = get(router, `query.${forKey}`, null);
 
     if (forKey === "publish_date__gte") {
-      return timeFilterOpts.find((opt) => opt.value === urlParam);
+      return timeFilterOpts.find((opt) => opt.valueForApi === urlParam);
     } else if (forKey === "ordering") {
       return sortOpts.find((opt) => opt.value === urlParam);
     }
@@ -158,7 +163,7 @@ const SearchResults = ({ initialResults }) => {
       selected = [router.query[forKey]];
     }
 
-    return selected.map((v) => ({ label: v, value: v }));
+    return selected.map((v) => ({ label: v, value: v, valueForApi: v }));
   };
 
   const handleFilterSelect = (filterId, selected) => {
@@ -166,12 +171,14 @@ const SearchResults = ({ initialResults }) => {
       ...router.query,
     };
 
+    console.log("selected", selected);
+
     if (isArray(selected)) {
-      query[filterId] = selected.map((v) => v.value);
-    } else if (!selected || !selected.value) {
+      query[filterId] = selected.map((v) => v.valueForApi);
+    } else if (!selected || !selected.valueForApi) {
       delete query[filterId];
     } else {
-      query[filterId] = selected.value;
+      query[filterId] = selected.valueForApi;
     }
 
     router.push({
@@ -266,7 +273,9 @@ const SearchResults = ({ initialResults }) => {
   const facetValueOpts = facetValuesForHub.map((f) => ({
     label: `${f.key} (${f.doc_count})`,
     value: f.key,
+    valueForApi: f.key,
   }));
+
   const entityTabsHtml = renderEntityTabs();
   const loadMoreBtn = renderLoadMoreButton();
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
@@ -286,7 +295,7 @@ const SearchResults = ({ initialResults }) => {
           isMulti={true}
           multiTagStyle={null}
           multiTagLabelStyle={null}
-          isClearable={true}
+          isClearable={false}
           showCountInsteadOfLabels={true}
         />
         <FormSelect
@@ -301,7 +310,7 @@ const SearchResults = ({ initialResults }) => {
           isMulti={false}
           multiTagStyle={null}
           multiTagLabelStyle={null}
-          isClearable={true}
+          isClearable={false}
         />
         <FormSelect
           id={"ordering"}

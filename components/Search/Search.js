@@ -16,7 +16,7 @@ const Search = ({}) => {
     };
 
     router.push({
-      pathname: "/search/paper",
+      pathname: "/search/[type]",
       query: queryParams,
     });
   };
