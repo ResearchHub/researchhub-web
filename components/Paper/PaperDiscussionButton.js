@@ -14,7 +14,7 @@ const PaperDiscussionButton = ({ discussionCount, paper }) => {
 
   return (
     <a
-      href={"#discussion"}
+      href={"#comments"}
       className={css(styles.root)}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
