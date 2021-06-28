@@ -6,6 +6,7 @@ export * from "./serializers";
 export * from "./validation";
 export * from "./form";
 export * from "./env";
+export * from "./search";
 
 export function getNestedValue(root, nodes, defaultValue = null) {
   const initialValue = root;
