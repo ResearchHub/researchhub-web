@@ -33,7 +33,13 @@ const Search = ({}) => {
     setQuery(e.target.value);
   };
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    router.events.on("routeChangeComplete", (url) => {
+      if (!url.includes("/search")) {
+        setQuery("");
+      }
+    });
+  }, []);
 
   return (
     <div className={css(styles.search)}>
