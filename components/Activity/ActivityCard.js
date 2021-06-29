@@ -33,11 +33,7 @@ const ActivityCard = (props) => {
   } = activity;
 
   const { id: paperId, slug: paperName, hubs } = paper;
-  const { id: sourceID, paper_title: sourcePaperTitle } = source;
-
-  if (!paperId) {
-    const { paper: paperId } = source;
-  }
+  const { id: sourceID, paper: sourcePaperID, paper_title: sourcePaperTitle} = source;
   useEffect(() => {
     checkIsRemoved();
   });
