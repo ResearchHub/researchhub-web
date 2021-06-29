@@ -12,10 +12,15 @@ const Search = ({}) => {
 
   const handleSearch = () => {
     const queryParams = {
-      type: "paper",
       ...router.query,
       search: query,
     };
+
+    const isUserOnSearchPage = router.pathname.indexOf("/search") === 0;
+
+    if (!isUserOnSearchPage) {
+      queryParams.type = "paper";
+    }
 
     router.push({
       pathname: "/search/[type]",
