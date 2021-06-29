@@ -42,7 +42,7 @@ export function SimpleEditor({
       "indent",
       "|",
       "link",
-      "imageUpload",
+      //"imageUpload", disabled until further BE changes
       "mediaEmbed",
     ],
     simpleUpload: {

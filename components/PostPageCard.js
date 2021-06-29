@@ -22,7 +22,7 @@ import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
-import ReactMarkdown from "react-markdown";
+import renderHTML from "react-render-html";
 import removeMd from "remove-markdown";
 import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
@@ -755,7 +755,7 @@ class PostPageCard extends React.Component {
               this.renderPostEditor()
             ) : (
               <>
-                <ReactMarkdown>{postBody}</ReactMarkdown>
+                {postBody && renderHTML(postBody)}
                 <div className={css(styles.bottomContainer)}>
                   <div className={css(styles.bottomRow)}>
                     {this.renderActions()}
