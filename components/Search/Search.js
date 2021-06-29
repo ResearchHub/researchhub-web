@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { get } from "lodash";
@@ -36,6 +37,9 @@ const Search = ({}) => {
 
   return (
     <div className={css(styles.search)}>
+      <span className={css(styles.searchIcon)} onClick={handleSearch}>
+        {icons.search}
+      </span>
       <input
         className={css(styles.searchbar, styles.searchInput)}
         placeholder={"Search Research Hub"}
@@ -64,6 +68,20 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  searchIcon: {
+    position: "absolute",
+    cursor: "text",
+    opacity: 0.4,
+    cursor: "pointer",
+    zIndex: 2,
+    top: 5,
+    right: 6,
+    borderRadius: 6,
+    padding: "4px 7px",
+    ":hover": {
+      background: "rgb(146 145 145 / 50%)",
+    },
+  },
   searchForMobile: {
     margin: "0 auto",
     marginBottom: 15,
@@ -84,7 +102,7 @@ const styles = StyleSheet.create({
     background: "transparent",
     border: "none",
     outline: "none",
-    fontSize: 16,
+    fontSize: 14,
     position: "relative",
     cursor: "pointer",
     ":hover": {
