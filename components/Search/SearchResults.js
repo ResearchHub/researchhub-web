@@ -16,7 +16,8 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
-import ComponentWrapper from "../../components/ComponentWrapper";
+import ComponentWrapper from "~/components/ComponentWrapper";
+import EmptyFeedScreen from "~/components/home/EmptyFeedScreen";
 
 const timeFilterOpts = [
   {
@@ -176,8 +177,6 @@ const SearchResults = ({ initialResults }) => {
       ...router.query,
     };
 
-    console.log("selected", selected);
-
     if (isArray(selected)) {
       query[filterId] = selected.map((v) => v.valueForApi);
     } else if (!selected || !selected.valueForApi) {
@@ -288,7 +287,7 @@ const SearchResults = ({ initialResults }) => {
   if (numOfHits === 0) {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        nope
+        <EmptyFeedScreen title="There are no results found for this criteria" />
       </ComponentWrapper>
     );
   }
