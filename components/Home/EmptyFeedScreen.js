@@ -175,7 +175,7 @@ EmptyFeedScreen.propTypes = {
 };
 
 EmptyFeedScreen.defaultProps = {
-  title: "TXXX",
+  title: "There are no posts found for this criteria",
   subTitle: "Click ‘New Post’ button to create a post",
 };
 
