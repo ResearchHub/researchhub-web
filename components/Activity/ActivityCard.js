@@ -34,6 +34,10 @@ const ActivityCard = (props) => {
 
   const { id: paperId, slug: paperName, hubs } = paper;
   const { id: sourceID, paper_title: sourcePaperTitle } = source;
+
+  if (!paperId) {
+    const { paper: paperId } = source;
+  }
   useEffect(() => {
     checkIsRemoved();
   });
