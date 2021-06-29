@@ -39,7 +39,7 @@ const ActivityCard = (props) => {
   const {
     contribution_type: contributionType,
     created_date: createdDate,
-    id: paperId /* TODO: briansantoso - rename */,
+    id: paperId /* TODO: briansantoso - rename to be inclusive to posts*/,
     source,
   } = activity;
 
