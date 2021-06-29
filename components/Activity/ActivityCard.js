@@ -33,7 +33,11 @@ const ActivityCard = (props) => {
   } = activity;
 
   const { id: paperId, slug: paperName, hubs } = paper;
-  const { id: sourceID, paper_title: sourcePaperTitle } = source;
+  const {
+    id: sourceID,
+    paper: sourcePaperID,
+    paper_title: sourcePaperTitle,
+  } = source;
   useEffect(() => {
     checkIsRemoved();
   });
@@ -74,7 +78,7 @@ const ActivityCard = (props) => {
   };
 
   if (isHidden) return null;
-  const resolvedPaperID = paperId || sourceID;
+  const resolvedPaperID = sourcePaperID || paperId || sourceID;
   const resolvedPaperName = paperName || sourcePaperTitle || "";
   if (isNullOrUndefined(resolvedPaperID)) return null;
   return (
