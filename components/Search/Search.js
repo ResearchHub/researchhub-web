@@ -11,6 +11,7 @@ const Search = ({}) => {
 
   const handleSearch = () => {
     const queryParams = {
+      type: "paper",
       ...router.query,
       search: query,
     };
