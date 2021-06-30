@@ -96,7 +96,6 @@ const ActivityCard = (props) => {
           removeIcon: true,
         };
       case "hub":
-        activity.contribution_type;
         const hub = hubs && hubs.length && hubs[0]; // we only show one hub tag (first)
         return {
           tag: hub,
