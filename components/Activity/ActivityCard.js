@@ -20,49 +20,36 @@ import colors from "~/config/themes/colors";
 // };
 
 const getHref = (activity) => {
-  // const {
-  //   content_type: { app_label: parentContentType },
-  //   contribution_type: contributionType,
-  //   created_date: createdDate,
-  //   id: paperId,
-  //   source,
-  // } = activity;
+  const { contribution_type: contributionType, source } = activity;
 
-  // const {
-  //   hubs,
-  //   document_meta: documentMeta,
-  //   paper_title: sourcePaperTitle,
-  //   slug: paperName,
-  // } = source;
-
-  const {
-    content_type: { app_label: sourceType },
-    contribution_type: contributionType,
-    source,
-  } = activity;
+  const sourceType = activity.unified_document.document_type;
 
   let href, hrefAs;
   let postId, postTitle;
-  switch (sourceType) {
-    case "paper":
-      href = "/paper/[paperId]/[paperName]";
-      postId = activity.id || source.id;
-      postTitle = source.slug || source.paper_title;
+  switch (contributionType) {
+    case "SUBMITTER":
+      postId = source.id;
+      // If it's a submission, then post title depends on whether it is a paper of discusison,
+      // so handle in next switch.
       break;
-    case "discussion":
-      href = "/post/[documentId]/[title]";
+    case "COMMENTER":
       postId = source.document_meta.id;
       postTitle = source.document_meta.title;
       break;
   }
-  switch (contributionType) {
-    case "SUBMITTER":
+  switch (sourceType) {
+    case "PAPER":
+      href = "/paper/[paperId]/[paperName]";
+      postTitle = postTitle ? postTitle : source.slug || source.paper_title;
       hrefAs = `/paper/${postId}/${postTitle}`;
       break;
-    case "COMMENTER":
+    case "DISCUSSION":
+      href = "/post/[documentId]/[title]";
+      postTitle = postTitle ? postTitle : source.title;
       hrefAs = `/post/${postId}/${postTitle}`;
       break;
   }
+
   return {
     href,
     hrefAs,
@@ -77,16 +64,6 @@ const ActivityCard = (props) => {
   const [isHidden, setIsHidden] = useState(false);
 
   const { activity, last } = props;
-
-  // const {
-  //   paper,
-  //   source,
-  //   created_date: createdDate,
-  //   contribution_type: contributionType,
-  // } = activity;
-
-  // const { id: paperId, slug: paperName, hubs } = paper;
-  // const { id: sourceID, paper_title: sourcePaperTitle } = source;
 
   const {
     contribution_type: contributionType,
@@ -116,6 +93,7 @@ const ActivityCard = (props) => {
           removeIcon: true,
         };
       case "hub":
+        activity.contribution_type;
         const hub = hubs && hubs.length && hubs[0]; // we only show one hub tag (first)
         return {
           tag: hub,
@@ -136,6 +114,7 @@ const ActivityCard = (props) => {
   };
 
   if (isHidden) return null;
+
   const { href, hrefAs, postId } = getHref(activity);
 
   if (isNullOrUndefined(postId)) return null;
