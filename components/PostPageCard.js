@@ -22,7 +22,7 @@ import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
-import renderHTML from "react-render-html";
+import ReactHtmlParser from "react-html-parser";
 import removeMd from "remove-markdown";
 import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
@@ -146,13 +146,17 @@ class PostPageCard extends React.Component {
     this.setState({ showAllHubs: !this.state.showAllHubs });
   };
 
-  firstImageFromMarkdown = (text) => {
-    // https://stackoverflow.com/questions/26024796/what-type-of-regexp-would-i-need-to-extract-image-url-from-markdown
-    const match = text.match(/!\[.*?\]\((.*?)\)/);
-    return match ? match[1] : null;
+  firstImageFromHtml = (text) => {
+    const elements = ReactHtmlParser(text);
+    for (const element of elements) {
+      if (element.type === "figure") {
+        return element.props.children[0].props.src;
+      }
+    }
+    return null;
   };
 
-  markdownToPlaintext = (text) => {
+  toPlaintext = (text) => {
     return removeMd(text).replace(/&nbsp;/g, " ");
   };
 
@@ -171,8 +175,8 @@ class PostPageCard extends React.Component {
       document_type: "DISCUSSION",
       full_src: postBody,
       /* @ts-ignore */
-      preview_img: this.firstImageFromMarkdown(postBody),
-      renderable_text: this.markdownToPlaintext(postBody),
+      preview_img: this.firstImageFromHtml(postBody),
+      renderable_text: this.toPlaintext(postBody),
       title: post.title,
     };
 
@@ -755,7 +759,7 @@ class PostPageCard extends React.Component {
               this.renderPostEditor()
             ) : (
               <>
-                {postBody && renderHTML(postBody)}
+                {postBody && ReactHtmlParser(postBody)}
                 <div className={css(styles.bottomContainer)}>
                   <div className={css(styles.bottomRow)}>
                     {this.renderActions()}
