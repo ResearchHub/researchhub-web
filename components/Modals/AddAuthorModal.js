@@ -179,7 +179,7 @@ class AddAuthorModal extends React.Component {
               labelStyle={styles.labelStyle}
             />
 
-            <div className={css(styles.socialMediaContainer)}>
+            {/* <div className={css(styles.socialMediaContainer)}>
               <div
                 className={css(styles.inputLabel)}
                 onClick={this.toggleShowLinks}
@@ -231,7 +231,7 @@ class AddAuthorModal extends React.Component {
                   labelStyle={styles.labelStyle}
                 />
               </span>
-            </div>
+            </div> */}
             <div className={css(styles.buttonWrapper)}>
               <Button
                 label={"Add user"}
