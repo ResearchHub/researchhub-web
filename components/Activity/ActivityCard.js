@@ -19,8 +19,60 @@ import colors from "~/config/themes/colors";
 //   CURATOR: true,
 // };
 
+const getHref = (activity) => {
+  // const {
+  //   content_type: { app_label: parentContentType },
+  //   contribution_type: contributionType,
+  //   created_date: createdDate,
+  //   id: paperId,
+  //   source,
+  // } = activity;
+
+  // const {
+  //   hubs,
+  //   document_meta: documentMeta,
+  //   paper_title: sourcePaperTitle,
+  //   slug: paperName,
+  // } = source;
+
+  const {
+    content_type: { app_label: sourceType },
+    contribution_type: contributionType,
+    source,
+  } = activity;
+
+  let href, hrefAs;
+  let postId, postTitle;
+  switch (sourceType) {
+    case "paper":
+      href = "/paper/[paperId]/[paperName]";
+      postId = activity.id || source.id;
+      postTitle = source.slug || source.paper_title;
+      break;
+    case "discussion":
+      href = "/post/[documentId]/[title]";
+      postId = source.document_meta.id;
+      postTitle = source.document_meta.title;
+      break;
+  }
+  switch (contributionType) {
+    case "SUBMITTER":
+      hrefAs = `/paper/${postId}/${postTitle}`;
+      break;
+    case "COMMENTER":
+      hrefAs = `/post/${postId}/${postTitle}`;
+      break;
+  }
+  return {
+    href,
+    hrefAs,
+    postId,
+    postTitle,
+    sourceType,
+  };
+};
+
 const ActivityCard = (props) => {
-  // TODO: calvinhlee - need to capture posts as well
   const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
 
@@ -39,16 +91,10 @@ const ActivityCard = (props) => {
   const {
     contribution_type: contributionType,
     created_date: createdDate,
-    id: paperId /* TODO: briansantoso - rename to be inclusive to posts*/,
     source,
   } = activity;
 
-  const {
-    hubs,
-    id: sourceID,
-    paper_title: sourcePaperTitle,
-    slug: paperName,
-  } = source;
+  const { hubs } = source;
 
   useEffect(() => {
     checkIsRemoved();
@@ -90,14 +136,12 @@ const ActivityCard = (props) => {
   };
 
   if (isHidden) return null;
-  const resolvedPaperID = paperId || sourceID;
-  const resolvedPaperName = paperName || sourcePaperTitle || "";
-  if (isNullOrUndefined(resolvedPaperID)) return null;
+  const { href, hrefAs, postId } = getHref(activity);
+
+  if (isNullOrUndefined(postId)) return null;
+
   return (
-    <Link
-      href={"/paper/[paperId]/[paperName]"}
-      as={`/paper/${resolvedPaperID}/${resolvedPaperName}`}
-    >
+    <Link href={href} as={hrefAs}>
       <a className={css(styles.link)}>
         <Ripples className={css(styles.root)}>
           <ActivityHeader {...props} />
