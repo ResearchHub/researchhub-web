@@ -97,7 +97,6 @@ class ColumnAuthors extends React.Component {
       isNullOrUndefined(author.user)
     );
     const authorCards = this.renderAuthorCards();
-    console.warn("AUTHORS: ", authors);
     return (
       <ReactPlaceholder
         showLoadingAnimation
@@ -112,12 +111,30 @@ class ColumnAuthors extends React.Component {
         />
         <div>
           {paper && authors.length > 0 && (
-            <Fragment>
+            <div className={css(styles.paperAuthorListContainer)}>
               <SideColumnTitle
                 title={`Author Detail${hasManyAuthors ? "s" : ""}`}
                 overrideStyles={styles.title}
               />
-              {shouldDisplayClaimCard && "HI"}
+              {shouldDisplayClaimCard && (
+                <div className={css(styles.claimCard)}>
+                  <div className={css(styles.claimCardTextGroup)}>
+                    <div className={css(styles.claimCardTextMain)}>
+                      {hasManyAuthors
+                        ? `Are you an author?`
+                        : "Are you the author?"}
+                    </div>
+                    <div className={css(styles.claimCardText)}>
+                      {"Claim your author and receive up to 1000 RSC"}
+                    </div>
+                  </div>
+                  <img
+                    className={css(styles.potOfGold)}
+                    src="/static/icons/pot-of-gold.png"
+                    alt="Pot of Gold"
+                  />
+                </div>
+              )}
               <div className={css(styles.authors)}>
                 {authorCards}
                 {pages > page && (
@@ -129,7 +146,7 @@ class ColumnAuthors extends React.Component {
                   </div>
                 )}
               </div>
-            </Fragment>
+            </div>
           )}
         </div>
       </ReactPlaceholder>
@@ -143,17 +160,50 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
   },
-  title: {
+  claimCard: {
+    alignItems: "center",
+    boxSizing: "border-box",
+    display: "flex",
+    height: 60,
+    margin: "16px 0 8px 0",
+    padding: "10px 20px",
+    width: "100%",
+  },
+  claimCardTextGroup: {
+    display: "flex",
+    flexDirection: "column",
+    height: "inherit",
+    justifyContent: "flex-start",
+    alignItems: "space-around",
+    width: 210,
+  },
+  claimCardTextMain: {
+    fontSize: 16,
+    fontStyle: "normal",
+    fontWeight: 500,
+    marginBottom: 4,
+  },
+  claimCardText: {
+    color: "#272727",
+    fontFamily: "Poppins",
+    fontSize: 14,
+    fontStyle: "normal",
+    width: "100",
+  },
+  title: {},
+  paperAuthorListContainer: {
     margin: "15px 0 10px",
     "@media only screen and (max-width: 415px)": {
       margin: "15px 0 5px",
     },
   },
+  potOfGold: {
+    width: 56,
+  },
   viewMoreButton: {
     color: "rgba(78, 83, 255)",
     textTransform: "capitalize",
     fontSize: 16,
-    padding: "10px 20px",
     boxSizing: "border-box",
     width: "100%",
     cursor: "pointer",
