@@ -326,17 +326,7 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {killswitch("searchResults") && <Search mobile={true} />}
-        {killswitch("algoliaSearch") && <AlgoliaSearch mobile={true} />}
-        {killswitch("legacySearch") && (
-          <LegacySearch
-            searchClass={styles.mobileSearch}
-            inputClass={styles.inputClass}
-            searchIconClass={styles.searchIconClass}
-            dropdownClass={styles.dropdownClass}
-            afterSearchClick={toggleSideMenu}
-          />
-        )}
+        {/*killswitch("searchResults") && <Search forSmallScree={true} />*/}
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
@@ -757,7 +747,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15,
     cursor: "pointer",
-    "@media only screen and (max-width: 900px)": {
+    "@media only screen and (max-width: 1000px)": {
       margin: "0 10px 0 10px",
       fontSize: 14,
     },
