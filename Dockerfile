@@ -16,7 +16,6 @@ COPY yarn.lock /usr/src/app
 COPY .sentryclirc /usr/src/app
 COPY .npmrc /usr/src/app
 COPY tsconfig.json /usr/src/app
-COPY ckeditor5 /usr/src/app/ckeditor5
 
 # install yarn and yarn install
 RUN yarn install --production --no-progress
