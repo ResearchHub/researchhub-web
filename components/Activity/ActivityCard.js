@@ -19,17 +19,19 @@ import colors from "~/config/themes/colors";
 //   CURATOR: true,
 // };
 
-const getHref = (activity) => {
-  const { contribution_type: contributionType, source } = activity;
-
-  const sourceType = activity.unified_document.document_type;
+export const getActivityMetadata = (activity) => {
+  const {
+    contribution_type: contributionType,
+    source,
+    unified_document: { document_type: sourceType },
+  } = activity;
 
   let href, hrefAs;
   let postId, postTitle;
   switch (contributionType) {
     case "SUBMITTER":
       postId = source.id;
-      // If it's a submission, then post title depends on whether it is a paper of discusison,
+      // If it's a submission, then the post title depends on whether it is a paper of discusison,
       // so handle in next switch.
       break;
     case "COMMENTER":
@@ -40,7 +42,7 @@ const getHref = (activity) => {
   switch (sourceType) {
     case "PAPER":
       href = "/paper/[paperId]/[paperName]";
-      postTitle = postTitle ? postTitle : source.slug || source.paper_title;
+      postTitle = postTitle ? postTitle : source.paper_title;
       hrefAs = `/paper/${postId}/${postTitle}`;
       break;
     case "DISCUSSION":
@@ -51,6 +53,7 @@ const getHref = (activity) => {
   }
 
   return {
+    contributionType,
     href,
     hrefAs,
     postId,
@@ -115,7 +118,7 @@ const ActivityCard = (props) => {
 
   if (isHidden) return null;
 
-  const { href, hrefAs, postId } = getHref(activity);
+  const { href, hrefAs, postId } = getActivityMetadata(activity);
 
   if (isNullOrUndefined(postId)) return null;
 

@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import { useRouter } from "next/router";
-
+import { getActivityMetadata } from "./ActivityCard";
 import { ClampedText } from "~/components/Typography";
 
 import colors from "~/config/themes/colors";
@@ -14,7 +14,7 @@ const ActivityDescription = (props) => {
   const { activity, author, contributionType, username } = props;
   const { source, paper, content_type: contentType } = activity;
   const { id: authorId } = author;
-  const paperTitle = source["paper_title"] || source["title"];
+  const { postTitle } = getActivityMetadata(activity);
 
   const updateClampStyle = (amount) => {
     if (amount !== lines) {
@@ -99,7 +99,7 @@ const ActivityDescription = (props) => {
           <a className={css(styles.link, styles.text)}>{username}</a>
         </Link>
         <span>{renderActionString()}</span>
-        <span className={css(styles.text)}>{paperTitle}</span>
+        <span className={css(styles.text)}>{postTitle}</span>
       </span>
     </ClampedText>
   );
