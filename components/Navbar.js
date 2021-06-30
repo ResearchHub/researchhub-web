@@ -326,6 +326,7 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
+        {killswitch("searchResults") && <Search mobile={true} />}
         {killswitch("algoliaSearch") && <AlgoliaSearch mobile={true} />}
         {killswitch("legacySearch") && (
           <LegacySearch

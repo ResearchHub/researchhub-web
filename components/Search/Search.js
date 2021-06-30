@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -6,9 +6,33 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { get } from "lodash";
 
+const MAX = 130;
+
 const Search = ({}) => {
   const router = useRouter();
+  const searchInputRef = useRef(null);
+
   const [query, setQuery] = useState(get(router, "query.search") || "");
+  const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
+  const [isExpandedSearchOn, setIsExpandedSearchOn] = useState(false);
+
+  useEffect(() => {
+    window.addEventListener("resize", calcForSmallScreen, true);
+
+    return () => {
+      window.removeEventListener("resize", calcForSmallScreen, true);
+    };
+  }, []);
+
+  const calcForSmallScreen = () => {
+    if (get(searchInputRef, "current.offsetWidth") <= MAX) {
+      setIsSmallScreenSearch(true);
+    }
+  };
+
+  const toggleExpandedSearch = () => {
+    setIsExpandedSearchOn(!isExpandedSearchOn);
+  };
 
   const handleSearch = () => {
     const queryParams = {
@@ -40,11 +64,45 @@ const Search = ({}) => {
 
   useEffect(() => {
     router.events.on("routeChangeComplete", (url) => {
+      // Reset the query if user navigates to non-search page.
       if (!url.includes("/search")) {
         setQuery("");
       }
     });
   }, []);
+
+  if (isSmallScreenSearch) {
+    return (
+      <div
+        className={css(
+          styles.search,
+          styles.searchSmallScreen,
+          isExpandedSearchOn && styles.searchExpanded
+        )}
+      >
+        <span className={css(styles.backIcon)} onClick={toggleExpandedSearch}>
+          {icons.longArrowLeft}
+        </span>
+        <span
+          className={css(styles.searchIcon, styles.searchIconSmallScreen)}
+          onClick={toggleExpandedSearch}
+        >
+          {icons.search}
+        </span>
+
+        {isExpandedSearchOn && (
+          <input
+            className={css(styles.searchInput, styles.searchInputExpanded)}
+            placeholder={"Search Research Hub"}
+            onKeyDown={handleKeyPress}
+            onChange={handleInputChange}
+            value={query}
+            ref={searchInputRef}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className={css(styles.search)}>
@@ -52,11 +110,12 @@ const Search = ({}) => {
         {icons.search}
       </span>
       <input
-        className={css(styles.searchbar, styles.searchInput)}
+        className={css(styles.searchInput)}
         placeholder={"Search Research Hub"}
         onKeyDown={handleKeyPress}
         onChange={handleInputChange}
         value={query}
+        ref={searchInputRef}
       />
     </div>
   );
@@ -67,7 +126,7 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 600,
     boxSizing: "border-box",
-    background: "#FBFBFD",
+    background: "white",
     border: "#E8E8F2 1px solid",
     display: "flex",
     alignItems: "center",
@@ -78,6 +137,20 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1024px)": {
       display: "none",
     },
+  },
+  searchExpanded: {
+    border: "unset",
+    background: "#ffd8d8",
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    zIndex: 10,
+    maxWidth: "unset",
+    paddingLeft: 20,
+  },
+  backIcon: {
+    color: colors.BLUE(),
+    fontSize: 28,
   },
   searchIcon: {
     position: "absolute",
@@ -93,6 +166,7 @@ const styles = StyleSheet.create({
       background: "rgb(146 145 145 / 50%)",
     },
   },
+  searchIconSmallScreen: {},
   searchForMobile: {
     margin: "0 auto",
     marginBottom: 15,
@@ -126,6 +200,9 @@ const styles = StyleSheet.create({
         cursor: "text",
       },
     },
+  },
+  searchInputExpanded: {
+    fontSize: 18,
   },
 });
 
