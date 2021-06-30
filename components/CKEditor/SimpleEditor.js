@@ -1,6 +1,8 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
+import API from "~/config/api";
+import { AUTH_TOKEN } from "~/config/constants";
 
 export function SimpleEditor({
   id,
@@ -16,6 +18,11 @@ export function SimpleEditor({
   const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, Editor } = editorRef.current || {};
 
+  let token = "";
+  if (process.browser) {
+    token = window.localStorage[AUTH_TOKEN];
+  }
+
   const editorConfiguration = {
     toolbar: [
       "heading",
@@ -28,7 +35,6 @@ export function SimpleEditor({
       "blockquote",
       "codeBlock",
       "insertTable",
-      "mathType",
       "|",
       "numberedList",
       "bulletedList",
@@ -36,14 +42,24 @@ export function SimpleEditor({
       "indent",
       "|",
       "link",
+      //"imageUpload", disabled until further BE changes
       "mediaEmbed",
     ],
+    simpleUpload: {
+      // The URL that the images are uploaded to.
+      uploadUrl: API.SAVE_IMAGE,
+
+      // Headers sent along with the XMLHttpRequest to the upload server.
+      headers: {
+        Authorization: "Token " + token,
+      },
+    },
   };
 
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("ckeditor5-simple-build/build/ckeditor").Editor,
+      Editor: require("ckeditor5-classic-plus"),
     };
     setEditorLoaded(true);
   }, []);
