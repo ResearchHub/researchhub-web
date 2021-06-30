@@ -395,7 +395,7 @@ const Paper = (props) => {
   function getAllAuthors() {
     const { authors, raw_authors } = paper;
     const seen = {};
-
+    console.warn("PAPER AUTHORS: ", raw_authors);
     const allAuthors = [];
 
     if (authors && authors.length) {

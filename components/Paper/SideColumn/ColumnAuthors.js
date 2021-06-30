@@ -1,15 +1,14 @@
-import { Fragment, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
-import ReactPlaceholder from "react-placeholder/lib";
-
-// Component
-import { SideColumnTitle } from "~/components/Typography";
-import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
-import AuthorCard from "./AuthorCard";
-
-// Config
+import { connect } from "react-redux";
+import { Fragment } from "react";
 import { getAuthorName } from "~/config/utils/";
+import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import { SideColumnTitle } from "~/components/Typography";
+import { StyleSheet, css } from "aphrodite";
+import AuthorCard from "./AuthorCard";
+import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import colors from "~/config/themes/colors";
+import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -91,24 +90,36 @@ class ColumnAuthors extends React.Component {
   };
 
   render() {
-    const { paper, authors } = this.props;
+    const { auth, authors, paper } = this.props;
     const { ready, pages, page } = this.state;
-
+    const hasManyAuthors = authors.length > 1;
+    const shouldDisplayClaimCard = authors.some(
+      (author) => !isNullOrUndefined(author.user)
+    );
+    const authorCards = this.renderAuthorCards();
+    console.warn("AUTHORS: ", authors);
     return (
       <ReactPlaceholder
         showLoadingAnimation
         ready={ready}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
+        <AuthorClaimModal
+          auth={auth}
+          author={{}}
+          isOpen={false}
+          setIsOpen={() => {}}
+        />
         <div>
           {paper && authors.length > 0 && (
             <Fragment>
               <SideColumnTitle
-                title={`Author Detail${authors.length > 1 ? "s" : ""}`}
+                title={`Author Detail${hasManyAuthors ? "s" : ""}`}
                 overrideStyles={styles.title}
               />
+              {shouldDisplayClaimCard && "HI"}
               <div className={css(styles.authors)}>
-                {this.renderAuthorCards()}
+                {authorCards}
                 {pages > page && (
                   <div
                     className={css(styles.viewMoreButton)}
@@ -158,4 +169,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ColumnAuthors;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(ColumnAuthors);
