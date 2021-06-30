@@ -1,40 +1,71 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { get } from "lodash";
+import { breakpoints } from "~/config/themes/screen";
 
-const MAX = 130;
-
-const Search = ({}) => {
+const Search = () => {
   const router = useRouter();
   const searchInputRef = useRef(null);
 
   const [query, setQuery] = useState(get(router, "query.search") || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
   const [isExpandedSearchOn, setIsExpandedSearchOn] = useState(false);
+  const [placeholderText, setPlaceholderText] = useState("Search Research Hub");
 
   useEffect(() => {
-    window.addEventListener("resize", calcForSmallScreen, true);
+    calcSearchLayout();
+
+    window.addEventListener("resize", calcSearchLayout, true);
 
     return () => {
-      window.removeEventListener("resize", calcForSmallScreen, true);
+      window.removeEventListener("resize", calcSearchLayout, true);
     };
   }, []);
 
-  const calcForSmallScreen = () => {
-    if (get(searchInputRef, "current.offsetWidth") <= MAX) {
+  const calcSearchLayout = () => {
+    const SMALLEST_ALLOWED_INPUT = 180;
+    const SMALL_PLACEHOLDER_WIDTH = 200;
+    const inputWidth = searchInputRef.current.offsetWidth;
+
+    if (window.innerWidth <= breakpoints.small) {
       setIsSmallScreenSearch(true);
+    } else if (inputWidth <= SMALLEST_ALLOWED_INPUT) {
+      setIsSmallScreenSearch(true);
+    } else {
+      setIsSmallScreenSearch(false);
     }
+
+    setPlaceholderText(
+      inputWidth <= SMALL_PLACEHOLDER_WIDTH ? "Search" : "Search Research Hub"
+    );
   };
 
   const toggleExpandedSearch = () => {
-    setIsExpandedSearchOn(!isExpandedSearchOn);
+    if (isExpandedSearchOn) {
+      setIsExpandedSearchOn(false);
+    } else {
+      setIsExpandedSearchOn(true);
+      searchInputRef.current.focus();
+    }
   };
 
-  const handleSearch = () => {
+  const handleSearchBtnClick = () => {
+    if (isSmallScreenSearch) {
+      if (isExpandedSearchOn) {
+        doSearch();
+      } else {
+        toggleExpandedSearch();
+      }
+    } else {
+      doSearch();
+    }
+  };
+
+  const doSearch = () => {
     const queryParams = {
       ...router.query,
       search: query,
@@ -53,8 +84,10 @@ const Search = ({}) => {
   };
 
   const handleKeyPress = (e) => {
-    if (e.keyCode === 13) {
-      handleSearch();
+    const RETURN_KEY = 13;
+
+    if (e.keyCode === RETURN_KEY) {
+      doSearch();
     }
   };
 
@@ -71,52 +104,45 @@ const Search = ({}) => {
     });
   }, []);
 
-  if (isSmallScreenSearch) {
-    return (
-      <div
-        className={css(
-          styles.search,
-          styles.searchSmallScreen,
-          isExpandedSearchOn && styles.searchExpanded
-        )}
-      >
-        <span className={css(styles.backIcon)} onClick={toggleExpandedSearch}>
-          {icons.longArrowLeft}
-        </span>
-        <span
-          className={css(styles.searchIcon, styles.searchIconSmallScreen)}
-          onClick={toggleExpandedSearch}
-        >
-          {icons.search}
-        </span>
-
-        {isExpandedSearchOn && (
-          <input
-            className={css(styles.searchInput, styles.searchInputExpanded)}
-            placeholder={"Search Research Hub"}
-            onKeyDown={handleKeyPress}
-            onChange={handleInputChange}
-            value={query}
-            ref={searchInputRef}
-          />
-        )}
-      </div>
-    );
-  }
-
   return (
-    <div className={css(styles.search)}>
-      <span className={css(styles.searchIcon)} onClick={handleSearch}>
-        {icons.search}
-      </span>
+    <div
+      className={css(
+        styles.search,
+        isSmallScreenSearch && styles.searchSmallScreen,
+        isExpandedSearchOn && styles.searchExpanded
+      )}
+    >
+      {isExpandedSearchOn && (
+        <Fragment>
+          <span className={css(styles.backIcon)} onClick={toggleExpandedSearch}>
+            {icons.longArrowLeft}
+          </span>
+        </Fragment>
+      )}
+
       <input
-        className={css(styles.searchInput)}
-        placeholder={"Search Research Hub"}
+        className={css(
+          styles.searchInput,
+          isSmallScreenSearch && styles.searchInputSmallScreen,
+          isExpandedSearchOn && styles.searchInputExpanded
+        )}
+        placeholder={placeholderText}
         onKeyDown={handleKeyPress}
         onChange={handleInputChange}
         value={query}
         ref={searchInputRef}
       />
+
+      <span
+        className={css(
+          styles.searchIcon,
+          isSmallScreenSearch && styles.searchIconSmallScreen,
+          isExpandedSearchOn && styles.searchIconExpanded
+        )}
+        onClick={handleSearchBtnClick}
+      >
+        {icons.search}
+      </span>
     </div>
   );
 };
@@ -127,36 +153,49 @@ const styles = StyleSheet.create({
     maxWidth: 600,
     boxSizing: "border-box",
     background: "white",
-    border: "#E8E8F2 1px solid",
+    border: `${colors.GREY()} 1px solid`,
     display: "flex",
     alignItems: "center",
     position: "relative",
     ":hover": {
       borderColor: colors.BLUE(),
     },
-    "@media only screen and (max-width: 1024px)": {
-      display: "none",
+  },
+  searchSmallScreen: {
+    width: "auto",
+    border: 0,
+    flex: 1,
+    alignItems: "flex-end",
+    flexDirection: "column",
+    ":hover": {
+      borderColor: 0,
     },
   },
   searchExpanded: {
     border: "unset",
-    background: "#ffd8d8",
     position: "absolute",
     height: "100%",
     width: "100%",
     zIndex: 10,
     maxWidth: "unset",
     paddingLeft: 20,
+    left: 0,
+    flexDirection: "row",
+    boxShadow: `inset 0px 0px 0px 1px ${colors.BLUE()}`,
   },
   backIcon: {
     color: colors.BLUE(),
     fontSize: 28,
+    display: "flex",
+    justifyContent: "center",
+    flexGrow: 1,
+    flexDirection: "column",
+    height: "100%",
   },
   searchIcon: {
     position: "absolute",
-    cursor: "text",
-    opacity: 0.4,
     cursor: "pointer",
+    opacity: 0.4,
     zIndex: 2,
     top: 5,
     right: 6,
@@ -166,18 +205,30 @@ const styles = StyleSheet.create({
       background: "rgb(146 145 145 / 50%)",
     },
   },
-  searchIconSmallScreen: {},
-  searchForMobile: {
-    margin: "0 auto",
-    marginBottom: 15,
-    "@media only screen and (max-width: 1024px)": {
-      display: "flex",
+  searchIconSmallScreen: {
+    position: "static",
+    fontSize: 18,
+    opacity: 1,
+    marginRight: 20,
+    ":hover": {
+      background: 0,
     },
-    "@media only screen and (max-width: 767px)": {
-      display: "flex",
-      borderRadius: 10,
-      maxWidth: "unset",
+    "@media only screen and (min-width: 761px)": {
+      fontSize: 20,
+      marginRight: 10,
+      opacity: 0.4,
     },
+  },
+  searchIconExpanded: {
+    fontSize: 24,
+    display: "flex",
+    justifyContent: "center",
+    flexGrow: 1,
+    paddingBottom: 0,
+    flexDirection: "column",
+    height: "100%",
+    position: "static",
+    background: 0,
   },
   searchInput: {
     padding: 10,
@@ -191,21 +242,32 @@ const styles = StyleSheet.create({
     position: "relative",
     cursor: "pointer",
     ":hover": {
-      borderColor: "#B3B3B3",
+      boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
     },
     ":focus": {
-      borderColor: "#3f85f7",
+      boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
       ":hover": {
-        boxShadow: "0px 0px 1px 1px #3f85f7",
+        boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
         cursor: "text",
       },
     },
   },
+  searchInputSmallScreen: {
+    padding: 0,
+    height: 0,
+    ":focus": {
+      boxShadow: "none",
+      ":hover": {
+        boxShadow: "none",
+      },
+    },
+  },
   searchInputExpanded: {
+    padding: 10,
+    height: "100%",
     fontSize: 18,
+    paddingLeft: 20,
   },
 });
-
-Search.propTypes = {};
 
 export default Search;
