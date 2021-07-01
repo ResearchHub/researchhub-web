@@ -26,6 +26,7 @@ const DEFAULT_DATA = {
 
 const RenderActiviyList = ({ data }) => {
   const results = data.results || [];
+
   if (results.length) {
     return (
       <div className={css(styles.renderList)}>
