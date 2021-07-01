@@ -5,6 +5,7 @@ import Link from "next/link";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import Ripples from "react-ripples";
+import { formatPaperSlug } from "~/config/utils";
 
 // Components
 import TextEditor from "~/components/TextEditor"; // QuillTextEditor
@@ -39,16 +40,21 @@ export const getActivityMetadata = (activity) => {
       postTitle = source.document_meta.title;
       break;
   }
+
   switch (sourceType) {
     case "PAPER":
       href = "/paper/[paperId]/[paperName]";
       postTitle = postTitle ? postTitle : source.paper_title;
-      hrefAs = `/paper/${postId}/${postTitle}`;
+      hrefAs = `/paper/${postId}/${formatPaperSlug(postTitle)}`;
       break;
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       postTitle = postTitle ? postTitle : source.title;
-      hrefAs = `/post/${postId}/${postTitle}`;
+      hrefAs = `/post/${postId}/${formatPaperSlug(postTitle)}`;
+      break;
+    default:
+      href = "";
+      hrefAs = "";
       break;
   }
 
