@@ -27,14 +27,13 @@ const styles = StyleSheet.create({
     margin: "0px 10px 0px 0",
     minWidth: "0",
     boxSizing: "border-box",
-    backgroundColor: "#edeefe",
+    backgroundColor: colors.LIGHT_BLUE(),
     borderRadius: "2px",
     color: colors.BLUE(),
     cursor: "pointer",
     padding: "5px 8px",
     ":hover": {
-      border: "1px solid",
-      margin: "-1px 9px -1px -1px",
+      boxShadow: `inset 0px 0px 0px 1px ${colors.BLUE()}`,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       margin: "0px 6px 6px 0",
