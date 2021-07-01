@@ -94,6 +94,9 @@ const SearchResults = ({ initialResults }) => {
   const [numOfHits, setNumOfHits] = useState(0);
   const [results, setResults] = useState([]);
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
+  const [pageWidth, setPageWidth] = useState(
+    process.browser ? window.innerWidth : 0
+  );
 
   const [selectedHubs, setSelectedHubs] = useState([]);
   const [selectedTimeRange, setSelectedTimeRange] = useState({});
@@ -115,6 +118,16 @@ const SearchResults = ({ initialResults }) => {
       get(initialResults, "facets._filter_hubs.hubs.buckets", [])
     );
   }, [initialResults]);
+
+  useEffect(() => {
+    const _setPageWidth = () => setPageWidth(window.innerWidth);
+
+    window.addEventListener("resize", _setPageWidth, true);
+
+    return () => {
+      window.removeEventListener("resize", _setPageWidth, true);
+    };
+  }, []);
 
   const loadMoreResults = () => {
     setIsLoadingMore(true);
@@ -322,9 +335,13 @@ const SearchResults = ({ initialResults }) => {
           multiTagStyle={null}
           multiTagLabelStyle={null}
           isClearable={false}
+          showLabelAlongSelection={
+            pageWidth <= breakpoints.small.int ? true : false
+          }
         />
         <FormSelect
           id={"ordering"}
+          placeholder={"Sort"}
           options={sortOpts}
           value={selectedSortOrder}
           containerStyle={[
@@ -334,6 +351,9 @@ const SearchResults = ({ initialResults }) => {
           inputStyle={styles.dropdownInput}
           onChange={handleFilterSelect}
           isSearchable={false}
+          showLabelAlongSelection={
+            pageWidth <= breakpoints.small.int ? true : false
+          }
         />
       </div>
 
@@ -402,8 +422,9 @@ const styles = StyleSheet.create({
     minHeight: "unset",
     marginTop: 0,
     marginBottom: 0,
+    marginRight: 20,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      background: "red",
+      marginRight: 0,
       marginBottom: 10,
       width: "100%",
     },
@@ -452,9 +473,9 @@ const styles = StyleSheet.create({
     backgroundColor: "none",
     color: colors.RED(),
     fontSize: 12,
-  },
-  clearFiltersX: {
-    color: colors.RED(),
+    ":hover": {
+      boxShadow: `inset 0px 0px 0px 1px ${colors.RED()}`,
+    },
   },
   loadMoreButton: {
     fontSize: 14,
