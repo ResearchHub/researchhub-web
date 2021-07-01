@@ -1,6 +1,6 @@
 import * as moment from "dayjs";
 import Ripples from "react-ripples";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { keys, isString, isArray } from "underscore";
@@ -208,12 +208,15 @@ const SearchResults = ({ initialResults }) => {
 
   const handleRemoveSelected = ({ opt, dropdownKey }) => {
     let updatedQuery = { ...router.query };
+
     if (dropdownKey === "hubs") {
       const newValue = selectedHubs
         .filter((h) => h.value !== opt.value)
         .map((h) => h.value);
 
       updatedQuery[dropdownKey] = newValue;
+    } else if (dropdownKey === "publish_date__gte") {
+      delete updatedQuery[dropdownKey];
     }
 
     router.push({
@@ -229,6 +232,7 @@ const SearchResults = ({ initialResults }) => {
 
     delete updatedQuery["publish_date__gte"];
     delete updatedQuery["hubs"];
+    delete updatedQuery["ordering"];
 
     router.push({
       pathname: "/search/[type]",
@@ -294,86 +298,88 @@ const SearchResults = ({ initialResults }) => {
   const loadMoreBtn = renderLoadMoreButton();
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
-  if (numOfHits === 0) {
-    return (
-      <ComponentWrapper overrideStyle={styles.componentWrapper}>
-        <EmptyFeedScreen title="There are no results found for this criteria" />
-      </ComponentWrapper>
-    );
-  }
-
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
       {/* OFF for v1 entityTabsHtml */}
       <div className={css(styles.resultCount)}>{numOfHits} results found.</div>
-      <div className={css(styles.filters)}>
-        <FormSelect
-          id={"hubs"}
-          options={facetValueOpts}
-          containerStyle={styles.dropdownContainer}
-          inputStyle={styles.dropdownInput}
-          onChange={handleFilterSelect}
-          isSearchable={true}
-          placeholder={"Hubs"}
-          value={selectedHubs}
-          isMulti={true}
-          multiTagStyle={null}
-          multiTagLabelStyle={null}
-          isClearable={false}
-          showCountInsteadOfLabels={true}
-        />
-        <FormSelect
-          id={"publish_date__gte"}
-          options={timeFilterOpts}
-          containerStyle={styles.dropdownContainer}
-          inputStyle={styles.dropdownInput}
-          onChange={handleFilterSelect}
-          isSearchable={true}
-          placeholder={"Date Published"}
-          value={selectedTimeRange}
-          isMulti={false}
-          multiTagStyle={null}
-          multiTagLabelStyle={null}
-          isClearable={false}
-          showLabelAlongSelection={
-            pageWidth <= breakpoints.small.int ? true : false
-          }
-        />
-        <FormSelect
-          id={"ordering"}
-          placeholder={"Sort"}
-          options={sortOpts}
-          value={selectedSortOrder}
-          containerStyle={[
-            styles.dropdownContainer,
-            styles.dropdownContainerForSort,
-          ]}
-          inputStyle={styles.dropdownInput}
-          onChange={handleFilterSelect}
-          isSearchable={false}
-          showLabelAlongSelection={
-            pageWidth <= breakpoints.small.int ? true : false
-          }
-        />
-      </div>
+      {(numOfHits > 0 || hasAppliedFilters) && (
+        <Fragment>
+          <div className={css(styles.filters)}>
+            <FormSelect
+              id={"hubs"}
+              options={facetValueOpts}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={handleFilterSelect}
+              isSearchable={true}
+              placeholder={"Hubs"}
+              value={selectedHubs}
+              isMulti={true}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+              showCountInsteadOfLabels={true}
+            />
+            <FormSelect
+              id={"publish_date__gte"}
+              options={timeFilterOpts}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={handleFilterSelect}
+              isSearchable={true}
+              placeholder={"Date Published"}
+              value={selectedTimeRange}
+              isMulti={false}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+              showLabelAlongSelection={
+                pageWidth <= breakpoints.small.int ? true : false
+              }
+            />
+            <FormSelect
+              id={"ordering"}
+              placeholder={"Sort"}
+              options={sortOpts}
+              value={selectedSortOrder}
+              containerStyle={[
+                styles.dropdownContainer,
+                styles.dropdownContainerForSort,
+              ]}
+              inputStyle={styles.dropdownInput}
+              onChange={handleFilterSelect}
+              isSearchable={false}
+              showLabelAlongSelection={
+                pageWidth <= breakpoints.small.int ? true : false
+              }
+            />
+          </div>
 
-      {hasAppliedFilters && (
-        <div className={css(styles.appliedFilters)}>
-          {selectedHubs.map((opt) =>
-            renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
+          {hasAppliedFilters && (
+            <div className={css(styles.appliedFilters)}>
+              {selectedHubs.map((opt) =>
+                renderAppliedFilterBadge({ opt, dropdownKey: "hubs" })
+              )}
+              {selectedTimeRange.value &&
+                renderAppliedFilterBadge({
+                  opt: selectedTimeRange,
+                  dropdownKey: "publish_date__gte",
+                })}
+
+              <Badge
+                label="CLEAR ALL"
+                badgeClassName={styles.clearFiltersBtn}
+                onClick={handleClearAll}
+              />
+            </div>
           )}
-          {selectedTimeRange.value &&
-            renderAppliedFilterBadge({
-              opt: selectedTimeRange,
-              dropdownKey: "publish_date__gte",
-            })}
+        </Fragment>
+      )}
 
-          <Badge
-            label="CLEAR ALL"
-            badgeClassName={styles.clearFiltersBtn}
-            onClick={handleClearAll}
-          />
-        </div>
+      {numOfHits === 0 && (
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <EmptyFeedScreen title="There are no results found for this criteria" />
+        </ComponentWrapper>
       )}
 
       {results.map((paper, index) => {
@@ -431,6 +437,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainerForSort: {
     width: 200,
+    marginRight: 0,
     marginLeft: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
