@@ -7,13 +7,15 @@ import { useRouter } from "next/router";
 import { get } from "lodash";
 import { breakpoints } from "~/config/themes/screen";
 
-const Search = () => {
+const Search = ({ navbarRef }) => {
   const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
   const SMALLEST_ALLOWED_INPUT = 180;
+  const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;
 
   const router = useRouter();
   const searchInputRef = useRef(null);
+  const searchContainerRef = useRef(null);
 
   const [query, setQuery] = useState(get(router, "query.search") || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
@@ -141,14 +143,26 @@ const Search = () => {
     });
   }, []);
 
+  const searchContainerProps = {
+    ref: searchContainerRef,
+    className: css(
+      styles.search,
+      isSmallScreenSearch && styles.searchSmallScreen,
+      isExpandedSearchOpen && styles.searchExpanded
+    ),
+  };
+
+  // Since expanded search is absolute, we want to dynamically
+  // set the height to be based on Navbar element.
+  if (isExpandedSearchOpen) {
+    const navHeight = get(navbarRef, "current.offsetHeight");
+    searchContainerProps.style = {
+      height: navHeight || DEFAULT_EXPANDED_SEARCH_HEIGHT,
+    };
+  }
+
   return (
-    <div
-      className={css(
-        styles.search,
-        isSmallScreenSearch && styles.searchSmallScreen,
-        isExpandedSearchOpen && styles.searchExpanded
-      )}
-    >
+    <div {...searchContainerProps}>
       {isExpandedSearchOpen && (
         <Fragment>
           <span className={css(styles.backIcon)} onClick={toggleExpandedSearch}>
@@ -211,7 +225,6 @@ const styles = StyleSheet.create({
   searchExpanded: {
     border: "unset",
     position: "absolute",
-    height: "100%",
     width: "100%",
     zIndex: 10,
     maxWidth: "unset",
