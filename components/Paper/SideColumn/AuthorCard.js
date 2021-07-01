@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from "react";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import Link from "next/link";
-
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React from "react";
 
 const AuthorCard = (props) => {
-  const { name, author } = props;
-
-  const { id, orcid_id } = author;
+  const { name, author, onClaimSelect } = props;
+  const { id, orcid_id, user } = author;
 
   if (id) {
+    const shouldDisplayClaimButton = isNullOrUndefined(user); // implies that this author doesn't have user
     return (
-      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
-        <a className={css(styles.container, styles.hover)}>
-          {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userImage)} />
-          ) : (
-            <span className={css(styles.userIcon)}>{icons.user}</span>
-          )}
-          <div className={css(styles.name) + " clamp1"}>{name}</div>
-        </a>
-      </Link>
+      <div>
+        <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
+          <a className={css(styles.container, styles.hover)}>
+            {author.profile_image ? (
+              <img
+                src={author.profile_image}
+                className={css(styles.userImage)}
+              />
+            ) : (
+              <span className={css(styles.userIcon)}>{icons.user}</span>
+            )}
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
+          </a>
+        </Link>
+        {shouldDisplayClaimButton ? <button onClick={onClaimSelect} /> : null}
+      </div>
     );
   }
 

@@ -17,10 +17,11 @@ class ColumnAuthors extends React.Component {
     super(props);
     this.state = {
       authors: [],
-      pages: 1,
+      claimSelectedAuthor: null,
       page: 1,
-      ready: false,
+      pages: 1,
       paginatedLists: {},
+      ready: false,
     };
   }
 
@@ -45,7 +46,19 @@ class ColumnAuthors extends React.Component {
       const name = getAuthorName(author);
       const key = `${name}-${index}`; // not all author have ids nor orcid_id -> combined list of authors and raw_authors
 
-      return <AuthorCard author={author} name={name} key={key} />;
+      return (
+        <AuthorCard
+          author={author}
+          name={name}
+          key={key}
+          onClaimSelect={(claimingAuthor) =>
+            this.setState({
+              ...this.state,
+              claimSelectedAuthor: claimingAuthor,
+            })
+          }
+        />
+      );
     });
   };
 
@@ -90,7 +103,7 @@ class ColumnAuthors extends React.Component {
   };
 
   render() {
-    const { auth, authors, paper } = this.props;
+    const { auth, authors, claimSelectedAuthor, paper } = this.props;
     const { ready, pages, page } = this.state;
     const hasManyAuthors = authors.length > 1;
     const shouldDisplayClaimCard = authors.some((author) =>
@@ -105,9 +118,14 @@ class ColumnAuthors extends React.Component {
       >
         <AuthorClaimModal
           auth={auth}
-          author={{}}
-          isOpen={false}
-          setIsOpen={() => {}}
+          author={claimSelectedAuthor}
+          isOpen={!isNullOrUndefined(claimSelectedAuthor)}
+          setIsOpen={() =>
+            this.setState({
+              ...this.state,
+              claimSelectedAuthor: null,
+            })
+          }
         />
         <div>
           {paper && authors.length > 0 && (
