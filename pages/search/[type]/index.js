@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import API from "~/config/api";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
@@ -5,6 +6,7 @@ import SearchResults from "~/components/Search/SearchResults";
 import { searchTypes } from "~/config/utils/options";
 import { pickAllowedSearchFiltersFor } from "~/config/utils";
 import killswitch from "~/config/killswitch/killswitch";
+import Head from "~/components/Head";
 
 import PropTypes from "prop-types";
 import Error from "next/error";
@@ -31,7 +33,19 @@ const Index = ({ serverResponse, hasError }) => {
     return <Error statusCode={500} />;
   }
 
-  return <SearchResults initialResults={serverResponse} />;
+  console.log(router.query);
+  return (
+    <Fragment>
+      <Head
+        title={`(${serverResponse.count}) ${get(
+          router,
+          "query.search"
+        )} - Research Hub`}
+        description={"Search Researchhub"}
+      />
+      <SearchResults initialResults={serverResponse} />
+    </Fragment>
+  );
 };
 
 Index.getInitialProps = async (ctx) => {
