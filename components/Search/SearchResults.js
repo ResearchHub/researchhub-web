@@ -13,6 +13,7 @@ import { searchTypes } from "~/config/utils/options";
 import colors from "~/config/themes/colors";
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
+import Badge from "~/components/Badge";
 import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
@@ -262,16 +263,11 @@ const SearchResults = ({ initialResults }) => {
 
   const renderAppliedFilterBadge = ({ opt, dropdownKey }) => {
     return (
-      <div
-        className={css(styles.badge)}
-        onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+      <Badge
         key={`${dropdownKey}-${opt.value}`}
-      >
-        <div className={css(styles.badgeLabel)}>{opt.label}</div>
-        <div className={css(styles.badgeRemove)}>
-          <CloseIcon />
-        </div>
-      </div>
+        label={opt.label}
+        onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+      />
     );
   };
 
@@ -351,15 +347,12 @@ const SearchResults = ({ initialResults }) => {
               opt: selectedTimeRange,
               dropdownKey: "publish_date__gte",
             })}
-          <div
-            className={css(styles.badge, styles.clearFiltersBtn)}
+
+          <Badge
+            label="CLEAR ALL"
+            badgeClassName={styles.clearFiltersBtn}
             onClick={handleClearAll}
-          >
-            <div className={css(styles.badgeLabel)}>CLEAR ALL</div>
-            <div className={css(styles.badgeRemove)}>
-              <CloseIcon />
-            </div>
-          </div>
+          />
         </div>
       )}
 
@@ -374,28 +367,6 @@ const SearchResults = ({ initialResults }) => {
         });
         paper.promoted = false;
 
-        // WIP MESS
-        //         console.log('paper.raw_authors.length', paper.raw_authors.length);
-        //
-        //
-        //         const highlight = get(paper, `highlight["raw_authors.full_name"]`, [])[0] || '';
-        //         let highlighWithoutMarks = highlight.replace('<mark>', '').replace('</mark>', '');
-        //         let final = [];
-        //
-        //
-        //         if (!highlight) {
-        //           final = paper.raw_authors
-        //         }
-        //         else {
-        //           for (let i = 0; i < paper.raw_authors.length; i++) {
-        //             console.log('highlighWithoutMarks', highlighWithoutMarks);
-        //             console.log('paper.raw_authors[i].full_name', paper.raw_authors[i].full_name);
-        //             if (paper.raw_authors[i].full_name.indexOf(highlighWithoutMarks) > -1) {
-        //               console.log('YES');
-        //             }
-        //           }
-        //         }
-
         return (
           <PaperEntryCard
             paper={paper}
@@ -409,7 +380,7 @@ const SearchResults = ({ initialResults }) => {
     </ComponentWrapper>
   );
 };
-console.log(`@media only screen and (max-width: ${breakpoints.small.str})`);
+
 const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
@@ -423,6 +394,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexWrap: "wrap",
+      marginBottom: 0,
     },
   },
   dropdownContainer: {
@@ -459,42 +431,6 @@ const styles = StyleSheet.create({
     display: "flex",
     textTransform: "capitalize",
     marginBottom: 20,
-  },
-  badge: {
-    display: "flex",
-    margin: "0px 10px 0px 0",
-    minWidth: "0",
-    boxSizing: "border-box",
-    backgroundColor: "#edeefe",
-    borderRadius: "2px",
-    color: colors.BLUE(),
-    cursor: "pointer",
-    padding: "5px 8px",
-    ":hover": {
-      border: "1px solid",
-      margin: "-1px 9px -1px -1px",
-    },
-  },
-  badgeLabel: {
-    borderRadius: "2px",
-    fontSize: "85%",
-    overflow: "hidden",
-    padding: "3px 3px 3px 6px",
-    textOverflow: "ellipsis",
-    whiteSpace: "nowrap",
-    boxSizing: "border-box",
-    fontSize: 12,
-    fontWeight: 500,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
-  badgeRemove: {
-    display: "flex",
-    paddingLeft: "4px",
-    paddingRight: "4px",
-    boxSizing: "border-box",
-    alignItems: "center",
-    borderRadius: "2px",
   },
   highlight: {
     backgroundColor: "yellow",

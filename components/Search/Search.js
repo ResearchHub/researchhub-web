@@ -8,6 +8,10 @@ import { get } from "lodash";
 import { breakpoints } from "~/config/themes/screen";
 
 const Search = () => {
+  const SMALL_PLACEHOLDER_WIDTH = 200;
+  const RETURN_KEY = 13;
+  const SMALLEST_ALLOWED_INPUT = 180;
+
   const router = useRouter();
   const searchInputRef = useRef(null);
 
@@ -17,23 +21,58 @@ const Search = () => {
   const [placeholderText, setPlaceholderText] = useState("Search Research Hub");
 
   useEffect(() => {
-    calcSearchLayout();
+    updateSearchLayout();
 
-    window.addEventListener("resize", calcSearchLayout, true);
+    const isUserOnSearchPage = router.pathname.indexOf("/search") === 0;
+
+    if (shouldShowSmallScreenSearch()) {
+      setIsSmallScreenSearch(true);
+
+      if (isUserOnSearchPage) {
+        setIsExpandedSearchOpen(true);
+        focusInput();
+      }
+    }
+
+    window.addEventListener("resize", updateSearchLayout, true);
 
     return () => {
-      window.removeEventListener("resize", calcSearchLayout, true);
+      window.removeEventListener("resize", updateSearchLayout, true);
     };
   }, []);
 
-  const calcSearchLayout = () => {
-    const SMALLEST_ALLOWED_INPUT = 180;
-    const SMALL_PLACEHOLDER_WIDTH = 200;
+  const focusInput = () => {
+    const el = get(searchInputRef, "current");
+
+    if (el) {
+      const val = el.value;
+
+      // Focus at end of input
+      el.focus();
+      el.value = "";
+      el.value = val;
+    }
+  };
+
+  const shouldShowSmallScreenSearch = () => {
     const inputWidth = searchInputRef.current.offsetWidth;
 
     if (window.innerWidth <= breakpoints.small.int) {
-      setIsSmallScreenSearch(true);
+      return true;
     } else if (inputWidth <= SMALLEST_ALLOWED_INPUT) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  // IN non-mobile resolutions (over 760px) we allow
+  // the input field to render naturally. If it is smaller than
+  // SMALLEST_ALLOWED_INPUT, we also consider it to be "small screen"
+  const updateSearchLayout = () => {
+    const inputWidth = searchInputRef.current.offsetWidth;
+
+    if (shouldShowSmallScreenSearch()) {
       setIsSmallScreenSearch(true);
     } else {
       setIsSmallScreenSearch(false);
@@ -44,12 +83,12 @@ const Search = () => {
     );
   };
 
-  const toggleExpandedSearch = () => {
+  const toggleExpandedSearch = (isOpen) => {
     if (isExpandedSearchOpen) {
       setIsExpandedSearchOpen(false);
     } else {
       setIsExpandedSearchOpen(true);
-      searchInputRef.current.focus();
+      focusInput();
     }
   };
 
@@ -84,8 +123,6 @@ const Search = () => {
   };
 
   const handleKeyPress = (e) => {
-    const RETURN_KEY = 13;
-
     if (e.keyCode === RETURN_KEY) {
       doSearch();
     }
