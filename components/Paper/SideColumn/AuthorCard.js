@@ -10,10 +10,10 @@ const AuthorCard = (props) => {
   const { name, author, onClaimSelect } = props;
   const { id, orcid_id, user } = author;
 
-  if (id) {
+  if (true) {
     const shouldDisplayClaimButton = isNullOrUndefined(user); // implies that this author doesn't have user
     return (
-      <div>
+      <div className={css(styles.authorCardWrap)}>
         <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
           <a className={css(styles.container, styles.hover)}>
             {author.profile_image ? (
@@ -27,7 +27,18 @@ const AuthorCard = (props) => {
             <div className={css(styles.name) + " clamp1"}>{name}</div>
           </a>
         </Link>
-        {shouldDisplayClaimButton ? <button onClick={onClaimSelect} /> : null}
+        {shouldDisplayClaimButton ? (
+          <div
+            className={css(styles.claimButton)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClaimSelect();
+            }}
+            role="button"
+          >
+            {"Claim"}
+          </div>
+        ) : null}
       </div>
     );
   }
@@ -69,6 +80,25 @@ const styles = StyleSheet.create({
     padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
+  },
+  authorCardWrap: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingRight: 16,
+  },
+  claimButton: {
+    backgroundColor: colors.NEW_BLUE(1),
+    borderRadius: 4,
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: 14,
+    height: 24,
+    padding: 4,
+    width: 52,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   hover: {
     textDecoration: "unset",

@@ -51,10 +51,10 @@ class ColumnAuthors extends React.Component {
           author={author}
           name={name}
           key={key}
-          onClaimSelect={(claimingAuthor) =>
+          onClaimSelect={() =>
             this.setState({
               ...this.state,
-              claimSelectedAuthor: claimingAuthor,
+              claimSelectedAuthor: author /* this relies on the hope that author profile was already created */,
             })
           }
         />
@@ -103,8 +103,8 @@ class ColumnAuthors extends React.Component {
   };
 
   render() {
-    const { auth, authors, claimSelectedAuthor, paper } = this.props;
-    const { ready, pages, page } = this.state;
+    const { auth, authors, paper } = this.props;
+    const { claimSelectedAuthor, pages, page, ready } = this.state;
     const hasManyAuthors = authors.length > 1;
     const shouldDisplayClaimCard = authors.some((author) =>
       isNullOrUndefined(author.user)
