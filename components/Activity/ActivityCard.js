@@ -5,6 +5,7 @@ import Link from "next/link";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import Ripples from "react-ripples";
+import { formatPaperSlug } from "~/config/utils";
 
 // Components
 import TextEditor from "~/components/TextEditor"; // QuillTextEditor
@@ -19,25 +20,68 @@ import colors from "~/config/themes/colors";
 //   CURATOR: true,
 // };
 
+export const getActivityMetadata = (activity) => {
+  const {
+    contribution_type: contributionType,
+    source,
+    unified_document: { document_type: sourceType },
+  } = activity;
+
+  let href, hrefAs;
+  let postId, postTitle;
+  switch (contributionType) {
+    case "SUBMITTER":
+      postId = source.id;
+      // If it's a submission, then the post title depends on whether it is a paper of discusison,
+      // so handle in next switch.
+      break;
+    case "COMMENTER":
+      postId = source.document_meta.id;
+      postTitle = source.document_meta.title;
+      break;
+  }
+
+  switch (sourceType) {
+    case "PAPER":
+      href = "/paper/[paperId]/[paperName]";
+      postTitle = postTitle ? postTitle : source.paper_title;
+      hrefAs = `/paper/${postId}/${formatPaperSlug(postTitle)}`;
+      break;
+    case "DISCUSSION":
+      href = "/post/[documentId]/[title]";
+      postTitle = postTitle ? postTitle : source.title;
+      hrefAs = `/post/${postId}/${formatPaperSlug(postTitle)}`;
+      break;
+    default:
+      href = "";
+      hrefAs = "";
+      break;
+  }
+
+  return {
+    contributionType,
+    href,
+    hrefAs,
+    postId,
+    postTitle,
+    sourceType,
+  };
+};
+
 const ActivityCard = (props) => {
-  // TODO: calvinhlee - need to capture posts as well
   const router = useRouter();
   const [isHidden, setIsHidden] = useState(false);
 
   const { activity, last } = props;
+
   const {
-    paper,
-    source,
-    created_date: createdDate,
     contribution_type: contributionType,
+    created_date: createdDate,
+    source,
   } = activity;
 
-  const { id: paperId, slug: paperName, hubs } = paper;
-  const {
-    id: sourceID,
-    paper: sourcePaperID,
-    paper_title: sourcePaperTitle,
-  } = source;
+  const { hubs } = source;
+
   useEffect(() => {
     checkIsRemoved();
   });
@@ -58,7 +102,7 @@ const ActivityCard = (props) => {
           removeIcon: true,
         };
       case "hub":
-        const hub = hubs.length && hubs[0]; // we only show one hub tag (first)
+        const hub = hubs && hubs.length && hubs[0]; // we only show one hub tag (first)
         return {
           tag: hub,
           last: true,
@@ -78,14 +122,13 @@ const ActivityCard = (props) => {
   };
 
   if (isHidden) return null;
-  const resolvedPaperID = sourcePaperID || paperId || sourceID;
-  const resolvedPaperName = paperName || sourcePaperTitle || "";
-  if (isNullOrUndefined(resolvedPaperID)) return null;
+
+  const { href, hrefAs, postId } = getActivityMetadata(activity);
+
+  if (isNullOrUndefined(postId)) return null;
+
   return (
-    <Link
-      href={"/paper/[paperId]/[paperName]"}
-      as={`/paper/${resolvedPaperID}/${resolvedPaperName}`}
-    >
+    <Link href={href} as={hrefAs}>
       <a className={css(styles.link)}>
         <Ripples className={css(styles.root)}>
           <ActivityHeader {...props} />
@@ -95,7 +138,9 @@ const ActivityCard = (props) => {
               <TimeStamp {...formatProps("timestamp")} />
             ) : null}
             <div className={css(styles.hubTag)}>
-              <HubTag {...formatProps("hub")} noHubName={true} />
+              {hubs ? (
+                <HubTag {...formatProps("hub")} noHubName={true} />
+              ) : null}
             </div>
           </div>
         </Ripples>
