@@ -317,6 +317,15 @@ const styles = StyleSheet.create({
     height: "100%",
     fontSize: 18,
     paddingLeft: 20,
+    ":focus": {
+      boxShadow: "none",
+      ":hover": {
+        boxShadow: "none",
+      },
+    },
+    ":hover": {
+      boxShadow: "none",
+    },
   },
 });
 
