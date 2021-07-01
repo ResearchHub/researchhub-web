@@ -35,6 +35,15 @@ const Search = ({ navbarRef }) => {
         focusInput();
       }
     }
+  }, []);
+
+  useEffect(() => {
+    router.events.on("routeChangeComplete", (url) => {
+      // Reset the query if user navigates to non-search page.
+      if (!url.includes("/search")) {
+        setQuery("");
+      }
+    });
 
     window.addEventListener("resize", updateSearchLayout, true);
 
@@ -133,15 +142,6 @@ const Search = ({ navbarRef }) => {
   const handleInputChange = (e) => {
     setQuery(e.target.value);
   };
-
-  useEffect(() => {
-    router.events.on("routeChangeComplete", (url) => {
-      // Reset the query if user navigates to non-search page.
-      if (!url.includes("/search")) {
-        setQuery("");
-      }
-    });
-  }, []);
 
   const searchContainerProps = {
     ref: searchContainerRef,
@@ -279,6 +279,11 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "static",
     background: 0,
+    [`@media only screen and (min-width: ${breakpoints.small.int + 1}px)`]: {
+      fontSize: 24,
+      marginRight: 20,
+      opacity: 1,
+    },
   },
   searchInput: {
     padding: 10,
@@ -328,5 +333,9 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+Search.propTypes = {
+  navbarRef: PropTypes.object,
+};
 
 export default Search;
