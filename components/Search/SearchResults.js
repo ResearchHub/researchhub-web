@@ -18,7 +18,7 @@ import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
 import ComponentWrapper from "~/components/ComponentWrapper";
-import EmptyFeedScreen from "~/components/home/EmptyFeedScreen";
+import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import { breakpoints } from "~/config/themes/screen";
 
 const timeFilterOpts = [
