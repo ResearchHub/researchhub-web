@@ -30,7 +30,6 @@ import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import LegacySearch from "./Search/LegacySearch";
-import AlgoliaSearch from "./Search/AlgoliaSearch";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";
@@ -101,6 +100,7 @@ const Navbar = (props) => {
       route: "",
       link: "https://medium.com/researchhub",
       icon: "medium",
+      className: "lessImportantTab",
     },
     {
       label: "Help",
@@ -108,6 +108,7 @@ const Navbar = (props) => {
       link:
         "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
       icon: "help",
+      className: "lessImportantTab",
     },
     { label: "Live", route: "/live", icon: "live" },
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
@@ -200,7 +201,8 @@ const Navbar = (props) => {
             className={css(
               styles.tab,
               index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab
+              index === 2 && styles.lastTab,
+              styles[tab.className]
             )}
           >
             <a
@@ -255,7 +257,10 @@ const Navbar = (props) => {
     return tabs.map((tab, index) => {
       if (tab.link) {
         return (
-          <div className={css(styles.menuItem)} key={`navbar_tab_${index}`}>
+          <div
+            className={css(styles.menuItem, styles[tab.className])}
+            key={`navbar_tab_${index}`}
+          >
             <a
               className={css(styles.menuItem, styles.noMargin)}
               href={tab.link}
@@ -280,7 +285,7 @@ const Navbar = (props) => {
       }
       return (
         <div
-          className={css(styles.menuItem)}
+          className={css(styles.menuItem, styles[tab.className])}
           onClick={
             tab.onClick
               ? tab.onClick
@@ -327,7 +332,6 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {/*killswitch("searchResults") && <Search forSmallScree={true} />*/}
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
@@ -442,11 +446,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {killswitch("searchResults") && (
-          <Search getNavbarEl={null} navbarRef={navbarRef} />
-        )}
-        {killswitch("algoliaSearch") && <AlgoliaSearch />}
-        {killswitch("legacySearch") && <LegacySearch />}
+        {killswitch("searchResults") && <Search navbarRef={navbarRef} />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -660,6 +660,11 @@ const styles = StyleSheet.create({
     display: "flex",
     marginRight: "auto",
     "@media only screen and (max-width: 760px)": {
+      display: "none",
+    },
+  },
+  lessImportantTab: {
+    "@media only screen and (min-width: 760px) and (max-width: 900px)": {
       display: "none",
     },
   },
