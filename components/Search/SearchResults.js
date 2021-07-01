@@ -18,6 +18,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/home/EmptyFeedScreen";
+import { breakpoints } from "~/config/themes/screen";
 
 const timeFilterOpts = [
   {
@@ -408,7 +409,7 @@ const SearchResults = ({ initialResults }) => {
     </ComponentWrapper>
   );
 };
-
+console.log(`@media only screen and (max-width: ${breakpoints.small.str})`);
 const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
@@ -420,20 +421,32 @@ const styles = StyleSheet.create({
   filters: {
     display: "flex",
     marginBottom: 20,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexWrap: "wrap",
+    },
   },
   dropdownContainer: {
     width: 250,
     minHeight: "unset",
     marginTop: 0,
     marginBottom: 0,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      background: "red",
+      marginBottom: 10,
+      width: "100%",
+    },
   },
   dropdownContainerForSort: {
     width: 200,
     marginLeft: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
   },
   dropdownInput: {
     width: 200,
     minHeight: "unset",
+    width: "100%",
   },
   appliedFilters: {
     alignItems: "center",
