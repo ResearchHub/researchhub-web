@@ -396,32 +396,15 @@ const PaperEntryCard = (props) => {
 
   const renderRawAuthors = (mobile) => {
     const _formatAuthors = (authors) => {
-      const _parseName = (name) => {
-        let firstName = "";
-        let lastName = "";
-
-        if (typeof name === "string") {
-          const tokens = name.split(/[ ,]/).filter((t) => t !== "");
-          firstName = tokens[0] || "";
-          lastName = tokens[1] || "";
-        } else if (typeof name === "object") {
-          firstName = name.first_name;
-          lastName = name.last_name;
-        }
-
-        return { firstName, lastName };
-      };
-
-      let { firstName, lastName } = _parseName(authors[0]);
+      let { first_name, last_name } = authors[0];
 
       if (authors.length >= 6) {
-        return `${lastName}, ${firstName}, et al`;
+        return `${last_name}, ${first_name}, et al`;
       }
 
       return authors
-        .map(_parseName)
         .map((author) => {
-          return `${author.firstName} ${author.lastName}`;
+          return `${author.first_name} ${author.last_name}`;
         })
         .join(", ");
     };
