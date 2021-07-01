@@ -13,7 +13,7 @@ const Search = () => {
 
   const [query, setQuery] = useState(get(router, "query.search") || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
-  const [isExpandedSearchOn, setIsExpandedSearchOn] = useState(false);
+  const [isExpandedSearchOpen, setIsExpandedSearchOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("Search Research Hub");
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const Search = () => {
     const SMALL_PLACEHOLDER_WIDTH = 200;
     const inputWidth = searchInputRef.current.offsetWidth;
 
-    if (window.innerWidth <= breakpoints.small) {
+    if (window.innerWidth <= breakpoints.small.int) {
       setIsSmallScreenSearch(true);
     } else if (inputWidth <= SMALLEST_ALLOWED_INPUT) {
       setIsSmallScreenSearch(true);
@@ -45,17 +45,17 @@ const Search = () => {
   };
 
   const toggleExpandedSearch = () => {
-    if (isExpandedSearchOn) {
-      setIsExpandedSearchOn(false);
+    if (isExpandedSearchOpen) {
+      setIsExpandedSearchOpen(false);
     } else {
-      setIsExpandedSearchOn(true);
+      setIsExpandedSearchOpen(true);
       searchInputRef.current.focus();
     }
   };
 
   const handleSearchBtnClick = () => {
     if (isSmallScreenSearch) {
-      if (isExpandedSearchOn) {
+      if (isExpandedSearchOpen) {
         doSearch();
       } else {
         toggleExpandedSearch();
@@ -109,10 +109,10 @@ const Search = () => {
       className={css(
         styles.search,
         isSmallScreenSearch && styles.searchSmallScreen,
-        isExpandedSearchOn && styles.searchExpanded
+        isExpandedSearchOpen && styles.searchExpanded
       )}
     >
-      {isExpandedSearchOn && (
+      {isExpandedSearchOpen && (
         <Fragment>
           <span className={css(styles.backIcon)} onClick={toggleExpandedSearch}>
             {icons.longArrowLeft}
@@ -124,7 +124,7 @@ const Search = () => {
         className={css(
           styles.searchInput,
           isSmallScreenSearch && styles.searchInputSmallScreen,
-          isExpandedSearchOn && styles.searchInputExpanded
+          isExpandedSearchOpen && styles.searchInputExpanded
         )}
         placeholder={placeholderText}
         onKeyDown={handleKeyPress}
@@ -137,7 +137,7 @@ const Search = () => {
         className={css(
           styles.searchIcon,
           isSmallScreenSearch && styles.searchIconSmallScreen,
-          isExpandedSearchOn && styles.searchIconExpanded
+          isExpandedSearchOpen && styles.searchIconExpanded
         )}
         onClick={handleSearchBtnClick}
       >
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
     ":hover": {
       background: 0,
     },
-    "@media only screen and (min-width: 761px)": {
+    [`@media only screen and (min-width: ${breakpoints.small.int + 1}px)`]: {
       fontSize: 20,
       marginRight: 10,
       opacity: 0.4,
