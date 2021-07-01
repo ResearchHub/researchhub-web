@@ -301,9 +301,11 @@ const SearchResults = ({ initialResults }) => {
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
       {/* OFF for v1 entityTabsHtml */}
-      <div className={css(styles.resultCount)}>{numOfHits} results found.</div>
       {(numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
+          <div className={css(styles.resultCount)}>
+            {numOfHits} results found.
+          </div>
           <div className={css(styles.filters)}>
             <FormSelect
               id={"hubs"}
@@ -410,6 +412,7 @@ const SearchResults = ({ initialResults }) => {
 const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
+    marginBottom: 20,
   },
   resultCount: {
     color: colors.GREY(),
