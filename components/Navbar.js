@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useRef } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -49,6 +49,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navbar = (props) => {
   const router = useRouter();
+  const navbarRef = useRef(null);
 
   const {
     isLoggedIn,
@@ -418,6 +419,7 @@ const Navbar = (props) => {
         {renderMenuItems()}
       </Menu>
       <div
+        ref={navbarRef}
         className={css(
           styles.navbarContainer,
           (router.route === "/paper/[paperId]/[paperName]" ||
@@ -440,7 +442,9 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {killswitch("searchResults") && <Search />}
+        {killswitch("searchResults") && (
+          <Search getNavbarEl={null} navbarRef={navbarRef} />
+        )}
         {killswitch("algoliaSearch") && <AlgoliaSearch />}
         {killswitch("legacySearch") && <LegacySearch />}
         <div className={css(styles.actions)}>
