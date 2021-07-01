@@ -328,7 +328,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "flex-start",
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
