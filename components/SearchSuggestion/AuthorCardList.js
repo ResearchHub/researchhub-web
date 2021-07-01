@@ -127,9 +127,9 @@ class AuthorCardList extends React.Component {
             </span>
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>
-            <div className={css(styles.name)}>Add New User</div>
+            <div className={css(styles.name)}>Add Author</div>
             <div className={css(styles.contact)}>
-              Click to add new user on ResearchHub
+              Click to add an author to ResearchHub
             </div>
           </div>
         </div>
