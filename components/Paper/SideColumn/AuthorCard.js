@@ -10,7 +10,7 @@ const AuthorCard = (props) => {
   const { name, author, onClaimSelect } = props;
   const { id, orcid_id, user } = author;
 
-  if (true) {
+  if (id) {
     const shouldDisplayClaimButton = isNullOrUndefined(user); // implies that this author doesn't have user
     return (
       <div className={css(styles.authorCardWrap)}>
