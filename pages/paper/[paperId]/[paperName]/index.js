@@ -531,7 +531,7 @@ const Paper = (props) => {
               topOffset={40}
               bottomOffset={"95%"}
             >
-              <a name="discussion">
+              <a name="comments">
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={props.hostname}
@@ -748,7 +748,7 @@ const styles = StyleSheet.create({
       display: "table",
     },
     "@media only screen and (min-width: 1200px)": {
-      width: "80%",
+      width: "90%",
     },
   },
   desktop: {

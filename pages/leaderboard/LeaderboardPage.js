@@ -70,11 +70,15 @@ class Index extends React.Component {
   constructor(props) {
     super(props);
 
-    let byOptions = [{ label: "All Hubs", value: 0 }];
+    let byOptions = [{ label: "ResearchHub", value: 0, slug: "researchhub" }];
     let defaultBy = byOptions[0];
 
     if (this.props.hub) {
-      defaultBy = { label: this.props.hub.name, value: this.props.hub.id };
+      defaultBy = {
+        label: this.props.hub.name,
+        value: this.props.hub.id,
+        slug: this.props.hub.slug,
+      };
     }
 
     this.state = {
@@ -529,6 +533,8 @@ class Index extends React.Component {
               pathname: "/leaderboard/[type]/[hub]/[scope]",
               query: {
                 type: `${encodeURIComponent(item.type)}`,
+                hub: this.state.by.slug,
+                scope: this.convertToSlug(this.state.filterBy.value),
               },
             }}
             as={`/leaderboard/${encodeURIComponent(item.type)}/${

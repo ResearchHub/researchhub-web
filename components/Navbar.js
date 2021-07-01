@@ -111,7 +111,7 @@ const Navbar = (props) => {
     isUserModerator
       ? {
           label: "Mods",
-          route: "/moderators/author-claim-case-dashboard",
+          route: "/moderators/author-claim-case-dashboard?case_status=OPEN",
           icon: "info-circle",
         }
       : null,

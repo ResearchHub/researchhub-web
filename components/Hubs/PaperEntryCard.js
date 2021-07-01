@@ -641,10 +641,9 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     cursor: "pointer",
     border: "1px solid #EDEDED",
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 12,
+    marginBottom: 12,
     borderRadius: 3,
-    overflow: "hidden",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },

@@ -20,10 +20,10 @@ const filterOptions = [
     value: "newest",
     label: "Newest",
   },
-  {
-    value: "most_discussed",
-    label: "Most Discussed",
-  },
+  // {
+  //   value: "most_discussed",
+  //   label: "Most Discussed",
+  // },
 ];
 
 const scopeOptions = [
