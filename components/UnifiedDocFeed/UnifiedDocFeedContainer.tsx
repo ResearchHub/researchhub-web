@@ -408,8 +408,8 @@ const styles = StyleSheet.create({
   customUserPostCard: {
     // border: 0,
     // borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    marginBottom: 5,
-    marginTop: 5,
+    marginBottom: 12,
+    marginTop: 12,
     // paddingTop: 24,
     // paddingBottom: 24,
   },

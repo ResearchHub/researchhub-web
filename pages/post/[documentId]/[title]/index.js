@@ -246,7 +246,10 @@ const Post = (props) => {
           <div className={css(styles.container)}>
             <div className={css(styles.main)}>
               <div className={css(styles.paperPageContainer, styles.top)}>
-                <PostPageCard post={post} />
+                <PostPageCard
+                  post={post}
+                  shareUrl={process.browser && window.location.href}
+                />
               </div>
               <div className={css(styles.paperMetaContainerMobile)}>
                 <AuthorStatsDropdown
@@ -257,7 +260,7 @@ const Post = (props) => {
                   isPost={true}
                 />
               </div>
-              <a name="discussion">
+              <a name="comments">
                 <div className={css(styles.space)}>
                   <DiscussionTab
                     hostname={props.hostname}
@@ -336,7 +339,7 @@ const styles = StyleSheet.create({
       display: "table",
     },
     "@media only screen and (min-width: 1200px)": {
-      width: "80%",
+      width: "90%",
     },
   },
   desktop: {

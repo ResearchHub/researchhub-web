@@ -3,9 +3,7 @@ import * as moment from "dayjs";
 import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
 import ReactTooltip from "react-tooltip";
-import Ripples from "react-ripples";
 import Router from "next/router";
-import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -654,11 +652,7 @@ class PaperPageCard extends React.Component {
                         showPromotion={true}
                         small={true}
                       />
-                      <PaperDiscussionButton
-                        paper={paper}
-                        discussionCount={discussionCount}
-                      />
-                      <PaperPromotionButton paper={paper} />
+                      <PaperPromotionIcon paper={paper} />
                     </div>
                   </div>
                 </div>

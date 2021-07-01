@@ -10,6 +10,7 @@ import { Router, useRouter } from "next/router";
 import { SimpleEditor } from "../CKEditor/SimpleEditor";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import ReactHtmlParser from "react-html-parser";
 
 type FormFields = {
   hubs: any[];
@@ -42,17 +43,21 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-function firstImageFromMarkdown(text: string): string | null {
-  // https://stackoverflow.com/questions/26024796/what-type-of-regexp-would-i-need-to-extract-image-url-from-markdown
-  const match = text.match(/!\[.*?\]\((.*?)\)/);
-  return match ? match[1] : null;
+function firstImageFromHtml(text: string): string | null {
+  const elements = ReactHtmlParser(text);
+  for (const element of elements) {
+    if (element.type === "figure") {
+      return element.props.children[0].props.src;
+    }
+  }
+  return null;
 }
 
 export type AskQuestionFormProps = {
   user: any;
 };
 
-function markdownToPlaintext(text: string): string {
+function toPlaintext(text: string): string {
   return removeMd(text).replace(/&nbsp;/g, " ");
 }
 
@@ -136,8 +141,8 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       /* @ts-ignore */
       hubs: mutableFormFields.hubs.map((hub) => hub.id),
       is_public: !draft,
-      preview_img: firstImageFromMarkdown(mutableFormFields.text),
-      renderable_text: markdownToPlaintext(mutableFormFields.text),
+      preview_img: firstImageFromHtml(mutableFormFields.text),
+      renderable_text: toPlaintext(mutableFormFields.text),
       title: mutableFormFields.title,
       viewers: null,
     };
