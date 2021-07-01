@@ -12,8 +12,9 @@ const animatedComponents = makeAnimated();
 
 // Will display count of selected options instead
 // of listing each individual option label.
-const CustomCountValueContainer = ({ children, getValue, ...props }) => {
-  var length = getValue().length;
+// Format: {label} {selectedCount}
+const CustomValueContainerWithCount = ({ children, getValue, ...props }) => {
+  const length = getValue().length;
   const label = get(props, "selectProps.placeholder", "");
 
   return (
@@ -25,6 +26,26 @@ const CustomCountValueContainer = ({ children, getValue, ...props }) => {
             <span className={css(styles.countBadge)}>{length}</span>
           )}
         </div>
+      )}
+      {React.cloneElement(children[1])}
+    </components.ValueContainer>
+  );
+};
+
+// Will display the selected value along label
+// Format: {label}: {selectedValue}
+const CustomValueContainerWithLabel = ({ children, getValue, ...props }) => {
+  const rawValue = getValue();
+  const label = get(props, "selectProps.placeholder", "");
+  const selectedValue = get(rawValue, "[0].label") || "";
+
+  return (
+    <components.ValueContainer {...props}>
+      <span className={css(styles.emphasizedLabel)}>{label}</span>
+      {selectedValue.length > 0 && (
+        <span>
+          {":"} {selectedValue}
+        </span>
       )}
       {React.cloneElement(children[1])}
     </components.ValueContainer>
@@ -66,6 +87,7 @@ class FormSelect extends React.Component {
       defaultValue,
       maxMenuHeight,
       showCountInsteadOfLabels,
+      showLabelAlongSelection,
     } = this.props;
 
     const configuredComponents = {
@@ -73,7 +95,9 @@ class FormSelect extends React.Component {
     };
 
     if (showCountInsteadOfLabels) {
-      configuredComponents.ValueContainer = CustomCountValueContainer;
+      configuredComponents.ValueContainer = CustomValueContainerWithCount;
+    } else if (showLabelAlongSelection) {
+      configuredComponents.ValueContainer = CustomValueContainerWithLabel;
     }
 
     const formatStyle = (styleObject) => {
@@ -204,8 +228,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
   },
+  emphasizedLabel: {
+    fontWeight: 500,
+  },
   countBadge: {
-    backgroundColor: "#edeefe",
+    backgroundColor: colors.LIGHT_BLUE(),
     borderRadius: 20,
     color: colors.BLUE(),
     padding: "3px 8px",
