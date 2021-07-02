@@ -186,7 +186,9 @@ class LiveFeedNotification extends React.Component {
     if (type === "summary") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}`;
-    } else if (["paper", "researchhub post", "thread", "comment", "reply"]) {
+    } else if (
+      ["paper", "researchhub post", "thread", "comment", "reply"].includes(type)
+    ) {
       const metaData = getNotifMetadata(notification);
       href = metaData.href;
       route = metaData.hrefAs;
@@ -294,7 +296,7 @@ class LiveFeedNotification extends React.Component {
         {verb}{" "}
         <Link href={href} as={hrefAs}>
           <a className={css(styles.link)} onClick={(e) => e.stopPropagation()}>
-            {subject.linkText},
+            {subject.linkText}
           </a>
         </Link>
         <em>{subject.plainText}</em>
