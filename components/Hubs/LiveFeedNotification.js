@@ -8,6 +8,8 @@ import Router from "next/router";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import { withAlert } from "react-alert";
+// import { isMobile } from "react-device-detect";
+const isMobile = true;
 
 // Component
 import AuthorAvatar from "../AuthorAvatar";
@@ -29,95 +31,39 @@ const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
   const {
     content_type: notifType,
-    created_by: createdBy,
-    created_date: createdDate,
     unified_document: unifiedDocument,
   } = notification;
 
   const { document_type: sourceType } = unifiedDocument;
 
-  let doc, href, hrefAs, postId, postTitle, slug;
+  let href, hrefAs, doc, postId, postTitle;
   switch (sourceType) {
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
       postId = doc.id;
       postTitle = doc.title || unifiedDocument.post_title;
-      slug = formatPaperSlug(postTitle);
-      hrefAs = `/post/${postId}/${slug}`;
+      hrefAs = `/post/${postId}/${postTitle}`;
       break;
     case "PAPER":
       href = "/paper/[paperId]/[paperName]";
       doc = unifiedDocument.documents; // For papers, documents is an object
       postId = doc.id;
-      postTitle = doc.title || unifiedDocument.paper_title;
-      slug = formatPaperSlug(postTitle);
-      hrefAs = `/paper/${postId}/${slug}`;
+      postTitle = unifiedDocument.slug || unifiedDocument.title;
+      hrefAs = `/paper/${postId}/${postTitle}`;
       break;
   }
   if (["thread", "comment", "reply"].includes(notifType)) {
-    hrefAs += "#comments"; // TODO: briansantoso - link directly to specific comment with threadId
+    hrefAs += "#comments";
   }
-  const timestamp = formatTimestamp(createdDate);
-  const username = formatUsername(
-    getNestedValue(createdBy, ["author_profile"])
-  );
-  const authorId = getNestedValue(createdBy, ["author_profile", "id"]);
   return {
-    authorId,
     href,
     hrefAs,
     notifType,
-    notifType,
     postId,
     postTitle,
-    slug,
     sourceType,
-    timestamp,
-    username,
   };
-};
-
-const formatUsername = (userObject) => {
-  if (!doesNotExist(userObject)) {
-    let { first_name, last_name } = userObject;
-    return `${first_name} ${last_name}`;
-  }
-  return "";
-};
-
-const formatTimestamp = (date_str) => {
-  if (!date_str) {
-    return;
-  }
-  date_str = date_str.trim();
-  date_str = date_str.replace(/\.\d\d\d+/, ""); // remove the milliseconds
-  date_str = date_str.replace(/-/, "/").replace(/-/, "/"); //substitute - with /
-  date_str = date_str.replace(/T/, " ").replace(/Z/, " UTC"); //remove T and substitute Z with UTC
-  date_str = date_str.replace(/([\+\-]\d\d)\:?(\d\d)/, " $1$2"); // +08:00 -> +0800
-  const parsed_date = new Date(date_str);
-  const relative_to = new Date();
-  const delta = Math.max(
-    2,
-    parseInt((relative_to.getTime() - parsed_date) / 1000)
-  );
-  let r = "";
-  if (delta < 60) {
-    r = delta + " seconds ago";
-  } else if (delta < 120) {
-    r = "a minute ago";
-  } else if (delta < 45 * 60) {
-    r = parseInt(delta / 60, 10).toString() + " minutes ago";
-  } else if (delta < 2 * 60 * 60) {
-    r = "an hour ago";
-  } else if (delta < 24 * 60 * 60) {
-    r = "" + parseInt(delta / 3600, 10).toString() + " hours ago";
-  } else if (delta < 48 * 60 * 60) {
-    r = "a day ago";
-  } else {
-    r = parseInt(delta / 86400, 10).toString() + " days ago";
-  }
-  return "about " + r;
 };
 
 class LiveFeedNotification extends React.Component {
@@ -156,10 +102,23 @@ class LiveFeedNotification extends React.Component {
     }
   };
 
+  formatUsername = (userObject) => {
+    if (!doesNotExist(userObject)) {
+      let { first_name, last_name } = userObject;
+      return `${first_name} ${last_name}`;
+    }
+    return "";
+  };
+
   handleClickNavigation = (e) => {
     e && e.stopPropagation();
     let { notification } = this.props;
-    let { content_type, paper_id, thread_id } = notification;
+    let {
+      content_type,
+      parent_content_type,
+      paper_id,
+      thread_id,
+    } = notification;
     let type = content_type;
 
     let paperId = paper_id;
@@ -174,12 +133,21 @@ class LiveFeedNotification extends React.Component {
             : notification.paper_title
         );
 
-    if (type === "summary") {
+    if (type === "paper" || type === "summary") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}`;
-    } else if (
-      ["paper", "researchhub post", "thread", "comment", "reply"].includes(type)
-    ) {
+    } else if (type === "researchhub post") {
+      const metaData = getNotifMetadata(notification);
+      href = metaData.href;
+      route = metaData.hrefAs;
+    } else if (type === "thread" || type === "comment" || type === "reply") {
+      // if (parent_content_type === "paper") { // TODO: briansantoso - refactor to reflect BE changes
+      //   href = "/paper/[paperId]/[paperName]";
+      //   route = `/paper/${paperId}/${slug}#comments`;
+      // } else if (parent_content_type === "post") {
+      //   href = "/post/[postId]/[postName]";
+      //   route = `/post/${paperId}/${slug}#comments`;
+      // }
       const metaData = getNotifMetadata(notification);
       href = metaData.href;
       route = metaData.hrefAs;
@@ -193,127 +161,6 @@ class LiveFeedNotification extends React.Component {
     return (document.documentElement.scrollTop = 0);
   };
 
-  handleNewCases = () => {
-    const { notification } = this.props;
-    const {
-      authorId,
-      href,
-      hrefAs,
-      notifType,
-      postId,
-      postTitle,
-      slug,
-      sourceType,
-      timestamp,
-      username,
-    } = getNotifMetadata(notification);
-
-    const threadTip = notification.thread_title
-      ? notification.thread_title
-      : notification.thread_plain_text;
-
-    let verb, subject, preposition;
-    switch (notifType) {
-      case "paper":
-        verb = `uploaded a new ${
-          notification.paper_type === "PRE_REGISTRATION"
-            ? "funding request"
-            : "paper"
-        }`;
-        subject = {
-          linkText: this.truncatePaperTitle(postTitle),
-          plainText: "",
-        };
-        break;
-      case "researchhub post":
-        verb = "created a new post";
-        subject = {
-          linkText: this.truncatePaperTitle(postTitle),
-          plainText: "",
-        };
-        break;
-      case "thread":
-        const plainText =
-          notification.thread_plain_text && notification.thread_plain_text;
-        verb = "left a";
-        subject = {
-          linkText: "comment",
-          plainText: plainText,
-        };
-        preposition = {
-          linkText: this.truncatePaperTitle(postTitle),
-          plainText: "",
-        };
-        break;
-      case "comment":
-        const commentTip = notification.tip;
-        verb = "left a";
-        subject = {
-          linkText: "comment",
-          plainText: commentTip,
-        };
-        preposition = {
-          linkText: threadTip,
-          plainText: "",
-        };
-        break;
-      case "reply":
-        const replyTip = notification.tip;
-        verb = "left a";
-        subject = {
-          linkText: "reply",
-          plainText: replyTip,
-        };
-        preposition = {
-          linkText: threadTip,
-          plainText: "",
-        };
-        break;
-    }
-
-    return (
-      <div className={css(styles.message)}>
-        <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/posts`}
-        >
-          <a
-            className={css(styles.username)}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {username}
-          </a>
-        </Link>
-        {` ${verb} `}
-        <Link href={href} as={hrefAs}>
-          <a className={css(styles.link)} onClick={(e) => e.stopPropagation()}>
-            {subject.linkText}
-          </a>
-        </Link>
-        <em>{subject.plainText}</em>
-        {preposition ? (
-          <Fragment>
-            {" in "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={postTitle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {preposition.linkText}
-              </a>
-            </Link>
-            <em>{preposition.plainText}</em>
-          </Fragment>
-        ) : null}
-        <span className={css(styles.timestamp)}>
-          <span className={css(styles.timestampDivider)}>•</span>
-          {timestamp}
-        </span>
-      </div>
-    );
-  };
-
   renderNotification = () => {
     const { notification } = this.props;
     let {
@@ -325,8 +172,8 @@ class LiveFeedNotification extends React.Component {
       slug,
     } = notification;
     let notificationType = content_type;
-    const timestamp = formatTimestamp(created_date);
-    const username = formatUsername(
+    const timestamp = this.formatTimestamp(created_date);
+    const username = this.formatUsername(
       getNestedValue(created_by, ["author_profile"])
     );
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
@@ -339,8 +186,15 @@ class LiveFeedNotification extends React.Component {
       ? notification.paper_title
       : notification.paper_official_title;
     let paperId = notification.paper_id;
+    let threadTip = notification.thread_title
+      ? notification.thread_title
+      : notification.thread_plain_text;
+    let threadId = notification.thread_id;
+    let plainText =
+      notification.thread_plain_text && notification.thread_plain_text;
 
-    // TODO: briansantoso - make bullet_point, summary, purchase compatible with posts
+    let href, route;
+    const { parent_content_type } = notification;
     switch (notificationType) {
       case "bullet_point":
         return (
@@ -423,24 +277,204 @@ class LiveFeedNotification extends React.Component {
             </span>
           </div>
         );
+      case "paper":
+        var paperTitle = notification.paper_title
+          ? notification.paper_title
+          : notification.paper_official_title;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            uploaded a new{" "}
+            {notification.paper_type === "PRE_REGISTRATION"
+              ? "funding request"
+              : "paper"}{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTitle}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTitle && this.truncatePaperTitle(paperTitle)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "thread":
+        if (parent_content_type === "paper") {
+          href = "/paper/[paperId]/[paperName]";
+          route = `/paper/${paperId}/${slug}#comments`;
+        } else if (parent_content_type === "post") {
+          href = "/post/[postId]/[postName]";
+          route = `/post/${paperId}/${slug}#comments`;
+        }
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            left a{" "}
+            <Link href={href} as={`${route}#comments`}>
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                comment,
+              </a>
+            </Link>
+            <em>{plainText && this.truncateComment(plainText)}</em>
+            {" in "}
+            <Link href={href} as={route}>
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "comment":
+        var commentTip = notification.tip;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            left a{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                data-tip={commentTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                comment,
+              </a>
+            </Link>
+            <em>{commentTip && this.truncateComment(commentTip)}</em>
+            {" in "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={threadTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {threadTip && this.truncatePaperTitle(threadTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "reply":
+        if (parent_content_type === "paper") {
+          href = "/paper/[paperId]/[paperName]";
+          route = `/paper/${paperId}/${slug}#comments`;
+        } else if (parent_content_type === "post") {
+          href = "/post/[postId]/[postName]";
+          route = `/post/${paperId}/${slug}#comments`;
+        }
+        var replyTip = notification.tip;
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            left a{" "}
+            <Link href={href} as={route}>
+              <a
+                className={css(styles.link)}
+                data-tip={replyTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                reply,
+              </a>
+            </Link>
+            <em>{replyTip && this.truncateComment(replyTip)}</em>
+            {" in "}
+            <Link href={href} as={route}>
+              <a
+                className={css(styles.paper)}
+                data-tip={threadTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {threadTip && this.truncatePaperTitle(threadTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
       case "purchase":
-        const { recipient } = notification;
-        const recipientAuthorId = recipient.author_id;
-        const recipientName = recipient.name;
-        const supportType = notification.support_type;
-        const paperTitle = notification.paper_title;
+        var { recipient } = notification;
+        var recipientAuthorId = recipient.author_id;
+        var recipientName = recipient.name;
+        var supportType = notification.support_type;
+        var paperTitle = notification.paper_title;
 
-        let formattedSupportType;
         if (supportType === "paper") {
-          formattedSupportType = "paper";
-        } else if (supportType === "post") {
-          formattedSupportType = "post";
+          supportType = "paper";
         } else if (supportType === "bulletpoint") {
-          formattedSupportType = "key takeaway";
+          supportType = "key takeaway";
         } else if (supportType === "summary") {
-          formattedSupportType = "summary";
+          supportType = "summary";
         } else {
-          formattedSupportType = "comment";
+          supportType = "comment";
         }
         return (
           <div className={css(styles.message)}>
@@ -473,7 +507,7 @@ class LiveFeedNotification extends React.Component {
                 {recipientName}
               </a>
             </Link>{" "}
-            for their {formattedSupportType} on{" "}
+            for their {supportType} on{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
@@ -493,7 +527,180 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       default:
-        return this.handleNewCases();
+        return;
+    }
+  };
+
+  deprecatedCases = () => {
+    switch (type) {
+      case "vote_paper":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            voted on{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "vote_thread":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            voted on a{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                thread
+              </a>
+            </Link>
+            in{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "vote_comment":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            voted on a{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                comment
+              </a>
+            </Link>
+            in{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
+      case "vote_reply":
+        return (
+          <div className={css(styles.message)}>
+            <Link
+              href={"/user/[authorId]/[tabName]"}
+              as={`/user/${authorId}/posts`}
+            >
+              <a
+                className={css(styles.username)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {username}
+              </a>
+            </Link>{" "}
+            voted on a{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]/[discussionThreadId]"}
+              as={`/paper/${paperId}/${title}/${threadId}`}
+            >
+              <a
+                className={css(styles.link)}
+                onClick={(e) => e.stopPropagation()}
+              >
+                reply
+              </a>
+            </Link>
+            in{" "}
+            <Link
+              href={"/paper/[paperId]/[paperName]"}
+              as={`/paper/${paperId}/${title}`}
+            >
+              <a
+                className={css(styles.paper)}
+                data-tip={paperTip}
+                onClick={(e) => e.stopPropagation()}
+              >
+                {paperTip && this.truncatePaperTitle(paperTip)}
+              </a>
+            </Link>
+            <span className={css(styles.timestamp)}>
+              <span className={css(styles.timestampDivider)}>•</span>
+              {timestamp}
+            </span>
+          </div>
+        );
     }
   };
 
@@ -617,6 +824,47 @@ class LiveFeedNotification extends React.Component {
 
   convertDate = () => {
     return formatPublishedDate(transformDate(paper.paper_publish_date));
+  };
+
+  formatTimestamp = (date) => {
+    if (!isMobile) {
+      date = new Date(date);
+      return timeAgo.format(date);
+    } else {
+      function relative_time(date_str) {
+        if (!date_str) {
+          return;
+        }
+        date_str = date_str.trim();
+        date_str = date_str.replace(/\.\d\d\d+/, ""); // remove the milliseconds
+        date_str = date_str.replace(/-/, "/").replace(/-/, "/"); //substitute - with /
+        date_str = date_str.replace(/T/, " ").replace(/Z/, " UTC"); //remove T and substitute Z with UTC
+        date_str = date_str.replace(/([\+\-]\d\d)\:?(\d\d)/, " $1$2"); // +08:00 -> +0800
+        var parsed_date = new Date(date_str);
+        var relative_to = arguments.length > 1 ? arguments[1] : new Date(); //defines relative to what ..default is now
+        var delta = parseInt((relative_to.getTime() - parsed_date) / 1000);
+        delta = delta < 2 ? 2 : delta;
+        var r = "";
+        if (delta < 60) {
+          r = delta + " seconds ago";
+        } else if (delta < 120) {
+          r = "a minute ago";
+        } else if (delta < 45 * 60) {
+          r = parseInt(delta / 60, 10).toString() + " minutes ago";
+        } else if (delta < 2 * 60 * 60) {
+          r = "an hour ago";
+        } else if (delta < 24 * 60 * 60) {
+          r = "" + parseInt(delta / 3600, 10).toString() + " hours ago";
+        } else if (delta < 48 * 60 * 60) {
+          r = "a day ago";
+        } else {
+          r = parseInt(delta / 86400, 10).toString() + " days ago";
+        }
+        return "about " + r;
+      }
+
+      return relative_time(date);
+    }
   };
 
   removeContent = () => {
