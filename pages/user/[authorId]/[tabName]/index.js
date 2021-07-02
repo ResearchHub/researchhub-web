@@ -142,7 +142,9 @@ function AuthorPage(props) {
   );
 
   const authorUserID = author.user;
-  const doesAuthorHaveUser = !isNullOrUndefined(authorUserID);
+  const isAuthorClaimed = author.is_claimed;
+  const doesAuthorHaveUser =
+    !isNullOrUndefined(authorUserID) || isAuthorClaimed;
   const isAuthorUserSuspended =
     authorUserStatus === AUTHOR_USER_STATUS.SUSPENDED;
   const isCurrentUserModerator =
