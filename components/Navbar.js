@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useRef } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -15,7 +15,6 @@ import { AuthActions } from "../redux/auth";
 
 // Components
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import AlgoliaSearch from "./Search/AlgoliaSearch";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "../components/Form/Button";
 import DndModal from "../components/Modals/DndModal";
@@ -30,6 +29,7 @@ import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
+// import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
@@ -47,6 +47,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Navbar = (props) => {
   const router = useRouter();
+  const navbarRef = useRef(null);
 
   const {
     isLoggedIn,
@@ -98,6 +99,7 @@ const Navbar = (props) => {
       route: "",
       link: "https://medium.com/researchhub",
       icon: "medium",
+      className: "lessImportantTab",
     },
     {
       label: "Help",
@@ -105,6 +107,7 @@ const Navbar = (props) => {
       link:
         "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
       icon: "help",
+      className: "lessImportantTab",
     },
     { label: "Live", route: "/live", icon: "live" },
     { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
@@ -197,7 +200,8 @@ const Navbar = (props) => {
             className={css(
               styles.tab,
               index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab
+              index === 2 && styles.lastTab,
+              styles[tab.className]
             )}
           >
             <a
@@ -252,7 +256,10 @@ const Navbar = (props) => {
     return tabs.map((tab, index) => {
       if (tab.link) {
         return (
-          <div className={css(styles.menuItem)} key={`navbar_tab_${index}`}>
+          <div
+            className={css(styles.menuItem, styles[tab.className])}
+            key={`navbar_tab_${index}`}
+          >
             <a
               className={css(styles.menuItem, styles.noMargin)}
               href={tab.link}
@@ -277,7 +284,7 @@ const Navbar = (props) => {
       }
       return (
         <div
-          className={css(styles.menuItem)}
+          className={css(styles.menuItem, styles[tab.className])}
           onClick={
             tab.onClick
               ? tab.onClick
@@ -324,16 +331,6 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        {killswitch("algoliaSearch") && <AlgoliaSearch mobile={true} />}
-        {killswitch("elasticSearch") && (
-          <Search
-            searchClass={styles.mobileSearch}
-            inputClass={styles.inputClass}
-            searchIconClass={styles.searchIconClass}
-            dropdownClass={styles.dropdownClass}
-            afterSearchClick={toggleSideMenu}
-          />
-        )}
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
@@ -425,6 +422,7 @@ const Navbar = (props) => {
         {renderMenuItems()}
       </Menu>
       <div
+        ref={navbarRef}
         className={css(
           styles.navbarContainer,
           (router.route === "/paper/[paperId]/[paperName]" ||
@@ -447,8 +445,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {killswitch("algoliaSearch") && <AlgoliaSearch />}
-        {killswitch("elasticSearch") && <Search />}
+        {killswitch("searchResults") && <Search navbarRef={navbarRef} />}
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -665,6 +662,11 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  lessImportantTab: {
+    "@media only screen and (min-width: 760px) and (max-width: 900px)": {
+      display: "none",
+    },
+  },
   buttonLeft: {
     marginRight: 16,
     "@media only screen and (min-width: 1024px)": {
@@ -753,7 +755,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginRight: 15,
     cursor: "pointer",
-    "@media only screen and (max-width: 900px)": {
+    "@media only screen and (max-width: 1000px)": {
       margin: "0 10px 0 10px",
       fontSize: 14,
     },

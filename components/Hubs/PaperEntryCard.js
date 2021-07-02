@@ -23,6 +23,7 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
   formatPaperSlug,
   getUsersFromPaper,
@@ -123,7 +124,7 @@ const PaperEntryCard = (props) => {
 
   function configurePreview(arr, setFigures) {
     return arr.filter((el) => {
-      return el !== null;
+      return !isNullOrUndefined(el);
     });
   }
 
