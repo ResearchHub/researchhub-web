@@ -92,7 +92,7 @@ const SearchResults = ({ initialResults }) => {
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
-  const [numOfHits, setNumOfHits] = useState(0);
+  const [numOfHits, setNumOfHits] = useState(null);
   const [results, setResults] = useState([]);
   const [userVotes, setUserVotes] = useState({});
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
@@ -420,7 +420,6 @@ const SearchResults = ({ initialResults }) => {
           attribute: "title",
         });
         paper.promoted = false;
-
         paper.user_vote = userVotes[paper.id];
 
         return (
@@ -430,9 +429,12 @@ const SearchResults = ({ initialResults }) => {
             key={paper.id}
             voteCallback={(arrIndex, currPaper) => {
               const idx = results.findIndex((p) => p.id === currPaper.id);
+
               results[idx] = currPaper;
+              userVotes[currPaper.id] = currPaper.user_vote;
 
               setResults(results);
+              setUserVotes(userVotes);
             }}
           />
         );
