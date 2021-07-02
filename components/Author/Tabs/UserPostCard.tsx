@@ -231,7 +231,11 @@ function UserPostCard(props: UserPostCardProps) {
 
   return (
     <Ripples
-      className={css(styles.userPostCard, style && style)}
+      className={css(
+        styles.userPostCard,
+        style && style,
+        isHubsOpen && styles.overflow
+      )}
       onClick={navigateToPage}
     >
       {desktopVoteWidget}
@@ -299,10 +303,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     borderRadius: 3,
-    overflow: "visible",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
+  },
+  overflow: {
+    overflow: "visible",
   },
   postCreatedBy: {
     display: "flex",
@@ -329,7 +335,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "flex-start",
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
