@@ -31,21 +31,10 @@ function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
 
 function UserPosts(props) {
   const { author, user, fetching } = props;
-
-  const emptyPosts = (
-    <div className={css(styles.box)}>
-      <h2 className={css(styles.noContent)}>User has not authored any posts</h2>
-    </div>
-  );
-
-  if (isNullOrUndefined(author.user)) {
-    return emptyPosts;
-  }
-
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
   let postCards;
-  if (posts.length > 0) {
+  if (!isNullOrUndefined(author.user) && posts.length > 0) {
     postCards = posts.map((post, index) => (
       <UserPostCard
         {...post}
@@ -54,7 +43,13 @@ function UserPosts(props) {
       />
     ));
   } else {
-    postCards = emptyPosts;
+    postCards = (
+      <div className={css(styles.box)}>
+        <h2 className={css(styles.noContent)}>
+          User has not authored any posts
+        </h2>
+      </div>
+    );
   }
 
   useEffectFetchUserPosts({ setIsFetching, setPosts, userID: author.user });
