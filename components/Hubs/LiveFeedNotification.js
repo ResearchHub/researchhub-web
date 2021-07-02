@@ -27,6 +27,45 @@ import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
 import { timeAgo } from "~/config/utils/dates";
 
+const getNotifMetadata = (notification) => {
+  // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
+  const {
+    content_type: notifType,
+    unified_document: unifiedDocument,
+  } = notification;
+
+  const { document_type: sourceType } = unifiedDocument;
+
+  let href, hrefAs, doc, postId, postTitle;
+  switch (sourceType) {
+    case "DISCUSSION":
+      href = "/post/[documentId]/[title]";
+      doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
+      postId = doc.id;
+      postTitle = doc.title || unifiedDocument.post_title;
+      hrefAs = `/post/${postId}/${postTitle}`;
+      break;
+    case "PAPER":
+      href = "/paper/[paperId]/[paperName]";
+      doc = unifiedDocument.documents; // For papers, documents is an object
+      postId = doc.id;
+      postTitle = unifiedDocument.slug || unifiedDocument.title;
+      hrefAs = `/paper/${postId}/${postTitle}`;
+      break;
+  }
+  if (["thread", "comment", "reply"].includes(notifType)) {
+    hrefAs += "#comments";
+  }
+  return {
+    href,
+    hrefAs,
+    notifType,
+    postId,
+    postTitle,
+    sourceType,
+  };
+};
+
 class LiveFeedNotification extends React.Component {
   constructor(props) {
     super(props);
@@ -97,14 +136,21 @@ class LiveFeedNotification extends React.Component {
     if (type === "paper" || type === "summary") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}`;
+    } else if (type === "researchhub post") {
+      const metaData = getNotifMetadata(notification);
+      href = metaData.href;
+      route = metaData.hrefAs;
     } else if (type === "thread" || type === "comment" || type === "reply") {
-      if (parent_content_type === "paper") {
-        href = "/paper/[paperId]/[paperName]";
-        route = `/paper/${paperId}/${slug}#comments`;
-      } else if (parent_content_type === "post") {
-        href = "/post/[postId]/[postName]";
-        route = `/post/${paperId}/${slug}#comments`;
-      }
+      // if (parent_content_type === "paper") { // TODO: briansantoso - refactor to reflect BE changes
+      //   href = "/paper/[paperId]/[paperName]";
+      //   route = `/paper/${paperId}/${slug}#comments`;
+      // } else if (parent_content_type === "post") {
+      //   href = "/post/[postId]/[postName]";
+      //   route = `/post/${paperId}/${slug}#comments`;
+      // }
+      const metaData = getNotifMetadata(notification);
+      href = metaData.href;
+      route = metaData.hrefAs;
     } else if (type === "bullet_point") {
       href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}#takeaways`;
