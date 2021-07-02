@@ -237,23 +237,6 @@ class LiveFeedNotification extends React.Component {
           linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
         };
-        contentBody = (
-          <Fragment>
-            uploaded a new{" "}
-            {notification.paper_type === "PRE_REGISTRATION"
-              ? "funding request"
-              : "paper"}{" "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={postTitle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {postTitle && this.truncatePaperTitle(postTitle)}
-              </a>
-            </Link>
-          </Fragment>
-        );
         break;
       case "researchhub post":
         verb = "created a new post";
@@ -261,20 +244,6 @@ class LiveFeedNotification extends React.Component {
           linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
         };
-        contentBody = (
-          <Fragment>
-            created a new post{" "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={postTitle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {postTitle && this.truncatePaperTitle(postTitle)}
-              </a>
-            </Link>
-          </Fragment>
-        );
         break;
       case "thread":
         const plainText =
@@ -288,31 +257,6 @@ class LiveFeedNotification extends React.Component {
           linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
         };
-
-        contentBody = (
-          <Fragment>
-            left a{" "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.link)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                comment,
-              </a>
-            </Link>
-            <em>{plainText && this.truncateComment(plainText)}</em>
-            {" in "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={postTitle}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {postTitle && this.truncatePaperTitle(postTitle)}
-              </a>
-            </Link>
-          </Fragment>
-        );
         break;
       case "comment":
         const commentTip = notification.tip;
@@ -325,31 +269,6 @@ class LiveFeedNotification extends React.Component {
           linkText: threadTip,
           plainText: "",
         };
-        contentBody = (
-          <Fragment>
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.link)}
-                data-tip={commentTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                comment,
-              </a>
-            </Link>
-            <em>{commentTip && this.truncateComment(commentTip)}</em>
-            {" in "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={threadTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {threadTip && this.truncatePaperTitle(threadTip)}
-              </a>
-            </Link>
-          </Fragment>
-        );
-
         break;
       case "reply":
         const replyTip = notification.tip;
@@ -362,31 +281,6 @@ class LiveFeedNotification extends React.Component {
           linkText: threadTip,
           plainText: "",
         };
-        contentBody = (
-          <Fragment>
-            left a{" "}
-            <Link href={href} as={route}>
-              <a
-                className={css(styles.link)}
-                data-tip={replyTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                reply,
-              </a>
-            </Link>
-            <em>{replyTip && this.truncateComment(replyTip)}</em>
-            {" in "}
-            <Link href={href} as={hrefAs}>
-              <a
-                className={css(styles.paper)}
-                data-tip={threadTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {threadTip && this.truncatePaperTitle(threadTip)}
-              </a>
-            </Link>
-          </Fragment>
-        );
         break;
     }
 
@@ -403,7 +297,6 @@ class LiveFeedNotification extends React.Component {
             {username}
           </a>
         </Link>{" "}
-        {/* {contentBody} */}
         {verb}{" "}
         <Link href={href} as={hrefAs}>
           <a className={css(styles.link)} onClick={(e) => e.stopPropagation()}>
