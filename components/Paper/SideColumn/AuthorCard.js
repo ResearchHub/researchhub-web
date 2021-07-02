@@ -17,7 +17,8 @@ const AuthorCard = (props) => {
   } = author;
 
   if (authorID) {
-    const shouldDisplayClaimButton =
+    // checks if this author is NOT an "raw_author"
+    const shouldDisplayClaimButton = // checks this author does NOT have author
       isNullOrUndefined(authorUserID) && !Boolean(is_claimed);
     return (
       <div className={css(styles.authorCardWrap)}>
