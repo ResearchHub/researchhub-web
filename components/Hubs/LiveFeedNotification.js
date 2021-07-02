@@ -168,12 +168,7 @@ class LiveFeedNotification extends React.Component {
   handleClickNavigation = (e) => {
     e && e.stopPropagation();
     let { notification } = this.props;
-    let {
-      content_type,
-      parent_content_type,
-      paper_id,
-      thread_id,
-    } = notification;
+    let { content_type, paper_id, thread_id } = notification;
     let type = content_type;
 
     let paperId = paper_id;
@@ -224,7 +219,6 @@ class LiveFeedNotification extends React.Component {
       ? notification.thread_title
       : notification.thread_plain_text;
 
-    let contentBody;
     let verb, subject, preposition;
     switch (notifType) {
       case "paper":
