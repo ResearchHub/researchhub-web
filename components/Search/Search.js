@@ -20,7 +20,7 @@ const Search = ({ navbarRef }) => {
   const [query, setQuery] = useState(get(router, "query.search") || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
   const [isExpandedSearchOpen, setIsExpandedSearchOpen] = useState(false);
-  const [placeholderText, setPlaceholderText] = useState("Search Research Hub");
+  const [placeholderText, setPlaceholderText] = useState("Search ResearchHub");
 
   useEffect(() => {
     updateSearchLayout();
@@ -59,12 +59,9 @@ const Search = ({ navbarRef }) => {
       const val = el.value;
 
       // Focus at end of input
-      // Timeout interval is arbitrary to provide fix in Safari
-      setTimeout(function() {
-        el.focus();
-      }, 250);
       el.value = "";
       el.value = val;
+      el.focus();
     }
   };
 
@@ -93,7 +90,7 @@ const Search = ({ navbarRef }) => {
     }
 
     setPlaceholderText(
-      inputWidth <= SMALL_PLACEHOLDER_WIDTH ? "Search" : "Search Research Hub"
+      inputWidth <= SMALL_PLACEHOLDER_WIDTH ? "Search" : "Search ResearchHub"
     );
   };
 
