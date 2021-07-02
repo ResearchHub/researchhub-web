@@ -33,7 +33,6 @@ const Index = ({ serverResponse, hasError }) => {
     return <Error statusCode={500} />;
   }
 
-  console.log(router.query);
   return (
     <Fragment>
       <Head
