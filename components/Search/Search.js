@@ -20,7 +20,7 @@ const Search = ({ navbarRef }) => {
   const [query, setQuery] = useState(get(router, "query.search") || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
   const [isExpandedSearchOpen, setIsExpandedSearchOpen] = useState(false);
-  const [placeholderText, setPlaceholderText] = useState("Search ResearchHub");
+  const [placeholderText, setPlaceholderText] = useState("Search");
 
   useEffect(() => {
     updateSearchLayout();
@@ -88,10 +88,6 @@ const Search = ({ navbarRef }) => {
     } else {
       setIsSmallScreenSearch(false);
     }
-
-    setPlaceholderText(
-      inputWidth <= SMALL_PLACEHOLDER_WIDTH ? "Search" : "Search ResearchHub"
-    );
   };
 
   const toggleExpandedSearch = (isOpen) => {
@@ -202,9 +198,10 @@ const styles = StyleSheet.create({
   search: {
     width: "100%",
     maxWidth: 600,
+    borderRadius: 2,
     boxSizing: "border-box",
     background: "white",
-    border: `${colors.GREY()} 1px solid`,
+    border: `1px solid rgba(151, 151, 151, 0.2)`,
     display: "flex",
     alignItems: "center",
     position: "relative",
@@ -307,6 +304,9 @@ const styles = StyleSheet.create({
         boxShadow: `0px 0px 1px 1px ${colors.BLUE()}`,
         cursor: "text",
       },
+    },
+    "::placeholder": {
+      opacity: 0.6,
     },
   },
   searchInputSmallScreen: {
