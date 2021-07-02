@@ -805,6 +805,7 @@ class LiveFeedNotification extends React.Component {
         var delta = parseInt((relative_to.getTime() - parsed_date) / 1000);
         delta = delta < 2 ? 2 : delta;
         var r = "";
+
         if (delta < 60) {
           r = delta + " seconds ago";
         } else if (delta < 120) {
