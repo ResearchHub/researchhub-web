@@ -8,10 +8,10 @@ import React from "react";
 
 const AuthorCard = (props) => {
   const { name, author, onClaimSelect } = props;
-  const { id, orcid_id, user } = author;
+  const { id, orcid_id, is_claimed } = author;
 
   if (id) {
-    const shouldDisplayClaimButton = isNullOrUndefined(user); // implies that this author doesn't have user
+    const shouldDisplayClaimButton = !Boolean(is_claimed);
     return (
       <div className={css(styles.authorCardWrap)}>
         <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
