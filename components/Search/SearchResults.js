@@ -19,6 +19,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
+import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
 
 const timeFilterOpts = [
@@ -93,6 +94,7 @@ const SearchResults = ({ initialResults }) => {
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(0);
   const [results, setResults] = useState([]);
+  const [userVotes, setUserVotes] = useState({});
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
@@ -111,12 +113,16 @@ const SearchResults = ({ initialResults }) => {
   }, [router.query]);
 
   useEffect(() => {
-    setResults(get(initialResults, "results", []));
+    const results = get(initialResults, "results", []);
+
+    setResults(results);
     setNextResultsUrl(get(initialResults, "next", null));
     setNumOfHits(get(initialResults, "count", 0));
     setFacetValuesForHub(
       get(initialResults, "facets._filter_hubs.hubs.buckets", [])
     );
+
+    fetchAndSetUserVotes(results);
   }, [initialResults]);
 
   useEffect(() => {
@@ -129,6 +135,24 @@ const SearchResults = ({ initialResults }) => {
     };
   }, []);
 
+  const fetchAndSetUserVotes = async (results) => {
+    const formattedReq = results.map((r) => ({
+      documents: r,
+      document_type: "PAPER",
+    }));
+
+    const documents = await fetchUserVote(formattedReq);
+
+    const userVoteMap = documents.reduce((map, doc) => {
+      const paper = get(doc, "documents", {});
+      map[paper.id] = paper.user_vote;
+      return map;
+    }, {});
+
+    // Don't override previous votes set, append to them.
+    setUserVotes({ ...userVotes, ...userVoteMap });
+  };
+
   const loadMoreResults = () => {
     setIsLoadingMore(true);
 
@@ -138,6 +162,8 @@ const SearchResults = ({ initialResults }) => {
         setNextResultsUrl(res.next);
         setNumOfHits(res.count);
         setFacetValuesForHub(get(res, "facets._filter_hubs.hubs.buckets", []));
+
+        fetchAndSetUserVotes(res.results);
       })
       .finally(() => {
         setIsLoadingMore(false);
@@ -395,12 +421,19 @@ const SearchResults = ({ initialResults }) => {
         });
         paper.promoted = false;
 
+        paper.user_vote = userVotes[paper.id];
+
         return (
           <PaperEntryCard
             paper={paper}
             index={index}
             key={paper.id}
-            voteCallback={() => null}
+            voteCallback={(arrIndex, currPaper) => {
+              const idx = results.findIndex((p) => p.id === currPaper.id);
+              results[idx] = currPaper;
+
+              setResults(results);
+            }}
           />
         );
       })}

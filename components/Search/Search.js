@@ -59,7 +59,10 @@ const Search = ({ navbarRef }) => {
       const val = el.value;
 
       // Focus at end of input
-      el.focus();
+      // Timeout interval is arbitrary to provide fix in Safari
+      setTimeout(function() {
+        el.focus();
+      }, 250);
       el.value = "";
       el.value = val;
     }
@@ -230,6 +233,7 @@ const styles = StyleSheet.create({
     maxWidth: "unset",
     paddingLeft: 20,
     left: 0,
+    marginTop: 1,
     flexDirection: "row",
     boxShadow: `inset 0px 0px 0px 1px ${colors.BLUE()}`,
   },
@@ -239,6 +243,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     flexGrow: 1,
+    cursor: "pointer",
     flexDirection: "column",
     height: "100%",
   },
@@ -257,7 +262,7 @@ const styles = StyleSheet.create({
   },
   searchIconSmallScreen: {
     position: "static",
-    fontSize: 18,
+    fontSize: 16,
     opacity: 1,
     marginRight: 20,
     ":hover": {
@@ -293,7 +298,7 @@ const styles = StyleSheet.create({
     background: "transparent",
     border: "none",
     outline: "none",
-    fontSize: 14,
+    fontSize: 16,
     position: "relative",
     cursor: "pointer",
     ":hover": {
@@ -310,6 +315,7 @@ const styles = StyleSheet.create({
   searchInputSmallScreen: {
     padding: 0,
     height: 0,
+    visibility: "hidden",
     ":focus": {
       boxShadow: "none",
       ":hover": {
@@ -322,6 +328,7 @@ const styles = StyleSheet.create({
     height: "100%",
     fontSize: 18,
     paddingLeft: 20,
+    visibility: "visible",
     ":focus": {
       boxShadow: "none",
       ":hover": {
