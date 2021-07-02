@@ -10,23 +10,30 @@ import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
-  useEffect(() => {
-    setIsFetching(true);
-    fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        try {
-          setPosts(data.results);
-          setIsFetching(false);
-        } catch (error) {
-          setIsFetching(false);
-        }
-      })
-      .catch(() => {
+  useEffect(
+    (userId) => {
+      if (!isNullOrUndefined(userId)) {
+        setIsFetching(true);
+        fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((data) => {
+            try {
+              setPosts(data.results);
+              setIsFetching(false);
+            } catch (error) {
+              setIsFetching(false);
+            }
+          })
+          .catch(() => {
+            setIsFetching(false);
+          });
+      } else {
         setIsFetching(false);
-      });
-  }, [userID]);
+      }
+    },
+    [userID]
+  );
 }
 
 function UserPosts(props) {
@@ -34,7 +41,7 @@ function UserPosts(props) {
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
   let postCards;
-  if (!isNullOrUndefined(author.user) && posts.length > 0) {
+  if (posts.length > 0) {
     postCards = posts.map((post, index) => (
       <UserPostCard
         {...post}
