@@ -23,6 +23,7 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
   formatPaperSlug,
   getUsersFromPaper,
@@ -35,7 +36,6 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import AuthorAvatar from "../AuthorAvatar";
 import { ModalActions } from "~/redux/modals";
-import { isEmpty } from "underscore";
 
 const PaperEntryCard = (props) => {
   const {
@@ -124,7 +124,7 @@ const PaperEntryCard = (props) => {
 
   function configurePreview(arr, setFigures) {
     return arr.filter((el) => {
-      return !isEmpty(el);
+      return !isNullOrUndefined(el);
     });
   }
 
