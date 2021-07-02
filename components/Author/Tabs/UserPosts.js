@@ -7,6 +7,7 @@ import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
   useEffect(() => {
@@ -30,6 +31,17 @@ function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
 
 function UserPosts(props) {
   const { author, user, fetching } = props;
+
+  const emptyPosts = (
+    <div className={css(styles.box)}>
+      <h2 className={css(styles.noContent)}>User has not authored any posts</h2>
+    </div>
+  );
+
+  if (isNullOrUndefined(author.user)) {
+    return emptyPosts;
+  }
+
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
   let postCards;
@@ -42,13 +54,7 @@ function UserPosts(props) {
       />
     ));
   } else {
-    postCards = (
-      <div className={css(styles.box)}>
-        <h2 className={css(styles.noContent)}>
-          User has not authored any posts
-        </h2>
-      </div>
-    );
+    postCards = emptyPosts;
   }
 
   useEffectFetchUserPosts({ setIsFetching, setPosts, userID: author.user });
