@@ -139,11 +139,11 @@ class ColumnAuthors extends React.Component {
                   <div className={css(styles.claimCardTextGroup)}>
                     <div className={css(styles.claimCardTextMain)}>
                       {hasManyAuthors
-                        ? `Are you an author?`
+                        ? "Are you one of the authors?"
                         : "Are you the author?"}
                     </div>
                     <div className={css(styles.claimCardText)}>
-                      {"Claim your author and receive up to 1000 RSC"}
+                      {"Claim your profile and receive up to 1000 RSC"}
                     </div>
                   </div>
                   <img
@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     boxSizing: "border-box",
     display: "flex",
-    height: 60,
     margin: "16px 0 8px 0",
     padding: "10px 20px",
     width: "100%",
@@ -203,7 +202,6 @@ const styles = StyleSheet.create({
   },
   claimCardText: {
     color: "#272727",
-    fontFamily: "Poppins",
     fontSize: 14,
     fontStyle: "normal",
     width: "100",

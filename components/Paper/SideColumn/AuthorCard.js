@@ -100,6 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingRight: 16,
+    marginTop: 8,
   },
   claimButton: {
     backgroundColor: colors.NEW_BLUE(1),
