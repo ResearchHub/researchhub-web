@@ -106,8 +106,8 @@ class ColumnAuthors extends React.Component {
     const { auth, authors, paper } = this.props;
     const { claimSelectedAuthor, pages, page, ready } = this.state;
     const hasManyAuthors = authors.length > 1;
-    const shouldDisplayClaimCard = authors.some((author) =>
-      isNullOrUndefined(author.user)
+    const shouldDisplayClaimCard = authors.some(
+      (author) => !isNullOrUndefined(author.id) && !Boolean(author.is_claimed)
     );
     const authorCards = this.renderAuthorCards();
     return (
