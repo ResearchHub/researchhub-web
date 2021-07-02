@@ -478,6 +478,16 @@ const routes = (BASE_URL) => {
       };
       return prepURL(url, params);
     },
+    UNIFIED_DOC: ({ id }) => {
+      const url = BASE_URL + "researchhub_unified_documents/";
+      const params = {
+        querystring: {},
+        rest: {
+          id: id,
+        },
+      };
+      return prepURL(url, params);
+    },
     HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
     HUB_UNSUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/unsubscribe/`,
     INVITE_TO_HUB: ({ hubId }) => {
