@@ -1,5 +1,4 @@
 import { connect } from "react-redux";
-import { Fragment } from "react";
 import { getAuthorName } from "~/config/utils/";
 import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { SideColumnTitle } from "~/components/Typography";
@@ -106,10 +105,11 @@ class ColumnAuthors extends React.Component {
     const { auth, authors, paper } = this.props;
     const { claimSelectedAuthor, pages, page, ready } = this.state;
     const hasManyAuthors = authors.length > 1;
-    const shouldDisplayClaimCard = authors.some((author) =>
-      isNullOrUndefined(author.user)
+    const shouldDisplayClaimCard = authors.some(
+      (author) => !isNullOrUndefined(author.id) && !Boolean(author.is_claimed)
     );
     const authorCards = this.renderAuthorCards();
+
     return (
       <ReactPlaceholder
         showLoadingAnimation
