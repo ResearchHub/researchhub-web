@@ -366,13 +366,19 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "reply":
-        if (parent_content_type === "paper") {
+        if (notification.unified_document.document_type === "PAPER") {
           href = "/paper/[paperId]/[paperName]";
           route = `/paper/${paperId}/${slug}#comments`;
-        } else if (parent_content_type === "post") {
+        } else if (
+          notification.unified_document.document_type === "DISCUSSION"
+        ) {
           href = "/post/[postId]/[postName]";
           route = `/post/${paperId}/${slug}#comments`;
+        } else {
+          console.log(notification.document_type);
+          debugger;
         }
+
         var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
@@ -799,6 +805,7 @@ class LiveFeedNotification extends React.Component {
         var delta = parseInt((relative_to.getTime() - parsed_date) / 1000);
         delta = delta < 2 ? 2 : delta;
         var r = "";
+
         if (delta < 60) {
           r = delta + " seconds ago";
         } else if (delta < 120) {

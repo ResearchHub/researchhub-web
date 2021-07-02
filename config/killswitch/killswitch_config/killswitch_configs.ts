@@ -13,15 +13,10 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: false,
     production: false,
   },
-  algoliaSearch: {
-    development: false,
-    staging: false,
-    production: false,
-  },
-  elasticSearch: {
+  searchResults: {
     development: true,
     staging: true,
-    production: false,
+    production: true,
   },
   newPostTypes: {
     development: true,

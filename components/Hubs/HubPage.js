@@ -17,7 +17,7 @@ import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
 import MainHeader from "../Home/MainHeader";
 import SubscribeButton from "../Home/SubscribeButton";
-import EmpytFeedScreen from "../Home/EmptyFeedScreen";
+import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import MobileFeedTabs from "../Home/MobileFeedTabs";
 import Button from "../Form/Button";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
@@ -810,7 +810,7 @@ class HubPage extends React.Component {
                         {!sampleFeed && this.renderLoadMoreButton()}
                       </div>
                     ) : (
-                      <EmpytFeedScreen activeFeed={this.state.feed} />
+                      <EmptyFeedScreen activeFeed={this.state.feed} />
                     )}
                   </ReactPlaceholder>
                 </div>

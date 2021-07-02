@@ -1,13 +1,56 @@
 import React from "react";
-import Select from "react-select";
+import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";
 import makeAnimated from "react-select/animated";
+import { get } from "lodash";
 
 // Config
 import * as Options from "../../config/utils/options";
 import colors from "../../config/themes/colors";
 
 const animatedComponents = makeAnimated();
+
+// Will display count of selected options instead
+// of listing each individual option label.
+// Format: {label} {selectedCount}
+const CustomValueContainerWithCount = ({ children, getValue, ...props }) => {
+  const length = getValue().length;
+  const label = get(props, "selectProps.placeholder", "");
+
+  return (
+    <components.ValueContainer {...props}>
+      {!props.selectProps.menuIsOpen && (
+        <div>
+          <span>{label}</span>
+          {length > 0 && (
+            <span className={css(styles.countBadge)}>{length}</span>
+          )}
+        </div>
+      )}
+      {React.cloneElement(children[1])}
+    </components.ValueContainer>
+  );
+};
+
+// Will display the selected value along label
+// Format: {label}: {selectedValue}
+const CustomValueContainerWithLabel = ({ children, getValue, ...props }) => {
+  const rawValue = getValue();
+  const label = get(props, "selectProps.placeholder", "");
+  const selectedValue = get(rawValue, "[0].label") || "";
+
+  return (
+    <components.ValueContainer {...props}>
+      <span className={css(styles.emphasizedLabel)}>{label}</span>
+      {selectedValue.length > 0 && (
+        <span>
+          {":"} {selectedValue}
+        </span>
+      )}
+      {React.cloneElement(children[1])}
+    </components.ValueContainer>
+  );
+};
 
 class FormSelect extends React.Component {
   constructor(props) {
@@ -43,7 +86,19 @@ class FormSelect extends React.Component {
       singleValue,
       defaultValue,
       maxMenuHeight,
+      showCountInsteadOfLabels,
+      showLabelAlongSelection,
     } = this.props;
+
+    const configuredComponents = {
+      animatedComponents,
+    };
+
+    if (showCountInsteadOfLabels) {
+      configuredComponents.ValueContainer = CustomValueContainerWithCount;
+    } else if (showLabelAlongSelection) {
+      configuredComponents.ValueContainer = CustomValueContainerWithLabel;
+    }
 
     const formatStyle = (styleObject) => {
       if (!styleObject) {
@@ -135,7 +190,7 @@ class FormSelect extends React.Component {
           {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <Select
-          components={animatedComponents}
+          components={{ ...configuredComponents }}
           options={options && options}
           onChange={(option) => this.handleOnChange(id, option)}
           styles={colorStyles}
@@ -172,6 +227,16 @@ const styles = StyleSheet.create({
     color: "#232038",
     display: "flex",
     justifyContent: "flex-start",
+  },
+  emphasizedLabel: {
+    fontWeight: 500,
+  },
+  countBadge: {
+    backgroundColor: colors.LIGHT_BLUE(),
+    borderRadius: 20,
+    color: colors.BLUE(),
+    padding: "3px 8px",
+    marginLeft: 10,
   },
   input: {
     display: "flex",

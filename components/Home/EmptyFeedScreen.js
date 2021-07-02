@@ -6,14 +6,16 @@ import NewPostButton from "../NewPostButton";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
+import PropTypes from "prop-types";
 
-const EmpytFeedScreen = (props) => {
+const EmptyFeedScreen = (props) => {
   const navigateToPaperUploadPage = () => {
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   };
 
   const renderContent = () => {
-    const { hubs } = props;
+    const { hubs, title, subTitle } = props;
+
     const subscribedHubs = hubs.subscribedHubs || [];
     if (props.activeFeed === 0 && !subscribedHubs.length) {
       return null;
@@ -27,12 +29,8 @@ const EmpytFeedScreen = (props) => {
           loading="lazy"
           alt="Empty State Icon"
         />
-        <span className={css(styles.emptyPlaceholderText)}>
-          There are no posts found for this criteria
-        </span>
-        <span className={css(styles.emptyPlaceholderSubtitle)}>
-          Click ‘New Post’ button to create a post
-        </span>
+        <span className={css(styles.emptyPlaceholderText)}>{title}</span>
+        <span className={css(styles.emptyPlaceholderSubtitle)}>{subTitle}</span>
         <div className={css(styles.row)}>
           <NewPostButton />
         </div>
@@ -167,10 +165,21 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  auth: state.auth,
   hubs: state.hubs,
 });
+
+EmptyFeedScreen.propTypes = {
+  hubs: PropTypes.object,
+  title: PropTypes.string.isRequired,
+  subTitle: PropTypes.string.isRequired,
+};
+
+EmptyFeedScreen.defaultProps = {
+  title: "There are no posts found for this criteria",
+  subTitle: "Click ‘New Post’ button to create a post",
+};
+
 export default connect(
   mapStateToProps,
   null
-)(EmpytFeedScreen);
+)(EmptyFeedScreen);

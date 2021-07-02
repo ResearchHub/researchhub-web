@@ -140,12 +140,12 @@ const Post = (props) => {
   //   updateWidgetUI();
   // }
 
-  const restorePaper = () => {
-    setPaper({ ...paper, is_removed: false });
+  const restorePost = () => {
+    setPost({ ...post, is_removed: false });
   };
 
-  const removePaper = () => {
-    setPaper({ ...paper, is_removed: true });
+  const removePost = () => {
+    setPost({ ...post, is_removed: true });
   };
 
   function calculateCommentCount(post) {
@@ -243,12 +243,17 @@ const Post = (props) => {
           canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
         />
         <div className={css(styles.root)}>
+          <PaperBanner post={post} postType="post" />
           <div className={css(styles.container)}>
             <div className={css(styles.main)}>
               <div className={css(styles.paperPageContainer, styles.top)}>
                 <PostPageCard
                   post={post}
                   shareUrl={process.browser && window.location.href}
+                  isModerator={isModerator}
+                  isSubmitter={isSubmitter}
+                  removePost={removePost}
+                  restorePost={restorePost}
                 />
               </div>
               <div className={css(styles.paperMetaContainerMobile)}>
@@ -312,10 +317,10 @@ const styles = StyleSheet.create({
     },
   },
   root: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "flex-start",
-    width: "100%",
+    // display: "flex",
+    // justifyContent: "center",
+    // alignItems: "flex-start",
+    // width: "100%",
   },
   container: {
     marginLeft: "auto",
@@ -665,8 +670,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   top: {
-    // paddingBottom: 0,
-    minHeight: 208,
     "@media only screen and (max-width: 767px)": {
       borderBottom: "none",
     },
