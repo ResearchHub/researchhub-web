@@ -539,7 +539,7 @@ const Paper = (props) => {
                     paperState={paper}
                     calculatedCount={discussionCount}
                     setCount={setCount}
-                    isCollapsible={true}
+                    isCollapsible={false}
                   />
                 </div>
               </a>
