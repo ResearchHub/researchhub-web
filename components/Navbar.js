@@ -29,7 +29,6 @@ import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
 import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-import LegacySearch from "./Search/LegacySearch";
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";

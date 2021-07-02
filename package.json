@@ -21,7 +21,6 @@
     "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh"
   },
   "dependencies": {
-    "@algolia/autocomplete-theme-classic": "^1.1.0",
     "@ckeditor/ckeditor5-react": "^3.0.2",
     "@elastic/apm-rum": "^5.6.0",
     "@fortawesome/fontawesome-free-brands": "^5.1.0-3",
@@ -40,7 +39,6 @@
     "@types/react-sidebar": "^3.0.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-source-maps": "^0.0.3",
-    "algoliasearch": "^4.9.1",
     "aphrodite": "^2.4.0",
     "babel-plugin-transform-imports": "^2.0.0",
     "ckeditor5-classic-plus": "^1.0.5",
@@ -141,5 +139,9 @@
   },
   "browser": {
     "child_process": false
+  },
+  "engines": {
+    "node": "==14.17.2",
+    "npm": "==7.19.1"
   }
 }

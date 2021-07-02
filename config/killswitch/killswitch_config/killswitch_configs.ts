@@ -13,16 +13,6 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: false,
     production: false,
   },
-  algoliaSearch: {
-    development: false,
-    staging: false,
-    production: false,
-  },
-  legacySearch: {
-    development: false,
-    staging: false,
-    production: false,
-  },
   searchResults: {
     development: true,
     staging: true,
