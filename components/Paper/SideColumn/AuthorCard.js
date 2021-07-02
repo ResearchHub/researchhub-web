@@ -8,13 +8,17 @@ import React from "react";
 
 const AuthorCard = (props) => {
   const { name, author, onClaimSelect } = props;
-  const { id, orcid_id, is_claimed } = author;
+  const { id, orcid_id, is_claimed, claimed_by_user_author_id } = author;
 
   if (id) {
     const shouldDisplayClaimButton = !Boolean(is_claimed);
     return (
       <div className={css(styles.authorCardWrap)}>
-        <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          // If the profile is already claimed, redirect to UserProfile that has claimed it
+          as={`/user/${is_claimed ? claimed_by_user_author_id : id}/posts`}
+        >
           <a className={css(styles.container, styles.hover)}>
             {author.profile_image ? (
               <img
