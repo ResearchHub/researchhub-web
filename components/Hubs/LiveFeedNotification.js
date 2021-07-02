@@ -271,11 +271,6 @@ class LiveFeedNotification extends React.Component {
           </div>
         );
       case "thread":
-<<<<<<< HEAD
-=======
-        let href, route;
-        const { parent_content_type } = notification;
->>>>>>> 26c30101 (live feed post comments working)
         if (parent_content_type === "paper") {
           href = "/paper/[paperId]/[paperName]";
           route = `/paper/${paperId}/${slug}#comments`;

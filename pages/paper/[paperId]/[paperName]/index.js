@@ -395,7 +395,6 @@ const Paper = (props) => {
   function getAllAuthors() {
     const { authors, raw_authors } = paper;
     const seen = {};
-
     const allAuthors = [];
 
     if (authors && authors.length) {
@@ -762,6 +761,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     verticalAlign: "top",
     position: "relative",
+    minWidth: 240,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },

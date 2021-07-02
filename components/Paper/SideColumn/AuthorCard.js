@@ -1,28 +1,45 @@
-import React, { useState, useEffect } from "react";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import Link from "next/link";
-
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React from "react";
 
 const AuthorCard = (props) => {
-  const { name, author } = props;
-
-  const { id, orcid_id } = author;
+  const { name, author, onClaimSelect } = props;
+  const { id, orcid_id, user } = author;
 
   if (id) {
+    const shouldDisplayClaimButton = isNullOrUndefined(user); // implies that this author doesn't have user
     return (
-      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
-        <a className={css(styles.container, styles.hover)}>
-          {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userImage)} />
-          ) : (
-            <span className={css(styles.userIcon)}>{icons.user}</span>
-          )}
-          <div className={css(styles.name) + " clamp1"}>{name}</div>
-        </a>
-      </Link>
+      <div className={css(styles.authorCardWrap)}>
+        <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
+          <a className={css(styles.container, styles.hover)}>
+            {author.profile_image ? (
+              <img
+                src={author.profile_image}
+                className={css(styles.userImage)}
+              />
+            ) : (
+              <span className={css(styles.userIcon)}>{icons.user}</span>
+            )}
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
+          </a>
+        </Link>
+        {shouldDisplayClaimButton ? (
+          <div
+            className={css(styles.claimButton)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClaimSelect();
+            }}
+            role="button"
+          >
+            {"Claim"}
+          </div>
+        ) : null}
+      </div>
     );
   }
 
@@ -63,6 +80,25 @@ const styles = StyleSheet.create({
     padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
+  },
+  authorCardWrap: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingRight: 16,
+  },
+  claimButton: {
+    backgroundColor: colors.NEW_BLUE(1),
+    borderRadius: 4,
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: 14,
+    height: 24,
+    padding: 4,
+    width: 52,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   hover: {
     textDecoration: "unset",

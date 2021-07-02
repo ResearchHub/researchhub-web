@@ -12,13 +12,40 @@ export type AuthorClaimDataProps = {
   setIsOpen: (flag: boolean) => void;
 };
 
+const getPrompt = ({
+  auth,
+  author,
+  closeModal,
+  promptName,
+  setOpenModalType,
+}) => {
+  switch (promptName) {
+    case "enterEmail":
+      return (
+        <AuthorClaimPromptEmail
+          onSuccess={() => setOpenModalType("success")}
+          targetAuthorID={author.id}
+          userID={auth.user.id}
+        />
+      );
+    case "success":
+      return <AuthorClaimPromptSuccess handleContinue={closeModal} />;
+    default:
+      return null;
+  }
+};
+
 export default function AuthorClaimModal({
   auth,
   author,
   isOpen,
   setIsOpen,
-}: AuthorClaimDataProps): ReactElement<typeof Modal> {
+}: AuthorClaimDataProps): ReactElement<typeof Modal> | null {
   const [openModalType, setOpenModalType] = useState<string>("enterEmail");
+
+  if (author == null) {
+    return null;
+  }
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
@@ -26,24 +53,14 @@ export default function AuthorClaimModal({
     setIsOpen(false);
   };
 
-  const getPrompt = (promptName) => {
-    switch (promptName) {
-      case "enterEmail":
-        return (
-          <AuthorClaimPromptEmail
-            onSuccess={() => setOpenModalType("success")}
-            targetAuthorID={author.id}
-            userID={auth.user.id}
-          />
-        );
-      case "success":
-        return <AuthorClaimPromptSuccess handleContinue={closeModal} />;
-      default:
-        return null;
-    }
-  };
+  const modalBody = getPrompt({
+    auth,
+    author,
+    closeModal,
+    promptName: openModalType,
+    setOpenModalType,
+  });
 
-  const modalBody = getPrompt(openModalType);
   return (
     <BaseModal
       children={
