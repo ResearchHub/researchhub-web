@@ -26,6 +26,7 @@ import ReactHtmlParser from "react-html-parser";
 import removeMd from "remove-markdown";
 import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
+import ActionButton from "~/components/ActionButton";
 
 class PostPageCard extends React.Component {
   constructor(props) {
@@ -92,8 +93,8 @@ class PostPageCard extends React.Component {
       showMessage,
       isModerator,
       isSubmitter,
-      paperId,
-      restorePaper,
+      post,
+      restorePost,
     } = this.props;
     let params = {};
     if (isModerator) {
@@ -104,41 +105,40 @@ class PostPageCard extends React.Component {
       params.is_removed_by_user = false;
     }
 
-    return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
+    return fetch(
+      API.UNIFIED_DOC({ id: post.unified_document_id }),
+      API.PATCH_CONFIG(params)
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setMessage("Paper Successfully Restored.");
+        setMessage("Post Successfully Restored.");
         showMessage({ show: true });
-        restorePaper();
+        restorePost && restorePost();
       });
   };
 
   removePaper = () => {
-    let {
-      setMessage,
-      showMessage,
-      isModerator,
-      isSubmitter,
-      paperId,
-      removePaper,
-    } = this.props;
+    let { setMessage, showMessage, isModerator, post, removePost } = this.props;
     let params = {};
     if (isModerator) {
       params.is_removed = true;
     }
 
-    if (isSubmitter) {
-      params.is_removed_by_user = true;
-    }
-
-    return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
+    return fetch(
+      API.UNIFIED_DOC({ id: post.unified_document_id }),
+      API.PATCH_CONFIG(params)
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setMessage("Paper Successfully Removed.");
+        setMessage("Post Successfully Removed.");
         showMessage({ show: true });
-        removePaper();
+        removePost && removePost();
+      })
+      .catch((error) => {
+        console.log(error);
+        Sentry.captureEvent(error);
       });
   };
 
@@ -394,24 +394,24 @@ class PostPageCard extends React.Component {
       //    </span>
       //  ),
       //},
-      //{
-      //  active: isModerator || isSubmitter,
-      //  button: (
-      //    <span
-      //      className={css(styles.actionIcon, styles.moderatorAction)}
-      //      data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
-      //    >
-      //      <ActionButton
-      //        isModerator={true}
-      //        paperId={post.id}
-      //        restore={post.is_removed}
-      //        icon={post.is_removed ? icons.plus : icons.minus}
-      //        onAction={post.is_removed ? this.restorePaper : this.removePaper}
-      //        iconStyle={styles.moderatorIcon}
-      //      />
-      //    </span>
-      //  ),
-      //},
+      {
+        active: isModerator || isSubmitter,
+        button: (
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
+          >
+            <ActionButton
+              isModerator={true}
+              paperId={post.id}
+              restore={post.is_removed}
+              icon={post.is_removed ? icons.plus : icons.minus}
+              onAction={post.is_removed ? this.restorePaper : this.removePaper}
+              iconStyle={styles.moderatorIcon}
+            />
+          </span>
+        ),
+      },
       //{
       //  active: isModerator,
       //  button: (
@@ -1238,6 +1238,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
     marginTop: "auto",
+    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       margin: 0,
     },
@@ -1246,7 +1247,6 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
       // display: "none",
     },

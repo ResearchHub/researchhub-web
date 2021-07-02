@@ -14,6 +14,8 @@ const PaperBanner = ({
   paper,
   fetchBullets,
   loadingPaper,
+  post,
+  postType,
   openPaperFeatureModal,
   bullets,
 }) => {
@@ -22,18 +24,30 @@ const PaperBanner = ({
 
   useEffect(() => {
     configureBanner();
-  }, [paper, loadingPaper]);
+  }, [paper, loadingPaper, post]);
 
   const configureBanner = () => {
-    if (!paper) {
-      return;
-    } else {
-      if (!paper.is_removed && (!fetchBullets || loadingPaper)) {
+    if (postType == "post") {
+      if (!post || Object.keys(post).length === 0) {
+        setShowBanner(false);
+        return;
+      } else if (!post.is_removed) {
+        setShowBanner(false);
         return;
       }
+    } else {
+      if (!paper) {
+        setShowBanner(false);
+        return;
+      } else {
+        if (!paper.is_removed && (!fetchBullets || loadingPaper)) {
+          setShowBanner(false);
+          return;
+        }
+      }
     }
-    const isRemoved = paper.is_removed;
-    const isRemovedByUser = paper.is_removed_by_user;
+    const isRemoved = postType === "post" ? post.is_removed : paper.is_removed;
+    const isRemovedByUser = paper && paper.is_removed_by_user;
 
     if (isRemoved) {
       setType("removed");
@@ -60,10 +74,10 @@ const PaperBanner = ({
           <div className={css(styles.removedMessage)}>
             <h3 className={css(styles.header)}>
               {renderIcon(true)}
-              Paper Removed
+              {post ? "Post" : "Paper"} Removed
             </h3>
-            This paper has been removed for having poor quality content and not
-            adhering to guidelines.
+            This {post ? "post" : "paper"} has been removed for having poor
+            quality content and not adhering to guidelines.
             <br />
             Please visit our{" "}
             <a
@@ -72,7 +86,7 @@ const PaperBanner = ({
               target="_blank"
               rel="noreferrer noopener"
             >
-              Paper Submission Guidelines
+              {post ? "Post" : "Paper"} Submission Guidelines
             </a>{" "}
             to review our standard.
           </div>
