@@ -50,11 +50,7 @@ const getNotifMetadata = (notification) => {
       href = "/paper/[paperId]/[paperName]";
       doc = unifiedDocument.documents; // For papers, documents is an object
       postId = doc.id;
-<<<<<<< HEAD
       postTitle = doc.title || unifiedDocument.paper_title;
-=======
-      postTitle = unifiedDocument.title;
->>>>>>> 3708385e (handle posts, papers, replies, comments, threads)
       slug = formatPaperSlug(postTitle);
       hrefAs = `/paper/${postId}/${slug}`;
       break;
@@ -320,13 +316,12 @@ class LiveFeedNotification extends React.Component {
 
   renderNotification = () => {
     const { notification } = this.props;
-    const {
-      authorId,
-      href,
-      hrefAs,
-      notifType,
-      postId,
-      postTitle,
+    let {
+      created_date,
+      created_by,
+      content_type,
+      paper_title,
+      paper_official_title,
       slug,
     } = notification;
     let notificationType = content_type;
