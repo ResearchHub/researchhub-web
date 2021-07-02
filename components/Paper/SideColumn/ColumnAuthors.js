@@ -227,6 +227,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
+    padding: "0 16px",
     ":hover": {
       background: "#FAFAFA",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
