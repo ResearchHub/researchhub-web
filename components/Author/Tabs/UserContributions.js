@@ -119,8 +119,8 @@ class UserContributionsTab extends React.Component {
           </div>
         ) : (
           <EmptyState
-            message={"User has not submitted a paper"}
-            icon={icons.commmentAlt}
+            message={"User has not submitted any papers"}
+            icon={icons.file}
           />
         )}
       </ReactPlaceholder>
