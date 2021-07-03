@@ -10,30 +10,27 @@ import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
-  useEffect(
-    (userId) => {
-      if (!isNullOrUndefined(userId)) {
-        setIsFetching(true);
-        fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((data) => {
-            try {
-              setPosts(data.results);
-              setIsFetching(false);
-            } catch (error) {
-              setIsFetching(false);
-            }
-          })
-          .catch(() => {
+  useEffect(() => {
+    if (!isNullOrUndefined(userID)) {
+      setIsFetching(true);
+      fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((data) => {
+          try {
+            setPosts(data.results);
             setIsFetching(false);
-          });
-      } else {
-        setIsFetching(false);
-      }
-    },
-    [userID]
-  );
+          } catch (error) {
+            setIsFetching(false);
+          }
+        })
+        .catch(() => {
+          setIsFetching(false);
+        });
+    } else {
+      setIsFetching(false);
+    }
+  }, [userID]);
 }
 
 function UserPosts(props) {
