@@ -127,7 +127,7 @@ class UserDiscussionsTab extends React.Component {
           </React.Fragment>
         ) : (
           <EmptyState
-            message={"User has not created any discussions"}
+            message={"User has not made any comments"}
             icon={icons.comments}
           />
         )}
