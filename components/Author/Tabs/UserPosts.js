@@ -3,28 +3,35 @@ import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import React, { useEffect, useState } from "react";
 import ReactPlaceholder from "react-placeholder";
 import UserPostCard from "./UserPostCard";
+import EmptyState from "./EmptyState";
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
   useEffect(() => {
-    setIsFetching(true);
-    fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        try {
-          setPosts(data.results);
+    if (!isNullOrUndefined(userID)) {
+      setIsFetching(true);
+      fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((data) => {
+          try {
+            setPosts(data.results);
+            setIsFetching(false);
+          } catch (error) {
+            setIsFetching(false);
+          }
+        })
+        .catch(() => {
           setIsFetching(false);
-        } catch (error) {
-          setIsFetching(false);
-        }
-      })
-      .catch(() => {
-        setIsFetching(false);
-      });
+        });
+    } else {
+      setIsFetching(false);
+    }
   }, [userID]);
 }
 
@@ -43,11 +50,10 @@ function UserPosts(props) {
     ));
   } else {
     postCards = (
-      <div className={css(styles.box)}>
-        <h2 className={css(styles.noContent)}>
-          User has not authored any posts
-        </h2>
-      </div>
+      <EmptyState
+        message={"User has not created any posts"}
+        icon={icons.comments}
+      />
     );
   }
 
@@ -71,16 +77,6 @@ const styles = StyleSheet.create({
     marginTop: 0,
     paddingTop: 24,
     paddingBottom: 24,
-  },
-  noContent: {
-    color: colors.BLACK(1),
-    fontSize: 20,
-    fontWeight: 500,
-    textAlign: "center",
-    "@media only screen and (max-width: 415px)": {
-      width: 280,
-      fontSize: 16,
-    },
   },
 });
 
