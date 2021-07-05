@@ -9,6 +9,7 @@ import React, { Fragment, SyntheticEvent, useState } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import colors from "../../../config/themes/colors";
+import icons from "~/config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   UPVOTE,
@@ -19,10 +20,13 @@ import {
 } from "../../../config/constants";
 import API from "../../../config/api";
 import { connect } from "react-redux";
+import { formatUploadedDate } from "~/config/utils/dates";
+import { transformDate } from "~/redux/utils";
 // import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
   created_by: any;
+  created_date: any;
   hubs: any[];
   id: number;
   preview_img: string;
@@ -38,6 +42,7 @@ export type UserPostCardProps = {
 function UserPostCard(props: UserPostCardProps) {
   const {
     created_by,
+    created_date,
     hubs,
     id,
     preview_img: previewImg,
@@ -229,6 +234,47 @@ function UserPostCard(props: UserPostCardProps) {
     }
   };
 
+  const renderMetadata = (mobile = false) => {
+    if (created_date) {
+      return (
+        <div className={css(styles.metadataRow)}>
+          {renderUploadedDate(mobile)}
+        </div>
+      );
+    }
+  };
+
+  const renderUploadedDate = (mobile) => {
+    if (created_date) {
+      function _convertDate() {
+        return formatUploadedDate(transformDate(created_date), mobile);
+      }
+
+      if (!mobile) {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.publishContainer)}
+          >
+            <span className={css(styles.metadataText, styles.removeMargin)}>
+              {_convertDate(mobile)}
+            </span>
+          </div>
+        );
+      } else {
+        return (
+          <div
+            className={css(styles.metadataContainer, styles.publishContainer)}
+          >
+            <span className={css(styles.icon)}>{icons.calendar}</span>
+            <span className={css(styles.metadataText)}>
+              {_convertDate(mobile)}
+            </span>
+          </div>
+        );
+      }
+    }
+  };
+
   return (
     <Ripples
       className={css(
@@ -247,6 +293,8 @@ function UserPostCard(props: UserPostCardProps) {
               <DesktopOnly> {mainTitle} </DesktopOnly>
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
+            <DesktopOnly> {renderMetadata()} </DesktopOnly>
+            <MobileOnly> {renderMetadata()} </MobileOnly>
             {summary}
             {mobileCreatorTag}
           </div>
@@ -358,6 +406,22 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     justifyContent: "space-between",
     marginRight: "8px",
+  },
+  metadataContainer: {
+    maxWidth: "100%",
+    display: "flex",
+    alignItems: "center",
+    marginBottom: 5,
+  },
+  publishContainer: {
+    marginRight: 10,
+  },
+  metadataText: {
+    fontSize: 13,
+    color: colors.BLACK(0.5),
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
   },
   topRow: {
     display: "flex",
