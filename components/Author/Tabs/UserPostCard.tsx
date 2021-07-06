@@ -39,6 +39,43 @@ export type UserPostCardProps = {
   user_vote: any; // TODO: briansantoso - define type for user_vote
 };
 
+const renderMetadata = (created_date, mobile = false) => {
+  if (created_date) {
+    return (
+      <div className={css(styles.metadataRow)}>
+        {renderUploadedDate(created_date, mobile)}
+      </div>
+    );
+  }
+};
+
+const renderUploadedDate = (created_date, mobile) => {
+  if (created_date) {
+    function _convertDate() {
+      return formatUploadedDate(transformDate(created_date), mobile);
+    }
+
+    if (!mobile) {
+      return (
+        <div className={css(styles.metadataContainer, styles.publishContainer)}>
+          <span className={css(styles.metadataText, styles.removeMargin)}>
+            {_convertDate(mobile)}
+          </span>
+        </div>
+      );
+    } else {
+      return (
+        <div className={css(styles.metadataContainer, styles.publishContainer)}>
+          <span className={css(styles.icon)}>{icons.calendar}</span>
+          <span className={css(styles.metadataText)}>
+            {_convertDate(mobile)}
+          </span>
+        </div>
+      );
+    }
+  }
+};
+
 function UserPostCard(props: UserPostCardProps) {
   const {
     created_by,
@@ -234,47 +271,6 @@ function UserPostCard(props: UserPostCardProps) {
     }
   };
 
-  const renderMetadata = (mobile = false) => {
-    if (created_date) {
-      return (
-        <div className={css(styles.metadataRow)}>
-          {renderUploadedDate(mobile)}
-        </div>
-      );
-    }
-  };
-
-  const renderUploadedDate = (mobile) => {
-    if (created_date) {
-      function _convertDate() {
-        return formatUploadedDate(transformDate(created_date), mobile);
-      }
-
-      if (!mobile) {
-        return (
-          <div
-            className={css(styles.metadataContainer, styles.publishContainer)}
-          >
-            <span className={css(styles.metadataText, styles.removeMargin)}>
-              {_convertDate(mobile)}
-            </span>
-          </div>
-        );
-      } else {
-        return (
-          <div
-            className={css(styles.metadataContainer, styles.publishContainer)}
-          >
-            <span className={css(styles.icon)}>{icons.calendar}</span>
-            <span className={css(styles.metadataText)}>
-              {_convertDate(mobile)}
-            </span>
-          </div>
-        );
-      }
-    }
-  };
-
   return (
     <Ripples
       className={css(
@@ -293,8 +289,8 @@ function UserPostCard(props: UserPostCardProps) {
               <DesktopOnly> {mainTitle} </DesktopOnly>
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
-            <DesktopOnly> {renderMetadata()} </DesktopOnly>
-            <MobileOnly> {renderMetadata()} </MobileOnly>
+            <DesktopOnly> {renderMetadata(created_date)} </DesktopOnly>
+            <MobileOnly> {renderMetadata(created_date)} </MobileOnly>
             {summary}
             {mobileCreatorTag}
           </div>
