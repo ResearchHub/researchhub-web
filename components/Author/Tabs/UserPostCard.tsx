@@ -271,6 +271,8 @@ function UserPostCard(props: UserPostCardProps) {
     }
   };
 
+  const metadata = renderMetadata(created_date);
+
   return (
     <Ripples
       className={css(
@@ -289,8 +291,7 @@ function UserPostCard(props: UserPostCardProps) {
               <DesktopOnly> {mainTitle} </DesktopOnly>
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
-            <DesktopOnly> {renderMetadata(created_date)} </DesktopOnly>
-            <MobileOnly> {renderMetadata(created_date)} </MobileOnly>
+            {metadata}
             {summary}
             {mobileCreatorTag}
           </div>
