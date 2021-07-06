@@ -51,15 +51,15 @@ const renderMetadata = (created_date, mobile = false) => {
 
 const renderUploadedDate = (created_date, mobile) => {
   if (created_date) {
-    function _convertDate() {
-      return formatUploadedDate(transformDate(created_date), mobile);
-    }
-
+    const formattedDate = formatUploadedDate(
+      transformDate(created_date),
+      mobile
+    );
     if (!mobile) {
       return (
         <div className={css(styles.metadataContainer, styles.publishContainer)}>
           <span className={css(styles.metadataText, styles.removeMargin)}>
-            {_convertDate(mobile)}
+            {formattedDate}
           </span>
         </div>
       );
@@ -67,9 +67,7 @@ const renderUploadedDate = (created_date, mobile) => {
       return (
         <div className={css(styles.metadataContainer, styles.publishContainer)}>
           <span className={css(styles.icon)}>{icons.calendar}</span>
-          <span className={css(styles.metadataText)}>
-            {_convertDate(mobile)}
-          </span>
+          <span className={css(styles.metadataText)}>{formattedDate}</span>
         </div>
       );
     }
