@@ -4,7 +4,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import SearchResults from "~/components/Search/SearchResults";
 import { searchTypes } from "~/config/utils/options";
-import { pickAllowedSearchFiltersFor } from "~/config/utils";
+import { pickFiltersForApi } from "~/config/utils";
 import killswitch from "~/config/killswitch/killswitch";
 import Head from "~/components/Head";
 
@@ -38,7 +38,7 @@ const Index = ({ serverResponse, hasError }) => {
       <Head
         title={`(${serverResponse.count}) ${get(
           router,
-          "query.search"
+          "query.q"
         )} - Research Hub`}
         description={"Search Researchhub"}
       />
@@ -51,10 +51,14 @@ Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
 
-  const filters = pickAllowedSearchFiltersFor({
+  const filters = pickFiltersForApi({
     searchType: ctx.query.type,
     query: ctx.query,
   });
+
+  console.log("-----------");
+  console.log(filters);
+  console.log("-----------");
 
   const facets = getFacetsToAggregate(ctx.query);
 
