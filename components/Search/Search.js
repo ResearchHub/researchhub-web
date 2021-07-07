@@ -6,26 +6,53 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { get } from "lodash";
 import { breakpoints } from "~/config/themes/screen";
+import { pickFiltersForApp } from "~/config/utils";
 
 const Search = ({ navbarRef }) => {
   const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
   const SMALLEST_ALLOWED_INPUT = 180;
   const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;
+  const QUERY_PARAM = "q";
 
   const router = useRouter();
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  const [query, setQuery] = useState(get(router, "query.search") || "");
+  const [query, setQuery] = useState(get(router, `query.${QUERY_PARAM}`) || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
   const [isExpandedSearchOpen, setIsExpandedSearchOpen] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("Search");
+  const [currentPath, setCurrentPath] = useState(router.pathname);
 
   useEffect(() => {
-    updateSearchLayout();
+    router.events.on("routeChangeComplete", (url) => {
+      setCurrentPath(window.location.pathname);
+    });
 
-    const isUserOnSearchPage = router.pathname.indexOf("/search") === 0;
+    window.addEventListener("resize", setSmallScreenLayoutIfNeeded, true);
+
+    return () => {
+      window.removeEventListener("resize", setSmallScreenLayoutIfNeeded, true);
+    };
+  }, []);
+
+  useEffect(() => {
+    prepareSearchLayout();
+
+    const isUserOnSearchPage = currentPath.includes("/search");
+
+    if (isUserOnSearchPage) {
+      setQuery(router.query[QUERY_PARAM]);
+    } else {
+      setQuery("");
+    }
+  }, [currentPath]);
+
+  const prepareSearchLayout = () => {
+    setSmallScreenLayoutIfNeeded();
+
+    const isUserOnSearchPage = currentPath.includes("/search");
 
     if (shouldShowSmallScreenSearch()) {
       setIsSmallScreenSearch(true);
@@ -33,24 +60,11 @@ const Search = ({ navbarRef }) => {
       if (isUserOnSearchPage) {
         setIsExpandedSearchOpen(true);
         focusInput();
+      } else {
+        setIsExpandedSearchOpen(false);
       }
     }
-  }, []);
-
-  useEffect(() => {
-    router.events.on("routeChangeComplete", (url) => {
-      // Reset the query if user navigates to non-search page.
-      if (!url.includes("/search")) {
-        setQuery("");
-      }
-    });
-
-    window.addEventListener("resize", updateSearchLayout, true);
-
-    return () => {
-      window.removeEventListener("resize", updateSearchLayout, true);
-    };
-  }, []);
+  };
 
   const focusInput = () => {
     const el = get(searchInputRef, "current");
@@ -80,7 +94,7 @@ const Search = ({ navbarRef }) => {
   // IN non-mobile resolutions (over 760px) we allow
   // the input field to render naturally. If it is smaller than
   // SMALLEST_ALLOWED_INPUT, we also consider it to be "small screen"
-  const updateSearchLayout = () => {
+  const setSmallScreenLayoutIfNeeded = () => {
     const inputWidth = searchInputRef.current.offsetWidth;
 
     if (shouldShowSmallScreenSearch()) {
@@ -112,16 +126,19 @@ const Search = ({ navbarRef }) => {
   };
 
   const doSearch = () => {
+    const isUserOnSearchPage = currentPath.includes("/search");
+    const currentSearchType = isUserOnSearchPage ? router.query.type : "paper";
+
+    const filterParams = pickFiltersForApp({
+      searchType: currentSearchType,
+      query: router.query,
+    });
+
     const queryParams = {
-      ...router.query,
-      search: query,
+      ...filterParams,
+      [QUERY_PARAM]: query,
+      type: currentSearchType,
     };
-
-    const isUserOnSearchPage = router.pathname.indexOf("/search") === 0;
-
-    if (!isUserOnSearchPage) {
-      queryParams.type = "paper";
-    }
 
     router.push({
       pathname: "/search/[type]",
@@ -201,7 +218,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     boxSizing: "border-box",
     background: "white",
-    border: `1px solid rgba(151, 151, 151, 0.2)`,
+    border: `${colors.GREY()} 1px solid`,
     display: "flex",
     alignItems: "center",
     position: "relative",
@@ -305,9 +322,7 @@ const styles = StyleSheet.create({
         cursor: "text",
       },
     },
-    "::placeholder": {
-      opacity: 0.6,
-    },
+    "::placeholder": {},
   },
   searchInputSmallScreen: {
     padding: 0,
