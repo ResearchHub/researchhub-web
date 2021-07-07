@@ -558,7 +558,6 @@ class PaperPageCard extends React.Component {
     } = this.props;
 
     const { fetching, previews, previewAvailable } = this.state;
-    console.log(paper);
 
     return (
       <ReactPlaceholder
@@ -678,7 +677,7 @@ class PaperPageCard extends React.Component {
           <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
           <div className={css(styles.downloadPDFContainer)}>
             <div className={css(styles.downloadPDFWrapper)}>
-              {previewAvailable && (
+              {(paper.file || paper.pdf_url) && (
                 <DownloadPDFButton
                   file={paper.file || paper.pdf_url}
                   style={styles.hideOnSmall}
