@@ -1,5 +1,4 @@
 import { searchTypes } from "./options";
-import { has } from "underscore";
 import { get } from "lodash";
 
 /*
