@@ -754,7 +754,7 @@ class PostPageCard extends React.Component {
               </div>
             </div>
           </div>
-          <div className={css(styles.bodyContainer)}>
+          <div className="ck-content">
             {this.state.showPostEditor ? (
               this.renderPostEditor()
             ) : (
@@ -1227,10 +1227,6 @@ const styles = StyleSheet.create({
   },
   left: {
     marginRight: 20,
-  },
-  bodyContainer: {
-    width: "100%",
-    wordBreak: "break-word",
   },
   bottomContainer: {
     width: "100%",
