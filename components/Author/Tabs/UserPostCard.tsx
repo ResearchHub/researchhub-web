@@ -9,7 +9,7 @@ import React, { Fragment, SyntheticEvent, useState } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import colors from "../../../config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons from "../../../config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
 import {
   UPVOTE,
@@ -20,8 +20,8 @@ import {
 } from "../../../config/constants";
 import API from "../../../config/api";
 import { connect } from "react-redux";
-import { formatUploadedDate } from "~/config/utils/dates";
-import { transformDate } from "~/redux/utils";
+import { formatUploadedDate } from "../../../config/utils/dates";
+import { transformDate } from "../../../redux/utils";
 // import { handleCatch } from "../../../config/utils";
 
 export type UserPostCardProps = {
@@ -41,11 +41,7 @@ export type UserPostCardProps = {
 
 const renderMetadata = (created_date, mobile = false) => {
   if (created_date) {
-    return (
-      <div className={css(styles.metadataRow)}>
-        {renderUploadedDate(created_date, mobile)}
-      </div>
-    );
+    return <div>{renderUploadedDate(created_date, mobile)}</div>;
   }
 };
 
@@ -58,15 +54,13 @@ const renderUploadedDate = (created_date, mobile) => {
     if (!mobile) {
       return (
         <div className={css(styles.metadataContainer, styles.publishContainer)}>
-          <span className={css(styles.metadataText, styles.removeMargin)}>
-            {formattedDate}
-          </span>
+          <span className={css(styles.metadataText)}>{formattedDate}</span>
         </div>
       );
     } else {
       return (
         <div className={css(styles.metadataContainer, styles.publishContainer)}>
-          <span className={css(styles.icon)}>{icons.calendar}</span>
+          <span>{icons.calendar}</span>
           <span className={css(styles.metadataText)}>{formattedDate}</span>
         </div>
       );
