@@ -56,10 +56,6 @@ Index.getInitialProps = async (ctx) => {
     query: ctx.query,
   });
 
-  console.log("-----------");
-  console.log(filters);
-  console.log("-----------");
-
   const facets = getFacetsToAggregate(ctx.query);
 
   const config = {
