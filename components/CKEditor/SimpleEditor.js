@@ -45,6 +45,9 @@ export function SimpleEditor({
       "imageUpload",
       "mediaEmbed",
     ],
+    mediaEmbed: {
+      previewsInData: true,
+    },
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
