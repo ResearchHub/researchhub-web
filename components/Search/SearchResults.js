@@ -204,6 +204,7 @@ const SearchResults = ({ initialResults }) => {
 
   const getSelectedFacetValues = ({ forKey }) => {
     let selected = [];
+
     if (isArray(router.query[forKey])) {
       selected = router.query[forKey];
     } else if (isString(router.query[forKey])) {
@@ -320,13 +321,11 @@ const SearchResults = ({ initialResults }) => {
     valueForApi: f.key,
   }));
 
-  const entityTabsHtml = renderEntityTabs();
   const loadMoreBtn = renderLoadMoreButton();
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
-      {/* OFF for v1 entityTabsHtml */}
       {(numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
           <div className={css(styles.resultCount)}>
