@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     borderRadius: 2,
     boxSizing: "border-box",
     background: "white",
-    border: `${colors.GREY()} 1px solid`,
+    border: `1px solid rgba(151, 151, 151, 0.2)`,
     display: "flex",
     alignItems: "center",
     position: "relative",
@@ -322,7 +322,9 @@ const styles = StyleSheet.create({
         cursor: "text",
       },
     },
-    "::placeholder": {},
+    "::placeholder": {
+      opacity: 0.6,
+    },
   },
   searchInputSmallScreen: {
     padding: 0,
