@@ -427,7 +427,7 @@ class LiveFeedNotification extends React.Component {
         const { recipient } = notification;
         const recipientAuthorId = recipient.author_id;
         const recipientName = recipient.name;
-        const supportType = notification.support_type;
+        let supportType = notification.support_type;
         const paperTitle = notification.paper_title;
 
         let formattedSupportType;
