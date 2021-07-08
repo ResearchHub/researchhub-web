@@ -21,6 +21,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
+import HubCard from "~/components/Hubs/HubCard";
 
 const timeFilterOpts = [
   {
@@ -324,6 +325,18 @@ const SearchResults = ({ initialResults }) => {
   const loadMoreBtn = renderLoadMoreButton();
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
 
+  if (router.query.type === "hub") {
+    return (
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        <div className={css(styles.grid)}>
+          {results.map((hub, index) => {
+            return <HubCard key={hub.id} hub={hub} />;
+          })}
+        </div>
+      </ComponentWrapper>
+    );
+  }
+
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
       {(numOfHits > 0 || hasAppliedFilters) && (
@@ -537,6 +550,20 @@ const styles = StyleSheet.create({
     ":hover": {
       color: "#FFF",
       backgroundColor: colors.BLUE(),
+    },
+  },
+
+  grid: {
+    display: "flex",
+    flexWrap: "wrap",
+    flexDirection: "row",
+    justifyContent: "left",
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginBottom: 30,
+    "@media only screen and (max-width: 767px)": {
+      paddingLeft: 0,
+      paddingRight: 0,
     },
   },
 });
