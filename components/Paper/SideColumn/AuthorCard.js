@@ -1,32 +1,61 @@
-import React, { useState, useEffect } from "react";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import Link from "next/link";
-
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React from "react";
 
 const AuthorCard = (props) => {
-  const { name, author } = props;
+  const { name, author, onClaimSelect } = props;
+  const {
+    claimed_by_user_author_id,
+    id: authorID,
+    is_claimed,
+    orcid_id,
+    user: authorUserID,
+  } = author;
 
-  const { id, orcid_id } = author;
-
-  if (id) {
+  if (authorID) {
+    // checks if this author is NOT an "raw_author"
+    const shouldDisplayClaimButton = // checks this author does NOT have author
+      isNullOrUndefined(authorUserID) && !Boolean(is_claimed);
     return (
-      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/posts`}>
-        <a className={css(styles.container, styles.hover)}>
-          {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userImage)} />
-          ) : (
-            <span className={css(styles.userIcon)}>{icons.user}</span>
-          )}
-          <div className={css(styles.name) + " clamp1"}>{name}</div>
-        </a>
-      </Link>
+      <div className={css(styles.authorCardWrap)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          // If the profile is already claimed, redirect to UserProfile that has claimed it
+          as={`/user/${
+            is_claimed ? claimed_by_user_author_id : authorID
+          }/posts`}
+        >
+          <a className={css(styles.container, styles.hover)}>
+            {author.profile_image ? (
+              <img
+                src={author.profile_image}
+                className={css(styles.userImage)}
+              />
+            ) : (
+              <span className={css(styles.userIcon)}>{icons.user}</span>
+            )}
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
+          </a>
+        </Link>
+        {shouldDisplayClaimButton ? (
+          <div
+            className={css(styles.claimButton)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClaimSelect();
+            }}
+            role="button"
+          >
+            {"Claim"}
+          </div>
+        ) : null}
+      </div>
     );
-  }
-
-  if (orcid_id) {
+  } else if (orcid_id) {
     return (
       <a
         className={css(styles.container, styles.hover)}
@@ -38,16 +67,15 @@ const AuthorCard = (props) => {
         <div className={css(styles.name) + " clamp1"}>{name}</div>
       </a>
     );
+  } else {
+    return (
+      <div className={css(styles.container)}>
+        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <div className={css(styles.name) + " clamp1"}>{name}</div>
+      </div>
+    );
   }
-
-  return (
-    <div className={css(styles.container)}>
-      <span className={css(styles.userIcon)}>{icons.user}</span>
-      <div className={css(styles.name) + " clamp1"}>{name}</div>
-    </div>
-  );
 };
-
 AuthorCard.propTypes = {
   name: PropTypes.string,
   author: PropTypes.object,
@@ -63,6 +91,26 @@ const styles = StyleSheet.create({
     padding: "8px 15px 8px 12px",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
+  },
+  authorCardWrap: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingRight: 16,
+    marginTop: 8,
+  },
+  claimButton: {
+    backgroundColor: colors.NEW_BLUE(1),
+    borderRadius: 4,
+    color: "#fff",
+    cursor: "pointer",
+    fontSize: 14,
+    height: 24,
+    padding: 4,
+    width: 52,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   hover: {
     textDecoration: "unset",

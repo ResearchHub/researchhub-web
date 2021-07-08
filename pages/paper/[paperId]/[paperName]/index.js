@@ -766,7 +766,6 @@ const styles = StyleSheet.create({
       display: "none",
     },
     "@media only screen and (min-width: 768px)": {
-      width: "20%",
       marginLeft: 16,
     },
     "@media only screen and (min-width: 1024px)": {

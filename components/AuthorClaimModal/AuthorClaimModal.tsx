@@ -1,9 +1,10 @@
+import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined } from "../../config/utils/nullchecks";
 import AuthorClaimPromptEmail from "./AuthorClaimPromptEmail";
 import AuthorClaimPromptSuccess from "./AuthorClaimPromptSuccess";
 import BaseModal from "../Modals/BaseModal";
 import Modal from "react-modal";
-import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
-import { css, StyleSheet } from "aphrodite";
+import React, { ReactElement, SyntheticEvent, useState } from "react";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -12,38 +13,55 @@ export type AuthorClaimDataProps = {
   setIsOpen: (flag: boolean) => void;
 };
 
+const getPrompt = ({
+  auth,
+  author,
+  onCloseModal,
+  promptName,
+  setOpenModalType,
+}) => {
+  switch (promptName) {
+    case "enterEmail":
+      return (
+        <AuthorClaimPromptEmail
+          onSuccess={() => setOpenModalType("success")}
+          targetAuthorID={author.id}
+          userID={auth.user.id}
+        />
+      );
+    case "success":
+      return <AuthorClaimPromptSuccess handleContinue={onCloseModal} />;
+    default:
+      return null;
+  }
+};
+
 export default function AuthorClaimModal({
   auth,
   author,
   isOpen,
   setIsOpen,
-}: AuthorClaimDataProps): ReactElement<typeof Modal> {
+}: AuthorClaimDataProps): ReactElement<typeof Modal> | null {
   const [openModalType, setOpenModalType] = useState<string>("enterEmail");
 
-  const closeModal = (e: SyntheticEvent): void => {
+  if (isNullOrUndefined(author)) {
+    return null;
+  }
+
+  const onCloseModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setOpenModalType("enterEmail");
     setIsOpen(false);
   };
 
-  const getPrompt = (promptName) => {
-    switch (promptName) {
-      case "enterEmail":
-        return (
-          <AuthorClaimPromptEmail
-            onSuccess={() => setOpenModalType("success")}
-            targetAuthorID={author.id}
-            userID={auth.user.id}
-          />
-        );
-      case "success":
-        return <AuthorClaimPromptSuccess handleContinue={closeModal} />;
-      default:
-        return null;
-    }
-  };
+  const modalBody = getPrompt({
+    auth,
+    author,
+    onCloseModal,
+    promptName: openModalType,
+    setOpenModalType,
+  });
 
-  const modalBody = getPrompt(openModalType);
   return (
     <BaseModal
       children={
@@ -52,13 +70,13 @@ export default function AuthorClaimModal({
             alt="Close Button"
             className={css(customModalStyle.closeButton)}
             draggable={false}
-            onClick={closeModal}
+            onClick={onCloseModal}
             src="/static/icons/close.png"
           />
           {modalBody}
         </div>
       }
-      closeModal={closeModal}
+      closeModal={onCloseModal}
       isOpen={isOpen}
       modalStyle={customModalStyle.modalStyle}
       removeDefault={true}
