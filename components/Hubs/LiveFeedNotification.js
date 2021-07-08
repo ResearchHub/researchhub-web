@@ -432,6 +432,8 @@ class LiveFeedNotification extends React.Component {
 
         if (supportType === "paper") {
           supportType = "paper";
+        } else if (supportType === "post") {
+          supportType = "post";
         } else if (supportType === "bulletpoint") {
           supportType = "key takeaway";
         } else if (supportType === "summary") {
