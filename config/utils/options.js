@@ -317,6 +317,24 @@ const searchTypes = {
       fieldForApp: "ordering",
     },
   },
+  hub: {
+    q: {
+      fieldForApi: "search_multi_match",
+      fieldForApp: "q",
+    },
+  },
+  post: {
+    q: {
+      fieldForApi: "search_multi_match",
+      fieldForApp: "q",
+    },
+  },
+  user: {
+    q: {
+      fieldForApi: "search_multi_match",
+      fieldForApp: "q",
+    },
+  },
 };
 
 export {
