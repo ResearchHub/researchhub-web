@@ -147,8 +147,8 @@ class ColumnAuthors extends React.Component {
                     </div>
                   </div>
                   <img
-                    className={css(styles.potOfGold)}
-                    src="/static/icons/pot-of-gold.png"
+                    className={css(styles.RSCIcon)}
+                    src="/static/icons/coin-filled.png"
                     alt="Pot of Gold"
                   />
                 </div>
@@ -192,11 +192,10 @@ const styles = StyleSheet.create({
     height: "inherit",
     justifyContent: "flex-start",
     alignItems: "space-around",
-    width: 210,
+    width: 192,
   },
   claimCardTextMain: {
-    fontSize: 16,
-    fontStyle: "normal",
+    fontSize: 14,
     fontWeight: 500,
     marginBottom: 4,
   },
@@ -213,8 +212,9 @@ const styles = StyleSheet.create({
       margin: "15px 0 5px",
     },
   },
-  potOfGold: {
-    width: 56,
+  RSCIcon: {
+    marginLeft: 8,
+    width: 40,
   },
   viewMoreButton: {
     color: "rgba(78, 83, 255)",
