@@ -299,10 +299,24 @@ const degrees = [
 ];
 
 const searchTypes = {
-  paper: ["search", "hubs", "publish_date__gte", "post_type", "ordering"],
-  hub: ["ordering"],
-  author: ["ordering"],
-  post: ["ordering"],
+  paper: {
+    q: {
+      fieldForApi: "search_multi_match",
+      fieldForApp: "q",
+    },
+    hubs: {
+      fieldForApi: "hubs",
+      fieldForApp: "hubs",
+    },
+    publish_date__gte: {
+      fieldForApi: "publish_date__gte",
+      fieldForApp: "publish_date__gte",
+    },
+    ordering: {
+      fieldForApi: "ordering",
+      fieldForApp: "ordering",
+    },
+  },
 };
 
 export {
