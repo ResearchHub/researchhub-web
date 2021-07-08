@@ -14,7 +14,11 @@ export function authenticateToken({
     .then((_response) => {
       onSuccess();
     })
-    .catch((err) => {
-      onError({ err, validationState: VALIDATION_STATE.REQUEST_NOT_FOUND });
+    .catch((error) => {
+      onError({
+        error,
+        validationState:
+          VALIDATION_STATE[error.message] || VALIDATION_STATE.REQUEST_NOT_FOUND,
+      });
     });
 }

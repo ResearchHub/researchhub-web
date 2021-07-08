@@ -5,6 +5,7 @@ import Loader from "~/components/Loader/Loader";
 import React from "react";
 
 export const getPageBody = (validationState) => {
+  console.warn("validationState: ", validationState);
   switch (validationState) {
     case VALIDATION_STATE.DENIED_TOO_MANY_ATTEMPS:
       return (
