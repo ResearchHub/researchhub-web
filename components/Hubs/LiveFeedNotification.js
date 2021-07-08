@@ -427,19 +427,20 @@ class LiveFeedNotification extends React.Component {
         const { recipient } = notification;
         const recipientAuthorId = recipient.author_id;
         const recipientName = recipient.name;
-        let supportType = notification.support_type;
+        const supportType = notification.support_type;
         const paperTitle = notification.paper_title;
 
+        let formattedSupportType;
         if (supportType === "paper") {
-          supportType = "paper";
+          formattedSupportType = "paper";
         } else if (supportType === "post") {
-          supportType = "post";
+          formattedSupportType = "post";
         } else if (supportType === "bulletpoint") {
-          supportType = "key takeaway";
+          formattedSupportType = "key takeaway";
         } else if (supportType === "summary") {
-          supportType = "summary";
+          formattedSupportType = "summary";
         } else {
-          supportType = "comment";
+          formattedSupportType = "comment";
         }
         return (
           <div className={css(styles.message)}>
@@ -472,7 +473,7 @@ class LiveFeedNotification extends React.Component {
                 {recipientName}
               </a>
             </Link>{" "}
-            for their {supportType} on{" "}
+            for their {formattedSupportType} on{" "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}`}
