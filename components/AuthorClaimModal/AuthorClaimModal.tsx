@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
-import { isNullOrUndefined } from "../../config/utils/nullchecks";
-import AuthorClaimPromptEmail from "./AuthorClaimPromptEmail";
+import { filterNull, isNullOrUndefined } from "../../config/utils/nullchecks";
+import AuthorClaimPromptEmail, { AuthorDatum } from "./AuthorClaimPromptEmail";
 import AuthorClaimPromptSuccess from "./AuthorClaimPromptSuccess";
 import BaseModal from "../Modals/BaseModal";
 import Modal from "react-modal";
@@ -8,14 +8,14 @@ import React, { ReactElement, SyntheticEvent, useState } from "react";
 
 export type AuthorClaimDataProps = {
   auth: any;
-  author: any;
+  authors: Array<any>;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
 };
 
 const getPrompt = ({
   auth,
-  author,
+  authors,
   onCloseModal,
   promptName,
   setOpenModalType,
@@ -24,8 +24,15 @@ const getPrompt = ({
     case "enterEmail":
       return (
         <AuthorClaimPromptEmail
+          authorData={authors.map(
+            (author: any): AuthorDatum => {
+              return {
+                name: `${author.first_name} ${author.last_name}`,
+                id: author.id,
+              };
+            }
+          )}
           onSuccess={() => setOpenModalType("success")}
-          targetAuthorID={author.id}
           userID={auth.user.id}
         />
       );
@@ -38,13 +45,16 @@ const getPrompt = ({
 
 export default function AuthorClaimModal({
   auth,
-  author,
+  authors,
   isOpen,
   setIsOpen,
 }: AuthorClaimDataProps): ReactElement<typeof Modal> | null {
   const [openModalType, setOpenModalType] = useState<string>("enterEmail");
 
-  if (isNullOrUndefined(author)) {
+  if (
+    isNullOrUndefined(authors) ||
+    (Array.isArray(authors) && filterNull(authors).length === 0)
+  ) {
     return null;
   }
 
@@ -56,7 +66,7 @@ export default function AuthorClaimModal({
 
   const modalBody = getPrompt({
     auth,
-    author,
+    authors,
     onCloseModal,
     promptName: openModalType,
     setOpenModalType,

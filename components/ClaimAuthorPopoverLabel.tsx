@@ -30,7 +30,7 @@ export default function ClaimAuthorPopoverLabel({
     <Fragment>
       <AuthorClaimModal
         auth={auth}
-        author={author}
+        authors={[author]}
         isOpen={isClaimModalOpen}
         setIsOpen={setIsClaimModalOpen}
       />

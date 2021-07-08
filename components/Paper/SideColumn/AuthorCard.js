@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import React from "react";
 
 const AuthorCard = (props) => {
-  const { name, author, onClaimSelect } = props;
+  const { name, author } = props;
   const {
     claimed_by_user_author_id,
     id: authorID,
@@ -17,9 +17,6 @@ const AuthorCard = (props) => {
   } = author;
 
   if (authorID) {
-    // checks if this author is NOT an "raw_author"
-    const shouldDisplayClaimButton = // checks this author does NOT have author
-      isNullOrUndefined(authorUserID) && !Boolean(is_claimed);
     return (
       <div className={css(styles.authorCardWrap)}>
         <Link
@@ -41,18 +38,6 @@ const AuthorCard = (props) => {
             <div className={css(styles.name) + " clamp1"}>{name}</div>
           </a>
         </Link>
-        {shouldDisplayClaimButton ? (
-          <div
-            className={css(styles.claimButton)}
-            onClick={(e) => {
-              e.stopPropagation();
-              onClaimSelect();
-            }}
-            role="button"
-          >
-            {"Claim"}
-          </div>
-        ) : null}
       </div>
     );
   } else if (orcid_id) {
@@ -98,19 +83,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingRight: 16,
     marginTop: 8,
-  },
-  claimButton: {
-    backgroundColor: colors.NEW_BLUE(1),
-    borderRadius: 4,
-    color: "#fff",
-    cursor: "pointer",
-    fontSize: 14,
-    height: 24,
-    padding: 4,
-    width: 52,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
   },
   hover: {
     textDecoration: "unset",

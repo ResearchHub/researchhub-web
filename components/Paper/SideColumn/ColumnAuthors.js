@@ -16,11 +16,11 @@ class ColumnAuthors extends React.Component {
     super(props);
     this.state = {
       authors: [],
-      claimSelectedAuthor: null,
       page: 1,
       pages: 1,
       paginatedLists: {},
       ready: false,
+      shouldOpenAuthorClaimModal: false,
     };
   }
 
@@ -45,19 +45,7 @@ class ColumnAuthors extends React.Component {
       const name = getAuthorName(author);
       const key = `${name}-${index}`; // not all author have ids nor orcid_id -> combined list of authors and raw_authors
 
-      return (
-        <AuthorCard
-          author={author}
-          name={name}
-          key={key}
-          onClaimSelect={() =>
-            this.setState({
-              ...this.state,
-              claimSelectedAuthor: author /* this relies on the hope that author profile was already created */,
-            })
-          }
-        />
-      );
+      return <AuthorCard author={author} name={name} key={key} />;
     });
   };
 
@@ -103,11 +91,13 @@ class ColumnAuthors extends React.Component {
 
   render() {
     const { auth, authors, paper } = this.props;
-    const { claimSelectedAuthor, pages, page, ready } = this.state;
+    const { pages, page, ready, shouldOpenAuthorClaimModal } = this.state;
     const hasManyAuthors = authors.length > 1;
-    const shouldDisplayClaimCard = authors.some(
+    const claimableAuthors = authors.filter(
+      // checks if this author is NOT an "raw_author"
       (author) => !isNullOrUndefined(author.id) && !Boolean(author.is_claimed)
     );
+    const shouldDisplayClaimCard = claimableAuthors.length > 0;
     const authorCards = this.renderAuthorCards();
 
     return (
@@ -118,12 +108,12 @@ class ColumnAuthors extends React.Component {
       >
         <AuthorClaimModal
           auth={auth}
-          author={claimSelectedAuthor}
-          isOpen={!isNullOrUndefined(claimSelectedAuthor)}
-          setIsOpen={() =>
+          authors={claimableAuthors}
+          isOpen={shouldOpenAuthorClaimModal}
+          setIsOpen={(flag) =>
             this.setState({
               ...this.state,
-              claimSelectedAuthor: null,
+              shouldOpenAuthorClaimModal: flag,
             })
           }
         />
@@ -135,22 +125,36 @@ class ColumnAuthors extends React.Component {
                 overrideStyles={styles.title}
               />
               {shouldDisplayClaimCard && (
-                <div className={css(styles.claimCard)}>
-                  <div className={css(styles.claimCardTextGroup)}>
-                    <div className={css(styles.claimCardTextMain)}>
-                      {hasManyAuthors
-                        ? "Are you one of the authors?"
-                        : "Are you the author?"}
+                <div className={css(styles.claimCardWrap)}>
+                  <div className={css(styles.claimCard)}>
+                    <div className={css(styles.claimCardTextGroup)}>
+                      <div className={css(styles.claimCardTextMain)}>
+                        {hasManyAuthors
+                          ? "Are you one of the authors?"
+                          : "Are you the author?"}
+                      </div>
+                      <div className={css(styles.claimCardText)}>
+                        {"Claim your profile and receive up to 1000 RSC"}
+                      </div>
                     </div>
-                    <div className={css(styles.claimCardText)}>
-                      {"Claim your profile and receive up to 1000 RSC"}
-                    </div>
+                    <img
+                      className={css(styles.RSCIcon)}
+                      src="/static/icons/coin-filled.png"
+                      alt="Pot of Gold"
+                    />
                   </div>
-                  <img
-                    className={css(styles.RSCIcon)}
-                    src="/static/icons/coin-filled.png"
-                    alt="Pot of Gold"
-                  />
+                  <div
+                    className={css(styles.claimButton)}
+                    onClick={() =>
+                      this.setState({
+                        ...this.state,
+                        shouldOpenAuthorClaimModal: true,
+                      })
+                    }
+                    role="button"
+                  >
+                    {"Claim"}
+                  </div>
                 </div>
               )}
               <div className={css(styles.authors)}>
@@ -178,12 +182,32 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
   },
+  claimCardWrap: {
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    margin: "8px 0 0",
+    padding: "10px 20px",
+    width: "100%",
+  },
   claimCard: {
     alignItems: "center",
     boxSizing: "border-box",
     display: "flex",
-    margin: "16px 0 8px 0",
-    padding: "10px 20px",
+    width: "100%",
+  },
+  claimButton: {
+    alignItems: "center",
+    backgroundColor: colors.NEW_BLUE(1),
+    borderRadius: 4,
+    color: "#fff",
+    cursor: "pointer",
+    display: "flex",
+    fontSize: 14,
+    height: 24,
+    justifyContent: "center",
+    marginTop: 12,
+    padding: 4,
     width: "100%",
   },
   claimCardTextGroup: {
