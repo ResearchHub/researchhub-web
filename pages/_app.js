@@ -17,6 +17,7 @@ import "./stylesheets/App.css";
 import "../components/Paper/progressbar.css";
 import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
+import "../components/CKEditor/CKEditor.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
