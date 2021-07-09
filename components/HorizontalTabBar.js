@@ -81,6 +81,9 @@ const styles = StyleSheet.create({
 HorizontalTabBar.propTypes = {
   tabs: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
+  alignCenter: PropTypes.bool,
+  dragging: PropTypes.bool,
+  containerStyle: PropTypes.object,
 };
 
 export default HorizontalTabBar;
