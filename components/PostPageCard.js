@@ -27,6 +27,8 @@ import removeMd from "remove-markdown";
 import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import ActionButton from "~/components/ActionButton";
+import PaperPromotionButton from "./Paper/PaperPromotionButton";
+import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 
 class PostPageCard extends React.Component {
   constructor(props) {
@@ -355,7 +357,7 @@ class PostPageCard extends React.Component {
         ),
       },
       {
-        active: false,
+        active: true,
         button: (
           <ShareAction
             addRipples={true}
@@ -370,17 +372,14 @@ class PostPageCard extends React.Component {
           />
         ),
       },
-      //{
-      //  active: true,
-      //  button: (
-      //    <span data-tip={"Support Post"}>
-      //      <PaperPromotionButton
-      //        paper={post}
-      //        customStyle={styles.actionIcon}
-      //      />
-      //    </span>
-      //  ),
-      //},
+      {
+        active: true,
+        button: (
+          <span data-tip={"Support Post"}>
+            <PaperPromotionButton post={post} customStyle={styles.actionIcon} />
+          </span>
+        ),
+      },
       //{
       //  active: !isSubmitter,
       //  button: (
@@ -681,18 +680,24 @@ class PostPageCard extends React.Component {
 
   render() {
     const { post } = this.props;
-    const { postBody, fetching, previews, figureUrls } = this.state;
+    const {
+      fetching,
+      figureUrls,
+      postBody,
+      previews,
+      score,
+      voteState,
+    } = this.state;
 
     const voteWidget = (horizontalView) => (
       <VoteWidget
-        score={this.state.score}
+        score={score + post.boost_amount}
         onUpvote={this.onUpvote}
         onDownvote={this.onDownvote}
-        selected={this.state.voteState}
+        selected={voteState}
         horizontalView={horizontalView}
+        isPaper={false}
         type={"Discussion"}
-        paperPage={true}
-        small={true}
       />
     );
 
@@ -715,7 +720,10 @@ class PostPageCard extends React.Component {
             <ReactTooltip />
             <meta property="description" content={post.title} />
             <meta property="commentCount" content={post.discussion_count} />
-            <div className={css(styles.voting)}>{voteWidget(false)}</div>
+            <div className={css(styles.voting)}>
+              {voteWidget(false)}
+              <PaperPromotionIcon post={post} />
+            </div>
             <div
               className={css(
                 styles.column,
@@ -746,9 +754,7 @@ class PostPageCard extends React.Component {
                 <div className={css(styles.rightColumn, styles.mobile)}>
                   <div className={css(styles.votingMobile)}>
                     {voteWidget(true)}
-                    <PaperDiscussionButton
-                      discussionCount={post.discussion_count}
-                    />
+                    <PaperPromotionIcon post={post} />
                   </div>
                 </div>
               </div>

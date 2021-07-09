@@ -36,6 +36,7 @@ import {
   onKeyDownNumInput,
   onPasteNumInput,
 } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 
 // Constants
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
@@ -294,17 +295,28 @@ class PaperTransactionModal extends React.Component {
       setMessage,
       updatePaperState,
       paper,
+      post,
       user,
     } = this.props;
     showMessage({ show: true, load: true });
 
-    const { id: paperId } = paper;
+    const isPaper = !isNullOrUndefined(paper);
+
+    let objectId;
+    let contentType;
+    if (isPaper) {
+      objectId = paper.id;
+      contentType = "paper";
+    } else {
+      objectId = post.id;
+      contentType = "researchhubpost";
+    }
     const { id: userId } = user;
 
     const payload = {
       amount: Number(this.state.value),
-      object_id: paperId,
-      content_type: "paper",
+      object_id: objectId,
+      content_type: contentType,
       user: userId,
       purchase_method: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
       purchase_type: "BOOST",
@@ -328,8 +340,8 @@ class PaperTransactionModal extends React.Component {
               : null,
             event_properties: {
               interaction: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
-              object_id: paperId,
-              content_type: "paper",
+              object_id: objectId,
+              content_type: contentType,
               amount: Number(this.state.value),
             },
           };
@@ -343,10 +355,14 @@ class PaperTransactionModal extends React.Component {
               transactionHash: res.trasaction_hash,
               finish: true,
             });
-            let promoted = res.source.promoted && res.source.promoted;
-            let updatedPaper = { ...paper };
-            updatedPaper.promoted = promoted;
-            updatePaperState && updatePaperState(updatedPaper);
+            if (isPaper) {
+              let promoted = res.source.promoted && res.source.promoted;
+              let updatedPaper = { ...paper };
+              updatedPaper.promoted = promoted;
+              updatePaperState && updatePaperState(updatedPaper);
+            } else {
+              console.log("INSIDE ELSE");
+            }
             this.updateBalance();
           });
         }
@@ -653,7 +669,7 @@ class PaperTransactionModal extends React.Component {
     );
   };
 
-  renderContent = () => {
+  renderContent = (isPaper) => {
     const { user } = this.props;
     const {
       nextScreen,
@@ -693,13 +709,14 @@ class PaperTransactionModal extends React.Component {
                 </div>
               )}
               <div onClick={this.closeModal}>
-                You can view the papers you support on your
+                You can view the {isPaper ? "papers" : "posts"} you support on
+                your
                 <Link
-                  href={"/user/[authorId]/[tabName]"}
+                  href={`/user/${user.author_profile.id}/boosts`}
                   as={`/user/${user.author_profile.id}/boosts`}
                 >
                   <a
-                    href={"/user/[authorId]/[tabName]"}
+                    href={`/user/${user.author_profile.id}/boosts`}
                     as={`/user/${user.author_profile.id}/boosts`}
                     className={css(
                       styles.transactionHashLink,
@@ -877,15 +894,16 @@ class PaperTransactionModal extends React.Component {
   };
 
   render() {
-    const { modals } = this.props;
+    const { modals, paper } = this.props;
+    const isPaper = !isNullOrUndefined(paper);
 
     return (
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Support Paper"}
+        title={"Support " + (isPaper ? "Paper" : "Post")}
       >
-        {this.renderContent()}
+        {this.renderContent(isPaper)}
       </BaseModal>
     );
   }

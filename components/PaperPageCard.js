@@ -585,20 +585,13 @@ class PaperPageCard extends React.Component {
               <meta property="commentCount" content={paper.discussion_count} />
               <div className={css(styles.voting)}>
                 <VoteWidget
-                  score={score}
+                  score={score + paper.boost_amount}
                   onUpvote={upvote}
                   onDownvote={downvote}
-                  selected={this.props.selectedVoteType}
+                  selected={selectedVoteType}
+                  horizontalView={false}
                   isPaper={true}
                   type={"Paper"}
-                  paperPage={true}
-                  promoted={this.props.paper && this.props.paper.promoted}
-                  paper={
-                    this.props.paper && this.props.paper.promoted !== false
-                      ? this.props.paper
-                      : null
-                  }
-                  small={true}
                 />
                 <PaperPromotionIcon paper={paper} />
               </div>
@@ -635,22 +628,13 @@ class PaperPageCard extends React.Component {
                   <div className={css(styles.rightColumn, styles.mobile)}>
                     <div className={css(styles.votingMobile)}>
                       <VoteWidget
-                        score={score}
+                        score={score + paper.boost_amount}
                         onUpvote={upvote}
                         onDownvote={downvote}
                         selected={selectedVoteType}
-                        isPaper={true}
                         horizontalView={true}
+                        isPaper={true}
                         type={"Paper"}
-                        paperPage={true}
-                        promoted={this.props.paper && this.props.paper.promoted}
-                        paper={
-                          this.props.paper && this.props.paper.promoted
-                            ? this.props.paper
-                            : null
-                        }
-                        showPromotion={true}
-                        small={true}
                       />
                       <PaperPromotionIcon paper={paper} />
                     </div>

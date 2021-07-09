@@ -103,8 +103,8 @@ const getTabs = (author, transactions) =>
     },
     {
       href: "boosts",
-      label: "supported papers",
-      name: "Supported Papers",
+      label: "supported content",
+      name: "Supported Content",
       showCount: true,
       count: () => author.promotions && author.promotions.count,
     },
