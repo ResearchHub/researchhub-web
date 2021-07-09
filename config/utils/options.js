@@ -317,13 +317,25 @@ const searchTypes = {
       fieldForApp: "ordering",
     },
   },
-  hub: {
+  post: {
     q: {
       fieldForApi: "search_multi_match",
       fieldForApp: "q",
     },
+    hubs: {
+      fieldForApi: "hubs",
+      fieldForApp: "hubs",
+    },
+    publish_date__gte: {
+      fieldForApi: "publish_date__gte",
+      fieldForApp: "publish_date__gte",
+    },
+    ordering: {
+      fieldForApi: "ordering",
+      fieldForApp: "ordering",
+    },
   },
-  post: {
+  hub: {
     q: {
       fieldForApi: "search_multi_match",
       fieldForApp: "q",
