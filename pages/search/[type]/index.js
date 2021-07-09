@@ -18,7 +18,7 @@ import nookies from "nookies";
 // alongside counts in the search response.
 const getFacetsToAggregate = (query = {}) => {
   let facet = [];
-  if (query.type === "paper") {
+  if (query.type === "paper" || query.type === "post") {
     facet = ["hubs"];
   }
 
