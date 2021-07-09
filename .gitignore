@@ -31,3 +31,7 @@ yarn-error.log*
 .eslintcache
 .eslintcache/*
 .vercel
+# Open Source
+/config/constants.js
+*.aws*
+.ebextensions
