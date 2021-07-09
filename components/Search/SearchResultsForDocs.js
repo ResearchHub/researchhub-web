@@ -16,6 +16,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
+import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
 
@@ -311,7 +312,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
       {(numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
           <div className={css(styles.resultCount)}>
-            {numOfHits} results found.
+            {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
           </div>
           <div className={css(styles.filters)}>
             <FormSelect
@@ -391,35 +392,41 @@ const SearchResultsForDocs = ({ apiResponse }) => {
         </ComponentWrapper>
       )}
 
-      {results.map((paper, index) => {
-        paper.abstract = parseIfHighlighted({
-          searchResult: paper,
-          attribute: "abstract",
-        });
-        paper.title = parseIfHighlighted({
-          searchResult: paper,
-          attribute: "title",
-        });
-        paper.promoted = false;
-        paper.user_vote = userVotes[paper.id];
+      {router.query.type === "post" &&
+        results.map((post, index) => {
+          return <UserPostCard {...post} key={post.id || index} />;
+        })}
+      {router.query.type === "paper" &&
+        results.map((paper, index) => {
+          paper.abstract = parseIfHighlighted({
+            searchResult: paper,
+            attribute: "abstract",
+          });
+          paper.title = parseIfHighlighted({
+            searchResult: paper,
+            attribute: "title",
+          });
+          paper.promoted = false;
+          paper.user_vote = userVotes[paper.id];
 
-        return (
-          <PaperEntryCard
-            paper={paper}
-            index={index}
-            key={paper.id}
-            voteCallback={(arrIndex, currPaper) => {
-              const idx = results.findIndex((p) => p.id === currPaper.id);
+          return (
+            <PaperEntryCard
+              paper={paper}
+              index={index}
+              key={paper.id}
+              voteCallback={(arrIndex, currPaper) => {
+                const idx = results.findIndex((p) => p.id === currPaper.id);
 
-              results[idx] = currPaper;
-              userVotes[currPaper.id] = currPaper.user_vote;
+                results[idx] = currPaper;
+                userVotes[currPaper.id] = currPaper.user_vote;
 
-              setResults(results);
-              setUserVotes(userVotes);
-            }}
-          />
-        );
-      })}
+                setResults(results);
+                setUserVotes(userVotes);
+              }}
+            />
+          );
+        })}
+
       {loadMoreBtn}
     </div>
   );
