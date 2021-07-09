@@ -25,7 +25,7 @@ const getFacetsToAggregate = (query = {}) => {
   return facet;
 };
 
-const Index = ({ serverResponse, hasError }) => {
+const Index = ({ apiResponse, hasError }) => {
   const router = useRouter();
   const currentSearchType = get(router, "query.type");
 
@@ -36,13 +36,13 @@ const Index = ({ serverResponse, hasError }) => {
   return (
     <Fragment>
       <Head
-        title={`(${serverResponse.count}) ${get(
+        title={`(${apiResponse.count}) ${get(
           router,
           "query.q"
         )} - Research Hub`}
         description={"Search Researchhub"}
       />
-      <SearchResults initialResults={serverResponse} />
+      <SearchResults apiResponse={apiResponse} />
     </Fragment>
   );
 };
@@ -72,16 +72,16 @@ Index.getInitialProps = async (ctx) => {
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((serverResponse) => {
-      return { serverResponse };
+    .then((apiResponse) => {
+      return { apiResponse };
     })
-    .catch((serverError) => {
+    .catch((error) => {
       return { hasError: true };
     });
 };
 
 Index.propTypes = {
-  serverResponse: PropTypes.object,
+  apiResponse: PropTypes.object,
   hasError: PropTypes.bool,
 };
 
