@@ -1,9 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement } from "react";
+import React, { Fragment, ReactElement, useEffect } from "react";
+import { useRouter } from "next/router";
 
 type Props = {};
 
 function PaperUploadV2({  }: Props): ReactElement<"div"> {
+  const router = useRouter();
+  const { paperId } = router.query;
   return (
     <div>
       Hi this is paper upload v2
