@@ -93,7 +93,7 @@ export const NavigationArrow = ({ icon, direction, customStyles }) => {
 };
 
 function formatTabs(tab, props) {
-  if (tab.label === "transactions" || tab.label === "supported papers") {
+  if (tab.href === "transactions" || tab.href === "boosts") {
     const { user, author } = props;
     if (author.user !== user.id) {
       return;

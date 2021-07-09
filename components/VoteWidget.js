@@ -162,9 +162,7 @@ const VoteWidget = (props) => {
           effect="solid"
         />
         <ScorePill
-          score={
-            promoted !== false && type === "Paper" ? promoted : displayableScore
-          }
+          score={displayableScore}
           promoted={promoted}
           paper={paper}
           showPromotion={showPromotion}
