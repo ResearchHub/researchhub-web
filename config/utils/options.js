@@ -329,7 +329,7 @@ const searchTypes = {
       fieldForApp: "q",
     },
   },
-  user: {
+  person: {
     q: {
       fieldForApi: "search_multi_match",
       fieldForApp: "q",
