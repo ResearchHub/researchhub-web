@@ -4,4 +4,8 @@ export const breakpoints = {
     int: 760,
     str: "760px",
   },
+  xsmall: {
+    int: 576,
+    str: "576px",
+  },
 };

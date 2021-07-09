@@ -22,6 +22,8 @@ import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
 import HubCard from "~/components/Hubs/HubCard";
+import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
+import HorizontalTabBar from "~/components/HorizontalTabBar";
 
 const timeFilterOpts = [
   {
@@ -268,18 +270,40 @@ const SearchResults = ({ initialResults }) => {
     });
   };
 
+  const resultTabClick = (tab) => {
+    console.log("click", tab);
+
+    const updatedQuery = {
+      ...router.query,
+      type: tab.type,
+    };
+
+    router.push({
+      pathname: "/search/[type]",
+      query: updatedQuery,
+    });
+  };
+
   const renderEntityTabs = () => {
-    return keys(searchTypes).map((type) => (
-      <Link href={`/search/${type}`} key={type}>
-        {type === currentSearchType ? (
-          <a>
-            {type + "s"} [{numOfHits}]
-          </a>
-        ) : (
-          <a>{type + "s"}</a>
-        )}
-      </Link>
-    ));
+    let tabs = [
+      { type: "paper", label: "Papers" },
+      { type: "post", label: "Posts" },
+      { type: "hub", label: "Hubs" },
+      { type: "person", label: "People" },
+    ];
+
+    tabs = tabs.map((t) => {
+      t.isSelected = t.type === router.query.type ? true : false;
+      return t;
+    });
+
+    return (
+      <HorizontalTabBar
+        tabs={tabs}
+        onClick={resultTabClick}
+        containerStyle={styles.tabContainer}
+      />
+    );
   };
 
   const renderLoadMoreButton = () => {
@@ -328,6 +352,7 @@ const SearchResults = ({ initialResults }) => {
   if (router.query.type === "hub") {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        {renderEntityTabs()}
         <div className={css(styles.grid)}>
           {results.map((hub, index) => {
             return <HubCard key={hub.id} hub={hub} />;
@@ -336,9 +361,36 @@ const SearchResults = ({ initialResults }) => {
       </ComponentWrapper>
     );
   }
+  //
+  //   else if (router.query.type === "author") {
+  //     return (
+  //       <ComponentWrapper overrideStyle={styles.componentWrapper}>
+  //         {renderEntityTabs()}
+  //         {results.map((user, index) => {
+  //
+  // console.log('----------');
+  // console.log(user);
+  // console.log('----------');
+  //
+  //           return (
+  //             <Ripples className={css(styles.user)} key={`user_${index}_${user.id}`}>
+  //               <LeaderboardUser
+  //                 user={user}
+  //                 name={'kobe'}
+  //                 authorProfile={null}
+  //                 // reputation={reputation}
+  //                 authorId={user.id}
+  //               />
+  //             </Ripples>
+  //           )
+  //         })}
+  //       </ComponentWrapper>
+  //     );
+  //   }
 
   return (
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
+      {renderEntityTabs()}
       {(numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
           <div className={css(styles.resultCount)}>
@@ -552,6 +604,9 @@ const styles = StyleSheet.create({
       backgroundColor: colors.BLUE(),
     },
   },
+  tabContainer: {
+    marginBottom: 40,
+  },
 
   grid: {
     display: "flex",
@@ -564,6 +619,19 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 0,
       paddingRight: 0,
+    },
+  },
+
+  user: {
+    display: "flex",
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "7px 20px",
+    borderLeft: "3px solid #FFF",
+    transition: "all ease-out 0.1s",
+    ":hover": {
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+      backgroundColor: "#FAFAFA",
     },
   },
 });
