@@ -26,3 +26,7 @@ yarn-error.log*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
+# Open Source
+/config/constants.js
+*.aws*
+.ebextensions
