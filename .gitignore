@@ -35,4 +35,7 @@ yarn-error.log*
 /config/constants.js
 *.aws*
 .ebextensions
+
 .vscode
+.npmrc
+.sentryclirc
