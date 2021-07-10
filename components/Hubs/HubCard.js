@@ -18,6 +18,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { capitalize } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 class HubCard extends React.Component {
   constructor(props) {
@@ -314,12 +315,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
     cursor: "pointer",
     textDecoration: "none",
-    width: "364px",
-    height: "264px",
-    marginTop: 25,
-    marginBottom: 25,
-    marginLeft: 21,
-    marginRight: 21,
+    width: "360px",
     transition: "transform 0.1s",
     ":hover": {
       transition: "transform 0.1s",
@@ -347,7 +343,7 @@ const styles = StyleSheet.create({
   },
   roundedImage: {
     borderRadius: "8px 8px 0 0",
-    width: "364px",
+    width: "100%",
     height: "128px",
     objectFit: "cover",
     pointerEvents: "none",

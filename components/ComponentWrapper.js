@@ -2,9 +2,6 @@ import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 
-// Components
-import Navbar from "./Navbar";
-
 const ComponentWrapper = (props) => {
   return (
     <div

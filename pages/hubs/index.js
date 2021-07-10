@@ -363,12 +363,12 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "left",
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 30,
+    marginBottom: 40,
+    gap: 30,
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 0,
       paddingRight: 0,
+      gap: 0,
     },
   },
   trendingIcon: {

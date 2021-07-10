@@ -5,13 +5,10 @@ import { useRouter } from "next/router";
 
 import colors from "~/config/themes/colors";
 import ComponentWrapper from "~/components/ComponentWrapper";
-import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
-import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
-import { breakpoints } from "~/config/themes/screen";
-import HubCard from "~/components/Hubs/HubCard";
-import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
+// import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
+import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();
@@ -57,11 +54,7 @@ const SearchResults = ({ apiResponse }) => {
       {currentSearchType === "paper" || currentSearchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
       ) : currentSearchType === "hub" ? (
-        <div className={css(styles.grid)}>
-          {results.map((hub, index) => {
-            return <HubCard key={hub.id} hub={hub} />;
-          })}
-        </div>
+        <SearchResultsForHubs apiResponse={apiResponse} />
       ) : currentSearchType === "person" ? (
         ""
       ) : null}
@@ -76,20 +69,6 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     marginBottom: 40,
-  },
-
-  grid: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "left",
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 30,
-    "@media only screen and (max-width: 767px)": {
-      paddingLeft: 0,
-      paddingRight: 0,
-    },
   },
 
   user: {
