@@ -70,9 +70,9 @@ class PaperUploadInfo extends React.Component {
       loading: false,
       uploadingPaper: false,
       suggestedHubs: [],
-      editMode: false,
+      editMode: false, // v2 remove
       edited: false,
-      suggestedPapers: false,
+      suggestedPapers: false, // v2 remove
       urlView: true,
       showTitle: false,
     };
