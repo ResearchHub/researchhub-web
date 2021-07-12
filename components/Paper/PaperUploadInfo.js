@@ -62,19 +62,19 @@ class PaperUploadInfo extends React.Component {
         author: false,
         tagline: false,
       },
-      showAuthorList: false,
-      activeStep: 1,
-      searchAuthor: "",
-      suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
-      selectedAuthors: [],
-      loading: false,
-      uploadingPaper: false,
-      suggestedHubs: [],
+      showAuthorList: false, // v2 -> shouldShowAuthorList
+      activeStep: 1, // v2 remove
+      searchAuthor: "", // v2 -> authorSearchText
+      suggestedAuthors: [], // v2 -> made local to component
+      selectedAuthors: [], // v2 -> made local to component
+      loading: false, // v2 -> isLoading
+      uploadingPaper: false, // v2 remove
+      suggestedHubs: [], // v2 -> made local to component
       editMode: false, // v2 remove
-      edited: false,
+      edited: false, // v2 -> isFormEdited
       suggestedPapers: false, // v2 remove
-      urlView: true,
-      showTitle: false,
+      urlView: true, // v2 -> isURLView
+      showTitle: false, // v2 remove
     };
 
     this.state = {
