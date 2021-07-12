@@ -428,6 +428,7 @@ class PaperUploadInfo extends React.Component {
     });
   };
 
+  // v2 -> remove
   uploadUrl = (urlData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
