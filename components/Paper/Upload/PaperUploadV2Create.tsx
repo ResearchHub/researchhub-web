@@ -1,8 +1,6 @@
 import { AuthActions } from "../../../redux/auth";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import Message from "../../Loader/Message";
-
 import {
   ComponentState,
   defaultComponentState,
@@ -36,10 +34,13 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import { HubConstants } from "../../../redux/hub";
+import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type Props = {
+  authActions: any;
+  authRedux: any;
   messageActions: any;
+  modalActions: any;
   paperActions: any;
   paperRedux: any;
 };
@@ -80,7 +81,6 @@ const useEffectParseReduxToState = ({
   useEffect((): void => {
     const {
       abstract,
-      accessed,
       author: authorArray,
       DOI,
       issued,
@@ -90,14 +90,11 @@ const useEffectParseReduxToState = ({
     const formattedAbstract = !isNullOrUndefined(abstract)
       ? abstract
       : formData.abstract;
-    console.warn("ISSUED: ", issued);
     const formattedDOI = !isNullOrUndefined(DOI) ? DOI : formData.doi;
     const formattedURL = !isNullOrUndefined(url) ? url : formData.url;
     // NOTE: calvinhlee - date parsing comes from legacy code.
     const formattedPublishedDate = !isNullOrUndefined(issued)
       ? parseDate(issued["date-parts"][0])
-      : !isNullOrUndefined(accessed)
-      ? parseDate(accessed["date-parts"][0])
       : formData.published;
     const formType = !isNullOrUndefined(type) ? type : "REGULAR"; // currently only supports regular type
     const formattedRawAuthors =
@@ -125,7 +122,7 @@ const useEffectParseReduxToState = ({
   }, [formAuthors, formHubs, messageActions, setFormData, uploadedPaper]);
 };
 
-const validateSelectors = ({
+const getIsFormValid = ({
   formData,
   formErrors,
   setFormErrors,
@@ -134,25 +131,23 @@ const validateSelectors = ({
   formErrors: FormErrorState;
   setFormErrors: (errors: FormErrorState) => void;
 }) => {
-  const { published, hubs: selectedHubs } = formData;
-  const { year, month } = published;
+  const { hubs: selectedHubs } = formData;
   const newErrors = { ...formErrors };
   let result = true;
   if (selectedHubs.length < 1) {
     result = false;
     newErrors.hubs = true;
   }
-  if (isNullOrUndefined(year) || isNullOrUndefined(month)) {
-    result = false;
-    newErrors.year = isNullOrUndefined(year);
-    newErrors.month = isNullOrUndefined(month);
-  }
+  // NOTE: calvinhlee - previoulsy we had a check for published date as well. It's deprecated
   setFormErrors(newErrors);
   return result;
 };
 
 function PaperuploadV2Create({
+  authActions,
+  authRedux,
   messageActions,
+  modalActions,
   paperActions,
   paperRedux,
 }: Props): ReactElement<typeof Fragment> {
@@ -174,7 +169,7 @@ function PaperuploadV2Create({
     const firstKey = keys[0];
     const newFormData = { ...formData };
     const newFormErrors = { ...formErrors };
-    // NOTE: calvinhlee - just simplifying previously existing logic. This however is still funky
+    // NOTE: calvinhlee - simplified legacy logic. Leaving as is to avoid refactoring FormInput
     if (keys.length === 1) {
       newFormData[firstKey] =
         firstKey === "title"
@@ -225,13 +220,45 @@ function PaperuploadV2Create({
 
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
-    const isFormValid = validateSelectors({
+    const isFormValid = getIsFormValid({
       formData,
       formErrors,
       setFormErrors,
     });
     if (isFormValid) {
-      alert("YO!");
+      messageActions.showMessage({ load: true, show: true });
+      uploadNewPaper({
+        onError: (respPayload: any): void => {
+          // NOTE: calvinhlee - existing legacy logic
+          const errorBody = respPayload.errorBody;
+          if (!isNullOrUndefined(errorBody) && errorBody.status === 429) {
+            messageActions.showMessage({ show: false });
+          } else {
+            messageActions.setMessage(
+              errorBody
+                ? errorBody.error
+                : "You are not allowed to upload papers"
+            );
+            messageActions.showMessage({ show: true, error: true });
+            setTimeout(() => messageActions.showMessage({ show: false }), 2000);
+          }
+        },
+        onSuccess: ({ paperID, paperName }): void => {
+          messageActions.setMessage("Paper successfully uploaded");
+          messageActions.showMessage({ show: true });
+          const isUsersFirstTime = !authRedux.user.has_seen_first_coin_modal;
+          // NOTE: calvinhlee - equivalent to authActions.checkUserFirstTime
+          modalActions.openFirstVoteModal(isUsersFirstTime);
+          messageActions.showMessage({ show: true, load: true });
+          paperActions.resetPaperState();
+          router.push(
+            "/paper/[paperId]/[paperName]",
+            `/paper/${paperID}/${paperName}`
+          );
+        },
+        paperActions,
+        payload: formData,
+      });
     } else {
       messageActions.setMessage("Required fields must be filled.");
       messageActions.showMessage({
@@ -241,8 +268,7 @@ function PaperuploadV2Create({
       });
     }
   };
-  console.warn("paperRedux: ", paperRedux);
-  console.warn("formErrors: ", formErrors);
+
   // logical ordering
   useEffectHandleInit({ paperActions, paperTitleQuery });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
@@ -401,17 +427,17 @@ function PaperuploadV2Create({
 }
 
 const mapStateToProps = (state: any) => ({
-  modalsRedux: state.modals,
-  paperRedux: state.paper,
   authRedux: state.auth,
   messageRedux: state.auth,
+  modalsRedux: state.modals,
+  paperRedux: state.paper,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  modalActions: bindActionCreators(ModalActions, dispatch),
-  paperActions: bindActionCreators(PaperActions, dispatch),
   authActions: bindActionCreators(AuthActions, dispatch),
   messageActions: bindActionCreators(MessageActions, dispatch),
+  modalActions: bindActionCreators(ModalActions, dispatch),
+  paperActions: bindActionCreators(PaperActions, dispatch),
 });
 
 export default connect(
