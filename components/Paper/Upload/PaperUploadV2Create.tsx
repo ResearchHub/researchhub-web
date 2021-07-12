@@ -31,10 +31,12 @@ import FormSelect from "../../Form/FormSelect";
 import React, {
   Fragment,
   ReactElement,
+  SyntheticEvent,
   useCallback,
   useEffect,
   useState,
 } from "react";
+import { HubConstants } from "../../../redux/hub";
 
 type Props = {
   messageActions: any;
@@ -78,6 +80,7 @@ const useEffectParseReduxToState = ({
   useEffect((): void => {
     const {
       abstract,
+      accessed,
       author: authorArray,
       DOI,
       issued,
@@ -87,10 +90,14 @@ const useEffectParseReduxToState = ({
     const formattedAbstract = !isNullOrUndefined(abstract)
       ? abstract
       : formData.abstract;
+    console.warn("ISSUED: ", issued);
     const formattedDOI = !isNullOrUndefined(DOI) ? DOI : formData.doi;
     const formattedURL = !isNullOrUndefined(url) ? url : formData.url;
+    // NOTE: calvinhlee - date parsing comes from legacy code.
     const formattedPublishedDate = !isNullOrUndefined(issued)
       ? parseDate(issued["date-parts"][0])
+      : !isNullOrUndefined(accessed)
+      ? parseDate(accessed["date-parts"][0])
       : formData.published;
     const formType = !isNullOrUndefined(type) ? type : "REGULAR"; // currently only supports regular type
     const formattedRawAuthors =
@@ -116,6 +123,32 @@ const useEffectParseReduxToState = ({
     });
     messageActions.showMessage({ show: false });
   }, [formAuthors, formHubs, messageActions, setFormData, uploadedPaper]);
+};
+
+const validateSelectors = ({
+  formData,
+  formErrors,
+  setFormErrors,
+}: {
+  formData: FormState;
+  formErrors: FormErrorState;
+  setFormErrors: (errors: FormErrorState) => void;
+}) => {
+  const { published, hubs: selectedHubs } = formData;
+  const { year, month } = published;
+  const newErrors = { ...formErrors };
+  let result = true;
+  if (selectedHubs.length < 1) {
+    result = false;
+    newErrors.hubs = true;
+  }
+  if (isNullOrUndefined(year) || isNullOrUndefined(month)) {
+    result = false;
+    newErrors.year = isNullOrUndefined(year);
+    newErrors.month = isNullOrUndefined(month);
+  }
+  setFormErrors(newErrors);
+  return result;
 };
 
 function PaperuploadV2Create({
@@ -146,7 +179,7 @@ function PaperuploadV2Create({
       newFormData[firstKey] =
         firstKey === "title"
           ? !isNullOrUndefined(value)
-            ? value[0].toUpperCase() + value.slice(1)
+            ? (value[0] || "").toUpperCase() + value.slice(1)
             : ""
           : value;
     } else {
@@ -190,6 +223,26 @@ function PaperuploadV2Create({
     [componentState, paperActions, setComponentState, setFormErrors]
   );
 
+  const onFormSubmit = (event: SyntheticEvent): void => {
+    event.preventDefault();
+    const isFormValid = validateSelectors({
+      formData,
+      formErrors,
+      setFormErrors,
+    });
+    if (isFormValid) {
+      alert("YO!");
+    } else {
+      messageActions.setMessage("Required fields must be filled.");
+      messageActions.showMessage({
+        load: false,
+        show: true,
+        error: true,
+      });
+    }
+  };
+  console.warn("paperRedux: ", paperRedux);
+  console.warn("formErrors: ", formErrors);
   // logical ordering
   useEffectHandleInit({ paperActions, paperTitleQuery });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
@@ -204,8 +257,11 @@ function PaperuploadV2Create({
   });
 
   return (
-    <form>
-      <Message />
+    <form
+      autoComplete={"off"}
+      className={css(formGenericStyles.form)}
+      onSubmit={onFormSubmit}
+    >
       <div className={css(formGenericStyles.pageContent)}>
         <div className={css(formGenericStyles.header, formGenericStyles.text)}>
           {"Add Paper"}
