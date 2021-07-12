@@ -7,6 +7,7 @@ export type ComponentState = {
   isLoading: boolean;
   isURLView: boolean;
   shouldShowAuthorList: boolean;
+  shouldShowTitle: boolean;
 };
 
 export type FormErrorState = {
@@ -23,25 +24,25 @@ export type FormState = {
   author: any;
   doi: ID;
   hubs: any[];
-  paper_title: string;
+  paperTitle: string;
   published: {
     year: number | null | string;
     month: number | null | string;
     day: number | null | string;
   };
-  raw_authors: any[];
+  rawAuthors: any[];
   title: string;
   type: string;
 };
 
-export const defaultComponentState = {
+export const defaultComponentState: ComponentState = {
   authorSearchText: "",
   isFormDisabled: false,
   isFormEdited: false,
   isLoading: false,
   isURLView: true,
   shouldShowAuthorList: false,
-  showTitle: false,
+  shouldShowTitle: false,
 };
 
 export const defaultFormErrorState: FormErrorState = {
@@ -60,13 +61,13 @@ export const defaultFormState: FormState = {
   },
   doi: null,
   hubs: [],
-  paper_title: "",
+  paperTitle: "",
   published: {
     year: null,
     month: null,
     day: null,
   },
-  raw_authors: [],
+  rawAuthors: [],
   title: "",
   type: "",
 };

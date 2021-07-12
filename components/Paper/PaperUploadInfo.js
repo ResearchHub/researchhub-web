@@ -74,7 +74,7 @@ class PaperUploadInfo extends React.Component {
       edited: false, // v2 -> isFormEdited
       suggestedPapers: false, // v2 remove
       urlView: true, // v2 -> isURLView
-      showTitle: false, // v2 remove
+      showTitle: false, // v2 -> shouldShowTitle
     };
 
     this.state = {
@@ -783,7 +783,6 @@ class PaperUploadInfo extends React.Component {
             </span>
           )}
         </div>
-        <div className={css(styles.section)}></div>
       </span>
     );
   };

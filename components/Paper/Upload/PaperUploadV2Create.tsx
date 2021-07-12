@@ -9,13 +9,17 @@ import {
   FormErrorState,
   FormState,
 } from "./types/UploadComponentTypes";
-import { css, StyleSheet } from "aphrodite";
+import { css } from "aphrodite";
+import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
+import Button from "../../Form/Button";
 import FormDND from "../../Form/FormDND";
+import FormInput from "../../Form/FormInput";
+import FormSelect from "../../Form/FormSelect";
 import React, {
   Fragment,
   ReactElement,
@@ -23,7 +27,6 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import colors from "../../../config/themes/colors";
 
 type Props = {
   paperActions: any;
@@ -62,163 +65,177 @@ function PaperuploadV2Create({
   );
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
+  const {
+    isFormDisabled,
+    isFormEdited,
+    isLoading,
+    isURLView,
+    shouldShowTitle,
+  } = componentState;
+  const {
+    abstract,
+    author,
+    doi,
+    hubs: selectedHubs,
+    paperTitle,
+    published,
+    rawAuthors,
+    title,
+  } = formData;
+
+  const handlePDFUpload = useCallback(
+    (acceptedFiles, metaData): void => {
+      // NOTE: calvinhlee - currently supporting only 1 upload
+      paperActions.uploadPaperToState(acceptedFiles[0], metaData);
+      setComponentState({
+        ...componentState,
+        isFormEdited: true,
+        isFormDisabled: false,
+      });
+      setFormErrors({ ...formErrors, dnd: false });
+    },
+    [componentState, paperActions, setComponentState, setFormErrors]
+  );
+
   useEffectHandleInit({ paperActions, paperRedux, uploadPaperTitle });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
-  const handlePDFUpload = useCallback((acceptedFiles, metaData): void => {
-    // NOTE: calvinhlee - currently supporting only 1 upload
-    paperActions.uploadPaperToState(acceptedFiles[0], metaData);
-    setComponentState({
-      ...componentState,
-      isFormEdited: true,
-      isFormDisabled: false,
-    });
-    setFormErrors({ ...formErrors, dnd: false });
-  }, []);
-
   return (
-    <Fragment>
-      <div className={css(styles.header, styles.text)}>
-        {"Add Paper"}
-        <a
-          className={css(styles.authorGuidelines)}
-          href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {"Submission Guidelines"}
-        </a>
-        <div className={css(styles.sidenote, styles.text)}>
-          {"Up to 15MB (.pdf)"}
-        </div>
-      </div>
-      <div className={css(styles.section)}>
-        <div className={css(styles.paper)}>
-          <div className={css(styles.label, styles.labelStyle)}>
-            {componentState.isURLView ? `Link to Paper` : "Paper PDF"}
-            <span className={css(styles.asterick)}>*</span>
+    <form>
+      <div className={css(formGenericStyles.pageContent)}>
+        <div className={css(formGenericStyles.header, formGenericStyles.text)}>
+          {"Add Paper"}
+          <a
+            className={css(formGenericStyles.authorGuidelines)}
+            href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
+            target="_blank"
+            rel="noreferrer noopener"
+          >
+            {"Submission Guidelines"}
+          </a>
+          <div
+            className={css(formGenericStyles.sidenote, formGenericStyles.text)}
+          >
+            {"Up to 15MB (.pdf)"}
           </div>
-          <FormDND
-            handleDrop={handlePDFUpload}
-            onDrop={null}
-            onDuplicate={(): void =>
-              setComponentState({ ...componentState, isFormDisabled: true })
+        </div>
+        <div className={css(formGenericStyles.section)}>
+          <div className={css(formGenericStyles.paper)}>
+            <div
+              className={css(
+                formGenericStyles.label,
+                formGenericStyles.labelStyle
+              )}
+            >
+              {componentState.isURLView ? `Link to Paper` : "Paper PDF"}
+              <span className={css(formGenericStyles.asterick)}>*</span>
+            </div>
+            <FormDND
+              handleDrop={handlePDFUpload}
+              onDrop={null}
+              onDuplicate={(): void =>
+                setComponentState({ ...componentState, isFormDisabled: true })
+              }
+              onValidUrl={(): void =>
+                setComponentState({ ...componentState, isFormDisabled: false })
+              }
+              toggleFormatState={(): void => {
+                setComponentState({
+                  ...componentState,
+                  isURLView: !componentState.isURLView,
+                });
+              }}
+            />
+          </div>
+        </div>
+        <div
+          className={css(formGenericStyles.section, formGenericStyles.padding)}
+        >
+          {!isURLView && (
+            <FormInput
+              label="Paper Title"
+              placeholder="Enter title of paper"
+              required={true}
+              containerStyle={formGenericStyles.container}
+              labelStyle={formGenericStyles.labelStyle}
+              value={paperTitle}
+              id="paper_title"
+              onChange={this.handleInputChange}
+            />
+          )}
+          <FormInput
+            label={"Editorialized Title (optional)"}
+            placeholder="Jargon free version of the title that the average person would understand"
+            containerStyle={formGenericStyles.container}
+            labelStyle={formGenericStyles.labelStyle}
+            value={title}
+            id={"title"}
+            onChange={this.handleInputChange}
+          />
+          <div className={css(formGenericStyles.section)}>
+            <div className={css(formGenericStyles.row)}>
+              <span className={css(formGenericStyles.doi)}>
+                <FormInput
+                  label="DOI"
+                  placeholder="Enter DOI of paper"
+                  id="doi"
+                  value={doi}
+                  required={true}
+                  containerStyle={formGenericStyles.doiInput}
+                  labelStyle={formGenericStyles.labelStyle}
+                  onChange={this.handleInputChange}
+                />
+              </span>
+            </div>
+          </div>
+          <FormSelect
+            label="Hubs"
+            placeholder="Search Hubs"
+            required={true}
+            containerStyle={formGenericStyles.container}
+            inputStyle={
+              (customStyles.input,
+              selectedHubs.length > 0 && customStyles.capitalize)
             }
-            onValidUrl={(): void =>
-              setComponentState({ ...componentState, isFormDisabled: false })
-            }
-            toggleFormatState={(): void => {
-              setComponentState({
-                ...componentState,
-                isURLView: !componentState.isURLView,
-              });
-            }}
+            labelStyle={formGenericStyles.labelStyle}
+            isMulti={true}
+            value={selectedHubs}
+            id="hubs"
+            options={suggestedHubs}
+            onChange={this.handleHubSelection}
+            error={error.hubs}
           />
         </div>
       </div>
-    </Fragment>
+      <div
+        className={css(formGenericStyles.buttonRow, formGenericStyles.buttons)}
+      >
+        <div
+          className={css(
+            formGenericStyles.button,
+            formGenericStyles.buttonLeft
+          )}
+          onClick={this.cancel}
+        >
+          <span
+            className={css(
+              formGenericStyles.buttonLabel,
+              formGenericStyles.text
+            )}
+          >
+            Cancel
+          </span>
+        </div>
+        <Button
+          label={editMode ? "Save" : "Upload"}
+          customButtonStyle={formGenericStyles.button}
+          disabled={disabled}
+          type={"submit"}
+        />
+      </div>
+    </form>
   );
 }
-
-const styles = StyleSheet.create({
-  asterick: {
-    color: colors.BLUE(1),
-  },
-  authorGuidelines: {
-    fontSize: 14,
-    letterSpacing: 0.3,
-    textDecoration: "none",
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 10,
-    },
-  },
-  header: {
-    fontSize: 22,
-    fontWeight: 500,
-    width: "100%",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingBottom: 8,
-    borderBottom: `1px solid #EBEBEB`,
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 18,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 16,
-      paddingLeft: 9,
-      paddingRight: 9,
-      width: "calc(100% - 18px)",
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 14,
-    },
-  },
-  label: {
-    fontFamily: "Roboto",
-    fontWeight: 500,
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  labelStyle: {
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 14,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 12,
-    },
-  },
-  paper: {
-    width: 601,
-    marginTop: 15,
-    "@media only screen and (max-width: 665px)": {
-      width: 380,
-    },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
-    },
-  },
-  section: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    marginTop: 10,
-  },
-  sidenote: {
-    fontSize: 14,
-    fontWeight: 400,
-    color: "#7a7887",
-    userSelect: "none",
-    cursor: "default",
-    display: "flex",
-    alignItems: "flex-end",
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 10,
-    },
-  },
-  text: {
-    fontFamily: "Roboto",
-  },
-});
 
 const mapStateToProps = (state: any) => ({
   modalsRedux: state.modals,
