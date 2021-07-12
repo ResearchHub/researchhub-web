@@ -91,7 +91,7 @@ class BaseModal extends React.Component {
         top: this.props.offset
           ? this.props.offset
           : this.state.mobileView
-          ? 80
+          ? 66
           : 0,
         left: 0,
         right: 0,
