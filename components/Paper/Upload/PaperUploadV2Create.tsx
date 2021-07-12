@@ -11,6 +11,8 @@ import {
 } from "./types/UploadComponentTypes";
 import { css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
+import { ID } from "../../../config/types/root_types";
+import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
@@ -65,23 +67,48 @@ function PaperuploadV2Create({
   );
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
-  const {
-    isFormDisabled,
-    isFormEdited,
-    isLoading,
-    isURLView,
-    shouldShowTitle,
-  } = componentState;
-  const {
-    abstract,
-    author,
-    doi,
-    hubs: selectedHubs,
-    paperTitle,
-    published,
-    rawAuthors,
-    title,
-  } = formData;
+  const { isFormDisabled, isURLView, shouldShowTitle } = componentState;
+  const { doi, hubs: selectedHubs, paper_title, title } = formData;
+
+  const handleInputChange = (id: string, value: any): void => {
+    const keys = id.split(".");
+    const firstKey = keys[0];
+    const newFormData = { ...formData };
+    const newFormErrors = { ...formErrors };
+    // NOTE: calvinhlee - just simplifying previously existing logic. This however is still funky
+    if (keys.length === 1) {
+      newFormData[firstKey] =
+        firstKey === "title"
+          ? !isNullOrUndefined(value)
+            ? value[0].toUpperCase() + value.slice(1)
+            : ""
+          : value;
+    } else {
+      newFormData[firstKey][keys[1]] = value;
+      firstKey === "published" ? (newFormErrors[keys[1]] = false) : null; // removes red border on select fields
+    }
+    setComponentState({ ...componentState, isFormEdited: true });
+    setFormData(newFormData);
+    setFormErrors(newFormErrors);
+  };
+
+  const handleCancel = (): void => {
+    paperActions.resetPaperState();
+    setComponentState(defaultComponentState);
+    setFormData(defaultFormState);
+    setFormErrors(defaultFormErrorState);
+    router.back();
+  };
+
+  const handleHubSelection = (_id: ID, selectedHubs: any): void => {
+    if (isNullOrUndefined(selectedHubs)) {
+      setFormData({ ...formData, hubs: [] });
+      setFormErrors({ ...formErrors, hubs: true });
+    } else {
+      setFormData({ ...formData, hubs: selectedHubs });
+      setFormErrors({ ...formErrors, hubs: selectedHubs.length < 1 });
+    }
+  };
 
   const handlePDFUpload = useCallback(
     (acceptedFiles, metaData): void => {
@@ -127,8 +154,8 @@ function PaperuploadV2Create({
                 formGenericStyles.labelStyle
               )}
             >
-              {componentState.isURLView ? `Link to Paper` : "Paper PDF"}
-              <span className={css(formGenericStyles.asterick)}>*</span>
+              {shouldShowTitle || isURLView ? `Link to Paper` : "Paper PDF"}
+              <span className={css(formGenericStyles.asterick)}>{"*"}</span>
             </div>
             <FormDND
               handleDrop={handlePDFUpload}
@@ -142,7 +169,7 @@ function PaperuploadV2Create({
               toggleFormatState={(): void => {
                 setComponentState({
                   ...componentState,
-                  isURLView: !componentState.isURLView,
+                  isURLView: !isURLView,
                 });
               }}
             />
@@ -153,57 +180,57 @@ function PaperuploadV2Create({
         >
           {!isURLView && (
             <FormInput
-              label="Paper Title"
-              placeholder="Enter title of paper"
-              required={true}
               containerStyle={formGenericStyles.container}
-              labelStyle={formGenericStyles.labelStyle}
-              value={paperTitle}
               id="paper_title"
-              onChange={this.handleInputChange}
+              label="Paper Title"
+              labelStyle={formGenericStyles.labelStyle}
+              onChange={handleInputChange}
+              placeholder="Enter title of paper"
+              required
+              value={paper_title}
             />
           )}
           <FormInput
-            label={"Editorialized Title (optional)"}
-            placeholder="Jargon free version of the title that the average person would understand"
             containerStyle={formGenericStyles.container}
+            id="title"
+            label="Editorialized Title (optional)"
             labelStyle={formGenericStyles.labelStyle}
+            onChange={handleInputChange}
+            placeholder="Jargon free version of the title that the average person would understand"
             value={title}
-            id={"title"}
-            onChange={this.handleInputChange}
           />
           <div className={css(formGenericStyles.section)}>
             <div className={css(formGenericStyles.row)}>
               <span className={css(formGenericStyles.doi)}>
                 <FormInput
-                  label="DOI"
-                  placeholder="Enter DOI of paper"
-                  id="doi"
-                  value={doi}
-                  required={true}
                   containerStyle={formGenericStyles.doiInput}
+                  id="doi"
+                  label="DOI"
                   labelStyle={formGenericStyles.labelStyle}
-                  onChange={this.handleInputChange}
+                  onChange={handleInputChange}
+                  placeholder="Enter DOI of paper"
+                  required
+                  value={doi}
                 />
               </span>
             </div>
           </div>
           <FormSelect
-            label="Hubs"
-            placeholder="Search Hubs"
-            required={true}
             containerStyle={formGenericStyles.container}
+            error={formErrors.hubs}
+            id="hubs"
+            isMulti
+            label="Hubs"
             inputStyle={
               (customStyles.input,
               selectedHubs.length > 0 && customStyles.capitalize)
             }
             labelStyle={formGenericStyles.labelStyle}
-            isMulti={true}
-            value={selectedHubs}
-            id="hubs"
+            onChange={handleHubSelection}
             options={suggestedHubs}
-            onChange={this.handleHubSelection}
-            error={error.hubs}
+            placeholder="Search Hubs"
+            required
+            value={selectedHubs}
           />
         </div>
       </div>
@@ -215,7 +242,7 @@ function PaperuploadV2Create({
             formGenericStyles.button,
             formGenericStyles.buttonLeft
           )}
-          onClick={this.cancel}
+          onClick={handleCancel}
         >
           <span
             className={css(
@@ -223,14 +250,14 @@ function PaperuploadV2Create({
               formGenericStyles.text
             )}
           >
-            Cancel
+            {"Cancel"}
           </span>
         </div>
         <Button
-          label={editMode ? "Save" : "Upload"}
           customButtonStyle={formGenericStyles.button}
-          disabled={disabled}
-          type={"submit"}
+          disabled={isFormDisabled}
+          label="Upload"
+          type="submit"
         />
       </div>
     </form>
