@@ -31,3 +31,5 @@ export const GET_THREADS = "@@paper/GET_THREADS";
 export const UPDATE_PAPER_STATE = "@@paper/UPDATE_PAPER_STATE";
 
 export const GET_TWITTER_THREADS = "@@paper/GET_TWITTER_THREADS";
+
+export const RESET_PAPER_STATE = "@@paper/RESET_PAPER_STATE";
