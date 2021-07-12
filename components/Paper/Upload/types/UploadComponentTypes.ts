@@ -7,7 +7,7 @@ export type ComponentState = {
   isLoading: boolean;
   isURLView: boolean;
   shouldShowAuthorList: boolean;
-  shouldShowTitle: boolean;
+  shouldShowTitleField: boolean;
 };
 
 export type FormErrorState = {
@@ -19,6 +19,12 @@ export type FormErrorState = {
   tagline: boolean;
 };
 
+export type FormPublishedDate = {
+  year: number | null | string;
+  month: number | null | string;
+  day: number | null | string;
+};
+
 // intentional snake_casing
 export type FormState = {
   abstract: any;
@@ -26,14 +32,11 @@ export type FormState = {
   doi: ID;
   hubs: any[];
   paper_title: string;
-  published: {
-    year: number | null | string;
-    month: number | null | string;
-    day: number | null | string;
-  };
+  paper_type: string;
+  published: FormPublishedDate;
   raw_authors: any[];
   title: string;
-  type: string;
+  url: string | null;
 };
 
 export const defaultComponentState: ComponentState = {
@@ -43,7 +46,7 @@ export const defaultComponentState: ComponentState = {
   isLoading: false,
   isURLView: true,
   shouldShowAuthorList: false,
-  shouldShowTitle: false,
+  shouldShowTitleField: false,
 };
 
 export const defaultFormErrorState: FormErrorState = {
@@ -64,6 +67,7 @@ export const defaultFormState: FormState = {
   doi: null,
   hubs: [],
   paper_title: "",
+  paper_type: "REGULAR",
   published: {
     year: null,
     month: null,
@@ -71,5 +75,5 @@ export const defaultFormState: FormState = {
   },
   raw_authors: [],
   title: "",
-  type: "",
+  url: null,
 };
