@@ -129,6 +129,7 @@ class FormDND extends React.Component {
 
   fetchCSL = async (value) => {
     if (value === "") return;
+    console.warn("FETCHING CSL");
     const param = { url: value };
     this.setState({ inputDisabled: true, fetching: true });
     await fetch(API.SEARCH_BY_URL, API.POST_CONFIG(param))
@@ -140,6 +141,7 @@ class FormDND extends React.Component {
         metaData = { ...csl_item };
         metaData.name = csl_item.title;
         metaData.url = url;
+        console.warn("CSL RES: ", res);
         this.props.paperActions.uploadPaperToState(metaData, { ...res });
         this.setState(
           {
@@ -382,6 +384,7 @@ class FormDND extends React.Component {
 
   renderContent = () => {
     if (this.state.urlView) {
+      console.warn("HI");
       return (
         <div className={css(styles.urlContainer)}>
           <FormInput

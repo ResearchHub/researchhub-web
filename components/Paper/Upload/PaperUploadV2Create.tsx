@@ -1,6 +1,8 @@
 import { AuthActions } from "../../../redux/auth";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import Message from "../../Loader/Message";
+
 import {
   ComponentState,
   defaultComponentState,
@@ -40,21 +42,12 @@ type Props = {
   paperRedux: any;
 };
 
-const useEffectHandleInit = ({
-  paperActions,
-  paperRedux,
-  paperTitleQuery,
-}): void => {
+const useEffectHandleInit = ({ paperActions, paperTitleQuery }): void => {
   useEffect(() => {
     paperActions.resetPaperState();
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
-  }, [
-    paperActions,
-    paperTitleQuery,
-    paperRedux,
-    paperRedux.uploadedPaper /* intentional explicit check */,
-  ]);
+  }, [paperTitleQuery /* intentional explicit check */]);
 };
 
 const useEffectParseReduxToState = ({
@@ -197,7 +190,9 @@ function PaperuploadV2Create({
     [componentState, paperActions, setComponentState, setFormErrors]
   );
 
-  useEffectHandleInit({ paperActions, paperRedux, paperTitleQuery });
+  // logical ordering
+  useEffectHandleInit({ paperActions, paperTitleQuery });
+  useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectParseReduxToState({
     componentState,
     messageActions,
@@ -207,9 +202,10 @@ function PaperuploadV2Create({
     setComponentState,
     setFormData,
   });
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
   return (
     <form>
+      <Message />
       <div className={css(formGenericStyles.pageContent)}>
         <div className={css(formGenericStyles.header, formGenericStyles.text)}>
           {"Add Paper"}
