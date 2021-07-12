@@ -20,7 +20,7 @@ const useEffectHandleInit = ({
   uploadPaperTitle,
 }): void => {
   useEffect(() => {
-    paperActions.resresetPaperState();
+    paperActions.resetPaperState();
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
   }, [
@@ -39,8 +39,9 @@ function PaperuploadV2Create({
   const { uploadPaperTitle } = router.query;
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  // logical ordering
   useEffectHandleInit({ paperActions, paperRedux, uploadPaperTitle });
+  useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   return <Fragment>Hi this is Create</Fragment>;
 }
