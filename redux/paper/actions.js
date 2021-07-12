@@ -94,3 +94,8 @@ export function setUserVoteSuccess(vote) {
     payload: { doneFetching: true, success: true, vote },
   };
 }
+export function resetPaperState() {
+  return {
+    type: types.RESET_PAPER_STATE,
+  };
+}
