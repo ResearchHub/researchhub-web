@@ -19,18 +19,19 @@ export type FormErrorState = {
   tagline: boolean;
 };
 
+// intentional snake_casing
 export type FormState = {
   abstract: any;
   author: any;
   doi: ID;
   hubs: any[];
-  paperTitle: string;
+  paper_title: string;
   published: {
     year: number | null | string;
     month: number | null | string;
     day: number | null | string;
   };
-  rawAuthors: any[];
+  raw_authors: any[];
   title: string;
   type: string;
 };
@@ -54,6 +55,7 @@ export const defaultFormErrorState: FormErrorState = {
   tagline: false,
 };
 
+// intentional snake_casing
 export const defaultFormState: FormState = {
   abstract: null,
   author: {
@@ -61,13 +63,13 @@ export const defaultFormState: FormState = {
   },
   doi: null,
   hubs: [],
-  paperTitle: "",
+  paper_title: "",
   published: {
     year: null,
     month: null,
     day: null,
   },
-  rawAuthors: [],
+  raw_authors: [],
   title: "",
   type: "",
 };
