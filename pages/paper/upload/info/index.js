@@ -15,6 +15,7 @@ export default function Index() {
       {shouldRenderV2 ? (
         <PaperUploadV2Container />
       ) : (
+        // type removed in V2. There's only "regular" paper upload type
         <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} />
       )}
     </Fragment>

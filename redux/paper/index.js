@@ -306,6 +306,14 @@ export const PaperActions = {
     };
   },
 
+  resetPaperState: () => {
+    return async (dispatch) => {
+      return dispatch({
+        type: types.RESET_PAPER_STATE,
+      });
+    };
+  },
+
   postPaperSummary: (body) => {
     return async (dispatch, getState) => {
       const response = await fetch(
