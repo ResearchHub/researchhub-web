@@ -9,8 +9,6 @@ import PaperUploadV2Create from "./PaperUploadV2Create";
 import PaperUploadV2Update from "./PaperUploadV2Update";
 import { getSuggestedHubs } from "./api/getSuggestedHubs";
 
-type Props = {};
-
 const useEffectFetchSuggestedHubs = ({ setSuggestedHubs }): void => {
   useEffect((): void => {
     getSuggestedHubs({
@@ -20,7 +18,7 @@ const useEffectFetchSuggestedHubs = ({ setSuggestedHubs }): void => {
   }, []);
 };
 
-function PaperUploadV2Container({  }: Props): ReactElement<"div"> {
+export default function PaperUploadV2Container(): ReactElement<"div"> {
   const router = useRouter();
   const { paperId, uploadPaperTitle, type } = router.query;
   const isUploadingNewPaper = isNullOrUndefined(paperId);
@@ -43,4 +41,3 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
   },
 });
-export default PaperUploadV2Container;

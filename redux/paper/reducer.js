@@ -49,7 +49,8 @@ const PaperReducer = (state = defaultPaperState, action) => {
         ...state,
         userVote: { ...action.payload },
       };
-
+    case types.RESET_PAPER_STATE:
+      return defaultPaperState;
     default:
       return state;
   }

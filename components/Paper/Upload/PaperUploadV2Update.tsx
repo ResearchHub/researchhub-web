@@ -11,17 +11,19 @@ import AddAuthorModal from "../../Modals/AddAuthorModal";
 import React, { Fragment, ReactElement, useState } from "react";
 
 type Props = {
-  modals: any;
+  modalsRedux: any;
 };
 
-function PaperUploadV2Update({ modals }: Props): ReactElement<typeof Fragment> {
+function PaperUploadV2Update({
+  modalsRedux,
+}: Props): ReactElement<typeof Fragment> {
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   return (
     <Fragment>
       <AddAuthorModal
-        isOpen={modals.openAddAuthorModal}
+        isOpen={modalsRedux.openAddAuthorModal}
         addNewUser={addNewUser}
       />
     </Fragment>
@@ -29,10 +31,10 @@ function PaperUploadV2Update({ modals }: Props): ReactElement<typeof Fragment> {
 }
 
 const mapStateToProps = (state) => ({
-  modals: state.modals,
-  paper: state.paper,
-  auth: state.auth,
-  message: state.auth,
+  modalsRedux: state.modals,
+  paperRedux: state.paper,
+  authRedux: state.auth,
+  messageRedux: state.auth,
 });
 
 const mapDispatchToProps = (dispatch) => ({
