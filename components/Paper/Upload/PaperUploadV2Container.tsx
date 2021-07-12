@@ -1,11 +1,24 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement, useEffect } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+} from "../../../config/utils/nullchecks";
 import PaperUploadV2Create from "./PaperUploadV2Create";
 import PaperUploadV2Update from "./PaperUploadV2Update";
+import { getSuggestedHubs } from "./api/getSuggestedHubs";
 
 type Props = {};
+
+const useEffectFetchSuggestedHubs = ({ setSuggestedHubs }): void => {
+  useEffect((): void => {
+    getSuggestedHubs({
+      onError: emptyFncWithMsg,
+      onSuccess: (hubs: any): void => setSuggestedHubs(hubs),
+    });
+  }, []);
+};
 
 function PaperUploadV2Container({  }: Props): ReactElement<"div"> {
   const router = useRouter();

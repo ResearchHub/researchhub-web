@@ -6,21 +6,25 @@ import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
+import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
 import AddAuthorModal from "../../Modals/AddAuthorModal";
-import React, { Fragment, ReactElement, useEffect } from "react";
+import React, { Fragment, ReactElement, useState } from "react";
 
 type Props = {
   modals: any;
 };
 
-function PaperUploadV2Update({ modals }: Props) {
+function PaperUploadV2Update({ modals }: Props): ReactElement<typeof Fragment> {
+  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
+  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
   return (
-    <div>
+    <Fragment>
       <AddAuthorModal
         isOpen={modals.openAddAuthorModal}
         addNewUser={addNewUser}
       />
-    </div>
+    </Fragment>
   );
 }
 

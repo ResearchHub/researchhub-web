@@ -1,16 +1,16 @@
-export const addNewUser = (params) => {
+import { Helpers } from "@quantfive/js-web-config";
+import API from "../../../../config/api";
+
+export const addNewUser = ({ onError, onSuccess, params }) => {
   fetch(API.AUTHOR({}), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
-      let selectedAuthors = [...this.state.selectedAuthors, resp];
-      this.setState({
-        selectedAuthors,
-      });
+      onSuccess(resp);
     })
     .catch((err) => {
       if (err.response.status === 429) {
-        this.props.modalActions.openRecaptchaPrompt(true);
+        onError();
       }
     });
 };
