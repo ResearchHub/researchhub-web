@@ -147,12 +147,12 @@ export default function AuthorClaimPromptEmail({
           containerStyle={modalBodyStyles.containerStyle}
           disable={isSubmitting}
           id="eduEmail"
-          label="Your edu email address"
+          label="Your academic email address"
           type="email"
           labelStyle={verifStyles.labelStyle}
           inputStyle={shouldDisplayError && modalBodyStyles.error}
           onChange={handleOnChangeFields}
-          placeholder="Your email address"
+          placeholder="example@university.edu"
           required
         />
         <div className={css(verifStyles.buttonContainer)}>

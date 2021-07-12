@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     minWidth: 30,
     minHeight: 30,
     fontSize: 30 + 1,
-    border: "3px solid transparent",
+    border: "1px solid transparent",
     "@media only screen and (max-width: 415px)": {
       width: 25,
       height: 25,
