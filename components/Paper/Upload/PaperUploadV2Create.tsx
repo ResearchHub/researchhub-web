@@ -58,12 +58,10 @@ const useEffectHandleInit = ({
 };
 
 const useEffectParseReduxToState = ({
-  componentState,
   formData,
   messageActions,
   paperRedux,
   paperTitleQuery,
-  setComponentState,
   setFormData,
 }: {
   componentState: ComponentState;
@@ -124,23 +122,7 @@ const useEffectParseReduxToState = ({
       url: formattedURL,
     });
     messageActions.showMessage({ show: false });
-  }, [
-    componentState,
-    formAuthors,
-    formHubs,
-    messageActions,
-    setFormData,
-    uploadedPaper,
-  ]);
-
-  // useEffect(() => {
-  //   setComponentState({
-  //     ...componentState,
-  //     // suggests that paper was linked / pasted but no title is present
-  //     shouldShowTitleField:
-  //       !isNullOrUndefined(uploadedPaper) && formattedPaperTitle, // intentional shallow string check
-  //   });
-  // }, [componentState, formattedPaperTitle, setComponentState, uploadedPaper]);
+  }, [formAuthors, formHubs, messageActions, setFormData, uploadedPaper]);
 };
 
 function PaperuploadV2Create({
@@ -299,7 +281,7 @@ function PaperuploadV2Create({
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleInputChange}
             placeholder="Jargon free version of the title that the average person would understand"
-            value={title}
+            value={title || ""}
           />
           <div className={css(formGenericStyles.section)}>
             <div className={css(formGenericStyles.row)}>
