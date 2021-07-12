@@ -74,7 +74,7 @@ class PaperUploadInfo extends React.Component {
       edited: false, // v2 -> isFormEdited
       suggestedPapers: false, // v2 remove
       urlView: true, // v2 -> isURLView
-      showTitle: false, // v2 -> shouldShowTitle
+      showTitle: false, // v2 -> shouldShowTitleField
     };
 
     this.state = {

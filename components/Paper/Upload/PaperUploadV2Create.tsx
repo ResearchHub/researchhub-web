@@ -12,10 +12,14 @@ import {
 import { css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { ID } from "../../../config/types/root_types";
-import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullthrows,
+} from "../../../config/utils/nullchecks";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
+import { parseDate } from "./util/parseDate";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import Button from "../../Form/Button";
@@ -31,6 +35,7 @@ import React, {
 } from "react";
 
 type Props = {
+  messageActions: any;
   paperActions: any;
   paperRedux: any;
 };
@@ -38,7 +43,7 @@ type Props = {
 const useEffectHandleInit = ({
   paperActions,
   paperRedux,
-  uploadPaperTitle,
+  paperTitleQuery,
 }): void => {
   useEffect(() => {
     paperActions.resetPaperState();
@@ -46,18 +51,105 @@ const useEffectHandleInit = ({
     document.documentElement.scrollTop = 0;
   }, [
     paperActions,
-    uploadPaperTitle,
+    paperTitleQuery,
     paperRedux,
     paperRedux.uploadedPaper /* intentional explicit check */,
   ]);
 };
 
+const useEffectParseReduxToState = ({
+  componentState,
+  formData,
+  messageActions,
+  paperRedux,
+  paperTitleQuery,
+  setComponentState,
+  setFormData,
+}: {
+  componentState: ComponentState;
+  formData: FormState;
+  messageActions: any;
+  paperRedux: any;
+  paperTitleQuery: string | string[] | undefined;
+  setComponentState: (componentState: ComponentState) => void;
+  setFormData: (formData: FormState) => void;
+}): void => {
+  const { uploadedPaper } = paperRedux;
+  const formHubs = formData.hubs;
+  const formAuthors = formData.author;
+  const { title } = uploadedPaper;
+  const formattedPaperTitle =
+    !isNullOrUndefined(paperTitleQuery) &&
+    nullthrows(paperTitleQuery).length > 0
+      ? paperTitleQuery
+      : title;
+
+  useEffect((): void => {
+    const {
+      abstract,
+      author: authorArray,
+      DOI,
+      issued,
+      type,
+      url,
+    } = uploadedPaper;
+    const formattedAbstract = !isNullOrUndefined(abstract)
+      ? abstract
+      : formData.abstract;
+    const formattedDOI = !isNullOrUndefined(DOI) ? DOI : formData.doi;
+    const formattedURL = !isNullOrUndefined(url) ? url : formData.url;
+    const formattedPublishedDate = !isNullOrUndefined(issued)
+      ? parseDate(issued["date-parts"][0])
+      : formData.published;
+    const formType = !isNullOrUndefined(type) ? type : "REGULAR"; // currently only supports regular type
+    const formattedRawAuthors =
+      !isNullOrUndefined(authorArray) && Array.isArray(authorArray)
+        ? authorArray.map((a) => {
+            return {
+              first_name: a.given ? a.given : "",
+              last_name: a.family ? a.family : "",
+            };
+          })
+        : [];
+    setFormData({
+      abstract: formattedAbstract,
+      author: formAuthors,
+      doi: formattedDOI,
+      hubs: formHubs,
+      paper_title: formattedPaperTitle,
+      paper_type: formType,
+      published: formattedPublishedDate,
+      raw_authors: formattedRawAuthors,
+      title: formattedPaperTitle,
+      url: formattedURL,
+    });
+    messageActions.showMessage({ show: false });
+  }, [
+    componentState,
+    formAuthors,
+    formHubs,
+    messageActions,
+    setFormData,
+    uploadedPaper,
+  ]);
+
+  // useEffect(() => {
+  //   setComponentState({
+  //     ...componentState,
+  //     // suggests that paper was linked / pasted but no title is present
+  //     shouldShowTitleField:
+  //       !isNullOrUndefined(uploadedPaper) && formattedPaperTitle, // intentional shallow string check
+  //   });
+  // }, [componentState, formattedPaperTitle, setComponentState, uploadedPaper]);
+};
+
 function PaperuploadV2Create({
+  messageActions,
   paperActions,
   paperRedux,
 }: Props): ReactElement<typeof Fragment> {
   const router = useRouter();
-  const { uploadPaperTitle } = router.query;
+  const { paperTitleQuery } = router.query;
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
@@ -67,9 +159,8 @@ function PaperuploadV2Create({
   );
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
-  const { isFormDisabled, isURLView, shouldShowTitle } = componentState;
+  const { isFormDisabled, isURLView, shouldShowTitleField } = componentState;
   const { doi, hubs: selectedHubs, paper_title, title } = formData;
-
   const handleInputChange = (id: string, value: any): void => {
     const keys = id.split(".");
     const firstKey = keys[0];
@@ -124,9 +215,17 @@ function PaperuploadV2Create({
     [componentState, paperActions, setComponentState, setFormErrors]
   );
 
-  useEffectHandleInit({ paperActions, paperRedux, uploadPaperTitle });
+  useEffectHandleInit({ paperActions, paperRedux, paperTitleQuery });
+  useEffectParseReduxToState({
+    componentState,
+    messageActions,
+    formData,
+    paperRedux,
+    paperTitleQuery,
+    setComponentState,
+    setFormData,
+  });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
-
   return (
     <form>
       <div className={css(formGenericStyles.pageContent)}>
@@ -154,7 +253,7 @@ function PaperuploadV2Create({
                 formGenericStyles.labelStyle
               )}
             >
-              {shouldShowTitle || isURLView ? `Link to Paper` : "Paper PDF"}
+              {isURLView ? `Link to Paper` : "Paper PDF"}
               <span className={css(formGenericStyles.asterick)}>{"*"}</span>
             </div>
             <FormDND
@@ -164,7 +263,10 @@ function PaperuploadV2Create({
                 setComponentState({ ...componentState, isFormDisabled: true })
               }
               onValidUrl={(): void =>
-                setComponentState({ ...componentState, isFormDisabled: false })
+                setComponentState({
+                  ...componentState,
+                  isFormDisabled: false,
+                })
               }
               toggleFormatState={(): void => {
                 setComponentState({
@@ -178,7 +280,7 @@ function PaperuploadV2Create({
         <div
           className={css(formGenericStyles.section, formGenericStyles.padding)}
         >
-          {!isURLView && (
+          {(shouldShowTitleField || !isURLView) && (
             <FormInput
               containerStyle={formGenericStyles.container}
               id="paper_title"
