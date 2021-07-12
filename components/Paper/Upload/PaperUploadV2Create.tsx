@@ -1,13 +1,6 @@
-import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import React, { Fragment, ReactElement, useEffect, useState } from "react";
-import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
 import { AuthActions } from "../../../redux/auth";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { MessageActions } from "../../../redux/message";
-import { ModalActions } from "../../../redux/modals";
-import { PaperActions } from "../../../redux/paper";
 import {
   ComponentState,
   defaultComponentState,
@@ -16,6 +9,21 @@ import {
   FormErrorState,
   FormState,
 } from "./types/UploadComponentTypes";
+import { css, StyleSheet } from "aphrodite";
+import { MessageActions } from "../../../redux/message";
+import { ModalActions } from "../../../redux/modals";
+import { PaperActions } from "../../../redux/paper";
+import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
+import { useRouter } from "next/router";
+import FormDND from "../../Form/FormDND";
+import React, {
+  Fragment,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
+import colors from "../../../config/themes/colors";
 
 type Props = {
   paperActions: any;
@@ -45,13 +53,28 @@ function PaperuploadV2Create({
 }: Props): ReactElement<typeof Fragment> {
   const router = useRouter();
   const { uploadPaperTitle } = router.query;
-  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
+  const [formData, setFormData] = useState<FormState>(defaultFormState);
+  const [formErrors, setFormErrors] = useState<FormErrorState>(
+    defaultFormErrorState
+  );
+  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
   useEffectHandleInit({ paperActions, paperRedux, uploadPaperTitle });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
+  const handlePDFUpload = useCallback((acceptedFiles, metaData): void => {
+    // NOTE: calvinhlee - currently supporting only 1 upload
+    paperActions.uploadPaperToState(acceptedFiles[0], metaData);
+    setComponentState({
+      ...componentState,
+      isFormEdited: true,
+      isFormDisabled: false,
+    });
+    setFormErrors({ ...formErrors, dnd: false });
+  }, []);
 
   return (
     <Fragment>
@@ -76,15 +99,20 @@ function PaperuploadV2Create({
             <span className={css(styles.asterick)}>*</span>
           </div>
           <FormDND
-            handleDrop={this.uploadPaper}
+            handleDrop={handlePDFUpload}
             onDrop={null}
-            onValidUrl={() => this.setState({ disabled: false })}
-            toggleFormatState={() => {
-              this.setState({
-                urlView: !componentState.isURLView,
+            onDuplicate={(): void =>
+              setComponentState({ ...componentState, isFormDisabled: true })
+            }
+            onValidUrl={(): void =>
+              setComponentState({ ...componentState, isFormDisabled: false })
+            }
+            toggleFormatState={(): void => {
+              setComponentState({
+                ...componentState,
+                isURLView: !componentState.isURLView,
               });
             }}
-            onDuplicate={() => this.setState({ disabled: true })}
           />
         </div>
       </div>
@@ -93,6 +121,9 @@ function PaperuploadV2Create({
 }
 
 const styles = StyleSheet.create({
+  asterick: {
+    color: colors.BLUE(1),
+  },
   authorGuidelines: {
     fontSize: 14,
     letterSpacing: 0.3,
@@ -128,6 +159,43 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 321px)": {
       fontSize: 14,
     },
+  },
+  label: {
+    fontFamily: "Roboto",
+    fontWeight: 500,
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  labelStyle: {
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 321px)": {
+      fontSize: 12,
+    },
+  },
+  paper: {
+    width: 601,
+    marginTop: 15,
+    "@media only screen and (max-width: 665px)": {
+      width: 380,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 338,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 270,
+    },
+  },
+  section: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    marginTop: 10,
   },
   sidenote: {
     fontSize: 14,

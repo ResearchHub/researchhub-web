@@ -2,6 +2,7 @@ import { ID } from "../../../../config/types/root_types";
 
 export type ComponentState = {
   authorSearchText: string;
+  isFormDisabled: boolean;
   isFormEdited: boolean;
   isLoading: boolean;
   isURLView: boolean;
@@ -22,7 +23,6 @@ export type FormState = {
   author: any;
   doi: ID;
   hubs: any[];
-  isFormDisabled: boolean;
   paper_title: string;
   published: {
     year: number | null | string;
@@ -36,6 +36,7 @@ export type FormState = {
 
 export const defaultComponentState = {
   authorSearchText: "",
+  isFormDisabled: false,
   isFormEdited: false,
   isLoading: false,
   isURLView: true,
@@ -59,7 +60,6 @@ export const defaultFormState: FormState = {
   },
   doi: null,
   hubs: [],
-  isFormDisabled: false,
   paper_title: "",
   published: {
     year: null,
