@@ -14,27 +14,12 @@ export default function PaperUploadV2Container(): ReactElement<"div"> {
   const isUploadingNewPaper = isNullOrUndefined(paperId);
   return (
     <div className={css(styles.paperUploadV2Container)}>
-      <form>
-        <div className={css(styles.pageContent)}>
-          {isUploadingNewPaper ? (
-            <PaperUploadV2Create />
-          ) : (
-            <PaperUploadV2Update />
-          )}
-        </div>
-      </form>
+      {isUploadingNewPaper ? <PaperUploadV2Create /> : <PaperUploadV2Update />}
     </div>
   );
 }
 
 const styles = StyleSheet.create({
-  form: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-  },
   paperUploadV2Container: {
     backgroundColor: "#FCFCFC",
     display: "flex",
@@ -44,26 +29,5 @@ const styles = StyleSheet.create({
     scrollBehavior: "smooth",
     position: "relative",
     minHeight: "100vh",
-  },
-  pageContent: {
-    position: "relative",
-    backgroundColor: "#FFF",
-    border: "1px solid #ddd",
-    borderRadius: 4,
-    padding: "30px 60px",
-    marginTop: 40,
-    "@media only screen and (max-width: 935px)": {
-      minWidth: "unset",
-      width: 600,
-      padding: 40,
-      marginTop: 16,
-    },
-    "@media only screen and (max-width: 665px)": {
-      width: "calc(100% - 16px)",
-      padding: 16,
-    },
-    "@media only screen and (max-width: 415px)": {
-      borderTop: "unset",
-    },
   },
 });
