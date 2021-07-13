@@ -93,12 +93,20 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     const defaultValue = "user";
     let dropdownValue = null;
 
-    const found = facetValuesForPersonType.find(
-      (opt) => opt.key === personTypeParam
-    );
+    // Almost every time, both user/author facet values will be available for selection
+    // but depending on query, sometimes only author or users will be returned. In such a case, we always
+    // want to default to whatever the only available option is.
+    if (facetValuesForPersonType.length === 1) {
+      dropdownValue = facetValuesForPersonType[0];
+    } else {
+      const found = facetValuesForPersonType.find(
+        (opt) => opt.key === personTypeParam
+      );
 
-    dropdownValue =
-      found || facetValuesForPersonType.find((opt) => opt.key === defaultValue);
+      dropdownValue =
+        found ||
+        facetValuesForPersonType.find((opt) => opt.key === defaultValue);
+    }
 
     return {
       label: get(dropdownValue, "key"),
