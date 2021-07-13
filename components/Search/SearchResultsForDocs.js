@@ -405,6 +405,15 @@ const SearchResultsForDocs = ({ apiResponse }) => {
         results.map((post, index) => {
           post.user_vote = userVotes[post.id];
 
+          post.renderableTextAsHtml = parseIfHighlighted({
+            searchResult: post,
+            attribute: "renderable_text",
+          });
+          post.titleAsHtml = parseIfHighlighted({
+            searchResult: post,
+            attribute: "title",
+          });
+
           return (
             <UserPostCard
               {...post}
