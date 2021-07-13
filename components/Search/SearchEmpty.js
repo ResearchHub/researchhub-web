@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
     fontSize: 22,
-    color: colors.BLACK(0.8),
+    color: colors.BLACK(0.9),
     marginTop: 20,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 16,
