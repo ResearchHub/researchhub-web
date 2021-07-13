@@ -243,22 +243,25 @@ const SearchResultsForPeople = ({ apiResponse }) => {
               }
             />
           </div>
-          {results.map((person, index) => {
-            return (
-              <Ripples
-                className={css(styles.person)}
-                key={`person-${index}-${person.id}`}
-              >
-                <LeaderboardUser
-                  user={person.user}
-                  name={person.full_name}
-                  reputation={getPersonReputation(person)}
-                  authorProfile={person.author_profile}
-                  authorId={get(person, "author_profile.id")}
-                />
-              </Ripples>
-            );
-          })}
+
+          <div className={css(styles.results)}>
+            {results.map((person, index) => {
+              return (
+                <Ripples
+                  className={css(styles.person)}
+                  key={`person-${index}-${person.id}`}
+                >
+                  <LeaderboardUser
+                    user={person.user}
+                    name={person.full_name}
+                    reputation={getPersonReputation(person)}
+                    authorProfile={person.author_profile}
+                    authorId={get(person, "author_profile.id")}
+                  />
+                </Ripples>
+              );
+            })}
+          </div>
           {nextResultsUrl && (
             <LoadMoreButton
               onClick={loadMoreResults}
@@ -320,6 +323,9 @@ const styles = StyleSheet.create({
     display: "flex",
     textTransform: "capitalize",
     marginBottom: 20,
+  },
+  results: {
+    marginTop: 10,
   },
   person: {
     display: "flex",
