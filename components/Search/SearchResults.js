@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 
 import colors from "~/config/themes/colors";
 import ComponentWrapper from "~/components/ComponentWrapper";
-// import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
@@ -75,19 +74,6 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     marginBottom: 40,
-  },
-
-  user: {
-    display: "flex",
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "7px 20px",
-    borderLeft: "3px solid #FFF",
-    transition: "all ease-out 0.1s",
-    ":hover": {
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
-    },
   },
 });
 
