@@ -387,9 +387,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
       )}
 
       {numOfHits === 0 && (
-        <ComponentWrapper overrideStyle={styles.componentWrapper}>
-          <EmptyFeedScreen title="There are no results found for this criteria" />
-        </ComponentWrapper>
+        <EmptyFeedScreen title="There are no results found for this criteria" />
       )}
 
       {router.query.type === "post" &&
@@ -427,7 +425,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
           );
         })}
 
-      {loadMoreBtn}
+      {nextResultsUrl && loadMoreBtn}
     </div>
   );
 };
@@ -485,6 +483,14 @@ const styles = StyleSheet.create({
   highlight: {
     backgroundColor: "yellow",
   },
+  clearFiltersBtn: {
+    backgroundColor: "none",
+    color: colors.RED(),
+    fontSize: 12,
+    ":hover": {
+      boxShadow: `inset 0px 0px 0px 1px ${colors.RED()}`,
+    },
+  },
   loadMore: {
     width: "100%",
     display: "flex",
@@ -496,14 +502,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 768px)": {
       marginTop: 15,
       marginBottom: 15,
-    },
-  },
-  clearFiltersBtn: {
-    backgroundColor: "none",
-    color: colors.RED(),
-    fontSize: 12,
-    ":hover": {
-      boxShadow: `inset 0px 0px 0px 1px ${colors.RED()}`,
     },
   },
   loadMoreButton: {
