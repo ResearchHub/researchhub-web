@@ -114,7 +114,7 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     return dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
   };
 
-  const handleSortSelect = (sortId, selected, redirect = true) => {
+  const handleSortSelect = (sortId, selected) => {
     const currentPersonType = get(router, `query.person_types`, null);
     let query = {
       ...router.query,
@@ -129,23 +129,17 @@ const SearchResultsForPeople = ({ apiResponse }) => {
           : selected.valueForApi.ifPersonTypeUser;
     }
 
-    if (redirect === true) {
-      router.push({
-        pathname: "/search/[type]",
-        query,
-      });
-    }
-
-    return query;
+    router.push({
+      pathname: "/search/[type]",
+      query,
+    });
   };
 
   const handleFilterSelect = (filterId, selected) => {
     const selectedSort = getDropdownValueForSort();
-    const sortQuery = handleSortSelect("ordering", selectedSort, false);
 
     let query = {
       ...router.query,
-      ...sortQuery,
       [filterId]: selected.valueForApi,
     };
 
