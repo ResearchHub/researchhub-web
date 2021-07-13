@@ -211,7 +211,7 @@ function AuthorPage(props) {
   }
 
   function fetchUserPromotions() {
-    if (!authorUserID || !auth.isLoggedIn) return;
+    if (!authorUserID) return;
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
