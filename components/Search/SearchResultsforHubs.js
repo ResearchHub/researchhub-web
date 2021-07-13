@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "left",
     marginBottom: 30,
-    gap: 30,
+    gap: 0,
     "::after": {
       content: "",
       flex: "auto",

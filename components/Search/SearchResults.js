@@ -71,6 +71,7 @@ const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
     marginBottom: 20,
+    boxSizing: "content-box",
   },
   tabContainer: {
     marginBottom: 40,
