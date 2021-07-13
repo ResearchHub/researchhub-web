@@ -50,6 +50,7 @@ const timeFilterOpts = [
     label: "This Year",
   },
   {
+    isDefault: true,
     valueForApi: null,
     value: null,
     label: "All Time",
@@ -58,6 +59,7 @@ const timeFilterOpts = [
 
 const sortOpts = [
   {
+    isDefault: true,
     valueForApi: null,
     value: null,
     label: "Relevance",
@@ -165,14 +167,20 @@ const SearchResultsForDocs = ({ apiResponse }) => {
 
   const getSelectedDropdownValue = ({ forKey }) => {
     const urlParam = get(router, `query.${forKey}`, null);
+    let dropdownValue = null;
 
     if (forKey === "publish_date__gte") {
-      return timeFilterOpts.find((opt) => opt.valueForApi === urlParam);
+      dropdownValue = timeFilterOpts.find(
+        (opt) => opt.valueForApi === urlParam
+      );
+      dropdownValue = dropdownValue || {};
     } else if (forKey === "ordering") {
-      return sortOpts.find((opt) => opt.value === urlParam);
+      dropdownValue = sortOpts.find((opt) => opt.value === urlParam);
+      dropdownValue =
+        dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
     }
 
-    return null;
+    return dropdownValue;
   };
 
   const handleFilterSelect = (filterId, selected) => {
