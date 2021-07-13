@@ -37,6 +37,8 @@ export type UserPostCardProps = {
   unified_document_id: number;
   user: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
+  titleAsHtml: any;
+  renderableTextAsHtml: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
