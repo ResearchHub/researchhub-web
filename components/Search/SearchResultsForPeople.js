@@ -73,6 +73,16 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     setSelectedSortOrderDropdownValue(getDropdownValueForSort());
   }, [selectedPersonTypeDropdownValue]);
 
+  useEffect(() => {
+    const _setPageWidth = () => setPageWidth(window.innerWidth);
+
+    window.addEventListener("resize", _setPageWidth, true);
+
+    return () => {
+      window.removeEventListener("resize", _setPageWidth, true);
+    };
+  }, []);
+
   const updateDropdowns = () => {
     setSelectedPersonTypeDropdownValue(getDropdownValueForPerson());
     setSelectedSortOrderDropdownValue(getDropdownValueForSort());
@@ -189,6 +199,9 @@ const SearchResultsForPeople = ({ apiResponse }) => {
               multiTagStyle={null}
               multiTagLabelStyle={null}
               isClearable={false}
+              showLabelAlongSelection={
+                pageWidth <= breakpoints.small.int ? true : false
+              }
             />
             <FormSelect
               id={"ordering"}
