@@ -82,6 +82,12 @@ function UserPostCard(props: UserPostCardProps) {
     unified_document_id: unifiedDocumentId,
     user,
     user_vote: userVote,
+    /*
+      In some contexts we want to wrap the title/renderable_text 
+      with html. e.g. rendering search highlights.
+    */
+    titleAsHtml,
+    renderableTextAsHtml,
   } = props;
 
   if (created_by == null) {
@@ -104,7 +110,6 @@ function UserPostCard(props: UserPostCardProps) {
 
   const creatorName = first_name + " " + last_name;
   const slug = title.toLowerCase().replace(/\s/g, "-");
-
   const mainTitle = (
     <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
       <a
@@ -113,7 +118,9 @@ function UserPostCard(props: UserPostCardProps) {
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>{title && title}</span>
+        <span className={css(styles.title)}>
+          {titleAsHtml ? titleAsHtml : title ? title : ""}
+        </span>
       </a>
     </Link>
   );
@@ -152,7 +159,13 @@ function UserPostCard(props: UserPostCardProps) {
   );
 
   const summary = (
-    <div className={css(styles.summary) + " clamp2"}>{renderableText}</div>
+    <div className={css(styles.summary) + " clamp2"}>
+      {renderableTextAsHtml
+        ? renderableTextAsHtml
+        : renderableText
+        ? renderableText
+        : ""}
+    </div>
   );
 
   const hubTags = (

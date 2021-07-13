@@ -22,7 +22,7 @@ const SearchResults = ({ apiResponse }) => {
 
     // User initiates a person search. Default to "user" person.
     if (tab.type === "person") {
-      updatedQuery["person_types"] = "user";
+      updatedQuery["person_types"] = "author";
     }
 
     router.push({

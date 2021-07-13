@@ -194,6 +194,7 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     return null;
   };
 
+  const currentPersonType = get(router, `query.person_types`, null);
   const facetValueOpts = facetValuesForPersonType.map((f) => ({
     label: `${f.key} (${f.doc_count})`,
     value: f.key,
