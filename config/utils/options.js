@@ -350,6 +350,10 @@ const searchTypes = {
       fieldForApi: "ordering",
       fieldForApp: "ordering",
     },
+    person_types: {
+      fieldForApi: "person_types",
+      fieldForApp: "person_types",
+    },
   },
 };
 
