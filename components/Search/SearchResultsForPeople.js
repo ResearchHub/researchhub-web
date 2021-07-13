@@ -1,14 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import Ripples from "react-ripples";
 import { useRouter } from "next/router";
-import { isArray, isString } from "underscore";
+import { isArray, isString, isEmpty } from "underscore";
 
 import FormSelect from "~/components/Form/FormSelect";
 import colors from "~/config/themes/colors";
 import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 
 const sortOpts = [
@@ -127,7 +128,7 @@ const SearchResultsForPeople = ({ apiResponse }) => {
   };
 
   // const loadMoreBtn = renderLoadMoreButton();
-  // const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
+  const hasAppliedFilters = !isEmpty(selectedPersonType);
   const facetValueOpts = facetValuesForPersonType.map((f) => ({
     label: `${f.key} (${f.doc_count})`,
     value: f.key,
@@ -136,38 +137,48 @@ const SearchResultsForPeople = ({ apiResponse }) => {
 
   return (
     <div>
-      <div className={css(styles.filters)}>
-        <FormSelect
-          id={"person_types"}
-          options={facetValueOpts}
-          containerStyle={styles.dropdownContainer}
-          inputStyle={styles.dropdownInput}
-          onChange={handleFilterSelect}
-          isSearchable={false}
-          placeholder={"Person Type"}
-          value={selectedPersonType}
-          isMulti={false}
-          multiTagStyle={null}
-          multiTagLabelStyle={null}
-          isClearable={false}
-        />
-        <FormSelect
-          id={"ordering"}
-          placeholder={"Sort"}
-          options={sortOpts}
-          value={selectedSortOrder}
-          containerStyle={[
-            styles.dropdownContainer,
-            styles.dropdownContainerForSort,
-          ]}
-          inputStyle={styles.dropdownInput}
-          onChange={handleSortSelect}
-          isSearchable={false}
-          showLabelAlongSelection={
-            pageWidth <= breakpoints.small.int ? true : false
-          }
-        />
-      </div>
+      {(numOfHits > 0 || hasAppliedFilters) && (
+        <Fragment>
+          <div className={css(styles.resultCount)}>
+            {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
+          </div>
+          <div className={css(styles.filters)}>
+            <FormSelect
+              id={"person_types"}
+              options={facetValueOpts}
+              containerStyle={styles.dropdownContainer}
+              inputStyle={styles.dropdownInput}
+              onChange={handleFilterSelect}
+              isSearchable={false}
+              placeholder={"Person Type"}
+              value={selectedPersonType}
+              isMulti={false}
+              multiTagStyle={null}
+              multiTagLabelStyle={null}
+              isClearable={false}
+            />
+            <FormSelect
+              id={"ordering"}
+              placeholder={"Sort"}
+              options={sortOpts}
+              value={selectedSortOrder}
+              containerStyle={[
+                styles.dropdownContainer,
+                styles.dropdownContainerForSort,
+              ]}
+              inputStyle={styles.dropdownInput}
+              onChange={handleSortSelect}
+              isSearchable={false}
+              showLabelAlongSelection={
+                pageWidth <= breakpoints.small.int ? true : false
+              }
+            />
+          </div>
+        </Fragment>
+      )}
+
+      {numOfHits === 0 && <SearchEmpty />}
+
       {results.map((person, index) => {
         return (
           <Ripples
