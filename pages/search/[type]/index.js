@@ -20,6 +20,8 @@ const getFacetsToAggregate = (query = {}) => {
   let facet = [];
   if (query.type === "paper" || query.type === "post") {
     facet = ["hubs"];
+  } else if (query.type === "person") {
+    facet = ["person_types"];
   }
 
   return facet;
