@@ -11,12 +11,12 @@ import colors from "~/config/themes/colors";
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import Badge from "~/components/Badge";
-import Loader from "~/components/Loader/Loader";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
+import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
 
@@ -283,31 +283,6 @@ const SearchResultsForDocs = ({ apiResponse }) => {
     );
   };
 
-  const renderLoadMoreButton = () => {
-    if (nextResultsUrl !== null) {
-      return (
-        <div className={css(styles.loadMore)}>
-          {!isLoadingMore ? (
-            <Ripples
-              className={css(styles.loadMoreButton)}
-              onClick={loadMoreResults}
-            >
-              Load More Papers
-            </Ripples>
-          ) : (
-            <Loader
-              key={"paperLoader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          )}
-        </div>
-      );
-    }
-  };
-
-  const loadMoreBtn = renderLoadMoreButton();
   const hasAppliedFilters = selectedHubs.length || selectedTimeRange.value;
   const facetValueOpts = facetValuesForHub.map((f) => ({
     label: `${f.key} (${f.doc_count})`,
@@ -433,7 +408,9 @@ const SearchResultsForDocs = ({ apiResponse }) => {
           );
         })}
 
-      {nextResultsUrl && loadMoreBtn}
+      {nextResultsUrl && (
+        <LoadMoreButton onClick={loadMoreResults} isLoading={isLoadingMore} />
+      )}
     </div>
   );
 };
@@ -497,37 +474,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     ":hover": {
       boxShadow: `inset 0px 0px 0px 1px ${colors.RED()}`,
-    },
-  },
-  loadMore: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 25,
-    marginBottom: 25,
-    height: 45,
-    "@media only screen and (max-width: 768px)": {
-      marginTop: 15,
-      marginBottom: 15,
-    },
-  },
-  loadMoreButton: {
-    fontSize: 14,
-    border: `1px solid ${colors.BLUE()}`,
-    boxSizing: "border-box",
-    borderRadius: 4,
-    height: 45,
-    width: 155,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: colors.BLUE(),
-    cursor: "pointer",
-    userSelect: "none",
-    ":hover": {
-      color: "#FFF",
-      backgroundColor: colors.BLUE(),
     },
   },
 });
