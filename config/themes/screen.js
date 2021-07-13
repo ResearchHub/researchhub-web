@@ -13,8 +13,8 @@ export const breakpoints = {
     str: "900px",
   },
   small: {
-    int: 760,
-    str: "760px",
+    int: 767,
+    str: "767px",
   },
   xsmall: {
     int: 576,
