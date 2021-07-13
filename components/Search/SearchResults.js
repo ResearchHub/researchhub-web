@@ -9,6 +9,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
+import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();
@@ -56,7 +57,7 @@ const SearchResults = ({ apiResponse }) => {
       ) : currentSearchType === "hub" ? (
         <SearchResultsForHubs apiResponse={apiResponse} />
       ) : currentSearchType === "person" ? (
-        ""
+        <SearchResultsForPeople apiResponse={apiResponse} />
       ) : null}
     </ComponentWrapper>
   );
