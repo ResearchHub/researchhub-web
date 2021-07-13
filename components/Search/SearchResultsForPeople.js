@@ -6,11 +6,13 @@ import Ripples from "react-ripples";
 import { useRouter } from "next/router";
 import { isArray, isString, isEmpty } from "underscore";
 
+import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import colors from "~/config/themes/colors";
 import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
+import LoadMoreButton from "~/components/LoadMoreButton";
 
 const sortOpts = [
   {
@@ -167,6 +169,20 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     });
   };
 
+  const loadMoreResults = () => {
+    setIsLoadingMore(true);
+
+    fetchURL(nextResultsUrl)
+      .then((res) => {
+        setResults([...results, ...res.results]);
+        setNextResultsUrl(res.next);
+        setNumOfHits(res.count);
+      })
+      .finally(() => {
+        setIsLoadingMore(false);
+      });
+  };
+
   const getPersonReputation = (person) => {
     const currentPersonType = get(router, `query.person_types`, null);
 
@@ -178,7 +194,6 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     return null;
   };
 
-  // const loadMoreBtn = renderLoadMoreButton();
   const facetValueOpts = facetValuesForPersonType.map((f) => ({
     label: `${f.key} (${f.doc_count})`,
     value: f.key,
@@ -244,6 +259,12 @@ const SearchResultsForPeople = ({ apiResponse }) => {
               </Ripples>
             );
           })}
+          {nextResultsUrl && (
+            <LoadMoreButton
+              onClick={loadMoreResults}
+              isLoading={isLoadingMore}
+            />
+          )}
         </Fragment>
       )}
     </div>
@@ -309,7 +330,7 @@ const styles = StyleSheet.create({
     transition: "all ease-out 0.1s",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
+      backgroundColor: colors.LIGHT_GREY(),
     },
   },
 });

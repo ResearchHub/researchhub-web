@@ -9,8 +9,8 @@ import HubCard from "~/components/Hubs/HubCard";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import colors from "~/config/themes/colors";
 import SearchEmpty from "~/components/Search/SearchEmpty";
+import LoadMoreButton from "~/components/LoadMoreButton";
 import { breakpoints } from "~/config/themes/screen";
-import Loader from "~/components/Loader/Loader";
 
 const SearchResultsForHubs = ({ apiResponse }) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -38,30 +38,6 @@ const SearchResultsForHubs = ({ apiResponse }) => {
       });
   };
 
-  const renderLoadMoreButton = () => {
-    if (nextResultsUrl !== null) {
-      return (
-        <div className={css(styles.loadMore)}>
-          {!isLoadingMore ? (
-            <Ripples
-              className={css(styles.loadMoreButton)}
-              onClick={loadMoreResults}
-            >
-              Load More Papers
-            </Ripples>
-          ) : (
-            <Loader
-              key={"paperLoader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          )}
-        </div>
-      );
-    }
-  };
-
   return (
     <div>
       {numOfHits > 0 && (
@@ -78,7 +54,9 @@ const SearchResultsForHubs = ({ apiResponse }) => {
       )}
       {numOfHits === 0 && <SearchEmpty />}
 
-      {nextResultsUrl && renderLoadMoreButton()}
+      {nextResultsUrl && (
+        <LoadMoreButton onClick={loadMoreResults} isLoading={isLoadingMore} />
+      )}
     </div>
   );
 };
@@ -87,37 +65,6 @@ const styles = StyleSheet.create({
   resultCount: {
     color: colors.GREY(),
     marginBottom: 20,
-  },
-  loadMore: {
-    width: "100%",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 25,
-    marginBottom: 25,
-    height: 45,
-    "@media only screen and (max-width: 768px)": {
-      marginTop: 15,
-      marginBottom: 15,
-    },
-  },
-  loadMoreButton: {
-    fontSize: 14,
-    border: `1px solid ${colors.BLUE()}`,
-    boxSizing: "border-box",
-    borderRadius: 4,
-    height: 45,
-    width: 155,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: colors.BLUE(),
-    cursor: "pointer",
-    userSelect: "none",
-    ":hover": {
-      color: "#FFF",
-      backgroundColor: colors.BLUE(),
-    },
   },
   grid: {
     display: "flex",
