@@ -21,6 +21,11 @@ const SearchResults = ({ apiResponse }) => {
       type: tab.type,
     };
 
+    // User initiates a person search. Default to "user" person.
+    if (tab.type === "person") {
+      updatedQuery["person_types"] = "user";
+    }
+
     router.push({
       pathname: "/search/[type]",
       query: updatedQuery,
