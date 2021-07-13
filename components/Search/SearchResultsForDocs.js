@@ -135,7 +135,27 @@ const SearchResultsForDocs = ({ apiResponse }) => {
     };
   }, []);
 
-  const fetchAndSetUserVotes = async (results) => {
+  const _fetchCurrentUserVotesForPosts = async (results) => {
+    const formattedReq = results.map((r) => ({
+      documents: [r],
+      document_type: "POST",
+    }));
+
+    const documents = await fetchUserVote(formattedReq);
+
+    const userVoteMap = documents.reduce((map, uniDoc) => {
+      const docs = get(uniDoc, "documents", []);
+      const post = docs[0];
+
+      map[post.id] = post.user_vote;
+      return map;
+    }, {});
+
+    // Don't override previous votes set, append to them.
+    setUserVotes({ ...userVotes, ...userVoteMap });
+  };
+
+  const _fetchCurrentUserVotesForPapers = async (results) => {
     const formattedReq = results.map((r) => ({
       documents: r,
       document_type: "PAPER",
@@ -151,6 +171,14 @@ const SearchResultsForDocs = ({ apiResponse }) => {
 
     // Don't override previous votes set, append to them.
     setUserVotes({ ...userVotes, ...userVoteMap });
+  };
+
+  const fetchAndSetUserVotes = async (results) => {
+    if (router.query.type === "post") {
+      return _fetchCurrentUserVotesForPosts(results);
+    } else if (router.query.type === "paper") {
+      return _fetchCurrentUserVotesForPapers(results);
+    }
   };
 
   const getSelectedFacetValues = ({ forKey }) => {
@@ -375,7 +403,15 @@ const SearchResultsForDocs = ({ apiResponse }) => {
 
       {router.query.type === "post" &&
         results.map((post, index) => {
-          return <UserPostCard {...post} key={post.id || index} />;
+          post.user_vote = userVotes[post.id];
+
+          return (
+            <UserPostCard
+              {...post}
+              user_vote={post.user_vote}
+              key={post.id || index}
+            />
+          );
         })}
       {router.query.type === "paper" &&
         results.map((paper, index) => {
