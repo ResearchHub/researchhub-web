@@ -5,7 +5,7 @@ import HubTag from "../../Hubs/HubTag";
 import Link from "next/link";
 import Router from "next/router";
 import MobileOnly from "../../MobileOnly";
-import React, { Fragment, SyntheticEvent, useState } from "react";
+import React, { Fragment, SyntheticEvent, useState, useEffect } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import colors from "../../../config/themes/colors";
@@ -97,6 +97,10 @@ function UserPostCard(props: UserPostCardProps) {
   );
   const [score, setScore] = useState<number>(initialScore);
   const [isHubsOpen, setIsHubsOpen] = useState(false);
+
+  useEffect((): void => {
+    setVoteState(userVoteToConstant(userVote));
+  }, [userVote]);
 
   const creatorName = first_name + " " + last_name;
   const slug = title.toLowerCase().replace(/\s/g, "-");
