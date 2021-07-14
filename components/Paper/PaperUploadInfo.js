@@ -476,7 +476,7 @@ class PaperUploadInfo extends React.Component {
         searchAuthor: value,
       });
     }
-
+    console.warn("THE FUCK");
     this.setState({
       searchAuthor: value,
       loading: true,

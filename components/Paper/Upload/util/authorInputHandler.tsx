@@ -59,41 +59,41 @@ export const getHandleAuthorInputChange = ({
   console.warn("defined function");
   return (value: string | null) => {
     console.warn("before clear: ", value);
-    if (!isNullOrUndefined(debounceRef)) {
-      clearTimeout(nullthrows(debounceRef));
-    }
+    // if (!isNullOrUndefined(debounceRef)) {
+    //   clearTimeout(nullthrows(debounceRef));
+    // }
     console.warn("after clear: ", value);
 
-    if (!isNullOrUndefined(value) && nullthrows(value).length > 1) {
-      setComponentState({
-        ...currComponentState,
-        authorSearchText: value,
-        isFetchingAuthors: true,
-      });
-    }
+    // if (!isNullOrUndefined(value) && nullthrows(value).length > 1) {
+    //   setComponentState({
+    //     ...currComponentState,
+    //     authorSearchText: value,
+    //     isFetchingAuthors: true,
+    //   });
+    // }
 
     const { selectedAuthors: currSelectedAuthors } = currComponentState;
-    setDebounceRef(
-      setTimeout(async () => {
-        return fetch(
-          API.AUTHOR({
-            search: value,
-            excludeIds: currSelectedAuthors.map((author: any): ID => author.id),
-          }),
-          API.GET_CONFIG()
-        )
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((resp: any): void => {
-            console.warn("setting: ", value);
+    // setDebounceRef(
+    //   setTimeout(async () => {
+    //     return fetch(
+    //       API.AUTHOR({
+    //         search: value,
+    //         excludeIds: currSelectedAuthors.map((author: any): ID => author.id),
+    //       }),
+    //       API.GET_CONFIG()
+    //     )
+    //       .then(Helpers.checkStatus)
+    //       .then(Helpers.parseJSON)
+    //       .then((resp: any): void => {
+    //         console.warn("setting: ", value);
 
-            setComponentState({
-              ...currComponentState,
-              suggestedAuthors: resp.results,
-              isFetchingAuthors: false,
-            });
-          });
-      }, debounceTime || 500)
-    );
+    //         setComponentState({
+    //           ...currComponentState,
+    //           suggestedAuthors: resp.results,
+    //           isFetchingAuthors: false,
+    //         });
+    //       });
+    //   }, debounceTime || 500)
+    // );
   };
 };
