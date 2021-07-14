@@ -23,26 +23,72 @@ import {
 } from "./types/UploadComponentTypes";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { NextRouter, useRouter } from "next/router";
+import { getExistingPaperForEdit } from "./api/getExistingPaperForEdit";
+import { emptyFncWithMsg, nullthrows } from "../../../config/utils/nullchecks";
+import { Exception } from "@sentry/browser";
 
 type ComponentProps = {
+  authRedux: any;
+  messageActions: any;
   modalsRedux: any;
+  paperActions: any;
 };
 
 type InitAndParseReduxToStateArgs = {
-  paperActions: any; // redux,
+  authRedux: any;
+  messageActions: any; // redux
+  paperActions: any; // redux
   router: NextRouter;
+  setFormData: (formData: FormState) => void;
+  setSelectedAuthors: (authors: any) => void;
 };
 
 const useEffectInitAndParseReduxToState = ({
+  authRedux,
+  messageActions,
   paperActions,
   router,
+  setFormData,
+  setSelectedAuthors,
 }: InitAndParseReduxToStateArgs): void => {
   const { paperId } = router.query;
-
   useEffect(() => {
     paperActions.resetPaperState();
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
+    messageActions.setMessage("Loading paper information for edit.");
+    messageActions.showMessage({
+      load: false,
+      show: true,
+      error: false,
+    });
+    getExistingPaperForEdit({
+      currUserAuthorID: "hi",
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        messageActions.showMessage({
+          load: false,
+          show: false,
+          error: true,
+        });
+      },
+      onSuccess: ({
+        selectedAuthors,
+        parsedFormData,
+      }: {
+        selectedAuthors: any[];
+        parsedFormData: FormState;
+      }): void => {
+        setSelectedAuthors(selectedAuthors);
+        setFormData(parsedFormData);
+        messageActions.showMessage({
+          load: false,
+          show: false,
+          error: false,
+        });
+      },
+      paperID: paperId,
+    });
   }, [
     // Intentional explicit memo. Should only be called on ID change
     paperId,
@@ -50,7 +96,10 @@ const useEffectInitAndParseReduxToState = ({
 };
 
 function PaperUploadV2Update({
+  authRedux,
+  messageActions,
   modalsRedux,
+  paperActions,
 }: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
   const [componentState, setComponentState] = useState<ComponentState>(
@@ -60,6 +109,8 @@ function PaperUploadV2Update({
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
+  /* NOTE: calvinhlee - because BE returns a hodge-podge of rawAuthors & "authorProfiles", we need separate handling state */
+  const [selectedAuthors, setSelectedAuthors] = useState<any[]>([]);
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
   const handleInputChange = getHandleInputChange({
@@ -72,7 +123,14 @@ function PaperUploadV2Update({
   });
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
-  useEffectInitAndParseReduxToState();
+  useEffectInitAndParseReduxToState({
+    authRedux,
+    messageActions,
+    paperActions,
+    router,
+    setFormData,
+    setSelectedAuthors,
+  });
 
   return (
     <Fragment>

@@ -1,7 +1,10 @@
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "../../../../config/types/root_types";
 import API from "../../../../config/api";
-import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullthrows,
+} from "../../../../config/utils/nullchecks";
 import { parseDate } from "../util/parseDate";
 import { FormState } from "../types/UploadComponentTypes";
 import { Exception } from "@sentry/browser";
@@ -10,18 +13,20 @@ type Args = {
   currUserAuthorID: ID;
   onError: Function;
   onSuccess: Function;
-  paperActions: any; // redux
-  paperID: ID;
+  paperID: ID | ID[] | undefined;
 };
 
 export async function getExistingPaperForEdit({
   currUserAuthorID,
   onError,
   onSuccess,
-  paperActions,
   paperID,
 }: Args): Promise<void> {
-  fetch(API.PAPER({ paperId: paperID }), API.GET_CONFIG())
+  if (isNullOrUndefined(paperID)) {
+    nullthrows(paperID, "paperID must be present to edit a paper");
+  }
+  const paperId = Array.isArray(paperID) ? paperID[0] : paperID;
+  fetch(API.PAPER({ paperId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((res: any): void => {
@@ -64,5 +69,5 @@ export async function getExistingPaperForEdit({
       };
       onSuccess({ selectedAuthors: [...authors], parsedFormData });
     })
-    .catch((e: Exception): void => onError(e));
+    .catch((e: Error): void => onError(e));
 }
