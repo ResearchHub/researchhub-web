@@ -65,6 +65,9 @@ const styles = StyleSheet.create({
   resultCount: {
     color: colors.GREY(),
     marginBottom: 20,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: 15,
+    },
   },
   grid: {
     display: "flex",
@@ -72,13 +75,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "left",
     marginBottom: 30,
-    gap: 0,
+    gap: 30,
     "::after": {
       content: "",
       flex: "auto",
     },
-    [`@media only screen and (max-width: ${breakpoints.small.medium})`]: {
-      gap: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      gap: 0,
     },
   },
 });
