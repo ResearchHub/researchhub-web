@@ -1,13 +1,12 @@
+import { FormState } from "../types/UploadComponentTypes";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "../../../../config/types/root_types";
-import API from "../../../../config/api";
 import {
   isNullOrUndefined,
   nullthrows,
 } from "../../../../config/utils/nullchecks";
 import { parseDate } from "../util/parseDate";
-import { FormState } from "../types/UploadComponentTypes";
-import { Exception } from "@sentry/browser";
+import API from "../../../../config/api";
 
 type Args = {
   currUserAuthorID: ID;

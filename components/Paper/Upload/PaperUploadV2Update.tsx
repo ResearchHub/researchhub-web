@@ -24,8 +24,13 @@ import {
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { NextRouter, useRouter } from "next/router";
 import { getExistingPaperForEdit } from "./api/getExistingPaperForEdit";
-import { emptyFncWithMsg, nullthrows } from "../../../config/utils/nullchecks";
-import { Exception } from "@sentry/browser";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+} from "../../../config/utils/nullchecks";
+import { ID } from "../../../config/types/root_types";
+import { formGenericStyles } from "./styles/formGenericStyles";
+import { css } from "aphrodite";
 
 type ComponentProps = {
   authRedux: any;
@@ -35,7 +40,7 @@ type ComponentProps = {
 };
 
 type InitAndParseReduxToStateArgs = {
-  authRedux: any;
+  currUserAuthorID: ID;
   messageActions: any; // redux
   paperActions: any; // redux
   router: NextRouter;
@@ -44,7 +49,7 @@ type InitAndParseReduxToStateArgs = {
 };
 
 const useEffectInitAndParseReduxToState = ({
-  authRedux,
+  currUserAuthorID,
   messageActions,
   paperActions,
   router,
@@ -63,7 +68,7 @@ const useEffectInitAndParseReduxToState = ({
       error: false,
     });
     getExistingPaperForEdit({
-      currUserAuthorID: "hi",
+      currUserAuthorID,
       onError: (error: Error): void => {
         emptyFncWithMsg(error);
         messageActions.showMessage({
@@ -113,6 +118,10 @@ function PaperUploadV2Update({
   const [selectedAuthors, setSelectedAuthors] = useState<any[]>([]);
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
+  const currUserAuthorID = isNullOrUndefined(authRedux.user.author_profile)
+    ? authRedux.user.author_profile.id
+    : null;
+
   const handleInputChange = getHandleInputChange({
     currFormData: formData,
     currFormErrors: formErrors,
@@ -124,7 +133,7 @@ function PaperUploadV2Update({
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectInitAndParseReduxToState({
-    authRedux,
+    currUserAuthorID,
     messageActions,
     paperActions,
     router,
@@ -133,13 +142,17 @@ function PaperUploadV2Update({
   });
 
   return (
-    <Fragment>
+    <form
+      autoComplete={"off"}
+      className={css(formGenericStyles.form)}
+      onSubmit={onFormSubmit}
+    >
       <AddAuthorModal
         isOpen={modalsRedux.openAddAuthorModal}
         addNewUser={addNewUser}
       />
       Hi this is edit!
-    </Fragment>
+    </form>
   );
 }
 
