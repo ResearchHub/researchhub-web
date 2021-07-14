@@ -340,14 +340,14 @@ function PaperUploadV2Update({
   );
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state: any) => ({
   authRedux: state.auth,
   messageRedux: state.auth,
   modalsRedux: state.modals,
   paperRedux: state.paper,
 });
 
-const mapDispatchToProps = (dispatch) => ({
+const mapDispatchToProps = (dispatch: any) => ({
   authActions: bindActionCreators(AuthActions, dispatch),
   messageActions: bindActionCreators(MessageActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
