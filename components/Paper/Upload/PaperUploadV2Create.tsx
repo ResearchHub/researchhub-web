@@ -35,9 +35,9 @@ import React, {
   useState,
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
+import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 
 type Props = {
-  authActions: any;
   authRedux: any;
   messageActions: any;
   modalActions: any;
@@ -144,7 +144,6 @@ const getIsFormValid = ({
 };
 
 function PaperuploadV2Create({
-  authActions,
   authRedux,
   messageActions,
   modalActions,
@@ -164,29 +163,17 @@ function PaperuploadV2Create({
 
   const { isFormDisabled, isURLView, shouldShowTitleField } = componentState;
   const { doi, hubs: selectedHubs, paper_title, title } = formData;
-  const handleInputChange = (id: string, value: any): void => {
-    const keys = id.split(".");
-    const firstKey = keys[0];
-    const newFormData = { ...formData };
-    const newFormErrors = { ...formErrors };
-    // NOTE: calvinhlee - simplified legacy logic. Leaving as is to avoid refactoring FormInput
-    if (keys.length === 1) {
-      newFormData[firstKey] =
-        firstKey === "title"
-          ? !isNullOrUndefined(value)
-            ? (value[0] || "").toUpperCase() + value.slice(1)
-            : ""
-          : value;
-    } else {
-      newFormData[firstKey][keys[1]] = value;
-      firstKey === "published" ? (newFormErrors[keys[1]] = false) : null; // removes red border on select fields
-    }
-    setComponentState({ ...componentState, isFormEdited: true });
-    setFormData(newFormData);
-    setFormErrors(newFormErrors);
-  };
 
-  const handleCancel = (): void => {
+  const handleInputChange = getHandleInputChange({
+    currFormData: formData,
+    currFormErrors: formErrors,
+    currComponentState: componentState,
+    setComponentState,
+    setFormData,
+    setFormErrors,
+  });
+
+  const handleFormCancel = (): void => {
     paperActions.resetPaperState();
     setComponentState(defaultComponentState);
     setFormData(defaultFormState);
@@ -404,7 +391,7 @@ function PaperuploadV2Create({
             formGenericStyles.button,
             formGenericStyles.buttonLeft
           )}
-          onClick={handleCancel}
+          onClick={handleFormCancel}
         >
           <span
             className={css(
@@ -434,7 +421,6 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  authActions: bindActionCreators(AuthActions, dispatch),
   messageActions: bindActionCreators(MessageActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   paperActions: bindActionCreators(PaperActions, dispatch),
