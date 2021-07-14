@@ -9,6 +9,7 @@ import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
+import { breakpoints } from "~/config/themes/screen";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();
@@ -53,8 +54,13 @@ const SearchResults = ({ apiResponse }) => {
     );
   };
 
+  const componentWrapperStyles = [styles.componentWrapper];
+  if (currentSearchType === "hub") {
+    componentWrapperStyles.push(styles.componentWrapperForHubsResults);
+  }
+
   return (
-    <ComponentWrapper overrideStyle={styles.componentWrapper}>
+    <ComponentWrapper overrideStyle={componentWrapperStyles}>
       {renderEntityTabs()}
       {currentSearchType === "paper" || currentSearchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
@@ -71,7 +77,12 @@ const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
     marginBottom: 20,
-    boxSizing: "content-box",
+  },
+  componentWrapperForHubsResults: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      paddingLeft: 5,
+      paddingRight: 5,
+    },
   },
   tabContainer: {
     marginBottom: 40,

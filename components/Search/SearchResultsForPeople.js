@@ -187,9 +187,9 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     const currentPersonType = get(router, `query.person_types`, null);
 
     if (currentPersonType === "user") {
-      return get(person, "user.reputation", "");
+      return get(person, "user.reputation", 0);
     } else if (currentPersonType === "author") {
-      return get(person, "author_profile.author_score", "");
+      return get(person, "author_profile.author_score", 0);
     }
     return null;
   };
