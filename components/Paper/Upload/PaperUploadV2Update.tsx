@@ -21,7 +21,7 @@ import {
   isNullOrUndefined,
 } from "../../../config/utils/nullchecks";
 import { css } from "aphrodite";
-import { formGenericStyles } from "./styles/formGenericStyles";
+import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { ID } from "../../../config/types/root_types";
 import * as Options from "../../../config/utils/options";
 import AddAuthorModal from "../../Modals/AddAuthorModal";
@@ -41,6 +41,7 @@ import {
   getHandleAuthorChange,
   getHandleAuthorInputChange,
 } from "./util/authorInputHandler";
+import FormTextArea from "../../Form/FormTextArea";
 
 type ComponentProps = {
   authRedux: any;
@@ -142,6 +143,16 @@ function PaperUploadV2Update({
     setFormErrors,
   });
 
+  const handleHubSelection = (_id: ID, selectedHubs: any): void => {
+    if (isNullOrUndefined(selectedHubs)) {
+      setFormData({ ...formData, hubs: [] });
+      setFormErrors({ ...formErrors, hubs: true });
+    } else {
+      setFormData({ ...formData, hubs: selectedHubs });
+      setFormErrors({ ...formErrors, hubs: selectedHubs.length < 1 });
+    }
+  };
+
   const onFormSubmit = emptyFncWithMsg;
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
@@ -155,10 +166,11 @@ function PaperUploadV2Update({
     setFormData,
   });
   const {
+    abstract,
     author: formAuthor,
     doi,
     hubs: selectedHubs,
-    paper_title,
+    paper_title: paperTitle,
     published,
     title,
   } = formData;
@@ -187,50 +199,49 @@ function PaperUploadV2Update({
             placeholder="Jargon free version of the title that the average person would understand"
             containerStyle={formGenericStyles.container}
             labelStyle={formGenericStyles.labelStyle}
-            value={title}
+            value={title || paperTitle}
             id="title"
             onChange={handleInputChange}
           />
-        </div>
-        <span className={css(formGenericStyles.container)}>
-          <AuthorInput
-            error={formErrors.author}
-            inputValue={authorSearchText}
-            label="Authors"
-            labelStyle={formGenericStyles.labelStyle}
-            onChange={getHandleAuthorChange({
-              currComponentState: componentState,
-              currFormData: formData,
-              currUserAuthorID,
-              setComponentState,
-              setFormData,
-            })}
-            onChangeInput={getHandleAuthorInputChange({
-              currComponentState: componentState,
-              debounceRef: authorSearchDebncRef,
-              debounceTime: 500,
-              setComponentState,
-              setDebounceRef: setAuthorSearchDebncRef,
-            })}
-            tags={selectedAuthors}
-          />
-        </span>
-        <span className={css(formGenericStyles.container)}>
-          {/* <AuthorCardList
+          <span className={css(formGenericStyles.container)}>
+            <AuthorInput
+              error={formErrors.author}
+              inputValue={authorSearchText}
+              label="Authors"
+              labelStyle={formGenericStyles.labelStyle}
+              onChange={getHandleAuthorChange({
+                currComponentState: componentState,
+                currFormData: formData,
+                currUserAuthorID,
+                setComponentState,
+                setFormData,
+              })}
+              onChangeInput={getHandleAuthorInputChange({
+                currComponentState: componentState,
+                debounceRef: authorSearchDebncRef,
+                debounceTime: 500,
+                setComponentState,
+                setDebounceRef: setAuthorSearchDebncRef,
+              })}
+              tags={selectedAuthors}
+            />
+          </span>
+          <span className={css(formGenericStyles.container)}>
+            {/* <AuthorCardList
             addAuthor={openAddAuthorModal}
             authors={suggestedAuthors}
             loading={loading}
             onAuthorClick={handleAuthorSelect}
             show={showAuthorList}
           /> */}
-        </span>
-        <div
-          className={css(
-            formGenericStyles.row,
-            formGenericStyles.authorCheckboxContainer
-          )}
-        >
-          {/* <CheckBox
+          </span>
+          <div
+            className={css(
+              formGenericStyles.row,
+              formGenericStyles.authorCheckboxContainer
+            )}
+          >
+            {/* <CheckBox
             active={formAuthor.self_author}
             id="author.self_author"
             isSquare
@@ -238,35 +249,92 @@ function PaperUploadV2Update({
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleSelfAuthorToggle}
           /> */}
+          </div>
+          <div className={css(formGenericStyles.row)}>
+            <FormSelect
+              label="Year of Publication"
+              placeholder="yyyy"
+              required={false}
+              containerStyle={formGenericStyles.smallContainer}
+              inputStyle={formGenericStyles.smallInput}
+              value={published.year}
+              id="published.year"
+              options={Options.range(1960, new Date().getFullYear())}
+              onChange={handleInputChange}
+              error={formErrors.year}
+              labelStyle={formGenericStyles.labelStyle}
+            />
+            <FormSelect
+              label="Month of Publication"
+              placeholder="month"
+              required={false}
+              containerStyle={formGenericStyles.smallContainer}
+              inputStyle={formGenericStyles.smallInput}
+              value={published.month}
+              id="published.month"
+              options={Options.months}
+              onChange={handleInputChange}
+              error={formErrors.month}
+              labelStyle={formGenericStyles.labelStyle}
+            />
+          </div>
         </div>
-        <div className={css(formGenericStyles.row)}>
-          <FormSelect
-            label="Year of Publication"
-            placeholder="yyyy"
-            required={false}
-            containerStyle={formGenericStyles.smallContainer}
-            inputStyle={formGenericStyles.smallInput}
-            value={published.year}
-            id="published.year"
-            options={Options.range(1960, new Date().getFullYear())}
-            onChange={handleInputChange}
-            error={formErrors.year}
-            labelStyle={formGenericStyles.labelStyle}
-          />
-          <FormSelect
-            label="Month of Publication"
-            placeholder="month"
-            required={false}
-            containerStyle={formGenericStyles.smallContainer}
-            inputStyle={formGenericStyles.smallInput}
-            value={published.month}
-            id="published.month"
-            options={Options.months}
-            onChange={handleInputChange}
-            error={formErrors.month}
-            labelStyle={formGenericStyles.labelStyle}
-          />
+        <div className={css(formGenericStyles.section)}>
+          <div className={css(formGenericStyles.row)}>
+            <span className={css(formGenericStyles.doi)}>
+              <FormInput
+                label="DOI"
+                placeholder="Enter DOI of paper"
+                id="doi"
+                value={doi}
+                required={true}
+                containerStyle={formGenericStyles.doiInput}
+                labelStyle={formGenericStyles.labelStyle}
+                onChange={handleInputChange}
+              />
+            </span>
+          </div>
         </div>
+        <FormSelect
+          containerStyle={formGenericStyles.container}
+          error={formErrors.hubs}
+          id="hubs"
+          isMulti
+          label="Hubs"
+          inputStyle={
+            (customStyles.input,
+            selectedHubs.length > 0 && customStyles.capitalize)
+          }
+          labelStyle={formGenericStyles.labelStyle}
+          onChange={handleHubSelection}
+          options={suggestedHubs}
+          placeholder="Search Hubs"
+          required
+          value={selectedHubs}
+        />
+        <span className={css(formGenericStyles.mobileDoi)}>
+          <FormInput
+            label="DOI"
+            placeholder="Enter DOI of paper"
+            id="doi"
+            value={doi}
+            required={true}
+            containerStyle={formGenericStyles.doiInput}
+            labelStyle={formGenericStyles.labelStyle}
+            onChange={handleInputChange}
+          />
+        </span>
+        <span className={css(formGenericStyles.tagline)}>
+          <FormTextArea
+            label="Abstract"
+            placeholder="Enter the paper"
+            containerStyle={formGenericStyles.taglineContainer}
+            labelStyle={formGenericStyles.labelStyle}
+            value={abstract}
+            id="abstract"
+            onChange={handleInputChange}
+          />
+        </span>
       </div>
     </form>
   );
