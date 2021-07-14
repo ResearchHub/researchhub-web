@@ -1,7 +1,7 @@
 import { ID } from "../../../../config/types/root_types";
 
 export type ComponentState = {
-  authorSearchText: string;
+  authorSearchText: string | null;
   isFetchingAuthors: boolean;
   isFormDisabled: boolean;
   isFormEdited: boolean;
@@ -10,6 +10,7 @@ export type ComponentState = {
   selectedAuthors: any[];
   shouldShowAuthorList: boolean;
   shouldShowTitleField: boolean;
+  suggestedAuthors: any[] | null;
 };
 
 export type FormErrorState = {
@@ -42,7 +43,7 @@ export type FormState = {
 };
 
 export const defaultComponentState: ComponentState = {
-  authorSearchText: "",
+  authorSearchText: null,
   isFetchingAuthors: false,
   isFormDisabled: false,
   isFormEdited: false,
@@ -50,6 +51,7 @@ export const defaultComponentState: ComponentState = {
   selectedAuthors: [],
   shouldShowAuthorList: false,
   shouldShowTitleField: false,
+  suggestedAuthors: null,
 };
 
 export const defaultFormErrorState: FormErrorState = {

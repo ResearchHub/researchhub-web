@@ -22,6 +22,7 @@ export const getHandleAuthorChange = ({
   setComponentState,
   setFormData,
 }: HandleAuthorChangeArgs): Function => (selectedAuthors: any[]) => {
+  console.warn("ok?");
   const { selectedAuthors: currSelectedAuthors } = currComponentState;
   if (selectedAuthors.length < currSelectedAuthors.length) {
     setFormData({
@@ -55,10 +56,13 @@ export const getHandleAuthorInputChange = ({
   setComponentState,
   setDebounceRef,
 }: GetHandleAuthorInputChangeArgs): Function => {
+  console.warn("defined function");
   return (value: string | null) => {
+    console.warn("before clear: ", value);
     if (!isNullOrUndefined(debounceRef)) {
       clearTimeout(nullthrows(debounceRef));
     }
+    console.warn("after clear: ", value);
 
     if (!isNullOrUndefined(value) && nullthrows(value).length > 1) {
       setComponentState({
@@ -81,7 +85,10 @@ export const getHandleAuthorInputChange = ({
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((resp: any): void => {
+            console.warn("setting: ", value);
+
             setComponentState({
+              ...currComponentState,
               suggestedAuthors: resp.results,
               isFetchingAuthors: false,
             });
