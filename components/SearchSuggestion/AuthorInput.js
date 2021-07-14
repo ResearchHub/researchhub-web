@@ -67,10 +67,7 @@ const AuthorInput = (props) => {
         style={styles.input}
         value={tags && tags}
         onChange={onChange}
-        onChangeInput={(value) => {
-          console.warn("being called?");
-          onChangeInput(value);
-        }}
+        onChangeInput={(value) => onChangeInput(value)}
         inputValue={inputValue}
         className={error ? css(styles.error) : "react-tagsinput"}
         onClick={focusInput}

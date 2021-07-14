@@ -26,7 +26,7 @@ import { ID } from "../../../config/types/root_types";
 import * as Options from "../../../config/utils/options";
 import AddAuthorModal from "../../Modals/AddAuthorModal";
 import AuthorCardList from "../../SearchSuggestion/AuthorCardList";
-import AuthorInput from "../../SearchSuggestion/AuthorInput.js";
+import AuthorInput from "../../SearchSuggestion/AuthorInput";
 import CheckBox from "../../Form/CheckBox";
 import FormInput from "../../Form/FormInput";
 import FormSelect from "../../Form/FormSelect";
@@ -167,6 +167,7 @@ function PaperUploadV2Update({
     selectedAuthors,
     suggestedAuthors,
   } = componentState;
+  console.warn("authorSearchText: ", authorSearchText);
   return (
     <form
       autoComplete={"off"}
