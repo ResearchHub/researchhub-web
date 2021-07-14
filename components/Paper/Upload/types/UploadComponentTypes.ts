@@ -2,10 +2,12 @@ import { ID } from "../../../../config/types/root_types";
 
 export type ComponentState = {
   authorSearchText: string;
+  isFetchingAuthors: boolean;
   isFormDisabled: boolean;
   isFormEdited: boolean;
-  isLoading: boolean;
   isURLView: boolean;
+  /* NOTE: calvinhlee - because BE returns a hodge-podge of rawAuthors & "authorProfiles", we need separate handling state */
+  selectedAuthors: any[];
   shouldShowAuthorList: boolean;
   shouldShowTitleField: boolean;
 };
@@ -41,10 +43,11 @@ export type FormState = {
 
 export const defaultComponentState: ComponentState = {
   authorSearchText: "",
+  isFetchingAuthors: false,
   isFormDisabled: false,
   isFormEdited: false,
-  isLoading: false,
   isURLView: true,
+  selectedAuthors: [],
   shouldShowAuthorList: false,
   shouldShowTitleField: false,
 };
@@ -75,6 +78,5 @@ export const defaultFormState: FormState = {
   },
   raw_authors: [],
   title: "",
-  type: "",
   url: null,
 };

@@ -67,7 +67,7 @@ class PaperUploadInfo extends React.Component {
       searchAuthor: "", // v2 -> authorSearchText
       suggestedAuthors: [], // v2 -> made local to component
       selectedAuthors: [], // v2 -> made local to component
-      loading: false, // v2 -> isLoading
+      loading: false, // v2 -> isFetchingAuthors
       uploadingPaper: false, // v2 remove
       suggestedHubs: [], // v2 -> made local to component
       editMode: false, // v2 remove
