@@ -22,26 +22,36 @@ import {
   FormState,
 } from "./types/UploadComponentTypes";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 
-type Props = {
+type ComponentProps = {
   modalsRedux: any;
+};
+
+type InitAndParseReduxToStateArgs = {
+  paperActions: any; // redux,
+  router: NextRouter;
 };
 
 const useEffectInitAndParseReduxToState = ({
   paperActions,
-  paperTitleQuery,
-}): void => {
+  router,
+}: InitAndParseReduxToStateArgs): void => {
+  const { paperId } = router.query;
+
   useEffect(() => {
     paperActions.resetPaperState();
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
-  }, []);
+  }, [
+    // Intentional explicit memo. Should only be called on ID change
+    paperId,
+  ]);
 };
 
 function PaperUploadV2Update({
   modalsRedux,
-}: Props): ReactElement<typeof Fragment> {
+}: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState

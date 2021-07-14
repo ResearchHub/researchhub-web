@@ -34,9 +34,9 @@ export type FormState = {
   paper_title: string;
   paper_type: string;
   published: FormPublishedDate;
-  raw_authors: any[];
+  raw_authors?: any[]; // only used for create
   title: string;
-  url: string | null;
+  url?: string | null; // only used for create
 };
 
 export const defaultComponentState: ComponentState = {
@@ -75,5 +75,6 @@ export const defaultFormState: FormState = {
   },
   raw_authors: [],
   title: "",
+  type: "",
   url: null,
 };
