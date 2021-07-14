@@ -141,7 +141,7 @@ class PromotionCard extends React.Component {
 
     const href = isPost
       ? "/post/[documentId]/[title]"
-      : "/paper[paperId]/[paperName]";
+      : "/paper/[paperId]/[paperName]";
     const as = isPost
       ? `/post/${source.id}/${postSlug}`
       : `/paper/${source.id}/${source.slug}`;
