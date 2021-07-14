@@ -17,13 +17,7 @@ function PaperPromotionIcon({
   const [hover, setHover] = useState(false);
 
   const isPaper = !isNullOrUndefined(paper);
-
-  let boost_amount;
-  if (isPaper) {
-    boost_amount = paper.boost_amount;
-  } else {
-    boost_amount = post.boost_amount;
-  }
+  const boost_amount = isPaper ? paper.boost_amount : post.boost_amount;
 
   return boost_amount ? (
     <Fragment>

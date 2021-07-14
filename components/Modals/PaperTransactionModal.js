@@ -39,6 +39,7 @@ import {
 import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 
 // Constants
+import { ContentTypes, ChainStatus } from "./constants/ModalConstants";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -294,6 +295,7 @@ class PaperTransactionModal extends React.Component {
       showMessage,
       setMessage,
       updatePaperState,
+      updatePostState,
       paper,
       post,
       user,
@@ -301,24 +303,20 @@ class PaperTransactionModal extends React.Component {
     showMessage({ show: true, load: true });
 
     const isPaper = !isNullOrUndefined(paper);
-
-    let objectId;
-    let contentType;
-    if (isPaper) {
-      objectId = paper.id;
-      contentType = "paper";
-    } else {
-      objectId = post.id;
-      contentType = "researchhubpost";
-    }
+    const documentId = isPaper ? paper.id : post.id;
+    const contentType = isPaper
+      ? ContentTypes.PAPER
+      : ContentTypes.RESEARCHHUB_POST;
     const { id: userId } = user;
 
     const payload = {
       amount: Number(this.state.value),
-      object_id: objectId,
+      object_id: documentId,
       content_type: contentType,
       user: userId,
-      purchase_method: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
+      purchase_method: this.state.offChain
+        ? ChainStatus.OFF_CHAIN
+        : ChainStatus.ON_CHAIN,
       purchase_type: "BOOST",
     };
 
@@ -339,8 +337,10 @@ class PaperTransactionModal extends React.Component {
               ? this.props.auth.user.id && this.props.auth.user.id
               : null,
             event_properties: {
-              interaction: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
-              object_id: objectId,
+              interaction: this.state.offChain
+                ? ChainStatus.OFF_CHAIN
+                : ChainStatus.ON_CHAIN,
+              object_id: documentId,
               content_type: contentType,
               amount: Number(this.state.value),
             },
@@ -356,12 +356,17 @@ class PaperTransactionModal extends React.Component {
               finish: true,
             });
             if (isPaper) {
-              let promoted = res.source.promoted && res.source.promoted;
-              let updatedPaper = { ...paper };
-              updatedPaper.promoted = promoted;
-              updatePaperState && updatePaperState(updatedPaper);
+              const promoted = !isNullOrUndefined(res.source.promoted)
+                ? res.source.promoted
+                : null;
+              const updatedPaper = { ...paper, promoted };
+              updatePaperState(updatedPaper);
             } else {
-              console.log("INSIDE ELSE");
+              const promoted = !isNullOrUndefined(res.source.promoted)
+                ? res.source.promoted
+                : null;
+              const updatedPost = { ...post, promoted };
+              updatePostState(updatedPost);
             }
             this.updateBalance();
           });
