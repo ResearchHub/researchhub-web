@@ -7,7 +7,13 @@ import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
 import AddAuthorModal from "../../Modals/AddAuthorModal";
-import React, { ComponentState, Fragment, ReactElement, useState } from "react";
+import React, {
+  ComponentState,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
 import {
   defaultComponentState,
   defaultFormErrorState,
@@ -20,6 +26,17 @@ import { useRouter } from "next/router";
 
 type Props = {
   modalsRedux: any;
+};
+
+const useEffectInitAndParseReduxToState = ({
+  paperActions,
+  paperTitleQuery,
+}): void => {
+  useEffect(() => {
+    paperActions.resetPaperState();
+    document.body.scrollTop = 0; // For Safari
+    document.documentElement.scrollTop = 0;
+  }, []);
 };
 
 function PaperUploadV2Update({
@@ -43,7 +60,9 @@ function PaperUploadV2Update({
     setFormData,
     setFormErrors,
   });
+
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  useEffectInitAndParseReduxToState();
 
   return (
     <Fragment>
@@ -51,6 +70,7 @@ function PaperUploadV2Update({
         isOpen={modalsRedux.openAddAuthorModal}
         addNewUser={addNewUser}
       />
+      Hi this is edit!
     </Fragment>
   );
 }

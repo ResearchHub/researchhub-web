@@ -37,12 +37,22 @@ import React, {
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 
-type Props = {
+type ComponentProps = {
   authRedux: any;
   messageActions: any;
   modalActions: any;
   paperActions: any;
   paperRedux: any;
+};
+
+type ParseReduxToStateArgs = {
+  componentState: ComponentState;
+  formData: FormState;
+  messageActions: any;
+  paperRedux: any;
+  paperTitleQuery: string | string[] | undefined;
+  setComponentState: (componentState: ComponentState) => void;
+  setFormData: (formData: FormState) => void;
 };
 
 const useEffectHandleInit = ({ paperActions, paperTitleQuery }): void => {
@@ -59,15 +69,7 @@ const useEffectParseReduxToState = ({
   paperRedux,
   paperTitleQuery,
   setFormData,
-}: {
-  componentState: ComponentState;
-  formData: FormState;
-  messageActions: any;
-  paperRedux: any;
-  paperTitleQuery: string | string[] | undefined;
-  setComponentState: (componentState: ComponentState) => void;
-  setFormData: (formData: FormState) => void;
-}): void => {
+}: ParseReduxToStateArgs): void => {
   const { uploadedPaper } = paperRedux;
   const formHubs = formData.hubs;
   const formAuthors = formData.author;
@@ -149,7 +151,7 @@ function PaperuploadV2Create({
   modalActions,
   paperActions,
   paperRedux,
-}: Props): ReactElement<typeof Fragment> {
+}: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
   const { paperTitleQuery } = router.query;
   const [componentState, setComponentState] = useState<ComponentState>(
