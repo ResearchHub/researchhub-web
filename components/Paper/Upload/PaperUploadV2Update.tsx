@@ -129,7 +129,6 @@ function PaperUploadV2Update({
     defaultFormErrorState
   );
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
-
   const currUserAuthorID = !isNullOrUndefined(authRedux.user.author_profile)
     ? authRedux.user.author_profile.id
     : null;
@@ -163,7 +162,11 @@ function PaperUploadV2Update({
     published,
     title,
   } = formData;
-  const { authorSearchText, selectedAuthors } = componentState;
+  const {
+    authorSearchText,
+    selectedAuthors,
+    suggestedAuthors,
+  } = componentState;
   return (
     <form
       autoComplete={"off"}
@@ -212,13 +215,13 @@ function PaperUploadV2Update({
           />
         </span>
         <span className={css(formGenericStyles.container)}>
-          <AuthorCardList
+          {/* <AuthorCardList
             addAuthor={openAddAuthorModal}
             authors={suggestedAuthors}
             loading={loading}
             onAuthorClick={handleAuthorSelect}
             show={showAuthorList}
-          />
+          /> */}
         </span>
         <div
           className={css(
@@ -226,14 +229,14 @@ function PaperUploadV2Update({
             formGenericStyles.authorCheckboxContainer
           )}
         >
-          <CheckBox
+          {/* <CheckBox
             active={formAuthor.self_author}
             id="author.self_author"
             isSquare
             label="I am an author of this paper"
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleSelfAuthorToggle}
-          />
+          /> */}
         </div>
         <div className={css(formGenericStyles.row)}>
           <FormSelect
