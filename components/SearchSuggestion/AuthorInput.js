@@ -3,21 +3,22 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import TagsInput from "react-tagsinput";
 
-const AuthorInput = ({
-  tags,
-  required,
-  label,
-  error,
-  inputValue,
-  containerStyle,
-  inputStyle,
-  labelStyle,
-  onChange,
-  onChangeInput,
-  placeholder,
-  renderEmail,
-  onKeyPress,
-}) => {
+const AuthorInput = (props) => {
+  const {
+    tags,
+    required,
+    label,
+    error,
+    inputValue,
+    containerStyle,
+    inputStyle,
+    labelStyle,
+    onChange,
+    onChangeInput,
+    placeholder,
+    renderEmail,
+    onKeyPress,
+  } = props;
   const inputRef = React.createRef();
 
   function renderTag(props) {

@@ -11,7 +11,13 @@ import API from "../../../../config/api";
 type Args = {
   currUserAuthorID: ID;
   onError: Function;
-  onSuccess: Function;
+  onSuccess: ({
+    selectedAuthors,
+    parsedFormData,
+  }: {
+    selectedAuthors: any[];
+    parsedFormData: FormState;
+  }) => void;
   paperID: ID | ID[] | undefined;
 };
 
@@ -62,7 +68,7 @@ export async function getExistingPaperForEdit({
           : { year: null, month: null, day: null },
         author: {
           self_author: !isNullOrUndefined(currUserAuthorID)
-            ? authors.has((author) => author.id === currUserAuthorID)
+            ? authors.includes((author: any) => author.id === currUserAuthorID)
             : false,
         },
       };

@@ -6,14 +6,6 @@ import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
-import AddAuthorModal from "../../Modals/AddAuthorModal";
-import React, {
-  ComponentState,
-  Fragment,
-  ReactElement,
-  useEffect,
-  useState,
-} from "react";
 import {
   defaultComponentState,
   defaultFormErrorState,
@@ -28,9 +20,27 @@ import {
   emptyFncWithMsg,
   isNullOrUndefined,
 } from "../../../config/utils/nullchecks";
-import { ID } from "../../../config/types/root_types";
-import { formGenericStyles } from "./styles/formGenericStyles";
 import { css } from "aphrodite";
+import { formGenericStyles } from "./styles/formGenericStyles";
+import { ID } from "../../../config/types/root_types";
+import * as Options from "../../../config/utils/options";
+import AddAuthorModal from "../../Modals/AddAuthorModal";
+import AuthorCardList from "../../SearchSuggestion/AuthorCardList";
+import AuthorInput from "../../SearchSuggestion/AuthorInput.js";
+import CheckBox from "../../Form/CheckBox";
+import FormInput from "../../Form/FormInput";
+import FormSelect from "../../Form/FormSelect";
+import React, {
+  ComponentState,
+  Fragment,
+  ReactElement,
+  useEffect,
+  useState,
+} from "react";
+import {
+  getHandleAuthorChange,
+  getHandleAuthorInputChange,
+} from "./util/authorInputHandler";
 
 type ComponentProps = {
   authRedux: any;
@@ -40,21 +50,23 @@ type ComponentProps = {
 };
 
 type InitAndParseReduxToStateArgs = {
+  currComponentState: ComponentState;
   currUserAuthorID: ID;
   messageActions: any; // redux
   paperActions: any; // redux
   router: NextRouter;
+  setComponentState: (state: ComponentState) => void;
   setFormData: (formData: FormState) => void;
-  setSelectedAuthors: (authors: any) => void;
 };
 
 const useEffectInitAndParseReduxToState = ({
+  currComponentState,
   currUserAuthorID,
   messageActions,
   paperActions,
   router,
   setFormData,
-  setSelectedAuthors,
+  setComponentState,
 }: InitAndParseReduxToStateArgs): void => {
   const { paperId } = router.query;
   useEffect(() => {
@@ -77,15 +89,13 @@ const useEffectInitAndParseReduxToState = ({
           error: true,
         });
       },
-      onSuccess: ({
-        selectedAuthors,
-        parsedFormData,
-      }: {
-        selectedAuthors: any[];
-        parsedFormData: FormState;
-      }): void => {
-        setSelectedAuthors(selectedAuthors);
+      onSuccess: ({ selectedAuthors, parsedFormData }): void => {
+        // logical ordering
         setFormData(parsedFormData);
+        setComponentState({
+          ...currComponentState,
+          selectedAuthors,
+        });
         messageActions.showMessage({
           load: false,
           show: false,
@@ -107,6 +117,10 @@ function PaperUploadV2Update({
   paperActions,
 }: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
+  const [
+    authorSearchDebncRef,
+    setAuthorSearchDebncRef,
+  ] = useState<NodeJS.Timeout | null>(null);
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
@@ -114,11 +128,9 @@ function PaperUploadV2Update({
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
-  /* NOTE: calvinhlee - because BE returns a hodge-podge of rawAuthors & "authorProfiles", we need separate handling state */
-  const [selectedAuthors, setSelectedAuthors] = useState<any[]>([]);
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
-  const currUserAuthorID = isNullOrUndefined(authRedux.user.author_profile)
+  const currUserAuthorID = !isNullOrUndefined(authRedux.user.author_profile)
     ? authRedux.user.author_profile.id
     : null;
 
@@ -131,27 +143,127 @@ function PaperUploadV2Update({
     setFormErrors,
   });
 
+  const onFormSubmit = emptyFncWithMsg;
+
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectInitAndParseReduxToState({
+    currComponentState: componentState,
     currUserAuthorID,
     messageActions,
     paperActions,
     router,
+    setComponentState,
     setFormData,
-    setSelectedAuthors,
   });
-
+  const {
+    author: formAuthor,
+    doi,
+    hubs: selectedHubs,
+    paper_title,
+    published,
+    title,
+  } = formData;
+  const { authorSearchText, selectedAuthors } = componentState;
   return (
     <form
       autoComplete={"off"}
       className={css(formGenericStyles.form)}
-      onSubmit={onFormSubmit}
+      onSubmit={() => onFormSubmit}
     >
       <AddAuthorModal
         isOpen={modalsRedux.openAddAuthorModal}
         addNewUser={addNewUser}
       />
-      Hi this is edit!
+      <div className={css(formGenericStyles.pageContent)}>
+        <div
+          className={css(formGenericStyles.section, formGenericStyles.padding)}
+        >
+          <FormInput
+            label="Editorialized Title (optional)"
+            placeholder="Jargon free version of the title that the average person would understand"
+            containerStyle={formGenericStyles.container}
+            labelStyle={formGenericStyles.labelStyle}
+            value={title}
+            id="title"
+            onChange={handleInputChange}
+          />
+        </div>
+        <span className={css(formGenericStyles.container)}>
+          <AuthorInput
+            error={formErrors.author}
+            inputValue={authorSearchText}
+            label="Authors"
+            labelStyle={formGenericStyles.labelStyle}
+            onChange={getHandleAuthorChange({
+              currComponentState: componentState,
+              currFormData: formData,
+              currUserAuthorID,
+              setComponentState,
+              setFormData,
+            })}
+            onChangeInput={getHandleAuthorInputChange({
+              currComponentState: componentState,
+              debounceRef: authorSearchDebncRef,
+              debounceTime: 500,
+              setComponentState,
+              setDebounceRef: setAuthorSearchDebncRef,
+            })}
+            tags={selectedAuthors}
+          />
+        </span>
+        <span className={css(formGenericStyles.container)}>
+          <AuthorCardList
+            addAuthor={openAddAuthorModal}
+            authors={suggestedAuthors}
+            loading={loading}
+            onAuthorClick={handleAuthorSelect}
+            show={showAuthorList}
+          />
+        </span>
+        <div
+          className={css(
+            formGenericStyles.row,
+            formGenericStyles.authorCheckboxContainer
+          )}
+        >
+          <CheckBox
+            active={formAuthor.self_author}
+            id="author.self_author"
+            isSquare
+            label="I am an author of this paper"
+            labelStyle={formGenericStyles.labelStyle}
+            onChange={handleSelfAuthorToggle}
+          />
+        </div>
+        <div className={css(formGenericStyles.row)}>
+          <FormSelect
+            label="Year of Publication"
+            placeholder="yyyy"
+            required={false}
+            containerStyle={formGenericStyles.smallContainer}
+            inputStyle={formGenericStyles.smallInput}
+            value={published.year}
+            id="published.year"
+            options={Options.range(1960, new Date().getFullYear())}
+            onChange={handleInputChange}
+            error={formErrors.year}
+            labelStyle={formGenericStyles.labelStyle}
+          />
+          <FormSelect
+            label="Month of Publication"
+            placeholder="month"
+            required={false}
+            containerStyle={formGenericStyles.smallContainer}
+            inputStyle={formGenericStyles.smallInput}
+            value={published.month}
+            id="published.month"
+            options={Options.months}
+            onChange={handleInputChange}
+            error={formErrors.month}
+            labelStyle={formGenericStyles.labelStyle}
+          />
+        </div>
+      </div>
     </form>
   );
 }
