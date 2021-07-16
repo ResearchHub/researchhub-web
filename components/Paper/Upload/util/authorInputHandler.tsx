@@ -30,12 +30,8 @@ export const getHandleAuthorChange = ({
   setComponentState,
   setFormState,
 }: HandleAuthorChangeArgs): Function => {
-  console.warn("inited");
   return (selectedAuthors: any[]): void => {
-    console.warn("clicked?");
     const { selectedAuthors: currSelectedAuthors } = currComponentState;
-    console.warn("selectedAuthors: ", selectedAuthors);
-    console.warn("currSelectedAuthors: ", currSelectedAuthors);
     if (selectedAuthors.length < currSelectedAuthors.length) {
       setFormState({
         ...currFormState,
@@ -59,7 +55,7 @@ type GetHandleAuthorInputChangeArgs = {
   debounceRef: NodeJS.Timeout | null;
   debounceTime: number | undefined | null;
   setComponentState: SetComponentState;
-  setDebounceRef: (ref: NodeJS.Timeout) => void;
+  setDebounceRef: (ref: NodeJS.Timeout | null) => void;
 };
 
 export const getHandleAuthorInputChange = ({
@@ -68,15 +64,20 @@ export const getHandleAuthorInputChange = ({
   debounceTime = 500,
   setComponentState,
   setDebounceRef,
-}: GetHandleAuthorInputChangeArgs): Function => (value: string | null) => {
+}: GetHandleAuthorInputChangeArgs): Function => (
+  searchText: string | null
+): void => {
   if (!isNullOrUndefined(debounceRef)) {
     clearTimeout(nullthrows(debounceRef));
   }
-  /* updating input string */
+
+  const shouldShowAuthorList = Boolean(searchText);
+  /* updating input state */
   setComponentState({
     ...currComponentState,
-    authorSearchText: value,
-    isFetchingAuthors: true,
+    authorSearchText: searchText,
+    isFetchingAuthors: shouldShowAuthorList,
+    shouldShowAuthorList: Boolean(searchText),
   });
 
   const { selectedAuthors: currSelectedAuthors } = currComponentState;
@@ -84,7 +85,7 @@ export const getHandleAuthorInputChange = ({
     setTimeout(async () => {
       return fetch(
         API.AUTHOR({
-          search: value,
+          search: searchText,
           excludeIds: currSelectedAuthors.map((author: any): ID => author.id),
         }),
         API.GET_CONFIG()
@@ -94,11 +95,12 @@ export const getHandleAuthorInputChange = ({
         .then((resp: any): void => {
           setComponentState({
             ...currComponentState,
-            authorSearchText: value,
+            authorSearchText: searchText,
             isFetchingAuthors: false,
-            shouldShowAuthorList: true,
+            shouldShowAuthorList,
             suggestedAuthors: resp.results,
           });
+          setDebounceRef(null);
         });
     }, debounceTime || 500)
   );
