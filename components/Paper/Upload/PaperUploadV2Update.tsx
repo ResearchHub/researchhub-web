@@ -1,4 +1,3 @@
-import { addNewUser } from "./api/authorModalAddNewUser";
 import { AuthActions } from "../../../redux/auth";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
@@ -13,6 +12,11 @@ import {
   FormErrorState,
   FormState,
 } from "./types/UploadComponentTypes";
+import {
+  getCreateNewProfileAndUpdateState,
+  getHandleAuthorInputChange,
+  getHandleAuthorSelect,
+} from "./util/authorInputHandler";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { NextRouter, useRouter } from "next/router";
 import { getExistingPaperForEdit } from "./api/getExistingPaperForEdit";
@@ -27,22 +31,19 @@ import * as Options from "../../../config/utils/options";
 import AddAuthorModal from "../../Modals/AddAuthorModal";
 import AuthorCardList from "../../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../../SearchSuggestion/AuthorInput";
+import Button from "../../Form/Button";
 import CheckBox from "../../Form/CheckBox";
 import FormInput from "../../Form/FormInput";
 import FormSelect from "../../Form/FormSelect";
+import FormTextArea from "../../Form/FormTextArea";
 import React, {
   ComponentState,
   Fragment,
   ReactElement,
+  SyntheticEvent,
   useEffect,
   useState,
 } from "react";
-import {
-  getHandleAuthorChange,
-  getHandleAuthorInputChange,
-  getHandleAuthorSelect,
-} from "./util/authorInputHandler";
-import FormTextArea from "../../Form/FormTextArea";
 
 type ComponentProps = {
   authRedux: any;
@@ -137,6 +138,14 @@ function PaperUploadV2Update({
     ? authRedux.user.author_profile.id
     : null;
 
+  const handleFormCancel = (): void => {
+    paperActions.resetPaperState();
+    setComponentState(defaultComponentState);
+    setFormState(defaultFormState);
+    setFormErrors(defaultFormErrorState);
+    router.back();
+  };
+
   const handleInputChange = getHandleInputChange({
     currFormState: formState,
     currFormErrors: formErrors,
@@ -156,7 +165,9 @@ function PaperUploadV2Update({
     }
   };
 
-  const onFormSubmit = (): void => {};
+  const onFormSubmit = (event: SyntheticEvent): void => {
+    event.preventDefault();
+  };
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectInitAndParseReduxToState({
@@ -168,6 +179,7 @@ function PaperUploadV2Update({
     setComponentState,
     setFormState,
   });
+
   const {
     abstract,
     author: formAuthor,
@@ -177,9 +189,11 @@ function PaperUploadV2Update({
     published,
     title,
   } = formState;
+  const { self_author: markedSelfAsAuthor } = formAuthor;
   const {
     authorSearchText,
     isFetchingAuthors,
+    isFormDisabled,
     selectedAuthors,
     suggestedAuthors,
     shouldShowAuthorList,
@@ -193,7 +207,13 @@ function PaperUploadV2Update({
     >
       <AddAuthorModal
         isOpen={modalsRedux.openAddAuthorModal}
-        addNewUser={addNewUser}
+        addNewUser={getCreateNewProfileAndUpdateState({
+          currComponentState: componentState,
+          currFormErrors: formErrors,
+          modalActions,
+          setComponentState,
+          setFormErrors,
+        })}
       />
       <div className={css(formGenericStyles.pageContent)}>
         <div
@@ -211,16 +231,9 @@ function PaperUploadV2Update({
           <span className={css(formGenericStyles.container)}>
             <AuthorInput
               error={formErrors.author}
-              inputValue={authorSearchText || ""}
+              inputValue={authorSearchText}
               label="Authors"
               labelStyle={formGenericStyles.labelStyle}
-              onChange={getHandleAuthorChange({
-                currComponentState: componentState,
-                currFormState: formState,
-                currUserAuthorID,
-                setComponentState,
-                setFormState,
-              })}
               onChangeInput={getHandleAuthorInputChange({
                 currComponentState: componentState,
                 debounceRef: authorSearchDebncRef,
@@ -256,41 +269,48 @@ function PaperUploadV2Update({
               formGenericStyles.authorCheckboxContainer
             )}
           >
-            {/* <CheckBox
-            active={formAuthor.self_author}
-            id="author.self_author"
-            isSquare
-            label="I am an author of this paper"
-            labelStyle={formGenericStyles.labelStyle}
-            onChange={handleSelfAuthorToggle}
-          /> */}
+            <CheckBox
+              active={markedSelfAsAuthor}
+              id="author.self_author"
+              isSquare
+              label="I am an author of this paper"
+              labelStyle={formGenericStyles.labelStyle}
+              onChange={(_id: ID, value: boolean): void => {
+                setComponentState({ ...componentState, isFormEdited: true });
+                setFormErrors({
+                  ...formErrors,
+                  author: value ? false : selectedAuthors.length < 1,
+                });
+                setFormState({ ...formState, author: { self_author: value } });
+              }}
+            />
           </div>
           <div className={css(formGenericStyles.row)}>
             <FormSelect
+              containerStyle={formGenericStyles.smallContainer}
+              error={formErrors.year}
+              id="published.year"
+              inputStyle={formGenericStyles.smallInput}
               label="Year of Publication"
+              labelStyle={formGenericStyles.labelStyle}
+              onChange={handleInputChange}
+              options={Options.range(1960, new Date().getFullYear())}
               placeholder="yyyy"
               required={false}
-              containerStyle={formGenericStyles.smallContainer}
-              inputStyle={formGenericStyles.smallInput}
               value={published.year}
-              id="published.year"
-              options={Options.range(1960, new Date().getFullYear())}
-              onChange={handleInputChange}
-              error={formErrors.year}
-              labelStyle={formGenericStyles.labelStyle}
             />
             <FormSelect
+              containerStyle={formGenericStyles.smallContainer}
+              error={formErrors.month}
+              id="published.month"
+              inputStyle={formGenericStyles.smallInput}
               label="Month of Publication"
+              labelStyle={formGenericStyles.labelStyle}
+              onChange={handleInputChange}
+              options={Options.months}
               placeholder="month"
               required={false}
-              containerStyle={formGenericStyles.smallContainer}
-              inputStyle={formGenericStyles.smallInput}
               value={published.month}
-              id="published.month"
-              options={Options.months}
-              onChange={handleInputChange}
-              error={formErrors.month}
-              labelStyle={formGenericStyles.labelStyle}
             />
           </div>
         </div>
@@ -298,14 +318,14 @@ function PaperUploadV2Update({
           <div className={css(formGenericStyles.row)}>
             <span className={css(formGenericStyles.doi)}>
               <FormInput
-                label="DOI"
-                placeholder="Enter DOI of paper"
-                id="doi"
-                value={doi}
-                required={true}
                 containerStyle={formGenericStyles.doiInput}
+                id="doi"
+                label="DOI"
                 labelStyle={formGenericStyles.labelStyle}
                 onChange={handleInputChange}
+                placeholder="Enter DOI of paper"
+                required={true}
+                value={doi}
               />
             </span>
           </div>
@@ -329,27 +349,53 @@ function PaperUploadV2Update({
         />
         <span className={css(formGenericStyles.mobileDoi)}>
           <FormInput
-            label="DOI"
-            placeholder="Enter DOI of paper"
-            id="doi"
-            value={doi}
-            required={true}
             containerStyle={formGenericStyles.doiInput}
+            id="doi"
+            label="DOI"
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleInputChange}
+            placeholder="Enter DOI of paper"
+            required={true}
+            value={doi}
           />
         </span>
         <span className={css(formGenericStyles.tagline)}>
           <FormTextArea
-            label="Abstract"
-            placeholder="Enter the paper"
             containerStyle={formGenericStyles.taglineContainer}
-            labelStyle={formGenericStyles.labelStyle}
-            value={abstract}
             id="abstract"
+            label="Abstract"
+            labelStyle={formGenericStyles.labelStyle}
             onChange={handleInputChange}
+            placeholder="Enter the paper"
+            value={abstract}
           />
         </span>
+      </div>
+      <div
+        className={css(formGenericStyles.buttonRow, formGenericStyles.buttons)}
+      >
+        <div
+          className={css(
+            formGenericStyles.button,
+            formGenericStyles.buttonLeft
+          )}
+          onClick={handleFormCancel}
+        >
+          <span
+            className={css(
+              formGenericStyles.buttonLabel,
+              formGenericStyles.text
+            )}
+          >
+            {"Cancel"}
+          </span>
+        </div>
+        <Button
+          customButtonStyle={formGenericStyles.button}
+          disabled={isFormDisabled}
+          label="Upload"
+          type="submit"
+        />
       </div>
     </form>
   );
