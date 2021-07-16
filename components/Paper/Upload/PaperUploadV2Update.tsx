@@ -104,7 +104,9 @@ const useEffectInitAndParseToState = ({
       paperID,
     });
   }, [
-    // Intentional explicit memo. Should only be called on ID change
+    /* Intentional explicit memo. Should only be called on ID changes
+       Due to User-fetch latency with redux, this function could be (most likely) called twice after mount */
+    currUserAuthorID,
     paperID,
   ]);
 };

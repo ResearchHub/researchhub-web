@@ -20,15 +20,15 @@ export type FormErrorState = {
   tagline: boolean;
 };
 
-type ModifiedDateType = {
-  value: string;
+export type ModifiedDateType = {
   label: string;
+  value: string;
 };
 
 /*  NOTE: calvinhlee - Making fields multi-purpose like below depending on component / situation makes code potentially very buggy. 
       Coding practices like this must to stop disregarding js-typing. */
 export type FormPublishedDate = {
-  year: ModifiedDateType | number | null | string;
+  year: number | null | string | ModifiedDateType;
   month: number | null | string | ModifiedDateType;
   day: number | null | string | ModifiedDateType;
 };
