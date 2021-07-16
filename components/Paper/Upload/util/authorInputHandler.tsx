@@ -22,7 +22,6 @@ export const getHandleAuthorChange = ({
   setComponentState,
   setFormData,
 }: HandleAuthorChangeArgs): Function => (selectedAuthors: any[]) => {
-  console.warn("ok?");
   const { selectedAuthors: currSelectedAuthors } = currComponentState;
   if (selectedAuthors.length < currSelectedAuthors.length) {
     setFormData({
@@ -82,8 +81,6 @@ export const getHandleAuthorInputChange = ({
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((resp: any): void => {
-            console.warn("setting: ", value);
-
             setComponentState({
               ...currComponentState,
               suggestedAuthors: resp.results,
