@@ -150,6 +150,7 @@ export const getHandleAuthorSelect = ({
       ...currComponentState,
       authorSearchText: "",
       isFormEdited: true,
+      shouldShowAuthorList: false,
     });
   };
 };
@@ -182,7 +183,9 @@ export const getCreateNewProfileAndUpdateState = ({
       const { authors: currSelectedAuthors } = currFormState;
       setComponentState({
         ...currComponentState,
+        authorSearchText: "",
         isFormEdited: true,
+        shouldShowAuthorList: false,
       });
       setFormState({
         ...currFormState,
