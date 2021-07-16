@@ -25,8 +25,7 @@ export type ModifiedDateType = {
   value: string;
 };
 
-/*  NOTE: calvinhlee - Making fields multi-purpose like below depending on component / situation makes code potentially very buggy. 
-      Coding practices like this must to stop disregarding js-typing. */
+/*  NOTE: calvinhlee - Making fields multi-purpose based on FE context makes code potentially very buggy. Coding practices like this must stop disregarding js-typing. */
 export type FormPublishedDate = {
   year: number | null | string | ModifiedDateType;
   month: number | null | string | ModifiedDateType;

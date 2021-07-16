@@ -22,7 +22,7 @@ export async function updateExistingPaper({
   payload,
 }: Args): Promise<void> {
   /*  NOTE(100): calvinhlee - Making fields multi-purpose like below depending on FE context makes code potentially very buggy. 
-      Coding practices like this must to stop disregarding js-typing. 
+      Coding practices like this must stop disregarding js-typing. 
       Referring to authors, hubs & published here.
   */
   const { authors, published, hubs } = payload;
