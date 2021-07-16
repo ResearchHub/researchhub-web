@@ -10,7 +10,7 @@ export type ComponentState = {
   selectedAuthors: any[];
   shouldShowAuthorList: boolean;
   shouldShowTitleField: boolean;
-  suggestedAuthors: any[] | null;
+  suggestedAuthors: any[];
 };
 
 export type FormErrorState = {
@@ -51,7 +51,7 @@ export const defaultComponentState: ComponentState = {
   selectedAuthors: [],
   shouldShowAuthorList: false,
   shouldShowTitleField: false,
-  suggestedAuthors: null,
+  suggestedAuthors: [],
 };
 
 export const defaultFormErrorState: FormErrorState = {
