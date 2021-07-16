@@ -31,8 +31,11 @@ export const getHandleAuthorChange = ({
   setFormState,
 }: HandleAuthorChangeArgs): Function => {
   return (selectedAuthors: any[]): void => {
-    const { selectedAuthors: currSelectedAuthors } = currComponentState;
-    if (selectedAuthors.length < currSelectedAuthors.length) {
+    const { authors: currSelectedAuthors } = currFormState;
+    if (
+      selectedAuthors.length <
+      nullthrows(currSelectedAuthors, "Must an array").length
+    ) {
       setFormState({
         ...currFormState,
         author: {
@@ -40,11 +43,11 @@ export const getHandleAuthorChange = ({
             (author: any): boolean => author.id === currUserAuthorID
           ),
         },
+        authors: selectedAuthors,
       });
       setComponentState({
         ...currComponentState,
         isFormEdited: true,
-        selectedAuthors,
       });
     }
   };
@@ -52,6 +55,7 @@ export const getHandleAuthorChange = ({
 
 type GetHandleAuthorInputChangeArgs = {
   currComponentState: ComponentState;
+  currFormState: FormState;
   debounceRef: NodeJS.Timeout | null;
   debounceTime: number | undefined | null;
   setComponentState: SetComponentState;
@@ -60,6 +64,7 @@ type GetHandleAuthorInputChangeArgs = {
 
 export const getHandleAuthorInputChange = ({
   currComponentState,
+  currFormState,
   debounceRef,
   debounceTime = 500,
   setComponentState,
@@ -80,13 +85,16 @@ export const getHandleAuthorInputChange = ({
     shouldShowAuthorList: Boolean(searchText),
   });
 
-  const { selectedAuthors: currSelectedAuthors } = currComponentState;
+  const { authors: currSelectedAuthors } = currFormState;
+
   setDebounceRef(
     setTimeout(async () => {
       return fetch(
         API.AUTHOR({
           search: searchText,
-          excludeIds: currSelectedAuthors.map((author: any): ID => author.id),
+          excludeIds: nullthrows(currSelectedAuthors, "Must be an array").map(
+            (author: any): ID => author.id
+          ),
         }),
         API.GET_CONFIG()
       )
@@ -126,18 +134,21 @@ export const getHandleAuthorSelect = ({
   setFormState,
 }: GetHandleAuthorSelectArgs): Function => {
   return (selectedAuthor: any): void => {
-    const { selectedAuthors: currSelectedAuthors } = currComponentState;
+    const { authors: currSelectedAuthors } = currFormState;
     setFormState({
       ...currFormState,
       author: {
         self_author: selectedAuthor.id === currUserAuthorID,
       },
+      authors: [
+        ...nullthrows(currSelectedAuthors, "Must an array"),
+        selectedAuthor,
+      ],
     });
     setFormErrors({ ...currFormErrors, author: false });
     setComponentState({
       ...currComponentState,
       authorSearchText: "",
-      selectedAuthors: [...currSelectedAuthors, selectedAuthor],
       isFormEdited: true,
     });
   };
@@ -146,17 +157,21 @@ export const getHandleAuthorSelect = ({
 type CreateNewProfileAndUpdateState = {
   currComponentState: ComponentState;
   currFormErrors: FormErrorState;
+  currFormState: FormState;
   modalActions: any; // redux
   setComponentState: SetComponentState;
   setFormErrors: SetFormErrors;
+  setFormState: SetFormState;
 };
 
 export const getCreateNewProfileAndUpdateState = ({
   currComponentState,
   currFormErrors,
+  currFormState,
   modalActions,
   setComponentState,
   setFormErrors,
+  setFormState,
 }: CreateNewProfileAndUpdateState): Function => (
   params: any /* refer to AddAuthorModal */
 ): void => {
@@ -164,11 +179,17 @@ export const getCreateNewProfileAndUpdateState = ({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((createdProfile) => {
-      const { selectedAuthors: currSelectedAuthors } = currComponentState;
+      const { authors: currSelectedAuthors } = currFormState;
       setComponentState({
         ...currComponentState,
-        selectedAuthors: [...currSelectedAuthors, createdProfile],
         isFormEdited: true,
+      });
+      setFormState({
+        ...currFormState,
+        authors: [
+          ...nullthrows(currSelectedAuthors, "Must an array"),
+          createdProfile,
+        ],
       });
       setFormErrors({ ...currFormErrors, author: false });
     })
