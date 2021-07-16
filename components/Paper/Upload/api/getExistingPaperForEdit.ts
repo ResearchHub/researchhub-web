@@ -13,10 +13,10 @@ type Args = {
   onError: Function;
   onSuccess: ({
     selectedAuthors,
-    parsedFormData,
+    parsedFormState,
   }: {
     selectedAuthors: any[];
-    parsedFormData: FormState;
+    parsedFormState: FormState;
   }) => void;
   paperID: ID | ID[] | undefined;
 };
@@ -47,7 +47,7 @@ export async function getExistingPaperForEdit({
         tagline: _tagline,
         title,
       } = res;
-      const parsedFormData: FormState = {
+      const parsedFormState: FormState = {
         doi,
         title,
         paper_title,
@@ -72,7 +72,7 @@ export async function getExistingPaperForEdit({
             : false,
         },
       };
-      onSuccess({ selectedAuthors: [...authors], parsedFormData });
+      onSuccess({ selectedAuthors: [...authors], parsedFormState });
     })
     .catch((e: Error): void => onError(e));
 }

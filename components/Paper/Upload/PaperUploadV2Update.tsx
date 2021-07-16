@@ -40,12 +40,14 @@ import React, {
 import {
   getHandleAuthorChange,
   getHandleAuthorInputChange,
+  getHandleAuthorSelect,
 } from "./util/authorInputHandler";
 import FormTextArea from "../../Form/FormTextArea";
 
 type ComponentProps = {
   authRedux: any;
   messageActions: any;
+  modalActions: any;
   modalsRedux: any;
   paperActions: any;
 };
@@ -57,7 +59,7 @@ type InitAndParseReduxToStateArgs = {
   paperActions: any; // redux
   router: NextRouter;
   setComponentState: (state: ComponentState) => void;
-  setFormData: (formData: FormState) => void;
+  setFormState: (formState: FormState) => void;
 };
 
 const useEffectInitAndParseReduxToState = ({
@@ -66,7 +68,7 @@ const useEffectInitAndParseReduxToState = ({
   messageActions,
   paperActions,
   router,
-  setFormData,
+  setFormState,
   setComponentState,
 }: InitAndParseReduxToStateArgs): void => {
   const { paperId } = router.query;
@@ -90,9 +92,9 @@ const useEffectInitAndParseReduxToState = ({
           error: true,
         });
       },
-      onSuccess: ({ selectedAuthors, parsedFormData }): void => {
+      onSuccess: ({ selectedAuthors, parsedFormState }): void => {
         // logical ordering
-        setFormData(parsedFormData);
+        setFormState(parsedFormState);
         setComponentState({
           ...currComponentState,
           selectedAuthors,
@@ -114,6 +116,7 @@ const useEffectInitAndParseReduxToState = ({
 function PaperUploadV2Update({
   authRedux,
   messageActions,
+  modalActions,
   modalsRedux,
   paperActions,
 }: ComponentProps): ReactElement<typeof Fragment> {
@@ -125,7 +128,7 @@ function PaperUploadV2Update({
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
-  const [formData, setFormData] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
@@ -135,25 +138,25 @@ function PaperUploadV2Update({
     : null;
 
   const handleInputChange = getHandleInputChange({
-    currFormData: formData,
+    currFormState: formState,
     currFormErrors: formErrors,
     currComponentState: componentState,
     setComponentState,
-    setFormData,
+    setFormState,
     setFormErrors,
   });
 
   const handleHubSelection = (_id: ID, selectedHubs: any): void => {
     if (isNullOrUndefined(selectedHubs)) {
-      setFormData({ ...formData, hubs: [] });
+      setFormState({ ...formState, hubs: [] });
       setFormErrors({ ...formErrors, hubs: true });
     } else {
-      setFormData({ ...formData, hubs: selectedHubs });
+      setFormState({ ...formState, hubs: selectedHubs });
       setFormErrors({ ...formErrors, hubs: selectedHubs.length < 1 });
     }
   };
 
-  const onFormSubmit = emptyFncWithMsg;
+  const onFormSubmit = (): void => {};
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectInitAndParseReduxToState({
@@ -163,7 +166,7 @@ function PaperUploadV2Update({
     paperActions,
     router,
     setComponentState,
-    setFormData,
+    setFormState,
   });
   const {
     abstract,
@@ -173,17 +176,20 @@ function PaperUploadV2Update({
     paper_title: paperTitle,
     published,
     title,
-  } = formData;
+  } = formState;
   const {
     authorSearchText,
+    isFetchingAuthors,
     selectedAuthors,
     suggestedAuthors,
+    shouldShowAuthorList,
   } = componentState;
+
   return (
     <form
       autoComplete={"off"}
       className={css(formGenericStyles.form)}
-      onSubmit={() => onFormSubmit}
+      onSubmit={onFormSubmit}
     >
       <AddAuthorModal
         isOpen={modalsRedux.openAddAuthorModal}
@@ -205,15 +211,15 @@ function PaperUploadV2Update({
           <span className={css(formGenericStyles.container)}>
             <AuthorInput
               error={formErrors.author}
-              inputValue={authorSearchText}
+              inputValue={authorSearchText || ""}
               label="Authors"
               labelStyle={formGenericStyles.labelStyle}
               onChange={getHandleAuthorChange({
                 currComponentState: componentState,
-                currFormData: formData,
+                currFormState: formState,
                 currUserAuthorID,
                 setComponentState,
-                setFormData,
+                setFormState,
               })}
               onChangeInput={getHandleAuthorInputChange({
                 currComponentState: componentState,
@@ -226,13 +232,23 @@ function PaperUploadV2Update({
             />
           </span>
           <span className={css(formGenericStyles.container)}>
-            {/* <AuthorCardList
-            addAuthor={openAddAuthorModal}
-            authors={suggestedAuthors}
-            loading={loading}
-            onAuthorClick={handleAuthorSelect}
-            show={showAuthorList}
-          /> */}
+            <AuthorCardList
+              addAuthor={async (): Promise<void> => {
+                await modalActions.openAddAuthorModal(true);
+              }}
+              authors={suggestedAuthors}
+              loading={isFetchingAuthors}
+              onAuthorClick={getHandleAuthorSelect({
+                currComponentState: componentState,
+                currFormErrors: formErrors,
+                currFormState: formState,
+                currUserAuthorID,
+                setComponentState,
+                setFormErrors,
+                setFormState,
+              })}
+              show={shouldShowAuthorList}
+            />
           </span>
           <div
             className={css(
