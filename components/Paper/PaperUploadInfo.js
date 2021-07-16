@@ -876,9 +876,11 @@ class PaperUploadInfo extends React.Component {
       if (body.published && body.published.year) {
         body.publishDate = this.formatPublishDate(body.published);
       }
+      // V2 -> removed. Initiallized as empty
       body.url = ""; // TODO: Add this optional field
     }
 
+    // V2 -> removed. It's already being parsed into state
     if (!body.title) {
       body.title = body.paper_title;
     }

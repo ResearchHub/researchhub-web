@@ -32,6 +32,7 @@ export const getHandleAuthorChange = ({
 }: HandleAuthorChangeArgs): Function => {
   return (selectedAuthors: any[]): void => {
     const { authors: currSelectedAuthors } = currFormState;
+    // NOTE: we are currently handling "adding" with card-click. Need to only handle removing
     if (
       selectedAuthors.length <
       nullthrows(currSelectedAuthors, "Must an array").length
@@ -138,7 +139,9 @@ export const getHandleAuthorSelect = ({
     setFormState({
       ...currFormState,
       author: {
-        self_author: selectedAuthor.id === currUserAuthorID,
+        self_author:
+          selectedAuthor.id === currUserAuthorID ||
+          currFormState.author.self_author,
       },
       authors: [
         ...nullthrows(currSelectedAuthors, "Must an array"),

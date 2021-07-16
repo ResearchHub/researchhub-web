@@ -20,10 +20,17 @@ export type FormErrorState = {
   tagline: boolean;
 };
 
+type ModifiedDateType = {
+  value: string;
+  label: string;
+};
+
+/*  NOTE: calvinhlee - Making fields multi-purpose like below depending on component / situation makes code potentially very buggy. 
+      Coding practices like this must to stop disregarding js-typing. */
 export type FormPublishedDate = {
-  year: number | null | string;
-  month: number | null | string;
-  day: number | null | string;
+  year: ModifiedDateType | number | null | string;
+  month: number | null | string | ModifiedDateType;
+  day: number | null | string | ModifiedDateType;
 };
 
 // Intentional snake_casing to be used as a BE payload
@@ -32,6 +39,7 @@ export type FormState = {
   author: any;
   authors?: any[]; // only used for update. Often referred to as selectedAuthors in FE
   doi: ID;
+  file?: any; // most likely only used for create
   hubs: any[];
   paper_title: string;
   paper_type: string;
