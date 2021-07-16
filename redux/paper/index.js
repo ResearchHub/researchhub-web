@@ -358,7 +358,7 @@ export const PaperActions = {
       const response = await fetch(
         API.PAPER({ paperId, progress }),
         API.PATCH_FILE_CONFIG(shims.paperPost(body))
-      ).catch(Boolean(onError) ? utils.handleCatch : onError);
+      ).catch(Boolean(onError) ? onError : utils.handleCatch);
       let errorBody = null;
       if (response.status === 400 || response.status === 500) {
         errorBody = await response.json();
