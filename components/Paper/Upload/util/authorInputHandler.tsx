@@ -29,23 +29,29 @@ export const getHandleAuthorChange = ({
   currUserAuthorID,
   setComponentState,
   setFormState,
-}: HandleAuthorChangeArgs): Function => (selectedAuthors: any[]) => {
-  const { selectedAuthors: currSelectedAuthors } = currComponentState;
-  if (selectedAuthors.length < currSelectedAuthors.length) {
-    setFormState({
-      ...currFormState,
-      author: {
-        self_author: selectedAuthors.includes(
-          (author: any): boolean => author.id === currUserAuthorID
-        ),
-      },
-    });
-    setComponentState({
-      ...currComponentState,
-      isFormEdited: true,
-      selectedAuthors,
-    });
-  }
+}: HandleAuthorChangeArgs): Function => {
+  console.warn("inited");
+  return (selectedAuthors: any[]): void => {
+    console.warn("clicked?");
+    const { selectedAuthors: currSelectedAuthors } = currComponentState;
+    console.warn("selectedAuthors: ", selectedAuthors);
+    console.warn("currSelectedAuthors: ", currSelectedAuthors);
+    if (selectedAuthors.length < currSelectedAuthors.length) {
+      setFormState({
+        ...currFormState,
+        author: {
+          self_author: selectedAuthors.includes(
+            (author: any): boolean => author.id === currUserAuthorID
+          ),
+        },
+      });
+      setComponentState({
+        ...currComponentState,
+        isFormEdited: true,
+        selectedAuthors,
+      });
+    }
+  };
 };
 
 type GetHandleAuthorInputChangeArgs = {
@@ -62,46 +68,43 @@ export const getHandleAuthorInputChange = ({
   debounceTime = 500,
   setComponentState,
   setDebounceRef,
-}: GetHandleAuthorInputChangeArgs): Function => {
-  return (value: string | null) => {
-    if (!isNullOrUndefined(debounceRef)) {
-      clearTimeout(nullthrows(debounceRef));
-    }
+}: GetHandleAuthorInputChangeArgs): Function => (value: string | null) => {
+  if (!isNullOrUndefined(debounceRef)) {
+    clearTimeout(nullthrows(debounceRef));
+  }
+  /* updating input string */
+  setComponentState({
+    ...currComponentState,
+    authorSearchText: value,
+    isFetchingAuthors: true,
+  });
 
-    /* updating input string */
-    setComponentState({
-      ...currComponentState,
-      authorSearchText: value,
-      isFetchingAuthors: true,
-    });
-
-    const { selectedAuthors: currSelectedAuthors } = currComponentState;
-    setDebounceRef(
-      setTimeout(async () => {
-        return fetch(
-          API.AUTHOR({
-            search: value,
-            excludeIds: currSelectedAuthors.map((author: any): ID => author.id),
-          }),
-          API.GET_CONFIG()
-        )
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((resp: any): void => {
-            setComponentState({
-              ...currComponentState,
-              authorSearchText: value,
-              isFetchingAuthors: false,
-              shouldShowAuthorList: true,
-              suggestedAuthors: resp.results,
-            });
+  const { selectedAuthors: currSelectedAuthors } = currComponentState;
+  setDebounceRef(
+    setTimeout(async () => {
+      return fetch(
+        API.AUTHOR({
+          search: value,
+          excludeIds: currSelectedAuthors.map((author: any): ID => author.id),
+        }),
+        API.GET_CONFIG()
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp: any): void => {
+          setComponentState({
+            ...currComponentState,
+            authorSearchText: value,
+            isFetchingAuthors: false,
+            shouldShowAuthorList: true,
+            suggestedAuthors: resp.results,
           });
-      }, debounceTime || 500)
-    );
-  };
+        });
+    }, debounceTime || 500)
+  );
 };
 
-type HndleAuthorSelectArgs = {
+type GetHandleAuthorSelectArgs = {
   currComponentState: ComponentState;
   currFormErrors: FormErrorState;
   currFormState: FormState;
@@ -119,8 +122,9 @@ export const getHandleAuthorSelect = ({
   setComponentState,
   setFormErrors,
   setFormState,
-}: HndleAuthorSelectArgs): Function => {
+}: GetHandleAuthorSelectArgs): Function => {
   return (selectedAuthor: any): void => {
+    const { selectedAuthors: currSelectedAuthors } = currComponentState;
     setFormState({
       ...currFormState,
       author: {
@@ -130,7 +134,45 @@ export const getHandleAuthorSelect = ({
     setFormErrors({ ...currFormErrors, author: false });
     setComponentState({
       ...currComponentState,
+      authorSearchText: "",
+      selectedAuthors: [...currSelectedAuthors, selectedAuthor],
       isFormEdited: true,
     });
   };
+};
+
+type CreateNewProfileAndUpdateState = {
+  currComponentState: ComponentState;
+  currFormErrors: FormErrorState;
+  modalActions: any; // redux
+  setComponentState: SetComponentState;
+  setFormErrors: SetFormErrors;
+};
+
+export const getCreateNewProfileAndUpdateState = ({
+  currComponentState,
+  currFormErrors,
+  modalActions,
+  setComponentState,
+  setFormErrors,
+}: CreateNewProfileAndUpdateState): Function => (
+  params: any /* refer to AddAuthorModal */
+): void => {
+  fetch(API.AUTHOR({}), API.POST_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((createdProfile) => {
+      const { selectedAuthors: currSelectedAuthors } = currComponentState;
+      setComponentState({
+        ...currComponentState,
+        selectedAuthors: [...currSelectedAuthors, createdProfile],
+        isFormEdited: true,
+      });
+      setFormErrors({ ...currFormErrors, author: false });
+    })
+    .catch((err) => {
+      if (err.response.status === 429) {
+        modalActions.openRecaptchaPrompt(true);
+      }
+    });
 };
