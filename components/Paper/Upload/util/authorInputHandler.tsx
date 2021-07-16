@@ -40,7 +40,7 @@ export const getHandleAuthorChange = ({
       setFormState({
         ...currFormState,
         author: {
-          self_author: selectedAuthors.includes(
+          self_author: selectedAuthors.some(
             (author: any): boolean => author.id === currUserAuthorID
           ),
         },

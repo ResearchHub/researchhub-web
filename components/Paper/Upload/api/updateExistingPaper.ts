@@ -21,25 +21,31 @@ export async function updateExistingPaper({
   paperID,
   payload,
 }: Args): Promise<void> {
+  /*  NOTE(100): calvinhlee - Making fields multi-purpose like below depending on FE context makes code potentially very buggy. 
+      Coding practices like this must to stop disregarding js-typing. 
+      Referring to authors, hubs & published here.
+  */
+  const { authors, published, hubs } = payload;
   const formattedPayload: any = {
     ...payload,
-    hubs: payload.hubs.map((hub): ID => hub.id),
+    authors: (authors || []).map((author: any): ID => author.id),
+    hubs: hubs.map((hub): ID => hub.id),
   };
 
-  /*  NOTE: calvinhlee - Making fields multi-purpose like below depending on component / situation makes code potentially very buggy. 
-      Coding practices like this must to stop disregarding js-typing. */
-  const { published } = payload;
   if (!isNullOrUndefined(published) && !isNullOrUndefined(published.year)) {
     const { year, month } = published;
-    // @ts-ignore (see comment above)
+    // @ts-ignore (see comment above & below is probably buggy due to how day is handled)
     const [yearValue, monthValue] = [year.value || "01", month.value || "01"];
-    formattedPayload.publishedDate = `${yearValue}-${monthValue}-01`;
+    formattedPayload.publishDate = `${yearValue}-${monthValue}-01`;
   }
-  const response = await paperActions.patchPaper(paperID, formattedPayload);
-  debugger;
+  const response = await paperActions.patchPaper(
+    paperID,
+    formattedPayload,
+    undefined,
+    onError
+  );
   const { payload: resPayload } = response;
   if (resPayload.success) {
-    debugger;
     const { postedPaper } = resPayload;
     const { id: paperID, paper_title, slug, title } = postedPaper || {};
     const paperName = !isNullOrUndefined(slug)
@@ -47,7 +53,6 @@ export async function updateExistingPaper({
       : formatPaperSlug(paper_title ? paper_title : title);
     onSuccess({ paperID, paperName });
   } else {
-    debugger;
     onError(resPayload);
   }
 }

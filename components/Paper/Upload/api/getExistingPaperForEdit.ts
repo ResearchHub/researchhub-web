@@ -5,7 +5,7 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "../../../../config/utils/nullchecks";
-import { parseDate } from "../util/parseDate";
+import { formatDateToDropdownOptions, parseDate } from "../util/parseDate";
 import API from "../../../../config/api";
 
 type Args = {
@@ -58,12 +58,15 @@ export async function getExistingPaperForEdit({
             value: id,
           };
         }),
+        /*  Refer to NOTE(100) - calvinhlee */
         published: !isNullOrUndefined(paper_publish_date)
-          ? parseDate(paper_publish_date.split("-"))
+          ? formatDateToDropdownOptions(
+              parseDate(paper_publish_date.split("-"))
+            )
           : { year: null, month: null, day: null },
         author: {
           self_author: !isNullOrUndefined(currUserAuthorID)
-            ? authors.includes((author: any) => author.id === currUserAuthorID)
+            ? authors.some((author: any) => author.id === currUserAuthorID)
             : false,
         },
       };

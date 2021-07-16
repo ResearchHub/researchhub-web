@@ -35,6 +35,7 @@ export const getHandleInputChange = ({
           : ""
         : value;
   } else {
+    // Refer to Note(100)
     newFormState[firstKey][keys[1]] = value;
     firstKey === "published" ? (newFormErrors[keys[1]] = false) : null; // removes red border on select fields
   }

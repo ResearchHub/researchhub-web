@@ -241,6 +241,7 @@ class PaperUploadInfo extends React.Component {
           };
 
           if (published_date.length > 1) {
+            // Below is an anti-pattern
             form.published.month = Options.months
               .filter((month) => month.value === published_date[1])
               .pop();
