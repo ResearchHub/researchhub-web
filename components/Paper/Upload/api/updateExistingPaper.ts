@@ -1,10 +1,7 @@
 import { formatPaperSlug } from "../../../../config/utils";
 import { FormState } from "../types/UploadComponentTypes";
 import { ID } from "../../../../config/types/root_types";
-import {
-  isNullOrUndefined,
-  nullthrows,
-} from "../../../../config/utils/nullchecks";
+import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
 
 type Args = {
   onError: Function;
