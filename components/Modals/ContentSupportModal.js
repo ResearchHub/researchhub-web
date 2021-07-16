@@ -82,11 +82,13 @@ class ContentSupportModal extends React.Component {
     const { alert } = this.props;
     const { amount } = this.state;
 
-    alert.show({
-      text: `Award ${parseInt(amount, 10)} RSC to this post?`,
-      buttonText: "Yes",
-      onClick: () => this.handleTransaction(),
-    });
+    if (amount) {
+      alert.show({
+        text: `Award ${parseInt(amount, 10)} RSC to this post?`,
+        buttonText: "Yes",
+        onClick: () => this.handleTransaction(),
+      });
+    }
   };
 
   getAuthorProfile = () => {
