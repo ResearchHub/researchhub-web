@@ -190,10 +190,10 @@ class PromotionCard extends React.Component {
                 alt="RSC Coin"
               />
             </div>
-            {this.renderData()}
+            {/* this.renderData() */}
           </div>
         </div>
-        <div className={css(styles.dataContainer)}>
+        {/* <div className={css(styles.dataContainer)}>
           <div className={css(styles.graph)}>
             <PromotionGraph
               source={source}
@@ -203,7 +203,7 @@ class PromotionCard extends React.Component {
               showViews={this.state.showViews}
             />
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     color: "rgb(190, 190, 190)",
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     marginBottom: 10,
     fontWeight: 500,
     width: "100%",
@@ -344,7 +344,6 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   metadata: {
-    width: "55%",
     display: "flex",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
