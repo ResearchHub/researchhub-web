@@ -269,7 +269,7 @@ class PaperTransactionModal extends React.Component {
         error: true,
       });
     }
-    if (value == 0) {
+    if (!value) {
       this.props.setMessage("Must spend at least 1 RSC");
       return this.props.showMessage({
         show: true,
