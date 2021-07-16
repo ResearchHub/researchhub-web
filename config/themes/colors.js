@@ -18,6 +18,11 @@ const colors = {
   ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`,
 };
 
+export const genericCardColors = {
+  BORDER: "#EDEDED",
+  BACKGROUND: "#FAFAFA",
+};
+
 export const formColors = {
   MESSAGE: colors.BLACK(0.65),
   BACKGROUND: "#F0F0F0",
