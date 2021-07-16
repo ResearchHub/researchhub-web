@@ -393,7 +393,7 @@ function PaperUploadV2Update({
         <Button
           customButtonStyle={formGenericStyles.button}
           disabled={isFormDisabled}
-          label="Upload"
+          label="Save"
           type="submit"
         />
       </div>
