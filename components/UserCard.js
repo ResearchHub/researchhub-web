@@ -18,8 +18,7 @@ const UserCard = ({ authorProfile, reputation }) => {
     )}`;
 
   const userSummary = createUserSummary(authorProfile);
-  console.log(userSummary);
-  console.log(isEmpty(userSummary));
+
   return (
     <div className={css(styles.container)}>
       <AuthorAvatar
