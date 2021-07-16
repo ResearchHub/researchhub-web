@@ -66,14 +66,8 @@ const AuthorInput = (props) => {
         onlyUnique={true}
         style={styles.input}
         value={tags && tags}
-        onChange={(val) => {
-          console.warn("hi selecting: ");
-          onChange(val);
-        }}
-        onChangeInput={(value) => {
-          console.warn("on change input");
-          onChangeInput(value);
-        }}
+        onChange={onChange}
+        onChangeInput={(value) => onChangeInput(value)}
         inputValue={inputValue || ""}
         className={error ? css(styles.error) : "react-tagsinput"}
         onClick={focusInput}
