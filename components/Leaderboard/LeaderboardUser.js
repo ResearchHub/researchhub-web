@@ -16,6 +16,10 @@ const LeaderboardUser = (props) => {
     repClass,
   } = props;
 
+  console.log("---------");
+  console.log(props);
+  console.log("---------");
+
   return (
     <div className={css(styles.container)}>
       <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/posts`}>
