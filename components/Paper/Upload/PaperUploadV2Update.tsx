@@ -179,7 +179,6 @@ function PaperUploadV2Update({
     selectedAuthors,
     suggestedAuthors,
   } = componentState;
-  console.warn("authorSearchText: ", authorSearchText);
   return (
     <form
       autoComplete={"off"}
