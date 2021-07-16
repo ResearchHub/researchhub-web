@@ -182,6 +182,22 @@ function PaperUploadV2Update({
 
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
+    const isFormValid = getIsFormValid({
+      componentState,
+      formState,
+      formErrors,
+      setFormErrors,
+    });
+    if (isFormValid) {
+      messageActions.showMessage({ load: true, show: true });
+    } else {
+      messageActions.setMessage("Required fields must be filled.");
+      messageActions.showMessage({
+        load: false,
+        show: true,
+        error: true,
+      });
+    }
   };
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
