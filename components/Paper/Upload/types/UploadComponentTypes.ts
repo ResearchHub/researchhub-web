@@ -6,8 +6,6 @@ export type ComponentState = {
   isFormDisabled: boolean;
   isFormEdited: boolean;
   isURLView: boolean;
-  /* NOTE: calvinhlee - because BE returns a hodge-podge of rawAuthors & "authorProfiles", we need separate handling state */
-  selectedAuthors: any[];
   shouldShowAuthorList: boolean;
   shouldShowTitleField: boolean;
   suggestedAuthors: any[];
@@ -28,10 +26,11 @@ export type FormPublishedDate = {
   day: number | null | string;
 };
 
-// intentional snake_casing
+// Intentional snake_casing to be used as a BE payload
 export type FormState = {
   abstract: any;
   author: any;
+  authors?: any[]; // only used for update. Often referred to as selectedAuthors in FE
   doi: ID;
   hubs: any[];
   paper_title: string;
@@ -48,7 +47,6 @@ export const defaultComponentState: ComponentState = {
   isFormDisabled: false,
   isFormEdited: false,
   isURLView: true,
-  selectedAuthors: [],
   shouldShowAuthorList: false,
   shouldShowTitleField: false,
   suggestedAuthors: [],
@@ -69,6 +67,7 @@ export const defaultFormState: FormState = {
   author: {
     self_author: false,
   },
+  authors: [],
   doi: null,
   hubs: [],
   paper_title: "",

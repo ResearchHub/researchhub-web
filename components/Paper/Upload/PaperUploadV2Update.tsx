@@ -53,25 +53,21 @@ type ComponentProps = {
   paperActions: any;
 };
 
-type InitAndParseReduxToStateArgs = {
-  currComponentState: ComponentState;
+type InitAndParseToStateArgs = {
   currUserAuthorID: ID;
   messageActions: any; // redux
   paperActions: any; // redux
   router: NextRouter;
-  setComponentState: (state: ComponentState) => void;
   setFormState: (formState: FormState) => void;
 };
 
-const useEffectInitAndParseReduxToState = ({
-  currComponentState,
+const useEffectInitAndParseToState = ({
   currUserAuthorID,
   messageActions,
   paperActions,
   router,
   setFormState,
-  setComponentState,
-}: InitAndParseReduxToStateArgs): void => {
+}: InitAndParseToStateArgs): void => {
   const { paperId } = router.query;
   useEffect(() => {
     paperActions.resetPaperState();
@@ -93,13 +89,9 @@ const useEffectInitAndParseReduxToState = ({
           error: true,
         });
       },
-      onSuccess: ({ selectedAuthors, parsedFormState }): void => {
+      onSuccess: ({ parsedFormState }): void => {
         // logical ordering
         setFormState(parsedFormState);
-        setComponentState({
-          ...currComponentState,
-          selectedAuthors,
-        });
         messageActions.showMessage({
           load: false,
           show: false,
@@ -112,6 +104,29 @@ const useEffectInitAndParseReduxToState = ({
     // Intentional explicit memo. Should only be called on ID change
     paperId,
   ]);
+};
+
+const getIsFormValid = ({
+  componentState,
+  formState,
+  formErrors,
+  setFormErrors,
+}: {
+  componentState: ComponentState;
+  formState: FormState;
+  formErrors: FormErrorState;
+  setFormErrors: (errors: FormErrorState) => void;
+}) => {
+  const { hubs: selectedHubs } = formState;
+  const newErrors = { ...formErrors };
+  let result = true;
+  if (selectedHubs.length < 1) {
+    result = false;
+    newErrors.hubs = true;
+  }
+  // NOTE: calvinhlee - previoulsy we had a check for published date as well. It's deprecated
+  setFormErrors(newErrors);
+  return result;
 };
 
 function PaperUploadV2Update({
@@ -170,19 +185,18 @@ function PaperUploadV2Update({
   };
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
-  useEffectInitAndParseReduxToState({
-    currComponentState: componentState,
+  useEffectInitAndParseToState({
     currUserAuthorID,
     messageActions,
     paperActions,
     router,
-    setComponentState,
     setFormState,
   });
 
   const {
     abstract,
     author: formAuthor,
+    authors: selectedAuthors = [],
     doi,
     hubs: selectedHubs,
     paper_title: paperTitle,
@@ -194,7 +208,6 @@ function PaperUploadV2Update({
     authorSearchText,
     isFetchingAuthors,
     isFormDisabled,
-    selectedAuthors,
     suggestedAuthors,
     shouldShowAuthorList,
   } = componentState;
@@ -210,9 +223,11 @@ function PaperUploadV2Update({
         addNewUser={getCreateNewProfileAndUpdateState({
           currComponentState: componentState,
           currFormErrors: formErrors,
+          currFormState: formState,
           modalActions,
           setComponentState,
           setFormErrors,
+          setFormState,
         })}
       />
       <div className={css(formGenericStyles.pageContent)}>
@@ -236,6 +251,7 @@ function PaperUploadV2Update({
               labelStyle={formGenericStyles.labelStyle}
               onChangeInput={getHandleAuthorInputChange({
                 currComponentState: componentState,
+                currFormState: formState,
                 debounceRef: authorSearchDebncRef,
                 debounceTime: 500,
                 setComponentState,
