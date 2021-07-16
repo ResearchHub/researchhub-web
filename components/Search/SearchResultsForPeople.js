@@ -13,6 +13,7 @@ import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 import LoadMoreButton from "~/components/LoadMoreButton";
+import UserCard from "~/components/UserCard";
 
 const sortOpts = [
   {
@@ -252,13 +253,19 @@ const SearchResultsForPeople = ({ apiResponse }) => {
                   className={css(styles.person)}
                   key={`person-${index}-${person.id}`}
                 >
+                  <UserCard
+                    className={css(styles.person)}
+                    authorProfile={person.author_profile}
+                    reputation={getPersonReputation(person)}
+                  />
+                  {/*
                   <LeaderboardUser
                     user={person.user}
                     name={person.full_name}
                     reputation={getPersonReputation(person)}
                     authorProfile={person.author_profile}
                     authorId={get(person, "author_profile.id")}
-                  />
+                />*/}
                 </Ripples>
               );
             })}
@@ -329,16 +336,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   person: {
-    display: "flex",
     width: "100%",
-    boxSizing: "border-box",
-    padding: "7px 20px",
-    borderLeft: "3px solid #FFF",
-    transition: "all ease-out 0.1s",
-    ":hover": {
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: colors.LIGHT_GREY(),
-    },
+    marginBottom: 10,
   },
 });
 
