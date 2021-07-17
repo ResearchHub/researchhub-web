@@ -13,11 +13,6 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: false,
     production: false,
   },
-  searchResults: {
-    development: true,
-    staging: true,
-    production: true,
-  },
   newPostTypes: {
     development: true,
     staging: true,
