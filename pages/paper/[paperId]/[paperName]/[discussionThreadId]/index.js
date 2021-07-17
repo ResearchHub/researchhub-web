@@ -48,7 +48,10 @@ const DiscussionThreadPage = (props) => {
   const [count, setCount] = useState(0);
 
   const fetchComments = async () => {
-    return fetch(API.THREAD_COMMENT(paperId, threadId, page), API.GET_CONFIG())
+    return fetch(
+      API.THREAD_COMMENT(paperId, null, threadId, page),
+      API.GET_CONFIG()
+    )
       .then(async (response) => {
         if (response.ok) {
           const body = await response.json();

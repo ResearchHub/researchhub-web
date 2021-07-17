@@ -33,7 +33,7 @@ const DiscussionThreadPage = (props) => {
     return <Error statusCode={404} />;
   }
 
-  const { discussion, hostname, paperId, threadId } = props;
+  const { discussion, hostname, threadId, documentId } = props;
 
   let initialThread = {
     createdBy: {
@@ -48,7 +48,10 @@ const DiscussionThreadPage = (props) => {
   const [count, setCount] = useState(0);
 
   const fetchComments = async () => {
-    return fetch(API.THREAD_COMMENT(paperId, threadId, page), API.GET_CONFIG())
+    return fetch(
+      API.THREAD_COMMENT(null, documentId, threadId, page),
+      API.GET_CONFIG()
+    )
       .then(async (response) => {
         if (response.ok) {
           const body = await response.json();
@@ -214,7 +217,7 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
   return {
     discussionThreadId,
     hostname,
-    paperId,
+    documentId,
     threadId: discussionThreadId,
     thread,
   };

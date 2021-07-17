@@ -29,6 +29,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import ContentSupportModal from "./Modals/ContentSupportModal";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
+const POST_HREF = "/post/[documentId]/[title]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
   const {
@@ -120,7 +121,6 @@ const DiscussionPostMetadata = (props) => {
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
     let { paperId, threadId, commentId, replyId, postId } = metaData;
-    console.log(metaData);
     let config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
@@ -189,9 +189,7 @@ const DiscussionPostMetadata = (props) => {
             </div>
             {showDropDown && (
               <div className={css(styles.dropdown)} ref={dropdown}>
-                {!metaData.postId && threadPath ? (
-                  <ExpandButton {...props} />
-                ) : null}
+                {threadPath ? <ExpandButton {...props} /> : null}
                 {threadPath && renderShareButton()}
                 <FlagButton
                   {...props}
@@ -406,11 +404,14 @@ const HideButton = (props) => {
 };
 
 const ExpandButton = (props) => {
-  let { threadPath } = props;
+  let { threadPath, metaData } = props;
 
   return (
     <Ripples className={css(styles.dropdownItem)}>
-      <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
+      <ClientLinkWrapper
+        dynamicHref={metaData.postId ? POST_HREF : DYNAMIC_HREF}
+        path={threadPath}
+      >
         <span className={css(styles.icon, styles.expandIcon)} id={"expandIcon"}>
           {icons.expandArrows}
         </span>
