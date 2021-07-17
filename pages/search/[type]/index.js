@@ -18,14 +18,16 @@ import nookies from "nookies";
 // alongside counts in the search response.
 const getFacetsToAggregate = (query = {}) => {
   let facet = [];
-  if (query.type === "paper") {
+  if (query.type === "paper" || query.type === "post") {
     facet = ["hubs"];
+  } else if (query.type === "person") {
+    facet = ["person_types"];
   }
 
   return facet;
 };
 
-const Index = ({ serverResponse, hasError }) => {
+const Index = ({ apiResponse, hasError }) => {
   const router = useRouter();
   const currentSearchType = get(router, "query.type");
 
@@ -36,13 +38,13 @@ const Index = ({ serverResponse, hasError }) => {
   return (
     <Fragment>
       <Head
-        title={`(${serverResponse.count}) ${get(
+        title={`(${apiResponse.count}) ${get(
           router,
           "query.q"
         )} - Research Hub`}
         description={"Search Researchhub"}
       />
-      <SearchResults initialResults={serverResponse} />
+      <SearchResults apiResponse={apiResponse} />
     </Fragment>
   );
 };
@@ -62,26 +64,22 @@ Index.getInitialProps = async (ctx) => {
     route: ctx.query.type,
   };
 
-  if (!killswitch("searchResults")) {
-    return { hasError: true };
-  }
-
   return fetch(
     API.SEARCH({ filters, facets, config }),
     API.GET_CONFIG(authToken)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((serverResponse) => {
-      return { serverResponse };
+    .then((apiResponse) => {
+      return { apiResponse };
     })
-    .catch((serverError) => {
+    .catch((error) => {
       return { hasError: true };
     });
 };
 
 Index.propTypes = {
-  serverResponse: PropTypes.object,
+  apiResponse: PropTypes.object,
   hasError: PropTypes.bool,
 };
 

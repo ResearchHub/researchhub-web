@@ -41,6 +41,10 @@
   width: 105%;
 }
 
+.menu-item-wrapper:focus {
+  outline: none;
+}
+
 @media only screen and (max-width: 767px) {
   .horizontal-menu {
     width: 100%;
