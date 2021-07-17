@@ -8,11 +8,6 @@ export type SwitchConfigs = {
 };
 
 const KillswtichConfigs: SwitchConfigs = {
-  searchResults: {
-    development: true,
-    staging: true,
-    production: true,
-  },
   newPostTypes: {
     development: true,
     staging: true,
