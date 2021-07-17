@@ -237,7 +237,7 @@ class PaperTransactionModal extends React.Component {
 
   handleInput = (e) => {
     let value = parseInt(sanitizeNumber(e.target.value), 10);
-    value = value ? (value > 0 ? value : 0) : null;
+    value = value ? value : 0;
     this.setState({
       value,
       error: this.handleError(value),
@@ -269,7 +269,7 @@ class PaperTransactionModal extends React.Component {
         error: true,
       });
     }
-    if (!value) {
+    if (value === 0) {
       this.props.setMessage("Must spend at least 1 RSC");
       return this.props.showMessage({
         show: true,
