@@ -8,6 +8,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation }) => {
   const getName = (authorProfile) =>
@@ -21,57 +22,71 @@ const UserCard = ({ authorProfile, reputation }) => {
 
   return (
     <div className={css(styles.container)}>
-      <AuthorAvatar
-        author={authorProfile}
-        name={name}
-        disableLink={true}
-        size={35}
-      />
-      <div className={css(styles.details)}>
-        <div
-          className={css(
-            styles.name,
-            isEmpty(userSummary) && styles.withoutSummary
-          )}
-        >
-          {getName(authorProfile)}
-        </div>
-        {userSummary && (
-          <div className={css(styles.summary)}>
-            <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
-            {userSummary}
-          </div>
-        )}
-        {reputation > 0 && (
-          <div className={css(styles.reputationForMobile)}>
-            <img
-              className={css(styles.logoIcon)}
-              src="/static/ResearchHubIcon.png"
-            />
-            Lifetime Reputation: {numeral(reputation).format("0,0")}
-          </div>
-        )}
-      </div>
-      {reputation > 0 && (
-        <div className={css(styles.reputation)}>
-          <img
-            className={css(styles.logoIcon)}
-            src="/static/ResearchHubIcon.png"
+      <Link
+        href={"/user/[authorId]/[tabName]"}
+        as={`/user/${authorProfile.id}/posts`}
+      >
+        <a className={css(styles.linkWrapper)}>
+          <AuthorAvatar
+            author={authorProfile}
+            name={name}
+            disableLink={true}
+            size={35}
           />
-          {numeral(reputation).format("0,0")}
-        </div>
-      )}
+          <div className={css(styles.details)}>
+            <div
+              className={css(
+                styles.name,
+                isEmpty(userSummary) && styles.withoutSummary
+              )}
+            >
+              {getName(authorProfile)}
+            </div>
+            {userSummary && (
+              <div className={css(styles.summary)}>
+                <span className={css(styles.eduIcon)}>
+                  {icons.graduationCap}
+                </span>
+                {userSummary}
+              </div>
+            )}
+            {reputation > 0 && (
+              <div className={css(styles.reputationForMobile)}>
+                <img
+                  className={css(styles.logoIcon)}
+                  src="/static/ResearchHubIcon.png"
+                />
+                Lifetime Reputation: {numeral(reputation).format("0,0")}
+              </div>
+            )}
+          </div>
+          {reputation > 0 && (
+            <div className={css(styles.reputation)}>
+              <img
+                className={css(styles.logoIcon)}
+                src="/static/ResearchHubIcon.png"
+              />
+              {numeral(reputation).format("0,0")}
+            </div>
+          )}
+        </a>
+      </Link>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
+  },
+  linkWrapper: {
     border: `1px solid ${genericCardColors.BORDER}`,
     display: "flex",
     padding: 15,
-    width: "100%",
     cursor: "pointer",
+    background: "white",
+    borderRadius: 2,
+    textDecoration: "none",
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
     },
@@ -92,6 +107,9 @@ const styles = StyleSheet.create({
   },
   withoutSummary: {
     marginTop: 8,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 0,
+    },
   },
   eduIcon: {
     color: colors.GREY(),
