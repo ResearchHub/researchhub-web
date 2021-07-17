@@ -25,7 +25,7 @@ class ContentSupportModal extends React.Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      amount: 0,
+      amount: 1,
       error: false,
     };
     this.state = {
@@ -39,9 +39,10 @@ class ContentSupportModal extends React.Component {
   };
 
   handleAmount = (e) => {
-    const amount = sanitizeNumber(e.target.value);
+    let amount = parseInt(sanitizeNumber(e.target.value), 10);
+    amount = amount ? amount : 0;
     this.setState({
-      amount: parseInt(amount, 10),
+      amount,
     });
   };
 
@@ -82,13 +83,11 @@ class ContentSupportModal extends React.Component {
     const { alert } = this.props;
     const { amount } = this.state;
 
-    if (amount) {
-      alert.show({
-        text: `Award ${parseInt(amount, 10)} RSC to this post?`,
-        buttonText: "Yes",
-        onClick: () => this.handleTransaction(),
-      });
-    }
+    alert.show({
+      text: `Award ${parseInt(amount, 10)} RSC to this post?`,
+      buttonText: "Yes",
+      onClick: () => this.handleTransaction(),
+    });
   };
 
   getAuthorProfile = () => {
