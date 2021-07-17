@@ -589,11 +589,10 @@ class PaperPageCard extends React.Component {
                   onUpvote={upvote}
                   onDownvote={downvote}
                   selected={selectedVoteType}
-                  horizontalView={false}
-                  isPaper={true}
+                  isPaper
                   type={"Paper"}
                 />
-                <PaperPromotionIcon paper={paper} />
+                <PaperPromotionIcon paper={paper} isPaper />
               </div>
               <div
                 className={css(
@@ -632,11 +631,11 @@ class PaperPageCard extends React.Component {
                         onUpvote={upvote}
                         onDownvote={downvote}
                         selected={selectedVoteType}
-                        horizontalView={true}
-                        isPaper={true}
+                        horizontalView
+                        isPaper
                         type={"Paper"}
                       />
-                      <PaperPromotionIcon paper={paper} />
+                      <PaperPromotionIcon paper={paper} isPaper />
                     </div>
                   </div>
                 </div>

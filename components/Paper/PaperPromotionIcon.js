@@ -23,13 +23,13 @@ function PaperPromotionIcon({
     <Fragment>
       <div className={css(styles.divider)}></div>
       <PermissionNotificationWrapper
-        modalMessage={"support " + (isPaper ? "paper" : "post")}
+        modalMessage={`support ${isPaper ? "paper" : "post"}`}
         onClick={() => openPaperTransactionModal(true)}
         loginRequired={true}
         hideRipples={true}
       >
         <div
-          data-tip={"Support " + (isPaper ? "Paper" : "Post")}
+          data-tip={`Support ${isPaper ? "Paper" : "Post"}`}
           className={css(styles.root)}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
