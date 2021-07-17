@@ -5,7 +5,7 @@ import HubTag from "../../Hubs/HubTag";
 import Link from "next/link";
 import Router from "next/router";
 import MobileOnly from "../../MobileOnly";
-import React, { Fragment, SyntheticEvent, useState } from "react";
+import React, { Fragment, SyntheticEvent, useState, useEffect } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import colors from "../../../config/themes/colors";
@@ -37,6 +37,8 @@ export type UserPostCardProps = {
   unified_document_id: number;
   user: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
+  titleAsHtml: any;
+  renderableTextAsHtml: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -82,6 +84,12 @@ function UserPostCard(props: UserPostCardProps) {
     unified_document_id: unifiedDocumentId,
     user,
     user_vote: userVote,
+    /*
+      In some contexts we want to wrap the title/renderable_text 
+      with html. e.g. rendering search highlights.
+    */
+    titleAsHtml,
+    renderableTextAsHtml,
   } = props;
 
   if (created_by == null) {
@@ -98,9 +106,12 @@ function UserPostCard(props: UserPostCardProps) {
   const [score, setScore] = useState<number>(initialScore);
   const [isHubsOpen, setIsHubsOpen] = useState(false);
 
+  useEffect((): void => {
+    setVoteState(userVoteToConstant(userVote));
+  }, [userVote]);
+
   const creatorName = first_name + " " + last_name;
   const slug = title.toLowerCase().replace(/\s/g, "-");
-
   const mainTitle = (
     <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
       <a
@@ -109,7 +120,9 @@ function UserPostCard(props: UserPostCardProps) {
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>{title && title}</span>
+        <span className={css(styles.title)}>
+          {titleAsHtml ? titleAsHtml : title ? title : ""}
+        </span>
       </a>
     </Link>
   );
@@ -148,7 +161,13 @@ function UserPostCard(props: UserPostCardProps) {
   );
 
   const summary = (
-    <div className={css(styles.summary) + " clamp2"}>{renderableText}</div>
+    <div className={css(styles.summary) + " clamp2"}>
+      {renderableTextAsHtml
+        ? renderableTextAsHtml
+        : renderableText
+        ? renderableText
+        : ""}
+    </div>
   );
 
   const hubTags = (
