@@ -445,7 +445,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        {killswitch("searchResults") && <Search navbarRef={navbarRef} />}
+        <Search navbarRef={navbarRef} />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
