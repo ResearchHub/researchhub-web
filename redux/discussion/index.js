@@ -7,7 +7,7 @@ import { sendAmpEvent } from "~/config/fetch";
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
     const response = await fetch(
-      API.THREAD(paperId, threadId),
+      API.THREAD(paperId, null, threadId),
       API.GET_CONFIG()
     ).catch(utils.handleCatch);
 

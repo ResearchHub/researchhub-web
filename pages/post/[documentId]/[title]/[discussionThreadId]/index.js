@@ -188,18 +188,18 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
   const { host } = absoluteUrl(req);
   const hostname = host;
 
-  const { paperId, discussionThreadId } = query;
+  const { documentId, discussionThreadId } = query;
   let thread;
 
   try {
     if (
-      typeof parseInt(paperId, 10) !== "number" ||
+      typeof parseInt(documentId, 10) !== "number" ||
       typeof parseInt(discussionThreadId, 10) !== "number"
     ) {
       throw 404;
     }
     const response = await fetch(
-      API.THREAD(paperId, discussionThreadId),
+      API.THREAD(null, documentId, discussionThreadId),
       API.GET_CONFIG()
     );
     thread = await response.json();
