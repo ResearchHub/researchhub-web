@@ -86,6 +86,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     background: "white",
     borderRadius: 2,
+    color: colors.BLACK(),
     textDecoration: "none",
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
@@ -108,7 +109,7 @@ const styles = StyleSheet.create({
   withoutSummary: {
     marginTop: 8,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginTop: 0,
+      marginTop: 8,
     },
   },
   eduIcon: {
@@ -136,6 +137,8 @@ const styles = StyleSheet.create({
   },
   reputationForMobile: {
     display: "none",
+    fontWeight: 500,
+    color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
       fontSize: 12,
@@ -150,7 +153,7 @@ const styles = StyleSheet.create({
       width: 10,
       height: 16,
       marginRight: 10,
-      marginTop: -2,
+      verticalAlign: -2,
     },
   },
 });
