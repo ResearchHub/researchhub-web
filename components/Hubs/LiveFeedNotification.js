@@ -402,9 +402,10 @@ class LiveFeedNotification extends React.Component {
               >
                 {username}
               </a>
-            </Link>{" "}
-            edited the <span>summary </span>
-            for{" "}
+            </Link>
+            {" edited the "}
+            <span>summary</span>
+            {" for "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}#summary`}
@@ -477,14 +478,14 @@ class LiveFeedNotification extends React.Component {
               >
                 {username}
               </a>
-            </Link>{" "}
-            awarded {notification.amount} RSC{" "}
+            </Link>
+            {` awarded ${notification.amount} RSC `}
             <img
               className={css(styles.coinIcon)}
               src={"/static/icons/coin-filled.png"}
               alt="RSC Coin"
-            />{" "}
-            to{" "}
+            />
+            {" to "}
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${recipientAuthorId}/posts`}
@@ -495,11 +496,12 @@ class LiveFeedNotification extends React.Component {
               >
                 {recipientName}
               </a>
-            </Link>{" "}
-            for their {formattedSupportType}{" "}
+            </Link>
+            {` for their ${formattedSupportType} `}
             {formattedSupportType === "comment" ? (
               <>
-                <em>{plain_text}</em> in{" "}
+                <em>{plain_text}</em>
+                {" in "}
               </>
             ) : null}
             <Link href={href} as={as}>
