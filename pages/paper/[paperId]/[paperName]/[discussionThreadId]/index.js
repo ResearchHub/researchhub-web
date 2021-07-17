@@ -199,7 +199,7 @@ DiscussionThreadPage.getInitialProps = async ({ res, req, store, query }) => {
       throw 404;
     }
     const response = await fetch(
-      API.THREAD(paperId, discussionThreadId),
+      API.THREAD(paperId, null, discussionThreadId),
       API.GET_CONFIG()
     );
     thread = await response.json();
