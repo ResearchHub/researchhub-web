@@ -64,10 +64,6 @@ Index.getInitialProps = async (ctx) => {
     route: ctx.query.type,
   };
 
-  if (!killswitch("searchResults")) {
-    return { hasError: true };
-  }
-
   return fetch(
     API.SEARCH({ filters, facets, config }),
     API.GET_CONFIG(authToken)
