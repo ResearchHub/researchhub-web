@@ -453,17 +453,17 @@ class LiveFeedNotification extends React.Component {
           formattedSupportType = "summary";
         } else {
           formattedSupportType = "comment";
-          if (parent_content_type === "paper") {
-            href = "/paper/[paperId]/[paperName]";
-            as = `/paper/${paperId}/${slug}`;
-            title = notification.paper_title;
-            plain_text = notification.plain_text;
-          } else {
-            href = "/post/[documentId]/[title]";
-            as = `/post/${notification.post_id}/${slug}`;
-            title = notification.post_title;
-            plain_text = notification.plain_text;
-          }
+          plain_text = notification.plain_text;
+          const commentOnPaper = parent_content_type === "paper";
+          href = commentOnPaper
+            ? "/paper/[paperId]/[paperName]"
+            : "/post/[documentId]/[title]";
+          as = commentOnPaper
+            ? `/paper/${paperId}/${slug}`
+            : `/post/${notification.post_id}/${slug}`;
+          title = commentOnPaper
+            ? notification.paper_title
+            : notification.post_title;
         }
 
         return (
