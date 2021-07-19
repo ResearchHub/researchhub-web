@@ -32,7 +32,6 @@ import React, {
   Fragment,
   ReactElement,
   SyntheticEvent,
-  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -56,12 +55,18 @@ type ParseReduxToStateArgs = {
   setFormState: (formState: FormState) => void;
 };
 
-const useEffectHandleInit = ({ paperActions, paperTitleQuery }): void => {
+const useEffectHandleInit = ({
+  isURLView,
+  paperActions,
+  paperTitleQuery,
+  setFormState,
+}): void => {
   useEffect(() => {
     paperActions.resetPaperState();
+    setFormState(defaultFormState);
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
-  }, [paperTitleQuery /* intentional explicit check */]);
+  }, [isURLView, paperTitleQuery /* intentional explicit check */]);
 };
 
 const useEffectParseReduxToState = ({
@@ -72,14 +77,28 @@ const useEffectParseReduxToState = ({
   setFormState,
 }: ParseReduxToStateArgs): void => {
   const { uploadedPaper } = paperRedux;
-  const formHubs = formState.hubs;
-  const formAuthors = formState.author;
+  const {
+    author: formAuthors,
+    hubs: formHubs,
+    paper_title: formPaperTitle,
+    title: formTitle,
+  } = formState;
+  const resolvedFormTitle =
+    !isNullOrUndefined(formPaperTitle) && formPaperTitle.length > 0
+      ? formPaperTitle
+      : formTitle;
   const { title } = uploadedPaper;
-  const formattedPaperTitle =
+
+  const formattedTitle =
     !isNullOrUndefined(paperTitleQuery) &&
     nullthrows(paperTitleQuery).length > 0
       ? paperTitleQuery
       : title;
+
+  const formattedPaperTitle =
+    !isNullOrUndefined(formattedTitle) && nullthrows(formattedTitle).length > 0
+      ? formattedTitle
+      : resolvedFormTitle;
 
   useEffect((): void => {
     const {
@@ -118,7 +137,7 @@ const useEffectParseReduxToState = ({
       paper_type: formType,
       published: formattedPublishedDate,
       raw_authors: formattedRawAuthors,
-      title: formattedPaperTitle,
+      title: formattedTitle,
       url: formattedURL,
     });
     messageActions.showMessage({ show: false });
@@ -173,21 +192,23 @@ function PaperuploadV2Create({
     }
   };
 
-  const handlePDFUpload = useCallback(
-    (acceptedFiles, metaData): void => {
-      // NOTE: calvinhlee - currently supporting only 1 upload
-      // logical ordering
-      paperActions.uploadPaperToState(acceptedFiles[0], metaData);
-      setFormState({ ...formState, file: acceptedFiles[0] });
-      setComponentState({
-        ...componentState,
-        isFormDisabled: false,
-        isFormEdited: true,
-      });
-      setFormErrors({ ...formErrors, dnd: false });
-    },
-    [componentState, paperActions, setComponentState, setFormErrors]
-  );
+  const handlePDFUpload = (acceptedFiles, metaData): void => {
+    // NOTE: calvinhlee - currently supporting only 1 upload
+    // logical ordering
+    const { csl_item } = metaData;
+    paperActions.uploadPaperToState(acceptedFiles[0], metaData);
+    setFormState({
+      ...formState,
+      paper_title: csl_item.name,
+      file: acceptedFiles[0],
+    });
+    setComponentState({
+      ...componentState,
+      isFormDisabled: false,
+      isFormEdited: true,
+    });
+    setFormErrors({ ...formErrors, dnd: false });
+  };
 
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
@@ -228,6 +249,7 @@ function PaperuploadV2Create({
           );
         },
         paperActions,
+        paperRedux,
         payload: formState,
       });
     } else {
@@ -241,7 +263,12 @@ function PaperuploadV2Create({
   };
 
   // logical ordering
-  useEffectHandleInit({ paperActions, paperTitleQuery });
+  useEffectHandleInit({
+    isURLView,
+    paperActions,
+    paperTitleQuery,
+    setFormState,
+  });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectParseReduxToState({
     componentState,
