@@ -1,45 +1,36 @@
-/**
- * NOTE: code is originally from PaperPromotionButton. Logic is copied from there
- * and is likely to be buggy (see: getCount, promoted is both boolean & number?).
- * The feature (showing # supports on left column) is likely temporary, so remove
- * or revise if needed @briansantoso
- */
-
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 import numeral from "numeral";
 import { Fragment, useState } from "react";
 import { ModalActions } from "~/redux/modals";
 import { PaperPromotionIcon as Icon } from "~/config/themes/icons";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 
-function PaperPromotionIcon({ customStyle, openPaperTransactionModal, paper }) {
+function PaperPromotionIcon({
+  customStyle,
+  openPaperTransactionModal,
+  paper,
+  post,
+}) {
   const [hover, setHover] = useState(false);
 
-  const { promoted, score } = paper;
+  const isPaper = !isNullOrUndefined(paper);
+  const boostAmount = isPaper ? paper.boost_amount : post.boost_amount;
 
-  const getCount = () => {
-    if (typeof promoted === "boolean") return 0;
-
-    return numeral(promoted - score).format("0a");
-  };
-
-  const numPromotions = getCount();
-  if (!numPromotions) {
-    return null;
-  }
-  return (
+  return boostAmount ? (
     <Fragment>
       <div className={css(styles.divider)}></div>
       <PermissionNotificationWrapper
-        modalMessage="support paper"
+        modalMessage={`support ${isPaper ? "paper" : "post"}`}
         onClick={() => openPaperTransactionModal(true)}
         loginRequired={true}
         hideRipples={true}
       >
         <div
-          data-tip={"Support Paper"}
+          data-tip={`Support ${isPaper ? "Paper" : "Post"}`}
           className={css(styles.root)}
           onMouseEnter={() => setHover(true)}
           onMouseLeave={() => setHover(false)}
@@ -47,11 +38,11 @@ function PaperPromotionIcon({ customStyle, openPaperTransactionModal, paper }) {
           <span className={css(styles.icon, customStyle)}>
             <Icon color={hover && "rgb(36, 31, 58)"} emptyState={false} />
           </span>
-          <span className={css(styles.count) + " count"}>{numPromotions}</span>
+          <span className={css(styles.count) + " count"}>{boostAmount}</span>
         </div>
       </PermissionNotificationWrapper>
     </Fragment>
-  );
+  ) : null;
 }
 
 const styles = StyleSheet.create({
@@ -88,6 +79,9 @@ const styles = StyleSheet.create({
     width: 44,
     border: "1px solid #E8E8F2",
     margin: "15px 0",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
 });
 

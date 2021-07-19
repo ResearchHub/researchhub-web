@@ -244,6 +244,10 @@ const Post = (props) => {
         />
         <div className={css(styles.root)}>
           <PaperBanner post={post} postType="post" />
+          <PaperTransactionModal
+            post={post}
+            updatePostState={updatePostState}
+          />
           <div className={css(styles.container)}>
             <div className={css(styles.main)}>
               <div className={css(styles.paperPageContainer, styles.top)}>

@@ -36,8 +36,10 @@ import {
   onKeyDownNumInput,
   onPasteNumInput,
 } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 
 // Constants
+import { ContentTypes, ChainStatus } from "./constants/SupportContent";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -235,7 +237,7 @@ class PaperTransactionModal extends React.Component {
 
   handleInput = (e) => {
     let value = parseInt(sanitizeNumber(e.target.value), 10);
-    value = value ? (value > 0 ? value : 0) : null;
+    value = value || 0;
     this.setState({
       value,
       error: this.handleError(value),
@@ -267,7 +269,7 @@ class PaperTransactionModal extends React.Component {
         error: true,
       });
     }
-    if (value == 0) {
+    if (value === 0) {
       this.props.setMessage("Must spend at least 1 RSC");
       return this.props.showMessage({
         show: true,
@@ -293,20 +295,28 @@ class PaperTransactionModal extends React.Component {
       showMessage,
       setMessage,
       updatePaperState,
+      updatePostState,
       paper,
+      post,
       user,
     } = this.props;
     showMessage({ show: true, load: true });
 
-    const { id: paperId } = paper;
+    const isPaper = !isNullOrUndefined(paper);
+    const documentId = isPaper ? paper.id : post.id;
+    const contentType = isPaper
+      ? ContentTypes.PAPER
+      : ContentTypes.RESEARCHHUB_POST;
     const { id: userId } = user;
 
     const payload = {
       amount: Number(this.state.value),
-      object_id: paperId,
-      content_type: "paper",
+      object_id: documentId,
+      content_type: contentType,
       user: userId,
-      purchase_method: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
+      purchase_method: this.state.offChain
+        ? ChainStatus.OFF_CHAIN
+        : ChainStatus.ON_CHAIN,
       purchase_type: "BOOST",
     };
 
@@ -327,9 +337,11 @@ class PaperTransactionModal extends React.Component {
               ? this.props.auth.user.id && this.props.auth.user.id
               : null,
             event_properties: {
-              interaction: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
-              object_id: paperId,
-              content_type: "paper",
+              interaction: this.state.offChain
+                ? ChainStatus.OFF_CHAIN
+                : ChainStatus.ON_CHAIN,
+              object_id: documentId,
+              content_type: contentType,
               amount: Number(this.state.value),
             },
           };
@@ -343,10 +355,19 @@ class PaperTransactionModal extends React.Component {
               transactionHash: res.trasaction_hash,
               finish: true,
             });
-            let promoted = res.source.promoted && res.source.promoted;
-            let updatedPaper = { ...paper };
-            updatedPaper.promoted = promoted;
-            updatePaperState && updatePaperState(updatedPaper);
+            if (isPaper) {
+              const promoted = !isNullOrUndefined(res.source.promoted)
+                ? res.source.promoted
+                : null;
+              const updatedPaper = { ...paper, promoted };
+              updatePaperState(updatedPaper);
+            } else {
+              const promoted = !isNullOrUndefined(res.source.promoted)
+                ? res.source.promoted
+                : null;
+              const updatedPost = { ...post, promoted };
+              updatePostState(updatedPost);
+            }
             this.updateBalance();
           });
         }
@@ -653,7 +674,7 @@ class PaperTransactionModal extends React.Component {
     );
   };
 
-  renderContent = () => {
+  renderContent = (isPaper) => {
     const { user } = this.props;
     const {
       nextScreen,
@@ -693,13 +714,14 @@ class PaperTransactionModal extends React.Component {
                 </div>
               )}
               <div onClick={this.closeModal}>
-                You can view the papers you support on your
+                You can view the {isPaper ? "papers" : "posts"} you support on
+                your
                 <Link
-                  href={"/user/[authorId]/[tabName]"}
+                  href={`/user/${user.author_profile.id}/boosts`}
                   as={`/user/${user.author_profile.id}/boosts`}
                 >
                   <a
-                    href={"/user/[authorId]/[tabName]"}
+                    href={`/user/${user.author_profile.id}/boosts`}
                     as={`/user/${user.author_profile.id}/boosts`}
                     className={css(
                       styles.transactionHashLink,
@@ -877,15 +899,16 @@ class PaperTransactionModal extends React.Component {
   };
 
   render() {
-    const { modals } = this.props;
+    const { modals, paper } = this.props;
+    const isPaper = !isNullOrUndefined(paper);
 
     return (
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Support Paper"}
+        title={`Support ${isPaper ? "Paper" : "Post"}`}
       >
-        {this.renderContent()}
+        {this.renderContent(isPaper)}
       </BaseModal>
     );
   }

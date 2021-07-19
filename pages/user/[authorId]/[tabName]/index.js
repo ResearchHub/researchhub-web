@@ -103,8 +103,8 @@ const getTabs = (author, transactions) =>
     },
     {
       href: "boosts",
-      label: "supported papers",
-      name: "Supported Papers",
+      label: "supported content",
+      name: "Supported Content",
       showCount: true,
       count: () => author.promotions && author.promotions.count,
     },
@@ -211,7 +211,7 @@ function AuthorPage(props) {
   }
 
   function fetchUserPromotions() {
-    if (!authorUserID || !auth.isLoggedIn) return;
+    if (!authorUserID) return;
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),

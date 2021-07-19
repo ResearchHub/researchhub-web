@@ -556,8 +556,8 @@ class PaperPageCard extends React.Component {
       doneFetchingPaper,
       discussionCount,
     } = this.props;
-
     const { fetching, previews, previewAvailable } = this.state;
+    const promotedScore = score + paper.boost_amount;
 
     return (
       <ReactPlaceholder
@@ -585,22 +585,14 @@ class PaperPageCard extends React.Component {
               <meta property="commentCount" content={paper.discussion_count} />
               <div className={css(styles.voting)}>
                 <VoteWidget
-                  score={score}
+                  score={promotedScore}
                   onUpvote={upvote}
                   onDownvote={downvote}
-                  selected={this.props.selectedVoteType}
-                  isPaper={true}
+                  selected={selectedVoteType}
+                  isPaper
                   type={"Paper"}
-                  paperPage={true}
-                  promoted={this.props.paper && this.props.paper.promoted}
-                  paper={
-                    this.props.paper && this.props.paper.promoted !== false
-                      ? this.props.paper
-                      : null
-                  }
-                  small={true}
                 />
-                <PaperPromotionIcon paper={paper} />
+                <PaperPromotionIcon paper={paper} isPaper />
               </div>
               <div
                 className={css(
@@ -635,24 +627,15 @@ class PaperPageCard extends React.Component {
                   <div className={css(styles.rightColumn, styles.mobile)}>
                     <div className={css(styles.votingMobile)}>
                       <VoteWidget
-                        score={score}
+                        score={promotedScore}
                         onUpvote={upvote}
                         onDownvote={downvote}
                         selected={selectedVoteType}
-                        isPaper={true}
-                        horizontalView={true}
+                        horizontalView
+                        isPaper
                         type={"Paper"}
-                        paperPage={true}
-                        promoted={this.props.paper && this.props.paper.promoted}
-                        paper={
-                          this.props.paper && this.props.paper.promoted
-                            ? this.props.paper
-                            : null
-                        }
-                        showPromotion={true}
-                        small={true}
                       />
-                      <PaperPromotionIcon paper={paper} />
+                      <PaperPromotionIcon paper={paper} isPaper />
                     </div>
                   </div>
                 </div>

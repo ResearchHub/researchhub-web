@@ -238,7 +238,7 @@ class LiveFeedNotification extends React.Component {
         verb = "left a";
         subject = {
           linkText: "comment",
-          plainText: plainText,
+          plainText: this.truncateComment(plainText),
         };
         preposition = {
           linkText: this.truncatePaperTitle(postTitle),
@@ -250,10 +250,10 @@ class LiveFeedNotification extends React.Component {
         verb = "left a";
         subject = {
           linkText: "comment",
-          plainText: commentTip,
+          plainText: this.truncateComment(commentTip),
         };
         preposition = {
-          linkText: threadTip,
+          linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
         };
         break;
@@ -261,11 +261,11 @@ class LiveFeedNotification extends React.Component {
         const replyTip = notification.tip;
         verb = "left a";
         subject = {
-          linkText: "reply",
-          plainText: replyTip,
+          linkText: "comment",
+          plainText: this.truncateComment(replyTip),
         };
         preposition = {
-          linkText: threadTip,
+          linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
         };
         break;
@@ -402,9 +402,10 @@ class LiveFeedNotification extends React.Component {
               >
                 {username}
               </a>
-            </Link>{" "}
-            edited the <span>summary </span>
-            for{" "}
+            </Link>
+            {" edited the "}
+            <span>summary</span>
+            {" for "}
             <Link
               href={"/paper/[paperId]/[paperName]"}
               as={`/paper/${paperId}/${title}#summary`}
@@ -428,20 +429,43 @@ class LiveFeedNotification extends React.Component {
         const recipientAuthorId = recipient.author_id;
         const recipientName = recipient.name;
         const supportType = notification.support_type;
-        const paperTitle = notification.paper_title;
+        const parentContentType = notification.parent_content_type;
+        const slug = notification.slug;
 
         let formattedSupportType;
+        let href;
+        let as;
+        let title;
+        let plainText;
         if (supportType === "paper") {
           formattedSupportType = "paper";
-        } else if (supportType === "post") {
+          href = "/paper/[paperId]/[paperName]";
+          as = `/paper/${paperId}/${slug}`;
+          title = notification.paper_title;
+        } else if (supportType === "researchhubpost") {
           formattedSupportType = "post";
+          href = "/post/[documentId]/[title]";
+          as = `/post/${notification.post_id}/${slug}`;
+          title = notification.post_title;
         } else if (supportType === "bulletpoint") {
           formattedSupportType = "key takeaway";
         } else if (supportType === "summary") {
           formattedSupportType = "summary";
         } else {
           formattedSupportType = "comment";
+          plainText = this.truncateComment(notification.plain_text);
+          const commentOnPaper = parentContentType === "paper";
+          href = commentOnPaper
+            ? "/paper/[paperId]/[paperName]"
+            : "/post/[documentId]/[title]";
+          as = commentOnPaper
+            ? `/paper/${paperId}/${slug}`
+            : `/post/${notification.post_id}/${slug}`;
+          title = commentOnPaper
+            ? notification.paper_title
+            : notification.post_title;
         }
+
         return (
           <div className={css(styles.message)}>
             <Link
@@ -454,14 +478,14 @@ class LiveFeedNotification extends React.Component {
               >
                 {username}
               </a>
-            </Link>{" "}
-            awarded {notification.amount} RSC{" "}
+            </Link>
+            {` awarded ${notification.amount} RSC `}
             <img
               className={css(styles.coinIcon)}
               src={"/static/icons/coin-filled.png"}
               alt="RSC Coin"
-            />{" "}
-            to{" "}
+            />
+            {" to "}
             <Link
               href={"/user/[authorId]/[tabName]"}
               as={`/user/${recipientAuthorId}/posts`}
@@ -472,18 +496,21 @@ class LiveFeedNotification extends React.Component {
               >
                 {recipientName}
               </a>
-            </Link>{" "}
-            for their {formattedSupportType} on{" "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
+            </Link>
+            {` for their ${formattedSupportType} `}
+            {formattedSupportType === "comment" ? (
+              <>
+                <em>{plainText}</em>
+                {" in "}
+              </>
+            ) : null}
+            <Link href={href} as={as}>
               <a
                 className={css(styles.paper)}
-                data-tip={paperTitle}
+                data-tip={title}
                 onClick={(e) => e.stopPropagation()}
               >
-                {paperTitle && this.truncatePaperTitle(paperTitle)}
+                {title && this.truncatePaperTitle(title)}
               </a>
             </Link>
             <span className={css(styles.timestamp)}>
@@ -593,7 +620,7 @@ class LiveFeedNotification extends React.Component {
 
     if (
       contentType === "thread" ||
-      contentType == "comment" ||
+      contentType === "comment" ||
       contentType === "reply"
     ) {
       metaData.threadId = notification.thread_id;
