@@ -6,11 +6,24 @@ import FormInput from "../Form/FormInput";
 import { ID } from "../../config/types/root_types";
 import Loader from "../Loader/Loader";
 import { SyntheticEvent, useState } from "react";
+import { nullthrows } from "../../config/utils/nullchecks";
+import FormSelect from "../Form/FormSelect";
 
 export type AuthorClaimPromptEmailProps = {
+  authorData: AuthorDatum[];
   onSuccess: Function;
-  targetAuthorID: ID;
   userID: ID;
+};
+
+export type AuthorDatum = {
+  id: ID;
+  name: string;
+};
+
+type DropDownAuthor = {
+  id: ID;
+  name: string;
+  label: string;
 };
 
 type FormFields = {
@@ -23,7 +36,9 @@ type FormError = {
 
 function validateEmail(email: string): boolean {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+  const splitEmail = email.split(".");
+  const stringEndsWithEDU = splitEmail[splitEmail.length - 1] === "edu";
+  return re.test(String(email).toLowerCase()) && stringEndsWithEDU;
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
@@ -37,8 +52,8 @@ function validateFormField(fieldID: string, value: any): boolean {
 }
 
 export default function AuthorClaimPromptEmail({
+  authorData,
   onSuccess,
-  targetAuthorID,
   userID,
 }: AuthorClaimPromptEmailProps) {
   const [formErrors, setFormErrors] = useState<FormError>({
@@ -49,6 +64,11 @@ export default function AuthorClaimPromptEmail({
     eduEmail: null,
   });
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
+  const [targetAuthor, setTargetAuthor] = useState<DropDownAuthor | null>(
+    authorData.length === 1
+      ? { ...authorData[0], label: authorData[0].name }
+      : null
+  );
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
@@ -75,7 +95,10 @@ export default function AuthorClaimPromptEmail({
           setIsSubmitting(false);
           onSuccess();
         },
-        targetAuthorID,
+        targetAuthorID: nullthrows(
+          nullthrows(targetAuthor).id,
+          "targetAuthorID must be present to make a request"
+        ),
         userID,
       });
     }
@@ -88,12 +111,14 @@ export default function AuthorClaimPromptEmail({
       </div>
       <div className={css(verifStyles.subTextContainer)}>
         <div className={css(verifStyles.subText)}>
-          We will send you an email to verify your academic email address. Use
-          the one that's openly available under your previous publications.
+          {
+            "We will send you an email to verify your academic email address. Use the one that's openly available under your previous publications."
+          }
           <br />
           <br />
-          After you verify your email, we will manually review your request to
-          ensure that it's you!
+          {
+            "After you verify your email, we will manually review your request to ensure that it's you!"
+          }
         </div>
       </div>
       <form
@@ -101,24 +126,39 @@ export default function AuthorClaimPromptEmail({
         className={css(verifStyles.form)}
         onSubmit={handleValidationAndSubmit}
       >
+        <FormSelect
+          containerStyle={modalBodyStyles.containerStyle}
+          onChange={(_type: string, authorDatum: DropDownAuthor): void =>
+            setTargetAuthor(authorDatum)
+          }
+          disable={isSubmitting}
+          id="author"
+          label={"Claiming author"}
+          options={authorData.map((authorDatum) => ({
+            ...authorData,
+            label: authorDatum.name,
+          }))}
+          placeholder="Select which author you would like to claim as"
+          required
+          type="select"
+          value={targetAuthor}
+        />
         <FormInput
           containerStyle={modalBodyStyles.containerStyle}
           disable={isSubmitting}
           id="eduEmail"
-          label="Email"
+          label="Your academic email address"
           type="email"
           labelStyle={verifStyles.labelStyle}
           inputStyle={shouldDisplayError && modalBodyStyles.error}
           onChange={handleOnChangeFields}
-          placeholder="Your email address"
+          placeholder="example@university.edu"
           required
         />
         <div className={css(verifStyles.buttonContainer)}>
-          {/* @ts-ignore */}
           <Button
             label={
               isSubmitting ? (
-                // @ts-ignore
                 <Loader
                   size={8}
                   loading
@@ -196,13 +236,13 @@ const verifStyles = StyleSheet.create({
     cursor: "pointer",
   },
   titleContainer: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
-    textAlign: "center",
-    boxSizing: "border-box",
-    marginBottom: "7px",
+    marginBottom: "16px",
+    textAlign: "left",
   },
   title: {
     fontWeight: 500,
@@ -226,23 +266,23 @@ const verifStyles = StyleSheet.create({
     },
   },
   subTextContainer: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    marginBottom: 16,
     textAlign: "center",
-    boxSizing: "border-box",
   },
   subText: {
-    fontWeight: "normal",
-    fontSize: "16px",
-    lineHeight: "22px",
-
-    display: "flex",
     alignItems: "center",
-    textAlign: "center",
     color: "#241F3A",
+    display: "flex",
+    fontSize: "16px",
+    fontWeight: "normal",
+    lineHeight: "22px",
     opacity: 0.8,
+    textAlign: "left",
   },
   modalContentStyles: {},
 });

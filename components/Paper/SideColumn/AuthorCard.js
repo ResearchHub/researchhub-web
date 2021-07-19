@@ -1,24 +1,36 @@
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
-import Link from "next/link";
-
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
+import PropTypes from "prop-types";
+import React from "react";
 
 const AuthorCard = (props) => {
   const { name, author } = props;
+  const {
+    claimed_by_user_author_id,
+    id: authorID,
+    is_claimed,
+    orcid_id,
+    user: authorUserID,
+  } = author;
 
-  const { id, orcid_id } = author;
-
-  if (id) {
+  if (authorID) {
     return (
-      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/overview`}>
-        <a
-          className={css(styles.container, styles.hover)}
-          data-test={`author-${author.id}`}
-        >
+      <Link
+        data-test={`author-${author.id}`}
+        href={"/user/[authorId]/[tabName]"}
+        // If the profile is already claimed, redirect to UserProfile that has claimed it
+        as={`/user/${
+          is_claimed ? claimed_by_user_author_id : authorID
+        }/posts`}
+      >
+        <a className={css(styles.container, styles.hover)}>
           {author.profile_image ? (
-            <img src={author.profile_image} className={css(styles.userImage)} />
+            <img
+              src={author.profile_image}
+              className={css(styles.userImage)}
+            />
           ) : (
             <span className={css(styles.userIcon)}>{icons.user}</span>
           )}
@@ -26,9 +38,7 @@ const AuthorCard = (props) => {
         </a>
       </Link>
     );
-  }
-
-  if (orcid_id) {
+  } else if (orcid_id) {
     return (
       <a
         className={css(styles.container, styles.hover)}
@@ -67,6 +77,13 @@ const styles = StyleSheet.create({
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
   },
+  authorCardWrap: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingRight: 16,
+    marginTop: 8,
+  },
   hover: {
     textDecoration: "unset",
     width: "100%",
@@ -91,7 +108,7 @@ const styles = StyleSheet.create({
     minWidth: 30,
     minHeight: 30,
     fontSize: 30 + 1,
-    border: "3px solid transparent",
+    border: "1px solid transparent",
     "@media only screen and (max-width: 415px)": {
       width: 25,
       height: 25,
