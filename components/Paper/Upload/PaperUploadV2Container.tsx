@@ -14,7 +14,6 @@ export default function PaperUploadV2Container(): ReactElement<"div"> {
   const isUploadingNewPaper = isNullOrUndefined(paperId);
   return (
     <div className={css(styles.paperUploadV2Container)}>
-      {"V2 - Text to be removed after testing"}
       {isUploadingNewPaper ? <PaperUploadV2Create /> : <PaperUploadV2Update />}
     </div>
   );
