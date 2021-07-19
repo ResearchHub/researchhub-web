@@ -429,14 +429,14 @@ class LiveFeedNotification extends React.Component {
         const recipientAuthorId = recipient.author_id;
         const recipientName = recipient.name;
         const supportType = notification.support_type;
-        const parent_content_type = notification.parent_content_type;
+        const parentContentType = notification.parent_content_type;
         const slug = notification.slug;
 
         let formattedSupportType;
         let href;
         let as;
         let title;
-        let plain_text;
+        let plainText;
         if (supportType === "paper") {
           formattedSupportType = "paper";
           href = "/paper/[paperId]/[paperName]";
@@ -453,8 +453,8 @@ class LiveFeedNotification extends React.Component {
           formattedSupportType = "summary";
         } else {
           formattedSupportType = "comment";
-          plain_text = notification.plain_text;
-          const commentOnPaper = parent_content_type === "paper";
+          plainText = notification.plain_text;
+          const commentOnPaper = parentContentType === "paper";
           href = commentOnPaper
             ? "/paper/[paperId]/[paperName]"
             : "/post/[documentId]/[title]";
@@ -500,7 +500,7 @@ class LiveFeedNotification extends React.Component {
             {` for their ${formattedSupportType} `}
             {formattedSupportType === "comment" ? (
               <>
-                <em>{plain_text}</em>
+                <em>{plainText}</em>
                 {" in "}
               </>
             ) : null}

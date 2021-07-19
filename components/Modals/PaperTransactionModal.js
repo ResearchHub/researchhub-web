@@ -39,7 +39,7 @@ import {
 import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 
 // Constants
-import { ContentTypes, ChainStatus } from "./constants/ModalConstants";
+import { ContentTypes, ChainStatus } from "./constants/SupportContent";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -237,7 +237,7 @@ class PaperTransactionModal extends React.Component {
 
   handleInput = (e) => {
     let value = parseInt(sanitizeNumber(e.target.value), 10);
-    value = value ? value : 0;
+    value = value || 0;
     this.setState({
       value,
       error: this.handleError(value),
@@ -906,7 +906,7 @@ class PaperTransactionModal extends React.Component {
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Support " + (isPaper ? "Paper" : "Post")}
+        title={`Support ${isPaper ? "Paper" : "Post"}`}
       >
         {this.renderContent(isPaper)}
       </BaseModal>
