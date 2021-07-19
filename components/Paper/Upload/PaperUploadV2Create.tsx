@@ -11,6 +11,8 @@ import {
 } from "./types/UploadComponentTypes";
 import { css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
+import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
+import { getIsFormValid } from "./util/getIsFormValid";
 import { ID } from "../../../config/types/root_types";
 import {
   isNullOrUndefined,
@@ -36,13 +38,22 @@ import React, {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 
-type Props = {
-  authActions: any;
+type ComponentProps = {
   authRedux: any;
   messageActions: any;
   modalActions: any;
   paperActions: any;
   paperRedux: any;
+};
+
+type ParseReduxToStateArgs = {
+  componentState: ComponentState;
+  formState: FormState;
+  messageActions: any;
+  paperRedux: any;
+  paperTitleQuery: string | string[] | undefined;
+  setComponentState: (componentState: ComponentState) => void;
+  setFormState: (formState: FormState) => void;
 };
 
 const useEffectHandleInit = ({ paperActions, paperTitleQuery }): void => {
@@ -54,23 +65,15 @@ const useEffectHandleInit = ({ paperActions, paperTitleQuery }): void => {
 };
 
 const useEffectParseReduxToState = ({
-  formData,
+  formState,
   messageActions,
   paperRedux,
   paperTitleQuery,
-  setFormData,
-}: {
-  componentState: ComponentState;
-  formData: FormState;
-  messageActions: any;
-  paperRedux: any;
-  paperTitleQuery: string | string[] | undefined;
-  setComponentState: (componentState: ComponentState) => void;
-  setFormData: (formData: FormState) => void;
-}): void => {
+  setFormState,
+}: ParseReduxToStateArgs): void => {
   const { uploadedPaper } = paperRedux;
-  const formHubs = formData.hubs;
-  const formAuthors = formData.author;
+  const formHubs = formState.hubs;
+  const formAuthors = formState.author;
   const { title } = uploadedPaper;
   const formattedPaperTitle =
     !isNullOrUndefined(paperTitleQuery) &&
@@ -89,13 +92,13 @@ const useEffectParseReduxToState = ({
     } = uploadedPaper;
     const formattedAbstract = !isNullOrUndefined(abstract)
       ? abstract
-      : formData.abstract;
-    const formattedDOI = !isNullOrUndefined(DOI) ? DOI : formData.doi;
-    const formattedURL = !isNullOrUndefined(url) ? url : formData.url;
+      : formState.abstract;
+    const formattedDOI = !isNullOrUndefined(DOI) ? DOI : formState.doi;
+    const formattedURL = !isNullOrUndefined(url) ? url : formState.url;
     // NOTE: calvinhlee - date parsing comes from legacy code.
     const formattedPublishedDate = !isNullOrUndefined(issued)
       ? parseDate(issued["date-parts"][0])
-      : formData.published;
+      : formState.published;
     const formType = !isNullOrUndefined(type) ? type : "REGULAR"; // currently only supports regular type
     const formattedRawAuthors =
       !isNullOrUndefined(authorArray) && Array.isArray(authorArray)
@@ -106,7 +109,7 @@ const useEffectParseReduxToState = ({
             };
           })
         : [];
-    setFormData({
+    setFormState({
       abstract: formattedAbstract,
       author: formAuthors,
       doi: formattedDOI,
@@ -119,87 +122,53 @@ const useEffectParseReduxToState = ({
       url: formattedURL,
     });
     messageActions.showMessage({ show: false });
-  }, [formAuthors, formHubs, messageActions, setFormData, uploadedPaper]);
-};
-
-const getIsFormValid = ({
-  formData,
-  formErrors,
-  setFormErrors,
-}: {
-  formData: FormState;
-  formErrors: FormErrorState;
-  setFormErrors: (errors: FormErrorState) => void;
-}) => {
-  const { hubs: selectedHubs } = formData;
-  const newErrors = { ...formErrors };
-  let result = true;
-  if (selectedHubs.length < 1) {
-    result = false;
-    newErrors.hubs = true;
-  }
-  // NOTE: calvinhlee - previoulsy we had a check for published date as well. It's deprecated
-  setFormErrors(newErrors);
-  return result;
+  }, [formAuthors, formHubs, messageActions, setFormState, uploadedPaper]);
 };
 
 function PaperuploadV2Create({
-  authActions,
   authRedux,
   messageActions,
   modalActions,
   paperActions,
   paperRedux,
-}: Props): ReactElement<typeof Fragment> {
+}: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
   const { paperTitleQuery } = router.query;
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
-  const [formData, setFormData] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
   const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
 
   const { isFormDisabled, isURLView, shouldShowTitleField } = componentState;
-  const { doi, hubs: selectedHubs, paper_title, title } = formData;
-  const handleInputChange = (id: string, value: any): void => {
-    const keys = id.split(".");
-    const firstKey = keys[0];
-    const newFormData = { ...formData };
-    const newFormErrors = { ...formErrors };
-    // NOTE: calvinhlee - simplified legacy logic. Leaving as is to avoid refactoring FormInput
-    if (keys.length === 1) {
-      newFormData[firstKey] =
-        firstKey === "title"
-          ? !isNullOrUndefined(value)
-            ? (value[0] || "").toUpperCase() + value.slice(1)
-            : ""
-          : value;
-    } else {
-      newFormData[firstKey][keys[1]] = value;
-      firstKey === "published" ? (newFormErrors[keys[1]] = false) : null; // removes red border on select fields
-    }
-    setComponentState({ ...componentState, isFormEdited: true });
-    setFormData(newFormData);
-    setFormErrors(newFormErrors);
-  };
+  const { doi, hubs: selectedHubs, paper_title, title } = formState;
 
-  const handleCancel = (): void => {
+  const handleInputChange = getHandleInputChange({
+    currFormState: formState,
+    currFormErrors: formErrors,
+    currComponentState: componentState,
+    setComponentState,
+    setFormState,
+    setFormErrors,
+  });
+
+  const handleFormCancel = (): void => {
     paperActions.resetPaperState();
     setComponentState(defaultComponentState);
-    setFormData(defaultFormState);
+    setFormState(defaultFormState);
     setFormErrors(defaultFormErrorState);
     router.back();
   };
 
   const handleHubSelection = (_id: ID, selectedHubs: any): void => {
     if (isNullOrUndefined(selectedHubs)) {
-      setFormData({ ...formData, hubs: [] });
+      setFormState({ ...formState, hubs: [] });
       setFormErrors({ ...formErrors, hubs: true });
     } else {
-      setFormData({ ...formData, hubs: selectedHubs });
+      setFormState({ ...formState, hubs: selectedHubs });
       setFormErrors({ ...formErrors, hubs: selectedHubs.length < 1 });
     }
   };
@@ -207,11 +176,13 @@ function PaperuploadV2Create({
   const handlePDFUpload = useCallback(
     (acceptedFiles, metaData): void => {
       // NOTE: calvinhlee - currently supporting only 1 upload
+      // logical ordering
       paperActions.uploadPaperToState(acceptedFiles[0], metaData);
+      setFormState({ ...formState, file: acceptedFiles[0] });
       setComponentState({
         ...componentState,
-        isFormEdited: true,
         isFormDisabled: false,
+        isFormEdited: true,
       });
       setFormErrors({ ...formErrors, dnd: false });
     },
@@ -221,7 +192,7 @@ function PaperuploadV2Create({
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     const isFormValid = getIsFormValid({
-      formData,
+      formState,
       formErrors,
       setFormErrors,
     });
@@ -257,7 +228,7 @@ function PaperuploadV2Create({
           );
         },
         paperActions,
-        payload: formData,
+        payload: formState,
       });
     } else {
       messageActions.setMessage("Required fields must be filled.");
@@ -275,11 +246,11 @@ function PaperuploadV2Create({
   useEffectParseReduxToState({
     componentState,
     messageActions,
-    formData,
+    formState,
     paperRedux,
     paperTitleQuery,
     setComponentState,
-    setFormData,
+    setFormState,
   });
 
   return (
@@ -404,7 +375,7 @@ function PaperuploadV2Create({
             formGenericStyles.button,
             formGenericStyles.buttonLeft
           )}
-          onClick={handleCancel}
+          onClick={handleFormCancel}
         >
           <span
             className={css(
@@ -434,7 +405,6 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
-  authActions: bindActionCreators(AuthActions, dispatch),
   messageActions: bindActionCreators(MessageActions, dispatch),
   modalActions: bindActionCreators(ModalActions, dispatch),
   paperActions: bindActionCreators(PaperActions, dispatch),
