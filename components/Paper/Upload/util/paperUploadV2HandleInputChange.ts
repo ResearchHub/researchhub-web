@@ -6,39 +6,40 @@ import {
 } from "../types/UploadComponentTypes";
 
 type InitArgs = {
-  currFormData: FormState;
+  currFormState: FormState;
   currFormErrors: FormErrorState;
   currComponentState: ComponentState;
   setComponentState: (state: ComponentState) => void;
-  setFormData: (data: FormState) => void;
+  setFormState: (data: FormState) => void;
   setFormErrors: (errors: FormErrorState) => void;
 };
 
 export const getHandleInputChange = ({
-  currFormData,
+  currFormState,
   currFormErrors,
   currComponentState,
   setComponentState,
-  setFormData,
+  setFormState,
   setFormErrors,
 }: InitArgs) => (id: string, value: any): void => {
   const keys = id.split(".");
   const firstKey = keys[0];
-  const newFormData = { ...currFormData };
+  const newFormState = { ...currFormState };
   const newFormErrors = { ...currFormErrors };
   // NOTE: calvinhlee - simplified legacy logic. Leaving as is to avoid refactoring FormInput
   if (keys.length === 1) {
-    newFormData[firstKey] =
+    newFormState[firstKey] =
       firstKey === "title"
         ? !isNullOrUndefined(value)
           ? (value[0] || "").toUpperCase() + value.slice(1)
           : ""
         : value;
   } else {
-    newFormData[firstKey][keys[1]] = value;
+    // Refer to Note(100)
+    newFormState[firstKey][keys[1]] = value;
     firstKey === "published" ? (newFormErrors[keys[1]] = false) : null; // removes red border on select fields
   }
   setComponentState({ ...currComponentState, isFormEdited: true });
-  setFormData(newFormData);
+  setFormState(newFormState);
   setFormErrors(newFormErrors);
 };

@@ -68,7 +68,7 @@ const AuthorInput = (props) => {
         value={tags && tags}
         onChange={onChange}
         onChangeInput={(value) => onChangeInput(value)}
-        inputValue={inputValue}
+        inputValue={inputValue || ""}
         className={error ? css(styles.error) : "react-tagsinput"}
         onClick={focusInput}
         ref={inputRef}
