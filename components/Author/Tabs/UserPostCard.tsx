@@ -80,7 +80,7 @@ function UserPostCard(props: UserPostCardProps) {
     preview_img: previewImg,
     renderable_text: renderableText,
     score: initialScore,
-    boost_amount,
+    boost_amount: boostAmount,
     style,
     title,
     unified_document_id: unifiedDocumentId,
@@ -105,9 +105,7 @@ function UserPostCard(props: UserPostCardProps) {
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
-  const [score, setScore] = useState<number>(
-    initialScore + (boost_amount || 0)
-  );
+  const [score, setScore] = useState<number>(initialScore + (boostAmount || 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
 
   useEffect((): void => {

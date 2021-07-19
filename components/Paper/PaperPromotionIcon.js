@@ -18,9 +18,9 @@ function PaperPromotionIcon({
   const [hover, setHover] = useState(false);
 
   const isPaper = !isNullOrUndefined(paper);
-  const boost_amount = isPaper ? paper.boost_amount : post.boost_amount;
+  const boostAmount = isPaper ? paper.boost_amount : post.boost_amount;
 
-  return boost_amount ? (
+  return boostAmount ? (
     <Fragment>
       <div className={css(styles.divider)}></div>
       <PermissionNotificationWrapper
@@ -38,7 +38,7 @@ function PaperPromotionIcon({
           <span className={css(styles.icon, customStyle)}>
             <Icon color={hover && "rgb(36, 31, 58)"} emptyState={false} />
           </span>
-          <span className={css(styles.count) + " count"}>{boost_amount}</span>
+          <span className={css(styles.count) + " count"}>{boostAmount}</span>
         </div>
       </PermissionNotificationWrapper>
     </Fragment>
