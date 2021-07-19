@@ -306,6 +306,14 @@ export const PaperActions = {
     };
   },
 
+  resetPaperState: () => {
+    return async (dispatch) => {
+      return dispatch({
+        type: types.RESET_PAPER_STATE,
+      });
+    };
+  },
+
   postPaperSummary: (body) => {
     return async (dispatch, getState) => {
       const response = await fetch(
@@ -345,13 +353,12 @@ export const PaperActions = {
       return dispatch(action);
     };
   },
-  patchPaper: (paperId, body, progress) => {
+  patchPaper: (paperId, body, progress, onError) => {
     return async (dispatch) => {
       const response = await fetch(
         API.PAPER({ paperId, progress }),
         API.PATCH_FILE_CONFIG(shims.paperPost(body))
-      ).catch(utils.handleCatch);
-
+      ).catch(Boolean(onError) ? onError : utils.handleCatch);
       let errorBody = null;
       if (response.status === 400 || response.status === 500) {
         errorBody = await response.json();

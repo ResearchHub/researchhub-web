@@ -8,11 +8,6 @@ export type SwitchConfigs = {
 };
 
 const KillswtichConfigs: SwitchConfigs = {
-  authorClaim: {
-    development: true,
-    staging: false,
-    production: false,
-  },
   newPostTypes: {
     development: true,
     staging: true,
@@ -22,6 +17,11 @@ const KillswtichConfigs: SwitchConfigs = {
     development: true,
     staging: true,
     production: true,
+  },
+  paperUploadV2: {
+    development: true,
+    staging: true,
+    production: false,
   },
 };
 

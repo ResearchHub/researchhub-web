@@ -62,19 +62,19 @@ class PaperUploadInfo extends React.Component {
         author: false,
         tagline: false,
       },
-      showAuthorList: false,
-      activeStep: 1,
-      searchAuthor: "",
-      suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
-      selectedAuthors: [],
-      loading: false,
-      uploadingPaper: false,
-      suggestedHubs: [],
-      editMode: false,
-      edited: false,
-      suggestedPapers: false,
-      urlView: true,
-      showTitle: false,
+      showAuthorList: false, // v2 -> shouldShowAuthorList
+      activeStep: 1, // v2 remove
+      searchAuthor: "", // v2 -> authorSearchText
+      suggestedAuthors: [], // v2 -> made local to component
+      selectedAuthors: [], // v2 -> made local to component
+      loading: false, // v2 -> isFetchingAuthors
+      uploadingPaper: false, // v2 remove
+      suggestedHubs: [], // v2 -> made local to component
+      editMode: false, // v2 remove
+      edited: false, // v2 -> isFormEdited
+      suggestedPapers: false, // v2 remove
+      urlView: true, // v2 -> isURLView
+      showTitle: false, // v2 -> shouldShowTitleField
     };
 
     this.state = {
@@ -241,6 +241,7 @@ class PaperUploadInfo extends React.Component {
           };
 
           if (published_date.length > 1) {
+            // Below is an anti-pattern
             form.published.month = Options.months
               .filter((month) => month.value === published_date[1])
               .pop();
@@ -428,6 +429,7 @@ class PaperUploadInfo extends React.Component {
     });
   };
 
+  // v2 -> remove
   uploadUrl = (urlData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
@@ -475,7 +477,6 @@ class PaperUploadInfo extends React.Component {
         searchAuthor: value,
       });
     }
-
     this.setState({
       searchAuthor: value,
       loading: true,
@@ -782,7 +783,6 @@ class PaperUploadInfo extends React.Component {
             </span>
           )}
         </div>
-        <div className={css(styles.section)}></div>
       </span>
     );
   };
@@ -877,9 +877,11 @@ class PaperUploadInfo extends React.Component {
       if (body.published && body.published.year) {
         body.publishDate = this.formatPublishDate(body.published);
       }
+      // V2 -> removed. Initiallized as empty
       body.url = ""; // TODO: Add this optional field
     }
 
+    // V2 -> removed. It's already being parsed into state
     if (!body.title) {
       body.title = body.paper_title;
     }
