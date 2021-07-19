@@ -6,8 +6,6 @@ export type ComponentState = {
   isFormDisabled: boolean;
   isFormEdited: boolean;
   isURLView: boolean;
-  /* NOTE: calvinhlee - because BE returns a hodge-podge of rawAuthors & "authorProfiles", we need separate handling state */
-  selectedAuthors: any[];
   shouldShowAuthorList: boolean;
   shouldShowTitleField: boolean;
   suggestedAuthors: any[];
@@ -22,17 +20,25 @@ export type FormErrorState = {
   tagline: boolean;
 };
 
-export type FormPublishedDate = {
-  year: number | null | string;
-  month: number | null | string;
-  day: number | null | string;
+export type ModifiedDateType = {
+  label: string;
+  value: string;
 };
 
-// intentional snake_casing
+/*  NOTE: calvinhlee - Making fields multi-purpose based on FE context makes code potentially very buggy. Coding practices like this must stop disregarding js-typing. */
+export type FormPublishedDate = {
+  year: number | null | string | ModifiedDateType;
+  month: number | null | string | ModifiedDateType;
+  day: number | null | string | ModifiedDateType;
+};
+
+// Intentional snake_casing to be used as a BE payload
 export type FormState = {
   abstract: any;
   author: any;
+  authors?: any[]; // only used for update. Often referred to as selectedAuthors in FE
   doi: ID;
+  file?: any; // most likely only used for create
   hubs: any[];
   paper_title: string;
   paper_type: string;
@@ -48,7 +54,6 @@ export const defaultComponentState: ComponentState = {
   isFormDisabled: false,
   isFormEdited: false,
   isURLView: true,
-  selectedAuthors: [],
   shouldShowAuthorList: false,
   shouldShowTitleField: false,
   suggestedAuthors: [],
@@ -69,6 +74,7 @@ export const defaultFormState: FormState = {
   author: {
     self_author: false,
   },
+  authors: [],
   doi: null,
   hubs: [],
   paper_title: "",
