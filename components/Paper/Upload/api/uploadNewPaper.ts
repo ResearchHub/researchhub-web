@@ -7,6 +7,7 @@ type Args = {
   onError: Function;
   onSuccess: Function;
   paperActions: any; // redux
+  paperRedux: any;
   payload: FormState;
 };
 
@@ -14,12 +15,21 @@ export async function uploadNewPaper({
   onError,
   onSuccess,
   paperActions,
+  paperRedux,
   payload,
 }: Args): Promise<void> {
-  const response = await paperActions.postPaper({
+  const { title: payloadTitle, paper_title: payloadPaperTitle } = payload;
+  const { uploadedPaper } = paperRedux;
+  const formattedPayload = {
     ...payload,
+    file: uploadedPaper.url ? uploadedPaper.url : uploadedPaper,
     hubs: payload.hubs.map((hub): ID => hub.id),
-  });
+    title:
+      !isNullOrUndefined(payloadTitle) && payloadTitle.length > 0
+        ? payloadTitle
+        : payloadPaperTitle,
+  };
+  const response = await paperActions.postPaper(formattedPayload);
   const { payload: resPayload } = response;
   if (resPayload.success) {
     const { postedPaper } = resPayload;
