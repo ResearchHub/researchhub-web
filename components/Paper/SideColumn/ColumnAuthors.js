@@ -1,15 +1,18 @@
-import { Component, Fragment, useState } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Component
+import { connect } from "react-redux";
+import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { SideColumnTitle } from "~/components/Typography";
-import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import AuthorCard from "./AuthorCard";
 
 // Config
 import { getAuthorName } from "~/config/utils/misc";
+import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import colors from "~/config/themes/colors";
+import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -18,10 +21,11 @@ class ColumnAuthors extends Component {
     super(props);
     this.state = {
       authors: [],
-      pages: 1,
       page: 1,
-      ready: false,
+      pages: 1,
       paginatedLists: {},
+      ready: false,
+      shouldOpenAuthorClaimModal: false,
     };
   }
 
@@ -91,8 +95,15 @@ class ColumnAuthors extends Component {
   };
 
   render() {
-    const { paper, authors } = this.props;
-    const { ready, pages, page } = this.state;
+    const { auth, authors, paper } = this.props;
+    const { pages, page, ready, shouldOpenAuthorClaimModal } = this.state;
+    const hasManyAuthors = authors.length > 1;
+    const claimableAuthors = authors.filter(
+      // checks if this author is NOT an "raw_author"
+      (author) => !isNullOrUndefined(author.id) && !Boolean(author.is_claimed)
+    );
+    const shouldDisplayClaimCard = claimableAuthors.length > 0;
+    const authorCards = this.renderAuthorCards();
 
     return (
       <ReactPlaceholder
@@ -100,26 +111,68 @@ class ColumnAuthors extends Component {
         ready={ready}
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
       >
+        <AuthorClaimModal
+          auth={auth}
+          authors={claimableAuthors}
+          isOpen={shouldOpenAuthorClaimModal}
+          setIsOpen={(flag) =>
+            this.setState({
+              ...this.state,
+              shouldOpenAuthorClaimModal: flag,
+            })
+          }
+        />
         <div>
-          {paper && authors.length > 0 && (
-            <Fragment>
-              <SideColumnTitle
-                title={`Author${authors.length > 1 ? "s" : ""}`}
-                overrideStyles={styles.title}
-              />
-              <div className={css(styles.authors)}>
-                {this.renderAuthorCards()}
-                {pages > page && (
-                  <div
-                    className={css(styles.viewMoreButton)}
-                    onClick={this.nextPage}
-                  >
-                    View more
+          <div className={css(styles.paperAuthorListContainer)}>
+            <SideColumnTitle
+              title={`Author Detail${hasManyAuthors ? "s" : ""}`}
+              overrideStyles={styles.title}
+            />
+            {shouldDisplayClaimCard && (
+              <div className={css(styles.claimCardWrap)}>
+                <div className={css(styles.claimCard)}>
+                  <div className={css(styles.claimCardTextGroup)}>
+                    <div className={css(styles.claimCardTextMain)}>
+                      {hasManyAuthors
+                        ? "Are you one of the authors?"
+                        : "Are you the author?"}
+                    </div>
+                    <div className={css(styles.claimCardText)}>
+                      {"Claim your profile and receive up to 1000 RSC"}
+                    </div>
                   </div>
-                )}
+                  <img
+                    className={css(styles.RSCIcon)}
+                    src="/static/icons/coin-filled.png"
+                    alt="Pot of Gold"
+                  />
+                </div>
+                <div
+                  className={css(styles.claimButton)}
+                  onClick={() =>
+                    this.setState({
+                      ...this.state,
+                      shouldOpenAuthorClaimModal: true,
+                    })
+                  }
+                  role="button"
+                >
+                  {"Claim"}
+                </div>
               </div>
-            </Fragment>
-          )}
+            )}
+            <div className={css(styles.authors)}>
+              {authorCards}
+              {pages > page && (
+                <div
+                  className={css(styles.viewMoreButton)}
+                  onClick={this.nextPage}
+                >
+                  View more
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </ReactPlaceholder>
     );
@@ -132,11 +185,63 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
   },
-  title: {
+  claimCardWrap: {
+    display: "flex",
+    flexDirection: "column",
+    boxSizing: "border-box",
+    margin: "8px 0 0",
+    padding: "10px 20px",
+    width: "100%",
+  },
+  claimCard: {
+    alignItems: "center",
+    boxSizing: "border-box",
+    display: "flex",
+    width: "100%",
+  },
+  claimButton: {
+    alignItems: "center",
+    backgroundColor: colors.NEW_BLUE(1),
+    borderRadius: 4,
+    color: "#fff",
+    cursor: "pointer",
+    display: "flex",
+    fontSize: 14,
+    height: 24,
+    justifyContent: "center",
+    marginTop: 12,
+    padding: 4,
+    width: "100%",
+  },
+  claimCardTextGroup: {
+    display: "flex",
+    flexDirection: "column",
+    height: "inherit",
+    justifyContent: "flex-start",
+    alignItems: "space-around",
+    width: 192,
+  },
+  claimCardTextMain: {
+    fontSize: 14,
+    fontWeight: 500,
+    marginBottom: 4,
+  },
+  claimCardText: {
+    color: "#272727",
+    fontSize: 14,
+    fontStyle: "normal",
+    width: "100",
+  },
+  title: {},
+  paperAuthorListContainer: {
     margin: "15px 0 10px",
     "@media only screen and (max-width: 415px)": {
       margin: "15px 0 5px",
     },
+  },
+  RSCIcon: {
+    marginLeft: 8,
+    width: 40,
   },
   viewMoreButton: {
     color: "rgba(78, 83, 255)",
@@ -148,6 +253,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
+    padding: "0 16px",
     ":hover": {
       background: "#FAFAFA",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
@@ -158,4 +264,8 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ColumnAuthors;
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(ColumnAuthors);
