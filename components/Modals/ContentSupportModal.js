@@ -40,7 +40,7 @@ class ContentSupportModal extends React.Component {
 
   handleAmount = (e) => {
     let amount = parseInt(sanitizeNumber(e.target.value), 10);
-    amount = amount ? amount : 0;
+    amount = amount || 0;
     this.setState({
       amount,
     });

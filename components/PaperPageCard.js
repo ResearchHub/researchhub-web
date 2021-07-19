@@ -557,7 +557,7 @@ class PaperPageCard extends React.Component {
       discussionCount,
     } = this.props;
     const { fetching, previews, previewAvailable } = this.state;
-    const promoted_score = score + paper.boost_amount;
+    const promotedScore = score + paper.boost_amount;
 
     return (
       <ReactPlaceholder
@@ -585,7 +585,7 @@ class PaperPageCard extends React.Component {
               <meta property="commentCount" content={paper.discussion_count} />
               <div className={css(styles.voting)}>
                 <VoteWidget
-                  score={promoted_score}
+                  score={promotedScore}
                   onUpvote={upvote}
                   onDownvote={downvote}
                   selected={selectedVoteType}
@@ -627,7 +627,7 @@ class PaperPageCard extends React.Component {
                   <div className={css(styles.rightColumn, styles.mobile)}>
                     <div className={css(styles.votingMobile)}>
                       <VoteWidget
-                        score={promoted_score}
+                        score={promotedScore}
                         onUpvote={upvote}
                         onDownvote={downvote}
                         selected={selectedVoteType}

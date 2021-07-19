@@ -1,5 +1,6 @@
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 import numeral from "numeral";
 import { Fragment, useState } from "react";
 import { ModalActions } from "~/redux/modals";
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
     width: 44,
     border: "1px solid #E8E8F2",
     margin: "15px 0",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },

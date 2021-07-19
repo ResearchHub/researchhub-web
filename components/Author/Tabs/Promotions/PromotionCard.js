@@ -190,20 +190,8 @@ class PromotionCard extends React.Component {
                 alt="RSC Coin"
               />
             </div>
-            {/* this.renderData() */}
           </div>
         </div>
-        {/* <div className={css(styles.dataContainer)}>
-          <div className={css(styles.graph)}>
-            <PromotionGraph
-              source={source}
-              promotion={promotion}
-              clicks={promotion.stats.clicks ? promotion.stats.clicks : []}
-              views={promotion.stats.views ? promotion.stats.views : []}
-              showViews={this.state.showViews}
-            />
-          </div>
-        </div> */}
       </div>
     );
   }
