@@ -33,7 +33,7 @@ class OrcidConnectSuccessPage extends React.Component {
             <div className={css(styles.icons)}>
               <img
                 className={css(styles.rhIcon)}
-                src={"/static/ResearchHubLogo.png"}
+                src={"/static/ResearchHubLogo.webp"}
               />
               <img
                 className={css(styles.orcidIcon)}

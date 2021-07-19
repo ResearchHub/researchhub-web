@@ -426,7 +426,7 @@ export const textEditorIcons = {
 export const RHLogo = ({ iconStyle, white }) => {
   return (
     <img
-      src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.png"}
+      src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
       className={css(styles.logo, iconStyle && iconStyle)}
       draggable={false}
       alt="RH Logo"
