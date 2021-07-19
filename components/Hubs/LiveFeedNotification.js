@@ -238,7 +238,7 @@ class LiveFeedNotification extends React.Component {
         verb = "left a";
         subject = {
           linkText: "comment",
-          plainText: plainText,
+          plainText: this.truncateComment(plainText),
         };
         preposition = {
           linkText: this.truncatePaperTitle(postTitle),
@@ -250,7 +250,7 @@ class LiveFeedNotification extends React.Component {
         verb = "left a";
         subject = {
           linkText: "comment",
-          plainText: commentTip,
+          plainText: this.truncateComment(commentTip),
         };
         preposition = {
           linkText: this.truncatePaperTitle(postTitle),
@@ -262,7 +262,7 @@ class LiveFeedNotification extends React.Component {
         verb = "left a";
         subject = {
           linkText: "comment",
-          plainText: replyTip,
+          plainText: this.truncateComment(replyTip),
         };
         preposition = {
           linkText: this.truncatePaperTitle(postTitle),
@@ -453,7 +453,7 @@ class LiveFeedNotification extends React.Component {
           formattedSupportType = "summary";
         } else {
           formattedSupportType = "comment";
-          plainText = notification.plain_text;
+          plainText = this.truncateComment(notification.plain_text);
           const commentOnPaper = parentContentType === "paper";
           href = commentOnPaper
             ? "/paper/[paperId]/[paperName]"
