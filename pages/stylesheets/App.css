@@ -1,3 +1,14 @@
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img {
+  image-rendering: auto;
+  /* image-rendering: crisp-edges; */
+  /* image-rendering: pixelated; */
+}
+
 .fslightbox-container {
   z-index: 21474800000 !important;
 }
