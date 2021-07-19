@@ -5,19 +5,13 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "../../../../config/utils/nullchecks";
-import { parseDate } from "../util/parseDate";
+import { formatDateToDropdownOptions, parseDate } from "../util/parseDate";
 import API from "../../../../config/api";
 
 type Args = {
   currUserAuthorID: ID;
   onError: Function;
-  onSuccess: ({
-    selectedAuthors,
-    parsedFormState,
-  }: {
-    selectedAuthors: any[];
-    parsedFormState: FormState;
-  }) => void;
+  onSuccess: ({ parsedFormState }: { parsedFormState: FormState }) => void;
   paperID: ID | ID[] | undefined;
 };
 
@@ -48,6 +42,7 @@ export async function getExistingPaperForEdit({
         title,
       } = res;
       const parsedFormState: FormState = {
+        authors: !isNullOrUndefined(authors) ? authors : [],
         doi,
         title,
         paper_title,
@@ -63,16 +58,19 @@ export async function getExistingPaperForEdit({
             value: id,
           };
         }),
+        /*  Refer to NOTE(100) - calvinhlee */
         published: !isNullOrUndefined(paper_publish_date)
-          ? parseDate(paper_publish_date.split("-"))
+          ? formatDateToDropdownOptions(
+              parseDate(paper_publish_date.split("-"))
+            )
           : { year: null, month: null, day: null },
         author: {
           self_author: !isNullOrUndefined(currUserAuthorID)
-            ? authors.includes((author: any) => author.id === currUserAuthorID)
+            ? authors.some((author: any) => author.id === currUserAuthorID)
             : false,
         },
       };
-      onSuccess({ selectedAuthors: [...authors], parsedFormState });
+      onSuccess({ parsedFormState });
     })
     .catch((e: Error): void => onError(e));
 }

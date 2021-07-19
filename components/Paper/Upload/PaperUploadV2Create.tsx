@@ -11,6 +11,8 @@ import {
 } from "./types/UploadComponentTypes";
 import { css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
+import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
+import { getIsFormValid } from "./util/getIsFormValid";
 import { ID } from "../../../config/types/root_types";
 import {
   isNullOrUndefined,
@@ -35,7 +37,6 @@ import React, {
   useState,
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
-import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 
 type ComponentProps = {
   authRedux: any;
@@ -124,27 +125,6 @@ const useEffectParseReduxToState = ({
   }, [formAuthors, formHubs, messageActions, setFormState, uploadedPaper]);
 };
 
-const getIsFormValid = ({
-  formState,
-  formErrors,
-  setFormErrors,
-}: {
-  formState: FormState;
-  formErrors: FormErrorState;
-  setFormErrors: (errors: FormErrorState) => void;
-}) => {
-  const { hubs: selectedHubs } = formState;
-  const newErrors = { ...formErrors };
-  let result = true;
-  if (selectedHubs.length < 1) {
-    result = false;
-    newErrors.hubs = true;
-  }
-  // NOTE: calvinhlee - previoulsy we had a check for published date as well. It's deprecated
-  setFormErrors(newErrors);
-  return result;
-};
-
 function PaperuploadV2Create({
   authRedux,
   messageActions,
@@ -196,11 +176,13 @@ function PaperuploadV2Create({
   const handlePDFUpload = useCallback(
     (acceptedFiles, metaData): void => {
       // NOTE: calvinhlee - currently supporting only 1 upload
+      // logical ordering
       paperActions.uploadPaperToState(acceptedFiles[0], metaData);
+      setFormState({ ...formState, file: acceptedFiles[0] });
       setComponentState({
         ...componentState,
-        isFormEdited: true,
         isFormDisabled: false,
+        isFormEdited: true,
       });
       setFormErrors({ ...formErrors, dnd: false });
     },
