@@ -133,26 +133,32 @@ class PromotionCard extends React.Component {
      * show loading state,
      * add pagination
      */
-    const { promotion, paper, isLast } = this.props;
+    const { promotion, source, isLast } = this.props;
+
+    const isPost =
+      source.document_type && source.document_type === "DISCUSSION";
+    const postSlug = source.title.toLowerCase().replace(/\s/g, "-");
+
+    const href = isPost
+      ? "/post/[documentId]/[title]"
+      : "/paper/[paperId]/[paperName]";
+    const as = isPost
+      ? `/post/${source.id}/${postSlug}`
+      : `/paper/${source.id}/${source.slug}`;
 
     return (
       <div className={css(styles.card, isLast && styles.removeBottomBorder)}>
         <div className={css(styles.metadata)}>
           <div className={css(styles.column, styles.vote)}>
             <ScorePill
-              score={paper.promoted ? paper.promoted : paper.score}
-              promoted={paper.promoted}
-              paper={paper}
-              type={"Paper"}
+              score={source.promoted ? source.promoted : source.score}
+              promoted={source.promoted}
             />
           </div>
           <div className={css(styles.column)}>
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paper.id}/${paper.slug}`}
-            >
+            <Link href={href} as={as}>
               <a className={css(styles.link)}>
-                <div className={css(styles.title)}>{paper.title}</div>
+                <div className={css(styles.title)}>{source.title}</div>
               </a>
             </Link>
             <div className={css(styles.metatext)}>
@@ -184,18 +190,6 @@ class PromotionCard extends React.Component {
                 alt="RSC Coin"
               />
             </div>
-            {this.renderData()}
-          </div>
-        </div>
-        <div className={css(styles.dataContainer)}>
-          <div className={css(styles.graph)}>
-            <PromotionGraph
-              paper={paper}
-              promotion={promotion}
-              clicks={promotion.stats.clicks ? promotion.stats.clicks : []}
-              views={promotion.stats.views ? promotion.stats.views : []}
-              showViews={this.state.showViews}
-            />
           </div>
         </div>
       </div>
@@ -241,7 +235,7 @@ const styles = StyleSheet.create({
     color: "rgb(190, 190, 190)",
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     marginBottom: 10,
     fontWeight: 500,
     width: "100%",
@@ -338,7 +332,6 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   metadata: {
-    width: "55%",
     display: "flex",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
