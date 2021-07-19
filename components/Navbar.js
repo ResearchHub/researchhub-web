@@ -872,9 +872,9 @@ const styles = StyleSheet.create({
     left: 6,
   },
   logo: {
-    height: 30,
+    width: 141,
     objectFit: "contain",
-    marginBottom: 4,
+    marginBottom: 6,
   },
   reputation: {
     marginLeft: 11,
