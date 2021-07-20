@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
     },
   },
   bannerImg: {
-    height: 120,
+    height: 116,
+    maxHeight: "100%",
     width: 330,
   },
   imgWrap: {
