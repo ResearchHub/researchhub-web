@@ -5,6 +5,8 @@ import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import nookies from "nookies";
 import { AUTH_TOKEN } from "../config/constants";
+import { fetchUnifiedDocFeed } from "../config/fetch";
+
 const isServer = () => typeof window === "undefined";
 
 const Index = (props) => {
@@ -12,21 +14,16 @@ const Index = (props) => {
 };
 
 const getHubPapers = (page, authToken) => {
-  return fetch(
-    API.GET_HUB_PAPERS({
-      hubId: 0,
-      ordering: "hot",
-      timePeriod: getInitialScope(),
-      subscribedHubs: true,
-      page,
-    }),
-    API.GET_CONFIG(authToken)
-  )
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res;
-    });
+  let params = {
+    hubId: 0,
+    ordering: "hot",
+    timePeriod: getInitialScope(),
+    subscribedHubs: true,
+    page,
+  };
+  return fetchUnifiedDocFeed(params).then((res) => {
+    return res;
+  });
 };
 
 Index.getInitialProps = async (ctx) => {
