@@ -591,7 +591,7 @@ const Navbar = (props) => {
             <Fragment>
               <span>
                 {
-                  "Alexandra Elbakyan, the founder of Sci-Hub, on building tools for open science. Click here to reserve your spot!"
+                  "Alexandra Elbakyan, the founder of Sci-Hub, will discuss building tools for open science. Click here to reserve your spot!"
                 }
               </span>
             </Fragment>
