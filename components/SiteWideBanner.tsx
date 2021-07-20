@@ -4,11 +4,13 @@ import React, { ReactNode, ReactElement } from "react";
 type Props = {
   body: ReactNode;
   header: ReactNode;
+  imgSrc: string;
 };
 
 export default function SiteWideBanner({
   body,
   header,
+  imgSrc,
 }: Props): ReactElement<"div"> {
   return (
     <div className={css(styles.siteWideBanner)}>
@@ -20,7 +22,7 @@ export default function SiteWideBanner({
         <div className={css(styles.imgWrap)}>
           <img
             className={css(styles.bannerImg)}
-            src={"/static/icons/site-wide-banner.png"}
+            src={imgSrc ? imgSrc : "/static/icons/site-wide-banner.png"}
           />
         </div>
       </div>
@@ -33,6 +35,7 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     height: 120,
+    boxSizing: "border-box",
     backgroundColor: "rgb(65 114 239)",
     fontFamily: "Roboto",
   },
@@ -43,7 +46,10 @@ const styles = StyleSheet.create({
     height: "100%",
     margin: "auto",
     width: "80%",
-    "@media only screen and (max-width: 1024px)": {
+    "@media only screen and (max-width: 1399px)": {
+      width: "90%",
+    },
+    "@media only screen and (max-width: 1199px)": {
       margin: "none",
       padding: "0 12px",
       width: "100%",
@@ -54,7 +60,10 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 24,
     marginBottom: 16,
-    "@media only screen and (max-width: 1024px)": {
+    "@media only screen and (max-width: 1399px)": {
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 1199px)": {
       fontSize: 18,
     },
   },
@@ -62,8 +71,11 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: 400,
-    "@media only screen and (max-width: 1024px)": {
-      fontSize: 12,
+    "@media only screen and (max-width: 1399px)": {
+      fontSize: 15,
+    },
+    "@media only screen and (max-width: 1199px)": {
+      fontSize: 14,
     },
   },
   textSection: {
