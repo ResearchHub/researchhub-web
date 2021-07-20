@@ -49,7 +49,7 @@ class Index extends React.Component {
           hubId: currentHub.id,
           ordering: "hot",
           timePeriod: getInitialScope(),
-        }).then((res) => res.json()),
+        }),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()
@@ -67,7 +67,7 @@ class Index extends React.Component {
           initialHubList,
         },
       };
-    } catch {
+    } catch (e) {
       if (res) {
         res.statusCode = 404;
       }
