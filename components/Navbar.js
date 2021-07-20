@@ -747,7 +747,7 @@ const styles = StyleSheet.create({
   },
   banner: {
     textDecoration: "none",
-    padding: 16,
+    // padding: 16,
   },
   orcidIcon: {
     width: 25,
