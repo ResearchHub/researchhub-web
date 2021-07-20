@@ -133,7 +133,7 @@ export default function AuthorClaimPromptEmail({
           }
           disable={isSubmitting}
           id="author"
-          label={"Claiming author"}
+          label="Claiming author"
           options={authorData.map((authorDatum) => ({
             ...authorData,
             label: authorDatum.name,
@@ -147,13 +147,13 @@ export default function AuthorClaimPromptEmail({
           containerStyle={modalBodyStyles.containerStyle}
           disable={isSubmitting}
           id="eduEmail"
-          label="Your academic email address"
-          type="email"
-          labelStyle={verifStyles.labelStyle}
           inputStyle={shouldDisplayError && modalBodyStyles.error}
+          label="Your academic email address"
+          labelStyle={verifStyles.labelStyle}
           onChange={handleOnChangeFields}
           placeholder="example@university.edu"
           required
+          type="email"
         />
         <div className={css(verifStyles.buttonContainer)}>
           <Button
