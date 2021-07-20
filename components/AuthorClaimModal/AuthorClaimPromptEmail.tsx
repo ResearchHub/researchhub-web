@@ -69,7 +69,7 @@ export default function AuthorClaimPromptEmail({
       ? { ...authorData[0], label: authorData[0].name }
       : null
   );
-
+  console.warn("targetAuthor: ", targetAuthor);
   const handleOnChangeFields = (fieldID: string, value: string): void => {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
