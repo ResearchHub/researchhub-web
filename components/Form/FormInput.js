@@ -1,6 +1,10 @@
 import { createRef, Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors, { formColors } from "../../config/themes/colors";
+import {
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "../../config/utils/nullchecks";
 
 class FormInput extends Component {
   constructor(props) {
@@ -105,6 +109,7 @@ class FormInput extends Component {
           onClick={this.focusOnClick}
           autoCapitalize="off"
           autoComplete={autoComplete}
+          onSearch={!isNullOrUndefined(onSearch) ? onSearch : silentEmptyFnc}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && (
