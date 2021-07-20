@@ -15,6 +15,7 @@ import {
   calculateScopeFromSlug,
 } from "~/config/utils/routing";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
 
 class Index extends React.Component {
   static async getInitialProps(ctx) {
@@ -45,9 +46,7 @@ class Index extends React.Component {
       }
 
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetch(API.GET_HUB_PAPERS(PARAMS), API.GET_CONFIG()).then((res) =>
-          res.json()
-        ),
+        fetchUnifiedDocFeed(PARAMS).then((res) => res.json()),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()

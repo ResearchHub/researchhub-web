@@ -36,7 +36,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import {
   checkUserVotesOnPapers,
-  fetchPaperFeed,
+  fetchUnifiedDocFeed,
   fetchURL,
 } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils";
@@ -277,7 +277,7 @@ class HubPage extends React.Component {
       PARAMS.ordering = "hot";
     }
 
-    fetchPaperFeed(PARAMS)
+    fetchUnifiedDocFeed(PARAMS)
       .then((res) => {
         const { count, next, results } = res;
         const papers = results.data;
