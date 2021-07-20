@@ -11,6 +11,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { toTitleCase } from "~/config/utils";
 import { getInitialScope } from "~/config/utils/dates";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
 
 const isServer = () => typeof window === "undefined";
 
@@ -43,15 +44,12 @@ class Index extends React.Component {
 
     try {
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetch(
-          API.GET_HUB_PAPERS({
-            // Initial Feed
-            hubId: currentHub.id,
-            ordering: "hot",
-            timePeriod: getInitialScope(),
-          }),
-          API.GET_CONFIG()
-        ).then((res) => res.json()),
+        fetchUnifiedDocFeed({
+          // Initial Feed
+          hubId: currentHub.id,
+          ordering: "hot",
+          timePeriod: getInitialScope(),
+        }).then((res) => res.json()),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()
