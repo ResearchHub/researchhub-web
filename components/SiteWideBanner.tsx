@@ -36,23 +36,9 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     fontFamily: "Roboto",
-    height: 120,
-    width: "100%",
-  },
-  bannerImg: {
-    height: 116,
-    maxHeight: "100%",
-    width: 330,
-  },
-  bodyText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: 400,
-    "@media only screen and (max-width: 1199px)": {
-      fontSize: 14,
-    },
-    "@media only screen and (max-width: 1399px)": {
-      fontSize: 15,
+
+    "@media only screen and (max-width: 767px)": {
+      height: "unset",
     },
   },
   contentWrap: {
@@ -83,22 +69,40 @@ const styles = StyleSheet.create({
       fontSize: 22,
     },
   },
-  imgWrap: {
-    display: "unset",
-    "@media only screen and (max-width: 767px)": {
-      // ipad-size
-      display: "none",
-    },
-  },
   textSection: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    padding: 16,
     width: "calc(100% - 330px)",
+    padding: 12,
+    height: "100%",
+    boxSizing: "border-box",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
-      padding: "0 16px",
+      padding: "12px 0px",
+    },
+  },
+  bannerImg: {
+    width: 330,
+    objectFit: "contain",
+  },
+  bodyText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: 400,
+    "@media only screen and (max-width: 1199px)": {
+      fontSize: 14,
+    },
+    "@media only screen and (max-width: 1399px)": {
+      fontSize: 15,
+    }
+  },
+  imgWrap: {
+    display: "unset",
+    height: "100%",
+    "@media only screen and (max-width: 767px)": {
+      // ipad-size
+      display: "none",
     },
   },
 });
