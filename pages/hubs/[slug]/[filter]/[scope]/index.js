@@ -46,7 +46,7 @@ class Index extends React.Component {
       }
 
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetchUnifiedDocFeed(PARAMS).then((res) => res.json()),
+        fetchUnifiedDocFeed(PARAMS),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()
