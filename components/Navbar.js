@@ -33,6 +33,7 @@ import Search from "./Search/Search";
 import UploadPaperModal from "../components/Modals/UploadPaperModal";
 import UserStateBanner from "./Banner/UserStateBanner";
 import WithdrawalModal from "../components/Modals/WithdrawalModal";
+import SiteWideBanner from "~/components/SiteWideBanner";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -572,10 +573,35 @@ const Navbar = (props) => {
             />
           )}
         </div>
+
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
           {icons.burgerMenu}
         </div>
       </div>
+      <SiteWideBanner
+        header={
+          "Join us on 7/22 at 11a PT for a live discussion with Alexandra Elbakyan!"
+        }
+        body={
+          <Fragment>
+            <span>
+              {
+                "Alexandra Elbakyan, the founder of Sci-Hub, on building tools for open science. Reserve your spot "
+              }
+            </span>
+            <span>
+              <Link
+                style={{ color: "#fff" }}
+                href={
+                  "https://www.crowdcast.io/e/a-discussion-on-open-science-with-alexandra-elbakyan/register"
+                }
+              >
+                {"here"}
+              </Link>
+            </span>
+          </Fragment>
+        }
+      />
       <UserStateBanner />
     </Fragment>
   );
