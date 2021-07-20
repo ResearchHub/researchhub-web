@@ -39,6 +39,14 @@ export const getActivityMetadata = (activity) => {
       postId = source.document_meta.id;
       postTitle = source.document_meta.title;
       break;
+    case "SUPPORTER":
+      let documents = activity.unified_document.documents;
+
+      if (Array.isArray(documents)) {
+        documents = documents[0];
+      }
+      postId = documents.id;
+      postTitle = documents.title;
   }
 
   switch (sourceType) {
