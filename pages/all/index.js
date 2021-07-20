@@ -44,7 +44,7 @@ Index.getInitialProps = async (ctx) => {
   };
 
   try {
-    const initialFeed = await fetchPaperFeed(PARAMS);
+    const initialFeed = await fetchUnifiedDocFeed(PARAMS);
 
     return {
       ...defaultProps,
