@@ -43,23 +43,39 @@ const styles = StyleSheet.create({
     height: "100%",
     margin: "auto",
     width: "80%",
+    "@media only screen and (max-width: 1024px)": {
+      margin: "none",
+      padding: "0 12px",
+      width: "100%",
+    },
   },
   headerText: {
     color: "#fff",
     fontWeight: 500,
     fontSize: 24,
     marginBottom: 16,
+    "@media only screen and (max-width: 1024px)": {
+      fontSize: 18,
+    },
   },
   bodyText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: 400,
+    "@media only screen and (max-width: 1024px)": {
+      fontSize: 12,
+    },
   },
   textSection: {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     width: "calc(100% - 330px)",
+    padding: 16,
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      padding: "0 16px",
+    },
   },
   bannerImg: {
     height: 120,

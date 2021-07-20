@@ -551,7 +551,7 @@ const Navbar = (props) => {
       </div>
       <SiteWideBanner
         header={
-          "Join us on 7/22 at 11a PT for a live discussion with Alexandra Elbakyan!"
+          "Join us on July 22 at 11am (PST) for a live discussion with Alexandra Elbakyan!"
         }
         body={
           <Fragment>
