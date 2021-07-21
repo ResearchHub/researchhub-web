@@ -103,7 +103,7 @@ const ModeratorDeleteButton = (props) => {
   const deletePaperPage = () => {
     showLoader();
     const { paperId, threadId, commentId, replyId, postId } = props.metaData;
-    fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
+    return fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -132,7 +132,7 @@ const ModeratorDeleteButton = (props) => {
   const deletePaperPDF = () => {
     showLoader();
     const { paperId, threadId, commentId, replyId } = props.metaData;
-    fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
+    return fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -161,7 +161,7 @@ const ModeratorDeleteButton = (props) => {
     showLoader();
     let query = buildQuery();
     const { paperId, threadId, commentId, replyId, postId } = props.metaData;
-    fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
+    return fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -213,7 +213,7 @@ const ModeratorDeleteButton = (props) => {
       replyId,
       setIsSuspended,
     } = metaData;
-    fetch(
+    return fetch(
       API.USER({ route: "censor" }),
       API.POST_CONFIG({ authorId: authorId })
     )
@@ -251,7 +251,7 @@ const ModeratorDeleteButton = (props) => {
   const reinstateUser = () => {
     const { authorId, setIsSuspended } = metaData;
     const { auth, updateUser } = props;
-    fetch(
+    return fetch(
       API.USER({ route: "reinstate" }),
       API.POST_CONFIG({ author_id: authorId })
     )
