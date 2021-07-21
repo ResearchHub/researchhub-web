@@ -14,6 +14,7 @@ const ActionButton = (props) => {
     icon,
     iconNode,
     action,
+    actionType,
     addRipples,
     active,
     isModerator,
