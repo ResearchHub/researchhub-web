@@ -36,7 +36,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
-import killswitch from "~/config/killswitch/killswitch";
+
 import {
   filterNull,
   isNullOrUndefined,
@@ -62,53 +62,50 @@ const SECTIONS = {
   picture: "picture",
 };
 
-const getTabs = (author, transactions) =>
-  filterNull([
-    killswitch("newPostTypes")
-      ? {
-          href: "posts",
-          label: "posts",
-          name: "Posts",
-          showCount: true,
-          count: () => author.num_posts,
-        }
-      : null,
-    {
-      href: "discussions",
-      label: "comments",
-      name: "Comments",
-      showCount: true,
-      count: () => author.userDiscussions.count,
-    },
-    {
-      href: "authored-papers",
-      label: "authored papers",
-      name: "Authored Papers",
-      showCount: true,
-      count: () => author.authoredPapers.count,
-    },
-    {
-      href: "contributions",
-      label: "paper submissions",
-      name: "Paper Submissions",
-      showCount: true,
-      count: () => author.userContributions.count,
-    },
-    {
-      href: "transactions",
-      label: "transactions",
-      name: "Transactions",
-      showCount: true,
-      count: () => transactions.count,
-    },
-    {
-      href: "boosts",
-      label: "supported content",
-      name: "Supported Content",
-      showCount: true,
-      count: () => author.promotions && author.promotions.count,
-    },
-  ]);
+const getTabs = (author, transactions) => [
+  {
+    href: "posts",
+    label: "posts",
+    name: "Posts",
+    showCount: true,
+    count: () => author.num_posts,
+  },
+  {
+    href: "discussions",
+    label: "comments",
+    name: "Comments",
+    showCount: true,
+    count: () => author.userDiscussions.count,
+  },
+  {
+    href: "authored-papers",
+    label: "authored papers",
+    name: "Authored Papers",
+    showCount: true,
+    count: () => author.authoredPapers.count,
+  },
+  {
+    href: "contributions",
+    label: "paper submissions",
+    name: "Paper Submissions",
+    showCount: true,
+    count: () => author.userContributions.count,
+  },
+  {
+    href: "transactions",
+    label: "transactions",
+    name: "Transactions",
+    showCount: true,
+    count: () => transactions.count,
+  },
+  {
+    href: "boosts",
+    label: "supported content",
+    name: "Supported Content",
+    showCount: true,
+    count: () => author.promotions && author.promotions.count,
+  },
+];
 
 function AuthorPage(props) {
   const { auth, author, hostname, user, transactions } = props;
