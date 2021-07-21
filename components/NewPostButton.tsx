@@ -4,7 +4,6 @@ import Button from "./Form/Button";
 import NewPostModal from "./Modals/NewPostModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";
-import killswitch from "../config/killswitch/killswitch";
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
@@ -16,10 +15,6 @@ export default function NewPostButton({
   onClick,
 }: NewPostButtonProps) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
-
-  if (!killswitch("newPostTypes")) {
-    return null;
-  }
 
   return (
     <Fragment>

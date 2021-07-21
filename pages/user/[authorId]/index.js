@@ -1,5 +1,4 @@
 import Router from "next/router";
-import killswitch from "~/config/killswitch/killswitch";
 import { redirect } from "~/config/utils";
 
 const isServer = () => typeof window === "undefined";
@@ -14,7 +13,7 @@ AuthorPageRedirect.getInitialProps = async (ctx) => {
   let { query, store } = ctx;
   if (!isServer()) {
     let authorProfile = store.getState().auth.user.author_profile;
-    let redirectTab = killswitch("newPostTypes") ? "posts" : "discussions";
+    let redirectTab = "posts";
     return { redirectPath: `${authorProfile.id}/${redirectTab}` };
   } else {
     let redirectPath = "contributions";
