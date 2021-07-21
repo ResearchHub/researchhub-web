@@ -42,7 +42,7 @@ const ActionButton = (props) => {
         icon={icon ? icon : icons.ban}
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
-        actionType={restore ? "restore" : "page"}
+        actionType={actionType ? actionType : restore ? "restore" : "page"}
         metaData={{ paperId }}
         forceRender={true}
         onAction={onAction}

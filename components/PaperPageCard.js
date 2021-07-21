@@ -360,6 +360,7 @@ class PaperPageCard extends React.Component {
                 isModerator={isModerator}
                 paperId={paper.id}
                 iconStyle={styles.moderatorIcon}
+                actionType="user"
               />
             </span>
           </>
