@@ -423,11 +423,7 @@ class PostPageCard extends React.Component {
             <ReactTooltip />
             <span
               className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={
-                isUploaderSuspended
-                  ? "Reinstate User"
-                  : "Remove Page & Ban User"
-              }
+              data-tip={isUploaderSuspended ? "Reinstate User" : "Ban User"}
             >
               <ActionButton
                 isModerator={isModerator}
