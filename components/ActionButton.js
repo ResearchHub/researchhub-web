@@ -14,6 +14,7 @@ const ActionButton = (props) => {
     icon,
     iconNode,
     action,
+    actionType,
     addRipples,
     active,
     isModerator,
@@ -22,6 +23,8 @@ const ActionButton = (props) => {
     containerStyle,
     iconStyle,
     restore,
+    uploadedById,
+    isUploaderSuspended,
   } = props;
 
   function renderIcon() {
@@ -42,8 +45,12 @@ const ActionButton = (props) => {
         icon={icon ? icon : icons.ban}
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
-        actionType={restore ? "restore" : "page"}
-        metaData={{ paperId }}
+        actionType={actionType ? actionType : restore ? "restore" : "page"}
+        metaData={{
+          paperId,
+          authorId: uploadedById,
+          isSuspended: isUploaderSuspended,
+        }}
         forceRender={true}
         onAction={onAction}
         onRemove={paperPageDeleteCallback}
