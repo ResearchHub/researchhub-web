@@ -258,7 +258,7 @@ const ModeratorDeleteButton = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setIsSuspended(false);
+        setIsSuspended && setIsSuspended(false);
         if (auth.user.author_profile.id === authorId) {
           updateUser({ ...res });
         }
