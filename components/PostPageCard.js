@@ -29,6 +29,7 @@ import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import ActionButton from "~/components/ActionButton";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 class PostPageCard extends React.Component {
   constructor(props) {
@@ -337,6 +338,9 @@ class PostPageCard extends React.Component {
       isSubmitter,
       user,
     } = this.props;
+    const uploadedById = post && post.created_by && post.created_by.id;
+    const isUploaderSuspended =
+      post && post.created_by && post.created_by.is_suspended;
     const actionButtons = [
       {
         active: post.created_by && user.id === post.created_by.id,
@@ -406,29 +410,38 @@ class PostPageCard extends React.Component {
               restore={post.is_removed}
               icon={post.is_removed ? icons.plus : icons.minus}
               onAction={post.is_removed ? this.restorePaper : this.removePaper}
+              containerStyle={styles.moderatorContainer}
               iconStyle={styles.moderatorIcon}
             />
           </span>
         ),
       },
-      //{
-      //  active: isModerator,
-      //  button: (
-      //    <>
-      //      <ReactTooltip />
-      //      <span
-      //        className={css(styles.actionIcon, styles.moderatorAction)}
-      //        data-tip={"Remove Page & Ban User"}
-      //      >
-      //        <ActionButton
-      //          isModerator={isModerator}
-      //          paperId={post.id}
-      //          iconStyle={styles.moderatorIcon}
-      //        />
-      //      </span>
-      //    </>
-      //  ),
-      //},
+      {
+        active: isModerator && !isNullOrUndefined(uploadedById),
+        button: (
+          <>
+            <ReactTooltip />
+            <span
+              className={css(styles.actionIcon, styles.moderatorAction)}
+              data-tip={
+                isUploaderSuspended
+                  ? "Reinstate User"
+                  : "Remove Page & Ban User"
+              }
+            >
+              <ActionButton
+                isModerator={isModerator}
+                paperId={post.id}
+                uploadedById={uploadedById}
+                isUploaderSuspended={isUploaderSuspended}
+                containerStyle={styles.moderatorContainer}
+                iconStyle={styles.moderatorIcon}
+                actionType="user"
+              />
+            </span>
+          </>
+        ),
+      },
     ].filter((action) => action.active);
 
     return (
@@ -1094,7 +1107,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     opacity: 1,
     transition: "all ease-in-out 0.2s",
-    cursor: "pointer",
   },
   actionsContainer: {},
   actionIcon: {
@@ -1140,6 +1152,29 @@ const styles = StyleSheet.create({
   },
   actionButtonMargin: {
     marginRight: 10,
+  },
+  moderatorContainer: {
+    padding: 5,
+    borderRadius: "50%",
+    width: 22,
+    minWidth: 22,
+    maxWidth: 22,
+    height: 22,
+    minHeight: 22,
+    maxHeight: 22,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 15,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
+    },
   },
   moderatorIcon: {
     color: colors.RED(0.6),
