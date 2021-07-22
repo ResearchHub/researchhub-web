@@ -36,6 +36,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -270,6 +271,9 @@ class PaperPageCard extends React.Component {
 
   renderActions = () => {
     const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const uploadedById = paper && paper.uploaded_by && paper.uploaded_by.id;
+    const isUploaderSuspended =
+      paper && paper.uploaded_by && paper.uploaded_by.is_suspended;
 
     const actionButtons = [
       {
@@ -342,24 +346,33 @@ class PaperPageCard extends React.Component {
               restore={paper.is_removed}
               icon={paper.is_removed ? icons.plus : icons.minus}
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
+              containerStyle={styles.moderatorContainer}
               iconStyle={styles.moderatorIcon}
             />
           </span>
         ),
       },
       {
-        active: isModerator,
+        active: isModerator && !isNullOrUndefined(uploadedById),
         button: (
           <>
             <ReactTooltip />
             <span
               className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={"Remove Page & Ban User"}
+              data-tip={
+                isUploaderSuspended
+                  ? "Reinstate User"
+                  : "Remove Page & Ban User"
+              }
             >
               <ActionButton
                 isModerator={isModerator}
                 paperId={paper.id}
+                uploadedById={uploadedById}
+                isUploaderSuspended={isUploaderSuspended}
+                containerStyle={styles.moderatorContainer}
                 iconStyle={styles.moderatorIcon}
+                actionType="user"
               />
             </span>
           </>
@@ -978,7 +991,6 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     opacity: 1,
     transition: "all ease-in-out 0.2s",
-    cursor: "pointer",
   },
   actionsContainer: {},
   actionIcon: {
@@ -1024,6 +1036,29 @@ const styles = StyleSheet.create({
   },
   actionButtonMargin: {
     marginRight: 10,
+  },
+  moderatorContainer: {
+    padding: 5,
+    borderRadius: "50%",
+    width: 22,
+    minWidth: 22,
+    maxWidth: 22,
+    height: 22,
+    minHeight: 22,
+    maxHeight: 22,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 15,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
+    },
   },
   moderatorIcon: {
     color: colors.RED(0.6),
