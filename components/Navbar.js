@@ -578,26 +578,6 @@ const Navbar = (props) => {
           {icons.burgerMenu}
         </div>
       </div>
-      <a
-        className={css(styles.banner)}
-        href="https://www.crowdcast.io/e/a-discussion-on-open-science-with-alexandra-elbakyan/register"
-        target="_blank"
-      >
-        <SiteWideBanner
-          header={
-            "Join us on July 22 at 11am (PST) for a live discussion with Alexandra Elbakyan!"
-          }
-          body={
-            <Fragment>
-              <span>
-                {
-                  "Alexandra Elbakyan, the founder of Sci-Hub, will discuss building tools for open science. Click here to reserve your spot!"
-                }
-              </span>
-            </Fragment>
-          }
-        />
-      </a>
       <UserStateBanner />
     </Fragment>
   );
