@@ -23,6 +23,8 @@ const ActionButton = (props) => {
     containerStyle,
     iconStyle,
     restore,
+    uploadedById,
+    isUploaderSuspended,
   } = props;
 
   function renderIcon() {
@@ -44,7 +46,11 @@ const ActionButton = (props) => {
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
         actionType={actionType ? actionType : restore ? "restore" : "page"}
-        metaData={{ paperId }}
+        metaData={{
+          paperId,
+          authorId: uploadedById,
+          isSuspended: isUploaderSuspended,
+        }}
         forceRender={true}
         onAction={onAction}
         onRemove={paperPageDeleteCallback}

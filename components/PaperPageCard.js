@@ -36,6 +36,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -270,6 +271,9 @@ class PaperPageCard extends React.Component {
 
   renderActions = () => {
     const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const uploadedById = paper && paper.uploaded_by && paper.uploaded_by.id;
+    const isUploaderSuspended =
+      paper && paper.uploaded_by && paper.uploaded_by.is_suspended;
 
     const actionButtons = [
       {
@@ -348,17 +352,23 @@ class PaperPageCard extends React.Component {
         ),
       },
       {
-        active: isModerator,
+        active: isModerator && !isNullOrUndefined(uploadedById),
         button: (
           <>
             <ReactTooltip />
             <span
               className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={"Remove Page & Ban User"}
+              data-tip={
+                isUploaderSuspended
+                  ? "Reinstate User"
+                  : "Remove Page & Ban User"
+              }
             >
               <ActionButton
                 isModerator={isModerator}
                 paperId={paper.id}
+                uploadedById={uploadedById}
+                isUploaderSuspended={isUploaderSuspended}
                 iconStyle={styles.moderatorIcon}
                 actionType="user"
               />
