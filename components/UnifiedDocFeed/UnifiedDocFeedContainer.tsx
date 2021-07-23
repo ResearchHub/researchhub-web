@@ -249,6 +249,8 @@ function UnifiedDocFeedContainer({
             return (
               <LazyLoad
                 key={`Paper-${docID}-${arrIndex}-lazy`}
+                offset={100}
+                once
                 placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
               >
                 <PaperEntryCard
@@ -277,6 +279,8 @@ function UnifiedDocFeedContainer({
             return (
               <LazyLoad
                 key={`Post-${docID}-${arrIndex}-lazy`}
+                offset={100}
+                once
                 placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
               >
                 <UserPostCard
