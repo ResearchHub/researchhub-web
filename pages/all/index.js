@@ -40,7 +40,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const urlDocType = urlQuery.type;
+    const urlDocType = urlQuery.type || "all";
     const initialFeed = await fetchUnifiedDocFeed({
       hubId: null,
       ordering: "hot",

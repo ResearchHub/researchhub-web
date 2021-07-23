@@ -14,24 +14,11 @@ const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
-const getHubPapers = (page, authToken) => {
-  let params = {
-    hubId: 0,
-    ordering: "hot",
-    timePeriod: getInitialScope(),
-    subscribedHubs: true,
-    page,
-  };
-  return fetchUnifiedDocFeed(params).then((res) => {
-    return res;
-  });
-};
-
 Index.getInitialProps = async (ctx) => {
   if (!isServer()) {
     return { home: true, page: 1, feed: 0 };
   }
-  let { query } = ctx;
+  const { query, query: urlQuery } = ctx;
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
 
@@ -45,7 +32,17 @@ Index.getInitialProps = async (ctx) => {
   };
 
   try {
-    let initialFeed = await getHubPapers(page, authToken);
+    const urlDocType = urlQuery.type || "all";
+    let initialFeed = await fetchUnifiedDocFeed({
+      hubId: 0,
+      ordering: "hot",
+      timePeriod: getInitialScope(),
+      subscribedHubs: true,
+      page,
+      type: urlDocType,
+    }).then((res) => {
+      return res;
+    });
     if (initialFeed.results.feed_type === "all") {
       defaultProps.feed = 1;
       const { res } = ctx;
