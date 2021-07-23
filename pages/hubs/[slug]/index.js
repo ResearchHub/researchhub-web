@@ -1,17 +1,16 @@
-import React from "react";
-import Router from "next/router";
-
-// Components
+import { AUTH_TOKEN } from "~/config/constants";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
+import { getInitialScope } from "~/config/utils/dates";
+import { Helpers } from "@quantfive/js-web-config";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { toTitleCase } from "~/config/utils";
+import API from "~/config/api";
+import Error from "next/error";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
-import Error from "next/error";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { toTitleCase } from "~/config/utils";
-import { getInitialScope } from "~/config/utils/dates";
-import { fetchUnifiedDocFeed } from "~/config/fetch";
+import nookies from "nookies";
+import React from "react";
+import Router from "next/router";
 
 const isServer = () => typeof window === "undefined";
 
@@ -20,6 +19,8 @@ class Index extends React.Component {
   static async getInitialProps(ctx) {
     const { query, query: urlQuery } = ctx;
     const { res, slug, name } = query;
+    const cookies = nookies.get(ctx);
+    const authToken = cookies[AUTH_TOKEN];
 
     let defaultProps = {
       initialFeed: null,
@@ -47,13 +48,17 @@ class Index extends React.Component {
     try {
       const urlDocType = urlQuery.type || "all";
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetchUnifiedDocFeed({
-          // Initial Feed
-          hubId: currentHub.id,
-          ordering: "hot",
-          timePeriod: getInitialScope(),
-          type: urlDocType,
-        }),
+        fetchUnifiedDocFeed(
+          {
+            // Initial Feed
+            hubId: currentHub.id,
+            ordering: "hot",
+            timePeriod: getInitialScope(),
+            type: urlDocType,
+          },
+          authToken,
+          !isNullOrUndefined(authToken) /* withVotes */
+        ),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()
