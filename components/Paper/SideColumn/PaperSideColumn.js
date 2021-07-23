@@ -62,8 +62,9 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   rhIcon: {
-    width: 12,
+    height: 17,
     marginRight: 10,
+    width: 12,
   },
   commentIcon: {
     marginRight: 10,
