@@ -10,6 +10,7 @@ import { fetchUnifiedDocFeed } from "../config/fetch";
 const isServer = () => typeof window === "undefined";
 
 const Index = (props) => {
+  // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
 
@@ -22,7 +23,6 @@ const getHubPapers = (page, authToken) => {
     page,
   };
   return fetchUnifiedDocFeed(params).then((res) => {
-    console.warn("INITIAL SSR");
     return res;
   });
 };
