@@ -45,8 +45,11 @@ export const getActivityMetadata = (activity) => {
       if (Array.isArray(documents)) {
         documents = documents[0];
       }
-      postId = documents.id;
-      postTitle = documents.title;
+
+      if (documents) {
+        postId = documents.id;
+        postTitle = documents.title;
+      }
   }
 
   switch (sourceType) {
