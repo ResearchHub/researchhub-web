@@ -1,14 +1,10 @@
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const ANALYZE = process.env.ANALYZE;
 const path = require("path");
-const webpack = require("webpack");
 const withCSS = require("@zeit/next-css");
 const withPlugins = require("next-compose-plugins");
 const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules");
-const shouldMinimize =
-  process.env.REACT_APP_ENV === "staging" ||
-  process.env.NODE_ENV === "production";
 
 module.exports = withPlugins(
   [
@@ -41,24 +37,11 @@ module.exports = withPlugins(
           })
         );
       }
-      // if (
-      //   process.env.REACT_APP_ENV === "staging" ||
-      //   process.env.NODE_ENV === "production"
-      // ) {
-      //   config.plugins = config.plugins.filter(
-      //     (plugin) => plugin.constructor.name !== "UglifyJsPlugin"
-      //   );
-      //   config.plugins.push(config.optimization.minimize);
-      // }
       return config;
     },
     env: {
       SENTRY_RELEASE: process.env.SENTRY_RELEASE,
       REACT_APP_ENV: process.env.REACT_APP_ENV,
     },
-    // compress: shouldMinimize,
-    // optimization: {
-    //   minimize: shouldMinimize,
-    // },
   }
 );
