@@ -16,6 +16,7 @@ import { fetchUnifiedDocFeed } from "~/config/fetch";
 const isServer = () => typeof window === "undefined";
 
 class Index extends React.Component {
+  // NOTE: calvinhlee - being called
   static async getInitialProps(ctx) {
     const { res, slug, name } = ctx.query;
 

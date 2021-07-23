@@ -1,19 +1,21 @@
 import HubPage from "~/components/Hubs/HubPage";
 
 import { getInitialScope } from "~/config/utils/dates";
-import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
 
 const Index = (props) => {
+  // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
 
 const isServer = () => typeof window === "undefined";
 
 Index.getInitialProps = async (ctx) => {
-  const { query } = ctx;
+  // TODO: calvinhlee - refactor this
+  const { query, query: urlQuery } = ctx;
   const { filter, page } = query;
   const filterObj = filterOptions.filter((el) => el.value === filter)[0];
   const cookies = nookies.get(ctx);
@@ -36,22 +38,24 @@ Index.getInitialProps = async (ctx) => {
       query,
     };
   }
-  const PARAMS = {
-    ordering: "hot",
-    timePeriod: getInitialScope(),
-    page: page || 1,
-    hubId: 0,
-  };
 
   try {
-    const initialFeed = await fetchUnifiedDocFeed(PARAMS);
-
+    const urlDocType = urlQuery.type;
+    const initialFeed = await fetchUnifiedDocFeed({
+      hubId: null,
+      ordering: "hot",
+      page: 1,
+      subfilters: filterObj,
+      subscribedHubs: false,
+      timePeriod: getInitialScope(),
+      type: urlDocType,
+    });
     return {
       ...defaultProps,
       initialFeed,
       feed: 1,
     };
-  } catch {
+  } catch (error) {
     return defaultProps;
   }
 };

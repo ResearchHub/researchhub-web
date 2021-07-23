@@ -100,6 +100,18 @@ export const fetchUserVote = (unifiedDocs, isLoggedIn) => {
     });
 };
 
+// TODO: calvinhlee - make this into a TS file so there's no confusion going forward
+// type FetchUnifiedDocsArgs = {
+//   docTypeFilter: any;
+//   hubID: any;
+//   isLoggedIn: any;
+//   onError: any;
+//   onSuccess: any;
+//   page: any;
+//   subscribedHubs: any;
+//   subFilters: any;
+// }
+
 export default function fetchUnifiedDocs({
   docTypeFilter,
   hubID,

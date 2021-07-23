@@ -9,6 +9,7 @@ import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 
 const Index = (props) => {
+  // NOTE: calvinhlee - no longer called
   return <HubPage home={true} {...props} />;
 };
 
