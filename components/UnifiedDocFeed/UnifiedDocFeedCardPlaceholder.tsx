@@ -8,20 +8,6 @@ export default function UnifiedDocFeedCardPlaceholder({ color }) {
     <div
       className={css(styles.placeholderContainer) + " show-loading-animation"}
     >
-      <div className={css(styles.voteContainer)}>
-        <RoundShape
-          color={color}
-          style={{ width: 48, height: 28, marginBottom: 10 }}
-        />
-        <RoundShape
-          color={color}
-          style={{ width: 28, height: 25, marginTop: 15 }}
-        />
-        <RoundShape
-          color={color}
-          style={{ width: 28, height: 25, marginTop: 15 }}
-        />
-      </div>
       <div className={css(styles.spaceBetween)}>
         <div className={css(styles.column)}>
           <div className={css(styles.header)}>
@@ -43,7 +29,7 @@ export default function UnifiedDocFeedCardPlaceholder({ color }) {
               color={color}
               style={{ width: "100%" }}
             />
-          </div>{" "}
+          </div>
           <div className={css(styles.row)}>
             <div style={{ width: "35%" }}>
               <TextBlock
