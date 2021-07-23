@@ -22,6 +22,7 @@ const getHubPapers = (page, authToken) => {
     page,
   };
   return fetchUnifiedDocFeed(params).then((res) => {
+    console.warn("INITIAL SSR");
     return res;
   });
 };
