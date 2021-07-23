@@ -6,6 +6,9 @@ const withCSS = require("@zeit/next-css");
 const withPlugins = require("next-compose-plugins");
 const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules");
+const shouldMinimize =
+  process.env.REACT_APP_ENV === "staging" ||
+  process.env.NODE_ENV === "production";
 
 module.exports = withPlugins(
   [
@@ -19,6 +22,10 @@ module.exports = withPlugins(
     ],
   ],
   {
+    compress: shouldMinimize,
+    optimization: {
+      minimize: shouldMinimize,
+    },
     webpack: (config, { isServer }) => {
       // Fixes npm packages that depend on `fs` module
       config.node = {
@@ -38,15 +45,15 @@ module.exports = withPlugins(
           })
         );
       }
-      if (
-        process.env.REACT_APP_ENV === "staging" ||
-        process.env.NODE_ENV === "production"
-      ) {
-        config.plugins = config.plugins.filter(
-          (plugin) => plugin.constructor.name !== "UglifyJsPlugin"
-        );
-        config.plugins.push(new webpack.optimize.UglifyJsPlugin());
-      }
+      // if (
+      //   process.env.REACT_APP_ENV === "staging" ||
+      //   process.env.NODE_ENV === "production"
+      // ) {
+      //   config.plugins = config.plugins.filter(
+      //     (plugin) => plugin.constructor.name !== "UglifyJsPlugin"
+      //   );
+      //   config.plugins.push(config.optimization.minimize);
+      // }
       return config;
     },
     env: {
