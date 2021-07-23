@@ -22,10 +22,6 @@ module.exports = withPlugins(
     ],
   ],
   {
-    compress: shouldMinimize,
-    optimization: {
-      minimize: shouldMinimize,
-    },
     webpack: (config, { isServer }) => {
       // Fixes npm packages that depend on `fs` module
       config.node = {
@@ -59,6 +55,10 @@ module.exports = withPlugins(
     env: {
       SENTRY_RELEASE: process.env.SENTRY_RELEASE,
       REACT_APP_ENV: process.env.REACT_APP_ENV,
+    },
+    compress: shouldMinimize,
+    optimization: {
+      minimize: shouldMinimize,
     },
   }
 );
