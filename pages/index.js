@@ -10,6 +10,7 @@ import { fetchUnifiedDocFeed } from "../config/fetch";
 const isServer = () => typeof window === "undefined";
 
 const Index = (props) => {
+  // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
 

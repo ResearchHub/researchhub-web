@@ -15,6 +15,7 @@ import { filterOptions } from "~/config/utils/options";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 
 class Index extends React.Component {
+  // NOTE: calvinhlee - no longer called
   static async getInitialProps(ctx) {
     let { query } = ctx;
 
