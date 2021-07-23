@@ -1,21 +1,20 @@
-import React from "react";
-import Router from "next/router";
-
-// Components
-import Head from "~/components/Head";
-import HubPage from "~/components/Hubs/HubPage";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { toTitleCase } from "~/config/utils";
+import { AUTH_TOKEN } from "~/config/constants";
+import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
+import { Helpers } from "@quantfive/js-web-config";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { toTitleCase } from "~/config/utils";
 import {
   slugToFilterQuery,
   calculateScopeFromSlug,
 } from "~/config/utils/routing";
-import { filterOptions, scopeOptions } from "~/config/utils/options";
-import { fetchUnifiedDocFeed } from "~/config/fetch";
+import API from "~/config/api";
+import Head from "~/components/Head";
+import HubPage from "~/components/Hubs/HubPage";
+import nookies from "nookies";
+import React from "react";
+import Router from "next/router";
 
 class Index extends React.Component {
   // NOTE: calvinhlee - no longer called
@@ -27,6 +26,8 @@ class Index extends React.Component {
     let scope = query.scope
       ? calculateScopeFromSlug(query.scope)
       : getInitialScope();
+    const cookies = nookies.get(ctx);
+    const authToken = cookies[AUTH_TOKEN];
 
     try {
       const { slug, name } = ctx.query;
@@ -47,7 +48,11 @@ class Index extends React.Component {
       }
 
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetchUnifiedDocFeed(PARAMS),
+        fetchUnifiedDocFeed(
+          PARAMS,
+          authToken,
+          !isNullOrUndefined(authToken) /* withVotes */
+        ),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()

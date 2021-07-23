@@ -1,10 +1,10 @@
-import HubPage from "~/components/Hubs/HubPage";
-
-import { getInitialScope } from "~/config/utils/dates";
-import { filterOptions } from "~/config/utils/options";
-import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
+import { filterOptions } from "~/config/utils/options";
+import { getInitialScope } from "~/config/utils/dates";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import HubPage from "~/components/Hubs/HubPage";
+import nookies from "nookies";
 
 const Index = (props) => {
   // NOTE: calvinhlee - being called
@@ -41,15 +41,19 @@ Index.getInitialProps = async (ctx) => {
 
   try {
     const urlDocType = urlQuery.type || "all";
-    const initialFeed = await fetchUnifiedDocFeed({
-      hubId: null,
-      ordering: "hot",
-      page: 1,
-      subfilters: filterObj,
-      subscribedHubs: false,
-      timePeriod: getInitialScope(),
-      type: urlDocType,
-    });
+    const initialFeed = await fetchUnifiedDocFeed(
+      {
+        hubId: null,
+        ordering: "hot",
+        page: 1,
+        subfilters: filterObj,
+        subscribedHubs: false,
+        timePeriod: getInitialScope(),
+        type: urlDocType,
+      },
+      authToken,
+      !isNullOrUndefined(authToken) /* withVotes */
+    );
     return {
       ...defaultProps,
       initialFeed,
