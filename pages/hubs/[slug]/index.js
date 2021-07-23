@@ -18,7 +18,8 @@ const isServer = () => typeof window === "undefined";
 class Index extends React.Component {
   // NOTE: calvinhlee - being called
   static async getInitialProps(ctx) {
-    const { res, slug, name } = ctx.query;
+    const { query, query: urlQuery } = ctx;
+    const { res, slug, name } = query;
 
     let defaultProps = {
       initialFeed: null,
@@ -44,12 +45,14 @@ class Index extends React.Component {
     }
 
     try {
+      const urlDocType = urlQuery.type || "all";
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed({
           // Initial Feed
           hubId: currentHub.id,
           ordering: "hot",
           timePeriod: getInitialScope(),
+          type: urlDocType,
         }),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
