@@ -147,7 +147,6 @@ const fetchAndUpdateFeedWithVotes = async (docPayload, authToken) => {
       documents.length > 0 && postIds.push(documents[0].id);
     }
   });
-  console.warn("HI: ", docPayload);
   if (paperIds.length < 1 && postIds.length < 1) {
     emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
     return docPayload;
