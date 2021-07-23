@@ -633,6 +633,7 @@ class HubPage extends React.Component {
       hubState,
       initialHubList,
       leaderboardFeed,
+      initialFeed,
     } = this.props;
 
     if (auth.user.moderator && filterOptions.length < 5) {
@@ -668,7 +669,7 @@ class HubPage extends React.Component {
         ? auth.isLoggedIn
         : this.props.loggedIn
       : this.props.loggedIn;
-    const shouldShowUnifiedDoc = killswitch("unifiedDocumentFeed");
+
     return (
       <Fragment>
         <MobileFeedTabs
@@ -699,123 +700,24 @@ class HubPage extends React.Component {
                 />
               </div>
             </div>
-            {shouldShowUnifiedDoc ? (
-              <UnifiedDocFeedContainer
-                feed={feed}
-                home={this.props.home}
-                hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
-                hubState={hubState}
-                hub={hub}
-                loggedIn={this.props.loggedIn}
-                subscribeButton={
-                  <SubscribeButton
-                    {...this.props}
-                    {...this.state}
-                    onClick={() => this.setState({ transition: true })}
-                    onSubscribe={this.onSubscribe}
-                    onUnsubscribe={this.onUnsubscribe}
-                  />
-                }
-              />
-            ) : (
-              <div className={css(styles.column, styles.mainfeed)}>
-                <MainHeader
+            <UnifiedDocFeedContainer
+              feed={feed}
+              home={this.props.home}
+              hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+              hubState={hubState}
+              hub={hub}
+              preloadedDocData={initialFeed}
+              loggedIn={this.props.loggedIn}
+              subscribeButton={
+                <SubscribeButton
                   {...this.props}
                   {...this.state}
-                  title={this.formatMainHeader()}
-                  hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
-                  scopeOptions={scopeOptions}
-                  filterOptions={filterOptions}
-                  onScopeSelect={this.onScopeSelect}
-                  onFilterSelect={this.onFilterSelect}
-                  subscribeButton={
-                    <SubscribeButton
-                      {...this.props}
-                      {...this.state}
-                      onClick={() => this.setState({ transition: true })}
-                      onSubscribe={this.onSubscribe}
-                      onUnsubscribe={this.onUnsubscribe}
-                    />
-                  }
+                  onClick={() => this.setState({ transition: true })}
+                  onSubscribe={this.onSubscribe}
+                  onUnsubscribe={this.onUnsubscribe}
                 />
-                <div>
-                  {(this.state.papers.length > 0 && sampleFeed) ||
-                  !hasSubscribed ? (
-                    <div
-                      className={css(styles.bannerContainer)}
-                      id="create-feed-banner"
-                    >
-                      <CreateFeedBanner />
-                    </div>
-                  ) : null}
-                </div>
-                <div className={css(styles.infiniteScroll)}>
-                  <ReactPlaceholder
-                    ready={this.state.doneFetching}
-                    showLoadingAnimation
-                    customPlaceholder={
-                      <PaperPlaceholder
-                        color="#efefef"
-                        rows={3}
-                        style={{ width: "100%" }}
-                      />
-                    }
-                  >
-                    {this.state.papers.length > 0 ? (
-                      <div>
-                        <div
-                          className={css(
-                            styles.feedPapers,
-                            sampleFeed && styles.sampleFeed
-                          )}
-                        >
-                          {sampleFeed && (
-                            <Fragment>
-                              <div className={css(styles.blur)} />
-                              <Button
-                                isLink={
-                                  loggedIn
-                                    ? {
-                                        href: `/user/${auth.user.author_profile.id}/onboard`,
-                                        query: {
-                                          selectHubs: true,
-                                        },
-                                      }
-                                    : {
-                                        href: "/all",
-                                        linkAs: "/all",
-                                      }
-                                }
-                                hideRipples={true}
-                                label={
-                                  loggedIn
-                                    ? "Generate My Hubs"
-                                    : "View All Hubs"
-                                }
-                                customButtonStyle={styles.allFeedButton}
-                              />
-                            </Fragment>
-                          )}
-                          {this.state.papers.map((paper, i) => (
-                            <PaperEntryCard
-                              key={`${paper.id}-${i}`}
-                              paper={paper}
-                              index={i}
-                              hubName={hubName}
-                              voteCallback={this.voteCallback}
-                              vote={paper.user_vote}
-                            />
-                          ))}
-                        </div>
-                        {!sampleFeed && this.renderLoadMoreButton()}
-                      </div>
-                    ) : (
-                      <EmptyFeedScreen activeFeed={this.state.feed} />
-                    )}
-                  </ReactPlaceholder>
-                </div>
-              </div>
-            )}
+              }
+            />
             <div className={css(styles.column, styles.sidebar)}>
               <div className={css(styles.rightSidebarContainer)}>
                 <ActivityList

@@ -65,7 +65,13 @@ const useEffectFetchFeed = ({
     (): Boolean => ["", "/"].includes(currPathname),
     [currPathname]
   );
+  const { page } = paginationInfo;
+  // first pages should have been preloaded
+  const isFetchExecutable =
+    (page === 1 && currDocuments.length === 0) || page !== 1;
+
   const onSuccess = ({ count, hasMore, documents }) => {
+    console.warn("FETCH WITHIN FEED");
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
       : setUnifiedDocuments(documents);
@@ -87,6 +93,9 @@ const useEffectFetchFeed = ({
   };
 
   useEffect((): void => {
+    if (!isFetchExecutable) {
+      return;
+    }
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
@@ -104,8 +113,9 @@ const useEffectFetchFeed = ({
   }, [
     currPathname,
     docTypeFilter,
-    selectedHub,
+    isFetchExecutable,
     paginationInfo.page,
+    selectedHub,
     subFilters,
   ]);
 };
@@ -126,10 +136,13 @@ function UnifiedDocFeedContainer({
   hub, // selected hub
   hubName,
   hubState, // hub data of current user
+  preloadedDocData,
   isLoggedIn,
-  subscribeButton,
   loggedIn,
+  subscribeButton,
 }): ReactElement<"div"> {
+  const { count: preloadCount, next: preloadNext, results: preloadResults } =
+    preloadedDocData || {};
   const router = useRouter();
   const isOnAllHubsTab = useMemo<Boolean>(
     (): Boolean => ["", "/"].includes(router.pathname),
@@ -143,13 +156,16 @@ function UnifiedDocFeedContainer({
     scope: scopeOptions[0],
   });
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    count: 0,
-    hasMore: false,
-    isLoading: true,
+    count: preloadCount || 0,
+    hasMore: Boolean(preloadNext),
+    isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
     page: 1,
   });
-  const [unifiedDocuments, setUnifiedDocuments] = useState<any>([]);
+
+  const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
+    preloadResults || []
+  );
 
   const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
   const hasSubscribed = useMemo(
@@ -157,10 +173,11 @@ function UnifiedDocFeedContainer({
     [auth.authChecked, hubState.subscribedHubs]
   );
   const { filterBy } = subFilters;
-  const onInitialLoad = useMemo((): Boolean => page === 1 && isLoading, [
+  const needsInitialFetch = useMemo((): Boolean => page === 1 && isLoading, [
     page,
     isLoading,
   ]);
+
   const formattedMainHeader = useMemo(
     (): string =>
       formatMainHeader({
@@ -307,7 +324,7 @@ function UnifiedDocFeedContainer({
           </div>
         </div>
       ) : null}
-      {onInitialLoad ? (
+      {needsInitialFetch ? (
         <div className={css(styles.initSpinnerWrap)}>
           <Loader
             key={"authored-loader"}
