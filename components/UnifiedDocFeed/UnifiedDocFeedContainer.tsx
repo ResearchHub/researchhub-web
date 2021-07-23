@@ -71,7 +71,6 @@ const useEffectFetchFeed = ({
     (page === 1 && currDocuments.length === 0) || page !== 1;
 
   const onSuccess = ({ count, hasMore, documents }) => {
-    console.warn("FETCHING WITHIN COMPONENT");
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
       : setUnifiedDocuments(documents);
@@ -162,7 +161,6 @@ function UnifiedDocFeedContainer({
     isLoadingMore: false,
     page: 1,
   });
-  console.warn("preloadResults: ", preloadResults);
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );

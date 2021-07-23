@@ -27,7 +27,6 @@ Index.getInitialProps = async (ctx) => {
     feed: 1,
     loggedIn: authToken !== undefined,
   };
-  console.warn("isServer ", isServer());
 
   if (!isServer()) {
     return {
