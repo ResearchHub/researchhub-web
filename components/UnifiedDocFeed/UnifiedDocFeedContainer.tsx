@@ -71,7 +71,7 @@ const useEffectFetchFeed = ({
     (page === 1 && currDocuments.length === 0) || page !== 1;
 
   const onSuccess = ({ count, hasMore, documents }) => {
-    console.warn("FETCH WITHIN FEED");
+    console.warn("FETCHING WITHIN COMPONENT");
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
       : setUnifiedDocuments(documents);
@@ -106,7 +106,7 @@ const useEffectFetchFeed = ({
       isLoggedIn,
       onError,
       onSuccess,
-      page: paginationInfo.page,
+      page,
       subscribedHubs: shouldGetSubscribed,
       subFilters,
     });
@@ -114,7 +114,7 @@ const useEffectFetchFeed = ({
     currPathname,
     docTypeFilter,
     isFetchExecutable,
-    paginationInfo.page,
+    page,
     selectedHub,
     subFilters,
   ]);
@@ -162,7 +162,7 @@ function UnifiedDocFeedContainer({
     isLoadingMore: false,
     page: 1,
   });
-
+  console.warn("preloadResults: ", preloadResults);
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
@@ -211,6 +211,7 @@ function UnifiedDocFeedContainer({
             key={filterKey}
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
+              setUnifiedDocuments([]);
               setDocTypeFilter(filterValue);
               setPaginationInfo({
                 ...paginationInfo,
@@ -284,6 +285,7 @@ function UnifiedDocFeedContainer({
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
             onSubFilterSelect={(_type: string, filterBy: any): void => {
+              setUnifiedDocuments([]);
               setPaginationInfo({
                 ...paginationInfo,
                 hasMore: false,
@@ -297,6 +299,7 @@ function UnifiedDocFeedContainer({
               });
             }}
             onScopeSelect={(_type: string, scope) => {
+              setUnifiedDocuments([]);
               setPaginationInfo({
                 ...paginationInfo,
                 hasMore: false,
