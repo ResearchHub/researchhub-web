@@ -1,11 +1,9 @@
-import HubPage from "../components/Hubs/HubPage";
-
-import API from "~/config/api";
-import { getInitialScope } from "~/config/utils/dates";
-import { Helpers } from "@quantfive/js-web-config";
-import nookies from "nookies";
 import { AUTH_TOKEN } from "../config/constants";
 import { fetchUnifiedDocFeed } from "../config/fetch";
+import { getInitialScope } from "~/config/utils/dates";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import HubPage from "../components/Hubs/HubPage";
+import nookies from "nookies";
 
 const isServer = () => typeof window === "undefined";
 
@@ -18,12 +16,11 @@ Index.getInitialProps = async (ctx) => {
   if (!isServer()) {
     return { home: true, page: 1, feed: 0 };
   }
-  const { query, query: urlQuery } = ctx;
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-
-  let page = query.page || 1;
-  let defaultProps = {
+  const { query, query: urlQuery } = ctx;
+  const { page: feedPage = 1 } = urlQuery;
+  const defaultProps = {
     home: true,
     initialFeed: null,
     leaderboardFeed: null,
@@ -33,31 +30,27 @@ Index.getInitialProps = async (ctx) => {
 
   try {
     const urlDocType = urlQuery.type || "all";
-    let initialFeed = await fetchUnifiedDocFeed({
-      hubId: 0,
-      ordering: "hot",
-      timePeriod: getInitialScope(),
-      subscribedHubs: true,
-      page,
-      type: urlDocType,
-    }).then((res) => {
+    const initialFeed = await fetchUnifiedDocFeed(
+      {
+        hubId: 0,
+        ordering: "hot",
+        timePeriod: getInitialScope(),
+        subscribedHubs: true,
+        page: feedPage,
+        type: urlDocType,
+      },
+      authToken,
+      !isNullOrUndefined(authToken) /* withVotes */
+    ).then((res) => {
       return res;
     });
-    if (initialFeed.results.feed_type === "all") {
-      defaultProps.feed = 1;
-      const { res } = ctx;
-      res.statusCode = 302;
-      res.setHeader("location", "/all");
-      res.end();
-    }
-    let props = {
+    return {
       ...defaultProps,
       initialFeed,
       query,
-      page: page + 1,
+      page: 1,
       loggedIn: authToken !== undefined,
     };
-    return props;
   } catch (e) {
     console.log(e);
     return defaultProps;
