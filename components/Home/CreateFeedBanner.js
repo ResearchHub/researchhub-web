@@ -214,25 +214,22 @@ const styles = StyleSheet.create({
     lineHeight: 1.3,
     marginBottom: 20,
     "@media only screen and (max-width: 767px)": {
-      fontSize: 22,
+      fontSize: 20,
       marginBottom: 20,
     },
     "@media only screen and (max-width: 415px)": {
-      fontSize: 18,
+      fontSize: 17,
     },
   },
   bannerImage: {
     width: 270,
     objectFit: "contain",
     "@media only screen and (max-width: 1200px)": {
-      display: "none",
-    },
-    "@media only screen and (max-width: 990px)": {
       display: "flex",
       width: "30%",
     },
     "@media only screen and (max-width: 767px)": {
-      display: "none",
+      width: "40%",
     },
   },
   button: {
@@ -276,9 +273,6 @@ const styles = StyleSheet.create({
     margin: 0,
     ":hover": {
       backgroundColor: "rgba(250, 250, 250, 1)",
-    },
-    "@media only screen and (max-width: 760px)": {
-      display: "none",
     },
   },
   googleLabel: {
