@@ -241,6 +241,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 767px)": {
       width: "unset",
+      height: 37,
     },
   },
   buttonLabel: {
