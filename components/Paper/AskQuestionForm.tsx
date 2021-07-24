@@ -171,7 +171,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
           id="hubs"
           inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
           isMulti={true}
-          label="Choose a hub"
+          label="Hubs"
           labelStyle={styles.label}
           menu={styles.dropDown}
           onChange={handleOnChangeFields}
