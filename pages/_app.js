@@ -94,9 +94,6 @@ class MyApp extends App {
 
   componentDidMount() {
     this.connectSift();
-    let scriptElem = document.createElement("script");
-    scriptElem.src = "https://app.appzi.io/bootstrap/bundle.js?token=ECg1v";
-    document.getElementsByTagName("head")[0].appendChild(scriptElem);
   }
 
   componentWillUnmount() {

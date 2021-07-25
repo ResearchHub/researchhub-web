@@ -238,12 +238,18 @@ function UnifiedDocFeedContainer({
         (uniDoc: any, arrIndex: number): UnifiedCard => {
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
+          const shouldBlurMobile = arrIndex > 1;
+          const shouldBlurDesktop = arrIndex > 1;
           if (isPaperCard) {
             return (
               <PaperEntryCard
                 index={arrIndex}
                 key={`Paper-${docID}-${arrIndex}`}
                 paper={uniDoc.documents}
+                style={[
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
                 vote={uniDoc.user_vote}
                 voteCallback={(arrIndex: number, currPaper: any): void => {
                   const [currUniDoc, newUniDocs] = [
@@ -262,7 +268,11 @@ function UnifiedDocFeedContainer({
               <UserPostCard
                 {...uniDoc.documents[0]}
                 key={`Post-${docID}-${arrIndex}`}
-                style={styles.customUserPostCard}
+                style={[
+                  styles.customUserPostCard,
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
               />
             );
           }
@@ -437,6 +447,16 @@ const styles = StyleSheet.create({
 
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
+    },
+  },
+  mobileBlurCard: {
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  desktopBlurCard: {
+    "@media only screen and (min-width: 768px)": {
+      display: "none",
     },
   },
   title: {
