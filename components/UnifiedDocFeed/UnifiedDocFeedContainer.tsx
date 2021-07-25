@@ -238,8 +238,10 @@ function UnifiedDocFeedContainer({
         (uniDoc: any, arrIndex: number): UnifiedCard => {
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
-          const shouldBlurMobile = arrIndex > 1;
-          const shouldBlurDesktop = arrIndex > 1;
+          const shouldBlurMobile =
+            arrIndex > 1 && !isLoggedIn && !UnifiedDocFilters.ALL;
+          const shouldBlurDesktop =
+            arrIndex > 1 && !isLoggedIn && !UnifiedDocFilters.ALL;
           if (isPaperCard) {
             return (
               <PaperEntryCard
