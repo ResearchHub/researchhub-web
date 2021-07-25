@@ -73,6 +73,8 @@ const styles = StyleSheet.create({
     width: "unset",
     padding: "0px 15px",
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
+    height: 50,
+    width: 140,
   },
   blur: {
     background:
@@ -82,5 +84,6 @@ const styles = StyleSheet.create({
     zIndex: 3,
     top: 0,
     width: "100%",
+    pointerEvents: "none",
   },
 });

@@ -989,15 +989,6 @@ var styles = StyleSheet.create({
       minWidth: 1200,
     },
   },
-  blur: {
-    background:
-      "linear-gradient(180deg, rgba(250, 250, 250, 0) 0%, #FCFCFC 86.38%)",
-    height: "100%",
-    position: "absolute",
-    zIndex: 3,
-    top: 0,
-    width: "100%",
-  },
   blank: {
     opacity: 0,
     height: 60,
