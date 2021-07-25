@@ -4,6 +4,7 @@ import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "../components/Hubs/HubPage";
 import nookies from "nookies";
+import { redirect } from "~/config/utils";
 
 const isServer = () => typeof window === "undefined";
 
@@ -18,6 +19,12 @@ Index.getInitialProps = async (ctx) => {
   }
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
+
+  if (!authToken) {
+    let redirectPath = "all";
+    redirect(ctx, "", redirectPath);
+  }
+
   const { query, query: urlQuery } = ctx;
   const { page: feedPage = 1 } = urlQuery;
   const defaultProps = {
