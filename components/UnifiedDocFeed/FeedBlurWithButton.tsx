@@ -73,8 +73,11 @@ const styles = StyleSheet.create({
     width: "unset",
     padding: "0px 15px",
     boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
-    height: 50,
-    width: 140,
+    "@media only screen and (max-width: 415px)": {
+      height: 50,
+      width: 140,
+      fontSize: 18,
+    },
   },
   blur: {
     background:
