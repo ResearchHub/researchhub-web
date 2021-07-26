@@ -257,9 +257,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   rhIcon: {
-    width: 17,
+    height: 26,
     marginLeft: 3,
     marginRight: 2,
+    width: 17,
   },
   space: {
     height: 50,

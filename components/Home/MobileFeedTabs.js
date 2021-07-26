@@ -78,9 +78,9 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
   },
   rhIcon: {
-    // height: 30,
-    width: 12,
+    height: 18,
     marginRight: 6,
+    width: 12,
   },
   icon: {
     // fontSize: 1,
