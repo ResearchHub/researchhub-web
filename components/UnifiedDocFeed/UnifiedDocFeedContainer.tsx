@@ -240,9 +240,9 @@ function UnifiedDocFeedContainer({
           const docID = uniDoc.id;
 
           const shouldBlurMobile =
-            arrIndex > 1 && !loggedIn && router.pathname !== "/all";
+            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           const shouldBlurDesktop =
-            arrIndex > 1 && !loggedIn && router.pathname !== "/all";
+            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           if (isPaperCard) {
             return (
               <PaperEntryCard
@@ -281,7 +281,7 @@ function UnifiedDocFeedContainer({
           }
         }
       ),
-    [docTypeFilter, paginationInfo, subFilters, unifiedDocuments]
+    [docTypeFilter, paginationInfo, subFilters, unifiedDocuments, isLoggedIn]
   );
 
   return (
