@@ -1,11 +1,10 @@
-const withCSS = require("@zeit/next-css");
-const withTM = require("next-transpile-modules");
-const withPlugins = require("next-compose-plugins");
-const path = require("path");
-const withSourceMaps = require("@zeit/next-source-maps");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-
 const ANALYZE = process.env.ANALYZE;
+const path = require("path");
+const withCSS = require("@zeit/next-css");
+const withPlugins = require("next-compose-plugins");
+const withSourceMaps = require("@zeit/next-source-maps");
+const withTM = require("next-transpile-modules");
 
 module.exports = withPlugins(
   [
@@ -38,7 +37,6 @@ module.exports = withPlugins(
           })
         );
       }
-
       return config;
     },
     env: {
