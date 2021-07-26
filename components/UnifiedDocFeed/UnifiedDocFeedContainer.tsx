@@ -239,9 +239,9 @@ function UnifiedDocFeedContainer({
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
           const shouldBlurMobile =
-            arrIndex > 1 && !isLoggedIn && !UnifiedDocFilters.ALL;
+            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           const shouldBlurDesktop =
-            arrIndex > 1 && !isLoggedIn && !UnifiedDocFilters.ALL;
+            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           if (isPaperCard) {
             return (
               <PaperEntryCard
