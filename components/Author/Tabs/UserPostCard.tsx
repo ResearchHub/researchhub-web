@@ -1,28 +1,26 @@
-import AuthorAvatar from "../../AuthorAvatar";
-import DesktopOnly from "../../DesktopOnly";
-import HubDropDown from "../../Hubs/HubDropDown";
-import HubTag from "../../Hubs/HubTag";
-import Link from "next/link";
-import Router from "next/router";
-import MobileOnly from "../../MobileOnly";
-import React, { Fragment, SyntheticEvent, useState, useEffect } from "react";
-import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
-import Ripples from "react-ripples";
-import colors from "../../../config/themes/colors";
-import icons from "../../../config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
-import {
-  UPVOTE,
-  DOWNVOTE,
-  UPVOTE_ENUM,
-  DOWNVOTE_ENUM,
-  userVoteToConstant,
-} from "../../../config/constants";
-import API from "../../../config/api";
 import { connect } from "react-redux";
 import { formatUploadedDate } from "../../../config/utils/dates";
 import { transformDate } from "../../../redux/utils";
-// import { handleCatch } from "../../../config/utils";
+import {
+  UPVOTE,
+  DOWNVOTE,
+  userVoteToConstant,
+} from "../../../config/constants";
+import API from "../../../config/api";
+import AuthorAvatar from "../../AuthorAvatar";
+import colors from "../../../config/themes/colors";
+import DesktopOnly from "../../DesktopOnly";
+import HubDropDown from "../../Hubs/HubDropDown";
+import HubTag from "../../Hubs/HubTag";
+import icons from "../../../config/themes/icons";
+import LazyLoad from "react-lazyload";
+import Link from "next/link";
+import MobileOnly from "../../MobileOnly";
+import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
+import Ripples from "react-ripples";
+import Router from "next/router";
 
 export type UserPostCardProps = {
   created_by: any;
@@ -129,27 +127,30 @@ function UserPostCard(props: UserPostCardProps) {
     </Link>
   );
 
-  let previewImgComponent;
-  if (previewImg) {
-    previewImgComponent = (
-      <div
-        className={css(styles.column, styles.previewColumn)}
-        onClick={(e) => {
-          e.stopPropagation();
-        }}
-      >
-        <div className={css(styles.preview)}>
-          <img src={previewImg} className={css(styles.image)} />
+  const previewImgComponent = useMemo(() => {
+    if (Boolean(previewImg)) {
+      return (
+        <div
+          className={css(styles.column, styles.previewColumn)}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <div className={css(styles.preview)}>
+            <LazyLoad once offset={100}>
+              <img src={previewImg} className={css(styles.image)} />
+            </LazyLoad>
+          </div>
         </div>
-      </div>
-    );
-  } else {
-    previewImgComponent = (
-      <div className={css(styles.column, styles.previewColumn)}>
-        <div className={css(styles.preview, styles.previewEmpty)} />
-      </div>
-    );
-  }
+      );
+    } else {
+      return (
+        <div className={css(styles.column, styles.previewColumn)}>
+          <div className={css(styles.preview, styles.previewEmpty)} />
+        </div>
+      );
+    }
+  }, [previewImg]);
 
   const creatorTag = (
     <div className={css(styles.postCreatedBy)}>
@@ -158,7 +159,6 @@ function UserPostCard(props: UserPostCardProps) {
         size={28}
         border="2px solid #F1F1F1"
       />
-      {/* <span className={css(styles.creatorName)}>{creatorName}</span> */}
     </div>
   );
 
@@ -172,33 +172,33 @@ function UserPostCard(props: UserPostCardProps) {
     </div>
   );
 
-  const hubTags = (
-    <div className={css(styles.tags)}>
-      {hubs.map(
-        (tag, index) =>
-          tag &&
-          index < 3 && (
-            // @ts-ignore
-            <HubTag
-              key={`hub_${index}`}
-              tag={tag}
-              last={index === hubs.length - 1}
-              labelStyle={
-                hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
-              }
-            />
-          )
-      )}
-      {hubs.length > 3 && (
-        <HubDropDown
-          hubs={hubs}
-          labelStyle={styles.hubLabel}
-          isOpen={isHubsOpen}
-          setIsOpen={setIsHubsOpen}
+  const hubTags = useMemo(() => {
+    const firstTagSet = hubs
+      .slice(0, 3)
+      .map((tag, index) => (
+        <HubTag
+          key={`hub_${index}`}
+          tag={tag}
+          last={index === hubs.length - 1}
+          labelStyle={
+            hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+          }
         />
-      )}
-    </div>
-  );
+      ));
+    return (
+      <div className={css(styles.tags)}>
+        {firstTagSet}
+        {hubs.length > 3 && (
+          <HubDropDown
+            hubs={hubs}
+            labelStyle={styles.hubLabel}
+            isOpen={isHubsOpen}
+            setIsOpen={setIsHubsOpen}
+          />
+        )}
+      </div>
+    );
+  }, [hubs]);
 
   const createVoteHandler = (voteType) => {
     const voteStrategies = {

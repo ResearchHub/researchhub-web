@@ -1,28 +1,11 @@
-import React, { useState, useEffect, Fragment } from "react";
-import Link from "next/link";
-import Router from "next/router";
 import { connect, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
-import ReactTooltip from "react-tooltip";
-
-// Components
-import VoteWidget from "../VoteWidget";
-import HubTag from "./HubTag";
-import HubDropDown from "./HubDropDown";
-import PaperJournalTag from "../Paper/PaperJournalTag";
-import PaperUserAvatars from "../Paper/PaperUserAvatars";
-import PaperPDFModal from "~/components/Modals/PaperPDFModal";
-
-// Utility
 import {
   UPVOTE,
   DOWNVOTE,
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "~/config/constants";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
   formatPaperSlug,
@@ -30,12 +13,24 @@ import {
   getJournalFromURL,
 } from "~/config/utils";
 import { formatUploadedDate } from "~/config/utils/dates";
-import { transformDate } from "~/redux/utils";
-import { PaperActions } from "~/redux/paper";
-import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import AuthorAvatar from "../AuthorAvatar";
 import { ModalActions } from "~/redux/modals";
+import { PaperActions } from "~/redux/paper";
+import { transformDate } from "~/redux/utils";
+import API from "~/config/api";
+import colors from "~/config/themes/colors";
+import HubDropDown from "./HubDropDown";
+import HubTag from "./HubTag";
+import Link from "next/link";
+import icons from "~/config/themes/icons";
+import PaperPDFModal from "~/components/Modals/PaperPDFModal";
+import PaperUserAvatars from "../Paper/PaperUserAvatars";
+import React, { useState, useEffect, Fragment } from "react";
+import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
+import Router from "next/router";
+import VoteWidget from "../VoteWidget";
+import LazyLoad from "react-lazyload";
 
 const PaperEntryCard = (props) => {
   const {
@@ -335,51 +330,54 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          {isPreviewing && (
-            <PaperPDFModal
-              paper={paper}
-              onClose={() => setIsPreviewing(false)}
-            />
-          )}
-          <div className={css(styles.preview)}>
-            <img
-              src={previews[0].file}
-              className={css(carousel.image)}
-              key={`preview_${previews[0].file}`}
-              alt={`Paper Preview Page 1`}
-              onClick={openPaperPDFModal}
-            />
-          </div>
+          <LazyLoad once offset={100}>
+            {isPreviewing && (
+              <PaperPDFModal
+                paper={paper}
+                onClose={() => setIsPreviewing(false)}
+              />
+            )}
+            <div className={css(styles.preview)}>
+              <img
+                src={previews[0].file}
+                className={css(carousel.image)}
+                key={`preview_${previews[0].file}`}
+                alt={`Paper Preview Page 1`}
+                onClick={openPaperPDFModal}
+              />
+            </div>
+          </LazyLoad>
         </div>
       );
     } else {
       return (
         <div className={css(styles.column, styles.previewColumn)}>
-          <div className={css(styles.preview, styles.previewEmpty)} />
+          <LazyLoad once offset={100}>
+            <div className={css(styles.preview, styles.previewEmpty)} />
+          </LazyLoad>
         </div>
       );
     }
   };
 
   const renderHubTags = () => {
-    if (hubs && hubs.length) {
+    if (Boolean(hubs) && Boolean(hubs.length)) {
+      const firstTagSet = hubs
+        .slice(0, 3)
+        .map((tag, index) => (
+          <HubTag
+            key={`hub_${index}`}
+            tag={tag}
+            hubName={hubName}
+            last={index === hubs.length - 1}
+            labelStyle={
+              hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+            }
+          />
+        ));
       return (
         <div className={css(styles.tags)}>
-          {hubs.map(
-            (tag, index) =>
-              tag &&
-              index < 3 && (
-                <HubTag
-                  key={`hub_${index}`}
-                  tag={tag}
-                  hubName={hubName}
-                  last={index === hubs.length - 1}
-                  labelStyle={
-                    hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
-                  }
-                />
-              )
-          )}
+          {firstTagSet}
           {hubs.length > 3 && (
             <HubDropDown
               hubs={hubs}
