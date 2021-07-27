@@ -137,7 +137,7 @@ function UserPostCard(props: UserPostCardProps) {
           }}
         >
           <div className={css(styles.preview)}>
-            <LazyLoad once offset={100}>
+            <LazyLoad offset={100} once>
               <img src={previewImg} className={css(styles.image)} />
             </LazyLoad>
           </div>
@@ -154,11 +154,13 @@ function UserPostCard(props: UserPostCardProps) {
 
   const creatorTag = (
     <div className={css(styles.postCreatedBy)}>
-      <AuthorAvatar
-        author={created_by.author_profile}
-        size={28}
-        border="2px solid #F1F1F1"
-      />
+      <LazyLoad offset={100} once>
+        <AuthorAvatar
+          author={created_by.author_profile}
+          size={28}
+          border="2px solid #F1F1F1"
+        />
+      </LazyLoad>
     </div>
   );
 

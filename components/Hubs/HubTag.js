@@ -46,7 +46,7 @@ const HubTag = (props) => {
                 )}
               >
                 {noHubName ? <ReactTooltip /> : null}
-                <LazyLoad once offset={100}>
+                <LazyLoad offset={100} once>
                   <img
                     className={css(styles.hubImage) + " hubImage"}
                     src={hubImage}

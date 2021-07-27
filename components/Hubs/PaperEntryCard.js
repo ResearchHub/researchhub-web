@@ -137,7 +137,9 @@ const PaperEntryCard = (props) => {
     if (users && users.length) {
       return (
         <div className={css(styles.journalTagContainer)}>
-          <PaperUserAvatars users={users} />
+          <LazyLoad offset={100} once>
+            <PaperUserAvatars users={users} />
+          </LazyLoad>
         </div>
       );
     }
@@ -330,7 +332,7 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <LazyLoad once offset={100}>
+          <LazyLoad offset={100} once>
             {isPreviewing && (
               <PaperPDFModal
                 paper={paper}
@@ -352,7 +354,7 @@ const PaperEntryCard = (props) => {
     } else {
       return (
         <div className={css(styles.column, styles.previewColumn)}>
-          <LazyLoad once offset={100}>
+          <LazyLoad offset={100} once>
             <div className={css(styles.preview, styles.previewEmpty)} />
           </LazyLoad>
         </div>
