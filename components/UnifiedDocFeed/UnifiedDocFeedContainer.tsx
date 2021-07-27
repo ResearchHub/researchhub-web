@@ -240,7 +240,6 @@ function UnifiedDocFeedContainer({
         (uniDoc: any, arrIndex: number): UnifiedCard => {
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
-
           const shouldBlurMobile =
             arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           const shouldBlurDesktop =
@@ -283,6 +282,7 @@ function UnifiedDocFeedContainer({
                 offset={100}
                 placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
               >
+                <UnifiedDocFeedCardPlaceholder color="#efefef" />
                 <UserPostCard
                   {...uniDoc.documents[0]}
                   key={`Post-${docID}-${arrIndex}`}

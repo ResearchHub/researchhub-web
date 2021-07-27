@@ -1,21 +1,23 @@
-import React, { Fragment, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
-import colors from "~/config/themes/colors";
-import Ripples from "react-ripples";
 import { nameToUrl } from "~/config/constants";
+import { StyleSheet, css } from "aphrodite";
+import colors from "~/config/themes/colors";
+import LazyLoad from "react-lazyload";
+import Link from "next/link";
+import React, { Fragment, useState } from "react";
 import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
 
-const HubTag = ({
-  tag,
-  overrideStyle,
-  hubName,
-  gray,
-  labelStyle,
-  last,
-  noHubName,
-}) => {
-  let { id, name, hub_image, link, slug } = tag;
+const HubTag = (props) => {
+  const {
+    tag,
+    overrideStyle,
+    hubName,
+    gray,
+    labelStyle,
+    last,
+    noHubName,
+  } = props;
+  const { id, name, hub_image, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
   const [hubImage, setHubImage] = useState(
     hub_image ? hub_image : "/static/background/hub-placeholder.svg"
@@ -44,15 +46,17 @@ const HubTag = ({
                 )}
               >
                 {noHubName ? <ReactTooltip /> : null}
-                <img
-                  className={css(styles.hubImage) + " hubImage"}
-                  src={hubImage}
-                  onError={() => {
-                    setHubImage("/static/background/hub-placeholder.svg");
-                  }}
-                  alt={name}
-                  data-tip={noHubName ? name : null}
-                />
+                <LazyLoad once offset={100}>
+                  <img
+                    className={css(styles.hubImage) + " hubImage"}
+                    src={hubImage}
+                    onError={() => {
+                      setHubImage("/static/background/hub-placeholder.svg");
+                    }}
+                    alt={name}
+                    data-tip={noHubName ? name : null}
+                  />
+                </LazyLoad>
                 {noHubName ? null : (
                   <span
                     className={
