@@ -354,13 +354,10 @@ function UnifiedDocFeedContainer({
         </div>
       ) : null}
       {needsInitialFetch ? (
-        <div className={css(styles.initSpinnerWrap)}>
-          <Loader
-            key={"authored-loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
+        <div className={css(styles.initPlaceholder)}>
+          <UnifiedDocFeedCardPlaceholder color="#efefef" />
+          <UnifiedDocFeedCardPlaceholder color="#efefef" />
+          <UnifiedDocFeedCardPlaceholder color="#efefef" />
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>
@@ -536,11 +533,11 @@ const styles = StyleSheet.create({
     width: "100%",
     margin: "8px 0 16px",
   },
-  initSpinnerWrap: {
+  initPlaceholder: {
     alignContent: "center",
     display: "flex",
-    height: 50,
-    justifyContent: "center",
+    flexDirection: "column",
+    height: "100%",
     width: "100%",
   },
   bannerContainer: {
