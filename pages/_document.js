@@ -1,8 +1,7 @@
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
 import CustomHead from "../components/Head";
-import Document, { Html, Head, Main } from "next/document";
-import NextScriptCustom from "_script_loader_custom";
+import Document, { Html, Head, Main, NextScript } from "next/document";
 
 process.on("unhandledRejection", (err) => {
   Sentry.captureException(err);
@@ -93,7 +92,7 @@ export default class MyDocument extends Document {
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>
           <Main />
-          <NextScriptCustom />
+          <NextScript />
         </body>
       </Html>
     );
