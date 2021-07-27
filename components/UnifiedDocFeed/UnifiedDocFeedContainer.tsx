@@ -282,7 +282,6 @@ function UnifiedDocFeedContainer({
                 once
                 placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
               >
-                <UnifiedDocFeedCardPlaceholder color="#efefef" />
                 <UserPostCard
                   {...uniDoc.documents[0]}
                   key={`Post-${docID}-${arrIndex}`}
