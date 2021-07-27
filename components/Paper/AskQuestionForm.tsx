@@ -125,8 +125,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
 
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
-      const { id, title } = response;
-      const slug = title.toLowerCase().replace(/\s/g, "-");
+      const { id, slug } = response;
       router.push(`/post/${id}/${slug}`);
     };
   };
