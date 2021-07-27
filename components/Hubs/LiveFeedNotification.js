@@ -31,9 +31,10 @@ const getNotifMetadata = (notification) => {
     content_type: notifType,
     created_by: createdBy,
     created_date: createdDate,
-    unified_document: unifiedDocument,
+    item: item,
   } = notification;
 
+  const { unified_document: unifiedDocument } = item;
   const { document_type: sourceType } = unifiedDocument;
 
   let doc, href, hrefAs, postId, postTitle, slug;
@@ -41,16 +42,16 @@ const getNotifMetadata = (notification) => {
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
-      postId = doc.id;
-      postTitle = doc.title || unifiedDocument.post_title;
-      slug = doc.slug;
+      postId = unifiedDocument.id;
+      postTitle = doc.title || doc.post_title;
+      slug = doc.slug
       hrefAs = `/post/${postId}/${slug}`;
       break;
     case "PAPER":
       href = "/paper/[paperId]/[paperName]";
       doc = unifiedDocument.documents; // For papers, documents is an object
-      postId = doc.id;
-      postTitle = doc.title || unifiedDocument.paper_title;
+      postId = unifiedDocument.id;
+      postTitle = doc.title || doc.paper_title;
       slug = doc.slug;
       hrefAs = `/paper/${postId}/${slug}`;
       break;
@@ -59,15 +60,12 @@ const getNotifMetadata = (notification) => {
     hrefAs += "#comments"; // TODO: briansantoso - link directly to specific comment with threadId
   }
   const timestamp = formatTimestamp(createdDate);
-  const username = formatUsername(
-    getNestedValue(createdBy, ["author_profile"])
-  );
+  const username = formatUsername(createdBy);
   const authorId = getNestedValue(createdBy, ["author_profile", "id"]);
   return {
     authorId,
     href,
     hrefAs,
-    notifType,
     notifType,
     postId,
     postTitle,
@@ -225,7 +223,7 @@ class LiveFeedNotification extends React.Component {
           plainText: "",
         };
         break;
-      case "researchhub post":
+      case "researchhubpost":
         verb = "created a new post";
         subject = {
           linkText: this.truncatePaperTitle(postTitle),
@@ -267,6 +265,17 @@ class LiveFeedNotification extends React.Component {
         preposition = {
           linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
+        };
+        break;
+      default:
+        verb = "whoa this is a bug!!!!!!!!!!!!!!!!";
+        subject = {
+          linkText: "comment",
+          plainText: notifType,
+        };
+        preposition = {
+          linkText: "",
+          plainText: notifType,
         };
         break;
     }
@@ -316,121 +325,27 @@ class LiveFeedNotification extends React.Component {
 
   renderNotification = () => {
     const { notification } = this.props;
-    let {
-      created_date,
-      created_by,
-      content_type,
-      paper_title,
-      paper_official_title,
-      slug,
-    } = notification;
+    let { created_date, created_by, content_type, slug } = notification;
     let notificationType = content_type;
     const timestamp = formatTimestamp(created_date);
-    const username = formatUsername(
-      getNestedValue(created_by, ["author_profile"])
-    );
-    const authorId = getNestedValue(created_by, ["author_profile", "id"]);
-    let title = slug
-      ? slug
-      : formatPaperSlug(
-          paper_official_title ? paper_official_title : paper_title
-        );
-    let paperTip = notification.paper_title
-      ? notification.paper_title
-      : notification.paper_official_title;
-    let paperId = notification.paper_id;
 
-    // TODO: briansantoso - make bullet_point, summary, purchase compatible with posts
     switch (notificationType) {
-      case "bullet_point":
-        return (
-          <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/discussions`}
-            >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {username}
-              </a>
-            </Link>
-            {" added a "}
-            <Link
-              href="/paper/[paperId]/[paperName]"
-              as={`/paper/${paperId}/${title}#takeaways`}
-            >
-              <a
-                className={css(styles.link)}
-                onClick={(e) => e.stopPropagation()}
-                data-tip={notification.tip}
-              >
-                key takeaway,
-              </a>
-            </Link>
-            <em style={{ marginRight: 3 }}>{notification.tip}</em>
-            {" to "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}`}
-            >
-              <a
-                className={css(styles.paper)}
-                data-tip={paperTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {paperTip && this.truncatePaperTitle(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
-          </div>
-        );
-      case "summary":
-        return (
-          <div className={css(styles.message)}>
-            <Link
-              href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/discussions`}
-            >
-              <a
-                className={css(styles.username)}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {username}
-              </a>
-            </Link>
-            {" edited the "}
-            <span>summary</span>
-            {" for "}
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paperId}/${title}#summary`}
-            >
-              <a
-                className={css(styles.paper)}
-                data-tip={paperTip}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {paperTip && this.truncatePaperTitle(paperTip)}
-              </a>
-            </Link>
-            <span className={css(styles.timestamp)}>
-              <span className={css(styles.timestampDivider)}>•</span>
-              {timestamp}
-            </span>
-          </div>
-        );
       case "purchase":
-        const { recipient } = notification;
-        const recipientAuthorId = recipient.author_id;
-        const recipientName = recipient.name;
-        const supportType = notification.support_type;
+        const { created_by: recipient } = notification;
+        const authorId = getNestedValue(notification.item.user, [
+          "author_profile",
+          "id",
+        ]);
+        const recipientAuthorId = getNestedValue(created_by, [
+          "author_profile",
+          "id",
+        ]);
+        const recipientName = formatUsername(recipient);
+        const username = formatUsername(notification.item.user);
+        const supportType = notification.item.content_type.model;
         const parentContentType = notification.parent_content_type;
-        const slug = notification.slug;
+        const slug = notification.item.source.slug;
+        const sourceId = notification.item.source.id;
 
         let formattedSupportType;
         let href;
@@ -440,13 +355,13 @@ class LiveFeedNotification extends React.Component {
         if (supportType === "paper") {
           formattedSupportType = "paper";
           href = "/paper/[paperId]/[paperName]";
-          as = `/paper/${paperId}/${slug}`;
-          title = notification.paper_title;
+          as = `/paper/${sourceId}/${slug}`;
+          title = notification.item.source.paper_title;
         } else if (supportType === "researchhubpost") {
           formattedSupportType = "post";
           href = "/post/[documentId]/[title]";
-          as = `/post/${notification.post_id}/${slug}`;
-          title = notification.post_title;
+          as = `/post/${sourceId}/${slug}`;
+          title = notification.item.source.title;
         } else if (supportType === "bulletpoint") {
           formattedSupportType = "key takeaway";
         } else if (supportType === "summary") {
@@ -459,8 +374,8 @@ class LiveFeedNotification extends React.Component {
             ? "/paper/[paperId]/[paperName]"
             : "/post/[documentId]/[title]";
           as = commentOnPaper
-            ? `/paper/${paperId}/${slug}`
-            : `/post/${notification.post_id}/${slug}`;
+            ? `/paper/${sourceId}/${slug}`
+            : `/post/${sourceId}/${slug}`;
           title = commentOnPaper
             ? notification.paper_title
             : notification.post_title;
@@ -479,7 +394,7 @@ class LiveFeedNotification extends React.Component {
                 {username}
               </a>
             </Link>
-            {` awarded ${notification.amount} RSC `}
+            {` awarded ${notification.item.amount} RSC `}
             <img
               className={css(styles.coinIcon)}
               src={"/static/icons/coin-filled.png"}
@@ -616,20 +531,35 @@ class LiveFeedNotification extends React.Component {
     let contentType = notification.content_type;
     let metaData = {};
 
-    metaData.paperId = notification.paper_id;
-
     if (
       contentType === "thread" ||
       contentType === "comment" ||
       contentType === "reply"
     ) {
-      metaData.threadId = notification.thread_id;
+      metaData.threadId = notification.id;
     }
     if (contentType === "comment" || contentType === "reply") {
-      metaData.commentId = notification.comment_id;
+      metaData.commentId = notification.id;
     }
     if (contentType === "reply") {
-      metaData.replyId = notification.reply_id;
+      metaData.replyId = notification.id;
+    }
+
+    if (contentType === "purchase") {
+      let item = notification.item;
+
+      if (item.content_type.model === "paper") {
+        metaData.paperId = item.source.id;
+      }
+    } else {
+      let unifiedDocument = notification.item.unified_document;
+      let document_type = unifiedDocument.document_type;
+
+      if (document_type === "DISCUSSION") {
+        metaData.postId = unifiedDocument.documents[0].id;
+      } else {
+        metaData.paperId = unifiedDocument.documents.id;
+      }
     }
 
     metaData.authorId = notification.created_by.author_profile.id;
