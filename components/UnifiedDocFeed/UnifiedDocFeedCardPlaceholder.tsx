@@ -1,14 +1,26 @@
-import React, { Fragment } from "react";
+import React, { Fragment, ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 
-export default function UnifiedDocFeedCardPlaceholder({ color }) {
+type Props = {
+  color: string;
+};
+
+export default function UnifiedDocFeedCardPlaceholder({
+  color,
+}: Props): ReactElement<"div"> {
   return (
     <div
-      className={css(styles.placeholderContainer) + " show-loading-animation"}
+      className={css(styles.docFeedCardPlaceholder) + " show-loading-animation"}
     >
-      <div className={css(styles.spaceBetween)}>
+      <div className={css(styles.voteContainer)}>
+        <RoundShape
+          color={color}
+          style={{ width: 48, height: 28, marginBottom: 10 }}
+        />
+      </div>
+      <div className={css(styles.cardMain)}>
         <div className={css(styles.column)}>
           <div className={css(styles.header)}>
             <TextBlock
@@ -44,7 +56,7 @@ export default function UnifiedDocFeedCardPlaceholder({ color }) {
               style={{ paddingLeft: 30, width: "50%" }}
             />
           </div>
-          <div className={css(styles.row, styles.marginBottom, styles.bottom)}>
+          <div className={css(styles.row, styles.marginBottom)}>
             <div className={css(styles.row)}>
               <RoundShape color={color} style={{ width: 30, height: 30 }} />
               <RoundShape
@@ -68,27 +80,25 @@ export default function UnifiedDocFeedCardPlaceholder({ color }) {
 }
 
 const styles = StyleSheet.create({
-  placeholderContainer: {
-    width: "100%",
+  docFeedCardPlaceholder: {
+    backgroundColor: "#FFF",
+    border: "1px solid #EDEDED",
+    boxSizing: "border-box",
+    display: "flex",
     height: "100%",
+    justifyContent: "space-between",
+    marginBottom: 12,
+    maxWidth: "100%",
+    padding: 12,
+    paddingTop: 24,
     position: "relative",
-    paddingTop: 10,
-  },
-  round: {
-    width: 53,
-    height: 25,
-    position: "absolute",
-    top: 32,
-    left: -70,
+    width: "100%",
   },
   voteContainer: {
-    position: "absolute",
-    left: -70,
-    top: 10,
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
+    marginRight: 16,
   },
   header: {
     paddingBottom: 20,
@@ -96,7 +106,7 @@ const styles = StyleSheet.create({
   paddingTop: {
     paddingTop: 8,
   },
-  textRow: {},
+  textRow: { width: "100%" },
   column: {
     width: "100%",
     display: "flex",
@@ -111,18 +121,11 @@ const styles = StyleSheet.create({
     display: "flex",
     marginBottom: 15,
   },
-  spaceBetween: {
+  cardMain: {
     display: "flex",
-    justifyContent: "space-between",
-    marginBottom: 16,
+    width: "100%",
   },
   marginBottom: {
     marginBottom: 0,
   },
-  bottom: {
-    marginTop: 20,
-    marginBottom: 0,
-  },
-  space: {},
-  label: {},
 });
