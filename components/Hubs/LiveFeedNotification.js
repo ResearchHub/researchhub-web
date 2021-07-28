@@ -43,7 +43,7 @@ const getNotifMetadata = (notification) => {
       doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
       postId = doc.id;
       postTitle = doc.title || unifiedDocument.post_title;
-      slug = formatPaperSlug(postTitle);
+      slug = doc.slug;
       hrefAs = `/post/${postId}/${slug}`;
       break;
     case "PAPER":
@@ -51,7 +51,7 @@ const getNotifMetadata = (notification) => {
       doc = unifiedDocument.documents; // For papers, documents is an object
       postId = doc.id;
       postTitle = doc.title || unifiedDocument.paper_title;
-      slug = formatPaperSlug(postTitle);
+      slug = doc.slug;
       hrefAs = `/paper/${postId}/${slug}`;
       break;
   }
