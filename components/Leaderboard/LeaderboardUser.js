@@ -18,7 +18,10 @@ const LeaderboardUser = (props) => {
 
   return (
     <div className={css(styles.container)}>
-      <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/posts`}>
+      <Link
+        href={"/user/[authorId]/[tabName]"}
+        as={`/user/${authorId}/discussions`}
+      >
         <a className={css(styles.link)}>
           <div className={css(styles.nameRow, userClass)}>
             <AuthorAvatar

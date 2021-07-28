@@ -64,15 +64,6 @@ const SECTIONS = {
 
 const getTabs = (author, transactions) =>
   filterNull([
-    killswitch("newPostTypes")
-      ? {
-          href: "posts",
-          label: "posts",
-          name: "Posts",
-          showCount: true,
-          count: () => author.num_posts,
-        }
-      : null,
     {
       href: "discussions",
       label: "comments",
@@ -93,6 +84,13 @@ const getTabs = (author, transactions) =>
       name: "Paper Submissions",
       showCount: true,
       count: () => author.userContributions.count,
+    },
+    {
+      href: "posts",
+      label: "posts",
+      name: "Posts",
+      showCount: true,
+      count: () => author.num_posts,
     },
     {
       href: "transactions",

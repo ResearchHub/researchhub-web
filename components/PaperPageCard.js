@@ -177,7 +177,7 @@ class PaperPageCard extends React.Component {
   navigateToSubmitter = () => {
     let { author_profile } = this.props.paper.uploaded_by;
     let authorId = author_profile && author_profile.id;
-    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/posts`);
+    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/discussions`);
   };
 
   renderMetadata = () => {
@@ -475,10 +475,13 @@ class PaperPageCard extends React.Component {
         authors.push(
           <Link
             href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/contributions`}
+            as={`/user/${author.id}/discussions`}
             key={`authorName-${author.id}`}
           >
-            <a href={`/user/${author.id}/posts`} className={css(styles.atag)}>
+            <a
+              href={`/user/${author.id}/discussions`}
+              className={css(styles.atag)}
+            >
               <span className={css(styles.authorName)} property="name">
                 {`${authorName}${i < length - 1 ? "," : ""}`}
               </span>
