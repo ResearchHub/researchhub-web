@@ -246,52 +246,52 @@ function UnifiedDocFeedContainer({
             arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           if (isPaperCard) {
             return (
-              <LazyLoad
-                key={`Paper-${docID}-${arrIndex}-lazy`}
-                offset={100}
-                once
-                // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
-              >
-                <PaperEntryCard
-                  index={arrIndex}
-                  key={`Paper-${docID}-${arrIndex}`}
-                  paper={uniDoc.documents}
-                  style={[
-                    shouldBlurMobile && styles.mobileBlurCard,
-                    shouldBlurDesktop && styles.desktopBlurCard,
-                  ]}
-                  vote={uniDoc.user_vote}
-                  voteCallback={(arrIndex: number, currPaper: any): void => {
-                    const [currUniDoc, newUniDocs] = [
-                      { ...uniDoc },
-                      [...unifiedDocuments],
-                    ];
-                    currUniDoc.documents.user_vote = currPaper.user_vote;
-                    currUniDoc.documents.score = currPaper.score;
-                    newUniDocs[arrIndex] = currUniDoc;
-                    setUnifiedDocuments(newUniDocs);
-                  }}
-                />
-              </LazyLoad>
+              // <LazyLoad
+              //   key={`Paper-${docID}-${arrIndex}-lazy`}
+              //   offset={100}
+              //   once
+              //   // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
+              // >
+              <PaperEntryCard
+                index={arrIndex}
+                key={`Paper-${docID}-${arrIndex}`}
+                paper={uniDoc.documents}
+                style={[
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
+                vote={uniDoc.user_vote}
+                voteCallback={(arrIndex: number, currPaper: any): void => {
+                  const [currUniDoc, newUniDocs] = [
+                    { ...uniDoc },
+                    [...unifiedDocuments],
+                  ];
+                  currUniDoc.documents.user_vote = currPaper.user_vote;
+                  currUniDoc.documents.score = currPaper.score;
+                  newUniDocs[arrIndex] = currUniDoc;
+                  setUnifiedDocuments(newUniDocs);
+                }}
+              />
+              // </LazyLoad>
             );
           } else {
             return (
-              <LazyLoad
-                key={`Post-${docID}-${arrIndex}-lazy`}
-                offset={100}
-                once
-                // // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
-              >
-                <UserPostCard
-                  {...uniDoc.documents[0]}
-                  key={`Post-${docID}-${arrIndex}`}
-                  style={[
-                    styles.customUserPostCard,
-                    shouldBlurMobile && styles.mobileBlurCard,
-                    shouldBlurDesktop && styles.desktopBlurCard,
-                  ]}
-                />
-              </LazyLoad>
+              // <LazyLoad
+              //   key={`Post-${docID}-${arrIndex}-lazy`}
+              //   offset={100}
+              //   once
+              //   // // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
+              // >
+              <UserPostCard
+                {...uniDoc.documents[0]}
+                key={`Post-${docID}-${arrIndex}`}
+                style={[
+                  styles.customUserPostCard,
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
+              />
+              // </LazyLoad>
             );
           }
         }
