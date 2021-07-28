@@ -1,5 +1,6 @@
 import React, { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { AUTH_TOKEN } from "~/config/constants";
@@ -24,27 +25,30 @@ export function SimpleEditor({
   }
 
   const editorConfiguration = {
-    toolbar: [
-      "heading",
-      "|",
-      "bold",
-      "italic",
-      "underline",
-      "strikethrough",
-      "|",
-      "blockquote",
-      "codeBlock",
-      "insertTable",
-      "|",
-      "numberedList",
-      "bulletedList",
-      "outdent",
-      "indent",
-      "|",
-      "link",
-      "imageUpload",
-      "mediaEmbed",
-    ],
+    toolbar: {
+      viewportTopOffset: window.innerWidth < breakpoints.small.int ? 66 : 80,
+      items: [
+        "heading",
+        "|",
+        "bold",
+        "italic",
+        "underline",
+        "strikethrough",
+        "|",
+        "blockquote",
+        "codeBlock",
+        "insertTable",
+        "|",
+        "numberedList",
+        "bulletedList",
+        "outdent",
+        "indent",
+        "|",
+        "link",
+        "imageUpload",
+        "mediaEmbed",
+      ],
+    },
     mediaEmbed: {
       previewsInData: true,
     },
