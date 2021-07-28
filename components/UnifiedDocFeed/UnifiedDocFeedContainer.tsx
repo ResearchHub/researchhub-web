@@ -250,7 +250,7 @@ function UnifiedDocFeedContainer({
                 key={`Paper-${docID}-${arrIndex}-lazy`}
                 offset={100}
                 once
-                placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
+                // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
               >
                 <PaperEntryCard
                   index={arrIndex}
@@ -280,7 +280,7 @@ function UnifiedDocFeedContainer({
                 key={`Post-${docID}-${arrIndex}-lazy`}
                 offset={100}
                 once
-                placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
+                // // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
               >
                 <UserPostCard
                   {...uniDoc.documents[0]}
