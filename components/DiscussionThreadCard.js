@@ -31,7 +31,7 @@ const DiscussionThreadCard = (props) => {
   const { hostname, hoverEvents, paperId, path, postId, mobileView } = props;
   const DYNAMIC_HREF = paperId
     ? "/paper/[paperId]/[paperName]"
-    : "/post/[postId]";
+    : "/post/[documentId]/[title]";
 
   const data = getNestedValue(props, ["data"]);
 
@@ -246,7 +246,7 @@ const ReadButton = (props) => {
   const { paperId, postId, threadPath } = props;
   const DYNAMIC_HREF = paperId
     ? "/paper/[paperId]/[paperName]"
-    : "/post/[postId]";
+    : "/post/[documentId]/[title]";
   return (
     <ClientLinkWrapper
       dynamicHref={DYNAMIC_HREF}
