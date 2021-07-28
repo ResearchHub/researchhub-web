@@ -240,7 +240,7 @@ const Navbar = (props) => {
     let { href, as } = route;
     if (href) {
       if (href === "/user/[authorId]/[tabName]") {
-        Router.push(href, `/user/${user.author_profile.id}/posts`);
+        Router.push(href, `/user/${user.author_profile.id}/discussions`);
       } else {
         Router.push(href, as);
       }
@@ -489,7 +489,7 @@ const Navbar = (props) => {
                   >
                     <Link
                       href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${user.author_profile.id}/posts`}
+                      as={`/user/${user.author_profile.id}/discussions`}
                     >
                       <div className={css(styles.option)}>
                         <span

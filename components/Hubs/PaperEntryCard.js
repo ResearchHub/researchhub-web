@@ -127,7 +127,7 @@ const PaperEntryCard = (props) => {
     e && e.stopPropagation();
     let { author_profile } = uploaded_by;
     let authorId = author_profile && author_profile.id;
-    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/posts`);
+    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/discussions`);
     onClick && onClick();
   }
 

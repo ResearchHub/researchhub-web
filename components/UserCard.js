@@ -24,7 +24,7 @@ const UserCard = ({ authorProfile, reputation }) => {
     <div className={css(styles.container)}>
       <Link
         href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorProfile.id}/posts`}
+        as={`/user/${authorProfile.id}/discussions`}
       >
         <a className={css(styles.linkWrapper)}>
           <AuthorAvatar

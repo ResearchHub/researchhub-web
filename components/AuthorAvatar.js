@@ -103,10 +103,10 @@ const AuthorAvatar = (props) => {
       ) : (
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/posts`}
+          as={`/user/${authorId}/discussions`}
         >
           <a
-            href={`/user/${authorId}/posts`}
+            href={`/user/${authorId}/discussions`}
             className={css(styles.atag)}
             rel="noreferrer noopener"
           >

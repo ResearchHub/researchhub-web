@@ -275,7 +275,7 @@ class LiveFeedNotification extends React.Component {
       <div className={css(styles.message)}>
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/posts`}
+          as={`/user/${authorId}/discussions`}
         >
           <a
             className={css(styles.username)}
@@ -347,7 +347,7 @@ class LiveFeedNotification extends React.Component {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/posts`}
+              as={`/user/${authorId}/discussions`}
             >
               <a
                 className={css(styles.username)}
@@ -394,7 +394,7 @@ class LiveFeedNotification extends React.Component {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/posts`}
+              as={`/user/${authorId}/discussions`}
             >
               <a
                 className={css(styles.username)}
@@ -470,7 +470,7 @@ class LiveFeedNotification extends React.Component {
           <div className={css(styles.message)}>
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${authorId}/posts`}
+              as={`/user/${authorId}/discussions`}
             >
               <a
                 className={css(styles.username)}
@@ -488,7 +488,7 @@ class LiveFeedNotification extends React.Component {
             {" to "}
             <Link
               href={"/user/[authorId]/[tabName]"}
-              as={`/user/${recipientAuthorId}/posts`}
+              as={`/user/${recipientAuthorId}/discussions`}
             >
               <a
                 className={css(styles.username)}
