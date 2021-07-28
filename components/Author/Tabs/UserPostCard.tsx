@@ -33,6 +33,7 @@ export type UserPostCardProps = {
   boost_amount: number;
   style: StyleSheet;
   title: string;
+  slug: string;
   unified_document_id: number;
   user: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
@@ -81,6 +82,7 @@ function UserPostCard(props: UserPostCardProps) {
     boost_amount: boostAmount,
     style,
     title,
+    slug,
     unified_document_id: unifiedDocumentId,
     user,
     user_vote: userVote,
@@ -111,7 +113,6 @@ function UserPostCard(props: UserPostCardProps) {
   }, [userVote]);
 
   const creatorName = first_name + " " + last_name;
-  const slug = title.toLowerCase().replace(/\s/g, "-");
   const mainTitle = (
     <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
       <a

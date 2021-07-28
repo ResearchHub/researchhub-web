@@ -30,9 +30,9 @@ Post.getInitialProps = async (ctx) => {
     API.GET_CONFIG()
   ).then(helpers.parseJSON);
   const post = posts.results[0];
-  const title = formatPaperSlug(post.title);
+  const slug = post.slug;
 
-  const redirectPath = `/post/${query.documentId}/${title}`;
+  const redirectPath = `/post/${post.id}/${slug}`;
 
   return { redirectPath, post };
 };
