@@ -5,7 +5,6 @@ import Link from "next/link";
 import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import Ripples from "react-ripples";
-import { formatPaperSlug } from "~/config/utils";
 
 // Components
 import TextEditor from "~/components/TextEditor"; // QuillTextEditor
@@ -28,16 +27,18 @@ export const getActivityMetadata = (activity) => {
   } = activity;
 
   let href, hrefAs;
-  let postId, postTitle;
+  let postId, postTitle, postSlug;
   switch (contributionType) {
     case "SUBMITTER":
       postId = source.id;
+      postSlug = source.slug;
       // If it's a submission, then the post title depends on whether it is a paper of discusison,
       // so handle in next switch.
       break;
     case "COMMENTER":
       postId = source.document_meta.id;
       postTitle = source.document_meta.title;
+      postSlug = source.document_meta.slug;
       break;
     case "SUPPORTER":
       let documents = activity.unified_document.documents;
@@ -56,12 +57,12 @@ export const getActivityMetadata = (activity) => {
     case "PAPER":
       href = "/paper/[paperId]/[paperName]";
       postTitle = postTitle ? postTitle : source.paper_title;
-      hrefAs = `/paper/${postId}/${formatPaperSlug(postTitle)}`;
+      hrefAs = `/paper/${postId}/${postSlug}`;
       break;
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       postTitle = postTitle ? postTitle : source.title;
-      hrefAs = `/post/${postId}/${formatPaperSlug(postTitle)}`;
+      hrefAs = `/post/${postId}/${postSlug}`;
       break;
     default:
       href = "";

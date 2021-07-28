@@ -137,14 +137,11 @@ class PromotionCard extends React.Component {
 
     const isPost =
       source.document_type && source.document_type === "DISCUSSION";
-    const postSlug = source.title.toLowerCase().replace(/\s/g, "-");
 
     const href = isPost
       ? "/post/[documentId]/[title]"
       : "/paper/[paperId]/[paperName]";
-    const as = isPost
-      ? `/post/${source.id}/${postSlug}`
-      : `/paper/${source.id}/${source.slug}`;
+    const as = `/${isPost ? "post" : "paper"}/${source.id}/${source.slug}`;
 
     return (
       <div className={css(styles.card, isLast && styles.removeBottomBorder)}>

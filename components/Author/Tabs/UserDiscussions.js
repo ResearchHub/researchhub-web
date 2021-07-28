@@ -89,7 +89,7 @@ class UserDiscussionsTab extends React.Component {
         if (discussion.paper) {
           path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
         } else {
-          path = `/post/${discussion.post}`;
+          path = `/post/${discussion.post}/${discussion.post_slug}`;
         }
         return (
           <div
