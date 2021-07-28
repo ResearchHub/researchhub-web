@@ -246,12 +246,6 @@ function UnifiedDocFeedContainer({
             arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
           if (isPaperCard) {
             return (
-              // <LazyLoad
-              //   key={`Paper-${docID}-${arrIndex}-lazy`}
-              //   offset={100}
-              //   once
-              //   // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
-              // >
               <PaperEntryCard
                 index={arrIndex}
                 key={`Paper-${docID}-${arrIndex}`}
@@ -272,16 +266,9 @@ function UnifiedDocFeedContainer({
                   setUnifiedDocuments(newUniDocs);
                 }}
               />
-              // </LazyLoad>
             );
           } else {
             return (
-              // <LazyLoad
-              //   key={`Post-${docID}-${arrIndex}-lazy`}
-              //   offset={100}
-              //   once
-              //   // // placeholder={<UnifiedDocFeedCardPlaceholder color="#efefef" />}
-              // >
               <UserPostCard
                 {...uniDoc.documents[0]}
                 key={`Post-${docID}-${arrIndex}`}
@@ -291,7 +278,6 @@ function UnifiedDocFeedContainer({
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
               />
-              // </LazyLoad>
             );
           }
         }
