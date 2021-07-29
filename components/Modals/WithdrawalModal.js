@@ -81,12 +81,10 @@ class WithdrawalModal extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
-      if (!this.state.buttonEnabled && this.props.agreedToTerms) {
-        if (this.state.userBalance) {
-          this.setState({
-            buttonEnabled: true,
-          });
-        }
+      if (!this.state.buttonEnabled && this.state.userBalance) {
+        this.setState({
+          buttonEnabled: true,
+        });
       }
       if (
         prevProps.modals.openWithdrawalModal !==
@@ -368,7 +366,6 @@ class WithdrawalModal extends React.Component {
     const { connected, provider, account } = await useMetaMask();
     if (connected) {
       this.setUpEthListeners();
-      console.log("Connected to MetaMask");
       this.setState({
         connectedMetaMask: connected,
         connectedWalletLink: false,
@@ -436,7 +433,6 @@ class WithdrawalModal extends React.Component {
     const { connected, provider, account, walletLink } = await useWalletLink();
     if (connected) {
       this.props.setWalletLink(walletLink);
-      console.log("Connected to WalletLink");
       this.setState({
         walletLink,
         connectedMetaMask: false,
@@ -1193,7 +1189,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   auth: state.auth,
   modals: state.modals,
-  agreedToTerms: state.auth.user.agreed_to_terms,
+  // agreedToTerms: state.auth.user.agreed_to_terms,
 });
 
 const mapDispatchToProps = {
