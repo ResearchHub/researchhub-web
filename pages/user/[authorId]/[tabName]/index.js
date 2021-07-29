@@ -30,6 +30,7 @@ import UserInfoModal from "~/components/Modals/UserInfoModal";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
+import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 
 // Config
 import icons from "~/config/themes/icons";
@@ -417,6 +418,14 @@ function AuthorPage(props) {
     <ComponentWrapper>
       <div className={css(styles.tabMeta)}>
         <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+
+        <div
+          className={css(
+            tabName === "overview" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserOverviewTab fetching={fetching} />
+        </div>
         <div
           className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
         >
