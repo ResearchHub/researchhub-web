@@ -7,21 +7,36 @@ import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
-import { connect } from "react-redux";
+import { connect, useStore, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { AuthorActions } from "~/redux/author";
 
-function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
+function useEffectFetchUserPosts({
+  setIsFetching,
+  setPosts,
+  userID,
+  store,
+  dispatch,
+}) {
   useEffect(() => {
     if (!isNullOrUndefined(userID)) {
       setIsFetching(true);
       fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
-        .then((data) => {
+        .then(async (data) => {
           try {
             setPosts(data.results);
             setIsFetching(false);
+
+            await dispatch(
+              AuthorActions.updateAuthorByKey({
+                key: "posts",
+                value: data,
+                prevState: store.getState().author,
+              })
+            );
           } catch (error) {
             setIsFetching(false);
           }
@@ -39,6 +54,9 @@ function UserPosts(props) {
   const { author, user, fetching } = props;
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
+  const store = useStore();
+  const dispatch = useDispatch();
+
   let postCards;
   if (posts.length > 0) {
     postCards = posts.map((post, index) => (
@@ -57,7 +75,13 @@ function UserPosts(props) {
     );
   }
 
-  useEffectFetchUserPosts({ setIsFetching, setPosts, userID: author.user });
+  useEffectFetchUserPosts({
+    setIsFetching,
+    setPosts,
+    userID: author.user,
+    store,
+    dispatch,
+  });
   return (
     <ReactPlaceholder
       ready={!isFetching}
