@@ -10,6 +10,7 @@ const isServer = () => typeof window === "undefined";
 
 const Index = (props) => {
   // NOTE: calvinhlee - being called
+  console.warn("HOME PAGE: ", props);
   return <HubPage home={true} {...props} />;
 };
 

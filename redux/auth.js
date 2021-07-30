@@ -56,7 +56,7 @@ const alertSignedUp = (userId) => {
   );
 };
 
-let getUserHelper = (dispatch, dispatchFetching) => {
+export const getUserHelper = (dispatch, dispatchFetching) => {
   if (!dispatchFetching) {
     dispatch({ type: AuthConstants.FETCHING_USER, isFetchingUser: true });
   }

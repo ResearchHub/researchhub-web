@@ -21,7 +21,7 @@ import "../components/CKEditor/CKEditor.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-
+import { getUserHelper } from "~/redux/auth";
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
 
@@ -90,6 +90,7 @@ class MyApp extends App {
     Router.events.on("routeChangeError", () => {
       props.store.dispatch(MessageActions.showMessage({ show: false }));
     });
+    console.warn("i'm here");
   }
 
   componentDidMount() {
@@ -162,6 +163,7 @@ class MyApp extends App {
 
   render() {
     const { store } = this.props;
+    // console.warn("app's initial props: ", args);
 
     return (
       <Provider store={store}>
@@ -170,5 +172,15 @@ class MyApp extends App {
     );
   }
 }
+
+MyApp.getInitialProps = async (appCtx) => {
+  console.warn("appCtx ", appCtx);
+  const appProps = await App.getInitialProps(appCtx);
+  console.warn("app's appProps: ", appProps);
+  //   return { ...appProps }
+  console.warn("DISPATCHED: ");
+  getUserHelper(appCtx.ctx.store.dispatch);
+  return appProps;
+};
 
 export default withRedux(configureStore)(MyApp);
