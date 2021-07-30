@@ -20,7 +20,6 @@ Index.getInitialProps = async (ctx) => {
   }
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
-
   if (!authToken) {
     let redirectPath = "all";
     redirect(ctx, "", redirectPath);
