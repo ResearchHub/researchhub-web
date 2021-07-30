@@ -645,7 +645,7 @@ const styles = StyleSheet.create({
     borderBottom: "rgb(151,151,151, .2) 1px solid",
     justifyContent: "space-around",
     position: "sticky",
-    zIndex: 1004,
+    zIndex: 4,
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
