@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
+import { get } from "lodash";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -34,7 +35,7 @@ import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 
 // Config
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
 import killswitch from "~/config/killswitch/killswitch";
@@ -120,7 +121,7 @@ function AuthorPage(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
-  const { tabName } = router.query;
+  const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
@@ -167,6 +168,14 @@ function AuthorPage(props) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
+
+  useEffect(() => {
+    const selectedTab = get(router, "query.tabName");
+
+    if (selectedTab && selectedTab !== tabName) {
+      setTabName(selectedTab);
+    }
+  }, [router]);
 
   async function fetchAuthoredPapers() {
     await dispatch(
@@ -807,14 +816,6 @@ function AuthorPage(props) {
     </div>
   );
 
-  // const onUserFollow = () => {
-  //   followUser({ followeeId: 11, userId: 4 })
-  //     .then((_) => {})
-  //     .catch((err) => {
-  //       console.log("follow err: ", err);
-  //     });
-  // };
-
   const userActionButtons = (
     /* <UserFollowButton authorId={router.query.authorId} authorname={`${author.first_name} ${author.last_name}`} /> */
     <div className={css(styles.userActions)}>
@@ -1011,7 +1012,7 @@ function AuthorPage(props) {
       </ComponentWrapper>
       <TabBar
         tabs={tabs}
-        selectedTab={router.query.tabName}
+        selectedTab={tabName}
         dynamic_href={"/user/[authorId]/[tabName]"}
         author={author}
         authorId={router.query.authorId}
@@ -1349,17 +1350,19 @@ const styles = StyleSheet.create({
     background: "#fff",
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: 50,
-    paddingTop: 24,
+    padding: "24px 20px 24px 20px",
     "@media only screen and (max-width: 767px)": {
       padding: 20,
     },
   },
   title: {
-    fontWeight: 500,
     textTransform: "capitalize",
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    paddingBottom: 10,
+    color: colors.BLACK(0.5),
+    fontWeight: 500,
+    fontSize: 16,
     marginTop: 0,
-    marginBottom: 16,
   },
   nameInput: {
     fontSize: 32,
