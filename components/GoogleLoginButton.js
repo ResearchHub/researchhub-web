@@ -16,6 +16,7 @@ import colors from "~/config/themes/colors";
 import { useEffect } from "react";
 
 const GoogleLoginButton = (props) => {
+  // maybe there's a separate auth check happening here to fetch user login data?
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
 

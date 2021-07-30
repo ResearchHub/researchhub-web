@@ -176,10 +176,8 @@ class MyApp extends App {
 MyApp.getInitialProps = async (appCtx) => {
   console.warn("appCtx ", appCtx);
   const appProps = await App.getInitialProps(appCtx);
-  console.warn("app's appProps: ", appProps);
-  //   return { ...appProps }
-  console.warn("DISPATCHED: ");
-  getUserHelper(appCtx.ctx.store.dispatch);
+  console.warn("appProps: ", appProps);
+  getUserHelper(appCtx.ctx.store.dispatch, true);
   return appProps;
 };
 

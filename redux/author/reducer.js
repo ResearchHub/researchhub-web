@@ -31,10 +31,12 @@ const AuthorReducer = (state = defaultAuthorState, action) => {
     case types.GET_USER_CONTRIBUTIONS_SUCCESS:
     case types.UPDATE_AUTHOR_BY_KEY:
     case types.UPDATE_AUTHOR:
-      return {
+      const result = {
         ...state,
         ...action.payload,
       };
+      console.warn("result: ", result);
+      return result;
     default:
       return state;
   }

@@ -87,7 +87,7 @@ export default class MyDocument extends Document {
               })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');`,
             }}
           />
-          <script src="https://accounts.google.com/gsi/client" async></script>
+          <script src="https://accounts.google.com/gsi/client"></script>
           <CustomHead />
         </Head>
         <body style={{ margin: 0, fontFamily: "Roboto, sans-serif" }}>

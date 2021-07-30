@@ -13,6 +13,7 @@ import { ModalActions } from "./modals";
 import { HubActions } from "./hub";
 import Cookies from "js-cookie";
 import * as Sentry from "@sentry/browser";
+import { isNullOrUndefined } from "../config/utils/nullchecks";
 
 export const AuthConstants = {
   LOGIN: "@@auth/LOGIN",
@@ -60,8 +61,8 @@ export const getUserHelper = (dispatch, dispatchFetching) => {
   if (!dispatchFetching) {
     dispatch({ type: AuthConstants.FETCHING_USER, isFetchingUser: true });
   }
-  var config = API.GET_CONFIG();
-  return fetch(API.USER({}), config)
+
+  return fetch(API.USER({}), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((json) => {
@@ -69,10 +70,14 @@ export const getUserHelper = (dispatch, dispatchFetching) => {
         dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
       }
 
-      if (window.localStorage[AUTH_TOKEN]) {
+      if (
+        !isNullOrUndefined(typeof window) &&
+        window.localStorage[AUTH_TOKEN]
+      ) {
         saveToLocalStorage(AUTH_TOKEN, window.localStorage[AUTH_TOKEN]);
       }
-
+      // Result is empty. It shouldn't be
+      console.warn("FETCH RESUILT: ", json);
       if (json.results.length > 0) {
         return dispatch({
           type: AuthConstants.GOT_USER,
