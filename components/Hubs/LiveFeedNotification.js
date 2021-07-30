@@ -44,7 +44,7 @@ const getNotifMetadata = (notification) => {
       doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
       postId = unifiedDocument.id;
       postTitle = doc.title || doc.post_title;
-      slug = doc.slug
+      slug = doc.slug;
       hrefAs = `/post/${postId}/${slug}`;
       break;
     case "PAPER":
@@ -265,17 +265,6 @@ class LiveFeedNotification extends React.Component {
         preposition = {
           linkText: this.truncatePaperTitle(postTitle),
           plainText: "",
-        };
-        break;
-      default:
-        verb = "whoa this is a bug!!!!!!!!!!!!!!!!";
-        subject = {
-          linkText: "comment",
-          plainText: notifType,
-        };
-        preposition = {
-          linkText: "",
-          plainText: notifType,
         };
         break;
     }
