@@ -81,37 +81,41 @@ class UserDiscussionsTab extends React.Component {
   };
 
   render() {
-    const { author, hostname } = this.props;
+    const { author, hostname, maxCardsToRender } = this.props;
 
-    const discussions = author.userDiscussions.discussions.map(
-      (discussion, index) => {
-        let path;
-        if (discussion.paper) {
-          path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
-        } else {
-          path = `/post/${discussion.post}/${discussion.post_slug}`;
-        }
-        return (
-          <div
-            className={css(
-              styles.discussionContainer,
-              index === author.userDiscussions.discussions.length - 1 &&
-                styles.noBorder
-            )}
-          >
-            <DiscussionThreadCard
-              data={discussion}
-              hostname={hostname}
-              path={path}
-              paperId={discussion.paper}
-              postId={discussion.post}
-              key={`discThread-${discussion.id}-${index}`}
-              mobileView={this.props.mobileView}
-            />
-          </div>
-        );
+    const discussions = [];
+    for (let i = 0; i < author.userDiscussions.discussions.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const discussion = author.userDiscussions.discussions[i];
+      let path;
+
+      if (discussion.paper) {
+        path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
+      } else {
+        path = `/post/${discussion.post}/${discussion.post_slug}`;
       }
-    );
+      discussions.push(
+        <div
+          className={css(
+            styles.discussionContainer,
+            i === author.userDiscussions.discussions.length - 1 &&
+              styles.noBorder
+          )}
+        >
+          <DiscussionThreadCard
+            data={discussion}
+            hostname={hostname}
+            path={path}
+            paperId={discussion.paper}
+            postId={discussion.post}
+            key={`discThread-${discussion.id}-${i}`}
+            mobileView={this.props.mobileView}
+          />
+        </div>
+      );
+    }
+
     return (
       <ReactPlaceholder
         ready={
@@ -147,8 +151,8 @@ var styles = StyleSheet.create({
   discussionContainer: {
     width: "100%",
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    "@media only screen and (max-width: 415px)": {
-      borderBottom: "none",
+    ":last-child": {
+      borderBottom: 0,
     },
   },
   box: {

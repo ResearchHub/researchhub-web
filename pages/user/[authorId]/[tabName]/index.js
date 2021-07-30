@@ -66,6 +66,12 @@ const SECTIONS = {
 const getTabs = (author, transactions) =>
   filterNull([
     {
+      href: "overview",
+      label: "overview",
+      name: "Overview",
+      showCount: false,
+    },
+    {
       href: "discussions",
       label: "comments",
       name: "Comments",
@@ -413,63 +419,72 @@ function AuthorPage(props) {
     }
   };
 
-  const tabContents = (
-    // render all tab content on the dom, but only show if selected
-    <ComponentWrapper>
-      <div className={css(styles.tabMeta)}>
-        <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-
-        <div
-          className={css(
-            tabName === "overview" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserOverviewTab fetching={fetching} />
-        </div>
-        <div
-          className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
-        >
-          <UserPostsTab fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "contributions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserContributionsTab fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "authored-papers" ? styles.reveal : styles.hidden
-          )}
-        >
-          <AuthoredPapersTab fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "discussions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "transactions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserTransactionsTab fetching={fetching} />
-        </div>
-        <div
-          className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
-        >
-          <UserPromotionsTab
-            fetching={fetchingPromotions}
-            activeTab={tabName === "boosts"}
-          />
-        </div>
+  const tabContents =
+    tabName === "overview" ? (
+      <div
+        className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
+      >
+        <UserOverviewTab fetching={fetching} />
       </div>
-    </ComponentWrapper>
-  );
+    ) : (
+      // render all tab content on the dom, but only show if selected
+      <ComponentWrapper>
+        <div className={css(styles.tabMeta)}>
+          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+
+          <div
+            className={css(
+              tabName === "overview" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserOverviewTab fetching={fetching} />
+          </div>
+          <div
+            className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
+          >
+            <UserPostsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "contributions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserContributionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "authored-papers" ? styles.reveal : styles.hidden
+            )}
+          >
+            <AuthoredPapersTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "discussions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "transactions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserTransactionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "boosts" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserPromotionsTab
+              fetching={fetchingPromotions}
+              activeTab={tabName === "boosts"}
+            />
+          </div>
+        </div>
+      </ComponentWrapper>
+    );
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
