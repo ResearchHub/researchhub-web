@@ -241,7 +241,7 @@ class PostPageCard extends React.Component {
   };
 
   renderMetadata = () => {
-    const { paper } = this.props;
+    const { post } = this.props;
 
     this.metadata = [
       {
@@ -250,59 +250,26 @@ class PostPageCard extends React.Component {
           <span
             className={css(styles.metadata) + " clamp1"}
             property="datePublished"
-            dateTime={paper.paper_publish_date}
+            dateTime={post.created_date}
           >
             {this.renderPublishDate()}
           </span>
         ),
-        active: paper && paper.paper_publish_date,
-      },
-
-      {
-        label: "DOI",
-        value: (
-          <a
-            property="sameAs"
-            href={this.formatDoiUrl(paper.doi)}
-            target="_blank"
-            className={css(styles.metadata, styles.link) + " clamp1"}
-            rel="noreferrer noopener"
-          >
-            {paper.doi}
-          </a>
-        ),
-        active: paper && paper.doi,
+        active: post && post.created_date,
       },
     ];
 
     const metadata = this.metadata.filter((data) => data.active);
 
     return (
-      <div>
-        <div className={css(styles.row)}>
-          {metadata.map((props, i) => (
-            <PaperMetadata
-              key={`metadata-${i}`}
-              {...props}
-              containerStyles={i === 0 && styles.marginRight}
-            />
-          ))}
-        </div>
-        <div className={css(styles.row, styles.lastRow)}>
+      <div className={css(styles.row)}>
+        {metadata.map((props, i) => (
           <PaperMetadata
-            label={"Paper Title"}
-            active={
-              paper.paper_title &&
-              removeLineBreaksInStr(paper.paper_title) !==
-                removeLineBreaksInStr(paper.title)
-            }
-            value={
-              <h3 className={css(styles.metadata)} property={"name"}>
-                {paper.paper_title}
-              </h3>
-            }
+            key={`metadata-${i}`}
+            {...props}
+            containerStyles={i === 0 && styles.marginRight}
           />
-        </div>
+        ))}
       </div>
     );
   };
@@ -563,9 +530,10 @@ class PostPageCard extends React.Component {
   };
 
   renderPublishDate = () => {
-    const { paper } = this.props;
-    if (paper.paper_publish_date) {
-      return formatPublishedDate(moment(paper.paper_publish_date), true);
+    const { post } = this.props;
+    const created_date = post.created_date;
+    if (created_date) {
+      return formatPublishedDate(moment(created_date), true);
     }
   };
 
@@ -759,7 +727,7 @@ class PostPageCard extends React.Component {
                       </div>
                     </div>
                     <div className={css(styles.column)}>
-                      {/*this.renderMetadata()*/}
+                      {this.renderMetadata()}
                     </div>
                   </div>
                 </div>
