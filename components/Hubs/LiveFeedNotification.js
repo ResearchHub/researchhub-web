@@ -42,7 +42,7 @@ const getNotifMetadata = (notification) => {
     case "DISCUSSION":
       href = "/post/[documentId]/[title]";
       doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
-      postId = unifiedDocument.id;
+      postId = doc.id;
       postTitle = doc.title || doc.post_title;
       slug = doc.slug;
       hrefAs = `/post/${postId}/${slug}`;
@@ -50,7 +50,7 @@ const getNotifMetadata = (notification) => {
     case "PAPER":
       href = "/paper/[paperId]/[paperName]";
       doc = unifiedDocument.documents; // For papers, documents is an object
-      postId = unifiedDocument.id;
+      postId = doc.id;
       postTitle = doc.title || doc.paper_title;
       slug = doc.slug;
       hrefAs = `/paper/${postId}/${slug}`;
@@ -231,8 +231,7 @@ class LiveFeedNotification extends React.Component {
         };
         break;
       case "thread":
-        const plainText =
-          notification.thread_plain_text && notification.thread_plain_text;
+        const plainText = notification.item.plain_text;
         verb = "left a";
         subject = {
           linkText: "comment",
@@ -244,7 +243,7 @@ class LiveFeedNotification extends React.Component {
         };
         break;
       case "comment":
-        const commentTip = notification.tip;
+        const commentTip = notification.item.plain_text;
         verb = "left a";
         subject = {
           linkText: "comment",
@@ -256,7 +255,7 @@ class LiveFeedNotification extends React.Component {
         };
         break;
       case "reply":
-        const replyTip = notification.tip;
+        const replyTip = notification.item.plain_text;
         verb = "left a";
         subject = {
           linkText: "comment",
