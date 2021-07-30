@@ -24,6 +24,7 @@ const TabBar = (props) => {
 
   useEffect(() => {
     menuRef.current && menuRef.current.scrollTo(selected);
+    setSelected(selectedTab);
   }, [selectedTab]);
 
   const menu = tabs.map((tab) => {
@@ -107,8 +108,8 @@ function formatTabs(tab, props) {
 const Tab = (props) => {
   const { tab, selected, dynamicHref, fetching, authorId } = props;
   const { href, label, showCount, count } = tab;
-  let isSelected = false;
   let classNames = [styles.tab];
+  let isSelected = false;
 
   if (selected) {
     isSelected = true;
