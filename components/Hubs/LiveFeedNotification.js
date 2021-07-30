@@ -658,6 +658,12 @@ class LiveFeedNotification extends React.Component {
   render() {
     let { notification } = this.props;
     let { isRemoved } = this.state;
+    let contentType = notification.content_type;
+    let authorProfile = notification.created_by.author_profile;
+
+    if (contentType === "purchase") {
+      authorProfile = notification.item.user.author_profile;
+    }
 
     return (
       <div
@@ -695,13 +701,7 @@ class LiveFeedNotification extends React.Component {
             className={css(styles.column, styles.left)}
             onClick={(e) => e.stopPropagation()}
           >
-            <AuthorAvatar
-              author={
-                notification.created_by &&
-                notification.created_by.author_profile
-              }
-              size={35}
-            />
+            <AuthorAvatar author={authorProfile} size={35} />
           </div>
           <div className={css(styles.column, styles.right)}>
             {this.renderNotification()}
