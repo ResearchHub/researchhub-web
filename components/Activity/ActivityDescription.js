@@ -94,7 +94,7 @@ const ActivityDescription = (props) => {
       <span onClick={(e) => e.stopPropagation()}>
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/discussions`}
+          as={`/user/${authorId}/overview`}
         >
           <a className={css(styles.link, styles.text)}>{username}</a>
         </Link>
