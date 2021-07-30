@@ -97,7 +97,7 @@ class BaseModal extends React.Component {
         right: 0,
         bottom: 0,
         backgroundColor: "rgba(0,0,0,0.2)",
-        zIndex: this.props.zIndex ? this.props.zIndex : "1011",
+        zIndex: this.props.zIndex ? this.props.zIndex : "11",
         borderRadius: 5,
       },
     };
