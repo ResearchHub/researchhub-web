@@ -331,7 +331,6 @@ class LiveFeedNotification extends React.Component {
         const recipientName = formatUsername(recipient);
         const username = formatUsername(notification.item.user);
         const supportType = notification.item.content_type.model;
-        const parentContentType = notification.parent_content_type;
         const slug = notification.item.source.slug;
         const sourceId = notification.item.source.id;
 
@@ -340,6 +339,7 @@ class LiveFeedNotification extends React.Component {
         let as;
         let title;
         let plainText;
+        let doc;
         if (supportType === "paper") {
           formattedSupportType = "paper";
           href = "/paper/[paperId]/[paperName]";
@@ -355,18 +355,25 @@ class LiveFeedNotification extends React.Component {
         } else if (supportType === "summary") {
           formattedSupportType = "summary";
         } else {
+          const unifiedDocument = notification.item.source.unified_document;
+          const parentContentType = unifiedDocument.document_type;
+          const commentOnPaper = parentContentType === "PAPER";
+
+          if (commentOnPaper) {
+            doc = unifiedDocument.documents;
+          } else {
+            doc = unifiedDocument.documents[0];
+          }
+
           formattedSupportType = "comment";
-          plainText = this.truncateComment(notification.plain_text);
-          const commentOnPaper = parentContentType === "paper";
+          plainText = this.truncateComment(notification.item.source.plain_text);
           href = commentOnPaper
             ? "/paper/[paperId]/[paperName]"
             : "/post/[documentId]/[title]";
           as = commentOnPaper
-            ? `/paper/${sourceId}/${slug}`
-            : `/post/${sourceId}/${slug}`;
-          title = commentOnPaper
-            ? notification.paper_title
-            : notification.post_title;
+            ? `/paper/${doc.id}/${doc.slug}`
+            : `/post/${doc.id}/${doc.slug}`;
+          title = commentOnPaper ? doc.title : doc.title;
         }
 
         return (
