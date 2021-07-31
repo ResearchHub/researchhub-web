@@ -535,11 +535,15 @@ const NotificationEntry = (props) => {
       if (type === "thread") {
         return "comment";
       }
+
+      if (type === "researchhubpost") {
+        return "post";
+      }
       return type;
     };
 
     const formatLink = (props) => {
-      const link = {
+      let link = {
         href: "/paper/[paperId]/[paperName]",
         as: `/paper/${paper_id}/${slug}`,
       };
