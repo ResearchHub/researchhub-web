@@ -3,6 +3,8 @@ import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import { get } from "lodash";
 import { isNumber } from "underscore";
+import Link from "next/link";
+
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
@@ -10,10 +12,11 @@ import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import ComponentWrapper from "~/components/ComponentWrapper";
+import EmptyState from "./EmptyState";
+import icons from "~/config/themes/icons";
 
 const UserOverviewTab = ({ author, transactions }) => {
   const maxCardsToRender = 2;
@@ -69,6 +72,27 @@ const UserOverviewTab = ({ author, transactions }) => {
       </div>
     );
   };
+
+  const hasNoContent =
+    authoredPaperCount === 0 &&
+    postCount === 0 &&
+    commentCount === 0 &&
+    submittedPaperCount === 0 &&
+    supportedPaperCount === 0 &&
+    transactionCount === 0;
+
+  if (hasNoContent) {
+    return (
+      <ComponentWrapper overrideStyle={styles.componentWrapper}>
+        <section className={css(styles.section)}>
+          <EmptyState
+            message={"No activity found for this user"}
+            icon={icons.help}
+          />
+        </section>
+      </ComponentWrapper>
+    );
+  }
 
   return (
     <div>
