@@ -50,6 +50,7 @@ export const getActivityMetadata = (activity) => {
       if (documents) {
         postId = documents.id;
         postTitle = documents.title;
+        postSlug = documents.slug;
       }
   }
 
