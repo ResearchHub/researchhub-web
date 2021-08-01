@@ -84,26 +84,30 @@ class UserContributionsTab extends React.Component {
   };
 
   render() {
-    const contributions = this.state.contributions.map(
-      (contribution, index) => {
-        return (
-          <div className={css(styles.contributionContainer)}>
-            <PaperEntryCard
-              key={`userContribution-${contribution.id}-${index}`}
-              paper={contribution}
-              index={index}
-              style={[
-                styles.paperEntryCard,
-                index === this.state.contributions.length - 1 &&
-                  styles.noBorder,
-              ]}
-              voteCallback={this.voteCallback}
-              mobileView={this.props.mobileView}
-            />
-          </div>
-        );
-      }
-    );
+    const { maxCardsToRender } = this.props;
+    const contributions = [];
+
+    for (let i = 0; i < this.state.contributions.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const current = this.state.contributions[i];
+      contributions.push(
+        <div className={css(styles.contributionContainer)}>
+          <PaperEntryCard
+            key={`userContribution-${current.id}-${i}`}
+            paper={current}
+            index={i}
+            style={[
+              styles.paperEntryCard,
+              i === this.state.contributions.length - 1 && styles.noBorder,
+            ]}
+            voteCallback={this.voteCallback}
+            mobileView={this.props.mobileView}
+          />
+        </div>
+      );
+    }
+
     return (
       <ReactPlaceholder
         ready={
@@ -115,7 +119,7 @@ class UserContributionsTab extends React.Component {
         {contributions.length > 0 ? (
           <div className={css(styles.container)}>
             {contributions}
-            {this.renderLoadMoreButton()}
+            {!maxCardsToRender && this.renderLoadMoreButton()}
           </div>
         ) : (
           <EmptyState

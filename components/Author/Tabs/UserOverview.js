@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { get } from "lodash";
 import { isNumber } from "underscore";
 import Link from "next/link";
+import PropTypes from "prop-types";
 
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
@@ -18,7 +19,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 
-const UserOverviewTab = ({ author, transactions }) => {
+const UserOverviewTab = ({ author, transactions, fetching }) => {
   const maxCardsToRender = 2;
   const [submittedPaperCount, setSubmittedPaperCount] = useState(null);
   const [authoredPaperCount, setAuthoredPaperCount] = useState(null);
@@ -79,7 +80,18 @@ const UserOverviewTab = ({ author, transactions }) => {
     commentCount === 0 &&
     submittedPaperCount === 0 &&
     supportedPaperCount === 0 &&
-    transactionCount === 0;
+    transactionCount === 0 &&
+    fetching === false;
+
+  // console.log('---------');
+  // console.log('authoredPaperCount', authoredPaperCount);
+  // console.log('postCount', postCount);
+  // console.log('commentCount', commentCount);
+  // console.log('submittedPaperCount', submittedPaperCount);
+  // console.log('supportedPaperCount', supportedPaperCount);
+  // console.log('transactionCount', transactionCount);
+  // console.log('fetching', fetching);
+  // console.log('---------');
 
   if (hasNoContent) {
     return (
@@ -96,44 +108,35 @@ const UserOverviewTab = ({ author, transactions }) => {
 
   return (
     <div>
-      {authoredPaperCount !== 0 && (
-        <ComponentWrapper overrideStyle={styles.componentWrapper}>
-          <section className={css(styles.section)}>
-            {isNumber(authoredPaperCount) && (
-              <h2 className={css(styles.sectionHeader)}>Authored Papers</h2>
-            )}
-            <AuthoredPapersTab />
-            {authoredPaperCount > maxCardsToRender &&
-              renderSeeMoreLink({
-                relPath: "authored-papers",
-                text: "See all authored papers",
-              })}
-          </section>
-        </ComponentWrapper>
-      )}
       {postCount !== 0 && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
             {isNumber(postCount) && (
               <h2 className={css(styles.sectionHeader)}>Posts</h2>
             )}
-            <UserPostsTab />
+            <UserPostsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
             {postCount > maxCardsToRender &&
               renderSeeMoreLink({ relPath: "posts", text: "See all posts" })}
           </section>
         </ComponentWrapper>
       )}
-      {commentCount !== 0 && (
+      {authoredPaperCount !== 0 && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
-            {isNumber(commentCount) && (
-              <h2 className={css(styles.sectionHeader)}>Comments</h2>
+            {get(author, "authorDoneFetching") && !fetching && (
+              <h2 className={css(styles.sectionHeader)}>Authored Papers</h2>
             )}
-            <UserDiscussionsTab maxCardsToRender={maxCardsToRender} />
-            {commentCount > maxCardsToRender &&
+            <AuthoredPapersTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
+            {authoredPaperCount > maxCardsToRender &&
               renderSeeMoreLink({
-                relPath: "discussions",
-                text: "See all comments",
+                relPath: "authored-papers",
+                text: "See all authored papers",
               })}
           </section>
         </ComponentWrapper>
@@ -144,11 +147,32 @@ const UserOverviewTab = ({ author, transactions }) => {
             {isNumber(submittedPaperCount) && (
               <h2 className={css(styles.sectionHeader)}>Submitted Papers</h2>
             )}
-            <UserContributionsTab />
+            <UserContributionsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
             {submittedPaperCount > maxCardsToRender &&
               renderSeeMoreLink({
                 relPath: "contributions",
                 text: "See all submitted papers",
+              })}
+          </section>
+        </ComponentWrapper>
+      )}
+      {commentCount !== 0 && (
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <section className={css(styles.section)}>
+            {get(author, "discussionsDoneFetching") && !fetching && (
+              <h2 className={css(styles.sectionHeader)}>Comments</h2>
+            )}
+            <UserDiscussionsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
+            {commentCount > maxCardsToRender &&
+              renderSeeMoreLink({
+                relPath: "discussions",
+                text: "See all comments",
               })}
           </section>
         </ComponentWrapper>
@@ -159,7 +183,10 @@ const UserOverviewTab = ({ author, transactions }) => {
             {isNumber(supportedPaperCount) && (
               <h2 className={css(styles.sectionHeader)}>Supported Content</h2>
             )}
-            <UserPromotionsTab />
+            <UserPromotionsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
             {supportedPaperCount > maxCardsToRender &&
               renderSeeMoreLink({
                 relPath: "boosts",
@@ -174,7 +201,10 @@ const UserOverviewTab = ({ author, transactions }) => {
             {isNumber(transactionCount) && (
               <h2 className={css(styles.sectionHeader)}>Transactions</h2>
             )}
-            <UserTransactionsTab />
+            <UserTransactionsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
             {transactionCount > maxCardsToRender &&
               renderSeeMoreLink({
                 relPath: "transactions",
@@ -230,5 +260,11 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+UserOverviewTab.propTypes = {
+  author: PropTypes.object,
+  transactions: PropTypes.object,
+  fetching: PropTypes.bool,
+};
 
 export default connect(mapStateToProps)(UserOverviewTab);

@@ -22,3 +22,4 @@ export const GET_USER_CONTRIBUTIONS_SUCCESS =
   "@@author/GET_USER_CONTRIBUTIONS_SUCCESS";
 export const UPDATE_AUTHOR_BY_KEY = "@@author/UPDATE_AUTHOR_BY_KEY";
 export const UPDATE_AUTHOR = "@@author/UPDATE_AUTHOR";
+export const RESET_AUTHOR = "@@author/RESET_AUTHOR";
