@@ -83,15 +83,9 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
     transactionCount === 0 &&
     fetching === false;
 
-  // console.log('---------');
-  // console.log('authoredPaperCount', authoredPaperCount);
-  // console.log('postCount', postCount);
-  // console.log('commentCount', commentCount);
-  // console.log('submittedPaperCount', submittedPaperCount);
-  // console.log('supportedPaperCount', supportedPaperCount);
-  // console.log('transactionCount', transactionCount);
-  // console.log('fetching', fetching);
-  // console.log('---------');
+  console.log("---------");
+  console.log("author", author);
+  console.log("---------");
 
   if (hasNoContent) {
     return (
