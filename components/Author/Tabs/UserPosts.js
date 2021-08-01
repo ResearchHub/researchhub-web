@@ -51,7 +51,7 @@ function useEffectFetchUserPosts({
 }
 
 function UserPosts(props) {
-  const { author, user, fetching } = props;
+  const { author, user, fetching, maxCardsToRender } = props;
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
   const store = useStore();
@@ -59,13 +59,19 @@ function UserPosts(props) {
 
   let postCards;
   if (posts.length > 0) {
-    postCards = posts.map((post, index) => (
-      <UserPostCard
-        {...post}
-        key={post.id || index}
-        style={styles.customUserPostCard}
-      />
-    ));
+    postCards = [];
+    for (let i = 0; i < posts.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const post = posts[i];
+      postCards.push(
+        <UserPostCard
+          {...post}
+          key={post.id || i}
+          style={styles.customUserPostCard}
+        />
+      );
+    }
   } else {
     postCards = (
       <EmptyState
