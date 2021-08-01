@@ -32,8 +32,8 @@ const UserPromotions = (props) => {
     for (let i = 0; i < promotions.length; i++) {
       if (i === maxCardsToRender) break;
 
-      const { source } = promotion;
       const p = promotions[i];
+      const { source } = p;
       if (source) {
         promotionCards.push(
           <PromotionCard
