@@ -95,6 +95,7 @@ class AuthoredPapersTab extends React.Component {
     for (let i = 0; i < papers.length; i++) {
       if (i === maxCardsToRender) break;
 
+      const paper = papers[i];
       authoredPapers.push(
         <div className={css(styles.paperContainer)}>
           <PaperEntryCard
