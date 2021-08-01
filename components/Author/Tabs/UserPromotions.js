@@ -32,15 +32,18 @@ const UserPromotions = (props) => {
     for (let i = 0; i < promotions.length; i++) {
       if (i === maxCardsToRender) break;
 
+      const { source } = promotion;
       const p = promotions[i];
-      promotionCards.push(
-        <PromotionCard
-          source={source}
-          promotion={p}
-          index={i}
-          isLast={promotions.length - 1 === i}
-        />
-      );
+      if (source) {
+        promotionCards.push(
+          <PromotionCard
+            source={source}
+            promotion={p}
+            index={i}
+            isLast={promotions.length - 1 === i}
+          />
+        );
+      }
     }
 
     return (

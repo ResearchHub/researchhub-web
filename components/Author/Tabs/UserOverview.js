@@ -20,7 +20,7 @@ import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 
 const UserOverviewTab = ({ author, transactions, fetching }) => {
-  const maxCardsToRender = 2;
+  const maxCardsToRender = 3;
   const [submittedPaperCount, setSubmittedPaperCount] = useState(null);
   const [authoredPaperCount, setAuthoredPaperCount] = useState(null);
   const [commentCount, setCommentCount] = useState(null);
@@ -118,6 +118,25 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
           </section>
         </ComponentWrapper>
       )}
+      {commentCount !== 0 && (
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <section className={css(styles.section)}>
+            {get(author, "discussionsDoneFetching") && !fetching && (
+              <h2 className={css(styles.sectionHeader)}>Comments</h2>
+            )}
+            <UserDiscussionsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
+            {commentCount > maxCardsToRender &&
+              !fetching &&
+              renderSeeMoreLink({
+                relPath: "discussions",
+                text: "See all comments",
+              })}
+          </section>
+        </ComponentWrapper>
+      )}
       {authoredPaperCount !== 0 && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
@@ -152,25 +171,6 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               renderSeeMoreLink({
                 relPath: "contributions",
                 text: "See all submitted papers",
-              })}
-          </section>
-        </ComponentWrapper>
-      )}
-      {commentCount !== 0 && (
-        <ComponentWrapper overrideStyle={styles.componentWrapper}>
-          <section className={css(styles.section)}>
-            {get(author, "discussionsDoneFetching") && !fetching && (
-              <h2 className={css(styles.sectionHeader)}>Comments</h2>
-            )}
-            <UserDiscussionsTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
-            {commentCount > maxCardsToRender &&
-              !fetching &&
-              renderSeeMoreLink({
-                relPath: "discussions",
-                text: "See all comments",
               })}
           </section>
         </ComponentWrapper>
