@@ -89,7 +89,8 @@ class AuthoredPapersTab extends React.Component {
   };
 
   render() {
-    let { papers, maxCardsToRender } = this.state;
+    let { papers } = this.state;
+    const { maxCardsToRender } = this.props;
 
     const authoredPapers = [];
     for (let i = 0; i < papers.length; i++) {
