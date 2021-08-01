@@ -119,6 +119,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               fetching={fetching}
             />
             {postCount > maxCardsToRender &&
+              !fetching &&
               renderSeeMoreLink({ relPath: "posts", text: "See all posts" })}
           </section>
         </ComponentWrapper>
@@ -134,6 +135,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               fetching={fetching}
             />
             {authoredPaperCount > maxCardsToRender &&
+              !fetching &&
               renderSeeMoreLink({
                 relPath: "authored-papers",
                 text: "See all authored papers",
@@ -152,6 +154,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               fetching={fetching}
             />
             {submittedPaperCount > maxCardsToRender &&
+              !fetching &&
               renderSeeMoreLink({
                 relPath: "contributions",
                 text: "See all submitted papers",
@@ -170,6 +173,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               fetching={fetching}
             />
             {commentCount > maxCardsToRender &&
+              !fetching &&
               renderSeeMoreLink({
                 relPath: "discussions",
                 text: "See all comments",
@@ -188,6 +192,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               fetching={fetching}
             />
             {supportedPaperCount > maxCardsToRender &&
+              !fetching &&
               renderSeeMoreLink({
                 relPath: "boosts",
                 text: "See all supported content",
@@ -206,6 +211,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               fetching={fetching}
             />
             {transactionCount > maxCardsToRender &&
+              !fetching &&
               renderSeeMoreLink({
                 relPath: "transactions",
                 text: "See all transactions",

@@ -117,7 +117,7 @@ const getTabs = (author, transactions) =>
   ]);
 
 function AuthorPage(props) {
-  console.log("confirming test");
+  console.log("confirming test 2");
   const { auth, author, hostname, user, transactions } = props;
   const router = useRouter();
   const dispatch = useDispatch();

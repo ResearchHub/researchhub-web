@@ -21,12 +21,27 @@ const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);
 
   const renderPromotions = () => {
-    const { author, fetching } = props;
+    const { author, fetching, maxCardsToRender } = props;
 
     const promotions =
       author.promotions && author.promotions.results
         ? author.promotions.results
         : [];
+
+    const promotionCards = [];
+    for (let i = 0; i < promotions.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const p = promotions[i];
+      promotionCards.push(
+        <PromotionCard
+          source={source}
+          promotion={p}
+          index={i}
+          isLast={promotions.length - 1 === i}
+        />
+      );
+    }
 
     return (
       <ReactPlaceholder
@@ -34,20 +49,8 @@ const UserPromotions = (props) => {
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" rows={2} />}
       >
-        {promotions.length ? (
-          promotions.map((promotion, i) => {
-            const { source } = promotion;
-            if (source) {
-              return (
-                <PromotionCard
-                  source={source}
-                  promotion={promotion}
-                  index={i}
-                  isLast={promotions.length - 1 === i}
-                />
-              );
-            }
-          })
+        {promotionCards.length > 0 ? (
+          { promotionCards }
         ) : (
           <EmptyState
             message={"User has not supported any content"}
