@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
+import { get } from "lodash";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -84,7 +85,11 @@ class UserDiscussionsTab extends React.Component {
     const { author, hostname, maxCardsToRender } = this.props;
 
     const discussions = [];
-    for (let i = 0; i < author.userDiscussions.discussions.length; i++) {
+    for (
+      let i = 0;
+      i < get(author, "userDiscussions.discussions.length", 0);
+      i++
+    ) {
       if (i === maxCardsToRender) break;
 
       const discussion = author.userDiscussions.discussions[i];
@@ -127,7 +132,7 @@ class UserDiscussionsTab extends React.Component {
         {discussions.length > 0 ? (
           <React.Fragment>
             <div className={css(styles.container)}>{discussions}</div>
-            {this.renderLoadMoreButton()}
+            {!maxCardsToRender && this.renderLoadMoreButton()}
           </React.Fragment>
         ) : (
           <EmptyState

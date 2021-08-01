@@ -111,7 +111,7 @@ const UserPromotions = (props) => {
   return (
     <div className={css(styles.feed)}>
       {renderPromotions()}
-      {renderLoadMoreButton()}
+      {!props.maxCardsToRender && renderLoadMoreButton()}
     </div>
   );
 };
