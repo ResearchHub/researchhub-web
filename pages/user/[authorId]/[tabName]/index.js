@@ -225,8 +225,6 @@ function AuthorPage(props) {
   }
 
   function fetchUserPromotions() {
-    console.log("props", props);
-
     const { auth, author } = props;
 
     if (author.id !== get(auth, "user.id")) return;
