@@ -10,7 +10,7 @@ import PaperUploadV2Update from "./PaperUploadV2Update";
 
 export default function PaperUploadV2Container(): ReactElement<"div"> {
   const router = useRouter();
-  const { paperId, uploadPaperTitle, type } = router.query;
+  const { paperId } = router.query;
   const isUploadingNewPaper = isNullOrUndefined(paperId);
   return (
     <div className={css(styles.paperUploadV2Container)}>
