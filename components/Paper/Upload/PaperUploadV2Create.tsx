@@ -50,7 +50,6 @@ type ParseReduxToStateArgs = {
   formState: FormState;
   messageActions: any;
   paperRedux: any;
-  paperTitleQuery: string | string[] | undefined;
   setComponentState: (componentState: ComponentState) => void;
   setFormState: (formState: FormState) => void;
 };
@@ -58,7 +57,6 @@ type ParseReduxToStateArgs = {
 const useEffectHandleInit = ({
   isURLView,
   paperActions,
-  paperTitleQuery,
   setFormState,
 }): void => {
   useEffect(() => {
@@ -66,39 +64,29 @@ const useEffectHandleInit = ({
     setFormState(defaultFormState);
     document.body.scrollTop = 0; // For Safari
     document.documentElement.scrollTop = 0;
-  }, [isURLView, paperTitleQuery /* intentional explicit check */]);
+  }, [isURLView /* intentional explicit check */]);
 };
 
 const useEffectParseReduxToState = ({
   formState,
   messageActions,
   paperRedux,
-  paperTitleQuery,
   setFormState,
 }: ParseReduxToStateArgs): void => {
   const { uploadedPaper } = paperRedux;
+  const { title: reduxPaperTitle } = uploadedPaper;
   const {
     author: formAuthors,
     hubs: formHubs,
     paper_title: formPaperTitle,
     title: formTitle,
   } = formState;
-  const resolvedFormTitle =
-    !isNullOrUndefined(formPaperTitle) && formPaperTitle.length > 0
-      ? formPaperTitle
-      : formTitle;
-  const { title } = uploadedPaper;
-
-  const formattedTitle =
-    !isNullOrUndefined(paperTitleQuery) &&
-    nullthrows(paperTitleQuery).length > 0
-      ? paperTitleQuery
-      : title;
-
-  const formattedPaperTitle =
-    !isNullOrUndefined(formattedTitle) && nullthrows(formattedTitle).length > 0
-      ? formattedTitle
-      : resolvedFormTitle;
+  const resolvedPaperTitle = !isNullOrUndefined(formPaperTitle)
+    ? formPaperTitle
+    : reduxPaperTitle;
+  const resolvedFormTitle = !isNullOrUndefined(formTitle)
+    ? formTitle
+    : resolvedPaperTitle;
 
   useEffect((): void => {
     const {
@@ -133,11 +121,11 @@ const useEffectParseReduxToState = ({
       author: formAuthors,
       doi: formattedDOI,
       hubs: formHubs,
-      paper_title: formattedPaperTitle,
+      paper_title: resolvedPaperTitle,
       paper_type: formType,
       published: formattedPublishedDate,
       raw_authors: formattedRawAuthors,
-      title: formattedTitle,
+      title: resolvedFormTitle,
       url: formattedURL,
     });
     messageActions.showMessage({ show: false });
@@ -152,7 +140,6 @@ function PaperuploadV2Create({
   paperRedux,
 }: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
-  const { paperTitleQuery } = router.query;
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
@@ -183,6 +170,7 @@ function PaperuploadV2Create({
   };
 
   const handleHubSelection = (_id: ID, selectedHubs: any): void => {
+    console.warn("formState: ", formState);
     if (isNullOrUndefined(selectedHubs)) {
       setFormState({ ...formState, hubs: [] });
       setFormErrors({ ...formErrors, hubs: true });
@@ -266,7 +254,6 @@ function PaperuploadV2Create({
   useEffectHandleInit({
     isURLView,
     paperActions,
-    paperTitleQuery,
     setFormState,
   });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
@@ -275,7 +262,6 @@ function PaperuploadV2Create({
     messageActions,
     formState,
     paperRedux,
-    paperTitleQuery,
     setComponentState,
     setFormState,
   });
