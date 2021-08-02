@@ -74,7 +74,7 @@ class UserTransaction extends React.Component {
 
   render() {
     const { transactions, maxCardsToRender, auth } = this.props;
-    debugger;
+    // debugger;
     console.log("--------");
     console.log("auth", auth);
     console.log("transactions", transactions);

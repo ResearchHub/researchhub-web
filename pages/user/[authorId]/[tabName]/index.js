@@ -227,14 +227,18 @@ function AuthorPage(props) {
   function fetchUserPromotions() {
     const { auth, author } = props;
 
+    console.log("+++++++++++");
     console.log("in fetchUserPromotions");
     console.log("author.id", author.id);
     console.log("user.id", get(auth, "user.id"));
+    console.log("auth", auth);
+    console.log("authorUserID", authorUserID);
+    console.log("+++++++++++");
 
-    if (author.id !== get(auth, "user.id")) return;
+    if (author.id !== authorUserID) return;
     setFetchingPromotions(true);
     return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: get(auth, "user.id") }),
+      API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
