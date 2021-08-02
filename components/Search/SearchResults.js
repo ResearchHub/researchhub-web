@@ -8,6 +8,7 @@ import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
+import SearchBestResults from "~/components/Search/SearchBestResults";
 import { breakpoints } from "~/config/themes/screen";
 
 const SearchResults = ({ apiResponse }) => {
@@ -33,6 +34,7 @@ const SearchResults = ({ apiResponse }) => {
 
   const renderEntityTabs = () => {
     let tabs = [
+      { type: "best", label: "Best Results" },
       { type: "paper", label: "Papers" },
       { type: "post", label: "Posts" },
       { type: "hub", label: "Hubs" },
@@ -56,12 +58,15 @@ const SearchResults = ({ apiResponse }) => {
   return (
     <div className={css(styles.componentWrapper)}>
       {renderEntityTabs()}
+
       {currentSearchType === "paper" || currentSearchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
       ) : currentSearchType === "hub" ? (
         <SearchResultsForHubs apiResponse={apiResponse} />
       ) : currentSearchType === "person" ? (
         <SearchResultsForPeople apiResponse={apiResponse} />
+      ) : currentSearchType === "best" ? (
+        <SearchBestResults apiResponse={apiResponse} />
       ) : null}
     </div>
   );
