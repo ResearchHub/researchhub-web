@@ -30,6 +30,7 @@ export const TransactionActions = {
           });
         })
         .catch((err) => {
+          console.log("err", err);
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {

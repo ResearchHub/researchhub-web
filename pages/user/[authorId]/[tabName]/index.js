@@ -227,10 +227,14 @@ function AuthorPage(props) {
   function fetchUserPromotions() {
     const { auth, author } = props;
 
+    console.log("in fetchUserPromotions");
+    console.log("author.id", author.id);
+    console.log("user.id", get(auth, "user.id"));
+
     if (author.id !== get(auth, "user.id")) return;
     setFetchingPromotions(true);
     return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
+      API.AGGREGATE_USER_PROMOTIONS({ userId: get(auth, "user.id") }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
@@ -254,7 +258,7 @@ function AuthorPage(props) {
   }
 
   function fetchUserTransactions() {
-    if (!auth.isLoggedIn) return;
+    // if (!auth.isLoggedIn) return;
     return dispatch(
       TransactionActions.getWithdrawals(1, store.getState().transactions)
     );
