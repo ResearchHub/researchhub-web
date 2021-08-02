@@ -58,12 +58,14 @@ export const paperPost = ({
     }
   }
 
+  // NOTE - calvinhlee: formatting data like below results in unexpected update behavior.
   hubs &&
     hubs.forEach((hub) => {
       return formData.append("hubs", hub);
     });
   doi && formData.append("doi", doi);
-  title && formData.append("title", title);
+  // no boolean check for title because empty string is falsey in js.
+  formData.append("title", title);
   file && formData.append("file", file);
   publishDate && formData.append("paper_publish_date", publishDate);
   url && formData.append("url", url);
