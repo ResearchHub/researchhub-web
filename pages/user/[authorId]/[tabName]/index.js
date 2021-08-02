@@ -226,7 +226,11 @@ function AuthorPage(props) {
   }
 
   function fetchUserPromotions() {
-    if (!authorUserID) return;
+    console.log("props", props);
+
+    const { auth, author } = props;
+
+    if (author.id !== get(auth, "user.id")) return;
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
@@ -242,6 +246,12 @@ function AuthorPage(props) {
             prevState: store.getState().author,
           })
         );
+        setFetchingPromotions(false);
+      })
+      .catch((e) => {
+        console.log("Failed to fetch promotions", e);
+      })
+      .finally((e) => {
         setFetchingPromotions(false);
       });
   }

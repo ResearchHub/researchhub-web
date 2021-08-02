@@ -75,13 +75,13 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
   };
 
   const hasNoContent =
-    authoredPaperCount === 0 &&
-    postCount === 0 &&
-    commentCount === 0 &&
-    submittedPaperCount === 0 &&
-    supportedPaperCount === 0 &&
-    transactionCount === 0 &&
-    fetching === false;
+    !authoredPaperCount &&
+    !postCount &&
+    !commentCount &&
+    !submittedPaperCount &&
+    !supportedPaperCount &&
+    !transactionCount &&
+    !fetching;
 
   console.log("---------");
   console.log("author", author);
@@ -160,7 +160,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
             {isNumber(submittedPaperCount) && (
-              <h2 className={css(styles.sectionHeader)}>Submitted Papers</h2>
+              <h2 className={css(styles.sectionHeader)}>Paper Submissions</h2>
             )}
             <UserContributionsTab
               maxCardsToRender={maxCardsToRender}
@@ -170,7 +170,7 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
               !fetching &&
               renderSeeMoreLink({
                 relPath: "contributions",
-                text: "See all submitted papers",
+                text: "See all paper submissions",
               })}
           </section>
         </ComponentWrapper>
