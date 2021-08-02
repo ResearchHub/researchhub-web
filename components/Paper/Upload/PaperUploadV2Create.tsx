@@ -1,4 +1,3 @@
-import { AuthActions } from "../../../redux/auth";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import {
@@ -14,10 +13,7 @@ import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { getIsFormValid } from "./util/getIsFormValid";
 import { ID } from "../../../config/types/root_types";
-import {
-  isNullOrUndefined,
-  nullthrows,
-} from "../../../config/utils/nullchecks";
+import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
@@ -170,7 +166,6 @@ function PaperuploadV2Create({
   };
 
   const handleHubSelection = (_id: ID, selectedHubs: any): void => {
-    console.warn("formState: ", formState);
     if (isNullOrUndefined(selectedHubs)) {
       setFormState({ ...formState, hubs: [] });
       setFormErrors({ ...formErrors, hubs: true });
