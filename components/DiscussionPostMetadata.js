@@ -295,11 +295,8 @@ const User = (props) => {
   }
 
   return (
-    <Link
-      href={"/user/[authorId]/[tabName]"}
-      as={`/user/${authorId}/discussions`}
-    >
-      <a href={`/user/${authorId}/discussions`} className={css(styles.atag)}>
+    <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/overview`}>
+      <a href={`/user/${authorId}/overview`} className={css(styles.atag)}>
         <div
           className={css(
             styles.userContainer,

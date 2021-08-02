@@ -83,10 +83,6 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
     !transactionCount &&
     !fetching;
 
-  console.log("---------");
-  console.log("author", author);
-  console.log("---------");
-
   if (hasNoContent) {
     return (
       <ComponentWrapper overrideStyle={styles.componentWrapper}>

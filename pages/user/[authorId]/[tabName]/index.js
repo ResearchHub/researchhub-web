@@ -263,13 +263,7 @@ function AuthorPage(props) {
     );
   }
 
-  function resetAuthor() {
-    return dispatch(AuthorActions.resetAuthor());
-  }
-
   useEffect(() => {
-    // resetAuthor();
-
     setFetching(true);
     async function refetchAuthor() {
       await dispatch(

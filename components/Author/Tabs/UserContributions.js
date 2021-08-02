@@ -162,6 +162,9 @@ var styles = StyleSheet.create({
     marginTop: 0,
     paddingTop: 24,
     paddingBottom: 24,
+    ":last-child": {
+      borderBottom: 0,
+    },
   },
   icon: {
     fontSize: 50,

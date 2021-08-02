@@ -10,14 +10,6 @@ import * as paperShim from "../paper/shims";
 import { MessageActions } from "~/redux/message";
 
 export const AuthorActions = {
-  resetAuthor: () => {
-    return (dispatch) => {
-      return dispatch({
-        type: types.RESET_AUTHOR,
-        payload: {},
-      });
-    };
-  },
   getAuthor: ({ authorId }) => {
     return (dispatch) => {
       return fetch(API.AUTHOR({ authorId }), API.GET_CONFIG())

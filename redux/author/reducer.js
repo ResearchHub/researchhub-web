@@ -18,10 +18,6 @@ const defaultAuthorState = {
 
 const AuthorReducer = (state = defaultAuthorState, action) => {
   switch (action.type) {
-    case types.RESET_AUTHOR:
-      return {
-        doneFetching: false,
-      };
     case types.GET_AUTHOR:
     case types.SAVE_AUTHOR_CHANGES:
     case types.GET_AUTHORED_PAPERS_PENDING:
