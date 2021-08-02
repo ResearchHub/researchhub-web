@@ -1,16 +1,13 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useEffect, useState } from "react";
+import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { useRouter } from "next/router";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-} from "../../../config/utils/nullchecks";
 import PaperUploadV2Create from "./PaperUploadV2Create";
 import PaperUploadV2Update from "./PaperUploadV2Update";
+import React, { ReactElement } from "react";
 
 export default function PaperUploadV2Container(): ReactElement<"div"> {
   const router = useRouter();
-  const { paperId, uploadPaperTitle, type } = router.query;
+  const { paperId } = router.query;
   const isUploadingNewPaper = isNullOrUndefined(paperId);
   return (
     <div className={css(styles.paperUploadV2Container)}>
