@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { get } from "lodash";
+import { isEmpty } from "underscore";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -229,13 +230,11 @@ function AuthorPage(props) {
 
     console.log("+++++++++++");
     console.log("in fetchUserPromotions");
-    console.log("author.id", author.id);
-    console.log("user.id", get(auth, "user.id"));
-    console.log("auth", auth);
+    console.log("user", user);
     console.log("authorUserID", authorUserID);
     console.log("+++++++++++");
 
-    if (author.id !== authorUserID) return;
+    if (authorUserID !== user.id) return;
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
@@ -268,26 +267,35 @@ function AuthorPage(props) {
     );
   }
 
+  async function refetchAuthor() {
+    const response = dispatch(
+      AuthorActions.getAuthor({ authorId: router.query.authorId })
+    );
+    setFetchedUser(true); // needed for tabbar
+    return response;
+  }
+
   useEffect(() => {
+    console.log("refetching author!");
     setFetching(true);
-    async function refetchAuthor() {
-      await dispatch(
-        AuthorActions.getAuthor({ authorId: router.query.authorId })
-      );
-      setFetchedUser(true); // needed for tabbar
-    }
-    Promise.all([
-      fetchAuthoredPapers(),
-      fetchAuthorSuspended(),
-      fetchUserContributions(),
-      fetchUserDiscussions(),
-      fetchUserPromotions(),
-      fetchUserTransactions(),
-      refetchAuthor(),
-    ]).then((_) => {
-      setFetching(false);
-    });
+    refetchAuthor();
   }, [router.query.authorId]);
+
+  useEffect(() => {
+    if (!isEmpty(user)) {
+      console.log("doing it!", user.id);
+      Promise.all([
+        fetchAuthoredPapers(),
+        fetchAuthorSuspended(),
+        fetchUserContributions(),
+        fetchUserDiscussions(),
+        fetchUserPromotions(),
+        fetchUserTransactions(),
+      ]).then((_) => {
+        setFetching(false);
+      });
+    }
+  }, [user]);
 
   useEffect(() => {
     if (
