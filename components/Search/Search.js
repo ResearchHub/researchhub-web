@@ -127,7 +127,7 @@ const Search = ({ navbarRef }) => {
 
   const doSearch = () => {
     const isUserOnSearchPage = currentPath.includes("/search");
-    const currentSearchType = isUserOnSearchPage ? router.query.type : "paper";
+    const currentSearchType = isUserOnSearchPage ? router.query.type : "best";
 
     const filterParams = pickFiltersForApp({
       searchType: currentSearchType,
