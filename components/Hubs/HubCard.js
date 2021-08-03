@@ -324,7 +324,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "42.5vmin",
       height: "42.5vmin",
-      margin: "2.5vmin",
     },
   },
   hubCard: {
