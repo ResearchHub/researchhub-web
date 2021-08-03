@@ -228,12 +228,6 @@ function AuthorPage(props) {
   function fetchUserPromotions() {
     const { auth, author } = props;
 
-    console.log("+++++++++++");
-    console.log("in fetchUserPromotions");
-    console.log("user", user);
-    console.log("authorUserID", authorUserID);
-    console.log("+++++++++++");
-
     // Reset promotions since depending on the user, they
     // may not be refetched and as a result, a cached promotions list
     // will stick to another user.
@@ -266,7 +260,7 @@ function AuthorPage(props) {
         setFetchingPromotions(false);
       })
       .catch((e) => {
-        console.log("Failed to fetch promotions", e);
+        console.warn("Failed to fetch promotions", e);
       })
       .finally((e) => {
         setFetchingPromotions(false);
@@ -289,7 +283,6 @@ function AuthorPage(props) {
   }
 
   useEffect(() => {
-    console.log("refetching author!");
     setFetching(true);
     refetchAuthor();
   }, [router.query.authorId]);
