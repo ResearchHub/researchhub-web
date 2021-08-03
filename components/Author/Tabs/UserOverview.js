@@ -83,23 +83,6 @@ const UserOverviewTab = ({ author, fetching }) => {
 
   return (
     <div>
-      <div className={postCount > 0 ? css(styles.reveal) : css(styles.hide)}>
-        <ComponentWrapper overrideStyle={styles.componentWrapper}>
-          <section className={css(styles.section)}>
-            {isNumber(postCount) && (
-              <h2 className={css(styles.sectionHeader)}>Posts</h2>
-            )}
-            <UserPostsTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
-            {postCount > maxCardsToRender &&
-              !fetching &&
-              renderSeeMoreLink({ relPath: "posts", text: "See all posts" })}
-          </section>
-        </ComponentWrapper>
-      </div>
-
       {(commentCount !== 0 || fetching) && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
@@ -119,6 +102,23 @@ const UserOverviewTab = ({ author, fetching }) => {
           </section>
         </ComponentWrapper>
       )}
+
+      <div className={postCount > 0 ? css(styles.reveal) : css(styles.hide)}>
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <section className={css(styles.section)}>
+            {isNumber(postCount) && (
+              <h2 className={css(styles.sectionHeader)}>Posts</h2>
+            )}
+            <UserPostsTab
+              maxCardsToRender={maxCardsToRender}
+              fetching={fetching}
+            />
+            {postCount > maxCardsToRender &&
+              !fetching &&
+              renderSeeMoreLink({ relPath: "posts", text: "See all posts" })}
+          </section>
+        </ComponentWrapper>
+      </div>
 
       {(authoredPaperCount !== 0 || fetching) && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>

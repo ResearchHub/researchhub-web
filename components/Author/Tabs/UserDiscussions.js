@@ -152,8 +152,11 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     boxSizing: "border-box",
+    padding: 0,
   },
   discussionContainer: {
+    boxSizing: "border-box",
+    padding: "24px 15px",
     width: "100%",
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
     ":last-child": {
