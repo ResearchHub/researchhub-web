@@ -16,6 +16,7 @@ import HubCard from "~/components/Hubs/HubCard";
 
 // Config
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -131,12 +132,17 @@ class Index extends React.Component {
   };
 
   renderCategories = () => {
-    const { categories, scrollDirection } = this.state;
+    const { categories, hubsByCategory, scrollDirection } = this.state;
 
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
+
+      const numHubs =
+        categoryName === "Trending"
+          ? this.props.hubs.topHubs.length
+          : hubsByCategory[categoryID] && hubsByCategory[categoryID].length;
 
       return (
         <Waypoint
@@ -160,7 +166,13 @@ class Index extends React.Component {
                 categoryName
               )}
             </div>
-            <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
+            <div
+              key={`${categoryName}_${i}`}
+              className={
+                css(styles.grid) +
+                (numHubs % 2 ? ` ${css(styles.oddHubs)}` : "")
+              }
+            >
               {categoryName === "Trending"
                 ? this.renderTrendingHubs()
                 : this.renderHubs(categoryID)}
@@ -277,8 +289,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   container: {
-    width: "95%",
-    margin: "auto",
+    padding: "0px 8px",
   },
   titleContainer: {
     display: "flex",
@@ -311,7 +322,7 @@ const styles = StyleSheet.create({
     top: -15,
     minHeight: "100vh",
     marginLeft: 20,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
     },
   },
@@ -320,14 +331,41 @@ const styles = StyleSheet.create({
     height: 0,
     marginTop: -25,
     marginBottom: 20,
-    "@media only screen and (max-width: 767px)": {
+
+    "::before": {
+      content: `""`,
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      left: -10,
+      bottom: 0,
+      pointerEvents: "none",
+      backgroundImage:
+        "linear-gradient(to left, rgba(255,255,255,0), white 85%)",
+      width: "10%",
+    },
+
+    "::after": {
+      content: `""`,
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      right: -10,
+      bottom: 0,
+      pointerEvents: "none",
+      backgroundImage:
+        "linear-gradient(to right, rgba(255,255,255,0), white 85%)",
+      width: "10%",
+    },
+
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       top: -2,
       position: "sticky",
       backgroundColor: "#FFF",
       zIndex: 3,
       display: "flex",
       height: "unset",
-      width: "100vw",
+      width: "95vw",
       boxSizing: "border-box",
     },
   },
@@ -343,19 +381,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   categoryLabel: {
+    cursor: "default",
+    userSelect: "none",
     borderBottom: "1px solid #ededed",
     fontSize: 22,
     fontWeight: 500,
     color: "#241F3A",
+    marginLeft: 15,
+    marginRight: 15,
     paddingBottom: 10,
     marginBottom: 15,
-    cursor: "default",
-    userSelect: "none",
     paddingTop: 18,
     marginTop: -18,
-    "@media only screen and (max-width: 767px)": {
-      paddingTop: 60,
-      marginTop: -60,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingTop: 70,
+      marginTop: -70,
     },
   },
   grid: {
@@ -363,12 +403,25 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "left",
+    marginLeft: 40,
+    marginTop: 30,
     marginBottom: 40,
     gap: 30,
-    "@media only screen and (max-width: 767px)": {
-      paddingLeft: 0,
-      paddingRight: 0,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "center",
+      marginLeft: 0,
+      marginTop: 0,
       gap: 0,
+    },
+  },
+  oddHubs: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      "::after": {
+        content: `""`,
+        width: "42.5vmin",
+        height: "42.5vmin",
+        margin: "2.5vmin",
+      },
     },
   },
   trendingIcon: {

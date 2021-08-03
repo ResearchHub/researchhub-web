@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     gap: 30,
     "::after": {
-      content: "",
+      content: `""`,
       flex: "auto",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
