@@ -8,16 +8,6 @@ export type SwitchConfigs = {
 };
 
 const KillswtichConfigs: SwitchConfigs = {
-  newPostTypes: {
-    development: true,
-    staging: true,
-    production: true,
-  },
-  unifiedDocumentFeed: {
-    development: true,
-    staging: true,
-    production: true,
-  },
   paperUploadV2: {
     development: true,
     staging: true,

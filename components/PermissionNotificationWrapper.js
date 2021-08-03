@@ -93,12 +93,4 @@ const PermissionNotificationWrapper = (props) => {
   }
 };
 
-PermissionNotificationWrapper.propTypes = {
-  loginRequired: PropTypes.bool,
-  modalMessage: PropTypes.string,
-  onClick: PropTypes.func,
-  permissionKey: PropTypes.string,
-  styling: PropTypes.object,
-};
-
 export default PermissionNotificationWrapper;
