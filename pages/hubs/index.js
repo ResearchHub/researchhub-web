@@ -296,11 +296,11 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: 30,
-    paddingBottom: 40,
   },
   hubsContainer: {
     opacity: 0,
     transition: "all ease-in-out 0.3s",
+    marginBottom: 30,
   },
   reveal: {
     opacity: 1,
@@ -321,7 +321,8 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: -15,
     minHeight: "100vh",
-    marginLeft: 20,
+    marginLeft: 30,
+    marginRight: 30,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "none",
     },
@@ -329,8 +330,8 @@ const styles = StyleSheet.create({
   stickyComponent: {
     display: "none",
     height: 0,
-    marginTop: -25,
-    marginBottom: 20,
+    marginTop: 30,
+    marginBottom: 30,
 
     "::before": {
       content: `""`,
@@ -367,6 +368,8 @@ const styles = StyleSheet.create({
       height: "unset",
       width: "95vw",
       boxSizing: "border-box",
+      marginTop: 20,
+      marginBottom: 0,
     },
   },
   content: {
@@ -377,8 +380,8 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    margin: "auto",
+    maxWidth: 1550,
   },
   categoryLabel: {
     cursor: "default",
@@ -387,15 +390,15 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 500,
     color: "#241F3A",
-    marginLeft: 15,
-    marginRight: 15,
     paddingBottom: 10,
-    marginBottom: 15,
-    paddingTop: 18,
-    marginTop: -18,
+    marginBottom: 30,
+    marginTop: 30,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingTop: 70,
-      marginTop: -70,
+      marginTop: -40,
+      marginBottom: 10,
+      marginLeft: "3vmin",
+      marginRight: "3vmin",
     },
   },
   grid: {
@@ -403,14 +406,9 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     flexDirection: "row",
     justifyContent: "left",
-    marginLeft: 40,
-    marginTop: 30,
-    marginBottom: 40,
     gap: 30,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
-      marginLeft: 0,
-      marginTop: 0,
       gap: 0,
     },
   },
