@@ -271,10 +271,12 @@ class PaperPageCard extends React.Component {
 
   renderActions = () => {
     const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
-    const uploadedById = paper && paper.uploaded_by && paper.uploaded_by.id;
+    const { paper_title, title, uploaded_by } = paper || {};
+    const uploadedById = uploaded_by && paper.uploaded_by.id;
     const isUploaderSuspended =
       paper && paper.uploaded_by && paper.uploaded_by.is_suspended;
-
+    const formattedPaperTitle =
+      !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
     const actionButtons = [
       {
         active: true,
@@ -299,7 +301,7 @@ class PaperPageCard extends React.Component {
           <ShareAction
             addRipples={true}
             title={"Share this paper"}
-            subtitle={paper && paper.title}
+            subtitle={formattedPaperTitle}
             url={this.props.shareUrl}
             customButton={
               <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
@@ -573,7 +575,10 @@ class PaperPageCard extends React.Component {
       discussionCount,
     } = this.props;
     const { fetching, previews, previewAvailable } = this.state;
-    const promotedScore = score + paper.boost_amount;
+    const { boost_amount, paper_title, title } = paper;
+    const promotedScore = score + boost_amount;
+    const formattedPaperTitle =
+      !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
 
     return (
       <ReactPlaceholder
@@ -631,7 +636,7 @@ class PaperPageCard extends React.Component {
                             className={css(styles.title)}
                             property={"headline"}
                           >
-                            {paper && paper.title}
+                            {formattedPaperTitle}
                           </h1>
                         </div>
                       </div>

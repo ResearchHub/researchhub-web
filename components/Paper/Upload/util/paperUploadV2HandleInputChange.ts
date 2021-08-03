@@ -33,7 +33,7 @@ export const getHandleInputChange = ({
         ? !isNullOrUndefined(value)
           ? (value[0] || "").toUpperCase() + value.slice(1)
           : ""
-        : value;
+        : value || "";
   } else {
     // Refer to Note(100)
     newFormState[firstKey][keys[1]] = value;

@@ -4,7 +4,6 @@ import Button from "./Form/Button";
 import NewPostModal from "./Modals/NewPostModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";
-import killswitch from "../config/killswitch/killswitch";
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
@@ -17,21 +16,15 @@ export default function NewPostButton({
 }: NewPostButtonProps) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
 
-  if (!killswitch("newPostTypes")) {
-    return null;
-  }
-
   return (
     <Fragment>
-      {/* @ts-ignore */}
       <PermissionNotificationWrapper
-        onClick={() => setIsNewPostModalOpen(true)}
+        loginRequired
         modalMessage="create a new post"
-        loginRequired={true}
+        onClick={() => setIsNewPostModalOpen(true)}
         permissionKey="CreatePaper"
         styling={styles.rippleClass}
       >
-        {/* @ts-ignore */}
         <Button
           customButtonStyle={customButtonStyle && customButtonStyle}
           hideRipples={true}
@@ -44,7 +37,7 @@ export default function NewPostButton({
                   icon={["far", "plus"]}
                 />
               ) : null}
-              <span> New Post </span>{" "}
+              <span>{"New Post"}</span>
             </div>
           }
           onClick={onClick && onClick}
