@@ -1,41 +1,25 @@
 import AboutQuestionCard from "./AboutQuestionCard";
 import AskQuestionForm from "../../../../components/Paper/AskQuestionForm";
 import Head from "../../../../components/Head";
-import React, { Fragment, useEffect } from "react";
-import { useRouter } from "next/router";
-import killswitch from "../../../../config/killswitch/killswitch";
+import React, { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 
 export default function Index() {
-  const router = useRouter();
-  const enableNewPostTypes = killswitch("newPostTypes");
-  useEffect(() => {
-    if (!enableNewPostTypes) {
-      router.push("/all");
-    }
-  }, [enableNewPostTypes, router.pathname]);
-  if (enableNewPostTypes) {
-    return (
-      <Fragment>
-        <Head title={`New Post`} description="Create a Post on ResearchHub" />
-        <div className={css(styles.background)}>
-          <div className={css(styles.content)}>
-            <div className={css(styles.title)}>Create a Post</div>
-            <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
-            <div className={css(styles.row)}>
-              <AskQuestionForm />
-              <AboutQuestionCard
-                customStyle={styles.cardOnSide}
-                isOpen={true}
-              />
-            </div>
+  return (
+    <Fragment>
+      <Head title={`New Post`} description="Create a Post on ResearchHub" />
+      <div className={css(styles.background)}>
+        <div className={css(styles.content)}>
+          <div className={css(styles.title)}>Create a Post</div>
+          <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
+          <div className={css(styles.row)}>
+            <AskQuestionForm />
+            <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
           </div>
         </div>
-      </Fragment>
-    );
-  } else {
-    return null;
-  }
+      </div>
+    </Fragment>
+  );
 }
 
 const styles = StyleSheet.create({

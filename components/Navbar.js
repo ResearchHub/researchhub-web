@@ -335,19 +335,6 @@ const Navbar = (props) => {
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
-        ) : !killswitch("newPostTypes") ? (
-          <PermissionNotificationWrapper
-            onClick={addPaperModal}
-            modalMessage="upload a paper"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              label={"Add Paper"}
-              hideRipples={true}
-              customButtonStyle={[styles.addPaperButton]}
-            />
-          </PermissionNotificationWrapper>
         ) : (
           <NewPostButton
             customButtonStyle={[styles.newPostButton]}
@@ -554,24 +541,9 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          {!killswitch("newPostTypes") ? (
-            <PermissionNotificationWrapper
-              onClick={onAddPaperClick}
-              modalMessage="upload a paper"
-              loginRequired={true}
-              permissionKey="CreatePaper"
-            >
-              <Button
-                customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-                label={"Add Paper"}
-                hideRipples={true}
-              />
-            </PermissionNotificationWrapper>
-          ) : (
-            <NewPostButton
-              customButtonStyle={{ ...styles.button, ...styles.newPost }}
-            />
-          )}
+          <NewPostButton
+            customButtonStyle={{ ...styles.button, ...styles.newPost }}
+          />
         </div>
 
         <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>

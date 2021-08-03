@@ -285,7 +285,7 @@ function PaperUploadV2Update({
               placeholder="Jargon free version of the title that the average person would understand"
               containerStyle={formGenericStyles.container}
               labelStyle={formGenericStyles.labelStyle}
-              value={title || paperTitle}
+              value={title}
               id="title"
               onChange={handleInputChange}
             />
