@@ -13,6 +13,11 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: true,
     production: true,
   },
+  hypothesis: {
+    development: true,
+    staging: true,
+    production: false,
+  },
 };
 
 export default KillswtichConfigs;
