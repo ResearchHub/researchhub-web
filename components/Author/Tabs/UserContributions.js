@@ -92,9 +92,11 @@ class UserContributionsTab extends React.Component {
 
       const current = this.state.contributions[i];
       contributions.push(
-        <div className={css(styles.contributionContainer)}>
+        <div
+          key={`userContribution-${current.id}-${i}`}
+          className={css(styles.contributionContainer)}
+        >
           <PaperEntryCard
-            key={`userContribution-${current.id}-${i}`}
             paper={current}
             index={i}
             style={[

@@ -234,7 +234,20 @@ function AuthorPage(props) {
     console.log("authorUserID", authorUserID);
     console.log("+++++++++++");
 
-    if (authorUserID !== user.id) return;
+    // Reset promotions since depending on the user, they
+    // may not be refetched and as a result, a cached promotions list
+    // will stick to another user.
+    if (authorUserID !== user.id) {
+      dispatch(
+        AuthorActions.updateAuthorByKey({
+          key: "promotions",
+          value: {},
+          prevState: store.getState().author,
+        })
+      );
+      return;
+    }
+
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
@@ -261,7 +274,7 @@ function AuthorPage(props) {
   }
 
   function fetchUserTransactions() {
-    // if (!auth.isLoggedIn) return;
+    if (!auth.isLoggedIn) return;
     return dispatch(
       TransactionActions.getWithdrawals(1, store.getState().transactions)
     );
@@ -283,7 +296,6 @@ function AuthorPage(props) {
 
   useEffect(() => {
     if (!isEmpty(user)) {
-      console.log("doing it!", user.id);
       Promise.all([
         fetchAuthoredPapers(),
         fetchAuthorSuspended(),
@@ -319,11 +331,11 @@ function AuthorPage(props) {
     if (prevProps && !auth.isLoggedIn) {
       checkUserVotes(); // clears the state
     } else if (!prevProps && auth.isLoggedIn) {
-      let papers = store.getState().author.authoredPapers.papers;
-      checkUserVotes(papers, "authored");
-      let contributions = store.getState().author.userContributions
-        .contributions;
-      checkUserVotes(contributions, "contributions");
+      // let papers = store.getState().author.authoredPapers.papers;
+      // checkUserVotes(papers, "authored");
+      // let contributions = store.getState().author.userContributions
+      //   .contributions;
+      // checkUserVotes(contributions, "contributions");
     }
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
