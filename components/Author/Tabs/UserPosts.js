@@ -7,21 +7,36 @@ import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
-import { connect } from "react-redux";
+import { connect, useStore, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { AuthorActions } from "~/redux/author";
 
-function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
+function useEffectFetchUserPosts({
+  setIsFetching,
+  setPosts,
+  userID,
+  store,
+  dispatch,
+}) {
   useEffect(() => {
     if (!isNullOrUndefined(userID)) {
       setIsFetching(true);
       fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
-        .then((data) => {
+        .then(async (data) => {
           try {
             setPosts(data.results);
             setIsFetching(false);
+
+            await dispatch(
+              AuthorActions.updateAuthorByKey({
+                key: "posts",
+                value: data,
+                prevState: store.getState().author,
+              })
+            );
           } catch (error) {
             setIsFetching(false);
           }
@@ -36,18 +51,27 @@ function useEffectFetchUserPosts({ setIsFetching, setPosts, userID }) {
 }
 
 function UserPosts(props) {
-  const { author, user, fetching } = props;
+  const { author, user, fetching, maxCardsToRender } = props;
   const [isFetching, setIsFetching] = useState(fetching);
   const [posts, setPosts] = useState([]);
+  const store = useStore();
+  const dispatch = useDispatch();
+
   let postCards;
   if (posts.length > 0) {
-    postCards = posts.map((post, index) => (
-      <UserPostCard
-        {...post}
-        key={post.id || index}
-        style={styles.customUserPostCard}
-      />
-    ));
+    postCards = [];
+    for (let i = 0; i < posts.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const post = posts[i];
+      postCards.push(
+        <UserPostCard
+          {...post}
+          key={post.id || i}
+          style={styles.customUserPostCard}
+        />
+      );
+    }
   } else {
     postCards = (
       <EmptyState
@@ -57,7 +81,13 @@ function UserPosts(props) {
     );
   }
 
-  useEffectFetchUserPosts({ setIsFetching, setPosts, userID: author.user });
+  useEffectFetchUserPosts({
+    setIsFetching,
+    setPosts,
+    userID: author.user,
+    store,
+    dispatch,
+  });
   return (
     <ReactPlaceholder
       ready={!isFetching}
@@ -75,8 +105,10 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
     marginBottom: 0,
     marginTop: 0,
-    paddingTop: 24,
-    paddingBottom: 24,
+    padding: "24px 15px",
+    ":last-child": {
+      borderBottom: 0,
+    },
   },
 });
 

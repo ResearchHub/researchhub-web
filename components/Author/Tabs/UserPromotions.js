@@ -13,7 +13,7 @@ import EmptyState from "./EmptyState";
 import { AuthorActions } from "~/redux/author";
 
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
@@ -21,33 +21,40 @@ const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);
 
   const renderPromotions = () => {
-    const { author, fetching } = props;
+    const { author, fetching, maxCardsToRender } = props;
 
     const promotions =
       author.promotions && author.promotions.results
         ? author.promotions.results
         : [];
 
+    const promotionCards = [];
+    for (let i = 0; i < promotions.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const p = promotions[i];
+      const { source } = p;
+      if (source) {
+        promotionCards.push(
+          <PromotionCard
+            source={source}
+            promotion={p}
+            index={i}
+            key={`promotion-${i}`}
+            isLast={promotions.length - 1 === i}
+          />
+        );
+      }
+    }
+
     return (
       <ReactPlaceholder
         ready={!fetching}
         showLoadingAnimation
-        customPlaceholder={<PaperPlaceholder color="#efefef" rows={2} />}
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
-        {promotions.length ? (
-          promotions.map((promotion, i) => {
-            const { source } = promotion;
-            if (source) {
-              return (
-                <PromotionCard
-                  source={source}
-                  promotion={promotion}
-                  index={i}
-                  isLast={promotions.length - 1 === i}
-                />
-              );
-            }
-          })
+        {promotionCards.length > 0 ? (
+          promotionCards.map((p) => p)
         ) : (
           <EmptyState
             message={"User has not supported any content"}
@@ -111,7 +118,7 @@ const UserPromotions = (props) => {
   return (
     <div className={css(styles.feed)}>
       {renderPromotions()}
-      {renderLoadMoreButton()}
+      {!props.maxCardsToRender && renderLoadMoreButton()}
     </div>
   );
 };

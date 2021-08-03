@@ -90,32 +90,39 @@ class AuthoredPapersTab extends React.Component {
 
   render() {
     let { papers } = this.state;
-    let authoredPapers = papers.map((paper, index) => {
-      return (
+    const { maxCardsToRender } = this.props;
+
+    const authoredPapers = [];
+    for (let i = 0; i < papers.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const paper = papers[i];
+      authoredPapers.push(
         <div className={css(styles.paperContainer)}>
           <PaperEntryCard
             paper={paper}
-            index={index}
+            index={i}
             style={[
               styles.paperEntryCard,
-              index === papers.length - 1 && styles.noBorder,
+              i === papers.length - 1 && styles.noBorder,
             ]}
             voteCallback={this.voteCallback}
             mobileView={this.props.mobileView}
           />
         </div>
       );
-    });
+    }
+
     return (
       <ReactPlaceholder
-        ready={this.props.author.authorDoneFetching}
+        ready={this.props.author.authorDoneFetching && !this.props.fetching}
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
         {authoredPapers.length > 0 ? (
           <div className={css(styles.container)}>
             {authoredPapers}
-            {this.renderLoadMoreButton()}
+            {!maxCardsToRender && this.renderLoadMoreButton()}
           </div>
         ) : (
           <div className={css(styles.box)}>

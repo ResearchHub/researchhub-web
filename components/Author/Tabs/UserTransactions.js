@@ -73,7 +73,8 @@ class UserTransaction extends React.Component {
   };
 
   render() {
-    const { transactions } = this.props;
+    const { transactions, maxCardsToRender, auth } = this.props;
+
     return (
       <ReactPlaceholder
         ready={transactions && !this.props.fetching}
@@ -96,7 +97,7 @@ class UserTransaction extends React.Component {
             icon={icons.receipt}
           />
         )}
-        {this.renderLoadMoreButton()}
+        {!maxCardsToRender && this.renderLoadMoreButton()}
       </ReactPlaceholder>
     );
   }
