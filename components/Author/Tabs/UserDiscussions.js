@@ -107,6 +107,7 @@ class UserDiscussionsTab extends React.Component {
             i === author.userDiscussions.discussions.length - 1 &&
               styles.noBorder
           )}
+          key={`discThread-${discussion.id}-${i}`}
         >
           <DiscussionThreadCard
             data={discussion}
@@ -114,7 +115,6 @@ class UserDiscussionsTab extends React.Component {
             path={path}
             paperId={discussion.paper}
             postId={discussion.post}
-            key={`discThread-${discussion.id}-${i}`}
             mobileView={this.props.mobileView}
           />
         </div>

@@ -12,27 +12,23 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
-import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 
-const UserOverviewTab = ({ author, transactions, fetching }) => {
+const UserOverviewTab = ({ author, fetching }) => {
   const maxCardsToRender = 3;
   const [submittedPaperCount, setSubmittedPaperCount] = useState(null);
   const [authoredPaperCount, setAuthoredPaperCount] = useState(null);
   const [commentCount, setCommentCount] = useState(null);
-  const [supportedPaperCount, setSupportedPaperCount] = useState(null);
   const [postCount, setPostCount] = useState(null);
-  const [transactionCount, setTransactionCount] = useState(null);
 
   useEffect(() => {
     const submittedPapers = get(author, "userContributions", {});
     const authoredPapers = get(author, "authoredPapers", {});
     const comments = get(author, "userDiscussions", {});
-    const supportedPapers = get(author, "promotions", {});
     const posts = get(author, "posts", {});
 
     if (isNumber(submittedPapers.count)) {
@@ -44,19 +40,10 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
     if (isNumber(comments.count)) {
       setCommentCount(comments.count);
     }
-    if (isNumber(supportedPapers.count)) {
-      setSupportedPaperCount(supportedPapers.count);
-    }
     if (isNumber(posts.count)) {
       setPostCount(posts.count);
     }
   }, [author]);
-
-  useEffect(() => {
-    if (get(transactions, "withdrawals")) {
-      setTransactionCount(transactions.withdrawals.length);
-    }
-  }, [transactions]);
 
   const renderSeeMoreLink = ({ relPath, text }) => {
     return (
@@ -79,8 +66,6 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
     !postCount &&
     !commentCount &&
     !submittedPaperCount &&
-    !supportedPaperCount &&
-    !transactionCount &&
     !fetching;
 
   if (hasNoContent) {
@@ -171,51 +156,12 @@ const UserOverviewTab = ({ author, transactions, fetching }) => {
           </section>
         </ComponentWrapper>
       )}
-      {supportedPaperCount !== 0 && supportedPaperCount !== null && (
-        <ComponentWrapper overrideStyle={styles.componentWrapper}>
-          <section className={css(styles.section)}>
-            {isNumber(supportedPaperCount) && (
-              <h2 className={css(styles.sectionHeader)}>Supported Content</h2>
-            )}
-            <UserPromotionsTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
-            {supportedPaperCount > maxCardsToRender &&
-              !fetching &&
-              renderSeeMoreLink({
-                relPath: "boosts",
-                text: "See all supported content",
-              })}
-          </section>
-        </ComponentWrapper>
-      )}
-      {transactionCount !== 0 && (
-        <ComponentWrapper overrideStyle={styles.componentWrapper}>
-          <section className={css(styles.section)}>
-            {isNumber(transactionCount) && (
-              <h2 className={css(styles.sectionHeader)}>Transactions</h2>
-            )}
-            <UserTransactionsTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
-            {transactionCount > maxCardsToRender &&
-              !fetching &&
-              renderSeeMoreLink({
-                relPath: "transactions",
-                text: "See all transactions",
-              })}
-          </section>
-        </ComponentWrapper>
-      )}
     </div>
   );
 };
 
 const mapStateToProps = (state) => ({
   author: state.author,
-  transactions: state.transactions,
 });
 
 const styles = StyleSheet.create({
@@ -259,7 +205,6 @@ const styles = StyleSheet.create({
 
 UserOverviewTab.propTypes = {
   author: PropTypes.object,
-  transactions: PropTypes.object,
   fetching: PropTypes.bool,
 };
 

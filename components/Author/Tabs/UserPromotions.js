@@ -40,6 +40,7 @@ const UserPromotions = (props) => {
             source={source}
             promotion={p}
             index={i}
+            key={`promotion-${i}`}
             isLast={promotions.length - 1 === i}
           />
         );
@@ -50,10 +51,10 @@ const UserPromotions = (props) => {
       <ReactPlaceholder
         ready={!fetching}
         showLoadingAnimation
-        customPlaceholder={<PaperPlaceholder color="#efefef" rows={2} />}
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
         {promotionCards.length > 0 ? (
-          { promotionCards }
+          promotionCards.map((p) => p)
         ) : (
           <EmptyState
             message={"User has not supported any content"}
