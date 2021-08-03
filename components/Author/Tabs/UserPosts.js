@@ -105,8 +105,7 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
     marginBottom: 0,
     marginTop: 0,
-    paddingTop: 24,
-    paddingBottom: 24,
+    padding: "24px 15px",
     ":last-child": {
       borderBottom: 0,
     },

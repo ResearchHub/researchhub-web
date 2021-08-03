@@ -13,7 +13,7 @@ import { AuthorActions } from "~/redux/author";
 
 // Config
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 class UserContributionsTab extends React.Component {
@@ -159,14 +159,10 @@ var styles = StyleSheet.create({
   },
   paperEntryCard: {
     border: 0,
-    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
     marginBottom: 0,
     marginTop: 0,
-    paddingTop: 24,
-    paddingBottom: 24,
-    ":last-child": {
-      borderBottom: 0,
-    },
+    padding: "24px 15px",
   },
   icon: {
     fontSize: 50,

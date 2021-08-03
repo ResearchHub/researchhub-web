@@ -9,7 +9,7 @@ import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
 const TransactionCard = (props) => {
-  let { transaction } = props;
+  let { transaction, style } = props;
   function renderStatus(status) {
     switch (status) {
       case "FAILED":
@@ -43,7 +43,10 @@ const TransactionCard = (props) => {
   }
 
   return (
-    <div className={css(styles.transactionCard)} onClick={openTransactionHash}>
+    <div
+      className={css(styles.transactionCard, style && style)}
+      onClick={openTransactionHash}
+    >
       <div className={css(styles.row)}>
         <div className={css(styles.column)}>
           <div className={css(styles.maintext)}>Withdrawal</div>
@@ -103,18 +106,21 @@ const TransactionCard = (props) => {
 const styles = StyleSheet.create({
   transactionCard: {
     width: "100%",
-    padding: "27px 20px",
+    padding: "24px 15px",
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
     alignItems: "flex-start",
     cursor: "pointer",
-    border: "1px solid #EDEDED",
+    borderBottom: "1px solid #EDEDED",
     marginBottom: 10,
     borderRadius: 3,
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+    ":last-child": {
+      borderBottom: 0,
     },
     "@media only screen and (max-width: 620px)": {
       position: "relative",

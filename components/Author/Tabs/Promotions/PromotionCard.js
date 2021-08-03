@@ -78,6 +78,7 @@ class PromotionCard extends React.Component {
 
   renderData = () => {
     const { promotion } = this.props;
+
     return (
       <div className={css(styles.row)}>
         <div
@@ -196,8 +197,9 @@ class PromotionCard extends React.Component {
 
 const styles = StyleSheet.create({
   card: {
+    boxSizing: "border-box",
     width: "100%",
-    padding: "27px 20px",
+    padding: "24px 15px",
     display: "flex",
     justifyContent: "space-between",
     cursor: "pointer",
