@@ -111,7 +111,12 @@ const Navbar = (props) => {
       className: "lessImportantTab",
     },
     { label: "Live", route: "/live", icon: "live" },
-    { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
+    {
+      label: "Leaderboard",
+      route: "/leaderboard/users",
+      icon: "trophy",
+      className: "lessImportantTab",
+    },
     isUserModerator
       ? {
           label: "Mods",
@@ -219,7 +224,13 @@ const Navbar = (props) => {
 
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <div className={css(styles.tab, index === 0 && styles.firstTab)}>
+          <div
+            className={css(
+              styles.tab,
+              index === 0 && styles.firstTab,
+              styles[tab.className]
+            )}
+          >
             {tab.label}
           </div>
         </Link>

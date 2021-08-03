@@ -132,17 +132,12 @@ class Index extends React.Component {
   };
 
   renderCategories = () => {
-    const { categories, hubsByCategory, scrollDirection } = this.state;
+    const { categories, scrollDirection } = this.state;
 
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
-
-      const numHubs =
-        categoryName === "Trending"
-          ? this.props.hubs.topHubs.length
-          : hubsByCategory[categoryID] && hubsByCategory[categoryID].length;
 
       return (
         <Waypoint
@@ -166,13 +161,7 @@ class Index extends React.Component {
                 categoryName
               )}
             </div>
-            <div
-              key={`${categoryName}_${i}`}
-              className={
-                css(styles.grid) +
-                (numHubs % 2 ? ` ${css(styles.oddHubs)}` : "")
-              }
-            >
+            <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
               {categoryName === "Trending"
                 ? this.renderTrendingHubs()
                 : this.renderHubs(categoryID)}
@@ -245,7 +234,7 @@ class Index extends React.Component {
             setActiveCategory={this.setActiveCategory}
           />
         </div>
-        <div className={css(styles.content)}>
+        <div>
           <AddHubModal addHub={this.addNewHubToState} />
           <EditHubModal editHub={this.editHub} />
           <Message />
@@ -284,12 +273,22 @@ class Index extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "0px 0px",
+    },
+  },
   body: {
     backgroundColor: "#FCFCFC",
-    alignItems: "flex-start",
+    justifyContent: "center",
   },
   container: {
     padding: "0px 8px",
+    "@media only screen and (min-width: 1601px)": {
+      width: "100%",
+    },
   },
   titleContainer: {
     display: "flex",
@@ -301,6 +300,10 @@ const styles = StyleSheet.create({
     opacity: 0,
     transition: "all ease-in-out 0.3s",
     marginBottom: 30,
+    "@media only screen and (min-width: 1601px)": {
+      width: "80vw",
+      maxWidth: 1200,
+    },
   },
   reveal: {
     opacity: 1,
@@ -323,7 +326,7 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
     marginLeft: 30,
     marginRight: 30,
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+    "@media only screen and (max-width: 1600px)": {
       display: "none",
     },
   },
@@ -359,7 +362,7 @@ const styles = StyleSheet.create({
       width: "10%",
     },
 
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+    "@media only screen and (max-width: 1600px)": {
       top: -2,
       position: "sticky",
       backgroundColor: "#FFF",
@@ -371,17 +374,6 @@ const styles = StyleSheet.create({
       marginTop: 20,
       marginBottom: 0,
     },
-  },
-  content: {
-    "@media only screen and (min-width: 900px)": {
-      width: "82%",
-    },
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    margin: "auto",
-    maxWidth: 1550,
   },
   categoryLabel: {
     cursor: "default",
@@ -402,24 +394,13 @@ const styles = StyleSheet.create({
     },
   },
   grid: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "left",
-    gap: 30,
+    justifyContent: "center",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, 360px)",
+    gridGap: "30px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "center",
-      gap: 0,
-    },
-  },
-  oddHubs: {
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      "::after": {
-        content: `""`,
-        width: "42.5vmin",
-        height: "42.5vmin",
-        margin: "2.5vmin",
-      },
+      gridTemplateColumns: "repeat(auto-fill, 42.5vmin)",
+      gridGap: "3vmin",
     },
   },
   trendingIcon: {
