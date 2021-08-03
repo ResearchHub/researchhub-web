@@ -83,7 +83,7 @@ const UserOverviewTab = ({ author, fetching }) => {
 
   return (
     <div>
-      {postCount !== 0 && (
+      <div className={postCount > 0 ? css(styles.reveal) : css(styles.hide)}>
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
             {isNumber(postCount) && (
@@ -98,11 +98,12 @@ const UserOverviewTab = ({ author, fetching }) => {
               renderSeeMoreLink({ relPath: "posts", text: "See all posts" })}
           </section>
         </ComponentWrapper>
-      )}
-      {commentCount !== 0 && (
+      </div>
+
+      {(commentCount !== 0 || fetching) && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
-            {get(author, "discussionsDoneFetching") && !fetching && (
+            {!fetching && (
               <h2 className={css(styles.sectionHeader)}>Comments</h2>
             )}
             <UserDiscussionsTab
@@ -118,10 +119,11 @@ const UserOverviewTab = ({ author, fetching }) => {
           </section>
         </ComponentWrapper>
       )}
-      {authoredPaperCount !== 0 && (
+
+      {(authoredPaperCount !== 0 || fetching) && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
-            {get(author, "authorDoneFetching") && !fetching && (
+            {!fetching && (
               <h2 className={css(styles.sectionHeader)}>Authored Papers</h2>
             )}
             <AuthoredPapersTab
@@ -137,10 +139,11 @@ const UserOverviewTab = ({ author, fetching }) => {
           </section>
         </ComponentWrapper>
       )}
-      {submittedPaperCount !== 0 && (
+
+      {(submittedPaperCount !== 0 || fetching) && (
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
           <section className={css(styles.section)}>
-            {isNumber(submittedPaperCount) && (
+            {!fetching && (
               <h2 className={css(styles.sectionHeader)}>Paper Submissions</h2>
             )}
             <UserContributionsTab
@@ -165,6 +168,12 @@ const mapStateToProps = (state) => ({
 });
 
 const styles = StyleSheet.create({
+  reveal: {
+    display: "block",
+  },
+  hide: {
+    display: "none",
+  },
   componentWrapper: {
     marginBottom: 20,
   },

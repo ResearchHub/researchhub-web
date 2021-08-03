@@ -115,7 +115,7 @@ class AuthoredPapersTab extends React.Component {
 
     return (
       <ReactPlaceholder
-        ready={this.props.author.authorDoneFetching}
+        ready={this.props.author.authorDoneFetching && !this.props.fetching}
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >

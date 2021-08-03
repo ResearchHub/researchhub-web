@@ -140,7 +140,7 @@ function AuthorPage(props) {
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
   // FetchingState
-  const [fetching, setFetching] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
   // KT Constants
@@ -275,7 +275,9 @@ function AuthorPage(props) {
   }
 
   async function refetchAuthor() {
-    const response = dispatch(
+    setFetchedUser(false); // needed for tabbar
+    setFetching(true);
+    const response = await dispatch(
       AuthorActions.getAuthor({ authorId: router.query.authorId })
     );
     setFetchedUser(true); // needed for tabbar
@@ -283,12 +285,11 @@ function AuthorPage(props) {
   }
 
   useEffect(() => {
-    setFetching(true);
     refetchAuthor();
   }, [router.query.authorId]);
 
   useEffect(() => {
-    if (!isEmpty(user)) {
+    if (fetchedUser) {
       Promise.all([
         fetchAuthoredPapers(),
         fetchAuthorSuspended(),
@@ -296,11 +297,11 @@ function AuthorPage(props) {
         fetchUserDiscussions(),
         fetchUserPromotions(),
         fetchUserTransactions(),
-      ]).then((_) => {
+      ]).finally((_) => {
         setFetching(false);
       });
     }
-  }, [user]);
+  }, [fetchedUser]);
 
   useEffect(() => {
     if (
@@ -324,11 +325,11 @@ function AuthorPage(props) {
     if (prevProps && !auth.isLoggedIn) {
       checkUserVotes(); // clears the state
     } else if (!prevProps && auth.isLoggedIn) {
-      // let papers = store.getState().author.authoredPapers.papers;
-      // checkUserVotes(papers, "authored");
-      // let contributions = store.getState().author.userContributions
-      //   .contributions;
-      // checkUserVotes(contributions, "contributions");
+      let papers = store.getState().author.authoredPapers.papers;
+      checkUserVotes(papers, "authored");
+      let contributions = store.getState().author.userContributions
+        .contributions;
+      checkUserVotes(contributions, "contributions");
     }
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
