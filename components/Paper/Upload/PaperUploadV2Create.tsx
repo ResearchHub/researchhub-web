@@ -77,13 +77,12 @@ const useEffectParseReduxToState = ({
     paper_title: formPaperTitle,
     title: formTitle,
   } = formState;
-  const resolvedPaperTitle = !isNullOrUndefined(formPaperTitle)
-    ? formPaperTitle
-    : reduxPaperTitle;
+  const resolvedPaperTitle = !isNullOrUndefined(reduxPaperTitle)
+    ? reduxPaperTitle
+    : formPaperTitle;
   const resolvedFormTitle = !isNullOrUndefined(formTitle)
     ? formTitle
     : resolvedPaperTitle;
-
   useEffect((): void => {
     const {
       abstract,
