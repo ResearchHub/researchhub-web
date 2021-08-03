@@ -13,7 +13,7 @@ import { AuthorActions } from "~/redux/author";
 
 // Config
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 class UserContributionsTab extends React.Component {
@@ -84,26 +84,32 @@ class UserContributionsTab extends React.Component {
   };
 
   render() {
-    const contributions = this.state.contributions.map(
-      (contribution, index) => {
-        return (
-          <div className={css(styles.contributionContainer)}>
-            <PaperEntryCard
-              key={`userContribution-${contribution.id}-${index}`}
-              paper={contribution}
-              index={index}
-              style={[
-                styles.paperEntryCard,
-                index === this.state.contributions.length - 1 &&
-                  styles.noBorder,
-              ]}
-              voteCallback={this.voteCallback}
-              mobileView={this.props.mobileView}
-            />
-          </div>
-        );
-      }
-    );
+    const { maxCardsToRender } = this.props;
+    const contributions = [];
+
+    for (let i = 0; i < this.state.contributions.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const current = this.state.contributions[i];
+      contributions.push(
+        <div
+          key={`userContribution-${current.id}-${i}`}
+          className={css(styles.contributionContainer)}
+        >
+          <PaperEntryCard
+            paper={current}
+            index={i}
+            style={[
+              styles.paperEntryCard,
+              i === this.state.contributions.length - 1 && styles.noBorder,
+            ]}
+            voteCallback={this.voteCallback}
+            mobileView={this.props.mobileView}
+          />
+        </div>
+      );
+    }
+
     return (
       <ReactPlaceholder
         ready={
@@ -115,7 +121,7 @@ class UserContributionsTab extends React.Component {
         {contributions.length > 0 ? (
           <div className={css(styles.container)}>
             {contributions}
-            {this.renderLoadMoreButton()}
+            {!maxCardsToRender && this.renderLoadMoreButton()}
           </div>
         ) : (
           <EmptyState
@@ -153,11 +159,10 @@ var styles = StyleSheet.create({
   },
   paperEntryCard: {
     border: 0,
-    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
     marginBottom: 0,
     marginTop: 0,
-    paddingTop: 24,
-    paddingBottom: 24,
+    padding: "24px 15px",
   },
   icon: {
     fontSize: 50,

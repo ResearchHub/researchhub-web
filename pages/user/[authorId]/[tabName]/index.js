@@ -3,6 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
+import { get } from "lodash";
+import { isEmpty } from "underscore";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -30,10 +32,11 @@ import UserInfoModal from "~/components/Modals/UserInfoModal";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
+import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 
 // Config
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils";
 import { createUserSummary } from "~/config/utils";
 import killswitch from "~/config/killswitch/killswitch";
@@ -64,6 +67,12 @@ const SECTIONS = {
 
 const getTabs = (author, transactions) =>
   filterNull([
+    {
+      href: "overview",
+      label: "overview",
+      name: "Overview",
+      showCount: false,
+    },
     {
       href: "discussions",
       label: "comments",
@@ -113,7 +122,7 @@ function AuthorPage(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
-  const { tabName } = router.query;
+  const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
@@ -131,7 +140,7 @@ function AuthorPage(props) {
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
   // FetchingState
-  const [fetching, setFetching] = useState(true);
+  const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
   // KT Constants
@@ -160,6 +169,14 @@ function AuthorPage(props) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
+
+  useEffect(() => {
+    const selectedTab = get(router, "query.tabName");
+
+    if (selectedTab && selectedTab !== tabName) {
+      setTabName(selectedTab);
+    }
+  }, [router]);
 
   async function fetchAuthoredPapers() {
     await dispatch(
@@ -209,7 +226,22 @@ function AuthorPage(props) {
   }
 
   function fetchUserPromotions() {
-    if (!authorUserID) return;
+    const { auth, author } = props;
+
+    // Reset promotions since depending on the user, they
+    // may not be refetched and as a result, a cached promotions list
+    // will stick to another user.
+    if (authorUserID !== user.id) {
+      dispatch(
+        AuthorActions.updateAuthorByKey({
+          key: "promotions",
+          value: {},
+          prevState: store.getState().author,
+        })
+      );
+      return;
+    }
+
     setFetchingPromotions(true);
     return fetch(
       API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
@@ -226,6 +258,12 @@ function AuthorPage(props) {
           })
         );
         setFetchingPromotions(false);
+      })
+      .catch((e) => {
+        console.warn("Failed to fetch promotions", e);
+      })
+      .finally((e) => {
+        setFetchingPromotions(false);
       });
   }
 
@@ -236,26 +274,34 @@ function AuthorPage(props) {
     );
   }
 
-  useEffect(() => {
+  async function refetchAuthor() {
+    setFetchedUser(false); // needed for tabbar
     setFetching(true);
-    async function refetchAuthor() {
-      await dispatch(
-        AuthorActions.getAuthor({ authorId: router.query.authorId })
-      );
-      setFetchedUser(true); // needed for tabbar
-    }
-    Promise.all([
-      fetchAuthoredPapers(),
-      fetchAuthorSuspended(),
-      fetchUserContributions(),
-      fetchUserDiscussions(),
-      fetchUserPromotions(),
-      fetchUserTransactions(),
-      refetchAuthor(),
-    ]).then((_) => {
-      setFetching(false);
-    });
+    const response = await dispatch(
+      AuthorActions.getAuthor({ authorId: router.query.authorId })
+    );
+    setFetchedUser(true); // needed for tabbar
+    return response;
+  }
+
+  useEffect(() => {
+    refetchAuthor();
   }, [router.query.authorId]);
+
+  useEffect(() => {
+    if (fetchedUser) {
+      Promise.all([
+        fetchAuthoredPapers(),
+        fetchAuthorSuspended(),
+        fetchUserContributions(),
+        fetchUserDiscussions(),
+        fetchUserPromotions(),
+        fetchUserTransactions(),
+      ]).finally((_) => {
+        setFetching(false);
+      });
+    }
+  }, [fetchedUser]);
 
   useEffect(() => {
     if (
@@ -412,55 +458,72 @@ function AuthorPage(props) {
     }
   };
 
-  const tabContents = (
-    // render all tab content on the dom, but only show if selected
-    <ComponentWrapper>
-      <div className={css(styles.tabMeta)}>
-        <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-        <div
-          className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
-        >
-          <UserPostsTab fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "contributions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserContributionsTab fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "authored-papers" ? styles.reveal : styles.hidden
-          )}
-        >
-          <AuthoredPapersTab fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "discussions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-        </div>
-        <div
-          className={css(
-            tabName === "transactions" ? styles.reveal : styles.hidden
-          )}
-        >
-          <UserTransactionsTab fetching={fetching} />
-        </div>
-        <div
-          className={css(tabName === "boosts" ? styles.reveal : styles.hidden)}
-        >
-          <UserPromotionsTab
-            fetching={fetchingPromotions}
-            activeTab={tabName === "boosts"}
-          />
-        </div>
+  const tabContents =
+    tabName === "overview" ? (
+      <div
+        className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
+      >
+        <UserOverviewTab fetching={fetching} />
       </div>
-    </ComponentWrapper>
-  );
+    ) : (
+      // render all tab content on the dom, but only show if selected
+      <ComponentWrapper>
+        <div className={css(styles.tabMeta)}>
+          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+
+          <div
+            className={css(
+              tabName === "overview" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserOverviewTab fetching={fetching} />
+          </div>
+          <div
+            className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
+          >
+            <UserPostsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "contributions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserContributionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "authored-papers" ? styles.reveal : styles.hidden
+            )}
+          >
+            <AuthoredPapersTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "discussions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "transactions" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserTransactionsTab fetching={fetching} />
+          </div>
+          <div
+            className={css(
+              tabName === "boosts" ? styles.reveal : styles.hidden
+            )}
+          >
+            <UserPromotionsTab
+              fetching={fetchingPromotions}
+              activeTab={tabName === "boosts"}
+            />
+          </div>
+        </div>
+      </ComponentWrapper>
+    );
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
@@ -783,14 +846,6 @@ function AuthorPage(props) {
     </div>
   );
 
-  // const onUserFollow = () => {
-  //   followUser({ followeeId: 11, userId: 4 })
-  //     .then((_) => {})
-  //     .catch((err) => {
-  //       console.log("follow err: ", err);
-  //     });
-  // };
-
   const userActionButtons = (
     /* <UserFollowButton authorId={router.query.authorId} authorname={`${author.first_name} ${author.last_name}`} /> */
     <div className={css(styles.userActions)}>
@@ -987,7 +1042,7 @@ function AuthorPage(props) {
       </ComponentWrapper>
       <TabBar
         tabs={tabs}
-        selectedTab={router.query.tabName}
+        selectedTab={tabName}
         dynamic_href={"/user/[authorId]/[tabName]"}
         author={author}
         authorId={router.query.authorId}
@@ -1325,17 +1380,20 @@ const styles = StyleSheet.create({
     background: "#fff",
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
-    padding: 50,
-    paddingTop: 24,
+    padding: "24px 20px 24px 20px",
     "@media only screen and (max-width: 767px)": {
       padding: 20,
     },
   },
   title: {
-    fontWeight: 500,
+    marginBottom: 15,
     textTransform: "capitalize",
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    paddingBottom: 10,
+    color: colors.BLACK(0.5),
+    fontWeight: 500,
+    fontSize: 16,
     marginTop: 0,
-    marginBottom: 16,
   },
   nameInput: {
     fontSize: 32,

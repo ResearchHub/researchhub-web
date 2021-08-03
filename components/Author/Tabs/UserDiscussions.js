@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
+import { get } from "lodash";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -81,37 +82,45 @@ class UserDiscussionsTab extends React.Component {
   };
 
   render() {
-    const { author, hostname } = this.props;
+    const { author, hostname, maxCardsToRender } = this.props;
 
-    const discussions = author.userDiscussions.discussions.map(
-      (discussion, index) => {
-        let path;
-        if (discussion.paper) {
-          path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
-        } else {
-          path = `/post/${discussion.post}/${discussion.post_slug}`;
-        }
-        return (
-          <div
-            className={css(
-              styles.discussionContainer,
-              index === author.userDiscussions.discussions.length - 1 &&
-                styles.noBorder
-            )}
-          >
-            <DiscussionThreadCard
-              data={discussion}
-              hostname={hostname}
-              path={path}
-              paperId={discussion.paper}
-              postId={discussion.post}
-              key={`discThread-${discussion.id}-${index}`}
-              mobileView={this.props.mobileView}
-            />
-          </div>
-        );
+    const discussions = [];
+    for (
+      let i = 0;
+      i < get(author, "userDiscussions.discussions.length", 0);
+      i++
+    ) {
+      if (i === maxCardsToRender) break;
+
+      const discussion = author.userDiscussions.discussions[i];
+      let path;
+
+      if (discussion.paper) {
+        path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
+      } else {
+        path = `/post/${discussion.post}/${discussion.post_slug}`;
       }
-    );
+      discussions.push(
+        <div
+          className={css(
+            styles.discussionContainer,
+            i === author.userDiscussions.discussions.length - 1 &&
+              styles.noBorder
+          )}
+          key={`discThread-${discussion.id}-${i}`}
+        >
+          <DiscussionThreadCard
+            data={discussion}
+            hostname={hostname}
+            path={path}
+            paperId={discussion.paper}
+            postId={discussion.post}
+            mobileView={this.props.mobileView}
+          />
+        </div>
+      );
+    }
+
     return (
       <ReactPlaceholder
         ready={
@@ -123,7 +132,7 @@ class UserDiscussionsTab extends React.Component {
         {discussions.length > 0 ? (
           <React.Fragment>
             <div className={css(styles.container)}>{discussions}</div>
-            {this.renderLoadMoreButton()}
+            {!maxCardsToRender && this.renderLoadMoreButton()}
           </React.Fragment>
         ) : (
           <EmptyState
@@ -143,12 +152,15 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     boxSizing: "border-box",
+    padding: 0,
   },
   discussionContainer: {
+    boxSizing: "border-box",
+    padding: "24px 15px",
     width: "100%",
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    "@media only screen and (max-width: 415px)": {
-      borderBottom: "none",
+    ":last-child": {
+      borderBottom: 0,
     },
   },
   box: {
