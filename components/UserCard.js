@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import numeral from "numeral";
 import { get, isEmpty } from "underscore";
+import Ripples from "react-ripples";
 
 import { createUserSummary } from "~/config/utils";
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -10,7 +11,7 @@ import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
 
-const UserCard = ({ authorProfile, reputation }) => {
+const UserCard = ({ authorProfile, reputation, styleVariation }) => {
   const getName = (authorProfile) =>
     `${get(authorProfile, "first_name", "")} ${get(
       authorProfile,
@@ -21,12 +22,15 @@ const UserCard = ({ authorProfile, reputation }) => {
   const userSummary = createUserSummary(authorProfile);
 
   return (
-    <div className={css(styles.container)}>
+    <Ripples
+      className={css(styles.card, styleVariation && styles[styleVariation])}
+      key={`person-${authorProfile.id}`}
+    >
       <Link
         href={"/user/[authorId]/[tabName]"}
         as={`/user/${authorProfile.id}/overview`}
       >
-        <a className={css(styles.linkWrapper)}>
+        <a className={css(styles.link)}>
           <AuthorAvatar
             author={authorProfile}
             name={name}
@@ -50,47 +54,52 @@ const UserCard = ({ authorProfile, reputation }) => {
                 {userSummary}
               </div>
             )}
-            {reputation > 0 && (
-              <div className={css(styles.reputationForMobile)}>
-                <img
-                  className={css(styles.logoIcon)}
-                  src="/static/ResearchHubIcon.png"
-                />
-                Lifetime Reputation: {numeral(reputation).format("0,0")}
-              </div>
-            )}
           </div>
-          {reputation > 0 && (
-            <div className={css(styles.reputation)}>
-              <img
-                className={css(styles.logoIcon)}
-                src="/static/ResearchHubIcon.png"
-              />
-              {numeral(reputation).format("0,0")}
-            </div>
-          )}
         </a>
       </Link>
-    </div>
+      {reputation > 0 && (
+        <div className={css(styles.reputation)}>
+          <img
+            className={css(styles.logoIcon)}
+            src="/static/ResearchHubIcon.png"
+          />
+          {numeral(reputation).format("0,0")}
+        </div>
+      )}
+    </Ripples>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
-  linkWrapper: {
+  card: {
     border: `1px solid ${genericCardColors.BORDER}`,
     display: "flex",
     padding: 15,
+    marginBottom: 10,
     cursor: "pointer",
     background: "white",
     borderRadius: 2,
-    color: colors.BLACK(),
-    textDecoration: "none",
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  noBorderVariation: {
+    border: 0,
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    marginBottom: 0,
+    marginTop: 0,
+    ":last-child": {
+      borderBottom: 0,
+    },
+  },
+  link: {
+    textDecoration: "none",
+    color: colors.BLACK(),
+    display: "flex",
+    flexDirection: "row",
   },
   details: {
     display: "flex",
@@ -131,17 +140,11 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     alignItems: "center",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  reputationForMobile: {
-    display: "none",
-    fontWeight: 500,
     color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
       fontSize: 12,
+      marginLeft: 45,
+      marginTop: 5,
     },
   },
   logoIcon: {
@@ -161,6 +164,7 @@ const styles = StyleSheet.create({
 UserCard.propTypes = {
   authorProfile: PropTypes.object,
   reputation: PropTypes.number.isRequired,
+  styleVariation: PropTypes.string,
 };
 
 export default UserCard;
