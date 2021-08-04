@@ -66,22 +66,20 @@ const styles = StyleSheet.create({
     color: colors.GREY(),
     marginBottom: 20,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginLeft: 15,
+      marginLeft: "3vmin",
     },
   },
   grid: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "left",
-    marginBottom: 30,
-    gap: 30,
-    "::after": {
-      content: `""`,
-      flex: "auto",
+    justifyContent: "center",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, 360px)",
+    gridGap: "30px",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 200px)",
+      gridGap: "20px",
     },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      gap: 0,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 42.5vmin)",
     },
   },
 });
