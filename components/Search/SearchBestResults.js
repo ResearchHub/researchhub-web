@@ -14,6 +14,12 @@ import Link from "next/link";
 const SearchBestResults = ({ apiResponse }) => {
   const router = useRouter();
   const maxResultsPerSection = 2;
+  const entityToHumanReadable = {
+    person: "people",
+    hub: "hubs",
+    paper: "papers",
+    post: "posts",
+  };
 
   const renderSeeMoreLink = ({ relPath, text }) => {
     return (
@@ -38,7 +44,9 @@ const SearchBestResults = ({ apiResponse }) => {
 
     return (
       <section className={css(styles.section)}>
-        <h2 className={css(styles.sectionHeader)}>{`${key}s`}</h2>
+        <h2 className={css(styles.sectionHeader)}>
+          {entityToHumanReadable[key]}
+        </h2>
         {key === "paper" || key === "post" ? (
           <SearchResultsForDocs
             apiResponse={{ results: results, count: results.length }}
@@ -55,11 +63,10 @@ const SearchBestResults = ({ apiResponse }) => {
             apiResponse={{ results: results, count: results.length }}
           />
         ) : null}
-        {results.length >= maxResultsPerSection &&
-          renderSeeMoreLink({
-            relPath: key,
-            text: `See all ${key}s`,
-          })}
+        {renderSeeMoreLink({
+          relPath: key,
+          text: `See all ${entityToHumanReadable[key]}`,
+        })}
       </section>
     );
   };
@@ -102,6 +109,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     borderBottom: `1px solid ${genericCardColors.BORDER}`,
     paddingBottom: 10,
+    marginBottom: 0,
     color: colors.BLACK(0.5),
     fontWeight: 500,
     fontSize: 16,
