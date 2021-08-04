@@ -86,7 +86,7 @@ const sortOpts = [
   },
 ];
 
-const SearchResultsForDocs = ({ apiResponse }) => {
+const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
   const router = useRouter();
 
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
@@ -95,6 +95,9 @@ const SearchResultsForDocs = ({ apiResponse }) => {
   const [numOfHits, setNumOfHits] = useState(null);
   const [results, setResults] = useState([]);
   const [userVotes, setUserVotes] = useState({});
+  const [searchEntityType, setSearchEntityType] = useState(
+    entityType || router.query.type
+  );
 
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
@@ -320,7 +323,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
 
   return (
     <div>
-      {(numOfHits > 0 || hasAppliedFilters) && (
+      {!showResultsOnly && (numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
           <div className={css(styles.resultCount)}>
             {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
@@ -401,7 +404,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
         <EmptyFeedScreen title="There are no results found for this criteria" />
       )}
 
-      {router.query.type === "post" &&
+      {searchEntityType === "post" &&
         results.map((post, index) => {
           post.user_vote = userVotes[post.id];
 
@@ -422,7 +425,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
             />
           );
         })}
-      {router.query.type === "paper" &&
+      {searchEntityType === "paper" &&
         results.map((paper, index) => {
           paper.abstract = parseIfHighlighted({
             searchResult: paper,
@@ -525,6 +528,8 @@ const styles = StyleSheet.create({
 
 SearchResultsForDocs.propTypes = {
   apiResponse: PropTypes.object,
+  entityType: PropTypes.string,
+  showResultsOnly: PropTypes.bool,
 };
 
 export default SearchResultsForDocs;
