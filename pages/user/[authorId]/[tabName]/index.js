@@ -108,13 +108,13 @@ const getTabs = (author, transactions) =>
       showCount: true,
       count: () => transactions.count,
     },
-    {
-      href: "boosts",
-      label: "supported content",
-      name: "Supported Content",
-      showCount: true,
-      count: () => author.promotions && author.promotions.count,
-    },
+    // {
+    //   href: "boosts",
+    //   label: "supported content",
+    //   name: "Supported Content",
+    //   showCount: true,
+    //   count: () => author.promotions && author.promotions.count,
+    // },
   ]);
 
 function AuthorPage(props) {
@@ -295,7 +295,7 @@ function AuthorPage(props) {
         fetchAuthorSuspended(),
         fetchUserContributions(),
         fetchUserDiscussions(),
-        fetchUserPromotions(),
+        // fetchUserPromotions(),
         fetchUserTransactions(),
       ]).finally((_) => {
         setFetching(false);
