@@ -422,6 +422,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
               {...post}
               user_vote={post.user_vote}
               key={post.id || index}
+              styleVariation={showResultsOnly ? "noBorderVariation" : null}
             />
           );
         })}
@@ -443,6 +444,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
               paper={paper}
               index={index}
               key={paper.id}
+              styleVariation={showResultsOnly ? "noBorderVariation" : null}
               voteCallback={(arrIndex, currPaper) => {
                 const idx = results.findIndex((p) => p.id === currPaper.id);
 

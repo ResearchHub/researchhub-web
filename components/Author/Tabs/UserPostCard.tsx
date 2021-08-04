@@ -9,7 +9,7 @@ import {
 } from "../../../config/constants";
 import API from "../../../config/api";
 import AuthorAvatar from "../../AuthorAvatar";
-import colors from "../../../config/themes/colors";
+import colors, { genericCardColors } from "../../../config/themes/colors";
 import DesktopOnly from "../../DesktopOnly";
 import HubDropDown from "../../Hubs/HubDropDown";
 import HubTag from "../../Hubs/HubTag";
@@ -86,6 +86,7 @@ function UserPostCard(props: UserPostCardProps) {
     unified_document_id: unifiedDocumentId,
     user,
     user_vote: userVote,
+    styleVariation,
     /*
       In some contexts we want to wrap the title/renderable_text 
       with html. e.g. rendering search highlights.
@@ -293,6 +294,7 @@ function UserPostCard(props: UserPostCardProps) {
     <Ripples
       className={css(
         styles.userPostCard,
+        styleVariation && styles[styleVariation],
         style && style,
         isHubsOpen && styles.overflow
       )}
@@ -366,6 +368,15 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+  },
+  noBorderVariation: {
+    border: 0,
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    marginBottom: 0,
+    marginTop: 0,
+    ":last-child": {
+      borderBottom: 0,
     },
   },
   overflow: {

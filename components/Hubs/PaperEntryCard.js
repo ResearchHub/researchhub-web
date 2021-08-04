@@ -18,7 +18,7 @@ import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { transformDate } from "~/redux/utils";
 import API from "~/config/api";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import HubDropDown from "./HubDropDown";
 import HubTag from "./HubTag";
 import Link from "next/link";
@@ -45,6 +45,7 @@ const PaperEntryCard = (props) => {
     postDownvote,
     promotionSummary,
     onClick,
+    styleVariation,
   } = props;
 
   const store = useStore();
@@ -583,6 +584,7 @@ const PaperEntryCard = (props) => {
     <Ripples
       className={css(
         styles.papercard,
+        styleVariation && styles[styleVariation],
         style && style,
         isOpen && styles.overflow
       )}
@@ -647,6 +649,15 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+  },
+  noBorderVariation: {
+    border: 0,
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    marginBottom: 0,
+    marginTop: 0,
+    ":last-child": {
+      borderBottom: 0,
     },
   },
   overflow: {
