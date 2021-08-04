@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/browser";
 import { withAlert } from "react-alert";
 
 // Component
+import HubCardAsRow from "~/components/Hubs/HubCardAsRow";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -245,9 +246,47 @@ class HubCard extends React.Component {
     this.props.openEditHubModal(true, this.props.hub);
   };
 
+  renderStats = () => {
+    const { hub, renderAsRow } = this.props;
+    return (
+      <div
+        className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
+      >
+        <div>
+          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          {hub.paper_count} Paper
+          {hub.paper_count != 1 ? "s" : ""}
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          {hub.discussion_count} Comment
+          {hub.discussion_count != 1 ? "s" : ""}
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          {this.state.subCount} Subscriber
+          {this.state.subCount != 1 ? "s" : ""}
+        </div>
+      </div>
+    );
+  };
+
   render() {
-    const { hub } = this.props;
+    const { hub, renderAsRow } = this.props;
     const { removed } = this.state;
+
+    if (renderAsRow) {
+      return (
+        <HubCardAsRow
+          hub={hub}
+          onClick={() => this.linkRef.current.click()}
+          styleVariation="noBorderVariation"
+        >
+          {this.renderStats()}
+        </HubCardAsRow>
+      );
+    }
+
     return (
       <div
         className={css(styles.slugLink, removed && styles.removed)}
@@ -264,7 +303,7 @@ class HubCard extends React.Component {
                 ? hub.hub_image
                 : "/static/background/twitter-banner.jpg"
             }
-            alt="Hub Background Image"
+            alt={`${hub.name} Hub`}
           ></img>
           {this.renderEdit()}
           {this.renderDelete()}
@@ -274,25 +313,7 @@ class HubCard extends React.Component {
               {this.renderSubscribe()}
             </div>
             <div className={css(styles.hubDescription)}>{hub.description}</div>
-            <div className={css(styles.hubStats)}>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {hub.paper_count} Paper
-                {hub.paper_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {hub.discussion_count} Comment
-                {hub.discussion_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>
-                  {icons.subscribers}
-                </span>
-                {this.state.subCount} Subscriber
-                {this.state.subCount != 1 ? "s" : ""}
-              </div>
-            </div>
+            {this.renderStats()}
           </div>
           <div className={css(styles.hubTitleMobile)}>
             <div className={css(styles.hubNameMobile)}>{hub.name}</div>
@@ -532,6 +553,9 @@ const styles = StyleSheet.create({
     padding: "0 0 15px 0",
     color: "#C1C1CF",
     fontSize: "12px",
+  },
+  hubStatsForRow: {
+    padding: 0,
   },
   statIcon: {
     marginRight: "5px",

@@ -61,6 +61,7 @@ const SearchBestResults = ({ apiResponse }) => {
         ) : key === "hub" ? (
           <SearchResultsForHubs
             apiResponse={{ results: results, count: results.length }}
+            showResultsOnly={true}
           />
         ) : null}
         {renderSeeMoreLink({
