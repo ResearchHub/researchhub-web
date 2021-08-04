@@ -8,7 +8,7 @@ import { breakpoints } from "~/config/themes/screen";
 
 const HubCardAsRow = ({ hub, styleVariation, children }) => {
   hub.description = "The science of biology and biotechnology.";
-  console.log(children);
+
   return (
     <Ripples
       className={css(styles.card, styleVariation && styles[styleVariation])}
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
 
 HubCardAsRow.propTypes = {
   hub: PropTypes.object.isRequired,
+  styleVariation: PropTypes.string,
 };
 
 export default HubCardAsRow;
