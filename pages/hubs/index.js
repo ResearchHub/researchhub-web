@@ -242,29 +242,26 @@ class Index extends React.Component {
             title={"Hubs on Researchhub"}
             description={"View all of the communities on Researchhub"}
           />
-
-          <div className={css(styles.container)}>
-            <div className={css(styles.titleContainer)}>
-              <span className={css(styles.title)}>Hubs</span>
-              {this.renderAddHubButton()}
-            </div>
-            <div className={css(styles.stickyComponent)}>
-              <CategoryListMobile
-                activeCategory={activeCategory}
-                categories={categories}
-                clickedTab={clickedTab}
-                setActiveCategory={this.setActiveCategory}
-                setClickedTab={this.setClickedTab}
-              />
-            </div>
-            <div
-              className={css(
-                styles.hubsContainer,
-                finishedLoading && styles.reveal
-              )}
-            >
-              {this.renderCategories()}
-            </div>
+          <div className={css(styles.titleContainer)}>
+            <span className={css(styles.title)}>Hubs</span>
+            {this.renderAddHubButton()}
+          </div>
+          <div className={css(styles.stickyComponent)}>
+            <CategoryListMobile
+              activeCategory={activeCategory}
+              categories={categories}
+              clickedTab={clickedTab}
+              setActiveCategory={this.setActiveCategory}
+              setClickedTab={this.setClickedTab}
+            />
+          </div>
+          <div
+            className={css(
+              styles.hubsContainer,
+              finishedLoading && styles.reveal
+            )}
+          >
+            {this.renderCategories()}
           </div>
         </div>
       </div>
@@ -276,31 +273,30 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flexDirection: "row",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       padding: "0px 0px",
     },
   },
   body: {
     backgroundColor: "#FCFCFC",
+    alignItems: "flex-start",
     justifyContent: "center",
-  },
-  container: {
-    padding: "0px 8px",
-    "@media only screen and (min-width: 1601px)": {
-      width: "100%",
-    },
   },
   titleContainer: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      marginLeft: "3vmin",
+      marginRight: "3vmin",
+    },
   },
   hubsContainer: {
     opacity: 0,
     transition: "all ease-in-out 0.3s",
     marginBottom: 30,
-    "@media only screen and (min-width: 1601px)": {
+    [`@media only screen and (min-width: ${breakpoints.xxlarge.int + 1}px)`]: {
       width: "80vw",
       maxWidth: 1200,
     },
@@ -324,9 +320,8 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: -15,
     minHeight: "100vh",
-    marginLeft: 30,
     marginRight: 30,
-    "@media only screen and (max-width: 1600px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       display: "none",
     },
   },
@@ -362,7 +357,7 @@ const styles = StyleSheet.create({
       width: "10%",
     },
 
-    "@media only screen and (max-width: 1600px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       top: -2,
       position: "sticky",
       backgroundColor: "#FFF",
@@ -382,13 +377,16 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 500,
     color: "#241F3A",
+    paddingTop: 20,
     paddingBottom: 10,
-    marginBottom: 30,
     marginTop: 30,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      paddingTop: 70,
-      marginTop: -40,
-      marginBottom: 10,
+    marginBottom: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
+      paddingTop: 65,
+      marginTop: -30,
+      marginBottom: 20,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       marginLeft: "3vmin",
       marginRight: "3vmin",
     },
@@ -398,9 +396,12 @@ const styles = StyleSheet.create({
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, 360px)",
     gridGap: "30px",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 200px)",
+      gridGap: "20px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       gridTemplateColumns: "repeat(auto-fill, 42.5vmin)",
-      gridGap: "3vmin",
     },
   },
   trendingIcon: {

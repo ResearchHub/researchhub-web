@@ -1,5 +1,9 @@
 // Use less than or equal checks when referencing sizes
 export const breakpoints = {
+  xxlarge: {
+    int: 1550,
+    str: "1550px",
+  },
   xlarge: {
     int: 1280,
     str: "1280px",
@@ -19,5 +23,9 @@ export const breakpoints = {
   xsmall: {
     int: 576,
     str: "576px",
+  },
+  xxsmall: {
+    int: 470,
+    str: "470px",
   },
 };
