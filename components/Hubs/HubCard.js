@@ -321,9 +321,11 @@ const styles = StyleSheet.create({
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "42.5vmin",
       height: "42.5vmin",
+      maxWidth: "200px",
+      maxHeight: "200px",
     },
   },
   hubCard: {
@@ -332,9 +334,11 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     borderRadius: "8px",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "42.5vmin",
       height: "42.5vmin",
+      maxWidth: "200px",
+      maxHeight: "200px",
     },
   },
   removed: {
@@ -346,22 +350,24 @@ const styles = StyleSheet.create({
     height: "128px",
     objectFit: "cover",
     pointerEvents: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "42.5vmin",
       height: "42.5vmin",
+      maxWidth: "200px",
+      maxHeight: "200px",
       borderRadius: "8px",
     },
   },
   hubInfo: {
     boxSizing: "border-box",
     padding: "0 15px",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "none",
     },
   },
   hubTitleMobile: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "block",
       position: "relative",
       bottom: 104,
@@ -373,21 +379,26 @@ const styles = StyleSheet.create({
   },
   hubNameMobile: {
     position: "absolute",
-    bottom: "1.5vmin",
-    left: "2vmin",
-    width: "38vmin",
     color: "#fff",
-    fontSize: "3.5vw",
     textTransform: "capitalize",
     fontWeight: 500,
     wordBreak: "break-word",
+    fontSize: "16px",
+    bottom: "7.5px",
+    left: "10px",
+    width: "180px",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      bottom: "1.5vmin",
+      left: "2vmin",
+      width: "38vmin",
+    },
   },
   hubTitle: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "10px 0 0 0",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "none",
     },
   },
