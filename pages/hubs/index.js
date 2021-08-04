@@ -16,6 +16,7 @@ import HubCard from "~/components/Hubs/HubCard";
 
 // Config
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -233,7 +234,7 @@ class Index extends React.Component {
             setActiveCategory={this.setActiveCategory}
           />
         </div>
-        <div className={css(styles.content)}>
+        <div>
           <AddHubModal addHub={this.addNewHubToState} />
           <EditHubModal editHub={this.editHub} />
           <Message />
@@ -241,29 +242,26 @@ class Index extends React.Component {
             title={"Hubs on Researchhub"}
             description={"View all of the communities on Researchhub"}
           />
-
-          <div className={css(styles.container)}>
-            <div className={css(styles.titleContainer)}>
-              <span className={css(styles.title)}>Hubs</span>
-              {this.renderAddHubButton()}
-            </div>
-            <div className={css(styles.stickyComponent)}>
-              <CategoryListMobile
-                activeCategory={activeCategory}
-                categories={categories}
-                clickedTab={clickedTab}
-                setActiveCategory={this.setActiveCategory}
-                setClickedTab={this.setClickedTab}
-              />
-            </div>
-            <div
-              className={css(
-                styles.hubsContainer,
-                finishedLoading && styles.reveal
-              )}
-            >
-              {this.renderCategories()}
-            </div>
+          <div className={css(styles.titleContainer)}>
+            <span className={css(styles.title)}>Hubs</span>
+            {this.renderAddHubButton()}
+          </div>
+          <div className={css(styles.stickyComponent)}>
+            <CategoryListMobile
+              activeCategory={activeCategory}
+              categories={categories}
+              clickedTab={clickedTab}
+              setActiveCategory={this.setActiveCategory}
+              setClickedTab={this.setClickedTab}
+            />
+          </div>
+          <div
+            className={css(
+              styles.hubsContainer,
+              finishedLoading && styles.reveal
+            )}
+          >
+            {this.renderCategories()}
           </div>
         </div>
       </div>
@@ -272,24 +270,36 @@ class Index extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: "0px 0px",
+    },
+  },
   body: {
     backgroundColor: "#FCFCFC",
     alignItems: "flex-start",
-  },
-  container: {
-    width: "95%",
-    margin: "auto",
+    justifyContent: "center",
   },
   titleContainer: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
     paddingTop: 30,
-    paddingBottom: 40,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      marginLeft: "3vmin",
+      marginRight: "3vmin",
+    },
   },
   hubsContainer: {
     opacity: 0,
     transition: "all ease-in-out 0.3s",
+    marginBottom: 30,
+    [`@media only screen and (min-width: ${breakpoints.xxlarge.int + 1}px)`]: {
+      width: "80vw",
+      maxWidth: `${breakpoints.large.str}`,
+    },
   },
   reveal: {
     opacity: 1,
@@ -310,65 +320,88 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: -15,
     minHeight: "100vh",
-    marginLeft: 20,
-    "@media only screen and (max-width: 767px)": {
+    marginRight: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       display: "none",
     },
   },
   stickyComponent: {
     display: "none",
     height: 0,
-    marginTop: -25,
-    marginBottom: 20,
-    "@media only screen and (max-width: 767px)": {
+    marginTop: 30,
+    marginBottom: 30,
+
+    "::before": {
+      content: `""`,
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      left: -10,
+      bottom: 0,
+      pointerEvents: "none",
+      backgroundImage:
+        "linear-gradient(to left, rgba(255,255,255,0), white 85%)",
+      width: "10%",
+    },
+
+    "::after": {
+      content: `""`,
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      right: -10,
+      bottom: 0,
+      pointerEvents: "none",
+      backgroundImage:
+        "linear-gradient(to right, rgba(255,255,255,0), white 85%)",
+      width: "10%",
+    },
+
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       top: -2,
       position: "sticky",
       backgroundColor: "#FFF",
       zIndex: 3,
       display: "flex",
       height: "unset",
-      width: "100vw",
+      width: "95vw",
       boxSizing: "border-box",
+      marginTop: 20,
+      marginBottom: 0,
     },
-  },
-  content: {
-    "@media only screen and (min-width: 900px)": {
-      width: "82%",
-    },
-  },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
   categoryLabel: {
+    cursor: "default",
+    userSelect: "none",
     borderBottom: "1px solid #ededed",
     fontSize: 22,
     fontWeight: 500,
     color: "#241F3A",
+    paddingTop: 20,
     paddingBottom: 10,
-    marginBottom: 15,
-    cursor: "default",
-    userSelect: "none",
-    paddingTop: 18,
-    marginTop: -18,
-    "@media only screen and (max-width: 767px)": {
-      paddingTop: 60,
-      marginTop: -60,
+    marginTop: 30,
+    marginBottom: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
+      paddingTop: 65,
+      marginTop: -30,
+      marginBottom: 20,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      marginLeft: "3vmin",
+      marginRight: "3vmin",
     },
   },
   grid: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "left",
-    marginBottom: 40,
-    gap: 30,
-    "@media only screen and (max-width: 767px)": {
-      paddingLeft: 0,
-      paddingRight: 0,
-      gap: 0,
+    justifyContent: "center",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, 360px)",
+    gridGap: "30px",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 200px)",
+      gridGap: "20px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 42.5vmin)",
     },
   },
   trendingIcon: {
