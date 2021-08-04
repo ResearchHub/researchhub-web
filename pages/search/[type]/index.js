@@ -31,7 +31,7 @@ const Index = ({ apiResponse, hasError }) => {
   const router = useRouter();
   const currentSearchType = get(router, "query.type");
 
-  if (hasError) {
+  if (hasError || !apiResponse) {
     return <Error statusCode={500} />;
   }
 
