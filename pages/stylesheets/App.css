@@ -48,18 +48,12 @@ img {
   white-space: unset !important;
 }
 
-.horizontal-menu {
-  width: 105%;
-}
-
 .menu-item-wrapper:focus {
   outline: none;
 }
 
-@media only screen and (max-width: 767px) {
-  .horizontal-menu {
-    width: 100%;
-  }
+.horizontal-menu {
+  width: 100%;
 }
 
 /* REACT-TOOLTIP */

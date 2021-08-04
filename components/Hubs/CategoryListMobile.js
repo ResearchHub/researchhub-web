@@ -45,20 +45,6 @@ const Menu = (list, activeCategory) =>
     );
   });
 
-const NavigationArrow = ({ icon, direction, customStyles }) => {
-  return (
-    <div
-      className={css([
-        styles.arrowContainer,
-        direction === "left" ? styles.arrowLeft : styles.arrowRight,
-        customStyles ? customStyles : null,
-      ])}
-    >
-      {icon}
-    </div>
-  );
-};
-
 const CategoryListMobile = (props) => {
   const {
     activeCategory,
@@ -89,12 +75,6 @@ const CategoryListMobile = (props) => {
   return (
     <div className={css(styles.container)}>
       <ScrollMenu
-        arrowLeft={
-          <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
-        }
-        arrowRight={
-          <NavigationArrow icon={icons.chevronRight} direction={"right"} />
-        }
         data={menu}
         hideSingleArrow={true}
         itemStyle={{ border: "none", highlight: "none", outline: "none" }}
@@ -110,7 +90,7 @@ const CategoryListMobile = (props) => {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    width: "95%",
+    width: "100%",
     justifyContent: "flex-start",
     boxSizing: "border-box",
     background: "#FCFCFC",
@@ -143,12 +123,6 @@ const styles = StyleSheet.create({
     ":hover": {
       background: "#FAFAFA",
     },
-  },
-  arrowLeft: {
-    paddingRight: 2,
-  },
-  arrowRight: {
-    paddingLeft: 5,
   },
   tab: {
     color: "rgba(36, 31, 58, .5)",
