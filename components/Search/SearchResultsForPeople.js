@@ -2,7 +2,6 @@ import { useState, useEffect, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import { get } from "lodash";
-import Ripples from "react-ripples";
 import { useRouter } from "next/router";
 import { isArray, isString, isEmpty } from "underscore";
 
@@ -160,16 +159,12 @@ const SearchResultsForPeople = ({ apiResponse, showResultsOnly }) => {
           <div className={css(styles.results)}>
             {results.map((person, index) => {
               return (
-                <Ripples
+                <UserCard
                   className={css(styles.person)}
-                  key={`person-${index}-${person.id}`}
-                >
-                  <UserCard
-                    className={css(styles.person)}
-                    authorProfile={person.author_profile}
-                    reputation={getPersonReputation(person)}
-                  />
-                </Ripples>
+                  authorProfile={person.author_profile}
+                  reputation={getPersonReputation(person)}
+                  styleVariation={showResultsOnly ? "noBorderVariation" : null}
+                />
               );
             })}
           </div>
@@ -236,7 +231,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   results: {
-    marginTop: 10,
+    marginTop: 0,
   },
   person: {
     width: "100%",
