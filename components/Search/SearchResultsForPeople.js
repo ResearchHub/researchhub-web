@@ -20,34 +20,23 @@ const sortOpts = [
     isDefault: true,
     value: null,
     label: "Relevance",
-    valueForApi: {
-      ifPersonTypeUser: null,
-      ifPersonTypeAuthor: null,
-    },
+    valueForApi: null,
   },
   {
     value: "-score",
     label: "Reputation",
-    valueForApi: {
-      ifPersonTypeUser: "-user_reputation",
-      ifPersonTypeAuthor: "-author_score",
-    },
+    valueForApi: "-author_score",
   },
 ];
 
-const SearchResultsForPeople = ({ apiResponse }) => {
+const SearchResultsForPeople = ({ apiResponse, showResultsOnly }) => {
   const router = useRouter();
 
-  const [facetValuesForPersonType, setFacetValuesForPersonType] = useState([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(null);
   const [results, setResults] = useState([]);
 
-  const [
-    selectedPersonTypeDropdownValue,
-    setSelectedPersonTypeDropdownValue,
-  ] = useState({});
   const [
     selectedSortOrderDropdownValue,
     setSelectedSortOrderDropdownValue,
@@ -58,23 +47,13 @@ const SearchResultsForPeople = ({ apiResponse }) => {
   );
 
   useEffect(() => {
-    updateDropdowns();
-  }, [router.query, facetValuesForPersonType]);
-
-  useEffect(() => {
     const results = get(apiResponse, "results", []);
 
     setResults(results);
     setNextResultsUrl(get(apiResponse, "next", null));
     setNumOfHits(get(apiResponse, "count", 0));
-    setFacetValuesForPersonType(
-      get(apiResponse, "facets._filter_person_types.person_types.buckets", [])
-    );
-  }, [apiResponse]);
-
-  useEffect(() => {
     setSelectedSortOrderDropdownValue(getDropdownValueForSort());
-  }, [selectedPersonTypeDropdownValue]);
+  }, [apiResponse]);
 
   useEffect(() => {
     const _setPageWidth = () => setPageWidth(window.innerWidth);
@@ -86,57 +65,18 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     };
   }, []);
 
-  const updateDropdowns = () => {
-    setSelectedPersonTypeDropdownValue(getDropdownValueForPerson());
-    setSelectedSortOrderDropdownValue(getDropdownValueForSort());
-  };
-
-  const getDropdownValueForPerson = () => {
-    const personTypeParam = get(router, "query.person_types", null);
-    const defaultValue = "user";
-    let dropdownValue = null;
-
-    // Almost every time, both user/author facet values will be available for selection
-    // but depending on query, sometimes only author or users will be returned. In such a case, we always
-    // want to default to whatever the only available option is.
-    if (facetValuesForPersonType.length === 1) {
-      dropdownValue = facetValuesForPersonType[0];
-    } else {
-      const found = facetValuesForPersonType.find(
-        (opt) => opt.key === personTypeParam
-      );
-
-      dropdownValue =
-        found ||
-        facetValuesForPersonType.find((opt) => opt.key === defaultValue);
-    }
-
-    return {
-      label: get(dropdownValue, "key"),
-      value: get(dropdownValue, "key"),
-    };
-  };
-
   const getDropdownValueForSort = () => {
     const orderingParam = get(router, "query.ordering", null);
     const currentPersonType = get(router, "query.person_types", null);
-    let dropdownValue = null;
 
-    if (currentPersonType === "user") {
-      dropdownValue = sortOpts.find(
-        (opt) => opt.valueForApi.ifPersonTypeUser === orderingParam
-      );
-    } else if (currentPersonType === "author") {
-      dropdownValue = sortOpts.find(
-        (opt) => opt.valueForApi.ifPersonTypeAuthor === orderingParam
-      );
-    }
+    const dropdownValue = sortOpts.find(
+      (opt) => opt.valueForApi === orderingParam
+    );
 
     return dropdownValue || sortOpts.find((opt) => opt.isDefault === true);
   };
 
   const handleSortSelect = (sortId, selected) => {
-    const currentPersonType = get(router, `query.person_types`, null);
     let query = {
       ...router.query,
     };
@@ -144,10 +84,7 @@ const SearchResultsForPeople = ({ apiResponse }) => {
     if (selected.value === null) {
       delete query[sortId];
     } else {
-      query[sortId] =
-        currentPersonType === "author"
-          ? selected.valueForApi.ifPersonTypeAuthor
-          : selected.valueForApi.ifPersonTypeUser;
+      query[sortId] = sortOpts[sortId];
     }
 
     router.push({
@@ -185,67 +122,41 @@ const SearchResultsForPeople = ({ apiResponse }) => {
   };
 
   const getPersonReputation = (person) => {
-    const currentPersonType = get(router, `query.person_types`, null);
-
-    if (currentPersonType === "user") {
-      return get(person, "user.reputation", 0);
-    } else if (currentPersonType === "author") {
-      return get(person, "author_profile.author_score", 0);
-    }
-    return null;
+    return get(person, "author_profile.reputation", 0);
   };
-
-  const currentPersonType = get(router, `query.person_types`, null);
-  const facetValueOpts = facetValuesForPersonType.map((f) => ({
-    label: `${f.key} (${f.doc_count})`,
-    value: f.key,
-    valueForApi: f.key,
-  }));
 
   return (
     <div>
       {numOfHits === 0 && <SearchEmpty />}
       {numOfHits > 0 && (
         <Fragment>
-          <div className={css(styles.resultCount)}>
-            {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
-          </div>
-          <div className={css(styles.filters)}>
-            <FormSelect
-              id={"person_types"}
-              options={facetValueOpts}
-              containerStyle={styles.dropdownContainer}
-              inputStyle={styles.dropdownInput}
-              onChange={handleFilterSelect}
-              isSearchable={false}
-              placeholder={"Person Type"}
-              value={selectedPersonTypeDropdownValue}
-              isMulti={false}
-              multiTagStyle={null}
-              multiTagLabelStyle={null}
-              isClearable={false}
-              showLabelAlongSelection={
-                pageWidth <= breakpoints.small.int ? true : false
-              }
-            />
-            <FormSelect
-              id={"ordering"}
-              placeholder={"Sort"}
-              options={sortOpts}
-              value={selectedSortOrderDropdownValue}
-              containerStyle={[
-                styles.dropdownContainer,
-                styles.dropdownContainerForSort,
-              ]}
-              inputStyle={styles.dropdownInput}
-              onChange={handleSortSelect}
-              isSearchable={false}
-              showLabelAlongSelection={
-                pageWidth <= breakpoints.small.int ? true : false
-              }
-            />
-          </div>
-
+          {!showResultsOnly && (
+            <Fragment>
+              <div className={css(styles.resultCount)}>
+                {`${numOfHits} ${
+                  numOfHits === 1 ? "result" : "results"
+                } found.`}
+              </div>
+              <div className={css(styles.filters)}>
+                <FormSelect
+                  id={"ordering"}
+                  placeholder={"Sort"}
+                  options={sortOpts}
+                  value={selectedSortOrderDropdownValue}
+                  containerStyle={[
+                    styles.dropdownContainer,
+                    styles.dropdownContainerForSort,
+                  ]}
+                  inputStyle={styles.dropdownInput}
+                  onChange={handleSortSelect}
+                  isSearchable={false}
+                  showLabelAlongSelection={
+                    pageWidth <= breakpoints.small.int ? true : false
+                  }
+                />
+              </div>
+            </Fragment>
+          )}
           <div className={css(styles.results)}>
             {results.map((person, index) => {
               return (
@@ -258,14 +169,6 @@ const SearchResultsForPeople = ({ apiResponse }) => {
                     authorProfile={person.author_profile}
                     reputation={getPersonReputation(person)}
                   />
-                  {/*
-                  <LeaderboardUser
-                    user={person.user}
-                    name={person.full_name}
-                    reputation={getPersonReputation(person)}
-                    authorProfile={person.author_profile}
-                    authorId={get(person, "author_profile.id")}
-                />*/}
                 </Ripples>
               );
             })}
@@ -343,6 +246,7 @@ const styles = StyleSheet.create({
 
 SearchResultsForPeople.propTypes = {
   apiResponse: PropTypes.object,
+  showResultsOnly: PropTypes.bool,
 };
 
 export default SearchResultsForPeople;
