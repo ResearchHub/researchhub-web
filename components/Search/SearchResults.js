@@ -4,7 +4,6 @@ import { get } from "lodash";
 import { useRouter } from "next/router";
 
 import colors from "~/config/themes/colors";
-import ComponentWrapper from "~/components/ComponentWrapper";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
@@ -54,13 +53,8 @@ const SearchResults = ({ apiResponse }) => {
     );
   };
 
-  const componentWrapperStyles = [styles.componentWrapper];
-  if (currentSearchType === "hub") {
-    componentWrapperStyles.push(styles.componentWrapperForHubsResults);
-  }
-
   return (
-    <ComponentWrapper overrideStyle={componentWrapperStyles}>
+    <div className={css(styles.componentWrapper)}>
       {renderEntityTabs()}
       {currentSearchType === "paper" || currentSearchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
@@ -69,7 +63,7 @@ const SearchResults = ({ apiResponse }) => {
       ) : currentSearchType === "person" ? (
         <SearchResultsForPeople apiResponse={apiResponse} />
       ) : null}
-    </ComponentWrapper>
+    </div>
   );
 };
 
@@ -77,12 +71,10 @@ const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
     marginBottom: 20,
-  },
-  componentWrapperForHubsResults: {
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      paddingLeft: 5,
-      paddingRight: 5,
-    },
+    marginLeft: "auto",
+    marginRight: "auto",
+    width: "95vw",
+    maxWidth: `${breakpoints.large.str}`,
   },
   tabContainer: {
     marginBottom: 40,
