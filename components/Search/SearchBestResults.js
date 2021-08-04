@@ -47,7 +47,12 @@ const SearchBestResults = ({ apiResponse }) => {
         <h2 className={css(styles.sectionHeader)}>
           {entityToHumanReadable[key]}
         </h2>
-        {key === "paper" || key === "post" ? (
+        {key === "hub" ? (
+          <SearchResultsForHubs
+            apiResponse={{ results: results, count: results.length }}
+            showResultsOnly={true}
+          />
+        ) : key === "paper" || key === "post" ? (
           <SearchResultsForDocs
             apiResponse={{ results: results, count: results.length }}
             showResultsOnly={true}
@@ -55,11 +60,6 @@ const SearchBestResults = ({ apiResponse }) => {
           />
         ) : key === "person" ? (
           <SearchResultsForPeople
-            apiResponse={{ results: results, count: results.length }}
-            showResultsOnly={true}
-          />
-        ) : key === "hub" ? (
-          <SearchResultsForHubs
             apiResponse={{ results: results, count: results.length }}
             showResultsOnly={true}
           />
@@ -87,11 +87,22 @@ const SearchBestResults = ({ apiResponse }) => {
     return true;
   };
 
-  return Object.keys(apiResponse).map((k) => (
-    <ComponentWrapper key={k} overrideStyle={styles.componentWrapper}>
-      {renderResultSection({ key: k, results: apiResponse[k] })}
-    </ComponentWrapper>
-  ));
+  return (
+    <Fragment>
+      <ComponentWrapper key="hub" overrideStyle={styles.componentWrapper}>
+        {renderResultSection({ key: "hub", results: apiResponse["hub"] })}
+      </ComponentWrapper>
+      <ComponentWrapper key="paper" overrideStyle={styles.componentWrapper}>
+        {renderResultSection({ key: "paper", results: apiResponse["paper"] })}
+      </ComponentWrapper>
+      <ComponentWrapper key="post" overrideStyle={styles.componentWrapper}>
+        {renderResultSection({ key: "post", results: apiResponse["post"] })}
+      </ComponentWrapper>
+      <ComponentWrapper key="person" overrideStyle={styles.componentWrapper}>
+        {renderResultSection({ key: "person", results: apiResponse["person"] })}
+      </ComponentWrapper>
+    </Fragment>
+  );
 };
 
 const styles = StyleSheet.create({
