@@ -298,7 +298,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     [`@media only screen and (min-width: ${breakpoints.xxlarge.int + 1}px)`]: {
       width: "80vw",
-      maxWidth: 1200,
+      maxWidth: `${breakpoints.large.str}`,
     },
   },
   reveal: {
