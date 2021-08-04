@@ -12,7 +12,7 @@ import SearchEmpty from "~/components/Search/SearchEmpty";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { breakpoints } from "~/config/themes/screen";
 
-const SearchResultsForHubs = ({ apiResponse }) => {
+const SearchResultsForHubs = ({ apiResponse, showResultsOnly }) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(null);
@@ -42,12 +42,14 @@ const SearchResultsForHubs = ({ apiResponse }) => {
     <div>
       {numOfHits > 0 && (
         <Fragment>
-          <div className={css(styles.resultCount)}>
-            {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
-          </div>
+          {!showResultsOnly && (
+            <div className={css(styles.resultCount)}>
+              {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
+            </div>
+          )}
           <div className={css(styles.grid)}>
             {results.map((hub, index) => {
-              return <HubCard key={hub.id} hub={hub} />;
+              return <HubCard key={hub.id} hub={hub} renderAsRow={true} />;
             })}
           </div>
         </Fragment>
@@ -86,6 +88,7 @@ const styles = StyleSheet.create({
 
 SearchResultsForHubs.propTypes = {
   apiResponse: PropTypes.object,
+  showResultsOnly: PropTypes.bool,
 };
 
 export default SearchResultsForHubs;
