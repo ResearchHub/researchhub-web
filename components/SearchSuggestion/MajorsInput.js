@@ -144,7 +144,6 @@ class MajorsInput extends React.Component {
       required,
       index,
       onClick,
-      onSearch,
       value,
     } = this.props;
     let { searching, majors, showDropDown } = this.state;
