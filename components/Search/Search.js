@@ -193,7 +193,7 @@ const Search = ({ navbarRef }) => {
         placeholder={placeholderText}
         onKeyDown={handleKeyPress}
         onChange={handleInputChange}
-        value={query}
+        value={query || ""}
         ref={searchInputRef}
         type="text"
       />

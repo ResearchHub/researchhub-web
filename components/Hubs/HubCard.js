@@ -272,7 +272,7 @@ class HubCard extends React.Component {
   };
 
   render() {
-    const { hub, renderAsRow } = this.props;
+    const { hub, renderAsRow, styleVariation } = this.props;
     const { removed } = this.state;
 
     if (renderAsRow) {
@@ -280,7 +280,7 @@ class HubCard extends React.Component {
         <HubCardAsRow
           hub={hub}
           onClick={() => this.linkRef.current.click()}
-          styleVariation="noBorderVariation"
+          styleVariation={styleVariation}
         >
           {this.renderStats()}
         </HubCardAsRow>
