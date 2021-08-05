@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     cursor: "pointer",
     background: "white",
+    boxSizing: "border-box",
     borderRadius: 2,
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,

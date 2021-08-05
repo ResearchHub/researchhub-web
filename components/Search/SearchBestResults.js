@@ -21,18 +21,27 @@ const SearchBestResults = ({ apiResponse }) => {
     post: "posts",
   };
 
-  const renderSeeMoreLink = ({ relPath, text }) => {
+  const handleSeeMoreClick = ({ key }) => {
+    const updatedQuery = {
+      ...router.query,
+      type: key,
+    };
+
+    router.push({
+      pathname: "/search/[type]",
+      query: updatedQuery,
+    });
+  };
+
+  const renderSeeMoreLink = ({ key, text }) => {
     return (
       <div className={css(styles.linkWrapper)}>
-        <Link
-          href={"/search/[type]"}
-          as={`/search/${relPath}?q=${router.query.q}`}
-          // shallow={true}
-          // replace={true}
-          // scroll={false}
+        <div
+          className={css(styles.link)}
+          onClick={() => handleSeeMoreClick({ key })}
         >
-          <div className={css(styles.link)}>{text}</div>
-        </Link>
+          {text}
+        </div>
       </div>
     );
   };
@@ -50,22 +59,22 @@ const SearchBestResults = ({ apiResponse }) => {
         {key === "hub" ? (
           <SearchResultsForHubs
             apiResponse={{ results: results, count: results.length }}
-            showResultsOnly={true}
+            context="best-results"
           />
         ) : key === "paper" || key === "post" ? (
           <SearchResultsForDocs
             apiResponse={{ results: results, count: results.length }}
-            showResultsOnly={true}
+            context="best-results"
             entityType={key}
           />
         ) : key === "person" ? (
           <SearchResultsForPeople
             apiResponse={{ results: results, count: results.length }}
-            showResultsOnly={true}
+            context="best-results"
           />
         ) : null}
         {renderSeeMoreLink({
-          relPath: key,
+          key,
           text: `See all ${entityToHumanReadable[key]}`,
         })}
       </section>

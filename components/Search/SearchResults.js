@@ -9,6 +9,7 @@ import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchBestResults from "~/components/Search/SearchBestResults";
+import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
 
 const SearchResults = ({ apiResponse }) => {
@@ -51,7 +52,7 @@ const SearchResults = ({ apiResponse }) => {
   };
 
   return (
-    <div className={css(styles.componentWrapper)}>
+    <ComponentWrapper overrideStyle={styles.componentWrapper}>
       {renderEntityTabs()}
 
       {currentSearchType === "paper" || currentSearchType === "post" ? (
@@ -63,7 +64,7 @@ const SearchResults = ({ apiResponse }) => {
       ) : currentSearchType === "best" ? (
         <SearchBestResults apiResponse={apiResponse} />
       ) : null}
-    </div>
+    </ComponentWrapper>
   );
 };
 
@@ -71,10 +72,6 @@ const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
     marginBottom: 20,
-    marginLeft: "auto",
-    marginRight: "auto",
-    width: "95vw",
-    maxWidth: `${breakpoints.large.str}`,
   },
   tabContainer: {
     marginBottom: 40,

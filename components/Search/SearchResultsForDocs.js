@@ -13,12 +13,12 @@ import FormSelect from "~/components/Form/FormSelect";
 import Badge from "~/components/Badge";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
-import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const timeFilterOpts = [
   {
@@ -86,7 +86,7 @@ const sortOpts = [
   },
 ];
 
-const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
+const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const router = useRouter();
 
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
@@ -125,7 +125,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
       get(apiResponse, "facets._filter_hubs.hubs.buckets", [])
     );
 
-    fetchAndSetUserVotes(results);
+    if (results && results.length) {
+      fetchAndSetUserVotes(results);
+    }
   }, [apiResponse]);
 
   useEffect(() => {
@@ -177,9 +179,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
   };
 
   const fetchAndSetUserVotes = async (results) => {
-    if (router.query.type === "post") {
+    if (entityType === "post") {
       return _fetchCurrentUserVotesForPosts(results);
-    } else if (router.query.type === "paper") {
+    } else if (entityType === "paper") {
       return _fetchCurrentUserVotesForPapers(results);
     }
   };
@@ -323,7 +325,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
 
   return (
     <div>
-      {!showResultsOnly && (numOfHits > 0 || hasAppliedFilters) && (
+      {context !== "best-results" && (numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
           <div className={css(styles.resultCount)}>
             {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
@@ -422,7 +424,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
               {...post}
               user_vote={post.user_vote}
               key={post.id || index}
-              styleVariation={showResultsOnly ? "noBorderVariation" : null}
+              styleVariation={
+                context === "best-results" ? "noBorderVariation" : null
+              }
             />
           );
         })}
@@ -444,7 +448,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, showResultsOnly }) => {
               paper={paper}
               index={index}
               key={paper.id}
-              styleVariation={showResultsOnly ? "noBorderVariation" : null}
+              styleVariation={
+                context === "best-results" ? "noBorderVariation" : null
+              }
               voteCallback={(arrIndex, currPaper) => {
                 const idx = results.findIndex((p) => p.id === currPaper.id);
 
@@ -531,7 +537,7 @@ const styles = StyleSheet.create({
 SearchResultsForDocs.propTypes = {
   apiResponse: PropTypes.object,
   entityType: PropTypes.string,
-  showResultsOnly: PropTypes.bool,
+  context: PropTypes.oneOf(["best-results"]),
 };
 
 export default SearchResultsForDocs;

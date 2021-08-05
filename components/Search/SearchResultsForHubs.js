@@ -12,7 +12,7 @@ import SearchEmpty from "~/components/Search/SearchEmpty";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { breakpoints } from "~/config/themes/screen";
 
-const SearchResultsForHubs = ({ apiResponse, showResultsOnly }) => {
+const SearchResultsForHubs = ({ apiResponse, context }) => {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [numOfHits, setNumOfHits] = useState(null);
@@ -42,15 +42,24 @@ const SearchResultsForHubs = ({ apiResponse, showResultsOnly }) => {
     <div>
       {numOfHits > 0 && (
         <Fragment>
-          {!showResultsOnly && (
+          {context !== "best-results" && (
             <div className={css(styles.resultCount)}>
               {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
             </div>
           )}
-          <div className={css(styles.grid)}>
-            {results.map((hub, index) => {
-              return <HubCard key={hub.id} hub={hub} renderAsRow={true} />;
-            })}
+          <div>
+            {results.map((hub, index) =>
+              context === "best-results" ? (
+                <HubCard
+                  key={hub.id}
+                  hub={hub}
+                  renderAsRow={true}
+                  styleVariation="noBorderVariation"
+                />
+              ) : (
+                <HubCard key={hub.id} hub={hub} renderAsRow={true} />
+              )
+            )}
           </div>
         </Fragment>
       )}
@@ -71,24 +80,11 @@ const styles = StyleSheet.create({
       marginLeft: "3vmin",
     },
   },
-  grid: {
-    justifyContent: "center",
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, 360px)",
-    gridGap: "30px",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      gridTemplateColumns: "repeat(auto-fill, 200px)",
-      gridGap: "20px",
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      gridTemplateColumns: "repeat(auto-fill, 42.5vmin)",
-    },
-  },
 });
 
 SearchResultsForHubs.propTypes = {
   apiResponse: PropTypes.object,
-  showResultsOnly: PropTypes.bool,
+  context: PropTypes.oneOf(["best-results"]),
 };
 
 export default SearchResultsForHubs;

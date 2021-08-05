@@ -28,7 +28,7 @@ const sortOpts = [
   },
 ];
 
-const SearchResultsForPeople = ({ apiResponse, showResultsOnly }) => {
+const SearchResultsForPeople = ({ apiResponse, context }) => {
   const router = useRouter();
 
   const [isLoadingMore, setIsLoadingMore] = useState(false);
@@ -129,7 +129,7 @@ const SearchResultsForPeople = ({ apiResponse, showResultsOnly }) => {
       {numOfHits === 0 && <SearchEmpty />}
       {numOfHits > 0 && (
         <Fragment>
-          {!showResultsOnly && (
+          {context !== "best-results" && (
             <Fragment>
               <div className={css(styles.resultCount)}>
                 {`${numOfHits} ${
@@ -160,10 +160,13 @@ const SearchResultsForPeople = ({ apiResponse, showResultsOnly }) => {
             {results.map((person, index) => {
               return (
                 <UserCard
+                  key={`person-${person.id}-${index}`}
                   className={css(styles.person)}
                   authorProfile={person.author_profile}
                   reputation={getPersonReputation(person)}
-                  styleVariation={showResultsOnly ? "noBorderVariation" : null}
+                  styleVariation={
+                    context === "best-results" ? "noBorderVariation" : null
+                  }
                 />
               );
             })}
@@ -241,7 +244,7 @@ const styles = StyleSheet.create({
 
 SearchResultsForPeople.propTypes = {
   apiResponse: PropTypes.object,
-  showResultsOnly: PropTypes.bool,
+  context: PropTypes.oneOf(["best-results"]),
 };
 
 export default SearchResultsForPeople;

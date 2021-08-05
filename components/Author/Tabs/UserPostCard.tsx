@@ -300,6 +300,7 @@ function UserPostCard(props: UserPostCardProps) {
         isHubsOpen && styles.overflow
       )}
       onClick={navigateToPage}
+      key={`post-${id}`}
     >
       {desktopVoteWidget}
       <div className={css(styles.container)}>
