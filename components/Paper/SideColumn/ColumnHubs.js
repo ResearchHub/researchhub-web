@@ -28,7 +28,7 @@ const ColumnHubs = (props) => {
   return (
     <ReactPlaceholder
       showLoadingAnimation
-      ready={hubs && hubs.length > 0}
+      ready={!!(hubs && hubs.length > 0)}
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
     >
       <div>
