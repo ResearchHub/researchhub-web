@@ -6,7 +6,6 @@ import Ripples from "react-ripples";
 
 import { fetchURL } from "~/config/fetch";
 import HubCard from "~/components/Hubs/HubCard";
-import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import colors from "~/config/themes/colors";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import LoadMoreButton from "~/components/LoadMoreButton";
