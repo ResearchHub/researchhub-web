@@ -9,7 +9,7 @@ import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import { breakpoints } from "~/config/themes/screen";
-import Link from "next/link";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 
 const SearchBestResults = ({ apiResponse }) => {
   const router = useRouter();
@@ -96,6 +96,10 @@ const SearchBestResults = ({ apiResponse }) => {
     return true;
   };
 
+  if (hasNoResults(apiResponse)) {
+    return <SearchEmpty />;
+  }
+
   return (
     <Fragment>
       <ComponentWrapper key="hub" overrideStyle={styles.componentWrapper}>
@@ -123,7 +127,7 @@ const styles = StyleSheet.create({
   },
   section: {
     background: "white",
-    padding: "24px 20px 24px 20px",
+    padding: "16px 20px",
     borderRadius: "2px",
     border: `1px solid ${genericCardColors.BORDER}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -142,7 +146,7 @@ const styles = StyleSheet.create({
   },
   linkWrapper: {
     textAlign: "center",
-    paddingTop: 24,
+    paddingTop: 16,
     borderTop: `1px solid ${genericCardColors.BORDER}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingTop: 14,
