@@ -52,6 +52,10 @@ class ThreadActionBar extends React.Component {
       onCountHover,
     } = this.props;
 
+    if (count === 0) {
+      return null;
+    }
+
     let classNames = [styles.commentCountContainer];
 
     if (small) {
@@ -60,10 +64,6 @@ class ThreadActionBar extends React.Component {
 
     if (showChildrenState) {
       classNames.push(styles.active);
-    }
-
-    if (count === 0) {
-      classNames.push(styles.inactive);
     }
 
     return (
@@ -96,7 +96,7 @@ class ThreadActionBar extends React.Component {
   renderEditButton = () => {
     const { toggleEdit, editing, small } = this.props;
 
-    let classNames = [];
+    let classNames = [styles.editContainer];
 
     if (small) {
       classNames.push(styles.smallReply);
@@ -114,7 +114,7 @@ class ThreadActionBar extends React.Component {
             styles.iconEdit,
             editing && styles.active
           )}
-          id={"chatIcon"}
+          id={"editIcon"}
         >
           {icons.pencil}
         </span>
@@ -165,8 +165,8 @@ class ThreadActionBar extends React.Component {
         </Fragment>
       );
     }
-    const commentCount = this.renderCommentCount()
-    const editButton = this.renderEditButton()
+    const commentCount = this.renderCommentCount();
+    const editButton = this.renderEditButton();
     return (
       <div
         className={css(styles.column)}
@@ -244,13 +244,24 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     cursor: "pointer",
     ":hover #text": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
     ":hover #chatIcon": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       marginRight: 10,
+    },
+  },
+  editContainer: {
+    cursor: "pointer",
+    padding: 4,
+    borderRadius: 3,
+    ":hover #text": {
+      color: colors.BLUE(),
+    },
+    ":hover #editIcon": {
+      color: colors.BLUE(),
     },
   },
   link: {
@@ -261,10 +272,10 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 3,
     ":hover #text": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
     ":hover #shareIcon": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
   },
   smallReply: {
