@@ -39,6 +39,7 @@ export type UserPostCardProps = {
   user_vote: any; // TODO: briansantoso - define type for user_vote
   titleAsHtml: any;
   renderableTextAsHtml: any;
+  styleVariation: string;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
