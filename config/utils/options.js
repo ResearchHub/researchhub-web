@@ -299,7 +299,7 @@ const degrees = [
 ];
 
 const searchTypes = {
-  best: {
+  all: {
     q: {
       fieldForApi: "search_multi_match",
       fieldForApp: "q",

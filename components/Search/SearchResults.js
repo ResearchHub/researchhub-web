@@ -30,7 +30,7 @@ const SearchResults = ({ apiResponse }) => {
 
   const renderEntityTabs = () => {
     let tabs = [
-      { type: "best", label: "Best Results" },
+      { type: "all", label: "Best Results" },
       { type: "paper", label: "Papers" },
       { type: "post", label: "Posts" },
       { type: "hub", label: "Hubs" },
@@ -61,7 +61,7 @@ const SearchResults = ({ apiResponse }) => {
         <SearchResultsForHubs apiResponse={apiResponse} />
       ) : currentSearchType === "person" ? (
         <SearchResultsForPeople apiResponse={apiResponse} />
-      ) : currentSearchType === "best" ? (
+      ) : currentSearchType === "all" ? (
         <SearchBestResults apiResponse={apiResponse} />
       ) : null}
     </ComponentWrapper>
