@@ -195,6 +195,7 @@ const Search = ({ navbarRef }) => {
         onChange={handleInputChange}
         value={query}
         ref={searchInputRef}
+        type="text"
       />
 
       <span

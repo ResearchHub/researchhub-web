@@ -27,9 +27,9 @@ const SearchBestResults = ({ apiResponse }) => {
         <Link
           href={"/search/[type]"}
           as={`/search/${relPath}?q=${router.query.q}`}
-          shallow={true}
-          replace={true}
-          scroll={false}
+          // shallow={true}
+          // replace={true}
+          // scroll={false}
         >
           <div className={css(styles.link)}>{text}</div>
         </Link>
