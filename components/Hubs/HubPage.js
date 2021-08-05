@@ -221,11 +221,13 @@ class HubPage extends React.Component {
 
   detectPromoted = (papers) => {
     const promotedPapers = [];
-    papers.forEach((paper) => {
-      if (paper.promoted) {
-        promotedPapers.push(paper.id);
-      }
-    });
+    if (papers) {
+      papers.forEach((paper) => {
+        if (paper.promoted) {
+          promotedPapers.push(paper.id);
+        }
+      });
+    }
 
     let createdLocationMeta = this.state.filterBy;
     if (createdLocationMeta === "hot") {
