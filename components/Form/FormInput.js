@@ -50,7 +50,6 @@ class FormInput extends React.Component {
       message,
       autoComplete,
       subtitle,
-      onSearch,
       onClick,
     } = this.props;
 
@@ -106,7 +105,6 @@ class FormInput extends React.Component {
           onClick={this.focusOnClick}
           autoCapitalize="off"
           autoComplete={autoComplete}
-          onSearch={onSearch && onSearch}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && (
