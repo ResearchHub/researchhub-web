@@ -2,17 +2,24 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Ripples from "react-ripples";
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
 
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 
 const HubCardAsRow = ({ hub, styleVariation, children }) => {
+  const router = useRouter();
   hub.description = "The science of biology and biotechnology.";
+
+  const goToHub = (hub) => {
+    router.push("/hubs/[slug]", `/hubs/${encodeURIComponent(hub.slug)}`);
+  };
 
   return (
     <Ripples
       className={css(styles.card, styleVariation && styles[styleVariation])}
       key={`hub-${hub.id}`}
+      onClick={() => goToHub(hub)}
     >
       <div className={css(styles.imgWrapper)}>
         <img
@@ -105,6 +112,7 @@ const styles = StyleSheet.create({
 HubCardAsRow.propTypes = {
   hub: PropTypes.object.isRequired,
   styleVariation: PropTypes.string,
+  onClick: PropTypes.func,
 };
 
 export default HubCardAsRow;

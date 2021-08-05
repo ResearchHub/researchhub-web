@@ -277,11 +277,7 @@ class HubCard extends React.Component {
 
     if (renderAsRow) {
       return (
-        <HubCardAsRow
-          hub={hub}
-          onClick={() => this.linkRef.current.click()}
-          styleVariation={styleVariation}
-        >
+        <HubCardAsRow hub={hub} styleVariation={styleVariation}>
           {this.renderStats()}
         </HubCardAsRow>
       );
