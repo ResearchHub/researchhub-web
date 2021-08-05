@@ -48,9 +48,6 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
     },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
-    },
   },
   noBorderVariation: {
     border: 0,
@@ -65,6 +62,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: "8px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
   },
   name: {
     fontSize: 20,
@@ -89,6 +89,10 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     marginRight: 5,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: 40,
+      width: 40,
+    },
   },
   img: {
     borderRadius: "4px",
