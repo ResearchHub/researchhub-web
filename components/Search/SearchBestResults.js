@@ -117,6 +117,9 @@ const SearchBestResults = ({ apiResponse }) => {
 const styles = StyleSheet.create({
   componentWrapper: {
     marginBottom: 20,
+    ":last-child": {
+      paddingBottom: 30,
+    },
   },
   section: {
     background: "white",

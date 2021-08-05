@@ -556,6 +556,11 @@ const styles = StyleSheet.create({
   },
   hubStatsForRow: {
     padding: 0,
+    marginLeft: 10,
+    gap: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "flex-start",
+    },
   },
   statIcon: {
     marginRight: "5px",
