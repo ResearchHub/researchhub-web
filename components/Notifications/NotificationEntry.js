@@ -57,9 +57,17 @@ const NotificationEntry = (props) => {
 
   const handleNavigation = (e) => {
     e && e.stopPropagation();
-    const { content_type, paper_id, thread_id, slug } = notification;
+    const {
+      content_type,
+      id,
+      thread_id,
+      slug,
+      support_type,
+      parent_content_type,
+    } = notification;
+
     const type = content_type;
-    const paperId = paper_id;
+    const paperId = id;
     const title = slug
       ? slug
       : formatPaperSlug(
@@ -68,6 +76,17 @@ const NotificationEntry = (props) => {
             : notification.paper_title
         );
 
+    let document_type;
+    let isComment = false;
+    if (["thread", "comment", "reply"].includes(support_type)) {
+      document_type = parent_content_type;
+      isComment = true;
+    } else if (support_type === "researchhubpost") {
+      document_type = "post";
+    } else {
+      document_type = "paper";
+    }
+
     let href, route;
     if (
       type === "paper" ||
@@ -75,8 +94,12 @@ const NotificationEntry = (props) => {
       type === "bounty_moderator" ||
       type === "bounty_contributor"
     ) {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}`;
+      href =
+        document_type === "paper"
+          ? "/paper/[paperId]/[paperName]"
+          : "/post/[documentId]/[title]";
+      route =
+        `/${document_type}/${id}/${slug}` + (isComment ? "#comments" : "");
     } else if (
       type === "thread" ||
       type === "comment" ||
@@ -523,19 +546,18 @@ const NotificationEntry = (props) => {
       type,
       created_by,
       created_date,
-      paper_id,
+      id,
       amount,
       slug,
+      support_type,
+      parent_content_type,
     } = props.notification;
+
     const author = created_by.author_profile;
     const getContentType = () => {
       if (type === "bulletpoint") {
         return "key takeaway";
       }
-      if (type === "thread") {
-        return "comment";
-      }
-
       if (type === "researchhubpost") {
         return "post";
       }
@@ -543,9 +565,21 @@ const NotificationEntry = (props) => {
     };
 
     const formatLink = (props) => {
+      let document_type;
+      if (["thread", "comment", "reply"].includes(support_type)) {
+        document_type = parent_content_type;
+      } else if (support_type === "researchhubpost") {
+        document_type = "post";
+      } else {
+        document_type = "paper";
+      }
+
       let link = {
-        href: "/paper/[paperId]/[paperName]",
-        as: `/paper/${paper_id}/${slug}`,
+        href:
+          document_type === "paper"
+            ? "/paper/[paperId]/[paperName]"
+            : "/post/[documentId]/[title]",
+        as: `/${document_type}/${id}/${slug}`,
       };
 
       switch (type) {
@@ -556,8 +590,7 @@ const NotificationEntry = (props) => {
           link.as = link.as + "#takeaways";
           break;
         case "thread":
-          link.href = link.href + "/[discussionThreadId]";
-          link.as = link.as + `/${props.data.extra.source.id}`;
+          link.as = link.as + "#comments";
           break;
         case "comment":
           link.as = link.as + "#comments";
@@ -570,48 +603,6 @@ const NotificationEntry = (props) => {
       }
       return link;
     };
-
-    if (type === "paper") {
-      return (
-        <div className={css(styles.message)}>
-          <Link
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/overview`}
-          >
-            <a
-              onClick={(e) => {
-                e.stopPropagation();
-                markAsRead(data);
-                props.closeMenu();
-              }}
-              className={css(styles.username)}
-            >
-              {`${author.first_name} ${author.last_name}`}
-            </a>
-          </Link>
-          {` contributed ${Number(amount)} RSC to support your `}
-          <Link
-            href={"/paper/[paperId]/[paperName]"}
-            as={`/paper/${paper_id}/${slug}`}
-          >
-            <a
-              onClick={(e) => {
-                e.stopPropagation();
-                markAsRead(data);
-                props.closeMenu();
-              }}
-              className={css(styles.link)}
-            >
-              paper.
-            </a>
-          </Link>
-          <span className={css(styles.timestamp)}>
-            <span className={css(styles.timestampDivider)}>•</span>
-            {timeAgoStamp(created_date)}
-          </span>
-        </div>
-      );
-    }
 
     return (
       <div className={css(styles.message)}>
