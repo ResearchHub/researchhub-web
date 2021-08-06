@@ -84,7 +84,7 @@ function useEffectFetchPost({ post, setPost, query }) {
       .then((data) => {
         setPost(data.results[0]);
       });
-  }, [post]);
+  }, [post, query]);
 }
 
 const Post = (props) => {
@@ -122,7 +122,7 @@ const Post = (props) => {
 
   useEffect(() => {
     setPost(props.post);
-  }, [props.post]);
+  }, [props.post, props.query]);
 
   //useEffect(() => {
   //  setCount(calculateCommentCount(post));
