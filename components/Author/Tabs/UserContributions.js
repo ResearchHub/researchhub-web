@@ -113,7 +113,9 @@ class UserContributionsTab extends React.Component {
     return (
       <ReactPlaceholder
         ready={
-          this.props.author.contributionsDoneFetching && !this.props.fetching
+          !!(
+            this.props.author.contributionsDoneFetching && !this.props.fetching
+          )
         }
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
