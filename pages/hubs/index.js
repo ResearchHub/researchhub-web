@@ -144,6 +144,7 @@ class Index extends React.Component {
           onEnter={() => this.setActiveCategory(i)}
           topOffset={40}
           bottomOffset={"95%"}
+          key={categoryID}
         >
           <div key={categoryID}>
             <div

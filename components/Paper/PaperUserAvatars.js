@@ -26,7 +26,7 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
       }
 
       return (
-        <div className={css(classNames)}>
+        <div className={css(classNames)} key={index}>
           <div style={avatarStyle}>
             <AuthorAvatar author={user} size={28} border="2px solid #F1F1F1" />
           </div>
