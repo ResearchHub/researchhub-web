@@ -275,7 +275,7 @@ class HubCard extends React.Component {
       <div
         className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
       >
-        <div>
+        <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>{icons.paper}</span>
           {hub.paper_count}
           <span className={css(styles.rowStatTitle)}>
@@ -283,7 +283,7 @@ class HubCard extends React.Component {
             {hub.paper_count != 1 ? "s" : ""}
           </span>
         </div>
-        <div>
+        <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>{icons.chat}</span>
           {hub.discussion_count}
           <span className={css(styles.rowStatTitle)}>
@@ -291,7 +291,7 @@ class HubCard extends React.Component {
             {hub.discussion_count != 1 ? "s" : ""}
           </span>
         </div>
-        <div>
+        <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>{icons.subscribers}</span>
           {this.state.subCount}
           <span className={css(styles.rowStatTitle)}>
@@ -584,9 +584,14 @@ const styles = StyleSheet.create({
   },
   hubStatsForRow: {
     padding: 0,
-    gap: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      gap: 10,
+      justifyContent: "flex-start",
+    },
+  },
+  statForRow: {
+    marginRight: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginRight: 10,
       justifyContent: "flex-start",
     },
   },
