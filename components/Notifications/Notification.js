@@ -211,7 +211,6 @@ class Notification extends React.Component {
 
   renderMenu = () => {
     let { isOpen } = this.state;
-    // if (isOpen) {
     return (
       <div
         className={css(styles.notificationMenu, isOpen && styles.open)}
@@ -227,7 +226,7 @@ class Notification extends React.Component {
             showLoadingAnimation
             customPlaceholder={<NotificationPlaceholder color="#efefef" />}
           >
-            {this.props.notifications && this.props.notifications.length ? (
+            {this.state.notifications && this.state.notifications.length ? (
               this.renderNotifications()
             ) : (
               <div className={css(styles.emptyState)}>No Notifications</div>
@@ -236,7 +235,6 @@ class Notification extends React.Component {
         </div>
       </div>
     );
-    // }
   };
 
   renderNotifications = () => {
