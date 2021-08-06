@@ -299,6 +299,12 @@ const degrees = [
 ];
 
 const searchTypes = {
+  all: {
+    q: {
+      fieldForApi: "search_multi_match",
+      fieldForApp: "q",
+    },
+  },
   paper: {
     q: {
       fieldForApi: "search_multi_match",

@@ -1,9 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import ScrollMenu from "react-horizontal-scrolling-menu";
+import { useState, useEffect } from "react";
 
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import icons from "~/config/themes/icons";
 
 const HorizontalTabBar = ({
   tabs,
@@ -11,7 +13,22 @@ const HorizontalTabBar = ({
   alignCenter = false,
   dragging = false,
   containerStyle = null,
+  showArrowsOnWidth = null,
 }) => {
+  const [pageWidth, setPageWidth] = useState(
+    process.browser ? window.innerWidth : 0
+  );
+
+  useEffect(() => {
+    const _setPageWidth = () => setPageWidth(window.innerWidth);
+
+    window.addEventListener("resize", _setPageWidth, true);
+
+    return () => {
+      window.removeEventListener("resize", _setPageWidth, true);
+    };
+  }, []);
+
   const renderTab = (tab, index) => {
     const { isSelected, label } = tab;
 
@@ -31,6 +48,16 @@ const HorizontalTabBar = ({
   return (
     <div className={css(styles.container, containerStyle)}>
       <ScrollMenu
+        arrowLeft={
+          pageWidth <= showArrowsOnWidth ? (
+            <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+          ) : null
+        }
+        arrowRight={
+          pageWidth <= showArrowsOnWidth ? (
+            <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+          ) : null
+        }
         data={tabsHtml}
         menuStyle={styles.tabContainer}
         alignCenter={alignCenter}
@@ -38,6 +65,18 @@ const HorizontalTabBar = ({
       />
     </div>
   );
+};
+
+export const NavigationArrow = ({ icon, direction }) => {
+  const classNames = [navStyles.arrowContainer];
+
+  if (direction === "left") {
+    classNames.push(navStyles.arrowLeft);
+  } else {
+    classNames.push(navStyles.arrowRight);
+  }
+
+  return <div className={css(classNames)}>{icon}</div>;
 };
 
 const styles = StyleSheet.create({
@@ -78,12 +117,44 @@ const styles = StyleSheet.create({
   },
 });
 
+const navStyles = StyleSheet.create({
+  arrowContainer: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    maxHeight: 40,
+    minHeight: 40,
+    height: 40,
+    maxWidth: 40,
+    minWidth: 40,
+    width: 40,
+    fontSize: 20,
+    borderRadius: "50%",
+    background: "#FFF",
+    boxSizing: "border-box",
+    color: colors.PURPLE(),
+    border: "1.5px solid rgba(151, 151, 151, 0.2)",
+    cursor: "pointer",
+    boxShadow: "0 0 15px rgba(255, 255, 255, 0.14)",
+    ":hover": {
+      background: "#FAFAFA",
+    },
+  },
+  arrowLeft: {
+    paddingRight: 2,
+  },
+  arrowRight: {
+    paddingLeft: 5,
+  },
+});
+
 HorizontalTabBar.propTypes = {
   tabs: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
   alignCenter: PropTypes.bool,
   dragging: PropTypes.bool,
   containerStyle: PropTypes.object,
+  showArrowsOnWidth: PropTypes.number,
 };
 
 export default HorizontalTabBar;

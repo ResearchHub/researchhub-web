@@ -2,6 +2,8 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import numeral from "numeral";
 import { get, isEmpty } from "underscore";
+import Ripples from "react-ripples";
+import { useRouter } from "next/router";
 
 import { createUserSummary } from "~/config/utils";
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -10,7 +12,13 @@ import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
 
-const UserCard = ({ authorProfile, reputation }) => {
+const UserCard = ({ authorProfile, reputation, styleVariation }) => {
+  const router = useRouter();
+
+  const goToProfile = (id) => {
+    router.push("/user/[authorId]/[tabName]", `/user/${id}/overview`);
+  };
+
   const getName = (authorProfile) =>
     `${get(authorProfile, "first_name", "")} ${get(
       authorProfile,
@@ -21,82 +29,88 @@ const UserCard = ({ authorProfile, reputation }) => {
   const userSummary = createUserSummary(authorProfile);
 
   return (
-    <div className={css(styles.container)}>
-      <Link
-        href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorProfile.id}/overview`}
-      >
-        <a className={css(styles.linkWrapper)}>
-          <AuthorAvatar
-            author={authorProfile}
-            name={name}
-            disableLink={true}
-            size={35}
-          />
-          <div className={css(styles.details)}>
-            <div
-              className={css(
-                styles.name,
-                isEmpty(userSummary) && styles.withoutSummary
-              )}
-            >
-              {getName(authorProfile)}
-            </div>
-            {userSummary && (
-              <div className={css(styles.summary)}>
-                <span className={css(styles.eduIcon)}>
-                  {icons.graduationCap}
-                </span>
-                {userSummary}
-              </div>
+    <Ripples
+      className={css(styles.card, styleVariation && styles[styleVariation])}
+      key={`person-${authorProfile.id}`}
+      onClick={() => goToProfile(authorProfile.id)}
+    >
+      <div className={css(styles.detailsWrapper)}>
+        <AuthorAvatar
+          author={authorProfile}
+          name={name}
+          disableLink={true}
+          size={35}
+        />
+        <div className={css(styles.details)}>
+          <div
+            className={css(
+              styles.name,
+              isEmpty(userSummary) && styles.withoutSummary
             )}
-            {reputation > 0 && (
-              <div className={css(styles.reputationForMobile)}>
-                <img
-                  className={css(styles.logoIcon)}
-                  src="/static/ResearchHubIcon.png"
-                />
-                Lifetime Reputation: {numeral(reputation).format("0,0")}
-              </div>
-            )}
+          >
+            {getName(authorProfile)}
           </div>
-          {reputation > 0 && (
-            <div className={css(styles.reputation)}>
-              <img
-                className={css(styles.logoIcon)}
-                src="/static/ResearchHubIcon.png"
-              />
-              {numeral(reputation).format("0,0")}
+          {userSummary && (
+            <div className={css(styles.summary)}>
+              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
+              {userSummary}
             </div>
           )}
-        </a>
-      </Link>
-    </div>
+        </div>
+      </div>
+      {reputation > 0 && (
+        <div className={css(styles.reputation)}>
+          <img
+            className={css(styles.logoIcon)}
+            src="/static/ResearchHubIcon.png"
+          />
+          <span className={css(styles.lifetimeText)}>
+            Lifetime reputation:{" "}
+          </span>
+          {numeral(reputation).format("0,0")}
+        </div>
+      )}
+    </Ripples>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    width: "100%",
-  },
-  linkWrapper: {
+  card: {
     border: `1px solid ${genericCardColors.BORDER}`,
     display: "flex",
     padding: 15,
+    marginBottom: 10,
     cursor: "pointer",
     background: "white",
     borderRadius: 2,
-    color: colors.BLACK(),
-    textDecoration: "none",
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  noBorderVariation: {
+    border: 0,
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    marginBottom: 0,
+    marginTop: 0,
+    ":last-child": {
+      borderBottom: 0,
+    },
+  },
+  detailsWrapper: {
+    textDecoration: "none",
+    color: colors.BLACK(),
+    display: "flex",
+    flexDirection: "row",
   },
   details: {
     display: "flex",
     flexDirection: "column",
     marginLeft: 15,
     gap: 8,
+    justifyContent: "center",
   },
   name: {
     fontSize: 20,
@@ -119,11 +133,18 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.BLACK(0.6),
     lineHeight: "22px",
+    display: "flex",
     marginRight: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 12,
+      fontSize: 13,
       lineHeight: "18px",
       marginRight: 0,
+    },
+  },
+  lifetimeText: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
     },
   },
   reputation: {
@@ -131,17 +152,11 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
     alignItems: "center",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  reputationForMobile: {
-    display: "none",
-    fontWeight: 500,
     color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "block",
-      fontSize: 12,
+      fontSize: 13,
+      marginLeft: 45,
+      marginTop: 5,
     },
   },
   logoIcon: {
@@ -161,6 +176,7 @@ const styles = StyleSheet.create({
 UserCard.propTypes = {
   authorProfile: PropTypes.object,
   reputation: PropTypes.number.isRequired,
+  styleVariation: PropTypes.string,
 };
 
 export default UserCard;

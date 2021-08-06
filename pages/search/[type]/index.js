@@ -20,8 +20,6 @@ const getFacetsToAggregate = (query = {}) => {
   let facet = [];
   if (query.type === "paper" || query.type === "post") {
     facet = ["hubs"];
-  } else if (query.type === "person") {
-    facet = ["person_types"];
   }
 
   return facet;
@@ -31,19 +29,21 @@ const Index = ({ apiResponse, hasError }) => {
   const router = useRouter();
   const currentSearchType = get(router, "query.type");
 
-  if (hasError) {
+  if (hasError || !apiResponse) {
     return <Error statusCode={500} />;
   }
 
+  const buildPageTitle = () => {
+    if (get(router, "query.type") === "all") {
+      return `${get(router, "query.q")} - Research Hub`;
+    } else {
+      return `(${apiResponse.count}) ${get(router, "query.q")} - Research Hub`;
+    }
+  };
+
   return (
     <Fragment>
-      <Head
-        title={`(${apiResponse.count}) ${get(
-          router,
-          "query.q"
-        )} - Research Hub`}
-        description={"Search Researchhub"}
-      />
+      <Head title={buildPageTitle()} description={"Search Researchhub"} />
       <SearchResults apiResponse={apiResponse} />
     </Fragment>
   );

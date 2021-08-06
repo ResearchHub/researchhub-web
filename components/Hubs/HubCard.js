@@ -6,6 +6,7 @@ import * as Sentry from "@sentry/browser";
 import { withAlert } from "react-alert";
 
 // Component
+import HubCardAsRow from "~/components/Hubs/HubCardAsRow";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -245,9 +246,75 @@ class HubCard extends React.Component {
     this.props.openEditHubModal(true, this.props.hub);
   };
 
-  render() {
+  renderStats = () => {
     const { hub } = this.props;
+    return (
+      <div className={css(styles.hubStats)}>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          {hub.paper_count} Paper
+          {hub.paper_count != 1 ? "s" : ""}
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          {hub.discussion_count} Comment
+          {hub.discussion_count != 1 ? "s" : ""}
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          {this.state.subCount} Subscriber
+          {this.state.subCount != 1 ? "s" : ""}
+        </div>
+      </div>
+    );
+  };
+
+  renderStatsForRow = () => {
+    const { hub, renderAsRow } = this.props;
+    return (
+      <div
+        className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
+      >
+        <div className={css(styles.statForRow)}>
+          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          {hub.paper_count}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Paper
+            {hub.paper_count != 1 ? "s" : ""}
+          </span>
+        </div>
+        <div className={css(styles.statForRow)}>
+          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          {hub.discussion_count}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Comment
+            {hub.discussion_count != 1 ? "s" : ""}
+          </span>
+        </div>
+        <div className={css(styles.statForRow)}>
+          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          {this.state.subCount}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Subscriber
+            {this.state.subCount != 1 ? "s" : ""}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    const { hub, renderAsRow, styleVariation } = this.props;
     const { removed } = this.state;
+
+    if (renderAsRow) {
+      return (
+        <HubCardAsRow hub={hub} styleVariation={styleVariation}>
+          {this.renderStatsForRow()}
+        </HubCardAsRow>
+      );
+    }
+
     return (
       <div
         className={css(styles.slugLink, removed && styles.removed)}
@@ -264,7 +331,7 @@ class HubCard extends React.Component {
                 ? hub.hub_image
                 : "/static/background/twitter-banner.jpg"
             }
-            alt="Hub Background Image"
+            alt={`${hub.name} Hub`}
           ></img>
           {this.renderEdit()}
           {this.renderDelete()}
@@ -274,25 +341,7 @@ class HubCard extends React.Component {
               {this.renderSubscribe()}
             </div>
             <div className={css(styles.hubDescription)}>{hub.description}</div>
-            <div className={css(styles.hubStats)}>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {hub.paper_count} Paper
-                {hub.paper_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {hub.discussion_count} Comment
-                {hub.discussion_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>
-                  {icons.subscribers}
-                </span>
-                {this.state.subCount} Subscriber
-                {this.state.subCount != 1 ? "s" : ""}
-              </div>
-            </div>
+            {this.renderStats()}
           </div>
           <div className={css(styles.hubTitleMobile)}>
             <div className={css(styles.hubNameMobile)}>{hub.name}</div>
@@ -532,6 +581,24 @@ const styles = StyleSheet.create({
     padding: "0 0 15px 0",
     color: "#C1C1CF",
     fontSize: "12px",
+  },
+  hubStatsForRow: {
+    padding: 0,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "flex-start",
+    },
+  },
+  statForRow: {
+    marginRight: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginRight: 10,
+      justifyContent: "flex-start",
+    },
+  },
+  rowStatTitle: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   statIcon: {
     marginRight: "5px",
