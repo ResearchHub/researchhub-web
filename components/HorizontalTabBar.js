@@ -47,22 +47,24 @@ const HorizontalTabBar = ({
 
   return (
     <div className={css(styles.container, containerStyle)}>
-      <ScrollMenu
-        arrowLeft={
-          pageWidth <= showArrowsOnWidth ? (
-            <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
-          ) : null
-        }
-        arrowRight={
-          pageWidth <= showArrowsOnWidth ? (
-            <NavigationArrow icon={icons.chevronRight} direction={"right"} />
-          ) : null
-        }
-        data={tabsHtml}
-        menuStyle={styles.tabContainer}
-        alignCenter={alignCenter}
-        dragging={dragging}
-      />
+      {pageWidth > 0 && (
+        <ScrollMenu
+          arrowLeft={
+            pageWidth <= showArrowsOnWidth ? (
+              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+            ) : null
+          }
+          arrowRight={
+            pageWidth <= showArrowsOnWidth ? (
+              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+            ) : null
+          }
+          data={tabsHtml}
+          menuStyle={styles.tabContainer}
+          alignCenter={alignCenter}
+          dragging={dragging}
+        />
+      )}
     </div>
   );
 };
