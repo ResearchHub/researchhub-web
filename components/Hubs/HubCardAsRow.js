@@ -111,7 +111,6 @@ const styles = StyleSheet.create({
 HubCardAsRow.propTypes = {
   hub: PropTypes.object.isRequired,
   styleVariation: PropTypes.string,
-  onClick: PropTypes.func,
 };
 
 export default HubCardAsRow;
