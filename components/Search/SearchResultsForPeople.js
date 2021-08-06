@@ -131,12 +131,19 @@ const SearchResultsForPeople = ({ apiResponse, context }) => {
         <Fragment>
           {context !== "best-results" && (
             <Fragment>
-              <div className={css(styles.resultCount)}>
+              <div className={css(styles.resultCount, styles.smallScreenOnly)}>
                 {`${numOfHits} ${
                   numOfHits === 1 ? "result" : "results"
                 } found.`}
               </div>
               <div className={css(styles.filters)}>
+                <div
+                  className={css(styles.resultCount, styles.largeScreenOnly)}
+                >
+                  {`${numOfHits} ${
+                    numOfHits === 1 ? "result" : "results"
+                  } found.`}
+                </div>
                 <FormSelect
                   id={"ordering"}
                   placeholder={"Sort"}
@@ -194,6 +201,18 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexWrap: "wrap",
       marginBottom: 0,
+    },
+  },
+  largeScreenOnly: {
+    display: "none",
+    [`@media only screen and (min-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  smallScreenOnly: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
     },
   },
   dropdownContainer: {
