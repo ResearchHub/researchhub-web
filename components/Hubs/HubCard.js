@@ -247,11 +247,9 @@ class HubCard extends React.Component {
   };
 
   renderStats = () => {
-    const { hub, renderAsRow } = this.props;
+    const { hub } = this.props;
     return (
-      <div
-        className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
-      >
+      <div className={css(styles.hubStats)}>
         <div>
           <span className={css(styles.statIcon)}>{icons.paper}</span>
           {hub.paper_count} Paper
@@ -271,6 +269,40 @@ class HubCard extends React.Component {
     );
   };
 
+  renderStatsForRow = () => {
+    const { hub, renderAsRow } = this.props;
+    return (
+      <div
+        className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
+      >
+        <div>
+          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          {hub.paper_count}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Paper
+            {hub.paper_count != 1 ? "s" : ""}
+          </span>
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          {hub.discussion_count}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Comment
+            {hub.discussion_count != 1 ? "s" : ""}
+          </span>
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          {this.state.subCount}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Subscriber
+            {this.state.subCount != 1 ? "s" : ""}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
   render() {
     const { hub, renderAsRow, styleVariation } = this.props;
     const { removed } = this.state;
@@ -278,7 +310,7 @@ class HubCard extends React.Component {
     if (renderAsRow) {
       return (
         <HubCardAsRow hub={hub} styleVariation={styleVariation}>
-          {this.renderStats()}
+          {this.renderStatsForRow()}
         </HubCardAsRow>
       );
     }
@@ -552,10 +584,15 @@ const styles = StyleSheet.create({
   },
   hubStatsForRow: {
     padding: 0,
-    marginLeft: 10,
-    gap: 10,
+    gap: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      gap: 10,
       justifyContent: "flex-start",
+    },
+  },
+  rowStatTitle: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
     },
   },
   statIcon: {

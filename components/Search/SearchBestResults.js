@@ -124,6 +124,13 @@ const styles = StyleSheet.create({
     ":last-child": {
       paddingBottom: 30,
     },
+    [`@media only screen and (max-width: ${breakpoints.xlarge.str})`]: {
+      width: "100%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   section: {
     background: "white",

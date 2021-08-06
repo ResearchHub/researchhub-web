@@ -68,6 +68,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: "8px",
+    marginLeft: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
@@ -76,14 +77,18 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: colors.BLACK(),
     fontWeight: 500,
-    marginLeft: 10,
     textTransform: "capitalize",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 16,
+    },
   },
   description: {
     color: colors.BLACK(0.6),
     fontSize: 16,
-    marginLeft: 10,
     lineHeight: "22px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 13,
+    },
   },
   link: {
     textDecoration: "none",
@@ -94,7 +99,6 @@ const styles = StyleSheet.create({
   imgWrapper: {
     height: 80,
     width: 80,
-    marginRight: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: 40,
       width: 40,

@@ -47,6 +47,8 @@ const SearchResults = ({ apiResponse }) => {
         tabs={tabs}
         onClick={handleTabClick}
         containerStyle={styles.tabContainer}
+        dragging={true}
+        showArrowsOnWidth={breakpoints.xsmall.int}
       />
     );
   };
@@ -72,6 +74,9 @@ const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
     marginBottom: 20,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 10,
+    },
   },
   tabContainer: {
     marginBottom: 40,
