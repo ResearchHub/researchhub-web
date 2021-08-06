@@ -67,13 +67,13 @@ const styles = StyleSheet.create({
   detailsWrapper: {
     display: "flex",
     flexDirection: "column",
-    gap: "8px",
     marginLeft: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
   },
   name: {
+    marginBottom: 8,
     fontSize: 20,
     color: colors.BLACK(),
     fontWeight: 500,
@@ -83,6 +83,7 @@ const styles = StyleSheet.create({
     },
   },
   description: {
+    marginBottom: 8,
     color: colors.BLACK(0.6),
     fontSize: 16,
     lineHeight: "22px",
