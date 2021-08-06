@@ -10,6 +10,7 @@ const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
   const hasMounted = useHasMounted();
 
+  // fixes an error with `style` Prop not matching on Server/Client
   if (!hasMounted) {
     return null;
   }
