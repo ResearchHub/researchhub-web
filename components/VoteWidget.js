@@ -232,9 +232,9 @@ const VoteButton = (props) => {
   }
 
   return (
-    <a className={css(...style)} onClick={onClick}>
+    <div className={css(...style)} onClick={onClick}>
       {props.children}
-    </a>
+    </div>
   );
 };
 
