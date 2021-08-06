@@ -130,9 +130,6 @@ const styles = StyleSheet.create({
     padding: "16px 20px",
     borderRadius: "2px",
     border: `1px solid ${genericCardColors.BORDER}`,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "24px 20px 14px 20px",
-    },
   },
   sectionHeader: {
     borderBottom: `1px solid ${genericCardColors.BORDER}`,
@@ -150,7 +147,6 @@ const styles = StyleSheet.create({
     borderTop: `1px solid ${genericCardColors.BORDER}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingTop: 14,
-      fontSize: 14,
     },
   },
   link: {
