@@ -9,7 +9,6 @@ import { breakpoints } from "~/config/themes/screen";
 
 const HubCardAsRow = ({ hub, styleVariation, children }) => {
   const router = useRouter();
-  hub.description = "The science of biology and biotechnology.";
 
   const goToHub = (hub) => {
     router.push("/hubs/[slug]", `/hubs/${encodeURIComponent(hub.slug)}`);
