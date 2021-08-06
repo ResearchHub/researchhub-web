@@ -179,29 +179,27 @@ const styles = StyleSheet.create({
   },
   section: {
     background: "white",
-    padding: "24px 20px 24px 20px",
+    padding: "16px 20px",
     borderRadius: "2px",
     border: `1px solid ${genericCardColors.BORDER}`,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "24px 20px 14px 20px",
-    },
   },
   sectionHeader: {
     borderBottom: `1px solid ${genericCardColors.BORDER}`,
     paddingBottom: 10,
+    marginBottom: 0,
     color: colors.BLACK(0.5),
     fontWeight: 500,
     fontSize: 16,
     marginTop: 0,
+    textTransform: "capitalize",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+    },
   },
   linkWrapper: {
     textAlign: "center",
-    paddingTop: 24,
+    paddingTop: 16,
     borderTop: `1px solid ${genericCardColors.BORDER}`,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      paddingTop: 14,
-      fontSize: 14,
-    },
   },
   link: {
     color: colors.BLUE(),

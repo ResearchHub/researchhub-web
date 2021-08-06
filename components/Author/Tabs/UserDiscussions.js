@@ -101,23 +101,15 @@ class UserDiscussionsTab extends React.Component {
         path = `/post/${discussion.post}/${discussion.post_slug}`;
       }
       discussions.push(
-        <div
-          className={css(
-            styles.discussionContainer,
-            i === author.userDiscussions.discussions.length - 1 &&
-              styles.noBorder
-          )}
+        <DiscussionThreadCard
+          data={discussion}
+          hostname={hostname}
+          path={path}
+          paperId={discussion.paper}
+          postId={discussion.post}
+          mobileView={this.props.mobileView}
           key={`discThread-${discussion.id}-${i}`}
-        >
-          <DiscussionThreadCard
-            data={discussion}
-            hostname={hostname}
-            path={path}
-            paperId={discussion.paper}
-            postId={discussion.post}
-            mobileView={this.props.mobileView}
-          />
-        </div>
+        />
       );
     }
 
@@ -196,9 +188,6 @@ var styles = StyleSheet.create({
       marginTop: 15,
       marginBottom: 15,
     },
-  },
-  noBorder: {
-    border: "none",
   },
   loadMoreButton: {
     fontSize: 14,

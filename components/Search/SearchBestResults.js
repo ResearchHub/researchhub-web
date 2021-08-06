@@ -140,14 +140,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 0,
     textTransform: "capitalize",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+    },
   },
   linkWrapper: {
     textAlign: "center",
     paddingTop: 16,
     borderTop: `1px solid ${genericCardColors.BORDER}`,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      paddingTop: 14,
-    },
   },
   link: {
     color: colors.BLUE(),
