@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
     display: "flex",
     marginRight: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 12,
+      fontSize: 13,
       lineHeight: "18px",
       marginRight: 0,
     },
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 12,
+      fontSize: 13,
       marginLeft: 45,
       marginTop: 5,
     },
