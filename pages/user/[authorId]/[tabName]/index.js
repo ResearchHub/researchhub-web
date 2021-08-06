@@ -1386,7 +1386,7 @@ const styles = StyleSheet.create({
     },
   },
   title: {
-    marginBottom: 15,
+    marginBottom: 0,
     textTransform: "capitalize",
     borderBottom: `1px solid ${genericCardColors.BORDER}`,
     paddingBottom: 10,

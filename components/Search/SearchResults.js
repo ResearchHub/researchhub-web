@@ -8,6 +8,8 @@ import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
+import SearchBestResults from "~/components/Search/SearchBestResults";
+import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
 
 const SearchResults = ({ apiResponse }) => {
@@ -20,11 +22,6 @@ const SearchResults = ({ apiResponse }) => {
       type: tab.type,
     };
 
-    // User initiates a person search. Default to "user" person.
-    if (tab.type === "person") {
-      updatedQuery["person_types"] = "author";
-    }
-
     router.push({
       pathname: "/search/[type]",
       query: updatedQuery,
@@ -33,6 +30,7 @@ const SearchResults = ({ apiResponse }) => {
 
   const renderEntityTabs = () => {
     let tabs = [
+      { type: "all", label: "Best Results" },
       { type: "paper", label: "Papers" },
       { type: "post", label: "Posts" },
       { type: "hub", label: "Hubs" },
@@ -49,21 +47,26 @@ const SearchResults = ({ apiResponse }) => {
         tabs={tabs}
         onClick={handleTabClick}
         containerStyle={styles.tabContainer}
+        dragging={true}
+        showArrowsOnWidth={breakpoints.xsmall.int}
       />
     );
   };
 
   return (
-    <div className={css(styles.componentWrapper)}>
+    <ComponentWrapper overrideStyle={styles.componentWrapper}>
       {renderEntityTabs()}
+
       {currentSearchType === "paper" || currentSearchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
       ) : currentSearchType === "hub" ? (
         <SearchResultsForHubs apiResponse={apiResponse} />
       ) : currentSearchType === "person" ? (
         <SearchResultsForPeople apiResponse={apiResponse} />
+      ) : currentSearchType === "all" ? (
+        <SearchBestResults apiResponse={apiResponse} />
       ) : null}
-    </div>
+    </ComponentWrapper>
   );
 };
 
@@ -71,10 +74,9 @@ const styles = StyleSheet.create({
   componentWrapper: {
     marginTop: 40,
     marginBottom: 20,
-    marginLeft: "auto",
-    marginRight: "auto",
-    width: "95vw",
-    maxWidth: `${breakpoints.large.str}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 10,
+    },
   },
   tabContainer: {
     marginBottom: 40,

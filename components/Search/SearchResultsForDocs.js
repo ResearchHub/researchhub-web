@@ -13,12 +13,12 @@ import FormSelect from "~/components/Form/FormSelect";
 import Badge from "~/components/Badge";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { CloseIcon } from "~/config/themes/icons";
-import ComponentWrapper from "~/components/ComponentWrapper";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const timeFilterOpts = [
   {
@@ -86,7 +86,7 @@ const sortOpts = [
   },
 ];
 
-const SearchResultsForDocs = ({ apiResponse }) => {
+const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const router = useRouter();
 
   const [facetValuesForHub, setFacetValuesForHub] = useState([]);
@@ -95,6 +95,9 @@ const SearchResultsForDocs = ({ apiResponse }) => {
   const [numOfHits, setNumOfHits] = useState(null);
   const [results, setResults] = useState([]);
   const [userVotes, setUserVotes] = useState({});
+  const [searchEntityType, setSearchEntityType] = useState(
+    entityType || router.query.type
+  );
 
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
@@ -122,7 +125,9 @@ const SearchResultsForDocs = ({ apiResponse }) => {
       get(apiResponse, "facets._filter_hubs.hubs.buckets", [])
     );
 
-    fetchAndSetUserVotes(results);
+    if (results && results.length) {
+      fetchAndSetUserVotes(results);
+    }
   }, [apiResponse]);
 
   useEffect(() => {
@@ -174,9 +179,9 @@ const SearchResultsForDocs = ({ apiResponse }) => {
   };
 
   const fetchAndSetUserVotes = async (results) => {
-    if (router.query.type === "post") {
+    if (entityType === "post") {
       return _fetchCurrentUserVotesForPosts(results);
-    } else if (router.query.type === "paper") {
+    } else if (entityType === "paper") {
       return _fetchCurrentUserVotesForPapers(results);
     }
   };
@@ -320,7 +325,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
 
   return (
     <div>
-      {(numOfHits > 0 || hasAppliedFilters) && (
+      {context !== "best-results" && (numOfHits > 0 || hasAppliedFilters) && (
         <Fragment>
           <div className={css(styles.resultCount)}>
             {`${numOfHits} ${numOfHits === 1 ? "result" : "results"} found.`}
@@ -401,7 +406,7 @@ const SearchResultsForDocs = ({ apiResponse }) => {
         <EmptyFeedScreen title="There are no results found for this criteria" />
       )}
 
-      {router.query.type === "post" &&
+      {searchEntityType === "post" &&
         results.map((post, index) => {
           post.user_vote = userVotes[post.id];
 
@@ -419,10 +424,13 @@ const SearchResultsForDocs = ({ apiResponse }) => {
               {...post}
               user_vote={post.user_vote}
               key={post.id || index}
+              styleVariation={
+                context === "best-results" ? "noBorderVariation" : null
+              }
             />
           );
         })}
-      {router.query.type === "paper" &&
+      {searchEntityType === "paper" &&
         results.map((paper, index) => {
           paper.abstract = parseIfHighlighted({
             searchResult: paper,
@@ -440,6 +448,9 @@ const SearchResultsForDocs = ({ apiResponse }) => {
               paper={paper}
               index={index}
               key={paper.id}
+              styleVariation={
+                context === "best-results" ? "noBorderVariation" : null
+              }
               voteCallback={(arrIndex, currPaper) => {
                 const idx = results.findIndex((p) => p.id === currPaper.id);
 
@@ -525,6 +536,8 @@ const styles = StyleSheet.create({
 
 SearchResultsForDocs.propTypes = {
   apiResponse: PropTypes.object,
+  entityType: PropTypes.string,
+  context: PropTypes.oneOf(["best-results"]),
 };
 
 export default SearchResultsForDocs;

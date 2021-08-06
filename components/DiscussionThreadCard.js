@@ -14,7 +14,7 @@ import { ClientLinkWrapper } from "./LinkWrapper";
 import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { getNestedValue } from "~/config/utils";
 import {
@@ -283,10 +283,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   discussionContainer: {
+    width: "100%",
     textDecoration: "none",
     cursor: "default",
     transition: "all ease-in-out 0.2s",
-
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    ":last-child": {
+      borderBottom: 0,
+    },
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
@@ -342,6 +346,7 @@ const styles = StyleSheet.create({
   body: {
     fontSize: 14,
     marginBottom: 18,
+    lineHeight: "1.3",
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
     color: "rgb(78, 76, 95)",

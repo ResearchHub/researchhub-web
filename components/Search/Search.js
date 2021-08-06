@@ -127,7 +127,7 @@ const Search = ({ navbarRef }) => {
 
   const doSearch = () => {
     const isUserOnSearchPage = currentPath.includes("/search");
-    const currentSearchType = isUserOnSearchPage ? router.query.type : "paper";
+    const currentSearchType = isUserOnSearchPage ? router.query.type : "all";
 
     const filterParams = pickFiltersForApp({
       searchType: currentSearchType,
@@ -193,8 +193,9 @@ const Search = ({ navbarRef }) => {
         placeholder={placeholderText}
         onKeyDown={handleKeyPress}
         onChange={handleInputChange}
-        value={query}
+        value={query || ""}
         ref={searchInputRef}
+        type="text"
       />
 
       <span
