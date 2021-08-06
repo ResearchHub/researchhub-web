@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import numeral from "numeral";
 import { get, isEmpty } from "underscore";
 import Ripples from "react-ripples";
+import { useRouter } from "next/router";
 
 import { createUserSummary } from "~/config/utils";
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -12,6 +13,12 @@ import icons from "~/config/themes/icons";
 import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {
+  const router = useRouter();
+
+  const goToProfile = (id) => {
+    router.push("/user/[authorId]/[tabName]", `/user/${id}/overview`);
+  };
+
   const getName = (authorProfile) =>
     `${get(authorProfile, "first_name", "")} ${get(
       authorProfile,
@@ -25,44 +32,41 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
     <Ripples
       className={css(styles.card, styleVariation && styles[styleVariation])}
       key={`person-${authorProfile.id}`}
+      onClick={() => goToProfile(authorProfile.id)}
     >
-      <Link
-        href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorProfile.id}/overview`}
-      >
-        <a className={css(styles.link)}>
-          <AuthorAvatar
-            author={authorProfile}
-            name={name}
-            disableLink={true}
-            size={35}
-          />
-          <div className={css(styles.details)}>
-            <div
-              className={css(
-                styles.name,
-                isEmpty(userSummary) && styles.withoutSummary
-              )}
-            >
-              {getName(authorProfile)}
-            </div>
-            {userSummary && (
-              <div className={css(styles.summary)}>
-                <span className={css(styles.eduIcon)}>
-                  {icons.graduationCap}
-                </span>
-                {userSummary}
-              </div>
+      <div className={css(styles.detailsWrapper)}>
+        <AuthorAvatar
+          author={authorProfile}
+          name={name}
+          disableLink={true}
+          size={35}
+        />
+        <div className={css(styles.details)}>
+          <div
+            className={css(
+              styles.name,
+              isEmpty(userSummary) && styles.withoutSummary
             )}
+          >
+            {getName(authorProfile)}
           </div>
-        </a>
-      </Link>
+          {userSummary && (
+            <div className={css(styles.summary)}>
+              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
+              {userSummary}
+            </div>
+          )}
+        </div>
+      </div>
       {reputation > 0 && (
         <div className={css(styles.reputation)}>
           <img
             className={css(styles.logoIcon)}
             src="/static/ResearchHubIcon.png"
           />
+          <span className={css(styles.lifetimeText)}>
+            Lifetime reputation:{" "}
+          </span>
           {numeral(reputation).format("0,0")}
         </div>
       )}
@@ -95,7 +99,7 @@ const styles = StyleSheet.create({
       borderBottom: 0,
     },
   },
-  link: {
+  detailsWrapper: {
     textDecoration: "none",
     color: colors.BLACK(),
     display: "flex",
@@ -106,6 +110,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginLeft: 15,
     gap: 8,
+    justifyContent: "center",
   },
   name: {
     fontSize: 20,
@@ -128,11 +133,18 @@ const styles = StyleSheet.create({
   summary: {
     color: colors.BLACK(0.6),
     lineHeight: "22px",
+    display: "flex",
     marginRight: 25,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 12,
       lineHeight: "18px",
       marginRight: 0,
+    },
+  },
+  lifetimeText: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
     },
   },
   reputation: {
