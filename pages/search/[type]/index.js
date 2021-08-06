@@ -33,15 +33,17 @@ const Index = ({ apiResponse, hasError }) => {
     return <Error statusCode={500} />;
   }
 
+  const buildPageTitle = () => {
+    if (get(router, "query.type") === "all") {
+      return `${get(router, "query.q")} - Research Hub`;
+    } else {
+      return `(${apiResponse.count}) ${get(router, "query.q")} - Research Hub`;
+    }
+  };
+
   return (
     <Fragment>
-      <Head
-        title={`(${apiResponse.count}) ${get(
-          router,
-          "query.q"
-        )} - Research Hub`}
-        description={"Search Researchhub"}
-      />
+      <Head title={buildPageTitle()} description={"Search Researchhub"} />
       <SearchResults apiResponse={apiResponse} />
     </Fragment>
   );
