@@ -68,7 +68,7 @@ function UserPosts(props) {
         <UserPostCard
           {...post}
           key={post.id || i}
-          style={styles.customUserPostCard}
+          styleVariation="noBorderVariation"
         />
       );
     }
@@ -98,19 +98,6 @@ function UserPosts(props) {
     </ReactPlaceholder>
   );
 }
-
-const styles = StyleSheet.create({
-  customUserPostCard: {
-    border: 0,
-    borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    marginBottom: 0,
-    marginTop: 0,
-    padding: "24px 15px",
-    ":last-child": {
-      borderBottom: 0,
-    },
-  },
-});
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
