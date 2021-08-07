@@ -583,6 +583,7 @@ const styles = StyleSheet.create({
     fontSize: "12px",
   },
   hubStatsForRow: {
+    justifyContent: "flex-start",
     padding: 0,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "flex-start",
