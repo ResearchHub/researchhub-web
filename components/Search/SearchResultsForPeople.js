@@ -24,7 +24,7 @@ const sortOpts = [
   {
     value: "-score",
     label: "Reputation",
-    valueForApi: "-author_score",
+    valueForApi: "-user_reputation",
   },
 ];
 
@@ -83,7 +83,11 @@ const SearchResultsForPeople = ({ apiResponse, context }) => {
     if (selected.value === null) {
       delete query[sortId];
     } else {
-      query[sortId] = sortOpts[sortId];
+      const opt = sortOpts.find((opt) => opt.value === selected.value);
+
+      if (opt) {
+        query[sortId] = opt.valueForApi;
+      }
     }
 
     router.push({
