@@ -19,7 +19,7 @@ import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 
 const UserOverviewTab = ({ author, fetching }) => {
-  const maxCardsToRender = 1;
+  const maxCardsToRender = 2;
   const [submittedPaperCount, setSubmittedPaperCount] = useState(null);
   const [authoredPaperCount, setAuthoredPaperCount] = useState(null);
   const [commentCount, setCommentCount] = useState(null);
