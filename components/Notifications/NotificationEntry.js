@@ -76,15 +76,15 @@ const NotificationEntry = (props) => {
             : notification.paper_title
         );
 
-    let document_type;
+    let documentType;
     let isComment = false;
     if (["thread", "comment", "reply"].includes(support_type)) {
-      document_type = parent_content_type;
+      documentType = parent_content_type;
       isComment = true;
     } else if (support_type === "researchhubpost") {
-      document_type = "post";
+      documentType = "post";
     } else {
-      document_type = "paper";
+      documentType = "paper";
     }
 
     let href, route;
@@ -95,11 +95,10 @@ const NotificationEntry = (props) => {
       type === "bounty_contributor"
     ) {
       href =
-        document_type === "paper"
+        documentType === "paper"
           ? "/paper/[paperId]/[paperName]"
           : "/post/[documentId]/[title]";
-      route =
-        `/${document_type}/${id}/${slug}` + (isComment ? "#comments" : "");
+      route = `/${documentType}/${id}/${slug}` + (isComment ? "#comments" : "");
     } else if (
       type === "thread" ||
       type === "comment" ||
@@ -565,21 +564,21 @@ const NotificationEntry = (props) => {
     };
 
     const formatLink = (props) => {
-      let document_type;
+      let documentType;
       if (["thread", "comment", "reply"].includes(support_type)) {
-        document_type = parent_content_type;
+        documentType = parent_content_type;
       } else if (support_type === "researchhubpost") {
-        document_type = "post";
+        documentType = "post";
       } else {
-        document_type = "paper";
+        documentType = "paper";
       }
 
       let link = {
         href:
-          document_type === "paper"
+          documentType === "paper"
             ? "/paper/[paperId]/[paperName]"
             : "/post/[documentId]/[title]",
-        as: `/${document_type}/${id}/${slug}`,
+        as: `/${documentType}/${id}/${slug}`,
       };
 
       switch (type) {
