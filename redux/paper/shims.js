@@ -65,7 +65,7 @@ export const paperPost = ({
     });
   doi && formData.append("doi", doi);
   // no boolean check for title because empty string is falsey in js.
-  formData.append("title", title);
+  title && formData.append("title", title);
   file && formData.append("file", file);
   publishDate && formData.append("paper_publish_date", publishDate);
   url && formData.append("url", url);
