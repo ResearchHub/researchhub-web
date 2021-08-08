@@ -99,10 +99,7 @@ class UserContributionsTab extends React.Component {
           <PaperEntryCard
             paper={current}
             index={i}
-            style={[
-              styles.paperEntryCard,
-              i === this.state.contributions.length - 1 && styles.noBorder,
-            ]}
+            styleVariation="noBorderVariation"
             voteCallback={this.voteCallback}
             mobileView={this.props.mobileView}
           />
@@ -156,13 +153,6 @@ var styles = StyleSheet.create({
       width: 280,
       fontSize: 16,
     },
-  },
-  paperEntryCard: {
-    border: 0,
-    borderBottom: `1px solid ${genericCardColors.BORDER}`,
-    marginBottom: 0,
-    marginTop: 0,
-    padding: "24px 15px",
   },
   icon: {
     fontSize: 50,
