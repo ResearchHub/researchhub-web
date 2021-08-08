@@ -58,25 +58,26 @@ const SearchBestResults = ({ apiResponse }) => {
         </h2>
         {key === "hub" ? (
           <SearchResultsForHubs
-            apiResponse={{ results: results, count: results.length }}
+            apiResponse={{ results, count: results.length }}
             context="best-results"
           />
         ) : key === "paper" || key === "post" ? (
           <SearchResultsForDocs
-            apiResponse={{ results: results, count: results.length }}
+            apiResponse={{ results, count: results.length }}
             context="best-results"
             entityType={key}
           />
         ) : key === "person" ? (
           <SearchResultsForPeople
-            apiResponse={{ results: results, count: results.length }}
+            apiResponse={{ results, count: results.length }}
             context="best-results"
           />
         ) : null}
-        {renderSeeMoreLink({
-          key,
-          text: `See all ${entityToHumanReadable[key]}`,
-        })}
+        {results.length >= maxResultsPerSection &&
+          renderSeeMoreLink({
+            key,
+            text: `See all ${entityToHumanReadable[key]}`,
+          })}
       </section>
     );
   };

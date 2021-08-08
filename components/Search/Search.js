@@ -144,6 +144,17 @@ const Search = ({ navbarRef }) => {
       pathname: "/search/[type]",
       query: queryParams,
     });
+
+    blurAndCloseDeviceKeyboard();
+  };
+
+  const blurAndCloseDeviceKeyboard = () => {
+    document.activeElement.blur();
+    const el = get(searchInputRef, "current");
+
+    if (el) {
+      el.blur();
+    }
   };
 
   const handleKeyPress = (e) => {

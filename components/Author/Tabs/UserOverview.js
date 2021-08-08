@@ -19,7 +19,7 @@ import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
 
 const UserOverviewTab = ({ author, fetching }) => {
-  const maxCardsToRender = 3;
+  const maxCardsToRender = 2;
   const [submittedPaperCount, setSubmittedPaperCount] = useState(null);
   const [authoredPaperCount, setAuthoredPaperCount] = useState(null);
   const [commentCount, setCommentCount] = useState(null);
@@ -109,12 +109,13 @@ const UserOverviewTab = ({ author, fetching }) => {
             {isNumber(postCount) && (
               <h2 className={css(styles.sectionHeader)}>Posts</h2>
             )}
-            <UserPostsTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
+            <div>
+              <UserPostsTab
+                maxCardsToRender={maxCardsToRender}
+                fetching={fetching}
+              />
+            </div>
             {postCount > maxCardsToRender &&
-              !fetching &&
               renderSeeMoreLink({ relPath: "posts", text: "See all posts" })}
           </section>
         </ComponentWrapper>
@@ -126,10 +127,12 @@ const UserOverviewTab = ({ author, fetching }) => {
             {!fetching && (
               <h2 className={css(styles.sectionHeader)}>Authored Papers</h2>
             )}
-            <AuthoredPapersTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
+            <div>
+              <AuthoredPapersTab
+                maxCardsToRender={maxCardsToRender}
+                fetching={fetching}
+              />
+            </div>
             {authoredPaperCount > maxCardsToRender &&
               !fetching &&
               renderSeeMoreLink({
@@ -146,10 +149,12 @@ const UserOverviewTab = ({ author, fetching }) => {
             {!fetching && (
               <h2 className={css(styles.sectionHeader)}>Paper Submissions</h2>
             )}
-            <UserContributionsTab
-              maxCardsToRender={maxCardsToRender}
-              fetching={fetching}
-            />
+            <div>
+              <UserContributionsTab
+                maxCardsToRender={maxCardsToRender}
+                fetching={fetching}
+              />
+            </div>
             {submittedPaperCount > maxCardsToRender &&
               !fetching &&
               renderSeeMoreLink({
