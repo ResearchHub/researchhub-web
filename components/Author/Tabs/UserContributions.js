@@ -92,18 +92,14 @@ class UserContributionsTab extends React.Component {
 
       const current = this.state.contributions[i];
       contributions.push(
-        <div
+        <PaperEntryCard
+          paper={current}
           key={`userContribution-${current.id}-${i}`}
-          className={css(styles.contributionContainer)}
-        >
-          <PaperEntryCard
-            paper={current}
-            index={i}
-            styleVariation="noBorderVariation"
-            voteCallback={this.voteCallback}
-            mobileView={this.props.mobileView}
-          />
-        </div>
+          index={i}
+          styleVariation="noBorderVariation"
+          voteCallback={this.voteCallback}
+          mobileView={this.props.mobileView}
+        />
       );
     }
 
