@@ -92,7 +92,6 @@ export default function NewPostModal({
             </div>
             <div className={css(styles.list)}>{optionCards}</div>
             <div className={css(styles.buttonContainer)}>
-              {/* @ts-ignore */}
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
