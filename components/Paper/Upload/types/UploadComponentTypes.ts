@@ -2,6 +2,7 @@ import { ID } from "../../../../config/types/root_types";
 
 export type ComponentState = {
   authorSearchText: string | null;
+  hypothesisID: ID;
   isFetchingAuthors: boolean;
   isFormDisabled: boolean;
   isFormEdited: boolean;
