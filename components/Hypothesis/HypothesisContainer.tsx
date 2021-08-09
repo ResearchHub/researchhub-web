@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import CitationContainer from "./Citation/CitationContainer";
+import CitationContainer from "./citation/CitationContainer";
 import React, { ReactElement } from "react";
 
 type Props = {};
