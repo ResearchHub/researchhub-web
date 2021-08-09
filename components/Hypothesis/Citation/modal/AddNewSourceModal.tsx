@@ -3,6 +3,8 @@ import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "../../../Modals/BaseModal";
 import React, { ReactElement, useState } from "react";
+import AddNewSourceBodyNewPaper from "./AddNewSourceBodyNewPaper";
+import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 
 const { NEW_PAPAER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
@@ -20,7 +22,9 @@ function getModalBody({
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
     case NEW_PAPAER_UPLOAD:
+      return <AddNewSourceBodyNewPaper />;
     case SEARCH:
+      return <AddNewSourceBodySearch />;
     case STAND_BY:
       return <AddNewSourceBodyStandBy setBodyType={setBodyType} />;
     default:
@@ -41,7 +45,11 @@ export default function AddNewSourceModal({
   return (
     <BaseModal
       children={modalBody}
-      closeModal={onCloseModal}
+      closeModal={(): void => {
+        // logical ordering
+        setBodyType(STAND_BY);
+        onCloseModal();
+      }}
       isOpen={isModalOpen}
     />
   );
