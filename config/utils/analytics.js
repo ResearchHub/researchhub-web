@@ -2,6 +2,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
 const VENDOR_AMPLITUDE = "amp";
+const VENDOR_GOOGLE = "google";
 
 export const trackEvent = ({
   eventType,
