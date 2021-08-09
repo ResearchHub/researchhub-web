@@ -7,6 +7,7 @@ import { searchTypes } from "~/config/utils/options";
 import { pickFiltersForApi } from "~/config/utils";
 import killswitch from "~/config/killswitch/killswitch";
 import Head from "~/components/Head";
+import { QUERY_PARAM } from "~/config/utils";
 
 import PropTypes from "prop-types";
 import Error from "next/error";
@@ -35,9 +36,12 @@ const Index = ({ apiResponse, hasError }) => {
 
   const buildPageTitle = () => {
     if (get(router, "query.type") === "all") {
-      return `${get(router, "query.q")} - Research Hub`;
+      return `${get(router, `query[${QUERY_PARAM}]`)} - Research Hub`;
     } else {
-      return `(${apiResponse.count}) ${get(router, "query.q")} - Research Hub`;
+      return `(${apiResponse.count}) ${get(
+        router,
+        `query[${QUERY_PARAM}]`
+      )} - Research Hub`;
     }
   };
 
