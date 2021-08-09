@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement, useState } from "react";
 import colors from "../../../config/themes/colors";
 import icons from "../../../config/themes/icons";
+import AddNewSourceModal from "./modal/AddNewSourceModal";
 
 type Props = {};
 
@@ -13,6 +14,10 @@ export default function CitationAddNewButton({  }: Props): ReactElement<"div"> {
       onClick={(): void => setShouldOpenModal(true)}
       role="button"
     >
+      <AddNewSourceModal
+        isModalOpen={shouldOpenModal}
+        onCloseModal={(): void => setShouldOpenModal(false)}
+      />
       <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>
       <span>{"Add new source"}</span>
     </div>
@@ -27,6 +32,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     height: 21,
+    userSelect: "none",
     width: 200,
   },
   plusIcon: {
