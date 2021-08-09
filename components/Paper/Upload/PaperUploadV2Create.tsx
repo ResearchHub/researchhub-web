@@ -137,8 +137,11 @@ function PaperuploadV2Create({
   paperRedux,
 }: ComponentProps): ReactElement<typeof Fragment> {
   const router = useRouter();
+  const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
   const [componentState, setComponentState] = useState<ComponentState>(
-    defaultComponentState
+    isPaperForHypothesis
+      ? { ...defaultComponentState, hypothesisID }
+      : defaultComponentState
   );
   const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [formErrors, setFormErrors] = useState<FormErrorState>(
@@ -148,7 +151,6 @@ function PaperuploadV2Create({
 
   const { isFormDisabled, isURLView, shouldShowTitleField } = componentState;
   const { doi, hubs: selectedHubs, paper_title, title } = formState;
-  const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
 
   const handleInputChange = getHandleInputChange({
     currFormState: formState,
@@ -161,7 +163,11 @@ function PaperuploadV2Create({
 
   const handleFormCancel = (): void => {
     paperActions.resetPaperState();
-    setComponentState(defaultComponentState);
+    setComponentState(
+      isPaperForHypothesis
+        ? { ...defaultComponentState, hypothesisID }
+        : defaultComponentState
+    );
     setFormState(defaultFormState);
     setFormErrors(defaultFormErrorState);
     router.back();
