@@ -148,15 +148,12 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       viewers: null,
     };
 
-    if (isPost) {
-      return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON);
-    } else {
-      return fetch(API.HYPOTHESIS({}), API.POST_CONFIG(params))
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON);
-    }
+    return fetch(
+      isPost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({}),
+      API.POST_CONFIG(params)
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
   };
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {
