@@ -16,6 +16,7 @@ type GetModalBodyArgs = {
 function getModalBody({
   bodyType,
   setBodyType,
+  hypothesisID,
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
     case NEW_PAPAER_UPLOAD:
