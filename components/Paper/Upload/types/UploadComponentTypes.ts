@@ -2,7 +2,6 @@ import { ID } from "../../../../config/types/root_types";
 
 export type ComponentState = {
   authorSearchText: string | null;
-  hypothesisID: ID;
   isFetchingAuthors: boolean;
   isFormDisabled: boolean;
   isFormEdited: boolean;
@@ -41,6 +40,7 @@ export type FormState = {
   doi: ID;
   file?: any; // most likely only used for create
   hubs: any[];
+  hypothesis_id: ID;
   paper_title: string;
   paper_type: string;
   published: FormPublishedDate;
@@ -78,6 +78,7 @@ export const defaultFormState: FormState = {
   authors: [],
   doi: null,
   hubs: [],
+  hypothesis_id: null,
   paper_title: "",
   paper_type: "REGULAR",
   published: {
