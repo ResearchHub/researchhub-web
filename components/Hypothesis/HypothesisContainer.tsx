@@ -1,17 +1,17 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { css, StyleSheet } from "aphrodite";
-import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
+import API from "~/config/api";
 import colors from "~/config/themes/colors";
+import React, { ReactElement, useEffect, useState } from "react";
 
 // Components
-import Head from "~/components/Head";
 import CitationContainer from "./Citation/CitationContainer";
-import VoteWidget from "~/components/VoteWidget";
+import Head from "~/components/Head";
 import PaperPromotionIcon from "~/components/Paper/PaperPromotionIcon";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
+import VoteWidget from "~/components/VoteWidget";
 
 type Props = {};
 
