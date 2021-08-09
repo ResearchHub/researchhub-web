@@ -1,8 +1,10 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-const VENDOR_AMPLITUDE = "amp";
-const VENDOR_GOOGLE = "google";
+export const VENDOR_AMPLITUDE = "amp";
+export const VENDOR_GOOGLE = "google";
+
+export const CLICK_INTERACTION = "click";
 
 export const trackEvent = ({
   eventType,
@@ -20,7 +22,7 @@ export const trackEvent = ({
       console.warn("No vendor specified while tracking event");
     }
   } catch (err) {
-    console.warn("Exception while tracking event", err);
+    console.error("Exception while tracking event", err);
   }
 };
 
@@ -30,7 +32,9 @@ const trackAmplitudeEvent = ({
   user = null,
   interactionType = null,
 }) => {
-  data = interactionType ? { ...data, interactionType } : data;
+  if (interactionType) {
+    data.interaction = interactionType;
+  }
 
   const payload = {
     event_type: eventType,
@@ -39,7 +43,7 @@ const trackAmplitudeEvent = ({
     event_properties: data,
   };
 
-  fetch(API.AMP_ANALYTICS, API.POST_CONFIG(payload))
+  return fetch(API.AMP_ANALYTICS, API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)
     .then((res) => res)
     .catch((err) => err);
