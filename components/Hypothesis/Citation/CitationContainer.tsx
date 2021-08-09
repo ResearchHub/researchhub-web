@@ -14,7 +14,7 @@ export default function CitationContainer(): ReactElement<"div"> {
   return (
     <div className={css(styles.citationContainer)}>
       <div className={css(styles.header)}>{"Relevant Sources"}</div>
-      <CitationTable hypothesisID={hypothesisID} />
+      <CitationTable hypothesisID={hypothesisID} items={[]} />
       <CitationAddNewButton hypothesisID={hypothesisID} />
     </div>
   );
