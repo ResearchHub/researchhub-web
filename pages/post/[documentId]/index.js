@@ -25,16 +25,15 @@ function Post(props) {
 
 Post.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
-  let posts = await fetch(
+
+  const posts = await fetch(
     API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
     API.GET_CONFIG()
   ).then(helpers.parseJSON);
   const post = posts.results[0];
-  const slug = post.slug;
+  const redirectPath = `/post/${post.id}/${post.slug}`;
 
-  const redirectPath = `/post/${post.id}/${slug}`;
-
-  return { redirectPath, post };
+  return { post, redirectPath };
 };
 
 export default Post;
