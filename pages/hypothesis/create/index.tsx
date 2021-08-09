@@ -8,19 +8,22 @@ import { css, StyleSheet } from "aphrodite";
 
 export default function Index() {
   const router = useRouter();
-  const enableNewPostTypes = killswitch("newPostTypes");
+  const enableHypothesis = killswitch("hypothesis");
   useEffect(() => {
-    if (!enableNewPostTypes) {
+    if (!enableHypothesis) {
       router.push("/all");
     }
-  }, [enableNewPostTypes, router.pathname]);
-  if (enableNewPostTypes) {
+  }, [enableHypothesis, router.pathname]);
+  if (enableHypothesis) {
     return (
       <Fragment>
-        <Head title={`New Post`} description="Create a Post on ResearchHub" />
+        <Head
+          title={`New Post`}
+          description="Create a Hypothesis on ResearchHub"
+        />
         <div className={css(styles.background)}>
           <div className={css(styles.content)}>
-            <div className={css(styles.title)}>Create a Post</div>
+            <div className={css(styles.title)}>Create a Hypothesis</div>
             <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
             <div className={css(styles.row)}>
               <AskQuestionForm />
