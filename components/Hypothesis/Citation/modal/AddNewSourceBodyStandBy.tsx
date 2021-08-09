@@ -18,7 +18,7 @@ export default function AddNewSourceBodyStandBy({
     <div className={css(styles.addNewSourceBodyStandBy)}>
       <ResearchhubOptionCard
         description="I would like to cite a source that I know already exist on ResearchHub"
-        header="Search Source on ResearchHub"
+        header="Search for a source on ResearchHub"
         imgSrc="/static/icons/search.png"
         isActive={activeBodyType === SEARCH}
         isCheckboxSquare={false}
@@ -26,8 +26,8 @@ export default function AddNewSourceBodyStandBy({
         onSelect={(): void => setActiveBodyType(SEARCH)}
       />
       <ResearchhubOptionCard
-        description="Upload a new paper that I've found"
-        header="Upload a New Paper"
+        description="Upload a new paper that does not exist on ResearchHub"
+        header="Upload a new paper"
         imgSrc="/static/icons/uploadPaper.png"
         isActive={activeBodyType === NEW_PAPAER_UPLOAD}
         isCheckboxSquare={false}
