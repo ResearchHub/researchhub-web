@@ -21,6 +21,12 @@ const items = [
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
   },
+  {
+    header: "Create a Hypothesis",
+    description: "TODO: Add copy here.",
+    imgSrc: "/static/icons/publishProject.png",
+    route: "/hypothesis/create",
+  },
   // {
   //   header: "Publish a Research Project",
   //   description: "Publish lab notes, original research, metastudies, etc.",
