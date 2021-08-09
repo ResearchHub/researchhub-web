@@ -26,7 +26,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     display: "flex",
     flexDirection: "column",
-    height: 524,
     padding: 16,
     width: 1278,
   },
