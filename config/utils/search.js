@@ -1,6 +1,8 @@
 import { searchTypes } from "./options";
 import { get } from "lodash";
 
+export const QUERY_PARAM = "q";
+
 /*
   Pick allowed search filters from Next's query params object.
 */
@@ -28,4 +30,24 @@ export const pickFiltersForApi = ({ searchType, query }) => {
 
 export const pickFiltersForApp = ({ searchType, query }) => {
   return pickFilters({ searchType, query, forApiOrApp: "App" });
+};
+
+export const hasNoSearchResults = ({ searchType, apiResponse }) => {
+  if (searchType === "all") {
+    const allResults = Object.values(apiResponse);
+
+    for (let i = 0; i < allResults.length; i++) {
+      const entityResultSet = allResults[i];
+
+      if (!Array.isArray(entityResultSet)) {
+        continue;
+      } else if (entityResultSet.length > 0) {
+        return false;
+      }
+    }
+
+    return true;
+  } else {
+    return apiResponse.count === 0 ? true : false;
+  }
 };
