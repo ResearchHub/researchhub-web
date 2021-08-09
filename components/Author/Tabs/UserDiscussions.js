@@ -116,7 +116,7 @@ class UserDiscussionsTab extends React.Component {
     return (
       <ReactPlaceholder
         ready={
-          this.props.author.discussionsDoneFetching && !this.props.fetching
+          !!(this.props.author.discussionsDoneFetching && !this.props.fetching) // needs to be boolean, not undefined
         }
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}

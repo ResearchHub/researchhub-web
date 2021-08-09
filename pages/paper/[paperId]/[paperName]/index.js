@@ -513,7 +513,8 @@ const Paper = (props) => {
                 topOffset={40}
                 bottomOffset={"95%"}
               >
-                <a name="abstract">
+                <div>
+                  <a name="abstract" />
                   <SummaryTab
                     paperId={paperId}
                     paper={paper}
@@ -523,7 +524,7 @@ const Paper = (props) => {
                     loadingSummary={loadingSummary}
                     userVoteChecked={userVoteChecked}
                   />
-                </a>
+                </div>
               </Waypoint>
             </div>
             <Waypoint
@@ -531,19 +532,18 @@ const Paper = (props) => {
               topOffset={40}
               bottomOffset={"95%"}
             >
-              <a name="comments">
-                <div className={css(styles.space)}>
-                  <DiscussionTab
-                    hostname={props.hostname}
-                    documentType={"paper"}
-                    paperId={paperId}
-                    paperState={paper}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                    isCollapsible={false}
-                  />
-                </div>
-              </a>
+              <div className={css(styles.space)}>
+                <a name="comments" />
+                <DiscussionTab
+                  hostname={props.hostname}
+                  documentType={"paper"}
+                  paperId={paperId}
+                  paperState={paper}
+                  calculatedCount={discussionCount}
+                  setCount={setCount}
+                  isCollapsible={false}
+                />
+              </div>
             </Waypoint>
             <div
               className={css(
@@ -558,7 +558,8 @@ const Paper = (props) => {
                 topOffset={40}
                 bottomOffset={"95%"}
               >
-                <a name="paper">
+                <div>
+                  <a name="paper" />
                   <TableOfContent
                     paperDraftExists={paperDraftExists}
                     paperDraftSections={paperDraftSections}
@@ -572,7 +573,7 @@ const Paper = (props) => {
                     setPaperDraftExists={setPaperDraftExists}
                     setPaperDraftSections={setPaperDraftSections}
                   />
-                </a>
+                </div>
               </Waypoint>
             </div>
             <Waypoint
@@ -580,7 +581,8 @@ const Paper = (props) => {
               topOffset={40}
               bottomOffset={"95%"}
             >
-              <a name="paper pdf">
+              <div>
+                <a name="paper pdf" />
                 <div className={css(styles.paperTabContainer)}>
                   <PaperTab
                     paperId={paperId}
@@ -588,7 +590,7 @@ const Paper = (props) => {
                     isModerator={isModerator}
                   />
                 </div>
-              </a>
+              </div>
             </Waypoint>
           </div>
           <div className={css(styles.sidebar)}>

@@ -411,11 +411,11 @@ class PostPageCard extends React.Component {
       <div className={css(styles.actions) + " action-bars"}>
         {actionButtons.map((action, i) => {
           if (actionButtons.length - 1 === i) {
-            return action.button;
+            return <span key={i}>{action.button}</span>;
           }
 
           return (
-            <span className={css(styles.actionButtonMargin)}>
+            <span key={i} className={css(styles.actionButtonMargin)}>
               {action.button}
             </span>
           );

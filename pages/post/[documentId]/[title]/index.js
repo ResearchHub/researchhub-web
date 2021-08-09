@@ -269,19 +269,18 @@ const Post = (props) => {
                   isPost={true}
                 />
               </div>
-              <a name="comments">
-                <div className={css(styles.space)}>
-                  <DiscussionTab
-                    hostname={props.hostname}
-                    documentType={"post"}
-                    post={post}
-                    postId={post.id}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                    isCollapsible={false}
-                  />
-                </div>
-              </a>
+              <div className={css(styles.space)}>
+                <a name="comments" />
+                <DiscussionTab
+                  hostname={props.hostname}
+                  documentType={"post"}
+                  post={post}
+                  postId={post.id}
+                  calculatedCount={discussionCount}
+                  setCount={setCount}
+                  isCollapsible={false}
+                />
+              </div>
             </div>
             <div className={css(styles.sidebar)}>
               <PaperSideColumn

@@ -62,6 +62,7 @@ export default function NewPostModal({
         imgSrc={option.imgSrc}
         isActive={index === selected}
         isCheckboxSquare={false}
+        key={index}
         onSelect={onSelect}
       />
     );
