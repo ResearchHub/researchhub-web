@@ -54,6 +54,7 @@ function firstImageFromHtml(text: string): string | null {
 }
 
 export type AskQuestionFormProps = {
+  documentType: string;
   user: any;
 };
 
@@ -61,7 +62,7 @@ function toPlaintext(text: string): string {
   return removeMd(text).replace(/&nbsp;/g, " ");
 }
 
-function AskQuestionForm({ user }: AskQuestionFormProps) {
+function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
     hubs: true,
@@ -76,6 +77,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
   const [suggestedHubs, setSuggestedHubs] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const isPost = documentType === "post";
 
   // From ./PaperUploadInfo.js
   const getHubs = () => {
@@ -126,7 +128,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
   const onSuccess = (isDraft: boolean): ((value: any) => void) => {
     return (response) => {
       const { id, slug } = response;
-      router.push(`/post/${id}/${slug}`);
+      router.push(`/${isPost ? "post" : "hypothesis"}/${id}/${slug}`);
     };
   };
 
@@ -134,7 +136,7 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
     const params = {
       admins: null,
       created_by: user.id,
-      document_type: "DISCUSSION",
+      document_type: isPost ? "DISCUSSION" : "HYPOTHESIS",
       editors: null,
       full_src: mutableFormFields.text,
       /* @ts-ignore */
@@ -146,9 +148,15 @@ function AskQuestionForm({ user }: AskQuestionFormProps) {
       viewers: null,
     };
 
-    return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
+    if (isPost) {
+      return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON);
+    } else {
+      return fetch(API.HYPOTHESIS({}), API.POST_CONFIG(params))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON);
+    }
   };
 
   const handleOnChangeFields = (fieldID: string, value: string): void => {
