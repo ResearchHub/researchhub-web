@@ -18,7 +18,7 @@ export default function AddNewSourceBodyStandBy({
   return (
     <div className={css(styles.addNewSourceBodyStandBy)}>
       <ResearchhubOptionCard
-        description="I would like to cite a source that I know already exist on ResearchHub"
+        description="I would like to cite a source that already exists on ResearchHub"
         header="Search for a source on ResearchHub"
         imgSrc="/static/icons/search.png"
         isActive={activeBodyType === SEARCH}
