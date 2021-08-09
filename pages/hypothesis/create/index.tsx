@@ -26,7 +26,7 @@ export default function Index() {
             <div className={css(styles.title)}>Create a Hypothesis</div>
             <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
             <div className={css(styles.row)}>
-              <AskQuestionForm />
+              <AskQuestionForm documentType={"hypothesis"} />
               <AboutQuestionCard
                 customStyle={styles.cardOnSide}
                 isOpen={true}
