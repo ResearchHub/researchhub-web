@@ -9,18 +9,19 @@ const { NEW_PAPAER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 type ComponentProps = { isModalOpen: boolean; onCloseModal: () => void };
 type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
-  onBodyTypeChage: (bodyType: BodyTypeVals) => void;
+  setBodyType: (bodyType: BodyTypeVals) => void;
   hypothesisID: ID;
 };
 
 function getModalBody({
   bodyType,
+  setBodyType,
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
     case NEW_PAPAER_UPLOAD:
     case SEARCH:
     case STAND_BY:
-      return <AddNewSourceBodyStandBy />;
+      return <AddNewSourceBodyStandBy setBodyType={setBodyType} />;
     default:
       return null;
   }
@@ -33,8 +34,8 @@ export default function AddNewSourceModal({
   const [bodyType, setBodyType] = useState<BodyTypeVals>(STAND_BY);
   const modalBody = getModalBody({
     bodyType,
+    setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
     hypothesisID: null,
-    onBodyTypeChage: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
   });
   return (
     <BaseModal
