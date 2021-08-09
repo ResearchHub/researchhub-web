@@ -45,6 +45,7 @@ type ComponentProps = {
 type ParseReduxToStateArgs = {
   componentState: ComponentState;
   formState: FormState;
+  hypothesisID: ID;
   messageActions: any;
   paperRedux: any;
   setComponentState: (componentState: ComponentState) => void;
@@ -66,6 +67,7 @@ const useEffectHandleInit = ({
 
 const useEffectParseReduxToState = ({
   formState,
+  hypothesisID,
   messageActions,
   paperRedux,
   setFormState,
@@ -117,6 +119,7 @@ const useEffectParseReduxToState = ({
       author: formAuthors,
       doi: formattedDOI,
       hubs: formHubs,
+      hypothesis_id: hypothesisID,
       paper_title: resolvedPaperTitle,
       paper_type: formType,
       published: formattedPublishedDate,
@@ -136,14 +139,16 @@ function PaperuploadV2Create({
   paperActions,
   paperRedux,
 }: ComponentProps): ReactElement<typeof Fragment> {
-  const router = useRouter();
   const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
+  const router = useRouter();
   const [componentState, setComponentState] = useState<ComponentState>(
-    isPaperForHypothesis
-      ? { ...defaultComponentState, hypothesisID }
-      : defaultComponentState
+    defaultComponentState
   );
-  const [formState, setFormState] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<FormState>(
+    isPaperForHypothesis
+      ? { ...defaultFormState, hypothesis_id: hypothesisID }
+      : defaultFormState
+  );
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
@@ -163,12 +168,12 @@ function PaperuploadV2Create({
 
   const handleFormCancel = (): void => {
     paperActions.resetPaperState();
-    setComponentState(
+    setComponentState(defaultComponentState);
+    setFormState(
       isPaperForHypothesis
-        ? { ...defaultComponentState, hypothesisID }
-        : defaultComponentState
+        ? { ...defaultFormState, hypothesis_id: hypothesisID }
+        : defaultFormState
     );
-    setFormState(defaultFormState);
     setFormErrors(defaultFormErrorState);
     router.back();
   };
@@ -264,6 +269,7 @@ function PaperuploadV2Create({
     componentState,
     messageActions,
     formState,
+    hypothesisID,
     paperRedux,
     setComponentState,
     setFormState,
