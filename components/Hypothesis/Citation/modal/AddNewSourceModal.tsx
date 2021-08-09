@@ -11,7 +11,11 @@ import React, { ReactElement, useState } from "react";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
-type ComponentProps = { isModalOpen: boolean; onCloseModal: () => void };
+type ComponentProps = {
+  hypothesisID: ID;
+  isModalOpen: boolean;
+  onCloseModal: () => void;
+};
 type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
   setBodyType: (bodyType: BodyTypeVals) => void;
@@ -36,15 +40,10 @@ function getModalBody({
 }
 
 export default function AddNewSourceModal({
+  hypothesisID,
   isModalOpen,
   onCloseModal,
 }: ComponentProps): ReactElement<typeof BaseModal> {
-  const router = useRouter();
-  const hypothesisID = Array.isArray(router.query.documentId)
-    ? parseInt(router.query.documentId[0])
-    : // @ts-ignore implied that this is a string / int
-      parseInt(router.query.documentId);
-
   const [bodyType, setBodyType] = useState<BodyTypeVals>(STAND_BY);
   const modalBody = getModalBody({
     bodyType,

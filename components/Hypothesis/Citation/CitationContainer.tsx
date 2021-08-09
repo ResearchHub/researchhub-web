@@ -1,14 +1,21 @@
 import { css, StyleSheet } from "aphrodite";
+import { useRouter } from "next/router";
 import React, { ReactElement } from "react";
 import CitationAddNewButton from "./CitationAddNewButton";
-import CitationTable from "./CitationTable";
+import CitationTable from "./table/CitationTable";
 
 export default function CitationContainer(): ReactElement<"div"> {
+  const router = useRouter();
+  const hypothesisID = Array.isArray(router.query.documentId)
+    ? parseInt(router.query.documentId[0])
+    : // @ts-ignore implied that this is a string / int
+      parseInt(router.query.documentId);
+
   return (
     <div className={css(styles.citationContainer)}>
-      <div className={css(styles.header)}>Relevant Sources</div>
-      <CitationTable />
-      <CitationAddNewButton />
+      <div className={css(styles.header)}>{"Relevant Sources"}</div>
+      <CitationTable hypothesisID={hypothesisID} />
+      <CitationAddNewButton hypothesisID={hypothesisID} />
     </div>
   );
 }
