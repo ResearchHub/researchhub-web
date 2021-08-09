@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import React, { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
+import killswitch from "~/config/killswitch/killswitch";
 
 const items = [
   {
@@ -61,7 +62,7 @@ export default function NewPostModal({
       e.preventDefault();
       setSelected(index);
     };
-    return (
+    return killswitch("hypothesis") || index !== 2 ? (
       <ResearchhubOptionCard
         description={option.description}
         header={option.header}
@@ -71,7 +72,7 @@ export default function NewPostModal({
         key={index}
         onSelect={onSelect}
       />
-    );
+    ) : null;
   });
 
   return (
