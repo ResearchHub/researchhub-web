@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    margin: 26,
+    margin: "36px 36px 26px",
   },
   buttonCustomStyle: {
     height: "50px",
