@@ -3,10 +3,18 @@ import { useState } from "react";
 import Link from "next/link";
 
 import icons from "~/config/themes/icons";
-import colors from "../config/themes/colors";
+import colors from "~/config/themes/colors";
+import { useHasMounted } from "~/config/utils/hooks";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
+  const hasMounted = useHasMounted();
+
+  // fixes an error with `style` Prop not matching on Server/Client
+  if (!hasMounted) {
+    return null;
+  }
+
   const {
     author,
     size = 30,

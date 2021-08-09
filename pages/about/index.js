@@ -456,7 +456,7 @@ class Index extends React.Component {
                 open={true}
                 trigger="- Is content created on ResearchHub open?"
               >
-                <p className={css(styles.subtext, styles.wideText)}>
+                <div className={css(styles.subtext, styles.wideText)}>
                   <p>
                     Yes. The scientific record is too important to be hidden
                     behind paywalls. Science should be open, not only for
@@ -494,7 +494,7 @@ class Index extends React.Component {
                     ResearchGate or Reddit, which do not apply an open license
                     to all user-contributed content.
                   </p>
-                </p>
+                </div>
               </Collapsible>
               <Collapsible
                 className={css(styles.collapsibleSection)}
@@ -508,7 +508,7 @@ class Index extends React.Component {
                 open={false}
                 trigger="- What papers can I legally upload to ResearchHub?"
               >
-                <p className={css(styles.subtext, styles.wideText)}>
+                <div className={css(styles.subtext, styles.wideText)}>
                   <p>
                     Users can create a ResearchHub page for any paper, allowing
                     for summary and discussion. However, due to copyright, only
@@ -553,7 +553,7 @@ class Index extends React.Component {
                     journals and use platforms like ResearchHub that remove
                     legal barriers from science.
                   </p>
-                </p>
+                </div>
               </Collapsible>
               <Collapsible
                 className={css(styles.collapsibleSection)}

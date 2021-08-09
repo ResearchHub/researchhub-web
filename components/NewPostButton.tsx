@@ -31,12 +31,10 @@ export default function NewPostButton({
           label={
             // isLink prop does not allow onClick to trigger on link click
             <div className={css(styles.newPostLabel)}>
-              {process.browser ? (
-                <FontAwesomeIcon
-                  style={{ fontSize: "1.5em", marginRight: 8 }}
-                  icon={["far", "plus"]}
-                />
-              ) : null}
+              <FontAwesomeIcon
+                style={{ fontSize: "1.5em", marginRight: 8 }}
+                icon={["far", "plus"]}
+              />
               <span>{"New Post"}</span>
             </div>
           }

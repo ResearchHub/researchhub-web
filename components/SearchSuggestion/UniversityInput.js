@@ -134,7 +134,6 @@ class UniversityInput extends React.Component {
       required,
       index,
       onClick,
-      onSearch,
     } = this.props;
     let { searching, universities, showDropDown } = this.state;
     return (

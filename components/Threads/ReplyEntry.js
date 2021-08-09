@@ -503,7 +503,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 5,
     overflow: "visible",
-    cursor: "pointer",
     display: "table",
     tableLayout: "fixed",
     height: "1%",

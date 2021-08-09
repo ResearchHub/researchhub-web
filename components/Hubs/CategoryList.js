@@ -70,7 +70,7 @@ class CategoryList extends React.Component {
           customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={9} />}
           title={"Categories"}
           renderListItem={this.renderCategoryEntry}
-          ready={this.props.categories.length}
+          ready={this.props.categories.length > 0}
         />
       </div>
     );
