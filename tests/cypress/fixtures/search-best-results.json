@@ -1,0 +1,406 @@
+{
+  "paper": [{
+    "id": 496,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Qiang",
+      "last_name": "Sun",
+      "full_name": "Qiang Sun"
+    }, {
+      "first_name": "A.",
+      "last_name": "Neuman",
+      "full_name": "A. Neuman"
+    }, {
+      "first_name": "Yuying",
+      "last_name": "Xie",
+      "full_name": "Yuying Xie"
+    }, {
+      "first_name": "Qiang",
+      "last_name": "Sun",
+      "full_name": "Qiang Sun"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 19,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "mathematics"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Restricted Riemannian geometry for positive semidefinite matrices",
+    "abstract": "We introduce the manifold of {\\it restricted} $n\\times n$ positive semidefinite matrices of fixed rank $p$, denoted $S(n,p)^{*}$. The manifold itself is an open and dense submanifold of $S(n,p)$, the manifold of $n\\times n$ positive semidefinite matrices of the same rank $p$, when both are viewed as manifolds in $\\mathbb{R}^{n\\times n}$. This density is the key fact that makes the consideration of $S(n,p)^{*}$ statistically meaningful. We furnish $S(n,p)^{*}$ with a convenient, and geodesically complete, Riemannian geometry, as well as a Lie group structure, that permits analytical closed forms for endpoint geodesics, parallel transports, Fr\\'echet means, exponential and logarithmic maps. This task is done partly through utilizing a {\\it reduced} Cholesky decomposition, whose algorithm is also provided. We produce a second algorithm from this framework to estimate principal eigenspaces and demonstrate its superior performance over other existing algorithms.",
+    "paper_title": "Restricted Riemannian geometry for positive semidefinite matrices",
+    "highlight": {},
+    "slug": "zjzENuqn2Kaa1W6kUinv6c2nAnjIgXJ1"
+  }, {
+    "id": 498,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Shang-Peng",
+      "last_name": "Gao",
+      "full_name": "Shang-Peng Gao"
+    }, {
+      "first_name": "Guang",
+      "last_name": "Yang",
+      "full_name": "Guang Yang"
+    }, {
+      "first_name": "Shang-Peng",
+      "last_name": "Gao",
+      "full_name": "Shang-Peng Gao"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 30,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "physics"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "A method to restore the intrinsic dielectric functions of 2D materials\n  in periodic calculations and its application to the dielectric and optical\n  properties of ultrathin h-BN and MoS2",
+    "abstract": "Previous calculations of the dielectric and optical properties of 2D materials often downplayed or circumvented the influence of vacuum spacing introduced in periodic calculations, which gave rise to mispredictions of intrinsic properties of 2D materials or merely qualitative results. We first elucidate the relationship between the vacuum spacing and the dielectric and optical properties of 2D materials in periodic calculations, and then bring forward an effective method to accurately predict the dielectric and optical properties of 2D materials by restoring the intrinsic dielectric functions of 2D materials independent of the additional vacuum spacing. As examples, intrinsic dielectric and optical properties of ultrathin h-BN and MoS2 from monolayer to pentalayer have been calculated by our method including dielectric functions, optical absorption coefficients, refraction indexes, reflectivities, extinction coefficients, and energy loss functions. Our calculations reveal that the out-of-plane optical dielectric constants, static refraction indexes, and static reflectivities of the 2D h-BN and MoS2 increase as the number of layers increases, while the in-plane counterparts remain unchanged. Excitonic frequency-dependent optical properties of h-BN and MoS2 from monolayer to bulk are also calculated by solving the Bethe-Salpeter equation and show strong anisotropy. In better agreement with experimental results than previous calculations, the presented method demonstrates enormous potential to investigate the dielectric and optical properties of other 2D materials extensively and quantitively.",
+    "paper_title": "A method to restore the intrinsic dielectric functions of 2D materials\n  in periodic calculations and its application to the dielectric and optical\n  properties of ultrathin h-BN and MoS2",
+    "highlight": {},
+    "slug": "0rdKRNHSlCmnZ8pq9ZMuNcP4mVBuScZd"
+  }],
+  "post": [{
+    "id": 4,
+    "hubs_flat": ["applied physics"],
+    "hot_score": 493802,
+    "score": 1,
+    "discussion_count": 0,
+    "unified_document_id": 921,
+    "hubs": [{
+      "hub_image": null,
+      "id": 185,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "applied physics"
+    }],
+    "created_date": "2021-08-07T20:54:13.480411+00:00",
+    "updated_date": "2021-08-07T20:54:15.839701+00:00",
+    "preview_img": null,
+    "title": "teststesfs",
+    "renderable_text": "asdfafadf",
+    "slug": "teststesfs",
+    "created_by_id": 1,
+    "highlight": {},
+    "created_by": {
+      "id": 1,
+      "author_profile": {
+        "id": 1,
+        "user": 1,
+        "first_name": "Kobe",
+        "last_name": "Attias",
+        "created_date": "2021-06-01T19:15:08.378922Z",
+        "updated_date": "2021-07-09T00:36:16.838153Z",
+        "description": "HI there, I am Kobe SUP",
+        "profile_image": "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/author_profile_images/2021/06/10/blob?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=mFvU9JyyCe9uc%2Bq7AUJx7uvt1qA%3D&Expires=1629222546",
+        "author_score": 0,
+        "university": null,
+        "orcid_id": "232",
+        "orcid_account": null,
+        "education": [{
+          "id": 525,
+          "city": "Hoboken",
+          "name": "Stevens Institute of Technology",
+          "year": {
+            "label": "2009",
+            "value": "2009"
+          },
+          "major": "Computer Science",
+          "state": "NJ",
+          "degree": {
+            "label": "Bachelor's Degree",
+            "value": "BA"
+          },
+          "country": "United States of America",
+          "summary": "Computer Science BA '09, Stevens Institute of Technology",
+          "is_public": true,
+          "created_date": "2019-11-11T22:25:47.203674Z",
+          "updated_date": "2019-11-11T22:25:47.203679Z"
+        }, {
+          "id": 190,
+          "city": "Fairfax",
+          "name": "George Mason University",
+          "year": {
+            "label": "2015",
+            "value": "2015"
+          },
+          "major": "Information Sciences",
+          "state": "VA",
+          "degree": {
+            "label": "Master's Degree",
+            "value": "Master's Degree"
+          },
+          "country": "United States of America",
+          "summary": "Information Sciences Master's Degree '15, George Mason University",
+          "is_public": false,
+          "created_date": "2019-11-11T22:25:47.199040Z",
+          "updated_date": "2019-11-11T22:25:47.199043Z"
+        }],
+        "headline": {
+          "title": "Software Engineer, BS in CS YO",
+          "isPublic": true
+        },
+        "facebook": null,
+        "twitter": null,
+        "linkedin": null,
+        "academic_verification": null,
+        "claimed_by_user_author_id": 1,
+        "is_claimed": true,
+        "num_posts": 2,
+        "reputation": 101,
+        "sift_link": "https://console.sift.com/users/1?abuse_type=content_abuse",
+        "total_score": 0,
+        "wallet": {
+          "id": 1,
+          "eth_address": null,
+          "btc_address": null,
+          "rsc_address": null,
+          "stripe_acc": null,
+          "stripe_verified": false,
+          "author": 1
+        }
+      },
+      "balance": null,
+      "bookmarks": [],
+      "created_date": "2021-06-01T19:15:08.347751Z",
+      "has_seen_first_coin_modal": true,
+      "has_seen_orcid_connect_modal": true,
+      "is_suspended": false,
+      "moderator": false,
+      "reputation": 101,
+      "subscribed": null,
+      "updated_date": "2021-06-10T11:53:19.925585Z",
+      "upload_tutorial_complete": false,
+      "hub_rep": null,
+      "probable_spammer": false
+    }
+  }, {
+    "id": 3,
+    "hubs_flat": ["anesthesiology"],
+    "hot_score": 492759,
+    "score": 1,
+    "discussion_count": 0,
+    "unified_document_id": 920,
+    "hubs": [{
+      "hub_image": null,
+      "id": 214,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "anesthesiology"
+    }],
+    "created_date": "2021-08-03T17:20:04.028921+00:00",
+    "updated_date": "2021-08-03T17:20:06.586428+00:00",
+    "preview_img": null,
+    "title": "This is a test",
+    "renderable_text": "",
+    "slug": "this-is-a-test",
+    "created_by_id": 1,
+    "highlight": {},
+    "created_by": {
+      "id": 1,
+      "author_profile": {
+        "id": 1,
+        "user": 1,
+        "first_name": "Kobe",
+        "last_name": "Attias",
+        "created_date": "2021-06-01T19:15:08.378922Z",
+        "updated_date": "2021-07-09T00:36:16.838153Z",
+        "description": "HI there, I am Kobe SUP",
+        "profile_image": "https://researchhub-paper-dev1.s3.amazonaws.com/uploads/author_profile_images/2021/06/10/blob?AWSAccessKeyId=AKIA3RZN3OVNNBYLSFM3&Signature=mFvU9JyyCe9uc%2Bq7AUJx7uvt1qA%3D&Expires=1629222546",
+        "author_score": 0,
+        "university": null,
+        "orcid_id": "232",
+        "orcid_account": null,
+        "education": [{
+          "id": 525,
+          "city": "Hoboken",
+          "name": "Stevens Institute of Technology",
+          "year": {
+            "label": "2009",
+            "value": "2009"
+          },
+          "major": "Computer Science",
+          "state": "NJ",
+          "degree": {
+            "label": "Bachelor's Degree",
+            "value": "BA"
+          },
+          "country": "United States of America",
+          "summary": "Computer Science BA '09, Stevens Institute of Technology",
+          "is_public": true,
+          "created_date": "2019-11-11T22:25:47.203674Z",
+          "updated_date": "2019-11-11T22:25:47.203679Z"
+        }, {
+          "id": 190,
+          "city": "Fairfax",
+          "name": "George Mason University",
+          "year": {
+            "label": "2015",
+            "value": "2015"
+          },
+          "major": "Information Sciences",
+          "state": "VA",
+          "degree": {
+            "label": "Master's Degree",
+            "value": "Master's Degree"
+          },
+          "country": "United States of America",
+          "summary": "Information Sciences Master's Degree '15, George Mason University",
+          "is_public": false,
+          "created_date": "2019-11-11T22:25:47.199040Z",
+          "updated_date": "2019-11-11T22:25:47.199043Z"
+        }],
+        "headline": {
+          "title": "Software Engineer, BS in CS YO",
+          "isPublic": true
+        },
+        "facebook": null,
+        "twitter": null,
+        "linkedin": null,
+        "academic_verification": null,
+        "claimed_by_user_author_id": 1,
+        "is_claimed": true,
+        "num_posts": 2,
+        "reputation": 101,
+        "sift_link": "https://console.sift.com/users/1?abuse_type=content_abuse",
+        "total_score": 0,
+        "wallet": {
+          "id": 1,
+          "eth_address": null,
+          "btc_address": null,
+          "rsc_address": null,
+          "stripe_acc": null,
+          "stripe_verified": false,
+          "author": 1
+        }
+      },
+      "balance": null,
+      "bookmarks": [],
+      "created_date": "2021-06-01T19:15:08.347751Z",
+      "has_seen_first_coin_modal": true,
+      "has_seen_orcid_connect_modal": true,
+      "is_suspended": false,
+      "moderator": false,
+      "reputation": 101,
+      "subscribed": null,
+      "updated_date": "2021-06-10T11:53:19.925585Z",
+      "upload_tutorial_complete": false,
+      "hub_rep": null,
+      "probable_spammer": false
+    }
+  }],
+  "person": [{
+    "id": 2,
+    "first_name": "Jihong",
+    "last_name": "Yu",
+    "full_name": "Jihong Yu",
+    "profile_image": "",
+    "headline": {},
+    "description": null,
+    "author_score": 0,
+    "user_reputation": 0,
+    "person_types": ["author"],
+    "user": null,
+    "author_profile": {
+      "id": 2,
+      "user": null,
+      "first_name": "Jihong",
+      "last_name": "Yu",
+      "created_date": "2021-06-01T19:29:18.300271Z",
+      "updated_date": "2021-06-01T19:29:18.300300Z",
+      "description": null,
+      "profile_image": null,
+      "author_score": 0,
+      "university": null,
+      "orcid_id": "0000-0003-1615-5034",
+      "orcid_account": null,
+      "education": [],
+      "headline": null,
+      "facebook": null,
+      "twitter": null,
+      "linkedin": null,
+      "academic_verification": null,
+      "claimed_by_user_author_id": null,
+      "is_claimed": false,
+      "num_posts": 0,
+      "reputation": 0,
+      "sift_link": null,
+      "total_score": 0,
+      "wallet": null
+    }
+  }, {
+    "id": 3,
+    "first_name": "Laura",
+    "last_name": "Gougeon",
+    "full_name": "Laura Gougeon",
+    "profile_image": "",
+    "headline": {},
+    "description": null,
+    "author_score": 0,
+    "user_reputation": 0,
+    "person_types": ["author"],
+    "user": null,
+    "author_profile": {
+      "id": 3,
+      "user": null,
+      "first_name": "Laura",
+      "last_name": "Gougeon",
+      "created_date": "2021-06-01T19:29:19.412684Z",
+      "updated_date": "2021-06-01T19:29:19.412749Z",
+      "description": null,
+      "profile_image": null,
+      "author_score": 0,
+      "university": null,
+      "orcid_id": "0000-0001-6576-7809",
+      "orcid_account": null,
+      "education": [],
+      "headline": null,
+      "facebook": null,
+      "twitter": null,
+      "linkedin": null,
+      "academic_verification": null,
+      "claimed_by_user_author_id": null,
+      "is_claimed": false,
+      "num_posts": 0,
+      "reputation": 0,
+      "sift_link": null,
+      "total_score": 0,
+      "wallet": null
+    }
+  }],
+  "hub": [{
+    "id": 71,
+    "name": "general physics",
+    "acronym": "",
+    "description": "",
+    "is_locked": false,
+    "hub_image": "",
+    "paper_count": 0,
+    "subscriber_count": 2,
+    "discussion_count": 0,
+    "slug": "general-physics"
+  }, {
+    "id": 28,
+    "name": "cybersecurity",
+    "acronym": "",
+    "description": "",
+    "is_locked": false,
+    "hub_image": "",
+    "paper_count": 0,
+    "subscriber_count": 1,
+    "discussion_count": 0,
+    "slug": "cybersecurity"
+  }]
+}

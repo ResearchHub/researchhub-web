@@ -30,11 +30,12 @@ const HorizontalTabBar = ({
   }, []);
 
   const renderTab = (tab, index) => {
-    const { isSelected, label } = tab;
+    const { isSelected, label, type } = tab;
 
     return (
       <div
         key={label}
+        id={`tabType--${type}`}
         className={css(styles.tab, isSelected && styles.selectedTab)}
         onClick={() => onClick(tab, index)}
       >
