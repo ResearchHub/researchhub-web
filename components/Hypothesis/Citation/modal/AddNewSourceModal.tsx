@@ -1,12 +1,13 @@
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { breakpoints } from "../../../../config/themes/screen";
 import { ID } from "../../../../config/types/root_types";
 import { StyleSheet } from "aphrodite";
+import { useRouter } from "next/router";
 import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "../../../Modals/BaseModal";
 import PaperUploadV2Create from "../../../Paper/Upload/PaperUploadV2Create";
 import React, { ReactElement, useState } from "react";
-import { useRouter } from "next/router";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
@@ -80,10 +81,10 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 25,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       padding: "50px 0px 0px 0px",
     },
   },
