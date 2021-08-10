@@ -40,11 +40,13 @@ export default function AuthorClaimCaseCard({
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
         (
-          actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>
+          actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>,
+          index: number
         ): ReactElement<typeof AuthorClaimCaseCardActionButton> => (
           <AuthorClaimCaseCardActionButton
             actionType={actionType}
             isDisabled={isSubmitting}
+            index={index}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
             onClick={() => setOpenModalType(actionType)}
           />
@@ -94,13 +96,17 @@ export default function AuthorClaimCaseCard({
               <span className={css(styles.requestorName)}>{requestorName}</span>
             </a>
           </div>
-          <div className={css(styles.cardMainSection, styles.fontGrey)}>
-            {providedEmail}
+          <div className={css(styles.row)}>
+            <div className={css(styles.cardMainSection, styles.fontGrey)}>
+              {providedEmail}
+            </div>
+            <div
+              className={css(styles.cardSmallerMainSection, styles.fontGrey)}
+            >
+              {createdDate.split("T")[0]}
+            </div>
           </div>
-          <div className={css(styles.cardSmallerMainSection, styles.fontGrey)}>
-            {createdDate.split("T")[0]}
-          </div>
-          <div className={css(styles.cardSmallerMainSection)}>
+          <div className={css(styles.cardSmallerMainSection, styles.actions)}>
             {actionLabels}
           </div>
         </div>
@@ -127,6 +133,11 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     minHeight: 72,
     maxWidth: "90%",
+
+    "@media only screen and (max-width: 767px)": {
+      width: "90%",
+      maxWidth: "unset",
+    },
   },
   borderBottom: {
     borderBottom: `1px solid ${colors.GREY(0.5)}`,
@@ -138,6 +149,10 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: "0px 16px",
     width: "100%",
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 16,
+    },
   },
   cardMainSection: {
     alignItems: "center",
@@ -149,6 +164,12 @@ const styles = StyleSheet.create({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     width: "24%",
+
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      height: "unset",
+      paddingRight: 0,
+    },
   },
   cardSmallerMainSection: {
     alignItems: "center",
@@ -160,11 +181,27 @@ const styles = StyleSheet.create({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     width: "15%",
+
+    "@media only screen and (max-width: 767px)": {
+      width: "unset",
+      height: "unset",
+      paddingRight: 0,
+    },
+  },
+  actions: {
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 16,
+    },
   },
   cardMainSectionWrap: {
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
+
+    "@media only screen and (max-width: 767px)": {
+      justifyContent: "unset",
+      flexDirection: "column",
+    },
   },
   chevronWrap: {
     alignItems: "center",
@@ -196,6 +233,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
     margin: "16px 0 8px",
+  },
+  row: {
+    display: "flex",
+    flex: 1,
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      marginTop: 16,
+    },
   },
   link: {
     color: colors.BLUE(1),

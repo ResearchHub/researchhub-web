@@ -44,8 +44,8 @@ function validateEmail(email: string): boolean {
 function validateFormField(fieldID: string, value: any): boolean {
   let result: boolean = true;
   switch (fieldID) {
-    case "eduEmail":
-      return typeof value === "string" && validateEmail(value);
+    // case "eduEmail":
+    //   return typeof value === "string" && validateEmail(value);
     default:
       return result;
   }
@@ -57,7 +57,7 @@ export default function AuthorClaimPromptEmail({
   userID,
 }: AuthorClaimPromptEmailProps) {
   const [formErrors, setFormErrors] = useState<FormError>({
-    eduEmail: false,
+    eduEmail: true,
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
@@ -69,7 +69,6 @@ export default function AuthorClaimPromptEmail({
       ? { ...authorData[0], label: authorData[0].name }
       : null
   );
-  console.warn("targetAuthor: ", targetAuthor);
   const handleOnChangeFields = (fieldID: string, value: string): void => {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
@@ -84,6 +83,11 @@ export default function AuthorClaimPromptEmail({
     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
       setShouldDisplayError(true);
     } else {
+      const name = targetAuthor.label.split(" ");
+      const author = {
+        first_name: name && name.length > 0 ? name[0] : null,
+        last_name: name && name.length > 1 ? name[1] : null,
+      };
       setShouldDisplayError(false);
       setIsSubmitting(true);
       createAuthorClaimCase({
@@ -100,9 +104,16 @@ export default function AuthorClaimPromptEmail({
           "targetAuthorID must be present to make a request"
         ),
         userID,
+        author,
       });
     }
   };
+
+  const options = authorData.map((authorDatum, index) => ({
+    ...authorDatum,
+    label: authorDatum.name,
+    value: authorDatum.name + `_${index}`,
+  }));
 
   return (
     <div className={css(verifStyles.rootContainer)}>
@@ -134,11 +145,8 @@ export default function AuthorClaimPromptEmail({
           disable={isSubmitting}
           id="author"
           label="Claiming author"
-          options={authorData.map((authorDatum) => ({
-            ...authorData,
-            label: authorDatum.name,
-          }))}
-          placeholder="Select which author you would like to claim as"
+          options={options}
+          placeholder="Choose an Author"
           required
           type="select"
           value={targetAuthor}
@@ -187,7 +195,7 @@ const verifStyles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: "51px 90px 40px 90px",
+    padding: "50px 40px",
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",

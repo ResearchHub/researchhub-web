@@ -5,8 +5,26 @@ import Link from "next/link";
 import PropTypes from "prop-types";
 import React from "react";
 
+const AccruedRSC = ({ name, accruedRSC }) => {
+  return (
+    <div className={css(styles.nameContainer)}>
+      <div className={css(styles.name) + " clamp1"}>{name}</div>
+      {accruedRSC ? (
+        <div className={css(styles.accruedRSC)}>
+          <span className={css(styles.accruedAmount)}>{accruedRSC} RSC</span>
+          <img
+            className={css(styles.potOfGold)}
+            src="/static/icons/coin-filled.png"
+            alt="Pot of Gold"
+          ></img>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
 const AuthorCard = (props) => {
-  const { name, author } = props;
+  const { name, author, accruedRSC } = props;
   const {
     claimed_by_user_author_id,
     id: authorID,
@@ -17,26 +35,27 @@ const AuthorCard = (props) => {
 
   if (authorID) {
     return (
-      <Link
-        data-test={`author-${author.id}`}
-        href={"/user/[authorId]/[tabName]"}
-        // If the profile is already claimed, redirect to UserProfile that has claimed it
-        as={`/user/${
-          is_claimed ? claimed_by_user_author_id : authorID
-        }/posts`}
-      >
-        <a className={css(styles.container, styles.hover)}>
-          {author.profile_image ? (
-            <img
-              src={author.profile_image}
-              className={css(styles.userImage)}
-            />
-          ) : (
-            <span className={css(styles.userIcon)}>{icons.user}</span>
-          )}
-          <div className={css(styles.name) + " clamp1"}>{name}</div>
-        </a>
-      </Link>
+      <div className={css(styles.authorCardWrap)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          // If the profile is already claimed, redirect to UserProfile that has claimed it
+          as={`/user/${
+            is_claimed ? claimed_by_user_author_id : authorID
+          }/posts`}
+        >
+          <a className={css(styles.container, styles.hover)}>
+            {author.profile_image ? (
+              <img
+                src={author.profile_image}
+                className={css(styles.userImage)}
+              />
+            ) : (
+              <span className={css(styles.userIcon)}>{icons.user}</span>
+            )}
+            <AccruedRSC name={name} accruedRSC={accruedRSC} />
+          </a>
+        </Link>
+      </div>
     );
   } else if (orcid_id) {
     return (
@@ -48,17 +67,17 @@ const AuthorCard = (props) => {
         data-test={`author-${author.id}`}
       >
         <span className={css(styles.userIcon)}>{icons.user}</span>
-        <div className={css(styles.name) + " clamp1"}>{name}</div>
+        <AccruedRSC name={name} accruedRSC={accruedRSC} />
       </a>
     );
+  } else {
+    return (
+      <div className={css(styles.container)} data-test={`author-${author.id}`}>
+        <span className={css(styles.userIcon)}>{icons.user}</span>
+        <AccruedRSC name={name} accruedRSC={accruedRSC} />
+      </div>
+    );
   }
-
-  return (
-    <div className={css(styles.container)} data-test={`author-${author.id}`}>
-      <span className={css(styles.userIcon)}>{icons.user}</span>
-      <div className={css(styles.name) + " clamp1"}>{name}</div>
-    </div>
-  );
 };
 
 AuthorCard.propTypes = {
@@ -133,6 +152,22 @@ const styles = StyleSheet.create({
       minWidth: 25,
       minHeight: 25,
     },
+  },
+  nameContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  accruedRSC: {
+    display: "flex",
+    alignItems: "center",
+  },
+  accruedAmount: {
+    fontSize: 12,
+  },
+  potOfGold: {
+    height: 16,
+    marginLeft: 4,
   },
 });
 
