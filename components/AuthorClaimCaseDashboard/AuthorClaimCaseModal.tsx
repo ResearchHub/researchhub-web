@@ -100,6 +100,7 @@ export default function AuthorClaimModal({
       isOpen={!!openModalType}
       modalStyle={customModalStyle.modalStyle}
       removeDefault={true}
+      modalContentStyle={customModalStyle.modalContentStyle}
     />
   );
 }
@@ -120,6 +121,10 @@ const customModalStyle = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
+  },
+  modalContentStyle: {
+    overflowY: "visible",
+    overflow: "visible",
   },
 });
 
