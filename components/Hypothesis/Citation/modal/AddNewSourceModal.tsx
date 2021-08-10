@@ -6,7 +6,7 @@ import React, { ReactElement, useState } from "react";
 import AddNewSourceBodyNewPaper from "./AddNewSourceBodyNewPaper";
 import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 
-const { NEW_PAPAER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
+const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
 type ComponentProps = { isModalOpen: boolean; onCloseModal: () => void };
 type GetModalBodyArgs = {
@@ -21,7 +21,7 @@ function getModalBody({
   hypothesisID,
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
-    case NEW_PAPAER_UPLOAD:
+    case NEW_PAPER_UPLOAD:
       return <AddNewSourceBodyNewPaper />;
     case SEARCH:
       return <AddNewSourceBodySearch />;
