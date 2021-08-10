@@ -150,7 +150,7 @@ const Search = ({ navbarRef }) => {
 
     blurAndCloseDeviceKeyboard();
     trackEvent({
-      eventType: "search: query submitted",
+      eventType: "search_query_submitted",
       vendor: "amp",
       user: get(auth, "isLoggedIn") ? auth.user : null,
       data: {
