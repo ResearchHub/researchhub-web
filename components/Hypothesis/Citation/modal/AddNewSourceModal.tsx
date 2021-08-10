@@ -87,7 +87,5 @@ const styles = StyleSheet.create({
       padding: "50px 0px 0px 0px",
     },
   },
-  titleStyle: {
-    display: "none",
-  },
+  titleStyle: { display: "none" },
 });
