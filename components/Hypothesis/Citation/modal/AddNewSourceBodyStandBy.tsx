@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   buttonCustomStyle: {
     height: "50px",
     width: "160px",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: "160px",
       height: "50px",
     },
