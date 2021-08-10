@@ -25,7 +25,7 @@ function getModalBody({
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
     case NEW_PAPER_UPLOAD:
-      return <AddNewSourceBodyNewPaper />;
+      return <PaperUploadV2Create hypothesisID={hypothesisID} />;
     case SEARCH:
       return <AddNewSourceBodySearch />;
     case STAND_BY:
