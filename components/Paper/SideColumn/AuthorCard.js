@@ -159,6 +159,7 @@ const styles = StyleSheet.create({
   accruedRSC: {
     display: "flex",
     alignItems: "center",
+    color: colors.BLACK(),
   },
   accruedAmount: {
     fontSize: 12,
