@@ -38,20 +38,18 @@ const AuthorCard = (props) => {
       <Link
         href={"/user/[authorId]/[tabName]"}
         // If the profile is already claimed, redirect to UserProfile that has claimed it
-        as={`/user/${
-          is_claimed ? claimed_by_user_author_id : authorID
-        }/posts`}
+        as={`/user/${is_claimed ? claimed_by_user_author_id : authorID}/posts`}
+        data-test={`author-${author.id}`}
       >
         <a className={css(styles.container, styles.hover)}>
           {author.profile_image ? (
-            <img
-              src={author.profile_image}
-              className={css(styles.userImage)}
-            />
+            <img src={author.profile_image} className={css(styles.userImage)} />
           ) : (
             <span className={css(styles.userIcon)}>{icons.user}</span>
           )}
-          <AccruedRSC name={name} accruedRSC={accruedRSC} />
+          {authorUserID ? null : (
+            <AccruedRSC name={name} accruedRSC={accruedRSC} />
+          )}
         </a>
       </Link>
     );
@@ -98,8 +96,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingRight: 16,
-    marginTop: 8,
   },
   hover: {
     textDecoration: "unset",
