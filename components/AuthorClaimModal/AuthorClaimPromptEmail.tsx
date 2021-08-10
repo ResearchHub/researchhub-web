@@ -83,7 +83,8 @@ export default function AuthorClaimPromptEmail({
     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
       setShouldDisplayError(true);
     } else {
-      const name = targetAuthor.label.split(" ");
+      const name =
+        targetAuthor && targetAuthor.label && targetAuthor.label.split(" ");
       const author = {
         first_name: name && name.length > 0 ? name[0] : null,
         last_name: name && name.length > 1 ? name[1] : null,
