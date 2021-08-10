@@ -11,15 +11,36 @@ import colors from "../../../../config/themes/colors";
 
 type Props = { hypothesisID: ID; items: Array<CitationTableRowItemProps> };
 
+const MOCKED_ITEMS = [
+  {
+    citationID: "123",
+    consensus: -1,
+    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
+    source: "The Extraodinary Importance of Sleep",
+    type: "Paper",
+    year: "2021",
+  },
+  {
+    citationID: "123",
+    consensus: -1,
+    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
+    source: "The Extraodinary Importance of Sleep",
+    type: "Paper",
+    year: "2021",
+  },
+];
+
 /* NOTE: This table UI isn't a "table". We may want to migrate to using an actual dom table */
 export default function CitationTable({ items }: Props): ReactElement<"div"> {
+  const mockedItems = [...items, ...MOCKED_ITEMS];
   const rowItems =
-    items.length > 0 ? (
-      items.map(
+    mockedItems.length > 0 ? (
+      mockedItems.map(
         (
-          propPayload: CitationTableRowItemProps
+          propPayload: CitationTableRowItemProps,
+          index: number
         ): ReactElement<typeof CitationTableRowItem> => (
-          <CitationTableRowItem {...propPayload} />
+          <CitationTableRowItem {...propPayload} key={index} />
         )
       )
     ) : (
@@ -45,14 +66,14 @@ export default function CitationTable({ items }: Props): ReactElement<"div"> {
 const styles = StyleSheet.create({
   citationTable: {
     boxSizing: "border-box",
+    margin: "8px 0 24px",
     minHeight: 120,
   },
   columnHeaderWrap: {
-    border: "1px solid blue",
-    borderBottom: `1px solid ${colors.LIGHT_GREY}`,
+    borderBottom: `1px solid ${colors.GREY(1)}`,
     display: "flex",
     width: "100%",
-    height: 28,
+    height: 58,
   },
   itemsWrap: {
     display: "flex",
