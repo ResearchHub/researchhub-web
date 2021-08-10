@@ -1,11 +1,12 @@
+import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { css, StyleSheet } from "aphrodite";
+import Modal from "react-modal";
+
 import {
   AUTHOR_CLAIM_ACTION_LABEL,
   AUTHOR_CLAIM_STATUS,
 } from "./constants/AuthorClaimStatus";
 import Button from "../Form/Button";
-import { css, StyleSheet } from "aphrodite";
-import Modal from "react-modal";
-import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
 import { breakpoints } from "../../config/themes/screen";

@@ -1,3 +1,5 @@
+import { SyntheticEvent, useState } from "react";
+import { connect } from "react-redux";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
@@ -5,15 +7,17 @@ import { css, StyleSheet } from "aphrodite";
 import FormInput from "../Form/FormInput";
 import { ID } from "../../config/types/root_types";
 import Loader from "../Loader/Loader";
-import { SyntheticEvent, useState } from "react";
 import { nullthrows } from "../../config/utils/nullchecks";
 import FormSelect from "../Form/FormSelect";
 import { breakpoints } from "../../config/themes/screen";
+import { MessageActions } from "../../redux/message";
 
 export type AuthorClaimPromptEmailProps = {
   authorData: AuthorDatum[];
   onSuccess: Function;
   userID: ID;
+  setMessage: Function;
+  showMessage: Function;
 };
 
 export type AuthorDatum = {
@@ -52,10 +56,12 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-export default function AuthorClaimPromptEmail({
+function AuthorClaimPromptEmail({
   authorData,
   onSuccess,
   userID,
+  setMessage,
+  showMessage,
 }: AuthorClaimPromptEmailProps) {
   const [formErrors, setFormErrors] = useState<FormError>({
     eduEmail: true,
@@ -84,6 +90,11 @@ export default function AuthorClaimPromptEmail({
     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
       setShouldDisplayError(true);
     } else {
+      if (!targetAuthor) {
+        setMessage("Please select an author to claim.");
+        showMessage({ show: true, error: true });
+        return;
+      }
       const name =
         targetAuthor && targetAuthor.label && targetAuthor.label.split(" ");
       const author = {
@@ -94,7 +105,17 @@ export default function AuthorClaimPromptEmail({
       setIsSubmitting(true);
       createAuthorClaimCase({
         eduEmail: mutableFormFields.eduEmail,
-        onError: (): void => {
+        onError: (err): void => {
+          let errMessage = "Something went wrong!";
+          const errorKeys = Object.keys(err.message);
+          for (let i = 0; i < errorKeys.length; i++) {
+            let curKey = errorKeys[i];
+            for (let j = 0; j < err.message[curKey].length; j++) {
+              errMessage = err.message[curKey][j];
+            }
+          }
+          setMessage(errMessage);
+          showMessage({ show: true, error: true });
           setIsSubmitting(false);
         },
         onSuccess: (): void => {
@@ -149,7 +170,7 @@ export default function AuthorClaimPromptEmail({
           label="Claiming author"
           options={options}
           placeholder="Choose an Author"
-          required
+          required={true}
           type="select"
           value={targetAuthor}
         />
@@ -317,3 +338,13 @@ const modalBodyStyles = StyleSheet.create({
     display: "unset",
   },
 });
+
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(AuthorClaimPromptEmail);
