@@ -45,12 +45,31 @@ class ColumnAuthors extends Component {
 
   renderAuthorCards = () => {
     const { authors } = this.state;
+    const { paper } = this.props;
 
+    let rawAuthorCount = 0;
     return authors.map((author, index) => {
       const name = getAuthorName(author);
       const key = `${name}-${index}`; // not all author have ids nor orcid_id -> combined list of authors and raw_authors
+      let accruedRSC = 0;
+      if (isNullOrUndefined(author.total_score)) {
+        accruedRSC = paper.raw_author_scores[rawAuthorCount];
+        rawAuthorCount += 1;
+      } else {
+        accruedRSC = author.total_score;
+      }
 
-      return <AuthorCard author={author} name={name} key={key} />;
+      return (
+        <AuthorCard
+          author={author}
+          name={name}
+          key={key}
+          accruedRSC={accruedRSC}
+          claimable={
+            !Boolean(author.is_claimed) || isNullOrUndefined(author.id)
+          }
+        />
+      );
     });
   };
 
@@ -100,7 +119,7 @@ class ColumnAuthors extends Component {
     const hasManyAuthors = authors.length > 1;
     const claimableAuthors = authors.filter(
       // checks if this author is NOT an "raw_author"
-      (author) => !isNullOrUndefined(author.id) && !Boolean(author.is_claimed)
+      (author) => !Boolean(author.is_claimed) || isNullOrUndefined(author.id)
     );
     const shouldDisplayClaimCard = claimableAuthors.length > 0;
     const authorCards = this.renderAuthorCards();
@@ -138,7 +157,7 @@ class ColumnAuthors extends Component {
                         : "Are you the author?"}
                     </div>
                     <div className={css(styles.claimCardText)}>
-                      {"Claim your profile and receive up to 1000 RSC"}
+                      {"Claim your profile and your stored up RSC"}
                     </div>
                   </div>
                   <img

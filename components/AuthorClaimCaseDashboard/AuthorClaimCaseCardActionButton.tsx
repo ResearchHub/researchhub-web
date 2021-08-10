@@ -10,6 +10,7 @@ import colors from "../../config/themes/colors";
 type Props = {
   actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
   isDisabled: boolean;
+  index: number;
   onClick: (event: SyntheticEvent) => void;
 };
 
@@ -22,6 +23,7 @@ const getButtonStyle = (actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>) => {
 export default function AuthorClaimCaseCardActionButton({
   actionType,
   isDisabled,
+  index,
   onClick,
 }: Props): ReactElement<"div"> {
   const buttonLabel = AUTHOR_CLAIM_ACTION_LABEL[actionType];
@@ -30,7 +32,8 @@ export default function AuthorClaimCaseCardActionButton({
       className={css(
         styles.authorClaimCaseCardActionButton,
         getButtonStyle(actionType),
-        isDisabled ? styles.disableButton : null
+        isDisabled ? styles.disableButton : null,
+        index === 0 && styles.firstCard
       )}
       onClick={onClick}
       role="button"
@@ -41,6 +44,9 @@ export default function AuthorClaimCaseCardActionButton({
 }
 
 const styles = StyleSheet.create({
+  firstCard: {
+    marginLeft: 0,
+  },
   authorClaimCaseCardActionButton: {
     alignItems: "center",
     borderRadius: 4,
@@ -50,6 +56,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 8,
     width: 144,
+
+    "@media only screen and (max-width: 767px)": {
+      width: "50%",
+    },
   },
   buttonApprove: {
     backgroundColor: colors.NEW_BLUE(1),
