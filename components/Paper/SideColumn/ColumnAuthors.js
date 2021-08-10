@@ -157,7 +157,7 @@ class ColumnAuthors extends Component {
                         : "Are you the author?"}
                     </div>
                     <div className={css(styles.claimCardText)}>
-                      {"Claim your profile and your stored up RSC"}
+                      {"Claim your profile to receive your stored RSC"}
                     </div>
                   </div>
                   <img
