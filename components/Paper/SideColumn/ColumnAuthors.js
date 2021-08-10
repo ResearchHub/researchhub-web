@@ -13,6 +13,7 @@ import { getAuthorName } from "~/config/utils/misc";
 import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import colors from "~/config/themes/colors";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
+import { breakpoints } from "~/config/themes/screen";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -226,11 +227,12 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     fontSize: 14,
-    height: 24,
+    // height: 24,
     justifyContent: "center",
     marginTop: 12,
-    padding: 4,
+    padding: 8,
     width: "100%",
+    boxSizing: "border-box",
   },
   claimCardTextGroup: {
     display: "flex",
@@ -239,6 +241,10 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "space-around",
     width: 192,
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "80%",
+    },
   },
   claimCardTextMain: {
     fontSize: 14,
@@ -261,6 +267,10 @@ const styles = StyleSheet.create({
   RSCIcon: {
     marginLeft: 8,
     width: 40,
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: "auto",
+    },
   },
   viewMoreButton: {
     color: "rgba(78, 83, 255)",
