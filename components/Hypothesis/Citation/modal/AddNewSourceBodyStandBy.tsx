@@ -4,7 +4,7 @@ import Button from "../../../Form/Button";
 import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 
-const { NEW_PAPAER_UPLOAD, SEARCH } = NEW_SOURCE_BODY_TYPES;
+const { NEW_PAPER_UPLOAD, SEARCH } = NEW_SOURCE_BODY_TYPES;
 
 type Props = {
   setBodyType: (bodyType: BodyTypeVals) => void;
@@ -29,10 +29,10 @@ export default function AddNewSourceBodyStandBy({
         description="Upload a new paper that does not exist on ResearchHub"
         header="Upload a new paper"
         imgSrc="/static/icons/uploadPaper.png"
-        isActive={activeBodyType === NEW_PAPAER_UPLOAD}
+        isActive={activeBodyType === NEW_PAPER_UPLOAD}
         isCheckboxSquare={false}
         key={SEARCH}
-        onSelect={(): void => setActiveBodyType(NEW_PAPAER_UPLOAD)}
+        onSelect={(): void => setActiveBodyType(NEW_PAPER_UPLOAD)}
       />
       <div className={css(styles.buttonWrap)}>
         <Button
