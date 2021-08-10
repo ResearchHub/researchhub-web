@@ -22,7 +22,7 @@ const SearchResults = ({ apiResponse }) => {
 
   useEffect(() => {
     trackEvent({
-      eventType: "search: results viewed",
+      eventType: "search_results_viewed",
       vendor: "amp",
       user: get(auth, "isLoggedIn") ? auth.user : null,
       data: {
@@ -33,7 +33,7 @@ const SearchResults = ({ apiResponse }) => {
 
     if (apiResponse && hasNoSearchResults({ searchType, apiResponse })) {
       trackEvent({
-        eventType: "search: no results",
+        eventType: "search_no_results",
         vendor: "amp",
         user: get(auth, "isLoggedIn") ? auth.user : null,
         data: {
