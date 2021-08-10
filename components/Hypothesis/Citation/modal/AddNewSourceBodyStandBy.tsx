@@ -49,10 +49,11 @@ export default function AddNewSourceBodyStandBy({
 
 const styles = StyleSheet.create({
   addNewSourceBodyStandBy: {
+    alignItems: "center",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    margin: 26,
   },
   buttonCustomStyle: {
     height: "50px",
