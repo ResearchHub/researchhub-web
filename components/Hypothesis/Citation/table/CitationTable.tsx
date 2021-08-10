@@ -12,22 +12,22 @@ import colors from "../../../../config/themes/colors";
 type Props = { hypothesisID: ID; items: Array<CitationTableRowItemProps> };
 
 const MOCKED_ITEMS = [
-  // {
-  //   citationID: "123",
-  //   consensus: -1,
-  //   notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
-  //   source: "The Extraodinary Importance of Sleep",
-  //   type: "Paper",
-  //   year: "2021",
-  // },
-  // {
-  //   citationID: "123",
-  //   consensus: -1,
-  //   notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
-  //   source: "The Extraodinary Importance of Sleep",
-  //   type: "Paper",
-  //   year: "2021",
-  // },
+  {
+    citationID: "123",
+    consensus: -1,
+    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
+    source: "The Extraodinary Importance of Sleep",
+    type: "Paper",
+    year: "2021",
+  },
+  {
+    citationID: "123",
+    consensus: -1,
+    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
+    source: "The Extraodinary Importance of Sleep",
+    type: "Paper",
+    year: "2021",
+  },
 ];
 
 /* NOTE: This table UI isn't a "table". We may want to migrate to using an actual dom table */
