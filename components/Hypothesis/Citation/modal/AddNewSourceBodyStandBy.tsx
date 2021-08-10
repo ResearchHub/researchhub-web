@@ -1,8 +1,9 @@
-import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useState } from "react";
-import Button from "../../../Form/Button";
-import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { css, StyleSheet } from "aphrodite";
+import { breakpoints } from "../../../../config/themes/screen.js";
+import Button from "../../../Form/Button";
+import React, { ReactElement, useState } from "react";
+import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 
 const { NEW_PAPER_UPLOAD, SEARCH } = NEW_SOURCE_BODY_TYPES;
 
@@ -56,7 +57,7 @@ const styles = StyleSheet.create({
   buttonCustomStyle: {
     height: "50px",
     width: "160px",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "160px",
       height: "50px",
     },
