@@ -133,6 +133,19 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    HYPOTHESIS: ({ created_by, hypothesis_id }) => {
+      let url = `${BASE_URL}hypothesis/${
+        !isNullOrUndefined(hypothesis_id) ? hypothesis_id + "/" : ""
+      }`;
+      let params = {
+        querystring: {
+          created_by,
+          hypothesis_id,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
       filters,

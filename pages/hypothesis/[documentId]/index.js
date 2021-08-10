@@ -24,18 +24,14 @@ function Hypothesis(props) {
 
 Hypothesis.getInitialProps = async (ctx) => {
   const { store, res, query } = ctx;
-  //let hypotheses = await fetch(
-  //  API.HYPOTHESIS({ hypothesis_id: query.documentId }),
-  //  API.GET_CONFIG()
-  //).then(helpers.parseJSON);
-  //const hypothesis = hypotheses.results[0];
-  //const slug = hypothesis.slug;
 
-  //const redirectPath = `/hypothesis/${hypothesis.id}/${slug}`;
-  const redirectPath = `/hypothesis/1/test`;
+  const hypothesis = await fetch(
+    API.HYPOTHESIS({ hypothesis_id: query.documentId }),
+    API.GET_CONFIG()
+  ).then(helpers.parseJSON);
+  const redirectPath = `/hypothesis/${hypothesis.id}/${hypothesis.slug}`;
 
-  //return { redirectPath, hypothesis };
-  return { redirectPath };
+  return { hypothesis, redirectPath };
 };
 
 export default Hypothesis;

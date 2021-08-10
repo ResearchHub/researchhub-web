@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import React, { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
+import killswitch from "~/config/killswitch/killswitch";
 
 const items = [
   {
@@ -20,6 +21,12 @@ const items = [
       "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
+  },
+  {
+    header: "Create a Hypothesis",
+    description: "TODO: Add copy here.",
+    imgSrc: "/static/icons/publishProject.png",
+    route: "/hypothesis/create",
   },
   // {
   //   header: "Publish a Research Project",
@@ -55,7 +62,7 @@ export default function NewPostModal({
       e.preventDefault();
       setSelected(index);
     };
-    return (
+    return killswitch("hypothesis") || index !== 2 ? (
       <ResearchhubOptionCard
         description={option.description}
         header={option.header}
@@ -65,7 +72,7 @@ export default function NewPostModal({
         key={index}
         onSelect={onSelect}
       />
-    );
+    ) : null;
   });
 
   return (

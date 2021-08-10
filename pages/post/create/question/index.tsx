@@ -13,7 +13,7 @@ export default function Index() {
           <div className={css(styles.title)}>Create a Post</div>
           <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
           <div className={css(styles.row)}>
-            <AskQuestionForm />
+            <AskQuestionForm documentType={"post"} />
             <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
           </div>
         </div>
