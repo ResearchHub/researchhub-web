@@ -35,6 +35,7 @@ import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type ComponentProps = {
   authRedux: any;
+  hypothesisID?: ID;
   messageActions: any;
   modalActions: any;
   paperActions: any;
@@ -129,6 +130,7 @@ const useEffectParseReduxToState = ({
 
 function PaperuploadV2Create({
   authRedux,
+  hypothesisID,
   messageActions,
   modalActions,
   paperActions,
@@ -146,6 +148,7 @@ function PaperuploadV2Create({
 
   const { isFormDisabled, isURLView, shouldShowTitleField } = componentState;
   const { doi, hubs: selectedHubs, paper_title, title } = formState;
+  const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
 
   const handleInputChange = getHandleInputChange({
     currFormState: formState,
@@ -266,7 +269,12 @@ function PaperuploadV2Create({
       className={css(formGenericStyles.form)}
       onSubmit={onFormSubmit}
     >
-      <div className={css(formGenericStyles.pageContent)}>
+      <div
+        className={css(
+          formGenericStyles.pageContent,
+          isPaperForHypothesis && formGenericStyles.noBorder
+        )}
+      >
         <div className={css(formGenericStyles.header, formGenericStyles.text)}>
           {"Add Paper"}
           <a
