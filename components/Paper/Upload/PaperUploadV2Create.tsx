@@ -156,6 +156,7 @@ function PaperuploadV2Create({
 
   const { isFormDisabled, isURLView, shouldShowTitleField } = componentState;
   const { doi, hubs: selectedHubs, paper_title, title } = formState;
+  const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
 
   const handleInputChange = getHandleInputChange({
     currFormState: formState,
