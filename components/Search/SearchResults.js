@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import { get } from "lodash";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 
 import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
@@ -11,10 +13,36 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchBestResults from "~/components/Search/SearchBestResults";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
+import { trackEvent, QUERY_PARAM, hasNoSearchResults } from "~/config/utils";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();
-  const currentSearchType = get(router, "query.type");
+  const searchType = get(router, "query.type");
+  const auth = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    trackEvent({
+      eventType: "search_results_viewed",
+      vendor: "amp",
+      user: get(auth, "isLoggedIn") ? auth.user : null,
+      data: {
+        searchType,
+        query: router.query[QUERY_PARAM],
+      },
+    });
+
+    if (apiResponse && hasNoSearchResults({ searchType, apiResponse })) {
+      trackEvent({
+        eventType: "search_no_results",
+        vendor: "amp",
+        user: get(auth, "isLoggedIn") ? auth.user : null,
+        data: {
+          searchType,
+          query: router.query[QUERY_PARAM],
+        },
+      });
+    }
+  }, [apiResponse]);
 
   const handleTabClick = (tab) => {
     const updatedQuery = {
@@ -57,13 +85,13 @@ const SearchResults = ({ apiResponse }) => {
     <ComponentWrapper overrideStyle={styles.componentWrapper}>
       {renderEntityTabs()}
 
-      {currentSearchType === "paper" || currentSearchType === "post" ? (
+      {searchType === "paper" || searchType === "post" ? (
         <SearchResultsForDocs apiResponse={apiResponse} />
-      ) : currentSearchType === "hub" ? (
+      ) : searchType === "hub" ? (
         <SearchResultsForHubs apiResponse={apiResponse} />
-      ) : currentSearchType === "person" ? (
+      ) : searchType === "person" ? (
         <SearchResultsForPeople apiResponse={apiResponse} />
-      ) : currentSearchType === "all" ? (
+      ) : searchType === "all" ? (
         <SearchBestResults apiResponse={apiResponse} />
       ) : null}
     </ComponentWrapper>

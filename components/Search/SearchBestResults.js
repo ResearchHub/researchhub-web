@@ -8,8 +8,9 @@ import colors, { genericCardColors } from "~/config/themes/colors";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
-import { breakpoints } from "~/config/themes/screen";
 import SearchEmpty from "~/components/Search/SearchEmpty";
+import { breakpoints } from "~/config/themes/screen";
+import { hasNoSearchResults } from "~/config/utils";
 
 const SearchBestResults = ({ apiResponse }) => {
   const router = useRouter();
@@ -82,22 +83,7 @@ const SearchBestResults = ({ apiResponse }) => {
     );
   };
 
-  const hasNoResults = (apiResponse) => {
-    const allResults = Object.values(apiResponse);
-    for (let i = 0; i < allResults.length; i++) {
-      const entityResultSet = allResults[i];
-
-      if (!Array.isArray(entityResultSet)) {
-        continue;
-      } else if (entityResultSet.length > 0) {
-        return false;
-      }
-    }
-
-    return true;
-  };
-
-  if (hasNoResults(apiResponse)) {
+  if (hasNoSearchResults({ searchType: "all", apiResponse })) {
     return <SearchEmpty />;
   }
 
