@@ -23,7 +23,6 @@ export default function CitationNoResult(): ReactElement<"div"> {
 const styles = StyleSheet.create({
   citationNotResult: {
     alignItems: "center",
-    border: "1px solid green",
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
