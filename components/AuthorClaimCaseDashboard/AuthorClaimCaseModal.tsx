@@ -165,9 +165,6 @@ const acceptRejectStyles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
-    "@media only screen and (min-width: 768px)": {
-      overflowY: "auto",
-    },
   },
   form: {
     width: "auto",
