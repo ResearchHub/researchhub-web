@@ -8,7 +8,7 @@ import React from "react";
 const AccruedRSC = ({ name, accruedRSC }) => {
   return (
     <div className={css(styles.nameContainer)}>
-      <div className={css(styles.name) + " clamp1"}>{name}</div>
+      <div className={css(styles.name)}>{name}</div>
       {accruedRSC ? (
         <div className={css(styles.accruedRSC)}>
           <span className={css(styles.accruedAmount)}>{accruedRSC} RSC</span>
@@ -110,6 +110,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(1),
     fontWeight: 500,
     marginLeft: 10,
+    flex: 1,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },

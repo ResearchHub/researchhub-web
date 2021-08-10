@@ -8,6 +8,7 @@ import Loader from "../Loader/Loader";
 import { SyntheticEvent, useState } from "react";
 import { nullthrows } from "../../config/utils/nullchecks";
 import FormSelect from "../Form/FormSelect";
+import { breakpoints } from "../../config/themes/screen";
 
 export type AuthorClaimPromptEmailProps = {
   authorData: AuthorDatum[];
@@ -201,6 +202,10 @@ const verifStyles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "40px 16px",
+    },
   },
   form: {
     width: "auto",

@@ -8,6 +8,7 @@ import Modal from "react-modal";
 import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
+import { breakpoints } from "../../config/themes/screen";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -170,6 +171,10 @@ const acceptRejectStyles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 16,
+    },
   },
   form: {
     width: "auto",

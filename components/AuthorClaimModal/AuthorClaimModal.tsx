@@ -8,6 +8,7 @@ import { ReactElement, SyntheticEvent, useState } from "react";
 // Dynamic modules
 import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
+import { breakpoints } from "../../config/themes/screen";
 
 export type AuthorClaimDataProps = {
   auth: any;
@@ -121,5 +122,9 @@ const customModalStyle = StyleSheet.create({
   modalContentStyle: {
     overflowY: "visible",
     overflow: "visible",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      overflowY: "auto",
+    },
   },
 });
