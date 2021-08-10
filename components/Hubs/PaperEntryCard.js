@@ -61,6 +61,7 @@ const PaperEntryCard = (props) => {
     abstract,
     user_vote,
     score,
+    boost_amount,
     summary,
     paper_title,
     first_figure,
@@ -204,7 +205,6 @@ const PaperEntryCard = (props) => {
    */
   async function onDownvote(e) {
     e.stopPropagation();
-    let userVote = store.getState().paper.userVote;
     let curPaper = { ...paper };
     if (curPaper.user_vote) {
       curPaper.score -= 2;
@@ -543,7 +543,7 @@ const PaperEntryCard = (props) => {
               onClick={(e) => e.stopPropagation()}
             >
               <VoteWidget
-                score={score}
+                score={score + boost_amount}
                 onUpvote={onUpvote}
                 onDownvote={onDownvote}
                 selected={selected}
