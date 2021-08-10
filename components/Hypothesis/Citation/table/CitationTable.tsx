@@ -51,12 +51,12 @@ export default function CitationTable({ items }: Props): ReactElement<"div"> {
       <div className={css(styles.columnHeaderWrap)}>
         <CitationTableHeaderItem label="Source" width={tableWidths.SOURCE} />
         <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
-        <CitationTableHeaderItem label="YEAR" width={tableWidths.YEAR} />
+        <CitationTableHeaderItem label="Year" width={tableWidths.YEAR} />
         <CitationTableHeaderItem
           label="Consensus"
           width={tableWidths.CONSENSUS}
         />
-        <CitationTableHeaderItem label="NOTES" width={tableWidths.NOTES} />
+        <CitationTableHeaderItem label="Notes" width={tableWidths.NOTES} />
       </div>
       <div className={css(styles.itemsWrap)}>{rowItems}</div>
     </div>
