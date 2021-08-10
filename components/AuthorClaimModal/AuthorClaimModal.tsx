@@ -93,6 +93,7 @@ export default function AuthorClaimModal({
       isOpen={isOpen}
       modalStyle={customModalStyle.modalStyle}
       removeDefault={true}
+      modalContentStyle={customModalStyle.modalContentStyle}
     />
   );
 }
@@ -116,5 +117,9 @@ const customModalStyle = StyleSheet.create({
   },
   bodyZIndex: {
     zIndex: 15 /* default overlay index is 11 */,
+  },
+  modalContentStyle: {
+    overflowY: "visible",
+    overflow: "visible",
   },
 });
