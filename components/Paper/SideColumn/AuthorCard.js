@@ -35,27 +35,25 @@ const AuthorCard = (props) => {
 
   if (authorID) {
     return (
-      <div className={css(styles.authorCardWrap)}>
-        <Link
-          href={"/user/[authorId]/[tabName]"}
-          // If the profile is already claimed, redirect to UserProfile that has claimed it
-          as={`/user/${
-            is_claimed ? claimed_by_user_author_id : authorID
-          }/posts`}
-        >
-          <a className={css(styles.container, styles.hover)}>
-            {author.profile_image ? (
-              <img
-                src={author.profile_image}
-                className={css(styles.userImage)}
-              />
-            ) : (
-              <span className={css(styles.userIcon)}>{icons.user}</span>
-            )}
-            <AccruedRSC name={name} accruedRSC={accruedRSC} />
-          </a>
-        </Link>
-      </div>
+      <Link
+        href={"/user/[authorId]/[tabName]"}
+        // If the profile is already claimed, redirect to UserProfile that has claimed it
+        as={`/user/${
+          is_claimed ? claimed_by_user_author_id : authorID
+        }/posts`}
+      >
+        <a className={css(styles.container, styles.hover)}>
+          {author.profile_image ? (
+            <img
+              src={author.profile_image}
+              className={css(styles.userImage)}
+            />
+          ) : (
+            <span className={css(styles.userIcon)}>{icons.user}</span>
+          )}
+          <AccruedRSC name={name} accruedRSC={accruedRSC} />
+        </a>
+      </Link>
     );
   } else if (orcid_id) {
     return (
