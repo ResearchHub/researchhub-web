@@ -16,6 +16,7 @@ export default function CitationAddNewButton({
   updateLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
+  console.warn("shouldOpenModal: ", shouldOpenModal);
   return (
     <div
       className={css(styles.citationAddNewButton)}
@@ -25,7 +26,10 @@ export default function CitationAddNewButton({
       <AddNewSourceModal
         hypothesisID={hypothesisID}
         isModalOpen={shouldOpenModal}
-        onCloseModal={(): void => setShouldOpenModal(false)}
+        onCloseModal={(): void => {
+          console.warn("hi");
+          setShouldOpenModal(false);
+        }}
         updateLastFetchTime={updateLastFetchTime}
       />
       <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>

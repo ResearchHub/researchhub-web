@@ -1,24 +1,25 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement } from "react";
+import React, { ReactElement, ReactNode } from "react";
 import colors from "../../../../config/themes/colors";
 import { ID } from "../../../../config/types/root_types";
+import AuthorFacePile from "../../../shared/AuthorFacePile";
 import { tableWidths } from "./constants/tableWidths";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
+  citedBy: Object[];
   consensus: number;
-  notes: string;
   source: string;
   type: string;
   year: string;
 };
 
 type ItemColumnProps = {
-  value: number | string;
+  value: ReactNode;
   width: string;
 };
 
-function ItemColumn({ value, width }) {
+function ItemColumn({ value, width }: ItemColumnProps) {
   return (
     <div
       className={css(styles.itemColumn)}
@@ -30,19 +31,24 @@ function ItemColumn({ value, width }) {
 }
 
 export default function CitationTableRowItem({
+  citedBy,
   consensus,
-  notes,
   source,
   type,
   year,
 }: CitationTableRowItemProps): ReactElement<"div"> {
+  const formattedSource =
+    source.length > 80 ? source.slice(0, 80) + " ..." : source;
   return (
     <div className={css(styles.tableRowItem)}>
-      <ItemColumn value={source} width={tableWidths.SOURCE} />
+      <ItemColumn value={formattedSource} width={tableWidths.SOURCE} />
       <ItemColumn value={type} width={tableWidths.TYPE} />
       <ItemColumn value={year} width={tableWidths.YEAR} />
       <ItemColumn value={consensus} width={tableWidths.CONSENSUS} />
-      <ItemColumn value={notes} width={tableWidths.NOTES} />
+      <ItemColumn
+        value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
+        width={tableWidths.CITED_BY}
+      />
     </div>
   );
 }

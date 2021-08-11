@@ -37,6 +37,7 @@ function getModalBody({
       return (
         <PaperUploadV2Create
           hypothesisID={hypothesisID}
+          onCancelComplete={onCloseModal}
           onSubmitComplete={(): void => {
             updateLastFetchTime();
             onCloseModal();
