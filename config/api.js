@@ -283,21 +283,16 @@ const routes = (BASE_URL) => {
       filter,
       isRemoved,
       page,
-      paperId,
       documentId,
+      documentType,
       progress,
       source,
       targetId,
       twitter,
     }) => {
-      let url =
-        targetId != null
-          ? BASE_URL +
-            (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
-            `/discussion/${targetId}/`
-          : BASE_URL +
-            (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
-            `/discussion/`;
+      let url = `${BASE_URL}${documentType}/${documentId}/discussion/${
+        targetId != null ? targetId + "/" : ""
+      }`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,

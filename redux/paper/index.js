@@ -115,12 +115,15 @@ export const PaperActions = {
     if (paper === null || paper === undefined) {
       return;
     }
+    const documentId = paperId;
+    const documentType = "paper";
 
     return (dispatch, getState) => {
       let endpoint = loadMore
         ? paper.nextDiscussion
         : API.DISCUSSION({
-            paperId,
+            documentId,
+            documentType,
             filter,
             page: 1,
             progress: false,
@@ -163,12 +166,14 @@ export const PaperActions = {
     if (post === null || post === undefined) {
       return;
     }
+    const documentType = "post";
 
     return (dispatch, getState) => {
       let endpoint = loadMore
         ? post.nextDiscussion
         : API.DISCUSSION({
             documentId,
+            documentType,
             filter,
             page: 1,
             progress: false,
@@ -179,6 +184,52 @@ export const PaperActions = {
         .then(Helpers.parseJSON)
         .then((res) => {
           const currPost = getState().post;
+
+          let threads = [...res.results];
+          if (loadMore) {
+            threads = [...currPost.threads, ...res.results];
+          }
+
+          return dispatch({
+            type: types.GET_THREADS,
+            payload: {
+              threads: threads,
+              threadCount: res.count,
+              nextDiscussion: res.next,
+            },
+          });
+        });
+    };
+  },
+  getHypothesisThreads: ({
+    documentId,
+    hypothesis,
+    filter,
+    twitter,
+    page,
+    loadMore = false,
+  }) => {
+    if (hypothesis === null || hypothesis === undefined) {
+      return;
+    }
+    const documentType = "hypothesis";
+
+    return (dispatch, getState) => {
+      let endpoint = loadMore
+        ? hypothesis.nextDiscussion
+        : API.DISCUSSION({
+            documentId,
+            documentType,
+            filter,
+            page: 1,
+            progress: false,
+            twitter,
+          });
+      return fetch(endpoint, API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          const currHypothesis = getState().hypothesis;
 
           let threads = [...res.results];
           if (loadMore) {

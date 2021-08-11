@@ -1,17 +1,22 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { css, StyleSheet } from "aphrodite";
+import * as moment from "dayjs";
+import ReactHtmlParser from "react-html-parser";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { formatPublishedDate } from "~/config/utils/dates";
 import colors from "~/config/themes/colors";
 
 // Components
 import Head from "~/components/Head";
 import CitationContainer from "./Citation/CitationContainer";
+import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import VoteWidget from "~/components/VoteWidget";
 import PaperPromotionIcon from "~/components/Paper/PaperPromotionIcon";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
+import PaperMetadata from "~/components/Paper/PaperMetadata";
 
 type Props = {};
 
@@ -34,52 +39,213 @@ function useFetchHypothesis() {
   return hypothesis;
 }
 
+const renderMetadata = (hypothesis) => {
+  const created_date = hypothesis.created_date;
+  const metadata = [
+    {
+      label: "Published",
+      value: (
+        <span
+          className={css(styles.metadata) + " clamp1"}
+          property="datePublished"
+          dateTime={created_date}
+        >
+          {formatPublishedDate(moment(created_date), true)}
+        </span>
+      ),
+      active: created_date,
+    },
+  ];
+  return (
+    <div className={css(styles.row)}>
+      {metadata.map((props, i) => (
+        <PaperMetadata
+          key={`metadata-${i}`}
+          {...props}
+          containerStyles={i === 0 && styles.marginRight}
+        />
+      ))}
+    </div>
+  );
+};
+
+const renderActions = () => {
+  const { post, isModerator, flagged, setFlag, isSubmitter, user } = this.props;
+  const uploadedById = post && post.created_by && post.created_by.id;
+  const isUploaderSuspended =
+    post && post.created_by && post.created_by.is_suspended;
+  const actionButtons = [
+    {
+      active: post.created_by && user.id === post.created_by.id,
+      button: (
+        <PermissionNotificationWrapper
+          modalMessage="edit post"
+          onClick={this.toggleShowPostEditor}
+          permissionKey="UpdatePaper"
+          loginRequired={true}
+          hideRipples={true}
+          styling={styles.borderRadius}
+        >
+          <ReactTooltip />
+          <div className={css(styles.actionIcon)} data-tip={"Edit Post"}>
+            {icons.pencil}
+          </div>
+        </PermissionNotificationWrapper>
+      ),
+    },
+    {
+      active: true,
+      button: (
+        <ShareAction
+          addRipples={true}
+          title={"Share this post"}
+          subtitle={post && post.title}
+          url={this.props.shareUrl}
+          customButton={
+            <div className={css(styles.actionIcon)} data-tip={"Share Post"}>
+              {icons.shareAlt}
+            </div>
+          }
+        />
+      ),
+    },
+    {
+      active: true,
+      button: (
+        <span data-tip={"Support Post"}>
+          <PaperPromotionButton post={post} customStyle={styles.actionIcon} />
+        </span>
+      ),
+    },
+    //{
+    //  active: !isSubmitter,
+    //  button: (
+    //    <span data-tip={"Flag Post"}>
+    //      <FlagButton
+    //        paperId={post.id}
+    //        flagged={flagged}
+    //        setFlag={setFlag}
+    //        style={styles.actionIcon}
+    //      />
+    //    </span>
+    //  ),
+    //},
+    {
+      active: isModerator || isSubmitter,
+      button: (
+        <span
+          className={css(styles.actionIcon, styles.moderatorAction)}
+          data-tip={post.is_removed ? "Restore Page" : "Remove Page"}
+        >
+          <ActionButton
+            isModerator={true}
+            paperId={post.id}
+            restore={post.is_removed}
+            icon={post.is_removed ? icons.plus : icons.minus}
+            onAction={post.is_removed ? this.restorePaper : this.removePaper}
+            containerStyle={styles.moderatorContainer}
+            iconStyle={styles.moderatorIcon}
+          />
+        </span>
+      ),
+    },
+    {
+      active: isModerator && !isNullOrUndefined(uploadedById),
+      button: (
+        <>
+          <ReactTooltip />
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip={isUploaderSuspended ? "Reinstate User" : "Ban User"}
+          >
+            <ActionButton
+              isModerator={isModerator}
+              paperId={post.id}
+              uploadedById={uploadedById}
+              isUploaderSuspended={isUploaderSuspended}
+              containerStyle={styles.moderatorContainer}
+              iconStyle={styles.moderatorIcon}
+              actionType="user"
+            />
+          </span>
+        </>
+      ),
+    },
+  ].filter((action) => action.active);
+
+  return (
+    <div className={css(styles.actions) + " action-bars"}>
+      {actionButtons.map((action, i) => {
+        if (actionButtons.length - 1 === i) {
+          return <span key={i}>{action.button}</span>;
+        }
+
+        return (
+          <span key={i} className={css(styles.actionButtonMargin)}>
+            {action.button}
+          </span>
+        );
+      })}
+    </div>
+  );
+};
+
+const voteWidget = (horizontalView) => (
+  <VoteWidget
+    //score={score + post.boost_amount}
+    //onUpvote={this.onUpvote}
+    //onDownvote={this.onDownvote}
+    //selected={voteState}
+    horizontalView={horizontalView}
+    isPaper={false}
+    type={"Hypothesis"}
+  />
+);
+
+const renderHypothesisEditor = (hypothesisBody, setHypothesisBody) => {
+  return (
+    <>
+      <SimpleEditor
+        id="text"
+        initialData={hypothesisBody}
+        labelStyle={styles.label}
+        onChange={(id, editorData) =>
+          useEffect(() => {
+            setHypothesisBody(editorData);
+          }, [])
+        }
+        containerStyle={styles.editor}
+      />
+      <div className={css(styles.editButtonRow)}>
+        <Button
+          isWhite={true}
+          label={"Cancel"}
+          onClick={toggleShowPostEditor}
+          size={"small"}
+        />
+        <Button label={"Save"} onClick={this.sendPost} size={"small"} />
+      </div>
+    </>
+  );
+};
+
+const toggleShowPostEditor = () => {
+  ReactTooltip.hide();
+  this.setState({ showPostEditor: !this.state.showPostEditor });
+};
+
 export default function HypothesisContainer(props: Props): ReactElement<"div"> {
   const hypothesis = useFetchHypothesis();
+  const [showHypothesisEditor, setShowHypothesisEditor] = useState(false);
+  const [hypothesisBody, setHypothesisBody] = useState("");
 
-  const voteWidget = (horizontalView) => (
-    <VoteWidget
-      //score={score + post.boost_amount}
-      //onUpvote={this.onUpvote}
-      //onDownvote={this.onDownvote}
-      //selected={voteState}
-      horizontalView={horizontalView}
-      isPaper={false}
-      type={"Hypothesis"}
-    />
-  );
+  useEffect(() => {
+    if (!isNullOrUndefined(hypothesis)) {
+      setHypothesisBody(hypothesis.full_markdown);
+    }
+  }, [hypothesis]);
 
-  //const renderMetadata = () => {
-  //  const { hypothesis } = props;
-  //  this.metadata = [
-  //    {
-  //      label: "Published",
-  //      value: (
-  //        <span
-  //          className={css(styles.metadata) + " clamp1"}
-  //          property="datePublished"
-  //          dateTime={hypothesis.created_date}
-  //        >
-  //          {this.renderPublishDate()}
-  //        </span>
-  //      ),
-  //      active: hypothesis && hypothesis.created_date,
-  //    },
-  //  ];
-  //  const metadata = this.metadata.filter((data) => data.active);
-  //  return (
-  //    <div className={css(styles.row)}>
-  //      {metadata.map((props, i) => (
-  //        <PaperMetadata
-  //          key={`metadata-${i}`}
-  //          {...props}
-  //          containerStyles={i === 0 && styles.marginRight}
-  //        />
-  //      ))}
-  //    </div>
-  //  );
-  //};
-
+  console.log({ hypothesisBody });
   return !isNullOrUndefined(hypothesis) ? (
     <div>
       <Head
@@ -106,7 +272,24 @@ export default function HypothesisContainer(props: Props): ReactElement<"div"> {
                       </h1>
                     </div>
                   </div>
-                  <div className={css(styles.column)}>{"renderMetadata()"}</div>
+                  <div className={css(styles.column)}>
+                    {renderMetadata(hypothesis)}
+                  </div>
+                  <div className="ck-content">
+                    {showHypothesisEditor ? (
+                      renderHypothesisEditor(hypothesisBody, setHypothesisBody)
+                    ) : (
+                      <>
+                        {hypothesisBody && ReactHtmlParser(hypothesisBody)}
+                        <div className={css(styles.bottomContainer)}>
+                          <div className={css(styles.bottomRow)}>
+                            {/*renderActions()*/}
+                          </div>
+                          <div className={css(styles.downloadPDF)}></div>
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className={css(styles.rightColumn, styles.mobile)}>
@@ -117,23 +300,20 @@ export default function HypothesisContainer(props: Props): ReactElement<"div"> {
               </div>
             </div>
           </div>
-          {/* <div className="ck-content">
-            {this.state.showPostEditor ? (
-              this.renderPostEditor()
-            ) : (
-              <>
-                {postBody && ReactHtmlParser(postBody)}
-                <div className={css(styles.bottomContainer)}>
-                  <div className={css(styles.bottomRow)}>
-                    {this.renderActions()}
-                  </div>
-                  <div className={css(styles.downloadPDF)}></div>
-                </div>
-              </>
-            )}
-          </div> */}
         </div>
-        {/* <div className={css(styles.sidebar)}>
+        <CitationContainer />
+        <div className={css(styles.space)}>
+          <a name="comments" />
+          <DiscussionTab
+            documentType={"hypothesis"}
+            hypothesis={hypothesis}
+            hypothesisId={hypothesis.id}
+            //calculatedCount={discussionCount}
+            //setCount={setCount}
+            isCollapsible={false}
+          />
+        </div>
+        <div className={css(styles.sidebar)}>
           <PaperSideColumn
             authors={[hypothesis.created_by.author_profile]}
             paper={hypothesis}
@@ -141,8 +321,7 @@ export default function HypothesisContainer(props: Props): ReactElement<"div"> {
             paperId={hypothesis.id}
             isPost={true}
           />
-        </div> */}
-        <CitationContainer />
+        </div>
       </div>
     </div>
   ) : null;
@@ -186,6 +365,25 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 20,
       width: "100%",
+    },
+  },
+  sidebar: {
+    display: "table-cell",
+    boxSizing: "border-box",
+    verticalAlign: "top",
+    position: "relative",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+    "@media only screen and (min-width: 768px)": {
+      width: "20%",
+      marginLeft: 16,
+    },
+    "@media only screen and (min-width: 1024px)": {
+      minWidth: 250,
+      maxWidth: 280,
+      width: 280,
+      marginLeft: 0,
     },
   },
   voting: {
