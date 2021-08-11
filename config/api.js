@@ -72,7 +72,7 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 const routes = (BASE_URL) => {
   return {
     CITATIONS: ({ citationID, hypothesisID }) => {
-      if (isNullOrUndefined(citationID)) {
+      if (!isNullOrUndefined(citationID)) {
         return BASE_URL + `citation/${citationID}`;
       } else if (!isNullOrUndefined(hypothesisID)) {
         return BASE_URL + `hypothesis/${hypothesisID}/get_citations/`;
