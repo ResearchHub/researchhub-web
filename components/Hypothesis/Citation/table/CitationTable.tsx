@@ -50,10 +50,9 @@ export default function CitationTable({
 
   useEffectGetCitations({ hypothesisID, lastFetchTime, setCitationItems });
 
-  const mockedItems = [...citationItems, ...MOCKED_ITEMS];
   const rowItems =
-    mockedItems.length > 0 ? (
-      mockedItems.map(
+    citationItems.length > 0 ? (
+      citationItems.map(
         (
           propPayload: CitationTableRowItemProps,
           index: number
