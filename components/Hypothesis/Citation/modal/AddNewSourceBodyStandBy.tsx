@@ -4,6 +4,7 @@ import { breakpoints } from "../../../../config/themes/screen.js";
 import Button from "../../../Form/Button";
 import React, { ReactElement, useState } from "react";
 import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
+import colors from "../../../../config/themes/colors";
 
 const { NEW_PAPER_UPLOAD, SEARCH } = NEW_SOURCE_BODY_TYPES;
 
@@ -17,8 +18,9 @@ export default function AddNewSourceBodyStandBy({
   const [activeBodyType, setActiveBodyType] = useState<BodyTypeVals>(SEARCH);
   return (
     <div className={css(styles.addNewSourceBodyStandBy)}>
+      <div className={css(styles.title)}>{"Add a new source"}</div>
       <ResearchhubOptionCard
-        description="I would like to cite a source that I know already exist on ResearchHub"
+        description="I would like to cite a source that already exists on ResearchHub"
         header="Search for a source on ResearchHub"
         imgSrc="/static/icons/search.png"
         isActive={activeBodyType === SEARCH}
@@ -49,15 +51,16 @@ export default function AddNewSourceBodyStandBy({
 
 const styles = StyleSheet.create({
   addNewSourceBodyStandBy: {
+    alignItems: "center",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    margin: "36px 36px 26px",
   },
   buttonCustomStyle: {
     height: "50px",
     width: "160px",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       width: "160px",
       height: "50px",
     },
@@ -71,5 +74,30 @@ const styles = StyleSheet.create({
   },
   buttonWrap: {
     marginTop: 16,
+  },
+  title: {
+    alignItems: "center",
+    color: colors.BLACK(1),
+    display: "flex",
+    fontSize: 26,
+    fontWeight: 500,
+    height: 30,
+    justifyContent: "center",
+    width: "100%",
+    marginBottom: 16,
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
 });
