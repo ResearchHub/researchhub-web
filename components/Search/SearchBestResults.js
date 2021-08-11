@@ -53,7 +53,7 @@ const SearchBestResults = ({ apiResponse }) => {
     }
 
     return (
-      <section className={`${css(styles.section)} SearchResultsSection`}>
+      <section className={`${css(styles.section)} searchResultsSection`}>
         <h2 className={css(styles.sectionHeader)}>
           {entityToHumanReadable[key]}
         </h2>

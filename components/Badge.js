@@ -4,15 +4,21 @@ import PropTypes from "prop-types";
 import { CloseIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
+import { isDevEnv } from "~/config/utils/env";
 
 const Badge = ({
   label,
+  id,
   onClick = null,
   onRemove = null,
   badgeClassName = null,
 }) => {
   return (
-    <div className={css(styles.badge, badgeClassName)} onClick={onClick}>
+    <div
+      className={css(styles.badge, badgeClassName)}
+      onClick={onClick}
+      data-test={isDevEnv() ? `badge-${id}` : undefined}
+    >
       <div className={css(styles.badgeLabel)}>{label}</div>
       <div className={css(styles.badgeRemove)} onClick={onRemove}>
         <CloseIcon />
@@ -64,6 +70,7 @@ const styles = StyleSheet.create({
 
 Badge.propTypes = {
   label: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   onClick: PropTypes.func,
   onRemove: PropTypes.func,
 };

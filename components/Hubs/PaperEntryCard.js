@@ -31,6 +31,7 @@ import Ripples from "react-ripples";
 import Router from "next/router";
 import VoteWidget from "../VoteWidget";
 import LazyLoad from "react-lazyload";
+import { isDevEnv } from "~/config/utils/env";
 
 const PaperEntryCard = (props) => {
   const {
@@ -591,6 +592,7 @@ const PaperEntryCard = (props) => {
       )}
       key={`${id}-${index}-${title}`}
       onClick={navigateToPage}
+      data-test={isDevEnv() ? `paper-${id}` : undefined}
     >
       <ReactTooltip />
       {desktopOnly(renderVoteWidget())}

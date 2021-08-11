@@ -1,5 +1,6 @@
 {
   "ignoreTestFiles": "**/examples/*",
   "video": false,
-  "baseUrl": "http://localhost:3000"
+  "baseUrl": "http://localhost:3000",
+  "pageLoadTimeout": 30000
 }

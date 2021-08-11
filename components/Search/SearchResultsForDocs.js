@@ -309,6 +309,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const renderAppliedFilterBadge = ({ opt, dropdownKey }) => {
     return (
       <Badge
+        id={`${dropdownKey}-${opt.value}`}
         key={`${dropdownKey}-${opt.value}`}
         label={opt.label}
         onClick={() => handleRemoveSelected({ opt, dropdownKey })}
@@ -393,6 +394,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
                 })}
 
               <Badge
+                id="clear-all"
                 label="CLEAR ALL"
                 badgeClassName={styles.clearFiltersBtn}
                 onClick={handleClearAll}
