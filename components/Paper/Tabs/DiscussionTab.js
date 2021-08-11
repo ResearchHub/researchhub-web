@@ -237,7 +237,7 @@ const DiscussionTab = (props) => {
           insert_id: `thread_${resp.id}`,
           event_properties: {
             interaction: "Post Thread",
-            paper: paperId,
+            paper: documentId,
             is_removed: resp.is_removed,
           },
         };
