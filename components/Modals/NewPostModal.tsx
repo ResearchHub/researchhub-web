@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import React, { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
-import killswitch from "~/config/killswitch/killswitch";
+import killswitch from "../../config/killswitch/killswitch";
 
 const items = [
   {
