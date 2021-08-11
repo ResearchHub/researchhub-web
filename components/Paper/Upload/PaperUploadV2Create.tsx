@@ -13,7 +13,10 @@ import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { getIsFormValid } from "./util/getIsFormValid";
 import { ID } from "../../../config/types/root_types";
-import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullthrows,
+} from "../../../config/utils/nullchecks";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
@@ -38,6 +41,7 @@ type ComponentProps = {
   hypothesisID?: ID;
   messageActions: any;
   modalActions: any;
+  onSubmitComplete?: Function;
   paperActions: any;
   paperRedux: any;
 };
@@ -136,6 +140,7 @@ function PaperuploadV2Create({
   hypothesisID,
   messageActions,
   modalActions,
+  onSubmitComplete,
   paperActions,
   paperRedux,
 }: ComponentProps): ReactElement<typeof Fragment> {
@@ -237,11 +242,16 @@ function PaperuploadV2Create({
           modalActions.openFirstVoteModal(isUsersFirstTime);
           messageActions.showMessage({ show: true, load: true });
           paperActions.resetPaperState();
+          setComponentState(defaultComponentState);
+          setFormState(defaultFormState);
           if (!isPaperForHypothesis) {
             router.push(
               "/paper/[paperId]/[paperName]",
               `/paper/${paperID}/${paperName}`
             );
+          }
+          if (!isNullOrUndefined(onSubmitComplete)) {
+            nullthrows(onSubmitComplete)();
           }
         },
         paperActions,
