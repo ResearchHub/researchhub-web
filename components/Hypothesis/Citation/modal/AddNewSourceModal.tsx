@@ -2,7 +2,6 @@ import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { breakpoints } from "../../../../config/themes/screen";
 import { ID } from "../../../../config/types/root_types";
 import { StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
 import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "../../../Modals/BaseModal";
@@ -11,7 +10,11 @@ import React, { ReactElement, useState } from "react";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
-type ComponentProps = { isModalOpen: boolean; onCloseModal: () => void };
+type ComponentProps = {
+  hypothesisID: ID;
+  isModalOpen: boolean;
+  onCloseModal: () => void;
+};
 type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
   setBodyType: (bodyType: BodyTypeVals) => void;
@@ -36,15 +39,10 @@ function getModalBody({
 }
 
 export default function AddNewSourceModal({
+  hypothesisID,
   isModalOpen,
   onCloseModal,
 }: ComponentProps): ReactElement<typeof BaseModal> {
-  const router = useRouter();
-  const hypothesisID = Array.isArray(router.query.documentId)
-    ? parseInt(router.query.documentId[0])
-    : // @ts-ignore implied that this is a string / int
-      parseInt(router.query.documentId);
-
   const [bodyType, setBodyType] = useState<BodyTypeVals>(STAND_BY);
   const modalBody = getModalBody({
     bodyType,
@@ -88,7 +86,5 @@ const styles = StyleSheet.create({
       padding: "50px 0px 0px 0px",
     },
   },
-  titleStyle: {
-    display: "none",
-  },
+  titleStyle: { display: "none" },
 });
