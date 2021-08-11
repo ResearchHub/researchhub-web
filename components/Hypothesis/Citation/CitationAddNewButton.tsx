@@ -5,7 +5,11 @@ import colors from "../../../config/themes/colors";
 import icons from "../../../config/themes/icons";
 import React, { ReactElement, useState } from "react";
 
-type Props = { hypothesisID: ID };
+type Props = {
+  hypothesisID: ID;
+  lastFetchTime: number;
+  updateLastFetchTime: Function;
+};
 
 export default function CitationAddNewButton({
   hypothesisID,
