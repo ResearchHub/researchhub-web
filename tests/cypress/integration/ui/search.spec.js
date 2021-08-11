@@ -10,8 +10,8 @@ describe('Search', () => {
       cy.intercept('GET', BEST_RESULTS_API_PATH, { fixture: 'search-best-results.json' });
 
       cy.wait(1500);
-      const searchBtn = cy.get("#navbarSearch").find('*[class^="searchIcon"]');
-      searchBtn.click();
+      const reloadBtn = cy.get('*[data-test="reload-client-side-data"]')
+      reloadBtn.click({ force: true });
     });
 
     it('displays each section in "Best Results"', async () => {
@@ -26,12 +26,12 @@ describe('Search', () => {
 
   context('Paper results', () => {
     beforeEach(() => {
-      cy.visit(PAPER_RESULTS_APP_PATH);      
-      cy.intercept('GET', PAPER_RESULTS_API_PATH, { fixture: 'search-paper-results.json' });
+      cy.visit(BEST_RESULTS_APP_PATH);      
+      cy.intercept('GET', BEST_RESULTS_API_PATH, { fixture: 'search-best-results.json' });
 
       cy.wait(1500);
-      const searchBtn = cy.get("#navbarSearch").find('*[class^="searchIcon"]');
-      searchBtn.click();
+      const reloadBtn = cy.get('*[data-test="reload-client-side-data"]')
+      reloadBtn.click({ force: true });
     });
 
     it('displays results', () => {
