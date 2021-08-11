@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import Router from "next/router";
 
 // Components
 import { AuthActions } from "../redux/auth";
@@ -13,6 +14,7 @@ import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
 import PermissionActions from "../redux/permission";
+import { isDevEnv } from "~/config/utils/env";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -46,6 +48,18 @@ class Base extends React.Component {
     fetchPermissions();
   };
 
+  SPEC__reloadClientSideData() {
+    const _reloadPage = () =>
+      Router.push({ pathname: Router.pathname, query: Router.query });
+    return (
+      <span
+        onClick={_reloadPage}
+        className={css(styles.hide)}
+        data-test="reload-client-side-data"
+      ></span>
+    );
+  }
+
   render() {
     const { Component, pageProps } = this.props;
     const options = {
@@ -55,6 +69,7 @@ class Base extends React.Component {
 
     return (
       <AlertProvider template={DynamicAlertTemplate} {...options}>
+        {isDevEnv() && this.SPEC__reloadClientSideData()}
         <div className={css(styles.pageWrapper)}>
           <DynamicPermissionNotification />
           <DynamicNavbar />
@@ -73,6 +88,9 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
     // background: "#FAFAFA",
     background: "#FCFCFC",
+  },
+  hide: {
+    display: "none",
   },
 });
 
