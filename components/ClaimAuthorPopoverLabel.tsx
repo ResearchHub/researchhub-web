@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",
     flexDirection: "column",
-    height: 90,
     justifyContent: "space-between",
     padding: 16,
     width: 320,
