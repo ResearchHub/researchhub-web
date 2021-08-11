@@ -13,6 +13,7 @@ type Props = {
 
 export default function CitationAddNewButton({
   hypothesisID,
+  updateLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
   return (
@@ -25,6 +26,7 @@ export default function CitationAddNewButton({
         hypothesisID={hypothesisID}
         isModalOpen={shouldOpenModal}
         onCloseModal={(): void => setShouldOpenModal(false)}
+        updateLastFetchTime={updateLastFetchTime}
       />
       <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>
       <span>{"Add new source"}</span>
