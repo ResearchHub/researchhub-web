@@ -1,12 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useState } from "react";
+import { ID } from "../../../config/types/root_types";
+import AddNewSourceModal from "./modal/AddNewSourceModal";
 import colors from "../../../config/themes/colors";
 import icons from "../../../config/themes/icons";
-import AddNewSourceModal from "./modal/AddNewSourceModal";
+import React, { ReactElement, useState } from "react";
 
-type Props = {};
+type Props = { hypothesisID: ID };
 
-export default function CitationAddNewButton({  }: Props): ReactElement<"div"> {
+export default function CitationAddNewButton({
+  hypothesisID,
+}: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
   return (
     <div
@@ -15,6 +18,7 @@ export default function CitationAddNewButton({  }: Props): ReactElement<"div"> {
       role="button"
     >
       <AddNewSourceModal
+        hypothesisID={hypothesisID}
         isModalOpen={shouldOpenModal}
         onCloseModal={(): void => setShouldOpenModal(false)}
       />
