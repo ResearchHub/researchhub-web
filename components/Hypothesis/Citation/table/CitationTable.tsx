@@ -17,25 +17,6 @@ type Props = {
   updateLastFetchTime: Function;
 };
 
-const MOCKED_ITEMS = [
-  {
-    citationID: "123",
-    consensus: -1,
-    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
-    source: "The Extraodinary Importance of Sleep",
-    type: "Paper",
-    year: "2021",
-  },
-  {
-    citationID: "123",
-    consensus: -1,
-    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
-    source: "The Extraodinary Importance of Sleep",
-    type: "Paper",
-    year: "2021",
-  },
-];
-
 type UseEffectGetCitationsArgs = {
   hypothesisID: ID;
   lastFetchTime: number;
@@ -51,10 +32,8 @@ function useEffectGetCitations({
     fetchCitationsOnHypothesis({
       hypothesisID,
       onError: (error: Error): void => emptyFncWithMsg(error),
-      onSuccess: (response: any): void => {
-        console.warn("RESPONSE: ", response);
-        // setCitationItems({})
-      },
+      onSuccess: (formattedResult: CitationTableRowItemProps[]): void =>
+        setCitationItems(formattedResult),
     });
   }, [hypothesisID, lastFetchTime, setCitationItems]);
 }
