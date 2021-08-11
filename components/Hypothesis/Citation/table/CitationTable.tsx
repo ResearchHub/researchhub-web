@@ -6,10 +6,14 @@ import CitationTableRowItem, {
   CitationTableRowItemProps,
 } from "./CitationTableRowItem";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
-import React, { ReactElement } from "react";
 import colors from "../../../../config/themes/colors";
+import React, { ReactElement, useState } from "react";
 
-type Props = { hypothesisID: ID; items: Array<CitationTableRowItemProps> };
+type Props = {
+  hypothesisID: ID;
+  lastFetchTime: number;
+  updateLastFetchTime: Function;
+};
 
 const MOCKED_ITEMS = [
   {
@@ -30,9 +34,31 @@ const MOCKED_ITEMS = [
   },
 ];
 
+type UseEffectGetCitationsArgs = {
+  hypothesisID: ID;
+  lastFetchTime: number;
+  setCitationItems: (items: CitationTableRowItemProps[]) => void;
+};
+
+function useEffectGetCitations({
+  hypothesisID,
+  lastFetchTime,
+  setCitationItems,
+}: UseEffectGetCitationsArgs): void {}
+
 /* NOTE: This table UI isn't a "table". We may want to migrate to using an actual dom table */
-export default function CitationTable({ items }: Props): ReactElement<"div"> {
-  const mockedItems = [...items, ...MOCKED_ITEMS];
+export default function CitationTable({
+  hypothesisID,
+  lastFetchTime,
+  updateLastFetchTime,
+}: Props): ReactElement<"div"> {
+  const [citationItems, setCitationItems] = useState<
+    CitationTableRowItemProps[]
+  >([]);
+
+  useEffectGetCitations({ hypothesisID, lastFetchTime, setCitationItems });
+
+  const mockedItems = [...citationItems, ...MOCKED_ITEMS];
   const rowItems =
     mockedItems.length > 0 ? (
       mockedItems.map(

@@ -3,6 +3,7 @@ import { API } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
 import { doesNotExist } from "~/config/utils";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { nullthrows } from "./utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -70,6 +71,18 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 
 const routes = (BASE_URL) => {
   return {
+    CITATIONS: ({ citationID, hypothesisID }) => {
+      if (isNullOrUndefined(citationID)) {
+        return BASE_URL + `citation/${citationID}`;
+      } else if (!isNullOrUndefined(hypothesisID)) {
+        return BASE_URL + `hypothesis/${hypothesisID}/get_citations/`;
+      } else {
+        nullthrows(
+          null,
+          "Both citationID & hypothesisID null when formatting URL"
+        );
+      }
+    },
     USER: ({
       userId,
       authorId,
