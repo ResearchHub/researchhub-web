@@ -7,7 +7,9 @@ import CitationTableRowItem, {
 } from "./CitationTableRowItem";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import colors from "../../../../config/themes/colors";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
+import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
+import { emptyFncWithMsg } from "../../../../config/utils/nullchecks";
 
 type Props = {
   hypothesisID: ID;
@@ -44,7 +46,18 @@ function useEffectGetCitations({
   hypothesisID,
   lastFetchTime,
   setCitationItems,
-}: UseEffectGetCitationsArgs): void {}
+}: UseEffectGetCitationsArgs): void {
+  useEffect((): void => {
+    fetchCitationsOnHypothesis({
+      hypothesisID,
+      onError: (error: Error): void => emptyFncWithMsg(error),
+      onSuccess: (response: any): void => {
+        console.warn("RESPONSE: ", response);
+        // setCitationItems({})
+      },
+    });
+  }, [hypothesisID, lastFetchTime, setCitationItems]);
+}
 
 /* NOTE: This table UI isn't a "table". We may want to migrate to using an actual dom table */
 export default function CitationTable({
