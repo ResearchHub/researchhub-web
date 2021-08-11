@@ -135,13 +135,13 @@ class DiscussionEntry extends React.Component {
         fetching: true,
       },
       () => {
-        let { data } = this.props;
+        let { data, documentType } = this.props;
         let discussionThreadId = data.id;
         let paperId = data.paper;
         let page = this.state.page;
 
         fetch(
-          API.THREAD_COMMENT(paperId, discussionThreadId, page),
+          API.THREAD_COMMENT(documentType, paperId, discussionThreadId, page),
           API.GET_CONFIG()
         )
           .then(Helpers.checkStatus)
@@ -170,16 +170,22 @@ class DiscussionEntry extends React.Component {
       postCommentPending,
       discussionCount,
       setCount,
+      documentType,
       post,
+      hypothesis,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
+
     postCommentPending();
     await postComment(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,
@@ -278,6 +284,8 @@ class DiscussionEntry extends React.Component {
       paper,
       mediaOnly,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     let comments = this.state.comments;
 
@@ -297,6 +305,8 @@ class DiscussionEntry extends React.Component {
             setCount={setCount}
             mediaOnly={mediaOnly}
             post={post}
+            hypothesis={hypothesis}
+            documentType={documentType}
           />
         );
       });

@@ -368,10 +368,10 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT: (paperId, documentId, threadId, page) => {
+    THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
       let url =
-        `${BASE_URL}` +
-        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/comment/`;
 
       if (typeof page === "number") {
@@ -381,10 +381,17 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT_REPLY: (paperId, documentId, threadId, commentId, page) => {
+    THREAD_COMMENT_REPLY: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      page
+    ) => {
       let url =
-        `${BASE_URL}` +
-        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/comment/${commentId}/reply/`;
 
       if (typeof page === "number") {
