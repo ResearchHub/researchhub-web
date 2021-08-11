@@ -6,7 +6,7 @@ export default function CitationNoResult(): ReactElement<"div"> {
     <div className={css(styles.citationNotResult)}>
       <img
         className={css(styles.emptyPlaceholderImage)}
-        src={"/static/background/homepage-empty-state.png"}
+        src="/static/background/homepage-empty-state.png"
         loading="lazy"
         alt="Empty State Icon"
       />

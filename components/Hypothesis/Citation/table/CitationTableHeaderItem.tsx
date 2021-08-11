@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement } from "react";
+import colors from "../../../../config/themes/colors";
 
 type Props = {
   label: string;
@@ -23,7 +24,7 @@ export default function CitationTableHeaderItem({
 const styles = StyleSheet.create({
   headerItem: {
     alignItems: "center",
-    color: "rgb(128 126 134)",
+    color: colors.TEXT_GREY(1),
     display: "flex",
     fontWeight: 500,
     height: "100%",
