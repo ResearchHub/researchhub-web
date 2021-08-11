@@ -1,43 +1,83 @@
 describe('Search', () => {
-  const BEST_RESULTS_PATH = "/search/all?q="
+  const BEST_RESULTS_APP_PATH = "/search/all?q=";
+  const BEST_RESULTS_API_PATH = "http://localhost:8000/api/search/all/*";
+  const PAPER_RESULTS_APP_PATH = "/search/paper?q=";
+  const PAPER_RESULTS_API_PATH = "http://localhost:8000/api/search/paper/*";
 
-  context('Best Results', () => {
+  context('Best results', () => {
+    beforeEach(() => {
+      cy.visit(BEST_RESULTS_APP_PATH);      
+      cy.intercept('GET', BEST_RESULTS_API_PATH, { fixture: 'search-best-results.json' });
+
+      cy.wait(1500);
+      const searchBtn = cy.get("#navbarSearch").find('*[class^="searchIcon"]');
+      searchBtn.click();
+    });
+
     it('displays each section in "Best Results"', async () => {
+      cy.get(".searchResultsSection").should('exist');
+      cy.get('.searchResultsSection').should('have.length', 4);
+    });
 
-      cy.visit(BEST_RESULTS_PATH);      
-      cy.intercept('GET', 'http://localhost:8000/api/search/all*', { fixture: 'search-best-results.json' }).as("bestResultsAPIRoute");
-
-      const bestResultsTab = cy.get('#tabType--all');
-      bestResultsTab.click();
-
-      cy.get('.SearchResultsSection').should('have.length', 4);
+    it('displays the search navigation', () => {
+      cy.get('#tabBarForSearch').should('exist');
     })
-    // it('displays the search navigation', () => {
-    //   expect(true).to.equal(false);  
-    // })
   })
 
-//   context('Viewport', () => {
-//     it('displays search toggle for small screens', () => {
-//       expect(true).to.equal(false);  
-//     })
-// 
-//     it('displays search input (no toggle) for larger screens', () => {
-//       expect(true).to.equal(false);  
-//     })
-//   });
+  context('Paper results', () => {
+    beforeEach(() => {
+      cy.visit(PAPER_RESULTS_APP_PATH);      
+      cy.intercept('GET', PAPER_RESULTS_API_PATH, { fixture: 'search-paper-results.json' });
 
-//   context('Papers', () => {
-//     it('filters by published date', () => {
-//       expect(true).to.equal(false);  
-//     })
-// 
-//     it('filters by hub', () => {
-//       expect(true).to.equal(false);  
-//     })
-// 
-//     it('sorts by top rated', () => {
-//       expect(true).to.equal(false);  
-//     })    
-//   })
+      cy.wait(1500);
+      const searchBtn = cy.get("#navbarSearch").find('*[class^="searchIcon"]');
+      searchBtn.click();
+    });
+
+    it('displays results', () => {
+      const paperElems = cy.get('*[data-test^="paper"]');
+      paperElems.should('exist');
+      paperElems.its('length').should('be.gt', 0);
+    });
+
+    it('filters by hub', () => {
+      const hubFilter = cy.get('[data-test="select-hubs"]');
+      hubFilter.click();
+
+      // Select an arbitrary option
+      const opts = hubFilter.find('*[class$="MenuList"]')
+      opts.first().click();
+
+      // Check that filter was applied
+      cy.get('[data-test^="badge-"]').should('exist'); 
+    });
+  });
+
+  context('Viewport', () => {
+    it('displays expanded search for small screens', () => {
+      cy.viewport(650, 1000);
+      cy.wait(200);
+
+      cy.visit(BEST_RESULTS_APP_PATH);
+
+      cy.get("#navbarSearch").should('exist');
+      cy.get("#navbarSearch")
+        .should(($div) => {
+          expect($div.attr('class')).to.match(/searchExpanded/)
+        });
+    });
+
+    it('does not display expanded search in large screens', () => {
+      cy.viewport(1500, 1000);
+      cy.wait(200);
+
+      cy.visit(BEST_RESULTS_APP_PATH);
+
+      cy.get("#navbarSearch").should('exist');
+      cy.get("#navbarSearch")
+        .should(($div) => {
+          expect($div.attr('class')).to.not.match(/searchExpanded/)
+        });     
+    })
+  });
 })

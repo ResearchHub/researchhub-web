@@ -11,7 +11,7 @@ import { trackEvent } from "~/config/utils";
 import { connect } from "react-redux";
 import { useSelector } from "react-redux";
 
-const Search = ({ navbarRef }) => {
+const Search = ({ navbarRef, id }) => {
   const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
   const SMALLEST_ALLOWED_INPUT = 180;
@@ -197,7 +197,7 @@ const Search = ({ navbarRef }) => {
   }
 
   return (
-    <div {...searchContainerProps}>
+    <div {...searchContainerProps} id={id}>
       {isExpandedSearchOpen && (
         <Fragment>
           <span className={css(styles.backIcon)} onClick={toggleExpandedSearch}>
@@ -384,6 +384,7 @@ const styles = StyleSheet.create({
 
 Search.propTypes = {
   navbarRef: PropTypes.object,
+  id: PropTypes.string.isRequired,
 };
 
 export default Search;

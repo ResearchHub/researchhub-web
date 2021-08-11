@@ -72,6 +72,7 @@ const SearchResults = ({ apiResponse }) => {
 
     return (
       <HorizontalTabBar
+        id="tabBarForSearch"
         tabs={tabs}
         onClick={handleTabClick}
         containerStyle={styles.tabContainer}
