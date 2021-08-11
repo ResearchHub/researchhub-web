@@ -4,6 +4,7 @@ import { breakpoints } from "../../../../config/themes/screen.js";
 import Button from "../../../Form/Button";
 import React, { ReactElement, useState } from "react";
 import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
+import colors from "../../../../config/themes/colors";
 
 const { NEW_PAPER_UPLOAD, SEARCH } = NEW_SOURCE_BODY_TYPES;
 
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
   },
   title: {
     alignItems: "center",
-    color: "#232038",
+    color: colors.BLACK(1),
     display: "flex",
     fontSize: 26,
     fontWeight: 500,
