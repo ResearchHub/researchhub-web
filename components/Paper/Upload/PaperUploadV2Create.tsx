@@ -170,9 +170,7 @@ function PaperuploadV2Create({
     paperActions.resetPaperState();
     setComponentState(defaultComponentState);
     setFormState(
-      isPaperForHypothesis
-        ? { ...defaultFormState, hypothesis_id: hypothesisID }
-        : defaultFormState
+      isPaperForHypothesis ? { ...defaultFormState } : defaultFormState
     );
     setFormErrors(defaultFormErrorState);
     router.back();
@@ -239,10 +237,12 @@ function PaperuploadV2Create({
           modalActions.openFirstVoteModal(isUsersFirstTime);
           messageActions.showMessage({ show: true, load: true });
           paperActions.resetPaperState();
-          router.push(
-            "/paper/[paperId]/[paperName]",
-            `/paper/${paperID}/${paperName}`
-          );
+          if (!isPaperForHypothesis) {
+            router.push(
+              "/paper/[paperId]/[paperName]",
+              `/paper/${paperID}/${paperName}`
+            );
+          }
         },
         paperActions,
         paperRedux,

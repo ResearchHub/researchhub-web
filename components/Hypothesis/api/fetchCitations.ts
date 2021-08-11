@@ -18,7 +18,7 @@ export function fetchCitationsOnHypothesis({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp): void => {
-      console.warn("resp: ", resp);
+      onSuccess(resp);
     })
     .catch((error: Error): void => {
       onError(error);
