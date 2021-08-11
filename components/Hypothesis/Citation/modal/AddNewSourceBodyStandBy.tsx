@@ -15,19 +15,12 @@ type Props = {
 export default function AddNewSourceBodyStandBy({
   setBodyType,
 }: Props): ReactElement<"div"> {
-  const [activeBodyType, setActiveBodyType] = useState<BodyTypeVals>(SEARCH);
+  const [activeBodyType, setActiveBodyType] = useState<BodyTypeVals>(
+    NEW_PAPER_UPLOAD
+  );
   return (
     <div className={css(styles.addNewSourceBodyStandBy)}>
       <div className={css(styles.title)}>{"Add a new source"}</div>
-      <ResearchhubOptionCard
-        description="I would like to cite a source that already exists on ResearchHub"
-        header="Search for a source on ResearchHub"
-        imgSrc="/static/icons/search.png"
-        isActive={activeBodyType === SEARCH}
-        isCheckboxSquare={false}
-        key={SEARCH}
-        onSelect={(): void => setActiveBodyType(SEARCH)}
-      />
       <ResearchhubOptionCard
         description="Upload a new paper that does not exist on ResearchHub"
         header="Upload a new paper"
@@ -36,6 +29,15 @@ export default function AddNewSourceBodyStandBy({
         isCheckboxSquare={false}
         key={NEW_PAPER_UPLOAD}
         onSelect={(): void => setActiveBodyType(NEW_PAPER_UPLOAD)}
+      />
+      <ResearchhubOptionCard
+        description="I would like to cite a source that already exists on ResearchHub"
+        header="Search for a source on ResearchHub"
+        imgSrc="/static/icons/search.png"
+        isActive={activeBodyType === SEARCH}
+        isCheckboxSquare={false}
+        key={SEARCH}
+        onSelect={(): void => setActiveBodyType(SEARCH)}
       />
       <div className={css(styles.buttonWrap)}>
         <Button
