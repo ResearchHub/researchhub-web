@@ -73,7 +73,10 @@ export default function CitationTable({
           label="Consensus"
           width={tableWidths.CONSENSUS}
         />
-        <CitationTableHeaderItem label="Notes" width={tableWidths.NOTES} />
+        <CitationTableHeaderItem
+          label="Cited by"
+          width={tableWidths.CITED_BY}
+        />
       </div>
       <div className={css(styles.itemsWrap)}>{rowItems}</div>
     </div>

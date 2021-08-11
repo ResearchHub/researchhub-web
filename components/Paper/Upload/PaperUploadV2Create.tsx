@@ -41,6 +41,7 @@ type ComponentProps = {
   hypothesisID?: ID;
   messageActions: any;
   modalActions: any;
+  onCancelComplete?: Function;
   onSubmitComplete?: Function;
   paperActions: any;
   paperRedux: any;
@@ -140,6 +141,7 @@ function PaperuploadV2Create({
   hypothesisID,
   messageActions,
   modalActions,
+  onCancelComplete,
   onSubmitComplete,
   paperActions,
   paperRedux,
@@ -171,13 +173,19 @@ function PaperuploadV2Create({
     setFormErrors,
   });
 
-  const handleFormCancel = (): void => {
+  const handleFormCancel = (event: SyntheticEvent): void => {
+    event.preventDefault();
     paperActions.resetPaperState();
     setComponentState(defaultComponentState);
     setFormState(
       isPaperForHypothesis ? { ...defaultFormState } : defaultFormState
     );
     setFormErrors(defaultFormErrorState);
+    if (!isNullOrUndefined(onCancelComplete)) {
+      nullthrows(onCancelComplete)();
+    }
+    // TODO: calvinhlee debug this
+    // if (!isPaperForHypothesis) {}
     router.back();
   };
 

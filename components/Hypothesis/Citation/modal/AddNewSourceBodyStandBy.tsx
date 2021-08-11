@@ -34,7 +34,7 @@ export default function AddNewSourceBodyStandBy({
         imgSrc="/static/icons/uploadPaper.png"
         isActive={activeBodyType === NEW_PAPER_UPLOAD}
         isCheckboxSquare={false}
-        key={SEARCH}
+        key={NEW_PAPER_UPLOAD}
         onSelect={(): void => setActiveBodyType(NEW_PAPER_UPLOAD)}
       />
       <div className={css(styles.buttonWrap)}>
