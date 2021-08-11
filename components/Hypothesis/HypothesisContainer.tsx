@@ -238,14 +238,15 @@ export default function HypothesisContainer(props: Props): ReactElement<"div"> {
   const hypothesis = useFetchHypothesis();
   const [showHypothesisEditor, setShowHypothesisEditor] = useState(false);
   const [hypothesisBody, setHypothesisBody] = useState("");
+  const [discussionCount, setDiscussionCount] = useState(0);
 
   useEffect(() => {
     if (!isNullOrUndefined(hypothesis)) {
       setHypothesisBody(hypothesis.full_markdown);
+      setDiscussionCount(hypothesis.discussion_count);
     }
   }, [hypothesis]);
 
-  console.log({ hypothesisBody });
   return !isNullOrUndefined(hypothesis) ? (
     <div>
       <Head
@@ -308,8 +309,8 @@ export default function HypothesisContainer(props: Props): ReactElement<"div"> {
             documentType={"hypothesis"}
             hypothesis={hypothesis}
             hypothesisId={hypothesis.id}
-            //calculatedCount={discussionCount}
-            //setCount={setCount}
+            calculatedCount={discussionCount}
+            setCount={setDiscussionCount}
             isCollapsible={false}
           />
         </div>
