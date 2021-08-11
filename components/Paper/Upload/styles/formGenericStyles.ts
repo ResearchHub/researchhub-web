@@ -129,6 +129,9 @@ export const formGenericStyles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
   },
+  noBorder: {
+    border: "none",
+  },
   row: {
     display: "flex",
     justifyContent: "space-between",

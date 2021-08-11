@@ -35,6 +35,7 @@ import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type ComponentProps = {
   authRedux: any;
+  hypothesisID?: ID;
   messageActions: any;
   modalActions: any;
   paperActions: any;
@@ -44,6 +45,7 @@ type ComponentProps = {
 type ParseReduxToStateArgs = {
   componentState: ComponentState;
   formState: FormState;
+  hypothesisID: ID;
   messageActions: any;
   paperRedux: any;
   setComponentState: (componentState: ComponentState) => void;
@@ -65,6 +67,7 @@ const useEffectHandleInit = ({
 
 const useEffectParseReduxToState = ({
   formState,
+  hypothesisID,
   messageActions,
   paperRedux,
   setFormState,
@@ -116,6 +119,7 @@ const useEffectParseReduxToState = ({
       author: formAuthors,
       doi: formattedDOI,
       hubs: formHubs,
+      hypothesis_id: hypothesisID,
       paper_title: resolvedPaperTitle,
       paper_type: formType,
       published: formattedPublishedDate,
@@ -129,16 +133,22 @@ const useEffectParseReduxToState = ({
 
 function PaperuploadV2Create({
   authRedux,
+  hypothesisID,
   messageActions,
   modalActions,
   paperActions,
   paperRedux,
 }: ComponentProps): ReactElement<typeof Fragment> {
+  const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
   const router = useRouter();
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
-  const [formState, setFormState] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<FormState>(
+    isPaperForHypothesis
+      ? { ...defaultFormState, hypothesis_id: hypothesisID }
+      : defaultFormState
+  );
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
@@ -159,7 +169,11 @@ function PaperuploadV2Create({
   const handleFormCancel = (): void => {
     paperActions.resetPaperState();
     setComponentState(defaultComponentState);
-    setFormState(defaultFormState);
+    setFormState(
+      isPaperForHypothesis
+        ? { ...defaultFormState, hypothesis_id: hypothesisID }
+        : defaultFormState
+    );
     setFormErrors(defaultFormErrorState);
     router.back();
   };
@@ -255,6 +269,7 @@ function PaperuploadV2Create({
     componentState,
     messageActions,
     formState,
+    hypothesisID,
     paperRedux,
     setComponentState,
     setFormState,
@@ -266,7 +281,12 @@ function PaperuploadV2Create({
       className={css(formGenericStyles.form)}
       onSubmit={onFormSubmit}
     >
-      <div className={css(formGenericStyles.pageContent)}>
+      <div
+        className={css(
+          formGenericStyles.pageContent,
+          isPaperForHypothesis && formGenericStyles.noBorder
+        )}
+      >
         <div className={css(formGenericStyles.header, formGenericStyles.text)}>
           {"Add Paper"}
           <a

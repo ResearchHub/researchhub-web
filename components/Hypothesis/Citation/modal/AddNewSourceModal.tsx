@@ -1,14 +1,20 @@
-import { ID } from "../../../../config/types/root_types";
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { breakpoints } from "../../../../config/themes/screen";
+import { ID } from "../../../../config/types/root_types";
+import { StyleSheet } from "aphrodite";
+import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "../../../Modals/BaseModal";
+import PaperUploadV2Create from "../../../Paper/Upload/PaperUploadV2Create";
 import React, { ReactElement, useState } from "react";
-import AddNewSourceBodyNewPaper from "./AddNewSourceBodyNewPaper";
-import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
-type ComponentProps = { isModalOpen: boolean; onCloseModal: () => void };
+type ComponentProps = {
+  hypothesisID: ID;
+  isModalOpen: boolean;
+  onCloseModal: () => void;
+};
 type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
   setBodyType: (bodyType: BodyTypeVals) => void;
@@ -22,7 +28,7 @@ function getModalBody({
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
     case NEW_PAPER_UPLOAD:
-      return <AddNewSourceBodyNewPaper />;
+      return <PaperUploadV2Create hypothesisID={hypothesisID} />;
     case SEARCH:
       return <AddNewSourceBodySearch />;
     case STAND_BY:
@@ -33,6 +39,7 @@ function getModalBody({
 }
 
 export default function AddNewSourceModal({
+  hypothesisID,
   isModalOpen,
   onCloseModal,
 }: ComponentProps): ReactElement<typeof BaseModal> {
@@ -40,8 +47,9 @@ export default function AddNewSourceModal({
   const modalBody = getModalBody({
     bodyType,
     setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
-    hypothesisID: null,
+    hypothesisID,
   });
+
   return (
     <BaseModal
       children={modalBody}
@@ -51,6 +59,32 @@ export default function AddNewSourceModal({
         onCloseModal();
       }}
       isOpen={isModalOpen}
+      modalContentStyle={styles.modalContentStyle}
+      titleStyle={styles.titleStyle}
     />
   );
 }
+
+const styles = StyleSheet.create({
+  modalContentStyle: {
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    position: "relative",
+    backgroundColor: "#fff",
+    padding: 24,
+    overflowY: "auto",
+    opacity: 0,
+    borderRadius: 5,
+    transition: "all ease-in-out 0.4s",
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 25,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      padding: "50px 0px 0px 0px",
+    },
+  },
+  titleStyle: { display: "none" },
+});
