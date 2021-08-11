@@ -42,6 +42,7 @@ const DiscussionTab = (props) => {
     hostname,
     documentType,
     paper,
+    paperState,
     calculatedCount,
     setCount,
     discussionRef,
@@ -146,8 +147,10 @@ const DiscussionTab = (props) => {
                       mobileView={mobileView}
                       discussionCount={calculatedCount}
                       setCount={setCount}
-                      paper={props.paperState}
-                      post={props.post}
+                      documentType={documentType}
+                      paper={paperState}
+                      post={post}
+                      hypothesis={hypothesis}
                     />
                   );
                 })

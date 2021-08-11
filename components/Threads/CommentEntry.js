@@ -279,17 +279,23 @@ class CommentEntry extends React.Component {
       postReplyPending,
       discussionCount,
       setCount,
+      documentType,
       post,
+      hypothesis,
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let discussionThreadId = data.id;
     let commentId = comment.id;
+
     postReplyPending();
     await postReply(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,
@@ -424,7 +430,17 @@ class CommentEntry extends React.Component {
   };
 
   renderReplies = () => {
-    let { data, hostname, path, comment, paper, mediaOnly, post } = this.props;
+    let {
+      data,
+      hostname,
+      path,
+      comment,
+      paper,
+      mediaOnly,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let replies =
       this.state.replies.length < 1
         ? this.props.comment.replies
@@ -443,6 +459,8 @@ class CommentEntry extends React.Component {
           onReplySubmitCallback={this.onReplySubmitCallback}
           mediaOnly={mediaOnly}
           post={post}
+          hypothesis={hypothesis}
+          documentType={documentType}
         />
       );
     });

@@ -68,10 +68,17 @@ export function fetchComments(paperId, threadId, page) {
   };
 }
 
-export function postComment(paperId, documentId, threadId, text, plain_text) {
+export function postComment(
+  documentType,
+  paperId,
+  documentId,
+  threadId,
+  text,
+  plain_text
+) {
   return async (dispatch, getState) => {
     const response = await fetch(
-      API.THREAD_COMMENT(paperId, documentId, threadId),
+      API.THREAD_COMMENT(documentType, paperId, documentId, threadId),
       API.POST_CONFIG({
         text,
         parent: threadId,
@@ -173,6 +180,7 @@ export function fetchReplies(paperId, threadId, commentId, page) {
 }
 
 export function postReply(
+  documentType,
   paperId,
   documentId,
   threadId,
@@ -182,7 +190,13 @@ export function postReply(
 ) {
   return async (dispatch, getState) => {
     const response = await fetch(
-      API.THREAD_COMMENT_REPLY(paperId, documentId, threadId, commentId),
+      API.THREAD_COMMENT_REPLY(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId
+      ),
       API.POST_CONFIG({
         text,
         parent: commentId,
