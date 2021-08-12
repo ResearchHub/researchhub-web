@@ -1,12 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { Fragment, ReactElement, useCallback, useState } from "react";
 import { connect } from "react-redux";
-import {
-  UPVOTE,
-  DOWNVOTE,
-  UPVOTE_ENUM,
-  DOWNVOTE_ENUM,
-} from "../../../../config/constants";
+import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
 import colors from "../../../../config/themes/colors";
 import icons from "../../../../config/themes/icons";
 import { getCurrentUser } from "../../../../config/utils";
