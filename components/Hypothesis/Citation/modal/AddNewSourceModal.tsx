@@ -14,21 +14,36 @@ type ComponentProps = {
   hypothesisID: ID;
   isModalOpen: boolean;
   onCloseModal: () => void;
+  updateLastFetchTime: Function;
 };
+
 type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
-  setBodyType: (bodyType: BodyTypeVals) => void;
   hypothesisID: ID;
+  onCloseModal: () => void;
+  setBodyType: (bodyType: BodyTypeVals) => void;
+  updateLastFetchTime: Function;
 };
 
 function getModalBody({
   bodyType,
-  setBodyType,
   hypothesisID,
+  onCloseModal,
+  setBodyType,
+  updateLastFetchTime,
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
     case NEW_PAPER_UPLOAD:
-      return <PaperUploadV2Create hypothesisID={hypothesisID} />;
+      return (
+        <PaperUploadV2Create
+          hypothesisID={hypothesisID}
+          onCancelComplete={onCloseModal}
+          onSubmitComplete={(): void => {
+            updateLastFetchTime();
+            onCloseModal();
+          }}
+        />
+      );
     case SEARCH:
       return <AddNewSourceBodySearch />;
     case STAND_BY:
@@ -42,12 +57,15 @@ export default function AddNewSourceModal({
   hypothesisID,
   isModalOpen,
   onCloseModal,
+  updateLastFetchTime,
 }: ComponentProps): ReactElement<typeof BaseModal> {
   const [bodyType, setBodyType] = useState<BodyTypeVals>(STAND_BY);
   const modalBody = getModalBody({
     bodyType,
-    setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
     hypothesisID,
+    onCloseModal,
+    setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
+    updateLastFetchTime,
   });
 
   return (

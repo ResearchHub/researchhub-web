@@ -5,10 +5,15 @@ import colors from "../../../config/themes/colors";
 import icons from "../../../config/themes/icons";
 import React, { ReactElement, useState } from "react";
 
-type Props = { hypothesisID: ID };
+type Props = {
+  hypothesisID: ID;
+  lastFetchTime: number;
+  updateLastFetchTime: Function;
+};
 
 export default function CitationAddNewButton({
   hypothesisID,
+  updateLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
   return (
@@ -21,6 +26,7 @@ export default function CitationAddNewButton({
         hypothesisID={hypothesisID}
         isModalOpen={shouldOpenModal}
         onCloseModal={(): void => setShouldOpenModal(false)}
+        updateLastFetchTime={updateLastFetchTime}
       />
       <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>
       <span>{"Add new source"}</span>
