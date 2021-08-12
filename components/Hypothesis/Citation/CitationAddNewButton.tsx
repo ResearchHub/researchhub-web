@@ -25,9 +25,7 @@ export default function CitationAddNewButton({
       <AddNewSourceModal
         hypothesisID={hypothesisID}
         isModalOpen={shouldOpenModal}
-        onCloseModal={(): void => {
-          setShouldOpenModal(false);
-        }}
+        onCloseModal={(): void => setShouldOpenModal(false)}
         updateLastFetchTime={updateLastFetchTime}
       />
       <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>
