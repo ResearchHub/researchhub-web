@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
 import colors from "../../../../config/themes/colors";
 import icons from "../../../../config/themes/icons";
+import { breakpoints } from "../../../../config/themes/screen";
 import { getCurrentUser } from "../../../../config/utils";
 import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
 
@@ -128,7 +129,7 @@ function CitationConsensusItem({
     <Fragment>
       <div className={css(styles.button)} onClick={handleReject} role="button">
         <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
-        {"Reject"}
+        <span className={css(styles.buttonText)}>{"Reject"}</span>
       </div>
       <div
         className={css(styles.button, styles.green)}
@@ -136,7 +137,7 @@ function CitationConsensusItem({
         role="button"
       >
         <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
-        {"Support"}
+        <span className={css(styles.buttonText)}>{"Support"}</span>
       </div>
     </Fragment>
   );
@@ -159,6 +160,12 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     marginRight: 16,
+  },
+  buttonText: {
+    display: "block",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
   },
   consensusBar: {
     alignItems: "center",
