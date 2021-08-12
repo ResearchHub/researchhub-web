@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
-import { isNullOrUndefined } from "../../config/utils/nullchecks";
+import { isNullOrUndefined, nullthrows } from "../../config/utils/nullchecks";
 import { useRouter } from "next/router";
 import API from "../../config/api";
 import colors from "../../config/themes/colors";
@@ -17,8 +17,8 @@ import VoteWidget from "../VoteWidget";
 
 type Props = {};
 
-function useFetchHypothesis() {
-  const [hypothesis, setHypothesis] = useState(null);
+function useFetchHypothesis(): any {
+  const [hypothesis, setHypothesis] = useState<any>(null);
   const router = useRouter();
   const hypothesisId = router.query.documentId;
 
@@ -39,23 +39,23 @@ export default function HypothesisContainer(
 ): ReactElement<"div"> | null {
   const hypothesis = useFetchHypothesis();
   const [discussionCount, setDiscussionCount] = useState(0);
-
+  const { created_by = {}, hubs, id, slug, title } = hypothesis || {};
   return !isNullOrUndefined(hypothesis) ? (
     <div>
       <Head
-        title={hypothesis.title}
-        description={hypothesis.title}
-        canonical={`https://www.researchhub.com/hypothesis/${hypothesis.id}/${hypothesis.slug}`}
+        title={title}
+        description={title}
+        canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${slug ||
+          ""}`}
       />
       <div className={css(styles.container)}>
         <HypothesisPageCard hypothesis={hypothesis} />
         <CitationContainer />
         <div className={css(styles.space)}>
-          <a name="comments" />
           <DiscussionTab
             documentType={"hypothesis"}
             hypothesis={hypothesis}
-            hypothesisId={hypothesis.id}
+            hypothesisId={id}
             calculatedCount={discussionCount}
             setCount={setDiscussionCount}
             isCollapsible={false}
@@ -63,10 +63,10 @@ export default function HypothesisContainer(
         </div>
         <div className={css(styles.sidebar)}>
           <PaperSideColumn
-            authors={[hypothesis.created_by.author_profile]}
+            authors={[created_by.author_profile]}
             paper={hypothesis}
-            hubs={hypothesis.hubs}
-            paperId={hypothesis.id}
+            hubs={hubs}
+            paperId={id}
             isPost={true}
           />
         </div>
@@ -101,6 +101,7 @@ const styles = StyleSheet.create({
       width: "90%",
     },
   },
+  space: { marginTop: 30 },
   sidebar: {
     display: "table-cell",
     boxSizing: "border-box",
