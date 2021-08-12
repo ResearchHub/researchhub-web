@@ -7,7 +7,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Components
 import Head from "~/components/Head";
-import HypothesisPageCard from "~/components/HypothesisPageCard";
+import HypothesisPageCard from "~/components/Hypothesis/HypothesisPageCard";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
