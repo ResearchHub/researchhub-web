@@ -257,6 +257,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    USER_POST: ({ authorId }) => {
+      let url = BASE_URL + `author/${authorId}/get_user_posts/`;
+      return url;
+    },
+
     POST_PAPER: () => {
       let url = BASE_URL + `paper/`;
 

@@ -15,14 +15,14 @@ import { AuthorActions } from "~/redux/author";
 function useEffectFetchUserPosts({
   setIsFetching,
   setPosts,
-  userID,
+  authorId,
   store,
   dispatch,
 }) {
   useEffect(() => {
-    if (!isNullOrUndefined(userID)) {
+    if (!isNullOrUndefined(authorId)) {
       setIsFetching(true);
-      fetch(API.RESEARCHHUB_POSTS({ created_by: userID }), API.GET_CONFIG())
+      fetch(API.USER_POST({ authorId }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then(async (data) => {
@@ -47,7 +47,7 @@ function useEffectFetchUserPosts({
     } else {
       setIsFetching(false);
     }
-  }, [userID]);
+  }, [authorId]);
 }
 
 function UserPosts(props) {
@@ -84,7 +84,7 @@ function UserPosts(props) {
   useEffectFetchUserPosts({
     setIsFetching,
     setPosts,
-    userID: author.user,
+    authorId: author.id,
     store,
     dispatch,
   });
