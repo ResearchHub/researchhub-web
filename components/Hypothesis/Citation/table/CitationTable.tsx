@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     minHeight: 120,
   },
   columnHeaderWrap: {
-    borderBottom: `1px solid ${colors.GREY(1)}`,
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
     height: 58,

@@ -16,14 +16,15 @@ export type CitationTableRowItemProps = {
 };
 
 type ItemColumnProps = {
+  bold?: boolean;
   value: ReactNode;
   width: string;
 };
 
-function ItemColumn({ value, width }: ItemColumnProps) {
+function ItemColumn({ bold, value, width }: ItemColumnProps) {
   return (
     <div
-      className={css(styles.itemColumn)}
+      className={css(styles.itemColumn, Boolean(bold) && styles.bold)}
       style={{ maxWidth: width, minWidth: width, width }}
     >
       {value}
@@ -42,7 +43,7 @@ export default function CitationTableRowItem({
     source.length > 80 ? source.slice(0, 80) + " ..." : source;
   return (
     <div className={css(styles.tableRowItem)}>
-      <ItemColumn value={formattedSource} width={tableWidths.SOURCE} />
+      <ItemColumn bold value={formattedSource} width={tableWidths.SOURCE} />
       <ItemColumn value={type} width={tableWidths.TYPE} />
       <ItemColumn value={year} width={tableWidths.YEAR} />
       <ItemColumn
@@ -63,12 +64,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-    height: 56,
+    height: 80,
     justifyContent: "flex-start",
     padding: "0 8px",
+    fontFamily: "Roboto",
+    size: 16,
+    fontStyle: "normal",
+    fontWeight: 400,
+  },
+  bold: {
+    size: 16,
+    fontStyle: "normal",
+    fontWeight: 500,
   },
   tableRowItem: {
-    borderBottom: `1px solid ${colors.GREY(1)}`,
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
   },

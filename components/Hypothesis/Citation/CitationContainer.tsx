@@ -34,12 +34,15 @@ export default function CitationContainer(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   citationContainer: {
-    border: "1px solid red",
+    border: "1.5px solid #F0F0F0", // copying existing cards for borders
     borderRadius: 3,
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)", // copying existing cards
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
+    marginTop: 30,
     padding: 16,
-    width: 1278,
+    width: "100%",
   },
   header: {
     fontSize: 20,
