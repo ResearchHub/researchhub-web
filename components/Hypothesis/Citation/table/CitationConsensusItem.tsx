@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useState } from "react";
+import React, { Fragment, ReactElement, useState } from "react";
 import { connect } from "react-redux";
 import {
   UPVOTE,
@@ -7,36 +7,77 @@ import {
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../../../../config/constants";
+import colors from "../../../../config/themes/colors";
+import icons from "../../../../config/themes/icons";
 import { getCurrentUser } from "../../../../config/utils";
 import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
 
+export type ConsensusMeta = {
+  downCount: number;
+  upCount: number;
+  userVote: Object;
+};
+
 type Props = {
-  consensusMeta: { down_count: number; up_count: number; user_vote: Object };
-  currentUser: any; // Redux
+  consensusMeta: ConsensusMeta;
+  currentUser?: any; // Redux
 };
 
 function CitationConsensusItem({
   consensusMeta,
   currentUser,
 }: Props): ReactElement<"div"> {
-  const {
-    down_count: downCount,
-    up_count: upCount,
-    user_vote: userVote,
-  } = consensusMeta;
-  const totalCount = downCount + upCount;
-  const countWinner = upCount >= downCount ? UPVOTE : DOWNVOTE;
+  const { downCount, upCount, userVote } = consensusMeta || {};
   const canCurrUserVote =
     !isNullOrUndefined(currentUser) && isNullOrUndefined(userVote);
+
+  const [countWinner, setCountWinner] = useState<string>(
+    upCount >= downCount ? UPVOTE : DOWNVOTE
+  );
   const [shouldShowConsensus, setShouldShowConsensus] = useState<boolean>(
     !canCurrUserVote
   );
-  if (shouldShowConsensus) {
-    return <div>CONSENSUS</div>;
-  } else {
-    return <div></div>;
-  }
+  const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
+
+  const body = shouldShowConsensus ? (
+    <div>CONSENSUS</div>
+  ) : (
+    <Fragment>
+      <div className={css(styles.button)} role="button">
+        <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
+        {"Reject"}
+      </div>
+      <div className={css(styles.button, styles.green)} role="button">
+        <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
+        {"Support"}
+      </div>
+    </Fragment>
+  );
+
+  return <div className={css(styles.citationConsensusItem)}>{body}</div>;
 }
+
+const styles = StyleSheet.create({
+  citationConsensusItem: {
+    display: "flex",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    width: "100%",
+  },
+  button: {
+    alignItems: "center",
+    color: colors.TEXT_GREY(1),
+    cursor: "pointer",
+    display: "flex",
+    marginRight: 16,
+  },
+  iconWrap: {
+    marginRight: 4,
+  },
+  green: {
+    color: colors.GREEN(1),
+  },
+});
 
 const mapStateToProps = (state) => ({
   currentUser: getCurrentUser(state),
