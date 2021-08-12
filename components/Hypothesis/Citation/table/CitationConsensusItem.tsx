@@ -18,15 +18,37 @@ export type ConsensusMeta = {
   userVote: Object;
 };
 
-type Props = {
+type CitationConsensusItemProps = {
   consensusMeta: ConsensusMeta;
   currentUser?: any; // Redux
 };
 
+type SentimentBarProps = {
+  color: string;
+  pointRight?: boolean;
+  width: number | string;
+};
+
+function SentimentBar({
+  color,
+  pointRight = false,
+  width,
+}: SentimentBarProps): ReactElement<"div"> {
+  return (
+    <div
+      className={css(
+        styles.sentimentBar,
+        pointRight ? styles.pointRightBorder : styles.pointLeftBorder
+      )}
+      style={{ backgroundColor: color, width }}
+    ></div>
+  );
+}
+
 function CitationConsensusItem({
   consensusMeta,
   currentUser,
-}: Props): ReactElement<"div"> {
+}: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
   const { downCount, upCount, userVote } = consensusMeta || {};
   const canCurrUserVote =
     !isNullOrUndefined(currentUser) && isNullOrUndefined(userVote);
@@ -40,19 +62,35 @@ function CitationConsensusItem({
   const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
 
   const handleReject = useCallback((): void => {
-    setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
     setTotalCount(totalCount + 1);
+    setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
+    // TODO: calvinhlee - api call
   }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
 
   const handleSupport = useCallback((): void => {
     setTotalCount(totalCount + 1);
-    setMajority(upCount + 1 >= downCount + 1 ? UPVOTE : DOWNVOTE);
+    setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
+    // TODO: calvinhlee - api call
   }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
+  console.warn("majority: ", majority);
+  console.warn("upCount: ", upCount);
+  console.warn("downCount: ", downCount);
 
   const body = shouldShowConsensus ? (
-    <div>CONSENSUS</div>
+    <div className={css(styles.consensusBar)}>
+      <SentimentBar
+        color={colors.RED(1)}
+        width={majority === UPVOTE ? 0 : "10%"}
+      />
+      <div className={css(styles.sentimentMidpoint)} />
+      <SentimentBar
+        color={colors.GREEN(1)}
+        width={majority === UPVOTE ? "10%" : 0}
+        pointRight
+      />
+    </div>
   ) : (
     <Fragment>
       <div className={css(styles.button)} onClick={handleReject} role="button">
@@ -87,11 +125,39 @@ const styles = StyleSheet.create({
     display: "flex",
     marginRight: 16,
   },
+  consensusBar: {
+    alignItems: "center",
+    background: colors.GREY(1),
+    borderRadius: 8,
+    display: "flex",
+    height: 8,
+    justifyContent: "center",
+    position: "relative",
+    width: "80%",
+  },
   iconWrap: {
     marginRight: 4,
   },
   green: {
     color: colors.GREEN(1),
+  },
+  sentimentBar: {
+    height: "inherit",
+  },
+  sentimentMidpoint: {
+    height: 10,
+    width: 10,
+    background: "#fff",
+    borderRadius: "50%",
+    border: `1px solid ${colors.GREY(1)}`,
+    position: "absolute",
+    left: "calc(50% + 5px)",
+  },
+  pointRightBorder: {
+    borderRadius: "0 8px 8px 0",
+  },
+  pointLeftBorder: {
+    borderRadius: "8px 0 0 8px",
   },
 });
 

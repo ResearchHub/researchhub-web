@@ -49,7 +49,7 @@ export default function CitationTable({
   >([]);
 
   useEffectGetCitations({ hypothesisID, lastFetchTime, setCitationItems });
-
+  console.warn("citationItems: ", citationItems);
   const rowItems =
     citationItems.length > 0 ? (
       citationItems.map(
