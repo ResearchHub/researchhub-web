@@ -65,6 +65,11 @@ export const getActivityMetadata = (activity) => {
       postTitle = postTitle ? postTitle : source.title;
       hrefAs = `/post/${postId}/${postSlug}`;
       break;
+    case "HYPOTHESIS":
+      href = "/hypothesis/[documentId]/[title]";
+      postTitle = postTitle ? postTitle : source.title;
+      hrefAs = `/hypothesis/${postId}/${postSlug}`;
+      break;
     default:
       href = "";
       hrefAs = "";
