@@ -6,36 +6,52 @@ import CitationTableRowItem, {
   CitationTableRowItemProps,
 } from "./CitationTableRowItem";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
-import React, { ReactElement } from "react";
 import colors from "../../../../config/themes/colors";
+import React, { ReactElement, useEffect, useState } from "react";
+import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
+import { emptyFncWithMsg } from "../../../../config/utils/nullchecks";
 
-type Props = { hypothesisID: ID; items: Array<CitationTableRowItemProps> };
+type Props = {
+  hypothesisID: ID;
+  lastFetchTime: number;
+  updateLastFetchTime: Function;
+};
 
-const MOCKED_ITEMS = [
-  {
-    citationID: "123",
-    consensus: -1,
-    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
-    source: "The Extraodinary Importance of Sleep",
-    type: "Paper",
-    year: "2021",
-  },
-  {
-    citationID: "123",
-    consensus: -1,
-    notes: "Cursus eleifend commodore pharetra adipiscing accumsan.",
-    source: "The Extraodinary Importance of Sleep",
-    type: "Paper",
-    year: "2021",
-  },
-];
+type UseEffectGetCitationsArgs = {
+  hypothesisID: ID;
+  lastFetchTime: number;
+  setCitationItems: (items: CitationTableRowItemProps[]) => void;
+};
+
+function useEffectGetCitations({
+  hypothesisID,
+  lastFetchTime,
+  setCitationItems,
+}: UseEffectGetCitationsArgs): void {
+  useEffect((): void => {
+    fetchCitationsOnHypothesis({
+      hypothesisID,
+      onError: (error: Error): void => emptyFncWithMsg(error),
+      onSuccess: (formattedResult: CitationTableRowItemProps[]): void =>
+        setCitationItems(formattedResult),
+    });
+  }, [hypothesisID, lastFetchTime, setCitationItems]);
+}
 
 /* NOTE: This table UI isn't a "table". We may want to migrate to using an actual dom table */
-export default function CitationTable({ items }: Props): ReactElement<"div"> {
-  const mockedItems = [...items, ...MOCKED_ITEMS];
+export default function CitationTable({
+  hypothesisID,
+  lastFetchTime,
+  updateLastFetchTime,
+}: Props): ReactElement<"div"> {
+  const [citationItems, setCitationItems] = useState<
+    CitationTableRowItemProps[]
+  >([]);
+
+  useEffectGetCitations({ hypothesisID, lastFetchTime, setCitationItems });
   const rowItems =
-    mockedItems.length > 0 ? (
-      mockedItems.map(
+    citationItems.length > 0 ? (
+      citationItems.map(
         (
           propPayload: CitationTableRowItemProps,
           index: number
@@ -56,7 +72,10 @@ export default function CitationTable({ items }: Props): ReactElement<"div"> {
           label="Consensus"
           width={tableWidths.CONSENSUS}
         />
-        <CitationTableHeaderItem label="Notes" width={tableWidths.NOTES} />
+        <CitationTableHeaderItem
+          label="Cited by"
+          width={tableWidths.CITED_BY}
+        />
       </div>
       <div className={css(styles.itemsWrap)}>{rowItems}</div>
     </div>

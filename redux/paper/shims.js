@@ -29,19 +29,20 @@ export const paper = (paper) => {
 };
 
 export const paperPost = ({
+  abstract,
   authors,
   doi,
   file,
   hubs,
-  publishDate,
-  title,
-  url,
-  type,
-  tagline,
-  abstract,
+  hypothesis_id,
   paper_title,
-  raw_authors,
   paper_type,
+  publishDate,
+  raw_authors,
+  tagline,
+  title,
+  type,
+  url,
 }) => {
   let formData = new FormData();
   authors &&
@@ -74,6 +75,7 @@ export const paperPost = ({
   abstract && formData.append("abstract", abstract);
   paper_title && formData.append("paper_title", paper_title);
   paper_type && formData.append("paper_type", paper_type);
+  hypothesis_id && formData.append("hypothesis_id", hypothesis_id);
   return formData;
 };
 
