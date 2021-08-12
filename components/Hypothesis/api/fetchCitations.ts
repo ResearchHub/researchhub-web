@@ -23,8 +23,9 @@ export function fetchCitationsOnHypothesis({
         | CitationTableRowItemProps[]
         | null => {
         const {
-          id,
+          consensus_meta,
           created_by,
+          id,
           source: { document_type, documents },
           updated_date,
         } = item;
@@ -32,10 +33,15 @@ export function fetchCitationsOnHypothesis({
         if (document_type === "PAPER") {
           const { paper_title, title } = documents;
           const { author_profile } = created_by;
+          const {
+            down_count: downCount,
+            up_count: upCount,
+            user_vote: userVote,
+          } = consensus_meta;
           return {
             // @ts-ignore id here is int
             citationID: id,
-            consensus: 0, // need to get voting info
+            consensusMeta: { downCount, upCount, userVote }, // need to get voting info
             citedBy: [author_profile],
             source: title || paper_title,
             type: document_type,

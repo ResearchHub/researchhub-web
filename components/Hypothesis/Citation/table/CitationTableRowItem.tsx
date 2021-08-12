@@ -3,12 +3,13 @@ import React, { ReactElement, ReactNode } from "react";
 import colors from "../../../../config/themes/colors";
 import { ID } from "../../../../config/types/root_types";
 import AuthorFacePile from "../../../shared/AuthorFacePile";
+import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
 import { tableWidths } from "./constants/tableWidths";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
   citedBy: Object[];
-  consensus: number;
+  consensus: ConsensusMeta;
   source: string;
   type: string;
   year: string;
@@ -44,7 +45,10 @@ export default function CitationTableRowItem({
       <ItemColumn value={formattedSource} width={tableWidths.SOURCE} />
       <ItemColumn value={type} width={tableWidths.TYPE} />
       <ItemColumn value={year} width={tableWidths.YEAR} />
-      <ItemColumn value={consensus} width={tableWidths.CONSENSUS} />
+      <ItemColumn
+        value={<CitationConsensusItem consensusMeta={consensus} />}
+        width={tableWidths.CONSENSUS}
+      />
       <ItemColumn
         value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
         width={tableWidths.CITED_BY}
