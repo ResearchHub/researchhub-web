@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement, useState } from "react";
+import React, { Fragment, ReactElement, useCallback, useState } from "react";
 import { connect } from "react-redux";
 import {
   UPVOTE,
@@ -31,7 +31,7 @@ function CitationConsensusItem({
   const canCurrUserVote =
     !isNullOrUndefined(currentUser) && isNullOrUndefined(userVote);
 
-  const [countWinner, setCountWinner] = useState<string>(
+  const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
   const [shouldShowConsensus, setShouldShowConsensus] = useState<boolean>(
@@ -39,15 +39,31 @@ function CitationConsensusItem({
   );
   const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
 
+  const handleReject = useCallback((): void => {
+    setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
+    setTotalCount(totalCount + 1);
+    setShouldShowConsensus(true);
+  }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
+
+  const handleSupport = useCallback((): void => {
+    setTotalCount(totalCount + 1);
+    setMajority(upCount + 1 >= downCount + 1 ? UPVOTE : DOWNVOTE);
+    setShouldShowConsensus(true);
+  }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
+
   const body = shouldShowConsensus ? (
     <div>CONSENSUS</div>
   ) : (
     <Fragment>
-      <div className={css(styles.button)} role="button">
+      <div className={css(styles.button)} onClick={handleReject} role="button">
         <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
         {"Reject"}
       </div>
-      <div className={css(styles.button, styles.green)} role="button">
+      <div
+        className={css(styles.button, styles.green)}
+        onClick={handleSupport}
+        role="button"
+      >
         <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
         {"Support"}
       </div>
