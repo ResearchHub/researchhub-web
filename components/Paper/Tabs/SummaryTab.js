@@ -32,6 +32,7 @@ import colors from "~/config/themes/colors";
 import { isQuillDelta, doesNotExist } from "~/config/utils/";
 import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
+import { isDevEnv } from "~/config/utils/env";
 
 class SummaryTab extends React.Component {
   constructor(props) {
@@ -434,7 +435,12 @@ class SummaryTab extends React.Component {
         return (
           <Fragment>
             {readOnly && !editAbstract && (
-              <div className={css(styles.abstractContainer)}>{abstract}</div>
+              <div
+                className={css(styles.abstractContainer)}
+                data-test={isDevEnv() ? `abstract` : undefined}
+              >
+                {abstract}
+              </div>
             )}
           </Fragment>
         );
