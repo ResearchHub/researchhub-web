@@ -30,5 +30,6 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "flex-start",
     padding: "0 8px",
+    wordWrap: "break-word",
   },
 });
