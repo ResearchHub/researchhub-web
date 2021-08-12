@@ -1,14 +1,14 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
-import * as moment from "dayjs";
+import dayjs from "dayjs";
 import ReactHtmlParser from "react-html-parser";
-import { formatPublishedDate } from "~/config/utils/dates";
-import colors from "~/config/themes/colors";
+import { formatPublishedDate } from "../../config/utils/dates";
+import colors from "../../config/themes/colors";
 
 // Components
-import VoteWidget from "~/components/VoteWidget";
-import PaperMetadata from "~/components/Paper/PaperMetadata";
-import PaperPromotionIcon from "~/components/Paper/PaperPromotionIcon";
+import VoteWidget from "../../components/VoteWidget";
+import PaperMetadata from "../../components/Paper/PaperMetadata";
+import PaperPromotionIcon from "../../components/Paper/PaperPromotionIcon";
 
 const renderMetadata = (hypothesis) => {
   const created_date = hypothesis.created_date;
@@ -19,9 +19,8 @@ const renderMetadata = (hypothesis) => {
         <span
           className={css(styles.metadata) + " clamp1"}
           property="datePublished"
-          dateTime={created_date}
         >
-          {formatPublishedDate(moment(created_date), true)}
+          {formatPublishedDate(dayjs(created_date), true)}
         </span>
       ),
       active: created_date,
@@ -30,11 +29,7 @@ const renderMetadata = (hypothesis) => {
   return (
     <div className={css(styles.row)}>
       {metadata.map((props, i) => (
-        <PaperMetadata
-          key={`metadata-${i}`}
-          {...props}
-          containerStyles={i === 0 && styles.marginRight}
-        />
+        <PaperMetadata key={`metadata-${i}`} {...props} />
       ))}
     </div>
   );
@@ -51,11 +46,6 @@ const voteWidget = (horizontalView) => (
     type={"Hypothesis"}
   />
 );
-
-const toggleShowPostEditor = () => {
-  ReactTooltip.hide();
-  setShowHypothesisEditor(!showHypothesisEditor);
-};
 
 export default function HypothesisPageCard({
   hypothesis,
@@ -91,15 +81,7 @@ export default function HypothesisPageCard({
               </div>
               <div className="ck-content">
                 {showHypothesisEditor ? null : ( //renderHypothesisEditor()
-                  <>
-                    {hypothesisBody && ReactHtmlParser(hypothesisBody)}
-                    <div className={css(styles.bottomContainer)}>
-                      <div className={css(styles.bottomRow)}>
-                        {/*renderActions()*/}
-                      </div>
-                      <div className={css(styles.downloadPDF)}></div>
-                    </div>
-                  </>
+                  <>{hypothesisBody && ReactHtmlParser(hypothesisBody)}</>
                 )}
               </div>
             </div>
