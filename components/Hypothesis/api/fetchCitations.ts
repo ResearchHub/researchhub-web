@@ -28,6 +28,7 @@ export function fetchCitationsOnHypothesis({
           source: { document_type, documents },
           updated_date,
         } = item;
+        console.warn("ITEM: ", item);
         if (document_type === "PAPER") {
           const { paper_title, title } = documents;
           const { author_profile } = created_by;
