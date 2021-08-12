@@ -6,18 +6,21 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import { get } from "lodash";
 import { breakpoints } from "~/config/themes/screen";
-import { pickFiltersForApp } from "~/config/utils";
+import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils";
+import { trackEvent } from "~/config/utils";
+import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 
 const Search = ({ navbarRef }) => {
   const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
   const SMALLEST_ALLOWED_INPUT = 180;
   const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;
-  const QUERY_PARAM = "q";
 
   const router = useRouter();
   const searchInputRef = useRef(null);
   const searchContainerRef = useRef(null);
+  const auth = useSelector((state) => state.auth);
 
   const [query, setQuery] = useState(get(router, `query.${QUERY_PARAM}`) || "");
   const [isSmallScreenSearch, setIsSmallScreenSearch] = useState(false);
@@ -146,6 +149,14 @@ const Search = ({ navbarRef }) => {
     });
 
     blurAndCloseDeviceKeyboard();
+    trackEvent({
+      eventType: "search_query_submitted",
+      vendor: "amp",
+      user: get(auth, "isLoggedIn") ? auth.user : null,
+      data: {
+        query,
+      },
+    });
   };
 
   const blurAndCloseDeviceKeyboard = () => {
