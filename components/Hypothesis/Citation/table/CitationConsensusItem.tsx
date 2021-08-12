@@ -88,19 +88,20 @@ function CitationConsensusItem({
     upCount,
   ]);
   const majorityPercent =
-    ((majority === UPVOTE ? upCount : downCount) / totalCount) * 100;
+    (majority === UPVOTE ? upCount : downCount) / totalCount;
+  const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
   const body = shouldShowConsensus ? (
     <div className={css(styles.consensusWrap)}>
       <div>{`Total vote: ${totalCount}`}</div>
       <div className={css(styles.consensusBar)}>
         <SentimentBar
           color={colors.RED(1)}
-          width={majority === UPVOTE ? 0 : majorityPercent}
+          width={majority === UPVOTE ? 0 : weightedPercent * 100}
         />
         <div className={css(styles.sentimentMidpoint)} />
         <SentimentBar
           color={colors.GREEN(1)}
-          width={majority === UPVOTE ? majorityPercent : 0}
+          width={majority === UPVOTE ? weightedPercent * 100 : 0}
           pointRight
         />
       </div>
