@@ -7,6 +7,7 @@ export * from "./validation";
 export * from "./form";
 export * from "./env";
 export * from "./search";
+export * from "./analytics";
 
 export function getNestedValue(root, nodes, defaultValue = null) {
   const initialValue = root;

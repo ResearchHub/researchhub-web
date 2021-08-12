@@ -82,7 +82,6 @@ export default function AuthorClaimModal({
               </div>
             </div>
             <div className={css(acceptRejectStyles.buttonContainer)}>
-              {/* @ts-ignore */}
               <Button
                 label={`${verb} User`}
                 disabled={isSubmitting}
