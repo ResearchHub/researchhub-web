@@ -160,6 +160,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     marginRight: 16,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      marginRight: 8,
+    },
   },
   buttonText: {
     display: "block",
@@ -188,6 +191,9 @@ const styles = StyleSheet.create({
   },
   iconWrap: {
     marginRight: 4,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      fontSize: 24,
+    },
   },
   green: {
     color: colors.GREEN(1),
