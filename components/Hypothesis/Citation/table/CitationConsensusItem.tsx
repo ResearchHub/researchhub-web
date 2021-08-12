@@ -35,7 +35,7 @@ function SentimentBar({
         styles.sentimentBar,
         pointRight ? styles.pointRightBorder : styles.pointLeftBorder
       )}
-      style={{ backgroundColor: color, width }}
+      style={{ backgroundColor: color, width: `${width}%`, maxWidth: "50%" }}
     ></div>
   );
 }
@@ -87,19 +87,20 @@ function CitationConsensusItem({
     totalCount,
     upCount,
   ]);
-
+  const majorityPercent =
+    ((majority === UPVOTE ? upCount : downCount) / totalCount) * 100;
   const body = shouldShowConsensus ? (
     <div className={css(styles.consensusWrap)}>
       <div>{`Total vote: ${totalCount}`}</div>
       <div className={css(styles.consensusBar)}>
         <SentimentBar
           color={colors.RED(1)}
-          width={majority === UPVOTE ? 0 : "10%"}
+          width={majority === UPVOTE ? 0 : majorityPercent}
         />
         <div className={css(styles.sentimentMidpoint)} />
         <SentimentBar
           color={colors.GREEN(1)}
-          width={majority === UPVOTE ? "10%" : 0}
+          width={majority === UPVOTE ? majorityPercent : 0}
           pointRight
         />
       </div>
@@ -179,14 +180,14 @@ const styles = StyleSheet.create({
   },
   pointRightBorder: {
     borderRadius: "0 8px 8px 0",
-    left: "calc(50% + 6px)",
+    left: "calc(50% + 4px)",
     position: "absolute",
     zIndex: 1,
   },
   pointLeftBorder: {
     borderRadius: "8px 0 0 8px",
     position: "absolute",
-    right: "calc(50% - 6px)",
+    right: "calc(50% - 2px)",
     zIndex: 1,
   },
 });
