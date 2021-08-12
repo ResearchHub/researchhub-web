@@ -78,6 +78,7 @@ const PaperEntryCard = (props) => {
 
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
+  boost_amount = boost_amount || 0;
 
   /**
    * Whether or not THIS PaperPDFModal is open.
