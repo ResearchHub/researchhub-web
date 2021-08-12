@@ -1,17 +1,17 @@
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isNullOrUndefined } from "../../config/utils/nullchecks";
 import { useRouter } from "next/router";
-import API from "~/config/api";
-import colors from "~/config/themes/colors";
+import API from "../../config/api";
+import colors from "../../config/themes/colors";
 import React, { ReactElement, useEffect, useState } from "react";
 
 // Components
 import CitationContainer from "./citation/CitationContainer";
-import Head from "~/components/Head";
-import PaperPromotionIcon from "~/components/Paper/PaperPromotionIcon";
-import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
-import VoteWidget from "~/components/VoteWidget";
+import Head from "../Head";
+import PaperPromotionIcon from "../Paper/PaperPromotionIcon";
+import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
+import VoteWidget from "../VoteWidget";
 
 type Props = {};
 
@@ -34,7 +34,9 @@ function useFetchHypothesis() {
   return hypothesis;
 }
 
-export default function HypothesisContainer(props: Props): ReactElement<"div"> {
+export default function HypothesisContainer(
+  props: Props
+): ReactElement<"div"> | null {
   const hypothesis = useFetchHypothesis();
 
   const voteWidget = (horizontalView) => (
