@@ -8,7 +8,7 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
 
   return async (dispatch) => {
     const response = await fetch(
-      API.UPVOTE(paperId, threadId, commentId, replyId),
+      API.UPVOTE("paper", paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
     ).catch(utils.handleCatch);
 
@@ -38,7 +38,7 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
 
   return async (dispatch) => {
     const response = await fetch(
-      API.DOWNVOTE(paperId, threadId, commentId, replyId),
+      API.DOWNVOTE("paper", paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
     ).catch(utils.handleCatch);
 
