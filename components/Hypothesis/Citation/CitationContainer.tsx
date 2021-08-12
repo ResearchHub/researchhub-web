@@ -10,7 +10,7 @@ export default function CitationContainer(): ReactElement<"div"> {
     ? parseInt(router.query.documentId[0])
     : // @ts-ignore implied that this is a string / int
       parseInt(router.query.documentId);
-  const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
+  const [lastFetchTime, setLastFetchTime] = useState<number | null>(null);
   const updateLastFetchTime = useCallback(() => setLastFetchTime(Date.now()), [
     setLastFetchTime,
   ]);
@@ -34,6 +34,7 @@ export default function CitationContainer(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   citationContainer: {
+    backgroundColor: "#fff",
     border: "1.5px solid #F0F0F0", // copying existing cards for borders
     borderRadius: 3,
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)", // copying existing cards
@@ -41,12 +42,13 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     marginTop: 30,
-    padding: 16,
+    padding: 30,
     width: "100%",
   },
   header: {
+    fontFamily: "Roboto",
     fontSize: 20,
+    fontStyle: "normal",
     fontWeight: 500,
-    width: "100%",
   },
 });

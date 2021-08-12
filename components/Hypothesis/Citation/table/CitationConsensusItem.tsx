@@ -87,21 +87,39 @@ function CitationConsensusItem({
     totalCount,
     upCount,
   ]);
+  const doesMajoritySupport = majority === UPVOTE;
   const majorityPercent =
-    (majority === UPVOTE ? upCount : downCount) / totalCount;
+    (doesMajoritySupport ? upCount : downCount) / totalCount;
   const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
   const body = shouldShowConsensus ? (
     <div className={css(styles.consensusWrap)}>
-      <div>{`Total vote: ${totalCount}`}</div>
+      <div className={css(styles.resultWrap)}>
+        {doesMajoritySupport ? (
+          <img
+            className={css(styles.resultImg)}
+            src="/static/icons/check.svg"
+          />
+        ) : (
+          <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
+        )}
+
+        <div
+          style={{
+            color: doesMajoritySupport ? colors.GREEN(1) : colors.RED(1),
+          }}
+        >{`${majorityPercent * 100}% researchers think ${
+          doesMajoritySupport ? "yes" : "no"
+        }`}</div>
+      </div>
       <div className={css(styles.consensusBar)}>
         <SentimentBar
           color={colors.RED(1)}
-          width={majority === UPVOTE ? 0 : weightedPercent * 100}
+          width={doesMajoritySupport ? 0 : weightedPercent * 100}
         />
         <div className={css(styles.sentimentMidpoint)} />
         <SentimentBar
           color={colors.GREEN(1)}
-          width={majority === UPVOTE ? weightedPercent * 100 : 0}
+          width={doesMajoritySupport ? weightedPercent * 100 : 0}
           pointRight
         />
       </div>
@@ -128,11 +146,12 @@ function CitationConsensusItem({
 
 const styles = StyleSheet.create({
   citationConsensusItem: {
-    display: "flex",
-    justifyContent: "flex-start",
     alignItems: "center",
-    width: "100%",
+    display: "flex",
+    fontFamily: "Roboto",
     height: "100%",
+    justifyContent: "flex-start",
+    width: "100%",
   },
   button: {
     alignItems: "center",
@@ -143,13 +162,14 @@ const styles = StyleSheet.create({
   },
   consensusBar: {
     alignItems: "center",
-    background: colors.GREY(1),
+    background: colors.LIGHT_GREY_BORDER,
     borderRadius: 8,
     display: "flex",
     height: 8,
     justifyContent: "center",
     position: "relative",
-    width: "100%",
+    maxWidth: "137px",
+    width: "80%",
   },
   consensusWrap: {
     alignItems: "center",
@@ -158,7 +178,6 @@ const styles = StyleSheet.create({
     height: "100%",
     justifyContent: "space-between",
     maxHeight: 28,
-    width: "80%",
   },
   iconWrap: {
     marginRight: 4,
@@ -174,7 +193,7 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.GREY(1)}`,
     borderRadius: "50%",
     height: 10,
-    left: "50%",
+    left: "calc(50% - 2px) ",
     position: "absolute",
     width: 10,
     zIndex: 2,
@@ -188,8 +207,21 @@ const styles = StyleSheet.create({
   pointLeftBorder: {
     borderRadius: "8px 0 0 8px",
     position: "absolute",
-    right: "calc(50% - 2px)",
+    right: "50%",
     zIndex: 1,
+  },
+  resultImg: { fontSize: 10, height: 10, width: 10, marginRight: 4 },
+  resultWrap: {
+    display: "flex",
+    fontSize: 10,
+    fontWeight: 500,
+  },
+  noSupportImg: {
+    color: colors.RED(1),
+    fontSize: 10,
+    height: 10,
+    width: 10,
+    marginRight: 4,
   },
 });
 
