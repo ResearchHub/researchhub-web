@@ -7,7 +7,7 @@ import colors from "../../config/themes/colors";
 import React, { ReactElement, useEffect, useState } from "react";
 
 // Components
-import CitationContainer from "./Citation/CitationContainer";
+import CitationContainer from "./citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
 import Head from "../Head";
 import HypothesisPageCard from "./HypothesisPageCard";
