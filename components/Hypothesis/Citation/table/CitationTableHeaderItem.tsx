@@ -24,7 +24,7 @@ export default function CitationTableHeaderItem({
 const styles = StyleSheet.create({
   headerItem: {
     alignItems: "center",
-    color: colors.TEXT_GREY(1),
+    color: colors.LIGHT_GREY_TEXT,
     display: "flex",
     fontWeight: 500,
     height: "100%",

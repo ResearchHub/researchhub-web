@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: "center",
-    color: colors.TEXT_GREY(1),
+    color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
     display: "flex",
     marginRight: 16,
