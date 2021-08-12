@@ -15,6 +15,7 @@ import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
@@ -233,6 +234,12 @@ class LiveFeed extends React.Component {
         );
       } else {
         return currentHubNotifications.map((notification, i) => {
+          // TODO: remove when hypothesis is properly returning unified document
+          if (
+            isNullOrUndefined(notification.item.unified_document.document_type)
+          ) {
+            return null;
+          }
           return (
             <LiveFeedNotification
               notification={notification}
