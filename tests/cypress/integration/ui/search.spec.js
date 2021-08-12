@@ -1,11 +1,18 @@
 describe('Search', () => {
   const BEST_RESULTS_APP_PATH = "/search/all?q=";
-  const BEST_RESULTS_API_PATH = "http://localhost:8000/api/search/all/*";
+  const BEST_RESULTS_API_PATH = `${Cypress.env('serverBaseUrl')}/api/search/all/*`;
   const PAPER_RESULTS_APP_PATH = "/search/paper?q=";
-  const PAPER_RESULTS_API_PATH = "http://localhost:8000/api/search/paper/*";
+  const PAPER_RESULTS_API_PATH = `${Cypress.env('serverBaseUrl')}/api/search/paper/*`;
 
   context('Best results', () => {
     beforeEach(() => {
+      /*
+        This technique is used in situations where we fetch data through
+        getInitialProps. In these cases, we cannot intercept the data and replace
+        it with a fixture. In order to bypass this restriction we basically
+        trigger a reload of the current page programatically which then runs the
+        fetch on the client side and allow to intercept.
+      */
       cy.visit(BEST_RESULTS_APP_PATH);      
       cy.intercept('GET', BEST_RESULTS_API_PATH, { fixture: 'search-best-results.json' });
 

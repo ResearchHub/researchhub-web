@@ -3,7 +3,7 @@ import paperFixture from '../../fixtures/paper.json';
 
 describe("Paper", () => {
   const PAPER_APP_PATH = "/paper/1/something";
-  const PAPER_API_PATH = "http://localhost:8000/api/paper/1/?make_public=true&";
+  const PAPER_API_PATH = `${Cypress.env('serverBaseUrl')}/api/paper/1/*`;
 
   context("Paper details", () => {
     beforeEach(() => {
@@ -12,24 +12,26 @@ describe("Paper", () => {
     });
 
     it("diplays paper title", () => {
-      cy.get(`*[data-test="paper-${paperFixture.id}"]`)
+      const paperCardEl = cy.get(`*[data-test="paper-${paperFixture.id}"]`);
+
+      paperCardEl
         .find("h1")
         .contains(paperFixture.title);
     });
 
     it("diplays doi", () => {
-      cy.get(`*[data-test="doi"]`)
-        .contains(paperFixture.doi);      
+      const doiEl = cy.get(`*[data-test="doi"]`);
+      doiEl.contains(paperFixture.doi);
     })
 
     it("diplays authors", () => {
-      cy.get(`*[data-test^="author"]`)
-        .its('length').should('be.gt', 0);
+      const authorElems = cy.get(`*[data-test^="author"]`);
+      authorElems.its('length').should('be.gt', 0);
     })
 
     it("diplays abstract", () => {
-      cy.get(`*[data-test="abstract"]`)
-        .contains(paperFixture.abstract);
+      const abstractEl = cy.get(`*[data-test="abstract"]`);
+      abstractEl.contains(paperFixture.abstract);
     })    
   });
 });
