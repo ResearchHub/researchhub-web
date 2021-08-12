@@ -13,7 +13,10 @@ import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { getIsFormValid } from "./util/getIsFormValid";
 import { ID } from "../../../config/types/root_types";
-import { isNullOrUndefined } from "../../../config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  nullthrows,
+} from "../../../config/utils/nullchecks";
 import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
@@ -35,8 +38,11 @@ import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type ComponentProps = {
   authRedux: any;
+  hypothesisID?: ID;
   messageActions: any;
   modalActions: any;
+  onCancelComplete?: Function;
+  onSubmitComplete?: Function;
   paperActions: any;
   paperRedux: any;
 };
@@ -44,6 +50,7 @@ type ComponentProps = {
 type ParseReduxToStateArgs = {
   componentState: ComponentState;
   formState: FormState;
+  hypothesisID: ID;
   messageActions: any;
   paperRedux: any;
   setComponentState: (componentState: ComponentState) => void;
@@ -65,6 +72,7 @@ const useEffectHandleInit = ({
 
 const useEffectParseReduxToState = ({
   formState,
+  hypothesisID,
   messageActions,
   paperRedux,
   setFormState,
@@ -116,6 +124,7 @@ const useEffectParseReduxToState = ({
       author: formAuthors,
       doi: formattedDOI,
       hubs: formHubs,
+      hypothesis_id: hypothesisID,
       paper_title: resolvedPaperTitle,
       paper_type: formType,
       published: formattedPublishedDate,
@@ -129,16 +138,24 @@ const useEffectParseReduxToState = ({
 
 function PaperuploadV2Create({
   authRedux,
+  hypothesisID,
   messageActions,
   modalActions,
+  onCancelComplete,
+  onSubmitComplete,
   paperActions,
   paperRedux,
 }: ComponentProps): ReactElement<typeof Fragment> {
+  const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
   const router = useRouter();
   const [componentState, setComponentState] = useState<ComponentState>(
     defaultComponentState
   );
-  const [formState, setFormState] = useState<FormState>(defaultFormState);
+  const [formState, setFormState] = useState<FormState>(
+    isPaperForHypothesis
+      ? { ...defaultFormState, hypothesis_id: hypothesisID }
+      : defaultFormState
+  );
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
@@ -156,11 +173,19 @@ function PaperuploadV2Create({
     setFormErrors,
   });
 
-  const handleFormCancel = (): void => {
+  const handleFormCancel = (event: SyntheticEvent): void => {
+    event.preventDefault();
     paperActions.resetPaperState();
     setComponentState(defaultComponentState);
-    setFormState(defaultFormState);
+    setFormState(
+      isPaperForHypothesis ? { ...defaultFormState } : defaultFormState
+    );
     setFormErrors(defaultFormErrorState);
+    if (!isNullOrUndefined(onCancelComplete)) {
+      nullthrows(onCancelComplete)();
+    }
+    // TODO: calvinhlee debug this
+    // if (!isPaperForHypothesis) {}
     router.back();
   };
 
@@ -225,10 +250,17 @@ function PaperuploadV2Create({
           modalActions.openFirstVoteModal(isUsersFirstTime);
           messageActions.showMessage({ show: true, load: true });
           paperActions.resetPaperState();
-          router.push(
-            "/paper/[paperId]/[paperName]",
-            `/paper/${paperID}/${paperName}`
-          );
+          setComponentState(defaultComponentState);
+          setFormState(defaultFormState);
+          if (!isPaperForHypothesis) {
+            router.push(
+              "/paper/[paperId]/[paperName]",
+              `/paper/${paperID}/${paperName}`
+            );
+          }
+          if (!isNullOrUndefined(onSubmitComplete)) {
+            nullthrows(onSubmitComplete)();
+          }
         },
         paperActions,
         paperRedux,
@@ -255,6 +287,7 @@ function PaperuploadV2Create({
     componentState,
     messageActions,
     formState,
+    hypothesisID,
     paperRedux,
     setComponentState,
     setFormState,
@@ -266,7 +299,12 @@ function PaperuploadV2Create({
       className={css(formGenericStyles.form)}
       onSubmit={onFormSubmit}
     >
-      <div className={css(formGenericStyles.pageContent)}>
+      <div
+        className={css(
+          formGenericStyles.pageContent,
+          isPaperForHypothesis && formGenericStyles.noBorder
+        )}
+      >
         <div className={css(formGenericStyles.header, formGenericStyles.text)}>
           {"Add Paper"}
           <a
