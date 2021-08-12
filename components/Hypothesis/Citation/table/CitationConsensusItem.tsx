@@ -52,10 +52,10 @@ function CitationConsensusItem({
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
-  const canCurrUserVote =
+  const hasCurrUserVoted =
     !isNullOrUndefined(currentUser) && isNullOrUndefined(userVote);
   const [shouldShowConsensus, setShouldShowConsensus] = useState<boolean>(
-    !canCurrUserVote
+    !hasCurrUserVoted
   );
 
   const handleReject = useCallback((): void => {
