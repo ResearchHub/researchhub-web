@@ -40,7 +40,7 @@ export type FormState = {
   doi: ID;
   file?: any; // most likely only used for create
   hubs: any[];
-  hypothesis_id: ID;
+  hypothesis_id?: ID;
   paper_title: string;
   paper_type: string;
   published: FormPublishedDate;
