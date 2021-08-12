@@ -49,19 +49,22 @@ function CitationConsensusItem({
   consensusMeta,
   currentUser,
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
-  const { downCount, upCount, userVote } = consensusMeta || {};
-  const canCurrUserVote =
-    !isNullOrUndefined(currentUser) && isNullOrUndefined(userVote);
-
+  const [localConsensusMeta, setLocalConsensusMeta] = useState<ConsensusMeta>(
+    consensusMeta
+  );
+  const { downCount, upCount, userVote } = localConsensusMeta || {};
+  const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
+  const canCurrUserVote =
+    !isNullOrUndefined(currentUser) && isNullOrUndefined(userVote);
   const [shouldShowConsensus, setShouldShowConsensus] = useState<boolean>(
     !canCurrUserVote
   );
-  const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
 
   const handleReject = useCallback((): void => {
+    setLocalConsensusMeta({ ...localConsensusMeta, downCount: downCount + 1 });
     setTotalCount(totalCount + 1);
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
@@ -69,27 +72,32 @@ function CitationConsensusItem({
   }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
 
   const handleSupport = useCallback((): void => {
+    setLocalConsensusMeta({ ...localConsensusMeta, upCount: upCount + 1 });
     setTotalCount(totalCount + 1);
     setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
     // TODO: calvinhlee - api call
   }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
-  console.warn("majority: ", majority);
-  console.warn("upCount: ", upCount);
-  console.warn("downCount: ", downCount);
-
+  // console.warn("majority: ", majority);
+  // console.warn("upCount: ", upCount);
+  // console.warn("downCount: ", downCount);
+  const majorityPercent =
+    (majority === UPVOTE ? upCount : downCount) / totalCount;
   const body = shouldShowConsensus ? (
-    <div className={css(styles.consensusBar)}>
-      <SentimentBar
-        color={colors.RED(1)}
-        width={majority === UPVOTE ? 0 : "10%"}
-      />
-      <div className={css(styles.sentimentMidpoint)} />
-      <SentimentBar
-        color={colors.GREEN(1)}
-        width={majority === UPVOTE ? "10%" : 0}
-        pointRight
-      />
+    <div className={css(styles.consensusWrap)}>
+      <div>{`Total vote: ${totalCount}`}</div>
+      <div className={css(styles.consensusBar)}>
+        <SentimentBar
+          color={colors.RED(1)}
+          width={majority === UPVOTE ? 0 : "10%"}
+        />
+        <div className={css(styles.sentimentMidpoint)} />
+        <SentimentBar
+          color={colors.GREEN(1)}
+          width={majority === UPVOTE ? "10%" : 0}
+          pointRight
+        />
+      </div>
     </div>
   ) : (
     <Fragment>
@@ -117,6 +125,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     width: "100%",
+    height: "100%",
   },
   button: {
     alignItems: "center",
@@ -133,6 +142,15 @@ const styles = StyleSheet.create({
     height: 8,
     justifyContent: "center",
     position: "relative",
+    width: "100%",
+  },
+  consensusWrap: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    height: "100%",
+    justifyContent: "space-between",
+    maxHeight: 28,
     width: "80%",
   },
   iconWrap: {
@@ -145,19 +163,26 @@ const styles = StyleSheet.create({
     height: "inherit",
   },
   sentimentMidpoint: {
-    height: 10,
-    width: 10,
     background: "#fff",
-    borderRadius: "50%",
     border: `1px solid ${colors.GREY(1)}`,
+    borderRadius: "50%",
+    height: 10,
+    left: "50%",
     position: "absolute",
-    left: "calc(50% + 5px)",
+    width: 10,
+    zIndex: 2,
   },
   pointRightBorder: {
     borderRadius: "0 8px 8px 0",
+    left: "calc(50% + 6px)",
+    position: "absolute",
+    zIndex: 1,
   },
   pointLeftBorder: {
     borderRadius: "8px 0 0 8px",
+    position: "absolute",
+    right: "calc(50% - 6px)",
+    zIndex: 1,
   },
 });
 
