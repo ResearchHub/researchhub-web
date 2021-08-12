@@ -127,12 +127,16 @@ class ReplyEntry extends React.Component {
       postUpvote,
       postUpvotePending,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     const discussionThreadId = data.id;
     const paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     const commentId = comment.id;
     const replyId = reply.id;
@@ -140,6 +144,7 @@ class ReplyEntry extends React.Component {
     postUpvotePending();
 
     await postUpvote(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,
@@ -158,12 +163,16 @@ class ReplyEntry extends React.Component {
       postDownvote,
       postDownvotePending,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     const discussionThreadId = data.id;
     const paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     const commentId = comment.id;
     const replyId = reply.id;
@@ -171,6 +180,7 @@ class ReplyEntry extends React.Component {
     postDownvotePending();
 
     await postDownvote(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,

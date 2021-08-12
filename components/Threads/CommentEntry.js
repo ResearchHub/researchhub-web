@@ -198,35 +198,67 @@ class CommentEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, comment, postUpvote, postUpvotePending, post } = this.props;
+    let {
+      data,
+      comment,
+      postUpvote,
+      postUpvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let commentId = comment.id;
 
     postUpvotePending();
 
-    await postUpvote(paperId, documentId, discussionThreadId, commentId);
+    await postUpvote(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId
+    );
 
     this.updateWidgetUI();
   };
 
   downvote = async () => {
-    let { data, comment, postDownvote, postDownvotePending, post } = this.props;
+    let {
+      data,
+      comment,
+      postDownvote,
+      postDownvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let commentId = comment.id;
 
     postDownvotePending();
 
-    await postDownvote(paperId, documentId, discussionThreadId, commentId);
+    await postDownvote(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId
+    );
 
     this.updateWidgetUI();
   };

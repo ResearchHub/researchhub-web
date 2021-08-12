@@ -292,12 +292,26 @@ export function updateReply(
   };
 }
 
-export function postUpvote(paperId, documentId, threadId, commentId, replyId) {
+export function postUpvote(
+  documentType,
+  paperId,
+  documentId,
+  threadId,
+  commentId,
+  replyId
+) {
   const isUpvote = true;
 
   return async (dispatch, getState) => {
     const response = await fetch(
-      API.UPVOTE(paperId, documentId, threadId, commentId, replyId),
+      API.UPVOTE(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      ),
       API.POST_CONFIG()
     ).catch(utils.handleCatch);
 
@@ -337,6 +351,7 @@ export function postUpvote(paperId, documentId, threadId, commentId, replyId) {
 }
 
 export function postDownvote(
+  documentType,
   paperId,
   documentId,
   threadId,
@@ -347,7 +362,14 @@ export function postDownvote(
 
   return async (dispatch, getState) => {
     const response = await fetch(
-      API.DOWNVOTE(paperId, documentId, threadId, commentId, replyId),
+      API.DOWNVOTE(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      ),
       API.POST_CONFIG()
     ).catch(utils.handleCatch);
 
