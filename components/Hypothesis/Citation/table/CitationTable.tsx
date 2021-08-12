@@ -9,31 +9,39 @@ import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import colors from "../../../../config/themes/colors";
 import React, { ReactElement, useEffect, useState } from "react";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
-import { emptyFncWithMsg } from "../../../../config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+} from "../../../../config/utils/nullchecks";
+import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 
 type Props = {
   hypothesisID: ID;
-  lastFetchTime: number;
+  lastFetchTime: number | null;
   updateLastFetchTime: Function;
 };
 
 type UseEffectGetCitationsArgs = {
   hypothesisID: ID;
-  lastFetchTime: number;
+  lastFetchTime: number | null;
   setCitationItems: (items: CitationTableRowItemProps[]) => void;
+  updateLastFetchTime: Function;
 };
 
 function useEffectGetCitations({
   hypothesisID,
   lastFetchTime,
   setCitationItems,
+  updateLastFetchTime,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
     fetchCitationsOnHypothesis({
       hypothesisID,
       onError: (error: Error): void => emptyFncWithMsg(error),
-      onSuccess: (formattedResult: CitationTableRowItemProps[]): void =>
-        setCitationItems(formattedResult),
+      onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
+        setCitationItems(formattedResult);
+        updateLastFetchTime();
+      },
     });
   }, [hypothesisID, lastFetchTime, setCitationItems]);
 }
@@ -47,21 +55,33 @@ export default function CitationTable({
   const [citationItems, setCitationItems] = useState<
     CitationTableRowItemProps[]
   >([]);
+  useEffectGetCitations({
+    hypothesisID,
+    lastFetchTime,
+    setCitationItems,
+    updateLastFetchTime,
+  });
 
-  useEffectGetCitations({ hypothesisID, lastFetchTime, setCitationItems });
-  const rowItems =
-    citationItems.length > 0 ? (
-      citationItems.map(
-        (
-          propPayload: CitationTableRowItemProps,
-          index: number
-        ): ReactElement<typeof CitationTableRowItem> => (
-          <CitationTableRowItem {...propPayload} key={index} />
-        )
+  const isLoading = isNullOrUndefined(lastFetchTime);
+  const rowItems = isLoading ? (
+    [
+      <CitationTableRowItemPlaceholder />,
+      <CitationTableRowItemPlaceholder />,
+      <CitationTableRowItemPlaceholder />,
+    ]
+  ) : citationItems.length > 0 ? (
+    citationItems.map(
+      (
+        propPayload: CitationTableRowItemProps,
+        index: number
+      ): ReactElement<typeof CitationTableRowItem> => (
+        <CitationTableRowItem {...propPayload} key={index} />
       )
-    ) : (
-      <CitationNoResult />
-    );
+    )
+  ) : (
+    <CitationNoResult />
+  );
+
   return (
     <div className={css(styles.citationTable)}>
       <div className={css(styles.columnHeaderWrap)}>
@@ -92,7 +112,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
-    height: 58,
+    height: 52,
   },
   itemsWrap: {
     display: "flex",
