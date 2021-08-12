@@ -103,7 +103,7 @@ const DiscussionTab = (props) => {
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
-  }, [filter, showTwitterComments, paperId]);
+  }, [filter, showTwitterComments, paperId, postId, hypothesisId]);
 
   function handleWindowResize() {
     if (window.innerWidth < 436) {
