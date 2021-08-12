@@ -64,7 +64,14 @@ function CitationConsensusItem({
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
     // TODO: calvinhlee - api call
-  }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
+  }, [
+    downCount,
+    localConsensusMeta,
+    setMajority,
+    setTotalCount,
+    totalCount,
+    upCount,
+  ]);
 
   const handleSupport = useCallback((): void => {
     setLocalConsensusMeta({ ...localConsensusMeta, upCount: upCount + 1 });
@@ -72,12 +79,15 @@ function CitationConsensusItem({
     setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
     // TODO: calvinhlee - api call
-  }, [upCount, downCount, totalCount, setMajority, setTotalCount]);
-  // console.warn("majority: ", majority);
-  // console.warn("upCount: ", upCount);
-  // console.warn("downCount: ", downCount);
-  const majorityPercent =
-    (majority === UPVOTE ? upCount : downCount) / totalCount;
+  }, [
+    downCount,
+    localConsensusMeta,
+    setMajority,
+    setTotalCount,
+    totalCount,
+    upCount,
+  ]);
+
   const body = shouldShowConsensus ? (
     <div className={css(styles.consensusWrap)}>
       <div>{`Total vote: ${totalCount}`}</div>
