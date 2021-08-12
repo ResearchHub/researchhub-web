@@ -273,11 +273,15 @@ class ReplyEntry extends React.Component {
       showMessage,
       setMessage,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let discussionThreadId = data.id;
     let commentId = comment.id;
@@ -285,6 +289,7 @@ class ReplyEntry extends React.Component {
 
     updateReplyPending();
     await updateReply(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,

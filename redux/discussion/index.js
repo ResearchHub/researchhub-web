@@ -25,10 +25,16 @@ export function fetchThread(paperId, threadId) {
   };
 }
 
-export function updateThread(paperId, documentId, threadId, body) {
+export function updateThread(
+  documentType,
+  paperId,
+  documentId,
+  threadId,
+  body
+) {
   return async (dispatch) => {
     const response = await fetch(
-      API.THREAD(paperId, documentId, threadId),
+      API.THREAD(documentType, paperId, documentId, threadId),
       API.PATCH_CONFIG(body)
     ).catch(utils.handleCatch);
 
@@ -123,6 +129,7 @@ export function postComment(
 }
 
 export function updateComment(
+  documentType,
   paperId,
   documentId,
   threadId,
@@ -132,7 +139,7 @@ export function updateComment(
 ) {
   return async (dispatch) => {
     const response = await fetch(
-      API.PAPER_CHAIN(paperId, documentId, threadId, commentId),
+      API.PAPER_CHAIN(documentType, paperId, documentId, threadId, commentId),
       API.PATCH_CONFIG({ text, plain_text })
     ).catch(utils.handleCatch);
 
@@ -242,6 +249,7 @@ export function postReply(
 }
 
 export function updateReply(
+  documentType,
   paperId,
   documentId,
   threadId,
@@ -252,7 +260,14 @@ export function updateReply(
 ) {
   return async (dispatch) => {
     const response = await fetch(
-      API.PAPER_CHAIN(paperId, documentId, threadId, commentId, replyId),
+      API.PAPER_CHAIN(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      ),
       API.PATCH_CONFIG({ text, plain_text })
     ).catch(utils.handleCatch);
 

@@ -220,12 +220,16 @@ class DiscussionEntry extends React.Component {
       showMessage,
       setMessage,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
 
     let body = {
@@ -234,7 +238,13 @@ class DiscussionEntry extends React.Component {
       paper: paperId,
     };
     updateThreadPending();
-    await updateThread(paperId, documentId, discussionThreadId, body);
+    await updateThread(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      body
+    );
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
       setMessage("Post successfully updated!");
       showMessage({ show: true });

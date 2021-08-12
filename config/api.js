@@ -263,10 +263,18 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    PAPER_CHAIN: (paperId, postId, threadId, commentId, replyId) => {
+    PAPER_CHAIN: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
-        postId,
+        documentId,
         threadId,
         commentId,
         replyId
@@ -341,10 +349,10 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD: (paperId, documentId, threadId) => {
+    THREAD: (documentType, paperId, documentId, threadId) => {
       let url =
-        `${BASE_URL}` +
-        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/`;
 
       return url;
@@ -875,10 +883,18 @@ const routes = (BASE_URL) => {
     SUPPORT: BASE_URL + "support/",
   };
 
-  function buildPaperChainUrl(paperId, postId, threadId, commentId, replyId) {
+  function buildPaperChainUrl(
+    documentType,
+    paperId,
+    documentId,
+    threadId,
+    commentId,
+    replyId
+  ) {
     let url =
-      `${BASE_URL}` +
-      (paperId != null ? `paper/${paperId}/` : `post/${postId}/`);
+      `${BASE_URL}${documentType}/` +
+      (paperId != null ? `${paperId}` : `${documentId}`) +
+      `/`;
 
     if (!doesNotExist(threadId)) {
       url += `discussion/${threadId}/`;
