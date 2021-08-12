@@ -1,8 +1,7 @@
-import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
+import { CitationTableRowItemProps } from "../citation/table/CitationTableRowItem";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "../../../config/types/root_types";
 import API from "../../../config/api";
-import { CitationTableRowItemProps } from "../citation/table/CitationTableRowItem";
 
 type FetchCitationsOnHypothesisArgs = {
   hypothesisID: ID;
@@ -29,7 +28,6 @@ export function fetchCitationsOnHypothesis({
           source: { document_type, documents },
           updated_date,
         } = item;
-        console.warn("ITEM: ", item);
         if (document_type === "PAPER") {
           const { paper_title, title } = documents;
           const { author_profile } = created_by;
