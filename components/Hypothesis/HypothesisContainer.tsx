@@ -7,7 +7,7 @@ import colors from "~/config/themes/colors";
 import React, { ReactElement, useEffect, useState } from "react";
 
 // Components
-import CitationContainer from "./Citation/CitationContainer";
+import CitationContainer from "./citation/CitationContainer";
 import Head from "~/components/Head";
 import PaperPromotionIcon from "~/components/Paper/PaperPromotionIcon";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
