@@ -49,7 +49,6 @@ export default function CitationTable({
   >([]);
 
   useEffectGetCitations({ hypothesisID, lastFetchTime, setCitationItems });
-
   const rowItems =
     citationItems.length > 0 ? (
       citationItems.map(
@@ -73,7 +72,10 @@ export default function CitationTable({
           label="Consensus"
           width={tableWidths.CONSENSUS}
         />
-        <CitationTableHeaderItem label="Notes" width={tableWidths.NOTES} />
+        <CitationTableHeaderItem
+          label="Cited by"
+          width={tableWidths.CITED_BY}
+        />
       </div>
       <div className={css(styles.itemsWrap)}>{rowItems}</div>
     </div>
