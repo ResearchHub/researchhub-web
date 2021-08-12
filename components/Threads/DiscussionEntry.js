@@ -348,33 +348,51 @@ class DiscussionEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, postUpvote, postUpvotePending, post } = this.props;
+    let {
+      data,
+      postUpvote,
+      postUpvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
 
     postUpvotePending();
 
-    await postUpvote(paperId, documentId, discussionThreadId);
+    await postUpvote(documentType, paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI(this.props.voteResult);
   };
 
   downvote = async () => {
-    let { data, postDownvote, postDownvotePending, post } = this.props;
+    let {
+      data,
+      postDownvote,
+      postDownvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
 
     postDownvotePending();
 
-    await postDownvote(paperId, documentId, discussionThreadId);
+    await postDownvote(documentType, paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI();
   };
