@@ -9,7 +9,7 @@ import { tableWidths } from "./constants/tableWidths";
 export type CitationTableRowItemProps = {
   citationID: ID;
   citedBy: Object[];
-  consensus: ConsensusMeta;
+  consensusMeta: ConsensusMeta;
   source: string;
   type: string;
   year: string;
@@ -33,7 +33,7 @@ function ItemColumn({ value, width }: ItemColumnProps) {
 
 export default function CitationTableRowItem({
   citedBy,
-  consensus,
+  consensusMeta,
   source,
   type,
   year,
@@ -46,7 +46,7 @@ export default function CitationTableRowItem({
       <ItemColumn value={type} width={tableWidths.TYPE} />
       <ItemColumn value={year} width={tableWidths.YEAR} />
       <ItemColumn
-        value={<CitationConsensusItem consensusMeta={consensus} />}
+        value={<CitationConsensusItem consensusMeta={consensusMeta} />}
         width={tableWidths.CONSENSUS}
       />
       <ItemColumn
