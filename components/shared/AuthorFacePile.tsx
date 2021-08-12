@@ -1,7 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useMemo } from "react";
-import LazyLoad from "react-lazyload";
 import AuthorAvatar from "../AuthorAvatar";
+import colors from "../../config/themes/colors";
+import LazyLoad from "react-lazyload";
+import React, { ReactElement, useMemo } from "react";
 
 type Props = {
   authorProfiles: Object[];
@@ -19,8 +20,9 @@ export default function AuthorFacePile({
           return (
             <AuthorAvatar
               author={author}
+              border={`2px solid ${colors.LIGHT_GREY(1)}`}
+              key={index}
               size={imgSize}
-              border="2px solid #F1F1F1"
             />
           );
         }
