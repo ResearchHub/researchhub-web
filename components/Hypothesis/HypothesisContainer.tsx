@@ -21,20 +21,18 @@ import PaperMetadata from "~/components/Paper/PaperMetadata";
 type Props = {};
 
 function useFetchHypothesis() {
-  const router = useRouter();
   const [hypothesis, setHypothesis] = useState(null);
+  const router = useRouter();
+  const hypothesisId = router.query.documentId;
 
   useEffect(() => {
-    fetch(
-      API.HYPOTHESIS({ hypothesis_id: router.query.documentId }),
-      API.GET_CONFIG()
-    )
+    fetch(API.HYPOTHESIS({ hypothesis_id: hypothesisId }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {
         setHypothesis(data);
       });
-  }, []);
+  }, [hypothesisId]);
 
   return hypothesis;
 }
