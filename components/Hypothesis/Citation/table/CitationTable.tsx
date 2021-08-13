@@ -27,12 +27,14 @@ type UseEffectGetCitationsArgs = {
   lastFetchTime: number | null;
   setCitationItems: (items: CitationTableRowItemProps[]) => void;
   updateLastFetchTime: Function;
+  onSuccess?: Function;
 };
 
 function useEffectGetCitations({
   hypothesisID,
   lastFetchTime,
   setCitationItems,
+  onSuccess,
   updateLastFetchTime,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
@@ -43,6 +45,7 @@ function useEffectGetCitations({
       onError: (error: Error): void => emptyFncWithMsg(error),
       onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
         setCitationItems(formattedResult);
+        onSuccess && onSuccess();
         // updateLastFetchTime();
       },
     });
@@ -59,14 +62,15 @@ export default function CitationTable({
   const [citationItems, setCitationItems] = useState<
     CitationTableRowItemProps[]
   >([]);
+
+  const [isLoading, setIsLoading] = useState(true);
   useEffectGetCitations({
     hypothesisID,
     lastFetchTime,
     setCitationItems,
     updateLastFetchTime,
+    onSuccess: () => setIsLoading(false),
   });
-
-  const isLoading = isNullOrUndefined(lastFetchTime);
   const rowItems = isLoading ? (
     [
       <CitationTableRowItemPlaceholder />,
