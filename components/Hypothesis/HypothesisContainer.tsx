@@ -41,7 +41,7 @@ export default function HypothesisContainer(
   const [discussionCount, setDiscussionCount] = useState(0);
   const { created_by = {}, hubs, id, slug, title } = hypothesis || {};
   return !isNullOrUndefined(hypothesis) ? (
-    <div>
+    <div className={css(styles.hypothesisContainer)}>
       <Head
         title={title}
         description={title}
@@ -76,7 +76,12 @@ export default function HypothesisContainer(
 }
 
 const styles = StyleSheet.create({
+  hypothesisContainer: {
+    height: "100%",
+    width: "100%",
+  },
   container: {
+    flexDirection: "column",
     marginLeft: "auto",
     marginRight: "auto",
     boxSizing: "border-box",

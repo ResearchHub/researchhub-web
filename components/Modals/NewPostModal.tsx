@@ -24,7 +24,7 @@ const items = [
   },
   {
     header: "Create a Hypothesis",
-    description: "TODO: Add copy here.",
+    description: "Make a claim and back it up citing relevant papers.",
     imgSrc: "/static/icons/publishProject.png",
     route: "/hypothesis/create",
   },

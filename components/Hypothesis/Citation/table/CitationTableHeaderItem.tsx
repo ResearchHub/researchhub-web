@@ -24,11 +24,15 @@ export default function CitationTableHeaderItem({
 const styles = StyleSheet.create({
   headerItem: {
     alignItems: "center",
-    color: colors.TEXT_GREY(1),
+    color: colors.LIGHT_GREY_TEXT,
     display: "flex",
-    fontWeight: 500,
+    fontWeight: 700,
     height: "100%",
+    fontSize: 12,
+    letterSpacing: "1.2px",
     justifyContent: "flex-start",
-    padding: "0 8px",
+    // padding: "0 8px",
+    textTransform: "uppercase",
+    wordWrap: "break-word",
   },
 });
