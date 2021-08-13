@@ -1,3 +1,5 @@
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+
 /**
  * Returns the value of `name` in the url `hash` path.
  *
@@ -46,6 +48,10 @@ export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
   // add uploader
   if (uploaded_by) {
     const { author_profile: uploader } = uploaded_by;
+    if (isNullOrUndefined(uploader)) {
+      return [];
+    }
+
     if (!seenUsers[uploader.id]) {
       users.push(uploader);
       seenUsers[uploader.id] = true;
@@ -55,9 +61,9 @@ export const getUsersFromPaper = (paper, filterFunc, limit = 3) => {
   // add discussion users
   (discussion_users || []).forEach((discussionUser) => {
     const { author_profile: commenter } = discussionUser;
-    // console.log("seenUser", seenUsers);
-    // console.log("commentr", commenter);
-    // console.log("commentrid", commenter.id)
+    if (isNullOrUndefined(commenter)) {
+      return [];
+    }
 
     if (!seenUsers[commenter.id]) {
       users.push(commenter);
