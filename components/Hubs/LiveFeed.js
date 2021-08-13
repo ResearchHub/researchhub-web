@@ -236,6 +236,7 @@ class LiveFeed extends React.Component {
         return currentHubNotifications.map((notification, i) => {
           // TODO: remove when hypothesis is properly returning unified document
           if (
+            isNullOrUndefined(notification.item.unified_document) ||
             isNullOrUndefined(notification.item.unified_document.document_type)
           ) {
             return null;
