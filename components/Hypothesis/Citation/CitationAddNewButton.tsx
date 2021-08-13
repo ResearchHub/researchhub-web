@@ -8,7 +8,7 @@ import { relative } from "@sentry/utils";
 
 type Props = {
   hypothesisID: ID;
-  lastFetchTime: number;
+  lastFetchTime: number | null;
   updateLastFetchTime: Function;
 };
 
