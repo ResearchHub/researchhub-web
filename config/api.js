@@ -83,6 +83,9 @@ const routes = (BASE_URL) => {
         );
       }
     },
+    CITATIONS_VOTE: ({ citationID, voteType }) => {
+      return BASE_URL + `citation/${citationID}/${voteType}/`;
+    },
     USER: ({
       userId,
       authorId,

@@ -33,6 +33,7 @@ function ItemColumn({ bold, value, width }: ItemColumnProps) {
 }
 
 export default function CitationTableRowItem({
+  citationID,
   citedBy,
   consensusMeta,
   source,
@@ -47,7 +48,12 @@ export default function CitationTableRowItem({
       <ItemColumn value={type} width={tableWidths.TYPE} />
       <ItemColumn value={year} width={tableWidths.YEAR} />
       <ItemColumn
-        value={<CitationConsensusItem consensusMeta={consensusMeta} />}
+        value={
+          <CitationConsensusItem
+            citationID={citationID}
+            consensusMeta={consensusMeta}
+          />
+        }
         width={tableWidths.CONSENSUS}
       />
       <ItemColumn

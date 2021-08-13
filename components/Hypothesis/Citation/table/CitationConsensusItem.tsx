@@ -3,10 +3,15 @@ import React, { Fragment, ReactElement, useCallback, useState } from "react";
 import { connect } from "react-redux";
 import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
 import colors from "../../../../config/themes/colors";
-import icons from "../../../../config/themes/icons";
 import { breakpoints } from "../../../../config/themes/screen";
 import { getCurrentUser } from "../../../../config/utils";
-import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
+import { ID } from "../../../../config/types/root_types";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+} from "../../../../config/utils/nullchecks";
+import { postCitationVote } from "../../api/postCitationVote";
+import icons from "../../../../config/themes/icons";
 
 export type ConsensusMeta = {
   downCount: number;
@@ -15,6 +20,7 @@ export type ConsensusMeta = {
 };
 
 type CitationConsensusItemProps = {
+  citationID: ID;
   consensusMeta: ConsensusMeta;
   currentUser?: any; // Redux
 };
@@ -42,6 +48,7 @@ function SentimentBar({
 }
 
 function CitationConsensusItem({
+  citationID,
   consensusMeta,
   currentUser,
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
@@ -60,11 +67,19 @@ function CitationConsensusItem({
   );
 
   const handleReject = useCallback((): void => {
-    setLocalConsensusMeta({ ...localConsensusMeta, downCount: downCount + 1 });
+    setLocalConsensusMeta({
+      ...localConsensusMeta,
+      downCount: downCount + 1,
+    });
     setTotalCount(totalCount + 1);
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
-    // TODO: calvinhlee - api call
+    postCitationVote({
+      citationID,
+      onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
+      onError: emptyFncWithMsg,
+      voteType: DOWNVOTE,
+    });
   }, [
     downCount,
     localConsensusMeta,
@@ -79,7 +94,12 @@ function CitationConsensusItem({
     setTotalCount(totalCount + 1);
     setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
     setShouldShowConsensus(true);
-    // TODO: calvinhlee - api call
+    postCitationVote({
+      citationID,
+      onSuccess: () => {}, //TODO: calvinhlee - move callback to here. after auth-vote fix
+      onError: emptyFncWithMsg,
+      voteType: UPVOTE,
+    });
   }, [
     downCount,
     localConsensusMeta,
@@ -88,6 +108,7 @@ function CitationConsensusItem({
     totalCount,
     upCount,
   ]);
+
   const doesMajoritySupport = majority === UPVOTE;
   const majorityPercent =
     (doesMajoritySupport ? upCount : downCount) / totalCount;
