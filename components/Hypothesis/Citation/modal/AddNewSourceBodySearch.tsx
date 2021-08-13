@@ -10,7 +10,7 @@ export default function AddNewSourceBodySearch(): ReactElement<"div"> {
       />
       <div className={css(styles.textSection)}>
         <div className={css(styles.headerText)}>
-          {"This Feature is still work in progress"}
+          {"This feature is still work in progress"}
         </div>
       </div>
     </div>
