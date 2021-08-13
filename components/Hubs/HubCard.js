@@ -20,6 +20,7 @@ import { capitalize } from "~/config/utils";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import { isDevEnv } from "~/config/utils/env";
 
 class HubCard extends React.Component {
   constructor(props) {
@@ -249,7 +250,10 @@ class HubCard extends React.Component {
   renderStats = () => {
     const { hub } = this.props;
     return (
-      <div className={css(styles.hubStats)}>
+      <div
+        className={css(styles.hubStats)}
+        data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
+      >
         <div>
           <span className={css(styles.statIcon)}>{icons.paper}</span>
           {hub.paper_count} Paper
@@ -274,6 +278,7 @@ class HubCard extends React.Component {
     return (
       <div
         className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
+        data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
       >
         <div className={css(styles.statForRow)}>
           <span className={css(styles.statIcon)}>{icons.paper}</span>
@@ -321,6 +326,7 @@ class HubCard extends React.Component {
         onClick={() => {
           this.linkRef.current.click();
         }}
+        data-hub-id={`${hub.id}`}
       >
         <div className={css(styles.hubCard)}>
           <img
@@ -337,10 +343,20 @@ class HubCard extends React.Component {
           {this.renderDelete()}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
-              <div className={css(styles.hubName)}>{hub.name}</div>
+              <div
+                className={css(styles.hubName)}
+                data-test={isDevEnv() ? `hub-name` : undefined}
+              >
+                {hub.name}
+              </div>
               {this.renderSubscribe()}
             </div>
-            <div className={css(styles.hubDescription)}>{hub.description}</div>
+            <div
+              className={css(styles.hubDescription)}
+              data-test={isDevEnv() ? `hub-description` : undefined}
+            >
+              {hub.description}
+            </div>
             {this.renderStats()}
           </div>
           <div className={css(styles.hubTitleMobile)}>
