@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement } from "react";
 
-export default function AddNewSourceBodySearch() {
+export default function AddNewSourceBodySearch(): ReactElement<"div"> {
   return (
     <div className={css(styles.addNewSourceBodySearch)}>
       <img
