@@ -66,9 +66,6 @@ function CitationConsensusItem({
     !hasCurrUserVoted
   );
 
-  console.log(isNullOrUndefined(userVote));
-  console.log(!isNullOrUndefined(currentUser));
-
   const handleReject = useCallback((): void => {
     setLocalConsensusMeta({
       ...localConsensusMeta,
