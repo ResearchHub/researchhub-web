@@ -96,7 +96,7 @@ function CitationConsensusItem({
     setShouldShowConsensus(true);
     postCitationVote({
       citationID,
-      onSuccess: () => {}, //TODO: calvinhlee - move callback to here. after auth-vote fix
+      onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
       onError: emptyFncWithMsg,
       voteType: UPVOTE,
     });
