@@ -32,7 +32,7 @@ export default function CitationAddNewButton({
       <span className={css(styles.plusCircle)}>
         <span className={css(styles.plus)}>{"+"}</span>
       </span>
-      <span>{"Add new source"}</span>
+      <span>{"Add new Paper"}</span>
     </div>
   );
 }
@@ -46,7 +46,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 21,
     userSelect: "none",
-    width: 200,
   },
   plus: {
     color: colors.BLUE(1),

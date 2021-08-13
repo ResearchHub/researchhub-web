@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import React, { ReactElement, useCallback, useState } from "react";
-import CitationAddNewButton from "./CitationAddNewButton";
 import CitationTable from "./table/CitationTable";
 
 export default function CitationContainer(): ReactElement<"div"> {
@@ -17,13 +16,8 @@ export default function CitationContainer(): ReactElement<"div"> {
 
   return (
     <div className={css(styles.citationContainer)}>
-      <div className={css(styles.header)}>{"Relevant Sources"}</div>
+      <div className={css(styles.header)}>{"Relevant Papers"}</div>
       <CitationTable
-        hypothesisID={hypothesisID}
-        lastFetchTime={lastFetchTime}
-        updateLastFetchTime={updateLastFetchTime}
-      />
-      <CitationAddNewButton
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}
         updateLastFetchTime={updateLastFetchTime}

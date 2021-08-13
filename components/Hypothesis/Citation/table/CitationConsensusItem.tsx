@@ -129,7 +129,7 @@ function CitationConsensusItem({
           style={{
             color: doesMajoritySupport ? colors.GREEN(1) : colors.RED(1),
           }}
-        >{`${majorityPercent * 100}% researchers think ${
+        >{`${majorityPercent * 100}% of researchers think ${
           doesMajoritySupport ? "yes" : "no"
         }`}</div>
       </div>
@@ -149,7 +149,8 @@ function CitationConsensusItem({
   ) : (
     <Fragment>
       <div className={css(styles.button)} onClick={handleReject} role="button">
-        <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
+        {icons.timesCircle}
+        <span className={css(styles.iconWrap)}></span>
         <span className={css(styles.buttonText)}>{"Reject"}</span>
       </div>
       <div
@@ -157,7 +158,8 @@ function CitationConsensusItem({
         onClick={handleSupport}
         role="button"
       >
-        <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
+        {icons.checkCircle}
+        <span className={css(styles.iconWrap)}></span>
         <span className={css(styles.buttonText)}>{"Support"}</span>
       </div>
     </Fragment>
@@ -199,8 +201,8 @@ const styles = StyleSheet.create({
     height: 8,
     justifyContent: "center",
     position: "relative",
-    maxWidth: "137px",
-    width: "80%",
+    // maxWidth: "137px",
+    width: "100%",
   },
   consensusWrap: {
     alignItems: "center",
@@ -247,7 +249,7 @@ const styles = StyleSheet.create({
   resultImg: { fontSize: 10, height: 10, width: 10, marginRight: 4 },
   resultWrap: {
     display: "flex",
-    fontSize: 10,
+    fontSize: 11,
     fontWeight: 500,
   },
   noSupportImg: {
