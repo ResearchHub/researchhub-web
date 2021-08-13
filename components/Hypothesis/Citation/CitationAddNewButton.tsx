@@ -4,10 +4,11 @@ import AddNewSourceModal from "./modal/AddNewSourceModal";
 import colors from "../../../config/themes/colors";
 import icons from "../../../config/themes/icons";
 import React, { ReactElement, useState } from "react";
+import { relative } from "@sentry/utils";
 
 type Props = {
   hypothesisID: ID;
-  lastFetchTime: number;
+  lastFetchTime: number | null;
   updateLastFetchTime: Function;
 };
 
@@ -28,8 +29,10 @@ export default function CitationAddNewButton({
         onCloseModal={(): void => setShouldOpenModal(false)}
         updateLastFetchTime={updateLastFetchTime}
       />
-      <span className={css(styles.plusIcon)}>{icons.plusCircleSolid}</span>
-      <span>{"Add new source"}</span>
+      <span className={css(styles.plusCircle)}>
+        <span className={css(styles.plus)}>{"+"}</span>
+      </span>
+      <span>{"Add new Paper"}</span>
     </div>
   );
 }
@@ -43,18 +46,24 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 21,
     userSelect: "none",
-    width: 200,
   },
-  plusIcon: {
-    backgroundColor: colors.BLUE(1),
-    color: "#fff",
-    borderRadius: "50%",
-    height: 14,
-    width: 14,
-    display: "flex",
-    justifyContent: "center",
+  plus: {
+    color: colors.BLUE(1),
+    left: 5,
+    position: "absolute",
+    top: -1,
+  },
+  plusCircle: {
     alignItems: "center",
     border: `1px solid ${colors.GREY(1)}`,
+    borderRadius: "50%",
+    color: "#fff",
+    display: "flex",
+    fontSize: 21,
+    height: 21,
+    justifyContent: "center",
     marginRight: 8,
+    position: "relative",
+    width: 21,
   },
 });

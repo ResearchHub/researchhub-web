@@ -193,17 +193,24 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           errorStyle={styles.errorText}
           id="title"
           inputStyle={shouldDisplayError && formErrors.title && styles.error}
-          label="Title"
+          label={documentType === "hypothesis" ? "Hypothesis" : "Title"}
           labelStyle={styles.label}
           onChange={handleOnChangeFields}
-          placeholder="Title"
           required
         />
         {/* @ts-ignore */}
         <SimpleEditor
           id="text"
           initialData={mutableFormFields.text}
-          label="Text"
+          label={
+            <div>
+              <div>Text</div>
+              <p className={css(styles.supportText)}>
+                Is there any clarification or short summary you wish to add to
+                the hypothesis?
+              </p>
+            </div>
+          }
           labelStyle={styles.label}
           onChange={handleOnChangeFields}
           containerStyle={styles.editor}
@@ -305,5 +312,13 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 900px)": {
       width: "80vw",
     },
+  },
+  supportText: {
+    marginTop: 6,
+    opacity: 0.6,
+    fontSize: 14,
+    letterSpacing: 0.7,
+    fontStyle: "italic",
+    marginBottom: 6,
   },
 });

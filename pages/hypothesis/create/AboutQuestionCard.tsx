@@ -19,9 +19,7 @@ export default function AboutQuestionCard({
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
         />
-        <div className={css(styles.aboutTitleText)}>
-          Posting to Research Hub
-        </div>
+        <div className={css(styles.aboutTitleText)}>Creating a Hypothesis</div>
       </div>
       <Collapsible
         className={css(styles.collapsibleSection)}
@@ -38,31 +36,9 @@ export default function AboutQuestionCard({
         }
       >
         <ul>
-          <li>Ask a scientific question</li>
-          <li>Share a theory or hypothesis</li>
-          <li>Publish a research output</li>
-        </ul>
-      </Collapsible>
-      <Collapsible
-        className={css(styles.collapsibleSection)}
-        contentInnerClassName={css(styles.collapsibleContent)}
-        open={isOpen}
-        openedClassName={css(styles.collapsibleSection)}
-        trigger={
-          <div className={css(styles.trigger)}>
-            What counts as research output?
-            <span className={css(styles.chevronDown)}>
-              {icons.chevronDownLeft}
-            </span>
-          </div>
-        }
-      >
-        <ul>
-          <li>Research posters</li>
-          <li>Conference proceedings</li>
-          <li>Experimental datasets</li>
-          <li>Peer-reviews</li>
-          <li>Unfinished works in progress</li>
+          <li>
+            Make a statement and back it up with relevant scientific papers
+          </li>
         </ul>
       </Collapsible>
       <Collapsible
@@ -82,7 +58,7 @@ export default function AboutQuestionCard({
         <ul>
           <li>Be civil</li>
           <li>Offer suggestions and corrections</li>
-          <li>Back up your claims by linking to relevant sources</li>
+          <li>Back up your claims by linking to relevant papers</li>
         </ul>
       </Collapsible>
     </div>
