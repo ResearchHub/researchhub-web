@@ -706,10 +706,18 @@ const routes = (BASE_URL) => {
     CENSOR_PAPER_PDF: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/censor_pdf/`;
     },
-    CENSOR_POST: ({ paperId, threadId, commentId, replyId, postId }) => {
+    CENSOR_POST: ({
+      documentType,
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      documentId,
+    }) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
-        postId,
+        documentId,
         threadId,
         commentId,
         replyId
