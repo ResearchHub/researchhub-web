@@ -447,6 +447,8 @@ class DiscussionEntry extends React.Component {
       paper,
       path,
       post,
+      hypothesis,
+      documentType,
       mediaOnly,
       shouldShowContextTitle = true,
       noVoteLine,
@@ -460,15 +462,17 @@ class DiscussionEntry extends React.Component {
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
     const username = createUsername(data);
-    let postId;
-    if (post) {
-      postId = post.id;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
-      postId: postId,
+      documentId: documentId,
       userFlag: data.user_flag,
       contentType: "thread",
       objectId: data.id,
@@ -540,6 +544,7 @@ class DiscussionEntry extends React.Component {
                     date={date}
                     paper={paper}
                     post={post}
+                    documentType={documentType}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}

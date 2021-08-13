@@ -395,10 +395,12 @@ class CommentEntry extends React.Component {
   };
 
   formatMetaData = () => {
-    let { data, comment, post } = this.props;
-    let postId;
-    if (post) {
-      postId = post.id;
+    let { data, comment, post, hypothesis, documentType } = this.props;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     return {
       authorId: data.created_by.author_profile.id,
@@ -408,7 +410,7 @@ class CommentEntry extends React.Component {
       comment: comment.user_flag,
       contentType: "comment",
       objectId: comment.id,
-      postId: postId,
+      documentId: documentId,
     };
   };
 
@@ -511,6 +513,7 @@ class CommentEntry extends React.Component {
       mobileView,
       paper,
       mediaOnly,
+      documentType,
     } = this.props;
     let threadId = comment.id;
     let commentCount =
@@ -570,6 +573,7 @@ class CommentEntry extends React.Component {
                   username={username}
                   date={date}
                   paper={paper}
+                  documentType={documentType}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}

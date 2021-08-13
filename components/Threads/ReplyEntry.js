@@ -76,10 +76,12 @@ class ReplyEntry extends React.Component {
   }
 
   formatMetaData = () => {
-    let { data, comment, reply, post } = this.props;
-    let postId;
-    if (post) {
-      postId = post.id;
+    let { data, comment, reply, post, hypothesis, documentType } = this.props;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     return {
       authorId: data.created_by.author_profile.id,
@@ -90,7 +92,7 @@ class ReplyEntry extends React.Component {
       userFlag: reply.userFlag,
       contentType: "reply",
       objectId: reply.id,
-      postId: postId,
+      documentId: documentId,
     };
   };
 
@@ -385,7 +387,14 @@ class ReplyEntry extends React.Component {
   };
 
   render() {
-    const { hostname, mobileView, reply, paper, mediaOnly } = this.props;
+    const {
+      hostname,
+      mobileView,
+      reply,
+      paper,
+      mediaOnly,
+      documentType,
+    } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -433,6 +442,7 @@ class ReplyEntry extends React.Component {
                   username={username}
                   date={date}
                   paper={paper}
+                  documentType={documentType}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
