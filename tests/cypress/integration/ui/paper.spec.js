@@ -1,4 +1,3 @@
-import Router from 'next/router'
 import paperFixture from '../../fixtures/paper.json';
 
 describe("Paper", () => {
