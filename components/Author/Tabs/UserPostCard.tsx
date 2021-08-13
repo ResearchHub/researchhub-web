@@ -34,6 +34,7 @@ export type UserPostCardProps = {
   style: StyleSheet;
   title: string;
   slug: string;
+  unified_document: any;
   unified_document_id: number;
   user: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
@@ -84,6 +85,7 @@ function UserPostCard(props: UserPostCardProps) {
     style,
     title,
     slug,
+    unified_document: unifiedDocument,
     unified_document_id: unifiedDocumentId,
     user,
     user_vote: userVote,

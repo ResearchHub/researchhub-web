@@ -96,9 +96,9 @@ class UserDiscussionsTab extends React.Component {
       let path;
 
       if (discussion.paper) {
-        path = `/paper/${discussion.paper}/${discussion.paper_slug}`;
+        path = `/paper/${discussion.paper.id}/${discussion.paper.slug}`;
       } else {
-        path = `/post/${discussion.post}/${discussion.post_slug}`;
+        path = `/post/${discussion.post.id}/${discussion.post.slug}`;
       }
       discussions.push(
         <DiscussionThreadCard
