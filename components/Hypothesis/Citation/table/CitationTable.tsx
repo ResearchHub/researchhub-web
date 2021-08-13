@@ -36,16 +36,17 @@ function useEffectGetCitations({
   updateLastFetchTime,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
-    if (isNullOrUndefined(lastFetchTime)) {
-      fetchCitationsOnHypothesis({
-        hypothesisID,
-        onError: (error: Error): void => emptyFncWithMsg(error),
-        onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
-          setCitationItems(formattedResult);
-          updateLastFetchTime();
-        },
-      });
-    }
+    // console.log(lastFetchTime)
+    // if (isNullOrUndefined(lastFetchTime)) {
+    fetchCitationsOnHypothesis({
+      hypothesisID,
+      onError: (error: Error): void => emptyFncWithMsg(error),
+      onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
+        setCitationItems(formattedResult);
+        updateLastFetchTime();
+      },
+    });
+    // }
   }, [hypothesisID, lastFetchTime, setCitationItems]);
 }
 
