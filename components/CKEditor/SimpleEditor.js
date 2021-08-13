@@ -12,6 +12,7 @@ export function SimpleEditor({
   label,
   labelStyle,
   required,
+  placeholder,
 }) {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
@@ -87,6 +88,7 @@ export function SimpleEditor({
         )}
         {editorLoaded && (
           <CKEditor
+            placeholder={placeholder}
             onChange={(event, editor) => {
               onChange(id, editor.getData());
             }}

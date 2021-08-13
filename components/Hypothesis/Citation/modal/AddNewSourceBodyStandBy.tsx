@@ -2,7 +2,7 @@ import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "../../../../config/themes/screen.js";
 import Button from "../../../Form/Button";
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 import colors from "../../../../config/themes/colors";
 
@@ -18,10 +18,15 @@ export default function AddNewSourceBodyStandBy({
   const [activeBodyType, setActiveBodyType] = useState<BodyTypeVals>(
     NEW_PAPER_UPLOAD
   );
+
+  useEffect(() => {
+    setBodyType(activeBodyType);
+  }, []);
+
   return (
     <div className={css(styles.addNewSourceBodyStandBy)}>
-      <div className={css(styles.title)}>{"Add a new source"}</div>
-      <ResearchhubOptionCard
+      <div className={css(styles.title)}>{"Add a new Paper"}</div>
+      {/* <ResearchhubOptionCard
         description="Upload a new paper that does not exist on ResearchHub"
         header="Upload a new paper"
         imgSrc="/static/icons/uploadPaper.png"
@@ -38,7 +43,7 @@ export default function AddNewSourceBodyStandBy({
         isCheckboxSquare={false}
         key={SEARCH}
         onSelect={(): void => setActiveBodyType(SEARCH)}
-      />
+      /> */}
       <div className={css(styles.buttonWrap)}>
         <Button
           customButtonStyle={styles.buttonCustomStyle}

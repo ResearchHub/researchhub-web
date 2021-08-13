@@ -19,12 +19,17 @@ type ItemColumnProps = {
   bold?: boolean;
   value: ReactNode;
   width: string;
+  className?: Object;
 };
 
-function ItemColumn({ bold, value, width }: ItemColumnProps) {
+function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
   return (
     <div
-      className={css(styles.itemColumn, Boolean(bold) && styles.bold)}
+      className={css(
+        styles.itemColumn,
+        Boolean(bold) && styles.bold,
+        className
+      )}
       style={{ maxWidth: width, minWidth: width, width }}
     >
       {value}
@@ -40,12 +45,14 @@ export default function CitationTableRowItem({
   type,
   year,
 }: CitationTableRowItemProps): ReactElement<"div"> {
-  const formattedSource =
-    source.length > 80 ? source.slice(0, 80) + " ..." : source;
   return (
     <div className={css(styles.tableRowItem)}>
-      <ItemColumn bold value={formattedSource} width={tableWidths.SOURCE} />
-      <ItemColumn value={type} width={tableWidths.TYPE} />
+      <ItemColumn bold value={source} width={tableWidths.SOURCE} />
+      <ItemColumn
+        className={styles.capitalize}
+        value={type && type.toLocaleLowerCase()}
+        width={tableWidths.TYPE}
+      />
       <ItemColumn value={year} width={tableWidths.YEAR} />
       <ItemColumn
         value={
@@ -70,13 +77,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-    height: 80,
+    // height: 80,
+    padding: "20px 0px",
     justifyContent: "flex-start",
-    padding: "0 8px",
+    // padding: "0 8px",
+    paddingRight: 8,
     fontFamily: "Roboto",
     size: 16,
     fontStyle: "normal",
     fontWeight: 400,
+    boxSizing: "border-box",
   },
   bold: {
     size: 16,
@@ -87,5 +97,8 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
+  },
+  capitalize: {
+    textTransform: "capitalize",
   },
 });

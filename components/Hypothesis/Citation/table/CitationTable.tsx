@@ -14,6 +14,7 @@ import {
   isNullOrUndefined,
 } from "../../../../config/utils/nullchecks";
 import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
+import CitationAddNewButton from "../CitationAddNewButton";
 
 type Props = {
   hypothesisID: ID;
@@ -81,13 +82,20 @@ export default function CitationTable({
       )
     )
   ) : (
-    <CitationNoResult />
+    <div className={css(styles.citationNoResults)}>
+      <CitationNoResult />
+      <CitationAddNewButton
+        hypothesisID={hypothesisID}
+        lastFetchTime={lastFetchTime}
+        updateLastFetchTime={updateLastFetchTime}
+      />
+    </div>
   );
 
   return (
     <div className={css(styles.citationTable)}>
       <div className={css(styles.columnHeaderWrap)}>
-        <CitationTableHeaderItem label="Source" width={tableWidths.SOURCE} />
+        <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
         <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
         <CitationTableHeaderItem label="Year" width={tableWidths.YEAR} />
         <CitationTableHeaderItem
@@ -100,6 +108,15 @@ export default function CitationTable({
         />
       </div>
       <div className={css(styles.itemsWrap)}>{rowItems}</div>
+      {citationItems.length > 0 ? (
+        <div className={css(styles.addCitation)}>
+          <CitationAddNewButton
+            hypothesisID={hypothesisID}
+            lastFetchTime={lastFetchTime}
+            updateLastFetchTime={updateLastFetchTime}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }
@@ -119,7 +136,16 @@ const styles = StyleSheet.create({
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    maxHeight: "500",
-    overflow: "auto",
+    // maxHeight: "500",
+    // overflow: "auto",
+  },
+  citationNoResults: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+  },
+  addCitation: {
+    marginTop: 20,
   },
 });
