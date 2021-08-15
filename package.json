@@ -7,7 +7,7 @@
     "start": "next start",
     "sentry": "node ./scripts/sentry.js",
     "analyze": "ANALYZE=true yarn run build",
-    "cypress:open": "cypress open --project $PWD/tests",
+    "cy:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
     "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
