@@ -21,6 +21,7 @@ import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import { isDevEnv } from "~/config/utils/env";
 
 export type UserPostCardProps = {
   created_by: any;
@@ -303,6 +304,7 @@ function UserPostCard(props: UserPostCardProps) {
       )}
       onClick={navigateToPage}
       key={`post-${id}`}
+      data-test={isDevEnv() ? `document-${id}` : undefined}
     >
       {desktopVoteWidget}
       <div className={css(styles.container)}>

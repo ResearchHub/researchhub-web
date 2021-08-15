@@ -592,7 +592,7 @@ const PaperEntryCard = (props) => {
       )}
       key={`${id}-${index}-${title}`}
       onClick={navigateToPage}
-      data-test={isDevEnv() ? `paper-${id}` : undefined}
+      data-test={isDevEnv() ? `document-${id}` : undefined}
     >
       <ReactTooltip />
       {desktopOnly(renderVoteWidget())}
