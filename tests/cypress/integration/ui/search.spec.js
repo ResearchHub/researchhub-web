@@ -1,3 +1,5 @@
+import { breakpoints } from "../../../../config/themes/screen";
+
 describe('Search', () => {
   const BEST_RESULTS_APP_PATH = "/search/all?q=";
   const BEST_RESULTS_API_PATH = `${Cypress.env('serverBaseUrl')}/api/search/all/*`;
@@ -62,7 +64,7 @@ describe('Search', () => {
 
   context('Viewport', () => {
     it('displays expanded search for small screens', () => {
-      cy.viewport(650, 1000);
+      cy.viewport(breakpoints.xsmall.int, 1000);
       cy.wait(200);
 
       cy.visit(BEST_RESULTS_APP_PATH);
@@ -75,7 +77,7 @@ describe('Search', () => {
     });
 
     it('does not display expanded search in large screens', () => {
-      cy.viewport(1500, 1000);
+      cy.viewport(breakpoints.xxlarge.int, 1000);
       cy.wait(200);
 
       cy.visit(BEST_RESULTS_APP_PATH);

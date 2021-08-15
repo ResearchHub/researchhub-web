@@ -45,6 +45,7 @@ import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isDevEnv } from "~/config/utils/env";
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -557,7 +558,11 @@ const Navbar = (props) => {
           />
         </div>
 
-        <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
+        <div
+          className={css(styles.menuIcon)}
+          onClick={toggleSideMenu}
+          data-test={isDevEnv() ? `navbar-mobile-trigger` : undefined}
+        >
           {icons.burgerMenu}
         </div>
       </div>

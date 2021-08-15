@@ -14,6 +14,7 @@ import { BannerActions } from "~/redux/banner";
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import { useEffect } from "react";
+import { isDevEnv } from "~/config/utils/env";
 
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
@@ -142,7 +143,10 @@ const GoogleLoginButton = (props) => {
           );
         } else {
           return (
-            <div className={css(styles.glogin)}>
+            <div
+              className={css(styles.glogin)}
+              data-test={isDevEnv() ? `google-login-btn` : undefined}
+            >
               <Button
                 disabled={renderProps.disabled || disabled}
                 onClick={renderProps.onClick}
