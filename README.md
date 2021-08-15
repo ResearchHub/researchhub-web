@@ -33,3 +33,14 @@ For more info see https://github.com/typicode/husky
 
 Running `$ git push` will trigger a git pre-push hook that will run all tests.
 If you want to push something without testing it run `$ git push --no-verify`. (This is not recommended :)
+
+## Testing
+
+### Integration Tests
+
+Integration tests are created using [cypress](https://www.cypress.io/)
+
+- Run `npm run test` to run all integration tests in headless mode
+- Run `npm run cy:open` to pick which tests to run in browser mode
+- Run `npm run cy:spec --spec path/to/your/test` to run a specific spec.  
+  e.g. `npm run cy:spec --spec tests/cypress/integration/ui/search.spec.js`
