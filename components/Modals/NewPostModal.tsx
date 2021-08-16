@@ -24,7 +24,7 @@ const items = [
   },
   {
     header: "Create a Hypothesis",
-    description: "TODO: Add copy here.",
+    description: "Make a claim and back it up citing relevant papers.",
     imgSrc: "/static/icons/publishProject.png",
     route: "/hypothesis/create",
   },
@@ -92,7 +92,6 @@ export default function NewPostModal({
             </div>
             <div className={css(styles.list)}>{optionCards}</div>
             <div className={css(styles.buttonContainer)}>
-              {/* @ts-ignore */}
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}

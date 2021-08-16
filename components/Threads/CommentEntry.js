@@ -198,35 +198,67 @@ class CommentEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, comment, postUpvote, postUpvotePending, post } = this.props;
+    let {
+      data,
+      comment,
+      postUpvote,
+      postUpvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let commentId = comment.id;
 
     postUpvotePending();
 
-    await postUpvote(paperId, documentId, discussionThreadId, commentId);
+    await postUpvote(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId
+    );
 
     this.updateWidgetUI();
   };
 
   downvote = async () => {
-    let { data, comment, postDownvote, postDownvotePending, post } = this.props;
+    let {
+      data,
+      comment,
+      postDownvote,
+      postDownvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let commentId = comment.id;
 
     postDownvotePending();
 
-    await postDownvote(paperId, documentId, discussionThreadId, commentId);
+    await postDownvote(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId
+    );
 
     this.updateWidgetUI();
   };
@@ -279,17 +311,23 @@ class CommentEntry extends React.Component {
       postReplyPending,
       discussionCount,
       setCount,
+      documentType,
       post,
+      hypothesis,
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let discussionThreadId = data.id;
     let commentId = comment.id;
+
     postReplyPending();
     await postReply(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,
@@ -322,17 +360,22 @@ class CommentEntry extends React.Component {
       showMessage,
       setMessage,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     let discussionThreadId = data.id;
     let commentId = comment.id;
 
     updateCommentPending();
     await updateComment(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,
@@ -352,10 +395,12 @@ class CommentEntry extends React.Component {
   };
 
   formatMetaData = () => {
-    let { data, comment, post } = this.props;
-    let postId;
-    if (post) {
-      postId = post.id;
+    let { data, comment, post, hypothesis, documentType } = this.props;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     return {
       authorId: data.created_by.author_profile.id,
@@ -365,7 +410,7 @@ class CommentEntry extends React.Component {
       comment: comment.user_flag,
       contentType: "comment",
       objectId: comment.id,
-      postId: postId,
+      documentId: documentId,
     };
   };
 
@@ -424,7 +469,17 @@ class CommentEntry extends React.Component {
   };
 
   renderReplies = () => {
-    let { data, hostname, path, comment, paper, mediaOnly, post } = this.props;
+    let {
+      data,
+      hostname,
+      path,
+      comment,
+      paper,
+      mediaOnly,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let replies =
       this.state.replies.length < 1
         ? this.props.comment.replies
@@ -443,6 +498,8 @@ class CommentEntry extends React.Component {
           onReplySubmitCallback={this.onReplySubmitCallback}
           mediaOnly={mediaOnly}
           post={post}
+          hypothesis={hypothesis}
+          documentType={documentType}
         />
       );
     });
@@ -456,6 +513,7 @@ class CommentEntry extends React.Component {
       mobileView,
       paper,
       mediaOnly,
+      documentType,
     } = this.props;
     let threadId = comment.id;
     let commentCount =
@@ -515,6 +573,7 @@ class CommentEntry extends React.Component {
                   username={username}
                   date={date}
                   paper={paper}
+                  documentType={documentType}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}

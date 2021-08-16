@@ -42,15 +42,19 @@ const DiscussionTab = (props) => {
     hostname,
     documentType,
     paper,
+    paperState,
     calculatedCount,
     setCount,
     discussionRef,
     getThreads,
     getPostThreads,
+    getHypothesisThreads,
     paperId,
     isCollapsible,
     post,
     postId,
+    hypothesis,
+    hypothesisId,
   } = props;
 
   // TODO: move to config
@@ -99,7 +103,7 @@ const DiscussionTab = (props) => {
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
-  }, [filter, showTwitterComments, paperId]);
+  }, [filter, showTwitterComments, paperId, postId, hypothesisId]);
 
   function handleWindowResize() {
     if (window.innerWidth < 436) {
@@ -143,8 +147,10 @@ const DiscussionTab = (props) => {
                       mobileView={mobileView}
                       discussionCount={calculatedCount}
                       setCount={setCount}
-                      paper={props.paperState}
-                      post={props.post}
+                      documentType={documentType}
+                      paper={paperState}
+                      post={post}
+                      hypothesis={hypothesis}
                     />
                   );
                 })
@@ -180,115 +186,78 @@ const DiscussionTab = (props) => {
   };
 
   const save = (text, plain_text) => {
+    let param;
+    let documentId;
     if (documentType === "paper") {
-      let { paperId } = router.query;
-      props.showMessage({ load: true, show: true });
-
-      let param = {
+      documentId = router.query.paperId;
+      param = {
         text: text,
         paper: paperId,
         plain_text: plain_text,
       };
-
-      let config = API.POST_CONFIG(param);
-
-      return fetch(API.DISCUSSION({ paperId, twitter: null }), config)
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((resp) => {
-          props.showMessage({ show: false });
-          props.setMessage("Successfully Saved!");
-          props.showMessage({ show: true });
-          // update state & redux
-          let newDiscussion = { ...resp };
-          setThreads([newDiscussion, ...threads]);
-          let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-          setFormattedThreads([formattedDiscussion, ...formattedThreads]);
-          cancel();
-
-          // amp events
-          let payload = {
-            event_type: "create_thread",
-            time: +new Date(),
-            user_id: props.auth.user
-              ? props.auth.user.id && props.auth.user.id
-              : null,
-            insert_id: `thread_${resp.id}`,
-            event_properties: {
-              interaction: "Post Thread",
-              paper: paperId,
-              is_removed: resp.is_removed,
-            },
-          };
-          props.setCount(props.calculatedCount + 1);
-          props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-          props.getUser();
-          sendAmpEvent(payload);
-        })
-        .catch((err) => {
-          if (err.response.status === 429) {
-            props.showMessage({ show: false });
-            return props.openRecaptchaPrompt(true);
-          }
-          props.showMessage({ show: false });
-          props.setMessage("Something went wrong");
-          props.showMessage({ show: true, error: true });
-        });
-    } else {
-      let { documentId } = router.query;
-      props.showMessage({ load: true, show: true });
-
-      let param = {
+    } else if (documentType === "post") {
+      documentId = router.query.documentId;
+      param = {
         text: text,
         post: documentId,
         plain_text: plain_text,
       };
-
-      let config = API.POST_CONFIG(param);
-
-      return fetch(API.DISCUSSION({ documentId, twitter: null }), config)
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((resp) => {
-          props.showMessage({ show: false });
-          props.setMessage("Successfully Saved!");
-          props.showMessage({ show: true });
-          // update state & redux
-          let newDiscussion = { ...resp };
-          setThreads([newDiscussion, ...threads]);
-          let formattedDiscussion = createFormattedDiscussion(newDiscussion);
-          setFormattedThreads([formattedDiscussion, ...formattedThreads]);
-          cancel();
-
-          // amp events
-          let payload = {
-            event_type: "create_thread",
-            time: +new Date(),
-            user_id: props.auth.user
-              ? props.auth.user.id && props.auth.user.id
-              : null,
-            insert_id: `thread_${resp.id}`,
-            event_properties: {
-              interaction: "Post Thread",
-              paper: paperId,
-              is_removed: resp.is_removed,
-            },
-          };
-          props.setCount(props.calculatedCount + 1);
-          props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
-          props.getUser();
-          sendAmpEvent(payload);
-        })
-        .catch((err) => {
-          if (err.response.status === 429) {
-            props.showMessage({ show: false });
-            return props.openRecaptchaPrompt(true);
-          }
-          props.showMessage({ show: false });
-          props.setMessage("Something went wrong");
-          props.showMessage({ show: true, error: true });
-        });
+    } else if (documentType === "hypothesis") {
+      documentId = router.query.documentId;
+      param = {
+        text: text,
+        hypothesis: documentId,
+        plain_text: plain_text,
+      };
     }
+    props.showMessage({ load: true, show: true });
+    let config = API.POST_CONFIG(param);
+
+    return fetch(
+      API.DISCUSSION({ documentId, documentType, twitter: null }),
+      config
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((resp) => {
+        props.showMessage({ show: false });
+        props.setMessage("Successfully Saved!");
+        props.showMessage({ show: true });
+        // update state & redux
+        let newDiscussion = { ...resp };
+        setThreads([newDiscussion, ...threads]);
+        let formattedDiscussion = createFormattedDiscussion(newDiscussion);
+        setFormattedThreads([formattedDiscussion, ...formattedThreads]);
+        cancel();
+
+        // amp events
+        let payload = {
+          event_type: "create_thread",
+          time: +new Date(),
+          user_id: props.auth.user
+            ? props.auth.user.id && props.auth.user.id
+            : null,
+          insert_id: `thread_${resp.id}`,
+          event_properties: {
+            interaction: "Post Thread",
+            paper: documentId,
+            is_removed: resp.is_removed,
+          },
+        };
+        props.setCount(props.calculatedCount + 1);
+        props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+        props.getUser();
+        sendAmpEvent(payload);
+      })
+      .catch((err) => {
+        if (err.response.status === 429) {
+          props.showMessage({ show: false });
+          return props.openRecaptchaPrompt(true);
+        }
+        props.showMessage({ show: false });
+        props.setMessage("Something went wrong");
+        props.showMessage({ show: true, error: true });
+      });
   };
 
   const createFormattedDiscussion = (newDiscussion) => {
@@ -344,6 +313,20 @@ const DiscussionTab = (props) => {
       const res = await getPostThreads({
         documentId: postId,
         post: currentPost,
+        filter,
+        loadMore,
+        twitter: showTwitterComments,
+      });
+      const threads = res.payload.threads;
+      setFetching(false);
+      setLoading(false);
+      setThreads(threads);
+      setFormattedThreads(formatThreads(threads, basePath));
+    } else if (hypothesisId) {
+      const currentHypothesis = hypothesis;
+      const res = await getHypothesisThreads({
+        documentId: hypothesisId,
+        hypothesis: currentHypothesis,
         filter,
         loadMore,
         twitter: showTwitterComments,
@@ -1096,6 +1079,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getThreads: PaperActions.getThreads,
   getPostThreads: PaperActions.getPostThreads,
+  getHypothesisThreads: PaperActions.getHypothesisThreads,
 };
 
 export default connect(

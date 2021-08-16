@@ -3,6 +3,7 @@ import { API } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
 import { doesNotExist } from "~/config/utils";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { nullthrows } from "./utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -70,6 +71,21 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 
 const routes = (BASE_URL) => {
   return {
+    CITATIONS: ({ citationID, hypothesisID }) => {
+      if (!isNullOrUndefined(citationID)) {
+        return BASE_URL + `citation/${citationID}`;
+      } else if (!isNullOrUndefined(hypothesisID)) {
+        return BASE_URL + `hypothesis/${hypothesisID}/get_citations/`;
+      } else {
+        nullthrows(
+          null,
+          "Both citationID & hypothesisID null when formatting URL"
+        );
+      }
+    },
+    CITATIONS_VOTE: ({ citationID, voteType }) => {
+      return BASE_URL + `citation/${citationID}/${voteType}/`;
+    },
     USER: ({
       userId,
       authorId,
@@ -268,10 +284,18 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    PAPER_CHAIN: (paperId, postId, threadId, commentId, replyId) => {
+    PAPER_CHAIN: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
-        postId,
+        documentId,
         threadId,
         commentId,
         replyId
@@ -288,21 +312,16 @@ const routes = (BASE_URL) => {
       filter,
       isRemoved,
       page,
-      paperId,
       documentId,
+      documentType,
       progress,
       source,
       targetId,
       twitter,
     }) => {
-      let url =
-        targetId != null
-          ? BASE_URL +
-            (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
-            `/discussion/${targetId}/`
-          : BASE_URL +
-            (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
-            `/discussion/`;
+      let url = `${BASE_URL}${documentType}/${documentId}/discussion/${
+        targetId != null ? targetId + "/" : ""
+      }`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
@@ -351,10 +370,10 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD: (paperId, documentId, threadId) => {
+    THREAD: (documentType, paperId, documentId, threadId) => {
       let url =
-        `${BASE_URL}` +
-        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/`;
 
       return url;
@@ -378,10 +397,10 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT: (paperId, documentId, threadId, page) => {
+    THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
       let url =
-        `${BASE_URL}` +
-        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/comment/`;
 
       if (typeof page === "number") {
@@ -391,10 +410,17 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT_REPLY: (paperId, documentId, threadId, commentId, page) => {
+    THREAD_COMMENT_REPLY: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      page
+    ) => {
       let url =
-        `${BASE_URL}` +
-        (paperId != null ? `paper/${paperId}` : `post/${documentId}`) +
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
         `/discussion/${threadId}/comment/${commentId}/reply/`;
 
       if (typeof page === "number") {
@@ -545,8 +571,16 @@ const routes = (BASE_URL) => {
       // New post types, such as Question
       return `${BASE_URL}researchhub_posts/${postId}/downvote/`;
     },
-    UPVOTE: (paperId, documentId, threadId, commentId, replyId) => {
+    UPVOTE: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
         documentId,
         threadId,
@@ -557,8 +591,16 @@ const routes = (BASE_URL) => {
       return url + "upvote/";
     },
 
-    DOWNVOTE: (paperId, documentId, threadId, commentId, replyId) => {
+    DOWNVOTE: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
         documentId,
         threadId,
@@ -672,10 +714,18 @@ const routes = (BASE_URL) => {
     CENSOR_PAPER_PDF: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/censor_pdf/`;
     },
-    CENSOR_POST: ({ paperId, threadId, commentId, replyId, postId }) => {
+    CENSOR_POST: ({
+      documentType,
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      documentId,
+    }) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
-        postId,
+        documentId,
         threadId,
         commentId,
         replyId
@@ -878,10 +928,18 @@ const routes = (BASE_URL) => {
     SUPPORT: BASE_URL + "support/",
   };
 
-  function buildPaperChainUrl(paperId, postId, threadId, commentId, replyId) {
+  function buildPaperChainUrl(
+    documentType,
+    paperId,
+    documentId,
+    threadId,
+    commentId,
+    replyId
+  ) {
     let url =
-      `${BASE_URL}` +
-      (paperId != null ? `paper/${paperId}/` : `post/${postId}/`);
+      `${BASE_URL}${documentType}/` +
+      (paperId != null ? `${paperId}` : `${documentId}`) +
+      `/`;
 
     if (!doesNotExist(threadId)) {
       url += `discussion/${threadId}/`;

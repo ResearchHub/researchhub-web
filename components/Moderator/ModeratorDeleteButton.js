@@ -30,6 +30,7 @@ const ModeratorDeleteButton = (props) => {
     authorId,
     onAction,
     metaData,
+    documentType,
   } = props;
 
   const containerClass = [
@@ -160,7 +161,14 @@ const ModeratorDeleteButton = (props) => {
   const deletePost = () => {
     showLoader();
     let query = buildQuery();
-    const { paperId, threadId, commentId, replyId, postId } = props.metaData;
+    const {
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      documentId,
+    } = props.metaData;
+    debugger;
     return fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -170,7 +178,7 @@ const ModeratorDeleteButton = (props) => {
           props.onRemove({
             commentID: commentId,
             paperID: paperId,
-            postID: postId,
+            documentID: documentId,
             replyID: replyId,
             threadID: threadId,
           });
@@ -274,13 +282,13 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const buildQuery = () => {
-    let { paperId, threadId, commentId, replyId, postId } = props.metaData;
+    let { paperId, threadId, commentId, replyId, documentId } = props.metaData;
     let query = {};
+    query.documentType = documentType;
 
-    if (!doesNotExist(postId)) {
-      query.postId = postId;
+    if (!doesNotExist(documentId)) {
+      query.documentId = documentId;
     }
-
     if (!doesNotExist(paperId)) {
       query.paperId = paperId;
     }

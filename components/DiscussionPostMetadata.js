@@ -202,6 +202,7 @@ const DiscussionPostMetadata = (props) => {
                   iconStyle={styles.expandIcon}
                   label={"Remove"}
                   actionType={"post"}
+                  documentType={props.documentType}
                   metaData={metaData}
                   onRemove={onRemove}
                   isModerator={isModerator}
