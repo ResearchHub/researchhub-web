@@ -15,17 +15,26 @@ import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PostPageCard from "~/components/PostPageCard";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
-import PaperPDFModal from "~/components/Modals/PaperPDFModal";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperFeatureModal = dynamic(() =>
+  import("~/components/Modals/PaperFeatureModal")
+);
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
+const PaperTransactionModal = dynamic(() =>
+  import("~/components/Modals/PaperTransactionModal")
+);
 
 // Redux
 import helpers from "@quantfive/js-web-config/helpers";
