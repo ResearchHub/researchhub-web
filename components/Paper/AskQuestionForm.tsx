@@ -203,13 +203,17 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           id="text"
           initialData={mutableFormFields.text}
           label={
-            <div>
-              <div>Text</div>
-              <p className={css(styles.supportText)}>
-                Is there any clarification or short summary you wish to add to
-                the hypothesis?
-              </p>
-            </div>
+            documentType === "hypothesis" ? (
+              <div>
+                <div>Text</div>
+                <p className={css(styles.supportText)}>
+                  Is there any clarification or short summary you wish to add to
+                  the hypothesis?
+                </p>
+              </div>
+            ) : (
+              "Text"
+            )
           }
           labelStyle={styles.label}
           onChange={handleOnChangeFields}

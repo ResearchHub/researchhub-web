@@ -58,7 +58,6 @@ export default function AboutQuestionCard({
         <ul>
           <li>Be civil</li>
           <li>Offer suggestions and corrections</li>
-          <li>Back up your claims by linking to relevant papers</li>
         </ul>
       </Collapsible>
     </div>
