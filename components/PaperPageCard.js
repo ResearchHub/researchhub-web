@@ -100,12 +100,8 @@ class PaperPageCard extends React.Component {
       restorePaper,
     } = this.props;
     let params = {};
-    if (isModerator) {
+    if (isModerator || isSubmitter) {
       params.is_removed = false;
-    }
-
-    if (isSubmitter) {
-      params.is_removed_by_user = false;
     }
 
     return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
@@ -128,12 +124,8 @@ class PaperPageCard extends React.Component {
       removePaper,
     } = this.props;
     let params = {};
-    if (isModerator) {
+    if (isModerator || isSubmitter) {
       params.is_removed = true;
-    }
-
-    if (isSubmitter) {
-      params.is_removed_by_user = true;
     }
 
     return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))

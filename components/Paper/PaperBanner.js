@@ -47,16 +47,9 @@ const PaperBanner = ({
       }
     }
     const isRemoved = postType === "post" ? post.is_removed : paper.is_removed;
-    const isRemovedByUser = paper && paper.is_removed_by_user;
 
     if (isRemoved) {
       setType("removed");
-      setShowBanner(true);
-      return;
-    }
-
-    if (isRemovedByUser) {
-      setType("removedBbyUser");
       setShowBanner(true);
       return;
     }
@@ -76,8 +69,8 @@ const PaperBanner = ({
               {renderIcon(true)}
               {post ? "Post" : "Paper"} Removed
             </h3>
-            This {post ? "post" : "paper"} has been removed for having poor
-            quality content and not adhering to guidelines.
+            This {post ? "post" : "paper"} has been removed by the submitter or
+            for having poor quality content and not adhering to guidelines.
             <br />
             Please visit our{" "}
             <a
@@ -89,16 +82,6 @@ const PaperBanner = ({
               {post ? "Post" : "Paper"} Submission Guidelines
             </a>{" "}
             to review our standard.
-          </div>
-        );
-      case "removedByUser":
-        return (
-          <div className={css(styles.removedMessage)}>
-            <h3 className={css(styles.header)}>
-              {renderIcon(true)}
-              Paper Removed
-            </h3>
-            This paper has been removed from ResearchHub by the submitter.
           </div>
         );
       default:
