@@ -135,13 +135,13 @@ class DiscussionEntry extends React.Component {
         fetching: true,
       },
       () => {
-        let { data } = this.props;
+        let { data, documentType } = this.props;
         let discussionThreadId = data.id;
         let paperId = data.paper;
         let page = this.state.page;
 
         fetch(
-          API.THREAD_COMMENT(paperId, discussionThreadId, page),
+          API.THREAD_COMMENT(documentType, paperId, discussionThreadId, page),
           API.GET_CONFIG()
         )
           .then(Helpers.checkStatus)
@@ -170,16 +170,22 @@ class DiscussionEntry extends React.Component {
       postCommentPending,
       discussionCount,
       setCount,
+      documentType,
       post,
+      hypothesis,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
+
     postCommentPending();
     await postComment(
+      documentType,
       paperId,
       documentId,
       discussionThreadId,
@@ -214,12 +220,16 @@ class DiscussionEntry extends React.Component {
       showMessage,
       setMessage,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
 
     let body = {
@@ -228,7 +238,13 @@ class DiscussionEntry extends React.Component {
       paper: paperId,
     };
     updateThreadPending();
-    await updateThread(paperId, documentId, discussionThreadId, body);
+    await updateThread(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      body
+    );
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
       setMessage("Post successfully updated!");
       showMessage({ show: true });
@@ -278,6 +294,8 @@ class DiscussionEntry extends React.Component {
       paper,
       mediaOnly,
       post,
+      hypothesis,
+      documentType,
     } = this.props;
     let comments = this.state.comments;
 
@@ -297,6 +315,8 @@ class DiscussionEntry extends React.Component {
             setCount={setCount}
             mediaOnly={mediaOnly}
             post={post}
+            hypothesis={hypothesis}
+            documentType={documentType}
           />
         );
       });
@@ -328,33 +348,51 @@ class DiscussionEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, postUpvote, postUpvotePending, post } = this.props;
+    let {
+      data,
+      postUpvote,
+      postUpvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
 
     postUpvotePending();
 
-    await postUpvote(paperId, documentId, discussionThreadId);
+    await postUpvote(documentType, paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI(this.props.voteResult);
   };
 
   downvote = async () => {
-    let { data, postDownvote, postDownvotePending, post } = this.props;
+    let {
+      data,
+      postDownvote,
+      postDownvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
-    if (post != null) {
+    if (documentType === "post") {
       documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
 
     postDownvotePending();
 
-    await postDownvote(paperId, documentId, discussionThreadId);
+    await postDownvote(documentType, paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI();
   };
@@ -409,6 +447,8 @@ class DiscussionEntry extends React.Component {
       paper,
       path,
       post,
+      hypothesis,
+      documentType,
       mediaOnly,
       shouldShowContextTitle = true,
       noVoteLine,
@@ -422,15 +462,17 @@ class DiscussionEntry extends React.Component {
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
     const username = createUsername(data);
-    let postId;
-    if (post) {
-      postId = post.id;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
     }
     const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
-      postId: postId,
+      documentId: documentId,
       userFlag: data.user_flag,
       contentType: "thread",
       objectId: data.id,
@@ -502,6 +544,7 @@ class DiscussionEntry extends React.Component {
                     date={date}
                     paper={paper}
                     post={post}
+                    documentType={documentType}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}
