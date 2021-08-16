@@ -2,8 +2,9 @@ import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import dynamic from "next/dynamic";
 
-// Components
-import BaseModal from "~/components/Modals/BaseModal";
+// Dynamic modules
+import dynamic from "next/dynamic";
+const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 // Config
 import ResearchHubIcon from "../static/ResearchHubIcon";

@@ -12,27 +12,18 @@ import Collapsible from "react-collapsible";
 // Redux
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
-
+import dynamic from "next/dynamic";
 // Components
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "../components/Form/Button";
-import DndModal from "../components/Modals/DndModal";
-import FirstVoteModal from "../components/Modals/FirstVoteModal";
+import UserStateBanner from "./Banner/UserStateBanner";
 import GoogleLoginButton from "../components/GoogleLoginButton";
-import LoginModal from "../components/Modals/LoginModal";
 import NewPostButton from "./NewPostButton";
 import Notification from "./Notifications/Notification";
-import OrcidConnectModal from "./Modals/OrcidConnectModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
-import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-// import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import UploadPaperModal from "../components/Modals/UploadPaperModal";
-import UserStateBanner from "./Banner/UserStateBanner";
-import WithdrawalModal from "../components/Modals/WithdrawalModal";
 import SiteWideBanner from "~/components/SiteWideBanner";
 
 // Styles
@@ -46,6 +37,28 @@ import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isDevEnv } from "~/config/utils/env";
+
+// Dynamic modules
+const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
+const FirstVoteModal = dynamic(() =>
+  import("~/components/Modals/FirstVoteModal")
+);
+const LoginModal = dynamic(() => import("~/components/Modals/LoginModal"));
+const OrcidConnectModal = dynamic(() =>
+  import("~/components/Modals/OrcidConnectModal")
+);
+const PromotionInfoModal = dynamic(() =>
+  import("~/components/Modals/PromotionInfoModal")
+);
+const UploadPaperModal = dynamic(() =>
+  import("~/components/Modals/UploadPaperModal")
+);
+const WithdrawalModal = dynamic(() =>
+  import("~/components/Modals/WithdrawalModal")
+);
+const ReCaptchaPrompt = dynamic(() =>
+  import("~/components/Modals/ReCaptchaPrompt")
+);
 
 const Navbar = (props) => {
   const router = useRouter();

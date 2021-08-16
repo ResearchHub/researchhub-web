@@ -7,10 +7,13 @@ import colors from "../../config/themes/colors";
 import removeMd from "remove-markdown";
 import { Helpers } from "@quantfive/js-web-config";
 import { Router, useRouter } from "next/router";
-import { SimpleEditor } from "../CKEditor/SimpleEditor";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactHtmlParser from "react-html-parser";
+import dynamic from "next/dynamic";
+const DynamicComponent = dynamic(() =>
+  import("../../components/CKEditor/SimpleEditor")
+);
 
 type FormFields = {
   hubs: any[];
@@ -199,7 +202,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           required
         />
         {/* @ts-ignore */}
-        <SimpleEditor
+        <DynamicComponent
           id="text"
           initialData={mutableFormFields.text}
           label={
