@@ -23,12 +23,12 @@ describe('Search', () => {
       reloadBtn.click({ force: true });
     });
 
-    xit('displays each section in "Best Results"', async () => {
+    it('displays each section in "Best Results"', async () => {
       cy.get(".searchResultsSection").should('exist');
       cy.get('.searchResultsSection').should('have.length', 4);
     });
 
-    xit('displays the search navigation', () => {
+    it('displays the search navigation', () => {
       cy.get('#tabBarForSearch').should('exist');
     });
   })
@@ -43,7 +43,7 @@ describe('Search', () => {
       reloadBtn.click({ force: true });
     });
 
-    xit('displays results', () => {
+    it('displays results', () => {
       const paperElems = cy.get('*[data-test^="document"]');
       paperElems.should('exist');
       paperElems.its('length').should('be.gt', 0);
@@ -63,7 +63,7 @@ describe('Search', () => {
   });
 
   context('Viewport', () => {
-    xit('displays expanded search for small screens', () => {
+    it('displays expanded search for small screens', () => {
       cy.viewport(breakpoints.xsmall.int, 1000);
       cy.wait(200);
 
@@ -76,7 +76,7 @@ describe('Search', () => {
         });
     });
 
-    xit('does not display expanded search in large screens', () => {
+    it('does not display expanded search in large screens', () => {
       cy.viewport(breakpoints.xxlarge.int, 1000);
       cy.wait(200);
 
