@@ -90,7 +90,7 @@ class PostPageCard extends React.Component {
     return url;
   };
 
-  restorePaper = () => {
+  restoreThisPost = () => {
     let {
       setMessage,
       showMessage,
@@ -100,12 +100,8 @@ class PostPageCard extends React.Component {
       restorePost,
     } = this.props;
     let params = {};
-    if (isModerator) {
+    if (isModerator || isSubmitter) {
       params.is_removed = false;
-    }
-
-    if (isSubmitter) {
-      params.is_removed_by_user = false;
     }
 
     return fetch(
@@ -121,10 +117,17 @@ class PostPageCard extends React.Component {
       });
   };
 
-  removePaper = () => {
-    let { setMessage, showMessage, isModerator, post, removePost } = this.props;
+  removeThisPost = () => {
+    let {
+      setMessage,
+      showMessage,
+      isModerator,
+      isSubmitter,
+      post,
+      removePost,
+    } = this.props;
     let params = {};
-    if (isModerator) {
+    if (isModerator || isSubmitter) {
       params.is_removed = true;
     }
 
@@ -376,7 +379,9 @@ class PostPageCard extends React.Component {
               paperId={post.id}
               restore={post.is_removed}
               icon={post.is_removed ? icons.plus : icons.minus}
-              onAction={post.is_removed ? this.restorePaper : this.removePaper}
+              onAction={
+                post.is_removed ? this.restoreThisPost : this.removeThisPost
+              }
               containerStyle={styles.moderatorContainer}
               iconStyle={styles.moderatorIcon}
             />
