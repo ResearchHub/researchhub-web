@@ -4,7 +4,7 @@ import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { AUTH_TOKEN } from "~/config/constants";
 
-export function SimpleEditor({
+export default function SimpleEditor({
   id,
   containerStyle,
   onChange,

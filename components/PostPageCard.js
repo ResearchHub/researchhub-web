@@ -24,12 +24,16 @@ import { MessageActions } from "../redux/message";
 import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import ReactHtmlParser from "react-html-parser";
 import removeMd from "remove-markdown";
-import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
+// import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import ActionButton from "~/components/ActionButton";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import dynamic from "next/dynamic";
+const DynamicComponent = dynamic(() =>
+  import("~/components/CKEditor/SimpleEditor")
+);
 
 class PostPageCard extends React.Component {
   constructor(props) {
@@ -196,7 +200,7 @@ class PostPageCard extends React.Component {
   renderPostEditor = () => {
     return (
       <>
-        <SimpleEditor
+        <DynamicComponent
           id="text"
           initialData={this.state.postBody}
           labelStyle={styles.label}
