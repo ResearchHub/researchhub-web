@@ -28,7 +28,6 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
-import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -38,6 +37,12 @@ import { formatPublishedDate } from "~/config/utils/dates";
 import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AuthorSupportModal = dynamic(() =>
+  import("~/components/Modals/AuthorSupportModal")
+);
 
 class PaperPageCard extends React.Component {
   constructor(props) {

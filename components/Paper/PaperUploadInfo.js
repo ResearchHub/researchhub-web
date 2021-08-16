@@ -16,8 +16,11 @@ import Message from "../Loader/Message";
 import FormDND from "../Form/FormDND";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
-// Modal
-import AddAuthorModal from "../Modals/AddAuthorModal";
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddAuthorModal = dynamic(() =>
+  import("~/components/Modals/AddAuthorModal")
+);
 
 // Redux
 import { ModalActions } from "../../redux/modals";

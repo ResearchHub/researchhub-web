@@ -5,14 +5,17 @@ import { Waypoint } from "react-waypoint";
 
 // Component
 import Button from "~/components/Form/Button";
-import AddHubModal from "~/components/Modals/AddHubModal";
-import EditHubModal from "~/components/Modals/EditHubModal";
 import Message from "~/components/Loader/Message";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
 import CategoryListMobile from "~/components/Hubs/CategoryListMobile";
 import HubCard from "~/components/Hubs/HubCard";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddHubModal = dynamic(() => import("~/components/Modals/AddHubModal"));
+const EditHubModal = dynamic(() => import("~/components/Modals/EditHubModal"));
 
 // Config
 import icons from "~/config/themes/icons";

@@ -23,7 +23,6 @@ import HubDropDown from "./HubDropDown";
 import HubTag from "./HubTag";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
-import PaperPDFModal from "~/components/Modals/PaperPDFModal";
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
 import React, { useState, useEffect, Fragment } from "react";
 import ReactTooltip from "react-tooltip";
@@ -32,6 +31,12 @@ import Router from "next/router";
 import VoteWidget from "../VoteWidget";
 import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
 
 const PaperEntryCard = (props) => {
   const {
