@@ -1,9 +1,12 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
-import NewPostModal from "./Modals/NewPostModal";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;

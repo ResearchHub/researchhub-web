@@ -11,7 +11,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
-import ManageBulletPointsModal from "~/components/Modals/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
@@ -23,6 +22,12 @@ import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const ManageBulletPointsModal = dynamic(() =>
+  import("~/components/Modals/ManageBulletPointsModal")
+);
 
 // Config
 import API from "~/config/api";
