@@ -13,8 +13,11 @@ import { ModalActions } from "../../redux/modals";
 import { PaperActions } from "../../redux/paper";
 import { MessageActions } from "../../redux/message";
 
+// Dynamic modules
+import dynamic from "next/dynamic";
+const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
+
 // Component
-import BaseModal from "../Modals/BaseModal";
 import PaperEntryCard from "../Hubs/PaperEntryCard";
 
 // Config

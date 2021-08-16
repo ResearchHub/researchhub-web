@@ -3,7 +3,12 @@ import { StyleSheet } from "aphrodite";
 
 // Component
 import Head from "~/components/Head";
-import UploadPaperModal from "~/components/Modals/UploadPaperModal";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const UploadPaperModal = dynamic(() =>
+  import("~/components/Modals/UploadPaperModal")
+);
 
 class Index extends React.Component {
   render() {

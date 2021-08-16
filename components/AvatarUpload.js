@@ -1,15 +1,13 @@
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import dynamic from "next/dynamic";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
+const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
 // Config
 import ResearchHubIcon from "../static/ResearchHubIcon";
-
-const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
 const AvatarUpload = (props) => {
   let { isOpen, closeModal, saveButton, section } = props;

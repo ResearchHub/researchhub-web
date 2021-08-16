@@ -1,6 +1,5 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import contractAbi from "~/components/Modals/Artifacts/contract-abi";
 import { contractABI } from "./contractAbi";
 import { ethers } from "ethers";
 import * as Sentry from "@sentry/browser";

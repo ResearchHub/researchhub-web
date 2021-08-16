@@ -8,7 +8,6 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import FormInput from "~/components/Form/FormInput";
 import AvatarUpload from "~/components/AvatarUpload";
 import FormTextArea from "~/components/Form/FormTextArea";
-import EducationModal from "~/components/Modals/EducationModal";
 import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
 
 // Redux
@@ -16,6 +15,12 @@ import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const EducationModal = dynamic(() =>
+  import("~/components/Modals/EducationModal")
+);
 
 // Config
 import colors from "~/config/themes/colors";

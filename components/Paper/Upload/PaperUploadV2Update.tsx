@@ -31,7 +31,6 @@ import { css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { ID } from "../../../config/types/root_types";
 import * as Options from "../../../config/utils/options";
-import AddAuthorModal from "../../Modals/AddAuthorModal";
 import AuthorCardList from "../../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../../SearchSuggestion/AuthorInput";
 import Button from "../../Form/Button";
@@ -48,6 +47,10 @@ import React, {
   useState,
 } from "react";
 import { updateExistingPaper } from "./api/updateExistingPaper";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddAuthorModal = dynamic(() => import("../../Modals/AddAuthorModal"));
 
 type ComponentProps = {
   authRedux: any;

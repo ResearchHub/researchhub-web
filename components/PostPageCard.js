@@ -21,7 +21,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
-import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import ReactHtmlParser from "react-html-parser";
 import removeMd from "remove-markdown";
 // import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
@@ -30,9 +29,14 @@ import ActionButton from "~/components/ActionButton";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+
+// Dynamic modules
 import dynamic from "next/dynamic";
 const DynamicComponent = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
+);
+const AuthorSupportModal = dynamic(() =>
+  import("~/components/Modals/AuthorSupportModal")
 );
 
 class PostPageCard extends React.Component {
