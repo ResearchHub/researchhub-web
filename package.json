@@ -20,7 +20,9 @@
     "sitemap": "node scripts/createSitemap.js",
     "sitemap-index": "node scripts/createSitemapIndex.js",
     "eb:deploy": "./scripts/deploy/eb-deploy.sh",
-    "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh"
+    "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh",
+    "analyze:maps": "source-map-explorer .next/static/**/*.js",
+    "build:analyze": "yarn run build && yarn run analyze:maps"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^3.0.2",
