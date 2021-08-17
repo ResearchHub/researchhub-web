@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Waypoint } from "react-waypoint";
@@ -26,7 +26,7 @@ import { HubActions } from "~/redux/hub";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
@@ -8,7 +9,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import { modalStyles } from "~/config/themes/styles";
 
-class OrcidConnectSuccessPage extends React.Component {
+class OrcidConnectSuccessPage extends Component {
   constructor(props) {
     super(props);
   }

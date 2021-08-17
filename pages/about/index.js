@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Component, Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useTransition, animated } from "react-spring";
 
@@ -154,7 +154,7 @@ const ReactTransitionComponent = ({ children, state, trail }) => {
   ));
 };
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {

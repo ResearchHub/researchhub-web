@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 
 // NPM Modules
 import { connect } from "react-redux";
@@ -118,7 +118,7 @@ const formatTimestamp = (date_str) => {
   return "about " + r;
 };
 
-class LiveFeedNotification extends React.Component {
+class LiveFeedNotification extends Component {
   constructor(props) {
     super(props);
     this.state = {

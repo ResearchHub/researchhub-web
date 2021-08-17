@@ -25,9 +25,6 @@ import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils";
 
-// Stylesheets
-import "./stylesheets/ReactPdf.css";
-
 function PaperTab(props) {
   const { paper, paperId, paperPdfRef, isModerator, updatePaperState } = props;
   const alert = useAlert();

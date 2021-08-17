@@ -1,6 +1,5 @@
 // NPM
-import "react-quill/dist/quill.snow.css";
-import "./stylesheets/QuillTextEditor.css";
+import { Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -15,9 +14,8 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { Fragment } from "react";
 
-class Editor extends React.Component {
+class Editor extends Component {
   constructor(props) {
     super(props);
 

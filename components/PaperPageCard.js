@@ -6,6 +6,7 @@ import ReactTooltip from "react-tooltip";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import React, { Component } from "react";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -44,7 +45,7 @@ const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
 
-class PaperPageCard extends React.Component {
+class PaperPageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {

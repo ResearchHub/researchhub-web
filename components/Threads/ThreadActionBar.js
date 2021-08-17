@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 
 import ThreadTextEditor from "./ThreadTextEditor";
 
@@ -9,7 +9,7 @@ import { doesNotExist } from "~/config/utils";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
-class ThreadActionBar extends React.Component {
+class ThreadActionBar extends Component {
   constructor(props) {
     super(props);
     this.state = {

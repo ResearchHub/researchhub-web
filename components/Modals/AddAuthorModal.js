@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -16,7 +16,7 @@ import UniversityInput from "../SearchSuggestion/UniversityInput";
 import icons from "~/config/themes/icons";
 import * as shims from "../../config/shims";
 
-class AddAuthorModal extends React.Component {
+class AddAuthorModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

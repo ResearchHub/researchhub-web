@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
@@ -13,7 +13,7 @@ import { MessageActions } from "~/redux/message";
 import API from "~/config/api";
 import colors from "~/config/themes/colors";
 
-class OrcidConnectModal extends React.Component {
+class OrcidConnectModal extends Component {
   constructor(props) {
     super(props);
     this.state = {};

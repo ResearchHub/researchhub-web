@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Component, Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
@@ -13,7 +13,7 @@ import colors from "~/config/themes/colors";
 
 const DEFAULT_PAGE_SIZE = 5;
 
-class ColumnAuthors extends React.Component {
+class ColumnAuthors extends Component {
   constructor(props) {
     super(props);
     this.state = {

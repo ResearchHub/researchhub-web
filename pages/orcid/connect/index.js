@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Router, { withRouter } from "next/router";
@@ -17,7 +18,7 @@ const client = jwksClient({
   jwksUri: ORCID_JWKS_URI,
 });
 
-class OrcidConnectPage extends React.Component {
+class OrcidConnectPage extends Component {
   constructor(props) {
     super(props);
     this.state = {

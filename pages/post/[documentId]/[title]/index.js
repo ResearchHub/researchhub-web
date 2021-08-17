@@ -5,7 +5,6 @@ import { useRouter } from "next/router";
 import { connect, useDispatch, useStore } from "react-redux";
 import Joyride from "react-joyride";
 import Error from "next/error";
-import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
 

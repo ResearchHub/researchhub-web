@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -9,7 +10,7 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 // Redux
 import { PaperActions } from "~/redux/paper";
 
-class PaperEditHistory extends React.Component {
+class PaperEditHistory extends Component {
   constructor(props) {
     super(props);
 

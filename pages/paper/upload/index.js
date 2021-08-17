@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet } from "aphrodite";
 
 // Component
@@ -10,7 +10,7 @@ const UploadPaperModal = dynamic(() =>
   import("~/components/Modals/UploadPaperModal")
 );
 
-class Index extends React.Component {
+class Index extends Component {
   render() {
     return (
       <Fragment>

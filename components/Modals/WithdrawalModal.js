@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
@@ -40,7 +40,7 @@ const CURRENT_CHAIN_ID =
     ? RINKEBY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
-class WithdrawalModal extends React.Component {
+class WithdrawalModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

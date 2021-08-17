@@ -19,6 +19,13 @@ import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
 import "../components/CKEditor/CKEditor.css";
 
+import "../components/Modals/Stylesheets/Dnd.css";
+import "react-quill/dist/quill.snow.css";
+import "../components/TextEditor/stylesheets/QuillTextEditor.css";
+import "../components/paper/tabs/stylesheets/ReactPdf.css";
+import "~/components/Paper/Tabs/stylesheets/paper.css";
+import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
+
 // Redux
 import { MessageActions } from "~/redux/message";
 

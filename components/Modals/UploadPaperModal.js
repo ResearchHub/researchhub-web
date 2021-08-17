@@ -1,5 +1,5 @@
 // NPM Modules
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -25,7 +25,7 @@ import colors from "~/config/themes/colors";
 
 const TRANSITION_TIME = 300;
 
-class UploadPaperModal extends React.Component {
+class UploadPaperModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

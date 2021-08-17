@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet } from "aphrodite";
 
 // Component
@@ -9,7 +9,7 @@ import TextEditor from "../../components/TextEditor";
 import colors from "~/config/themes/colors";
 import { convertToEditorValue } from "~/config/utils";
 
-class ThreadTextEditor extends React.Component {
+class ThreadTextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {

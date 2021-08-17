@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
@@ -46,7 +46,7 @@ import killswitch from "~/config/killswitch/killswitch";
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
 
-class HubPage extends React.Component {
+class HubPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
