@@ -25,6 +25,7 @@ import "../components/TextEditor/stylesheets/QuillTextEditor.css";
 import "../components/paper/tabs/stylesheets/ReactPdf.css";
 import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
+import "~/pages/user/stylesheets/toggle.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";

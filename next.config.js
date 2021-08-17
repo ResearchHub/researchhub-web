@@ -1,5 +1,5 @@
-// const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-// const ANALYZE = process.env.ANALYZE;
+const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const ANALYZE = process.env.ANALYZE;
 const path = require("path");
 // // const withCSS = require("@zeit/next-css");
 // const withPlugins = require("next-compose-plugins");
@@ -48,12 +48,32 @@ const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
 //   }
 
 module.exports = withTM({
+  webpack5: true,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.resolve.fallback = {
-      // fs: false,
-      // net: false,
-      // tls: false,
+      fs: false,
+      net: false,
+      tls: false,
+      http: false,
+      https: false,
+      stream: false,
+      crypto: false,
     };
+
+    if (ANALYZE && !isServer) {
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          analyzerMode: "server",
+          analyzerPort: isServer ? 8888 : 8889,
+          openAnalyzer: true,
+        })
+      );
+    }
+
+    // config.resolve.fallback.fs = false;
 
     config.resolve.alias["~"] = path.resolve(__dirname);
     return config;
