@@ -25,7 +25,6 @@ import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist, isEmpty, capitalize } from "~/config/utils";
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
-import "./stylesheets/toggle.css";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
