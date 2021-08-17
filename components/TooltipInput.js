@@ -1,10 +1,11 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-export class TooltipInput extends React.Component {
+export class TooltipInput extends Component {
   detectEnter = (e) => {
     let keycode = e.keyCode ? e.keyCode : e.which;
     if (keycode == "13") {

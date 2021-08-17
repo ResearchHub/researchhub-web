@@ -5,7 +5,7 @@
  *
  * Link the file upload modal
  */
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
@@ -26,7 +26,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import { openExternalLink } from "~/config/utils";
 
-class FileTab extends React.Component {
+class FileTab extends Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withAlert } from "react-alert";
@@ -21,7 +21,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 import { sanitizeNumber } from "~/config/utils";
 
-class ContentSupportModal extends React.Component {
+class ContentSupportModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

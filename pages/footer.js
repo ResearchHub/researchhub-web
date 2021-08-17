@@ -1,11 +1,11 @@
-import React from "react";
+import { Component } from "react";
 
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
 
-class Footer extends React.Component {
+class Footer extends Component {
   tabData = [
     { label: "Hubs", route: "/hubs", icon: "hub" },
     { label: "About", route: "/about", icon: "info-circle" },

@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
@@ -22,7 +22,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-class FigureTab extends React.Component {
+class FigureTab extends Component {
   constructor(props) {
     super(props);
     this.state = {

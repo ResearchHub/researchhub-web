@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -25,7 +25,7 @@ import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineComm
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
-class DiscussionEntry extends React.Component {
+class DiscussionEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {

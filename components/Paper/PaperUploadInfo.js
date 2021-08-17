@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -36,7 +36,7 @@ import * as Options from "../../config/utils/options";
 import FormTextArea from "../Form/FormTextArea";
 import { formatPaperSlug } from "~/config/utils";
 
-class PaperUploadInfo extends React.Component {
+class PaperUploadInfo extends Component {
   constructor(props) {
     super(props);
     let initialState = {

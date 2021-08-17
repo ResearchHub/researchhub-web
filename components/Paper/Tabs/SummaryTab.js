@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import Router from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -39,7 +39,7 @@ import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
 
-class SummaryTab extends React.Component {
+class SummaryTab extends Component {
   constructor(props) {
     super(props);
 

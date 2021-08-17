@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { Document, Page } from "react-pdf";
 import { Fragment } from "react";
 import Loader from "~/components/Loader/Loader";
@@ -7,7 +8,7 @@ import icons from "~/config/themes/icons";
 import { pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
-export default class PaperPdf extends React.Component {
+export default class PaperPdf extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -257,7 +258,7 @@ export default class PaperPdf extends React.Component {
   }
 }
 
-class FakePage extends React.Component {
+class FakePage extends Component {
   constructor(props) {
     super(props);
   }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";
 import makeAnimated from "react-select/animated";
@@ -53,7 +53,7 @@ const CustomValueContainerWithLabel = ({ children, getValue, ...props }) => {
   );
 };
 
-class FormSelect extends React.Component {
+class FormSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {};

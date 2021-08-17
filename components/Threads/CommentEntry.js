@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -21,7 +21,7 @@ import { createUsername } from "../../config/utils";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 
-class CommentEntry extends React.Component {
+class CommentEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {

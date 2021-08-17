@@ -1,3 +1,4 @@
+import React, { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Router from "next/router";
@@ -39,7 +40,7 @@ const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
 
-class PostPageCard extends React.Component {
+class PostPageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {

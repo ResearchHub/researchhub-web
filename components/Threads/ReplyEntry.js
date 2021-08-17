@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -19,7 +19,7 @@ import { createUsername } from "../../config/utils";
 import { MessageActions } from "~/redux/message";
 import { divide } from "numeral";
 
-class ReplyEntry extends React.Component {
+class ReplyEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {

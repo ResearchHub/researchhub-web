@@ -1,3 +1,4 @@
+import { Component } from "react";
 import Link from "next/link";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
@@ -21,7 +22,7 @@ import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class PaperEditHistory extends React.Component {
+class PaperEditHistory extends Component {
   static async getInitialProps({ store, isServer, query }) {
     await store.dispatch(PaperActions.getEditHistory(query.paperId));
     await store.dispatch(PaperActions.getPaper(query.paperId));

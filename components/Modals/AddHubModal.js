@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -18,7 +18,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 
-class AddHubModal extends React.Component {
+class AddHubModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

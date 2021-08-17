@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
@@ -18,7 +19,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class UserTransaction extends React.Component {
+class UserTransaction extends Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -1,10 +1,9 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import Dropzone from "react-dropzone";
 import DragNDrop from "@quantfive/react-image-upload-grid";
-import "./Stylesheets/Dnd.css";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -19,7 +18,7 @@ import { ModalActions } from "~/redux/modals";
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-class DndModal extends React.Component {
+class DndModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

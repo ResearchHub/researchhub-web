@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Progress from "react-progressbar";
@@ -23,7 +23,7 @@ import {
   isQuillDelta,
 } from "~/config/utils/";
 
-class PaperProgress extends React.Component {
+class PaperProgress extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

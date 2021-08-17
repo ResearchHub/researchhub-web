@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
@@ -14,7 +14,7 @@ import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
 
-class DragNDrop extends React.Component {
+class DragNDrop extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

@@ -1,5 +1,5 @@
 // NPM
-import React, { Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -24,7 +24,7 @@ import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import Dropzone from "react-dropzone";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
 
-class FormDND extends React.Component {
+class FormDND extends Component {
   constructor(props) {
     super(props);
     this.state = {

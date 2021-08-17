@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
@@ -13,7 +14,7 @@ import colors from "~/config/themes/colors";
 import Loader from "../../Loader/Loader";
 import { AuthorActions } from "../../../redux/author";
 
-class AuthoredPapersTab extends React.Component {
+class AuthoredPapersTab extends Component {
   constructor(props) {
     super(props);
 

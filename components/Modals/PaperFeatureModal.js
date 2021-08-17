@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
@@ -31,7 +31,7 @@ import { sendAmpEvent } from "~/config/fetch";
 const BULLET_COUNT = 5;
 const LIMITATIONS_COUNT = 5;
 
-class PaperFeatureModal extends React.Component {
+class PaperFeatureModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

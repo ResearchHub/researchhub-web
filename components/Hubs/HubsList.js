@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -16,7 +16,7 @@ import { HubActions } from "~/redux/hub";
 
 const DEFAULT_TRANSITION_TIME = 400;
 
-class HubsList extends React.Component {
+class HubsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
