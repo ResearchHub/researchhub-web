@@ -16,7 +16,8 @@ import { AuthActions } from "~/redux/auth";
 // Config
 import { setSectionBounty } from "../../config/fetch";
 import colors from "../../config/themes/colors";
-import { getBountyAmount, sanitizeNumber } from "~/config/utils";
+import { getBountyAmount } from "~/config/utils/misc";
+import { sanitizeNumber } from "~/config/utils/misc/form";
 
 class ContentSupportModal extends Component {
   constructor(props) {

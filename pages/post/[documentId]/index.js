@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import Router from "next/router";
 import Error from "next/error";
 import Loader from "~/components/Loader/Loader";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils/serializers";
 import API from "~/config/api";
 
 // Redux

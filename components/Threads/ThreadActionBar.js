@@ -5,7 +5,7 @@ import ThreadTextEditor from "./ThreadTextEditor";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 

@@ -16,7 +16,7 @@ import { HubActions } from "~/redux/hub";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { capitalize } from "~/config/utils";
+import { capitalize } from "~/config/utils/misc";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";

@@ -24,12 +24,8 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask } from "../connectEthereum";
 import CheckBox from "../Form/CheckBox";
-import {
-  sanitizeNumber,
-  formatBalance,
-  isAddress,
-  toCheckSumAddress,
-} from "~/config/utils";
+import { sanitizeNumber, formatBalance } from "~/config/utils/form";
+import { isAddress, toCheckSumAddress } from "~/config/utils/validation";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";

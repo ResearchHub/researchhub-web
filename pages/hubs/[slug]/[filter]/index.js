@@ -5,7 +5,7 @@ import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import { slugToFilterQuery } from "~/config/utils/routing";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { toTitleCase } from "~/config/utils";
+import { toTitleCase } from "~/config/utils/serializers";
 import API from "~/config/api";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";

@@ -13,7 +13,8 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchBestResults from "~/components/Search/SearchBestResults";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
-import { trackEvent, QUERY_PARAM, hasNoSearchResults } from "~/config/utils";
+import { QUERY_PARAM, hasNoSearchResults } from "~/config/utils/search";
+import { trackEvent } from "~/config/utils/analytics";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();

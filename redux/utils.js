@@ -2,9 +2,9 @@ import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { doesNotExist, getNestedValue } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { getNestedValue, logFetchError } from "~/config/utils/misc";
 
-export { logFetchError } from "~/config/utils";
 import { ModalActions } from "~/redux/modals";
 
 export function handleCatch(err, dispatch) {

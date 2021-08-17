@@ -12,7 +12,7 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils/serializers";
 import icons from "~/config/themes/icons";
 
 class CitationCard extends Component {

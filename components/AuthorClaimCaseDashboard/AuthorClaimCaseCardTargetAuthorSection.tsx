@@ -1,4 +1,4 @@
-import { createUserSummary } from "../../config/utils";
+import { createUserSummary } from "~/config/utils/serializers";
 import { css, StyleSheet } from "aphrodite";
 import { TargetAuthor } from "./api/AuthorClaimCaseGetCases";
 import colors from "../../config/themes/colors";

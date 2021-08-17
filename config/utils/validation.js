@@ -1,7 +1,6 @@
 import { getCurrentUserReputation } from "./serializers";
-import { getNestedValue } from "./index";
+import { getNestedValue } from "./misc";
 import { keccak256, sha3_256 } from "js-sha3";
-import { ethers } from "ethers";
 
 export function isValidEmail(email) {
   const re = /\S+@\S+\.edu/;

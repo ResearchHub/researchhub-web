@@ -19,7 +19,6 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
 import ReactHtmlParser from "react-html-parser";

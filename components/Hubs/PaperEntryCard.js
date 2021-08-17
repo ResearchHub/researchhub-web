@@ -7,12 +7,9 @@ import {
   DOWNVOTE_ENUM,
 } from "~/config/constants";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import {
-  formatPaperSlug,
-  getUsersFromPaper,
-  getJournalFromURL,
-} from "~/config/utils";
+import { getUsersFromPaper, getJournalFromURL } from "~/config/utils/parsers";
 import { formatUploadedDate } from "~/config/utils/dates";
+import { formatPaperSlug } from "~/config/utils/serializers";
 import { Helpers } from "@quantfive/js-web-config";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
