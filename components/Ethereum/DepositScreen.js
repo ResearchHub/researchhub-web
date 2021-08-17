@@ -2,7 +2,6 @@ import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { contractABI } from "./contractAbi";
 import { ethers } from "ethers";
-import * as Sentry from "@sentry/browser";
 
 // Dynamic modules
 import dynamic from "next/dynamic";

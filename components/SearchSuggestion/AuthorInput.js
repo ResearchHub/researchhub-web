@@ -10,8 +10,6 @@ const AuthorInput = (props) => {
     label,
     error,
     inputValue,
-    containerStyle,
-    inputStyle,
     labelStyle,
     onChange,
     onChangeInput,

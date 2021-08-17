@@ -11,11 +11,9 @@ import React, { Component } from "react";
 // Components
 import ActionButton from "~/components/ActionButton";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "~/components/Form/Button";
 import DownloadPDFButton from "~/components/DownloadPDFButton";
 import FlagButton from "~/components/FlagButton";
 import HubTag from "~/components/Hubs/HubTag";
-import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
@@ -36,7 +34,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { removeLineBreaksInStr } from "~/config/utils/misc";
-import { openExternalLink } from "~/config/utils/routing";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 

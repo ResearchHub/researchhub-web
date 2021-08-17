@@ -1,11 +1,7 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import {
-  TextBlock,
-  TextRow,
-  RoundShape,
-} from "react-placeholder/lib/placeholders";
+import { TextBlock, RoundShape } from "react-placeholder/lib/placeholders";
 
 const NotificationPlaceholder = ({ color }) => (
   <Fragment>

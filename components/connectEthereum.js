@@ -1,7 +1,7 @@
 import { ethers } from "ethers";
 // import WalletLink from "walletlink";
 
-import { WEB3_INFURA_PROJECT_ID } from "../config/constants";
+// import { WEB3_INFURA_PROJECT_ID } from "../config/constants";
 
 // const APP_NAME = "ResearchHub";
 // const APP_LOGO_URL = "";

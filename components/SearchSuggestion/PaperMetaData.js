@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 
 // Config
-import { convertNumToMonth, cslFields } from "../../config/utils/options";
+import { cslFields } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 

@@ -1,12 +1,7 @@
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import colors from "~/config/themes/colors";
-import numeral from "numeral";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { ModalActions } from "~/redux/modals";
-import {
-  PaperPromotionIcon,
-  PaperPromotionIconLarge,
-} from "~/config/themes/icons";
+import { PaperPromotionIconLarge } from "~/config/themes/icons";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 

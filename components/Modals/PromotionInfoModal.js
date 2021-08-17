@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import Ripples from "react-ripples";
@@ -12,7 +12,7 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import colors, { voteWidgetColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 
 const PromotionInfoModal = (props) => {
   const store = useStore();

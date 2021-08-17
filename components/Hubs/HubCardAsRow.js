@@ -1,5 +1,4 @@
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
 import Ripples from "react-ripples";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";

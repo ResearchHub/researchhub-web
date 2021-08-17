@@ -2,8 +2,6 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
-import icons from "~/config/themes/icons";
-import colors, { bannerColor } from "~/config/themes/colors";
 import { getJournalFromURL } from "~/config/utils/parsers";
 import {
   capitalize,

@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
 import Confetti from "react-confetti";

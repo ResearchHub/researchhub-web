@@ -1,7 +1,5 @@
-import { Fragment, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
-import Link from "next/link";
+import { Fragment } from "react";
+import { StyleSheet } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Component

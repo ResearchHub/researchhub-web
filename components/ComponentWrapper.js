@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 

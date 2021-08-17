@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { StyleSheet, css } from "aphrodite";
+import { StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import get from "lodash/get";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";

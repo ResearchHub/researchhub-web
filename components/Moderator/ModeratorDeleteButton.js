@@ -6,7 +6,6 @@ import { useAlert } from "react-alert";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { AuthorActions } from "~/redux/author";
 import { AuthActions } from "~/redux/auth";
 
 // Config

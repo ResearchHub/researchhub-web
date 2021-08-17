@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import { useStore, useDispatch } from "react-redux";
 
 import { AuthActions } from "../redux/auth";
-import API from "~/config/api";
 import { orcidMethods } from "~/config/constants";
 
 const LOGIN_ATTEMPT_TIMEOUT = 300000; // 5 minutes

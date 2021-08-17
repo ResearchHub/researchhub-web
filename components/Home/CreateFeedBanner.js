@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
-import Ripples from "react-ripples";
 import Router from "next/router";
 import { connect } from "react-redux";
-import { parseCookies, setCookie, destroyCookie } from "nookies";
+import { parseCookies, setCookie } from "nookies";
 
 // Redux
 import { AuthActions } from "~/redux/auth";

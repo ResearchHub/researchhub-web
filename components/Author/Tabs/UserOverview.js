@@ -6,11 +6,9 @@ import { isNumber } from "underscore";
 import Link from "next/link";
 import PropTypes from "prop-types";
 
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
-import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";

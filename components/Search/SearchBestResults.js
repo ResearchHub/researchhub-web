@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useState, useEffect, Fragment } from "react";
+import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 

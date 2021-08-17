@@ -3,7 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 import get from "lodash/get";
 import { useRouter } from "next/router";
-import { isArray, isString, isEmpty } from "underscore";
 
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
