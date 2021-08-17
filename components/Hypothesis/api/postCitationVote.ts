@@ -18,8 +18,8 @@ export function postCitationVote({
   fetch(API.CITATIONS_VOTE({ citationID, voteType }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((_result: any): void => {
-      onSuccess();
+    .then((result: Object): void => {
+      onSuccess(result);
     })
     .catch((error: Error): void => {
       onError(error);
