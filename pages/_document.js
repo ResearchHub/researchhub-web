@@ -45,27 +45,27 @@ export default class MyDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
             rel="stylesheet"
-            preload
+            preload="true"
           />
           <link
             rel="apple-touch-icon"
             sizes="152x152"
             href="/static/favicons/apple-touch-icon.png"
-            preload
+            preload="true"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="32x32"
             href="/static/favicons/favicon-32x32.png"
-            preload
+            preload="true"
           />
           <link
             rel="icon"
             type="image/png"
             sizes="16x16"
             href="/static/favicons/favicon-16x16.png"
-            preload
+            preload="true"
           />
           <link rel="manifest" href="/static/favicons/site.webmanifest" async />
           <meta name="msapplication-TileColor" content="#da532c" />

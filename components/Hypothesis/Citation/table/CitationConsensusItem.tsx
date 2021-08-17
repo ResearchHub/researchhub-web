@@ -1,17 +1,17 @@
-import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement, useCallback, useState } from "react";
-import { connect } from "react-redux";
-import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
-import colors from "../../../../config/themes/colors";
 import { breakpoints } from "../../../../config/themes/screen";
-import { getCurrentUser } from "../../../../config/utils";
-import { ID } from "../../../../config/types/root_types";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
 } from "../../../../config/utils/nullchecks";
+import { getCurrentUser } from "../../../../config/utils";
+import { ID } from "../../../../config/types/root_types";
 import { postCitationVote } from "../../api/postCitationVote";
+import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
+import colors from "../../../../config/themes/colors";
 import icons from "../../../../config/themes/icons";
+import React, { Fragment, ReactElement, useCallback, useState } from "react";
 
 export type ConsensusMeta = {
   downCount: number;
@@ -60,7 +60,6 @@ function CitationConsensusItem({
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
-  console.warn("totalCount: ", totalCount);
   const [hasCurrUserVoted, setHasCurrUserVoted] = useState<boolean>(
     !isNullOrUndefined(userVote)
   );
@@ -68,8 +67,8 @@ function CitationConsensusItem({
   const handleReject = useCallback((): void => {
     setLocalConsensusMeta({
       ...localConsensusMeta,
-      userVote: true,
       downCount: downCount + 1,
+      userVote: true,
     });
     setTotalCount(totalCount + 1);
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
@@ -129,10 +128,11 @@ function CitationConsensusItem({
           <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
         )}
         <div
+          className={css(styles.consensusText)}
           style={{
             color: doesMajoritySupport ? colors.GREEN(1) : colors.RED(1),
           }}
-        >{`${majorityPercent * 100}% of researchers think ${
+        >{`${Math.floor(majorityPercent * 100)}% of researchers think ${
           doesMajoritySupport ? "yes" : "no"
         }`}</div>
       </div>
@@ -155,19 +155,13 @@ function CitationConsensusItem({
     <div className={css(styles.citationConsensusItem)}>
       {totalCount > 0 ? consensusBar : null}
       {hasCurrUserVoted ? null : (
-        <div
-          className={css(styles.voteWrap, totalCount > 1 && styles.centerVote)}
-        >
+        <div className={css(styles.voteWrap)}>
           <div
-            className={css(
-              styles.button,
-              totalCount > 1 && styles.centerRejectButton
-            )}
+            className={css(styles.button)}
             onClick={handleReject}
             role="button"
           >
-            {icons.timesCircle}
-            <span className={css(styles.iconWrap)}></span>
+            <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
             <span className={css(styles.buttonText)}>{"Reject"}</span>
           </div>
           <div
@@ -175,8 +169,7 @@ function CitationConsensusItem({
             onClick={handleSupport}
             role="button"
           >
-            {icons.checkCircle}
-            <span className={css(styles.iconWrap)}></span>
+            <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
             <span className={css(styles.buttonText)}>{"Support"}</span>
           </div>
         </div>
@@ -199,7 +192,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     marginTop: 8,
-    maxWidth: "162px",
+    maxWidth: 166,
     width: "inherit",
   },
   button: {
@@ -207,12 +200,8 @@ const styles = StyleSheet.create({
     color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
     display: "flex",
-    fontSize: 12,
     justifyContent: "center",
     width: "50%",
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      marginRight: 8,
-    },
   },
   buttonText: {
     display: "block",
@@ -222,9 +211,6 @@ const styles = StyleSheet.create({
   },
   centerVote: {
     marginLeft: 10,
-  },
-  centerRejectButton: {
-    marginRight: 13,
   },
   consensusBar: {
     alignItems: "center",
@@ -238,14 +224,24 @@ const styles = StyleSheet.create({
     position: "relative",
     width: "100%",
   },
+  consensusText: {
+    width: "100%",
+    maxWidth: "inherit",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+  },
   consensusWrap: {
     height: "100%",
     maxHeight: 28,
+    maxWidth: 166,
+    width: "100%",
   },
   iconWrap: {
     marginRight: 4,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      fontSize: 24,
+      fontSize: 18,
+      marginRight: 0,
     },
   },
   green: {

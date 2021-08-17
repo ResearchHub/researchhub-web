@@ -75,7 +75,7 @@ class Base extends React.Component {
     };
 
     return (
-      <AlertProvider template={DynamicAlertTemplate} {...options}>
+      <AlertProvider template={<DynamicAlertTemplate />} {...options}>
         {isDevEnv() && this.SPEC__reloadClientSideData()}
         <div className={css(styles.pageWrapper)}>
           <DynamicPermissionNotification />
