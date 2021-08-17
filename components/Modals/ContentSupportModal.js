@@ -7,7 +7,6 @@ import { withAlert } from "react-alert";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
-import FormSelect from "../Form/FormSelect";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -15,9 +14,7 @@ import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 
 // Config
-import API from "~/config/api";
 import { supportContent } from "../../config/fetch";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 import { sanitizeNumber } from "~/config/utils/form";
 

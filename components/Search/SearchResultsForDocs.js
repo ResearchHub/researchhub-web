@@ -1,5 +1,4 @@
 import * as moment from "dayjs";
-import Ripples from "react-ripples";
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 import { isString, isArray } from "underscore";
@@ -17,7 +16,6 @@ import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const timeFilterOpts = [
   {

@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withAlert } from "react-alert";

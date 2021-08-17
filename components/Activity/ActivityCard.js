@@ -2,12 +2,10 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import PropTypes from "prop-types";
 import React, { useState, useEffect } from "react";
 import Ripples from "react-ripples";
 
 // Components
-import TextEditor from "~/components/TextEditor"; // QuillTextEditor
 import ActivityHeader from "./ActivityHeader";
 import ActivityBody from "./ActivityBody";
 import { TimeStamp } from "~/components/Notifications/NotificationHelpers";

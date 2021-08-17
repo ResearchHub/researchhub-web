@@ -3,11 +3,7 @@ import { useState, useEffect } from "react";
 // NPM Components
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
+
 // Components
 import QuillTextEditor from "./QuillTextEditor";
 
@@ -43,7 +39,6 @@ const TextEditor = (props) => {
     smallToolBar,
     loading,
     commentEditorStyles,
-    removeStickyToolbar,
     editing,
     focusEditor,
     hasHeader,

@@ -11,7 +11,6 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 
 // Redux
 import { ModalActions } from "~/redux/modals";
-import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 
 // Config

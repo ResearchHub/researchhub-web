@@ -22,7 +22,6 @@ import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import Dropzone from "react-dropzone";
-import PaperEntry from "../SearchSuggestion/PaperEntry";
 
 class FormDND extends Component {
   constructor(props) {

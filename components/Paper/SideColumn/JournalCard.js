@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import PaperJournalTag from "~/components/Paper/PaperJournalTag";
-
 // Config
-import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
 import {
   capitalize,

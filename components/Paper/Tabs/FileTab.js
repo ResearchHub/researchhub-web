@@ -5,7 +5,7 @@
  *
  * Link the file upload modal
  */
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";

@@ -8,11 +8,9 @@ import get from "lodash/get";
 import { breakpoints } from "~/config/themes/screen";
 import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
 import { trackEvent } from "~/config/utils/analytics";
-import { connect } from "react-redux";
 import { useSelector } from "react-redux";
 
 const Search = ({ navbarRef, id, overrideStyle }) => {
-  const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
   const SMALLEST_ALLOWED_INPUT = 200;
   const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;

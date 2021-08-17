@@ -1,11 +1,9 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState, useRef } from "react";
-import Modal from "react-modal";
 import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
 import colors from "~/config/themes/colors";
-import { RHLogo } from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";

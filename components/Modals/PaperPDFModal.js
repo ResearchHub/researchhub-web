@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 

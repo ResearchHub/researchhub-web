@@ -1,7 +1,6 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 // Component
 import AuthorAvatar from "~/components/AuthorAvatar";

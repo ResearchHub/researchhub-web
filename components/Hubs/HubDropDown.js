@@ -1,10 +1,7 @@
 // NPM
-import React, { useRef, useEffect } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-
-// Component
-import HubTag from "./HubTag";
 
 // Config
 import colors from "~/config/themes/colors";

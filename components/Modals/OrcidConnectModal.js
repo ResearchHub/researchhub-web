@@ -2,7 +2,6 @@ import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
-import { Helpers } from "@quantfive/js-web-config";
 
 import BaseModal from "./BaseModal";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
@@ -10,7 +9,6 @@ import OrcidConnectButton from "~/components/OrcidConnectButton";
 import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
-import API from "~/config/api";
 import colors from "~/config/themes/colors";
 
 class OrcidConnectModal extends Component {

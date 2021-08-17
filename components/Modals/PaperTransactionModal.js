@@ -20,7 +20,6 @@ import FormInput from "~/components/Form/FormInput";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
-import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors from "~/config/themes/colors";

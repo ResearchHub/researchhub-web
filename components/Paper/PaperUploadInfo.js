@@ -14,7 +14,6 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import Message from "../Loader/Message";
 import FormDND from "../Form/FormDND";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Dynamic modules
 import dynamic from "next/dynamic";

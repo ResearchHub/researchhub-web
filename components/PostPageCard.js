@@ -13,7 +13,6 @@ import ShareAction from "~/components/ShareAction";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "~/components/Form/Button";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";

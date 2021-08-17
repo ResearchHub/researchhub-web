@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import NewPostButton from "../NewPostButton";
+
 import PropTypes from "prop-types";
 import Router from "next/router";
 
