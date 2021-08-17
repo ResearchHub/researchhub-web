@@ -21,8 +21,9 @@ import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-} from "~/config/utils/serializers";
-import { createUsername } from "../config/utils";
+} from "~/config/utils/editor";
+
+import { createUsername } from "~/config/utils";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();

@@ -60,8 +60,8 @@ import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-  getAuthorName,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
+import { getAuthorName } from "~/config/utils";
 import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";
