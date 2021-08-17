@@ -4,6 +4,7 @@ import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
+  silentEmptyFnc,
 } from "../../../../config/utils/nullchecks";
 import { getCurrentUser } from "../../../../config/utils";
 import { ID } from "../../../../config/types/root_types";
@@ -75,7 +76,7 @@ function CitationConsensusItem({
     setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
-      onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
+      onSuccess: silentEmptyFnc, // NOTE: optimistic update.
       onError: emptyFncWithMsg,
       voteType: DOWNVOTE,
     });
@@ -99,7 +100,7 @@ function CitationConsensusItem({
     setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
-      onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
+      onSuccess: silentEmptyFnc, // NOTE: optimistic update.
       onError: emptyFncWithMsg,
       voteType: UPVOTE,
     });
