@@ -38,7 +38,6 @@ function useEffectGetCitations({
   updateLastFetchTime,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
-    console.log(lastFetchTime);
     // if (isNullOrUndefined(lastFetchTime)) {
     fetchCitationsOnHypothesis({
       hypothesisID,
@@ -53,7 +52,6 @@ function useEffectGetCitations({
   }, [hypothesisID, lastFetchTime, setCitationItems]);
 }
 
-/* NOTE: This table UI isn't a "table". We may want to migrate to using an actual dom table */
 export default function CitationTable({
   hypothesisID,
   lastFetchTime,
