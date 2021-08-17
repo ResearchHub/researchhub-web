@@ -14,6 +14,7 @@ import { NotificationActions } from "~/redux/notification";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import { doesNotExist } from "~/config/utils";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 class Notification extends React.Component {
   constructor(props) {
@@ -150,15 +151,31 @@ class Notification extends React.Component {
           slug: paper_slug,
         };
       } else if (content_type && content_type.model) {
-        return {
-          type: content_type.model,
-          content_type: "support_content",
-          created_by: action_user,
-          created_date: created_date,
-          paper_id: paper,
-          amount: extra.amount,
-          slug: paper_slug,
-        };
+        if (!isNullOrUndefined(action[0])) {
+          return {
+            type: content_type.model,
+            content_type: "support_content",
+            created_by: action_user,
+            created_date: created_date,
+            id: action[0].paper_id || action[0].post_id,
+            amount: extra.amount,
+            slug: action[0].slug,
+            support_type: action[0].support_type,
+            parent_content_type: action[0].parent_content_type,
+          };
+        } else {
+          return {
+            type: content_type.model,
+            content_type: "support_content",
+            created_by: action_user,
+            created_date: created_date,
+            id: null,
+            amount: extra.amount,
+            slug: null,
+            support_type: null,
+            parent_content_type: null,
+          };
+        }
       } else if (bounty_object_id) {
         return {
           content_type: "bounty_moderator",
@@ -194,7 +211,6 @@ class Notification extends React.Component {
 
   renderMenu = () => {
     let { isOpen } = this.state;
-    // if (isOpen) {
     return (
       <div
         className={css(styles.notificationMenu, isOpen && styles.open)}
@@ -210,7 +226,7 @@ class Notification extends React.Component {
             showLoadingAnimation
             customPlaceholder={<NotificationPlaceholder color="#efefef" />}
           >
-            {this.props.notifications && this.props.notifications.length ? (
+            {this.state.notifications && this.state.notifications.length ? (
               this.renderNotifications()
             ) : (
               <div className={css(styles.emptyState)}>No Notifications</div>
@@ -219,14 +235,11 @@ class Notification extends React.Component {
         </div>
       </div>
     );
-    // }
   };
 
   renderNotifications = () => {
     return this.state.notifications.map((notification, index) => {
       const action = this.formatAction(notification);
-
-      // console.log(action);
       if (action) {
         return (
           <NotificationEntry
