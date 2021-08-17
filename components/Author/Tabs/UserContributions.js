@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
@@ -16,7 +17,7 @@ import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
-class UserContributionsTab extends React.Component {
+class UserContributionsTab extends Component {
   constructor(props) {
     super(props);
     this.state = {

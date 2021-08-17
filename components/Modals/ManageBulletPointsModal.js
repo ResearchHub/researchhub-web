@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -19,7 +19,7 @@ import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
 
-class ManageBulletPointsModal extends React.Component {
+class ManageBulletPointsModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

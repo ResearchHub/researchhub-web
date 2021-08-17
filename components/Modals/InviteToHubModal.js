@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import React, { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
@@ -19,7 +19,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class InviteToHubModal extends React.Component {
+class InviteToHubModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

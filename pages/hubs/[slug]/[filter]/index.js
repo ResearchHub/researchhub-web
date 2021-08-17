@@ -12,8 +12,9 @@ import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import React from "react";
 import Router from "next/router";
+import { Component } from "react";
 
-class Index extends React.Component {
+class Index extends Component {
   // NOTE: calvinhlee - no longer called
   static async getInitialProps(ctx) {
     let { query } = ctx;

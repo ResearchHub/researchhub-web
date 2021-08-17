@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
@@ -18,7 +18,7 @@ import { MessageActions } from "~/redux/message";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class LockedHubPage extends React.Component {
+class LockedHubPage extends Component {
   constructor(props) {
     super(props);
     this.state = {

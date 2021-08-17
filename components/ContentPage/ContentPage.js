@@ -1,6 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
+import { Component } from "react";
 
-class ContentPage extends React.Component {
+class ContentPage extends Component {
   render() {
     return (
       <div className={css(styles.content, styles.column)}>

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -22,7 +22,7 @@ import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
 
-class HubCard extends React.Component {
+class HubCard extends Component {
   constructor(props) {
     super(props);
     this.linkRef = React.createRef();

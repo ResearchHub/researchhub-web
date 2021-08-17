@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -16,7 +17,7 @@ import icons from "../../config/themes/icons";
 import { doesNotExist } from "~/config/utils";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-class Notification extends React.Component {
+class Notification extends Component {
   constructor(props) {
     super(props);
     this.state = {

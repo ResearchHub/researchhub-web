@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -14,7 +14,7 @@ import colors from "~/config/themes/colors";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
-class PromotionCard extends React.Component {
+class PromotionCard extends Component {
   constructor(props) {
     super(props);
     this.state = {

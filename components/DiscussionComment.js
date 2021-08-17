@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import React, { Component, Fragment } from "react";
 
 import { css, StyleSheet } from "aphrodite";
 import Router from "next/router";
@@ -20,7 +20,7 @@ import { voteWidgetIcons } from "~/config/themes/icons";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
 
-class DiscussionComment extends React.Component {
+class DiscussionComment extends Component {
   state = {
     id: this.props.data.id,
     date: this.props.data.created_date,

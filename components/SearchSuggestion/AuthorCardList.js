@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import colors from "../../config/themes/colors";
@@ -9,7 +9,7 @@ import Loader from "../Loader/Loader";
 
 const DEFAULT_TRANSITION_TIME = 0.4;
 
-class AuthorCardList extends React.Component {
+class AuthorCardList extends Component {
   constructor(props) {
     super(props);
     this.state = {
