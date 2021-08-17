@@ -10,7 +10,7 @@ import { AuthActions } from "../redux/auth";
 
 import { doesNotExist } from "~/config/utils/nullchecks";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import icons, { voteWidgetIcons, BoltSvg } from "~/config/themes/icons";
+import { voteWidgetIcons } from "~/config/themes/icons";
 import {
   UPVOTE,
   DOWNVOTE,

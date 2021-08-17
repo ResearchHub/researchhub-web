@@ -1,5 +1,5 @@
-import { Fragment, useState, useEffect, useRef } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
 import Loader from "~/components/Loader/Loader";
