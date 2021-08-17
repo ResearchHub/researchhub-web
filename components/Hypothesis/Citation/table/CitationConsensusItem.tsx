@@ -198,16 +198,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "center",
-    width: "inherit",
-    maxWidth: "162px",
     marginTop: 8,
+    maxWidth: "162px",
+    width: "inherit",
   },
   button: {
     alignItems: "center",
     color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
     display: "flex",
-    marginRight: 16,
+    fontSize: 12,
     justifyContent: "center",
     width: "50%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   consensusBar: {
     alignItems: "center",
-    backgroundColor: colors.LIGHT_GREY_TEXT,
+    background: colors.LIGHT_GREY_BACKGROUND,
     borderRadius: 8,
     display: "flex",
     marginTop: 8,
