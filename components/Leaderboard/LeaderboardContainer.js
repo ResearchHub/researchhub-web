@@ -10,6 +10,7 @@ import Ripples from "react-ripples";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import { isDevEnv } from "~/config/utils/env";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState(
@@ -69,7 +70,10 @@ const LeaderboardContainer = (props) => {
   };
 
   return (
-    <div className={css(styles.container)}>
+    <div
+      className={css(styles.container)}
+      data-test={isDevEnv() ? `leaderboard` : undefined}
+    >
       <h3 className={css(styles.title)}>Trending Users</h3>
       <ReactPlaceholder
         ready={false}

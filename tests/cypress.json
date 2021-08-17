@@ -1,5 +1,9 @@
 {
-  "ignoreTestFiles": "**/examples/*",
+  "ignoreTestFiles": "**/FIXME__utils/*.spec.js",
   "video": false,
-  "baseUrl": "http://localhost:3000"
+  "baseUrl": "http://localhost:3000",
+  "pageLoadTimeout": 30000,
+  "env": {
+    "serverBaseUrl": "http://localhost:8000"
+  }
 }

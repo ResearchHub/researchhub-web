@@ -5,3 +5,7 @@ export const getCurrServerEnv = () => {
     ? "production"
     : "development";
 };
+
+export const isDevEnv = () => {
+  return getCurrServerEnv() === "development";
+};

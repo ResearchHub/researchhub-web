@@ -10,6 +10,7 @@ import icons from "~/config/themes/icons";
 const HorizontalTabBar = ({
   tabs,
   onClick,
+  id,
   alignCenter = false,
   dragging = false,
   containerStyle = null,
@@ -30,11 +31,12 @@ const HorizontalTabBar = ({
   }, []);
 
   const renderTab = (tab, index) => {
-    const { isSelected, label } = tab;
+    const { isSelected, label, type } = tab;
 
     return (
       <div
         key={label}
+        id={`tabType--${type}`}
         className={css(styles.tab, isSelected && styles.selectedTab)}
         onClick={() => onClick(tab, index)}
       >
@@ -46,7 +48,7 @@ const HorizontalTabBar = ({
   const tabsHtml = tabs.map(renderTab);
 
   return (
-    <div className={css(styles.container, containerStyle)}>
+    <div className={css(styles.container, containerStyle)} id={id}>
       {pageWidth > 0 && (
         <ScrollMenu
           arrowLeft={
@@ -153,6 +155,7 @@ const navStyles = StyleSheet.create({
 HorizontalTabBar.propTypes = {
   tabs: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
+  id: PropTypes.string.isRequired,
   alignCenter: PropTypes.bool,
   dragging: PropTypes.bool,
   containerStyle: PropTypes.object,

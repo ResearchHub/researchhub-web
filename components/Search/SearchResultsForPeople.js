@@ -129,7 +129,7 @@ const SearchResultsForPeople = ({ apiResponse, context }) => {
   };
 
   return (
-    <div>
+    <div id="SearchResultsForPeople">
       {numOfHits === 0 && <SearchEmpty />}
       {numOfHits > 0 && (
         <Fragment>

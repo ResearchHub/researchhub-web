@@ -1,0 +1,478 @@
+{
+  "count": 912,
+  "next": "http://localhost:8000/api/search/paper/?external_source=true&facet=hubs&limit=10&offset=10",
+  "previous": null,
+  "facets": {
+    "_filter_hubs": {
+      "doc_count": 912,
+      "hubs": {
+        "doc_count_error_upper_bound": 0,
+        "sum_other_doc_count": 8,
+        "buckets": [{
+          "key": "computer science",
+          "doc_count": 310
+        }, {
+          "key": "mathematics",
+          "doc_count": 167
+        }, {
+          "key": "physics",
+          "doc_count": 164
+        }, {
+          "key": "astrophysics",
+          "doc_count": 36
+        }, {
+          "key": "economics",
+          "doc_count": 6
+        }, {
+          "key": "engineering",
+          "doc_count": 6
+        }, {
+          "key": "bioinformatics",
+          "doc_count": 5
+        }, {
+          "key": "materials science",
+          "doc_count": 4
+        }, {
+          "key": "geology",
+          "doc_count": 3
+        }, {
+          "key": "botany",
+          "doc_count": 2
+        }]
+      }
+    }
+  },
+  "results": [{
+    "id": 496,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Qiang",
+      "last_name": "Sun",
+      "full_name": "Qiang Sun"
+    }, {
+      "first_name": "A.",
+      "last_name": "Neuman",
+      "full_name": "A. Neuman"
+    }, {
+      "first_name": "Yuying",
+      "last_name": "Xie",
+      "full_name": "Yuying Xie"
+    }, {
+      "first_name": "Qiang",
+      "last_name": "Sun",
+      "full_name": "Qiang Sun"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 19,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "mathematics"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Restricted Riemannian geometry for positive semidefinite matrices",
+    "abstract": "We introduce the manifold of {\\it restricted} $n\\times n$ positive semidefinite matrices of fixed rank $p$, denoted $S(n,p)^{*}$. The manifold itself is an open and dense submanifold of $S(n,p)$, the manifold of $n\\times n$ positive semidefinite matrices of the same rank $p$, when both are viewed as manifolds in $\\mathbb{R}^{n\\times n}$. This density is the key fact that makes the consideration of $S(n,p)^{*}$ statistically meaningful. We furnish $S(n,p)^{*}$ with a convenient, and geodesically complete, Riemannian geometry, as well as a Lie group structure, that permits analytical closed forms for endpoint geodesics, parallel transports, Fr\\'echet means, exponential and logarithmic maps. This task is done partly through utilizing a {\\it reduced} Cholesky decomposition, whose algorithm is also provided. We produce a second algorithm from this framework to estimate principal eigenspaces and demonstrate its superior performance over other existing algorithms.",
+    "paper_title": "Restricted Riemannian geometry for positive semidefinite matrices",
+    "highlight": {},
+    "slug": "zjzENuqn2Kaa1W6kUinv6c2nAnjIgXJ1"
+  }, {
+    "id": 498,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Shang-Peng",
+      "last_name": "Gao",
+      "full_name": "Shang-Peng Gao"
+    }, {
+      "first_name": "Guang",
+      "last_name": "Yang",
+      "full_name": "Guang Yang"
+    }, {
+      "first_name": "Shang-Peng",
+      "last_name": "Gao",
+      "full_name": "Shang-Peng Gao"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 30,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "physics"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "A method to restore the intrinsic dielectric functions of 2D materials\n  in periodic calculations and its application to the dielectric and optical\n  properties of ultrathin h-BN and MoS2",
+    "abstract": "Previous calculations of the dielectric and optical properties of 2D materials often downplayed or circumvented the influence of vacuum spacing introduced in periodic calculations, which gave rise to mispredictions of intrinsic properties of 2D materials or merely qualitative results. We first elucidate the relationship between the vacuum spacing and the dielectric and optical properties of 2D materials in periodic calculations, and then bring forward an effective method to accurately predict the dielectric and optical properties of 2D materials by restoring the intrinsic dielectric functions of 2D materials independent of the additional vacuum spacing. As examples, intrinsic dielectric and optical properties of ultrathin h-BN and MoS2 from monolayer to pentalayer have been calculated by our method including dielectric functions, optical absorption coefficients, refraction indexes, reflectivities, extinction coefficients, and energy loss functions. Our calculations reveal that the out-of-plane optical dielectric constants, static refraction indexes, and static reflectivities of the 2D h-BN and MoS2 increase as the number of layers increases, while the in-plane counterparts remain unchanged. Excitonic frequency-dependent optical properties of h-BN and MoS2 from monolayer to bulk are also calculated by solving the Bethe-Salpeter equation and show strong anisotropy. In better agreement with experimental results than previous calculations, the presented method demonstrates enormous potential to investigate the dielectric and optical properties of other 2D materials extensively and quantitively.",
+    "paper_title": "A method to restore the intrinsic dielectric functions of 2D materials\n  in periodic calculations and its application to the dielectric and optical\n  properties of ultrathin h-BN and MoS2",
+    "highlight": {},
+    "slug": "0rdKRNHSlCmnZ8pq9ZMuNcP4mVBuScZd"
+  }, {
+    "id": 499,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Juan",
+      "last_name": "Cao",
+      "full_name": "Juan Cao"
+    }, {
+      "first_name": "Yongchun",
+      "last_name": "Zhu",
+      "full_name": "Yongchun Zhu"
+    }, {
+      "first_name": "Yudan",
+      "last_name": "Liu",
+      "full_name": "Yudan Liu"
+    }, {
+      "first_name": "Ruobing",
+      "last_name": "Xie",
+      "full_name": "Ruobing Xie"
+    }, {
+      "first_name": "Fuzhen",
+      "last_name": "Zhuang",
+      "full_name": "Fuzhen Zhuang"
+    }, {
+      "first_name": "Xiaobo",
+      "last_name": "Hao",
+      "full_name": "Xiaobo Hao"
+    }, {
+      "first_name": "Kaikai",
+      "last_name": "Ge",
+      "full_name": "Kaikai Ge"
+    }, {
+      "first_name": "Xu",
+      "last_name": "Zhang",
+      "full_name": "Xu Zhang"
+    }, {
+      "first_name": "Leyu",
+      "last_name": "Lin",
+      "full_name": "Leyu Lin"
+    }, {
+      "first_name": "Juan",
+      "last_name": "Cao",
+      "full_name": "Juan Cao"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "10.1145/3447548.3467093",
+    "hubs": [{
+      "hub_image": null,
+      "id": 18,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "computer science"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Learning to Expand Audience via Meta Hybrid Experts and Critics for\n  Recommendation and Advertising",
+    "abstract": "In recommender systems and advertising platforms, marketers always want to deliver products, contents, or advertisements to potential audiences over media channels such as display, video, or social. Given a set of audiences or customers (seed users), the audience expansion technique (look-alike modeling) is a promising solution to identify more potential audiences, who are similar to the seed users and likely to finish the business goal of the target campaign. However, look-alike modeling faces two challenges: (1) In practice, a company could run hundreds of marketing campaigns to promote various contents within completely different categories every day, e.g., sports, politics, society. Thus, it is difficult to utilize a common method to expand audiences for all campaigns. (2) The seed set of a certain campaign could only cover limited users. Therefore, a customized approach based on such a seed set is likely to be overfitting.   In this paper, to address these challenges, we propose a novel two-stage framework named Meta Hybrid Experts and Critics (MetaHeac) which has been deployed in WeChat Look-alike System. In the offline stage, a general model which can capture the relationships among various tasks is trained from a meta-learning perspective on all existing campaign tasks. In the online stage, for a new campaign, a customized model is learned with the given seed set based on the general model. According to both offline and online experiments, the proposed MetaHeac shows superior effectiveness for both content marketing campaigns in recommender systems and advertising campaigns in advertising platforms. Besides, MetaHeac has been successfully deployed in WeChat for the promotion of both contents and advertisements, leading to great improvement in the quality of marketing. The code has been available at \\url{https://github.com/easezyc/MetaHeac}.",
+    "paper_title": "Learning to Expand Audience via Meta Hybrid Experts and Critics for\n  Recommendation and Advertising",
+    "highlight": {},
+    "slug": "UvfClOhnvAe9zn0kNdIO3ZQn3Cyt5rIt"
+  }, {
+    "id": 513,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Alexey",
+      "last_name": "Belyanin",
+      "full_name": "Alexey Belyanin"
+    }, {
+      "first_name": "Mikhail",
+      "last_name": "Tokman",
+      "full_name": "Mikhail Tokman"
+    }, {
+      "first_name": "Qianfan",
+      "last_name": "Chen",
+      "full_name": "Qianfan Chen"
+    }, {
+      "first_name": "Maria",
+      "last_name": "Erukhimova",
+      "full_name": "Maria Erukhimova"
+    }, {
+      "first_name": "Yongrui",
+      "last_name": "Wang",
+      "full_name": "Yongrui Wang"
+    }, {
+      "first_name": "Alexey",
+      "last_name": "Belyanin",
+      "full_name": "Alexey Belyanin"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Quantum dynamics of open many-qubit systems strongly coupled to a\n  quantized electromagnetic field in dissipative cavities",
+    "abstract": "We study quantum dynamics of many-qubit systems strongly coupled to a quantized electromagnetic cavity mode, in the presence of decoherence and dissipation for both fermions and cavity photons. The analytic solutions are derived for a broad class of open quantum systems in Lindblad approximation. They include identical qubits, an ensemble of qubits with a broad distribution of transition frequencies, and multi-level electron systems. Compact analytic solutions for time-dependent quantum state amplitudes and observables become possible with the use of the stochastic equation of evolution for the state vector. We show that depending on the initial quantum state preparation, the systems can evolve into a rich variety of entangled states with destructive or constructive interference between the qubits. In particular, dissipation in a cavity can drive the system into the dark states completely decoupled from the cavity modes. We also find the regimes in which multi-electron systems with a broad distribution of transition frequencies couple to the quantized cavity field as a giant collective dipole.",
+    "paper_title": "Quantum dynamics of open many-qubit systems strongly coupled to a\n  quantized electromagnetic field in dissipative cavities",
+    "highlight": {},
+    "slug": "4hq8NKONkbFDmWlWS6FbOZ8mJOfNCWRO"
+  }, {
+    "id": 500,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Linmao",
+      "last_name": "Li",
+      "full_name": "Linmao Li"
+    }, {
+      "first_name": "Pengcheng",
+      "last_name": "Ai",
+      "full_name": "Pengcheng Ai"
+    }, {
+      "first_name": "Zhi",
+      "last_name": "Deng",
+      "full_name": "Zhi Deng"
+    }, {
+      "first_name": "Yi",
+      "last_name": "Wang",
+      "full_name": "Yi Wang"
+    }, {
+      "first_name": "Linmao",
+      "last_name": "Li",
+      "full_name": "Linmao Li"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 30,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "physics"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Simulation study of neural network--featured timing systems for\n  radiation detectors: performance evaluation based on bound analysis",
+    "abstract": "Waveform sampling systems are used pervasively in the design of front end electronics for radiation detection. The introduction of new feature extraction algorithms (eg. neural networks) to waveform sampling has the great potential to substantially improve the performance and enrich the capability. To analyze the limits of such algorithms and thus illuminate the direction of resolution optimization, in this paper we systematically simulate the detection procedure of contemporary radiation detectors with an emphasis on pulse timing. neural networks and variants of constant fraction discrimination are studied in a wide range of analog channel frequency and noise level. Furthermore, we propose an estimation of multivariate Cram\\'er Rao lower bound within the model using intrinsic-extrinsic parameterization and prior information. Two case studies (single photon detection and shashlik-type calorimeter) verify the reliability of the proposed method and show it works as a useful guideline when assessing the abilities of various feature extraction algorithms.",
+    "paper_title": "Simulation study of neural network--featured timing systems for\n  radiation detectors: performance evaluation based on bound analysis",
+    "highlight": {},
+    "slug": "UcATsZelpPmKmG8bnJowiGMUgheePbhv"
+  }, {
+    "id": 501,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Jie",
+      "last_name": "Zhou",
+      "full_name": "Jie Zhou"
+    }, {
+      "first_name": "Weize",
+      "last_name": "Chen",
+      "full_name": "Weize Chen"
+    }, {
+      "first_name": "Xu",
+      "last_name": "Han",
+      "full_name": "Xu Han"
+    }, {
+      "first_name": "Yankai",
+      "last_name": "Lin",
+      "full_name": "Yankai Lin"
+    }, {
+      "first_name": "Hexu",
+      "last_name": "Zhao",
+      "full_name": "Hexu Zhao"
+    }, {
+      "first_name": "Zhiyuan",
+      "last_name": "Liu",
+      "full_name": "Zhiyuan Liu"
+    }, {
+      "first_name": "Peng",
+      "last_name": "Li",
+      "full_name": "Peng Li"
+    }, {
+      "first_name": "Maosong",
+      "last_name": "Sun",
+      "full_name": "Maosong Sun"
+    }, {
+      "first_name": "Jie",
+      "last_name": "Zhou",
+      "full_name": "Jie Zhou"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 18,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "computer science"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Fully Hyperbolic Neural Networks",
+    "abstract": "Hyperbolic neural networks have shown great potential for modeling complex data. However, existing hyperbolic networks are not completely hyperbolic, as they encode features in a hyperbolic space yet formalize most of their operations in the tangent space (a Euclidean subspace) at the origin of the hyperbolic space. This hybrid method greatly limits the modeling ability of networks. In this paper, we propose a fully hyperbolic framework to build hyperbolic networks based on the Lorentz model by adapting the Lorentz transformations (including boost and rotation) to formalize essential operations of neural networks. Moreover, we also prove that linear transformation in tangent spaces used by existing hyperbolic networks is a relaxation of the Lorentz rotation and does not include the boost, implicitly limiting the capabilities of existing hyperbolic networks. The experimental results on four NLP tasks show that our method has better performance for building both shallow and deep networks. Our code will be released to facilitate follow-up research.",
+    "paper_title": "Fully Hyperbolic Neural Networks",
+    "highlight": {},
+    "slug": "aH2eGAUcub0oBYXu9haAfsdCDqKLn9s8"
+  }, {
+    "id": 514,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Waheed",
+      "last_name": "Bajwa",
+      "full_name": "Waheed Bajwa"
+    }, {
+      "first_name": "Batoul",
+      "last_name": "Taki",
+      "full_name": "Batoul Taki"
+    }, {
+      "first_name": "Mohsen",
+      "last_name": "Ghassemi",
+      "full_name": "Mohsen Ghassemi"
+    }, {
+      "first_name": "Anand",
+      "last_name": "Sarwate",
+      "full_name": "Anand Sarwate"
+    }, {
+      "first_name": "Waheed",
+      "last_name": "Bajwa",
+      "full_name": "Waheed Bajwa"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 18,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "computer science"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "A Minimax Lower Bound for Low-Rank Matrix-Variate Logistic Regression",
+    "abstract": "This paper considers the problem of matrix-variate logistic regression. The fundamental error threshold on estimating coefficient matrices in the logistic regression problem is found by deriving a lower bound on the minimax risk. The focus of this paper is on derivation of a minimax risk lower bound for low-rank coefficient matrices. The bound depends explicitly on the dimensions and distribution of the covariates, the rank and energy of the coefficient matrix, and the number of samples. The resulting bound is proportional to the intrinsic degrees of freedom in the problem, which suggests the sample complexity of the low-rank matrix logistic regression problem can be lower than that for vectorized logistic regression. \\color{red}\\color{black} The proof techniques utilized in this work also set the stage for development of minimax lower bounds for tensor-variate logistic regression problems.",
+    "paper_title": "A Minimax Lower Bound for Low-Rank Matrix-Variate Logistic Regression",
+    "highlight": {},
+    "slug": "HmHd5a64H3CtPcExvAqbDDTy2fuN1jHk"
+  }, {
+    "id": 515,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Alexander",
+      "last_name": "Kruchkov",
+      "full_name": "Alexander Kruchkov"
+    }, {
+      "first_name": "Alexander",
+      "last_name": "Kruchkov",
+      "full_name": "Alexander Kruchkov"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 30,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "physics"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Origin of band flatness and constraints of higher Chern numbers",
+    "abstract": "Flat bands provide a natural platform for emergent electronic states beyond Landau paradigm. Among those of particular importance are flat Chern bands, including bands of higher Chern numbers ($C$$>$$1$). We introduce a new framework for band flatness through wave functions, and classify the existing isolated flat bands in a \"periodic table\" according to tight binding features and wave function properties. Our flat band categorization encompasses seemingly different classes of flat bands ranging from atomic insulators to perfectly flat Chern bands and Landau Levels. The perfectly flat Chern bands satisfy Berry curvature condition $F_{xy} = \\text{Tr} \\, \\mathcal G_{ij}$ which on the tight-binding level is fulfilled only for infinite-range models. Most of the natural Chern bands fall into category of $C=1$; the complexity of creating higher-$C$ flat bands is beyond the current technology. This is due to the breakdown of the microscopic stability for higher-$C$ flatness, seen atomistically e.g. in the increase of the hopping range bound as $\\propto$$\\sqrt{C} a$. Within our new formalism, we indicate strategies for bypassing higher-$C$ constraints and thus dramatically decreasing the implementation complexity.",
+    "paper_title": "Origin of band flatness and constraints of higher Chern numbers",
+    "highlight": {},
+    "slug": "tAwPvq8O8uoEjUa6SLeVr0RiVW9bN7LA"
+  }, {
+    "id": 502,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Xiatian",
+      "last_name": "Zhu",
+      "full_name": "Xiatian Zhu"
+    }, {
+      "first_name": "Peng",
+      "last_name": "Xu",
+      "full_name": "Peng Xu"
+    }, {
+      "first_name": "Xiatian",
+      "last_name": "Zhu",
+      "full_name": "Xiatian Zhu"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [{
+      "hub_image": null,
+      "id": 18,
+      "is_locked": false,
+      "is_removed": false,
+      "name": "computer science"
+    }],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Long-term Person Re-identification: A Benchmark",
+    "abstract": "Existing person re-identification (Re-ID) works mostly consider a short-term search problem assuming unchanged clothes and personal appearance. However, in realworld we often dress ourselves differently across locations, time, dates, seasons, weather, and events. As a result, the existing methods are unsuitable for long-term person Re-ID with clothes change involved. Whilst there are several recent longterm Re-ID attempts, a large realistic dataset with clothes change is lacking and indispensable for enabling extensive study as already experienced in short-term Re-ID setting. In this work, we contribute timely a large, realistic long-term person re-identification benchmark. It consists of 171K bounding boxes from 1.1K person identities, collected and constructed over a course of 12 months. Unique characteristics of this dataset include: (1) Natural/native personal appearance (e.g., clothes and hair style) variations: The degrees of clothes-change and dressing styles all are highly diverse, with the reappearing gap in time ranging from minutes, hours, and days to weeks, months, seasons, and years. (2) Diverse walks of life: Persons across a wide range of ages and professions appear in different weather conditions (e.g., sunny, cloudy, windy, rainy, snowy, extremely cold) and events (e.g., working, leisure, daily activities). (3) Rich camera setups: The raw videos were recorded by 17 outdoor security cameras with various resolutions operating in a real-world surveillance system for a wide and dense block. (4) Largest scale: It covers the largest number of (17) cameras, (1082) identities, and (171K) bounding boxes, as compared to alternative datasets.",
+    "paper_title": "Long-term Person Re-identification: A Benchmark",
+    "highlight": {},
+    "slug": "rATQ4vX7mXOrOosgHP2tD5QigB5Xp1jG"
+  }, {
+    "id": 516,
+    "authors": [],
+    "raw_authors": [{
+      "first_name": "Ruizhi",
+      "last_name": "Chen",
+      "full_name": "Ruizhi Chen"
+    }, {
+      "first_name": "Liang",
+      "last_name": "Chen",
+      "full_name": "Liang Chen"
+    }, {
+      "first_name": "Xiangchen",
+      "last_name": "Lu",
+      "full_name": "Xiangchen Lu"
+    }, {
+      "first_name": "Nan",
+      "last_name": "Shen",
+      "full_name": "Nan Shen"
+    }, {
+      "first_name": "Lei",
+      "last_name": "Wang",
+      "full_name": "Lei Wang"
+    }, {
+      "first_name": "Yuan",
+      "last_name": "Zhuang",
+      "full_name": "Yuan Zhuang"
+    }, {
+      "first_name": "Ye",
+      "last_name": "Su",
+      "full_name": "Ye Su"
+    }, {
+      "first_name": "Deren",
+      "last_name": "Li",
+      "full_name": "Deren Li"
+    }, {
+      "first_name": "Ruizhi",
+      "last_name": "Chen",
+      "full_name": "Ruizhi Chen"
+    }],
+    "hot_score": 481623,
+    "discussion_count": 0,
+    "doi": "",
+    "hubs": [],
+    "paper_publish_date": "2021-05-31",
+    "score": 1,
+    "summary": "",
+    "title": "Signal Acquisition of Luojia-1A Low Earth Orbit Navigation Augmentation\n  System with Software Defined Receiver",
+    "abstract": "Low earth orbit (LEO) satellite navigation signal can be used as an opportunity signal in case of a Global navigation satellite system (GNSS) outage, or as an enhancement means of traditional GNSS positioning algorithms. No matter which service mode is used, signal acquisition is the prerequisite of providing enhanced LEO navigation service. Compared with the medium orbit satellite, the transit time of the LEO satellite is shorter. Thus, it is of great significance to expand the successful acquisition time range of the LEO signal. Previous studies on LEO signal acquisition are based on simulation data. However, signal acquisition research based on real data is very important. In this work, the signal characteristics of LEO satellite: power space density in free space and the Doppler shift of LEO satellite are individually studied. The unified symbol definitions of several integration algorithms based on the parallel search signal acquisition algorithm are given. To verify these algorithms for LEO signal acquisition, a software-defined receiver (SDR) is developed. The performance of those integration algorithms on expanding the successful acquisition time range is verified by the real data collected from the Luojia-1A satellite. The experimental results show that the integration strategy can expand the successful acquisition time range, and it will not expand indefinitely with the integration duration.",
+    "paper_title": "Signal Acquisition of Luojia-1A Low Earth Orbit Navigation Augmentation\n  System with Software Defined Receiver",
+    "highlight": {},
+    "slug": "hdkDvTCqaWTmiCEPELWAapqsWdEIgjGD"
+  }]
+}
