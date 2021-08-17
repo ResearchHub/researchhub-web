@@ -1,5 +1,5 @@
 // NPM
-import { Fragment, Component } from "react";
+import React, { Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -41,7 +41,7 @@ class Editor extends Component {
       this.setState(
         {
           ReactQuill: val.default,
-          Quill: val.Quill,
+          Quill: val.default.Quill,
         },
         () => {
           this.attachQuillRefs();

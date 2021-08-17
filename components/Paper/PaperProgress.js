@@ -21,7 +21,7 @@ import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
 
 class PaperProgress extends Component {
   constructor(props) {

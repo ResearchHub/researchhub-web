@@ -16,7 +16,7 @@ import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import { convertToEditorValue } from "~/config/utils";
+import { convertToEditorValue } from "~/config/utils/editor";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
