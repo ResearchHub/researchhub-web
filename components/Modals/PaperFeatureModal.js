@@ -25,7 +25,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { thread } from "~/redux/discussion/shims";
-import { isQuillDelta } from "~/config/utils/";
+import { isQuillDelta } from "~/config/utils/editor";
 import { sendAmpEvent } from "~/config/fetch";
 
 const BULLET_COUNT = 5;

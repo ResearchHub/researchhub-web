@@ -59,12 +59,12 @@ import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { getAuthorName } from "~/config/utils/";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-  getAuthorName,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";
