@@ -51,7 +51,6 @@ function SentimentBar({
 function CitationConsensusItem({
   citationID,
   consensusMeta,
-  currentUser,
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
   const [localConsensusMeta, setLocalConsensusMeta] = useState<ConsensusMeta>(
     consensusMeta
@@ -66,17 +65,23 @@ function CitationConsensusItem({
   );
 
   const handleReject = useCallback((): void => {
-    setLocalConsensusMeta({
+    const updatedMeta = {
       ...localConsensusMeta,
       downCount: downCount + 1,
-      userVote: true,
-    });
+    };
+    setLocalConsensusMeta(updatedMeta);
     setTotalCount(totalCount + 1);
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
     setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
-      onSuccess: silentEmptyFnc, // NOTE: optimistic update.
+      onSuccess: (userVote: Object): void => {
+        // NOTE: optimistic update.
+        setLocalConsensusMeta({
+          ...updatedMeta,
+          userVote,
+        });
+      },
       onError: emptyFncWithMsg,
       voteType: DOWNVOTE,
     });
@@ -90,17 +95,23 @@ function CitationConsensusItem({
   ]);
 
   const handleSupport = useCallback((): void => {
-    setLocalConsensusMeta({
+    const updatedMeta = {
       ...localConsensusMeta,
       upCount: upCount + 1,
-      userVote: true,
-    });
+    };
+    setLocalConsensusMeta(updatedMeta);
     setTotalCount(totalCount + 1);
     setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
     setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
-      onSuccess: silentEmptyFnc, // NOTE: optimistic update.
+      onSuccess: (userVote: Object): void => {
+        // NOTE: optimistic update.
+        setLocalConsensusMeta({
+          ...updatedMeta,
+          userVote,
+        });
+      },
       onError: emptyFncWithMsg,
       voteType: UPVOTE,
     });
