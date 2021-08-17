@@ -9,7 +9,7 @@ import BaseModal from "./BaseModal";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import { convertHttpToHttps } from "~/config/utils";
+import { convertHttpToHttps } from "~/config/utils/routing";
 
 const PaperPDFModal = (props) => {
   const { paper, modals, openPaperPDFModal, onClose } = props;

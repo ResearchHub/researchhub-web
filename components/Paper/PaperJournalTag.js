@@ -4,12 +4,12 @@ import { StyleSheet, css } from "aphrodite";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
+import { getJournalFromURL } from "~/config/utils/parsers";
 import {
-  getJournalFromURL,
   capitalize,
   getJournalImagePath,
   formatJournalName,
-} from "~/config/utils";
+} from "~/config/utils/misc";
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;

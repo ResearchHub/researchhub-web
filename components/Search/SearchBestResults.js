@@ -10,7 +10,7 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
-import { hasNoSearchResults } from "~/config/utils";
+import { hasNoSearchResults } from "~/config/utils/search";
 
 const SearchBestResults = ({ apiResponse }) => {
   const router = useRouter();

@@ -19,7 +19,7 @@ import API from "~/config/api";
 import { supportContent } from "../../config/fetch";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
-import { sanitizeNumber } from "~/config/utils";
+import { sanitizeNumber } from "~/config/utils/form";
 
 class ContentSupportModal extends Component {
   constructor(props) {

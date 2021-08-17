@@ -24,7 +24,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
-import { openExternalLink } from "~/config/utils";
+import { openExternalLink } from "~/config/utils/routing";
 
 class FileTab extends Component {
   constructor(props) {

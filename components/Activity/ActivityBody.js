@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 // Components
 import { ClampedText } from "~/components/Typography";
 
-import { convertDeltaToText } from "~/config/utils";
+import { convertDeltaToText } from "~/config/utils/editor";
 import colors from "~/config/themes/colors";
 
 const ActivityBody = (props) => {

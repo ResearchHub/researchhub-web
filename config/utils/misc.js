@@ -1,13 +1,18 @@
-// export * from "./dates";
-export * from "./network";
-export * from "./parsers";
-export * from "./routing";
-export * from "./serializers";
-export * from "./validation";
-export * from "./form";
-export * from "./env";
-export * from "./search";
-export * from "./analytics";
+import { doesNotExist } from "./nullchecks";
+
+export function removeLineBreaksInStr(str) {
+  return str.replace(/\r?\n |\r/g, "");
+}
+
+/**
+ *
+ * @param {String} str - any string
+ *
+ * returns string with first letter of each word capitalized
+ */
+export function capitalize(str) {
+  return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+}
 
 export function getNestedValue(root, nodes, defaultValue = null) {
   const initialValue = root;
@@ -27,27 +32,6 @@ export function getNestedValue(root, nodes, defaultValue = null) {
   return value;
 }
 
-export function doesNotExist(value) {
-  if (value === undefined || value === null) {
-    return true;
-  }
-  return false;
-}
-
-export function isEmpty(value) {
-  if (typeof value === "object") {
-    if (Object.entries(value).length === 0 && value.constructor === Object) {
-      return true;
-    }
-    return false;
-  } else if (typeof value === "string") {
-    return value === "";
-  } else if (typeof value === "number") {
-    return false;
-  }
-  return false;
-}
-
 export function truncateText(str) {
   if (str && str.length >= 90) {
     return str.slice(0, 90).trim() + "...";
@@ -55,18 +39,8 @@ export function truncateText(str) {
   return str;
 }
 
-export function removeLineBreaksInStr(str) {
-  return str.replace(/\r?\n |\r/g, "");
-}
-
-/**
- *
- * @param {String} str - any string
- *
- * returns string with first letter of each word capitalized
- */
-export function capitalize(str) {
-  return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
+export function logFetchError(fetchResponse) {
+  const message = `Error fetching ${fetchResponse.url}:`;
 }
 
 /**

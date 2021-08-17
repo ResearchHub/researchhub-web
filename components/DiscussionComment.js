@@ -15,10 +15,11 @@ import DiscussionActions from "~/redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 
-import { UPVOTE, DOWNVOTE } from "../config/constants";
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
+import { createUsername, getCurrentUser } from "~/config/utils/serializers";
+import { getNestedValue } from "~/config/utils/misc";
 
 class DiscussionComment extends Component {
   state = {

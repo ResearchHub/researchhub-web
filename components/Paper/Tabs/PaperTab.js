@@ -23,7 +23,7 @@ import { AuthActions } from "~/redux/auth";
 import colors from "../../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
-import { openExternalLink, convertHttpToHttps } from "~/config/utils";
+import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 
 function PaperTab(props) {
   const { paper, paperId, paperPdfRef, isModerator, updatePaperState } = props;

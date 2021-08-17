@@ -35,7 +35,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { isQuillDelta } from "~/config/utils/editor";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";

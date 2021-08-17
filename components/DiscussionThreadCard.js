@@ -16,14 +16,14 @@ import VoteWidget from "./VoteWidget";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
 } from "~/config/utils/editor";
 
-import { createUsername } from "~/config/utils";
+import { createUsername } from "~/config/utils/serializers";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();

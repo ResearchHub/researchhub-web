@@ -20,7 +20,8 @@ import DiscussionActions from "~/redux/discussion";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
+import { createUsername, getCurrentUser } from "~/config/utils/serializers";
+import { getNestedValue } from "~/config/utils/misc";
 
 const Thread = (props) => {
   const { data, hostname, title, body, createdBy, date, vote } = props;

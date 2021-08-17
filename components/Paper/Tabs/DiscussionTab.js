@@ -34,7 +34,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
-import { endsWithSlash } from "~/config/utils";
+import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 

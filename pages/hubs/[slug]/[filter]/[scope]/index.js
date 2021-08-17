@@ -4,7 +4,7 @@ import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { toTitleCase } from "~/config/utils";
+import { toTitleCase } from "~/config/utils/serializers";
 import {
   slugToFilterQuery,
   calculateScopeFromSlug,
