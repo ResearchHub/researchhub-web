@@ -60,10 +60,9 @@ function CitationConsensusItem({
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
-
-  const hasCurrUserVoted = !isNullOrUndefined(userVote);
-  const [shouldShowConsensus, setShouldShowConsensus] = useState<boolean>(
-    !hasCurrUserVoted
+  console.warn("totalCount: ", totalCount);
+  const [hasCurrUserVoted, setHasCurrUserVoted] = useState<boolean>(
+    !isNullOrUndefined(userVote)
   );
 
   const handleReject = useCallback((): void => {
@@ -74,7 +73,7 @@ function CitationConsensusItem({
     });
     setTotalCount(totalCount + 1);
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
-    setShouldShowConsensus(true);
+    setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
       onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
@@ -98,7 +97,7 @@ function CitationConsensusItem({
     });
     setTotalCount(totalCount + 1);
     setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
-    setShouldShowConsensus(true);
+    setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
       onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
@@ -118,7 +117,7 @@ function CitationConsensusItem({
   const majorityPercent =
     (doesMajoritySupport ? upCount : downCount) / totalCount;
   const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
-  const consensus = (
+  const consensusBar = (
     <div className={css(styles.consensusWrap)}>
       <div className={css(styles.resultWrap)}>
         {doesMajoritySupport ? (
@@ -129,7 +128,6 @@ function CitationConsensusItem({
         ) : (
           <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
         )}
-
         <div
           style={{
             color: doesMajoritySupport ? colors.GREEN(1) : colors.RED(1),
@@ -152,38 +150,35 @@ function CitationConsensusItem({
       </div>
     </div>
   );
-  const vote = (
-    <Fragment>
-      <div
-        className={css(
-          styles.button,
-          totalCount > 1 && styles.centerRejectButton
-        )}
-        onClick={handleReject}
-        role="button"
-      >
-        {icons.timesCircle}
-        <span className={css(styles.iconWrap)}></span>
-        <span className={css(styles.buttonText)}>{"Reject"}</span>
-      </div>
-      <div
-        className={css(styles.button, styles.green)}
-        onClick={handleSupport}
-        role="button"
-      >
-        {icons.checkCircle}
-        <span className={css(styles.iconWrap)}></span>
-        <span className={css(styles.buttonText)}>{"Support"}</span>
-      </div>
-    </Fragment>
-  );
 
   return (
     <div className={css(styles.citationConsensusItem)}>
-      {totalCount > 1 ? consensus : null}
+      {totalCount > 0 ? consensusBar : null}
       {hasCurrUserVoted ? null : (
-        <div className={css(styles.vote, totalCount > 1 && styles.centerVote)}>
-          {vote}
+        <div
+          className={css(styles.voteWrap, totalCount > 1 && styles.centerVote)}
+        >
+          <div
+            className={css(
+              styles.button,
+              totalCount > 1 && styles.centerRejectButton
+            )}
+            onClick={handleReject}
+            role="button"
+          >
+            {icons.timesCircle}
+            <span className={css(styles.iconWrap)}></span>
+            <span className={css(styles.buttonText)}>{"Reject"}</span>
+          </div>
+          <div
+            className={css(styles.button, styles.green)}
+            onClick={handleSupport}
+            role="button"
+          >
+            {icons.checkCircle}
+            <span className={css(styles.iconWrap)}></span>
+            <span className={css(styles.buttonText)}>{"Support"}</span>
+          </div>
         </div>
       )}
     </div>
@@ -199,10 +194,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  vote: {
-    display: "flex",
+  voteWrap: {
     alignItems: "center",
+    display: "flex",
     justifyContent: "center",
+    width: "inherit",
+    maxWidth: "162px",
+    marginTop: 8,
   },
   button: {
     alignItems: "center",
@@ -210,6 +208,8 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     marginRight: 16,
+    justifyContent: "center",
+    width: "50%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       marginRight: 8,
     },
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   },
   consensusBar: {
     alignItems: "center",
-    background: colors.LIGHT_GREY_BORDER,
+    backgroundColor: colors.LIGHT_GREY_TEXT,
     borderRadius: 8,
     display: "flex",
     marginTop: 8,
@@ -236,15 +236,10 @@ const styles = StyleSheet.create({
     height: 8,
     justifyContent: "center",
     position: "relative",
-    // maxWidth: "137px",
     width: "100%",
   },
   consensusWrap: {
-    alignItems: "center",
-    // display: "flex",
-    flexDirection: "column",
     height: "100%",
-    justifyContent: "space-between",
     maxHeight: 28,
   },
   iconWrap: {
