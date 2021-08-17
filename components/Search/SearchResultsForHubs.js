@@ -38,7 +38,7 @@ const SearchResultsForHubs = ({ apiResponse, context }) => {
   };
 
   return (
-    <div>
+    <div id="SearchResultsForHubs">
       {numOfHits > 0 && (
         <Fragment>
           {context !== "best-results" && (

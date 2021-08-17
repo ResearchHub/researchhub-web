@@ -37,6 +37,7 @@ import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isDevEnv } from "~/config/utils/env";
 
 class PaperPageCard extends React.Component {
   constructor(props) {
@@ -199,6 +200,7 @@ class PaperPageCard extends React.Component {
             target="_blank"
             className={css(styles.metadata, styles.link) + " clamp1"}
             rel="noreferrer noopener"
+            data-test={isDevEnv() ? `doi` : undefined}
           >
             {paper.doi}
           </a>
@@ -578,7 +580,10 @@ class PaperPageCard extends React.Component {
         showLoadingAnimation
         customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
       >
-        <div className={css(styles.mainContainer)}>
+        <div
+          className={css(styles.mainContainer)}
+          data-test={isDevEnv() ? `paper-${paper.id}` : undefined}
+        >
           <div className={css(styles.main)}>
             <AuthorSupportModal />
 

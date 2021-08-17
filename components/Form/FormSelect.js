@@ -7,6 +7,7 @@ import { get } from "lodash";
 // Config
 import * as Options from "../../config/utils/options";
 import colors from "../../config/themes/colors";
+import { isDevEnv } from "~/config/utils/env";
 
 const animatedComponents = makeAnimated();
 
@@ -177,6 +178,7 @@ class FormSelect extends React.Component {
         className={css(styles.inputContainer, containerStyle && containerStyle)}
         id={id && id}
         ref={ref}
+        data-test={isDevEnv() ? `select-${id}` : undefined}
       >
         <div
           className={css(

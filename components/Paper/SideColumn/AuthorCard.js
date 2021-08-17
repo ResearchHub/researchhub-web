@@ -14,7 +14,10 @@ const AuthorCard = (props) => {
   if (id) {
     return (
       <Link href={"/user/[authorId]/[tabName]"} as={`/user/${id}/overview`}>
-        <a className={css(styles.container, styles.hover)}>
+        <a
+          className={css(styles.container, styles.hover)}
+          data-test={`author-${author.id}`}
+        >
           {author.profile_image ? (
             <img src={author.profile_image} className={css(styles.userImage)} />
           ) : (
@@ -33,6 +36,7 @@ const AuthorCard = (props) => {
         target="_blank"
         href={`https://orcid.org/${orcid_id}`}
         rel="noreferrer noopener"
+        data-test={`author-${author.id}`}
       >
         <span className={css(styles.userIcon)}>{icons.user}</span>
         <div className={css(styles.name) + " clamp1"}>{name}</div>
@@ -41,7 +45,7 @@ const AuthorCard = (props) => {
   }
 
   return (
-    <div className={css(styles.container)}>
+    <div className={css(styles.container)} data-test={`author-${author.id}`}>
       <span className={css(styles.userIcon)}>{icons.user}</span>
       <div className={css(styles.name) + " clamp1"}>{name}</div>
     </div>
