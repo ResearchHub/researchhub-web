@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";
 import makeAnimated from "react-select/animated";
-import { get } from "lodash";
+import get from "lodash/get";
 
 // Config
 import * as Options from "../../config/utils/options";

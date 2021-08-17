@@ -1,9 +1,9 @@
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const ANALYZE = process.env.ANALYZE;
 const path = require("path");
-// // const withCSS = require("@zeit/next-css");
-// const withPlugins = require("next-compose-plugins");
-// const withSourceMaps = require("@zeit/next-source-maps");
+// const withCSS = require("@zeit/next-css");
+const withPlugins = require("next-compose-plugins");
+const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
 
 // module.exports = withPlugins(
@@ -47,7 +47,7 @@ const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
 //    }
 //   }
 
-module.exports = withTM({
+module.exports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
   typescript: {
     ignoreBuildErrors: true,
@@ -69,6 +69,7 @@ module.exports = withTM({
           analyzerMode: "server",
           analyzerPort: isServer ? 8888 : 8889,
           openAnalyzer: true,
+          generateStatsFile: true,
         })
       );
     }
