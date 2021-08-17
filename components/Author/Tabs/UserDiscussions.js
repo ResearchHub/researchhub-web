@@ -2,7 +2,7 @@ import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
-import { get } from "lodash";
+import get from "lodash/get";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
