@@ -1,8 +1,7 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import InfiniteScroll from "react-infinite-scroller";
 
 // Component
 import LiveFeedNotification from "./LiveFeedNotification";

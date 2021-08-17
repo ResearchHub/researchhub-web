@@ -138,7 +138,6 @@ class MajorsInput extends Component {
   render() {
     let {
       containerStyle,
-      inputStyle,
       labelStyle,
       label,
       required,

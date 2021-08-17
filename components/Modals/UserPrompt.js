@@ -1,5 +1,4 @@
 import React, { useState, useEffect, Fragment } from "react";
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { useSpring, animated as a } from "react-spring";
 import icons from "~/config/themes/icons";

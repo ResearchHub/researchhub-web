@@ -6,7 +6,6 @@ import * as moment from "dayjs";
 
 // Components
 import { ScorePill } from "~/components/VoteWidget";
-import PromotionGraph from "./PromotionGraph";
 
 // Config
 import icons from "~/config/themes/icons";

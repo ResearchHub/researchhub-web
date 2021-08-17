@@ -13,7 +13,6 @@ import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 
-import icons from "~/config/themes/icons";
 import * as shims from "../../config/shims";
 
 class AddAuthorModal extends Component {

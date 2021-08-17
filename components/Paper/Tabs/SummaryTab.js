@@ -8,7 +8,6 @@ import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import FormTextArea from "~/components/Form/FormTextArea";
@@ -36,7 +35,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { isQuillDelta } from "~/config/utils/editor";
 import { doesNotExist } from "~/config/utils/nullchecks";
-import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
+import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
 

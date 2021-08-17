@@ -1,7 +1,6 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 // Component
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -24,7 +23,6 @@ const EducationModal = dynamic(() =>
 
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 

@@ -1,5 +1,4 @@
 import { Component, Fragment } from "react";
-import { connect } from "react-redux";
 import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 

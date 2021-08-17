@@ -16,15 +16,12 @@ import dynamic from "next/dynamic";
 // Components
 // import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "../components/Form/Button";
 import UserStateBanner from "./Banner/UserStateBanner";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import NewPostButton from "./NewPostButton";
 import Notification from "./Notifications/Notification";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-import SiteWideBanner from "~/components/SiteWideBanner";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -32,10 +29,8 @@ import { RHLogo } from "~/config/themes/icons";
 
 // Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import killswitch from "~/config/killswitch/killswitch";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen"
 

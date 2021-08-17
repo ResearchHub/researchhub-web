@@ -2,7 +2,6 @@ import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
-import ReactPlaceholder from "react-placeholder/lib";
 import Ripples from "react-ripples";
 import * as Sentry from "@sentry/browser";
 import Router from "next/router";
@@ -10,17 +9,11 @@ import Router from "next/router";
 // Component
 import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
-import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
-import MainHeader from "../Home/MainHeader";
 import SubscribeButton from "../Home/SubscribeButton";
-import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import MobileFeedTabs from "../Home/MobileFeedTabs";
-import Button from "../Form/Button";
-import CreateFeedBanner from "../Home/CreateFeedBanner";
 import ActivityList from "~/components/Activity/ActivityList";
 import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
 
@@ -41,7 +34,6 @@ import {
 } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
-import killswitch from "~/config/killswitch/killswitch";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];

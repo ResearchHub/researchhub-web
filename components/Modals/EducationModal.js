@@ -17,7 +17,6 @@ import { ModalActions } from "~/redux/modals";
 import { degrees } from "~/config/utils/options";
 import * as Options from "../../config/utils/options";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const EducationModal = (props) => {
   // set initial props;

@@ -14,7 +14,7 @@ import { AuthorActions } from "~/redux/author";
 
 // Config
 import icons from "~/config/themes/icons";
-import colors, { genericCardColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 class UserContributionsTab extends Component {

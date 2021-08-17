@@ -7,7 +7,6 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import ComponentWrapper from "../../ComponentWrapper";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";

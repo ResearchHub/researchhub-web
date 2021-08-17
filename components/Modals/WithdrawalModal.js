@@ -1,7 +1,6 @@
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 import Link from "next/link";
 
 // Component
@@ -23,7 +22,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask } from "../connectEthereum";
-import CheckBox from "../Form/CheckBox";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
 import { isAddress, toCheckSumAddress } from "~/config/utils/validation";
 

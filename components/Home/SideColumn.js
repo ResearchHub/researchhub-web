@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -7,8 +7,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 
 // Config
 import colors from "../../config/themes/colors";
-
-const DEFAULT_TRANSITION_TIME = 400;
 
 class SideColumn extends Component {
   constructor(props) {

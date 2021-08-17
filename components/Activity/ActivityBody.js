@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
 
 // Components
 import { ClampedText } from "~/components/Typography";

@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 const ColumnContainer = (props) => {

@@ -6,9 +6,6 @@ import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
-// Config
-import ResearchHubIcon from "../static/ResearchHubIcon";
-
 const AvatarUpload = (props) => {
   let { isOpen, closeModal, saveButton, section } = props;
   const [image, setImage] = useState(null);

@@ -5,9 +5,6 @@ import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripple from "react-ripples";
 
-// Next
-import Router from "next/router";
-
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { PaperActions } from "../../redux/paper";
@@ -19,9 +16,6 @@ const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 // Component
 import PaperEntryCard from "../Hubs/PaperEntryCard";
-
-// Config
-import colors from "~/config/themes/colors";
 
 const TRANSITION_TIME = 300;
 

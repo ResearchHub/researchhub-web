@@ -1,5 +1,3 @@
-import React, { useRef, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
 import { Draggable } from "react-beautiful-dnd";
 
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
@@ -17,9 +15,6 @@ const DraggableCard = ({
   onEditCallback,
   onRemoveCallback,
 }) => {
-  const [dragActive, setDrag] = useState(false);
-  const ref = useRef(null);
-
   return (
     <Draggable draggableId={`takeaway-${id}`} index={index}>
       {(provided, snapshot) => (
@@ -41,7 +36,5 @@ const DraggableCard = ({
     </Draggable>
   );
 };
-
-const styles = StyleSheet.create({});
 
 export default DraggableCard;

@@ -22,9 +22,6 @@ import { getNestedValue } from "~/config/utils/misc";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/serializers";
-import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-
-const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
 class DiscussionEntry extends Component {
   constructor(props) {

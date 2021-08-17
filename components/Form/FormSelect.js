@@ -5,7 +5,6 @@ import makeAnimated from "react-select/animated";
 import get from "lodash/get";
 
 // Config
-import * as Options from "../../config/utils/options";
 import colors from "../../config/themes/colors";
 import { isDevEnv } from "~/config/utils/env";
 
