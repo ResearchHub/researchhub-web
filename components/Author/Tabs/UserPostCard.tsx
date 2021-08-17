@@ -21,7 +21,7 @@ import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { isDevEnv } from "~/config/utils/env";
+import { isDevEnv } from "../../../config/utils/env";
 
 export type UserPostCardProps = {
   created_by: any;
