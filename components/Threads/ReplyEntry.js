@@ -11,11 +11,11 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
-import DiscussionActions from "../../redux/discussion";
-import { createUsername } from "../../config/utils";
+import DiscussionActions from "~/redux/discussion";
+import { createUsername } from "~/config/utils/serializers";
 import { MessageActions } from "~/redux/message";
 import { divide } from "numeral";
 

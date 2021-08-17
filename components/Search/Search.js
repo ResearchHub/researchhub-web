@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 import get from "lodash/get";
 import { breakpoints } from "~/config/themes/screen";
-import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils";
-import { trackEvent } from "~/config/utils";
+import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
+import { trackEvent } from "~/config/utils/analytics";
 import { connect } from "react-redux";
 import { useSelector } from "react-redux";
 

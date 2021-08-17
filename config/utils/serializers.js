@@ -1,4 +1,5 @@
-import { doesNotExist, getNestedValue } from "./index";
+import { getNestedValue } from "./misc";
+import { doesNotExist } from "./nullchecks";
 
 export function createUserSummary(author = {}) {
   const { headline, education } = author;

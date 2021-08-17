@@ -14,8 +14,7 @@ import { NotificationActions } from "~/redux/notification";
 // Config
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import { doesNotExist } from "~/config/utils";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 class Notification extends Component {
   constructor(props) {

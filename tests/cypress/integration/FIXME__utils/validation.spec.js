@@ -1,4 +1,4 @@
-import { isValidEmail } from "../../../../config/utils";
+import { isValidEmail } from "../../../../config/utils/validation";
 
 describe("Validation Utils", function() {
   context("isValidEmail", function() {

@@ -46,12 +46,9 @@ import { BulletActions } from "~/redux/bullets";
 
 // Config
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
-import {
-  absoluteUrl,
-  getNestedValue,
-  getVoteType,
-  formatPaperSlug,
-} from "~/config/utils";
+import { absoluteUrl } from "~/config/utils/routing";
+import { getNestedValue } from "~/config/utils/misc";
+import { getVoteType, formatPaperSlug } from "~/config/utils/serializers";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
@@ -61,7 +58,7 @@ import {
   convertDeltaToText,
   isQuillDelta,
 } from "~/config/utils/editor";
-import { getAuthorName } from "~/config/utils";
+import { getAuthorName } from "~/config/utils/misc";
 import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";

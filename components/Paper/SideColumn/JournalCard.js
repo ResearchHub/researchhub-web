@@ -7,11 +7,11 @@ import PaperJournalTag from "~/components/Paper/PaperJournalTag";
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
 import {
-  getJournalFromURL,
   capitalize,
   getJournalImagePath,
   formatJournalName,
-} from "~/config/utils";
+} from "~/config/utils/misc";
+import { getJournalFromURL } from "~/config/utils/parsers";
 
 const JournalCard = (props) => {
   const { paper } = props;

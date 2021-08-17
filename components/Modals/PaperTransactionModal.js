@@ -32,11 +32,11 @@ import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
   sanitizeNumber,
-  formatBalance,
   onKeyDownNumInput,
   onPasteNumInput,
-} from "~/config/utils";
-import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
+  formatBalance,
+} from "~/config/utils/form";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Constants
 import { ContentTypes, ChainStatus } from "./constants/SupportContent";

@@ -49,17 +49,13 @@ import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxS
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import {
-  absoluteUrl,
-  getNestedValue,
-  getVoteType,
-  formatPaperSlug,
-} from "~/config/utils";
+import { absoluteUrl } from "~/config/utils/routing";
+import { getVoteType, formatPaperSlug } from "~/config/utils/serializers";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { getAuthorName } from "~/config/utils/";
+import { getAuthorName, getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
   convertDeltaToText,

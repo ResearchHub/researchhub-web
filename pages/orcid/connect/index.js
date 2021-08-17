@@ -9,7 +9,7 @@ import Modal from "react-modal";
 import { ORCID_CLIENT_ID, ORCID_JWKS_URI } from "../../../config/constants";
 import colors from "~/config/themes/colors";
 import { modalStyles } from "~/config/themes/styles";
-import { getFragmentParameterByName } from "~/config/utils";
+import { getFragmentParameterByName } from "~/config/utils/parsers";
 
 import { AuthActions, AuthConstants } from "../../../redux/auth";
 

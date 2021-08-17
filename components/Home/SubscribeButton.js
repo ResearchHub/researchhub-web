@@ -9,7 +9,7 @@ import { ModalActions } from "~/redux/modals";
 
 import colors from "~/config/themes/colors";
 import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
-import { capitalize } from "~/config/utils";
+import { capitalize } from "~/config/utils/misc";
 
 const SubscribeButton = (props) => {
   const {

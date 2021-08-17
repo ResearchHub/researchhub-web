@@ -4,7 +4,7 @@ import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "../components/Hubs/HubPage";
 import nookies from "nookies";
-import { redirect } from "~/config/utils";
+import { redirect } from "~/config/utils/routing";
 
 const isServer = () => typeof window === "undefined";
 

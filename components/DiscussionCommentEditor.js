@@ -9,11 +9,10 @@ import TextEditor from "~/components/TextEditor";
 import DiscussionActions from "~/redux/discussion";
 
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import {
-  currentUserHasMinimumReputation,
-  doesNotExist,
-  getMinimumReputation,
-} from "~/config/utils";
+import { getMinimumReputation } from "~/config/utils/serializers";
+import { currentUserHasMinimumReputation } from "~/config/utils/validation";
+import { doesNotExist } from "~/config/utils/nullchecks";
+
 import { ModalActions } from "../redux/modals";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 

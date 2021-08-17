@@ -1,6 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import FormSelect from "~/components/Form/FormSelect";
-import { capitalize } from "~/config/utils";
+import { capitalize } from "~/config/utils/misc";
 
 const MainHeader = (props) => {
   const {

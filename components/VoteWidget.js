@@ -8,7 +8,7 @@ import { connect } from "react-redux";
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 import icons, { voteWidgetIcons, BoltSvg } from "~/config/themes/icons";
 import {
@@ -17,7 +17,8 @@ import {
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../config/constants";
-import { getCurrentUserReputation, formatScore } from "../config/utils";
+import { getCurrentUserReputation } from "~/config/utils/serializers";
+import { formatScore } from "~/config/utils/form";
 
 // components
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";

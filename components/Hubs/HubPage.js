@@ -39,7 +39,7 @@ import {
   fetchUnifiedDocFeed,
   fetchURL,
 } from "~/config/fetch";
-import { getFragmentParameterByName } from "~/config/utils";
+import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import killswitch from "~/config/killswitch/killswitch";
 

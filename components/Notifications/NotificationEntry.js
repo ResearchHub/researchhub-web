@@ -18,7 +18,9 @@ import { NotificationActions } from "~/redux/notification";
 
 // Config
 import colors from "../../config/themes/colors";
-import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { getNestedValue } from "~/config/utils/misc";
+import { formatPaperSlug } from "~/config/utils/serializers";
 import { timeAgoStamp } from "~/config/utils/dates";
 import { reviewBounty } from "~/config/fetch";
 

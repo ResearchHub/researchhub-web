@@ -19,7 +19,8 @@ import {
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { doesNotExist, truncateText } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { truncateText } from "~/config/utils/misc";
 
 const ModeratorBounty = (props) => {
   const { data, notification, markAsRead, closeMenu } = props;

@@ -1,4 +1,5 @@
-import { doesNotExist, getNestedValue, isEmpty } from "~/config/utils";
+import { doesNotExist, isEmpty } from "../../../../config/utils/nullchecks";
+import { getNestedValue } from "../../../../config/utils/misc";
 
 describe("General Utils", function() {
   context("doesNotExist", function() {
