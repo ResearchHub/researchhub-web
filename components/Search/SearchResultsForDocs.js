@@ -3,7 +3,7 @@ import Ripples from "react-ripples";
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
 import { isString, isArray } from "underscore";
-import { get } from "lodash";
+import get from "lodash/get";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 

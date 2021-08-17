@@ -4,7 +4,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import { get } from "lodash";
+import get from "lodash/get";
 import { breakpoints } from "~/config/themes/screen";
 import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils";
 import { trackEvent } from "~/config/utils";
