@@ -9,10 +9,7 @@ import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import colors from "../../../../config/themes/colors";
 import React, { ReactElement, useEffect, useState } from "react";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-} from "../../../../config/utils/nullchecks";
+import { emptyFncWithMsg } from "../../../../config/utils/nullchecks";
 import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 import CitationAddNewButton from "../CitationAddNewButton";
 
@@ -35,20 +32,17 @@ function useEffectGetCitations({
   lastFetchTime,
   setCitationItems,
   onSuccess,
-  updateLastFetchTime,
+  updateLastFetchTime: _update,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
-    // if (isNullOrUndefined(lastFetchTime)) {
     fetchCitationsOnHypothesis({
       hypothesisID,
       onError: (error: Error): void => emptyFncWithMsg(error),
       onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
         setCitationItems(formattedResult);
         onSuccess && onSuccess();
-        // updateLastFetchTime();
       },
     });
-    // }
   }, [hypothesisID, lastFetchTime, setCitationItems]);
 }
 
@@ -139,8 +133,6 @@ const styles = StyleSheet.create({
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    // maxHeight: "500",
-    // overflow: "auto",
   },
   citationNoResults: {
     display: "flex",

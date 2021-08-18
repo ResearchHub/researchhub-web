@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     letterSpacing: "1.2px",
     justifyContent: "flex-start",
-    // padding: "0 8px",
     textTransform: "uppercase",
     wordWrap: "break-word",
   },
