@@ -9,6 +9,7 @@
     "analyze": "ANALYZE=true yarn run build",
     "cy:open": "cypress open --project $PWD/tests",
     "cy:spec": "cypress run --project $PWD/tests --spec",
+    "analyze:maps": "source-map-explorer .next/static/**/*.js",
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
     "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
@@ -21,8 +22,6 @@
     "sitemap-index": "node scripts/createSitemapIndex.js",
     "eb:deploy": "./scripts/deploy/eb-deploy.sh",
     "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh",
-    "analyze:maps": "source-map-explorer .next/static/**/*.js",
-    "build:analyze": "yarn run build && yarn run analyze:maps",
     "lint": "./node_modules/.bin/eslint",
     "prepare": "husky install"
   },
