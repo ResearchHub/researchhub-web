@@ -17,7 +17,7 @@ import {
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../config/constants";
-import { getCurrentUserReputation } from "~/config/utils/serializers";
+import { getCurrentUserReputation } from "~/config/utils/reputation";
 import { formatScore } from "~/config/utils/form";
 
 // components

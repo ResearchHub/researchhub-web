@@ -23,7 +23,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { getNestedValue } from "~/config/utils/misc";
-import { formatPaperSlug } from "~/config/utils/serializers";
+import { formatPaperSlug } from "~/config/utils/document";
 import { doesNotExist } from "~/config/utils/nullchecks";
 
 const getNotifMetadata = (notification) => {

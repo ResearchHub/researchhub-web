@@ -14,6 +14,7 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
+import { toTitleCase } from "~/config/utils/string";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 
@@ -42,8 +43,8 @@ class EditHubModal extends Component {
     if (prevHub !== currHub) {
       let hub = this.props.modals.editHubModal.hub;
       this.setState({
-        originalHubName: hub ? this.toTitleCase(hub.name) : "",
-        hubName: hub ? this.toTitleCase(hub.name) : "",
+        originalHubName: hub ? toTitleCase(hub.name) : "",
+        hubName: hub ? toTitleCase(hub.name) : "",
         hubDescription: hub ? hub.description : "",
         hubImage: undefined,
         hubCategory: undefined,
@@ -83,7 +84,7 @@ class EditHubModal extends Component {
     ) {
       return;
     }
-    this.setState({ [id]: id === "hubName" ? this.toTitleCase(value) : value });
+    this.setState({ [id]: id === "hubName" ? toTitleCase(value) : value });
   };
 
   UpdateHub = async (hub) => {
@@ -164,13 +165,6 @@ class EditHubModal extends Component {
     this.props.openEditHubModal(false);
     this.setState({
       ...this.initialState,
-    });
-  };
-
-  // Thank you stackoverflow :)
-  toTitleCase = (str) => {
-    return str.replace(/\w\S*/g, function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   };
 

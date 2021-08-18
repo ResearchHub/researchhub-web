@@ -1,19 +1,5 @@
 import { doesNotExist } from "./nullchecks";
 
-export function removeLineBreaksInStr(str) {
-  return str.replace(/\r?\n |\r/g, "");
-}
-
-/**
- *
- * @param {String} str - any string
- *
- * returns string with first letter of each word capitalized
- */
-export function capitalize(str) {
-  return str.replace(/(^\w{1})|(\s+\w{1})/g, (letter) => letter.toUpperCase());
-}
-
 export function getNestedValue(root, nodes, defaultValue = null) {
   const initialValue = root;
 
@@ -30,13 +16,6 @@ export function getNestedValue(root, nodes, defaultValue = null) {
   }, initialValue);
 
   return value;
-}
-
-export function truncateText(str) {
-  if (str && str.length >= 90) {
-    return str.slice(0, 90).trim() + "...";
-  }
-  return str;
 }
 
 export function logFetchError(fetchResponse) {

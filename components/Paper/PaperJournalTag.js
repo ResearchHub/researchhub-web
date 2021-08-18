@@ -3,11 +3,8 @@ import { StyleSheet, css } from "aphrodite";
 
 // Config
 import { getJournalFromURL } from "~/config/utils/parsers";
-import {
-  capitalize,
-  getJournalImagePath,
-  formatJournalName,
-} from "~/config/utils/misc";
+import { getJournalImagePath, formatJournalName } from "~/config/utils/misc";
+import { capitalize } from "~/config/utils/string";
 
 const PaperJournalTag = (props) => {
   const { url, externalSource } = props;

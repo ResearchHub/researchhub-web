@@ -23,7 +23,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask } from "../connectEthereum";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
-import { isAddress, toCheckSumAddress } from "~/config/utils/validation";
+import { isAddress, toCheckSumAddress } from "~/config/utils/crypto";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";

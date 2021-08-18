@@ -22,7 +22,7 @@ import {
   isQuillDelta,
 } from "~/config/utils/editor";
 
-import { createUsername } from "~/config/utils/serializers";
+import { createUsername } from "~/config/utils/user";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
