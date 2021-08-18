@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import { RoundShape } from "react-placeholder/lib/placeholders";
+import { RoundShape, TextBlock } from "react-placeholder/lib/placeholders";
 
 const PaperPagePlaceholder = ({ color }) => {
   const header = (

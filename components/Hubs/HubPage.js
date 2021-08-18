@@ -20,7 +20,6 @@ import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedC
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 // Config
@@ -1156,7 +1155,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
-  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
