@@ -12,7 +12,7 @@ import { QUERY_PARAM } from "~/config/utils/search";
 import PropTypes from "prop-types";
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { get } from "lodash";
+import get from "lodash/get";
 import nookies from "nookies";
 
 // Facets specified will have their values returned
