@@ -266,7 +266,6 @@ const Post = (props) => {
                   paper={post}
                   hubs={post.hubs}
                   paperId={post.id}
-                  isPost={true}
                 />
               </div>
               <div className={css(styles.space)}>
@@ -563,7 +562,6 @@ const styles = StyleSheet.create({
     display: "none",
     "@media only screen and (max-width: 767px)": {
       display: "flex",
-      borderBottom: "1px solid #F0F0F0",
     },
   },
   stickyComponent: {
@@ -664,6 +662,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
+      borderRadius: "0px",
+      borderTop: "none",
       padding: 20,
       width: "100%",
     },
