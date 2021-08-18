@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     position: "sticky",
     top: 20,
+    borderRadius: 4,
   },
   title: {
     display: "flex",
@@ -157,7 +158,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     padding: 10,
     borderLeft: `3px solid #FFF`,
-    color: colors.BLUE(),
+    color: colors.BLACK(),
     cursor: "pointer",
     textDecoration: "unset",
     transition: "all ease-out 0.1s",
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
       cursor: "pointer",
       background: "#FAFAFA",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      color: colors.BLACK(1),
+      color: colors.BLUE(),
     },
   },
   small: {
@@ -180,7 +181,7 @@ const styles = StyleSheet.create({
   active: {
     background: "#FAFAFA",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    color: colors.BLACK(1),
+    color: colors.BLUE(),
   },
   hidden: {
     height: 0,
