@@ -1,4 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 import React, { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
@@ -36,7 +37,7 @@ export default function NewPostButton({
             <div className={css(styles.newPostLabel)}>
               <FontAwesomeIcon
                 style={{ fontSize: "1.5em", marginRight: 8 }}
-                icon={["far", "plus"]}
+                icon={faPlus}
               />
               <span>{"New Post"}</span>
             </div>
