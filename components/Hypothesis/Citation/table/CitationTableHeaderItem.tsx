@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement } from "react";
-import colors from "../../../../config/themes/colors";
+import colors from "~/config/themes/colors";
 
 type Props = {
   label: string;
