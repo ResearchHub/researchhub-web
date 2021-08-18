@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import { getCurrentUser } from "~/config/utils";
+import { getCurrentUser } from "~/config/utils/user";
 import { ID } from "~/config/types/root_types";
 import {
   emptyFncWithMsg,
