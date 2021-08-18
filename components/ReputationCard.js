@@ -3,7 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useStore } from "react-redux";
 
 import { modalStyles } from "~/config/themes/styles";
-import { getCurrentUserReputation } from "~/config/utils/serializers";
+import { getCurrentUserReputation } from "~/config/utils/reputation";
 
 const ReputationCard = (props) => {
   const store = useStore();

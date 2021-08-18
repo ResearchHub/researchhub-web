@@ -33,7 +33,7 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "~/config/utils/options";
 import FormTextArea from "../Form/FormTextArea";
-import { formatPaperSlug } from "~/config/utils/serializers";
+import { formatPaperSlug } from "~/config/utils/document";
 
 class PaperUploadInfo extends Component {
   constructor(props) {

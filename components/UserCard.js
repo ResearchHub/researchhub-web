@@ -5,7 +5,7 @@ import { get, isEmpty } from "underscore";
 import Ripples from "react-ripples";
 import { useRouter } from "next/router";
 
-import { createUserSummary } from "~/config/utils/serializers";
+import { createUserSummary } from "~/config/utils/user";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";

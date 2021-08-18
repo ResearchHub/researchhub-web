@@ -12,11 +12,11 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { checkVoteTypeChanged } from "~/config/utils/validation";
+import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { createUsername } from "~/config/utils/serializers";
+import { createUsername } from "~/config/utils/user";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";

@@ -15,13 +15,13 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { checkVoteTypeChanged } from "~/config/utils/validation";
+import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { createUsername } from "~/config/utils/serializers";
+import { createUsername } from "~/config/utils/user";
 
 class DiscussionEntry extends Component {
   constructor(props) {

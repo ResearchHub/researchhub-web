@@ -3,8 +3,10 @@ import PropTypes from "prop-types";
 import { useDispatch, useStore } from "react-redux";
 import Ripples from "react-ripples";
 import { ModalActions } from "~/redux/modals";
-import { currentUserHasMinimumReputation } from "~/config/utils/validation";
-import { getMinimumReputation } from "~/config/utils/serializers";
+import {
+  currentUserHasMinimumReputation,
+  getMinimumReputation,
+} from "~/config/utils/reputation";
 
 const PropsWarning = `Must supply at least one of the following props to
 PermissionNotificationWrapper: loginRequired, onClick, permissionKey.

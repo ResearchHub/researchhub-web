@@ -20,7 +20,7 @@ import { NotificationActions } from "~/redux/notification";
 import colors from "../../config/themes/colors";
 import { doesNotExist } from "~/config/utils/nullchecks";
 import { getNestedValue } from "~/config/utils/misc";
-import { formatPaperSlug } from "~/config/utils/serializers";
+import { formatPaperSlug } from "~/config/utils/document";
 import { timeAgoStamp } from "~/config/utils/dates";
 import { reviewBounty } from "~/config/fetch";
 
