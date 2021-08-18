@@ -2,7 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useEffect, useState } from "react";
 import get from "lodash/get";
-import { isNumber } from "underscore";
+import { isNumber } from "~/config/utils/number";
 import Link from "next/link";
 import PropTypes from "prop-types";
 

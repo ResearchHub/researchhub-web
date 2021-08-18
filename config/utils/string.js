@@ -22,3 +22,7 @@ export function truncateText(str) {
   }
   return str;
 }
+
+export const isString = (str) => {
+  return typeof str === "string";
+};
