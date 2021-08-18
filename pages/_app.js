@@ -8,7 +8,7 @@ import "isomorphic-unfetch";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
-console.log("yo");
+
 // Components
 import Base from "./Base";
 
