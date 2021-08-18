@@ -23,7 +23,7 @@ import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
-import { capitalize } from "~/config/utils/misc";
+import { capitalize } from "~/config/utils/string";
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 
