@@ -23,7 +23,8 @@
     "eb:deploy:staging": "./scripts/deploy/eb-deploy.sh",
     "analyze:maps": "source-map-explorer .next/static/**/*.js",
     "build:analyze": "yarn run build && yarn run analyze:maps",
-    "lint": "./node_modules/.bin/eslint"
+    "lint": "./node_modules/.bin/eslint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^3.0.2",
@@ -127,17 +128,13 @@
     "eslint": "^7.32.0",
     "eslint-config-next": "^11.1.0",
     "eslint-plugin-react": "^7.24.0",
-    "husky": "3.0.8",
+    "husky": ">=6",
+    "lint-staged": ">=10",
     "prettier": "1.18.2",
     "pretty-quick": "^3.1.1",
     "progress": "^2.0.3",
     "source-map-explorer": "^2.5.2",
     "webpack-cli": "^4.8.0"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
   },
   "browser": {
     "child_process": false
@@ -145,5 +142,9 @@
   "engines": {
     "node": "==14.15.5",
     "npm": "==7.19.1"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{js,css,md}": "prettier --write"
   }
 }
