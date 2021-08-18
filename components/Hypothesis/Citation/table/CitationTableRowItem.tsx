@@ -1,8 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement, ReactNode } from "react";
-import colors from "../../../../config/themes/colors";
-import { ID } from "../../../../config/types/root_types";
-import AuthorFacePile from "../../../shared/AuthorFacePile";
+import colors from "~/config/themes/colors";
+import { ID } from "~/config/types/root_types";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
 import { tableWidths } from "./constants/tableWidths";
 
