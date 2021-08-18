@@ -13,6 +13,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "target": "es6",
+    "baseUrl": "./",
+    "paths": {
+      "~*": "./"
+    },
     "noImplicitAny": false /* implicit any ignored while building */
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
