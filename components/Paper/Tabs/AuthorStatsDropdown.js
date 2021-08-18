@@ -8,11 +8,11 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const AuthorStatsDropdown = (props) => {
-  const { authors, paper, paperId, hubs } = props;
+  const { authors, paper, paperId, hubs, isPaper } = props;
   const [showDropdown, toggleDropdown] = useState(false);
 
   return (
-    <div className={css(styles.root)}>
+    <div className={css(styles.root, isPaper && styles.bottomBorderRadius)}>
       <div
         className={css(styles.header, showDropdown && styles.borderBottom)}
         onClick={() => toggleDropdown(!showDropdown)}
@@ -34,11 +34,16 @@ const AuthorStatsDropdown = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    borderTop: "1.5px solid #F0F0F0",
+    border: "1.5px solid #F0F0F0",
+    borderRadius: "0px 0px 4px 4px",
     boxSizing: "border-box",
     background: "#FFF",
     display: "flex",
     flexDirection: "column",
+  },
+  bottomBorderRadius: {
+    borderRadius: "0px",
+    borderBottom: "none",
   },
   header: {
     width: "100%",

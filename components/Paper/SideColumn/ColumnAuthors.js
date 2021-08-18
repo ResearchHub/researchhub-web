@@ -104,7 +104,7 @@ class ColumnAuthors extends React.Component {
           {paper && authors.length > 0 && (
             <Fragment>
               <SideColumnTitle
-                title={`Author Detail${authors.length > 1 ? "s" : ""}`}
+                title={`Author${authors.length > 1 ? "s" : ""}`}
                 overrideStyles={styles.title}
               />
               <div className={css(styles.authors)}>

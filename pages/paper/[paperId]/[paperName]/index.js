@@ -494,6 +494,7 @@ const Paper = (props) => {
                 paper={paper}
                 hubs={paper.hubs}
                 paperId={paperId}
+                isPaper
               />
             </div>
             <div className={css(styles.stickyComponent)}>
@@ -1066,6 +1067,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
+      borderRadius: "0px",
+      borderTop: "none",
       padding: 20,
       width: "100%",
     },
