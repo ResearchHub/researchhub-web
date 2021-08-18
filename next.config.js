@@ -36,6 +36,7 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
     }
 
     config.resolve.alias["~"] = path.resolve(__dirname);
+    config.resolve.extensions = [".ts", ".tsx", ".js"];
     return config;
   },
   env: {
