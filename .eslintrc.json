@@ -22,5 +22,6 @@
     "no-unused-vars": "error",
     "react/react-in-jsx-scope": "off",
     "no-console": "warn"
-  }
+  },
+  "ignorePatterns": ["next.config.js"]
 }
