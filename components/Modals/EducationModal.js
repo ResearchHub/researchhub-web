@@ -15,7 +15,7 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import { degrees } from "~/config/utils/options";
-import * as Options from "../../config/utils/options";
+import { range as rangeOpts } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
 
 const EducationModal = (props) => {
@@ -172,7 +172,7 @@ const EducationModal = (props) => {
             required={false}
             value={year}
             id={"year"}
-            options={Options.range(1980, 2040)}
+            options={rangeOpts(1980, 2040)}
             maxMenuHeight={120}
             onChange={handleYearSelect}
           />

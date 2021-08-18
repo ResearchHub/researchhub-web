@@ -13,7 +13,7 @@ import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 
-import * as shims from "../../config/shims";
+import { authorPost } from "~/config/shims";
 
 class AddAuthorModal extends Component {
   constructor(props) {
@@ -85,7 +85,7 @@ class AddAuthorModal extends Component {
    */
   addNewUser = (e) => {
     e.preventDefault();
-    const params = shims.authorPost(this.state);
+    const params = authorPost(this.state);
     this.props.addNewUser(params);
     this.closeModal();
   };
