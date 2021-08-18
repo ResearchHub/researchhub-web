@@ -1,17 +1,17 @@
-import { breakpoints } from "../../../../config/themes/screen";
-import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { Fragment, ReactElement, useCallback, useState } from "react";
+import { connect } from "react-redux";
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
+import { getCurrentUser } from "~/config/utils";
+import { ID } from "~/config/types/root_types";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
-} from "../../../../config/utils/nullchecks";
-import { getCurrentUser } from "../../../../config/utils";
-import { ID } from "../../../../config/types/root_types";
+} from "~/config/utils/nullchecks";
 import { postCitationVote } from "../../api/postCitationVote";
-import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
-import colors from "../../../../config/themes/colors";
-import icons from "../../../../config/themes/icons";
-import React, { Fragment, ReactElement, useCallback, useState } from "react";
+import icons from "~/config/themes/icons";
 
 export type ConsensusMeta = {
   downCount: number;
