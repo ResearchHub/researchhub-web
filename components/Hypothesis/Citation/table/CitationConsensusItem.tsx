@@ -4,7 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
-  silentEmptyFnc,
 } from "../../../../config/utils/nullchecks";
 import { getCurrentUser } from "../../../../config/utils";
 import { ID } from "../../../../config/types/root_types";
