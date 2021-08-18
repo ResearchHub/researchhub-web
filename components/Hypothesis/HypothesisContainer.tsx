@@ -1,19 +1,17 @@
-import { css, StyleSheet } from "aphrodite";
-import { Helpers } from "@quantfive/js-web-config";
-import { isNullOrUndefined, nullthrows } from "../../config/utils/nullchecks";
-import { useRouter } from "next/router";
 import API from "../../config/api";
-import colors from "../../config/themes/colors";
 import React, { ReactElement, useEffect, useState } from "react";
+import { Helpers } from "@quantfive/js-web-config";
+import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined } from "../../config/utils/nullchecks";
+import { useRouter } from "next/router";
 
 // Components
+import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
 import Head from "../Head";
 import HypothesisPageCard from "./HypothesisPageCard";
-import PaperPromotionIcon from "../Paper/PaperPromotionIcon";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
-import VoteWidget from "../VoteWidget";
 
 type Props = {};
 
@@ -50,24 +48,32 @@ export default function HypothesisContainer(
       />
       <div className={css(styles.container)}>
         <HypothesisPageCard hypothesis={hypothesis} />
+        <div className={css(styles.metaContainerMobile)}>
+          <AuthorStatsDropdown
+            authors={[created_by.author_profile]}
+            hubs={hubs}
+            paper={hypothesis}
+            paperId={id}
+          />
+        </div>
         <CitationContainer />
         <div className={css(styles.space)}>
           <DiscussionTab
+            calculatedCount={discussionCount}
             documentType={"hypothesis"}
             hypothesis={hypothesis}
             hypothesisId={id}
-            calculatedCount={discussionCount}
-            setCount={setDiscussionCount}
             isCollapsible={false}
+            setCount={setDiscussionCount}
           />
         </div>
         <div className={css(styles.sidebar)}>
           <PaperSideColumn
             authors={[created_by.author_profile]}
-            paper={hypothesis}
             hubs={hubs}
-            paperId={id}
             isPost={true}
+            paper={hypothesis}
+            paperId={id}
           />
         </div>
       </div>
@@ -81,17 +87,17 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   container: {
+    borderCollapse: "separate",
+    borderSpacing: "30px 40px",
+    boxSizing: "border-box",
     flexDirection: "column",
     marginLeft: "auto",
     marginRight: "auto",
-    boxSizing: "border-box",
-    borderCollapse: "separate",
-    borderSpacing: "30px 40px",
     "@media only screen and (max-width: 767px)": {
-      width: "100%",
       borderSpacing: "0",
       display: "flex",
       flexDirection: "column",
+      width: "100%",
     },
     "@media only screen and (min-width: 768px)": {
       display: "flex",
@@ -99,31 +105,30 @@ const styles = StyleSheet.create({
       width: "90%",
     },
     "@media only screen and (min-width: 1024px)": {
-      width: "100%",
       display: "table",
+      width: "100%",
     },
     "@media only screen and (min-width: 1200px)": {
       width: "90%",
     },
   },
-  space: { marginTop: 30 },
   sidebar: {
-    display: "table-cell",
     boxSizing: "border-box",
-    verticalAlign: "top",
+    display: "table-cell",
     position: "relative",
-    "@media only screen and (max-width: 767px)": {
+    verticalAlign: "top",
+    width: 280,
+    "@media only screen and (max-width: 1024px)": {
       display: "none",
     },
-    "@media only screen and (min-width: 768px)": {
-      width: "20%",
-      marginLeft: 16,
+  },
+  metaContainerMobile: {
+    display: "none",
+    "@media only screen and (max-width: 1024px)": {
+      display: "flex",
     },
-    "@media only screen and (min-width: 1024px)": {
-      minWidth: 250,
-      maxWidth: 280,
-      width: 280,
-      marginLeft: 0,
-    },
+  },
+  space: {
+    marginTop: 30,
   },
 });

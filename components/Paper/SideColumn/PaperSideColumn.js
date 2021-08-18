@@ -23,6 +23,7 @@ const styles = StyleSheet.create({
   root: {
     width: "100%",
     border: "1.5px solid #F0F0F0",
+    borderRadius: 4,
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     boxSizing: "border-box",

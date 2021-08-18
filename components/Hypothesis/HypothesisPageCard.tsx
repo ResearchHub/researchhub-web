@@ -108,7 +108,13 @@ const styles = StyleSheet.create({
     padding: "20px 30px 30px 20px",
     boxSizing: "border-box",
     borderRadius: 4,
+    "@media only screen and (max-width: 1024px)": {
+      borderBottom: "none",
+      borderRadius: "4px 4px 0px 0px",
+    },
     "@media only screen and (max-width: 767px)": {
+      borderRadius: "0px",
+      borderTop: "none",
       padding: 20,
       width: "100%",
     },
