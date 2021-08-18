@@ -4,7 +4,6 @@ import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import get from "lodash/get";
-import { isEmpty } from "underscore";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
