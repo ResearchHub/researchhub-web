@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { get } from "lodash";
+import get from "lodash/get";
 import { isEmpty } from "underscore";
 
 // Redux
