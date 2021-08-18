@@ -3,7 +3,6 @@ import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
-import Joyride from "react-joyride";
 import Error from "next/error";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
