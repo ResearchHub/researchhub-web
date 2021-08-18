@@ -22,7 +22,7 @@ import "../components/CKEditor/CKEditor.css";
 import "../components/Modals/Stylesheets/Dnd.css";
 import "react-quill/dist/quill.snow.css";
 import "../components/TextEditor/stylesheets/QuillTextEditor.css";
-import "../components/paper/tabs/stylesheets/ReactPdf.css";
+import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
