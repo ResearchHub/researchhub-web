@@ -43,7 +43,7 @@ const UserInfoModal = dynamic(() =>
 import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils/routing";
-import { createUserSummary } from "~/config/utils/serializers";
+import { createUserSummary } from "~/config/utils/user";
 import killswitch from "~/config/killswitch/killswitch";
 import {
   filterNull,

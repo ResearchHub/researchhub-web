@@ -22,7 +22,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { createUserSummary } from "~/config/utils/serializers";
+import { createUserSummary } from "~/config/utils/user";
 import { timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";

@@ -15,7 +15,7 @@ import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
-import { createUsername } from "~/config/utils/serializers";
+import { createUsername } from "~/config/utils/user";
 import { MessageActions } from "~/redux/message";
 import { divide } from "numeral";
 

@@ -1,4 +1,4 @@
-import { capitalize } from "../../config/utils/misc";
+import { capitalize } from "../../config/utils/string";
 
 type FormatMainHeaderArgs = {
   feed: number;

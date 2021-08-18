@@ -1,4 +1,18 @@
-import * as moment from "dayjs";
+export function formatURL(url) {
+  let http = "http://";
+  let https = "https://";
+  if (!url) {
+    return;
+  }
+  if (url.startsWith(http)) {
+    return url;
+  }
+
+  if (!url.startsWith(https)) {
+    url = https + url;
+  }
+  return url;
+}
 
 export function redirect(ctx, baseKey, path) {
   path = buildRedirectPath(ctx, baseKey, path);
@@ -69,43 +83,4 @@ export function slugToFilterQuery(slug) {
     default:
       return slug;
   }
-}
-
-export function calculateScopeFromSlug(scopeId) {
-  let scope = {
-    start: 0,
-    end: 0,
-  };
-
-  let now = moment();
-  let today = moment().startOf("day");
-  let week = moment()
-    .startOf("day")
-    .subtract(7, "days");
-  let month = moment()
-    .startOf("day")
-    .subtract(30, "days");
-  let year = moment()
-    .startOf("day")
-    .subtract(365, "days");
-
-  scope.end = now.unix();
-
-  if (scopeId === "day") {
-    scope.start = today.unix();
-  } else if (scopeId === "week") {
-    scope.start = week.unix();
-  } else if (scopeId === "month") {
-    scope.start = month.unix();
-  } else if (scopeId === "year") {
-    scope.start = year.unix();
-  } else if (scopeId === "all-time") {
-    let start = "2019-01-01";
-    let diff = now.diff(start, "days") + 1;
-
-    let alltime = now.startOf("day").subtract(diff, "days");
-    scope.start = alltime.unix();
-  }
-
-  return scope;
 }

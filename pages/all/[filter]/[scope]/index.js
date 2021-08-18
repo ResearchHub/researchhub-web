@@ -1,10 +1,8 @@
 import HubPage from "~/components/Hubs/HubPage";
 
 import { getInitialScope } from "~/config/utils/dates";
-import {
-  slugToFilterQuery,
-  calculateScopeFromSlug,
-} from "~/config/utils/routing";
+import { slugToFilterQuery } from "~/config/utils/routing";
+import { calculateScopeFromSlug } from "~/config/utils/dates";
 import { fetchPaperFeed } from "~/config/fetch";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 
