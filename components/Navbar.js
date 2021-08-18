@@ -5,7 +5,7 @@ import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import "react-placeholder/lib/reactPlaceholder.css";
+
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import Collapsible from "react-collapsible";
 
@@ -13,13 +13,12 @@ import Collapsible from "react-collapsible";
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 import dynamic from "next/dynamic";
+
 // Components
-// import SectionBountyModal from "../components/Modals/SectionBountyModal";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import UserStateBanner from "./Banner/UserStateBanner";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import NewPostButton from "./NewPostButton";
-import Notification from "./Notifications/Notification";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 
@@ -53,6 +52,9 @@ const WithdrawalModal = dynamic(() =>
 );
 const ReCaptchaPrompt = dynamic(() =>
   import("~/components/Modals/ReCaptchaPrompt")
+);
+const Notification = dynamic(() =>
+  import("~/components/Notifications/Notification")
 );
 
 const Navbar = (props) => {
