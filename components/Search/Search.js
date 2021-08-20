@@ -11,10 +11,10 @@ import { trackEvent } from "~/config/utils";
 import { connect } from "react-redux";
 import { useSelector } from "react-redux";
 
-const Search = ({ navbarRef, id }) => {
+const Search = ({ navbarRef, id, overrideStyle }) => {
   const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
-  const SMALLEST_ALLOWED_INPUT = 180;
+  const SMALLEST_ALLOWED_INPUT = 200;
   const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;
 
   const router = useRouter();
@@ -183,7 +183,8 @@ const Search = ({ navbarRef, id }) => {
     className: css(
       styles.search,
       isSmallScreenSearch && styles.searchSmallScreen,
-      isExpandedSearchOpen && styles.searchExpanded
+      isExpandedSearchOpen && styles.searchExpanded,
+      overrideStyle && overrideStyle
     ),
   };
 

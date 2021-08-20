@@ -46,6 +46,7 @@ import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isDevEnv } from "~/config/utils/env";
+import { breakpoints } from "~/config/themes/screen"
 
 const Navbar = (props) => {
   const router = useRouter();
@@ -445,7 +446,7 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search navbarRef={navbarRef} id="navbarSearch" />
+        <Search overrideStyle={styles.navbarSearchOverride} navbarRef={navbarRef} id="navbarSearch" />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -664,15 +665,6 @@ const styles = StyleSheet.create({
       marginRight: 16,
     },
   },
-  mobileSearch: {
-    width: "100%",
-    marginBottom: 16,
-    borderRadius: 32,
-    height: 32,
-    "@media only screen and (max-width: 1024px)": {
-      display: "flex",
-    },
-  },
   loginContainer: {
     width: "100%",
   },
@@ -779,24 +771,6 @@ const styles = StyleSheet.create({
       height: 50,
     },
   },
-  searchbar: {
-    padding: 10,
-    boxSizing: "border-box",
-    height: "100%",
-    width: "100%",
-    background: "transparent",
-    border: "none",
-    outline: "none",
-    fontSize: 16,
-    position: "relative",
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 10,
-    top: 13,
-    cursor: "text",
-    opacity: 0.4,
-  },
   button: {
     width: 141,
     height: 45,
@@ -866,9 +840,8 @@ const styles = StyleSheet.create({
     left: 6,
   },
   logo: {
-    width: 141,
     objectFit: "contain",
-    marginBottom: 6,
+    marginBottom: 8,
   },
   reputation: {
     marginLeft: 11,
@@ -919,10 +892,6 @@ const styles = StyleSheet.create({
     borderBottom: 0,
   },
   profileIcon: {
-    // position: "absolute",
-    // left: 16,
-    // top: "50%",
-    // transform: "translateY(-50%)",
     color: "#888A8C",
     marginRight: 16,
   },
@@ -961,27 +930,6 @@ const styles = StyleSheet.create({
       marginLeft: 10,
     },
   },
-  searchDropdown: {
-    width: "150%",
-    position: "absolute",
-    zIndex: 4,
-    top: 60,
-    maxHeight: 400,
-    left: "50%",
-    transform: "translateX(-50%)",
-    boxShadow: "0 5px 10px 0 #ddd",
-    background: "#fff",
-    overflow: "scroll",
-    borderRadius: 8,
-    padding: 16,
-    boxSizing: "border-box",
-  },
-  searchResult: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottom: "1px solid rgb(235, 235, 235)",
-  },
   menuIcon: {
     display: "none",
     fontSize: 22,
@@ -997,6 +945,11 @@ const styles = StyleSheet.create({
     width: "100%",
     minWidth: 160,
   },
+  navbarSearchOverride: {
+    [`@media only screen and (max-width: ${breakpoints.medium.int}px)`]: {
+      marginRight: 10,
+    }
+  }
 });
 
 const mapStateToProps = (state) => ({
