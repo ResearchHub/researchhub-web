@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
-import Joyride from "react-joyride";
 import Error from "next/error";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
@@ -288,25 +287,6 @@ const Paper = (props) => {
     setPaper({ ...paper, is_removed: true });
   };
 
-  function onJoyrideComplete(joyrideState) {
-    let { auth, updateUser, setUploadingPaper } = props;
-    if (
-      joyrideState.status === "finished" &&
-      joyrideState.lifecycle === "complete"
-    ) {
-      fetch(
-        API.USER({ userId: auth.user.id }),
-        API.PATCH_CONFIG({ upload_tutorial_complete: true })
-      )
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then(() => {
-          updateUser({ upload_tutorial_complete: true });
-          setUploadingPaper(false);
-        });
-    }
-  }
-
   function calculateCommentCount(paper) {
     let discussionCount = 0;
     if (paper) {
@@ -448,22 +428,6 @@ const Paper = (props) => {
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
       />
-      <Joyride
-        steps={steps}
-        continuous={true}
-        locale={{ last: "Done" }}
-        styles={{
-          options: {
-            primaryColor: colors.BLUE(1),
-          },
-        }}
-        callback={onJoyrideComplete}
-        run={
-          props.auth.uploadingPaper &&
-          props.auth.isLoggedIn &&
-          !props.auth.user.upload_tutorial_complete
-        }
-      />
       <div className={css(styles.root)}>
         <Waypoint
           onEnter={() => onSectionEnter(0)}
@@ -603,7 +567,7 @@ const Paper = (props) => {
             {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
-              <React.Fragment>
+              <Fragment>
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
@@ -618,7 +582,7 @@ const Paper = (props) => {
                   paperDraftSections={paperDraftSections}
                   paperDraftExists={paperDraftExists}
                 />
-              </React.Fragment>
+              </Fragment>
             )}
           </div>
         </div>
