@@ -1,5 +1,5 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
+import { RectShape } from "react-placeholder/lib/placeholders";
 
 const PreviewPlaceholder = ({ color, hideAnimation, previewStyles }) => {
   var animate = " show-loading-animation";
