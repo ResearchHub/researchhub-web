@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 
 // Components
 import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
-import CitationContainer from "./Citation/CitationContainer";
+import CitationContainer from "./citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
 import Head from "../Head";
 import HypothesisPageCard from "./HypothesisPageCard";
