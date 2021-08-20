@@ -1,17 +1,17 @@
-import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement, useCallback, useState } from "react";
-import { connect } from "react-redux";
-import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
-import colors from "../../../../config/themes/colors";
 import { breakpoints } from "../../../../config/themes/screen";
-import { getCurrentUser } from "../../../../config/utils";
-import { ID } from "../../../../config/types/root_types";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
 } from "../../../../config/utils/nullchecks";
+import { getCurrentUser } from "../../../../config/utils";
+import { ID } from "../../../../config/types/root_types";
 import { postCitationVote } from "../../api/postCitationVote";
+import { UPVOTE, DOWNVOTE } from "../../../../config/constants";
+import colors from "../../../../config/themes/colors";
 import icons from "../../../../config/themes/icons";
+import React, { Fragment, ReactElement, useCallback, useState } from "react";
 
 export type ConsensusMeta = {
   downCount: number;
@@ -50,7 +50,6 @@ function SentimentBar({
 function CitationConsensusItem({
   citationID,
   consensusMeta,
-  currentUser,
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
   const [localConsensusMeta, setLocalConsensusMeta] = useState<ConsensusMeta>(
     consensusMeta
@@ -60,24 +59,28 @@ function CitationConsensusItem({
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
-
-  const hasCurrUserVoted = !isNullOrUndefined(userVote);
-  const [shouldShowConsensus, setShouldShowConsensus] = useState<boolean>(
-    !hasCurrUserVoted
+  const [hasCurrUserVoted, setHasCurrUserVoted] = useState<boolean>(
+    !isNullOrUndefined(userVote)
   );
 
   const handleReject = useCallback((): void => {
-    setLocalConsensusMeta({
+    const updatedMeta = {
       ...localConsensusMeta,
-      userVote: true,
       downCount: downCount + 1,
-    });
+    };
+    setLocalConsensusMeta(updatedMeta);
     setTotalCount(totalCount + 1);
     setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
-    setShouldShowConsensus(true);
+    setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
-      onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
+      onSuccess: (userVote: Object): void => {
+        // NOTE: optimistic update.
+        setLocalConsensusMeta({
+          ...updatedMeta,
+          userVote,
+        });
+      },
       onError: emptyFncWithMsg,
       voteType: DOWNVOTE,
     });
@@ -91,17 +94,23 @@ function CitationConsensusItem({
   ]);
 
   const handleSupport = useCallback((): void => {
-    setLocalConsensusMeta({
+    const updatedMeta = {
       ...localConsensusMeta,
       upCount: upCount + 1,
-      userVote: true,
-    });
+    };
+    setLocalConsensusMeta(updatedMeta);
     setTotalCount(totalCount + 1);
     setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
-    setShouldShowConsensus(true);
+    setHasCurrUserVoted(true);
     postCitationVote({
       citationID,
-      onSuccess: () => {}, // TODO: calvinhlee - move callback to here. after auth-vote fix
+      onSuccess: (userVote: Object): void => {
+        // NOTE: optimistic update.
+        setLocalConsensusMeta({
+          ...updatedMeta,
+          userVote,
+        });
+      },
       onError: emptyFncWithMsg,
       voteType: UPVOTE,
     });
@@ -118,7 +127,7 @@ function CitationConsensusItem({
   const majorityPercent =
     (doesMajoritySupport ? upCount : downCount) / totalCount;
   const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
-  const consensus = (
+  const consensusBar = (
     <div className={css(styles.consensusWrap)}>
       <div className={css(styles.resultWrap)}>
         {doesMajoritySupport ? (
@@ -129,12 +138,12 @@ function CitationConsensusItem({
         ) : (
           <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
         )}
-
         <div
+          className={css(styles.consensusText)}
           style={{
             color: doesMajoritySupport ? colors.GREEN(1) : colors.RED(1),
           }}
-        >{`${majorityPercent * 100}% of researchers think ${
+        >{`${Math.floor(majorityPercent * 100)}% of researchers think ${
           doesMajoritySupport ? "yes" : "no"
         }`}</div>
       </div>
@@ -152,38 +161,28 @@ function CitationConsensusItem({
       </div>
     </div>
   );
-  const vote = (
-    <Fragment>
-      <div
-        className={css(
-          styles.button,
-          totalCount > 1 && styles.centerRejectButton
-        )}
-        onClick={handleReject}
-        role="button"
-      >
-        {icons.timesCircle}
-        <span className={css(styles.iconWrap)}></span>
-        <span className={css(styles.buttonText)}>{"Reject"}</span>
-      </div>
-      <div
-        className={css(styles.button, styles.green)}
-        onClick={handleSupport}
-        role="button"
-      >
-        {icons.checkCircle}
-        <span className={css(styles.iconWrap)}></span>
-        <span className={css(styles.buttonText)}>{"Support"}</span>
-      </div>
-    </Fragment>
-  );
 
   return (
     <div className={css(styles.citationConsensusItem)}>
-      {totalCount > 1 ? consensus : null}
+      {totalCount > 0 ? consensusBar : null}
       {hasCurrUserVoted ? null : (
-        <div className={css(styles.vote, totalCount > 1 && styles.centerVote)}>
-          {vote}
+        <div className={css(styles.voteWrap)}>
+          <div
+            className={css(styles.button)}
+            onClick={handleReject}
+            role="button"
+          >
+            <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
+            <span className={css(styles.buttonText)}>{"Reject"}</span>
+          </div>
+          <div
+            className={css(styles.button, styles.green)}
+            onClick={handleSupport}
+            role="button"
+          >
+            <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
+            <span className={css(styles.buttonText)}>{"Support"}</span>
+          </div>
         </div>
       )}
     </div>
@@ -199,20 +198,21 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     width: "100%",
   },
-  vote: {
-    display: "flex",
+  voteWrap: {
     alignItems: "center",
+    display: "flex",
     justifyContent: "center",
+    marginTop: 8,
+    maxWidth: 166,
+    width: "inherit",
   },
   button: {
     alignItems: "center",
     color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
     display: "flex",
-    marginRight: 16,
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      marginRight: 8,
-    },
+    justifyContent: "center",
+    width: "50%",
   },
   buttonText: {
     display: "block",
@@ -223,12 +223,9 @@ const styles = StyleSheet.create({
   centerVote: {
     marginLeft: 10,
   },
-  centerRejectButton: {
-    marginRight: 13,
-  },
   consensusBar: {
     alignItems: "center",
-    background: colors.LIGHT_GREY_BORDER,
+    background: colors.LIGHT_GREY_BACKGROUND,
     borderRadius: 8,
     display: "flex",
     marginTop: 8,
@@ -236,21 +233,26 @@ const styles = StyleSheet.create({
     height: 8,
     justifyContent: "center",
     position: "relative",
-    // maxWidth: "137px",
     width: "100%",
   },
+  consensusText: {
+    width: "100%",
+    maxWidth: "inherit",
+    textOverflow: "ellipsis",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+  },
   consensusWrap: {
-    alignItems: "center",
-    // display: "flex",
-    flexDirection: "column",
     height: "100%",
-    justifyContent: "space-between",
     maxHeight: 28,
+    maxWidth: 166,
+    width: "100%",
   },
   iconWrap: {
     marginRight: 4,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      fontSize: 24,
+      fontSize: 18,
+      marginRight: 0,
     },
   },
   green: {
