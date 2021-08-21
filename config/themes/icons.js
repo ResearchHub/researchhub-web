@@ -629,7 +629,8 @@ export function CloseIcon({ height = 14, width = 14 }) {
 
 const styles = StyleSheet.create({
   logo: {
-    height: 40,
+    transform: "scale(1)",
+    height: 33,
   },
   coinStack: {},
   iconPartyPopper: {
