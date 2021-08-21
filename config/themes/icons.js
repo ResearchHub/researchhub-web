@@ -1,3 +1,4 @@
+import { iconColors } from "~/config/themes/colors";
 import * as React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -613,21 +614,49 @@ export function DownloadIcon({ style }) {
   );
 }
 
-export function CloseIcon({ height = 14, width = 14 }) {
+export const CloseIcon = ({ onClick, width = 14, height = 14, withAnimation = true, styleVariation = null }) => {
   return (
-    <svg
-      height={height}
-      width={width}
-      viewBox="0 0 20 20"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path d="M14.348 14.849c-0.469 0.469-1.229 0.469-1.697 0l-2.651-3.030-2.651 3.029c-0.469 0.469-1.229 0.469-1.697 0-0.469-0.469-0.469-1.229 0-1.697l2.758-3.15-2.759-3.152c-0.469-0.469-0.469-1.228 0-1.697s1.228-0.469 1.697 0l2.652 3.031 2.651-3.031c0.469-0.469 1.228-0.469 1.697 0s0.469 1.229 0 1.697l-2.758 3.152 2.758 3.15c0.469 0.469 0.469 1.229 0 1.698z"></path>
-    </svg>
+    <span onClick={onClick} className={css(styles.iconWrapper, withAnimation && styles.withAnimation, styleVariation && styles[styleVariation])}>
+      <svg width={width} height={height} version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 409.806 409.806" > <g> <g> <path d="M228.929,205.01L404.596,29.343c6.78-6.548,6.968-17.352,0.42-24.132c-6.548-6.78-17.352-6.968-24.132-0.42 c-0.142,0.137-0.282,0.277-0.42,0.42L204.796,180.878L29.129,5.21c-6.78-6.548-17.584-6.36-24.132,0.42 c-6.388,6.614-6.388,17.099,0,23.713L180.664,205.01L4.997,380.677c-6.663,6.664-6.663,17.468,0,24.132 c6.664,6.662,17.468,6.662,24.132,0l175.667-175.667l175.667,175.667c6.78,6.548,17.584,6.36,24.132-0.42 c6.387-6.614,6.387-17.099,0-23.712L228.929,205.01z"/> </g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> </svg>
+    </span>
+  );
+}
+
+export const DownIcon = ({ onClick, withAnimation = true, overrideStyle = null }) => {
+  return (
+    <span onClick={onClick} className={css(styles.iconWrapper, withAnimation && styles.withAnimation, overrideStyle && overrideStyle)}>
+      {icons.chevronDown}
+    </span>
+  );
+}
+
+export const UpIcon = ({ onClick, withAnimation = true, overrideStyle = null }) => {
+  return (
+    <span onClick={onClick} className={css(styles.iconWrapper, withAnimation && styles.withAnimation, overrideStyle && overrideStyle)}>
+      {icons.chevronUp}
+    </span>
   );
 }
 
 const styles = StyleSheet.create({
+  iconWrapper: {
+    padding: 8,
+    display: "inline-flex",
+  },
+  withAnimation: {
+    ":hover": {
+      background: iconColors.BACKGROUND,
+      borderRadius: 3,
+      transition: "0.3s",
+    }
+  },  
+  closeIcon: {
+    fontWeight: 200,
+    transform: "rotate(45deg)",
+    fontSize: 36, 
+    color: "black",
+    display: "inline-block",
+  },
   logo: {
     transform: "scale(1)",
     height: 33,

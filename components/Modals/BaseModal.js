@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
+import { CloseIcon } from "~/config/themes/icons";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -146,16 +147,9 @@ class BaseModal extends React.Component {
           )}
           {!this.props.removeDefault && (
             <Fragment>
-              <img
-                src={"/static/icons/close.png"}
-                className={css(
-                  styles.closeButton,
-                  this.props.backgroundImage && styles.zIndex
-                )}
-                onClick={this.closeModal}
-                draggable={false}
-                alt="Close Button"
-              />
+              <div className={css(styles.closeButtonWrapper)}>
+                <CloseIcon onClick={this.closeModal} />
+              </div>
               <div
                 className={css(
                   styles.titleContainer,
@@ -259,13 +253,11 @@ const styles = StyleSheet.create({
   reveal: {
     opacity: 1,
   },
-  closeButton: {
-    height: 12,
-    width: 12,
+  closeButtonWrapper: {
     position: "absolute",
-    top: 20,
-    right: 20,
     cursor: "pointer",
+    top: 8,
+    right: 8,
   },
   titleContainer: {
     display: "flex",
