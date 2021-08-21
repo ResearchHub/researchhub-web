@@ -12,7 +12,6 @@ import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import Badge from "~/components/Badge";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import { CloseIcon } from "~/config/themes/icons";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import LoadMoreButton from "~/components/LoadMoreButton";

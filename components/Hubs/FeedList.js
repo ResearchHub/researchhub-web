@@ -8,7 +8,7 @@ import SubscribedHubList from "../Home/SubscribedHubList";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
+import icons, { DownIcon, UpIcon } from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
@@ -64,7 +64,7 @@ class FeedList extends React.Component {
             className={css(styles.dropdownIcon)}
             onClick={this.toggleDropdown}
           >
-            {dropdown ? icons.chevronUp : icons.chevronDown}
+            {dropdown ? <UpIcon /> : <DownIcon />}
           </span>
         )
       );
