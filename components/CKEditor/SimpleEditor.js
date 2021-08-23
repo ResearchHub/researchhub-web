@@ -66,7 +66,7 @@ export default function SimpleEditor(props) {
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("ckeditor5-classic-plus"),
+      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
     };
     setEditorLoaded(true);
   }, []);
