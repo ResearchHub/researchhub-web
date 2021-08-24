@@ -1,4 +1,4 @@
-import { CitationTableRowItemProps } from "../citation/table/CitationTableRowItem";
+import { CitationTableRowItemProps } from "../Citation/table/CitationTableRowItem";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "../../../config/types/root_types";
 import API from "../../../config/api";
