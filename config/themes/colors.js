@@ -59,4 +59,8 @@ export const bannerColor = {
   GREY: "#F2F2F6",
 };
 
+export const iconColors = {
+  BACKGROUND: colors.LIGHT_GREY(),
+}
+
 export default colors;
