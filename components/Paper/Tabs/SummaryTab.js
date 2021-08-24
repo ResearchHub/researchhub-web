@@ -38,7 +38,8 @@ import { doesNotExist } from "~/config/utils/nullchecks";
 import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
-
+import { parseMath } from "~/config/utils/latex";
+ 
 class SummaryTab extends Component {
   constructor(props) {
     super(props);
@@ -444,7 +445,7 @@ class SummaryTab extends Component {
                 className={css(styles.abstractContainer)}
                 data-test={isDevEnv() ? `abstract` : undefined}
               >
-                {abstract}
+                 {parseMath(abstract)}
               </div>
             )}
           </Fragment>
@@ -752,6 +753,8 @@ var styles = StyleSheet.create({
       fontSize: 14,
       width: "100%",
     },
+    display: "block",
+    borderSpacing: "initial"    
   },
   abstractText: {
     lineHeight: 1.6,

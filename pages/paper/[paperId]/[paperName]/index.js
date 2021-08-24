@@ -1041,6 +1041,7 @@ const styles = StyleSheet.create({
       padding: 20,
       width: "100%",
     },
+    overflow: "hidden",
   },
   noMarginLeft: {
     padding: 30,
