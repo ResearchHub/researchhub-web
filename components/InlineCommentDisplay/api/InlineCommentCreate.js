@@ -14,7 +14,7 @@ export function saveCommentToBackend({
   showMessage,
   threadID,
 }) {
-  fetch(API.THREAD_COMMENT(paperID, threadID), API.POST_CONFIG(params))
+  fetch(API.THREAD_COMMENT("paper", paperID, threadID), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((comment_response) => {
