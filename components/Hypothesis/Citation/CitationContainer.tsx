@@ -14,7 +14,7 @@ export default function CitationContainer(): ReactElement<"div"> {
 
   return (
     <div className={css(styles.citationContainer)}>
-      <div className={css(styles.header)}>{"Relevant Papers"}</div>
+      <div className={css(styles.header)}>{"Relevant Sources"}</div>
       <CitationTable
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}
