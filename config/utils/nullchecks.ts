@@ -1,5 +1,7 @@
+import { Exception } from "@sentry/types";
+
 export function emptyFncWithMsg(
-  message: Error | string | null | undefined
+  message: Error | string | null | undefined | unknown
 ): void {
   if (message == null) {
     console.warn("emptyFncWithMsg is used. this maybe a bug");

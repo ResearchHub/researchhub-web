@@ -59,7 +59,7 @@ export default function AddNewSourceModal({
   onCloseModal,
   updateLastFetchTime,
 }: ComponentProps): ReactElement<typeof BaseModal> {
-  const [bodyType, setBodyType] = useState<BodyTypeVals>(STAND_BY);
+  const [bodyType, setBodyType] = useState<BodyTypeVals>(SEARCH);
   const modalBody = getModalBody({
     bodyType,
     hypothesisID,

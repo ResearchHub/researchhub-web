@@ -41,9 +41,10 @@ const getVoteWidgetProps = ({
   localVoteMeta,
   setLocalVoteMeta,
 }) => {
-  const { downCount, upCount, userVote = {} } = localVoteMeta || {};
-  const currScore = upCount - downCount + (hypothesis.boost_amount || 0);
-  const currUserVoteType = userVote?.vote_type ?? {};
+  const { downCount, upCount, userVote } = localVoteMeta || {};
+  const currScore =
+    upCount - downCount + ((hypothesis || {}).boost_amount || 0);
+  const { vote_type: currUserVoteType } = userVote || {};
 
   const handleDownVote = () => {
     if (currUserVoteType === DOWNVOTE_ENUM) {
