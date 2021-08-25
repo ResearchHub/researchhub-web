@@ -116,6 +116,7 @@ class HubPage extends React.Component {
   };
 
   componentDidMount() {
+    console.log("MOUNTED");
     const { isLoggedIn, initialFeed, hubState } = this.props;
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
