@@ -15,7 +15,7 @@ export function saveThreadToBackend({
   fetch(
     API.DISCUSSION({
       documentType: "paper",
-      paperId: params.paper,
+      documentId: params.paper,
       source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
       twitter: null,
     }),
