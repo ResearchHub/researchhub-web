@@ -11,7 +11,8 @@ export function inlineThreadFetchAll({
 }) {
   fetch(
     API.DISCUSSION({
-      paperId,
+      documentId: paperId,
+      documentType: "paper",
       source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
     }),
     API.GET_CONFIG()
@@ -36,9 +37,10 @@ export function inlineThreadFetchTarget({
 }) {
   fetch(
     API.DISCUSSION({
-      paperId,
-      targetId,
+      documentId: paperId,
+      documentType: "paper",
       source: INLINE_COMMENT_DISCUSSION_URI_SOUCE,
+      targetId,
     }),
     API.GET_CONFIG()
   )
