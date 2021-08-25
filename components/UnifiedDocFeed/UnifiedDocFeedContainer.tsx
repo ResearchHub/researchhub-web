@@ -17,7 +17,7 @@ import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState, useRef } from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
@@ -54,6 +54,7 @@ type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
 const useEffectFetchFeed = ({
   docTypeFilter,
   hub: selectedHub,
+  prevHub,
   isLoggedIn,
   paginationInfo,
   router,
@@ -67,17 +68,34 @@ const useEffectFetchFeed = ({
     (): Boolean => ["", "/"].includes(currPathname),
     [currPathname]
   );
-  const { page } = paginationInfo;
-  // first pages should have been preloaded
+
+  const isExistingHubAction = (selectedHub && prevHub && selectedHub.id === prevHub.id);
+  const isNewHubAction = (selectedHub && prevHub && selectedHub.id !== prevHub.id);
+  let page = paginationInfo.page;
+
+  if (isNewHubAction) {
+    page = 1;
+  }
+
+
+  console.log('isNewHubAction', isNewHubAction);
+  console.log('isExistingHubAction', isExistingHubAction);
+  console.log('subFilters', subFilters);
+
   const isFetchExecutable =
-    (page === 1 && currDocuments.length === 0) || page !== 1;
+    (isNewHubAction) || (isExistingHubAction && page > 1)
+    // (page === 1 && currDocuments.length === 0) || 
+    // (page !== 1);
 
   const onSuccess = ({ count, hasMore, documents }) => {
+
     paginationInfo.isLoadingMore
       ? setUnifiedDocuments([...currDocuments, ...documents])
       : setUnifiedDocuments(documents);
+
     setPaginationInfo({
       ...paginationInfo,
+      page: isNewHubAction ? 1 : page,
       count,
       hasMore,
       isLoading: false,
@@ -88,6 +106,7 @@ const useEffectFetchFeed = ({
     emptyFncWithMsg(error);
     setPaginationInfo({
       ...paginationInfo,
+      page: isNewHubAction ? 1 : page,
       hasMore: false,
       isLoading: false,
     });
@@ -97,6 +116,9 @@ const useEffectFetchFeed = ({
     if (!isFetchExecutable) {
       return;
     }
+
+    console.log("!!!executing", page);
+
     // @ts-ignore legacy fetch code
     fetchUnifiedDocs({
       docTypeFilter,
@@ -130,6 +152,14 @@ const getFilterFromRouter = (router: NextRouter): string => {
     : nullthrows(docType);
 };
 
+const usePrevious = (value: any): any => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
 function UnifiedDocFeedContainer({
   auth, // redux
   feed,
@@ -137,7 +167,7 @@ function UnifiedDocFeedContainer({
   hub, // selected hub
   hubName,
   hubState, // hub data of current user
-  preloadedDocData,
+  preloadedDocData, // Loaded on the server via getInitialProps on full page load
   isLoggedIn,
   loggedIn,
   subscribeButton,
@@ -149,9 +179,16 @@ function UnifiedDocFeedContainer({
     (): Boolean => ["", "/"].includes(router.pathname),
     [router.pathname]
   );
+
+
+console.log('router.pathname', router.pathname);
+console.log('router', router);
+
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
+  const prevHub = usePrevious<any>(hub);
+
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
@@ -163,6 +200,29 @@ function UnifiedDocFeedContainer({
     isLoadingMore: false,
     page: 1,
   });
+
+  useEffect((): void => {
+    if (hub && prevHub && hub.id !== prevHub.id) {
+      setPaginationInfo({
+        count: preloadCount || 0,
+        hasMore: Boolean(preloadNext),
+        isLoading: isNullOrUndefined(preloadResults),
+        isLoadingMore: false,
+        page: 1,
+      })
+    }
+  }, [hub, prevHub])
+// console.log('------------');
+// console.log('paginationInfo', paginationInfo);
+// console.log('preloadCount', paginationInfo.preloadCount);
+// console.log('page', paginationInfo.page);
+// console.log('isLoadingMore', paginationInfo.isLoadingMore);
+// console.log('isLoading', paginationInfo.isLoading);
+// console.log('page', paginationInfo.page);
+// console.log('preloadedDocData', preloadedDocData);
+// console.log('------------');
+
+
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
@@ -177,7 +237,7 @@ function UnifiedDocFeedContainer({
     page,
     isLoading,
   ]);
-
+console.log('paginationInfo', paginationInfo);
   const formattedMainHeader = useMemo(
     (): string =>
       formatMainHeader({
@@ -192,6 +252,7 @@ function UnifiedDocFeedContainer({
   useEffectFetchFeed({
     docTypeFilter,
     hub,
+    prevHub,
     isLoggedIn: auth.isLoggedIn,
     paginationInfo,
     router,
