@@ -73,7 +73,7 @@ export default function AddNewSourceModal({
       children={modalBody}
       closeModal={(): void => {
         // logical ordering
-        setBodyType(STAND_BY);
+        setBodyType(SEARCH);
         onCloseModal();
       }}
       isOpen={isModalOpen}
