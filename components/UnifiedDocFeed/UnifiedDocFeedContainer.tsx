@@ -37,107 +37,7 @@ type PaginationInfo = {
   page: number;
 };
 
-type UseEffectFetchFeedArgs = {
-  docTypeFilter: string;
-  hub: any;
-  isLoggedIn: Boolean;
-  paginationInfo: PaginationInfo;
-  router: NextRouter;
-  setPaginationInfo: Function;
-  setUnifiedDocuments: Function;
-  subFilters: any;
-  unifiedDocuments: any;
-};
-
 type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
-
-const useEffectFetchFeed = ({
-  docTypeFilter,
-  hub: selectedHub,
-  prevHub,
-  isLoggedIn,
-  paginationInfo,
-  router,
-  setPaginationInfo,
-  setUnifiedDocuments,
-  subFilters,
-  unifiedDocuments: currDocuments,
-}: UseEffectFetchFeedArgs): void => {
-  const currPathname = router.pathname;
-  const shouldGetSubscribed = useMemo<Boolean>(
-    (): Boolean => ["", "/"].includes(currPathname),
-    [currPathname]
-  );
-
-  const isExistingHubAction = (selectedHub && prevHub && selectedHub.id === prevHub.id);
-  const isNewHubAction = (selectedHub && prevHub && selectedHub.id !== prevHub.id);
-  let page = paginationInfo.page;
-
-  if (isNewHubAction) {
-    page = 1;
-  }
-
-  const isFetchExecutable =
-    (isNewHubAction) || (isExistingHubAction && page > 1)
-    // (page === 1 && currDocuments.length === 0) || 
-    // (page !== 1);
-
-  const onSuccess = ({ count, hasMore, documents }) => {
-
-    paginationInfo.isLoadingMore
-      ? setUnifiedDocuments([...currDocuments, ...documents])
-      : setUnifiedDocuments(documents);
-
-    setPaginationInfo({
-      ...paginationInfo,
-      page: isNewHubAction ? 1 : page,
-      count,
-      hasMore,
-      isLoading: false,
-      isLoadingMore: false,
-    });
-  };
-  const onError = (error: Error): void => {
-    emptyFncWithMsg(error);
-    setPaginationInfo({
-      ...paginationInfo,
-      page: isNewHubAction ? 1 : page,
-      hasMore: false,
-      isLoading: false,
-    });
-  };
-
-  useEffect((): void => {
-    if (true) {
-      return;
-    }
-
-    console.log("!!!executing", page);
-
-    // @ts-ignore legacy fetch code
-    fetchUnifiedDocs({
-      docTypeFilter,
-      hubID:
-        !shouldGetSubscribed && !isNullOrUndefined(selectedHub)
-          ? selectedHub.id
-          : null,
-      isLoggedIn,
-      onError,
-      onSuccess,
-      page,
-      subscribedHubs: shouldGetSubscribed,
-      subFilters,
-    });
-  }, [
-    currPathname,
-    docTypeFilter,
-    isFetchExecutable,
-    page,
-    selectedHub,
-    subFilters,
-  ]);
-};
-
 
 const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
@@ -155,6 +55,7 @@ const usePrevious = (value: any): any => {
   }, [value]);
   return ref.current;
 }
+
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -176,19 +77,12 @@ function UnifiedDocFeedContainer({
     [router.pathname]
   );
 
-
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
 
   const [prevPath, setPrevPath] = useState<string>(router.asPath)
-  // const [prevHub, setPrevHub] = useState<any>(hub);
-
-  // console.log('currentPath', currentPath);
-  // console.log('router.asPath', router.asPath);
-
   const prevHub = usePrevious<any>(hub);
-
 
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
@@ -203,150 +97,17 @@ function UnifiedDocFeedContainer({
     page: 1,
   });
 
-  const resetState = () => {
-    setPaginationInfo({
-      count: 0,
-      hasMore: false,
-      isLoading: false,
-      isLoadingMore: false,
-      page: 1,
-    });    
-  }
-
-  useEffect(() => {
-    // const currPath = router.asPath;
-
-    // resetState();
-    // if (prevPath !== currPath) {
-    //   fetchDocsFromApi({});
-    // }
-
-    const currPath = router.asPath;
-
-
-    console.log('prevPath', prevPath);
-    console.log('currPath', currPath);
-
-    resetState();
-    if (prevPath !== currPath) {
-      console.log("change happened");
-      fetchDocsFromApi({});
-    }
-    setPrevPath(router.asPath)
-  }, [hub])
-
-  useEffect(() => {
-    fetchDocsFromApi({});  
-  }, [])
-
-
-  // useEffect(() => {
-  //   const currPath = router.asPath;
-
-  //   resetState();
-  //   if (prevPath !== currPath) {
-  //     fetchDocsFromApi({});
-  //   }
-
-  //   setPrevPath(router.asPath)
-  // }, [router.asPath])
-
-
-
-
-  const fetchDocsFromApi = ({ isNewHub }) => {
-
-    const selectedHub = hub;
-    const currPath = router.asPath;
-    const shouldGetSubscribed = ["", "/"].includes(router.pathname);
-
-    const isExistingHubAction = (currPath === prevPath)
-    const isNewHubAction = (currPath !== prevPath)
-    let page = paginationInfo.page;
-
-
-    console.log('--------------');
-    console.log('selectedHub', selectedHub);
-    console.log('isNewHubAction', isNewHubAction);
-    console.log('page', page);
-    console.log('--------------');
-
-    const onSuccess = ({ count, hasMore, documents }) => {
-
-      paginationInfo.isLoadingMore
-        ? setUnifiedDocuments([...currDocuments, ...documents])
-        : setUnifiedDocuments(documents);
-
-      setPaginationInfo({
-        ...paginationInfo,
-        page: isNewHubAction ? 1 : page,
-        count,
-        hasMore,
-        isLoading: false,
-        isLoadingMore: false,
-      });
-    };
-    const onError = (error: Error): void => {
-      emptyFncWithMsg(error);
-      setPaginationInfo({
-        ...paginationInfo,
-        page: isNewHubAction ? 1 : page,
-        hasMore: false,
-        isLoading: false,
-      });
-    };
-
-    const hubID = 
-        !shouldGetSubscribed && !isNullOrUndefined(selectedHub)
-          ? selectedHub.id
-          : null;
-
-
-    console.log('+++++++++++++');
-    console.log('hub', hub);
-    console.log('hubID', hubID);
-    console.log('docTypeFilter', docTypeFilter);
-    console.log('page', page);
-    console.log('subFilters', subFilters);
-    console.log('+++++++++++++');
-
-    fetchUnifiedDocs({
-      docTypeFilter,
-      hubID,
-      isLoggedIn,
-      onError,
-      onSuccess,
-      page,
-      subscribedHubs: shouldGetSubscribed,
-      subFilters,
-    });  
-  }
-
-
-
-
-
-// console.log('------------');
-// console.log('paginationInfo', paginationInfo);
-// console.log('preloadCount', paginationInfo.preloadCount);
-// console.log('page', paginationInfo.page);
-// console.log('isLoadingMore', paginationInfo.isLoadingMore);
-// console.log('isLoading', paginationInfo.isLoading);
-// console.log('page', paginationInfo.page);
-// console.log('preloadedDocData', preloadedDocData);
-// console.log('------------');
-
+  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
+  const { filterBy } = subFilters;
 
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
 
-  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  const { filterBy } = subFilters;
   const needsInitialFetch = useMemo((): Boolean => page === 1 && isLoading, [
     page,
     isLoading,
@@ -363,18 +124,90 @@ function UnifiedDocFeedContainer({
     [hubName, feed, filterBy, isHomePage]
   );
 
-  // useEffectFetchFeed({
-  //   docTypeFilter,
-  //   hub,
-  //   prevHub,
-  //   isLoggedIn: auth.isLoggedIn,
-  //   paginationInfo,
-  //   router,
-  //   setPaginationInfo,
-  //   setUnifiedDocuments,
-  //   subFilters,
-  //   unifiedDocuments,
-  // });
+  useEffect((): void => {
+    const currPath = router.asPath;
+    resetState();
+    if (prevPath !== currPath) {
+      fetchDocsFromApi({});
+    }
+    setPrevPath(router.asPath)
+  }, [hub]);
+
+  useEffect((): void => {
+    resetState();
+    fetchDocsFromApi({});
+  }, []);
+
+  const resetState = () => {
+    setPaginationInfo({
+      count: 0,
+      hasMore: false,
+      isLoading: true,
+      isLoadingMore: false,
+      page: 1,
+    });    
+  }
+
+  const fetchDocsFromApi = ({ filter, filterBy, scope, page, isLoadingMore }) => {
+    const currDocuments = unifiedDocuments;
+    const shouldGetSubscribed = ["", "/"].includes(router.pathname);
+    const hubID = 
+      !shouldGetSubscribed && !isNullOrUndefined(hub)
+        ? hub.id
+        : null;
+
+    const onSuccess = ({ count, hasMore, documents }) => {
+      isLoadingMore
+        ? setUnifiedDocuments([...currDocuments, ...documents])
+        : setUnifiedDocuments(documents);
+
+      setPaginationInfo({
+        ...paginationInfo,
+        page: page || 1,
+        count,
+        hasMore,
+        isLoading: false,
+        isLoadingMore: false,
+      });
+    };
+
+    const onError = (error: Error): void => {
+      emptyFncWithMsg(error);
+      setPaginationInfo({
+        ...paginationInfo,
+        page: page || 1,
+        hasMore: false,
+        isLoading: false,
+        isLoadingMore: false,
+      });
+    };
+
+    console.log('+++++++++++++');
+    console.log('hub', hub);
+    console.log('hubID', hubID);
+    console.log('docTypeFilter', docTypeFilter);
+    console.log('page', page);
+    console.log('subFilters', subFilters);
+    console.log('filterBy', filterBy);
+    console.log('scope', scope);
+    console.log('+++++++++++++');
+
+    let additionalFilters = subFilters;
+    if (filterBy) {
+      additionalFilters = { filterBy, scope }
+    }
+
+    fetchUnifiedDocs({
+      docTypeFilter: filter || docTypeFilter,
+      hubID,
+      isLoggedIn,
+      onError,
+      onSuccess,
+      page,
+      subscribedHubs: shouldGetSubscribed,
+      subFilters: additionalFilters,
+    });  
+  }
 
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
@@ -395,10 +228,12 @@ function UnifiedDocFeedContainer({
                 isLoadingMore: false,
                 page: 1,
               });
+              fetchDocsFromApi({ page: 1, filter: filterValue })
               router.push(
                 {
                   pathname: router.pathname,
                   query: { ...router.query, type: filterValue },
+                  shallow: true,
                 },
                 router.pathname + `?type=${filterValue}`
               );
@@ -484,6 +319,7 @@ function UnifiedDocFeedContainer({
                 filterBy,
                 scope: subFilters.scope,
               });
+              fetchDocsFromApi({ filterBy, scope: subFilters.scope })
             }}
             onScopeSelect={(_type: string, scope) => {
               setUnifiedDocuments([]);
@@ -498,6 +334,7 @@ function UnifiedDocFeedContainer({
                 filterBy: subFilters.filterBy,
                 scope,
               });
+              fetchDocsFromApi({ filterBy, scope })
             }}
             subFilters={subFilters}
           />
@@ -542,12 +379,14 @@ function UnifiedDocFeedContainer({
               onClick={(): void =>
                 isLoadingMore
                   ? silentEmptyFnc()
-                  : setPaginationInfo({
-                      ...paginationInfo,
-                      isLoading: false,
-                      isLoadingMore: true,
-                      page: paginationInfo.page + 1,
-                    })
+                  : (
+                      setPaginationInfo({
+                        ...paginationInfo,
+                        isLoading: false,
+                        isLoadingMore: true,
+                      }),
+                      fetchDocsFromApi({ page: paginationInfo.page + 1, isLoadingMore: true })
+                    )
               }
             >
               {"Load More"}
