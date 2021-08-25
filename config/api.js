@@ -154,11 +154,13 @@ const routes = (BASE_URL) => {
       let params = {
         querystring: {
           created_by,
-          hypothesis_id,
         },
       };
       url = prepURL(url, params);
       return url;
+    },
+    HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
+      return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
     },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({

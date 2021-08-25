@@ -8,9 +8,16 @@ import colors from "../../config/themes/colors";
 // Components
 import VoteWidget from "../../components/VoteWidget";
 import PaperMetadata from "../../components/Paper/PaperMetadata";
-import PaperPromotionIcon from "../../components/Paper/PaperPromotionIcon";
+import {
+  DOWNVOTE,
+  DOWNVOTE_ENUM,
+  UPVOTE,
+  UPVOTE_ENUM,
+} from "../../config/constants";
+import { postHypothesisVote } from "./api/postHypothesisVote";
+import { emptyFncWithMsg } from "../../config/utils/nullchecks";
 
-const renderMetadata = (hypothesis) => {
+const getMetaData = (hypothesis: any): ReactElement<"div"> => {
   const created_date = hypothesis.created_date;
   const metadata = [
     {
@@ -25,32 +32,82 @@ const renderMetadata = (hypothesis) => {
       ),
       active: created_date,
     },
-  ];
-  return (
-    <div className={css(styles.row)}>
-      {metadata.map((props, i) => (
-        <PaperMetadata key={`metadata-${i}`} {...props} />
-      ))}
-    </div>
-  );
+  ].map((props, i) => <PaperMetadata key={`metadata-${i}`} {...props} />);
+  return <div className={css(styles.row)}>{metadata}</div>;
 };
 
-const voteWidget = (horizontalView) => (
-  <VoteWidget
-    //score={score + post.boost_amount}
-    //onUpvote={onUpvote}
-    //onDownvote={onDownvote}
-    //selected={voteState}
-    horizontalView={horizontalView}
-    isPaper={false}
-    type={"Hypothesis"}
-  />
-);
+const getVoteWidgetProps = ({
+  hypothesis,
+  localVoteMeta,
+  setLocalVoteMeta,
+}) => {
+  const { downCount, upCount, userVote = {} } = localVoteMeta || {};
+  const currScore = upCount - downCount + (hypothesis.boost_amount || 0);
+  const currUserVoteType = userVote.vote_type;
+
+  const handleDownVote = () => {
+    if (currUserVoteType === DOWNVOTE_ENUM) {
+      return; // can't downvote twice
+    }
+    const updatedMeta = {
+      ...localVoteMeta,
+      downCount: downCount + 1,
+      upCount: upCount - 1,
+    };
+    postHypothesisVote({
+      hypothesisID: hypothesis.id,
+      // NOTE: optimistic update.
+      onSuccess: (userVote: any) =>
+        setLocalVoteMeta({
+          ...updatedMeta,
+          userVote,
+        }),
+      onError: emptyFncWithMsg,
+      voteType: DOWNVOTE,
+    });
+  };
+
+  const handleUpvote = () => {
+    if (currUserVoteType === UPVOTE_ENUM) {
+      return; // can't upvote twice
+    }
+    const updatedMeta = {
+      ...localVoteMeta,
+      downCount: downCount - 1,
+      upCount: upCount + 1,
+    };
+    postHypothesisVote({
+      hypothesisID: hypothesis.id,
+      // NOTE: optimistic update.
+      onSuccess: (userVote: any) =>
+        setLocalVoteMeta({
+          ...updatedMeta,
+          userVote,
+        }),
+      onError: emptyFncWithMsg,
+      voteType: UPVOTE,
+    });
+  };
+
+  return {
+    onDownvote: handleDownVote,
+    onUpvote: handleUpvote,
+    selected: currUserVoteType,
+    score: currScore,
+    type: "hypothesis",
+  };
+};
 
 export default function HypothesisPageCard({
   hypothesis,
 }): ReactElement<"div"> {
+  const { vote_meta: voteMeta } = hypothesis || {};
   const [showHypothesisEditor, setShowHypothesisEditor] = useState(false);
+  const [localVoteMeta, setLocalVoteMeta] = useState({
+    downCount: voteMeta.down_count || 0,
+    upCount: voteMeta.up_count || 0,
+    userVote: voteMeta.user_vote || null,
+  });
   const [hypothesisBody, setHypothesisBody] = useState(
     hypothesis.full_markdown
   );
@@ -59,11 +116,17 @@ export default function HypothesisPageCard({
     setHypothesisBody(hypothesis.full_markdown);
   }, [hypothesis]);
 
+  const formattedMetaData = getMetaData(hypothesis);
+  const voteWidgetProps = getVoteWidgetProps({
+    hypothesis,
+    localVoteMeta,
+    setLocalVoteMeta,
+  });
+
   return (
     <div className={css(styles.hypothesisCard)}>
       <div className={css(styles.voting)}>
-        {voteWidget(false)}
-        {/* <PaperPromotionIcon hypothesis={null} /> */}
+        <VoteWidget {...voteWidgetProps} />
       </div>
       <div className={css(styles.column)}>
         <div className={css(styles.reverseRow)}>
@@ -76,11 +139,9 @@ export default function HypothesisPageCard({
                   </h1>
                 </div>
               </div>
-              <div className={css(styles.column)}>
-                {renderMetadata(hypothesis)}
-              </div>
+              <div className={css(styles.column)}>{formattedMetaData}</div>
               <div className="ck-content">
-                {showHypothesisEditor ? null : ( //renderHypothesisEditor()
+                {showHypothesisEditor ? null : (
                   <>{hypothesisBody && ReactHtmlParser(hypothesisBody)}</>
                 )}
               </div>
@@ -88,8 +149,7 @@ export default function HypothesisPageCard({
           </div>
           <div className={css(styles.rightColumn, styles.mobile)}>
             <div className={css(styles.votingMobile)}>
-              {voteWidget(true)}
-              {/* <PaperPromotionIcon hypothesis={null} /> */}
+              <VoteWidget {...voteWidgetProps} />
             </div>
           </div>
         </div>
