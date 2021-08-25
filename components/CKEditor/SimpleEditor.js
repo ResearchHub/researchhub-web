@@ -19,45 +19,15 @@ export default function SimpleEditor({
   const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, Editor } = editorRef.current || {};
 
-  let token = "";
-  if (process.browser) {
-    token = window.localStorage[AUTH_TOKEN];
-  }
-
   const editorConfiguration = {
-    toolbar: {
-      items: [
-        "heading",
-        "|",
-        "bold",
-        "italic",
-        "underline",
-        "strikethrough",
-        "|",
-        "blockquote",
-        "codeBlock",
-        "insertTable",
-        "|",
-        "numberedList",
-        "bulletedList",
-        "outdent",
-        "indent",
-        "|",
-        "link",
-        "imageUpload",
-        "mediaEmbed",
-      ],
-    },
-    mediaEmbed: {
-      previewsInData: true,
-    },
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
 
       // Headers sent along with the XMLHttpRequest to the upload server.
       headers: {
-        Authorization: "Token " + token,
+        Authorization:
+          "Token " + (process.browser ? window.localStorage[AUTH_TOKEN] : ""),
       },
     },
   };

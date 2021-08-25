@@ -315,7 +315,7 @@ const styles = StyleSheet.create({
     },
   },
   editor: {
-    width: "720px",
+    width: "721px",
     "@media only screen and (max-width: 900px)": {
       width: "80vw",
     },
