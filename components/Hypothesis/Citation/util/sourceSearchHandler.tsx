@@ -26,21 +26,26 @@ export type SearchState = {
     route: ValueOf<typeof SearchFilterDocTypeLabel>;
   };
   facets: string[];
-  filters: any;
+  filters: {
+    query: string;
+    searchType: ValueOf<typeof SearchFilterDocTypeLabel>;
+  };
   searchInputString: string | null;
 };
 
 export type getHandleSourceSearchInputChange = {
   debounceTime: number | undefined | null;
+  onError: Function;
+  onSuccess: Function;
   searchState: SearchState;
   setDebounceRef: (ref: NodeJS.Timeout | null) => void;
-  onSuccess: Function;
 };
 
 export const getHandleSourceSearchInputChange = ({
   debounceTime = 500,
-  searchState,
+  onError,
   onSuccess,
+  searchState,
 }: getHandleSourceSearchInputChange): ((searchText: string | null) => void) => {
   const [debounceRef, setDebounceRef] = useState<NodeJS.Timeout | null>(null);
 
@@ -60,7 +65,8 @@ export const getHandleSourceSearchInputChange = ({
           .then((apiResponse) => {
             onSuccess(apiResponse);
             setDebounceRef(null);
-          });
+          })
+          .catch((error: Error): void => onError(error));
       }, debounceTime || 500)
     );
   };
