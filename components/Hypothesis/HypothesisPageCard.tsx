@@ -102,11 +102,13 @@ export default function HypothesisPageCard({
   hypothesis,
 }): ReactElement<"div"> {
   const { vote_meta: voteMeta } = hypothesis || {};
+  const { down_count: downCount, up_count: upCount, user_vote: userVote } =
+    voteMeta || {};
   const [showHypothesisEditor, setShowHypothesisEditor] = useState(false);
   const [localVoteMeta, setLocalVoteMeta] = useState({
-    downCount: voteMeta.down_count || 0,
-    upCount: voteMeta.up_count || 0,
-    userVote: voteMeta.user_vote || null,
+    downCount: downCount || 0,
+    upCount: upCount || 0,
+    userVote: userVote || null,
   });
   const [hypothesisBody, setHypothesisBody] = useState(
     hypothesis.full_markdown
@@ -149,7 +151,7 @@ export default function HypothesisPageCard({
           </div>
           <div className={css(styles.rightColumn, styles.mobile)}>
             <div className={css(styles.votingMobile)}>
-              <VoteWidget {...voteWidgetProps} />
+              <VoteWidget {...voteWidgetProps} horizontalView />
             </div>
           </div>
         </div>
