@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 import AuthorClaimCaseContainer from "./AuthorClaimCaseContainer";
 import AuthorClaimDashboardNavbar from "./AuthorClaimDashboardNavbar";
 import Head from "../Head";

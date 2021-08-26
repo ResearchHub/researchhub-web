@@ -4,7 +4,7 @@ import {
 } from "./constants/AuthorClaimStatus";
 import { css, StyleSheet } from "aphrodite";
 import { ValueOf } from "../../config/types/root_types";
-import React, { ReactElement, SyntheticEvent } from "react";
+import { ReactElement, SyntheticEvent } from "react";
 import colors from "../../config/themes/colors";
 
 type Props = {

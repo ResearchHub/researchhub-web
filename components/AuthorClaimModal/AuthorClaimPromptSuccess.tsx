@@ -1,6 +1,5 @@
 import Button from "../Form/Button";
 import { css, StyleSheet } from "aphrodite";
-import React from "react";
 
 export type AuthorClaimPromptSuccessProps = {
   handleContinue: Function;

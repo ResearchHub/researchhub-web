@@ -5,7 +5,7 @@ import { css, StyleSheet } from "aphrodite";
 import FormInput from "../Form/FormInput";
 import { ID } from "../../config/types/root_types";
 import Loader from "../Loader/Loader";
-import React, { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useState } from "react";
 
 export type AuthorClaimPromptEmailProps = {
   onSuccess: Function;

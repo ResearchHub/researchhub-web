@@ -1,5 +1,5 @@
 import { ArrowContainer, Popover } from "react-tiny-popover";
-import React, { Fragment, ReactElement } from "react";
+import { Fragment, ReactElement } from "react";
 import { isNullOrUndefined } from "../config/utils/nullchecks";
 
 type Props = {

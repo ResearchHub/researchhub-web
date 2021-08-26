@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ValueOf } from "../../config/types/root_types";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
 type Props = {
   status: ValueOf<typeof AUTHOR_CLAIM_STATUS>;

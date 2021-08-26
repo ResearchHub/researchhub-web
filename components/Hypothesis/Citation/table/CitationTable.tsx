@@ -7,7 +7,7 @@ import CitationTableRowItem, {
 } from "./CitationTableRowItem";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import colors from "~/config/themes/colors";
-import React, { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";

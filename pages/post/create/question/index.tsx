@@ -1,7 +1,7 @@
 import AboutQuestionCard from "./AboutQuestionCard";
 import AskQuestionForm from "../../../../components/Paper/AskQuestionForm";
 import Head from "../../../../components/Head";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 
 export default function Index() {

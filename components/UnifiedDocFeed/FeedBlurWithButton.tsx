@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import Button from "../Form/Button";
-import React, { Fragment, ReactElement, useMemo } from "react";
+import { Fragment, ReactElement, useMemo } from "react";
 import { ID } from "../../config/types/root_types";
 import { isNullOrUndefined } from "../../config/utils/nullchecks";
 import { useRouter } from "next/router";

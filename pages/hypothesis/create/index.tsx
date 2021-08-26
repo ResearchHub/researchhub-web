@@ -1,7 +1,7 @@
 import AboutQuestionCard from "./AboutQuestionCard";
 import AskQuestionForm from "../../../components/Paper/AskQuestionForm";
 import Head from "../../../components/Head";
-import React, { Fragment, useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import { useRouter } from "next/router";
 import killswitch from "../../../config/killswitch/killswitch";
 import { css, StyleSheet } from "aphrodite";

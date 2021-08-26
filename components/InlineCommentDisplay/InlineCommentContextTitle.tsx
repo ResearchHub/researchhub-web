@@ -5,7 +5,7 @@ import {
   getScrollToTargetElFnc,
   getTargetInlineDraftEntityEl,
 } from "./util/InlineCommentThreadUtil";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
 type Props = {
   commentThreadID: ID;
