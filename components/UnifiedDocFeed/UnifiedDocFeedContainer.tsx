@@ -200,7 +200,7 @@ function UnifiedDocFeedContainer({
     });
   };
 
-  const getFetchParams = (): object => {
+  const getFetchParams = (): any => {
     const isOnMyHubsTab = ["", "/"].includes(router.pathname);
     const hubID = hub ? hub.id : null;
 
