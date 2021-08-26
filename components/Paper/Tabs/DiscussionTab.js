@@ -300,12 +300,8 @@ const DiscussionTab = (props) => {
 
   const handleDiscussionTextEditor = (editorState) => {
 
-    console.log('editorState', editorState);
-
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
-
-console.log('newDiscussion.question', newDiscussion.question);
 
     setDiscussion(newDiscussion);
   };
