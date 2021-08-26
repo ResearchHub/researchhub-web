@@ -19,13 +19,13 @@ function FeedBlurWithButton(
   const { auth, currentAuthorId, hubState, isLoggedIn } = props;
   const router = useRouter();
 
-  const isOnAllHubsTab = ["", "/"].includes(router.pathname);
+  const isOnMyHubsTab = ["", "/"].includes(router.pathname);
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
 
-  return (!hasSubscribed || !isLoggedIn) && isOnAllHubsTab ? (
+  return (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab ? (
     <Fragment>
       <div className={css(styles.blur)} />
       <Button

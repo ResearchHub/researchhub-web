@@ -104,7 +104,7 @@ function UnifiedDocFeedContainer({
   const { count: preloadCount, next: preloadNext, results: preloadResults } =
     preloadedDocData || {};
   const router = useRouter();
-  const isOnAllHubsTab = useMemo<Boolean>(
+  const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["", "/"].includes(router.pathname),
     [router.pathname]
   );
@@ -179,7 +179,7 @@ function UnifiedDocFeedContainer({
     }
   }, []);
 
-  const onFetchSuccess = ({ count, page, hasMore, documents, prevDocuments }) => {
+  const onFetchSuccess = ({ count, page, hasMore, documents, prevDocuments }): void => {
 
 console.log('page', page);
 console.log('prevDocuments', prevDocuments);
@@ -210,7 +210,7 @@ console.log('documents', documents);
     });
   };
 
-  const resetState = () => {
+  const resetState = (): void => {
     setPaginationInfo({
       count: 0,
       hasMore: false,
@@ -220,7 +220,7 @@ console.log('documents', documents);
     });    
   }
 
-  const getFetchParams = () => {
+  const getFetchParams = (): object => {
     return {
       hub,
       prevDocuments: unifiedDocuments,
@@ -274,9 +274,9 @@ console.log('documents', documents);
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
           const shouldBlurMobile =
-            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
+            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab
           const shouldBlurDesktop =
-            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
+            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab
           if (isPaperCard) {
             return (
               <PaperEntryCard
@@ -387,7 +387,7 @@ console.log('documents', documents);
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {!isLoggedIn && isOnAllHubsTab ? null : (
+      {!isLoggedIn && isOnMyHubsTab ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
