@@ -168,7 +168,6 @@ const ModeratorDeleteButton = (props) => {
       replyId,
       documentId,
     } = props.metaData;
-    debugger;
     return fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
