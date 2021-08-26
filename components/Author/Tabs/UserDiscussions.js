@@ -1,7 +1,8 @@
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
-import { get } from "lodash";
+import get from "lodash/get";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
@@ -19,7 +20,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { thread } from "../../../redux/discussion/shims";
 
-class UserDiscussionsTab extends React.Component {
+class UserDiscussionsTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -122,10 +123,10 @@ class UserDiscussionsTab extends React.Component {
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
         {discussions.length > 0 ? (
-          <React.Fragment>
+          <Fragment>
             <div className={css(styles.container)}>{discussions}</div>
             {!maxCardsToRender && this.renderLoadMoreButton()}
-          </React.Fragment>
+          </Fragment>
         ) : (
           <EmptyState
             message={"User has not made any comments"}

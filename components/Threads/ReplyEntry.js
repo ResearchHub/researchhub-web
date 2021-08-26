@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -11,15 +11,15 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
-import DiscussionActions from "../../redux/discussion";
-import { createUsername } from "../../config/utils";
+import DiscussionActions from "~/redux/discussion";
+import { createUsername } from "~/config/utils/user";
 import { MessageActions } from "~/redux/message";
 import { divide } from "numeral";
 
-class ReplyEntry extends React.Component {
+class ReplyEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {

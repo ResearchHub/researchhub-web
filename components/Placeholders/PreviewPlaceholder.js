@@ -1,13 +1,5 @@
-import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-
-import {
-  TextBlock,
-  MediaBlock,
-  TextRow,
-  RectShape,
-  RoundShape,
-} from "react-placeholder/lib/placeholders";
+import { RectShape } from "react-placeholder/lib/placeholders";
 
 const PreviewPlaceholder = ({ color, hideAnimation, previewStyles }) => {
   var animate = " show-loading-animation";

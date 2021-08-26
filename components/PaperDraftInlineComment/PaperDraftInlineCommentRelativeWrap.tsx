@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import PaperDraftInlineCommentSlideButton from "./PaperDraftInlineCommentSlideButton";
-import React, { ReactChildren, ReactElement } from "react";
+import { ReactChildren, ReactElement } from "react";
 
 type Props = { children: ReactChildren };
 

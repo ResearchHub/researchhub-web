@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withAlert } from "react-alert";
@@ -16,9 +16,10 @@ import { AuthActions } from "~/redux/auth";
 // Config
 import { setSectionBounty } from "../../config/fetch";
 import colors from "../../config/themes/colors";
-import { getBountyAmount, sanitizeNumber } from "~/config/utils";
+import { getBountyAmount } from "~/config/utils/misc";
+import { sanitizeNumber } from "~/config/utils/misc/form";
 
-class ContentSupportModal extends React.Component {
+class ContentSupportModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

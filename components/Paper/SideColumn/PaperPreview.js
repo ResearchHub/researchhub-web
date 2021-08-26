@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -6,7 +6,7 @@ import ColumnContainer from "./ColumnContainer";
 import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
 import { ModalActions } from "~/redux/modals";
 import { fetchPaperFigures } from "~/config/fetch";
-import { absoluteUrl } from "../../../config/utils";
+import { absoluteUrl } from "~/config/utils/routing";
 
 const PaperPreview = ({
   paper,

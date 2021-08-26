@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import ReactPlaceholder from "react-placeholder/lib";
 
 // Component
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
@@ -14,7 +13,7 @@ import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { isDevEnv } from "~/config/utils/env";
 
-class CategoryList extends React.Component {
+class CategoryList extends Component {
   constructor(props) {
     super(props);
     this.state = {

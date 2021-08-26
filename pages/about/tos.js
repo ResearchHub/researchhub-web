@@ -1,11 +1,11 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 
 import ComponentWrapper from "~/components/ComponentWrapper";
 import colors from "~/config/themes/colors";
 
-class TOS extends React.Component {
+class TOS extends Component {
   render() {
     return (
       <div className={css(styles.page)}>

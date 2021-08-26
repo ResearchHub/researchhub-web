@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Carousel from "nuka-carousel";
@@ -12,10 +12,10 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils/document";
 import icons from "~/config/themes/icons";
 
-class CitationCard extends React.Component {
+class CitationCard extends Component {
   constructor(props) {
     super(props);
     this.state = {

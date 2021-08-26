@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import InfiniteScroll from "react-infinite-scroller";
 
 // Component
 import LiveFeedNotification from "./LiveFeedNotification";
@@ -23,7 +22,7 @@ import { NotificationActions } from "~/redux/notification";
 const DEFAULT_PING_REFRESH = 10000; // 1 minute
 const DEFAULT_LOADING = 400; //
 
-class LiveFeed extends React.Component {
+class LiveFeed extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -38,7 +37,6 @@ class LiveFeed extends React.Component {
       liveModeResults: [],
       fetchingPage: false,
     };
-    // this.liveButton = React.createRef();
   }
 
   componentDidMount() {

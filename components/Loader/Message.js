@@ -2,7 +2,7 @@
  * @patr
  */
 
-import React, { Component } from "react";
+import { Component } from "react";
 
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";
@@ -60,7 +60,7 @@ class Message extends Component {
           </span>
         )}
         {!message.load && (
-          <div className={css(styles.message)}>{message.message}</div>
+          <div className={css(styles.message)}>{String(message.message)}</div>
         )}
       </div>
     );

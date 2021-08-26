@@ -1,10 +1,10 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 
 // Config
-import { convertNumToMonth, cslFields } from "../../config/utils/options";
+import { cslFields } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 

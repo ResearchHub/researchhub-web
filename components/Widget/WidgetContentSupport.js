@@ -1,5 +1,5 @@
-import { Fragment, useState, useEffect, useRef } from "react";
-import { connect, useDispatch } from "react-redux";
+import { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 
 import Loader from "~/components/Loader/Loader";
@@ -9,7 +9,7 @@ import { ModalActions } from "~/redux/modals";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { formatScore } from "~/config/utils";
+import { formatScore } from "~/config/utils/form";
 
 const DEFAULT_SHIMMER_TIME = 1150;
 

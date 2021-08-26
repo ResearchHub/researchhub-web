@@ -1,3 +1,4 @@
+import { createRef, Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Router from "next/router";
@@ -12,26 +13,32 @@ import ShareAction from "~/components/ShareAction";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "~/components/Form/Button";
 import PaperMetadata from "./Paper/PaperMetadata";
-import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
 import { formatPublishedDate } from "~/config/utils/dates";
 import { MessageActions } from "../redux/message";
-import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import ReactHtmlParser from "react-html-parser";
 import removeMd from "remove-markdown";
-import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
+// import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import ActionButton from "~/components/ActionButton";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-class PostPageCard extends React.Component {
+// Dynamic modules
+import dynamic from "next/dynamic";
+const DynamicComponent = dynamic(() =>
+  import("~/components/CKEditor/SimpleEditor")
+);
+const AuthorSupportModal = dynamic(() =>
+  import("~/components/Modals/AuthorSupportModal")
+);
+
+class PostPageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,8 +55,8 @@ class PostPageCard extends React.Component {
       showPostEditor: false,
       postBody: this.props.post.full_markdown,
     };
-    this.containerRef = React.createRef();
-    this.metaContainerRef = React.createRef();
+    this.containerRef = createRef();
+    this.metaContainerRef = createRef();
 
     this.onUpvote = this.createVoteHandler(UPVOTE);
     this.onDownvote = this.createVoteHandler(DOWNVOTE);
@@ -196,7 +203,7 @@ class PostPageCard extends React.Component {
   renderPostEditor = () => {
     return (
       <>
-        <SimpleEditor
+        <DynamicComponent
           id="text"
           initialData={this.state.postBody}
           labelStyle={styles.label}

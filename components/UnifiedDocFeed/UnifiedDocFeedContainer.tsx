@@ -17,13 +17,7 @@ import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import React, {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from "react";
+import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
@@ -32,7 +26,6 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import UserPostCard from "../Author/Tabs/UserPostCard";
 import { connect } from "react-redux";
 import FeedBlurWithButton from "./FeedBlurWithButton";
-import LazyLoad from "react-lazyload";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
 type PaginationInfo = {

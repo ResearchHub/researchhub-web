@@ -5,7 +5,7 @@ import Link from "next/link";
 // Config
 import colors from "../config/themes/colors";
 import icons from "~/config/themes/icons";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils/document";
 
 const HubSearchResult = ({ result, index, clearSearch }) => {
   let { id, meta, name, paper_count } = result;

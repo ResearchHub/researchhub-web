@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -15,9 +15,8 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import { degrees } from "~/config/utils/options";
-import * as Options from "../../config/utils/options";
+import { range as rangeOpts } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const EducationModal = (props) => {
   // set initial props;
@@ -173,7 +172,7 @@ const EducationModal = (props) => {
             required={false}
             value={year}
             id={"year"}
-            options={Options.range(1980, 2040)}
+            options={rangeOpts(1980, 2040)}
             maxMenuHeight={120}
             onChange={handleYearSelect}
           />

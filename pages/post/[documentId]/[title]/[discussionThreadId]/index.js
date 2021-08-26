@@ -18,15 +18,16 @@ import Message from "~/components/Loader/Message";
 
 // Redux
 import DiscussionActions from "~/redux/discussion";
-import { MessageActions } from "../../../../../redux/message";
+import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 
 // Utils
 import { discussionPageColors } from "~/config/themes/colors";
-import { absoluteUrl } from "~/config/utils";
-import colors from "../../../../../config/themes/colors";
-import API from "../../../../../config/api";
-import * as utils from "../../../../../redux/utils";
+import { absoluteUrl } from "~/config/utils/routing";
+import colors from "~/config/themes/colors";
+import API from "~/config/api";
+import { handleCatch } from "~/redux/utils";
+import { logFetchError } from "~/config/utils/misc";
 
 const DiscussionThreadPage = (props) => {
   if (props.error) {
@@ -65,10 +66,10 @@ const DiscussionThreadPage = (props) => {
           setPage(page + 1);
           setCount(body.count);
         } else {
-          utils.logFetchError(response);
+          logFetchError(response);
         }
       })
-      .catch(utils.handleCatch);
+      .catch(handleCatch);
   };
 
   const initialize = async () => {

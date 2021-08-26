@@ -1,17 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import PaperJournalTag from "~/components/Paper/PaperJournalTag";
-
 // Config
-import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import {
-  getJournalFromURL,
-  capitalize,
-  getJournalImagePath,
-  formatJournalName,
-} from "~/config/utils";
+import { getJournalImagePath, formatJournalName } from "~/config/utils/misc";
+import { capitalize } from "~/config/utils/string";
+import { getJournalFromURL } from "~/config/utils/parsers";
 
 const JournalCard = (props) => {
   const { paper } = props;

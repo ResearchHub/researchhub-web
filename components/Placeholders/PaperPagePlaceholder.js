@@ -1,13 +1,6 @@
-import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-import {
-  TextBlock,
-  MediaBlock,
-  TextRow,
-  RectShape,
-  RoundShape,
-} from "react-placeholder/lib/placeholders";
+import { RoundShape, TextBlock } from "react-placeholder/lib/placeholders";
 
 const PaperPagePlaceholder = ({ color }) => {
   const header = (

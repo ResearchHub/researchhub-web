@@ -1,4 +1,3 @@
-import React from "react";
 import Responsive from "../../Responsive";
 import VoteWidget from "../../VoteWidget";
 import { css, StyleSheet } from "aphrodite";

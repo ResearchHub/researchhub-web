@@ -22,11 +22,16 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { createUserSummary } from "~/config/utils";
+import { createUserSummary } from "~/config/utils/user";
 import { timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import ContentSupportModal from "./Modals/ContentSupportModal";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const ContentSupportModal = dynamic(() =>
+  import("./Modals/ContentSupportModal")
+);
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 const POST_HREF = "/post/[documentId]/[title]/[discussionThreadId]";

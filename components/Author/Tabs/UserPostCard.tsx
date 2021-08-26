@@ -17,7 +17,7 @@ import icons from "../../../config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
-import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";

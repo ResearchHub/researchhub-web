@@ -1,14 +1,14 @@
 import { ethers } from "ethers";
 // import WalletLink from "walletlink";
 
-import { WEB3_INFURA_PROJECT_ID } from "../config/constants";
+// import { WEB3_INFURA_PROJECT_ID } from "../config/constants";
 
-const APP_NAME = "ResearchHub";
-const APP_LOGO_URL = "";
-const ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`;
-const RINKEBY_ETH_JSONRPC_URL = `https://rinkeby.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`;
-const CHAIN_ID = 1;
-const RINKEBY_CHAIN_ID = 4;
+// const APP_NAME = "ResearchHub";
+// const APP_LOGO_URL = "";
+// const ETH_JSONRPC_URL = `https://mainnet.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`;
+// const RINKEBY_ETH_JSONRPC_URL = `https://rinkeby.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`;
+// const CHAIN_ID = 1;
+// const RINKEBY_CHAIN_ID = 4;
 
 export async function useMetaMask() {
   if (typeof window.ethereum !== "undefined") {

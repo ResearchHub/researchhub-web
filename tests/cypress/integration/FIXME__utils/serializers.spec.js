@@ -3,7 +3,7 @@ import Plain from "slate-plain-serializer";
 
 import slateData from "../../fixtures/slate";
 
-import { convertToEditorValue } from "../../../../config/utils";
+import { convertToEditorValue } from "../../../../config/utils/editor";
 
 describe("Serializer Utils", function() {
   context("convertToEditorValue", function() {

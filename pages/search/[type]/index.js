@@ -4,15 +4,15 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import SearchResults from "~/components/Search/SearchResults";
 import { searchTypes } from "~/config/utils/options";
-import { pickFiltersForApi } from "~/config/utils";
+import { pickFiltersForApi } from "~/config/utils/search";
 import killswitch from "~/config/killswitch/killswitch";
 import Head from "~/components/Head";
-import { QUERY_PARAM } from "~/config/utils";
+import { QUERY_PARAM } from "~/config/utils/search";
 
 import PropTypes from "prop-types";
 import Error from "next/error";
 import { useRouter } from "next/router";
-import { get } from "lodash";
+import get from "lodash/get";
 import nookies from "nookies";
 
 // Facets specified will have their values returned

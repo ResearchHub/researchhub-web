@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import Router from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -8,10 +8,8 @@ import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
-import ManageBulletPointsModal from "~/components/Modals/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
@@ -24,17 +22,24 @@ import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 
+// Dynamic modules
+import dynamic from "next/dynamic";
+const ManageBulletPointsModal = dynamic(() =>
+  import("~/components/Modals/ManageBulletPointsModal")
+);
+
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { isQuillDelta, doesNotExist } from "~/config/utils/";
-import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
+import { isQuillDelta } from "~/config/utils/editor";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
 
-class SummaryTab extends React.Component {
+class SummaryTab extends Component {
   constructor(props) {
     super(props);
 

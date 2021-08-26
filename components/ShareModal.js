@@ -1,12 +1,13 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState, useRef } from "react";
-import Modal from "react-modal";
 import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
-import BaseModal from "../components/Modals/BaseModal";
 import colors from "~/config/themes/colors";
-import { RHLogo } from "~/config/themes/icons";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 const ShareModal = (props) => {
   const { close, isOpen, title, subtitle, url } = props;

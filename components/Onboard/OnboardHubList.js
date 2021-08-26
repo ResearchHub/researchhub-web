@@ -1,4 +1,3 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
@@ -6,7 +5,6 @@ import OnboardHub from "./OnboardHub";
 import Loader from "~/components/Loader/Loader";
 
 // Config
-import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
 const OnboardHubList = (props) => {

@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
-import Joyride from "react-joyride";
 import Error from "next/error";
-import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
 
@@ -15,17 +13,26 @@ import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PostPageCard from "~/components/PostPageCard";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
-import PaperPDFModal from "~/components/Modals/PaperPDFModal";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperFeatureModal = dynamic(() =>
+  import("~/components/Modals/PaperFeatureModal")
+);
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
+const PaperTransactionModal = dynamic(() =>
+  import("~/components/Modals/PaperTransactionModal")
+);
 
 // Redux
 import helpers from "@quantfive/js-web-config/helpers";
@@ -38,12 +45,10 @@ import { BulletActions } from "~/redux/bullets";
 
 // Config
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
-import {
-  absoluteUrl,
-  getNestedValue,
-  getVoteType,
-  formatPaperSlug,
-} from "~/config/utils";
+import { absoluteUrl } from "~/config/utils/routing";
+import { getNestedValue } from "~/config/utils/misc";
+import { formatPaperSlug } from "~/config/utils/document";
+import { getVoteType } from "~/config/utils/reputation";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
@@ -52,8 +57,8 @@ import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-  getAuthorName,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
+import { getAuthorName } from "~/config/utils/misc";
 import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";

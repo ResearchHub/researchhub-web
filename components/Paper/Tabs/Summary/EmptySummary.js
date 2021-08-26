@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Components
@@ -7,7 +8,7 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 // Config
 import colors from "../../../../config/themes/colors";
 
-class EmptySummary extends React.Component {
+class EmptySummary extends Component {
   render() {
     return (
       <ComponentWrapper>

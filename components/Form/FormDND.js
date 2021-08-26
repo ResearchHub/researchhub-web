@@ -1,5 +1,5 @@
 // NPM
-import React, { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -22,9 +22,8 @@ import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import Dropzone from "react-dropzone";
-import PaperEntry from "../SearchSuggestion/PaperEntry";
 
-class FormDND extends React.Component {
+class FormDND extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +47,7 @@ class FormDND extends React.Component {
       searchResults: [],
       isDuplicate: false,
     };
-    this.inputRef = React.createRef();
+    this.inputRef = createRef();
   }
 
   componentDidMount() {

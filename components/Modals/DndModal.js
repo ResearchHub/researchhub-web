@@ -1,10 +1,8 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import Dropzone from "react-dropzone";
 import DragNDrop from "@quantfive/react-image-upload-grid";
-import "./Stylesheets/Dnd.css";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -19,7 +17,7 @@ import { ModalActions } from "~/redux/modals";
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-class DndModal extends React.Component {
+class DndModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -216,37 +214,6 @@ const styles = StyleSheet.create({
       maxWidth: "unset",
       boxSizing: "border-box",
     },
-  },
-  dropzoneContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    boxSizing: "border-box",
-    height: "100%",
-    minHeight: 200,
-    width: "90%",
-    backgroundColor: "#F7F7FB",
-    cursor: "pointer",
-    borderRadius: 3,
-    border: `1px dashed ${colors.BLUE()}`,
-    outline: "none",
-    ":hover": {
-      borderStyle: "solid",
-    },
-    ":hover #browse": {
-      textDecoration: "underline",
-    },
-  },
-  dropzone: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "20px 0px",
-    transition: "all ease-out 0.1s",
   },
   fullCanvas: {
     height: "100%",

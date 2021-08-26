@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
@@ -10,10 +10,11 @@ import DiscussionActions from "~/redux/discussion";
 
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import {
-  currentUserHasMinimumReputation,
-  doesNotExist,
   getMinimumReputation,
-} from "~/config/utils";
+  currentUserHasMinimumReputation,
+} from "~/config/utils/reputation";
+import { doesNotExist } from "~/config/utils/nullchecks";
+
 import { ModalActions } from "../redux/modals";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 

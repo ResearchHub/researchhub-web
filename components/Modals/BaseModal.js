@@ -1,5 +1,5 @@
 // NPM Modules
-import React, { Fragment, Children } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -9,7 +9,7 @@ import { CloseIcon } from "~/config/themes/icons";
 // Redux
 import { ModalActions } from "../../redux/modals";
 
-class BaseModal extends React.Component {
+class BaseModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

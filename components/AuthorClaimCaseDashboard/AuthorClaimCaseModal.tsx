@@ -2,13 +2,16 @@ import {
   AUTHOR_CLAIM_ACTION_LABEL,
   AUTHOR_CLAIM_STATUS,
 } from "./constants/AuthorClaimStatus";
-import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import { css, StyleSheet } from "aphrodite";
 import Modal from "react-modal";
-import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const BaseModal = dynamic(() => import("../Modals/BaseModal"));
 
 export type AuthorClaimCaseProps = {
   caseID: any;

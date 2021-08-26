@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -10,7 +11,7 @@ import { AuthActions } from "~/redux/auth";
 
 import icons from "~/config/themes/icons";
 
-class ResearchHubBanner extends React.Component {
+class ResearchHubBanner extends Component {
   constructor(props) {
     super(props);
     this.state = {

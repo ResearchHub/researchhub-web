@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
@@ -11,7 +11,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { getSummaryText } from "~/config/utils";
+import { getSummaryText } from "~/config/utils/editor";
 
 const SectionBounty = (props) => {
   const { section, paper, bullets, updatePaperState, loading, auth } = props;

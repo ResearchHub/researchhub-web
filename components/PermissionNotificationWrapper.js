@@ -6,7 +6,7 @@ import { ModalActions } from "~/redux/modals";
 import {
   currentUserHasMinimumReputation,
   getMinimumReputation,
-} from "~/config/utils";
+} from "~/config/utils/reputation";
 
 const PropsWarning = `Must supply at least one of the following props to
 PermissionNotificationWrapper: loginRequired, onClick, permissionKey.

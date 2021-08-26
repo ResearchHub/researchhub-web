@@ -1,12 +1,13 @@
 import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
-import * as utils from "../utils";
+import { handleCatch } from "../utils";
+import { logFetchError } from "~/config/utils/misc";
 
 export function fetchPermissions() {
   return async (dispatch) => {
     const response = await fetch(API.PERMISSIONS(), API.GET_CONFIG()).catch(
-      utils.handleCatch
+      handleCatch
     );
 
     let action = actions.setPermissionsFailure();
@@ -16,7 +17,7 @@ export function fetchPermissions() {
       const permissions = shims.permissions(body);
       action = actions.setPermissions(permissions);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);

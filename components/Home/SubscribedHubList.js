@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
@@ -17,7 +17,7 @@ import { HubActions } from "~/redux/hub";
 
 const DEFAULT_PAGE_SIZE = 5;
 
-class SubscribedHubList extends React.Component {
+class SubscribedHubList extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

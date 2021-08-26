@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
-import React, { ReactElement, useCallback, useState } from "react";
+import { ReactElement, useCallback, useState } from "react";
 import CitationTable from "./table/CitationTable";
 
 export default function CitationContainer(): ReactElement<"div"> {

@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -18,7 +18,9 @@ import { NotificationActions } from "~/redux/notification";
 
 // Config
 import colors from "../../config/themes/colors";
-import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { getNestedValue } from "~/config/utils/misc";
+import { formatPaperSlug } from "~/config/utils/document";
 import { timeAgoStamp } from "~/config/utils/dates";
 import { reviewBounty } from "~/config/fetch";
 

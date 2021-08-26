@@ -1,18 +1,21 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { Waypoint } from "react-waypoint";
 
 // Component
 import Button from "~/components/Form/Button";
-import AddHubModal from "~/components/Modals/AddHubModal";
-import EditHubModal from "~/components/Modals/EditHubModal";
 import Message from "~/components/Loader/Message";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
 import CategoryListMobile from "~/components/Hubs/CategoryListMobile";
 import HubCard from "~/components/Hubs/HubCard";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddHubModal = dynamic(() => import("~/components/Modals/AddHubModal"));
+const EditHubModal = dynamic(() => import("~/components/Modals/EditHubModal"));
 
 // Config
 import icons from "~/config/themes/icons";
@@ -23,7 +26,7 @@ import { HubActions } from "~/redux/hub";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

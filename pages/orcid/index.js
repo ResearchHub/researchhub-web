@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router, { withRouter } from "next/router";
 import Modal from "react-modal";
@@ -15,7 +16,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { modalStyles } from "~/config/themes/styles";
 
-class OrcidLoginPage extends React.Component {
+class OrcidLoginPage extends Component {
   constructor(props) {
     super(props);
     this.state = {

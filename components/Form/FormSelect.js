@@ -1,11 +1,10 @@
-import React from "react";
+import { cloneElement, Component } from "react";
 import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";
 import makeAnimated from "react-select/animated";
-import { get } from "lodash";
+import get from "lodash/get";
 
 // Config
-import * as Options from "../../config/utils/options";
 import colors from "../../config/themes/colors";
 import { isDevEnv } from "~/config/utils/env";
 
@@ -28,7 +27,7 @@ const CustomValueContainerWithCount = ({ children, getValue, ...props }) => {
           )}
         </div>
       )}
-      {React.cloneElement(children[1])}
+      {cloneElement(children[1])}
     </components.ValueContainer>
   );
 };
@@ -48,12 +47,12 @@ const CustomValueContainerWithLabel = ({ children, getValue, ...props }) => {
           {":"} {selectedValue}
         </span>
       )}
-      {React.cloneElement(children[1])}
+      {cloneElement(children[1])}
     </components.ValueContainer>
   );
 };
 
-class FormSelect extends React.Component {
+class FormSelect extends Component {
   constructor(props) {
     super(props);
     this.state = {};

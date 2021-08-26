@@ -35,3 +35,24 @@ export function nullthrows<T>(
 export function filterNull(arr: Array<any>): Array<any> {
   return arr.filter((el: any): boolean => el != null);
 }
+
+export function doesNotExist(value) {
+  if (value === undefined || value === null) {
+    return true;
+  }
+  return false;
+}
+
+export function isEmpty(value) {
+  if (typeof value === "object") {
+    if (Object.entries(value).length === 0 && value.constructor === Object) {
+      return true;
+    }
+    return false;
+  } else if (typeof value === "string") {
+    return value === "";
+  } else if (typeof value === "number") {
+    return false;
+  }
+  return false;
+}

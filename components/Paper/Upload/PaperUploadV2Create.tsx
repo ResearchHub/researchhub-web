@@ -27,13 +27,7 @@ import Button from "../../Form/Button";
 import FormDND from "../../Form/FormDND";
 import FormInput from "../../Form/FormInput";
 import FormSelect from "../../Form/FormSelect";
-import React, {
-  Fragment,
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useState,
-} from "react";
+import { Fragment, ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type ComponentProps = {

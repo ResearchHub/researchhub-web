@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -9,7 +8,7 @@ import BaseModal from "./BaseModal";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import { convertHttpToHttps } from "~/config/utils";
+import { convertHttpToHttps } from "~/config/utils/routing";
 
 const PaperPDFModal = (props) => {
   const { paper, modals, openPaperPDFModal, onClose } = props;

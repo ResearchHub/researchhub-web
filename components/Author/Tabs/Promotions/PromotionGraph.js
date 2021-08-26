@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import Chart from "react-google-charts";
 
 import Loader from "../../../Loader/Loader";
@@ -6,7 +6,7 @@ import Loader from "../../../Loader/Loader";
 import { formatDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
-class PromotionGraph extends React.Component {
+class PromotionGraph extends Component {
   constructor(props) {
     super(props);
 

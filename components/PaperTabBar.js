@@ -9,8 +9,6 @@ import icons from "~/config/themes/icons";
 import colors, { paperTabColors } from "~/config/themes/colors";
 import { paperTabFont } from "~/config/themes/fonts";
 
-const VIEW_TIMER = 3000; // 3 seconds
-
 const PaperTabBar = (props) => {
   const { activeTab, setActiveTab, paperDraftExists } = props;
   const [tabs, setTabs] = useState(getPaperTabs());
@@ -37,63 +35,6 @@ const PaperTabBar = (props) => {
     }
 
     return paperTabs;
-  }
-
-  function trackEvent(interaction, label) {
-    let auth = store.getState().auth;
-    let user;
-    if (auth.isLoggedIn) {
-      user = auth.user;
-    }
-    let paperId = props.paper.id;
-    let googlePayload = {
-      paper: paperId,
-      interaction,
-      item: {
-        name: "tab",
-        value: label,
-      },
-      utc: new Date(),
-    };
-
-    let ampPayload = {
-      event_type: "paper_tab",
-      user_id: user ? user.id : null,
-      time: +new Date(),
-      event_properties: {
-        interaction,
-        tab_name: label,
-        paper: paperId,
-      },
-    };
-
-    fetch(
-      API.GOOGLE_ANALYTICS({ ignorePaper: true, ignoreUser: true }),
-      API.POST_CONFIG(googlePayload)
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {});
-
-    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
-      .then(Helpers.checkStatus)
-      .then((res) => {});
-  }
-
-  function renderPreregistrationTag() {
-    if (props.paper && props.paper.paper_type === "PRE_REGISTRATION") {
-      return (
-        <div className={css(styles.preRegContainer)}>
-          <img
-            src="/static/icons/wip.png"
-            className={css(styles.preRegIcon)}
-            alt="Preregistration Icon"
-          />
-          Funding Request
-        </div>
-      );
-    }
-    return null;
   }
 
   const onClick = (key) => {

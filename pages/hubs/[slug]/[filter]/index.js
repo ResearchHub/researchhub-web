@@ -5,15 +5,15 @@ import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import { slugToFilterQuery } from "~/config/utils/routing";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { toTitleCase } from "~/config/utils";
+import { toTitleCase } from "~/config/utils/string";
 import API from "~/config/api";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
-import React from "react";
 import Router from "next/router";
+import { Component } from "react";
 
-class Index extends React.Component {
+class Index extends Component {
   // NOTE: calvinhlee - no longer called
   static async getInitialProps(ctx) {
     let { query } = ctx;

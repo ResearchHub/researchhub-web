@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 import Link from "next/link";

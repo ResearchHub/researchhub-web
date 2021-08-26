@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -14,10 +14,12 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import Message from "../Loader/Message";
 import FormDND from "../Form/FormDND";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
-// Modal
-import AddAuthorModal from "../Modals/AddAuthorModal";
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddAuthorModal = dynamic(() =>
+  import("~/components/Modals/AddAuthorModal")
+);
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -29,11 +31,11 @@ import { MessageActions } from "~/redux/message";
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import * as Options from "../../config/utils/options";
+import * as Options from "~/config/utils/options";
 import FormTextArea from "../Form/FormTextArea";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils/document";
 
-class PaperUploadInfo extends React.Component {
+class PaperUploadInfo extends Component {
   constructor(props) {
     super(props);
     let initialState = {
@@ -80,7 +82,7 @@ class PaperUploadInfo extends React.Component {
     this.state = {
       ...initialState,
     };
-    this.titleRef = React.createRef();
+    this.titleRef = createRef();
   }
 
   componentDidMount() {

@@ -1,9 +1,7 @@
 import * as moment from "dayjs";
-import Ripples from "react-ripples";
 import { useState, useEffect, Fragment } from "react";
 import { useRouter } from "next/router";
-import { isString, isArray } from "underscore";
-import { get } from "lodash";
+import get from "lodash/get";
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
 
@@ -17,7 +15,7 @@ import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isString } from "~/config/utils/string";
 
 const timeFilterOpts = [
   {
@@ -188,7 +186,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
   const getSelectedFacetValues = ({ forKey }) => {
     let selected = [];
 
-    if (isArray(router.query[forKey])) {
+    if (Array.isArray(router.query[forKey])) {
       selected = router.query[forKey];
     } else if (isString(router.query[forKey])) {
       selected = [router.query[forKey]];
@@ -220,7 +218,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
       ...router.query,
     };
 
-    if (isArray(selected)) {
+    if (Array.isArray(selected)) {
       query[filterId] = selected.map((v) => v.valueForApi);
     } else if (!selected || !selected.valueForApi) {
       delete query[filterId];

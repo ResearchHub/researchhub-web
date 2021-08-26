@@ -1,5 +1,5 @@
 import API from "../../config/api";
-import React, { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { Helpers } from "@quantfive/js-web-config";
 import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "../../config/utils/nullchecks";

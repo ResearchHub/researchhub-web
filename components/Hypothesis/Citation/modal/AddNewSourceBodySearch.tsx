@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
 export default function AddNewSourceBodySearch(): ReactElement<"div"> {
   return (

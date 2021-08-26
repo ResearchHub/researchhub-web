@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
@@ -13,7 +13,7 @@ import icons, { DownIcon, UpIcon } from "~/config/themes/icons";
 // Redux
 import { HubActions } from "~/redux/hub";
 
-class FeedList extends React.Component {
+class FeedList extends Component {
   constructor(props) {
     super(props);
     this.state = {

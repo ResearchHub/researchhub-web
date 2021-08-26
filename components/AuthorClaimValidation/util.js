@@ -2,7 +2,6 @@ import { css, StyleSheet } from "aphrodite";
 import { VALIDATION_STATE } from "./constants";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
-import React from "react";
 
 export const getPageBody = (validationState) => {
   switch (validationState) {

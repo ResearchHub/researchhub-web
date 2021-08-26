@@ -1,4 +1,3 @@
-import React from "react";
 import { ClipLoader, DotLoader, BeatLoader } from "react-spinners";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";

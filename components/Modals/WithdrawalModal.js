@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 import Link from "next/link";
 
 // Component
@@ -23,13 +22,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask } from "../connectEthereum";
-import CheckBox from "../Form/CheckBox";
-import {
-  sanitizeNumber,
-  formatBalance,
-  isAddress,
-  toCheckSumAddress,
-} from "~/config/utils";
+import { sanitizeNumber, formatBalance } from "~/config/utils/form";
+import { isAddress, toCheckSumAddress } from "~/config/utils/crypto";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -40,7 +34,7 @@ const CURRENT_CHAIN_ID =
     ? RINKEBY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
-class WithdrawalModal extends React.Component {
+class WithdrawalModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

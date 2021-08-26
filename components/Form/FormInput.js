@@ -1,12 +1,12 @@
-import React from "react";
+import { createRef, Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors, { formColors } from "../../config/themes/colors";
 
-class FormInput extends React.Component {
+class FormInput extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.formInputRef = React.createRef();
+    this.formInputRef = createRef();
   }
 
   focusOnClick = (e) => {

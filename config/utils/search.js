@@ -1,5 +1,5 @@
 import { searchTypes } from "./options";
-import { get } from "lodash";
+import get from "lodash/get";
 
 export const QUERY_PARAM = "q";
 

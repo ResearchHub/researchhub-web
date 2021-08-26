@@ -1,11 +1,9 @@
-import React, { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
-import Joyride from "react-joyride";
 import Error from "next/error";
-import "./styles/anchor.css";
 import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
 
@@ -15,17 +13,26 @@ import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
 import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
 import PaperPageCard from "~/components/PaperPageCard";
 import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
-import PaperPDFModal from "~/components/Modals/PaperPDFModal";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperFeatureModal = dynamic(() =>
+  import("~/components/Modals/PaperFeatureModal")
+);
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
+const PaperTransactionModal = dynamic(() =>
+  import("~/components/Modals/PaperTransactionModal")
+);
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -41,22 +48,19 @@ import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxS
 
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import {
-  absoluteUrl,
-  getNestedValue,
-  getVoteType,
-  formatPaperSlug,
-} from "~/config/utils";
+import { absoluteUrl } from "~/config/utils/routing";
+import { formatPaperSlug } from "~/config/utils/document";
+import { getVoteType } from "~/config/utils/reputation";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { getAuthorName, getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-  getAuthorName,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";
@@ -283,25 +287,6 @@ const Paper = (props) => {
     setPaper({ ...paper, is_removed: true });
   };
 
-  function onJoyrideComplete(joyrideState) {
-    let { auth, updateUser, setUploadingPaper } = props;
-    if (
-      joyrideState.status === "finished" &&
-      joyrideState.lifecycle === "complete"
-    ) {
-      fetch(
-        API.USER({ userId: auth.user.id }),
-        API.PATCH_CONFIG({ upload_tutorial_complete: true })
-      )
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then(() => {
-          updateUser({ upload_tutorial_complete: true });
-          setUploadingPaper(false);
-        });
-    }
-  }
-
   function calculateCommentCount(paper) {
     let discussionCount = 0;
     if (paper) {
@@ -443,22 +428,6 @@ const Paper = (props) => {
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
       />
-      <Joyride
-        steps={steps}
-        continuous={true}
-        locale={{ last: "Done" }}
-        styles={{
-          options: {
-            primaryColor: colors.BLUE(1),
-          },
-        }}
-        callback={onJoyrideComplete}
-        run={
-          props.auth.uploadingPaper &&
-          props.auth.isLoggedIn &&
-          !props.auth.user.upload_tutorial_complete
-        }
-      />
       <div className={css(styles.root)}>
         <Waypoint
           onEnter={() => onSectionEnter(0)}
@@ -598,7 +567,7 @@ const Paper = (props) => {
             {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
-              <React.Fragment>
+              <Fragment>
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
@@ -613,7 +582,7 @@ const Paper = (props) => {
                   paperDraftSections={paperDraftSections}
                   paperDraftExists={paperDraftExists}
                 />
-              </React.Fragment>
+              </Fragment>
             )}
           </div>
         </div>

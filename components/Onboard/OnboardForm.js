@@ -1,14 +1,12 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 // Component
 import AuthorAvatar from "~/components/AuthorAvatar";
 import FormInput from "~/components/Form/FormInput";
 import AvatarUpload from "~/components/AvatarUpload";
 import FormTextArea from "~/components/Form/FormTextArea";
-import EducationModal from "~/components/Modals/EducationModal";
 import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
 
 // Redux
@@ -17,13 +15,18 @@ import { AuthorActions } from "~/redux/author";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
+// Dynamic modules
+import dynamic from "next/dynamic";
+const EducationModal = dynamic(() =>
+  import("~/components/Modals/EducationModal")
+);
+
 // Config
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class OnboardForm extends React.Component {
+class OnboardForm extends Component {
   constructor(props) {
     super(props);
     this.initialState = this.mapStateFromProps();
