@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { ValueOf } from "../../config/types/root_types";
 import AuthorClaimDashboardNavbarButton from "./AuthorClaimDashboardNavbarButton";
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import { getCaseCounts, Counts } from "./api/AuthorClaimCaseGetCounts";
 
 type ButtonConfig = {

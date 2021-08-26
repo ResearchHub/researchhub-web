@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
 import LazyLoad from "react-lazyload";
-import React, { ReactElement, useMemo } from "react";
+import { ReactElement, useMemo } from "react";
 
 type Props = {
   authorProfiles: Object[];

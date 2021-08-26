@@ -2,7 +2,7 @@ import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "../../../../config/themes/screen.js";
 import Button from "../../../Form/Button";
-import React, { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 import colors from "../../../../config/themes/colors";
 

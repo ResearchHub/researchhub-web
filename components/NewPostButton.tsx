@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-import React, { Fragment, SyntheticEvent, useState } from "react";
+import { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";

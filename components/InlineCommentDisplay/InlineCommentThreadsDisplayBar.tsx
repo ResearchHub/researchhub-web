@@ -6,7 +6,7 @@ import InlineCommentUnduxStore, {
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 type Props = {

@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import colors from "~/config/themes/colors";
 
 type Props = {

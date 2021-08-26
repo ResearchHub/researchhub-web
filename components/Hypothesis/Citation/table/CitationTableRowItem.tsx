@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode } from "react";
 import colors from "~/config/themes/colors";
 import { ID } from "~/config/types/root_types";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";

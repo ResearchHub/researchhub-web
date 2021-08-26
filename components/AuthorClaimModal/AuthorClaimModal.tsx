@@ -1,7 +1,7 @@
 import AuthorClaimPromptEmail from "./AuthorClaimPromptEmail";
 import AuthorClaimPromptSuccess from "./AuthorClaimPromptSuccess";
 import Modal from "react-modal";
-import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 
 // Dynamic modules

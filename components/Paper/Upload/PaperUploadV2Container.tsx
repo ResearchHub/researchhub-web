@@ -3,7 +3,7 @@ import { isNullOrUndefined } from "../../../config/utils/nullchecks";
 import { useRouter } from "next/router";
 import PaperUploadV2Create from "./PaperUploadV2Create";
 import PaperUploadV2Update from "./PaperUploadV2Update";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 
 export default function PaperUploadV2Container(): ReactElement<"div"> {
   const router = useRouter();

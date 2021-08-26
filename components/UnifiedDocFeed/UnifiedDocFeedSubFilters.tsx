@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import FormSelect from "../Form/FormSelect";
 import { filterOptions, scopeOptions } from "../../config/utils/options";
 

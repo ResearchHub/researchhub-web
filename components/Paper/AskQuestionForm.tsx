@@ -2,7 +2,7 @@ import API from "../../config/api";
 import Button from "../Form/Button";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import React, { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import colors from "../../config/themes/colors";
 import removeMd from "remove-markdown";
 import { Helpers } from "@quantfive/js-web-config";

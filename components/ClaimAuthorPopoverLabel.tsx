@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { Fragment, ReactElement, useCallback, useState } from "react";
+import { Fragment, ReactElement, useCallback, useState } from "react";
 import ResearchHubPopover from "./ResearchHubPopover";
 import icons from "../config/themes/icons";
 import AuthorClaimModal from "./AuthorClaimModal/AuthorClaimModal";

@@ -5,7 +5,7 @@ import {
 import Button from "../Form/Button";
 import { css, StyleSheet } from "aphrodite";
 import Modal from "react-modal";
-import React, { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
 

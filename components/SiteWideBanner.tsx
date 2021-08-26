@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactNode, ReactElement } from "react";
+import { ReactNode, ReactElement } from "react";
 
 type Props = {
   body: ReactNode;
