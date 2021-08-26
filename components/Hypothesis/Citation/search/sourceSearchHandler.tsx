@@ -30,44 +30,47 @@ export type SearchState = {
     query: string;
     searchType: ValueOf<typeof SearchFilterDocTypeLabel>;
   };
-  searchInputString: string | null;
 };
 
 export type getHandleSourceSearchInputChange = {
-  debounceTime: number | undefined | null;
+  debounceTime?: number | undefined | null;
   onError: Function;
   onSuccess: Function;
-  searchState: SearchState;
-  setDebounceRef: (ref: NodeJS.Timeout | null) => void;
+};
+
+export const DEFAULT_SEARCH_STATE: SearchState = {
+  config: {
+    route: "paper",
+  },
+  facets: ["hubs"],
+  filters: {
+    query: "",
+    searchType: "paper",
+  },
 };
 
 export const getHandleSourceSearchInputChange = ({
   debounceTime = 500,
   onError,
   onSuccess,
-  searchState,
-}: getHandleSourceSearchInputChange): ((searchText: string | null) => void) => {
-  const [debounceRef, setDebounceRef] = useState<NodeJS.Timeout | null>(null);
+}: getHandleSourceSearchInputChange): ((searchState: SearchState) => void) => {
+  let debounceRef: NodeJS.Timeout | null = null;
 
-  return (searchText: string | null): void => {
+  return (searchState: SearchState): void => {
     if (!isNullOrUndefined(debounceRef)) {
-      clearTimeout(nullthrows(debounceRef));
+      clearTimeout(nullthrows(debounceRef, "debounceRef not found"));
     }
 
-    const shouldShowSearchResult = Boolean(searchText);
-
-    setDebounceRef(
-      setTimeout(async () => {
-        const { config, facets, filters } = searchState;
-        return fetch(API.SEARCH({ config, facets, filters }), API.GET_CONFIG())
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((apiResponse) => {
-            onSuccess(apiResponse);
-            setDebounceRef(null);
-          })
-          .catch((error: Error): void => onError(error));
-      }, debounceTime || 500)
-    );
+    debounceRef = setTimeout(async () => {
+      const { config, facets, filters } = searchState;
+      return fetch(API.SEARCH({ config, facets, filters }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((apiResponse) => {
+          onSuccess(apiResponse);
+          debounceRef = null;
+        })
+        .catch((error: Error): void => onError(error));
+    }, debounceTime || 500);
   };
 };
