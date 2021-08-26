@@ -31,16 +31,16 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
 const fetchDocsFromApi = ({ isLoggedIn, hub, prevDocuments, docTypeFilter, subFilters, pathname, onSuccess, onError, isLoadingMore = false, page = 1 }) => {
 
-  console.log('+++++++++++++');
-  console.log('prevDocuments', prevDocuments);
-  console.log('docTypeFilter', docTypeFilter);
-  console.log('subFilters', subFilters);
-  console.log('pathname', pathname);
-  console.log('subFilters', subFilters);
-  console.log('isLoadingMore', isLoadingMore);
-  console.log('page', page);
-  console.log('hub', hub);
-  console.log('+++++++++++++');
+console.log('+++++++++++++');
+console.log('prevDocuments', prevDocuments);
+console.log('docTypeFilter', docTypeFilter);
+console.log('subFilters', subFilters);
+console.log('pathname', pathname);
+console.log('subFilters', subFilters);
+console.log('isLoadingMore', isLoadingMore);
+console.log('page', page);
+console.log('hub', hub);
+console.log('+++++++++++++');
 
   const shouldGetSubscribed = ["", "/"].includes(pathname);
   const hubID = 
