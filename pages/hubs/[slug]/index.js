@@ -9,12 +9,12 @@ import Error from "next/error";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
-import React from "react";
+import { Component } from "react";
 import Router from "next/router";
 
 const isServer = () => typeof window === "undefined";
 
-class Index extends React.Component {
+class Index extends Component {
   // NOTE: calvinhlee - being called
   static async getInitialProps(ctx) {
     const { query, query: urlQuery } = ctx;

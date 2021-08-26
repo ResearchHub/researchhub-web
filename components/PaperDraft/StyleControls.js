@@ -1,7 +1,7 @@
 import { draftCssToCustomCss } from "./util/PaperDraftTextEditorUtil";
 import { getCurrSelectionBlockTypesInSet } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { StyleSheet, css } from "aphrodite";
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import StyleButton from "./StyleButton";
 
 // Config

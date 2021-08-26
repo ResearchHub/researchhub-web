@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import Router from "next/router";
 import Ripples from "react-ripples";
@@ -66,7 +66,7 @@ const createdOptions = [
 const createdByOptions = createdOptions[0];
 const defaultFilterBy = filterOptions[4];
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
 

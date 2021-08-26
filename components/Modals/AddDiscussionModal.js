@@ -1,5 +1,5 @@
 // NPM Modules
-import React, { useState } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 

@@ -1,4 +1,4 @@
-import React, { Component, Fragment, useState } from "react";
+import { createRef, Component, Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useTransition, animated } from "react-spring";
 
@@ -162,7 +162,7 @@ class Index extends Component {
       revealText: false,
     };
 
-    this.pointsListRef = React.createRef();
+    this.pointsListRef = createRef();
     this.points = points.map((point, index) => {
       const { icon, title, text } = point;
 

@@ -1,5 +1,3 @@
-import React from "react";
-
 const ResearchHubIcon = (props) => (
   <svg width={216} height={61} fill="none" {...props}>
     <path fill="url(#prefix__pattern0)" d="M0 0h216v61H0z" {...props} />

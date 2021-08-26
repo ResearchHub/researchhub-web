@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useImperativeHandle,
-  Fragment,
-} from "react";
+import { forwardRef, useState, useEffect, useImperativeHandle, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import DragNDrop from "./DragNDrop";
 import Loader from "../Loader/Loader";
@@ -12,7 +7,7 @@ import colors from "../../config/themes/colors";
 import api from "../../config/api";
 import helpers from "@quantfive/js-web-config/helpers";
 
-const VerificationForm = React.forwardRef((props, ref) => {
+const VerificationForm = forwardRef((props, ref) => {
   const { showMessage } = props;
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);

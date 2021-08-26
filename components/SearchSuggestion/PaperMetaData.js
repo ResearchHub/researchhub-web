@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";

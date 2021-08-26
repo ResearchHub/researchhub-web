@@ -21,7 +21,7 @@ import HubTag from "./HubTag";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
-import React, { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import Router from "next/router";

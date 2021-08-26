@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { useRouter } from "next/router";

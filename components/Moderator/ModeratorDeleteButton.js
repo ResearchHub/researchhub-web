@@ -1,4 +1,3 @@
-import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";

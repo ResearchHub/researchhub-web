@@ -1,5 +1,5 @@
 // NPM
-import React, { Component, Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -47,7 +47,7 @@ class FormDND extends Component {
       searchResults: [],
       isDuplicate: false,
     };
-    this.inputRef = React.createRef();
+    this.inputRef = createRef();
   }
 
   componentDidMount() {

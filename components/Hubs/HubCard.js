@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -25,7 +25,7 @@ import { isDevEnv } from "~/config/utils/env";
 class HubCard extends Component {
   constructor(props) {
     super(props);
-    this.linkRef = React.createRef();
+    this.linkRef = createRef();
     this.state = {
       transition: false,
       removed: false,

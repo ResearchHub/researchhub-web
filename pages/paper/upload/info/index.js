@@ -1,6 +1,6 @@
 import Head from "~/components/Head";
 import PaperUploadV2Container from "~/components/Paper/Upload/PaperUploadV2Container";
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 
 export default function Index() {
   return (

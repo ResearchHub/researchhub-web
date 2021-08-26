@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { createRef, Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Router from "next/router";
@@ -55,8 +55,8 @@ class PostPageCard extends Component {
       showPostEditor: false,
       postBody: this.props.post.full_markdown,
     };
-    this.containerRef = React.createRef();
-    this.metaContainerRef = React.createRef();
+    this.containerRef = createRef();
+    this.metaContainerRef = createRef();
 
     this.onUpvote = this.createVoteHandler(UPVOTE);
     this.onDownvote = this.createVoteHandler(DOWNVOTE);

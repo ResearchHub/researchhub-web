@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 
 import { css, StyleSheet } from "aphrodite";
 import Router from "next/router";
@@ -239,7 +239,7 @@ class CommentClass extends DiscussionComment {
     this.state.loaded = false;
     this.state.windowPostion = null;
     this.state.highlight = false;
-    this.ref = React.createRef();
+    this.ref = createRef();
   }
 
   componentDidMount() {

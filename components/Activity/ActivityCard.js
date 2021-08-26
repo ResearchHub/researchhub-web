@@ -2,7 +2,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Ripples from "react-ripples";
 
 // Components
