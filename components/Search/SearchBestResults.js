@@ -1,5 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import { useState, useEffect, Fragment } from "react";
+import { Fragment } from "react";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
 
@@ -10,7 +10,7 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
-import { hasNoSearchResults } from "~/config/utils";
+import { hasNoSearchResults } from "~/config/utils/search";
 
 const SearchBestResults = ({ apiResponse }) => {
   const router = useRouter();

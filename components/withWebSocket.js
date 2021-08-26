@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { AUTH_TOKEN as TOKEN_NAME } from "../config/constants";
 
 const ALLOWED_ORIGINS = [

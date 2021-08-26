@@ -1,4 +1,4 @@
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 export const authorPost = (data) => {
   const university =

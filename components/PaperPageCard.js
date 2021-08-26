@@ -6,15 +6,14 @@ import ReactTooltip from "react-tooltip";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { createRef, Component } from "react";
 
 // Components
 import ActionButton from "~/components/ActionButton";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "~/components/Form/Button";
 import DownloadPDFButton from "~/components/DownloadPDFButton";
 import FlagButton from "~/components/FlagButton";
 import HubTag from "~/components/Hubs/HubTag";
-import PaperDiscussionButton from "./Paper/PaperDiscussionButton";
 import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
@@ -28,18 +27,23 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import API from "~/config/api";
-import AuthorSupportModal from "./Modals/AuthorSupportModal";
 import PaperPreview from "./Paper/SideColumn/PaperPreview";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
-import { openExternalLink, removeLineBreaksInStr } from "~/config/utils";
+import { removeLineBreaksInStr } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 
-class PaperPageCard extends React.Component {
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AuthorSupportModal = dynamic(() =>
+  import("~/components/Modals/AuthorSupportModal")
+);
+
+class PaperPageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -52,8 +56,8 @@ class PaperPageCard extends React.Component {
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
     };
-    this.containerRef = React.createRef();
-    this.metaContainerRef = React.createRef();
+    this.containerRef = createRef();
+    this.metaContainerRef = createRef();
   }
 
   componentWillUnmount() {

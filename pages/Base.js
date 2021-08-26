@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import dynamic from "next/dynamic";
 
 // NPM Modules
@@ -26,7 +26,7 @@ const DynamicAlertTemplate = dynamic(() =>
 const DynamicFooter = dynamic(() => import("./footer"));
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 
-class Base extends React.Component {
+class Base extends Component {
   componentDidMount = async () => {
     const {
       fetchPermissions,

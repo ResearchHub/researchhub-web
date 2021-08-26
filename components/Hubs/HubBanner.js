@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -49,11 +48,6 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   hubs: state.hubs,
 });
-
-const mapDispatchToProps = {
-  googleLogin: AuthActions.googleLogin,
-  getUser: AuthActions.getUser,
-};
 
 export default connect(
   mapStateToProps,

@@ -1,15 +1,16 @@
 import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
-import * as utils from "../utils";
 import { sendAmpEvent } from "~/config/fetch";
+import { handleCatch } from "../utils";
+import { logFetchError } from "~/config/utils/misc";
 
 export function fetchThread(paperId, threadId) {
   return async (dispatch) => {
     const response = await fetch(
       API.THREAD(paperId, null, threadId),
       API.GET_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setThreadFailure();
 
@@ -18,7 +19,7 @@ export function fetchThread(paperId, threadId) {
       const thread = body;
       action = actions.setThread(thread);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -36,7 +37,7 @@ export function updateThread(
     const response = await fetch(
       API.THREAD(documentType, paperId, documentId, threadId),
       API.PATCH_CONFIG(body)
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setUpdateThreadFailure();
 
@@ -45,7 +46,7 @@ export function updateThread(
       const thread = shims.thread(body);
       action = actions.setUpdateThread(thread);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -57,7 +58,7 @@ export function fetchComments(paperId, threadId, page) {
     const response = await fetch(
       API.THREAD_COMMENT(paperId, threadId, page),
       API.GET_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setCommentsFailure();
 
@@ -67,7 +68,7 @@ export function fetchComments(paperId, threadId, page) {
       comments.page = page;
       action = actions.setComments(comments);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -90,14 +91,14 @@ export function postComment(
         parent: threadId,
         plain_text,
       })
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setPostCommentFailure();
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -121,7 +122,7 @@ export function postComment(
       sendAmpEvent(payload);
       action = actions.setPostCommentSuccess(comment);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -141,14 +142,14 @@ export function updateComment(
     const response = await fetch(
       API.PAPER_CHAIN(documentType, paperId, documentId, threadId, commentId),
       API.PATCH_CONFIG({ text, plain_text })
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setUpdateCommentFailure();
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -157,7 +158,7 @@ export function updateComment(
       const comment = body;
       action = actions.setUpdateComment(comment);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -169,7 +170,7 @@ export function fetchReplies(paperId, threadId, commentId, page) {
     const response = await fetch(
       API.THREAD_COMMENT_REPLY(paperId, threadId, commentId, page),
       API.GET_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setRepliesFailure();
 
@@ -179,7 +180,7 @@ export function fetchReplies(paperId, threadId, commentId, page) {
       replies.page = page;
       action = actions.setReplies(replie);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -209,14 +210,14 @@ export function postReply(
         parent: commentId,
         plain_text,
       })
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setPostReplyFailure();
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -241,7 +242,7 @@ export function postReply(
       sendAmpEvent(payload);
       action = actions.setPostReplySuccess(reply);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -269,14 +270,14 @@ export function updateReply(
         replyId
       ),
       API.PATCH_CONFIG({ text, plain_text })
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setUpdateReplyFailure();
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -285,7 +286,7 @@ export function updateReply(
       const reply = body;
       action = actions.setUpdateReply(reply);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -313,14 +314,14 @@ export function postUpvote(
         replyId
       ),
       API.POST_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setPostVoteFailure(isUpvote);
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -343,7 +344,7 @@ export function postUpvote(
       sendAmpEvent(payload);
       action = actions.setPostVoteSuccess(vote);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -371,14 +372,14 @@ export function postDownvote(
         replyId
       ),
       API.POST_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setPostVoteFailure(isUpvote);
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -401,7 +402,7 @@ export function postDownvote(
       sendAmpEvent(payload);
       action = actions.setPostVoteSuccess(vote);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);

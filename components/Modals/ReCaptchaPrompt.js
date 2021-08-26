@@ -1,4 +1,4 @@
-import React from "react";
+import { createRef, Component } from "react";
 import { connect } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import { StyleSheet, css } from "aphrodite";
@@ -16,14 +16,14 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { RECAPTCHA_CLIENT_KEY } from "~/config/constants";
 
-class ReCaptchaPrompt extends React.Component {
+class ReCaptchaPrompt extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
     };
 
-    this.recaptchaRef = React.createRef();
+    this.recaptchaRef = createRef();
   }
 
   componentDidMount() {

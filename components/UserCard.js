@@ -1,16 +1,16 @@
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import numeral from "numeral";
-import { get, isEmpty } from "underscore";
+import { isEmpty } from "~/config/utils/nullchecks";
 import Ripples from "react-ripples";
 import { useRouter } from "next/router";
 
-import { createUserSummary } from "~/config/utils";
+import get from "lodash/get";
+import { createUserSummary } from "~/config/utils/user";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
-import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {
   const router = useRouter();

@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -16,16 +16,16 @@ import { HubActions } from "~/redux/hub";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { capitalize } from "~/config/utils";
+import { capitalize } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { isDevEnv } from "~/config/utils/env";
 
-class HubCard extends React.Component {
+class HubCard extends Component {
   constructor(props) {
     super(props);
-    this.linkRef = React.createRef();
+    this.linkRef = createRef();
     this.state = {
       transition: false,
       removed: false,

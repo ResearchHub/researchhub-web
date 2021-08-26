@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -48,7 +48,7 @@ const scopeOptions = [
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
 
-class LiveFeedPage extends React.Component {
+class LiveFeedPage extends Component {
   constructor(props) {
     super(props);
     this.state = {

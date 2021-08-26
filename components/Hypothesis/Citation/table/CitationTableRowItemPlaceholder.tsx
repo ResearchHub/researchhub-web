@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { TextRow } from "react-placeholder/lib/placeholders";
-import colors from "../../../../config/themes/colors";
-import React, { ReactElement, ReactNode } from "react";
+import colors from "~/config/themes/colors";
+import { ReactElement, ReactNode } from "react";
 
 export default function CitationTableRowItemPlaceholder(): ReactElement<"div"> {
   return (

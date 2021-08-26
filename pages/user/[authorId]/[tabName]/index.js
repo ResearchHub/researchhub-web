@@ -3,8 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { get } from "lodash";
-import { isEmpty } from "underscore";
+import get from "lodash/get";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -24,21 +23,26 @@ import Head from "~/components/Head";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import ShareModal from "~/components/ShareModal";
 import TabBar from "~/components/TabBar";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
-import UserInfoModal from "~/components/Modals/UserInfoModal";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 
+// Dynamic modules
+import dynamic from "next/dynamic";
+const ShareModal = dynamic(() => import("~/components/ShareModal"));
+const UserInfoModal = dynamic(() =>
+  import("~/components/Modals/UserInfoModal")
+);
+
 // Config
 import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import { absoluteUrl } from "~/config/utils";
-import { createUserSummary } from "~/config/utils";
+import { absoluteUrl } from "~/config/utils/routing";
+import { createUserSummary } from "~/config/utils/user";
 import killswitch from "~/config/killswitch/killswitch";
 import {
   filterNull,

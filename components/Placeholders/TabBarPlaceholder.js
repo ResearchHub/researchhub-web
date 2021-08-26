@@ -1,4 +1,3 @@
-import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextRow, RectShape } from "react-placeholder/lib/placeholders";

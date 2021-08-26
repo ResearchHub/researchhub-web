@@ -7,12 +7,9 @@ import {
   DOWNVOTE_ENUM,
 } from "~/config/constants";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import {
-  formatPaperSlug,
-  getUsersFromPaper,
-  getJournalFromURL,
-} from "~/config/utils";
+import { getUsersFromPaper, getJournalFromURL } from "~/config/utils/parsers";
 import { formatUploadedDate } from "~/config/utils/dates";
+import { formatPaperSlug } from "~/config/utils/document";
 import { Helpers } from "@quantfive/js-web-config";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
@@ -23,15 +20,20 @@ import HubDropDown from "./HubDropDown";
 import HubTag from "./HubTag";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
-import PaperPDFModal from "~/components/Modals/PaperPDFModal";
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
-import React, { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment } from "react";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import VoteWidget from "../VoteWidget";
 import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
 
 const PaperEntryCard = (props) => {
   const {

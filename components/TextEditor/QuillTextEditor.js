@@ -1,6 +1,5 @@
 // NPM
-import "react-quill/dist/quill.snow.css";
-import "./stylesheets/QuillTextEditor.css";
+import { createRef, Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -15,9 +14,8 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { Fragment } from "react";
 
-class Editor extends React.Component {
+class Editor extends Component {
   constructor(props) {
     super(props);
 
@@ -33,7 +31,7 @@ class Editor extends React.Component {
       ReactQuill: null,
       Quill: null,
     };
-    this.reactQuillRef = React.createRef();
+    this.reactQuillRef = createRef();
     this.quillRef = null;
   }
 
@@ -43,7 +41,7 @@ class Editor extends React.Component {
       this.setState(
         {
           ReactQuill: val.default,
-          Quill: val.Quill,
+          Quill: val.default.Quill,
         },
         () => {
           this.attachQuillRefs();
@@ -52,7 +50,9 @@ class Editor extends React.Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
-          this.props.onChange && this.props.onChange(); // calculates the thread height
+          // This line leads to an infinite loop
+          // leaving here temporarily for debugging purposes  
+          // this.props.onChange && this.props.onChange(); // calculates the thread height
         }
       );
     });
@@ -177,6 +177,8 @@ class Editor extends React.Component {
   }
 
   onEditorChange = (value, delta, source, editor) => {
+
+
     if (this.props.editing) {
       return this.setState(
         {
@@ -398,6 +400,11 @@ class Editor extends React.Component {
 
   render() {
     const { ReactQuill } = this.state;
+    const modules = Editor.modules(
+      this.props.uid,
+      this.imageHandler,
+      this.linkHandler
+    )
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
@@ -421,11 +428,7 @@ class Editor extends React.Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(
-                  this.props.uid,
-                  this.imageHandler,
-                  this.linkHandler
-                )}
+                modules={modules}
                 formats={Editor.formats}
                 className={css(
                   styles.editSection,
@@ -451,11 +454,7 @@ class Editor extends React.Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(
-                  this.props.uid,
-                  this.imageHandler,
-                  this.linkHandler
-                )}
+                modules={modules}
                 formats={Editor.formats}
                 className={css(
                   styles.comment,

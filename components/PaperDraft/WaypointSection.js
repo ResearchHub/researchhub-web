@@ -1,4 +1,3 @@
-import React from "react";
 import { Waypoint } from "react-waypoint";
 
 const WaypointSection = (props) => {

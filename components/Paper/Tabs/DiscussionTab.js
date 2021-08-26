@@ -7,15 +7,19 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import ComponentWrapper from "../../ComponentWrapper";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
-import AddDiscussionModal from "~/components/Modals/AddDiscussionModal";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddDiscussionModal = dynamic(() =>
+  import("~/components/Modals/AddDiscussionModal")
+);
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -29,7 +33,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
-import { endsWithSlash } from "~/config/utils";
+import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -295,8 +299,10 @@ const DiscussionTab = (props) => {
   };
 
   const handleDiscussionTextEditor = (editorState) => {
+
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
+
     setDiscussion(newDiscussion);
   };
 
@@ -410,7 +416,7 @@ const DiscussionTab = (props) => {
             <TextEditor
               canEdit={true}
               readOnly={false}
-              onChange={handleDiscussionTextEditor}
+              // onChange={handleDiscussionTextEditor}
               placeholder={
                 "Leave a question or a comment for the Author of the paper or the community"
               }

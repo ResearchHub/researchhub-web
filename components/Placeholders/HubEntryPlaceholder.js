@@ -1,4 +1,3 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import { TextBlock, RectShape } from "react-placeholder/lib/placeholders";

@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import * as moment from "dayjs";
-import { formatPaperSlug } from "~/config/utils";
+import { formatPaperSlug } from "~/config/utils/document";
 
 const PaperEntry = ({
   data,

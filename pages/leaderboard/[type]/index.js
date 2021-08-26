@@ -1,6 +1,7 @@
 import LeaderboardPage from "../LeaderboardPage";
+import { Component } from "react";
 
-class Index extends React.Component {
+class Index extends Component {
   render() {
     return <LeaderboardPage />;
   }

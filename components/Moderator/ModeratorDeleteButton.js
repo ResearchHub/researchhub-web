@@ -1,4 +1,3 @@
-import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
@@ -6,7 +5,6 @@ import { useAlert } from "react-alert";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { AuthorActions } from "~/redux/author";
 import { AuthActions } from "~/redux/auth";
 
 // Config
@@ -14,7 +12,7 @@ import colors from "~/config/themes/colors";
 import icons from "../../config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();

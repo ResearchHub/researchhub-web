@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -15,17 +15,15 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
+import { checkVoteTypeChanged } from "~/config/utils/reputation";
+import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { createUsername } from "../../config/utils";
-import InlineCommentUnduxStore from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import { createUsername } from "~/config/utils/user";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
-
-class DiscussionEntry extends React.Component {
+class DiscussionEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {

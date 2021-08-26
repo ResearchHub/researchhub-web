@@ -1,4 +1,4 @@
-import React, { ReactChildren, SyntheticEvent, useCallback } from "react";
+import { ReactChildren, SyntheticEvent, useCallback } from "react";
 
 type Props = {
   children: ReactChildren;

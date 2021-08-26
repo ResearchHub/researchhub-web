@@ -1,14 +1,12 @@
 import API from "~/config/api";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlaceholder from "react-placeholder";
 import UserPostCard from "./UserPostCard";
 import EmptyState from "./EmptyState";
 import icons from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
 import { connect, useStore, useDispatch } from "react-redux";
-import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { AuthorActions } from "~/redux/author";
 

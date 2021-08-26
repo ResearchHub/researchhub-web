@@ -1,11 +1,10 @@
 import { useEffect } from "react";
-import { StyleSheet, css } from "aphrodite";
+import { StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import get from "lodash/get";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 
-import colors from "~/config/themes/colors";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import SearchResultsForDocs from "~/components/Search/SearchResultsForDocs";
 import SearchResultsForHubs from "~/components/Search/SearchResultsForHubs";
@@ -13,7 +12,8 @@ import SearchResultsForPeople from "~/components/Search/SearchResultsForPeople";
 import SearchBestResults from "~/components/Search/SearchBestResults";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import { breakpoints } from "~/config/themes/screen";
-import { trackEvent, QUERY_PARAM, hasNoSearchResults } from "~/config/utils";
+import { QUERY_PARAM, hasNoSearchResults } from "~/config/utils/search";
+import { trackEvent } from "~/config/utils/analytics";
 
 const SearchResults = ({ apiResponse }) => {
   const router = useRouter();

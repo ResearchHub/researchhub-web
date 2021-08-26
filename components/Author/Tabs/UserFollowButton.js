@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from "react";
-import { connect, useStore, useDispatch } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import { connect } from "react-redux";
+import { StyleSheet } from "aphrodite";
 
 // Component
 import Button from "~/components/Form/Button";

@@ -1,9 +1,8 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 
-import { getUsersFromPaper } from "~/config/utils";
+import { getUsersFromPaper } from "~/config/utils/parsers";
 
 const PaperUserAvatars = ({ paper, users = [] }) => {
   // if users is not provided, we find users from paper object

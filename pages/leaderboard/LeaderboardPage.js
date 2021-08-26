@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import Router from "next/router";
 import Ripples from "react-ripples";
@@ -15,7 +15,6 @@ import colors from "~/config/themes/colors";
 
 // Components
 import ContentPage from "../../components/ContentPage/ContentPage";
-import SidebarList from "../../components/ContentPage/SidebarList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import LeaderboardFeedPlaceholder from "../../components/Placeholders/LeaderboardFeedPlaceholder";
@@ -66,7 +65,7 @@ const createdOptions = [
 const createdByOptions = createdOptions[0];
 const defaultFilterBy = filterOptions[4];
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
 

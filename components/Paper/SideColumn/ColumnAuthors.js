@@ -1,4 +1,4 @@
-import { Fragment, useState } from "react";
+import { Component, Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
@@ -8,12 +8,12 @@ import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import AuthorCard from "./AuthorCard";
 
 // Config
-import { getAuthorName } from "~/config/utils/";
+import { getAuthorName } from "~/config/utils/misc";
 import colors from "~/config/themes/colors";
 
 const DEFAULT_PAGE_SIZE = 5;
 
-class ColumnAuthors extends React.Component {
+class ColumnAuthors extends Component {
   constructor(props) {
     super(props);
     this.state = {

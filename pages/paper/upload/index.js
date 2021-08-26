@@ -1,11 +1,16 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet } from "aphrodite";
 
 // Component
 import Head from "~/components/Head";
-import UploadPaperModal from "~/components/Modals/UploadPaperModal";
 
-class Index extends React.Component {
+// Dynamic modules
+import dynamic from "next/dynamic";
+const UploadPaperModal = dynamic(() =>
+  import("~/components/Modals/UploadPaperModal")
+);
+
+class Index extends Component {
   render() {
     return (
       <Fragment>

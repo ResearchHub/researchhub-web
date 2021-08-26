@@ -1,5 +1,5 @@
 import Button from "./Form/Button";
-import React, { ReactElement } from "react";
+import { ReactElement } from "react";
 import colors from "../config/themes/colors";
 import { DownloadIcon } from "../config/themes/icons";
 import { StyleSheet, css } from "aphrodite";

@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
@@ -13,7 +13,7 @@ import EmptyState from "./EmptyState";
 import { AuthorActions } from "~/redux/author";
 
 import icons from "~/config/themes/icons";
-import colors, { genericCardColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 

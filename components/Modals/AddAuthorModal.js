@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -13,10 +13,9 @@ import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 
-import icons from "~/config/themes/icons";
-import * as shims from "../../config/shims";
+import { authorPost } from "~/config/shims";
 
-class AddAuthorModal extends React.Component {
+class AddAuthorModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -86,7 +85,7 @@ class AddAuthorModal extends React.Component {
    */
   addNewUser = (e) => {
     e.preventDefault();
-    const params = shims.authorPost(this.state);
+    const params = authorPost(this.state);
     this.props.addNewUser(params);
     this.closeModal();
   };

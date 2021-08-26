@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import PropTypes from "prop-types";
 
 // Components
 import { ClampedText } from "~/components/Typography";
 
-import { convertDeltaToText } from "~/config/utils";
+import { convertDeltaToText } from "~/config/utils/editor";
 import colors from "~/config/themes/colors";
 
 const ActivityBody = (props) => {

@@ -6,7 +6,6 @@ import * as moment from "dayjs";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Loader from "~/components/Loader/Loader";
-import VoteWidget from "~/components/VoteWidget";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";

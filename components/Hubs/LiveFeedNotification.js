@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 
 // NPM Modules
 import { connect } from "react-redux";
@@ -22,8 +22,9 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { doesNotExist, getNestedValue, formatPaperSlug } from "~/config/utils";
-import { timeAgo } from "~/config/utils/dates";
+import { getNestedValue } from "~/config/utils/misc";
+import { formatPaperSlug } from "~/config/utils/document";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
@@ -118,7 +119,7 @@ const formatTimestamp = (date_str) => {
   return "about " + r;
 };
 
-class LiveFeedNotification extends React.Component {
+class LiveFeedNotification extends Component {
   constructor(props) {
     super(props);
     this.state = {

@@ -1,5 +1,4 @@
 import { StyleSheet, css } from "aphrodite";
-import React from "react";
 
 const StyleButton = (props) => {
   const { isStyleActive, label, onClick } = props;

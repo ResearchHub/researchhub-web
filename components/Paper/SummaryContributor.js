@@ -1,11 +1,9 @@
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import Router from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import * as moment from "dayjs";
 
 import VoteWidget from "~/components/VoteWidget";
-import AuthorAvatar from "~/components/AuthorAvatar";
 
 import { summaryVote } from "~/config/fetch";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";

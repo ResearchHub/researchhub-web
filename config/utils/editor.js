@@ -1,170 +1,8 @@
-import { Value } from "slate";
-import Plain from "slate-plain-serializer";
 import Html from "slate-html-serializer";
-import { doesNotExist, getNestedValue } from "./index";
 import ModalImage from "react-modal-image";
-import QuillToPlaintext from "quill-to-plaintext";
 import { css, StyleSheet } from "aphrodite";
-
-export function createUserSummary(author = {}) {
-  const { headline, education } = author;
-  const space = " | ";
-
-  let userSummary = "";
-
-  if (education && education.length) {
-    let school = education.filter((school) => school.is_public);
-    if (school.length) {
-      userSummary += school[0].summary;
-    }
-  }
-
-  if (headline && headline.isPublic) {
-    let title = headline.title.trim();
-    if (title.length) {
-      userSummary += `${userSummary.length ? space : ""}` + headline.title;
-    }
-  }
-
-  return userSummary;
-}
-
-export function createUsername({ created_by, createdBy }) {
-  if (created_by) {
-    const { first_name, last_name } = created_by.author_profile;
-    return `${first_name} ${last_name}`;
-  } else if (createdBy) {
-    const { first_name, last_name } = createdBy.authorProfile;
-    return `${first_name} ${last_name}`;
-  }
-  return "";
-}
-
-export function capitalize(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-export function convertToEditorValue(text) {
-  if (isQuillDelta(text)) {
-    return text;
-  }
-
-  if (Value.isValue(text)) {
-    return text;
-  }
-
-  if (typeof text === "string") {
-    return Plain.deserialize(text);
-  }
-
-  try {
-    return Value.fromJSON(text);
-  } catch {
-    return undefined;
-  }
-}
-
-export function convertToEditorToHTML(text) {
-  if (!text) {
-    return null;
-  }
-  if (isQuillDelta(text)) {
-    return text;
-  }
-
-  if (Value.isValue(text)) {
-    return convertEditorValueToHtml(text);
-  }
-
-  if (typeof text === "string") {
-    return convertEditorValueToHtml(Plain.deserialize(text));
-  }
-
-  try {
-    return convertEditorValueToHtml(Value.fromJSON(text));
-  } catch {
-    return undefined;
-  }
-}
-
-export function isQuillDelta(value) {
-  if (typeof value === "object" && value !== null) {
-    if (value.hasOwnProperty("ops")) {
-      return true;
-    }
-  } else {
-    return false;
-  }
-}
-
-export function convertDeltaToText(delta) {
-  return QuillToPlaintext(delta);
-}
-
-export function getSummaryText(summary) {
-  if (summary.summary) {
-    if (summary.summary_plain_text) {
-      return summary.summary_plain_text;
-    }
-    if (isQuillDelta(summary.summary)) {
-      return convertDeltaToText(summary.summary);
-    }
-    return convertToEditorValue(summary.summary).document.text
-      ? convertToEditorValue(summary.summary).document.text
-      : "";
-  } else {
-    return "";
-  }
-}
-
-export function getCurrentUser(storeState) {
-  return getNestedValue(storeState, ["auth", "user"], null);
-}
-
-export function getCurrentUserReputation(storeState) {
-  const currentUser = getCurrentUser(storeState);
-  if (!doesNotExist(currentUser)) {
-    return currentUser.reputation;
-  }
-  return null;
-}
-
-export function getMinimumReputation(storeState, key) {
-  return (
-    storeState.permission.success &&
-    storeState.permission.data[key].minimumReputation
-  );
-}
-
-export function getVoteType(vote) {
-  return vote && vote.voteType;
-}
-
-export function toTitleCase(str) {
-  if (typeof str === "string") {
-    return str.replace(
-      /\w\S*/g,
-      (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase()
-    );
-  }
-  return str;
-}
-
-export function formatURL(url) {
-  let http = "http://";
-  let https = "https://";
-  if (!url) {
-    return;
-  }
-  if (url.startsWith(http)) {
-    return url;
-  }
-
-  if (!url.startsWith(https)) {
-    url = https + url;
-  }
-  return url;
-}
+import QuillToPlaintext from "quill-to-plaintext";
+import Plain from "slate-plain-serializer";
 
 export function convertEditorValueToHtml(value) {
   if (typeof value === "object" && value.hasOwnProperty("ops")) {
@@ -415,15 +253,59 @@ export function convertEditorValueToHtml(value) {
   return value && html.serialize(value); // hmtl
 }
 
-export function formatPaperSlug(paperTitle) {
-  if (paperTitle && typeof paperTitle === "string") {
-    let slug = paperTitle.replace(/[^a-zA-Z ]/g, ""); // remove special characters regex
-    slug = slug
-      .split(" ")
-      .filter((el) => el !== "")
-      .join("-")
-      .toLowerCase();
-    return slug ? slug : "";
+export function convertToEditorToHTML(text) {
+  if (!text) {
+    return null;
   }
-  return "";
+  if (isQuillDelta(text)) {
+    return text;
+  }
+
+  if (typeof text === "string") {
+    return convertEditorValueToHtml(Plain.deserialize(text));
+  }
+
+  return undefined;
+}
+
+export function isQuillDelta(value) {
+  if (typeof value === "object" && value !== null) {
+    if (value.hasOwnProperty("ops")) {
+      return true;
+    }
+  } else {
+    return false;
+  }
+}
+
+export function convertToEditorValue(text) {
+  if (isQuillDelta(text)) {
+    return text;
+  }
+
+  if (typeof text === "string") {
+    return Plain.deserialize(text);
+  }
+
+  return undefined;
+}
+
+export function convertDeltaToText(delta) {
+  return QuillToPlaintext(delta);
+}
+
+export function getSummaryText(summary) {
+  if (summary.summary) {
+    if (summary.summary_plain_text) {
+      return summary.summary_plain_text;
+    }
+    if (isQuillDelta(summary.summary)) {
+      return convertDeltaToText(summary.summary);
+    }
+    return convertToEditorValue(summary.summary).document.text
+      ? convertToEditorValue(summary.summary).document.text
+      : "";
+  } else {
+    return "";
+  }
 }

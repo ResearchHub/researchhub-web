@@ -1,4 +1,5 @@
 import Router from "next/router";
+import { Component } from "react";
 
 // Config
 import API from "~/config/api";
@@ -15,7 +16,7 @@ const fetchHub = (slug) => {
     });
 };
 
-class Index extends React.Component {
+class Index extends Component {
   static async getInitialProps({ store, isServer, query }) {
     let slug = query.slug;
     let hub = null;

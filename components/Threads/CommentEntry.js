@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -12,16 +12,17 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
+import { checkVoteTypeChanged } from "~/config/utils/reputation";
+import { getNestedValue } from "~/config/utils/misc";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { createUsername } from "../../config/utils";
+import { createUsername } from "~/config/utils/user";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 
-class CommentEntry extends React.Component {
+class CommentEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {

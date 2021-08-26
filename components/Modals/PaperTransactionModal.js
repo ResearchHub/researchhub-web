@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
@@ -20,23 +20,22 @@ import FormInput from "~/components/Form/FormInput";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
-import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { useMetaMask } from "../connectEthereum";
+// import { useMetaMask } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
   sanitizeNumber,
-  formatBalance,
   onKeyDownNumInput,
   onPasteNumInput,
-} from "~/config/utils";
-import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
+  formatBalance,
+} from "~/config/utils/form";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Constants
 import { ContentTypes, ChainStatus } from "./constants/SupportContent";
@@ -44,7 +43,7 @@ const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
 
-class PaperTransactionModal extends React.Component {
+class PaperTransactionModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {

@@ -8,7 +8,8 @@ import { getCases } from "./api/AuthorClaimCaseGetCases";
 import { INNER_EL_WIDTH } from "./AuthorClaimCaseDashboard";
 import { useRouter, NextRouter } from "next/router";
 import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
-import React, { useEffect, ReactElement, useState, Fragment } from "react";
+import { useEffect, ReactElement, useState, Fragment } from "react";
+import * as React from "react";
 import colors from "../../config/themes/colors";
 
 type Props = {

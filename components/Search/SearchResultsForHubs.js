@@ -1,8 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import get from "lodash/get";
 import { useState, useEffect, Fragment } from "react";
-import Ripples from "react-ripples";
 
 import { fetchURL } from "~/config/fetch";
 import HubCard from "~/components/Hubs/HubCard";
@@ -47,7 +46,7 @@ const SearchResultsForHubs = ({ apiResponse, context }) => {
             </div>
           )}
           <div>
-            {results.map((hub, index) =>
+            {results.map((hub) =>
               context === "best-results" ? (
                 <HubCard
                   key={hub.id}

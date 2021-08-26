@@ -1,9 +1,9 @@
-import { createUserSummary } from "../../config/utils";
+import { createUserSummary } from "~/config/utils/user";
 import { css, StyleSheet } from "aphrodite";
 import { TargetAuthor } from "./api/AuthorClaimCaseGetCases";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import React, { ReactElement, SyntheticEvent, useMemo } from "react";
+import { ReactElement, SyntheticEvent, useMemo } from "react";
 
 type Props = {
   targetAuthor: TargetAuthor;

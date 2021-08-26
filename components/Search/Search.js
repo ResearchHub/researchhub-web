@@ -4,15 +4,13 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import PropTypes from "prop-types";
 import { useRouter } from "next/router";
-import { get } from "lodash";
+import get from "lodash/get";
 import { breakpoints } from "~/config/themes/screen";
-import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils";
-import { trackEvent } from "~/config/utils";
-import { connect } from "react-redux";
+import { pickFiltersForApp, QUERY_PARAM } from "~/config/utils/search";
+import { trackEvent } from "~/config/utils/analytics";
 import { useSelector } from "react-redux";
 
 const Search = ({ navbarRef, id, overrideStyle }) => {
-  const SMALL_PLACEHOLDER_WIDTH = 200;
   const RETURN_KEY = 13;
   const SMALLEST_ALLOWED_INPUT = 200;
   const DEFAULT_EXPANDED_SEARCH_HEIGHT = 66;

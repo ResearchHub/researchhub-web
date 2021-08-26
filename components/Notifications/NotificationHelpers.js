@@ -6,7 +6,7 @@ import { ClampedText } from "~/components/Typography";
 
 // Config
 import colors from "~/config/themes/colors";
-import { truncateText } from "~/config/utils";
+import { truncateText } from "~/config/utils/string";
 import { timeAgoStamp } from "~/config/utils/dates";
 
 const HyperLink = (props) => {

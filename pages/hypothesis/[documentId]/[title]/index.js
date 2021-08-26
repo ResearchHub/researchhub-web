@@ -1,4 +1,3 @@
-import React from "react";
 import Router from "next/router";
 import killswitch from "~/config/killswitch/killswitch";
 import HypothesisContainer from "~/components/Hypothesis/HypothesisContainer";

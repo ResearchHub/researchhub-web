@@ -8,7 +8,7 @@ import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetAuthorSection";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import React, { ReactElement, SyntheticEvent, useMemo, useState } from "react";
+import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 
 type Props = {

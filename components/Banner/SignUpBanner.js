@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { GoogleLogin } from "react-google-login";
@@ -11,7 +12,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
-class SignUpBanner extends React.Component {
+class SignUpBanner extends Component {
   constructor(props) {
     super(props);
     this.state = {

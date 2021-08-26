@@ -3,10 +3,10 @@ import { Helpers } from "@quantfive/js-web-config";
 //import * as shims from "./shims";
 import * as types from "./types";
 import * as actions from "./actions";
-import * as utils from "../utils";
 import * as discussionShim from "../discussion/shims";
 import * as paperShim from "../paper/shims";
-
+import { handleCatch } from "../utils";
+import { logFetchError } from "~/config/utils/misc";
 import { MessageActions } from "~/redux/message";
 
 export const AuthorActions = {
@@ -32,7 +32,7 @@ export const AuthorActions = {
       const response = await fetch(
         API.AUTHORED_PAPER({ authorId, page }),
         API.GET_CONFIG()
-      ).catch(utils.handleCatch);
+      ).catch(handleCatch);
 
       let action = actions.getAuthoredPapersFailure();
       if (response.ok) {
@@ -45,7 +45,7 @@ export const AuthorActions = {
         };
         action = actions.getAuthoredPapersSuccess(results);
       } else {
-        utils.logFetchError(response);
+        logFetchError(response);
       }
       return dispatch(action);
     };
@@ -56,7 +56,7 @@ export const AuthorActions = {
       const response = await fetch(
         API.USER_DISCUSSION({ authorId, page }),
         API.GET_CONFIG()
-      ).catch(utils.handleCatch);
+      ).catch(handleCatch);
 
       let action = actions.getUserDiscussionsFailure();
       if (response.ok) {
@@ -74,7 +74,7 @@ export const AuthorActions = {
         };
         action = actions.getUserDiscussionsSuccess(results);
       } else {
-        utils.logFetchError(response);
+        logFetchError(response);
       }
       return dispatch(action);
     };
@@ -94,7 +94,7 @@ export const AuthorActions = {
           });
 
       const response = await fetch(ENDPOINT, API.GET_CONFIG()).catch(
-        utils.handleCatch
+        handleCatch
       );
 
       let action = actions.getUserContributionsFailure();
@@ -133,7 +133,7 @@ export const AuthorActions = {
         };
         action = actions.getUserContributionsSuccess(results);
       } else {
-        utils.logFetchError(response);
+        logFetchError(response);
       }
       return dispatch(action);
     };
@@ -170,7 +170,7 @@ export const AuthorActions = {
           });
         })
         .catch((err) => {
-          utils.handleCatch(err, dispatch);
+          handleCatch(err, dispatch);
         });
     };
   },

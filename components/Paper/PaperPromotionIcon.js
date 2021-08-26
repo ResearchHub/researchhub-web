@@ -1,7 +1,6 @@
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
-import numeral from "numeral";
 import { Fragment, useState } from "react";
 import { ModalActions } from "~/redux/modals";
 import { PaperPromotionIcon as Icon } from "~/config/themes/icons";

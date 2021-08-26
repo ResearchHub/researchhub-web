@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
@@ -21,7 +21,7 @@ import icons from "~/config/themes/icons";
 
 const LIMITATIONS_COUNT = 5;
 
-class LimitationTab extends React.Component {
+class LimitationTab extends Component {
   constructor(props) {
     super(props);
     this.state = {

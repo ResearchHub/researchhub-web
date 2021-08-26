@@ -1,4 +1,3 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // import AuthorAvatar from "../AuthorAvatar";
@@ -6,7 +5,7 @@ import ActivityAvatar from "./ActivityAvatar";
 import ActivityDescription from "./ActivityDescription";
 
 import colors from "~/config/themes/colors";
-import { getAuthorName } from "~/config/utils/";
+import { getAuthorName } from "~/config/utils/misc";
 
 const ActivityHeader = ({ activity }) => {
   const { contribution_type: contributionType } = activity;

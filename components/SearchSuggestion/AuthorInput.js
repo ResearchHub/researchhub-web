@@ -1,4 +1,4 @@
-import React from "react";
+import { createRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import TagsInput from "react-tagsinput";
@@ -10,8 +10,6 @@ const AuthorInput = (props) => {
     label,
     error,
     inputValue,
-    containerStyle,
-    inputStyle,
     labelStyle,
     onChange,
     onChangeInput,
@@ -19,7 +17,7 @@ const AuthorInput = (props) => {
     renderEmail,
     onKeyPress,
   } = props;
-  const inputRef = React.createRef();
+  const inputRef = createRef();
 
   function renderTag(props) {
     let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;

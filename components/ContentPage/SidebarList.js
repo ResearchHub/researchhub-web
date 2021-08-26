@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Component
@@ -7,7 +7,7 @@ import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 // Config
 import colors from "../../config/themes/colors";
 
-class SidebarList extends React.Component {
+class SidebarList extends Component {
   constructor(props) {
     super(props);
     this.state = {

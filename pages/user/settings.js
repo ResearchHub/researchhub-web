@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
@@ -22,10 +22,10 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
-import { doesNotExist, isEmpty, capitalize } from "~/config/utils";
+import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
+import { capitalize } from "~/config/utils/string";
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
-import "./stylesheets/toggle.css";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -66,7 +66,7 @@ class UserSettings extends Component {
       activeEmailInput: false,
       transition: false,
     };
-    this.emailInputRef = React.createRef();
+    this.emailInputRef = createRef();
     contentSubscriptionOptions.forEach((option) => {
       this.state[option.id] = true;
     });

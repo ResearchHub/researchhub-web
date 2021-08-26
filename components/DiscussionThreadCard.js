@@ -5,7 +5,6 @@ import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useStore } from "react-redux";
 
 import DiscussionActions from "~/redux/discussion";
-import { ModalActions } from "~/redux/modals";
 
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
@@ -16,13 +15,14 @@ import VoteWidget from "./VoteWidget";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-} from "~/config/utils/serializers";
-import { createUsername } from "../config/utils";
+} from "~/config/utils/editor";
+
+import { createUsername } from "~/config/utils/user";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();

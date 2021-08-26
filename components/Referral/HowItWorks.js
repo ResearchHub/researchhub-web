@@ -1,10 +1,4 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
-import Ripples from "react-ripples";
-
-// Config
-import colors from "../../config/themes/colors";
 
 const Step = ({ text, icon, title }) => {
   return (

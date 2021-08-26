@@ -13,7 +13,7 @@ import InlineCommentUnduxStore, {
   getSavedInlineCommentsGivenBlockKey,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import PaperDraftUnduxStore from "../PaperDraft/undux/PaperDraftUnduxStore";
-import React, { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 
 type Props = {
   auth: any /* redux */;

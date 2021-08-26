@@ -15,7 +15,7 @@ import ColumnContainer from "../Paper/SideColumn/ColumnContainer";
 import { css, StyleSheet } from "aphrodite";
 import DiscussionPostMetadata from "../DiscussionPostMetadata.js";
 import InlineCommentComposer from "./InlineCommentComposer";
-import React, { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import {
   getScrollToTargetElFnc,
   getTargetInlineDraftEntityEl,

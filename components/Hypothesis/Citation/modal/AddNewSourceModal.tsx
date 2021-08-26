@@ -6,7 +6,7 @@ import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "../../../Modals/BaseModal";
 import PaperUploadV2Create from "../../../Paper/Upload/PaperUploadV2Create";
-import React, { ReactElement, useState } from "react";
+import { ReactElement, useState } from "react";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
