@@ -14,7 +14,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorToHTML } from "~/config/utils/editor";
 
-const TextEditor = (props) => {
+function TextEditor(props) {
   const {
     canCancel,
     canSubmit,
@@ -44,6 +44,8 @@ const TextEditor = (props) => {
     hasHeader,
     summary,
     mediaOnly,
+    setMessage,
+    showMessage
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -79,8 +81,8 @@ const TextEditor = (props) => {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
       if (isQuillEmpty(content)) {
-        props.setMessage("Content cannot be empty.");
-        return props.showMessage({ error: true, show: true, clickoff: true });
+        setMessage("Content cannot be empty.");
+        return showMessage({ error: true, show: true, clickoff: true });
       }
 
       onSubmit && onSubmit(content, plain_text, callback);

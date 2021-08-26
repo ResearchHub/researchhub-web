@@ -15,7 +15,6 @@ import colors from "~/config/themes/colors";
 
 // Components
 import ContentPage from "../../components/ContentPage/ContentPage";
-import SidebarList from "../../components/ContentPage/SidebarList";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import LeaderboardFeedPlaceholder from "../../components/Placeholders/LeaderboardFeedPlaceholder";

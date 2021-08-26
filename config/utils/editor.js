@@ -2,7 +2,6 @@ import Html from "slate-html-serializer";
 import ModalImage from "react-modal-image";
 import { css, StyleSheet } from "aphrodite";
 import QuillToPlaintext from "quill-to-plaintext";
-import { Value } from "slate";
 import Plain from "slate-plain-serializer";
 
 export function convertEditorValueToHtml(value) {
@@ -262,19 +261,11 @@ export function convertToEditorToHTML(text) {
     return text;
   }
 
-  if (Value.isValue(text)) {
-    return convertEditorValueToHtml(text);
-  }
-
   if (typeof text === "string") {
     return convertEditorValueToHtml(Plain.deserialize(text));
   }
 
-  try {
-    return convertEditorValueToHtml(Value.fromJSON(text));
-  } catch {
-    return undefined;
-  }
+  return undefined;
 }
 
 export function isQuillDelta(value) {
@@ -292,19 +283,11 @@ export function convertToEditorValue(text) {
     return text;
   }
 
-  if (Value.isValue(text)) {
-    return text;
-  }
-
   if (typeof text === "string") {
     return Plain.deserialize(text);
   }
 
-  try {
-    return Value.fromJSON(text);
-  } catch {
-    return undefined;
-  }
+  return undefined;
 }
 
 export function convertDeltaToText(delta) {
