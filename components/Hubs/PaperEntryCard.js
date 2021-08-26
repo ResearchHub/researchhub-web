@@ -197,8 +197,7 @@ const PaperEntryCard = (props) => {
 
     voteCallback && voteCallback(index, curPaper);
 
-    postUpvote(curPaper.id);
-    let userVote = store.getState().paper.userVote;
+    postUpvote('paper', curPaper.id);
   }
 
   /**
@@ -226,7 +225,7 @@ const PaperEntryCard = (props) => {
 
     voteCallback && voteCallback(index, curPaper);
 
-    postDownvote(curPaper.id);
+    postDownvote('paper', curPaper.id);
   }
 
   function postEvent() {
