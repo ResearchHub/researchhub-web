@@ -29,10 +29,10 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import LazyLoad from "react-lazyload";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
-const fetchDocsFromApi = ({ isLoggedIn, hub, prevDocuments, currDocuments, docTypeFilter, subFilters, pathname, onSuccess, onError, isLoadingMore = false, page = 1 }) => {
+const fetchDocsFromApi = ({ isLoggedIn, hub, prevDocuments, docTypeFilter, subFilters, pathname, onSuccess, onError, isLoadingMore = false, page = 1 }) => {
 
   console.log('+++++++++++++');
-  console.log('currDocuments', currDocuments);
+  console.log('prevDocuments', prevDocuments);
   console.log('docTypeFilter', docTypeFilter);
   console.log('subFilters', subFilters);
   console.log('pathname', pathname);
