@@ -17,7 +17,13 @@ import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import React, { ReactElement, useEffect, useMemo, useState, useRef } from "react";
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
@@ -29,24 +35,31 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import LazyLoad from "react-lazyload";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
-const fetchDocsFromApi = ({ isLoggedIn, hub, prevDocuments, docTypeFilter, subFilters, pathname, onSuccess, onError, isLoadingMore = false, page = 1 }) => {
-
-console.log('+++++++++++++');
-console.log('prevDocuments', prevDocuments);
-console.log('docTypeFilter', docTypeFilter);
-console.log('subFilters', subFilters);
-console.log('pathname', pathname);
-console.log('subFilters', subFilters);
-console.log('isLoadingMore', isLoadingMore);
-console.log('page', page);
-console.log('hub', hub);
-console.log('+++++++++++++');
+const fetchDocsFromApi = ({
+  isLoggedIn,
+  hub,
+  prevDocuments,
+  docTypeFilter,
+  subFilters,
+  pathname,
+  onSuccess,
+  onError,
+  isLoadingMore = false,
+  page = 1,
+}) => {
+  console.log("---DEBUG---");
+  console.log("prevDocuments", prevDocuments);
+  console.log("docTypeFilter", docTypeFilter);
+  console.log("subFilters", subFilters);
+  console.log("pathname", pathname);
+  console.log("subFilters", subFilters);
+  console.log("isLoadingMore", isLoadingMore);
+  console.log("page", page);
+  console.log("hub", hub);
+  console.log("-----------");
 
   const shouldGetSubscribed = ["", "/"].includes(pathname);
-  const hubID = 
-    !shouldGetSubscribed && !isNullOrUndefined(hub)
-      ? hub.id
-      : null;
+  const hubID = !shouldGetSubscribed && !isNullOrUndefined(hub) ? hub.id : null;
 
   fetchUnifiedDocs({
     docTypeFilter,
@@ -58,8 +71,8 @@ console.log('+++++++++++++');
     subscribedHubs: shouldGetSubscribed,
     subFilters,
     prevDocuments,
-  });  
-}
+  });
+};
 
 type PaginationInfo = {
   count: number;
@@ -86,8 +99,7 @@ const usePrevious = (value: any): any => {
     ref.current = value;
   }, [value]);
   return ref.current;
-}
-
+};
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -101,8 +113,11 @@ function UnifiedDocFeedContainer({
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const { count: preloadCount, next: preloadNext, results: preloadResults } =
-    preloadedDocData || {};
+  const {
+    count: preloadCount,
+    next: preloadNext,
+    results: preloadResults,
+  } = preloadedDocData || {};
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["", "/"].includes(router.pathname),
@@ -113,7 +128,7 @@ function UnifiedDocFeedContainer({
     getFilterFromRouter(router)
   );
 
-  const [prevPath, setPrevPath] = useState<string>(router.asPath)
+  const [prevPath, setPrevPath] = useState<string>(router.asPath);
   const prevHub = usePrevious(hub);
 
   const [subFilters, setSubFilters] = useState({
@@ -140,10 +155,10 @@ function UnifiedDocFeedContainer({
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  const needsInitialFetch = useMemo((): Boolean => page === 1 && isLoading, [
-    page,
-    isLoading,
-  ]);
+  const needsInitialFetch = useMemo(
+    (): Boolean => page === 1 && isLoading,
+    [page, isLoading]
+  );
 
   const formattedMainHeader = useMemo(
     (): string =>
@@ -160,9 +175,9 @@ function UnifiedDocFeedContainer({
     const currPath = router.asPath;
     resetState();
     if (prevPath !== currPath) {
-      fetchDocsFromApi({...getFetchParams()});
+      fetchDocsFromApi({ ...getFetchParams() });
     }
-    setPrevPath(router.asPath)
+    setPrevPath(router.asPath);
   }, [hub]);
 
   useEffect((): void => {
@@ -171,19 +186,25 @@ function UnifiedDocFeedContainer({
         ...paginationInfo,
         isLoading: false,
         page: 1,
-      });          
-    }
-    else {
+      });
+    } else {
       resetState();
-      fetchDocsFromApi({...getFetchParams()});
+      fetchDocsFromApi({ ...getFetchParams() });
     }
   }, []);
 
-  const onFetchSuccess = ({ count, page, hasMore, documents, prevDocuments }): void => {
-
-console.log('page', page);
-console.log('prevDocuments', prevDocuments);
-console.log('documents', documents);
+  const onFetchSuccess = ({
+    count,
+    page,
+    hasMore,
+    documents,
+    prevDocuments,
+  }): void => {
+    console.log("---DEBUG---");
+    console.log("page", page);
+    console.log("prevDocuments", prevDocuments);
+    console.log("documents", documents);
+    console.log("-----------");
 
     page > 1
       ? setUnifiedDocuments([...prevDocuments, ...documents])
@@ -217,8 +238,8 @@ console.log('documents', documents);
       isLoading: true,
       isLoadingMore: false,
       page: 1,
-    });    
-  }
+    });
+  };
 
   const getFetchParams = (): object => {
     return {
@@ -230,8 +251,8 @@ console.log('documents', documents);
       pathname: router.pathname,
       onSuccess: onFetchSuccess,
       onError: onFetchError,
-    }
-  }
+    };
+  };
 
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
@@ -252,7 +273,10 @@ console.log('documents', documents);
                 isLoadingMore: false,
                 page: 1,
               });
-              fetchDocsFromApi({ ...getFetchParams(), docTypeFilter: filterValue })
+              fetchDocsFromApi({
+                ...getFetchParams(),
+                docTypeFilter: filterValue,
+              });
               router.push(
                 {
                   pathname: router.pathname,
@@ -274,9 +298,9 @@ console.log('documents', documents);
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
           const shouldBlurMobile =
-            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab
+            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
           const shouldBlurDesktop =
-            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab
+            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
           if (isPaperCard) {
             return (
               <PaperEntryCard
@@ -342,7 +366,10 @@ console.log('documents', documents);
                 filterBy,
                 scope: subFilters.scope,
               });
-              fetchDocsFromApi({ ...getFetchParams(), subFilters: { filterBy, scope: subFilters.scope }})
+              fetchDocsFromApi({
+                ...getFetchParams(),
+                subFilters: { filterBy, scope: subFilters.scope },
+              });
             }}
             onScopeSelect={(_type: string, scope) => {
               setUnifiedDocuments([]);
@@ -357,7 +384,10 @@ console.log('documents', documents);
                 filterBy: subFilters.filterBy,
                 scope,
               });
-              fetchDocsFromApi({ ...getFetchParams(), subFilters: { filterBy: subFilters.filterBy, scope }})
+              fetchDocsFromApi({
+                ...getFetchParams(),
+                subFilters: { filterBy: subFilters.filterBy, scope },
+              });
             }}
             subFilters={subFilters}
           />
@@ -402,14 +432,16 @@ console.log('documents', documents);
               onClick={(): void =>
                 isLoadingMore
                   ? silentEmptyFnc()
-                  : (
-                      setPaginationInfo({
-                        ...paginationInfo,
-                        isLoading: false,
-                        isLoadingMore: true,
-                      }),
-                      fetchDocsFromApi({ ...getFetchParams(), page: paginationInfo.page + 1, isLoadingMore: true })
-                    )
+                  : (setPaginationInfo({
+                      ...paginationInfo,
+                      isLoading: false,
+                      isLoadingMore: true,
+                    }),
+                    fetchDocsFromApi({
+                      ...getFetchParams(),
+                      page: paginationInfo.page + 1,
+                      isLoadingMore: true,
+                    }))
               }
             >
               {"Load More"}
