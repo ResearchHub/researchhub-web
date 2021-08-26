@@ -1,11 +1,13 @@
 import { css, StyleSheet } from "aphrodite";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { ReactElement } from "react";
-import FormSelect from "../../../Form/FormSelect";
-import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
 import {
   SearchFilterDocType,
   SearchFilterDocTypeLabel,
-} from "../util/sourceSearchHandler";
+} from "../search/sourceSearchHandler";
+import FormSelect from "~/components//Form/FormSelect";
+import SourceSearchInput from "../search/SourceSearchInput";
 
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
 const docTypeOptions = [
@@ -14,32 +16,32 @@ const docTypeOptions = [
 export default function AddNewSourceBodySearch(): ReactElement<"div"> {
   console.warn("docTypeOptions: ", docTypeOptions);
   return (
-    <form
-      autoComplete={"off"}
-      className={css(formGenericStyles.form)}
-      // onSubmit={onFormSubmit}
+    <div
+      className={css(
+        styles.addNewSourceBodySearch,
+        formGenericStyles.pageContent,
+        formGenericStyles.noBorder
+      )}
     >
-      <div
-        className={css(
-          styles.addNewSourceBodySearch,
-          formGenericStyles.pageContent,
-          formGenericStyles.noBorder
-        )}
-      >
-        <FormSelect
-          // error={formErrors.year}
-          id="doc-search-type"
-          inputStyle={formGenericStyles.inputStyle}
-          label="Type"
-          labelStyle={formGenericStyles.labelStyle}
-          // onChange={handleInputChange}
-          options={docTypeOptions}
-          placeholder="Select search type"
-          required
-          value={docTypeOptions[0]}
-        />
-      </div>
-    </form>
+      <FormSelect
+        // error={formErrors.year}
+        id="doc-search-type"
+        inputStyle={formGenericStyles.inputStyle}
+        label="Type"
+        labelStyle={formGenericStyles.labelStyle}
+        // onChange={handleInputChange}
+        options={docTypeOptions}
+        placeholder="Select search type"
+        required
+        value={docTypeOptions[0]}
+      />
+      <SourceSearchInput
+        emptyResultDisplay={<div>Click me to upload a new paper</div>}
+        inputPlaceholder="Search for a paper or upload"
+        label="Sources"
+        onSelect={emptyFncWithMsg}
+      />
+    </div>
   );
 }
 
