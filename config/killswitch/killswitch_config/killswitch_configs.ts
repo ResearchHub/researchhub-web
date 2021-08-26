@@ -23,6 +23,11 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: true,
     production: true,
   },
+  ELN: {
+    development: true,
+    staging: true,
+    production: false,
+  },
 };
 
 export default KillswtichConfigs;

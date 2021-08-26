@@ -1,10 +1,14 @@
 import API from "~/config/api";
 import React, { useEffect, useRef, useState } from "react";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 
 // Components
 import Button from "~/components/Form/Button";
+import Collapsible from "~/components/Form/Collapsible";
 
 export const ELNEditor = () => {
   const editorRef = useRef();
@@ -93,9 +97,31 @@ export const ELNEditor = () => {
   };
 
   return (
-    <div className="centered">
+    <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
+      </div>
+      <div className={css(styles.sidebar)}>
+        <Collapsible
+          className={css(styles.sidecolumnHeader)}
+          contentInnerClassName={css(styles.collapsibleContent)}
+          open={true}
+          openedClassName={css(styles.sidecolumnHeader)}
+          trigger={
+            <div className={css(styles.trigger)}>
+              Workspace
+              <span className={css(styles.chevronDown)}>
+                {icons.chevronDownLeft}
+              </span>
+            </div>
+          }
+        >
+          <ul>
+            <li>Note 1</li>
+            <li>Note 2</li>
+            <li>Note 3</li>
+          </ul>
+        </Collapsible>
       </div>
       {editorLoaded && (
         <div className={css(styles.editor)}>
@@ -107,7 +133,7 @@ export const ELNEditor = () => {
               editor.editing.view.change((writer) => {
                 writer.setStyle(
                   "height",
-                  "1200px",
+                  "100%",
                   editor.editing.view.document.getRoot()
                 );
               });
@@ -135,28 +161,86 @@ export const ELNEditor = () => {
         </div>
       )}
       <div ref={sidebarElementRef} className="sidebar"></div>
-      <div className={css(styles.saveButton)}>
+      {/*<div className={css(styles.saveButton)}>
         <Button
           hideRipples={true}
           isWhite={false}
           label={"Save"}
           onClick={() => manualSaveData(editorInstance.getData())}
         />
-      </div>
+      </div>*/}
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    background: "#FFF",
+    display: "flex",
+    maxWidth: "100vw",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  sidebar: {
+    background: "#f9f9fc",
+    //background: "#ddd",
+    minWidth: 255,
+    maxWidth: 400,
+    width: "18%",
+    position: "sticky",
+    top: -15,
+    height: "100vh",
+    paddingTop: "30px",
+    paddingLeft: "15px",
+    paddingRight: "15px",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      display: "none",
+    },
+  },
   presenceList: {
+    display: "none",
     marginBottom: 10,
     marginTop: 10,
   },
   editor: {
-    width: "100vw",
+    maxWidth: "1200px",
+    marginLeft: 30,
+    marginRight: 30,
   },
   saveButton: {
     marginBottom: 15,
     marginTop: 15,
+  },
+  sidecolumnHeader: {
+    textTransform: "uppercase",
+    fontWeight: 500,
+    fontSize: 14,
+    letterSpacing: 1.2,
+    color: colors.BLACK(0.6),
+  },
+  collapsibleSection: {
+    fontWeight: 500,
+    fontSize: "18px",
+    lineHeight: "21px",
+    color: "#000000",
+    marginTop: 24,
+  },
+  collapsibleContent: {
+    marginLeft: "3px",
+    fontStyle: "normal",
+    fontWeight: "normal",
+    fontSize: "16px",
+    lineHeight: "26px",
+    color: "#241F3A",
+  },
+  chevronDown: {
+    marginLeft: "auto",
+  },
+  trigger: {
+    display: "flex",
+    cursor: "pointer",
   },
 });
