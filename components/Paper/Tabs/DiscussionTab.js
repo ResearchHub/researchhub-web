@@ -299,8 +299,14 @@ const DiscussionTab = (props) => {
   };
 
   const handleDiscussionTextEditor = (editorState) => {
+
+    console.log('editorState', editorState);
+
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
+
+console.log('newDiscussion.question', newDiscussion.question);
+
     setDiscussion(newDiscussion);
   };
 
@@ -414,7 +420,7 @@ const DiscussionTab = (props) => {
             <TextEditor
               canEdit={true}
               readOnly={false}
-              onChange={handleDiscussionTextEditor}
+              // onChange={handleDiscussionTextEditor}
               placeholder={
                 "Leave a question or a comment for the Author of the paper or the community"
               }
