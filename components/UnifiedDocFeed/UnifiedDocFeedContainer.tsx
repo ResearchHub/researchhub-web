@@ -114,7 +114,7 @@ function UnifiedDocFeedContainer({
   );
 
   const [prevPath, setPrevPath] = useState<string>(router.asPath)
-  const prevHub = usePrevious<any>(hub);
+  const prevHub = usePrevious(hub);
 
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
