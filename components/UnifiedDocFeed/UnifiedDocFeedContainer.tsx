@@ -35,45 +35,6 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import LazyLoad from "react-lazyload";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
-const fetchDocsFromApi = ({
-  isLoggedIn,
-  hub,
-  prevDocuments,
-  docTypeFilter,
-  subFilters,
-  pathname,
-  onSuccess,
-  onError,
-  isLoadingMore = false,
-  page = 1,
-}) => {
-  console.log("---DEBUG---");
-  console.log("prevDocuments", prevDocuments);
-  console.log("docTypeFilter", docTypeFilter);
-  console.log("subFilters", subFilters);
-  console.log("pathname", pathname);
-  console.log("subFilters", subFilters);
-  console.log("isLoadingMore", isLoadingMore);
-  console.log("page", page);
-  console.log("hub", hub);
-  console.log("-----------");
-
-  const shouldGetSubscribed = ["", "/"].includes(pathname);
-  const hubID = !shouldGetSubscribed && !isNullOrUndefined(hub) ? hub.id : null;
-
-  fetchUnifiedDocs({
-    docTypeFilter,
-    hubID,
-    isLoggedIn,
-    onError,
-    onSuccess,
-    page,
-    subscribedHubs: shouldGetSubscribed,
-    subFilters,
-    prevDocuments,
-  });
-};
-
 type PaginationInfo = {
   count: number;
   hasMore: Boolean;
@@ -175,7 +136,7 @@ function UnifiedDocFeedContainer({
     const currPath = router.asPath;
     resetState();
     if (prevPath !== currPath) {
-      fetchDocsFromApi({ ...getFetchParams() });
+      fetchUnifiedDocs({ ...getFetchParams() });
     }
     setPrevPath(router.asPath);
   }, [hub]);
@@ -189,7 +150,7 @@ function UnifiedDocFeedContainer({
       });
     } else {
       resetState();
-      fetchDocsFromApi({ ...getFetchParams() });
+      fetchUnifiedDocs({ ...getFetchParams() });
     }
   }, []);
 
@@ -200,12 +161,6 @@ function UnifiedDocFeedContainer({
     documents,
     prevDocuments,
   }): void => {
-    console.log("---DEBUG---");
-    console.log("page", page);
-    console.log("prevDocuments", prevDocuments);
-    console.log("documents", documents);
-    console.log("-----------");
-
     page > 1
       ? setUnifiedDocuments([...prevDocuments, ...documents])
       : setUnifiedDocuments(documents);
@@ -242,15 +197,19 @@ function UnifiedDocFeedContainer({
   };
 
   const getFetchParams = (): object => {
+    const isOnMyHubsTab = ["", "/"].includes(router.pathname);
+    const hubID = hub ? hub.id : null;
+
     return {
-      hub,
+      hubID,
       prevDocuments: unifiedDocuments,
       docTypeFilter,
       subFilters,
       isLoggedIn,
-      pathname: router.pathname,
       onSuccess: onFetchSuccess,
       onError: onFetchError,
+      subscribedHubs: isOnMyHubsTab,
+      page: 1,
     };
   };
 
@@ -273,7 +232,7 @@ function UnifiedDocFeedContainer({
                 isLoadingMore: false,
                 page: 1,
               });
-              fetchDocsFromApi({
+              fetchUnifiedDocs({
                 ...getFetchParams(),
                 docTypeFilter: filterValue,
               });
@@ -366,7 +325,7 @@ function UnifiedDocFeedContainer({
                 filterBy,
                 scope: subFilters.scope,
               });
-              fetchDocsFromApi({
+              fetchUnifiedDocs({
                 ...getFetchParams(),
                 subFilters: { filterBy, scope: subFilters.scope },
               });
@@ -384,7 +343,7 @@ function UnifiedDocFeedContainer({
                 filterBy: subFilters.filterBy,
                 scope,
               });
-              fetchDocsFromApi({
+              fetchUnifiedDocs({
                 ...getFetchParams(),
                 subFilters: { filterBy: subFilters.filterBy, scope },
               });
@@ -437,7 +396,7 @@ function UnifiedDocFeedContainer({
                       isLoading: false,
                       isLoadingMore: true,
                     }),
-                    fetchDocsFromApi({
+                    fetchUnifiedDocs({
                       ...getFetchParams(),
                       page: paginationInfo.page + 1,
                       isLoadingMore: true,
