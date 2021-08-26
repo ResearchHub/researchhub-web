@@ -197,7 +197,7 @@ const PaperEntryCard = (props) => {
 
     voteCallback && voteCallback(index, curPaper);
 
-    postUpvote('paper', curPaper.id);
+    postUpvote(curPaper.id);
   }
 
   /**
@@ -225,7 +225,7 @@ const PaperEntryCard = (props) => {
 
     voteCallback && voteCallback(index, curPaper);
 
-    postDownvote('paper', curPaper.id);
+    postDownvote(curPaper.id);
   }
 
   function postEvent() {

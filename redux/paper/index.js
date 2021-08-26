@@ -15,7 +15,7 @@ export const PaperActions = {
     const isUpvote = true;
 
     return async (dispatch, getState) => {
-      await fetch(API.UPVOTE(paperId), API.POST_CONFIG())
+      await fetch(API.UPVOTE('paper', paperId), API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -50,7 +50,7 @@ export const PaperActions = {
     const isUpvote = false;
 
     return async (dispatch, getState) => {
-      await fetch(API.DOWNVOTE(paperId), API.POST_CONFIG())
+      await fetch(API.DOWNVOTE('paper', paperId), API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
