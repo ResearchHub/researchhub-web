@@ -50,7 +50,7 @@ class Editor extends Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
-          this.props.onChange && this.props.onChange(); // calculates the thread height
+          // this.props.onChange && this.props.onChange(); // calculates the thread height
         }
       );
     });
