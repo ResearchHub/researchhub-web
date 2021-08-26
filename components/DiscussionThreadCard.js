@@ -231,12 +231,17 @@ const Title = (props) => {
 const Body = (props) => {
   let { overrideStyle } = props;
   let text;
-  if (typeof text === "string") {
-    text = props.text;
-  } else if (isQuillDelta(props.text)) {
-    text = convertDeltaToText(props.text);
-  } else {
-    text = convertToEditorValue(props.text).document.text;
+  try {
+    if (typeof text === "string") {
+      text = props.text;
+    } else if (isQuillDelta(props.text)) {
+      text = convertDeltaToText(props.text);
+    } else {
+      text = convertToEditorValue(props.text).document.text;
+    }  
+  } catch(e) {
+    console.log(e);
+    return null;
   }
 
   return <div className={css(styles.body, overrideStyle)}>{text}</div>;
