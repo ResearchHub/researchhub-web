@@ -17,7 +17,7 @@ import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import { ReactElement, useEffect, useMemo, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
