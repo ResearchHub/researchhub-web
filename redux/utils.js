@@ -3,8 +3,7 @@ import * as Sentry from "@sentry/browser";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { doesNotExist } from "~/config/utils/nullchecks";
-import { getNestedValue, logFetchError } from "~/config/utils/misc";
-
+import { getNestedValue } from "~/config/utils/misc";
 import { ModalActions } from "~/redux/modals";
 
 export function handleCatch(err, dispatch) {
