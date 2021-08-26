@@ -98,8 +98,10 @@ class UserDiscussionsTab extends Component {
 
       if (discussion.paper) {
         path = `/paper/${discussion.paper.id}/${discussion.paper.slug}`;
-      } else {
+      } else if (discussion.post) {
         path = `/post/${discussion.post.id}/${discussion.post.slug}`;
+      } else {
+        continue
       }
       discussions.push(
         <DiscussionThreadCard
