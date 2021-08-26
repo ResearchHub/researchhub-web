@@ -50,6 +50,8 @@ class Editor extends Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
+          // This line leads to an infinite loop
+          // leaving here temporarily for debugging purposes  
           // this.props.onChange && this.props.onChange(); // calculates the thread height
         }
       );
@@ -175,6 +177,8 @@ class Editor extends Component {
   }
 
   onEditorChange = (value, delta, source, editor) => {
+
+
     if (this.props.editing) {
       return this.setState(
         {
@@ -396,6 +400,11 @@ class Editor extends Component {
 
   render() {
     const { ReactQuill } = this.state;
+    const modules = Editor.modules(
+      this.props.uid,
+      this.imageHandler,
+      this.linkHandler
+    )
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
@@ -419,11 +428,7 @@ class Editor extends Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(
-                  this.props.uid,
-                  this.imageHandler,
-                  this.linkHandler
-                )}
+                modules={modules}
                 formats={Editor.formats}
                 className={css(
                   styles.editSection,
@@ -449,11 +454,7 @@ class Editor extends Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(
-                  this.props.uid,
-                  this.imageHandler,
-                  this.linkHandler
-                )}
+                modules={modules}
                 formats={Editor.formats}
                 className={css(
                   styles.comment,
