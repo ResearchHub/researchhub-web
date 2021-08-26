@@ -1,4 +1,4 @@
-import React, { Fragment, useState, useEffect, useRef } from "react";
+import { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";

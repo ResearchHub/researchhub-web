@@ -1,6 +1,6 @@
 import API from "~/config/api";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ReactPlaceholder from "react-placeholder";
 import UserPostCard from "./UserPostCard";
 import EmptyState from "./EmptyState";

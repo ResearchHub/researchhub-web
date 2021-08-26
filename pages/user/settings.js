@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
@@ -66,7 +66,7 @@ class UserSettings extends Component {
       activeEmailInput: false,
       transition: false,
     };
-    this.emailInputRef = React.createRef();
+    this.emailInputRef = createRef();
     contentSubscriptionOptions.forEach((option) => {
       this.state[option.id] = true;
     });

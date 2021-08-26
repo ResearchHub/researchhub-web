@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";

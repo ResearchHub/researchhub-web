@@ -1,5 +1,4 @@
 import { iconColors } from "~/config/themes/colors";
-import * as React from "react";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";

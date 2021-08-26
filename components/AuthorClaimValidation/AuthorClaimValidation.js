@@ -4,7 +4,7 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { getPageBody } from "./util";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { VALIDATION_STATE } from "./constants";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 export default function AuthorClaimValidation() {
   const [validationState, setValidationState] = useState(null);

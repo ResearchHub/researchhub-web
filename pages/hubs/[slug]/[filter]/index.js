@@ -10,7 +10,6 @@ import API from "~/config/api";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
-import React from "react";
 import Router from "next/router";
 import { Component } from "react";
 

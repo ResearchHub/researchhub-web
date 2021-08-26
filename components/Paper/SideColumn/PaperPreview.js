@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";

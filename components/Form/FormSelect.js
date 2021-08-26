@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { cloneElement, Component } from "react";
 import Select, { components } from "react-select";
 import { StyleSheet, css } from "aphrodite";
 import makeAnimated from "react-select/animated";
@@ -27,7 +27,7 @@ const CustomValueContainerWithCount = ({ children, getValue, ...props }) => {
           )}
         </div>
       )}
-      {React.cloneElement(children[1])}
+      {cloneElement(children[1])}
     </components.ValueContainer>
   );
 };
@@ -47,7 +47,7 @@ const CustomValueContainerWithLabel = ({ children, getValue, ...props }) => {
           {":"} {selectedValue}
         </span>
       )}
-      {React.cloneElement(children[1])}
+      {cloneElement(children[1])}
     </components.ValueContainer>
   );
 };

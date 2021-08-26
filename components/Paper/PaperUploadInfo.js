@@ -1,4 +1,4 @@
-import React, { Component, Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -82,7 +82,7 @@ class PaperUploadInfo extends Component {
     this.state = {
       ...initialState,
     };
-    this.titleRef = React.createRef();
+    this.titleRef = createRef();
   }
 
   componentDidMount() {

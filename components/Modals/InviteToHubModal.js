@@ -1,5 +1,5 @@
 // NPM Modules
-import React, { Component } from "react";
+import { createRef, Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
@@ -31,7 +31,7 @@ class InviteToHubModal extends Component {
     this.state = {
       ...this.initialState,
     };
-    this.formInputRef = React.createRef();
+    this.formInputRef = createRef();
   }
 
   componentDidMount() {

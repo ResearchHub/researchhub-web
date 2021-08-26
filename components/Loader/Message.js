@@ -2,7 +2,7 @@
  * @patr
  */
 
-import React, { Component } from "react";
+import { Component } from "react";
 
 // NPM Modules
 import { StyleSheet, css } from "aphrodite";

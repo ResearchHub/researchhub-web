@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
-import React, { Fragment, useState } from "react";
+import { Fragment, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 

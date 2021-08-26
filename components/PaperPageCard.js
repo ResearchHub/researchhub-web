@@ -6,7 +6,7 @@ import ReactTooltip from "react-tooltip";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import React, { Component } from "react";
+import { createRef, Component } from "react";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -56,8 +56,8 @@ class PaperPageCard extends Component {
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
     };
-    this.containerRef = React.createRef();
-    this.metaContainerRef = React.createRef();
+    this.containerRef = createRef();
+    this.metaContainerRef = createRef();
   }
 
   componentWillUnmount() {

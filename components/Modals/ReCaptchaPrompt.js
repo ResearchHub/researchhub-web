@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { createRef, Component } from "react";
 import { connect } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import { StyleSheet, css } from "aphrodite";
@@ -23,7 +23,7 @@ class ReCaptchaPrompt extends Component {
       show: false,
     };
 
-    this.recaptchaRef = React.createRef();
+    this.recaptchaRef = createRef();
   }
 
   componentDidMount() {
