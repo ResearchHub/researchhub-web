@@ -17,7 +17,13 @@ import colors from "../../config/themes/colors";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import React, { ReactElement, useEffect, useMemo, useState } from "react";
+import React, {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+} from "react";
 import Loader from "../Loader/Loader";
 import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
@@ -37,89 +43,7 @@ type PaginationInfo = {
   page: number;
 };
 
-type UseEffectFetchFeedArgs = {
-  docTypeFilter: string;
-  hub: any;
-  isLoggedIn: Boolean;
-  paginationInfo: PaginationInfo;
-  router: NextRouter;
-  setPaginationInfo: Function;
-  setUnifiedDocuments: Function;
-  subFilters: any;
-  unifiedDocuments: any;
-};
-
 type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
-
-const useEffectFetchFeed = ({
-  docTypeFilter,
-  hub: selectedHub,
-  isLoggedIn,
-  paginationInfo,
-  router,
-  setPaginationInfo,
-  setUnifiedDocuments,
-  subFilters,
-  unifiedDocuments: currDocuments,
-}: UseEffectFetchFeedArgs): void => {
-  const currPathname = router.pathname;
-  const shouldGetSubscribed = useMemo<Boolean>(
-    (): Boolean => ["", "/"].includes(currPathname),
-    [currPathname]
-  );
-  const { page } = paginationInfo;
-  // first pages should have been preloaded
-  const isFetchExecutable =
-    (page === 1 && currDocuments.length === 0) || page !== 1;
-
-  const onSuccess = ({ count, hasMore, documents }) => {
-    paginationInfo.isLoadingMore
-      ? setUnifiedDocuments([...currDocuments, ...documents])
-      : setUnifiedDocuments(documents);
-    setPaginationInfo({
-      ...paginationInfo,
-      count,
-      hasMore,
-      isLoading: false,
-      isLoadingMore: false,
-    });
-  };
-  const onError = (error: Error): void => {
-    emptyFncWithMsg(error);
-    setPaginationInfo({
-      ...paginationInfo,
-      hasMore: false,
-      isLoading: false,
-    });
-  };
-
-  useEffect((): void => {
-    if (!isFetchExecutable) {
-      return;
-    }
-    // @ts-ignore legacy fetch code
-    fetchUnifiedDocs({
-      docTypeFilter,
-      hubID:
-        !shouldGetSubscribed && !isNullOrUndefined(selectedHub)
-          ? selectedHub.id
-          : null,
-      isLoggedIn,
-      onError,
-      onSuccess,
-      page,
-      subscribedHubs: shouldGetSubscribed,
-      subFilters,
-    });
-  }, [
-    currPathname,
-    docTypeFilter,
-    isFetchExecutable,
-    page,
-    selectedHub,
-    subFilters,
-  ]);
-};
 
 const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
@@ -130,6 +54,14 @@ const getFilterFromRouter = (router: NextRouter): string => {
     : nullthrows(docType);
 };
 
+const usePrevious = (value: any): any => {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+};
+
 function UnifiedDocFeedContainer({
   auth, // redux
   feed,
@@ -137,25 +69,34 @@ function UnifiedDocFeedContainer({
   hub, // selected hub
   hubName,
   hubState, // hub data of current user
-  preloadedDocData,
+  preloadedDocData, // Loaded on the server via getInitialProps on full page load
   isLoggedIn,
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const { count: preloadCount, next: preloadNext, results: preloadResults } =
-    preloadedDocData || {};
+  const {
+    count: preloadCount,
+    next: preloadNext,
+    results: preloadResults,
+  } = preloadedDocData || {};
   const router = useRouter();
-  const isOnAllHubsTab = useMemo<Boolean>(
+  const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["", "/"].includes(router.pathname),
     [router.pathname]
   );
+
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
+
+  const [prevPath, setPrevPath] = useState<string>(router.asPath);
+  const prevHub = usePrevious(hub);
+
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
+
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     count: preloadCount || 0,
     hasMore: Boolean(preloadNext),
@@ -163,20 +104,22 @@ function UnifiedDocFeedContainer({
     isLoadingMore: false,
     page: 1,
   });
+
+  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
+  const { filterBy } = subFilters;
+
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
 
-  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  const { filterBy } = subFilters;
-  const needsInitialFetch = useMemo((): Boolean => page === 1 && isLoading, [
-    page,
-    isLoading,
-  ]);
+  const needsInitialFetch = useMemo(
+    (): Boolean => page === 1 && isLoading,
+    [page, isLoading]
+  );
 
   const formattedMainHeader = useMemo(
     (): string =>
@@ -189,17 +132,90 @@ function UnifiedDocFeedContainer({
     [hubName, feed, filterBy, isHomePage]
   );
 
-  useEffectFetchFeed({
-    docTypeFilter,
-    hub,
-    isLoggedIn: auth.isLoggedIn,
-    paginationInfo,
-    router,
-    setPaginationInfo,
-    setUnifiedDocuments,
-    subFilters,
-    unifiedDocuments,
-  });
+  // When the hub changes, we want to automatically fetch new docs
+  useEffect((): void => {
+    const currPath = router.asPath;
+
+    if (prevPath !== currPath) {
+      resetState();
+      fetchUnifiedDocs({ ...getFetchParams() });
+      setPrevPath(router.asPath);
+    }
+  }, [hub]);
+
+  // Switching from "all" => slug hub unmounts the component
+  // to mitigate, we need to figure out if a fetch is needed.
+  useEffect((): void => {
+    if (preloadedDocData) {
+      setPaginationInfo({
+        ...paginationInfo,
+        isLoading: false,
+        page: 1,
+      });
+    } else {
+      resetState();
+      fetchUnifiedDocs({ ...getFetchParams() });
+    }
+  }, []);
+
+  const onFetchSuccess = ({
+    count,
+    page,
+    hasMore,
+    documents,
+    prevDocuments,
+  }): void => {
+    page > 1
+      ? setUnifiedDocuments([...prevDocuments, ...documents])
+      : setUnifiedDocuments(documents);
+
+    setPaginationInfo({
+      ...paginationInfo,
+      page,
+      count,
+      hasMore,
+      isLoading: false,
+      isLoadingMore: false,
+    });
+  };
+
+  const onFetchError = (error: Error): void => {
+    emptyFncWithMsg(error);
+    setPaginationInfo({
+      ...paginationInfo,
+      page,
+      hasMore: false,
+      isLoading: false,
+      isLoadingMore: false,
+    });
+  };
+
+  const resetState = (): void => {
+    setPaginationInfo({
+      count: 0,
+      hasMore: false,
+      isLoading: true,
+      isLoadingMore: false,
+      page: 1,
+    });
+  };
+
+  const getFetchParams = (): any => {
+    const isOnMyHubsTab = ["", "/"].includes(router.pathname);
+    const hubID = hub ? hub.id : null;
+
+    return {
+      hubID,
+      prevDocuments: unifiedDocuments,
+      docTypeFilter,
+      subFilters,
+      isLoggedIn,
+      onSuccess: onFetchSuccess,
+      onError: onFetchError,
+      subscribedHubs: isOnMyHubsTab,
+      page: 1,
+    };
+  };
 
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
@@ -219,6 +235,10 @@ function UnifiedDocFeedContainer({
                 isLoading: true,
                 isLoadingMore: false,
                 page: 1,
+              });
+              fetchUnifiedDocs({
+                ...getFetchParams(),
+                docTypeFilter: filterValue,
               });
               router.push(
                 {
@@ -241,9 +261,9 @@ function UnifiedDocFeedContainer({
           const isPaperCard = uniDoc.document_type === "PAPER";
           const docID = uniDoc.id;
           const shouldBlurMobile =
-            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
+            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
           const shouldBlurDesktop =
-            arrIndex > 1 && !isLoggedIn && router.pathname !== "/all";
+            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
           if (isPaperCard) {
             return (
               <PaperEntryCard
@@ -309,6 +329,10 @@ function UnifiedDocFeedContainer({
                 filterBy,
                 scope: subFilters.scope,
               });
+              fetchUnifiedDocs({
+                ...getFetchParams(),
+                subFilters: { filterBy, scope: subFilters.scope },
+              });
             }}
             onScopeSelect={(_type: string, scope) => {
               setUnifiedDocuments([]);
@@ -322,6 +346,10 @@ function UnifiedDocFeedContainer({
               setSubFilters({
                 filterBy: subFilters.filterBy,
                 scope,
+              });
+              fetchUnifiedDocs({
+                ...getFetchParams(),
+                subFilters: { filterBy: subFilters.filterBy, scope },
               });
             }}
             subFilters={subFilters}
@@ -352,7 +380,7 @@ function UnifiedDocFeedContainer({
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {!isLoggedIn && isOnAllHubsTab ? null : (
+      {!isLoggedIn && isOnMyHubsTab ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -367,12 +395,16 @@ function UnifiedDocFeedContainer({
               onClick={(): void =>
                 isLoadingMore
                   ? silentEmptyFnc()
-                  : setPaginationInfo({
+                  : (setPaginationInfo({
                       ...paginationInfo,
                       isLoading: false,
                       isLoadingMore: true,
+                    }),
+                    fetchUnifiedDocs({
+                      ...getFetchParams(),
                       page: paginationInfo.page + 1,
-                    })
+                      isLoadingMore: true,
+                    }))
               }
             >
               {"Load More"}
