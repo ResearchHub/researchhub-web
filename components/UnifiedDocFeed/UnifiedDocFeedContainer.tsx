@@ -132,15 +132,19 @@ function UnifiedDocFeedContainer({
     [hubName, feed, filterBy, isHomePage]
   );
 
+  // When the hub changes, we want to automatically fetch new docs
   useEffect((): void => {
     const currPath = router.asPath;
-    resetState();
+
     if (prevPath !== currPath) {
+      resetState();
       fetchUnifiedDocs({ ...getFetchParams() });
+      setPrevPath(router.asPath);
     }
-    setPrevPath(router.asPath);
   }, [hub]);
 
+  // Switching from "all" => slug hub unmounts the component
+  // to mitigate, we need to figure out if a fetch is needed.
   useEffect((): void => {
     if (preloadedDocData) {
       setPaginationInfo({
