@@ -28,12 +28,12 @@ const items = [
     imgSrc: "/static/icons/publishProject.png",
     route: "/hypothesis/create",
   },
-  // {
-  //   header: "Publish a Research Project",
-  //   description: "Publish lab notes, original research, metastudies, etc.",
-  //   imgSrc: "/static/icons/publishProject.png",
-  //   route: "/notebook",
-  // },
+  {
+    header: "Publish a Research Project",
+    description: "Publish lab notes, original research, metastudies, etc.",
+    imgSrc: "/static/icons/publishProject.png",
+    route: "/notebook",
+  },
 ];
 
 export type NewPostModalProps = {
@@ -62,7 +62,10 @@ export default function NewPostModal({
       e.preventDefault();
       setSelected(index);
     };
-    return killswitch("hypothesis") || index !== 2 ? (
+    return index === 0 ||
+      index === 1 ||
+      (index === 2 && killswitch("hypothesis")) ||
+      (index === 3 && killswitch("ELN")) ? (
       <ResearchhubOptionCard
         description={option.description}
         header={option.header}
