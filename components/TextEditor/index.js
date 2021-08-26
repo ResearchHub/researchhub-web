@@ -48,7 +48,8 @@ const TextEditor = (props) => {
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
-  const [uid, setUid] = useState(createUid());
+
+  const uid = createUid();
 
   useEffect(() => {
     setValue(initialValue);

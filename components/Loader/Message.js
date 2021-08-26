@@ -60,7 +60,7 @@ class Message extends Component {
           </span>
         )}
         {!message.load && (
-          <div className={css(styles.message)}>{message.message}</div>
+          <div className={css(styles.message)}>{String(message.message)}</div>
         )}
       </div>
     );
