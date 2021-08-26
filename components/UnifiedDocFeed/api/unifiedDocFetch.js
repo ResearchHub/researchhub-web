@@ -121,6 +121,7 @@ export default function fetchUnifiedDocs({
   page,
   subscribedHubs,
   subFilters,
+  prevDocuments = [],
 }) {
   const { filterBy, scope } = subFilters;
   /* PARAMS is: 
@@ -135,6 +136,7 @@ export default function fetchUnifiedDocs({
       type, // docType
     }
   */
+
   const PARAMS = {
     hubId: hubID,
     ordering: filterBy.value,
@@ -152,8 +154,10 @@ export default function fetchUnifiedDocs({
       );
       onSuccess({
         count,
+        page,
         hasMore: !isNullOrUndefined(next),
         documents: voteFormattedDocs,
+        prevDocuments,
       });
     })
     .catch((err) => {
