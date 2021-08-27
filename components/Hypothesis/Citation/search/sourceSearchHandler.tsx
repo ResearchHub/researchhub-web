@@ -35,6 +35,7 @@ export type SearchState = {
 export type getHandleSourceSearchInputChange = {
   debounceTime?: number | undefined | null;
   onError: Function;
+  onLoad: Function;
   onSuccess: Function;
 };
 
@@ -52,11 +53,15 @@ export const DEFAULT_SEARCH_STATE: SearchState = {
 export const getHandleSourceSearchInputChange = ({
   debounceTime = 500,
   onError,
+  onLoad,
   onSuccess,
 }: getHandleSourceSearchInputChange): ((searchState: SearchState) => void) => {
   let debounceRef: NodeJS.Timeout | null = null;
 
   return (searchState: SearchState): void => {
+    if (!isNullOrUndefined(onLoad)) {
+      nullthrows(onLoad());
+    }
     if (!isNullOrUndefined(debounceRef)) {
       clearTimeout(nullthrows(debounceRef, "debounceRef not found"));
     }
