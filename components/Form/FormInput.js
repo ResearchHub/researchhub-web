@@ -29,28 +29,31 @@ class FormInput extends Component {
 
   render() {
     const {
-      id,
-      getRef,
-      label,
-      placeholder,
-      type,
-      required,
-      size,
+      autoComplete,
       containerStyle,
-      labelStyle,
-      inputStyle,
-      search,
+      disabled,
       error,
+      getRef,
       icon,
-      messageStyle,
       iconStyles,
+      id,
       inlineNodeRight,
       inlineNodeStyles,
-      disabled,
+      inputStyle,
+      label,
+      labelStyle,
       message,
-      autoComplete,
-      subtitle,
+      messageStyle,
+      onBlur,
+      onBlurCapture,
       onClick,
+      onFocus,
+      placeholder,
+      required,
+      search,
+      size,
+      subtitle,
+      type,
     } = this.props;
 
     return (
@@ -98,10 +101,11 @@ class FormInput extends Component {
             onClick && styles.inputClick
           )}
           id={id && id}
-          onBlur={this.props.onBlur}
+          onBlur={onBlur && onBlur}
+          onBlurCapture={onBlurCapture && onBlurCapture}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          onFocus={this.props.onFocus}
+          onFocus={onFocus && onFocus}
           placeholder={placeholder ? placeholder : ""}
           ref={getRef ? getRef : this.formInputRef}
           required={required ? required : false}

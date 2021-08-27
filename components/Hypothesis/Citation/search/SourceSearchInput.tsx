@@ -1,6 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useMemo,
+  useState,
+} from "react";
 import FormInput from "../../../Form/FormInput";
 import {
   DEFAULT_SEARCH_STATE,
@@ -85,6 +91,7 @@ export default function SourceSearchInput({
   const handleClearItemSelect = (): void => {
     onSelect(null);
     setSelectedItem(null);
+    Boolean(onClearSelect) && nullthrows(onClearSelect)();
     const updatedSearchState = {
       ...searchState,
       filters: {
@@ -101,8 +108,8 @@ export default function SourceSearchInput({
   const shouldShowInput = !Boolean(selectedItem);
   const shouldDisplaySearchResults =
     shouldShowInput && isInputFocused && query.length > 0;
-
-  const searchResultsItems = true ? (
+  console.warn("selectedItem: ", selectedItem);
+  const searchResultsItems = shouldDisplaySearchResults ? (
     <div className={css(styles.itemsList)}>
       {isResultLoading
         ? [
@@ -110,11 +117,11 @@ export default function SourceSearchInput({
             <CitationTableRowItemPlaceholder key="2" />,
           ]
         : searchResults
-            .map((item: any) => (
+            .map((item: any, index: number) => (
               <SourceSearchInputItem
-                key={`source-search-input-item-${(item || {}).id}`}
-                onClick={() => {}}
+                key={`source-search-input-item-${(item || {}).id || index}`}
                 label={item.title || item.paper_title || "N/A"}
+                onSelect={(): void => handleItemSelect(item)}
               />
             ))
             .concat([optionalResultItem])}
@@ -131,7 +138,10 @@ export default function SourceSearchInput({
             inputStyle={formGenericStyles.inputStyle}
             label={label}
             labelStyle={formGenericStyles.labelStyle}
-            onBlur={(): void => setIsInputFocused(false)}
+            onBlurCapture={(event: SyntheticEvent) => {
+              event.stopPropagation();
+              event.preventDefault();
+            }}
             onChange={handleInputChange}
             onFocus={(): void => setIsInputFocused(true)}
             placeholder={inputPlaceholder || "Search sources"}
