@@ -5,17 +5,16 @@ import colors from "../../../../config/themes/colors";
 type Props = {
   icon: string;
   label: string;
-  onClick: Function;
+  onSelect: Function;
 };
 
-export default function SourceSearchInputItem({ onClick, label }) {
+export default function SourceSearchInputItem({ onSelect, label }) {
   return (
     <div
       className={css(itemStyle.sourceSearchInputItem)}
-      onClick={(event: SyntheticEvent): void => {
-        event.preventDefault();
-        event.stopPropagation();
-        onClick(event);
+      onClickCapture={(event: SyntheticEvent): void => {
+        event.stopPropagation(), event.preventDefault();
+        onSelect(event);
       }}
       role="button"
     >
