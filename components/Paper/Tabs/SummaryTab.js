@@ -747,7 +747,6 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     fontFamily: "CharterBT",
-    whiteSpace: "pre-wrap",
     wordBreak: "break-word",
     display: "block",
     borderSpacing: "initial",
