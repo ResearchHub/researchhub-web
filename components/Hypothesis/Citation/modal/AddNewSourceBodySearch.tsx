@@ -110,8 +110,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     flexDirection: "column",
-    height: 320,
     justifyContent: "center",
+    minHeight: 320,
     width: 600,
   },
   buttonCustomStyle: {

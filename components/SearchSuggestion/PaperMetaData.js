@@ -36,7 +36,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
     pdf_location,
     csl_item,
   } = metaData;
-
+  console.warn("metaData: ", metaData);
   const {
     URL,
     number,
