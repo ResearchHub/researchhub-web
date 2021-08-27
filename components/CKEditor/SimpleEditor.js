@@ -28,7 +28,10 @@ export default function SimpleEditor(props) {
       // Headers sent along with the XMLHttpRequest to the upload server.
       headers: {
         Authorization:
-          "Token " + (process.browser ? window.localStorage[AUTH_TOKEN] : ""),
+          "Token " +
+          (typeof window !== "undefined"
+            ? window.localStorage[AUTH_TOKEN]
+            : ""),
       },
     },
   };
