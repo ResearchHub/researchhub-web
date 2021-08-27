@@ -1615,6 +1615,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     flexDirection: "column",
+    marginTop: 16,
   },
   supportButton: {
     marginBottom: 20,

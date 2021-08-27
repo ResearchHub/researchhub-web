@@ -56,7 +56,7 @@ export const getPageBody = (validationState) => {
             {"You have successfully authenticated your email address!"}
           </div>
           <div className={css(styles.textRow)}>
-            {"The ResearchHub team will now review your author claim request."}
+            {"We will now review your author claim request."}
           </div>
         </div>
       );

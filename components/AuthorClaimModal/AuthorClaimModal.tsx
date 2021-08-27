@@ -1,52 +1,81 @@
-import AuthorClaimPromptEmail from "./AuthorClaimPromptEmail";
+import { css, StyleSheet } from "aphrodite";
+import { filterNull, isNullOrUndefined } from "../../config/utils/nullchecks";
+import AuthorClaimPromptEmail, { AuthorDatum } from "./AuthorClaimPromptEmail";
 import AuthorClaimPromptSuccess from "./AuthorClaimPromptSuccess";
 import Modal from "react-modal";
-import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
-import { css, StyleSheet } from "aphrodite";
+import { ReactElement, SyntheticEvent, useState } from "react";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
+import { breakpoints } from "../../config/themes/screen";
 
 export type AuthorClaimDataProps = {
   auth: any;
-  author: any;
+  authors: Array<any>;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
 };
 
+const getPrompt = ({
+  auth,
+  authors,
+  onCloseModal,
+  promptName,
+  setOpenModalType,
+}) => {
+  switch (promptName) {
+    case "enterEmail":
+      return (
+        <AuthorClaimPromptEmail
+          authorData={authors.map(
+            (author: any): AuthorDatum => {
+              return {
+                name: `${author.first_name} ${author.last_name}`,
+                id: author.id,
+              };
+            }
+          )}
+          onSuccess={() => setOpenModalType("success")}
+          userID={auth.user.id}
+        />
+      );
+    case "success":
+      return <AuthorClaimPromptSuccess handleContinue={onCloseModal} />;
+    default:
+      return null;
+  }
+};
+
 export default function AuthorClaimModal({
   auth,
-  author,
+  authors,
   isOpen,
   setIsOpen,
-}: AuthorClaimDataProps): ReactElement<typeof Modal> {
+}: AuthorClaimDataProps): ReactElement<typeof Modal> | null {
   const [openModalType, setOpenModalType] = useState<string>("enterEmail");
 
-  const closeModal = (e: SyntheticEvent): void => {
+  if (
+    isNullOrUndefined(authors) ||
+    (Array.isArray(authors) && filterNull(authors).length === 0)
+  ) {
+    return null;
+  }
+
+  const onCloseModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setOpenModalType("enterEmail");
     setIsOpen(false);
   };
 
-  const getPrompt = (promptName) => {
-    switch (promptName) {
-      case "enterEmail":
-        return (
-          <AuthorClaimPromptEmail
-            onSuccess={() => setOpenModalType("success")}
-            targetAuthorID={author.id}
-            userID={auth.user.id}
-          />
-        );
-      case "success":
-        return <AuthorClaimPromptSuccess handleContinue={closeModal} />;
-      default:
-        return null;
-    }
-  };
+  const modalBody = getPrompt({
+    auth,
+    authors,
+    onCloseModal,
+    promptName: openModalType,
+    setOpenModalType,
+  });
 
-  const modalBody = getPrompt(openModalType);
   return (
     <BaseModal
       children={
@@ -55,16 +84,17 @@ export default function AuthorClaimModal({
             alt="Close Button"
             className={css(customModalStyle.closeButton)}
             draggable={false}
-            onClick={closeModal}
+            onClick={onCloseModal}
             src="/static/icons/close.png"
           />
           {modalBody}
         </div>
       }
-      closeModal={closeModal}
+      closeModal={onCloseModal}
       isOpen={isOpen}
       modalStyle={customModalStyle.modalStyle}
       removeDefault={true}
+      modalContentStyle={customModalStyle.modalContentStyle}
     />
   );
 }
@@ -88,5 +118,13 @@ const customModalStyle = StyleSheet.create({
   },
   bodyZIndex: {
     zIndex: 15 /* default overlay index is 11 */,
+  },
+  modalContentStyle: {
+    overflowY: "visible",
+    overflow: "visible",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      overflowY: "auto",
+    },
   },
 });

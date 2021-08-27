@@ -1,13 +1,15 @@
+import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { css, StyleSheet } from "aphrodite";
+import Modal from "react-modal";
+
 import {
   AUTHOR_CLAIM_ACTION_LABEL,
   AUTHOR_CLAIM_STATUS,
 } from "./constants/AuthorClaimStatus";
 import Button from "../Form/Button";
-import { css, StyleSheet } from "aphrodite";
-import Modal from "react-modal";
-import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
+import { breakpoints } from "../../config/themes/screen";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -100,6 +102,7 @@ export default function AuthorClaimModal({
       isOpen={!!openModalType}
       modalStyle={customModalStyle.modalStyle}
       removeDefault={true}
+      modalContentStyle={customModalStyle.modalContentStyle}
     />
   );
 }
@@ -120,6 +123,10 @@ const customModalStyle = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
+  },
+  modalContentStyle: {
+    overflowY: "visible",
+    overflow: "visible",
   },
 });
 
@@ -165,8 +172,9 @@ const acceptRejectStyles = StyleSheet.create({
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
-    "@media only screen and (min-width: 768px)": {
-      overflowY: "auto",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 16,
     },
   },
   form: {

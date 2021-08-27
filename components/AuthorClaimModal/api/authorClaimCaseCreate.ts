@@ -10,6 +10,7 @@ type Args = {
   onSuccess?: Function;
   userID: ID;
   targetAuthorID: ID;
+  author?: Object;
 };
 
 type Params = {
@@ -19,6 +20,7 @@ type Params = {
   requestor: ID;
   provided_email: string;
   target_author: ID;
+  author?: Object;
 };
 
 export function createAuthorClaimCase({
@@ -27,8 +29,9 @@ export function createAuthorClaimCase({
   onSuccess = emptyFncWithMsg,
   targetAuthorID,
   userID,
+  author,
 }: Args) {
-  const params: Params = {
+  let params: Params = {
     case_type: "AUTHOR_CLAIM",
     creator: nullthrows(
       userID,
@@ -44,6 +47,11 @@ export function createAuthorClaimCase({
     ),
     target_author: targetAuthorID,
   };
+
+  if (author) {
+    params.author = author;
+  }
+
   fetch(API.AUTHOR_CLAIM_CASE(), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
