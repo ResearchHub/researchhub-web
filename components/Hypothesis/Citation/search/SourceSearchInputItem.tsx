@@ -3,12 +3,12 @@ import { SyntheticEvent } from "react";
 import colors from "../../../../config/themes/colors";
 
 type Props = {
-  icon: string;
+  icon?: string;
   label: string;
   onSelect: Function;
 };
 
-export default function SourceSearchInputItem({ onSelect, label }) {
+export default function SourceSearchInputItem({ onSelect, label }: Props) {
   return (
     <div
       className={css(itemStyle.sourceSearchInputItem)}

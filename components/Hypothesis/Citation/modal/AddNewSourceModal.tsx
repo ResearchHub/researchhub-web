@@ -68,7 +68,10 @@ export default function AddNewSourceModal({
   const modalBody = getModalBody({
     bodyType,
     hypothesisID,
-    onCloseModal,
+    onCloseModal: (event: SyntheticEvent) => {
+      setBodyType(SEARCH);
+      onCloseModal(event);
+    },
     setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
     updateLastFetchTime,
   });
