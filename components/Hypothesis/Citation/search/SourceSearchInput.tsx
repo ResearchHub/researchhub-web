@@ -32,7 +32,6 @@ export type Props = {
   onSelect: (sourceData: any) => void;
   optionalResultItem?: ReactNode;
   required?: boolean;
-  setModal;
 };
 
 export default function SourceSearchInput({
