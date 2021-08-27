@@ -87,12 +87,8 @@ class FormInput extends Component {
           </div>
         )}
         <input
-          id={id && id}
-          type={type ? type : "text"}
-          value={this.props.value}
-          required={required ? required : false}
-          placeholder={placeholder ? placeholder : ""}
-          ref={getRef ? getRef : this.formInputRef}
+          autoCapitalize="off"
+          autoComplete={autoComplete}
           className={css(
             styles.input,
             inputStyle && inputStyle,
@@ -101,10 +97,16 @@ class FormInput extends Component {
             icon && styles.search,
             onClick && styles.inputClick
           )}
+          id={id && id}
+          onBlur={this.props.onBlur}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          autoCapitalize="off"
-          autoComplete={autoComplete}
+          onFocus={this.props.onFocus}
+          placeholder={placeholder ? placeholder : ""}
+          ref={getRef ? getRef : this.formInputRef}
+          required={required ? required : false}
+          type={type ? type : "text"}
+          value={this.props.value}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && (
