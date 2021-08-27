@@ -15,6 +15,7 @@ import {
 } from "./sourceSearchHandler";
 import {
   emptyFncWithMsg,
+  filterNull,
   isNullOrUndefined,
   nullthrows,
 } from "../../../../config/utils/nullchecks";
@@ -126,7 +127,7 @@ export default function SourceSearchInput({
                 onSelect={(): void => handleItemSelect(item)}
               />
             ))
-            .concat([optionalResultItem])}
+            .concat(filterNull([optionalResultItem, emptyResultDisplay]))}
     </div>
   ) : null;
 
@@ -140,11 +141,6 @@ export default function SourceSearchInput({
             inputStyle={formGenericStyles.inputStyle}
             label={label}
             labelStyle={formGenericStyles.labelStyle}
-            onBlurCapture={(event: SyntheticEvent) => {
-              // Allows item selection before blurring is finished
-              event.stopPropagation();
-              event.preventDefault();
-            }}
             onChange={handleInputChange}
             onFocus={(): void => setIsInputFocused(true)}
             placeholder={inputPlaceholder || "Search sources"}
