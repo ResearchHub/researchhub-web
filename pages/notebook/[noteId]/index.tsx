@@ -1,6 +1,6 @@
 import Router from "next/router";
-import killswitch from "../../config/killswitch/killswitch";
-import { ELNEditor } from "../../components/CKEditor/ELNEditor";
+import killswitch from "../../../config/killswitch/killswitch";
+import { ELNEditor } from "../../../components/CKEditor/ELNEditor";
 import { ReactElement } from "react";
 import { connect } from "react-redux";
 
