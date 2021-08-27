@@ -223,6 +223,8 @@ const styles = StyleSheet.create({
   error: {
     margin: 0,
     padding: 0,
+    marginTop: 4,
+    marginBottom: 4,
     color: colors.RED(1),
     fontSize: 12,
   },
