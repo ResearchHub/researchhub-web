@@ -125,9 +125,23 @@ export const ELNEditor = ({ user }) => {
           "Evaluation and comparison of hereditary Cancer guidelines",
           "First 'Time Crystal' Built Using Google's Quantum Computer",
           "Esports: the journey of becoming a real sport",
-        ].map((el) => (
-          <div className={css(styles.sidebarSectionContent)}>{el}</div>
+        ].map((el, index) => (
+          <div
+            className={css(
+              styles.sidebarSectionContent,
+              index === 3 && styles.lastSection
+            )}
+          >
+            {el}
+          </div>
         ))}
+        <div
+          className={css(styles.sidebarNewNote)}
+          onClick={toggleSidebarSection}
+        >
+          <div className={css(styles.actionButton)}>{icons.plus}</div>
+          <div className={css(styles.newNoteText)}>Create New Note</div>
+        </div>
       </div>
       <div className={css(styles.editorContainer)}>
         {editorLoaded && (
@@ -140,7 +154,7 @@ export const ELNEditor = ({ user }) => {
                 editor.editing.view.change((writer) => {
                   writer.setStyle(
                     {
-                      "min-height": "79vh",
+                      "min-height": "calc(100% - 227px)",
                     },
                     editor.editing.view.document.getRoot()
                   );
@@ -179,6 +193,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   editorContainer: {
+    height: "calc(100vh - 80px)",
     marginLeft: "max(min(calc(16%), 300px), 240px)",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
@@ -186,13 +201,16 @@ const styles = StyleSheet.create({
     },
   },
   editor: {
+    height: "100%",
     margin: "auto",
     maxWidth: 900,
   },
   sidebar: {
     background: "#f9f9fc",
     borderRight: "1px solid #f0f0f0",
-    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    height: "calc(100vh - 80px)",
     left: 0,
     maxWidth: 300,
     minWidth: 240,
@@ -230,6 +248,49 @@ const styles = StyleSheet.create({
     padding: 20,
     ":hover": {
       background: "#f0f0f6",
+    },
+  },
+  lastSection: {
+    borderBottom: "1px solid #f0f0f0",
+  },
+  sidebarNewNote: {
+    borderBottom: "1px solid #f0f0f0",
+    color: colors.BLUE(),
+    cursor: "pointer",
+    display: "flex",
+    padding: 20,
+    ":hover": {
+      color: "#3E43E8",
+    },
+  },
+  newNoteText: {
+    fontSize: 18,
+    fontWeight: 500,
+    margin: "auto",
+  },
+  actionButton: {
+    alignItems: "center",
+    background: colors.LIGHT_GREY(),
+    border: "1px solid #ddd",
+    borderRadius: "50%",
+    display: "flex",
+    fontSize: 16,
+    height: 35,
+    justifyContent: "center",
+    marginLeft: 5,
+    marginRight: 5,
+    transition: "all ease-in-out 0.1s",
+    width: 35,
+    //":hover": {
+    //  background: "#d8d8d8",
+    //},
+    "@media only screen and (max-width: 415px)": {
+      height: 33,
+      width: 33,
+    },
+    "@media only screen and (max-width: 321px)": {
+      height: 31,
+      width: 31,
     },
   },
   chevronDown: {
