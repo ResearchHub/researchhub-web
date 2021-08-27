@@ -407,6 +407,7 @@
   }
 }
 
+/* Custom CSS */
 .ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
   position: absolute !important;
   z-index: 0 !important;
@@ -415,4 +416,23 @@
 .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
   border: 1px solid transparent !important;
   box-shadow: none !important;
+}
+
+.ck-content {
+  word-break: break-word;
+  line-height: 24px;
+}
+
+.ck-content h1 {
+  line-height: 38px;
+}
+
+.ck-editor__editable_inline {
+  padding: 25px 60px 200px 60px !important;
+}
+
+@media only screen and (max-width: 900px) {
+  .ck-editor__editable_inline {
+    padding: 0px 30px 200px 30px !important;
+  }
 }
