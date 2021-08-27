@@ -176,11 +176,11 @@ function PaperuploadV2Create({
     );
     setFormErrors(defaultFormErrorState);
     if (!isNullOrUndefined(onCancelComplete)) {
-      nullthrows(onCancelComplete)();
+      nullthrows(onCancelComplete)(event);
     }
-    // TODO: calvinhlee debug this
-    // if (!isPaperForHypothesis) {}
-    router.back();
+    if (!isPaperForHypothesis) {
+      router.back();
+    }
   };
 
   const handleHubSelection = (_id: ID, selectedHubs: any): void => {
