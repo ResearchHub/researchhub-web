@@ -58,7 +58,8 @@ class Footer extends Component {
 
   render() {
     let tabs = this.renderTabs();
-    return (
+    return typeof window !== "undefined" &&
+      window.location.pathname.split("/")[1] !== "notebook" ? (
       <footer className={css(styles.footer)}>
         <div className={css(styles.imgTab)}>
           <img
@@ -135,7 +136,7 @@ class Footer extends Component {
           </div>
         </div>
       </footer>
-    );
+    ) : null;
   }
 }
 
