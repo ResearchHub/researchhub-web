@@ -54,13 +54,13 @@ class ColumnAuthors extends Component {
       const key = `${name}-${index}`; // not all author have ids nor orcid_id -> combined list of authors and raw_authors
       let accruedRSC = 0;
 
-      if (paper.raw_author_scores) {
-        if (isNullOrUndefined(author.total_score)) {
+      if (isNullOrUndefined(author.total_score)) {
+        if (paper.raw_author_scores) {
           accruedRSC = paper.raw_author_scores[rawAuthorCount];
-          rawAuthorCount += 1;
-        } else {
-          accruedRSC = author.total_score;
         }
+        rawAuthorCount += 1;
+      } else {
+        accruedRSC = author.total_score;
       }
 
       return (
