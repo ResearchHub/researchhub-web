@@ -26,6 +26,7 @@ export default function SourceSearchInputItem({ onSelect, label }: Props) {
 export const itemStyle = StyleSheet.create({
   sourceSearchInputItem: {
     alignItems: "center",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     boxSizing: "border-box",
     color: "black",
     cursor: "pointer",

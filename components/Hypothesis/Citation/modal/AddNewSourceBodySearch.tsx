@@ -1,9 +1,9 @@
 import { BodyTypeVals } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
-import React, { ReactElement, SyntheticEvent, useState } from "react";
+import { silentEmptyFnc } from "../../../../config/utils/nullchecks";
+import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import {
   SearchFilterDocType,
   SearchFilterDocTypeLabel,
@@ -48,13 +48,12 @@ export default function AddNewSourceBodySearch({
         value={docTypeOptions[0]}
       />
       <SourceSearchInput
-        emptyResultDisplay={<div>{""}</div>}
         inputPlaceholder="Search for a paper or upload"
         label="Source"
         onPaperUpload={() =>
           setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)
         }
-        onSelect={emptyFncWithMsg}
+        onSelect={silentEmptyFnc}
         optionalResultItem={
           <div
             className={css(styles.uploadNewPaperButton)}
