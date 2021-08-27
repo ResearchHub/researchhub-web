@@ -160,6 +160,19 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    NOTE: ({ noteId }) => {
+      let url;
+      if (noteId) {
+        url = `${BASE_URL}note/${noteId}`;
+      } else {
+        url = `${BASE_URL}note/`;
+      }
+      return url;
+    },
+    NOTE_CONTENT: () => {
+      let url = `${BASE_URL}note_content/`;
+      return url;
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
       filters,
