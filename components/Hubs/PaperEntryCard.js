@@ -21,13 +21,14 @@ import HubTag from "./HubTag";
 import Link from "next/link";
 import icons from "~/config/themes/icons";
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, useMemo, Fragment } from "react";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import VoteWidget from "../VoteWidget";
 import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
+import { parseMath } from "~/config/utils/latex";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -82,6 +83,9 @@ const PaperEntryCard = (props) => {
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
   boost_amount = boost_amount || 0;
+
+  abstract = useMemo(() => parseMath(abstract), [abstract]);
+  title = useMemo(() => parseMath(title), [title]);
 
   /**
    * Whether or not THIS PaperPDFModal is open.
@@ -577,7 +581,7 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <span className={css(styles.title)}>{title && title}</span>
+          <span className={css(styles.title)}>{title}</span>
         </a>
       </Link>
     );
@@ -790,6 +794,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 1.3,
     marginTop: 5,
+    borderSpacing: "initial",
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },

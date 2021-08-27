@@ -15,6 +15,7 @@ import SummaryContributor from "../SummaryContributor";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
 import SectionBounty from "./SectionBounty";
 import AbstractPlaceholder from "../../Placeholders/AbstractPlaceholder";
+import { parseMath } from "~/config/utils/latex";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -444,7 +445,7 @@ class SummaryTab extends Component {
                 className={css(styles.abstractContainer)}
                 data-test={isDevEnv() ? `abstract` : undefined}
               >
-                {abstract}
+                {parseMath(abstract)}
               </div>
             )}
           </Fragment>
@@ -748,6 +749,8 @@ var styles = StyleSheet.create({
     fontFamily: "CharterBT",
     whiteSpace: "pre-wrap",
     wordBreak: "break-word",
+    display: "block",
+    borderSpacing: "initial",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",

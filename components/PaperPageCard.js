@@ -36,6 +36,7 @@ import { formatPublishedDate } from "~/config/utils/dates";
 import { removeLineBreaksInStr } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
+import { parseMath } from "~/config/utils/latex";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -637,7 +638,7 @@ class PaperPageCard extends Component {
                             className={css(styles.title)}
                             property={"headline"}
                           >
-                            {formattedPaperTitle}
+                            {parseMath(formattedPaperTitle)}
                           </h1>
                         </div>
                       </div>
@@ -818,8 +819,8 @@ const styles = StyleSheet.create({
     fontWeight: "unset",
     padding: 0,
     margin: 0,
-    display: "flex",
-
+    display: "block",
+    borderSpacing: "initial",
     "@media only screen and (max-width: 760px)": {
       fontSize: 24,
     },
