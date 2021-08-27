@@ -4,7 +4,6 @@ import {
 } from "../../../../config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
 import { KeyOf, ValueOf } from "../../../../config/types/root_types";
-import { useState } from "react";
 import API from "../../../../config/api";
 
 export const SearchFilterDocType: { [key: string]: string } = {

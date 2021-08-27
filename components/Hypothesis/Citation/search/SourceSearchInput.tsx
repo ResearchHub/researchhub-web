@@ -1,12 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
-import {
-  ReactElement,
-  ReactNode,
-  SyntheticEvent,
-  useMemo,
-  useState,
-} from "react";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
 import FormInput from "../../../Form/FormInput";
 import {
   DEFAULT_SEARCH_STATE,
