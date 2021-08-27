@@ -111,10 +111,10 @@
     "typescript": "^4.3.5",
     "undux": "^5.2.0",
     "webpack": "^5.50.0",
-    "react-katex": "^2.0.2"
+    "react-katex": "^2.0.2",
+    "webpack-bundle-analyzer": "^4.3.0"
   },
   "devDependencies": {
-    "webpack-bundle-analyzer": "^4.3.0",
     "@next/bundle-analyzer": "^11.1.0",
     "@types/draft-js": "^0.11.1",
     "@types/react-modal": "^3.12.0",
