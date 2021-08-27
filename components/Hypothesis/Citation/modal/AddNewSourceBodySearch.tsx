@@ -1,4 +1,4 @@
-import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { BodyTypeVals } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
@@ -8,9 +8,10 @@ import {
   SearchFilterDocType,
   SearchFilterDocTypeLabel,
 } from "../search/sourceSearchHandler";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
 import FormSelect from "~/components//Form/FormSelect";
 import SourceSearchInput from "../search/SourceSearchInput";
-import Button from "~/components/Form/Button";
 
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
 const docTypeOptions = [
@@ -51,7 +52,14 @@ export default function AddNewSourceBodySearch({
         inputPlaceholder="Search for a paper or upload"
         label="Source"
         onSelect={emptyFncWithMsg}
-        optionalResultItem={<div> {"Click me to upload a new paper"} </div>}
+        optionalResultItem={
+          <div className={css(styles.uploadNewPaperButton)}>
+            <span className={css(styles.plusCircle)}>
+              <span className={css(styles.plus)}>{"+"}</span>
+            </span>
+            <span>{"Upload a paper"}</span>
+          </div>
+        }
         required
       />
       <div
@@ -172,5 +180,39 @@ const styles = StyleSheet.create({
   },
   whiteBackground: {
     background: "#fff",
+  },
+  uploadNewPaperButton: {
+    alignItems: "center",
+    boxSizing: "border-box",
+    cursor: "pointer",
+    display: "flex",
+    minHeight: 37,
+    overflow: "hidden",
+    padding: "0 12px",
+    whiteSpace: "nowrap",
+    width: "100%",
+    color: colors.BLUE(1),
+    ":hover": {
+      backgroundColor: colors.LIGHT_BLUE(0.7),
+    },
+  },
+  plus: {
+    color: colors.BLUE(1),
+    left: 5,
+    position: "absolute",
+    top: -1,
+  },
+  plusCircle: {
+    alignItems: "center",
+    border: `1px solid ${colors.GREY(1)}`,
+    borderRadius: "50%",
+    color: "#fff",
+    display: "flex",
+    fontSize: 21,
+    height: 21,
+    justifyContent: "center",
+    marginRight: 8,
+    position: "relative",
+    width: 21,
   },
 });
