@@ -65,9 +65,9 @@ export default function CitationTable({
   });
   const rowItems = isLoading ? (
     [
-      <CitationTableRowItemPlaceholder />,
-      <CitationTableRowItemPlaceholder />,
-      <CitationTableRowItemPlaceholder />,
+      <CitationTableRowItemPlaceholder key="citation-table-item-1" />,
+      <CitationTableRowItemPlaceholder key="citation-table-item-2" />,
+      <CitationTableRowItemPlaceholder key="citation-table-item-3" />,
     ]
   ) : citationItems.length > 0 ? (
     citationItems.map(

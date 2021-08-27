@@ -56,6 +56,7 @@ export default function AddNewSourceBodySearch({
         onSelect={silentEmptyFnc}
         optionalResultItem={
           <div
+            key="optionalResultItem-Search-PaperUpload"
             className={css(styles.uploadNewPaperButton)}
             onClick={() => setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)}
           >
