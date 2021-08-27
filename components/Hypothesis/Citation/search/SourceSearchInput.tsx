@@ -1,14 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
-import React, {
-  ReactElement,
-  ReactNode,
-  RefObject,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
 import FormInput from "../../../Form/FormInput";
 import {
   DEFAULT_SEARCH_STATE,
@@ -35,31 +27,6 @@ export type Props = {
   required?: boolean;
 };
 
-type UseEffectHandleInputFocusArgs = {
-  inputRef: RefObject<typeof FormInput>;
-  setIsInputFocused: (flag: boolean) => void;
-};
-
-const useEffectHandleInputFocus = ({
-  inputRef,
-  setIsInputFocused,
-}: UseEffectHandleInputFocusArgs) => {
-  useEffect(() => {
-    if (!isNullOrUndefined(inputRef) && !isNullOrUndefined(document)) {
-      // @ts-ignore TODO: calvinhlee change to optional chaining on Next upgrade
-      const refID = (inputRef.current || {}).id;
-      if (
-        !isNullOrUndefined(refID) &&
-        refID === (document.activeElement || {}).id
-      ) {
-        setIsInputFocused(true);
-      } else {
-        setIsInputFocused(false);
-      }
-    }
-  }, [document, document.activeElement, inputRef, setIsInputFocused]);
-};
-
 export default function SourceSearchInput({
   emptyResultDisplay,
   inputPlaceholder,
@@ -70,7 +37,6 @@ export default function SourceSearchInput({
   optionalResultItem,
   required,
 }: Props): ReactElement<"div"> {
-  const inputRef = useRef<typeof FormInput>(null);
   const [searchState, setSearchState] = useState<SearchState>(
     DEFAULT_SEARCH_STATE
   );
@@ -78,8 +44,6 @@ export default function SourceSearchInput({
   const [isResultLoading, setIsResultLoading] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState<any>(null);
-
-  useEffectHandleInputFocus({ inputRef, setIsInputFocused });
 
   const {
     filters,
@@ -161,12 +125,13 @@ export default function SourceSearchInput({
         <div className={css(styles.inputSection)}>
           <FormInput
             autoComplete="off"
-            getRef={inputRef}
             id="source-search-input"
             inputStyle={formGenericStyles.inputStyle}
             label={label}
             labelStyle={formGenericStyles.labelStyle}
+            onBlur={(): void => setIsInputFocused(false)}
             onChange={handleInputChange}
+            onFocus={(): void => setIsInputFocused(true)}
             placeholder={inputPlaceholder || "Search sources"}
             required={Boolean(required)}
             value={query || ""}
