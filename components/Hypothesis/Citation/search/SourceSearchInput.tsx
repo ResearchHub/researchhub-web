@@ -28,9 +28,11 @@ export type Props = {
   label: string;
   onClearSelect?: () => void;
   onInputTextChange?: (text: string) => void;
+  onPaperUpload: () => void;
   onSelect: (sourceData: any) => void;
   optionalResultItem?: ReactNode;
   required?: boolean;
+  setModal;
 };
 
 export default function SourceSearchInput({
@@ -39,6 +41,7 @@ export default function SourceSearchInput({
   label,
   onClearSelect,
   onInputTextChange,
+  onPaperUpload,
   onSelect,
   optionalResultItem,
   required,
@@ -108,7 +111,7 @@ export default function SourceSearchInput({
   const shouldShowInput = !Boolean(selectedItem);
   const shouldDisplaySearchResults =
     shouldShowInput && isInputFocused && query.length > 0;
-  console.warn("selectedItem: ", selectedItem);
+
   const searchResultsItems = shouldDisplaySearchResults ? (
     <div className={css(styles.itemsList)}>
       {isResultLoading
@@ -139,6 +142,7 @@ export default function SourceSearchInput({
             label={label}
             labelStyle={formGenericStyles.labelStyle}
             onBlurCapture={(event: SyntheticEvent) => {
+              // Allows item selection before blurring is finished
               event.stopPropagation();
               event.preventDefault();
             }}
@@ -148,6 +152,9 @@ export default function SourceSearchInput({
             required={Boolean(required)}
             value={query || ""}
           />
+          <span className={css(styles.uploadAPaper)} onClick={onPaperUpload}>
+            {"Upload a paper"}
+          </span>
         </div>
       ) : (
         <div className={css(styles.selectedItemSection)}></div>
@@ -158,7 +165,7 @@ export default function SourceSearchInput({
 }
 
 const styles = StyleSheet.create({
-  sourceSearchInput: { position: "relative", width: "100%" },
+  sourceSearchInput: { position: "relative", width: "100%", minHeight: 75 },
   inputSection: {},
   itemsList: {
     background: "#fff",
@@ -175,4 +182,13 @@ const styles = StyleSheet.create({
     zIndex: 2,
   },
   selectedItemSection: {},
+  uploadAPaper: {
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    fontSize: 12,
+    fontWeight: 500,
+    position: "absolute",
+    right: 0,
+    top: 24,
+  },
 });
