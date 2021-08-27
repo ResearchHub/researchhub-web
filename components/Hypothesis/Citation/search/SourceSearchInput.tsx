@@ -37,12 +37,12 @@ export default function SourceSearchInput({
   optionalResultItem,
   required,
 }: Props): ReactElement<"div"> {
-  const [searchState, setSearchState] = useState<SearchState>(
-    DEFAULT_SEARCH_STATE
-  );
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [isResultLoading, setIsResultLoading] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<any>([]);
+  const [searchState, setSearchState] = useState<SearchState>(
+    DEFAULT_SEARCH_STATE
+  );
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   const {
@@ -51,10 +51,10 @@ export default function SourceSearchInput({
   } = searchState;
 
   const apiSearchHandler = useMemo((): ((searchState: SearchState) => void) => {
-    setIsResultLoading(true);
     return getHandleSourceSearchInputChange({
       debounceTime: 600,
       onError: emptyFncWithMsg,
+      onLoad: (): void => setIsResultLoading(true),
       onSuccess: (payload: any): void => {
         setIsResultLoading(false);
         setSearchResults(payload.results || []);
@@ -102,20 +102,22 @@ export default function SourceSearchInput({
   const shouldDisplaySearchResults =
     shouldShowInput && isInputFocused && query.length > 0;
 
-  const searchResultsItems = shouldDisplaySearchResults ? (
+  const searchResultsItems = true ? (
     <div className={css(styles.itemsList)}>
       {isResultLoading
         ? [
             <CitationTableRowItemPlaceholder key="1" />,
             <CitationTableRowItemPlaceholder key="2" />,
           ]
-        : searchResults.map((item: any) => (
-            <SourceSearchInputItem
-              key={`source-search-input-item-${(item || {}).id}`}
-              onClick={() => {}}
-              label={item.title || item.paper_title || "N/A"}
-            />
-          ))}
+        : searchResults
+            .map((item: any) => (
+              <SourceSearchInputItem
+                key={`source-search-input-item-${(item || {}).id}`}
+                onClick={() => {}}
+                label={item.title || item.paper_title || "N/A"}
+              />
+            ))
+            .concat([optionalResultItem])}
     </div>
   ) : null;
 
@@ -149,17 +151,18 @@ const styles = StyleSheet.create({
   sourceSearchInput: { position: "relative", width: "100%" },
   inputSection: {},
   itemsList: {
-    border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     background: "#fff",
+    border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 4,
+    top: 104,
     display: "flex",
     flexDirection: "column",
+    maxHeight: 120,
+    minHeight: 40,
+    overflowY: "scroll",
     position: "absolute",
     width: "inherit",
     zIndex: 2,
-    minHeight: 40,
-    maxHeight: 120,
-    overflowY: "scroll",
   },
   selectedItemSection: {},
 });
