@@ -51,9 +51,15 @@ export default function AddNewSourceBodySearch({
         emptyResultDisplay={<div>{""}</div>}
         inputPlaceholder="Search for a paper or upload"
         label="Source"
+        onPaperUpload={() =>
+          setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)
+        }
         onSelect={emptyFncWithMsg}
         optionalResultItem={
-          <div className={css(styles.uploadNewPaperButton)}>
+          <div
+            className={css(styles.uploadNewPaperButton)}
+            onClick={() => setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)}
+          >
             <span className={css(styles.plusCircle)}>
               <span className={css(styles.plus)}>{"+"}</span>
             </span>
