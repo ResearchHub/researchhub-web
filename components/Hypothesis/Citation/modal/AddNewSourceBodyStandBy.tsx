@@ -1,10 +1,10 @@
+// import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
+import { breakpoints } from "~/config/themes/screen.js";
 import { css, StyleSheet } from "aphrodite";
-import { breakpoints } from "../../../../config/themes/screen.js";
-import Button from "../../../Form/Button";
 import { ReactElement, useEffect, useState } from "react";
-import ResearchhubOptionCard from "../../../ResearchhubOptionCard";
-import colors from "../../../../config/themes/colors";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
 
 const { NEW_PAPER_UPLOAD, SEARCH } = NEW_SOURCE_BODY_TYPES;
 
