@@ -1,6 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import React, { ReactElement, ReactNode, useMemo, useState } from "react";
 import FormInput from "../../../Form/FormInput";
 import {
   DEFAULT_SEARCH_STATE,
@@ -12,10 +12,12 @@ import {
   filterNull,
   isNullOrUndefined,
   nullthrows,
+  silentEmptyFnc,
 } from "../../../../config/utils/nullchecks";
 import colors from "../../../../config/themes/colors";
 import SourceSearchInputItem from "./SourceSearchInputItem";
 import CitationTableRowItemPlaceholder from "../table/CitationTableRowItemPlaceholder";
+import PaperMetaData from "../../../SearchSuggestion/PaperMetaData";
 
 export type Props = {
   emptyResultDisplay?: ReactNode;
@@ -146,7 +148,32 @@ export default function SourceSearchInput({
           </span>
         </div>
       ) : (
-        <div className={css(styles.selectedItemSection)}></div>
+        <div className={css(styles.selectedItemCard)}>
+          <PaperMetaData
+            metaData={{
+              ...selectedItem,
+              csl_item: {
+                ...selectedItem,
+                author: (selectedItem || {}).authors,
+                URL: true,
+              },
+              url_is_pdf: true,
+            }}
+            onEdit={silentEmptyFnc}
+            onRemove={(event): void => {
+              event.preventDefault();
+              event.stopPropagation();
+              setSelectedItem(null);
+              setSearchState({
+                ...searchState,
+                filters: {
+                  ...filters,
+                  query: "",
+                },
+              });
+            }}
+          />
+        </div>
       )}
       {searchResultsItems}
     </div>
@@ -170,7 +197,7 @@ const styles = StyleSheet.create({
     width: "inherit",
     zIndex: 2,
   },
-  selectedItemSection: {},
+  selectedItemCard: { marginBottom: 8 },
   uploadAPaper: {
     color: colors.BLUE(1),
     cursor: "pointer",
