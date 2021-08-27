@@ -1,3 +1,5 @@
+import { SyntheticEvent, useState } from "react";
+import { connect } from "react-redux";
 import Button from "../Form/Button";
 import colors from "../../config/themes/colors";
 import { createAuthorClaimCase } from "./api/authorClaimCaseCreate";
@@ -5,12 +7,28 @@ import { css, StyleSheet } from "aphrodite";
 import FormInput from "../Form/FormInput";
 import { ID } from "../../config/types/root_types";
 import Loader from "../Loader/Loader";
-import { SyntheticEvent, useState } from "react";
+import { nullthrows } from "../../config/utils/nullchecks";
+import FormSelect from "../Form/FormSelect";
+import { breakpoints } from "../../config/themes/screen";
+import { MessageActions } from "../../redux/message";
 
 export type AuthorClaimPromptEmailProps = {
+  authorData: AuthorDatum[];
   onSuccess: Function;
-  targetAuthorID: ID;
   userID: ID;
+  setMessage: Function;
+  showMessage: Function;
+};
+
+export type AuthorDatum = {
+  id: ID;
+  name: string;
+};
+
+type DropDownAuthor = {
+  id: ID;
+  name: string;
+  label: string;
 };
 
 type FormFields = {
@@ -23,33 +41,41 @@ type FormError = {
 
 function validateEmail(email: string): boolean {
   const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  return re.test(String(email).toLowerCase());
+  const splitEmail = email.split(".");
+  const stringEndsWithEDU = splitEmail[splitEmail.length - 1] === "edu";
+  return re.test(String(email).toLowerCase()) && stringEndsWithEDU;
 }
 
 function validateFormField(fieldID: string, value: any): boolean {
   let result: boolean = true;
   switch (fieldID) {
-    case "eduEmail":
-      return typeof value === "string" && validateEmail(value);
+    // case "eduEmail":
+    //   return typeof value === "string" && validateEmail(value);
     default:
       return result;
   }
 }
 
-export default function AuthorClaimPromptEmail({
+function AuthorClaimPromptEmail({
+  authorData,
   onSuccess,
-  targetAuthorID,
   userID,
+  setMessage,
+  showMessage,
 }: AuthorClaimPromptEmailProps) {
   const [formErrors, setFormErrors] = useState<FormError>({
-    eduEmail: false,
+    eduEmail: true,
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [mutableFormFields, setMutableFormFields] = useState<FormFields>({
     eduEmail: null,
   });
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-
+  const [targetAuthor, setTargetAuthor] = useState<DropDownAuthor | null>(
+    authorData.length === 1
+      ? { ...authorData[0], label: authorData[0].name }
+      : null
+  );
   const handleOnChangeFields = (fieldID: string, value: string): void => {
     setMutableFormFields({ ...mutableFormFields, [fieldID]: value });
     setFormErrors({
@@ -64,22 +90,53 @@ export default function AuthorClaimPromptEmail({
     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
       setShouldDisplayError(true);
     } else {
+      if (!targetAuthor) {
+        setMessage("Please select an author to claim.");
+        showMessage({ show: true, error: true });
+        return;
+      }
+      const name =
+        targetAuthor && targetAuthor.label && targetAuthor.label.split(" ");
+      const author = {
+        first_name: name && name.length > 0 ? name[0] : null,
+        last_name: name && name.length > 1 ? name[1] : null,
+      };
       setShouldDisplayError(false);
       setIsSubmitting(true);
       createAuthorClaimCase({
         eduEmail: mutableFormFields.eduEmail,
-        onError: (): void => {
+        onError: (err): void => {
+          let errMessage = "Something went wrong!";
+          const errorKeys = Object.keys(err.message);
+          for (let i = 0; i < errorKeys.length; i++) {
+            let curKey = errorKeys[i];
+            for (let j = 0; j < err.message[curKey].length; j++) {
+              errMessage = err.message[curKey][j];
+            }
+          }
+          setMessage(errMessage);
+          showMessage({ show: true, error: true });
           setIsSubmitting(false);
         },
         onSuccess: (): void => {
           setIsSubmitting(false);
           onSuccess();
         },
-        targetAuthorID,
+        targetAuthorID: nullthrows(
+          nullthrows(targetAuthor).id,
+          "targetAuthorID must be present to make a request"
+        ),
         userID,
+        author,
       });
     }
   };
+
+  const options = authorData.map((authorDatum, index) => ({
+    ...authorDatum,
+    label: authorDatum.name,
+    value: authorDatum.name + `_${index}`,
+  }));
 
   return (
     <div className={css(verifStyles.rootContainer)}>
@@ -88,12 +145,14 @@ export default function AuthorClaimPromptEmail({
       </div>
       <div className={css(verifStyles.subTextContainer)}>
         <div className={css(verifStyles.subText)}>
-          We will send you an email to verify your academic email address. Use
-          the one that's openly available under your previous publications.
+          {
+            "We will send you an email to verify your academic email address. Use the one that's openly available under your previous publications."
+          }
           <br />
           <br />
-          After you verify your email, we will manually review your request to
-          ensure that it's you!
+          {
+            "After you verify your email, we will manually review your request to ensure that it's you!"
+          }
         </div>
       </div>
       <form
@@ -101,24 +160,36 @@ export default function AuthorClaimPromptEmail({
         className={css(verifStyles.form)}
         onSubmit={handleValidationAndSubmit}
       >
+        <FormSelect
+          containerStyle={modalBodyStyles.containerStyle}
+          onChange={(_type: string, authorDatum: DropDownAuthor): void =>
+            setTargetAuthor(authorDatum)
+          }
+          disable={isSubmitting}
+          id="author"
+          label="Claiming author"
+          options={options}
+          placeholder="Choose an Author"
+          required={true}
+          type="select"
+          value={targetAuthor}
+        />
         <FormInput
           containerStyle={modalBodyStyles.containerStyle}
           disable={isSubmitting}
           id="eduEmail"
-          label="Email"
-          type="email"
-          labelStyle={verifStyles.labelStyle}
           inputStyle={shouldDisplayError && modalBodyStyles.error}
+          label="Your academic email address"
+          labelStyle={verifStyles.labelStyle}
           onChange={handleOnChangeFields}
-          placeholder="Your email address"
+          placeholder="example@university.edu"
           required
+          type="email"
         />
         <div className={css(verifStyles.buttonContainer)}>
-          {/* @ts-ignore */}
           <Button
             label={
               isSubmitting ? (
-                // @ts-ignore
                 <Loader
                   size={8}
                   loading
@@ -147,13 +218,14 @@ const verifStyles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
-    padding: "51px 90px 40px 90px",
+    padding: "50px 40px",
     borderRadius: 5,
     transition: "all ease-in-out 0.4s",
     boxSizing: "border-box",
     width: "100%",
-    "@media only screen and (min-width: 768px)": {
-      overflowY: "auto",
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "40px 16px",
     },
   },
   form: {
@@ -196,13 +268,13 @@ const verifStyles = StyleSheet.create({
     cursor: "pointer",
   },
   titleContainer: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
-    textAlign: "center",
-    boxSizing: "border-box",
-    marginBottom: "7px",
+    marginBottom: "16px",
+    textAlign: "left",
   },
   title: {
     fontWeight: 500,
@@ -226,25 +298,24 @@ const verifStyles = StyleSheet.create({
     },
   },
   subTextContainer: {
+    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-between",
-    alignItems: "center",
+    marginBottom: 16,
     textAlign: "center",
-    boxSizing: "border-box",
   },
   subText: {
-    fontWeight: "normal",
-    fontSize: "16px",
-    lineHeight: "22px",
-
-    display: "flex",
     alignItems: "center",
-    textAlign: "center",
     color: "#241F3A",
+    display: "flex",
+    fontSize: "16px",
+    fontWeight: "normal",
+    lineHeight: "22px",
     opacity: 0.8,
+    textAlign: "left",
   },
-  modalContentStyles: {},
 });
 
 const modalBodyStyles = StyleSheet.create({
@@ -267,3 +338,13 @@ const modalBodyStyles = StyleSheet.create({
     display: "unset",
   },
 });
+
+const mapDispatchToProps = {
+  setMessage: MessageActions.setMessage,
+  showMessage: MessageActions.showMessage,
+};
+
+export default connect(
+  null,
+  mapDispatchToProps
+)(AuthorClaimPromptEmail);

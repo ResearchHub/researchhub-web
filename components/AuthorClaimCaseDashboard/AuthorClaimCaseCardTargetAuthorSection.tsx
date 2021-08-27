@@ -54,8 +54,8 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
 
 const styles = StyleSheet.create({
   targetAuthorSection: {
-    display: "flex",
-    flexDirection: "column",
+    // display: "flex",
+    // flexDirection: "column",
   },
   description: {
     display: "flex",
@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
     display: "flex",
     marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      alignItems: "center",
-      justifyContent: "center",
+      // alignItems: "center",
+      // justifyContent: "center",
       marginBottom: 15,
       width: "100%",
     },
