@@ -1,19 +1,65 @@
 import API from "~/config/api";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import router, { useRouter } from "next/router";
 import { AUTH_TOKEN } from "~/config/constants";
+import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 
+function useFetchNotes(router) {
+  const [notes, setNotes] = useState([]);
+  const noteId = router.query.noteId;
+
+  useEffect(() => {
+    fetch(API.NOTE({}), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data) => {
+        setNotes(data.results);
+      });
+  }, [noteId]);
+
+  return notes;
+}
+
+function useFetchNote(router) {
+  const [note, setNote] = useState(null);
+  const noteId = router.query.noteId;
+
+  useEffect(() => {
+    fetch(API.NOTE({ noteId }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data) => {
+        setNote(data);
+      });
+  }, [noteId]);
+
+  return note;
+}
+
 export const ELNEditor = ({ user }) => {
+  const router = useRouter();
   const editorRef = useRef();
+  const sidebarElementRef = useRef();
+  const presenceListElementRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
   const { CKEditor, Editor } = editorRef.current || {};
-
-  const sidebarElementRef = useRef();
-  const presenceListElementRef = useRef();
+  const notes = useFetchNotes(router);
+  const note = useFetchNote(router);
+  //const note = (() => {
+  //  for (const n of notes) {
+  //    if (`${n.id}` === router.query.noteId) {
+  //      return n;
+  //    }
+  //  }
+  //})();
+  //console.log("notes", notes);
+  //console.log("note", note);
 
   useEffect(() => {
     editorRef.current = {
@@ -27,8 +73,15 @@ export const ELNEditor = ({ user }) => {
     };
   }, []);
 
-  function saveData(data) {
-    console.log("saveData: " + data);
+  function saveData(editorData) {
+    const params = {
+      full_src: editorData,
+      plain_text: "",
+      note: router.query.noteId,
+    };
+    fetch(API.NOTE_CONTENT(), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
   }
 
   function manualSaveData(data) {
@@ -41,6 +94,7 @@ export const ELNEditor = ({ user }) => {
     },
     placeholder:
       "Start typing to continue with an empty page, or pick a template",
+    initialData: note?.title ?? "",
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
@@ -102,6 +156,19 @@ export const ELNEditor = ({ user }) => {
 
   const toggleSidebarSection = () => {};
 
+  const handleCreateNewNote = () => {
+    const params = {
+      title: "Untitled",
+    };
+
+    fetch(API.NOTE({}), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data) => {
+        router.push(`/notebook/${data.id}`);
+      });
+  };
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
@@ -120,24 +187,22 @@ export const ELNEditor = ({ user }) => {
             {icons.chevronDownLeft}
           </span>
         </div>
-        {[
-          "Cognitive deficits in people who have recovered from COVID-19",
-          "Evaluation and comparison of hereditary Cancer guidelines",
-          "First 'Time Crystal' Built Using Google's Quantum Computer",
-          "Esports: the journey of becoming a real sport",
-        ].map((el, index) => (
-          <div
-            className={css(
-              styles.sidebarSectionContent,
-              index === 3 && styles.lastSection
-            )}
-          >
-            {el}
-          </div>
+        {notes.map((note, index) => (
+          <Link href={`/notebook/${note.id}`}>
+            <div
+              className={css(
+                styles.sidebarSectionContent,
+                index === 3 && styles.lastSection
+              )}
+              key={note.id}
+            >
+              {note.title}
+            </div>
+          </Link>
         ))}
         <div
           className={css(styles.sidebarNewNote)}
-          onClick={toggleSidebarSection}
+          onClick={handleCreateNewNote}
         >
           <div className={css(styles.actionButton)}>{icons.plus}</div>
           <div className={css(styles.newNoteText)}>Create New Note</div>
@@ -178,7 +243,7 @@ export const ELNEditor = ({ user }) => {
               onChange={(event, editor) => console.log({ event, editor })}
               editor={Editor}
               config={editorConfiguration}
-              data={"hello world"}
+              data={""}
             />
           </div>
         )}
