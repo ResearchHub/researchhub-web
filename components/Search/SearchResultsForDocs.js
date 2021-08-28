@@ -409,15 +409,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         results.map((post, index) => {
           post.user_vote = userVotes[post.id];
 
-          post.renderableTextAsHtml = parseIfHighlighted({
-            searchResult: post,
-            attribute: "renderable_text",
-          });
-          post.titleAsHtml = parseIfHighlighted({
-            searchResult: post,
-            attribute: "title",
-          });
-
           return (
             <UserPostCard
               {...post}
@@ -431,14 +422,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         })}
       {searchEntityType === "paper" &&
         results.map((paper, index) => {
-          paper.abstract = parseIfHighlighted({
-            searchResult: paper,
-            attribute: "abstract",
-          });
-          paper.title = parseIfHighlighted({
-            searchResult: paper,
-            attribute: "title",
-          });
           paper.promoted = false;
           paper.user_vote = userVotes[paper.id];
 

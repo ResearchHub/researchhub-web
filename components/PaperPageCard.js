@@ -56,6 +56,10 @@ class PaperPageCard extends Component {
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
+      title: {
+        parsed: parseMath(props?.paper?.title),
+        raw: props?.paper?.title
+      }
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
@@ -64,6 +68,19 @@ class PaperPageCard extends Component {
   componentWillUnmount() {
     if (document.body.style) {
       document.body.style.overflow = "scroll";
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const didTitleChange = this.props.paper?.title !== this.state.title.raw;
+
+    if (didTitleChange) {
+      this.setState({
+        title: {
+          parsed: parseMath(this.props.paper?.title),
+          raw: this.props.paper?.title,
+        },
+      });
     }
   }
 
@@ -573,8 +590,8 @@ class PaperPageCard extends Component {
       doneFetchingPaper,
       discussionCount,
     } = this.props;
-    const { fetching, previews, previewAvailable } = this.state;
-    const { boost_amount, paper_title, title } = paper;
+    const { fetching, previews, previewAvailable, title } = this.state;
+    const { boost_amount, paper_title } = paper;
     const promotedScore = score + boost_amount;
     const formattedPaperTitle =
       !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
@@ -638,7 +655,7 @@ class PaperPageCard extends Component {
                             className={css(styles.title)}
                             property={"headline"}
                           >
-                            {parseMath(formattedPaperTitle)}
+                            {title.parsed}
                           </h1>
                         </div>
                       </div>
