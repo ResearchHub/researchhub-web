@@ -148,7 +148,7 @@ class ColumnAuthors extends Component {
         <div>
           <div className={css(styles.paperAuthorListContainer)}>
             <SideColumnTitle
-              title={`Author Detail${hasManyAuthors ? "s" : ""}`}
+              title={`Author${hasManyAuthors ? "s" : ""}`}
               overrideStyles={styles.title}
             />
             {shouldDisplayClaimCard && (

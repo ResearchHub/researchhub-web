@@ -47,9 +47,11 @@ const AuthorCard = (props) => {
           ) : (
             <span className={css(styles.userIcon)}>{icons.user}</span>
           )}
-          {authorUserID ? null : (
-            <AccruedRSC name={name} accruedRSC={accruedRSC} />
-          )}
+          {
+            authorUserID
+              ? <div className={css(styles.name) + " clamp1"}>{name}</div>
+              : <AccruedRSC name={name} accruedRSC={accruedRSC} />
+          }
         </a>
       </Link>
     );
