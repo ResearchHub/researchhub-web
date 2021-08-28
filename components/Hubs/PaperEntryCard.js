@@ -690,6 +690,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
+    borderSpacing: "initial",
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
       paddingBottom: 10,
