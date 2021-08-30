@@ -1,10 +1,7 @@
-import {
-  isNullOrUndefined,
-  nullthrows,
-} from "../../../../config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
-import { KeyOf, ValueOf } from "../../../../config/types/root_types";
-import API from "../../../../config/api";
+import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
+import { KeyOf, ValueOf } from "~/config/types/root_types";
+import API from "~/config/api";
 
 export const SearchFilterDocType: { [key: string]: string } = {
   ALL: "ALL",

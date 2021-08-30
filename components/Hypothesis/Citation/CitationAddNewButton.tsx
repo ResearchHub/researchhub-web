@@ -1,11 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useState } from "react";
 import AddNewSourceModal from "./modal/AddNewSourceModal";
 import Button from "../../Form/Button";
 import colors from "~/config/themes/colors";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 type Props = {
   hypothesisID: ID;
