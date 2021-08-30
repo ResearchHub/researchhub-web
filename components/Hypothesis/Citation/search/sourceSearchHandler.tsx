@@ -72,6 +72,6 @@ export const getHandleSourceSearchInputChange = ({
           debounceRef = null;
         })
         .catch((error: Error): void => onError(error));
-    }, debounceTime || 500);
+    }, debounceTime ?? 500);
   };
 };
