@@ -2,12 +2,12 @@ import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
-import { ValueOf } from "../../config/types/root_types";
+import { ValueOf } from "~/config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetAuthorSection";
-import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
 

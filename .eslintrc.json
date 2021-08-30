@@ -5,9 +5,12 @@
     "es2021": true
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:@typescript-eslint/recommended",
+    "plugin:import/errors",
+    "plugin:import/typescript",
+    "plugin:import/warnings",
+    "plugin:prettier/recommended",
+    "prettier/@typescript-eslint"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -15,13 +18,26 @@
       "jsx": true
     },
     "ecmaVersion": 12,
-    "sourceType": "module"
+    "sourceType": "module",
+    "project": "./tsconfig.json"
   },
   "plugins": ["react", "@typescript-eslint"],
   "rules": {
     "no-unused-vars": "error",
     "react/react-in-jsx-scope": "off",
     "no-console": "warn"
+  },
+  "settings": {
+    "parser": { "@typescript-eslint/parser": [".ts", ".tsx"] },
+    "import/parsers": {
+      "@typescript-eslint/parser": [".ts", ".tsx"]
+    },
+    "import/resolver": {
+      "typescript": {
+        "alwaysTryTypes": true, // always try to resolve types under `<root>@types` directory even it doesn't contain any source code, like `@types/unist`yarn add -D eslint-plugin-import @typescript-eslint/parser eslint-import-resolver-typescript
+        "project": ["./tsconfig.json"]
+      }
+    }
   },
   "ignorePatterns": ["next.config.js"]
 }

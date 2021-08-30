@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import AddNewSourceModal from "./modal/AddNewSourceModal";
 import colors from "~/config/themes/colors";
+import { ID } from "config/types/root_types";
 
 type Props = {
   hypothesisID: ID;
