@@ -29,6 +29,7 @@ import VoteWidget from "../VoteWidget";
 import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
+import { stripHTML } from "~/config/utils/string";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -84,8 +85,17 @@ const PaperEntryCard = (props) => {
   let selected = setVoteSelected(paper.user_vote);
   boost_amount = boost_amount || 0;
 
-  abstract = useMemo(() => parseMath(abstract), [abstract]);
-  title = useMemo(() => parseMath(title), [title]);
+  abstract = useMemo(() => {
+    abstract = stripHTML(abstract);
+    abstract = parseMath(abstract);
+    return abstract;
+  }, [abstract]);
+
+  title = useMemo(() => {
+    title = stripHTML(title);
+    title = parseMath(title);
+    return title;
+  }, [title]);  
 
   /**
    * Whether or not THIS PaperPDFModal is open.
