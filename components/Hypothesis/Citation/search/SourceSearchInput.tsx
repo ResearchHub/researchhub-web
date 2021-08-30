@@ -1,7 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
-import React, { ReactElement, ReactNode, useMemo, useState } from "react";
-import FormInput from "../../../Form/FormInput";
+import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import {
   DEFAULT_SEARCH_STATE,
   getHandleSourceSearchInputChange,
@@ -13,11 +11,13 @@ import {
   isNullOrUndefined,
   nullthrows,
   silentEmptyFnc,
-} from "../../../../config/utils/nullchecks";
-import colors from "../../../../config/themes/colors";
-import SourceSearchInputItem from "./SourceSearchInputItem";
+} from "~/config/utils/nullchecks";
+import { ReactElement, ReactNode, useMemo, useState } from "react";
 import CitationTableRowItemPlaceholder from "../table/CitationTableRowItemPlaceholder";
-import PaperMetaData from "../../../SearchSuggestion/PaperMetaData";
+import colors from "~/config/themes/colors";
+import FormInput from "~/components/Form/FormInput";
+import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData";
+import SourceSearchInputItem from "./SourceSearchInputItem";
 
 export type Props = {
   emptyResultDisplay?: ReactNode;

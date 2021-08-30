@@ -1,7 +1,7 @@
 import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { useDispatch, useStore, connect } from "react-redux";
+import { connect, useDispatch, useStore } from "react-redux";
 import ReactTooltip from "react-tooltip";
 
 import { ModalActions } from "../redux/modals";
@@ -48,7 +48,6 @@ const VoteWidget = (props) => {
     replyId,
     postDownvote,
     postDownvotePending,
-    comment,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -187,22 +186,15 @@ const VoteWidget = (props) => {
 
 VoteWidget.propTypes = {
   fontSize: PropTypes.string,
-  onUpvote: PropTypes.func,
+  horizontalView: PropTypes.bool,
   onDownvote: PropTypes.func,
+  onUpvote: PropTypes.func,
   score: PropTypes.number,
   width: PropTypes.string,
 };
 
 const ScorePill = (props) => {
-  const dispatch = useDispatch();
-  const {
-    score,
-    paper,
-    small,
-    promoted,
-    showPromotion,
-    horizontalView,
-  } = props;
+  const { score, small } = props;
 
   const isScoreNumeric = !isNaN(score);
 

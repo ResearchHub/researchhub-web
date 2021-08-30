@@ -1,9 +1,9 @@
-import { BodyTypeVals } from "./modalBodyTypes";
+import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { silentEmptyFnc } from "../../../../config/utils/nullchecks";
-import { formGenericStyles } from "../../../Paper/Upload/styles/formGenericStyles";
+import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { ReactElement, SyntheticEvent, useState } from "react";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import {
   SearchFilterDocType,
   SearchFilterDocTypeLabel,
