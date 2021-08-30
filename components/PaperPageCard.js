@@ -37,6 +37,7 @@ import { removeLineBreaksInStr } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
+import { stripHTML } from "~/config/utils/string";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -57,7 +58,7 @@ class PaperPageCard extends Component {
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
       title: {
-        parsed: parseMath(props?.paper?.title),
+        parsed: this.parseTitle(props?.paper?.title),
         raw: props?.paper?.title
       }
     };
@@ -77,11 +78,17 @@ class PaperPageCard extends Component {
     if (didTitleChange) {
       this.setState({
         title: {
-          parsed: parseMath(this.props.paper?.title),
+          parsed: this.parseTitle(this.props.paper?.title),
           raw: this.props.paper?.title,
         },
       });
     }
+  }
+
+  parseTitle(title) {
+    title = stripHTML(title);
+    title = parseMath(title);
+    return title;
   }
 
   revealPage = (timeout) => {
