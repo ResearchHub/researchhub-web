@@ -2,20 +2,20 @@ import { ReactElement, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import dayjs from "dayjs";
 import ReactHtmlParser from "react-html-parser";
-import { formatPublishedDate } from "../../config/utils/dates";
-import colors from "../../config/themes/colors";
+import { formatPublishedDate } from "~/config/utils/dates";
+import colors from "~/config/themes/colors";
 
 // Components
-import VoteWidget from "../../components/VoteWidget";
-import PaperMetadata from "../../components/Paper/PaperMetadata";
+import VoteWidget from "~/components/VoteWidget";
+import PaperMetadata from "~/components/Paper/PaperMetadata";
 import {
   DOWNVOTE,
   DOWNVOTE_ENUM,
   UPVOTE,
   UPVOTE_ENUM,
-} from "../../config/constants";
+} from "~/config/constants";
 import { postHypothesisVote } from "./api/postHypothesisVote";
-import { emptyFncWithMsg } from "../../config/utils/nullchecks";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const getMetaData = (hypothesis: any): ReactElement<"div"> => {
   const created_date = hypothesis.created_date;
@@ -43,7 +43,7 @@ const getVoteWidgetProps = ({
 }) => {
   const { downCount, upCount, userVote = {} } = localVoteMeta || {};
   const currScore = upCount - downCount + (hypothesis.boost_amount || 0);
-  const currUserVoteType = userVote.vote_type;
+  const currUserVoteType = userVote?.vote_type ?? {};
 
   const handleDownVote = () => {
     if (currUserVoteType === DOWNVOTE_ENUM) {

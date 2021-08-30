@@ -25,7 +25,7 @@ export default function CitationAddNewButton({
       label={
         <div className={css(styles.buttonInner)}>
           <AddNewSourceModal
-            hypothesisID={hypothesisID}
+          hypothesisID={hypothesisID}
             isModalOpen={shouldOpenModal}
             onCloseModal={(): void => setShouldOpenModal(false)}
             updateLastFetchTime={updateLastFetchTime}
