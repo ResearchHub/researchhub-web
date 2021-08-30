@@ -1,6 +1,7 @@
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { ReactElement, SyntheticEvent, useState } from "react";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
@@ -60,9 +61,10 @@ export default function AddNewSourceBodySearch({
             className={css(styles.uploadNewPaperButton)}
             onClick={() => setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)}
           >
-            <span className={css(styles.plusCircle)}>
-              <span className={css(styles.plus)}>{"+"}</span>
-            </span>
+            <FontAwesomeIcon
+              icon={"plus-circle"}
+              className={css(styles.plusCircle)}
+            />
             <span>{"Upload a paper"}</span>
           </div>
         }
@@ -210,15 +212,14 @@ const styles = StyleSheet.create({
   },
   plusCircle: {
     alignItems: "center",
-    border: `1px solid ${colors.GREY(1)}`,
     borderRadius: "50%",
-    color: "#fff",
+    color: colors.BLUE(1),
     display: "flex",
-    fontSize: 21,
-    height: 21,
+    fontSize: 16,
+    height: 16,
     justifyContent: "center",
     marginRight: 8,
     position: "relative",
-    width: 21,
+    width: 16,
   },
 });

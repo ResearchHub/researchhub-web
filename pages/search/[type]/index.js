@@ -1,11 +1,11 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Fragment } from "react";
-import { get } from "lodash";
 import { Helpers } from "@quantfive/js-web-config";
-import { pickFiltersForApi, QUERY_PARAM } from "~/config/utils";
+import { pickFiltersForApi, QUERY_PARAM } from "~/config/utils/search";
 import { useRouter } from "next/router";
 import API from "~/config/api";
 import Error from "next/error";
+import get from "lodash/get";
 import Head from "~/components/Head";
 import nookies from "nookies";
 import PropTypes from "prop-types";
@@ -23,7 +23,6 @@ const getFacetsToAggregate = (query = {}) => {
 
 const Index = ({ apiResponse, hasError }) => {
   const router = useRouter();
-  const currentSearchType = get(router, "query.type");
 
   if (hasError || !apiResponse) {
     return <Error statusCode={500} />;
@@ -71,7 +70,7 @@ Index.getInitialProps = async (ctx) => {
     .then((apiResponse) => {
       return { apiResponse };
     })
-    .catch((error) => {
+    .catch((_error) => {
       return { hasError: true };
     });
 };
