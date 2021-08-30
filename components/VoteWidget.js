@@ -1,9 +1,8 @@
 import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { useDispatch, useStore } from "react-redux";
+import { connect, useDispatch, useStore } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { connect } from "react-redux";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -49,7 +48,6 @@ const VoteWidget = (props) => {
     replyId,
     postDownvote,
     postDownvotePending,
-    comment,
   } = props;
 
   const userReputation = getCurrentUserReputation(store.getState());
@@ -188,22 +186,15 @@ const VoteWidget = (props) => {
 
 VoteWidget.propTypes = {
   fontSize: PropTypes.string,
-  onUpvote: PropTypes.func,
+  horizontalView: PropTypes.bool,
   onDownvote: PropTypes.func,
+  onUpvote: PropTypes.func,
   score: PropTypes.number,
   width: PropTypes.string,
 };
 
 const ScorePill = (props) => {
-  const dispatch = useDispatch();
-  const {
-    score,
-    paper,
-    small,
-    promoted,
-    showPromotion,
-    horizontalView,
-  } = props;
+  const { score, small } = props;
 
   return (
     <div className={css(styles.pillContainer)}>
@@ -385,7 +376,4 @@ const mapDispatchToProps = {
   postDownvote: DiscussionActions.postDownvote,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(VoteWidget);
+export default connect(null, mapDispatchToProps)(VoteWidget);

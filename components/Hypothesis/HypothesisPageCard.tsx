@@ -1,9 +1,9 @@
-import { ReactElement, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
+import { formatPublishedDate } from "~/config/utils/dates";
+import { ReactElement, useEffect, useState } from "react";
+import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
 import ReactHtmlParser from "react-html-parser";
-import { formatPublishedDate } from "~/config/utils/dates";
-import colors from "~/config/themes/colors";
 
 // Components
 import VoteWidget from "~/components/VoteWidget";

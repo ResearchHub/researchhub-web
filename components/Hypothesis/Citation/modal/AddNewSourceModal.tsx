@@ -1,12 +1,12 @@
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
-import { breakpoints } from "../../../../config/themes/screen";
-import { ID } from "../../../../config/types/root_types";
+import { breakpoints } from "~/config/themes/screen";
+import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState } from "react";
 import { StyleSheet } from "aphrodite";
 import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
-import BaseModal from "../../../Modals/BaseModal";
-import PaperUploadV2Create from "../../../Paper/Upload/PaperUploadV2Create";
+import BaseModal from "~/components/Modals/BaseModal";
+import PaperUploadV2Create from "~/components/Paper/Upload/PaperUploadV2Create";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
