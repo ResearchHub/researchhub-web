@@ -23,7 +23,6 @@ type UseEffectGetCitationsArgs = {
   hypothesisID: ID;
   lastFetchTime: number | null;
   setCitationItems: (items: CitationTableRowItemProps[]) => void;
-  updateLastFetchTime: Function;
   onSuccess?: Function;
 };
 
@@ -32,7 +31,6 @@ function useEffectGetCitations({
   lastFetchTime,
   setCitationItems,
   onSuccess,
-  updateLastFetchTime: _update,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
     fetchCitationsOnHypothesis({

@@ -29,14 +29,9 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
     toggleBlankState(metaData.csl_item.URL ? false : true);
   }, [metaData]);
   // Deconstruct the JSON returned from the backend
-  const {
-    url,
-    url_is_pdf,
-    url_is_unsupported_pdf,
-    pdf_location,
-    csl_item,
-  } = metaData;
-  console.warn("metaData: ", metaData);
+  const { url, url_is_pdf, url_is_unsupported_pdf, pdf_location, csl_item } =
+    metaData;
+
   const {
     URL,
     number,
@@ -67,8 +62,9 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         return `${firstAuthor.literal}, et al`;
       }
 
-      return `${firstAuthor.family}, ${firstAuthor.given &&
-        firstAuthor.given[0]}., et al`;
+      return `${firstAuthor.family}, ${
+        firstAuthor.given && firstAuthor.given[0]
+      }., et al`;
     }
     return (
       arr &&

@@ -12,7 +12,13 @@ import {
   nullthrows,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useMemo,
+  useState,
+} from "react";
 import CitationTableRowItemPlaceholder from "../table/CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
@@ -159,10 +165,10 @@ export default function SourceSearchInput({
               url_is_pdf: true,
             }}
             onEdit={silentEmptyFnc}
-            onRemove={(event): void => {
+            onRemove={(event: SyntheticEvent): void => {
               event.preventDefault();
               event.stopPropagation();
-              setSelectedItem(null);
+              handleClearItemSelect();
               setSearchState({
                 ...searchState,
                 filters: {
