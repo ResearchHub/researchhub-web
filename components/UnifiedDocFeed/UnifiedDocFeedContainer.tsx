@@ -149,9 +149,11 @@ function UnifiedDocFeedContainer({
     prefetchNextPage({ nextPage: 2 });
   }, []);
 
-  const prefetchNextPage = ({ nextPage }) => {
+  const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
+
     fetchUnifiedDocs({
       ...getFetchParams(),
+      ...fetchParams,
       page: nextPage,
       onSuccess: ({
         documents,
@@ -164,11 +166,7 @@ function UnifiedDocFeedContainer({
         })
       },
       onError: () => {
-        setPaginationInfo({
-          isLoading: false,
-          isLoadingMore: false,
-          page: nextPage - 1,
-        })        
+        setNextResultSet([]);
       }
     });
   }
@@ -178,15 +176,15 @@ function UnifiedDocFeedContainer({
       return silentEmptyFnc();
     };
 
+    // If we have more results loaded, use them
     if (nextResultSet.length > 0) {
       setUnifiedDocuments([...unifiedDocuments, ...nextResultSet])
       setNextResultSet([]);
+      prefetchNextPage({ nextPage: paginationInfo.page + 1 });
     }
-
-    prefetchNextPage({ nextPage: paginationInfo.page + 1 });
   }
 
-  const handleDocTypeChange = (docTypeValue) => {
+  const handleDocTypeChange = (docTypeValue: string): void => {
     resetState();
     setDocTypeFilter(docTypeValue);
 
@@ -194,7 +192,7 @@ function UnifiedDocFeedContainer({
       ...getFetchParams(),
       docTypeFilter: docTypeValue,
     });
-    prefetchNextPage({ nextPage: 2 });
+    prefetchNextPage({ nextPage: 2, fetchParams: { docTypeFilter: docTypeValue } });
 
     router.push(
       {
@@ -205,40 +203,39 @@ function UnifiedDocFeedContainer({
     );    
   }
 
-  const handleFilterSelect = (_type: string, filterBy: any) => {
+  const handleFilterSelect = (_type: string, filterBy: any): void => {
+    const updatedSubFilters = { filterBy, scope: subFilters.scope }
+
     resetState();
-    setSubFilters({
-      filterBy,
-      scope: subFilters.scope,
-    });
+    setSubFilters(updatedSubFilters);
     fetchUnifiedDocs({
       ...getFetchParams(),
-      subFilters: { filterBy, scope: subFilters.scope },
+      subFilters: updatedSubFilters
     });
-    prefetchNextPage({ nextPage: 2 });
+
+    prefetchNextPage({ nextPage: 2, fetchParams: { subFilters: updatedSubFilters } });
   }
 
-  const handleScopeSelect = (_type: string, scope) => {
+  const handleScopeSelect = (_type: string, scope: string): void => {
+    const updatedSubFilters = { filterBy: subFilters.filterBy, scope }
+    
     resetState();
-    setSubFilters({
-      filterBy: subFilters.filterBy,
-      scope,
-    });
+    setSubFilters(updatedSubFilters);
     fetchUnifiedDocs({
       ...getFetchParams(),
-      subFilters: { filterBy: subFilters.filterBy, scope },
+      subFilters: updatedSubFilters,
     });
-    prefetchNextPage({ nextPage: 2 });
+    prefetchNextPage({ nextPage: 2, fetchParams: { subFilters: updatedSubFilters } });
   }
 
   const resetState = (): void => {
-    setUnifiedDocuments([]);
-    setNextResultSet([]);
     setPaginationInfo({
       isLoading: true,
       isLoadingMore: false,
       page: 1,
     });
+    setUnifiedDocuments([]);
+    setNextResultSet([]);
   };
 
   const getFetchParams = (): any => {
