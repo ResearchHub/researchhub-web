@@ -1,7 +1,11 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import { isNullOrUndefined, doesNotExist, nullthrows } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  doesNotExist,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -69,16 +73,20 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 
 const routes = (BASE_URL) => {
   return {
-    CITATIONS: ({ citationID, hypothesisID }) => {
-      if (!isNullOrUndefined(citationID)) {
-        return BASE_URL + `citation/${citationID}`;
-      } else if (!isNullOrUndefined(hypothesisID)) {
-        return BASE_URL + `hypothesis/${hypothesisID}/get_citations/`;
-      } else {
-        nullthrows(
-          null,
-          "Both citationID & hypothesisID null when formatting URL"
-        );
+    CITATIONS: ({ citationID, hypothesisID }, requestType) => {
+      if (requestType === "get") {
+        if (!isNullOrUndefined(citationID)) {
+          return BASE_URL + `citation/${citationID}`;
+        } else if (!isNullOrUndefined(hypothesisID)) {
+          return BASE_URL + `hypothesis/${hypothesisID}/get_citations/`;
+        } else {
+          nullthrows(
+            null,
+            "Both citationID & hypothesisID null when formatting URL"
+          );
+        }
+      } else if (requestType === "post") {
+        return BASE_URL + `citation/`;
       }
     },
     CITATIONS_VOTE: ({ citationID, voteType }) => {
