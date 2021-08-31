@@ -117,7 +117,6 @@ export default function AddNewSourceBodySearch({
           }
           onClick={(event: SyntheticEvent): void => {
             setIsSubmitting(true);
-            debugger;
             postCitationFromSearch({
               payload: {
                 hypothesis_id: nullthrows(
@@ -125,7 +124,7 @@ export default function AddNewSourceBodySearch({
                   "Selected item must have HypothesisID"
                 ),
                 source_id: nullthrows(
-                  selectedItem?.source?.id,
+                  selectedItem?.unified_doc_id,
                   "Selected item must have unifiedDocID"
                 ),
               },
