@@ -29,8 +29,6 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
 type PaginationInfo = {
-  count: number;
-  hasMore: Boolean;
   isLoading: Boolean;
   isLoadingMore: Boolean;
   page: number;
@@ -68,7 +66,6 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const {
-    count: preloadCount,
     next: preloadNext,
     results: preloadResults,
   } = preloadedDocData || {};
@@ -91,19 +88,18 @@ function UnifiedDocFeedContainer({
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    count: preloadCount || 0,
-    hasMore: Boolean(preloadNext),
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
     page: 1,
   });
 
-  const { page, isLoading, hasMore, isLoadingMore } = paginationInfo;
+  const { page, isLoading, isLoadingMore } = paginationInfo;
   const { filterBy } = subFilters;
 
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
+  const [nextResultSet, setNextResultSet] = useState<any>([]);  
 
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
@@ -141,7 +137,7 @@ function UnifiedDocFeedContainer({
   useEffect((): void => {
     if (preloadedDocData) {
       setPaginationInfo({
-        ...paginationInfo,
+        isLoadingMore: false,
         isLoading: false,
         page: 1,
       });
@@ -149,53 +145,127 @@ function UnifiedDocFeedContainer({
       resetState();
       fetchUnifiedDocs({ ...getFetchParams() });
     }
+
+    prefetchNextPage({ nextPage: 2 });
   }, []);
 
-  const onFetchSuccess = ({
-    count,
-    page,
-    hasMore,
-    documents,
-    prevDocuments,
-  }): void => {
-    page > 1
-      ? setUnifiedDocuments([...prevDocuments, ...documents])
-      : setUnifiedDocuments(documents);
+  const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
 
-    setPaginationInfo({
-      ...paginationInfo,
-      page,
-      count,
-      hasMore,
-      isLoading: false,
-      isLoadingMore: false,
+    fetchUnifiedDocs({
+      ...getFetchParams(),
+      ...fetchParams,
+      page: nextPage,
+      onSuccess: ({
+        documents,
+      }) => {
+        setNextResultSet(documents);
+        setPaginationInfo({
+          isLoading: false,
+          isLoadingMore: false,
+          page: nextPage,
+        })
+      },
+      onError: () => {
+        setNextResultSet([]);
+      }
     });
-  };
+  }
 
-  const onFetchError = (error: Error): void => {
-    emptyFncWithMsg(error);
-    setPaginationInfo({
-      ...paginationInfo,
-      page,
-      hasMore: false,
-      isLoading: false,
-      isLoadingMore: false,
+  const handleLoadMore = (): void => {
+    if (isLoadingMore) {
+      return silentEmptyFnc();
+    };
+
+    // If we have more results loaded, use them
+    if (nextResultSet.length > 0) {
+      setUnifiedDocuments([...unifiedDocuments, ...nextResultSet])
+      setNextResultSet([]);
+      prefetchNextPage({ nextPage: paginationInfo.page + 1 });
+    }
+  }
+
+  const handleDocTypeChange = (docTypeValue: string): void => {
+    resetState();
+    setDocTypeFilter(docTypeValue);
+
+    fetchUnifiedDocs({
+      ...getFetchParams(),
+      docTypeFilter: docTypeValue,
     });
-  };
+    prefetchNextPage({ nextPage: 2, fetchParams: { docTypeFilter: docTypeValue } });
+
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, type: docTypeValue },
+      },
+      router.pathname + `?type=${docTypeValue}`
+    );    
+  }
+
+  const handleFilterSelect = (_type: string, filterBy: any): void => {
+    const updatedSubFilters = { filterBy, scope: subFilters.scope }
+
+    resetState();
+    setSubFilters(updatedSubFilters);
+    fetchUnifiedDocs({
+      ...getFetchParams(),
+      subFilters: updatedSubFilters
+    });
+
+    prefetchNextPage({ nextPage: 2, fetchParams: { subFilters: updatedSubFilters } });
+  }
+
+  const handleScopeSelect = (_type: string, scope: string): void => {
+    const updatedSubFilters = { filterBy: subFilters.filterBy, scope }
+    
+    resetState();
+    setSubFilters(updatedSubFilters);
+    fetchUnifiedDocs({
+      ...getFetchParams(),
+      subFilters: updatedSubFilters,
+    });
+    prefetchNextPage({ nextPage: 2, fetchParams: { subFilters: updatedSubFilters } });
+  }
 
   const resetState = (): void => {
     setPaginationInfo({
-      count: 0,
-      hasMore: false,
       isLoading: true,
       isLoadingMore: false,
       page: 1,
     });
+    setUnifiedDocuments([]);
+    setNextResultSet([]);
   };
 
   const getFetchParams = (): any => {
     const isOnMyHubsTab = ["", "/"].includes(router.pathname);
     const hubID = hub ? hub.id : null;
+
+    const onFetchSuccess = ({
+      page,
+      documents,
+      prevDocuments,
+    }): void => {
+      page > 1
+        ? setUnifiedDocuments([...prevDocuments, ...documents])
+        : setUnifiedDocuments(documents);
+
+      setPaginationInfo({
+        isLoading: false,
+        isLoadingMore: false,
+        page,
+      });
+    };
+
+    const onFetchError = (error: Error): void => {
+      emptyFncWithMsg(error);
+      setPaginationInfo({
+        isLoading: false,
+        isLoadingMore: false,
+        page: paginationInfo.page,
+      });
+    };
 
     return {
       hubID,
@@ -219,28 +289,7 @@ function UnifiedDocFeedContainer({
             isActive={docTypeFilter === filterValue}
             key={filterKey}
             label={UnifiedDocFilterLabels[filterKey]}
-            onClick={(): void => {
-              setUnifiedDocuments([]);
-              setDocTypeFilter(filterValue);
-              setPaginationInfo({
-                ...paginationInfo,
-                hasMore: false,
-                isLoading: true,
-                isLoadingMore: false,
-                page: 1,
-              });
-              fetchUnifiedDocs({
-                ...getFetchParams(),
-                docTypeFilter: filterValue,
-              });
-              router.push(
-                {
-                  pathname: router.pathname,
-                  query: { ...router.query, type: filterValue },
-                },
-                router.pathname + `?type=${filterValue}`
-              );
-            }}
+            onClick={() => handleDocTypeChange(filterValue)}
           />
         );
       }
@@ -309,42 +358,8 @@ function UnifiedDocFeedContainer({
         )}
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
-            onSubFilterSelect={(_type: string, filterBy: any): void => {
-              setUnifiedDocuments([]);
-              setPaginationInfo({
-                ...paginationInfo,
-                hasMore: false,
-                isLoading: true,
-                isLoadingMore: false,
-                page: 1,
-              });
-              setSubFilters({
-                filterBy,
-                scope: subFilters.scope,
-              });
-              fetchUnifiedDocs({
-                ...getFetchParams(),
-                subFilters: { filterBy, scope: subFilters.scope },
-              });
-            }}
-            onScopeSelect={(_type: string, scope) => {
-              setUnifiedDocuments([]);
-              setPaginationInfo({
-                ...paginationInfo,
-                hasMore: false,
-                isLoading: true,
-                isLoadingMore: false,
-                page: 1,
-              });
-              setSubFilters({
-                filterBy: subFilters.filterBy,
-                scope,
-              });
-              fetchUnifiedDocs({
-                ...getFetchParams(),
-                subFilters: { filterBy: subFilters.filterBy, scope },
-              });
-            }}
+            onSubFilterSelect={handleFilterSelect}
+            onScopeSelect={handleScopeSelect}
             subFilters={subFilters}
           />
         </div>
@@ -382,23 +397,10 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : hasMore ? (
+          ) : nextResultSet.length > 0 ? (
             <Ripples
               className={css(styles.loadMoreButton)}
-              onClick={(): void =>
-                isLoadingMore
-                  ? silentEmptyFnc()
-                  : (setPaginationInfo({
-                      ...paginationInfo,
-                      isLoading: false,
-                      isLoadingMore: true,
-                    }),
-                    fetchUnifiedDocs({
-                      ...getFetchParams(),
-                      page: paginationInfo.page + 1,
-                      isLoadingMore: true,
-                    }))
-              }
+              onClick={handleLoadMore}
             >
               {"Load More"}
             </Ripples>
