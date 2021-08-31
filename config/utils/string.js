@@ -26,3 +26,7 @@ export function truncateText(str) {
 export const isString = (str) => {
   return typeof str === "string";
 };
+
+export const stripHTML = (str) => {
+  return (str || "").replace(/<[^>]*>?/gm, '');
+}

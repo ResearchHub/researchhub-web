@@ -15,6 +15,8 @@ import SummaryContributor from "../SummaryContributor";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
 import SectionBounty from "./SectionBounty";
 import AbstractPlaceholder from "../../Placeholders/AbstractPlaceholder";
+import { parseMath } from "~/config/utils/latex";
+import { stripHTML } from "~/config/utils/string";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -406,7 +408,7 @@ class SummaryTab extends Component {
 
   renderAbstract = () => {
     const { paper } = this.props;
-    const { abstract, showAbstract, editAbstract, readOnly } = this.state;
+    const { showAbstract, editAbstract, readOnly, abstract } = this.state;
     const externalSource = paper.retrieved_from_external_source;
 
     if (showAbstract) {
@@ -436,7 +438,11 @@ class SummaryTab extends Component {
           </div>
         );
       }
-      if (paper.abstract || abstract) {
+      if (abstract) {
+        let parsedAbstract = abstract; 
+        parsedAbstract = stripHTML(parsedAbstract);
+        parsedAbstract = parseMath(parsedAbstract);
+
         return (
           <Fragment>
             {readOnly && !editAbstract && (
@@ -444,7 +450,7 @@ class SummaryTab extends Component {
                 className={css(styles.abstractContainer)}
                 data-test={isDevEnv() ? `abstract` : undefined}
               >
-                {abstract}
+                {parsedAbstract}
               </div>
             )}
           </Fragment>
@@ -746,8 +752,9 @@ var styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     fontFamily: "CharterBT",
-    whiteSpace: "pre-wrap",
     wordBreak: "break-word",
+    display: "block",
+    borderSpacing: "initial",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
       width: "100%",
