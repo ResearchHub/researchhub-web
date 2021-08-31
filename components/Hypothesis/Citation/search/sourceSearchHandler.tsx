@@ -76,8 +76,6 @@ export const getHandleSourceSearchInputChange = ({
         .then(Helpers.parseJSON)
         .then((apiResponse) => {
           onSuccess(apiResponse);
-          console.warn("searchState: ", searchState);
-          console.warn("apiResponse: ", apiResponse);
           debounceRef = null;
         })
         .catch((error: Error): void => onError(error));
