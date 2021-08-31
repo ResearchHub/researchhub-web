@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import router, { useRouter } from "next/router";
+import { useRouter } from "next/router";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
@@ -19,6 +19,9 @@ function useFetchNotes(router) {
       .then(Helpers.parseJSON)
       .then((data) => {
         setNotes(data.results);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [noteId]);
 
@@ -35,6 +38,9 @@ function useFetchNote(router) {
       .then(Helpers.parseJSON)
       .then((data) => {
         setNote(data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, [noteId]);
 
@@ -94,7 +100,6 @@ export const ELNEditor = ({ user }) => {
     },
     placeholder:
       "Start typing to continue with an empty page, or pick a template",
-    initialData: note?.title ?? "",
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
@@ -189,15 +194,15 @@ export const ELNEditor = ({ user }) => {
         </div>
         {notes.map((note, index) => (
           <Link href={`/notebook/${note.id}`}>
-            <div
+            <a
               className={css(
                 styles.sidebarSectionContent,
-                index === 3 && styles.lastSection
+                index === notes.length - 1 && styles.lastSection
               )}
               key={note.id}
             >
               {note.title}
-            </div>
+            </a>
           </Link>
         ))}
         <div
@@ -259,16 +264,17 @@ const styles = StyleSheet.create({
   },
   editorContainer: {
     height: "calc(100vh - 80px)",
-    marginLeft: "max(min(calc(16%), 300px), 240px)",
+    marginLeft: "max(min(16%, 300px), 240px)",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: "calc(100vh - 66px)",
+    },
   },
   editor: {
     height: "100%",
-    margin: "auto",
-    maxWidth: 900,
   },
   sidebar: {
     background: "#f9f9fc",
@@ -311,6 +317,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     padding: 20,
+    textDecoration: "none",
     ":hover": {
       background: "#f0f0f6",
     },
@@ -319,10 +326,11 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #f0f0f0",
   },
   sidebarNewNote: {
-    borderBottom: "1px solid #f0f0f0",
+    borderTop: "1px solid #f0f0f0",
     color: colors.BLUE(),
     cursor: "pointer",
     display: "flex",
+    marginTop: "auto",
     padding: 20,
     ":hover": {
       color: "#3E43E8",
