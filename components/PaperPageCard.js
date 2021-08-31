@@ -36,6 +36,8 @@ import { formatPublishedDate } from "~/config/utils/dates";
 import { removeLineBreaksInStr } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
+import { parseMath } from "~/config/utils/latex";
+import { stripHTML } from "~/config/utils/string";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -55,6 +57,10 @@ class PaperPageCard extends Component {
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
+      title: {
+        parsed: this.parseTitle(props?.paper?.title),
+        raw: props?.paper?.title
+      }
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
@@ -64,6 +70,25 @@ class PaperPageCard extends Component {
     if (document.body.style) {
       document.body.style.overflow = "scroll";
     }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const didTitleChange = this.props.paper?.title !== this.state.title.raw;
+
+    if (didTitleChange) {
+      this.setState({
+        title: {
+          parsed: this.parseTitle(this.props.paper?.title),
+          raw: this.props.paper?.title,
+        },
+      });
+    }
+  }
+
+  parseTitle(title) {
+    title = stripHTML(title);
+    title = parseMath(title);
+    return title;
   }
 
   revealPage = (timeout) => {
@@ -572,8 +597,8 @@ class PaperPageCard extends Component {
       doneFetchingPaper,
       discussionCount,
     } = this.props;
-    const { fetching, previews, previewAvailable } = this.state;
-    const { boost_amount, paper_title, title } = paper;
+    const { fetching, previews, previewAvailable, title } = this.state;
+    const { boost_amount, paper_title } = paper;
     const promotedScore = score + boost_amount;
     const formattedPaperTitle =
       !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
@@ -637,7 +662,7 @@ class PaperPageCard extends Component {
                             className={css(styles.title)}
                             property={"headline"}
                           >
-                            {formattedPaperTitle}
+                            {title.parsed}
                           </h1>
                         </div>
                       </div>
@@ -818,8 +843,8 @@ const styles = StyleSheet.create({
     fontWeight: "unset",
     padding: 0,
     margin: 0,
-    display: "flex",
-
+    display: "block",
+    borderSpacing: "initial",
     "@media only screen and (max-width: 760px)": {
       fontSize: 24,
     },
