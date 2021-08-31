@@ -1035,7 +1035,6 @@ const styles = StyleSheet.create({
     padding: "20px 30px 30px 90px",
     boxSizing: "border-box",
     borderRadius: 4,
-    // overflow: "hidden",
     "@media only screen and (max-width: 767px)": {
       borderRadius: "0px",
       borderTop: "none",
