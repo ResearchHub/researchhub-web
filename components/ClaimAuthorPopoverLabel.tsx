@@ -49,7 +49,7 @@ export default function ClaimAuthorPopoverLabel({
                   />
                 </div>
                 <div className={css(styles.bodySubheader)}>
-                  {"Claim your profile and receive 1000 RSC"}
+                  {"Claim your profile and your accrued RSC"}
                 </div>
               </div>
               {/* @ts-ignore */}

@@ -151,6 +151,17 @@ class ColumnAuthors extends Component {
               title={`Author${hasManyAuthors ? "s" : ""}`}
               overrideStyles={styles.title}
             />
+            <div className={css(styles.authors)}>
+              {authorCards}
+              {pages > page && (
+                <div
+                  className={css(styles.viewMoreButton)}
+                  onClick={this.nextPage}
+                >
+                  View more
+                </div>
+              )}
+            </div>
             {shouldDisplayClaimCard && (
               <div className={css(styles.claimCardWrap)}>
                 <div className={css(styles.claimCard)}>
@@ -184,17 +195,6 @@ class ColumnAuthors extends Component {
                 </div>
               </div>
             )}
-            <div className={css(styles.authors)}>
-              {authorCards}
-              {pages > page && (
-                <div
-                  className={css(styles.viewMoreButton)}
-                  onClick={this.nextPage}
-                >
-                  View more
-                </div>
-              )}
-            </div>
           </div>
         </div>
       </ReactPlaceholder>
