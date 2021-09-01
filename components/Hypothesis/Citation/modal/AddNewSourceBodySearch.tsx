@@ -47,6 +47,7 @@ export default function AddNewSourceBodySearch({
         formGenericStyles.noBorder
       )}
     >
+      <div className={css(styles.title)}>{"Add a new Source"}</div>
       <FormSelect
         id="doc-search-type"
         inputStyle={formGenericStyles.inputMax}
@@ -255,5 +256,30 @@ const styles = StyleSheet.create({
     marginRight: 8,
     position: "relative",
     width: 16,
+  },
+  title: {
+    alignItems: "center",
+    color: colors.BLACK(1),
+    display: "flex",
+    fontSize: 26,
+    fontWeight: 500,
+    height: 30,
+    justifyContent: "center",
+    width: "100%",
+    marginBottom: 16,
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
 });
