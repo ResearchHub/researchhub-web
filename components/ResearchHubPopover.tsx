@@ -1,6 +1,6 @@
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Fragment, ReactElement } from "react";
-import { isNullOrUndefined } from "../config/utils/nullchecks";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 type Props = {
   isOpen: boolean;
