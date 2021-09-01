@@ -2,20 +2,20 @@ import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "~/config/types/root_types";
 import API from "~/config/api";
 
-type FetchHypothesisArgs = {
-  hypothesisID: ID;
+type PostCitationFromSearchArgs = {
   onError: Function;
   onSuccess: Function;
+  payload: { hypothesis_id: ID; source_id: ID };
 };
 
-export function fetchHypothesis({
-  hypothesisID,
+export function postCitationFromSearch({
   onError,
   onSuccess,
-}: FetchHypothesisArgs) {
-  fetch(API.HYPOTHESIS({ hypothesis_id: hypothesisID }), API.GET_CONFIG())
+  payload,
+}: PostCitationFromSearchArgs): void {
+  fetch(API.CITATIONS({}, "post"), API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((data) => onSuccess(data))
+    .then((result: Object): void => onSuccess(result))
     .catch((error: Error): void => onError(error));
 }

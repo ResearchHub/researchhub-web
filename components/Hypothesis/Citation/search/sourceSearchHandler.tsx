@@ -39,7 +39,7 @@ export const DEFAULT_SEARCH_STATE: SearchState = {
   config: {
     route: "paper",
   },
-  facets: ["hubs"],
+  facets: [],
   filters: {
     query: "",
     searchType: "paper",
@@ -64,7 +64,14 @@ export const getHandleSourceSearchInputChange = ({
 
     debounceRef = setTimeout(async () => {
       const { config, facets, filters } = searchState;
-      return fetch(API.SEARCH({ config, facets, filters }), API.GET_CONFIG())
+      return fetch(
+        API.SEARCH({
+          config,
+          facets,
+          filters: { ...filters, search_multi_match: filters.query },
+        }),
+        API.GET_CONFIG()
+      )
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((apiResponse) => {
@@ -72,6 +79,6 @@ export const getHandleSourceSearchInputChange = ({
           debounceRef = null;
         })
         .catch((error: Error): void => onError(error));
-    }, debounceTime || 500);
+    }, debounceTime ?? 500);
   };
 };

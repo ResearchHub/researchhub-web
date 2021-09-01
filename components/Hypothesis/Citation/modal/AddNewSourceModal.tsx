@@ -47,7 +47,12 @@ function getModalBody({
     case SEARCH:
       return (
         <AddNewSourceBodySearch
+          hypothesisID={hypothesisID}
           onCancel={onCloseModal}
+          onSubmitComplete={(event: SyntheticEvent): void => {
+            updateLastFetchTime();
+            onCloseModal(event);
+          }}
           setBodyType={setBodyType}
         />
       );

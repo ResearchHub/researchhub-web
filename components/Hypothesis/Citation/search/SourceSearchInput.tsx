@@ -12,7 +12,13 @@ import {
   nullthrows,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode, useMemo, useState } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useMemo,
+  useState,
+} from "react";
 import CitationTableRowItemPlaceholder from "../table/CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
@@ -45,9 +51,8 @@ export default function SourceSearchInput({
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
   const [isResultLoading, setIsResultLoading] = useState<boolean>(false);
   const [searchResults, setSearchResults] = useState<any>([]);
-  const [searchState, setSearchState] = useState<SearchState>(
-    DEFAULT_SEARCH_STATE
-  );
+  const [searchState, setSearchState] =
+    useState<SearchState>(DEFAULT_SEARCH_STATE);
   const [selectedItem, setSelectedItem] = useState<any>(null);
 
   const {
@@ -62,7 +67,7 @@ export default function SourceSearchInput({
       onLoad: (): void => setIsResultLoading(true),
       onSuccess: (payload: any): void => {
         setIsResultLoading(false);
-        setSearchResults(payload.results || []);
+        setSearchResults(payload.results ?? []);
       },
     });
   }, [setSearchResults, setIsResultLoading]);
@@ -118,8 +123,8 @@ export default function SourceSearchInput({
         : searchResults
             .map((item: any, index: number) => (
               <SourceSearchInputItem
-                key={`source-search-input-item-${(item || {}).id || index}`}
-                label={item.title || item.paper_title || "N/A"}
+                key={`source-search-input-item-${(item ?? {}).id ?? index}`}
+                label={item.title ?? item.paper_title ?? "N/A"}
                 onSelect={(): void => handleItemSelect(item)}
               />
             ))
@@ -139,9 +144,9 @@ export default function SourceSearchInput({
             labelStyle={formGenericStyles.labelStyle}
             onChange={handleInputChange}
             onFocus={(): void => setIsInputFocused(true)}
-            placeholder={inputPlaceholder || "Search sources"}
+            placeholder={inputPlaceholder ?? "Search sources"}
             required={Boolean(required)}
-            value={query || ""}
+            value={query ?? ""}
           />
           <span className={css(styles.uploadAPaper)} onClick={onPaperUpload}>
             {"Upload a paper"}
@@ -154,16 +159,16 @@ export default function SourceSearchInput({
               ...selectedItem,
               csl_item: {
                 ...selectedItem,
-                author: (selectedItem || {}).authors,
+                author: (selectedItem ?? {}).authors,
                 URL: true,
               },
               url_is_pdf: true,
             }}
             onEdit={silentEmptyFnc}
-            onRemove={(event): void => {
+            onRemove={(event: SyntheticEvent): void => {
               event.preventDefault();
               event.stopPropagation();
-              setSelectedItem(null);
+              handleClearItemSelect();
               setSearchState({
                 ...searchState,
                 filters: {

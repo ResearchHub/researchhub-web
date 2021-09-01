@@ -3,8 +3,8 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { formGenericStyles } from "~/components/Paper/Upload/styles/formGenericStyles";
+import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState } from "react";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import {
   SearchFilterDocType,
   SearchFilterDocTypeLabel,
@@ -12,23 +12,33 @@ import {
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import FormSelect from "~/components//Form/FormSelect";
+import Loader from "~/components/Loader/Loader";
 import SourceSearchInput from "../search/SourceSearchInput";
+import { postCitationFromSearch } from "../../api/postCitationFromSearch";
+import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
 
+const { NEW_PAPER_UPLOAD } = NEW_SOURCE_BODY_TYPES;
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
 const docTypeOptions = [
   { label: SearchFilterDocTypeLabel[PAPER_KEY], value: PAPER_KEY },
 ];
 
 type Props = {
+  hypothesisID: ID;
   onCancel: (event: SyntheticEvent) => void;
+  onSubmitComplete: (event: SyntheticEvent) => void;
   setBodyType: (bodyType: BodyTypeVals) => void;
 };
 
 export default function AddNewSourceBodySearch({
+  hypothesisID,
   onCancel,
+  onSubmitComplete,
   setBodyType,
 }: Props): ReactElement<"div"> {
-  const [isItemSelected, setIsItemSelected] = useState<boolean>(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const isItemSelected = Boolean(selectedItem);
   return (
     <div
       className={css(
@@ -37,6 +47,7 @@ export default function AddNewSourceBodySearch({
         formGenericStyles.noBorder
       )}
     >
+      <div className={css(styles.title)}>{"Add a new Source"}</div>
       <FormSelect
         id="doc-search-type"
         inputStyle={formGenericStyles.inputMax}
@@ -51,15 +62,14 @@ export default function AddNewSourceBodySearch({
       <SourceSearchInput
         inputPlaceholder="Search for a paper or upload"
         label="Source"
-        onPaperUpload={() =>
-          setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)
-        }
-        onSelect={silentEmptyFnc}
+        onClearSelect={(): void => setSelectedItem(null)}
+        onPaperUpload={(): void => setBodyType(NEW_PAPER_UPLOAD)}
+        onSelect={(item: any): void => setSelectedItem(item)}
         optionalResultItem={
           <div
             key="optionalResultItem-Search-PaperUpload"
             className={css(styles.uploadNewPaperButton)}
-            onClick={() => setBodyType(NEW_SOURCE_BODY_TYPES.NEW_PAPER_UPLOAD)}
+            onClick={(): void => setBodyType(NEW_PAPER_UPLOAD)}
           >
             <FontAwesomeIcon
               icon={"plus-circle"}
@@ -98,9 +108,34 @@ export default function AddNewSourceBodySearch({
         <Button
           customButtonStyle={styles.buttonCustomStyle}
           customLabelStyle={styles.buttonLabel}
-          disabled={!isItemSelected}
-          label="Add source"
-          onClick={(): void => {}}
+          disabled={!isItemSelected || isSubmitting}
+          label={
+            !isSubmitting ? (
+              "Add source"
+            ) : (
+              <Loader size={8} loading color="#fff" />
+            )
+          }
+          onClick={(event: SyntheticEvent): void => {
+            setIsSubmitting(true);
+            postCitationFromSearch({
+              payload: {
+                hypothesis_id: nullthrows(
+                  hypothesisID,
+                  "Selected item must have HypothesisID"
+                ),
+                source_id: nullthrows(
+                  selectedItem?.unified_doc_id,
+                  "Selected item must have unifiedDocID"
+                ),
+              },
+              onSuccess: (): void => {
+                setIsSubmitting(false);
+                onSubmitComplete(event);
+              },
+              onError: emptyFncWithMsg,
+            });
+          }}
         />
       </div>
     </div>
@@ -221,5 +256,30 @@ const styles = StyleSheet.create({
     marginRight: 8,
     position: "relative",
     width: 16,
+  },
+  title: {
+    alignItems: "center",
+    color: colors.BLACK(1),
+    display: "flex",
+    fontSize: 26,
+    fontWeight: 500,
+    height: 30,
+    justifyContent: "center",
+    width: "100%",
+    marginBottom: 16,
+    "@media only screen and (max-width: 725px)": {
+      width: 450,
+    },
+    "@media only screen and (max-width: 557px)": {
+      width: 380,
+      fontSize: 24,
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: 300,
+      fontSize: 22,
+    },
+    "@media only screen and (max-width: 321px)": {
+      width: 280,
+    },
   },
 });
