@@ -9,7 +9,7 @@ const AccruedRSC = ({ name, accruedRSC }) => {
   return (
     <div className={css(styles.nameContainer)}>
       <div className={css(styles.name)}>{name}</div>
-      {accruedRSC ? (
+      {/* {accruedRSC ? (
         <div className={css(styles.accruedRSC)}>
           <span className={css(styles.accruedAmount)}>{accruedRSC} RSC</span>
           <img
@@ -18,7 +18,7 @@ const AccruedRSC = ({ name, accruedRSC }) => {
             alt="Pot of Gold"
           ></img>
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   );
 };
