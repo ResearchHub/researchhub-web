@@ -1,19 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
-import { formatUploadedDate } from "../../../config/utils/dates";
-import { transformDate } from "../../../redux/utils";
-import {
-  UPVOTE,
-  DOWNVOTE,
-  userVoteToConstant,
-} from "../../../config/constants";
-import API from "../../../config/api";
+import { formatUploadedDate } from "~/config/utils/dates";
+import { transformDate } from "~/redux/utils";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
+import API from "~/config/api";
 import AuthorAvatar from "../../AuthorAvatar";
-import colors, { genericCardColors } from "../../../config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import DesktopOnly from "../../DesktopOnly";
 import HubDropDown from "../../Hubs/HubDropDown";
 import HubTag from "../../Hubs/HubTag";
-import icons from "../../../config/themes/icons";
+import icons from "~/config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
@@ -21,7 +17,7 @@ import { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { isDevEnv } from "../../../config/utils/env";
+import { isDevEnv } from "~/config/utils/env";
 
 export type UserPostCardProps = {
   created_by: any;
