@@ -19,7 +19,7 @@ function FeedBlurWithButton(
   const { auth, currentAuthorId, hubState, isLoggedIn } = props;
   const router = useRouter();
 
-  const isOnMyHubsTab = ["", "/"].includes(router.pathname);
+  const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
@@ -38,8 +38,8 @@ function FeedBlurWithButton(
                 },
               }
             : {
-                href: "/all",
-                linkAs: "/all",
+                href: "/",
+                linkAs: "/",
               }
         }
         hideRipples={true}

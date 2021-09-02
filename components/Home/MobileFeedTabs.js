@@ -9,7 +9,7 @@ const MobileFeedTabs = (props) => {
   const { activeLeft, activeRight, onFeedSelect } = props;
 
   const onClick = async (left) => {
-    const link = left ? "/" : "/all";
+    const link = left ? "/" : "/my-hubs";
     await Router.push(link, link, { shallow: true });
     return onFeedSelect(left ? 0 : 1);
   };
@@ -17,25 +17,25 @@ const MobileFeedTabs = (props) => {
   return (
     <div className={css(styles.tabs)}>
       <div
-        className={css(styles.tab, styles.tabLeft, activeLeft && styles.active)}
+        className={css(
+          styles.tab,
+          styles.tabLeft,
+          activeLeft && styles.active
+        )}
         onClick={() => onClick(true)}
+      >
+        <span className={css(styles.icon)}>{icons.squares}</span>
+        All
+      </div>
+      <div
+        className={css(styles.tab, styles.tabRight, activeRight && styles.active)}
+        onClick={() => onClick(false)}
       >
         <img
           src={"/static/ResearchHubIcon.png"}
           className={css(styles.rhIcon)}
         />
         My Hubs
-      </div>
-      <div
-        className={css(
-          styles.tab,
-          styles.tabRight,
-          activeRight && styles.active
-        )}
-        onClick={() => onClick(false)}
-      >
-        <span className={css(styles.icon)}>{icons.squares}</span>
-        All
       </div>
     </div>
   );

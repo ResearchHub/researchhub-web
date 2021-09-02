@@ -408,6 +408,7 @@ const Paper = (props) => {
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+
   return (
     <div>
       <PaperBanner paper={paper} loadingPaper={loadingPaper} />
@@ -497,24 +498,26 @@ const Paper = (props) => {
                 </div>
               </Waypoint>
             </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(2)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <div className={css(styles.space)}>
-                <a name="comments" />
-                <DiscussionTab
-                  hostname={props.hostname}
-                  documentType={"paper"}
-                  paperId={paperId}
-                  paperState={paper}
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  isCollapsible={false}
-                />
-              </div>
-            </Waypoint>
+            {!loadingPaper && /* Performance Optimization */
+              <Waypoint
+                onEnter={() => onSectionEnter(2)}
+                topOffset={40}
+                bottomOffset={"95%"}
+              >
+                <div className={css(styles.space)}>
+                  <a name="comments" />
+                  <DiscussionTab
+                    hostname={props.hostname}
+                    documentType={"paper"}
+                    paperId={paperId}
+                    paperState={paper}
+                    calculatedCount={discussionCount}
+                    setCount={setCount}
+                    isCollapsible={false}
+                  />
+                </div>
+              </Waypoint>
+            }
             <div
               className={css(
                 styles.paperPageContainer,
@@ -523,46 +526,51 @@ const Paper = (props) => {
                 !paperDraftExists && styles.hide
               )}
             >
+              {!loadingPaper && /* Performance Optimization */
+                <Waypoint
+                  onEnter={() => onSectionEnter(3)}
+                  topOffset={40}
+                  bottomOffset={"95%"}
+                >
+                  <div>
+                    <a name="paper" />
+                    <TableOfContent
+                      paperDraftExists={paperDraftExists}
+                      paperDraftSections={paperDraftSections}
+                    />
+                    <PaperDraftContainer
+                      isViewerAllowedToEdit={isModerator}
+                      paperDraftExists={paperDraftExists}
+                      paperDraftSections={paperDraftSections}
+                      paperId={paperId}
+                      setActiveSection={setActiveSection}
+                      setPaperDraftExists={setPaperDraftExists}
+                      setPaperDraftSections={setPaperDraftSections}
+                    />
+                  </div>
+                </Waypoint>
+              }
+            </div>
+            {!loadingPaper && /* Performance Optimization */
               <Waypoint
-                onEnter={() => onSectionEnter(3)}
+                onEnter={() => onSectionEnter(4)}
                 topOffset={40}
                 bottomOffset={"95%"}
               >
                 <div>
-                  <a name="paper" />
-                  <TableOfContent
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                  />
-                  <PaperDraftContainer
-                    isViewerAllowedToEdit={isModerator}
-                    paperDraftExists={paperDraftExists}
-                    paperDraftSections={paperDraftSections}
-                    paperId={paperId}
-                    setActiveSection={setActiveSection}
-                    setPaperDraftExists={setPaperDraftExists}
-                    setPaperDraftSections={setPaperDraftSections}
-                  />
+                  <a name="paper pdf" />
+                  <div className={css(styles.paperTabContainer)}>
+                    <PaperTab
+                      paperId={paperId}
+                      paper={paper}
+                      isModerator={isModerator}
+                    />
+                  </div>
                 </div>
               </Waypoint>
-            </div>
-            <Waypoint
-              onEnter={() => onSectionEnter(4)}
-              topOffset={40}
-              bottomOffset={"95%"}
-            >
-              <div>
-                <a name="paper pdf" />
-                <div className={css(styles.paperTabContainer)}>
-                  <PaperTab
-                    paperId={paperId}
-                    paper={paper}
-                    isModerator={isModerator}
-                  />
-                </div>
-              </div>
-            </Waypoint>
+            }
           </div>
+          
           <div className={css(styles.sidebar)}>
             {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
