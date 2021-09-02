@@ -11,7 +11,7 @@ export default function Index() {
   const enableHypothesis = killswitch("hypothesis");
   useEffect(() => {
     if (!enableHypothesis) {
-      router.push("/all");
+      router.push("/");
     }
   }, [enableHypothesis, router.pathname]);
   if (enableHypothesis) {

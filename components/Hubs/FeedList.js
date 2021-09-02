@@ -30,14 +30,14 @@ class FeedList extends Component {
             className={css(styles.rhIcon)}
           />
         ),
-        href: "/",
-        as: "/",
+        href: "/my-hubs",
+        as: "/my-hubs",
       },
       {
         label: "All",
         icon: icons.squares,
-        href: "/all",
-        as: "/all",
+        href: "/",
+        as: "/",
       },
     ];
   }
@@ -92,6 +92,7 @@ class FeedList extends Component {
 
   renderFeedList = () => {
     const { activeFeed } = this.props;
+
     return this.feeds.map((feed, i) => {
       const { label, icon, href, as } = feed;
 
