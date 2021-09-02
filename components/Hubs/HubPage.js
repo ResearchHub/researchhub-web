@@ -361,7 +361,7 @@ class HubPage extends Component {
     const scopeRoute = "/[scope]";
     const hubNameRoute = "/[slug]";
     const hubPrefix = "/hubs";
-    const allPrefix = "/all";
+    const allPrefix = "/";
 
     const myFeed = feed === 0;
     const trending = filter === "trending";
@@ -618,6 +618,7 @@ class HubPage extends Component {
 
   render() {
     const { feed, isLatestActivityShown } = this.state;
+    console.log('feed', feed);
     const {
       auth,
       home,

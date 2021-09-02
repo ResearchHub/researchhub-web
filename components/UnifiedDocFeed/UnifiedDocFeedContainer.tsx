@@ -71,7 +71,7 @@ function UnifiedDocFeedContainer({
   } = preloadedDocData || {};
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
-    (): Boolean => ["", "/"].includes(router.pathname),
+    (): Boolean => ["/my-hubs"].includes(router.pathname),
     [router.pathname]
   );
 
@@ -239,7 +239,6 @@ function UnifiedDocFeedContainer({
   };
 
   const getFetchParams = (): any => {
-    const isOnMyHubsTab = ["", "/"].includes(router.pathname);
     const hubID = hub ? hub.id : null;
 
     const onFetchSuccess = ({
