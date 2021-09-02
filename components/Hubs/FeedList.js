@@ -59,7 +59,7 @@ class FeedList extends Component {
 
     if (auth.isLoggedIn && hubState.subscribedHubs.length) {
       return (
-        i === 0 && (
+        i === 1 && (
           <span
             className={css(styles.dropdownIcon)}
             onClick={this.toggleDropdown}
@@ -79,7 +79,7 @@ class FeedList extends Component {
 
     if (auth.isLoggedIn && hubState.subscribedHubs.length) {
       return (
-        i === 0 &&
+        i === 1 &&
         dropdown && (
           <div className={css(styles.dropdown)}>
             <SubscribedHubList current={this.props.current} />
