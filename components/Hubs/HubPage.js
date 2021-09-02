@@ -618,7 +618,7 @@ class HubPage extends Component {
 
   render() {
     const { feed, isLatestActivityShown } = this.state;
-    console.log('feed', feed);
+
     const {
       auth,
       home,
