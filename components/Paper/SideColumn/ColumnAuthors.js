@@ -128,6 +128,10 @@ class ColumnAuthors extends Component {
     const shouldDisplayClaimCard = claimableAuthors.length > 0;
     const authorCards = this.renderAuthorCards();
 
+    if (ready && !authors.length) {
+      return null;
+    }
+
     return (
       <ReactPlaceholder
         showLoadingAnimation

@@ -23,6 +23,12 @@ class FeedList extends Component {
 
     this.feeds = [
       {
+        label: "All",
+        icon: icons.squares,
+        href: "/",
+        as: "/",
+      },
+      {
         label: "My Hubs",
         icon: (
           <img
@@ -30,15 +36,9 @@ class FeedList extends Component {
             className={css(styles.rhIcon)}
           />
         ),
-        href: "/",
-        as: "/",
-      },
-      {
-        label: "All",
-        icon: icons.squares,
-        href: "/all",
-        as: "/all",
-      },
+        href: "/my-hubs",
+        as: "/my-hubs",
+      }
     ];
   }
 
@@ -59,7 +59,7 @@ class FeedList extends Component {
 
     if (auth.isLoggedIn && hubState.subscribedHubs.length) {
       return (
-        i === 0 && (
+        i === 1 && (
           <span
             className={css(styles.dropdownIcon)}
             onClick={this.toggleDropdown}
@@ -79,7 +79,7 @@ class FeedList extends Component {
 
     if (auth.isLoggedIn && hubState.subscribedHubs.length) {
       return (
-        i === 0 &&
+        i === 1 &&
         dropdown && (
           <div className={css(styles.dropdown)}>
             <SubscribedHubList current={this.props.current} />
@@ -92,6 +92,7 @@ class FeedList extends Component {
 
   renderFeedList = () => {
     const { activeFeed } = this.props;
+
     return this.feeds.map((feed, i) => {
       const { label, icon, href, as } = feed;
 
