@@ -76,7 +76,10 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
       // Focus at end of input
       el.value = "";
       el.value = val;
-      el.focus();
+      setTimeout(() => {
+        el.click();
+        el.focus();
+      }, 200);
     }
   };
 
