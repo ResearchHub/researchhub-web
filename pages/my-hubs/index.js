@@ -24,7 +24,7 @@ Index.getInitialProps = async (ctx) => {
     initialFeed: null,
     leaderboardFeed: null,
     initialHubList: null,
-    feed: 0,
+    feed: 1,
     loggedIn: authToken !== undefined,
   };
 
@@ -33,7 +33,7 @@ Index.getInitialProps = async (ctx) => {
       ...defaultProps,
       home: true,
       page: 1,
-      feed: 0,
+      feed: 1,
       filter: filterObj,
       query,
     };
@@ -57,7 +57,7 @@ Index.getInitialProps = async (ctx) => {
     return {
       ...defaultProps,
       initialFeed,
-      feed: 0,
+      feed: 1,
     };
   } catch (error) {
     return defaultProps;

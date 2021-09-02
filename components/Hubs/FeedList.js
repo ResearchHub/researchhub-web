@@ -23,6 +23,12 @@ class FeedList extends Component {
 
     this.feeds = [
       {
+        label: "All",
+        icon: icons.squares,
+        href: "/",
+        as: "/",
+      },
+      {
         label: "My Hubs",
         icon: (
           <img
@@ -32,13 +38,7 @@ class FeedList extends Component {
         ),
         href: "/my-hubs",
         as: "/my-hubs",
-      },
-      {
-        label: "All",
-        icon: icons.squares,
-        href: "/",
-        as: "/",
-      },
+      }
     ];
   }
 

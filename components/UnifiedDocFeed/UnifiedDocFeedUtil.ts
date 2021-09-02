@@ -13,7 +13,7 @@ export function formatMainHeader({
   hubName,
   isHomePage,
 }: FormatMainHeaderArgs): string {
-  if (feed === 0) {
+  if (feed === 1) {
     return "My Hubs";
   }
 
