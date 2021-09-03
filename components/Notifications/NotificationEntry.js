@@ -255,14 +255,11 @@ const NotificationEntry = (props) => {
       created_by,
       created_date,
       document_type: documentType,
+      document_id: documentId,
       slug,
     } = props.notification;
 
-    const {
-      first_name: creatorFName,
-      last_name: creatorLName,
-      author_profile: creatorProfile,
-    } = created_by;
+    const { first_name: creatorFName, last_name: creatorLName } = created_by;
 
     const formattedSlug = slug ?? formatPaperSlug(document_title);
     const creatorName = creatorFName ?? "" + creatorLName ?? "";
