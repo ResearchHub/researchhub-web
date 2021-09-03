@@ -162,7 +162,7 @@ const routes = (BASE_URL) => {
     NOTE: ({ noteId }) => {
       let url;
       if (noteId) {
-        url = `${BASE_URL}note/${noteId}`;
+        url = `${BASE_URL}note/${noteId}/`;
       } else {
         url = `${BASE_URL}note/`;
       }
