@@ -75,7 +75,6 @@ const NotificationEntry = (props) => {
     const isComment = ["thread", "comment", "reply"].includes(support_type);
     // TODO: calvinhlee check with leo with parent_content_type
     const documentType = isComment ? parent_content_type : document_type;
-    console.warn("documentType: ", documentType);
     const hrefPattern = `/[document_type]/[document_id]/[formatted_slug]`;
     const route =
       `/${documentType}/${document_id}/${formattedSlug}` +
