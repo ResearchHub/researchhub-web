@@ -137,10 +137,6 @@
   "browser": {
     "child_process": false
   },
-  "engines": {
-    "node": "==14.15.5",
-    "npm": "==7.19.1"
-  },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
     "*.{js,css,md}": "prettier --write"
