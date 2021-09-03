@@ -69,6 +69,10 @@ class MyApp extends App {
   constructor(props) {
     super(props);
 
+console.log('*******');
+    console.log(props);
+console.log('*******');
+
     this.previousPath = props.router.asPath.split("?")[0];
 
     ReactGA.initialize("UA-106669204-1", {
@@ -180,4 +184,20 @@ class MyApp extends App {
   }
 }
 
-export default withRedux(configureStore)(MyApp);
+
+const MyApp2 = ({Component, pageProps}) =>{
+
+  const store = configureStore()
+
+  return (
+    <Provider store={store}>
+      <Base pageProps={pageProps} Component={Component} />
+    </Provider>
+  );
+}
+
+
+
+export default MyApp2;
+
+// export default withRedux(configureStore)(MyApp2);
