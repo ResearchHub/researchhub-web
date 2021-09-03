@@ -1,7 +1,6 @@
 import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import { connect } from "react-redux";
 import Ripples from "react-ripples";
 
 // Component
@@ -16,12 +15,6 @@ import { isDevEnv } from "~/config/utils/env";
 class CategoryList extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      categories:
-        this.props.categories && this.props.categories.results
-          ? this.props.categories.results
-          : [],
-    };
   }
 
   renderCategoryEntry = () => {
@@ -158,9 +151,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-  categories: state.hubs.categories,
-});
-
-export default connect(mapStateToProps)(CategoryList);
+export default CategoryList;

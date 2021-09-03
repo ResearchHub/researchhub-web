@@ -7,6 +7,7 @@ import "isomorphic-unfetch";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
+import { useEffect } from "react";
 
 // Components
 import Base from "./Base";
@@ -68,10 +69,6 @@ initApm({
 class MyApp extends App {
   constructor(props) {
     super(props);
-
-console.log('*******');
-    console.log(props);
-console.log('*******');
 
     this.previousPath = props.router.asPath.split("?")[0];
 
@@ -185,9 +182,18 @@ console.log('*******');
 }
 
 
-const MyApp2 = ({Component, pageProps}) =>{
+const MyApp2 = ({ Component, pageProps, store }) =>{
 
-  const store = configureStore()
+  // let auth = this.getAuthProps(this.props);
+
+  // const store = configureStore();
+
+   useEffect(() => {
+    
+   }, [])
+
+
+
 
   return (
     <Provider store={store}>
@@ -198,6 +204,6 @@ const MyApp2 = ({Component, pageProps}) =>{
 
 
 
-export default MyApp2;
+// export default MyApp2;
 
-// export default withRedux(configureStore)(MyApp2);
+ export default withRedux(configureStore)(MyApp2);

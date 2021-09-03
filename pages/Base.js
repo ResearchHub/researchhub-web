@@ -74,11 +74,6 @@ class Base extends Component {
       transition: transitions.SCALE,
     };
 
-console.log('-----------');
-console.log(pageProps);
-console.log('-----------');
-
-
     return (
       <AlertProvider template={DynamicAlertTemplate} {...options}>
         {isDevEnv() && this.SPEC__reloadClientSideData()}

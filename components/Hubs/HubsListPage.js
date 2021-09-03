@@ -30,9 +30,9 @@ class Index extends Component {
     super(props);
     this.initialState = {
       width: null,
-      categories: [],
-      hubsByCategory: {},
-      finishedLoading: false,
+      categories: props.categories,
+      hubsByCategory: props.hubsByCategory,
+      finishedLoading: true,
       activeCategory: 0,
       clickedTab: false,
       scrollDirection: "down",
@@ -41,40 +41,6 @@ class Index extends Component {
       ...this.initialState,
     };
     this.scrollPos = 0;
-    console.log('--------');
-    console.log('props', props);
-    console.log('--------');
-  }
-
-  componentDidMount = async () => {
-    const { showMessage, categories, hubsByCategory } = this.props;
-    // showMessage({ show: true, load: true });
-
-
-    this.setState({
-      categories: JSON.parse(JSON.stringify(categories)),
-      hubsByCategory: JSON.parse(JSON.stringify(hubsByCategory)),
-      finishedLoading: true,
-      activeCategory: 0,
-      clickedTab: false,
-    });
-    // showMessage({ show: false });
-  };
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
-      const { showMessage, hubs } = this.props;
-      showMessage({ show: true, load: true });
-      this.setState(
-        {
-          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-          finishedLoading: true,
-        },
-        () => {
-          showMessage({ show: false });
-        }
-      );
-    }
   }
 
   setClickedTab = (clickedTab) => {
@@ -82,15 +48,13 @@ class Index extends Component {
   };
 
   setActiveCategory = (activeCategory, onLeave) => {
-    const { categories, finishedLoading } = this.state;
+    const { categories } = this.state;
 
     if (this.state.activeCategory === 0 && onLeave) {
       return;
     }
 
-    if (finishedLoading && categories.length) {
-      this.setState({ activeCategory });
-    }
+    this.setState({ activeCategory });
   };
 
   openAddHubModal = () => {
