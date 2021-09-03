@@ -127,6 +127,9 @@ class Notification extends Component {
     // TODO: calvinhlee - confirm with leo that "extra" is deprecated
     // documentType is passed wrongly in the backend
     // support_type is currently null from the backend check with @Leo
+
+    // notification_type: " making comment / replying / creating / upload "
+    // document_type: ""
     return {
       content_type: documentType,
       created_by: action_user,
