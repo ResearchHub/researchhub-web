@@ -251,7 +251,7 @@ const NotificationEntry = (props) => {
 
   const renderContentSupportNotification = () => {
     const {
-      type,
+      document_type: documentType,
       created_by,
       created_date,
       id,
@@ -261,54 +261,31 @@ const NotificationEntry = (props) => {
       parent_content_type,
     } = props.notification;
 
-    const author = created_by.author_profile;
-    const getContentType = () => {
-      if (type === "bulletpoint") {
-        return "key takeaway";
-      }
-      if (type === "researchhubpost") {
-        return "post";
-      }
-      return type;
-    };
+    const {
+      first_name: creatorFName,
+      last_name: creatorLName,
+      author_profile: creatorProfile,
+    } = created_by;
+
+    const formattedSlug = slug ?? formatPaperSlug(document_title);
+    const creatorName = creatorFName ?? "" + creatorLName ?? "";
 
     const formatLink = (props) => {
-      let documentType;
-      if (["thread", "comment", "reply"].includes(support_type)) {
-        documentType = parent_content_type;
-      } else if (support_type === "researchhubpost") {
-        documentType = "post";
-      } else {
-        documentType = "paper";
-      }
-
-      let link = {
-        href:
-          documentType === "paper"
-            ? "/paper/[paperId]/[paperName]"
-            : "/post/[documentId]/[title]",
-        as: `/${documentType}/${id}/${slug}`,
+      const link = {
+        href: "/[documentType]/[paperId]/[paperName]",
+        as: `/${documentType}/${documentId}/${formattedSlug}`,
       };
 
       switch (type) {
-        case "summary":
-          link.as = link.as + "#summary";
-          break;
-        case "bulletpoint":
-          link.as = link.as + "#takeaways";
-          break;
         case "thread":
-          link.as = link.as + "#comments";
-          break;
         case "comment":
-          link.as = link.as + "#comments";
-          break;
         case "reply":
-          link.as = link.as + "#comments";
+          link.as += "#comments";
           break;
         default:
           break;
       }
+
       return link;
     };
 
@@ -330,7 +307,7 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.link)}
           >
-            {getContentType()}
+            {documentType}
           </a>
         </Link>
         {"has been awarded "}
@@ -348,7 +325,7 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.username)}
           >
-            {`${author.first_name} ${author.last_name}. `}
+            {creatorName + ". "}
           </a>
         </Link>
         <span className={css(styles.timestamp)}>
