@@ -116,8 +116,8 @@ class Notification extends Component {
       documentType === "discussion" ? "post" : documentType;
     const documentContent =
       formattedDocumentType === "paper"
-        ? unified_document.documents
-        : unified_document.documents[0] ?? {};
+        ? unified_document?.documents
+        : unified_document?.documents[0] ?? {};
     const {
       title = null,
       paper_title = null,
