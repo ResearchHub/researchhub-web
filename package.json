@@ -116,6 +116,7 @@
     "webpack-visualizer-plugin": "^0.1.11"
   },
   "devDependencies": {
+    "@ckeditor/ckeditor5-inspector": "^2.2.2",
     "@next/bundle-analyzer": "^11.1.0",
     "@types/draft-js": "^0.11.1",
     "@types/react-modal": "^3.12.0",
