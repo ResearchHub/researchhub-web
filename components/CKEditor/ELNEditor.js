@@ -3,11 +3,11 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { useRouter } from "next/router";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { useRouter } from "next/router";
 
 function useFetchNotes(router) {
   const [notes, setNotes] = useState([]);
@@ -54,7 +54,7 @@ export const ELNEditor = ({ user }) => {
   const presenceListElementRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState(null);
-  const { CKEditor, Editor } = editorRef.current || {};
+  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const notes = useFetchNotes(router);
   const note = useFetchNote(router);
   //const note = (() => {
@@ -71,6 +71,7 @@ export const ELNEditor = ({ user }) => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
       Editor: require("@thomasvu/ckeditor5-custom-build").ELNEditor,
+      CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
     };
     setEditorLoaded(true);
     return () => {
@@ -228,6 +229,7 @@ export const ELNEditor = ({ user }) => {
               onChange={(event, editor) => console.log({ event, editor })}
               onReady={(editor) => {
                 console.log("Editor is ready to use!", editor);
+                CKEditorInspector.attach(editor);
 
                 editor.editing.view.change((writer) => {
                   writer.setStyle(
