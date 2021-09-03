@@ -110,7 +110,7 @@ class Notification extends Component {
       unified_document,
     } = notification;
     const { content_type = null, item: actonItem } = action ?? {};
-    const { plain_text } = actonItem ?? {};
+    const { amount, plain_text } = actonItem ?? {};
     const documentType = unified_document?.document_type?.toLowerCase() ?? null;
     const formattedDocumentType =
       documentType === "discussion" ? "post" : documentType;
@@ -128,6 +128,7 @@ class Notification extends Component {
     return {
       action_tip: plain_text ?? "",
       content_type,
+      contribution_amount: amount,
       created_by: action_user,
       created_date,
       document_id: documentID,
