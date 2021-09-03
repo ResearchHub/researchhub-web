@@ -9,42 +9,22 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 
-function useFetchNotes(router) {
+function useFetchNotes(currentNoteId) {
   const [notes, setNotes] = useState([]);
-  const noteId = router.query.noteId;
 
   useEffect(() => {
     fetch(API.NOTE({}), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {
-        setNotes(data.results);
+        setNotes(data.results.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)));
       })
       .catch((err) => {
         console.log(err);
       });
-  }, [noteId]);
+  }, [currentNoteId]);
 
-  return notes;
-}
-
-function useFetchNote(router) {
-  const [note, setNote] = useState(null);
-  const noteId = router.query.noteId;
-
-  useEffect(() => {
-    fetch(API.NOTE({ noteId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        setNote(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [noteId]);
-
-  return note;
+  return [notes, setNotes];
 }
 
 export const ELNEditor = ({ user }) => {
@@ -55,17 +35,7 @@ export const ELNEditor = ({ user }) => {
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState(null);
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const notes = useFetchNotes(router);
-  const note = useFetchNote(router);
-  //const note = (() => {
-  //  for (const n of notes) {
-  //    if (`${n.id}` === router.query.noteId) {
-  //      return n;
-  //    }
-  //  }
-  //})();
-  //console.log("notes", notes);
-  //console.log("note", note);
+  const [notes, setNotes] = useFetchNotes(currentNoteId);
 
   useEffect(() => {
     editorRef.current = {
@@ -85,13 +55,20 @@ export const ELNEditor = ({ user }) => {
     setCurrentNoteId(router.query.noteId);
   }, [router.query.noteId]);
 
-  function saveData(editorData) {
-    const params = {
-      full_src: editorData,
-      plain_text: "",
-      note: router.query.noteId,
+  function saveData(editor) {
+    const noteParams = {
+      title: editor.plugins.get("Title").getTitle() || "Untitled",
     };
-    fetch(API.NOTE_CONTENT(), API.POST_CONFIG(params))
+    fetch(API.NOTE({ noteId: currentNoteId }), API.PATCH_CONFIG(noteParams))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+
+    const noteContentParams = {
+      full_src: editor.getData(),
+      plain_text: "",
+      note: currentNoteId,
+    };
+    fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
   }
@@ -125,7 +102,7 @@ export const ELNEditor = ({ user }) => {
       webSocketUrl: "wss://80957.cke-cs.com/ws",
     },
     collaboration: {
-      channelId: router.query.noteId,
+      channelId: currentNoteId,
     },
     sidebar: {
       container: sidebarElementRef.current,
@@ -135,7 +112,7 @@ export const ELNEditor = ({ user }) => {
     },
     autosave: {
       save(editor) {
-        return saveData(editor.getData());
+        return saveData(editor);
       },
     },
   };
@@ -180,6 +157,16 @@ export const ELNEditor = ({ user }) => {
       });
   };
 
+  const handleInput = (event, editor) => {
+    const updatedNotes = notes.map(note => (
+      note.id === parseInt(currentNoteId, 10)
+        ? {...note, title: editor.plugins.get("Title").getTitle() || "Untitled"}
+        : note
+      )
+    );
+    setNotes(updatedNotes);
+  };
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
@@ -203,6 +190,7 @@ export const ELNEditor = ({ user }) => {
             <a
               className={css(
                 styles.sidebarSectionContent,
+                note.id === parseInt(currentNoteId, 10) && styles.active,
                 index === notes.length - 1 && styles.lastSection
               )}
             >
@@ -226,10 +214,10 @@ export const ELNEditor = ({ user }) => {
               data={""}
               editor={Editor}
               id={currentNoteId}
-              onChange={(event, editor) => console.log({ event, editor })}
+              onChange={(event, editor) => handleInput(event, editor)}
               onReady={(editor) => {
                 console.log("Editor is ready to use!", editor);
-                CKEditorInspector.attach(editor);
+                //CKEditorInspector.attach(editor);
 
                 editor.editing.view.change((writer) => {
                   writer.setStyle(
@@ -325,8 +313,13 @@ const styles = StyleSheet.create({
     padding: 20,
     textDecoration: "none",
     ":hover": {
-      background: "#f0f0f6",
+      background: colors.GREY(0.3),
+      borderTop: `1px solid transparent`,
     },
+  },
+  active: {
+    background: colors.GREY(0.3),
+    borderTop: `1px solid transparent`,
   },
   lastSection: {
     borderBottom: "1px solid #f0f0f0",
