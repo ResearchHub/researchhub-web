@@ -1,4 +1,4 @@
-import { connect } from "react-redux";
+import { connect, useDispatch, useStore } from "react-redux";
 import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { formatPaperSlug } from "~/config/utils/document";
 import { getNestedValue } from "~/config/utils/misc";
@@ -8,7 +8,6 @@ import { NotificationActions } from "~/redux/notification";
 import { reviewBounty } from "~/config/fetch";
 import { StyleSheet, css } from "aphrodite";
 import { timeAgoStamp } from "~/config/utils/dates";
-import { useDispatch, useStore } from "react-redux";
 import { useState } from "react";
 import AuthorAvatar from "../AuthorAvatar";
 import Button from "~/components/Form/Button";
@@ -104,11 +103,13 @@ const NotificationEntry = (props) => {
   const renderMessage = () => {
     const { notification } = props;
     const {
-      created_date,
-      created_by,
+      action_tip,
       content_type,
-      paper_title,
-      paper_official_title,
+      created_by,
+      created_date,
+      document_id: documentId,
+      document_title,
+      document_type,
       slug,
     } = notification;
     const {
@@ -120,19 +121,11 @@ const NotificationEntry = (props) => {
     const username = creatorFName ?? "" + creatorLName ?? "";
     const authorId = creatorProfile?.id ?? null;
 
-    const title = slug
-      ? slug
-      : formatPaperSlug(
-          paper_official_title ? paper_official_title : paper_title
-        );
+    const formattedSlug = slug ?? formatPaperSlug(document_title);
 
     const paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
-    const paperId = notification.paper_id;
-    const threadTip = notification.thread_title
-      ? notification.thread_title
-      : notification.thread_plain_text;
     const threadId = notification.thread_id;
 
     const onClick = (e) => {
@@ -147,13 +140,13 @@ const NotificationEntry = (props) => {
     };
 
     const paperLink = {
-      href: "/paper/[paperId]/[paperName]",
-      as: `/paper/${paperId}/${slug}`,
+      href: "/[documentType]/[paperId]/[paperName]",
+      as: `/${document_type}/${documentId}/${formattedSlug}`,
     };
 
     const discussionPageLink = {
-      href: "/paper/[paperId]/[paperName]/[discussionThreadId]",
-      as: `/paper/${paperId}/${title}/${threadId}`,
+      href: "/[documentType]/[paperId]/[paperName]/[discussionThreadId]",
+      as: `/${document_type}/${documentId}/${formattedSlug}/${threadId ?? ""}`,
     };
 
     const sectionLink = (section) => {
@@ -170,6 +163,7 @@ const NotificationEntry = (props) => {
         text={username}
       />
     );
+    const timeStamp = <TimeStamp date={created_date} />;
 
     switch (content_type) {
       case "bullet_point":
@@ -180,11 +174,11 @@ const NotificationEntry = (props) => {
             <HyperLink
               link={sectionLink("takeaways")}
               onClick={onClick}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              dataTip={document_title}
+              text={truncateText(document_title)}
               style={styles.paper}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "summary":
@@ -195,17 +189,14 @@ const NotificationEntry = (props) => {
             <HyperLink
               link={sectionLink("summary")}
               onClick={onClick}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              dataTip={document_title}
+              text={truncateText(document_title)}
               style={styles.paper}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "paper":
-        var paperTitle = notification.paper_title
-          ? notification.paper_title
-          : notification.paper_official_title;
         return (
           <div className={css(styles.message)}>
             {user}
@@ -214,10 +205,10 @@ const NotificationEntry = (props) => {
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTitle}
-              text={paperTitle && truncateText(paperTitle)}
+              dataTip={document_title}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "thread":
@@ -236,58 +227,56 @@ const NotificationEntry = (props) => {
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              dataTip={document_title}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "comment":
-        var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
             {user}
             {" left a "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.link}
-              dataTip={commentTip}
               text={"comment"}
             />
             {"in your thread: "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.paper}
-              dataTip={threadTip}
-              text={threadTip && truncateText(threadTip)}
+              text={truncateText(action_tip)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "reply":
-        var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
             {user}
             {" left a "}
             <HyperLink
+              dataTip={replyTip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.link}
-              dataTip={replyTip}
               text={"reply"}
             />
             {"to your comment in "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.paper}
-              dataTip={threadTip}
-              text={threadTip && truncateText(threadTip)}
+              text={truncateText(action_tip)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "vote_paper":
@@ -296,13 +285,13 @@ const NotificationEntry = (props) => {
             {user}
             {" voted on "}
             <HyperLink
+              dataTip={document_title}
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "vote_thread":
@@ -318,13 +307,13 @@ const NotificationEntry = (props) => {
             />
             {"in "}
             <HyperLink
+              dataTip={document_title}
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "vote_comment":
@@ -340,13 +329,13 @@ const NotificationEntry = (props) => {
             />
             {"in "}
             <HyperLink
+              dataTip={document_title}
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "vote_reply":
@@ -362,41 +351,46 @@ const NotificationEntry = (props) => {
             />
             {"in "}
             <HyperLink
+              dataTip={document_title}
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
-      case "vote_bullet":
-        return renderBulletVoteNotification();
-      case "vote_summary":
-        return renderSummaryVoteNotification();
+      // case "vote_bullet":
+      //   return renderBulletVoteNotification();
+      // case "vote_summary":
+      //   return renderSummaryVoteNotification();
       case "support_content":
         return renderContentSupportNotification();
-      case "bounty_moderator":
-        return (
-          <div className={css(styles.message)}>
-            <ModeratorBounty {...props} markAsRead={markAsRead} />
-          </div>
-        );
-      case "bounty_contributor":
-        return (
-          <div className={css(styles.message)}>
-            <ContributorBounty {...props} markAsRead={markAsRead} />
-          </div>
-        );
+      // case "bounty_moderator":
+      //   return (
+      //     <div className={css(styles.message)}>
+      //       <ModeratorBounty {...props} markAsRead={markAsRead} />
+      //     </div>
+      //   );
+      // case "bounty_contributor":
+      //   return (
+      //     <div className={css(styles.message)}>
+      //       <ContributorBounty {...props} markAsRead={markAsRead} />
+      //     </div>
+      //   );
       default:
         return;
     }
   };
 
   const renderBulletVoteNotification = () => {
-    const { created_by, created_date, plain_text, paper_id, slug } =
-      props.notification;
+    const {
+      created_by,
+      created_date,
+      plain_text,
+      paper_id,
+      slug,
+    } = props.notification;
 
     const author = created_by.author_profile;
 
@@ -874,4 +868,7 @@ const mapDispatchToProps = {
   updateNotification: NotificationActions.updateNotification,
 };
 
-export default connect(null, mapDispatchToProps)(NotificationEntry);
+export default connect(
+  null,
+  mapDispatchToProps
+)(NotificationEntry);

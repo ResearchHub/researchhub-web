@@ -103,12 +103,19 @@ class Notification extends Component {
   };
 
   formatAction = (notification) => {
-    const { action_user, created_date, action, unified_document } =
-      notification;
-
+    const {
+      action_user,
+      action,
+      created_date,
+      unified_document,
+    } = notification;
+    const { content_type = null, item: actonItem } = action ?? {};
+    const { plain_text } = actonItem ?? {};
     const documentType = unified_document?.document_type?.toLowerCase() ?? null;
+    const formattedDocumentType =
+      documentType === "discussion" ? "post" : documentType;
     const documentContent =
-      documentType === "paper"
+      formattedDocumentType === "paper"
         ? unified_document.documents
         : unified_document.documents[0] ?? {};
     const {
@@ -119,12 +126,13 @@ class Notification extends Component {
     } = documentContent;
 
     return {
-      content_type: action?.content_type ?? null,
+      action_tip: plain_text ?? "",
+      content_type,
       created_by: action_user,
       created_date,
-      document_title: paper_title ?? title ?? "Title: N/A",
-      document_type: documentType,
       document_id: documentID,
+      document_title: paper_title ?? title ?? "Title: N/A",
+      document_type: formattedDocumentType,
       slug,
     };
   };
