@@ -1,5 +1,5 @@
 import { getCategories, getHubs } from "~/config/fetch_hubs";
-import HubsListPage from "~/components/hubs/HubsListPage";
+import HubsListPage from "~/components/Hubs/HubsListPage";
 
 function HubsIndex(props){
   return (
