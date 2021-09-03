@@ -10,10 +10,8 @@ import { StyleSheet, css } from "aphrodite";
 import { timeAgoStamp } from "~/config/utils/dates";
 import { useState } from "react";
 import AuthorAvatar from "../AuthorAvatar";
-import Button from "~/components/Form/Button";
 import colors from "../../config/themes/colors";
 import Link from "next/link";
-import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
 import Router from "next/router";
 
