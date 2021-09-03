@@ -128,7 +128,7 @@ class Notification extends Component {
     return {
       action_tip: plain_text ?? "",
       content_type,
-      contribution_amount: amount,
+      contribution_amount: amount ?? 0,
       created_by: action_user,
       created_date,
       document_id: documentID,
