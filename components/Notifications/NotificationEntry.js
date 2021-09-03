@@ -251,14 +251,11 @@ const NotificationEntry = (props) => {
 
   const renderContentSupportNotification = () => {
     const {
-      document_type: documentType,
+      contribution_amount,
       created_by,
       created_date,
-      id,
-      amount,
+      document_type: documentType,
       slug,
-      support_type,
-      parent_content_type,
     } = props.notification;
 
     const {
@@ -270,7 +267,7 @@ const NotificationEntry = (props) => {
     const formattedSlug = slug ?? formatPaperSlug(document_title);
     const creatorName = creatorFName ?? "" + creatorLName ?? "";
 
-    const formatLink = (props) => {
+    const formatLink = () => {
       const link = {
         href: "/[documentType]/[paperId]/[paperName]",
         as: `/${documentType}/${documentId}/${formattedSlug}`,
@@ -298,7 +295,7 @@ const NotificationEntry = (props) => {
           alt="Party Popper Icon"
         />
         {" Your "}
-        <Link {...formatLink(props)}>
+        <Link {...formatLink()}>
           <a
             onClick={(e) => {
               e.stopPropagation();
@@ -311,7 +308,9 @@ const NotificationEntry = (props) => {
           </a>
         </Link>
         {"has been awarded "}
-        <span className={css(styles.rsc)}>{`${Number(amount)} RSC`}</span>
+        <span className={css(styles.rsc)}>{`${Number(
+          contribution_amount
+        )} RSC`}</span>
         {" by "}
         <Link
           href={"/user/[authorId]/[tabName]"}
