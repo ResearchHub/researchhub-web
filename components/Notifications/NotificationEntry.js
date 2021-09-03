@@ -155,6 +155,7 @@ const NotificationEntry = (props) => {
       return { ...paperLink, as };
     };
 
+    const timeStamp = <TimeStamp date={created_date} />;
     const user = (
       <HyperLink
         link={authorLink}
@@ -163,44 +164,14 @@ const NotificationEntry = (props) => {
         text={username}
       />
     );
-    const timeStamp = <TimeStamp date={created_date} />;
 
     switch (content_type) {
-      case "bullet_point":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" added a key takeaway to "}
-            <HyperLink
-              link={sectionLink("takeaways")}
-              onClick={onClick}
-              dataTip={document_title}
-              text={truncateText(document_title)}
-              style={styles.paper}
-            />
-            {timeStamp}
-          </div>
-        );
-      case "summary":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" edited a summary for "}
-            <HyperLink
-              link={sectionLink("summary")}
-              onClick={onClick}
-              dataTip={document_title}
-              text={truncateText(document_title)}
-              style={styles.paper}
-            />
-            {timeStamp}
-          </div>
-        );
       case "paper":
+      case "post":
         return (
           <div className={css(styles.message)}>
             {user}
-            {" uploaded a new paper "}
+            {` uploaded a new paper ${content_type}`}
             <HyperLink
               link={paperLink}
               onClick={onClick}
@@ -279,105 +250,8 @@ const NotificationEntry = (props) => {
             {timeStamp}
           </div>
         );
-      case "vote_paper":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on "}
-            <HyperLink
-              dataTip={document_title}
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              text={truncateText(document_title)}
-            />
-            {timeStamp}
-          </div>
-        );
-      case "vote_thread":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on a "}
-            <HyperLink
-              link={discussionPageLink}
-              onClick={onClick}
-              style={styles.link}
-              text={"thread"}
-            />
-            {"in "}
-            <HyperLink
-              dataTip={document_title}
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              text={truncateText(document_title)}
-            />
-            {timeStamp}
-          </div>
-        );
-      case "vote_comment":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on a "}
-            <HyperLink
-              link={discussionPageLink}
-              onClick={onClick}
-              style={styles.link}
-              text={"comment"}
-            />
-            {"in "}
-            <HyperLink
-              dataTip={document_title}
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              text={truncateText(document_title)}
-            />
-            {timeStamp}
-          </div>
-        );
-      case "vote_reply":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on a "}
-            <HyperLink
-              link={discussionPageLink}
-              onClick={onClick}
-              style={styles.link}
-              text={"reply"}
-            />
-            {"in "}
-            <HyperLink
-              dataTip={document_title}
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              text={truncateText(document_title)}
-            />
-            {timeStamp}
-          </div>
-        );
-      // case "vote_bullet":
-      //   return renderBulletVoteNotification();
-      // case "vote_summary":
-      //   return renderSummaryVoteNotification();
-      case "support_content":
+      case "purchase": // synanomous to "support"
         return renderContentSupportNotification();
-      // case "bounty_moderator":
-      //   return (
-      //     <div className={css(styles.message)}>
-      //       <ModeratorBounty {...props} markAsRead={markAsRead} />
-      //     </div>
-      //   );
-      // case "bounty_contributor":
-      //   return (
-      //     <div className={css(styles.message)}>
-      //       <ContributorBounty {...props} markAsRead={markAsRead} />
-      //     </div>
-      //   );
       default:
         return;
     }
