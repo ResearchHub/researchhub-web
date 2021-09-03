@@ -53,7 +53,7 @@ export const ELNEditor = ({ user }) => {
   const sidebarElementRef = useRef();
   const presenceListElementRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
-  const [editorInstance, setEditorInstance] = useState(null);
+  const [currentNoteId, setCurrentNoteId] = useState(null);
   const { CKEditor, Editor } = editorRef.current || {};
   const notes = useFetchNotes(router);
   const note = useFetchNote(router);
@@ -77,7 +77,12 @@ export const ELNEditor = ({ user }) => {
       //window.removeEventListener("resize", boundRefreshDisplayMode);
       //window.removeEventListener("beforeunload", boundCheckPendingActions);
     };
-  }, []);
+  }, [currentNoteId]);
+
+  useEffect(() => {
+    setEditorLoaded(false);
+    setCurrentNoteId(router.query.noteId);
+  }, [router.query.noteId]);
 
   function saveData(editorData) {
     const params = {
@@ -119,7 +124,7 @@ export const ELNEditor = ({ user }) => {
       webSocketUrl: "wss://80957.cke-cs.com/ws",
     },
     collaboration: {
-      channelId: "test",
+      channelId: router.query.noteId,
     },
     sidebar: {
       container: sidebarElementRef.current,
@@ -193,13 +198,12 @@ export const ELNEditor = ({ user }) => {
           </span>
         </div>
         {notes.map((note, index) => (
-          <Link href={`/notebook/${note.id}`}>
+          <Link href={`/notebook/${note.id}`} key={note.id}>
             <a
               className={css(
                 styles.sidebarSectionContent,
                 index === notes.length - 1 && styles.lastSection
               )}
-              key={note.id}
             >
               {note.title}
             </a>
@@ -217,9 +221,13 @@ export const ELNEditor = ({ user }) => {
         {editorLoaded && (
           <div className={css(styles.editor)}>
             <CKEditor
+              config={editorConfiguration}
+              data={""}
+              editor={Editor}
+              id={currentNoteId}
+              onChange={(event, editor) => console.log({ event, editor })}
               onReady={(editor) => {
                 console.log("Editor is ready to use!", editor);
-                setEditorInstance(editor);
 
                 editor.editing.view.change((writer) => {
                   writer.setStyle(
@@ -245,10 +253,6 @@ export const ELNEditor = ({ user }) => {
                 //window.addEventListener("beforeunload", boundCheckPendingActions);
                 //refreshDisplayMode(editor);
               }}
-              onChange={(event, editor) => console.log({ event, editor })}
-              editor={Editor}
-              config={editorConfiguration}
-              data={""}
             />
           </div>
         )}
