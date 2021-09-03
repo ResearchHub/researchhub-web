@@ -1,28 +1,22 @@
-import { useState } from "react";
-import { useDispatch, useStore } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import Router from "next/router";
-import Link from "next/link";
-import Ripples from "react-ripples";
-
-// Component
+import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { formatPaperSlug } from "~/config/utils/document";
+import { getNestedValue } from "~/config/utils/misc";
+import { HyperLink, TimeStamp } from "./NotificationHelpers";
+import { ModeratorBounty, ContributorBounty } from "./BountyNotifications";
+import { NotificationActions } from "~/redux/notification";
+import { reviewBounty } from "~/config/fetch";
+import { StyleSheet, css } from "aphrodite";
+import { timeAgoStamp } from "~/config/utils/dates";
+import { useDispatch, useStore } from "react-redux";
+import { useState } from "react";
 import AuthorAvatar from "../AuthorAvatar";
 import Button from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
-import { ModeratorBounty, ContributorBounty } from "./BountyNotifications";
-import { HyperLink, TimeStamp } from "./NotificationHelpers";
-
-// Redux
-import { NotificationActions } from "~/redux/notification";
-
-// Config
 import colors from "../../config/themes/colors";
-import { doesNotExist } from "~/config/utils/nullchecks";
-import { getNestedValue } from "~/config/utils/misc";
-import { formatPaperSlug } from "~/config/utils/document";
-import { timeAgoStamp } from "~/config/utils/dates";
-import { reviewBounty } from "~/config/fetch";
+import Link from "next/link";
+import Loader from "~/components/Loader/Loader";
+import Ripples from "react-ripples";
+import Router from "next/router";
 
 const NotificationEntry = (props) => {
   const { notification, data, updateNotification } = props;
@@ -32,6 +26,11 @@ const NotificationEntry = (props) => {
 
   const dispatch = useDispatch();
   const store = useStore();
+
+  if (isNullOrUndefined(notification)) {
+    // if no notification object is passed, dont render anything
+    return null;
+  }
 
   const markAsRead = async (data) => {
     if (isRead) {
@@ -61,74 +60,50 @@ const NotificationEntry = (props) => {
     e && e.stopPropagation();
     const {
       content_type,
-      id,
-      thread_id,
+      document_id,
       slug,
       support_type,
       parent_content_type,
+      paper_official_title,
+      document_type,
+      paper_title,
     } = notification;
 
-    const type = content_type;
-    const paperId = id;
-    const title = slug
+    const formattedSlug = !isNullOrUndefined(slug)
       ? slug
-      : formatPaperSlug(
-          notification.paper_official_title
-            ? notification.paper_official_title
-            : notification.paper_title
-        );
+      : formatPaperSlug(paper_official_title ?? paper_title);
+    const isComment = ["thread", "comment", "reply"].includes(support_type);
+    // TODO: calvinhlee check with leo with parent_content_type
+    const documentType = isComment ? parent_content_type : document_type;
+    console.warn("documentType: ", documentType);
+    const hrefPattern = `/[document_type]/[document_id]/[formatted_slug]`;
+    const route =
+      `/${documentType}/${document_id}/${formattedSlug}` +
+      (isComment
+        ? "#comments"
+        : [
+            "thread",
+            "comment",
+            "reply",
+            "vote_thread",
+            "vote_reply",
+            "vote_comment",
+          ].includes(content_type)
+        ? "#comments"
+        : ["bullet_point", "vote_bullet"].includes(content_type)
+        ? "#takeaways"
+        : ["summary", "vote_summary"].includes(content_type)
+        ? "#summary"
+        : "");
 
-    let documentType;
-    let isComment = false;
-    if (["thread", "comment", "reply"].includes(support_type)) {
-      documentType = parent_content_type;
-      isComment = true;
-    } else if (support_type === "researchhubpost") {
-      documentType = "post";
-    } else {
-      documentType = "paper";
-    }
-
-    let href, route;
-    if (
-      type === "paper" ||
-      type === "support_content" ||
-      type === "bounty_moderator" ||
-      type === "bounty_contributor"
-    ) {
-      href =
-        documentType === "paper"
-          ? "/paper/[paperId]/[paperName]"
-          : "/post/[documentId]/[title]";
-      route = `/${documentType}/${id}/${slug}` + (isComment ? "#comments" : "");
-    } else if (
-      type === "thread" ||
-      type === "comment" ||
-      type === "reply" ||
-      type === "vote_thread" ||
-      type === "vote_reply" ||
-      type === "vote_comment"
-    ) {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#comments`;
-    } else if (type === "bullet_point" || type === "vote_bullet") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#takeaways`;
-    } else if (type === "summary" || type === "vote_summary") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#summary`;
-    }
-
-    if (href && route) {
-      Router.push(href, route).then(() => {
-        markAsRead(props.data);
-        props.closeMenu(); // added as a fallback
-      });
-    }
+    Router.push(hrefPattern, route).then(() => {
+      markAsRead(props.data);
+      props.closeMenu(); // added as a fallback
+    });
   };
 
   const renderMessage = () => {
-    const notification = props.notification;
+    const { notification } = props;
     const {
       created_date,
       created_by,
@@ -137,16 +112,21 @@ const NotificationEntry = (props) => {
       paper_official_title,
       slug,
     } = notification;
-    const timestamp = timeAgoStamp(created_date);
-    const username = formatUsername(
-      getNestedValue(created_by, ["author_profile"])
-    );
-    const authorId = getNestedValue(created_by, ["author_profile", "id"]);
+    const {
+      first_name: creatorFName,
+      last_name: creatorLName,
+      author_profile: creatorProfile,
+    } = created_by;
+
+    const username = creatorFName ?? "" + creatorLName ?? "";
+    const authorId = creatorProfile?.id ?? null;
+
     const title = slug
       ? slug
       : formatPaperSlug(
           paper_official_title ? paper_official_title : paper_title
         );
+
     const paperTip = notification.paper_title
       ? notification.paper_title
       : notification.paper_official_title;
@@ -416,13 +396,8 @@ const NotificationEntry = (props) => {
   };
 
   const renderBulletVoteNotification = () => {
-    const {
-      created_by,
-      created_date,
-      plain_text,
-      paper_id,
-      slug,
-    } = props.notification;
+    const { created_by, created_date, plain_text, paper_id, slug } =
+      props.notification;
 
     const author = created_by.author_profile;
 
@@ -442,8 +417,8 @@ const NotificationEntry = (props) => {
           >
             {`${author.first_name} ${author.last_name}`}
           </a>
-        </Link>{" "}
-        voted on your{" "}
+        </Link>
+        {"voted on your"}
         <Link
           href={"/paper/[paperId]/[paperName]"}
           as={`/paper/${paper_id}/${slug}#description`}
@@ -730,6 +705,8 @@ const NotificationEntry = (props) => {
       });
   };
 
+  const message = renderMessage();
+  const actionText = renderActions();
   return (
     <Ripples
       className={css(styles.container, isRead && styles.read)}
@@ -738,13 +715,12 @@ const NotificationEntry = (props) => {
       <div className={css(styles.authorAvatar)}>
         <AuthorAvatar
           size={35}
-          author={notification && notification.created_by.author_profile}
+          author={notification?.created_by?.author_profile ?? ""}
         />
       </div>
       <div className={css(styles.body)}>
-        {notification &&
-          renderMessage(notification.context_type && notification.context_type)}
-        {renderActions()}
+        {message}
+        {actionText}
       </div>
     </Ripples>
   );
@@ -899,7 +875,4 @@ const mapDispatchToProps = {
   updateNotification: NotificationActions.updateNotification,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(NotificationEntry);
+export default connect(null, mapDispatchToProps)(NotificationEntry);
