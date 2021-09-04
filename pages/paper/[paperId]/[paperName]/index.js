@@ -89,8 +89,7 @@ const Paper = ({ paperResponse, auth, redirectPath, errorCode, isFetchComplete =
     return <Error statusCode={errorCode} />;
   }
 console.log('isFetchComplete', isFetchComplete);
-
-console.log('router', router);
+console.log('paperResponse', paperResponse);
 
   // TODO: This issue needs to be addressed
   if (redirectPath && typeof window !== "undefined") {
@@ -154,7 +153,7 @@ console.log('router', router);
     }, [summary.id, auth.isLoggedIn]);
   }
   else {
-    console.warn("Info: Paper summary feature is off")
+    console.log("Info: Paper summary feature is off")
   }
 
 
@@ -175,6 +174,12 @@ console.log('router', router);
       document.head.appendChild(script);
     }
   }, [isFetchComplete]);
+
+  useEffect(() => {
+    if (paperResponse) {
+      setPaper(shims.paper(paperResponse));
+    }
+  }, [paperResponse])
 
   useEffect(() => {
     if (isFetchComplete && auth.isLoggedIn) {
@@ -582,9 +587,6 @@ console.log('router', router);
 };
 
 const PaperIndexWithUndux = (props) => {
-
-  console.log('33333333333');
-
   return (
     <PaperDraftUnduxStore.Container>
       <InlineCommentUnduxStore.Container>
@@ -1018,7 +1020,7 @@ export async function getStaticPaths(ctx) {
 
   return {
     paths: [
-      '/paper/20893/engineering-self-organized-criticality-in-living-cells'
+      // '/paper/20893/engineering-self-organized-criticality-in-living-cells'
     ],
     fallback: true,
   }
