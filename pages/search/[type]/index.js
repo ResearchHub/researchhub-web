@@ -5,7 +5,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import SearchResults from "~/components/Search/SearchResults";
 import { searchTypes } from "~/config/utils/options";
 import { pickFiltersForApi } from "~/config/utils/search";
-import killswitch from "~/config/killswitch/killswitch";
 import Head from "~/components/Head";
 import { QUERY_PARAM } from "~/config/utils/search";
 

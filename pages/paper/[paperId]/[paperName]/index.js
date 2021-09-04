@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
-import * as Sentry from "@sentry/browser";
 import { Waypoint } from "react-waypoint";
 
 // Components
@@ -21,6 +20,7 @@ import PaperTabBar from "~/components/PaperTabBar";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
+import killswitch from "~/config/killswitch/killswitch";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -63,7 +63,6 @@ import {
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
-const isServer = () => typeof window === "undefined";
 const steps = [
   {
     target: ".first-step",
@@ -80,39 +79,41 @@ const steps = [
   },
 ];
 
-const Paper = (props) => {
-  const router = useRouter();
-  if (props.error) {
-    return <Error statusCode={404} />;
-  }
+const Paper = ({ paperResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
 
-  if (props.redirectPath && typeof window !== "undefined") {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const store = useStore();
+
+  if (errorCode) {
+    return <Error statusCode={errorCode} />;
+  }
+console.log('isFetchComplete', isFetchComplete);
+
+console.log('router', router);
+
+  // TODO: This issue needs to be addressed
+  if (redirectPath && typeof window !== "undefined") {
     // updates the [paperName] without refetching data
-    router.replace("/paper/[paperId]/[paperName]", props.redirectPath, {
+    router.replace("/paper/[paperId]/[paperName]", redirectPath, {
       shallow: true,
     });
   }
 
-  const dispatch = useDispatch();
-  const store = useStore();
+  const { paperId } = router.query;
 
-  const [paper, setPaper] = useState(
-    (props.paper && shims.paper(props.paper)) || {}
-  );
-  const [summary, setSummary] = useState(
-    (props.paper && props.paper.summary) || {}
-  );
-  const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+  const [paper, setPaper] = useState((paperResponse && shims.paper(paperResponse)) || {});
 
-  const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
+  const [summary, setSummary] = useState(paper.summary || {});
+  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [loadingSummary, setLoadingSummary] = useState(true);
 
-  const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
+  const [flagged, setFlag] = useState(paper && paper.user_flag);
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(props.paper && props.paper.userVote)
+    getVoteType(paper && paper.userVote)
   );
   const [discussionCount, setCount] = useState(
-    calculateCommentCount(props.paper)
+    calculateCommentCount(paper)
   );
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
@@ -121,47 +122,48 @@ const Paper = (props) => {
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const [userVoteChecked, setUserVoteChecked] = useState(false);
 
-  const { paperId } = router.query;
-
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+    paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
   let summaryVoteChecked = false;
 
+
+  if (killswitch("paperSummary")) {
+    useEffect(() => {
+      const summaryId = summary.id;
+      if (summaryId && !summaryVoteChecked) {
+        checkSummaryVote({ summaryId: summaryId }).then((res) => {
+          const summaryUserVote = res[summaryId];
+          summaryVoteChecked = true;
+
+          let summary = {
+            ...paper.summary,
+            user_vote: summaryUserVote,
+          };
+
+          if (summaryUserVote) {
+            summary.score = summaryUserVote.score || 0;
+            summary.promoted = summaryUserVote.promoted;
+          }
+          setSummary(summary);
+          setLoadingSummary(false);
+        });
+      }
+      setLoadingSummary(false);
+    }, [summary.id, auth.isLoggedIn]);
+  }
+  else {
+    console.warn("Info: Paper summary feature is off")
+  }
+
+
   useEffect(() => {
-    const summaryId = summary.id;
-    if (summaryId && !summaryVoteChecked) {
-      checkSummaryVote({ summaryId: summaryId }).then((res) => {
-        const summaryUserVote = res[summaryId];
-        summaryVoteChecked = true;
-
-        let summary = {
-          ...paper.summary,
-          user_vote: summaryUserVote,
-        };
-
-        if (summaryUserVote) {
-          summary.score = summaryUserVote.score || 0;
-          summary.promoted = summaryUserVote.promoted;
-        }
-        setSummary(summary);
-        setLoadingSummary(false);
-      });
+    if (!isFetchComplete) {
+      return false;
     }
-    setLoadingSummary(false);
-  }, [summary.id, props.auth.isLoggedIn]);
 
-  useEffect(() => {
-    setPaper(props.paper ? shims.paper(props.paper) : {});
-  }, [props.paper]);
-
-  useEffect(() => {
-    if (!props.fetchedPaper) {
-      fetchPaper({ paperId });
-    } else {
-      checkUserVote();
-    }
+    // TODO: Check that this is happening
     if (document.getElementById("structuredData")) {
       let script = document.getElementById("structuredData");
       script.textContext = formatStructuredData();
@@ -172,43 +174,20 @@ const Paper = (props) => {
       script.textContext = formatStructuredData();
       document.head.appendChild(script);
     }
-  }, [paperId]);
+  }, [isFetchComplete]);
 
   useEffect(() => {
-    if (Object.keys(paper).length !== 0) {
+    if (isFetchComplete && auth.isLoggedIn) {
       checkUserVote();
     }
-  }, [props.auth.isLoggedIn]);
+  }, [auth.isLoggedIn, isFetchComplete]);
 
   useEffect(() => {
     setCount(calculateCommentCount(paper));
   }, [paper.discussionSource]);
 
-  function fetchPaper({ paperId }) {
-    setLoadingPaper(true);
-    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        setLoadingPaper(false);
-        const currPaper = shims.paper(resp);
-        setScore(getNestedValue(currPaper, ["score"], 0));
-        setFlag(currPaper.user_flag);
-        setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount(currPaper));
-        setPaper(currPaper);
-        setSummary(currPaper.summary || {});
-        checkUserVote(currPaper);
-        return currPaper;
-      })
-      .catch((error) => {
-        console.log(error);
-        Sentry.captureException(error);
-      });
-  }
-
   function checkUserVote(paperState = paper) {
-    if (props.auth.isLoggedIn && props.auth.user) {
+    if (auth.isLoggedIn && auth.user) {
       return checkUserVotesOnPapers({ paperIds: [paperId] }).then(
         (userVotes) => {
           const userVote = userVotes[paperId];
@@ -405,13 +384,14 @@ const Paper = (props) => {
   function onSectionEnter(index) {
     activeTab !== index && setActiveTab(index);
   }
+
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
 
   return (
     <div>
-      <PaperBanner paper={paper} loadingPaper={loadingPaper} />
+      <PaperBanner paper={paper} loadingPaper={!isFetchComplete} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -454,7 +434,7 @@ const Paper = (props) => {
                 flagged={flagged}
                 restorePaper={restorePaper}
                 removePaper={removePaper}
-                doneFetchingPaper={!loadingPaper}
+                doneFetchingPaper={isFetchComplete}
                 setFlag={setFlag}
               />
             </div>
@@ -498,7 +478,7 @@ const Paper = (props) => {
                 </div>
               </Waypoint>
             </div>
-            {!loadingPaper && /* Performance Optimization */
+            {isFetchComplete && /* Performance Optimization */
               <Waypoint
                 onEnter={() => onSectionEnter(2)}
                 topOffset={40}
@@ -506,15 +486,17 @@ const Paper = (props) => {
               >
                 <div className={css(styles.space)}>
                   <a name="comments" />
+
+                  {/* TODO: uncomment this
                   <DiscussionTab
-                    hostname={props.hostname}
+                    hostname={hostname}
                     documentType={"paper"}
                     paperId={paperId}
                     paperState={paper}
                     calculatedCount={discussionCount}
                     setCount={setCount}
                     isCollapsible={false}
-                  />
+                  />*/}
                 </div>
               </Waypoint>
             }
@@ -526,7 +508,7 @@ const Paper = (props) => {
                 !paperDraftExists && styles.hide
               )}
             >
-              {!loadingPaper && /* Performance Optimization */
+              {isFetchComplete && /* Performance Optimization */
                 <Waypoint
                   onEnter={() => onSectionEnter(3)}
                   topOffset={40}
@@ -551,7 +533,7 @@ const Paper = (props) => {
                 </Waypoint>
               }
             </div>
-            {!loadingPaper && /* Performance Optimization */
+            {isFetchComplete && /* Performance Optimization */
               <Waypoint
                 onEnter={() => onSectionEnter(4)}
                 topOffset={40}
@@ -599,87 +581,10 @@ const Paper = (props) => {
   );
 };
 
-const fetchPaper = ({ paperId }) => {
-  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((resp) => {
-      return resp;
-    })
-    .catch((error) => {
-      console.log(error);
-      Sentry.captureException(error);
-    });
-};
-
-Paper.getInitialProps = async (ctx) => {
-  const { req, store, query, res } = ctx;
-  const { host } = absoluteUrl(req);
-  const hostname = host;
-
-  if (!isServer()) {
-    return {
-      hostname,
-    };
-  }
-
-  // Fetch data from external API
-  let props = {};
-  let paper;
-  let paperSlug;
-
-  try {
-    paper = await fetchPaper({ paperId: query.paperId });
-  } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-    // if paper doesnot exist
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  if (!paper) {
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  paperSlug = paper.slug;
-  let fetchedPaper = true;
-
-  if (paperSlug !== query.paperName) {
-    // redirect paper if paperName does not match slug
-    let paperName = paperSlug
-      ? paperSlug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
-
-    if (paperName === query.paperName) {
-      // catch multiple redirect when slug does not exist
-      props = { hostname, paper, fetchedPaper };
-      return props;
-    }
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
-
-    res.writeHead(301, { Location: redirectPath });
-    res.end();
-    props = {
-      hostname,
-      paper,
-      redirectPath,
-      paperName,
-      paperSlug,
-      paperName: query.paperName,
-    };
-    return props;
-  }
-  props = { hostname, paper, fetchedPaper };
-  return props;
-};
-
 const PaperIndexWithUndux = (props) => {
+
+  console.log('33333333333');
+
   return (
     <PaperDraftUnduxStore.Container>
       <InlineCommentUnduxStore.Container>
@@ -1095,6 +1000,62 @@ const mapDispatchToProps = {
   getThreads: PaperActions.getThreads,
   getBullets: BulletActions.getBullets,
 };
+
+const fetchPaper = ({ paperId }) => {
+  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      return resp;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export async function getStaticPaths(ctx) {
+  console.log("00000000");
+
+  return {
+    paths: [
+      '/paper/20893/engineering-self-organized-criticality-in-living-cells'
+    ],
+    fallback: true,
+  }
+}
+
+export async function getStaticProps(ctx) {
+
+  console.log("1111111");
+
+  let paper;
+  let paperSlug;
+  try {
+    paper = await fetchPaper({ paperId: ctx.params.paperId });
+  } catch (err) {
+    return {
+      props: {
+        errorCode: 500,
+      }
+    };
+  }
+
+  if (!paper) {
+    return {
+      props: {
+        errorCode: 404
+      }
+    };
+  }
+  else {
+    return {
+      props: {
+        paperResponse: paper,
+        isFetchComplete: true,
+      }
+    };
+  }
+}
 
 export default connect(
   mapStateToProps,

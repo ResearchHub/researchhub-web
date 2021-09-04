@@ -1,5 +1,4 @@
 import Router from "next/router";
-import killswitch from "~/config/killswitch/killswitch";
 import { redirect } from "~/config/utils/routing";
 
 const isServer = () => typeof window === "undefined";
