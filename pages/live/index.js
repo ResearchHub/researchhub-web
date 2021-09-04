@@ -4,7 +4,6 @@ import { StyleSheet, css } from "aphrodite";
 
 // Component
 import LiveFeed from "~/components/Hubs/LiveFeed";
-import ResearchHubBanner from "~/components/ResearchHubBanner";
 
 // Config
 import API from "~/config/api";
@@ -83,7 +82,10 @@ class LiveFeedPage extends Component {
   };
 
   render() {
+    debugger;
     let { auth } = this.props;
+
+    console.log('auth', auth);
 
     return (
       <Fragment>

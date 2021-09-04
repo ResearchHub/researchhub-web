@@ -606,7 +606,6 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   livefeed: state.livefeed.livefeed,
   allHubs: state.hubs.hubs,
-  auth: state.auth,
 });
 
 const mapDispatchToProps = {
