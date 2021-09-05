@@ -189,6 +189,7 @@ const MyApp2 = ({ Component, pageProps, store }) =>{
   // const store = configureStore();
 
    useEffect(() => {
+    console.log('process.env', process.env);    
     console.log('process.env.REACT_APP_ENV', process.env.REACT_APP_ENV);    
    }, [])
 
