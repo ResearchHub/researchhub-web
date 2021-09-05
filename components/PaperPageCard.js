@@ -689,7 +689,6 @@ class PaperPageCard extends Component {
               </div>
             </div>
           </div>
-
           {
             <div className={css(styles.previewBox)}>
               <PaperPreview

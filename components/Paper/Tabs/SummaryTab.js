@@ -54,13 +54,15 @@ class SummaryTab extends Component {
       firstLoad: true,
       summaryExists: false,
       editing: false,
+      editedAbstract: false,
       finishedLoading: false,
-      // abstract
-      abstract: "",
       showAbstract: true,
       editAbstract: false,
       checked: false,
     };
+
+
+    console.log('props', props);
   }
 
   // TODO: come back to this
@@ -185,10 +187,8 @@ class SummaryTab extends Component {
   };
 
   editAbstract = () => {
-    const { editAbstract, abstract } = this.state;
-
     this.setState({
-      editAbstract: !editAbstract, // don't keep changes when user cancels
+      editAbstract: !this.state.editAbstract, // don't keep changes when user cancels
     });
   };
 
@@ -198,7 +198,7 @@ class SummaryTab extends Component {
 
     this.setState({
       editAbstract: !editAbstract,
-      abstract: paper.abstract,
+      editedAbstract: paper.abstract,
     });
   };
 
@@ -210,7 +210,7 @@ class SummaryTab extends Component {
     const { paper, setMessage, showMessage, updatePaperState } = this.props;
     showMessage({ show: true, load: true });
 
-    const abstract = this.state.abstract; // remove linebreak
+    const abstract = this.state.editedAbstract; // remove linebreak
 
     this.props
       .patchPaper(paper.id, { abstract })
@@ -232,7 +232,10 @@ class SummaryTab extends Component {
         setMessage("Abstract successfully edited.");
         showMessage({ show: true });
 
-        this.setState({ editAbstract: false, abstract });
+        this.setState({
+          editAbstract: false,
+          editedAbstract: abstract,
+        });
       })
       .catch((err) => {
         if (err.response.status === 429) {
@@ -408,7 +411,7 @@ class SummaryTab extends Component {
 
   renderAbstract = () => {
     const { paper } = this.props;
-    const { showAbstract, editAbstract, readOnly, abstract } = this.state;
+    const { showAbstract, editAbstract, readOnly } = this.state;
     const externalSource = paper.retrieved_from_external_source;
 
     if (showAbstract) {
@@ -438,8 +441,8 @@ class SummaryTab extends Component {
           </div>
         );
       }
-      if (abstract) {
-        let parsedAbstract = abstract; 
+      if (paper.abstract) {
+        let parsedAbstract = paper.abstract; 
         parsedAbstract = stripHTML(parsedAbstract);
         parsedAbstract = parseMath(parsedAbstract);
 
