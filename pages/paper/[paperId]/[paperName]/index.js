@@ -93,6 +93,14 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   const dispatch = useDispatch();
   const store = useStore();
 
+
+//   if (pdfExtractResponse) {
+//     console.log(pdfExtractResponse);
+//     const a = EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data))
+//     console.log(a);
+// 
+//   }
+
   if (errorCode) {
     return <Error statusCode={errorCode} />;
   }
@@ -540,8 +548,9 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                       paperDraftExists={paperDraftExists}
                       paperDraftSections={[]}
                     />
+                    {pdfExtractResponse &&
                     <PaperDraftContainer
-                      paperDraftEditorState={EditorState.createEmpty()}
+                      paperDraftEditorState={EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data))}
                       isViewerAllowedToEdit={isModerator}
                       paperDraftExists={paperDraftExists}
                       paperDraftSections={[]}
@@ -550,6 +559,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                       setPaperDraftExists={setPaperDraftExists}
                       setPaperDraftSections={setPaperDraftSections}
                     />
+                    }
                   </div>
                 </Waypoint>
             </div>
