@@ -23,16 +23,22 @@ import { savePaperSilentlyHook } from "./api/PaperDraftSilentSave";
 // Container to fetch documents & convert strings into a disgestable format for PaperDraft.
 export default function PaperDraftContainer({
   isViewerAllowedToEdit,
+  paperDraft,
   paperDraftExists,
   paperDraftSections,
+  paperDraftEditorState,
   paperId,
   setActiveSection,
   setPaperDraftExists,
   setPaperDraftSections,
 }) {
+
+console.log('paperDraftEditorState', paperDraftEditorState);
+// return null
+
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
-  const editorState = paperDraftStore.get("editorState");
+  const editorState = paperDraftEditorState;
   const initEditorState = paperDraftStore.get("initEditorState");
   const setEditorState = (updatedEditorState) =>
     paperDraftStore.set("editorState")(updatedEditorState);
@@ -43,33 +49,33 @@ export default function PaperDraftContainer({
   const [isFetching, setIsFetching] = useState(true);
   const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
-  const decorator = useMemo(
-    () =>
-      getDecorator({
-        seenEntityKeys,
-        setActiveSection,
-        setSeenEntityKeys,
-      }),
-    [seenEntityKeys, setActiveSection, setSeenEntityKeys]
-  );
-  useEffect(
-    /* backend fetch */
-    () => {
-      paperDraftStore.set("paperID")(paperId);
-      inlineCommentStore.set("paperID")(paperId);
-      /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
-      paperFetchHook({
-        decorator,
-        paperId,
-        setEditorState,
-        setInitEditorState,
-        setIsFetching,
-        setPaperDraftExists,
-        setPaperDraftSections,
-      });
-    },
-    [paperId] /* intentionally hard enforcing only on paperID. */
-  );
+  // const decorator = useMemo(
+  //   () =>
+  //     getDecorator({
+  //       seenEntityKeys,
+  //       setActiveSection,
+  //       setSeenEntityKeys,
+  //     }),
+  //   [seenEntityKeys, setActiveSection, setSeenEntityKeys]
+  // );
+  // useEffect(
+  //   /* backend fetch */
+  //   () => {
+  //     paperDraftStore.set("paperID")(paperId);
+  //     inlineCommentStore.set("paperID")(paperId);
+  //     /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
+  //     paperFetchHook({
+  //       decorator,
+  //       paperId,
+  //       setEditorState,
+  //       setInitEditorState,
+  //       setIsFetching,
+  //       setPaperDraftExists,
+  //       setPaperDraftSections,
+  //     });
+  //   },
+  //   [paperId] /* intentionally hard enforcing only on paperID. */
+  // );
 
   const shouldSavePaperSilently = getShouldSavePaperSilently({
     isDraftInEditMode,
@@ -148,7 +154,7 @@ export default function PaperDraftContainer({
           spellCheck: isDraftInEditMode,
         }}
         inlineCommentStore={inlineCommentStore}
-        isFetching={isFetching}
+        isFetching={false}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}

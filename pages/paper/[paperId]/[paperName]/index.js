@@ -56,11 +56,17 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { getAuthorName, getNestedValue } from "~/config/utils/misc";
+import { fetchPaperDraft } from "~/config/fetch";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
 } from "~/config/utils/editor";
+import {
+  formatBase64ToEditorState,
+  formatRawJsonToEditorState,
+} from "~/components/PaperDraft/util/PaperDraftUtils";
+import { isEmpty } from "~/config/utils/nullchecks";
 import * as shims from "~/redux/paper/shims";
 
 const steps = [
@@ -79,7 +85,10 @@ const steps = [
   },
 ];
 
-const Paper = ({ paperResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
+const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
+
+console.log('pdfExtractResponse', pdfExtractResponse);
+
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -88,8 +97,6 @@ const Paper = ({ paperResponse, auth, redirectPath, errorCode, isFetchComplete =
   if (errorCode) {
     return <Error statusCode={errorCode} />;
   }
-console.log('isFetchComplete', isFetchComplete);
-console.log('paperResponse', paperResponse);
 
   // TODO: This issue needs to be addressed
   if (redirectPath && typeof window !== "undefined") {
@@ -116,7 +123,9 @@ console.log('paperResponse', paperResponse);
   );
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
-  const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
+  const [paperDraftSections, setPaperDraftSections] = useState(null);
+  const [paperDraftEditorState, setPaperDraftEditorState] = useState(null);
+  
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const [userVoteChecked, setUserVoteChecked] = useState(false);
@@ -152,9 +161,6 @@ console.log('paperResponse', paperResponse);
       setLoadingSummary(false);
     }, [summary.id, auth.isLoggedIn]);
   }
-  else {
-    console.log("Info: Paper summary feature is off")
-  }
 
 
   useEffect(() => {
@@ -174,6 +180,16 @@ console.log('paperResponse', paperResponse);
       document.head.appendChild(script);
     }
   }, [isFetchComplete]);
+
+  useEffect(() => {
+    if (pdfExtractResponse) {
+      const parsed = parsePaperBody(pdfExtractResponse);
+      setPaperDraftExists(true);
+      setPaperDraftSections(parsed.paperDraftSections);
+      setPaperDraftEditorState(parsed.paperDraftEditorState);
+      console.log('parsed.paperDraftEditorState', parsed.paperDraftEditorState);
+    }
+  }, [pdfExtractResponse])
 
   useEffect(() => {
     if (paperResponse) {
@@ -513,7 +529,7 @@ console.log('paperResponse', paperResponse);
                 !paperDraftExists && styles.hide
               )}
             >
-              {isFetchComplete && /* Performance Optimization */
+              {paperDraftSections &&
                 <Waypoint
                   onEnter={() => onSectionEnter(3)}
                   topOffset={40}
@@ -526,6 +542,7 @@ console.log('paperResponse', paperResponse);
                       paperDraftSections={paperDraftSections}
                     />
                     <PaperDraftContainer
+                      paperDraftEditorState={paperDraftEditorState}
                       isViewerAllowedToEdit={isModerator}
                       paperDraftExists={paperDraftExists}
                       paperDraftSections={paperDraftSections}
@@ -1026,12 +1043,26 @@ export async function getStaticPaths(ctx) {
   }
 }
 
+
+const parsePaperBody = (data) => {
+  if (typeof data !== "string") {
+    return formatRawJsonToEditorState({
+      rawJson: data,
+    });
+  } else {
+    return formatBase64ToEditorState({
+      base64: data,
+    });
+  }
+};
+
+
 export async function getStaticProps(ctx) {
 
-  console.log("1111111");
-
   let paper;
+  let pdfExtractResponse;
   let paperSlug;
+
   try {
     paper = await fetchPaper({ paperId: ctx.params.paperId });
   } catch (err) {
@@ -1042,6 +1073,14 @@ export async function getStaticProps(ctx) {
     };
   }
 
+  try {  
+    pdfExtractResponse = await fetchPaperDraft({ paperId: ctx.params.paperId });
+    pdfExtractResponse = await Helpers.parseJSON(pdfExtractResponse);
+  }
+  catch(err) {
+    console.log(err);
+  }
+
   if (!paper) {
     return {
       props: {
@@ -1050,9 +1089,13 @@ export async function getStaticProps(ctx) {
     };
   }
   else {
+
+
+
     return {
       props: {
         paperResponse: paper,
+        pdfExtractResponse,
         isFetchComplete: true,
       }
     };

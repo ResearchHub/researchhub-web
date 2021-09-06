@@ -126,8 +126,6 @@ export const formatBase64ToEditorState = (payload) => {
     base64 = "",
     currenEditorState = EditorState.createEmpty(),
     decorator = null,
-    onError = emptyFncWithMsg,
-    onSuccess = emptyFncWithMsg,
   } = payload ?? {};
   try {
     const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
@@ -140,8 +138,11 @@ export const formatBase64ToEditorState = (payload) => {
       EditorState.push(currenEditorState, blocksFromHTML),
       { decorator }
     );
-    onSuccess({ sections: sectionTitles });
-    return newEditorState;
+
+    return {
+      paperDraftEditorState: newEditorState,
+      paperDraftSections: sectionTitles  
+    }    
   } catch (error) {
     onError("formatBase64ToEditorState: ", error);
   }
@@ -150,8 +151,6 @@ export const formatBase64ToEditorState = (payload) => {
 export const formatRawJsonToEditorState = (payload) => {
   const {
     decorator = null,
-    onError = emptyFncWithMsg,
-    onSuccess = emptyFncWithMsg,
     rawJson /* json formatted by draftJs & saved to backend */,
   } = payload ?? {};
   try {
@@ -160,8 +159,11 @@ export const formatRawJsonToEditorState = (payload) => {
       EditorState.createWithContent(convertFromRaw(data)),
       { decorator }
     );
-    onSuccess({ sections });
-    return newEditorState;
+
+    return {
+      paperDraftEditorState: newEditorState,
+      paperDraftSections: sections  
+    }
   } catch (error) {
     onError("formatRawJsonToEditorState: ", error);
   }
