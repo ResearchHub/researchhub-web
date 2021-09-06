@@ -68,6 +68,7 @@ import {
 } from "~/components/PaperDraft/util/PaperDraftUtils";
 import { isEmpty } from "~/config/utils/nullchecks";
 import * as shims from "~/redux/paper/shims";
+import { EditorState, convertFromRaw } from "draft-js";
 
 const steps = [
   {
@@ -86,8 +87,6 @@ const steps = [
 ];
 
 const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
-
-console.log('pdfExtractResponse', pdfExtractResponse);
 
 
   const router = useRouter();
@@ -539,13 +538,13 @@ console.log('pdfExtractResponse', pdfExtractResponse);
                     <a name="paper" />
                     <TableOfContent
                       paperDraftExists={paperDraftExists}
-                      paperDraftSections={paperDraftSections}
+                      paperDraftSections={[]}
                     />
                     <PaperDraftContainer
-                      paperDraftEditorState={paperDraftEditorState}
+                      paperDraftEditorState={EditorState.createEmpty()}
                       isViewerAllowedToEdit={isModerator}
                       paperDraftExists={paperDraftExists}
-                      paperDraftSections={paperDraftSections}
+                      paperDraftSections={[]}
                       paperId={paperId}
                       setActiveSection={setActiveSection}
                       setPaperDraftExists={setPaperDraftExists}

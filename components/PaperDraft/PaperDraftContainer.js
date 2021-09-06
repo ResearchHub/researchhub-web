@@ -140,6 +140,7 @@ console.log('paperDraftEditorState', paperDraftEditorState);
 
   return (
     <PaperDraftInlineCommentRelativeWrap>
+      Test
       <PaperDraft
         textEditorProps={{
           blockStyleFn: getBlockStyleFn,
