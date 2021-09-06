@@ -136,17 +136,7 @@ class PaperDraft extends Component {
     } = this.props;
     const { isSaving } = this.state;
     return (
-      <ReactPlaceholder
-        ready={!isFetching}
-        showLoadingAnimation
-        customPlaceholder={
-          <div style={{ paddingTop: 30 }}>
-            <AbstractPlaceholder color="#efefef" />
-            <AbstractPlaceholder color="#efefef" />
-            <AbstractPlaceholder color="#efefef" />
-          </div>
-        }
-      >
+
         <div className={css(styles.root)}>
           Test2
           <h3
@@ -173,18 +163,12 @@ class PaperDraft extends Component {
             shouldAllowKeyEvents={true}
             shouldAllowMouseEvents={true}
           >
-            <div
-              style={{
-                caretColor: !isInEditMode ? "transparent" : "black",
-              }}
-              className={css(isInEditMode && styles.editorActive)}
-            >
+
               <Editor
                 {...textEditorProps}
                 readOnly={false} // setting this to false grants access to selection
                 ref={(ref) => (this.editor = ref)}
               />
-            </div>
           </PaperDraftEventCaptureWrap>
 
           <div
@@ -212,7 +196,6 @@ class PaperDraft extends Component {
             />
           </div>
         </div>
-      </ReactPlaceholder>
     );
   }
 }
