@@ -525,10 +525,10 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                 styles.paperPageContainer,
                 styles.bottom,
                 styles.noMarginLeft,
-                !paperDraftExists && styles.hide
+                // !paperDraftExists && styles.hide
               )}
             >
-              {paperDraftSections &&
+                Test0
                 <Waypoint
                   onEnter={() => onSectionEnter(3)}
                   topOffset={40}
@@ -552,7 +552,6 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                     />
                   </div>
                 </Waypoint>
-              }
             </div>
             {isFetchComplete && /* Performance Optimization */
               <Waypoint

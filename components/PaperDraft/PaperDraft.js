@@ -147,7 +147,8 @@ class PaperDraft extends Component {
           </div>
         }
       >
-        <div className={css(styles.root, !paperDraftExists && styles.hidden)}>
+        <div className={css(styles.root)}>
+          Test2
           <h3
             className={css(styles.title, isInEditMode && styles.paddingBottom)}
           >
