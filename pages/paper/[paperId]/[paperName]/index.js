@@ -548,9 +548,8 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                       paperDraftExists={paperDraftExists}
                       paperDraftSections={[]}
                     />
-                    {pdfExtractResponse &&
                     <PaperDraftContainer
-                      paperDraftEditorState={EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data))}
+                      paperDraftEditorState={pdfExtractResponse ? EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)): EditorState.createEmpty()}
                       isViewerAllowedToEdit={isModerator}
                       paperDraftExists={paperDraftExists}
                       paperDraftSections={[]}
@@ -559,7 +558,6 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                       setPaperDraftExists={setPaperDraftExists}
                       setPaperDraftSections={setPaperDraftSections}
                     />
-                    }
                   </div>
                 </Waypoint>
             </div>
