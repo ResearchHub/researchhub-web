@@ -62,7 +62,6 @@ class SummaryTab extends Component {
     };
 
 
-    console.log('props', props);
   }
 
   // TODO: come back to this

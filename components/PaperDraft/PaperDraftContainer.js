@@ -33,7 +33,7 @@ export default function PaperDraftContainer({
   setPaperDraftSections,
 }) {
 
-console.log('paperDraftEditorState', paperDraftEditorState);
+// console.log('paperDraftEditorState', paperDraftEditorState);
 // return null
 
   const paperDraftStore = PaperDraftUnduxStore.useStore();

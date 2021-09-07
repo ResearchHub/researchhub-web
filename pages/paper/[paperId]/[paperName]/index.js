@@ -88,11 +88,11 @@ const steps = [
 
 const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
 
-
-  console.log('**********');
-  console.log('paperResponse', paperResponse);
-  console.log('pdfExtractResponse', pdfExtractResponse);
-  console.log('**********');
+  console.log("In Paper Index");
+  // console.log('**********');
+  // console.log('paperResponse', paperResponse);
+  // console.log('pdfExtractResponse', pdfExtractResponse);
+  // console.log('**********');
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -193,30 +193,33 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     }
   }, [isFetchComplete]);
 
-  useEffect(() => {
-// console.log(pdfExtractResponse);
-      // pdfExtractResponse ? EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)): EditorState.createEmpty()
-
-      try {
-        console.log("00000");
-        if (pdfExtractResponse) {
-          console.log("1111");
-          const parsed = parsePaperBody(pdfExtractResponse);
-          setPaperDraftSections(parsed.paperDraftSections);
-          setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
-        }
-      }
-      catch(err) {
-        console.log(err);
-        // TODO: Log sentry error
-      }
-  }, [pdfExtractResponse, paper, paperResponse])
-
-  useEffect(() => {
-    if (paperResponse) {
-      setPaper(shims.paper(paperResponse));
+  try {
+    if (pdfExtractResponse) {
+      console.log("in PDF EXTRACT");
+      console.log(pdfExtractResponse);
+      const parsed = parsePaperBody(pdfExtractResponse);
+      setPaperDraftSections(parsed.paperDraftSections);
+      setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
     }
-  }, [paperResponse])
+  }
+  catch(err) {
+    console.log(err);
+    // TODO: Log sentry error
+  }
+
+  if (paperResponse) {
+    setPaper(shims.paper(paperResponse));
+  }
+  if (paper?.discussionSource) {
+    setCount(calculateCommentCount(paper));
+  }
+
+  // useEffect(() => {
+  //   console.log("In paperResponse useEffect");
+  //   if (paperResponse) {
+  //     setPaper(shims.paper(paperResponse));
+  //   }
+  // }, [paperResponse])
 
   useEffect(() => {
     if (isFetchComplete && auth.isLoggedIn) {
@@ -224,9 +227,9 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     }
   }, [auth.isLoggedIn, isFetchComplete]);
 
-  useEffect(() => {
-    setCount(calculateCommentCount(paper));
-  }, [paper.discussionSource]);
+  // useEffect(() => {
+  //   setCount(calculateCommentCount(paper));
+  // }, [paper.discussionSource]);
 
   function checkUserVote(paperState = paper) {
     if (auth.isLoggedIn && auth.user) {
@@ -1055,7 +1058,7 @@ const fetchPaper = ({ paperId }) => {
 export async function getStaticPaths(ctx) {
   return {
     paths: [
-      // '/paper/20893/engineering-self-organized-criticality-in-living-cells'
+      // '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
     ],
     fallback: true,
   }
@@ -1091,9 +1094,11 @@ export async function getStaticProps(ctx) {
     };
   }
 
-  try {  
+  try {
     pdfExtractResponse = await fetchPaperDraft({ paperId: ctx.params.paperId });
 
+    console.log('ctx.params.paperId', ctx.params.paperId);  
+    console.log('pdfExtractResponse.status', pdfExtractResponse.status);
     // TODO: Need better error checking. What if 405?
     if (pdfExtractResponse.status === 404) {
       pdfExtractResponse = undefined;
