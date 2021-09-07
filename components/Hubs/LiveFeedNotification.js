@@ -26,6 +26,8 @@ import { getNestedValue } from "~/config/utils/misc";
 import { formatPaperSlug } from "~/config/utils/document";
 import { doesNotExist } from "~/config/utils/nullchecks";
 
+const HREF_PATTERN = "/[documentType]/[documentId]/[slug]";
+
 const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
   const {
@@ -36,42 +38,32 @@ const getNotifMetadata = (notification) => {
   } = notification;
 
   const { unified_document: unifiedDocument } = item;
-  const { document_type: sourceType } = unifiedDocument;
-
-  let doc, href, hrefAs, postId, postTitle, slug;
-  switch (sourceType) {
-    case "DISCUSSION":
-      href = "/post/[documentId]/[title]";
-      doc = unifiedDocument.documents[0]; // For posts, documents is an array of objects
-      postId = doc.id;
-      postTitle = doc.title || doc.post_title;
-      slug = doc.slug;
-      hrefAs = `/post/${postId}/${slug}`;
-      break;
-    case "PAPER":
-      href = "/paper/[paperId]/[paperName]";
-      doc = unifiedDocument.documents; // For papers, documents is an object
-      postId = doc.id;
-      postTitle = doc.title || doc.paper_title;
-      slug = doc.slug;
-      hrefAs = `/paper/${postId}/${slug}`;
-      break;
-  }
-  if (["thread", "comment", "reply"].includes(notifType)) {
-    hrefAs += "#comments"; // TODO: briansantoso - link directly to specific comment with threadId
-  }
+  const { document_type: documentType } = unifiedDocument;
+  const authorId = getNestedValue(createdBy, ["author_profile", "id"]);
   const timestamp = formatTimestamp(createdDate);
   const username = formatUsername(createdBy);
-  const authorId = getNestedValue(createdBy, ["author_profile", "id"]);
+  const shouldLeadToComments = ["thread", "comment", "reply"].includes(
+    notifType
+  );
+  const targetDoc =
+    documentType === "PAPER"
+      ? unifiedDocument.documents // For papers, documents is an object :
+      : unifiedDocument.documents[0]; // For other documents, it's an array of objects
+  const { id: documentID, paper_title, slug, title } = targetDoc ?? {};
+  const uriResolvedDocType = (
+    (documentType === "DISCUSSION" ? "POST" : documentType) ?? ""
+  ).toLowerCase();
+  const hrefAs = `/${uriResolvedDocType}/${documentID}/${slug ?? ""}`;
+
   return {
     authorId,
-    href,
-    hrefAs,
+    href: HREF_PATTERN,
+    hrefAs: !shouldLeadToComments ? hrefAs : hrefAs + "#comments",
     notifType,
-    postId,
-    postTitle,
-    slug,
-    sourceType,
+    postId: documentID,
+    postTitle: title ?? paper_title,
+    slug: slug,
+    sourceType: documentType,
     timestamp,
     username,
   };
@@ -283,7 +275,7 @@ class LiveFeedNotification extends Component {
           </a>
         </Link>
         {` ${verb} `}
-        <Link href={href} as={hrefAs}>
+        <Link href={href ?? ""} as={hrefAs ?? ""}>
           <a className={css(styles.link)} onClick={(e) => e.stopPropagation()}>
             {subject.linkText}
           </a>
@@ -292,7 +284,7 @@ class LiveFeedNotification extends Component {
         {preposition ? (
           <Fragment>
             {" in "}
-            <Link href={href} as={hrefAs}>
+            <Link href={href ?? ""} as={hrefAs}>
               <a
                 className={css(styles.paper)}
                 data-tip={postTitle}
