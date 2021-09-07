@@ -24,7 +24,6 @@ export const NotificationActions = {
       dispatch({ type: NotificationConstants.GET_LIVEFEED });
       const prevState = getState().livefeed.livefeed;
       const ENDPOINT = loadMore ? prevState.next : API.GET_LIVE_FEED({ hubId });
-
       return fetch(ENDPOINT, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
@@ -35,15 +34,13 @@ export const NotificationActions = {
             results = [...prevState.results, ...res.results];
           }
 
-          const livefeed = {
-            ...res,
-            results,
-          };
-
           return dispatch({
             type: NotificationConstants.LIVEFEED_UPDATED,
             payload: {
-              livefeed,
+              livefeed: {
+                ...res,
+                results,
+              },
             },
           });
         });
