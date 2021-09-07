@@ -225,7 +225,7 @@ const NotificationEntry = (props) => {
             {notifCreator}
             {" left a "}
             <HyperLink
-              dataTip={replyTip}
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.link}
