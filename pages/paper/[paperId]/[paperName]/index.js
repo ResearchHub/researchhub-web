@@ -89,6 +89,11 @@ const steps = [
 const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
 
 
+  console.log('**********');
+  console.log('paperResponse', paperResponse);
+  console.log('pdfExtractResponse', pdfExtractResponse);
+  console.log('**********');
+
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
@@ -205,7 +210,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
         console.log(err);
         // TODO: Log sentry error
       }
-  }, [pdfExtractResponse])
+  }, [pdfExtractResponse, paper, paperResponse])
 
   useEffect(() => {
     if (paperResponse) {
