@@ -129,9 +129,9 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     calculateCommentCount(paper)
   );
 
-  const [paperDraftExists, setPaperDraftExists] = useState(false);
-  const [paperDraftSections, setPaperDraftSections] = useState(null);
-  const [paperDraftEditorState, setPaperDraftEditorState] = useState(null);
+  // const [paperDraftExists, setPaperDraftExists] = useState(false);
+  const [paperDraftSections, setPaperDraftSections] = useState([]);
+  const [paperDraftEditorState, setPaperDraftEditorState] = useState(EditorState.createEmpty());
   
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
@@ -189,13 +189,22 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   }, [isFetchComplete]);
 
   useEffect(() => {
-    if (pdfExtractResponse) {
-      const parsed = parsePaperBody(pdfExtractResponse);
-      setPaperDraftExists(true);
-      setPaperDraftSections(parsed.paperDraftSections);
-      setPaperDraftEditorState(parsed.paperDraftEditorState);
-      console.log('parsed.paperDraftEditorState', parsed.paperDraftEditorState);
-    }
+// console.log(pdfExtractResponse);
+      // pdfExtractResponse ? EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)): EditorState.createEmpty()
+
+      try {
+        console.log("00000");
+        if (pdfExtractResponse) {
+          console.log("1111");
+          const parsed = parsePaperBody(pdfExtractResponse);
+          setPaperDraftSections(parsed.paperDraftSections);
+          setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
+        }
+      }
+      catch(err) {
+        console.log(err);
+        // TODO: Log sentry error
+      }
   }, [pdfExtractResponse])
 
   useEffect(() => {
@@ -481,7 +490,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 paperDraftSections={paperDraftSections}
-                paperDraftExists={paperDraftExists}
+                paperDraftExists={true}
               />
             </div>
             <div
@@ -545,17 +554,17 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                   <div>
                     <a name="paper" />
                     <TableOfContent
-                      paperDraftExists={paperDraftExists}
-                      paperDraftSections={[]}
+                      paperDraftExists={true}
+                      paperDraftSections={paperDraftSections}
                     />
                     <PaperDraftContainer
-                      paperDraftEditorState={pdfExtractResponse ? EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)): EditorState.createEmpty()}
+                      paperDraftEditorState={paperDraftEditorState}
                       isViewerAllowedToEdit={isModerator}
-                      paperDraftExists={paperDraftExists}
+                      paperDraftExists={true}
                       paperDraftSections={[]}
                       paperId={paperId}
                       setActiveSection={setActiveSection}
-                      setPaperDraftExists={setPaperDraftExists}
+                      setPaperDraftExists={true}
                       setPaperDraftSections={setPaperDraftSections}
                     />
                   </div>
@@ -598,7 +607,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                   activeSection={activeSection} // for paper draft sections
                   setActiveSection={setActiveSection}
                   paperDraftSections={paperDraftSections}
-                  paperDraftExists={paperDraftExists}
+                  paperDraftExists={true}
                 />
               </Fragment>
             )}
@@ -1039,8 +1048,6 @@ const fetchPaper = ({ paperId }) => {
 };
 
 export async function getStaticPaths(ctx) {
-  console.log("00000000");
-
   return {
     paths: [
       // '/paper/20893/engineering-self-organized-criticality-in-living-cells'
@@ -1081,7 +1088,15 @@ export async function getStaticProps(ctx) {
 
   try {  
     pdfExtractResponse = await fetchPaperDraft({ paperId: ctx.params.paperId });
-    pdfExtractResponse = await Helpers.parseJSON(pdfExtractResponse);
+
+    // TODO: Need better error checking. What if 405?
+    if (pdfExtractResponse.status === 404) {
+      pdfExtractResponse = undefined;
+    }
+    else {
+      pdfExtractResponse = await Helpers.parseJSON(pdfExtractResponse);
+    }
+
   }
   catch(err) {
     console.log(err);
@@ -1095,15 +1110,17 @@ export async function getStaticProps(ctx) {
     };
   }
   else {
+    const props = {
+      paperResponse: paper,
+      isFetchComplete: true,
+    }
 
-
+    if (pdfExtractResponse) {
+      props["pdfExtractResponse"] = pdfExtractResponse;
+    }
 
     return {
-      props: {
-        paperResponse: paper,
-        pdfExtractResponse,
-        isFetchComplete: true,
-      }
+      props
     };
   }
 }
