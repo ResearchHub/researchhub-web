@@ -182,7 +182,6 @@ class Notification extends Component {
   };
 
   render() {
-    console.warn("notifs: ", this.props.notifications);
     return (
       <div className={css(styles.container)}>
         <div
