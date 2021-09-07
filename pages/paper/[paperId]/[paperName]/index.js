@@ -136,7 +136,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
 
   // const [paperDraftExists, setPaperDraftExists] = useState(false);
   const [paperDraftSections, setPaperDraftSections] = useState([]);
-  const [paperDraftEditorState, setPaperDraftEditorState] = useState(EditorState.createEmpty());
+  const [paperDraftEditorState, setPaperDraftEditorState] = useState(null);
   
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
@@ -194,9 +194,9 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   }, [isFetchComplete]);
 
   try {
-    if (pdfExtractResponse) {
+    if (pdfExtractResponse && isEmpty(paperDraftEditorState)) {
       console.log("in PDF EXTRACT");
-      console.log(pdfExtractResponse);
+      // console.log(pdfExtractResponse);
       const parsed = parsePaperBody(pdfExtractResponse);
       setPaperDraftSections(parsed.paperDraftSections);
       setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
@@ -207,10 +207,10 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     // TODO: Log sentry error
   }
 
-  if (paperResponse) {
+  if (paperResponse && isEmpty(paper)) {
     setPaper(shims.paper(paperResponse));
   }
-  if (paper?.discussionSource) {
+  if (paper?.discussionSource && !discussionCount) {
     setCount(calculateCommentCount(paper));
   }
 
@@ -559,23 +559,25 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                   topOffset={40}
                   bottomOffset={"95%"}
                 >
-                  <div>
-                    <a name="paper" />
-                    <TableOfContent
-                      paperDraftExists={true}
-                      paperDraftSections={paperDraftSections}
-                    />
-                    <PaperDraftContainer
-                      paperDraftEditorState={paperDraftEditorState}
-                      isViewerAllowedToEdit={isModerator}
-                      paperDraftExists={true}
-                      paperDraftSections={[]}
-                      paperId={paperId}
-                      setActiveSection={setActiveSection}
-                      setPaperDraftExists={true}
-                      setPaperDraftSections={setPaperDraftSections}
-                    />
-                  </div>
+                  {paperDraftEditorState &&
+                    <div>
+                      <a name="paper" />
+                      <TableOfContent
+                        paperDraftExists={!!paperDraftEditorState}
+                        paperDraftSections={paperDraftSections}
+                      />
+                      <PaperDraftContainer
+                        paperDraftEditorState={paperDraftEditorState}
+                        isViewerAllowedToEdit={isModerator}
+                        paperDraftExists={!!paperDraftEditorState}
+                        paperDraftSections={[]}
+                        paperId={paperId}
+                        setActiveSection={setActiveSection}
+                        setPaperDraftExists={() => null}
+                        setPaperDraftSections={setPaperDraftSections}
+                      />
+                    </div>
+                  }
                 </Waypoint>
             </div>
             {isFetchComplete && /* Performance Optimization */
