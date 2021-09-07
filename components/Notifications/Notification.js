@@ -102,7 +102,7 @@ class Notification extends Component {
     });
   };
 
-  formatAction = (notification) => {
+  formatNotification = (notification) => {
     const {
       action_user,
       action,
@@ -167,14 +167,14 @@ class Notification extends Component {
 
   renderNotifications = () => {
     return this.state.notifications.map((notification, index) => {
-      const action = this.formatAction(notification);
-      if (!isNullOrUndefined(action)) {
+      const formattedNotifData = this.formatNotification(notification);
+      if (!isNullOrUndefined(formattedNotifData)) {
         return (
           <NotificationEntry
-            data={notification}
-            notification={action}
-            key={`notif-${notification.id}`}
             closeMenu={this.toggleMenu}
+            data={notification}
+            key={`notif-${index}`}
+            notification={formattedNotifData}
           />
         );
       }
