@@ -254,6 +254,7 @@ const NotificationEntry = (props) => {
       contribution_amount,
       created_by,
       created_date,
+      document_id: documentId,
       document_type: documentType,
       slug,
     } = props.notification;
@@ -264,7 +265,7 @@ const NotificationEntry = (props) => {
       author_profile: creatorProfile,
     } = created_by;
 
-    const formattedSlug = slug ?? formatPaperSlug(document_title);
+    const formattedSlug = slug ?? formatPaperSlug(documentType);
     const creatorName = creatorFName ?? "" + creatorLName ?? "";
 
     const formatLink = () => {
