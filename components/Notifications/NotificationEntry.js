@@ -274,7 +274,7 @@ const NotificationEntry = (props) => {
         as: `/${documentType}/${documentId}/${formattedSlug}`,
       };
 
-      switch (type) {
+      switch (documentType) {
         case "thread":
         case "comment":
         case "reply":
