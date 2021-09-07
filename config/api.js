@@ -1,7 +1,11 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import { isNullOrUndefined, doesNotExist, nullthrows } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  doesNotExist,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -641,17 +645,12 @@ const routes = (BASE_URL) => {
     CHECKURL: BASE_URL + "paper/check_url/",
     GET_LIVE_FEED: ({ hubId, page = 1, filter }) => {
       let url = BASE_URL + `hub/`;
-
-      if (hubId !== undefined && hubId !== null) {
+      if (!isNullOrUndefined(hubId)) {
         url += `${hubId}/latest_actions/?page=${page}`;
       }
-
-      if (filter !== undefined || filter !== null) {
-        if (typeof filter === "string") {
-          url += `&ordering=${filter}`;
-        }
+      if (!isNullOrUndefined(filter) && typeof filter === "string") {
+        url += `&ordering=${filter}`;
       }
-
       return url;
     },
     GET_CSL_ITEM: BASE_URL + "paper/get_csl_item/",
