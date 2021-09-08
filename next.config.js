@@ -5,6 +5,7 @@ const withPlugins = require("next-compose-plugins");
 const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
 
+
 module.exports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
   typescript: {

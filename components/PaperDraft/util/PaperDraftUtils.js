@@ -1,6 +1,48 @@
-import { EditorState, convertFromRaw } from "draft-js";
-import { convertFromHTML } from "draft-convert";
+import { EditorState, convertFromRaw, ContentState } from "~/vendor/draft-js";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { convertFromHTML } from "~/vendor/draft-convert";
+
+ let jsdom;
+ let JSDOM;
+ if (!process.browser) {
+   jsdom = require("jsdom");
+   JSDOM = jsdom.JSDOM;
+ }
+
+
+function serverDOMBuilder (html) {
+  const { document: jsdomDocument, HTMLElement, HTMLAnchorElement } = (new JSDOM(`<!DOCTYPE html>`)).window
+  // HTMLElement and HTMLAnchorElement needed on global for convertFromHTML to work
+  global.HTMLElement = HTMLElement
+  global.HTMLAnchorElement = HTMLAnchorElement
+
+  const doc = jsdomDocument.implementation.createHTMLDocument('foo')
+  doc.documentElement.innerHTML = html
+  const body = doc.getElementsByTagName('body')[0]
+  return body
+}
+
+export default function stateFromHTML (html) {
+  // if DOMBuilder is undefined convertFromHTML will use the browser dom,
+  //  hence we set DOMBuilder to undefined when document exist
+  let DOMBuilder = process.browser ? undefined : serverDOMBuilder;
+
+  // const blocksFromHTML = convertFromHTML(html, DOMBuilder)
+
+
+   const blocksFromHTML = convertFromHTML({
+     htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
+     htmlToStyle,
+     htmlToEntity,
+   })(html, { flat: true });
+
+  console.log('blocksFromHTML', blocksFromHTML);
+
+  return ContentState.createFromBlockArray(
+     blocksFromHTML.contentBlocks,
+     blocksFromHTML.entityMap,
+   )
+}
 
 const htmlToBlock = (nodeName, node, idsToRemove) => {
   if (idsToRemove[node.id] || idsToRemove[node.parentNode.id]) {
@@ -69,14 +111,30 @@ const htmlToEntity = (nodeName, node, createEntity) => {
 const formatHTMLForMarkup = (base64) => {
   const sectionTitles = [];
   const idsToRemove = {};
+  const base64Decoder = process.browser ? window.atob : (str) => Buffer.from(str, 'base64');
 
-  const html = decodeURIComponent(escape(window.atob(base64)));
-  const doc = new DOMParser().parseFromString(html, "text/xml");
+
+  const html = decodeURIComponent(escape(base64Decoder(base64)));
+
+  let doc;
+  if (process.browser) {
+    doc = new DOMParser().parseFromString(html, "text/xml");
+
+  }
+  else {
+    const dom = new JSDOM(html);
+    doc = dom.window.document;
+  console.log('dom.window.document', dom.window.document);
+  console.log('doc', doc);
+console.log(doc.getElementsByTagName("sec").length);
+  }
   const sections = [].slice.call(doc.getElementsByTagName("sec"));
 
   let count = 0;
-
+console.log('sections', sections.length);
   sections.forEach((section) => {
+
+
     const { parentNode } = section;
 
     const titleNode = section.getElementsByTagName("title")[0];
@@ -116,6 +174,8 @@ const formatHTMLForMarkup = (base64) => {
       count++;
     }
   });
+
+
   return [doc.documentElement.innerHTML, idsToRemove, sectionTitles];
 };
 
@@ -127,25 +187,47 @@ export const formatBase64ToEditorState = (payload) => {
     currenEditorState = EditorState.createEmpty(),
     decorator = null,
   } = payload ?? {};
-  try {
-    const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
-    const blocksFromHTML = convertFromHTML({
-      htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
-      htmlToStyle,
-      htmlToEntity,
-    })(html, { flat: true });
-    const newEditorState = EditorState.set(
-      EditorState.push(currenEditorState, blocksFromHTML),
-      { decorator }
-    );
+  // const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
 
-    return {
-      paperDraftEditorState: newEditorState,
-      paperDraftSections: sectionTitles  
-    }    
-  } catch (error) {
-    onError("formatBase64ToEditorState: ", error);
-  }
+  const [html, idsToRemove, sectionTitles] = formatHTMLForMarkup(base64);
+
+  let DOMBuilder = process.browser ? undefined : serverDOMBuilder;
+
+  // const blocksFromHTML = convertFromHTML(html, DOMBuilder)
+
+
+   const blocksFromHTML = convertFromHTML({
+     htmlToBlock: (nodeName, node) => htmlToBlock(nodeName, node, idsToRemove),
+     htmlToStyle,
+     htmlToEntity,
+   })(html, { flat: true });
+
+  console.log('blocksFromHTML', blocksFromHTML);
+
+  // const state = ContentState.createFromBlockArray(
+  //    blocksFromHTML.contentBlocks,
+  //    blocksFromHTML.entityMap,
+  //  )
+
+
+  // console.log('state', state);
+
+  // const blocksFromHTML = convertFromHTML(html)
+
+   const newEditorState = EditorState.set(
+     EditorState.push(currenEditorState, blocksFromHTML),
+     { decorator }
+   );
+
+  // const newEditorState = state;
+
+
+
+
+  return {
+    paperDraftEditorState: newEditorState,
+    paperDraftSections: sectionTitles  
+  }    
 };
 
 export const formatRawJsonToEditorState = (payload) => {
@@ -153,19 +235,15 @@ export const formatRawJsonToEditorState = (payload) => {
     decorator = null,
     rawJson /* json formatted by draftJs & saved to backend */,
   } = payload ?? {};
-  try {
-    const { data, sections } = rawJson;
-    const newEditorState = EditorState.set(
-      EditorState.createWithContent(convertFromRaw(data)),
-      { decorator }
-    );
+  const { data, sections } = rawJson;
+  const newEditorState = EditorState.set(
+    EditorState.createWithContent(convertFromRaw(data)),
+    { decorator }
+  );
 
-    return {
-      paperDraftEditorState: newEditorState,
-      paperDraftSections: sections  
-    }
-  } catch (error) {
-    onError("formatRawJsonToEditorState: ", error);
+  return {
+    paperDraftEditorState: newEditorState,
+    paperDraftSections: sections  
   }
 };
 

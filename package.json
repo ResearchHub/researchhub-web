@@ -56,6 +56,7 @@
     "javascript-time-ago": "^2.0.7",
     "js-cookie": "^2.2.1",
     "js-sha3": "^0.8.0",
+    "jsdom": "^17.0.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.6.2",
     "lodash": "^4.17.21",
@@ -84,6 +85,7 @@
     "react-horizontal-scrolling-menu": "^0.7.8",
     "react-html-parser": "^2.0.2",
     "react-infinite-scroller": "^1.2.4",
+    "react-katex": "^2.0.2",
     "react-lazyload": "^3.2.0",
     "react-modal": "^3.10.1",
     "react-modal-image": "^2.5.0",
@@ -111,7 +113,6 @@
     "typescript": "^4.3.5",
     "undux": "^5.2.0",
     "webpack": "^5.50.0",
-    "react-katex": "^2.0.2",
     "webpack-bundle-analyzer": "^4.3.0"
   },
   "devDependencies": {
@@ -136,7 +137,7 @@
   },
   "browser": {
     "child_process": false
-  },
+  },  
   "lint-staged": {
     "*.js": "eslint --cache --fix",
     "*.{js,css,md}": "prettier --write"

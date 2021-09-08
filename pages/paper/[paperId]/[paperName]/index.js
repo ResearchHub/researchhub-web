@@ -123,7 +123,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   const [discussionCount, setCount] = useState(0);
 
   const [paperDraftSections, setPaperDraftSections] = useState([]);
-  const [paperDraftEditorState, setPaperDraftEditorState] = useState(null);
+  const [paperDraftEditorState, setPaperDraftEditorState] = useState(0);
   
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
@@ -148,20 +148,18 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
 
   (function initSSG() {
     try {
-      if (pdfExtractResponse && isEmpty(paperDraftEditorState)) {
+      if (pdfExtractResponse && paperDraftEditorState === 0) {
 
 
         const parsed = parsePaperBody({ data: pdfExtractResponse, decorator });
-        console.log('***********');
-        console.log('parsed', parsed);
-        console.log('pdfExtractResponse.data', pdfExtractResponse.data);
-        console.log('***********');
         setPaperDraftSections(parsed.paperDraftSections);
-        setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
+        // setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
+        setPaperDraftEditorState(parsed.paperDraftEditorState);
       }
     }
     catch(err) {
       console.log(err);
+      setPaperDraftEditorState(null);
       // TODO: Log sentry error
     }
 
@@ -1085,9 +1083,6 @@ export async function getStaticProps(ctx) {
   try {
     pdfExtractResponse = await fetchPaperDraft({ paperId: ctx.params.paperId });
 
-    console.log('ctx.params.paperId', ctx.params.paperId);  
-    console.log('pdfExtractResponse.status', pdfExtractResponse?.status);
-    console.log('pdfExtractResponse', pdfExtractResponse);
     // TODO: Need better error checking. What if 405?
     if (pdfExtractResponse?.status === 404) {
       pdfExtractResponse = undefined;
