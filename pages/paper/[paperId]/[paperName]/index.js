@@ -69,6 +69,7 @@ import {
 import { isEmpty } from "~/config/utils/nullchecks";
 import * as shims from "~/redux/paper/shims";
 import { EditorState, convertFromRaw } from "draft-js";
+import { getDecorator } from "~/components/PaperDraft/util/PaperDraftDecoratorFinders";
 
 const steps = [
   {
@@ -119,9 +120,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper && paper.userVote)
   );
-  const [discussionCount, setCount] = useState(
-    calculateCommentCount(paper)
-  );
+  const [discussionCount, setCount] = useState(0);
 
   const [paperDraftSections, setPaperDraftSections] = useState([]);
   const [paperDraftEditorState, setPaperDraftEditorState] = useState(null);
@@ -129,17 +128,28 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const [userVoteChecked, setUserVoteChecked] = useState(false);
+  const [seenEntityKeys, setSeenEntityKeys] = useState({});
 
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
     paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  let summaryVoteChecked = false;
+  const decorator = useMemo(
+    () =>
+      getDecorator({
+        seenEntityKeys,
+        setActiveSection,
+        setSeenEntityKeys,
+      }),
+    [seenEntityKeys, setActiveSection, setSeenEntityKeys]
+  );
 
-  (()=> {
+  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [paper]);
+
+  (function initSSG() {
     try {
       if (pdfExtractResponse && isEmpty(paperDraftEditorState)) {
-        const parsed = parsePaperBody(pdfExtractResponse);
+        const parsed = parsePaperBody({ data: pdfExtractResponse, decorator });
         setPaperDraftSections(parsed.paperDraftSections);
         setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
       }
@@ -155,13 +165,10 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     if (paper?.discussionSource && !discussionCount) {
       setCount(calculateCommentCount(paper));
     }
-  })()
-
-  const formattedStructuredDataForSEO = useMemo(() => {
-    formatStructuredDataForSEO()
-  }, [paper]);
+  })();
 
   if (killswitch("paperSummary")) {
+    let summaryVoteChecked = false;
     useEffect(() => {
       const summaryId = summary.id;
       if (summaryId && !summaryVoteChecked) {
@@ -311,7 +318,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     return "";
   }
 
-  function formatStructuredDataForSEO() {
+  function buildStructuredDataForSEO() {
     let data = {
       "@context": "https://schema.org/",
       name: paper.title,
@@ -420,7 +427,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
           type="application/ld+json"
           id="structuredData"
           dangerouslySetInnerHTML={{
-            __html: formattedStructuredDataForSEO
+            __html: JSON.stringify(structuredDataForSEO)
           }}
           >
         </script>
@@ -522,7 +529,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                 styles.paperPageContainer,
                 styles.bottom,
                 styles.noMarginLeft,
-                // !paperDraftExists && styles.hide
+                !paperDraftEditorState && styles.hide
               )}
             >
                 <Waypoint
@@ -541,11 +548,10 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                         paperDraftEditorState={paperDraftEditorState}
                         isViewerAllowedToEdit={isModerator}
                         paperDraftExists={!!paperDraftEditorState}
-                        paperDraftSections={[]}
+                        paperDraftSections={paperDraftSections}
                         paperId={paperId}
+                        isFetching={!isFetchComplete}
                         setActiveSection={setActiveSection}
-                        setPaperDraftExists={() => null}
-                        setPaperDraftSections={setPaperDraftSections}
                       />
                     </div>
                   }
@@ -1038,14 +1044,16 @@ export async function getStaticPaths(ctx) {
 }
 
 
-const parsePaperBody = (data) => {
+const parsePaperBody = ({ data, decorator }) => {
   if (typeof data !== "string") {
     return formatRawJsonToEditorState({
       rawJson: data,
+      decorator,
     });
   } else {
     return formatBase64ToEditorState({
       base64: data,
+      decorator,
     });
   }
 };

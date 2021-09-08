@@ -13,7 +13,6 @@ import {
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
 import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
-import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
 import PaperDraftUnduxStore from "./undux/PaperDraftUnduxStore";
@@ -33,9 +32,6 @@ export default function PaperDraftContainer({
   setPaperDraftSections,
 }) {
 
-// console.log('paperDraftEditorState', paperDraftEditorState);
-// return null
-
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const editorState = paperDraftEditorState;
@@ -47,35 +43,6 @@ export default function PaperDraftContainer({
 
   const [isDraftInEditMode, setIsDraftInEditMode] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
-  const [seenEntityKeys, setSeenEntityKeys] = useState({});
-
-  // const decorator = useMemo(
-  //   () =>
-  //     getDecorator({
-  //       seenEntityKeys,
-  //       setActiveSection,
-  //       setSeenEntityKeys,
-  //     }),
-  //   [seenEntityKeys, setActiveSection, setSeenEntityKeys]
-  // );
-  // useEffect(
-  //   /* backend fetch */
-  //   () => {
-  //     paperDraftStore.set("paperID")(paperId);
-  //     inlineCommentStore.set("paperID")(paperId);
-  //     /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
-  //     paperFetchHook({
-  //       decorator,
-  //       paperId,
-  //       setEditorState,
-  //       setInitEditorState,
-  //       setIsFetching,
-  //       setPaperDraftExists,
-  //       setPaperDraftSections,
-  //     });
-  //   },
-  //   [paperId] /* intentionally hard enforcing only on paperID. */
-  // );
 
   const shouldSavePaperSilently = getShouldSavePaperSilently({
     isDraftInEditMode,
@@ -102,6 +69,7 @@ export default function PaperDraftContainer({
     inlineCommentStore,
     isDraftInEditMode,
   });
+
   useEffect(() => {
     /* listener to deal with editor selection & inline commenting */
     if (isReadyForNewInlineComment) {
@@ -140,7 +108,6 @@ export default function PaperDraftContainer({
 
   return (
     <PaperDraftInlineCommentRelativeWrap>
-      Test
       <PaperDraft
         textEditorProps={{
           blockStyleFn: getBlockStyleFn,
@@ -155,7 +122,7 @@ export default function PaperDraftContainer({
           spellCheck: isDraftInEditMode,
         }}
         inlineCommentStore={inlineCommentStore}
-        isFetching={false}
+        isFetching={isFetching}
         isViewerAllowedToEdit={isViewerAllowedToEdit}
         paperDraftExists={paperDraftExists}
         paperDraftSections={paperDraftSections}

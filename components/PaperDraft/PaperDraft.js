@@ -138,7 +138,6 @@ class PaperDraft extends Component {
     return (
 
         <div className={css(styles.root)}>
-          Test2
           <h3
             className={css(styles.title, isInEditMode && styles.paddingBottom)}
           >
@@ -163,7 +162,6 @@ class PaperDraft extends Component {
             shouldAllowKeyEvents={true}
             shouldAllowMouseEvents={true}
           >
-
               <Editor
                 {...textEditorProps}
                 readOnly={false} // setting this to false grants access to selection
