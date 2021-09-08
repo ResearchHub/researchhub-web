@@ -11,7 +11,7 @@ describe('Home', () => {
       cy.viewport(breakpoints.xxlarge.int, 1000);    
     });
 
-    it("displays unified feed", () => {
+    xit("displays unified feed", () => {
       // Replace unified doc payload with fixture data
       cy.intercept('GET', UNIFIED_DOCS_API_PATH, { fixture: 'unified-feed.json' });
       cy.visit(APP_PATH);
@@ -31,7 +31,7 @@ describe('Home', () => {
       feedDocs.its('length').should('be.eq', unifiedFeedFixture.results.length);
     });
 
-    it("displays leaderboard section", () => {
+    xit("displays leaderboard section", () => {
       cy.visit(APP_PATH);
 
       const leaderboard = cy.get(`*[data-test="leaderboard"]`);
@@ -39,5 +39,17 @@ describe('Home', () => {
     });   
 
   });
+
+  context("Latest Activity", () => {
+    it("display ALL latest activity if user is in ALL section", () => {
+      cy.intercept('GET', `${Cypress.env('serverBaseUrl')}/api/user/following_latest_activity/*`).as('allActivityRoute');
+
+      cy.visit(APP_PATH);
+
+      cy.wait("@allActivityRoute").then(xhr=>{
+         expect(xhr.request.url).to.include('hub_ids=&')
+      })
+    });
+  })
 
 });
