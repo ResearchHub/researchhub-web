@@ -183,18 +183,8 @@ class MyApp extends App {
 
 
 const MyApp2 = ({ Component, pageProps, store }) =>{
-
-  // let auth = this.getAuthProps(this.props);
-
-  // const store = configureStore();
-
-   useEffect(() => {
-    console.log('process.env', process.env);    
-    console.log('process.env.REACT_APP_ENV', process.env.REACT_APP_ENV);    
-   }, [])
-
-
-
+  useEffect(() => {
+  }, [])
 
   return (
     <Provider store={store}>

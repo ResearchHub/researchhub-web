@@ -6,7 +6,6 @@ import {
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
-import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
@@ -27,10 +26,10 @@ export default function PaperDraftContainer({
   paperDraftSections,
   paperDraftEditorState,
   paperId,
-  setActiveSection,
-  setPaperDraftExists,
-  setPaperDraftSections,
 }) {
+
+  console.log('editorState', editorState);
+  console.log('paperDraft', paperDraft);
 
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const inlineCommentStore = InlineCommentUnduxStore.useStore();

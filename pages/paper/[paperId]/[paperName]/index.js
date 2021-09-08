@@ -1037,7 +1037,8 @@ const fetchPaper = ({ paperId }) => {
 export async function getStaticPaths(ctx) {
   return {
     paths: [
-      '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
+      '/paper/907989/dynamics-of-florida-milk-production-and-total-phosphate-in-lake-okeechobee',
+      // '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
     ],
     fallback: true,
   }
@@ -1079,9 +1080,9 @@ export async function getStaticProps(ctx) {
     pdfExtractResponse = await fetchPaperDraft({ paperId: ctx.params.paperId });
 
     console.log('ctx.params.paperId', ctx.params.paperId);  
-    console.log('pdfExtractResponse.status', pdfExtractResponse.status);
+    console.log('pdfExtractResponse.status', pdfExtractResponse?.status);
     // TODO: Need better error checking. What if 405?
-    if (pdfExtractResponse.status === 404) {
+    if (pdfExtractResponse?.status === 404) {
       pdfExtractResponse = undefined;
     }
     else {
