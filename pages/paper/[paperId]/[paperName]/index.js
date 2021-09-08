@@ -88,23 +88,12 @@ const steps = [
 
 const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCode, isFetchComplete = false }) => {
 
-  console.log("In Paper Index");
-  // console.log('**********');
-  // console.log('paperResponse', paperResponse);
-  // console.log('pdfExtractResponse', pdfExtractResponse);
-  // console.log('**********');
+  console.log("Rendering paper index");
 
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
 
-
-//   if (pdfExtractResponse) {
-//     console.log(pdfExtractResponse);
-//     const a = EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data))
-//     console.log(a);
-// 
-//   }
 
   if (errorCode) {
     return <Error statusCode={errorCode} />;
@@ -134,7 +123,6 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     calculateCommentCount(paper)
   );
 
-  // const [paperDraftExists, setPaperDraftExists] = useState(false);
   const [paperDraftSections, setPaperDraftSections] = useState([]);
   const [paperDraftEditorState, setPaperDraftEditorState] = useState(null);
   
@@ -147,6 +135,27 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
   let summaryVoteChecked = false;
+
+  (()=> {
+    try {
+      if (pdfExtractResponse && isEmpty(paperDraftEditorState)) {
+        const parsed = parsePaperBody(pdfExtractResponse);
+        setPaperDraftSections(parsed.paperDraftSections);
+        setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
+      }
+    }
+    catch(err) {
+      console.log(err);
+      // TODO: Log sentry error
+    }
+
+    if (paperResponse && isEmpty(paper)) {
+      setPaper(shims.paper(paperResponse));
+    }
+    if (paper?.discussionSource && !discussionCount) {
+      setCount(calculateCommentCount(paper));
+    }
+  })()
 
 
   if (killswitch("paperSummary")) {
@@ -174,62 +183,12 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     }, [summary.id, auth.isLoggedIn]);
   }
 
-
-  useEffect(() => {
-    if (!isFetchComplete) {
-      return false;
-    }
-
-    // TODO: Check that this is happening
-    if (document.getElementById("structuredData")) {
-      let script = document.getElementById("structuredData");
-      script.textContext = formatStructuredData();
-    } else {
-      let script = document.createElement("script");
-      script.setAttribute("type", "application/ld+json");
-      script.setAttribute("id", "structuredData");
-      script.textContext = formatStructuredData();
-      document.head.appendChild(script);
-    }
-  }, [isFetchComplete]);
-
-  try {
-    if (pdfExtractResponse && isEmpty(paperDraftEditorState)) {
-      console.log("in PDF EXTRACT");
-      // console.log(pdfExtractResponse);
-      const parsed = parsePaperBody(pdfExtractResponse);
-      setPaperDraftSections(parsed.paperDraftSections);
-      setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
-    }
-  }
-  catch(err) {
-    console.log(err);
-    // TODO: Log sentry error
-  }
-
-  if (paperResponse && isEmpty(paper)) {
-    setPaper(shims.paper(paperResponse));
-  }
-  if (paper?.discussionSource && !discussionCount) {
-    setCount(calculateCommentCount(paper));
-  }
-
-  // useEffect(() => {
-  //   console.log("In paperResponse useEffect");
-  //   if (paperResponse) {
-  //     setPaper(shims.paper(paperResponse));
-  //   }
-  // }, [paperResponse])
-
   useEffect(() => {
     if (isFetchComplete && auth.isLoggedIn) {
       checkUserVote();
     }
   }, [auth.isLoggedIn, isFetchComplete]);
 
-  // useEffect(() => {
-  //   setCount(calculateCommentCount(paper));
-  // }, [paper.discussionSource]);
 
   function checkUserVote(paperState = paper) {
     if (auth.isLoggedIn && auth.user) {
@@ -453,7 +412,12 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
         socialImageUrl={socialImageUrl}
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
-      />
+      >
+        <script type="application/ld+json" id="structuredData">
+          {JSON.stringify(formatStructuredData())}
+        </script>
+      </Head>
+
       <div className={css(styles.root)}>
         <Waypoint
           onEnter={() => onSectionEnter(0)}
@@ -553,7 +517,6 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
                 // !paperDraftExists && styles.hide
               )}
             >
-                Test0
                 <Waypoint
                   onEnter={() => onSectionEnter(3)}
                   topOffset={40}
@@ -1060,7 +1023,7 @@ const fetchPaper = ({ paperId }) => {
 export async function getStaticPaths(ctx) {
   return {
     paths: [
-      // '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
+      '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
     ],
     fallback: true,
   }
