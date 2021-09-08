@@ -11,7 +11,7 @@ describe('Home', () => {
       cy.viewport(breakpoints.xxlarge.int, 1000);    
     });
 
-    xit("displays unified feed", () => {
+    it("displays unified feed", () => {
       // Replace unified doc payload with fixture data
       cy.intercept('GET', UNIFIED_DOCS_API_PATH, { fixture: 'unified-feed.json' });
       cy.visit(APP_PATH);
@@ -31,7 +31,7 @@ describe('Home', () => {
       feedDocs.its('length').should('be.eq', unifiedFeedFixture.results.length);
     });
 
-    xit("displays leaderboard section", () => {
+    it("displays leaderboard section", () => {
       cy.visit(APP_PATH);
 
       const leaderboard = cy.get(`*[data-test="leaderboard"]`);
