@@ -1087,6 +1087,7 @@ export async function getStaticProps(ctx) {
 
     console.log('ctx.params.paperId', ctx.params.paperId);  
     console.log('pdfExtractResponse.status', pdfExtractResponse?.status);
+    console.log('pdfExtractResponse', pdfExtractResponse);
     // TODO: Need better error checking. What if 405?
     if (pdfExtractResponse?.status === 404) {
       pdfExtractResponse = undefined;
