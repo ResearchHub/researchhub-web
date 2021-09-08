@@ -14,7 +14,7 @@ import { NotificationActions } from "~/redux/notification";
 // Config
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 class Notification extends Component {
   constructor(props) {
@@ -111,13 +111,14 @@ class Notification extends Component {
     } = notification;
     const { content_type = null, item: actonItem } = action ?? {};
     const { amount, plain_text } = actonItem ?? {};
-    const documentType = unified_document?.document_type?.toLowerCase() ?? null;
-    const formattedDocumentType =
-      documentType === "discussion" ? "post" : documentType;
+    const formattedDocumentType = getUnifiedDocType(
+      unified_document?.document_type
+    );
     const documentContent =
       formattedDocumentType === "paper"
         ? unified_document?.documents
         : (unified_document?.documents ?? [])[0] ?? {};
+
     const {
       title = null,
       paper_title = null,
