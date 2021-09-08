@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
@@ -157,6 +157,9 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     }
   })()
 
+  const formattedStructuredDataForSEO = useMemo(() => {
+    formatStructuredDataForSEO()
+  }, [paper]);
 
   if (killswitch("paperSummary")) {
     useEffect(() => {
@@ -308,7 +311,7 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
     return "";
   }
 
-  function formatStructuredData() {
+  function formatStructuredDataForSEO() {
     let data = {
       "@context": "https://schema.org/",
       name: paper.title,
@@ -413,8 +416,13 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
       >
-        <script type="application/ld+json" id="structuredData">
-          {JSON.stringify(formatStructuredData())}
+        <script
+          type="application/ld+json"
+          id="structuredData"
+          dangerouslySetInnerHTML={{
+            __html: formattedStructuredDataForSEO
+          }}
+          >
         </script>
       </Head>
 
