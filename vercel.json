@@ -1,6 +1,6 @@
 {
   "functions": {
-    "paper/[paperId].js": {
+    "api/paper/[paperId].js": {
       "memory": 3008,
       "maxDuration": 60
     }
