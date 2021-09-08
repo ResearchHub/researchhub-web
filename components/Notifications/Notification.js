@@ -1,6 +1,6 @@
 import { Component } from "react";
-import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Component
@@ -12,9 +12,10 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 import { NotificationActions } from "~/redux/notification";
 
 // Config
-import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 class Notification extends Component {
   constructor(props) {
