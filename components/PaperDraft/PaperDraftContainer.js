@@ -28,9 +28,6 @@ export default function PaperDraftContainer({
   paperId,
 }) {
 
-  console.log('editorState', editorState);
-  console.log('paperDraft', paperDraft);
-
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const inlineCommentStore = InlineCommentUnduxStore.useStore();
   const editorState = paperDraftEditorState;

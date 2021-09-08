@@ -149,7 +149,13 @@ const Paper = ({ paperResponse, pdfExtractResponse, auth, redirectPath, errorCod
   (function initSSG() {
     try {
       if (pdfExtractResponse && isEmpty(paperDraftEditorState)) {
+
+
         const parsed = parsePaperBody({ data: pdfExtractResponse, decorator });
+        console.log('***********');
+        console.log('parsed', parsed);
+        console.log('pdfExtractResponse.data', pdfExtractResponse.data);
+        console.log('***********');
         setPaperDraftSections(parsed.paperDraftSections);
         setPaperDraftEditorState(EditorState.createWithContent(convertFromRaw(pdfExtractResponse.data)));
       }
