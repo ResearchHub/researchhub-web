@@ -40,4 +40,16 @@ describe('Home', () => {
 
   });
 
+  context("Latest Activity", () => {
+    it("display ALL latest activity if user is in ALL section", () => {
+      cy.intercept('GET', `${Cypress.env('serverBaseUrl')}/api/user/following_latest_activity/*`).as('allActivityRoute');
+
+      cy.visit(APP_PATH);
+
+      cy.wait("@allActivityRoute").then(xhr=>{
+         expect(xhr.request.url).to.include('hub_ids=&')
+      })
+    });
+  })
+
 });
