@@ -1,6 +1,6 @@
 import { Component } from "react";
-import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Component
@@ -12,9 +12,10 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 import { NotificationActions } from "~/redux/notification";
 
 // Config
-import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
-import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 class Notification extends Component {
   constructor(props) {
@@ -102,111 +103,41 @@ class Notification extends Component {
     });
   };
 
-  formatAction = (notification) => {
+  formatNotification = (notification) => {
     const {
-      extra,
       action_user,
-      created_date,
-      paper,
-      paper_slug,
       action,
+      created_date,
+      unified_document,
     } = notification;
-    if (extra) {
-      const {
-        status,
-        bullet_point,
-        summary,
-        content_type,
-        bounty_object_id,
-        bounty_content_type,
-        bounty_approval,
-      } = extra;
+    const { content_type = null, item: actonItem } = action ?? {};
+    const { amount, plain_text } = actonItem ?? {};
+    const formattedDocumentType = getUnifiedDocType(
+      unified_document?.document_type
+    );
+    const documentContent =
+      formattedDocumentType === "paper"
+        ? unified_document?.documents
+        : (unified_document?.documents ?? [])[0] ?? {};
 
-      if (status) {
-        // Stripe branch not yet integrated
-        return null;
-        // action = {
-        //   content_type: "stripe",
-        //   created_by: notification.recipient,
-        //   created_date: notification.created_date,
-        //   ...extra,
-        // };
-      } else if (bullet_point) {
-        return {
-          content_type: "vote_bullet",
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: bullet_point.plain_text,
-          paper_id: bullet_point.paper,
-          slug: paper_slug,
-        };
-      } else if (summary) {
-        return {
-          content_type: "vote_summary",
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: summary.summary_plain_text,
-          paper_id: summary.paper,
-          paper_official_title: summary.paper_title,
-          slug: paper_slug,
-        };
-      } else if (content_type && content_type.model) {
-        if (!isNullOrUndefined(action[0])) {
-          return {
-            type: content_type.model,
-            content_type: "support_content",
-            created_by: action_user,
-            created_date: created_date,
-            id: action[0].paper_id || action[0].post_id,
-            amount: extra.amount,
-            slug: action[0].slug,
-            support_type: action[0].support_type,
-            parent_content_type: action[0].parent_content_type,
-          };
-        } else {
-          return {
-            type: content_type.model,
-            content_type: "support_content",
-            created_by: action_user,
-            created_date: created_date,
-            id: null,
-            amount: extra.amount,
-            slug: null,
-            support_type: null,
-            parent_content_type: null,
-          };
-        }
-      } else if (bounty_object_id) {
-        return {
-          content_type: "bounty_moderator",
-          type: bounty_content_type, // summary or takeaway,
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: extra.tip,
-          paper_id: paper,
-          paper_official_title: action[0] && action[0].paper_official_title,
-          slug: paper_slug,
-          bounty_amount: extra.bounty_amount,
-          bounty_id: extra.bounty_object_id,
-          bounty_approved: extra.bounty_approval,
-        };
-      } else if (!doesNotExist(bounty_approval)) {
-        return {
-          content_type: "bounty_contributor",
-          type: bounty_content_type, // summary or takeaway,
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: action[0] && action[0].tip,
-          paper_id: paper,
-          paper_official_title: action[0] && action[0].paper_official_title,
-          slug: paper_slug,
-          bounty_amount: extra.bounty_amount,
-          bounty_approval: bounty_approval,
-        };
-      }
-    }
+    const {
+      title = null,
+      paper_title = null,
+      slug,
+      id: documentID,
+    } = documentContent;
 
-    return notification.action[0];
+    return {
+      action_tip: plain_text ?? "",
+      content_type,
+      contribution_amount: amount ?? 0,
+      created_by: action_user,
+      created_date,
+      document_id: documentID,
+      document_title: paper_title ?? title ?? "Title: N/A",
+      document_type: formattedDocumentType,
+      slug,
+    };
   };
 
   renderMenu = () => {
@@ -239,14 +170,14 @@ class Notification extends Component {
 
   renderNotifications = () => {
     return this.state.notifications.map((notification, index) => {
-      const action = this.formatAction(notification);
-      if (action) {
+      const formattedNotifData = this.formatNotification(notification);
+      if (!isNullOrUndefined(formattedNotifData)) {
         return (
           <NotificationEntry
-            data={notification}
-            notification={action}
-            key={`notif-${notification.id}`}
             closeMenu={this.toggleMenu}
+            data={notification}
+            key={`notif-${index}`}
+            notification={formattedNotifData}
           />
         );
       }
