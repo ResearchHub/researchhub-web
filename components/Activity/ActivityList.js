@@ -76,7 +76,7 @@ const ActivityList = (props) => {
     const fetchActivityFeed = async () => {
       setIsFetching(true);
       const hubIds =
-        feed === 0
+        feed === 1
           ? subscribedHubs.map((hub) => hub.id)
           : hub
           ? [hub.id]
