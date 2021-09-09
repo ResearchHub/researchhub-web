@@ -37,6 +37,88 @@ export const ELNEditor = ({ user }) => {
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const [notes, setNotes] = useFetchNotes(currentNoteId);
 
+  const editors = notes.map(note => {
+    const editorConfiguration = {
+      title: {
+        placeholder: "Untitled",
+      },
+      placeholder:
+        "Start typing to continue with an empty page, or pick a template",
+      initialData: note.latest_version.src,
+      simpleUpload: {
+        // The URL that the images are uploaded to.
+        uploadUrl: API.SAVE_IMAGE,
+
+        // Headers sent along with the XMLHttpRequest to the upload server.
+        headers: {
+          Authorization:
+            "Token " +
+            (typeof window !== "undefined"
+              ? window.localStorage[AUTH_TOKEN]
+              : ""),
+        },
+      },
+      cloudServices: {
+        tokenUrl:
+          "https://80957.cke-cs.com/token/dev/f7269818e72213ec0c800718cd4aeeed27eaa131ec5f5b60f3339fdeeecc",
+        webSocketUrl: "wss://80957.cke-cs.com/ws",
+      },
+      collaboration: {
+        channelId: note.id.toString(),
+      },
+      sidebar: {
+        container: sidebarElementRef.current,
+      },
+      presenceList: {
+        container: presenceListElementRef.current,
+      },
+      autosave: {
+        save(editor) {
+          return saveData(editor);
+        },
+      },
+    };
+
+    return (
+      <div className={css(styles.editor, currentNoteId !== note.id.toString() && styles.hideEditor)}>
+        <CKEditor
+          config={editorConfiguration}
+          editor={Editor}
+          id={note.id.toString()}
+          onChange={(event, editor) => handleInput(event, editor)}
+          onReady={(editor) => {
+            console.log("Editor is ready to use!", editor);
+            CKEditorInspector.attach(editor);
+
+            editor.editing.view.change((writer) => {
+              writer.setStyle(
+                {
+                  "min-height": "calc(100% - 227px)",
+                },
+                editor.editing.view.document.getRoot()
+              );
+            });
+
+            //// Switch between inline and sidebar annotations according to the window size.
+            //const boundRefreshDisplayMode = refreshDisplayMode.bind(
+            //  this,
+            //  editor
+            //);
+            //// Prevent closing the tab when any action is pending.
+            //const boundCheckPendingActions = checkPendingActions.bind(
+            //  this,
+            //  editor
+            //);
+
+            //window.addEventListener("resize", boundRefreshDisplayMode);
+            //window.addEventListener("beforeunload", boundCheckPendingActions);
+            //refreshDisplayMode(editor);
+          }}
+        />
+      </div>
+    );
+  });
+
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
@@ -44,16 +126,12 @@ export const ELNEditor = ({ user }) => {
       CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
     };
     setEditorLoaded(true);
+    setCurrentNoteId(router.query.noteId);
     return () => {
       //window.removeEventListener("resize", boundRefreshDisplayMode);
       //window.removeEventListener("beforeunload", boundCheckPendingActions);
     };
-  }, [currentNoteId]);
-
-  useEffect(() => {
-    setEditorLoaded(false);
-    setCurrentNoteId(router.query.noteId);
-  }, [router.query.noteId]);
+  }, []);
 
   function saveData(editor) {
     const noteParams = {
@@ -76,46 +154,6 @@ export const ELNEditor = ({ user }) => {
   function manualSaveData(data) {
     console.log("manualSaveData: " + data);
   }
-
-  const editorConfiguration = {
-    title: {
-      placeholder: "Untitled",
-    },
-    placeholder:
-      "Start typing to continue with an empty page, or pick a template",
-    simpleUpload: {
-      // The URL that the images are uploaded to.
-      uploadUrl: API.SAVE_IMAGE,
-
-      // Headers sent along with the XMLHttpRequest to the upload server.
-      headers: {
-        Authorization:
-          "Token " +
-          (typeof window !== "undefined"
-            ? window.localStorage[AUTH_TOKEN]
-            : ""),
-      },
-    },
-    cloudServices: {
-      tokenUrl:
-        "https://80957.cke-cs.com/token/dev/f7269818e72213ec0c800718cd4aeeed27eaa131ec5f5b60f3339fdeeecc",
-      webSocketUrl: "wss://80957.cke-cs.com/ws",
-    },
-    collaboration: {
-      channelId: currentNoteId,
-    },
-    sidebar: {
-      container: sidebarElementRef.current,
-    },
-    presenceList: {
-      container: presenceListElementRef.current,
-    },
-    autosave: {
-      save(editor) {
-        return saveData(editor);
-      },
-    },
-  };
 
   const refreshDisplayMode = (editor) => {
     const annotationsUIs = editor.plugins.get("AnnotationsUIs");
@@ -153,13 +191,14 @@ export const ELNEditor = ({ user }) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((data) => {
+        setCurrentNoteId(note.id.toString());
         router.push(`/notebook/${data.id}`);
       });
   };
 
   const handleInput = (event, editor) => {
     const updatedNotes = notes.map(note => (
-      note.id === parseInt(currentNoteId, 10)
+      note.id.toString() === currentNoteId
         ? {...note, title: editor.plugins.get("Title").getTitle() || "Untitled"}
         : note
       )
@@ -186,17 +225,20 @@ export const ELNEditor = ({ user }) => {
           </span>
         </div>
         {notes.map((note, index) => (
-          <Link href={`/notebook/${note.id}`} key={note.id}>
-            <a
-              className={css(
-                styles.sidebarSectionContent,
-                note.id === parseInt(currentNoteId, 10) && styles.active,
-                index === notes.length - 1 && styles.lastSection
-              )}
-            >
-              {note.title}
-            </a>
-          </Link>
+          <div
+            className={css(
+              styles.sidebarSectionContent,
+              note.id.toString() === currentNoteId && styles.active,
+              index === notes.length - 1 && styles.lastSection
+            )}
+            key={note.id.toString()}
+            onClick={() => {
+              setCurrentNoteId(note.id.toString());
+              router.push(`/notebook/${note.id}`);
+            }}
+          >
+            {note.title}
+          </div>
         ))}
         <div
           className={css(styles.sidebarNewNote)}
@@ -207,45 +249,7 @@ export const ELNEditor = ({ user }) => {
         </div>
       </div>
       <div className={css(styles.editorContainer)}>
-        {editorLoaded && (
-          <div className={css(styles.editor)}>
-            <CKEditor
-              config={editorConfiguration}
-              data={""}
-              editor={Editor}
-              id={currentNoteId}
-              onChange={(event, editor) => handleInput(event, editor)}
-              onReady={(editor) => {
-                console.log("Editor is ready to use!", editor);
-                //CKEditorInspector.attach(editor);
-
-                editor.editing.view.change((writer) => {
-                  writer.setStyle(
-                    {
-                      "min-height": "calc(100% - 227px)",
-                    },
-                    editor.editing.view.document.getRoot()
-                  );
-                });
-
-                //// Switch between inline and sidebar annotations according to the window size.
-                //const boundRefreshDisplayMode = refreshDisplayMode.bind(
-                //  this,
-                //  editor
-                //);
-                //// Prevent closing the tab when any action is pending.
-                //const boundCheckPendingActions = checkPendingActions.bind(
-                //  this,
-                //  editor
-                //);
-
-                //window.addEventListener("resize", boundRefreshDisplayMode);
-                //window.addEventListener("beforeunload", boundCheckPendingActions);
-                //refreshDisplayMode(editor);
-              }}
-            />
-          </div>
-        )}
+        {editorLoaded && editors}
       </div>
       <div ref={sidebarElementRef} className="sidebar"></div>
     </div>
@@ -269,6 +273,9 @@ const styles = StyleSheet.create({
   },
   editor: {
     height: "100%",
+  },
+  hideEditor: {
+    display: "none",
   },
   sidebar: {
     background: "#f9f9fc",
