@@ -1,6 +1,7 @@
 import { useEffect, useState, Fragment, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
+import  useSWR from 'swr'
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
@@ -81,19 +82,40 @@ const steps = [
   },
 ];
 
+const paperFetcher = (url, config) => fetchPaper(url, JSON.parse(config))
+
+const fetchPaper = (url, config) => {
+  console.log('url', url);
+  console.log('config', config);
+  return fetch(url, config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      return resp;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
 const Paper = ({
-  paperResponse,
+  initialPaperData,
   auth,
   redirectPath,
   error,
   isFetchComplete = false,
 }) => {
+console.log('initialPaperData', initialPaperData);
+  const { data } = useSWR(initialPaperData ? [ API.PAPER({ paperId: initialPaperData.id }), JSON.stringify(API.GET_CONFIG()) ] : null, paperFetcher, { revalidateOnMount: true })
+  const paperData = data ?? initialPaperData;
+  console.log('data', data);
+
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
 
   if (error) {
-    Sentry.captureException({ error, paperResponse, query: router.query });
+    Sentry.captureException({ error, initialPaperData, query: router.query });
     return <Error statusCode={error.code} />;
   }
 
@@ -107,7 +129,7 @@ const Paper = ({
 
   const { paperId } = router.query;
   const [paper, setPaper] = useState(
-    (paperResponse && shims.paper(paperResponse)) || {}
+    (paperData && shims.paper(paperData)) || {}
   );
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
@@ -139,8 +161,8 @@ const Paper = ({
   // set when component receives props. This is necessary since
   // useEffect does not work with SSG.
   (function initSSG() {
-    if (paperResponse && isEmpty(paper)) {
-      setPaper(shims.paper(paperResponse));
+    if (paperData && isEmpty(paper)) {
+      setPaper(shims.paper(paperData));
     }
     if (paper?.discussionSource && !discussionCount) {
       setCount(calculateCommentCount(paper));
@@ -591,18 +613,6 @@ const PaperIndexWithUndux = (props) => {
   );
 };
 
-const fetchPaper = ({ paperId }) => {
-  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((resp) => {
-      return resp;
-    })
-    .catch((error) => {
-      console.log(error);
-    });
-};
-
 export async function getStaticPaths(ctx) {
   return {
     paths: [],
@@ -615,8 +625,9 @@ export async function getStaticProps(ctx) {
   let paperSlug;
 
   try {
-    paper = await fetchPaper({ paperId: ctx.params.paperId });
+    paper = await fetchPaper(API.PAPER({ paperId: ctx.params.paperId }), API.GET_CONFIG());
   } catch (err) {
+    console.log('err', err);
     return {
       props: {
         error: {
@@ -636,7 +647,7 @@ export async function getStaticProps(ctx) {
     };
   } else {
     const props = {
-      paperResponse: paper,
+      initialPaperData: paper,
       isFetchComplete: true,
     };
 
