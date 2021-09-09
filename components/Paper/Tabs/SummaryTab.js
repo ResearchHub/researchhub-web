@@ -56,7 +56,7 @@ class SummaryTab extends Component {
       editing: false,
       finishedLoading: false,
       // abstract
-      abstract: "",
+      abstract: props?.paper?.abstract ?? "",
       showAbstract: true,
       editAbstract: false,
       checked: false,
