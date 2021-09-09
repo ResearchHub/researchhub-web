@@ -154,4 +154,16 @@ const MyApp = ({ Component, pageProps, store }) => {
   );
 };
 
+// FIXME: This approach is only needed while there are pages containg
+// getStaticPrpos and others containing getInitialProps. Once all pages
+// migrated to getStaticProps, this can be removed safely.
+MyApp.getInitialProps = async (appContext) => {
+  const staticPropsPaths = ["/paper/[paperId]/[paperName]", "/hubs"];
+
+  if (!staticPropsPaths.includes(appContext.router.route)) {
+    const appProps = await App.getInitialProps(appContext);
+    return { ...appProps };
+  }
+};
+
 export default withRedux(configureStore)(MyApp);
