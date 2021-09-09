@@ -7,7 +7,8 @@ import "isomorphic-unfetch";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 // Components
 import Base from "./Base";
@@ -183,8 +184,82 @@ class MyApp extends App {
 }
 
 const MyApp2 = ({ Component, pageProps, store }) =>{
+  const router = useRouter();
+
   useEffect(() => {
+    connectSift();
+    ReactGA.initialize("UA-106669204-1", {
+      testMode: process.env.NODE_ENV !== "production",
+    });
+
+    ReactGA.pageview(router.asPath);
+    router.events.on("routeChangeStart", () => {
+      store.dispatch(MessageActions.setMessage(""));
+      store.dispatch(
+        MessageActions.showMessage({ show: true, load: true })
+      );
+    });
+
+    router.events.on("routeChangeComplete", (url) => {
+      connectSift();
+      ReactGA.pageview(router.asPath);
+      store.dispatch(MessageActions.showMessage({ show: false }));
+    });
+
+    Router.events.on("routeChangeError", () => {
+      store.dispatch(MessageActions.showMessage({ show: false }));
+    });    
   }, [])
+
+  const connectSift = () => {
+    let auth = getAuthProps();
+    if (auth.isLoggedIn) {
+      let _user_id = auth.user.id || "";
+      let _session_id = uniqueId();
+      let _sift = (window._sift = window._sift || []);
+      _sift.push(["_setAccount", SIFT_BEACON_KEY]);
+      _sift.push(["_setUserId", _user_id]);
+      _sift.push(["_setSessionId", _session_id]);
+      _sift.push(["_trackPageview"]);
+
+      if (window.attachEvent) {
+        window.attachEvent("onload", loadSift);
+      } else {
+        window.addEventListener("load", loadSift, false);
+      }
+
+      loadSift();
+    } else {
+      disconnectSift();
+    }  
+  }
+
+  const getAuthProps = () => {
+    return store.getState().auth;
+  };
+
+  const disconnectSift = () => {
+    let sift = document.getElementById("sift");
+    sift && sift.parentNode.removeChild(sift);
+  };
+
+  const loadSift = () => {
+    if (!document.getElementById("sift")) {
+      // only attach script if it isn't there
+      let script = document.createElement("script");
+      script.setAttribute("id", "sift");
+      script.src = "https://cdn.sift.com/s.js";
+      document.body.appendChild(script);
+    }
+  };
+
+  const uniqueId = () => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };  
 
   return (
     <Provider store={store}>
