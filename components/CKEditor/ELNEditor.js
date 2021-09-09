@@ -11,6 +11,7 @@ import { useRouter } from "next/router";
 
 function useFetchNotes(currentNoteId) {
   const [notes, setNotes] = useState([]);
+  const [fetched, setFetched] = useState(false);
 
   useEffect(() => {
     fetch(API.NOTE({}), API.GET_CONFIG())
@@ -18,13 +19,16 @@ function useFetchNotes(currentNoteId) {
       .then(Helpers.parseJSON)
       .then((data) => {
         setNotes(data.results.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)));
+        if (!fetched) {
+          setFetched(true);
+        }
       })
       .catch((err) => {
         console.log(err);
       });
   }, [currentNoteId]);
 
-  return [notes, setNotes];
+  return [fetched, notes, setNotes];
 }
 
 export const ELNEditor = ({ user }) => {
@@ -35,7 +39,30 @@ export const ELNEditor = ({ user }) => {
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState(null);
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [notes, setNotes] = useFetchNotes(currentNoteId);
+  const [fetched, notes, setNotes] = useFetchNotes(currentNoteId);
+  const [titles, setTitles] = useState({});
+
+  useEffect(() => {
+    editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      Editor: require("@thomasvu/ckeditor5-custom-build").ELNEditor,
+      CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
+    };
+    setEditorLoaded(true);
+    setCurrentNoteId(router.query.noteId);
+    return () => {
+      //window.removeEventListener("resize", boundRefreshDisplayMode);
+      //window.removeEventListener("beforeunload", boundCheckPendingActions);
+    };
+  }, []);
+
+  useEffect(() => {
+    const updatedTitles = {};
+    for (const note of notes) {
+      updatedTitles[note.id.toString()] = note.title;
+    }
+    setTitles(updatedTitles);
+  }, [fetched]);
 
   const editors = notes.map(note => {
     const editorConfiguration = {
@@ -44,7 +71,7 @@ export const ELNEditor = ({ user }) => {
       },
       placeholder:
         "Start typing to continue with an empty page, or pick a template",
-      initialData: note.latest_version.src,
+      initialData: note.latest_version?.src ?? "",
       simpleUpload: {
         // The URL that the images are uploaded to.
         uploadUrl: API.SAVE_IMAGE,
@@ -74,7 +101,7 @@ export const ELNEditor = ({ user }) => {
       },
       autosave: {
         save(editor) {
-          return saveData(editor);
+          return saveData(editor, note.id.toString());
         },
       },
     };
@@ -119,32 +146,18 @@ export const ELNEditor = ({ user }) => {
     );
   });
 
-  useEffect(() => {
-    editorRef.current = {
-      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").ELNEditor,
-      CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
-    };
-    setEditorLoaded(true);
-    setCurrentNoteId(router.query.noteId);
-    return () => {
-      //window.removeEventListener("resize", boundRefreshDisplayMode);
-      //window.removeEventListener("beforeunload", boundCheckPendingActions);
-    };
-  }, []);
-
-  function saveData(editor) {
+  function saveData(editor, noteId) {
     const noteParams = {
       title: editor.plugins.get("Title").getTitle() || "Untitled",
     };
-    fetch(API.NOTE({ noteId: currentNoteId }), API.PATCH_CONFIG(noteParams))
+    fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
 
     const noteContentParams = {
       full_src: editor.getData(),
       plain_text: "",
-      note: currentNoteId,
+      note: noteId,
     };
     fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
       .then(Helpers.checkStatus)
@@ -197,13 +210,14 @@ export const ELNEditor = ({ user }) => {
   };
 
   const handleInput = (event, editor) => {
-    const updatedNotes = notes.map(note => (
-      note.id.toString() === currentNoteId
-        ? {...note, title: editor.plugins.get("Title").getTitle() || "Untitled"}
-        : note
-      )
-    );
-    setNotes(updatedNotes);
+    const updatedTitles = {};
+    for (const key in titles) {
+      updatedTitles[key] =
+        key === currentNoteId
+          ? editor.plugins.get("Title").getTitle() || "Untitled"
+          : titles[key];
+    }
+    setTitles(updatedTitles);
   };
 
   return (
@@ -237,7 +251,7 @@ export const ELNEditor = ({ user }) => {
               router.push(`/notebook/${note.id}`);
             }}
           >
-            {note.title}
+            {titles[note.id.toString()]}
           </div>
         ))}
         <div
