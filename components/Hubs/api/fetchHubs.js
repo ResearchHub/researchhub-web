@@ -1,9 +1,8 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-
 export const getHubs = () => {
-// Passing large page limit to return all hubs for hubs page
+  // Passing large page limit to return all hubs for hubs page
   return fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
@@ -21,7 +20,7 @@ export const getHubs = () => {
     .catch((err) => {
       console.error(err);
     });
-}
+};
 
 export const getCategories = () => {
   return fetch(API.GET_HUB_CATEGORIES(), API.GET_CONFIG())
@@ -29,17 +28,15 @@ export const getCategories = () => {
     .then(Helpers.parseJSON)
     .then((resp) => {
       const categories = [...resp.results];
-      categories.sort((a, b) =>
-        a.category_name.localeCompare(b.category_name)
-      );
+      categories.sort((a, b) => a.category_name.localeCompare(b.category_name));
       categories.unshift({ id: 0.5, category_name: "Trending" });
 
-      return categories
+      return categories;
     })
     .catch((err) => {
-      console.log(err)
+      console.log(err);
     });
-}
+};
 
 const shims = {
   subscribedHubs: (hubs) => {

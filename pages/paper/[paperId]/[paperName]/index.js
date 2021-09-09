@@ -81,7 +81,13 @@ const steps = [
   },
 ];
 
-const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = false }) => {
+const Paper = ({
+  paperResponse,
+  auth,
+  redirectPath,
+  error,
+  isFetchComplete = false,
+}) => {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
@@ -100,11 +106,11 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
   }
 
   const { paperId } = router.query;
-  const [paper, setPaper] = useState((paperResponse && shims.paper(paperResponse)) || {});
-
-  const [summary, setSummary] = useState(
-    (paper && paper.summary) || {}
+  const [paper, setPaper] = useState(
+    (paperResponse && shims.paper(paperResponse)) || {}
   );
+
+  const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
 
   const [loadingSummary, setLoadingSummary] = useState(true);
@@ -113,9 +119,7 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper && paper.userVote)
   );
-  const [discussionCount, setCount] = useState(
-    calculateCommentCount(paper)
-  );
+  const [discussionCount, setCount] = useState(calculateCommentCount(paper));
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
   const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
@@ -127,8 +131,13 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
   const isSubmitter =
     paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [paper]);
+  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [
+    paper,
+  ]);
 
+  // Alternative to useEffect for data that needs to be
+  // set when component receives props. This is necessary since
+  // useEffect does not work with SSG.
   (function initSSG() {
     if (paperResponse && isEmpty(paper)) {
       setPaper(shims.paper(paperResponse));
@@ -137,7 +146,6 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
       setCount(calculateCommentCount(paper));
     }
   })();
-
 
   if (killswitch("paperSummary")) {
     let summaryVoteChecked = false;
@@ -170,7 +178,6 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
       checkUserVote();
     }
   }, [auth.isLoggedIn, isFetchComplete]);
-
 
   function checkUserVote(paperState = paper) {
     if (auth.isLoggedIn && auth.user) {
@@ -398,11 +405,10 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
           type="application/ld+json"
           id="structuredData"
           dangerouslySetInnerHTML={{
-            __html: JSON.stringify(structuredDataForSEO)
+            __html: JSON.stringify(structuredDataForSEO),
           }}
-          >
-        </script>
-      </Head>      
+        ></script>
+      </Head>
       <div className={css(styles.root)}>
         <Waypoint
           onEnter={() => onSectionEnter(0)}
@@ -472,7 +478,7 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
                 </div>
               </Waypoint>
             </div>
-            {isFetchComplete && /* Performance Optimization */
+            {isFetchComplete /* Performance Optimization */ && (
               <Waypoint
                 onEnter={() => onSectionEnter(2)}
                 topOffset={40}
@@ -480,18 +486,20 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
               >
                 <div className={css(styles.space)}>
                   <a name="comments" />
-                  {<DiscussionTab
-                    hostname={process.env.HOST}
-                    documentType={"paper"}
-                    paperId={paperId}
-                    paperState={paper}
-                    calculatedCount={discussionCount}
-                    setCount={setCount}
-                    isCollapsible={false}
-                  />}
+                  {
+                    <DiscussionTab
+                      hostname={process.env.HOST}
+                      documentType={"paper"}
+                      paperId={paperId}
+                      paperState={paper}
+                      calculatedCount={discussionCount}
+                      setCount={setCount}
+                      isCollapsible={false}
+                    />
+                  }
                 </div>
               </Waypoint>
-            }
+            )}
             <div
               className={css(
                 styles.paperPageContainer,
@@ -500,7 +508,7 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
                 !paperDraftExists && styles.hide
               )}
             >
-              {isFetchComplete && /* Performance Optimization */
+              {isFetchComplete /* Performance Optimization */ && (
                 <Waypoint
                   onEnter={() => onSectionEnter(3)}
                   topOffset={40}
@@ -523,9 +531,9 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
                     />
                   </div>
                 </Waypoint>
-              }
+              )}
             </div>
-            {isFetchComplete && /* Performance Optimization */
+            {isFetchComplete /* Performance Optimization */ && (
               <Waypoint
                 onEnter={() => onSectionEnter(4)}
                 topOffset={40}
@@ -542,9 +550,9 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
                   </div>
                 </div>
               </Waypoint>
-            }
+            )}
           </div>
-          
+
           <div className={css(styles.sidebar)}>
             {shouldShowInlineComments ? (
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
@@ -573,7 +581,6 @@ const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = fal
   );
 };
 
-
 const PaperIndexWithUndux = (props) => {
   return (
     <PaperDraftUnduxStore.Container>
@@ -598,16 +605,12 @@ const fetchPaper = ({ paperId }) => {
 
 export async function getStaticPaths(ctx) {
   return {
-    paths: [
-      '/paper/907989/dynamics-of-florida-milk-production-and-total-phosphate-in-lake-okeechobee',
-      // '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
-    ],
+    paths: [],
     fallback: true,
-  }
+  };
 }
 
 export async function getStaticProps(ctx) {
-
   let paper;
   let paperSlug;
 
@@ -617,9 +620,9 @@ export async function getStaticProps(ctx) {
     return {
       props: {
         error: {
-          code: 500
+          code: 500,
         },
-      }
+      },
     };
   }
 
@@ -627,19 +630,18 @@ export async function getStaticProps(ctx) {
     return {
       props: {
         error: {
-          code: 404
+          code: 404,
         },
-      }
+      },
     };
-  }
-  else {
+  } else {
     const props = {
       paperResponse: paper,
       isFetchComplete: true,
-    }
+    };
 
     return {
-      props
+      props,
     };
   }
 }
