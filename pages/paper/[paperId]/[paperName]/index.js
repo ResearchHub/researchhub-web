@@ -106,9 +106,14 @@ const Paper = ({
   isFetchComplete = false,
 }) => {
 console.log('initialPaperData', initialPaperData);
-  const { data } = useSWR(initialPaperData ? [ API.PAPER({ paperId: initialPaperData.id }), JSON.stringify(API.GET_CONFIG()) ] : null, paperFetcher, { revalidateOnMount: true })
-  const paperData = data ?? initialPaperData;
-  console.log('data', data);
+  const { data, mutate } = useSWR(initialPaperData ? [ API.PAPER({ paperId: initialPaperData.id }), JSON.stringify(API.GET_CONFIG()) ] : null, paperFetcher, { revalidateOnMount: true })
+  const paper = data
+    ? shims.paper(data)
+    : initialPaperData
+    ? shims.paper(initialPaperData)
+    : {}
+  
+  console.log('paper', paper);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -128,9 +133,9 @@ console.log('initialPaperData', initialPaperData);
   }
 
   const { paperId } = router.query;
-  const [paper, setPaper] = useState(
-    (paperData && shims.paper(paperData)) || {}
-  );
+  // const [paper, setPaper] = useState(
+  //   (paperData && shims.paper(paperData)) || {}
+  // );
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
@@ -161,9 +166,9 @@ console.log('initialPaperData', initialPaperData);
   // set when component receives props. This is necessary since
   // useEffect does not work with SSG.
   (function initSSG() {
-    if (paperData && isEmpty(paper)) {
-      setPaper(shims.paper(paperData));
-    }
+    // if (paperData && isEmpty(paper)) {
+    //   setPaper(shims.paper(paperData));
+    // }
     if (paper?.discussionSource && !discussionCount) {
       setCount(calculateCommentCount(paper));
     }
@@ -217,7 +222,9 @@ console.log('initialPaperData', initialPaperData);
               userVote: userVote,
             };
 
-            setPaper(updatedPaper);
+
+
+            mutate(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
           return setUserVoteChecked(true);
@@ -248,7 +255,7 @@ console.log('initialPaperData', initialPaperData);
       if (voteType === UPVOTE) {
         setScore(selectedVoteType === DOWNVOTE ? score + 2 : score + 1);
         if (paper.promoted !== false) {
-          setPaper({
+          mutate({
             ...paper,
             promoted:
               selectedVoteType === UPVOTE
@@ -260,7 +267,7 @@ console.log('initialPaperData', initialPaperData);
       } else if (voteType === DOWNVOTE) {
         setScore(selectedVoteType === UPVOTE ? score - 2 : score - 1);
         if (paper.promoted !== false) {
-          setPaper({
+          mutate({
             ...paper,
             promoted:
               selectedVoteType === UPVOTE
@@ -274,11 +281,11 @@ console.log('initialPaperData', initialPaperData);
   }
 
   const restorePaper = () => {
-    setPaper({ ...paper, is_removed: false });
+    mutate({ ...paper, is_removed: false });
   };
 
   const removePaper = () => {
-    setPaper({ ...paper, is_removed: true });
+    mutate({ ...paper, is_removed: true });
   };
 
   function calculateCommentCount(paper) {
@@ -368,7 +375,7 @@ console.log('initialPaperData', initialPaperData);
   }
 
   function updatePaperState(newState) {
-    setPaper(newState);
+    mutate(newState);
   }
 
   function getAllAuthors() {
@@ -653,6 +660,7 @@ export async function getStaticProps(ctx) {
 
     return {
       props,
+      revalidate: 60,
     };
   }
 }
