@@ -18,14 +18,21 @@ import colors from "~/config/themes/colors";
 // };
 
 export const getActivityMetadata = (activity) => {
+  console.log(activity);
   const {
     contribution_type: contributionType,
     source,
-    unified_document: { document_type: sourceType },
+    unified_document: { document_type: sourceType, documents: documents },
   } = activity;
 
   let href, hrefAs;
   let postId, postTitle, postSlug;
+  let docs = documents;
+
+  if (Array.isArray(documents)) {
+    docs = documents[0];
+  }
+
   switch (contributionType) {
     case "SUBMITTER":
       postId = source.id;
@@ -34,21 +41,15 @@ export const getActivityMetadata = (activity) => {
       // so handle in next switch.
       break;
     case "COMMENTER":
-      postId = source.document_meta.id;
-      postTitle = source.document_meta.title;
-      postSlug = source.document_meta.slug;
+      postId = docs.id;
+      postTitle = docs.title;
+      postSlug = docs.slug;
       break;
     case "SUPPORTER":
-      let documents = activity.unified_document.documents;
-
-      if (Array.isArray(documents)) {
-        documents = documents[0];
-      }
-
-      if (documents) {
-        postId = documents.id;
-        postTitle = documents.title;
-        postSlug = documents.slug;
+      if (docs) {
+        postId = docs.id;
+        postTitle = docs.title;
+        postSlug = docs.slug;
       }
   }
 
@@ -93,10 +94,11 @@ const ActivityCard = (props) => {
   const {
     contribution_type: contributionType,
     created_date: createdDate,
+    unified_document: unifiedDocument,
     source,
   } = activity;
 
-  const { hubs } = source;
+  const { hubs } = unifiedDocument;
 
   useEffect(() => {
     checkIsRemoved();
