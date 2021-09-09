@@ -39,7 +39,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: "4px 0",
     marginRight: 24,
-    width: 44,
     borderBottom: "2px solid transparent",
   },
   isButtonActive: {
