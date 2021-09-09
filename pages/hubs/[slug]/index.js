@@ -1,6 +1,8 @@
 import { AUTH_TOKEN } from "~/config/constants";
+import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
+import { getUnifiedDocTypes } from "~/config/utils/getUnifiedDocTypes";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
@@ -9,13 +11,11 @@ import Error from "next/error";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
-import { Component } from "react";
 import Router from "next/router";
 
 const isServer = () => typeof window === "undefined";
 
 class Index extends Component {
-  // NOTE: calvinhlee - being called
   static async getInitialProps(ctx) {
     const { query, query: urlQuery } = ctx;
     const { res, slug, name } = query;
@@ -46,7 +46,7 @@ class Index extends Component {
     }
 
     try {
-      const urlDocType = urlQuery.type || "all";
+      const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
           {
