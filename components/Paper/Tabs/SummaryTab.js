@@ -438,7 +438,8 @@ class SummaryTab extends Component {
           </div>
         );
       }
-      if (abstract) {
+
+      if (abstract || paper.abstract) {
         let parsedAbstract = abstract; 
         parsedAbstract = stripHTML(parsedAbstract);
         parsedAbstract = parseMath(parsedAbstract);
