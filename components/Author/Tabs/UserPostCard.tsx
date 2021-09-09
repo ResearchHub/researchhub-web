@@ -1,6 +1,8 @@
-import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 import { formatUploadedDate } from "~/config/utils/dates";
+import { isDevEnv } from "~/config/utils/env";
+import { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import { transformDate } from "~/redux/utils";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import API from "~/config/api";
@@ -13,11 +15,9 @@ import icons from "~/config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
-import { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { isDevEnv } from "~/config/utils/env";
 
 export type UserPostCardProps = {
   created_by: any;

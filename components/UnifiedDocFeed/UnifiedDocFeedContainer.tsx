@@ -328,10 +328,11 @@ function UnifiedDocFeedContainer({
               />
             );
           } else {
+            // NOTE: we are sharing this UI with other document types
             return (
               <UserPostCard
                 {...uniDoc.documents[0]}
-                key={`Post-${docID}-${arrIndex}`}
+                key={`${docTypeFilter}-${docID}-${arrIndex}`}
                 style={[
                   styles.customUserPostCard,
                   shouldBlurMobile && styles.mobileBlurCard,
