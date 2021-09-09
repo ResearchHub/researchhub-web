@@ -27,6 +27,7 @@ import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
 import "react-placeholder/lib/reactPlaceholder.css";
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import 'katex/dist/katex.min.css';
 
 // Redux
