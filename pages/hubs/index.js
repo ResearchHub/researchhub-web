@@ -20,9 +20,9 @@ const EditHubModal = dynamic(() => import("~/components/Modals/EditHubModal"));
 // Config
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
+import { getHubs, getCategories } from "~/components/Hubs/api/fetchHubs";
 
 // Redux
-import { HubActions } from "~/redux/hub";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
 
@@ -31,9 +31,9 @@ class Index extends Component {
     super(props);
     this.initialState = {
       width: null,
-      categories: [],
-      hubsByCategory: {},
-      finishedLoading: false,
+      categories: props.categories,
+      hubsByCategory: props.hubsByCategory,
+      finishedLoading: true,
       activeCategory: 0,
       clickedTab: false,
       scrollDirection: "down",
@@ -44,59 +44,18 @@ class Index extends Component {
     this.scrollPos = 0;
   }
 
-  componentDidMount = async () => {
-    const { getCategories, getHubs, showMessage, hubs } = this.props;
-    showMessage({ show: true, load: true });
-
-    if (!hubs.fetchedHubs) {
-      getCategories().then((payload) => {
-        this.setState({ categories: payload.payload.categories });
-      });
-      getHubs().then((action) => {
-        this.setState({ hubsByCategory: action.payload.hubsByCategory });
-      });
-    } else {
-      this.setState({
-        categories: JSON.parse(JSON.stringify(hubs.categories)),
-        hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-        finishedLoading: true,
-        activeCategory: 0,
-        clickedTab: false,
-      });
-      showMessage({ show: false });
-    }
-  };
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
-      const { showMessage, hubs } = this.props;
-      showMessage({ show: true, load: true });
-      this.setState(
-        {
-          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-          finishedLoading: true,
-        },
-        () => {
-          showMessage({ show: false });
-        }
-      );
-    }
-  }
-
   setClickedTab = (clickedTab) => {
     this.setState({ clickedTab });
   };
 
   setActiveCategory = (activeCategory, onLeave) => {
-    const { categories, finishedLoading } = this.state;
+    const { categories } = this.state;
 
     if (this.state.activeCategory === 0 && onLeave) {
       return;
     }
 
-    if (finishedLoading && categories.length) {
-      this.setState({ activeCategory });
-    }
+    this.setState({ activeCategory });
   };
 
   openAddHubModal = () => {
@@ -421,12 +380,22 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getCategories: HubActions.getCategories,
-  getHubs: HubActions.getHubs,
   openAddHubModal: ModalActions.openAddHubModal,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
 };
+
+export async function getStaticProps() {
+  const categories = await getCategories();
+  const { hubsByCategory } = await getHubs();
+
+  return {
+    props: {
+      categories,
+      hubsByCategory 
+    }
+  }
+}
 
 export default connect(
   mapStateToProps,

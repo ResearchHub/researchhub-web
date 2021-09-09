@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
@@ -21,6 +21,8 @@ import PaperTabBar from "~/components/PaperTabBar";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
 import TableOfContent from "~/components/PaperDraft/TableOfContent";
+import killswitch from "~/config/killswitch/killswitch";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -63,7 +65,6 @@ import {
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
-const isServer = () => typeof window === "undefined";
 const steps = [
   {
     target: ".first-step",
@@ -80,39 +81,40 @@ const steps = [
   },
 ];
 
-const Paper = (props) => {
+const Paper = ({ paperResponse, auth, redirectPath, error, isFetchComplete = false }) => {
   const router = useRouter();
-  if (props.error) {
-    return <Error statusCode={404} />;
+  const dispatch = useDispatch();
+  const store = useStore();
+
+  if (error) {
+    Sentry.captureException({ error, paperResponse, query: router.query });
+    return <Error statusCode={error.code} />;
   }
 
-  if (props.redirectPath && typeof window !== "undefined") {
+  // TODO: This issue needs to be addressed
+  if (redirectPath && typeof window !== "undefined") {
     // updates the [paperName] without refetching data
-    router.replace("/paper/[paperId]/[paperName]", props.redirectPath, {
+    router.replace("/paper/[paperId]/[paperName]", redirectPath, {
       shallow: true,
     });
   }
 
-  const dispatch = useDispatch();
-  const store = useStore();
+  const { paperId } = router.query;
+  const [paper, setPaper] = useState((paperResponse && shims.paper(paperResponse)) || {});
 
-  const [paper, setPaper] = useState(
-    (props.paper && shims.paper(props.paper)) || {}
-  );
   const [summary, setSummary] = useState(
-    (props.paper && props.paper.summary) || {}
+    (paper && paper.summary) || {}
   );
-  const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
 
-  const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
   const [loadingSummary, setLoadingSummary] = useState(true);
 
-  const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
+  const [flagged, setFlag] = useState(paper && paper.user_flag);
   const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(props.paper && props.paper.userVote)
+    getVoteType(paper && paper.userVote)
   );
   const [discussionCount, setCount] = useState(
-    calculateCommentCount(props.paper)
+    calculateCommentCount(paper)
   );
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
@@ -121,94 +123,57 @@ const Paper = (props) => {
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const [userVoteChecked, setUserVoteChecked] = useState(false);
 
-  const { paperId } = router.query;
-
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+    paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  let summaryVoteChecked = false;
+  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [paper]);
 
-  useEffect(() => {
-    const summaryId = summary.id;
-    if (summaryId && !summaryVoteChecked) {
-      checkSummaryVote({ summaryId: summaryId }).then((res) => {
-        const summaryUserVote = res[summaryId];
-        summaryVoteChecked = true;
-
-        let summary = {
-          ...paper.summary,
-          user_vote: summaryUserVote,
-        };
-
-        if (summaryUserVote) {
-          summary.score = summaryUserVote.score || 0;
-          summary.promoted = summaryUserVote.promoted;
-        }
-        setSummary(summary);
-        setLoadingSummary(false);
-      });
+  (function initSSG() {
+    if (paperResponse && isEmpty(paper)) {
+      setPaper(shims.paper(paperResponse));
     }
-    setLoadingSummary(false);
-  }, [summary.id, props.auth.isLoggedIn]);
-
-  useEffect(() => {
-    setPaper(props.paper ? shims.paper(props.paper) : {});
-  }, [props.paper]);
-
-  useEffect(() => {
-    if (!props.fetchedPaper) {
-      fetchPaper({ paperId });
-    } else {
-      checkUserVote();
+    if (paper?.discussionSource && !discussionCount) {
+      setCount(calculateCommentCount(paper));
     }
-    if (document.getElementById("structuredData")) {
-      let script = document.getElementById("structuredData");
-      script.textContext = formatStructuredData();
-    } else {
-      let script = document.createElement("script");
-      script.setAttribute("type", "application/ld+json");
-      script.setAttribute("id", "structuredData");
-      script.textContext = formatStructuredData();
-      document.head.appendChild(script);
-    }
-  }, [paperId]);
+  })();
 
-  useEffect(() => {
-    if (Object.keys(paper).length !== 0) {
-      checkUserVote();
-    }
-  }, [props.auth.isLoggedIn]);
 
-  useEffect(() => {
-    setCount(calculateCommentCount(paper));
-  }, [paper.discussionSource]);
+  if (killswitch("paperSummary")) {
+    let summaryVoteChecked = false;
+    useEffect(() => {
+      const summaryId = summary.id;
+      if (summaryId && !summaryVoteChecked) {
+        checkSummaryVote({ summaryId: summaryId }).then((res) => {
+          const summaryUserVote = res[summaryId];
+          summaryVoteChecked = true;
 
-  function fetchPaper({ paperId }) {
-    setLoadingPaper(true);
-    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        setLoadingPaper(false);
-        const currPaper = shims.paper(resp);
-        setScore(getNestedValue(currPaper, ["score"], 0));
-        setFlag(currPaper.user_flag);
-        setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount(currPaper));
-        setPaper(currPaper);
-        setSummary(currPaper.summary || {});
-        checkUserVote(currPaper);
-        return currPaper;
-      })
-      .catch((error) => {
-        console.log(error);
-        Sentry.captureException(error);
-      });
+          let summary = {
+            ...paper.summary,
+            user_vote: summaryUserVote,
+          };
+
+          if (summaryUserVote) {
+            summary.score = summaryUserVote.score || 0;
+            summary.promoted = summaryUserVote.promoted;
+          }
+          setSummary(summary);
+          setLoadingSummary(false);
+        });
+      }
+      setLoadingSummary(false);
+    }, [summary.id, auth.isLoggedIn]);
   }
 
+  useEffect(() => {
+    if (isFetchComplete && auth.isLoggedIn) {
+      checkUserVote();
+    }
+  }, [auth.isLoggedIn, isFetchComplete]);
+
+
   function checkUserVote(paperState = paper) {
-    if (props.auth.isLoggedIn && props.auth.user) {
+    if (auth.isLoggedIn && auth.user) {
       return checkUserVotesOnPapers({ paperIds: [paperId] }).then(
         (userVotes) => {
           const userVote = userVotes[paperId];
@@ -325,7 +290,7 @@ const Paper = (props) => {
     return "";
   }
 
-  function formatStructuredData() {
+  function buildStructuredDataForSEO() {
     let data = {
       "@context": "https://schema.org/",
       name: paper.title,
@@ -411,7 +376,7 @@ const Paper = (props) => {
 
   return (
     <div>
-      <PaperBanner paper={paper} loadingPaper={loadingPaper} />
+      <PaperBanner paper={paper} loadingPaper={!isFetchComplete} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -428,7 +393,16 @@ const Paper = (props) => {
         socialImageUrl={socialImageUrl}
         noindex={paper.is_removed || paper.is_removed_by_user}
         canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
-      />
+      >
+        <script
+          type="application/ld+json"
+          id="structuredData"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredDataForSEO)
+          }}
+          >
+        </script>
+      </Head>      
       <div className={css(styles.root)}>
         <Waypoint
           onEnter={() => onSectionEnter(0)}
@@ -454,7 +428,7 @@ const Paper = (props) => {
                 flagged={flagged}
                 restorePaper={restorePaper}
                 removePaper={removePaper}
-                doneFetchingPaper={!loadingPaper}
+                doneFetchingPaper={isFetchComplete}
                 setFlag={setFlag}
               />
             </div>
@@ -498,7 +472,7 @@ const Paper = (props) => {
                 </div>
               </Waypoint>
             </div>
-            {!loadingPaper && /* Performance Optimization */
+            {isFetchComplete && /* Performance Optimization */
               <Waypoint
                 onEnter={() => onSectionEnter(2)}
                 topOffset={40}
@@ -506,15 +480,15 @@ const Paper = (props) => {
               >
                 <div className={css(styles.space)}>
                   <a name="comments" />
-                  <DiscussionTab
-                    hostname={props.hostname}
+                  {<DiscussionTab
+                    hostname={process.env.HOST}
                     documentType={"paper"}
                     paperId={paperId}
                     paperState={paper}
                     calculatedCount={discussionCount}
                     setCount={setCount}
                     isCollapsible={false}
-                  />
+                  />}
                 </div>
               </Waypoint>
             }
@@ -526,7 +500,7 @@ const Paper = (props) => {
                 !paperDraftExists && styles.hide
               )}
             >
-              {!loadingPaper && /* Performance Optimization */
+              {isFetchComplete && /* Performance Optimization */
                 <Waypoint
                   onEnter={() => onSectionEnter(3)}
                   topOffset={40}
@@ -551,7 +525,7 @@ const Paper = (props) => {
                 </Waypoint>
               }
             </div>
-            {!loadingPaper && /* Performance Optimization */
+            {isFetchComplete && /* Performance Optimization */
               <Waypoint
                 onEnter={() => onSectionEnter(4)}
                 topOffset={40}
@@ -599,85 +573,6 @@ const Paper = (props) => {
   );
 };
 
-const fetchPaper = ({ paperId }) => {
-  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((resp) => {
-      return resp;
-    })
-    .catch((error) => {
-      console.log(error);
-      Sentry.captureException(error);
-    });
-};
-
-Paper.getInitialProps = async (ctx) => {
-  const { req, store, query, res } = ctx;
-  const { host } = absoluteUrl(req);
-  const hostname = host;
-
-  if (!isServer()) {
-    return {
-      hostname,
-    };
-  }
-
-  // Fetch data from external API
-  let props = {};
-  let paper;
-  let paperSlug;
-
-  try {
-    paper = await fetchPaper({ paperId: query.paperId });
-  } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-    // if paper doesnot exist
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  if (!paper) {
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  paperSlug = paper.slug;
-  let fetchedPaper = true;
-
-  if (paperSlug !== query.paperName) {
-    // redirect paper if paperName does not match slug
-    let paperName = paperSlug
-      ? paperSlug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
-
-    if (paperName === query.paperName) {
-      // catch multiple redirect when slug does not exist
-      props = { hostname, paper, fetchedPaper };
-      return props;
-    }
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
-
-    res.writeHead(301, { Location: redirectPath });
-    res.end();
-    props = {
-      hostname,
-      paper,
-      redirectPath,
-      paperName,
-      paperSlug,
-      paperName: query.paperName,
-    };
-    return props;
-  }
-  props = { hostname, paper, fetchedPaper };
-  return props;
-};
 
 const PaperIndexWithUndux = (props) => {
   return (
@@ -688,6 +583,66 @@ const PaperIndexWithUndux = (props) => {
     </PaperDraftUnduxStore.Container>
   );
 };
+
+const fetchPaper = ({ paperId }) => {
+  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      return resp;
+    })
+    .catch((error) => {
+      console.log(error);
+    });
+};
+
+export async function getStaticPaths(ctx) {
+  return {
+    paths: [
+      '/paper/907989/dynamics-of-florida-milk-production-and-total-phosphate-in-lake-okeechobee',
+      // '/paper/1266004/cognitive-deficits-in-people-who-have-recovered-from-covid-19'
+    ],
+    fallback: true,
+  }
+}
+
+export async function getStaticProps(ctx) {
+
+  let paper;
+  let paperSlug;
+
+  try {
+    paper = await fetchPaper({ paperId: ctx.params.paperId });
+  } catch (err) {
+    return {
+      props: {
+        error: {
+          code: 500
+        },
+      }
+    };
+  }
+
+  if (!paper) {
+    return {
+      props: {
+        error: {
+          code: 404
+        },
+      }
+    };
+  }
+  else {
+    const props = {
+      paperResponse: paper,
+      isFetchComplete: true,
+    }
+
+    return {
+      props
+    };
+  }
+}
 
 const styles = StyleSheet.create({
   componentWrapperStyles: {
