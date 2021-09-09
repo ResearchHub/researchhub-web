@@ -1,7 +1,7 @@
 {
   "name": "researchhub",
   "scripts": {
-    "dev": "next dev",
+    "dev": "HOST=http://localhost:3000 next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
@@ -138,10 +138,6 @@
   },
   "browser": {
     "child_process": false
-  },
-  "engines": {
-    "node": "==14.15.5",
-    "npm": "==7.19.1"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",

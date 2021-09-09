@@ -7,6 +7,7 @@ import "isomorphic-unfetch";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
+import { useEffect } from "react";
 
 // Components
 import Base from "./Base";
@@ -180,4 +181,20 @@ class MyApp extends App {
   }
 }
 
-export default withRedux(configureStore)(MyApp);
+const MyApp2 = ({ Component, pageProps, store }) =>{
+  useEffect(() => {
+  }, [])
+
+  return (
+    <Provider store={store}>
+      <Base pageProps={pageProps} Component={Component} />
+    </Provider>
+  );
+}
+
+
+
+// export default MyApp2;
+
+export default withRedux(configureStore)(MyApp2);
+
