@@ -1,5 +1,5 @@
 import App from "next/app";
-import Router from "next/router";
+import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
@@ -8,7 +8,6 @@ import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 
 // Components
 import Base from "./Base";
@@ -28,8 +27,8 @@ import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
 import "react-placeholder/lib/reactPlaceholder.css";
-import '@fortawesome/fontawesome-svg-core/styles.css';
-import 'katex/dist/katex.min.css';
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import "katex/dist/katex.min.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -68,122 +67,7 @@ initApm({
   serviceVersion: process.env.SENTRY_RELEASE,
 });
 
-class MyApp extends App {
-  constructor(props) {
-    super(props);
-
-    this.previousPath = props.router.asPath.split("?")[0];
-
-    ReactGA.initialize("UA-106669204-1", {
-      testMode: process.env.NODE_ENV !== "production",
-    });
-    ReactGA.pageview(props.router.asPath);
-    Router.events.on("routeChangeStart", () => {
-      props.store.dispatch(MessageActions.setMessage(""));
-      props.store.dispatch(
-        MessageActions.showMessage({ show: true, load: true })
-      );
-    });
-
-    Router.events.on("routeChangeComplete", (url) => {
-      if (this.previousPath !== url.split("?")[0]) {
-        window.scroll({
-          top: 0,
-          left: 0,
-          behavior: "auto",
-        });
-      }
-      this.connectSift();
-      this.previousPath = props.router.asPath.split("?")[0];
-      ReactGA.pageview(props.router.asPath);
-      props.store.dispatch(MessageActions.showMessage({ show: false }));
-    });
-
-    Router.events.on("routeChangeError", () => {
-      props.store.dispatch(MessageActions.showMessage({ show: false }));
-    });
-  }
-
-  componentDidMount() {
-    this.connectSift();
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener("load", this.loadSift);
-  }
-
-  componentDidUpdate(prevProps) {
-    let prevAuth = this.getAuthProps(prevProps);
-    let currAuth = this.getAuthProps(this.props);
-    if (!prevAuth.isLoggedIn && currAuth.isLoggedIn) {
-      this.connectSift();
-    } else if (prevAuth.isLoggedIn && !currAuth.isLoggedIn) {
-      this.disconnectSift();
-    }
-  }
-
-  getAuthProps = (props) => {
-    return props.store.getState().auth;
-  };
-
-  connectSift = () => {
-    let auth = this.getAuthProps(this.props);
-    if (auth.isLoggedIn) {
-      let _user_id = auth.user.id || "";
-      let _session_id = this.uniqueId();
-      let _sift = (window._sift = window._sift || []);
-      _sift.push(["_setAccount", SIFT_BEACON_KEY]);
-      _sift.push(["_setUserId", _user_id]);
-      _sift.push(["_setSessionId", _session_id]);
-      _sift.push(["_trackPageview"]);
-
-      if (window.attachEvent) {
-        window.attachEvent("onload", this.loadSift);
-      } else {
-        window.addEventListener("load", this.loadSift, false);
-      }
-
-      this.loadSift();
-    } else {
-      this.disconnectSift();
-    }
-  };
-
-  disconnectSift = () => {
-    let sift = document.getElementById("sift");
-    sift && sift.parentNode.removeChild(sift);
-  };
-
-  loadSift = () => {
-    if (!document.getElementById("sift")) {
-      // only attach script if it isn't there
-      let script = document.createElement("script");
-      script.setAttribute("id", "sift");
-      script.src = "https://cdn.sift.com/s.js";
-      document.body.appendChild(script);
-    }
-  };
-
-  uniqueId = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
-  };
-
-  render() {
-    const { store } = this.props;
-
-    return (
-      <Provider store={store}>
-        <Base {...this.props} />
-      </Provider>
-    );
-  }
-}
-
-const MyApp2 = ({ Component, pageProps, store }) =>{
+const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
 
   useEffect(() => {
@@ -195,9 +79,7 @@ const MyApp2 = ({ Component, pageProps, store }) =>{
     ReactGA.pageview(router.asPath);
     router.events.on("routeChangeStart", () => {
       store.dispatch(MessageActions.setMessage(""));
-      store.dispatch(
-        MessageActions.showMessage({ show: true, load: true })
-      );
+      store.dispatch(MessageActions.showMessage({ show: true, load: true }));
     });
 
     router.events.on("routeChangeComplete", (url) => {
@@ -208,8 +90,12 @@ const MyApp2 = ({ Component, pageProps, store }) =>{
 
     Router.events.on("routeChangeError", () => {
       store.dispatch(MessageActions.showMessage({ show: false }));
-    });    
-  }, [])
+    });
+
+    return () => {
+      window.removeEventListener("load", loadSift);
+    };
+  }, []);
 
   const connectSift = () => {
     let auth = getAuthProps();
@@ -231,8 +117,8 @@ const MyApp2 = ({ Component, pageProps, store }) =>{
       loadSift();
     } else {
       disconnectSift();
-    }  
-  }
+    }
+  };
 
   const getAuthProps = () => {
     return store.getState().auth;
@@ -259,18 +145,13 @@ const MyApp2 = ({ Component, pageProps, store }) =>{
         v = c == "x" ? r : (r & 0x3) | 0x8;
       return v.toString(16);
     });
-  };  
+  };
 
   return (
     <Provider store={store}>
       <Base pageProps={pageProps} Component={Component} />
     </Provider>
   );
-}
+};
 
-
-
-// export default MyApp2;
-
-export default withRedux(configureStore)(MyApp2);
-
+export default withRedux(configureStore)(MyApp);
