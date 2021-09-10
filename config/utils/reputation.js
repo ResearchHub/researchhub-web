@@ -32,8 +32,5 @@ export function getMinimumReputation(storeState, key) {
 }
 
 export function getVoteType(vote) {
-  if (vote?.vote_type && parseInt(vote.vote_type)) {
-    return userVoteToConstant(vote);
-  }
   return vote && vote.voteType;
 }
