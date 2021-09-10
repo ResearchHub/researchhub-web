@@ -1,4 +1,5 @@
 import API from "~/config/api";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -61,6 +62,10 @@ export const ELNEditor = ({ user }) => {
     }
     setTitles(updatedTitles);
   }, [fetched]);
+
+  useEffect(() => {
+    setCurrentNoteId(router.query.noteId);
+  }, [router.query.noteId]);
 
   const editors = notes.map(note => {
     const editorConfiguration = {
@@ -247,20 +252,17 @@ export const ELNEditor = ({ user }) => {
           </span>
         </div>
         {notes.map((note, index) => (
-          <div
-            className={css(
-              styles.sidebarSectionContent,
-              note.id.toString() === currentNoteId && styles.active,
-              index === notes.length - 1 && styles.lastSection
-            )}
-            key={note.id.toString()}
-            onClick={() => {
-              setCurrentNoteId(note.id.toString());
-              router.push(`/notebook/${note.id}`);
-            }}
-          >
-            {titles[note.id.toString()] || "Untitled"}
-          </div>
+          <Link href={`/notebook/${note.id}`} key={note.id.toString()}>
+            <a
+              className={css(
+                styles.sidebarSectionContent,
+                note.id.toString() === currentNoteId && styles.active,
+                index === notes.length - 1 && styles.lastSection
+              )}
+            >
+              {titles[note.id.toString()]}
+            </a>
+          </Link>
         ))}
         <div
           className={css(styles.sidebarNewNote)}
