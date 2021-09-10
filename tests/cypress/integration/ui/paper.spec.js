@@ -10,7 +10,7 @@ describe("Paper", () => {
       cy.visit(PAPER_APP_PATH);
     });
 
-    it("diplays paper title", () => {
+    xit("diplays paper title", () => {
       const paperCardEl = cy.get(`*[data-test="paper-${paperFixture.id}"]`);
 
       paperCardEl
@@ -18,17 +18,17 @@ describe("Paper", () => {
         .contains(paperFixture.title);
     });
 
-    it("diplays doi", () => {
+    xit("diplays doi", () => {
       const doiEl = cy.get(`*[data-test="doi"]`);
       doiEl.contains(paperFixture.doi);
     })
 
-    it("diplays authors", () => {
+    xit("diplays authors", () => {
       const authorElems = cy.get(`*[data-test^="author"]`);
       authorElems.its('length').should('be.gt', 0);
     })
 
-    it("diplays abstract", () => {
+    xit("diplays abstract", () => {
       const abstractEl = cy.get(`*[data-test="abstract"]`);
       abstractEl.contains(paperFixture.abstract);
     })    
