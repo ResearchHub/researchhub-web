@@ -85,8 +85,6 @@ const steps = [
 const paperFetcher = (url, config) => fetchPaper(url, JSON.parse(config))
 
 const fetchPaper = (url, config) => {
-  console.log('url', url);
-  console.log('config', config);
   return fetch(url, config)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
@@ -105,15 +103,12 @@ const Paper = ({
   error,
   isFetchComplete = false,
 }) => {
-console.log('initialPaperData', initialPaperData);
   const { data, mutate } = useSWR(initialPaperData ? [ API.PAPER({ paperId: initialPaperData.id }), JSON.stringify(API.GET_CONFIG()) ] : null, paperFetcher, { revalidateOnMount: true })
   const paper = data
     ? shims.paper(data)
     : initialPaperData
     ? shims.paper(initialPaperData)
     : {}
-  
-  console.log('paper', paper);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -133,12 +128,13 @@ console.log('initialPaperData', initialPaperData);
   }
 
   const { paperId } = router.query;
-  // const [paper, setPaper] = useState(
-  //   (paperData && shims.paper(paperData)) || {}
-  // );
+
+  useEffect(() => {
+    setScore(getNestedValue(paper, ["score"], 0));  
+  }, [paper]);
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
-  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [score, setScore] = useState(0);
 
   const [loadingSummary, setLoadingSummary] = useState(true);
 
