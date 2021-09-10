@@ -120,12 +120,12 @@ const Paper = ({
   }
 
   // TODO: This issue needs to be addressed
-  if (redirectPath && typeof window !== "undefined") {
-    // updates the [paperName] without refetching data
-    router.replace("/paper/[paperId]/[paperName]", redirectPath, {
-      shallow: true,
-    });
-  }
+  // if (redirectPath && typeof window !== "undefined") {
+  //   // updates the [paperName] without refetching data
+  //   router.replace("/paper/[paperId]/[paperName]", redirectPath, {
+  //     shallow: true,
+  //   });
+  // }
 
   const { paperId } = router.query;
 
@@ -617,10 +617,10 @@ export async function getStaticPaths(ctx) {
 
 export async function getStaticProps(ctx) {
   let paper;
-  let paperSlug;
+  const { paperId } = ctx.params;
 
   try {
-    paper = await fetchPaper(API.PAPER({ paperId: ctx.params.paperId }), API.GET_CONFIG());
+    paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
     console.log('err', err);
     return {
