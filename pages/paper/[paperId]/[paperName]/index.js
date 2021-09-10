@@ -103,7 +103,7 @@ const Paper = ({
   error,
   isFetchComplete = false,
 }) => {
-  const { data, mutate } = useSWR(
+  const { data, mutate: mutatePaperCache, isValidating } = useSWR(
     initialPaperData
       ? [
           API.PAPER({ paperId: initialPaperData.id }),
@@ -131,11 +131,14 @@ const Paper = ({
   const { paperId } = router.query;
 
   useEffect(() => {
+    console.log('setting score on paper');
     setScore(getNestedValue(paper, ["score"], 0));
-  }, [paper]);
+  }, [isValidating]);
+
+
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
 
   const [loadingSummary, setLoadingSummary] = useState(true);
 
@@ -212,7 +215,7 @@ const Paper = ({
               userVote: userVote,
             };
 
-            mutate(updatedPaper);
+            mutatePaperCache(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
           }
           return setUserVoteChecked(true);
@@ -242,8 +245,9 @@ const Paper = ({
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
         setScore(selectedVoteType === DOWNVOTE ? score + 2 : score + 1);
+
         if (paper.promoted !== false) {
-          mutate({
+          mutatePaperCache({
             ...paper,
             promoted:
               selectedVoteType === UPVOTE
@@ -255,7 +259,7 @@ const Paper = ({
       } else if (voteType === DOWNVOTE) {
         setScore(selectedVoteType === UPVOTE ? score - 2 : score - 1);
         if (paper.promoted !== false) {
-          mutate({
+          mutatePaperCache({
             ...paper,
             promoted:
               selectedVoteType === UPVOTE
@@ -269,11 +273,11 @@ const Paper = ({
   }
 
   const restorePaper = () => {
-    mutate({ ...paper, is_removed: false });
+    mutatePaperCache({ ...paper, is_removed: false });
   };
 
   const removePaper = () => {
-    mutate({ ...paper, is_removed: true });
+    mutatePaperCache({ ...paper, is_removed: true });
   };
 
   function calculateCommentCount(paper) {
@@ -363,7 +367,7 @@ const Paper = ({
   }
 
   function updatePaperState(newState) {
-    mutate(newState);
+    mutatePaperCache(newState);
   }
 
   function getAllAuthors() {
