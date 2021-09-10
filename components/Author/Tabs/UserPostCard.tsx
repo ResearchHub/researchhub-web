@@ -18,26 +18,28 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
 
 export type UserPostCardProps = {
+  boost_amount: number;
   created_by: any;
   created_date: any;
+  formattedDocType: string | null;
   hubs: any[];
   id: number;
   preview_img: string;
   renderable_text: string;
-  score: number;
-  boost_amount: number;
-  style: StyleSheet;
-  title: string;
-  slug: string;
-  unified_document: any;
-  unified_document_id: number;
-  user: any;
-  user_vote: any; // TODO: briansantoso - define type for user_vote
-  titleAsHtml: any;
   renderableTextAsHtml: any;
+  score: number;
+  slug: string;
+  style: StyleSheet;
   styleVariation: string;
+  title: string;
+  titleAsHtml: any;
+  unified_document_id: number;
+  unified_document: any;
+  user_vote: any; // TODO: briansantoso - define type for user_vote
+  user: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -84,6 +86,7 @@ function UserPostCard(props: UserPostCardProps) {
     slug,
     unified_document: unifiedDocument,
     unified_document_id: unifiedDocumentId,
+    formattedDocType,
     user,
     user_vote: userVote,
     styleVariation,
@@ -98,7 +101,6 @@ function UserPostCard(props: UserPostCardProps) {
   if (created_by == null) {
     return null;
   }
-
   const {
     author_profile: { first_name, last_name, author },
   } = created_by;
@@ -282,9 +284,12 @@ function UserPostCard(props: UserPostCardProps) {
 
   const navigateToPage = (e) => {
     if (e.metaKey || e.ctrlKey) {
-      window.open(`/post/${id}/${slug}`, "_blank");
+      window.open(`/${formattedDocType}/${id}/${slug}`, "_blank");
     } else {
-      Router.push("/post/[documentId]/[title]", `/post/${id}/${slug}`);
+      Router.push(
+        "/[documentType]/[documentId]/[title]",
+        `/${formattedDocType}/${id}/${slug}`
+      );
     }
   };
 
@@ -299,7 +304,7 @@ function UserPostCard(props: UserPostCardProps) {
         isHubsOpen && styles.overflow
       )}
       onClick={navigateToPage}
-      key={`post-${id}`}
+      key={`${formattedDocType}-${id}`}
       data-test={isDevEnv() ? `document-${id}` : undefined}
     >
       {desktopVoteWidget}
