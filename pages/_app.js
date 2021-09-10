@@ -160,7 +160,7 @@ const MyApp = ({ Component, pageProps, store }) => {
 MyApp.getInitialProps = async (appContext) => {
   const staticPropsPaths = ["/paper/[paperId]/[paperName]", "/hubs"];
 
-  if (!staticPropsPaths.includes(appContext.router.route)) {
+  if (process.browser || !staticPropsPaths.includes(appContext.router.route)) {
     const appProps = await App.getInitialProps(appContext);
     return { ...appProps };
   }
