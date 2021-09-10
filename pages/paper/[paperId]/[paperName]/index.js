@@ -50,10 +50,9 @@ import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/
 import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxStore";
 
 // Config
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import { absoluteUrl } from "~/config/utils/routing";
 import { formatPaperSlug } from "~/config/utils/document";
-import { getVoteType } from "~/config/utils/reputation";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
@@ -103,7 +102,7 @@ const Paper = ({
   error,
   isFetchComplete = false,
 }) => {
-  const { data, mutate: mutatePaperCache, isValidating } = useSWR(
+  const { data: freshData, mutate: mutatePaperCache, isValidating } = useSWR(
     initialPaperData
       ? [
           API.PAPER({ paperId: initialPaperData.id }),
@@ -113,8 +112,8 @@ const Paper = ({
     swrPaperFetcher,
     { revalidateOnMount: true }
   );
-  const paper = data
-    ? shims.paper(data)
+  const paper = freshData
+    ? shims.paper(freshData)
     : initialPaperData
     ? shims.paper(initialPaperData)
     : {};
@@ -131,20 +130,20 @@ const Paper = ({
   const { paperId } = router.query;
 
   useEffect(() => {
-    setScore(getNestedValue(paper, ["score"], 0));
-  }, [isValidating]);
-
-
+    if (freshData && isValidating === false) {
+      console.log("freshData", freshData);
+      setScore(getNestedValue(paper, ["score"], 0));
+      setFlag(currPaper.user_flag);
+    }
+  }, [freshData]);
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
-
+  console.log("score", score);
   const [loadingSummary, setLoadingSummary] = useState(true);
 
   const [flagged, setFlag] = useState(paper && paper.user_flag);
-  const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(paper && paper.userVote)
-  );
+  const [selectedVoteType, setSelectedVoteType] = useState(undefined);
   const [discussionCount, setCount] = useState(null);
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
@@ -157,10 +156,9 @@ const Paper = ({
   const isSubmitter =
     paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  const structuredDataForSEO = useMemo(
-    () => buildStructuredDataForSEO(),
-    [paper]
-  );
+  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [
+    paper,
+  ]);
 
   if (!isEmpty(paper) && discussionCount === null) {
     setCount(calculateCommentCount(paper));
@@ -199,28 +197,24 @@ const Paper = ({
   }, [auth.isLoggedIn, isFetchComplete]);
 
   function checkUserVote(paperState = paper) {
-    if (auth.isLoggedIn && auth.user) {
-      return checkUserVotesOnPapers({ paperIds: [paperId] }).then(
-        (userVotes) => {
-          const userVote = userVotes[paperId];
+    return checkUserVotesOnPapers({ paperIds: [paperId] }).then((userVotes) => {
+      const userVote = userVotes[paperId];
 
-          if (userVote) {
-            const { bullet_low_quality, summary_low_quality } = userVote;
+      if (userVote) {
+        const { bullet_low_quality, summary_low_quality } = userVote;
 
-            const updatedPaper = {
-              ...paperState,
-              bullet_low_quality,
-              summary_low_quality,
-              userVote: userVote,
-            };
+        const updatedPaper = {
+          ...paperState,
+          bullet_low_quality,
+          summary_low_quality,
+          userVote: userVote,
+        };
 
-            mutatePaperCache(updatedPaper);
-            setSelectedVoteType(updatedPaper.userVote.vote_type);
-          }
-          return setUserVoteChecked(true);
-        }
-      );
-    }
+        mutatePaperCache(updatedPaper);
+        setSelectedVoteType(userVoteToConstant(userVote));
+      }
+      return setUserVoteChecked(true);
+    });
   }
 
   async function upvote() {
