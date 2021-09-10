@@ -98,7 +98,7 @@ export default function NewPostModal({
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  <Link href={items[selected].route}>
+                  <Link href={items[selected]?.route ?? ''}>
                     <div className={css(styles.buttonLabel)}>Continue</div>
                   </Link>
                 }
