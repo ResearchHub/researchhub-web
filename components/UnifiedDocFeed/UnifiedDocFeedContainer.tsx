@@ -65,10 +65,7 @@ function UnifiedDocFeedContainer({
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const {
-    next: preloadNext,
-    results: preloadResults,
-  } = preloadedDocData || {};
+  const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["/my-hubs"].includes(router.pathname),
@@ -99,16 +96,16 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
-  const [nextResultSet, setNextResultSet] = useState<any>([]);  
+  const [nextResultSet, setNextResultSet] = useState<any>([]);
 
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  const needsInitialFetch = useMemo(
-    (): Boolean => page === 1 && isLoading,
-    [page, isLoading]
-  );
+  const needsInitialFetch = useMemo((): Boolean => page === 1 && isLoading, [
+    page,
+    isLoading,
+  ]);
 
   const formattedMainHeader = useMemo(
     (): string =>
@@ -150,39 +147,36 @@ function UnifiedDocFeedContainer({
   }, []);
 
   const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
-
     fetchUnifiedDocs({
       ...getFetchParams(),
       ...fetchParams,
       page: nextPage,
-      onSuccess: ({
-        documents,
-      }) => {
+      onSuccess: ({ documents }) => {
         setNextResultSet(documents);
         setPaginationInfo({
           isLoading: false,
           isLoadingMore: false,
           page: nextPage,
-        })
+        });
       },
       onError: () => {
         setNextResultSet([]);
-      }
+      },
     });
-  }
+  };
 
   const handleLoadMore = (): void => {
     if (isLoadingMore) {
       return silentEmptyFnc();
-    };
+    }
 
     // If we have more results loaded, use them
     if (nextResultSet.length > 0) {
-      setUnifiedDocuments([...unifiedDocuments, ...nextResultSet])
+      setUnifiedDocuments([...unifiedDocuments, ...nextResultSet]);
       setNextResultSet([]);
       prefetchNextPage({ nextPage: paginationInfo.page + 1 });
     }
-  }
+  };
 
   const handleDocTypeChange = (docTypeValue: string): void => {
     resetState();
@@ -192,7 +186,10 @@ function UnifiedDocFeedContainer({
       ...getFetchParams(),
       docTypeFilter: docTypeValue,
     });
-    prefetchNextPage({ nextPage: 2, fetchParams: { docTypeFilter: docTypeValue } });
+    prefetchNextPage({
+      nextPage: 2,
+      fetchParams: { docTypeFilter: docTypeValue },
+    });
 
     router.push(
       {
@@ -200,33 +197,39 @@ function UnifiedDocFeedContainer({
         query: { ...router.query, type: docTypeValue },
       },
       router.pathname + `?type=${docTypeValue}`
-    );    
-  }
+    );
+  };
 
   const handleFilterSelect = (_type: string, filterBy: any): void => {
-    const updatedSubFilters = { filterBy, scope: subFilters.scope }
+    const updatedSubFilters = { filterBy, scope: subFilters.scope };
 
-    resetState();
-    setSubFilters(updatedSubFilters);
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      subFilters: updatedSubFilters
-    });
-
-    prefetchNextPage({ nextPage: 2, fetchParams: { subFilters: updatedSubFilters } });
-  }
-
-  const handleScopeSelect = (_type: string, scope: string): void => {
-    const updatedSubFilters = { filterBy: subFilters.filterBy, scope }
-    
     resetState();
     setSubFilters(updatedSubFilters);
     fetchUnifiedDocs({
       ...getFetchParams(),
       subFilters: updatedSubFilters,
     });
-    prefetchNextPage({ nextPage: 2, fetchParams: { subFilters: updatedSubFilters } });
-  }
+
+    prefetchNextPage({
+      nextPage: 2,
+      fetchParams: { subFilters: updatedSubFilters },
+    });
+  };
+
+  const handleScopeSelect = (_type: string, scope: any): void => {
+    const updatedSubFilters = { filterBy: subFilters.filterBy, scope };
+
+    resetState();
+    setSubFilters(updatedSubFilters);
+    fetchUnifiedDocs({
+      ...getFetchParams(),
+      subFilters: updatedSubFilters,
+    });
+    prefetchNextPage({
+      nextPage: 2,
+      fetchParams: { subFilters: updatedSubFilters },
+    });
+  };
 
   const resetState = (): void => {
     setPaginationInfo({
@@ -241,11 +244,7 @@ function UnifiedDocFeedContainer({
   const getFetchParams = (): any => {
     const hubID = hub ? hub.id : null;
 
-    const onFetchSuccess = ({
-      page,
-      documents,
-      prevDocuments,
-    }): void => {
+    const onFetchSuccess = ({ page, documents, prevDocuments }): void => {
       page > 1
         ? setUnifiedDocuments([...prevDocuments, ...documents])
         : setUnifiedDocuments(documents);

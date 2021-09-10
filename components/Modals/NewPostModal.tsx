@@ -6,6 +6,7 @@ import { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
 import killswitch from "../../config/killswitch/killswitch";
+import { filterNull } from "~/config/utils/nullchecks";
 
 const items = [
   {
@@ -22,12 +23,14 @@ const items = [
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
   },
-  {
-    header: "Create a Hypothesis",
-    description: "Make a claim and back it up citing relevant papers.",
-    imgSrc: "/static/icons/publishProject.png",
-    route: "/hypothesis/create",
-  },
+  killswitch("hypothesis")
+    ? {
+        header: "Create a Hypothesis",
+        description: "Make a claim and back it up citing relevant papers.",
+        imgSrc: "/static/icons/publishProject.png",
+        route: "/hypothesis/create",
+      }
+    : null,
   // {
   //   header: "Publish a Research Project",
   //   description: "Publish lab notes, original research, metastudies, etc.",
@@ -57,12 +60,8 @@ export default function NewPostModal({
     closeModal(e);
   };
 
-  const optionCards = items.map((option, index) => {
-    const onSelect = (e: SyntheticEvent) => {
-      e.preventDefault();
-      setSelected(index);
-    };
-    return killswitch("hypothesis") || index !== 2 ? (
+  const optionCards = filterNull(items).map((option, index) => {
+    return (
       <ResearchhubOptionCard
         description={option.description}
         header={option.header}
@@ -70,9 +69,12 @@ export default function NewPostModal({
         isActive={index === selected}
         isCheckboxSquare={false}
         key={index}
-        onSelect={onSelect}
+        onSelect={(e: SyntheticEvent) => {
+          e.preventDefault();
+          setSelected(index);
+        }}
       />
-    ) : null;
+    );
   });
 
   return (
