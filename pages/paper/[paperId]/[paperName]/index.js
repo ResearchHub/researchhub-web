@@ -142,7 +142,7 @@ const Paper = ({
   const [selectedVoteType, setSelectedVoteType] = useState(
     getVoteType(paper && paper.userVote)
   );
-  const [discussionCount, setCount] = useState(calculateCommentCount(paper));
+  const [discussionCount, setCount] = useState(null);
 
   const [paperDraftExists, setPaperDraftExists] = useState(false);
   const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
@@ -158,17 +158,9 @@ const Paper = ({
     paper,
   ]);
 
-  // Alternative to useEffect for data that needs to be
-  // set when component receives props. This is necessary since
-  // useEffect does not work with SSG.
-  (function initSSG() {
-    // if (paperData && isEmpty(paper)) {
-    //   setPaper(shims.paper(paperData));
-    // }
-    if (paper?.discussionSource && !discussionCount) {
-      setCount(calculateCommentCount(paper));
-    }
-  })();
+  if (!isEmpty(paper) && discussionCount === null) {
+    setCount(calculateCommentCount(paper));
+  }
 
   if (killswitch("paperSummary")) {
     let summaryVoteChecked = false;
