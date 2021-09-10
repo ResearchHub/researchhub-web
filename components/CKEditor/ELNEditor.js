@@ -122,7 +122,7 @@ export const ELNEditor = ({ user }) => {
           config={editorConfiguration}
           editor={Editor}
           id={note.id.toString()}
-          onChange={(event, editor) => handleInput(event, editor)}
+          onChange={(event, editor) => handleInput(editor)}
           onReady={(editor) => {
             console.log("Editor is ready to use!", editor);
             //CKEditorInspector.attach(editor);
@@ -223,7 +223,7 @@ export const ELNEditor = ({ user }) => {
       });
   };
 
-  const handleInput = (event, editor) => {
+  const handleInput = (editor) => {
     const updatedTitles = {};
     for (const key in titles) {
       updatedTitles[key] =
