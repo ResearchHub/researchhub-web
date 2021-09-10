@@ -1,11 +1,11 @@
 import { Fragment } from "react";
-import Router from "next/router";
-import Error from "next/error";
-import Loader from "~/components/Loader/Loader";
 import API from "~/config/api";
-
-// Redux
+import Error from "next/error";
 import helpers from "@quantfive/js-web-config/helpers";
+import killswitch from "~/config/killswitch/killswitch";
+import Router from "next/router";
+
+const isServer = () => typeof window === "undefined";
 
 function Hypothesis(props) {
   // TODO: Does this need to be a dynamic route or hard refresh?
@@ -13,6 +13,9 @@ function Hypothesis(props) {
     return <Error statusCode={404} />;
   }
 
+  if (!killswitch("hypothesis") && !isServer()) {
+    Router.push("/");
+  }
   if (props.redirectPath && typeof window !== "undefined") {
     Router.push(props.redirectPath);
   }
