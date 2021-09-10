@@ -29,6 +29,7 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 
 type PaginationInfo = {
+  hasMore: Boolean;
   isLoading: Boolean;
   isLoadingMore: Boolean;
   page: number;
@@ -65,7 +66,7 @@ function UnifiedDocFeedContainer({
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
+  const { next: nextPageURI, results: preloadResults } = preloadedDocData || {};
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["/my-hubs"].includes(router.pathname),
@@ -85,6 +86,7 @@ function UnifiedDocFeedContainer({
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
+    hasMore: Boolean(nextPageURI),
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
     page: 1,
@@ -134,6 +136,7 @@ function UnifiedDocFeedContainer({
   useEffect((): void => {
     if (preloadedDocData) {
       setPaginationInfo({
+        hasMore: Boolean(nextPageURI),
         isLoadingMore: false,
         isLoading: false,
         page: 1,
@@ -147,13 +150,18 @@ function UnifiedDocFeedContainer({
   }, []);
 
   const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
+    if (Boolean(nextPageURI) || (!paginationInfo?.hasMore ?? false)) {
+      return;
+    }
     fetchUnifiedDocs({
       ...getFetchParams(),
       ...fetchParams,
       page: nextPage,
-      onSuccess: ({ documents }) => {
-        setNextResultSet(documents);
+      onSuccess: ({ document}) => {
+        debugger;
+        setNextResultSet(document);
         setPaginationInfo({
+          hasMore: isNullOrUndefined(document?.hasMore) ?? false,
           isLoading: false,
           isLoadingMore: false,
           page: nextPage,
@@ -167,7 +175,7 @@ function UnifiedDocFeedContainer({
 
   const handleLoadMore = (): void => {
     if (isLoadingMore) {
-      return silentEmptyFnc();
+      return;
     }
 
     // If we have more results loaded, use them
@@ -233,6 +241,7 @@ function UnifiedDocFeedContainer({
 
   const resetState = (): void => {
     setPaginationInfo({
+      ...paginationInfo,
       isLoading: true,
       isLoadingMore: false,
       page: 1,
@@ -250,6 +259,7 @@ function UnifiedDocFeedContainer({
         : setUnifiedDocuments(documents);
 
       setPaginationInfo({
+        ...paginationInfo,
         isLoading: false,
         isLoadingMore: false,
         page,
@@ -259,6 +269,7 @@ function UnifiedDocFeedContainer({
     const onFetchError = (error: Error): void => {
       emptyFncWithMsg(error);
       setPaginationInfo({
+        ...paginationInfo,
         isLoading: false,
         isLoadingMore: false,
         page: paginationInfo.page,
@@ -396,7 +407,7 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : nextResultSet.length > 0 ? (
+          ) : (nextResultSet?.length ?? 0) > 0 ? (
             <Ripples
               className={css(styles.loadMoreButton)}
               onClick={handleLoadMore}
