@@ -65,7 +65,8 @@ function UserPosts(props) {
       postCards.push(
         <UserPostCard
           {...post}
-          key={post.id || i}
+          formattedDocType="post"
+          key={post?.id || i}
           styleVariation="noBorderVariation"
         />
       );
