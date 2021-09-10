@@ -413,7 +413,7 @@ const Paper = ({
         description={formatDescription()}
         socialImageUrl={socialImageUrl}
         noindex={paper.is_removed || paper.is_removed_by_user}
-        canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
+        canonical={`${process.env.HOST}/paper/${paper.id}/${paper.slug}`}
       >
         <script
           type="application/ld+json"
@@ -638,6 +638,21 @@ export async function getStaticProps(ctx) {
       },
     };
   } else {
+
+
+    const slugFromQuery = ctx.params.paperName;
+
+    // DANGER ZONE: Be careful when updating this. Could result
+    // in an infinite loop that could bring server down.
+    if (paper.slug && paper.slug !== slugFromQuery) {
+      return {
+        redirect: {
+          destination: paper.slug,
+          permanent: true
+        }
+      }
+    }
+
     const props = {
       initialPaperData: paper,
       isFetchComplete: true,
@@ -645,6 +660,7 @@ export async function getStaticProps(ctx) {
 
     return {
       props,
+      // Static page will be regenerated after specified seconds.
       revalidate: 120,
     };
   }
