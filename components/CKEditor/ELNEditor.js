@@ -27,7 +27,7 @@ function useFetchNotes(currentNoteId) {
       });
   }, [currentNoteId]);
 
-  return [fetched, notes];
+  return [notes, fetched];
 }
 
 export const ELNEditor = ({ user }) => {
@@ -38,7 +38,7 @@ export const ELNEditor = ({ user }) => {
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [fetched, notes] = useFetchNotes(currentNoteId);
+  const [notes, fetched] = useFetchNotes(currentNoteId);
   const [titles, setTitles] = useState({});
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const ELNEditor = ({ user }) => {
           onChange={(event, editor) => handleInput(event, editor)}
           onReady={(editor) => {
             console.log("Editor is ready to use!", editor);
-            CKEditorInspector.attach(editor);
+            //CKEditorInspector.attach(editor);
 
             editor.editing.view.change((writer) => {
               writer.setStyle(
@@ -209,6 +209,10 @@ export const ELNEditor = ({ user }) => {
       .then(Helpers.parseJSON)
       .then((note) => {
         setCurrentNoteId(note.id.toString());
+        setTitles({
+          [note.id.toString()]: note.title,
+          ...titles
+        });
         router.push(`/notebook/${note.id}`);
       });
   };
@@ -255,7 +259,7 @@ export const ELNEditor = ({ user }) => {
               router.push(`/notebook/${note.id}`);
             }}
           >
-            {titles[note.id.toString()]}
+            {titles[note.id.toString()] || "Untitled"}
           </div>
         ))}
         <div
