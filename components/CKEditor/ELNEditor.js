@@ -9,7 +9,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 
-function useFetchNotes(currentNoteId) {
+function useFetchNotes(refetchNotes) {
   const [notes, setNotes] = useState([]);
   const [fetched, setFetched] = useState(false);
 
@@ -26,7 +26,7 @@ function useFetchNotes(currentNoteId) {
       .catch((err) => {
         console.log(err);
       });
-  }, [currentNoteId]);
+  }, [refetchNotes]);
 
   return [notes, fetched];
 }
@@ -39,7 +39,8 @@ export const ELNEditor = ({ user }) => {
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [notes, fetched] = useFetchNotes(currentNoteId);
+  const [refetchNotes, setRefetchNotes] = useState(false);
+  const [notes, fetched] = useFetchNotes(refetchNotes);
   const [titles, setTitles] = useState({});
 
   useEffect(() => {
@@ -213,7 +214,7 @@ export const ELNEditor = ({ user }) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((note) => {
-        setCurrentNoteId(note.id.toString());
+        setRefetchNotes(!refetchNotes);
         setTitles({
           [note.id.toString()]: note.title,
           ...titles
