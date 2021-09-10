@@ -82,7 +82,7 @@ const steps = [
   },
 ];
 
-const paperFetcher = (url, config) => fetchPaper(url, JSON.parse(config));
+const swrPaperFetcher = (url, config) => fetchPaper(url, JSON.parse(config));
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)
@@ -110,7 +110,7 @@ const Paper = ({
           JSON.stringify(API.GET_CONFIG()),
         ]
       : null,
-    paperFetcher,
+    swrPaperFetcher,
     { revalidateOnMount: true }
   );
   const paper = data
@@ -131,7 +131,6 @@ const Paper = ({
   const { paperId } = router.query;
 
   useEffect(() => {
-    console.log('setting score on paper');
     setScore(getNestedValue(paper, ["score"], 0));
   }, [isValidating]);
 
@@ -652,7 +651,7 @@ export async function getStaticProps(ctx) {
 
     return {
       props,
-      revalidate: 60,
+      revalidate: 120,
     };
   }
 }
