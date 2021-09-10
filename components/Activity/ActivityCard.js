@@ -18,7 +18,6 @@ import colors from "~/config/themes/colors";
 // };
 
 export const getActivityMetadata = (activity) => {
-  console.log(activity);
   const {
     contribution_type: contributionType,
     source,
