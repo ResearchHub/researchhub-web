@@ -27,9 +27,9 @@ import UserPostCard from "../Author/Tabs/UserPostCard";
 import { connect } from "react-redux";
 import FeedBlurWithButton from "./FeedBlurWithButton";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
 
 type PaginationInfo = {
-  hasMore: Boolean;
   isLoading: Boolean;
   isLoadingMore: Boolean;
   page: number;
@@ -66,7 +66,7 @@ function UnifiedDocFeedContainer({
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const { next: nextPageURI, results: preloadResults } = preloadedDocData || {};
+  const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["/my-hubs"].includes(router.pathname),
@@ -86,7 +86,6 @@ function UnifiedDocFeedContainer({
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    hasMore: Boolean(nextPageURI),
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
     page: 1,
@@ -136,7 +135,6 @@ function UnifiedDocFeedContainer({
   useEffect((): void => {
     if (preloadedDocData) {
       setPaginationInfo({
-        hasMore: Boolean(nextPageURI),
         isLoadingMore: false,
         isLoading: false,
         page: 1,
@@ -150,18 +148,13 @@ function UnifiedDocFeedContainer({
   }, []);
 
   const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
-    if (Boolean(nextPageURI) || (!paginationInfo?.hasMore ?? false)) {
-      return;
-    }
     fetchUnifiedDocs({
       ...getFetchParams(),
       ...fetchParams,
       page: nextPage,
-      onSuccess: ({ document}) => {
-        debugger;
-        setNextResultSet(document);
+      onSuccess: ({ documents }) => {
+        setNextResultSet(documents);
         setPaginationInfo({
-          hasMore: isNullOrUndefined(document?.hasMore) ?? false,
           isLoading: false,
           isLoadingMore: false,
           page: nextPage,
@@ -175,7 +168,7 @@ function UnifiedDocFeedContainer({
 
   const handleLoadMore = (): void => {
     if (isLoadingMore) {
-      return;
+      return silentEmptyFnc();
     }
 
     // If we have more results loaded, use them
@@ -241,7 +234,6 @@ function UnifiedDocFeedContainer({
 
   const resetState = (): void => {
     setPaginationInfo({
-      ...paginationInfo,
       isLoading: true,
       isLoadingMore: false,
       page: 1,
@@ -259,7 +251,6 @@ function UnifiedDocFeedContainer({
         : setUnifiedDocuments(documents);
 
       setPaginationInfo({
-        ...paginationInfo,
         isLoading: false,
         isLoadingMore: false,
         page,
@@ -269,7 +260,6 @@ function UnifiedDocFeedContainer({
     const onFetchError = (error: Error): void => {
       emptyFncWithMsg(error);
       setPaginationInfo({
-        ...paginationInfo,
         isLoading: false,
         isLoadingMore: false,
         page: paginationInfo.page,
@@ -309,7 +299,8 @@ function UnifiedDocFeedContainer({
     (): Array<UnifiedCard> =>
       filterNull(unifiedDocuments).map(
         (uniDoc: any, arrIndex: number): UnifiedCard => {
-          const isPaperCard = uniDoc.document_type === "PAPER";
+          const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
+          const isPaperCard =  formattedDocType ===  "paper";
           const docID = uniDoc.id;
           const shouldBlurMobile =
             arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
@@ -340,9 +331,11 @@ function UnifiedDocFeedContainer({
             );
           } else {
             // NOTE: we are sharing this UI with other document types
+            const targetDoc = formattedDocType === "hypothesis" ? uniDoc.documents : uniDoc.documents[0]
             return (
               <UserPostCard
-                {...uniDoc.documents[0]}
+                {...targetDoc}
+                formattedDocType={formattedDocType}
                 key={`${docTypeFilter}-${docID}-${arrIndex}`}
                 style={[
                   styles.customUserPostCard,
@@ -407,7 +400,7 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : (nextResultSet?.length ?? 0) > 0 ? (
+          ) : nextResultSet.length > 0 ? (
             <Ripples
               className={css(styles.loadMoreButton)}
               onClick={handleLoadMore}
