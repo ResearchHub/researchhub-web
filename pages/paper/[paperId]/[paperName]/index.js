@@ -119,14 +119,6 @@ const Paper = ({
     return <Error statusCode={error.code} />;
   }
 
-  // TODO: This issue needs to be addressed
-  // if (redirectPath && typeof window !== "undefined") {
-  //   // updates the [paperName] without refetching data
-  //   router.replace("/paper/[paperId]/[paperName]", redirectPath, {
-  //     shallow: true,
-  //   });
-  // }
-
   const { paperId } = router.query;
 
   useEffect(() => {
