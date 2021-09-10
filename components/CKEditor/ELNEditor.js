@@ -1,5 +1,4 @@
 import API from "~/config/api";
-import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -28,7 +27,7 @@ function useFetchNotes(currentNoteId) {
       });
   }, [currentNoteId]);
 
-  return [fetched, notes, setNotes];
+  return [fetched, notes];
 }
 
 export const ELNEditor = ({ user }) => {
@@ -37,9 +36,9 @@ export const ELNEditor = ({ user }) => {
   const sidebarElementRef = useRef();
   const presenceListElementRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
-  const [currentNoteId, setCurrentNoteId] = useState(null);
+  const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [fetched, notes, setNotes] = useFetchNotes(currentNoteId);
+  const [fetched, notes] = useFetchNotes(currentNoteId);
   const [titles, setTitles] = useState({});
 
   useEffect(() => {
@@ -49,7 +48,6 @@ export const ELNEditor = ({ user }) => {
       CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
     };
     setEditorLoaded(true);
-    setCurrentNoteId(router.query.noteId);
     return () => {
       //window.removeEventListener("resize", boundRefreshDisplayMode);
       //window.removeEventListener("beforeunload", boundCheckPendingActions);
@@ -107,7 +105,13 @@ export const ELNEditor = ({ user }) => {
     };
 
     return (
-      <div className={css(styles.editor, currentNoteId !== note.id.toString() && styles.hideEditor)}>
+      <div
+        className={css(
+          styles.editor,
+          currentNoteId !== note.id.toString() && styles.hideEditor,
+        )}
+        key={note.id.toString()}
+      >
         <CKEditor
           config={editorConfiguration}
           editor={Editor}
@@ -203,9 +207,9 @@ export const ELNEditor = ({ user }) => {
     fetch(API.NOTE({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then((data) => {
+      .then((note) => {
         setCurrentNoteId(note.id.toString());
-        router.push(`/notebook/${data.id}`);
+        router.push(`/notebook/${note.id}`);
       });
   };
 
