@@ -133,7 +133,7 @@ const Paper = ({
     if (freshData && isValidating === false) {
       console.log("freshData", freshData);
       setScore(getNestedValue(paper, ["score"], 0));
-      setFlag(currPaper.user_flag);
+      setFlag(paper.user_flag);
     }
   }, [freshData]);
 
