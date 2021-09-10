@@ -1,7 +1,7 @@
 import { useEffect, useState, Fragment, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
-import  useSWR from 'swr'
+import useSWR from "swr";
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
@@ -82,7 +82,7 @@ const steps = [
   },
 ];
 
-const paperFetcher = (url, config) => fetchPaper(url, JSON.parse(config))
+const paperFetcher = (url, config) => fetchPaper(url, JSON.parse(config));
 
 const fetchPaper = (url, config) => {
   return fetch(url, config)
@@ -103,12 +103,21 @@ const Paper = ({
   error,
   isFetchComplete = false,
 }) => {
-  const { data, mutate } = useSWR(initialPaperData ? [ API.PAPER({ paperId: initialPaperData.id }), JSON.stringify(API.GET_CONFIG()) ] : null, paperFetcher, { revalidateOnMount: true })
+  const { data, mutate } = useSWR(
+    initialPaperData
+      ? [
+          API.PAPER({ paperId: initialPaperData.id }),
+          JSON.stringify(API.GET_CONFIG()),
+        ]
+      : null,
+    paperFetcher,
+    { revalidateOnMount: true }
+  );
   const paper = data
     ? shims.paper(data)
     : initialPaperData
     ? shims.paper(initialPaperData)
-    : {}
+    : {};
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -122,7 +131,7 @@ const Paper = ({
   const { paperId } = router.query;
 
   useEffect(() => {
-    setScore(getNestedValue(paper, ["score"], 0));  
+    setScore(getNestedValue(paper, ["score"], 0));
   }, [paper]);
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
@@ -146,9 +155,10 @@ const Paper = ({
   const isSubmitter =
     paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [
-    paper,
-  ]);
+  const structuredDataForSEO = useMemo(
+    () => buildStructuredDataForSEO(),
+    [paper]
+  );
 
   if (!isEmpty(paper) && discussionCount === null) {
     setCount(calculateCommentCount(paper));
@@ -201,8 +211,6 @@ const Paper = ({
               summary_low_quality,
               userVote: userVote,
             };
-
-
 
             mutate(updatedPaper);
             setSelectedVoteType(updatedPaper.userVote.vote_type);
@@ -614,7 +622,7 @@ export async function getStaticProps(ctx) {
   try {
     paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
-    console.log('err', err);
+    console.log("err", err);
     return {
       props: {
         error: {
