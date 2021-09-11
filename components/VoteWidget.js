@@ -1,9 +1,8 @@
 import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { useDispatch, useStore } from "react-redux";
+import { useDispatch, useStore, connect } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { connect } from "react-redux";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
@@ -205,9 +204,18 @@ const ScorePill = (props) => {
     horizontalView,
   } = props;
 
+  const isScoreNumeric = !isNaN(score);
+
   return (
     <div className={css(styles.pillContainer)}>
-      <div className={css(small && styles.small)}>{formatScore(score)}</div>
+      <div
+        className={css(
+          small && styles.small,
+          !isScoreNumeric && styles.hideScore
+        )}
+      >
+        {formatScore(score)}
+      </div>
     </div>
   );
 };
@@ -291,6 +299,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+  },
+  hideScore: {
+    visibility: "hidden",
   },
   horizontalViewPill: {
     minWidth: 50,

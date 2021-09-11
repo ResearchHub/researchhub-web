@@ -112,11 +112,20 @@ const Paper = ({
     swrPaperFetcher,
     { revalidateOnMount: true }
   );
-  const paper = freshData
-    ? shims.paper(freshData)
-    : initialPaperData
-    ? shims.paper(initialPaperData)
-    : {};
+
+  const paper =
+    !isEmpty(freshData) && !isValidating
+      ? shims.paper(freshData)
+      : !isEmpty(initialPaperData)
+      ? shims.paper(initialPaperData)
+      : {};
+
+  console.log("------------------------------");
+  console.log("isValidating", isValidating);
+  console.log("initialPaperData", initialPaperData);
+  console.log("paper", paper);
+  console.log("freshData", freshData);
+  console.log("------------------------------");
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -137,7 +146,7 @@ const Paper = ({
   }, [freshData]);
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
-  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [score, setScore] = useState(undefined);
   const [loadingSummary, setLoadingSummary] = useState(true);
 
   const [flagged, setFlag] = useState(paper && paper.user_flag);
