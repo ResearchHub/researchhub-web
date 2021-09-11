@@ -70,6 +70,21 @@ initApm({
 const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
 
+  const [prevPath, setPrevPath] = useState(router.asPath);
+
+  // Scroll to top on page change
+  useEffect(() => {
+    if (prevPath !== router.pathname) {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    }
+
+    setPrevPath(router.pathname);
+  }, [router.asPath]);
+
   useEffect(() => {
     connectSift();
     ReactGA.initialize("UA-106669204-1", {
@@ -77,7 +92,7 @@ const MyApp = ({ Component, pageProps, store }) => {
     });
 
     ReactGA.pageview(router.asPath);
-    router.events.on("routeChangeStart", () => {
+    router.events.on("routeChangeStart", (url) => {
       store.dispatch(MessageActions.setMessage(""));
       store.dispatch(MessageActions.showMessage({ show: true, load: true }));
     });

@@ -131,7 +131,6 @@ const Paper = ({
 
   useEffect(() => {
     if (freshData && isValidating === false) {
-      console.log("freshData", freshData);
       setScore(getNestedValue(paper, ["score"], 0));
       setFlag(paper.user_flag);
     }
@@ -139,7 +138,6 @@ const Paper = ({
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
-  console.log("score", score);
   const [loadingSummary, setLoadingSummary] = useState(true);
 
   const [flagged, setFlag] = useState(paper && paper.user_flag);
@@ -638,8 +636,6 @@ export async function getStaticProps(ctx) {
       },
     };
   } else {
-
-
     const slugFromQuery = ctx.params.paperName;
 
     // DANGER ZONE: Be careful when updating this. Could result
@@ -648,9 +644,9 @@ export async function getStaticProps(ctx) {
       return {
         redirect: {
           destination: paper.slug,
-          permanent: true
-        }
-      }
+          permanent: true,
+        },
+      };
     }
 
     const props = {
