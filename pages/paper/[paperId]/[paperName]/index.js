@@ -65,6 +65,10 @@ import {
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
+import { useRef, useCallback } from 'react'
+
+
+
 const steps = [
   {
     target: ".first-step",
@@ -88,6 +92,11 @@ const fetchPaper = (url, config) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
+
+      if (process.browser) {
+        resp.title = "some different title"
+      }
+
       return resp;
     })
     .catch((error) => {
@@ -102,6 +111,11 @@ const Paper = ({
   error,
   isFetchComplete = false,
 }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const store = useStore();
+
+  const { paperId } = router.query;
   const { data: freshData, mutate: mutatePaperCache, isValidating } = useSWR(
     initialPaperData
       ? [
@@ -113,30 +127,17 @@ const Paper = ({
     { revalidateOnMount: true }
   );
 
-  const paper =
-    !isEmpty(freshData) && !isValidating
-      ? shims.paper(freshData)
-      : !isEmpty(initialPaperData)
-      ? shims.paper(initialPaperData)
-      : {};
+  const paper = !isEmpty(freshData)
+    ? shims.paper(freshData)
+    : !isEmpty(initialPaperData)
+    ? shims.paper(initialPaperData)
+    : {}
 
-  console.log("------------------------------");
-  console.log("isValidating", isValidating);
-  console.log("initialPaperData", initialPaperData);
-  console.log("paper", paper);
-  console.log("freshData", freshData);
-  console.log("------------------------------");
-
-  const router = useRouter();
-  const dispatch = useDispatch();
-  const store = useStore();
 
   if (error) {
     Sentry.captureException({ error, initialPaperData, query: router.query });
     return <Error statusCode={error.code} />;
   }
-
-  const { paperId } = router.query;
 
   useEffect(() => {
     if (freshData && isValidating === false) {
@@ -146,7 +147,7 @@ const Paper = ({
   }, [freshData]);
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
-  const [score, setScore] = useState(undefined);
+  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
   const [loadingSummary, setLoadingSummary] = useState(true);
 
   const [flagged, setFlag] = useState(paper && paper.user_flag);
@@ -169,6 +170,7 @@ const Paper = ({
 
   if (!isEmpty(paper) && discussionCount === null) {
     setCount(calculateCommentCount(paper));
+    getNestedValue(paper, ["score"], 0)
   }
 
   if (killswitch("paperSummary")) {
@@ -198,12 +200,12 @@ const Paper = ({
   }
 
   useEffect(() => {
-    if (isFetchComplete && auth.isLoggedIn) {
-      checkUserVote();
+    if (auth.isLoggedIn && !selectedVoteType && !isEmpty(freshData)) {
+      checkUserVote(freshData);
     }
-  }, [auth.isLoggedIn, isFetchComplete]);
+  }, [auth.isLoggedIn, freshData]);
 
-  function checkUserVote(paperState = paper) {
+  function checkUserVote(paper) {
     return checkUserVotesOnPapers({ paperIds: [paperId] }).then((userVotes) => {
       const userVote = userVotes[paperId];
 
@@ -211,7 +213,7 @@ const Paper = ({
         const { bullet_low_quality, summary_low_quality } = userVote;
 
         const updatedPaper = {
-          ...paperState,
+          ...paper,
           bullet_low_quality,
           summary_low_quality,
           userVote: userVote,
@@ -614,7 +616,7 @@ const PaperIndexWithUndux = (props) => {
 
 export async function getStaticPaths(ctx) {
   return {
-    paths: [],
+    paths: ["/paper/1266153/synaptic-mechanism-underlying-serotonin-modulation-of-transition-to-cocaine-addiction"],
     fallback: true,
   };
 }
