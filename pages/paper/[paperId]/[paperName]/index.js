@@ -1,8 +1,6 @@
 import { useEffect, useState, Fragment, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
-import useSWRImmutable from 'swr/immutable'
-import { useSWRConfig } from 'swr'
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
@@ -86,8 +84,6 @@ const steps = [
   },
 ];
 
-const swrPaperFetcher = (url, config) => fetchPaper(url, JSON.parse(config));
-
 const fetchPaper = (url, config) => {
   return fetch(url, config)
     .then(Helpers.checkStatus)
@@ -97,6 +93,7 @@ const fetchPaper = (url, config) => {
     })
     .catch((error) => {
       console.log(error);
+      Sentry.captureException({ error, url, config });
     });
 };
 
@@ -121,7 +118,7 @@ const Paper = ({
   const [paper, setPaper] = useState({});
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
-  const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
+  const [score, setScore] = useState(undefined);
   const [loadingSummary, setLoadingSummary] = useState(true);
 
   const [flagged, setFlag] = useState(paper && paper.user_flag);
@@ -142,14 +139,15 @@ const Paper = ({
     paper,
   ]);
 
-  // Paper data has never been set.
   // Typically, this if statement would be created with a useEffect clause
   // but since useEffect does not work with SSG, we need a standard if statement.
-  if (!isEmpty(initialPaperData) && isEmpty(paper)) {
+  const noSetPaperData = !isEmpty(initialPaperData) && isEmpty(paper);
+  if (noSetPaperData) {
     setPaper(shims.paper(initialPaperData));
+    setScore(getNestedValue(initialPaperData, ["score"], 0));
 
     if (discussionCount === null) {
-      setCount(calculateCommentCount(paper));
+      setCount(calculateCommentCount(initialPaperData));
     }
   }
 
@@ -184,12 +182,6 @@ const Paper = ({
       setLoadingSummary(false);
     }, [summary.id, auth.isLoggedIn]);
   }
-
-  // useEffect(() => {
-  //   if (auth.isLoggedIn && !selectedVoteType && fetchFreshDataStatus === "NOT_FETCHED") {
-  //     checkUserVote(paper);
-  //   }
-  // }, [auth.isLoggedIn, fetchFreshDataStatus]);
 
   function fetchFreshData(paper) {
     setFetchFreshDataStatus("FETCHING");
@@ -355,7 +347,7 @@ const Paper = ({
   }
 
   function updatePaperState(newState) {
-    mutatePaperCache(newState);
+    setPaper(newState);
   }
 
   function getAllAuthors() {
@@ -654,7 +646,7 @@ export async function getStaticProps(ctx) {
     return {
       props,
       // Static page will be regenerated after specified seconds.
-      revalidate: 120,
+      revalidate: 60,
     };
   }
 }
