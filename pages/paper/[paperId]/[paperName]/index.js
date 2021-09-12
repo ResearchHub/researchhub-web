@@ -1,7 +1,8 @@
 import { useEffect, useState, Fragment, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
-import useSWR from "swr";
+import useSWRImmutable from 'swr/immutable'
+import { useSWRConfig } from 'swr'
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
@@ -92,11 +93,6 @@ const fetchPaper = (url, config) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
-
-      if (process.browser) {
-        resp.title = "some different title"
-      }
-
       return resp;
     })
     .catch((error) => {
@@ -115,36 +111,14 @@ const Paper = ({
   const dispatch = useDispatch();
   const store = useStore();
 
-  const { paperId } = router.query;
-  const { data: freshData, mutate: mutatePaperCache, isValidating } = useSWR(
-    initialPaperData
-      ? [
-          API.PAPER({ paperId: initialPaperData.id }),
-          JSON.stringify(API.GET_CONFIG()),
-        ]
-      : null,
-    swrPaperFetcher,
-    { revalidateOnMount: true }
-  );
-
-  const paper = !isEmpty(freshData)
-    ? shims.paper(freshData)
-    : !isEmpty(initialPaperData)
-    ? shims.paper(initialPaperData)
-    : {}
-
-
   if (error) {
     Sentry.captureException({ error, initialPaperData, query: router.query });
     return <Error statusCode={error.code} />;
   }
 
-  useEffect(() => {
-    if (freshData && isValidating === false) {
-      setScore(getNestedValue(paper, ["score"], 0));
-      setFlag(paper.user_flag);
-    }
-  }, [freshData]);
+  // ENUM: NOT_FETCHED, FETCHING, COMPLETED
+  const [fetchFreshDataStatus, setFetchFreshDataStatus] = useState("NOT_FETCHED");
+  const [paper, setPaper] = useState({});
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
   const [score, setScore] = useState(getNestedValue(paper, ["score"], 0));
@@ -168,10 +142,22 @@ const Paper = ({
     paper,
   ]);
 
-  if (!isEmpty(paper) && discussionCount === null) {
-    setCount(calculateCommentCount(paper));
-    getNestedValue(paper, ["score"], 0)
+  // Paper data has never been set.
+  // Typically, this if statement would be created with a useEffect clause
+  // but since useEffect does not work with SSG, we need a standard if statement.
+  if (!isEmpty(initialPaperData) && isEmpty(paper)) {
+    setPaper(shims.paper(initialPaperData));
+
+    if (discussionCount === null) {
+      setCount(calculateCommentCount(paper));
+    }
   }
+
+  useEffect(() => {
+    if (fetchFreshDataStatus === "NOT_FETCHED" && !isEmpty(paper)) {
+      fetchFreshData(paper);
+    }
+  }, [fetchFreshDataStatus, paper])
 
   if (killswitch("paperSummary")) {
     let summaryVoteChecked = false;
@@ -199,42 +185,42 @@ const Paper = ({
     }, [summary.id, auth.isLoggedIn]);
   }
 
-  useEffect(() => {
-    if (auth.isLoggedIn && !selectedVoteType && !isEmpty(freshData)) {
-      checkUserVote(freshData);
-    }
-  }, [auth.isLoggedIn, freshData]);
+  // useEffect(() => {
+  //   if (auth.isLoggedIn && !selectedVoteType && fetchFreshDataStatus === "NOT_FETCHED") {
+  //     checkUserVote(paper);
+  //   }
+  // }, [auth.isLoggedIn, fetchFreshDataStatus]);
 
-  function checkUserVote(paper) {
-    return checkUserVotesOnPapers({ paperIds: [paperId] }).then((userVotes) => {
-      const userVote = userVotes[paperId];
+  function fetchFreshData(paper) {
+    setFetchFreshDataStatus("FETCHING");
+    fetchPaper(API.PAPER({ paperId: paper.id }), API.GET_CONFIG())
+      .then((freshPaperData) => {
+        setFetchFreshDataStatus("COMPLETED");
+        setScore(getNestedValue(freshPaperData, ["score"], 0));
+        setFlag(freshPaperData.user_flag);
 
-      if (userVote) {
-        const { bullet_low_quality, summary_low_quality } = userVote;
+        const updatedPaper = shims.paper({
+          ...freshPaperData,
+        })
 
-        const updatedPaper = {
-          ...paper,
-          bullet_low_quality,
-          summary_low_quality,
-          userVote: userVote,
-        };
+        if (!isEmpty(freshPaperData.user_vote)) {
+          setSelectedVoteType(userVoteToConstant(freshPaperData.user_vote));
+        }
 
-        mutatePaperCache(updatedPaper);
-        setSelectedVoteType(userVoteToConstant(userVote));
-      }
-      return setUserVoteChecked(true);
-    });
+        setPaper(shims.paper(freshPaperData));
+        setUserVoteChecked(true);
+      });    
   }
 
   async function upvote() {
     dispatch(VoteActions.postUpvotePending());
-    await dispatch(VoteActions.postUpvote(paperId));
+    await dispatch(VoteActions.postUpvote(paper.id));
     updateWidgetUI();
   }
 
   async function downvote() {
     dispatch(VoteActions.postDownvotePending());
-    await dispatch(VoteActions.postDownvote(paperId));
+    await dispatch(VoteActions.postDownvote(paper.id));
     updateWidgetUI();
   }
 
@@ -249,7 +235,7 @@ const Paper = ({
         setScore(selectedVoteType === DOWNVOTE ? score + 2 : score + 1);
 
         if (paper.promoted !== false) {
-          mutatePaperCache({
+          setPaper({
             ...paper,
             promoted:
               selectedVoteType === UPVOTE
@@ -261,7 +247,7 @@ const Paper = ({
       } else if (voteType === DOWNVOTE) {
         setScore(selectedVoteType === UPVOTE ? score - 2 : score - 1);
         if (paper.promoted !== false) {
-          mutatePaperCache({
+          setPaper({
             ...paper,
             promoted:
               selectedVoteType === UPVOTE
@@ -275,11 +261,11 @@ const Paper = ({
   }
 
   const restorePaper = () => {
-    mutatePaperCache({ ...paper, is_removed: false });
+    setPaper({ ...paper, is_removed: false });
   };
 
   const removePaper = () => {
-    mutatePaperCache({ ...paper, is_removed: true });
+    setPaper({ ...paper, is_removed: true });
   };
 
   function calculateCommentCount(paper) {
@@ -416,7 +402,7 @@ const Paper = ({
         updatePaperState={updatePaperState}
         updateSummary={setSummary}
       />
-      <PaperPDFModal paperId={paperId} paper={paper} />
+      <PaperPDFModal paperId={paper.id} paper={paper} />
       <Head
         title={paper.title}
         description={formatDescription()}
@@ -445,7 +431,7 @@ const Paper = ({
             <div className={css(styles.paperPageContainer, styles.top)}>
               <PaperPageCard
                 paper={paper}
-                paperId={paperId}
+                paperId={paper.id}
                 score={score}
                 upvote={upvote}
                 downvote={downvote}
@@ -466,13 +452,13 @@ const Paper = ({
                 authors={getAllAuthors()}
                 paper={paper}
                 hubs={paper.hubs}
-                paperId={paperId}
+                paperId={paper.id}
                 isPaper
               />
             </div>
             <div className={css(styles.stickyComponent)}>
               <PaperTabBar
-                paperId={paperId}
+                paperId={paper.id}
                 activeTab={activeTab}
                 setActiveTab={setActiveTab}
                 paperDraftSections={paperDraftSections}
@@ -490,7 +476,7 @@ const Paper = ({
                 <div>
                   <a name="abstract" />
                   <SummaryTab
-                    paperId={paperId}
+                    paperId={paper.id}
                     paper={paper}
                     summary={summary}
                     updatePaperState={updatePaperState}
@@ -513,7 +499,7 @@ const Paper = ({
                     <DiscussionTab
                       hostname={process.env.HOST}
                       documentType={"paper"}
-                      paperId={paperId}
+                      paperId={paper.id}
                       paperState={paper}
                       calculatedCount={discussionCount}
                       setCount={setCount}
@@ -547,7 +533,7 @@ const Paper = ({
                       isViewerAllowedToEdit={isModerator}
                       paperDraftExists={paperDraftExists}
                       paperDraftSections={paperDraftSections}
-                      paperId={paperId}
+                      paperId={paper.id}
                       setActiveSection={setActiveSection}
                       setPaperDraftExists={setPaperDraftExists}
                       setPaperDraftSections={setPaperDraftSections}
@@ -566,7 +552,7 @@ const Paper = ({
                   <a name="paper pdf" />
                   <div className={css(styles.paperTabContainer)}>
                     <PaperTab
-                      paperId={paperId}
+                      paperId={paper.id}
                       paper={paper}
                       isModerator={isModerator}
                     />
@@ -585,7 +571,7 @@ const Paper = ({
                   authors={getAllAuthors()}
                   paper={paper}
                   hubs={paper.hubs}
-                  paperId={paperId}
+                  paperId={paper.id}
                 />
                 <PaperSections
                   activeTab={activeTab} // for paper page tabs
