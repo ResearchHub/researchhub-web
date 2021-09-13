@@ -1,8 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState } from "react";
-import AddNewSourceModal from "./modal/AddNewSourceModal";
-import colors from "~/config/themes/colors";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { ReactElement, SyntheticEvent, useState } from "react";
+import AddNewSourceModal from "./modal/AddNewSourceModal";
+import Button from "../../Form/Button";
+import colors from "~/config/themes/colors";
 
 type Props = {
   hypothesisID: ID;
@@ -16,22 +19,32 @@ export default function CitationAddNewButton({
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
   return (
-    <div
-      className={css(styles.citationAddNewButton)}
+    <Button
+      customButtonStyle={styles.citationAddNewButton}
       onClick={(): void => setShouldOpenModal(true)}
       role="button"
-    >
-      <AddNewSourceModal
-        hypothesisID={hypothesisID}
-        isModalOpen={shouldOpenModal}
-        onCloseModal={(): void => setShouldOpenModal(false)}
-        updateLastFetchTime={updateLastFetchTime}
-      />
-      <span className={css(styles.plusCircle)}>
-        <span className={css(styles.plus)}>{"+"}</span>
-      </span>
-      <span>{"Add new Paper"}</span>
-    </div>
+      label={
+        <div className={css(styles.buttonInner)}>
+          <AddNewSourceModal
+            hypothesisID={hypothesisID}
+            isModalOpen={shouldOpenModal}
+            onCloseModal={(event: SyntheticEvent): void => {
+              if (!isNullOrUndefined(event)) {
+                event.preventDefault();
+                event.stopPropagation();
+              }
+              setShouldOpenModal(false);
+            }}
+            updateLastFetchTime={updateLastFetchTime}
+          />
+          <FontAwesomeIcon
+            icon={"plus-circle"}
+            className={css(styles.plusCircle)}
+          />
+          <span>{"Add New Source"}</span>
+        </div>
+      }
+    />
   );
 }
 
@@ -42,26 +55,22 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     fontSize: 16,
-    height: 21,
+    height: 50,
+    width: 180,
     userSelect: "none",
   },
   plus: {
-    color: colors.BLUE(1),
+    // color: colors.BLUE(1),
     left: 5,
     position: "absolute",
     top: -1,
   },
   plusCircle: {
-    alignItems: "center",
-    border: `1px solid ${colors.GREY(1)}`,
-    borderRadius: "50%",
-    color: "#fff",
+    // fontSize: ,
+    marginRight: 6,
+  },
+  buttonInner: {
     display: "flex",
-    fontSize: 21,
-    height: 21,
-    justifyContent: "center",
-    marginRight: 8,
-    position: "relative",
-    width: 21,
+    alignItems: "center",
   },
 });

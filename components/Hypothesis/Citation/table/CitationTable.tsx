@@ -23,7 +23,6 @@ type UseEffectGetCitationsArgs = {
   hypothesisID: ID;
   lastFetchTime: number | null;
   setCitationItems: (items: CitationTableRowItemProps[]) => void;
-  updateLastFetchTime: Function;
   onSuccess?: Function;
 };
 
@@ -32,7 +31,6 @@ function useEffectGetCitations({
   lastFetchTime,
   setCitationItems,
   onSuccess,
-  updateLastFetchTime: _update,
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
     fetchCitationsOnHypothesis({
@@ -65,9 +63,9 @@ export default function CitationTable({
   });
   const rowItems = isLoading ? (
     [
-      <CitationTableRowItemPlaceholder />,
-      <CitationTableRowItemPlaceholder />,
-      <CitationTableRowItemPlaceholder />,
+      <CitationTableRowItemPlaceholder key="citation-table-item-1" />,
+      <CitationTableRowItemPlaceholder key="citation-table-item-2" />,
+      <CitationTableRowItemPlaceholder key="citation-table-item-3" />,
     ]
   ) : citationItems.length > 0 ? (
     citationItems.map(

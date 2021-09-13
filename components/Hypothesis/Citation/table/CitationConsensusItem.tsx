@@ -6,10 +6,7 @@ import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { getCurrentUser } from "~/config/utils/user";
 import { ID } from "~/config/types/root_types";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-} from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { postCitationVote } from "../../api/postCitationVote";
 import icons from "~/config/themes/icons";
 
@@ -51,10 +48,9 @@ function CitationConsensusItem({
   citationID,
   consensusMeta,
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
-  const [localConsensusMeta, setLocalConsensusMeta] = useState<ConsensusMeta>(
-    consensusMeta
-  );
-  const { downCount, upCount, userVote } = localConsensusMeta || {};
+  const [localConsensusMeta, setLocalConsensusMeta] =
+    useState<ConsensusMeta>(consensusMeta);
+  const { downCount, upCount, userVote } = localConsensusMeta ?? {};
   const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
@@ -303,7 +299,4 @@ const mapStateToProps = (state) => ({
   currentUser: getCurrentUser(state),
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(CitationConsensusItem);
+export default connect(mapStateToProps, null)(CitationConsensusItem);

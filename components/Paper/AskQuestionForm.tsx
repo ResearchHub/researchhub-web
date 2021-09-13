@@ -118,6 +118,12 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
     e.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
+    } else if (!isPost && !mutableFormFields.title.includes('?')) {
+      setFormErrors({
+        ...formErrors,
+        title: true,
+      })
+      setShouldDisplayError(true);
     } else {
       setShouldDisplayError(false);
       setIsSubmitting(true);
@@ -171,36 +177,42 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   return (
     <div className={css(styles.rootContainer)}>
       <form>
-        <FormSelect
-          containerStyle={styles.chooseHub}
-          error={shouldDisplayError && formErrors.hubs && `Please select a hub`}
-          errorStyle={styles.errorText}
-          id="hubs"
-          inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
-          isMulti={true}
-          label="Hubs"
-          labelStyle={styles.label}
-          menu={styles.dropDown}
-          onChange={handleOnChangeFields}
-          options={suggestedHubs}
-          placeholder="Search Hubs"
-          required
-        />
-        <FormInput
-          containerStyle={styles.titleInputContainer}
-          error={
-            shouldDisplayError &&
-            formErrors.title &&
-            `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
-          }
-          errorStyle={styles.errorText}
-          id="title"
-          inputStyle={shouldDisplayError && formErrors.title && styles.error}
-          label={documentType === "hypothesis" ? "Hypothesis" : "Title"}
-          labelStyle={styles.label}
-          onChange={handleOnChangeFields}
-          required
-        />
+        <div className={css(!isPost && styles.columnReverse)}>
+          <FormSelect
+            containerStyle={[styles.chooseHub, !isPost && styles.hypothesisChooseHub]}
+            error={shouldDisplayError && formErrors.hubs && `Please select a hub`}
+            errorStyle={styles.errorText}
+            id="hubs"
+            inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
+            isMulti={true}
+            label="Hubs"
+            labelStyle={styles.label}
+            menu={styles.dropDown}
+            onChange={handleOnChangeFields}
+            options={suggestedHubs}
+            placeholder="Search Hubs"
+            required
+          />
+          <FormInput
+            containerStyle={[styles.titleInputContainer, !isPost && styles.hypothesisTitle]}
+            placeholder={"Does the earth revolve around the sun?"}
+            error={
+              shouldDisplayError &&
+              formErrors.title 
+                ? isPost
+                  ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
+                  : `You must ask a scientific question`
+                : null
+            }
+            errorStyle={styles.errorText}
+            id="title"
+            inputStyle={shouldDisplayError && formErrors.title && styles.error}
+            label={documentType === "hypothesis" ? "Ask a Scientific Question" : "Title"}
+            labelStyle={styles.label}
+            onChange={handleOnChangeFields}
+            required
+          />
+        </div>
         {/* @ts-ignore */}
         <DynamicComponent
           id="text"
@@ -208,7 +220,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           label={
             documentType === "hypothesis" ? (
               <div>
-                <div>Text</div>
+                <div>Optional: Add a Clarifying Statement</div>
                 <p className={css(styles.supportText)}>
                   Is there any clarification or short summary you wish to add to
                   the hypothesis?
@@ -238,7 +250,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
             isWhite={false}
-            label="Post"
+            label={isPost ? "Post" : 'Create Hypothesis'}
             onClick={handlePost}
           />
         </div>
@@ -266,6 +278,10 @@ const styles = StyleSheet.create({
       paddingRight: "5vw",
     },
   },
+  columnReverse: {
+    display: 'flex',
+    flexDirection: 'column-reverse',
+  },
   buttonsContainer: {
     width: "auto",
     display: "flex",
@@ -286,11 +302,18 @@ const styles = StyleSheet.create({
     minHeight: "55px",
     marginBottom: "21px",
   },
+  hypothesisChooseHub: {
+    marginBottom: 35,
+  },
   titleInputContainer: {
     width: "auto",
     maxWidth: "851px",
     height: "55px",
     marginBottom: "35px",
+  },
+
+  hypothesisTitle: {
+    marginBottom: 16,
   },
   label: {
     fontWeight: 500,

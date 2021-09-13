@@ -37,7 +37,10 @@ export default function AboutQuestionCard({
       >
         <ul>
           <li>
-            Make a statement and back it up with relevant scientific papers
+            Ask a relevant scientific question in order to start a discussion
+          </li>
+          <li>
+            After you create the hypothesis, add relevant papers to support or reject the hypothesis
           </li>
         </ul>
       </Collapsible>

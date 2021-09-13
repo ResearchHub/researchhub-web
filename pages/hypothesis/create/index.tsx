@@ -18,7 +18,7 @@ export default function Index() {
     return (
       <Fragment>
         <Head
-          title={`New Post`}
+          title={`Create a Hypothesis on ResearchHub`}
           description="Create a Hypothesis on ResearchHub"
         />
         <div className={css(styles.background)}>

@@ -219,6 +219,9 @@ export const formGenericStyles = StyleSheet.create({
   inputStyle: {
     width: 570,
   },
+  inputMax: {
+    width: "100%",
+  },
   search: {
     width: 555,
   },
