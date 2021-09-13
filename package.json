@@ -1,7 +1,7 @@
 {
   "name": "researchhub",
   "scripts": {
-    "dev": "next dev",
+    "dev": "HOST=http://localhost:3000 next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
@@ -11,8 +11,8 @@
     "cy:open": "cypress open --project $PWD/tests",
     "cy:spec": "cypress run --project $PWD/tests --spec",
     "test": "cypress run --project $PWD/tests",
-    "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
-    "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
+    "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) --build-arg HOST=https://researchhub.com -t researchhub-web .",
+    "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging --build-arg HOST=https://staging-web.researchhub.com -t researchhub-web-staging .",
     "deploy": "./scripts/deploy/production.sh deploy",
     "staging": "./scripts/deploy/staging.sh deploy",
     "run:staging": "docker run",
@@ -111,6 +111,7 @@
     "slate": "0.47.8",
     "slate-html-serializer": "^0.8.13",
     "slate-plain-serializer": "^0.7.13",
+    "swr": "^1.0.0",
     "typescript": "^4.3.5",
     "undux": "^5.2.0",
     "webpack": "^5.50.0",
@@ -138,10 +139,6 @@
   },
   "browser": {
     "child_process": false
-  },
-  "engines": {
-    "node": "==14.15.5",
-    "npm": "==7.19.1"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",

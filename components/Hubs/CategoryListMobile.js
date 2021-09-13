@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   auth: state.auth,
-  categories: state.hubs.categories,
 });
 
 export default connect(mapStateToProps)(CategoryListMobile);

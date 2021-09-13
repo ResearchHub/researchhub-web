@@ -59,7 +59,6 @@ import {
   isQuillDelta,
 } from "~/config/utils/editor";
 import { getAuthorName } from "~/config/utils/misc";
-import * as shims from "~/redux/paper/shims";
 
 const isServer = () => typeof window === "undefined";
 const steps = [
