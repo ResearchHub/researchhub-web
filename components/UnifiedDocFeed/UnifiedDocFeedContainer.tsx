@@ -2,7 +2,6 @@ import { css, StyleSheet } from "aphrodite";
 import { filterOptions, scopeOptions } from "../../config/utils/options";
 import {
   emptyFncWithMsg,
-  filterNull,
   isNullOrUndefined,
   nullthrows,
   silentEmptyFnc,
@@ -13,29 +12,25 @@ import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
+import { connect } from "react-redux";
+import { getDocumentCard, UnifiedCard } from "./utils/getDocumentCard";
+import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
 import colors from "../../config/themes/colors";
-import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
+import FeedBlurWithButton from "./FeedBlurWithButton";
+import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import Loader from "../Loader/Loader";
-import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
 import Ripples from "react-ripples";
+import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
-import UserPostCard from "../Author/Tabs/UserPostCard";
-import { connect } from "react-redux";
-import FeedBlurWithButton from "./FeedBlurWithButton";
-import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
 
 type PaginationInfo = {
   isLoading: Boolean;
   isLoadingMore: Boolean;
   page: number;
 };
-
-type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard>;
 
 const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
@@ -296,58 +291,15 @@ function UnifiedDocFeedContainer({
   }, [docTypeFilter, router]);
 
   const documentCards = useMemo(
-    (): Array<UnifiedCard> =>
-      filterNull(unifiedDocuments).map(
-        (uniDoc: any, arrIndex: number): UnifiedCard => {
-          const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
-          const isPaperCard =  formattedDocType ===  "paper";
-          const docID = uniDoc.id;
-          const shouldBlurMobile =
-            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
-          const shouldBlurDesktop =
-            arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
-          if (isPaperCard) {
-            return (
-              <PaperEntryCard
-                index={arrIndex}
-                key={`Paper-${docID}-${arrIndex}`}
-                paper={uniDoc.documents}
-                style={[
-                  shouldBlurMobile && styles.mobileBlurCard,
-                  shouldBlurDesktop && styles.desktopBlurCard,
-                ]}
-                vote={uniDoc.user_vote}
-                voteCallback={(arrIndex: number, currPaper: any): void => {
-                  const [currUniDoc, newUniDocs] = [
-                    { ...uniDoc },
-                    [...unifiedDocuments],
-                  ];
-                  currUniDoc.documents.user_vote = currPaper.user_vote;
-                  currUniDoc.documents.score = currPaper.score;
-                  newUniDocs[arrIndex] = currUniDoc;
-                  setUnifiedDocuments(newUniDocs);
-                }}
-              />
-            );
-          } else {
-            // NOTE: we are sharing this UI with other document types
-            const targetDoc = formattedDocType === "hypothesis" ? uniDoc.documents : uniDoc.documents[0]
-            return (
-              <UserPostCard
-                {...targetDoc}
-                formattedDocType={formattedDocType}
-                key={`${docTypeFilter}-${docID}-${arrIndex}`}
-                style={[
-                  styles.customUserPostCard,
-                  shouldBlurMobile && styles.mobileBlurCard,
-                  shouldBlurDesktop && styles.desktopBlurCard,
-                ]}
-              />
-            );
-          }
-        }
-      ),
-    [docTypeFilter, paginationInfo, subFilters, unifiedDocuments, isLoggedIn]
+    (): UnifiedCard[] =>
+      getDocumentCard({
+        hasSubscribed,
+        isLoggedIn,
+        isOnMyHubsTab,
+        setUnifiedDocuments,
+        unifiedDocumentData: unifiedDocuments,
+      }),
+    [getDocumentCard, setUnifiedDocuments, unifiedDocuments, isLoggedIn]
   );
 
   return (
@@ -464,30 +416,11 @@ const styles = StyleSheet.create({
       marginTop: 16,
     },
   },
-  customUserPostCard: {
-    // border: 0,
-    // borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    marginBottom: 12,
-    marginTop: 12,
-    // paddingTop: 24,
-    // paddingBottom: 24,
-  },
   titleContainer: {
     display: "flex",
     alignItems: "center",
-
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
-    },
-  },
-  mobileBlurCard: {
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  desktopBlurCard: {
-    "@media only screen and (min-width: 768px)": {
-      display: "none",
     },
   },
   title: {
