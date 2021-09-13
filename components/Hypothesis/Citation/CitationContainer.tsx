@@ -1,14 +1,12 @@
+import { castUriID } from "../../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
 import { ReactElement, useCallback, useState } from "react";
+import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
 
 export default function CitationContainer(): ReactElement<"div"> {
   const router = useRouter();
-  const hypothesisID = Array.isArray(router.query.documentId)
-    ? parseInt(router.query.documentId[0])
-    : // @ts-ignore implied that this is a string / int
-      parseInt(router.query.documentId);
+  const hypothesisID = castUriID(router.query.documentId);
   const [lastFetchTime, setLastFetchTime] = useState<number | null>(null);
   const updateLastFetchTime = useCallback(() => setLastFetchTime(Date.now()), [
     setLastFetchTime,
@@ -16,7 +14,7 @@ export default function CitationContainer(): ReactElement<"div"> {
 
   return (
     <div className={css(styles.citationContainer)}>
-      <div className={css(styles.header)}>{"Relevant Papers"}</div>
+      <div className={css(styles.header)}>{"Relevant Sources"}</div>
       <CitationTable
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}

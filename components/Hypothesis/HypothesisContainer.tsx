@@ -1,8 +1,11 @@
-import API from "../../config/api";
-import { ReactElement, useEffect, useState } from "react";
-import { Helpers } from "@quantfive/js-web-config";
+import { castUriID } from "../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import { isNullOrUndefined } from "../../config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+} from "../../config/utils/nullchecks";
+import { fetchHypothesis } from "./api/fetchHypothesis";
+import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 // Components
@@ -15,29 +18,24 @@ import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 
 type Props = {};
 
-function useFetchHypothesis(): any {
-  const [hypothesis, setHypothesis] = useState<any>(null);
-  const router = useRouter();
-  const hypothesisId = router.query.documentId;
-
-  useEffect(() => {
-    fetch(API.HYPOTHESIS({ hypothesis_id: hypothesisId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        setHypothesis(data);
-      });
-  }, [hypothesisId]);
-
-  return hypothesis;
-}
-
 export default function HypothesisContainer(
   props: Props
 ): ReactElement<"div"> | null {
-  const hypothesis = useFetchHypothesis();
+  const router = useRouter();
+  const [hypothesis, setHypothesis] = useState<any>(null);
   const [discussionCount, setDiscussionCount] = useState(0);
+  const hypothesisID = castUriID(router.query.documentId);
+
+  useEffect(() => {
+    fetchHypothesis({
+      hypothesisID,
+      onSuccess: setHypothesis,
+      onError: emptyFncWithMsg,
+    });
+  }, [hypothesisID, setHypothesis]);
+
   const { created_by = {}, hubs, id, slug, title } = hypothesis || {};
+
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <Head

@@ -1,26 +1,26 @@
 import { BodyTypeVals, NEW_SOURCE_BODY_TYPES } from "./modalBodyTypes";
-import { breakpoints } from "../../../../config/themes/screen";
-import { ID } from "../../../../config/types/root_types";
+import { breakpoints } from "~/config/themes/screen";
+import { ID } from "~/config/types/root_types";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { StyleSheet } from "aphrodite";
 import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
-import BaseModal from "../../../Modals/BaseModal";
-import PaperUploadV2Create from "../../../Paper/Upload/PaperUploadV2Create";
-import { ReactElement, useState } from "react";
+import BaseModal from "~/components/Modals/BaseModal";
+import PaperUploadV2Create from "~/components/Paper/Upload/PaperUploadV2Create";
 
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
 type ComponentProps = {
   hypothesisID: ID;
   isModalOpen: boolean;
-  onCloseModal: () => void;
+  onCloseModal: (event: SyntheticEvent) => void;
   updateLastFetchTime: Function;
 };
 
 type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
   hypothesisID: ID;
-  onCloseModal: () => void;
+  onCloseModal: (event: SyntheticEvent) => void;
   setBodyType: (bodyType: BodyTypeVals) => void;
   updateLastFetchTime: Function;
 };
@@ -38,14 +38,24 @@ function getModalBody({
         <PaperUploadV2Create
           hypothesisID={hypothesisID}
           onCancelComplete={onCloseModal}
-          onSubmitComplete={(): void => {
+          onSubmitComplete={(event: SyntheticEvent): void => {
             updateLastFetchTime();
-            onCloseModal();
+            onCloseModal(event);
           }}
         />
       );
     case SEARCH:
-      return <AddNewSourceBodySearch />;
+      return (
+        <AddNewSourceBodySearch
+          hypothesisID={hypothesisID}
+          onCancel={onCloseModal}
+          onSubmitComplete={(event: SyntheticEvent): void => {
+            updateLastFetchTime();
+            onCloseModal(event);
+          }}
+          setBodyType={setBodyType}
+        />
+      );
     case STAND_BY:
       return <AddNewSourceBodyStandBy setBodyType={setBodyType} />;
     default:
@@ -59,11 +69,14 @@ export default function AddNewSourceModal({
   onCloseModal,
   updateLastFetchTime,
 }: ComponentProps): ReactElement<typeof BaseModal> {
-  const [bodyType, setBodyType] = useState<BodyTypeVals>(STAND_BY);
+  const [bodyType, setBodyType] = useState<BodyTypeVals>(SEARCH);
   const modalBody = getModalBody({
     bodyType,
     hypothesisID,
-    onCloseModal,
+    onCloseModal: (event: SyntheticEvent) => {
+      setBodyType(SEARCH);
+      onCloseModal(event);
+    },
     setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
     updateLastFetchTime,
   });
@@ -71,10 +84,10 @@ export default function AddNewSourceModal({
   return (
     <BaseModal
       children={modalBody}
-      closeModal={(): void => {
+      closeModal={(event: SyntheticEvent): void => {
         // logical ordering
-        setBodyType(STAND_BY);
-        onCloseModal();
+        setBodyType(SEARCH);
+        onCloseModal(event);
       }}
       isOpen={isModalOpen}
       modalContentStyle={styles.modalContentStyle}
@@ -91,7 +104,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     backgroundColor: "#fff",
-    // overflowY: 'visible',
     padding: 24,
     opacity: 0,
     borderRadius: 5,

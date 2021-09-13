@@ -1,7 +1,7 @@
 {
   "name": "researchhub",
   "scripts": {
-    "dev": "HOST=http://localhost:3000 next dev",
+    "dev": "next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
@@ -11,8 +11,8 @@
     "cy:open": "cypress open --project $PWD/tests",
     "cy:spec": "cypress run --project $PWD/tests --spec",
     "test": "cypress run --project $PWD/tests",
-    "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) --build-arg HOST=https://researchhub.com -t researchhub-web .",
-    "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging --build-arg HOST=https://staging-web.researchhub.com -t researchhub-web-staging .",
+    "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
+    "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
     "deploy": "./scripts/deploy/production.sh deploy",
     "staging": "./scripts/deploy/staging.sh deploy",
     "run:staging": "docker run",
@@ -49,7 +49,6 @@
     "draft-convert": "^2.1.10",
     "draft-js": "^0.11.7",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-prettier": "^4.0.0",
     "ethers": "^5.4.4",
     "fslightbox-react": "^1.4.9",
     "immutability-helper": "^3.0.1",
@@ -111,8 +110,7 @@
     "slate": "0.47.8",
     "slate-html-serializer": "^0.8.13",
     "slate-plain-serializer": "^0.7.13",
-    "swr": "^1.0.0",
-    "typescript": "^4.3.5",
+    "typescript": "^4.4.2",
     "undux": "^5.2.0",
     "webpack": "^5.50.0",
     "webpack-bundle-analyzer": "^4.3.0"
@@ -122,16 +120,19 @@
     "@types/draft-js": "^0.11.1",
     "@types/react-modal": "^3.12.0",
     "@types/react-redux": "^7.1.16",
-    "@typescript-eslint/eslint-plugin": "^4.29.2",
-    "@typescript-eslint/parser": "^4.29.2",
+    "@typescript-eslint/eslint-plugin": "^4.30.0",
+    "@typescript-eslint/parser": "^4.30.0",
     "axios": "^0.21.1",
     "cypress": "^8.2.0",
     "eslint": "^7.32.0",
     "eslint-config-next": "^11.1.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.24.2",
+    "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.24.0",
     "husky": ">=6",
     "lint-staged": ">=10",
-    "prettier": "1.18.2",
+    "prettier": "^2.3.2",
     "pretty-quick": "^3.1.1",
     "progress": "^2.0.3",
     "source-map-explorer": "^2.5.2",
@@ -139,6 +140,10 @@
   },
   "browser": {
     "child_process": false
+  },
+  "engines": {
+    "node": "==14.15.5",
+    "npm": "==7.19.1"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
