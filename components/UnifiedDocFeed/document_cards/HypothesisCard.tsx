@@ -15,11 +15,11 @@ import icons from "~/config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
-import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
+import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
 
-export type UserPostCardProps = {
+export type HypothesisCardProps = {
   boost_amount: number;
   created_by: any;
   created_date: any;
@@ -70,33 +70,31 @@ const renderUploadedDate = (created_date, mobile) => {
   }
 };
 
-function UserPostCard(props: UserPostCardProps) {
-  const {
-    created_by,
-    created_date,
-    hubs,
-    id,
-    preview_img: previewImg,
-    renderable_text: renderableText,
-    score: initialScore,
-    boost_amount: boostAmount,
-    style,
-    title,
-    slug,
-    unified_document: unifiedDocument,
-    unified_document_id: unifiedDocumentId,
-    formattedDocType,
-    user,
-    user_vote: userVote,
-    styleVariation,
-    /*
-      In some contexts we want to wrap the title/renderable_text 
-      with html. e.g. rendering search highlights.
-    */
-    titleAsHtml,
-    renderableTextAsHtml,
-  } = props;
-
+function HypothesisCard({
+  created_by,
+  created_date,
+  hubs,
+  id,
+  preview_img: previewImg,
+  renderable_text: renderableText,
+  score: initialScore,
+  boost_amount: boostAmount,
+  style,
+  title,
+  slug,
+  unified_document: unifiedDocument,
+  unified_document_id: unifiedDocumentId,
+  formattedDocType,
+  user,
+  user_vote: userVote,
+  styleVariation,
+  /*
+    In some contexts we want to wrap the title/renderable_text 
+    with html. e.g. rendering search highlights.
+  */
+  titleAsHtml,
+  renderableTextAsHtml,
+}: HypothesisCardProps) {
   if (created_by == null) {
     return null;
   }
@@ -297,7 +295,7 @@ function UserPostCard(props: UserPostCardProps) {
   return (
     <Ripples
       className={css(
-        styles.userPostCard,
+        styles.HypothesisCard,
         styleVariation && styles[styleVariation],
         style && style,
         isHubsOpen && styles.overflow
@@ -352,7 +350,7 @@ const mapDispatchToProps = {};
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(UserPostCard);
+)(HypothesisCard);
 
 /**
  * Styles taken from PaperEntryCard.js
@@ -360,7 +358,7 @@ export default connect(
  * are behaving the same way. If not, refer to PaperEntryCard.js styles
  */
 const styles = StyleSheet.create({
-  userPostCard: {
+  HypothesisCard: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "flex-start",
