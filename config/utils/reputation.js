@@ -1,6 +1,7 @@
 import { doesNotExist } from "./nullchecks";
 import { getCurrentUser } from "./user";
 import { getNestedValue } from "./misc";
+import { userVoteToConstant } from "~/config/constants";
 
 export function currentUserHasMinimumReputation(stateObject, minimum) {
   let reputation = getCurrentUserReputation(stateObject);

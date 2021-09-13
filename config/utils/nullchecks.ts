@@ -44,7 +44,9 @@ export function doesNotExist(value) {
 }
 
 export function isEmpty(value) {
-  if (typeof value === "object") {
+  if (isNullOrUndefined(value)) {
+    return true;
+  } else if (typeof value === "object") {  
     if (Object.entries(value).length === 0 && value.constructor === Object) {
       return true;
     }

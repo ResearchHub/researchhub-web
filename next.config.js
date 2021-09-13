@@ -42,6 +42,7 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
   env: {
     SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     REACT_APP_ENV: process.env.REACT_APP_ENV,
+    HOST: process.env.HOST,
   },
   async redirects() {
     return [

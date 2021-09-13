@@ -36,7 +36,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { isQuillDelta } from "~/config/utils/editor";
-import { doesNotExist } from "~/config/utils/nullchecks";
+import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
@@ -56,7 +56,7 @@ class SummaryTab extends Component {
       editing: false,
       finishedLoading: false,
       // abstract
-      abstract: "",
+      abstract: props?.paper?.abstract ?? "",
       showAbstract: true,
       editAbstract: false,
       checked: false,
@@ -438,7 +438,8 @@ class SummaryTab extends Component {
           </div>
         );
       }
-      if (abstract) {
+
+      if (abstract || paper.abstract) {
         let parsedAbstract = abstract; 
         parsedAbstract = stripHTML(parsedAbstract);
         parsedAbstract = parseMath(parsedAbstract);
@@ -678,33 +679,35 @@ class SummaryTab extends Component {
         className={css(this.containerStyle())}
         ref={this.props.descriptionRef}
       >
-        <div className={css(this.sectionHeaderStyle())}>
-          <h3 className={css(styles.sectionTitle)}>
-            <span className={css(styles.titleRow)}>
-              Abstract
-              {paper.abstract && (
-                <PermissionNotificationWrapper
-                  modalMessage="propose abstract edit"
-                  onClick={this.editAbstract}
-                  loginRequired={true}
-                  hideRipples={true}
-                >
-                  <div className={css(styles.action, styles.editAction)}>
-                    <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
-                  </div>
-                </PermissionNotificationWrapper>
-              )}
-              {!showAbstract && (
-                <SectionBounty
-                  paper={paper}
-                  section={"summary"}
-                  loading={!userVoteChecked}
-                  updatePaperState={updatePaperState}
-                />
-              )}
-            </span>
-          </h3>
-        </div>
+        {!isEmpty(paper) &&
+          <div className={css(this.sectionHeaderStyle())}>
+            <h3 className={css(styles.sectionTitle)}>
+              <span className={css(styles.titleRow)}>
+                Abstract
+                {paper.abstract && (
+                  <PermissionNotificationWrapper
+                    modalMessage="propose abstract edit"
+                    onClick={this.editAbstract}
+                    loginRequired={true}
+                    hideRipples={true}
+                  >
+                    <div className={css(styles.action, styles.editAction)}>
+                      <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
+                    </div>
+                  </PermissionNotificationWrapper>
+                )}
+                {!showAbstract && (
+                  <SectionBounty
+                    paper={paper}
+                    section={"summary"}
+                    loading={!userVoteChecked}
+                    updatePaperState={updatePaperState}
+                  />
+                )}
+              </span>
+            </h3>
+          </div>
+        }
         {this.renderContent()}
         <ManageBulletPointsModal paperId={this.props.paper.id} />
       </div>

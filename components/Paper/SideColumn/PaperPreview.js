@@ -60,7 +60,7 @@ const PaperPreview = ({
         ready={!fetching}
         showLoadingAnimation
         customPlaceholder={
-          <PreviewPlaceholder previewStyles={previewStyles} color="#efefef" />
+          <PreviewPlaceholder width={140} height="100%" previewStyles={previewStyles} color="#efefef" />
         }
       >
         <img
