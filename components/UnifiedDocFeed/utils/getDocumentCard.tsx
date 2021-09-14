@@ -1,29 +1,37 @@
 import { filterNull } from "~/config/utils/nullchecks";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
-import { StyleSheet } from 'aphrodite';
+import { StyleSheet } from "aphrodite";
 import HypothesisCard from "../document_cards/HypothesisCard";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import React, { ReactElement } from "react";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 
-export type UnifiedCard = ReactElement<typeof PaperEntryCard | typeof UserPostCard> | null
+export type UnifiedCard = ReactElement<
+  typeof PaperEntryCard | typeof UserPostCard
+> | null;
 
-export function getDocumentCard({hasSubscribed,
+export function getDocumentCard({
+  hasSubscribed,
   isLoggedIn,
   isOnMyHubsTab,
   setUnifiedDocuments,
-  unifiedDocumentData,}): UnifiedCard[] {
+  unifiedDocumentData,
+}): UnifiedCard[] {
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
       const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
-      const targetDoc = formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0]
+      const targetDoc =
+        formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
       const docID = targetDoc.id;
       const shouldBlurMobile =
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
       const shouldBlurDesktop =
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
-      switch(formattedDocType) {
-        case 'post':
+
+      console.warn("uniDoc: ", uniDoc);
+      console.warn("targetDoc: ", targetDoc);
+      switch (formattedDocType) {
+        case "post":
           return (
             <UserPostCard
               {...targetDoc}
@@ -36,18 +44,20 @@ export function getDocumentCard({hasSubscribed,
               ]}
             />
           );
-        case 'hypothesis': 
-        return (<HypothesisCard
-        {...targetDoc}
-        formattedDocType={formattedDocType}
-        key={`${formattedDocType}-${docID}-${arrIndex}`}
-        style={[
-          styles.customUserPostCard,
-          shouldBlurMobile && styles.mobileBlurCard,
-          shouldBlurDesktop && styles.desktopBlurCard,
-        ]}
-      />)
-        case 'paper': 
+        case "hypothesis":
+          return (
+            <HypothesisCard
+              {...targetDoc}
+              formattedDocType={formattedDocType}
+              key={`${formattedDocType}-${docID}-${arrIndex}`}
+              style={[
+                styles.customUserPostCard,
+                shouldBlurMobile && styles.mobileBlurCard,
+                shouldBlurDesktop && styles.desktopBlurCard,
+              ]}
+            />
+          );
+        case "paper":
           return (
             <PaperEntryCard
               index={arrIndex}
@@ -70,13 +80,12 @@ export function getDocumentCard({hasSubscribed,
               }}
             />
           );
-        default: 
-          return null; 
-      }     
+        default:
+          return null;
+      }
     }
-  )
+  );
 }
-
 
 const styles = StyleSheet.create({
   customUserPostCard: {
@@ -93,4 +102,4 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-})
+});
