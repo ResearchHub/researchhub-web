@@ -1,7 +1,7 @@
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import { emailPreference } from "./shims";
-import { emptyFncWithMsg, filterNull } from "~/config/utils/nullchecks";
+import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
+import { Helpers } from "@quantfive/js-web-config";
+import API from "~/config/api";
 
 export const fetchEmailPreference = async () => {
   const params = API.GET_CONFIG();
@@ -132,64 +132,8 @@ export const fetchUnifiedDocFeed = async (
   if (!withVotes) {
     return docPayload;
   } else {
-    return await fetchAndUpdateFeedWithVotes(docPayload, authToken);
+    return await fetchUserVote(docPayload, authToken);
   }
-};
-
-const fetchAndUpdateFeedWithVotes = async (docPayload, authToken) => {
-  const unifiedDocs = docPayload.results;
-  const [paperIds, postIds] = [[], []];
-  unifiedDocs.forEach(({ documents, document_type }) => {
-    if (document_type === "PAPER") {
-      paperIds.push(documents.id);
-    } else {
-      // below assumes we are only getting the first version of post
-      documents.length > 0 && postIds.push(documents[0].id);
-    }
-  });
-  if (paperIds.length < 1 && postIds.length < 1) {
-    emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
-    return docPayload;
-  }
-  return fetch(
-    API.CHECK_USER_VOTE_DOCUMENTS({ postIds, paperIds }),
-    API.GET_CONFIG(authToken)
-  )
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      const uniDocsWithVotes = filterNull(
-        unifiedDocs.map((currUniDoc) => {
-          const isPaper = currUniDoc.document_type === "PAPER";
-          const relatedDocs = currUniDoc.documents;
-          const uniDocId = isPaper
-            ? relatedDocs.id
-            : relatedDocs.length > 0
-            ? relatedDocs[0].id
-            : null;
-          if (uniDocId == null) {
-            return null;
-          } else if (isPaper) {
-            return {
-              ...currUniDoc,
-              documents: { ...relatedDocs, user_vote: res.papers[uniDocId] },
-            };
-          } else {
-            return {
-              ...currUniDoc,
-              documents: [
-                { ...relatedDocs[0], user_vote: res.posts[uniDocId] },
-              ],
-            };
-          }
-        })
-      );
-      return { ...docPayload, results: uniDocsWithVotes };
-    })
-    .catch((error) => {
-      emptyFncWithMsg(error);
-      return docPayload;
-    });
 };
 
 export const fetchLeaderboard = async (PARAMS) => {
