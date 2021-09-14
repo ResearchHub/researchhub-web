@@ -38,7 +38,6 @@ export default function AuthorClaimModal({
 
   const createAcceptReject = (actionType) => {
     return (event: SyntheticEvent) => {
-      //asdfasdfasdf
       event.stopPropagation(); /* prevents card collapse */
       setIsSubmitting(true);
       updateCaseStatus({
