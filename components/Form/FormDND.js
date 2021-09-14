@@ -128,7 +128,7 @@ class FormDND extends Component {
 
   fetchCSL = async (value) => {
     if (value === "") return;
-    const param = { url: value };
+    const param = { url: value, update: this.props.update };
     this.setState({ inputDisabled: true, fetching: true });
     await fetch(API.SEARCH_BY_URL, API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
