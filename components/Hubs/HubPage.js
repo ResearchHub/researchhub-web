@@ -607,6 +607,7 @@ class HubPage extends Component {
       hubName,
       hubState,
       initialHubList,
+      initialActivity,
       leaderboardFeed,
       initialFeed,
     } = this.props;
@@ -701,6 +702,7 @@ class HubPage extends Component {
                   //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
                   //     : hub ? [hub.id] : null // Single hub or All feed
                   // }
+                  initialActivity={initialActivity}
                   subscribedHubs={hubState.subscribedHubs}
                   hub={hub}
                   hubId={hub ? hub.id : null}

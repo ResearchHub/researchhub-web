@@ -16,6 +16,7 @@ import { fetchLatestActivity } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 const DEFAULT_DATA = {
   count: 0,
@@ -68,30 +69,30 @@ const RenderViewMore = ({ data, loadMore, isLoadingNext }) => {
 
 const ActivityList = (props) => {
   const { auth, subscribedHubs, feed, hub, hubId } = props;
-  const [isFetching, setIsFetching] = useState(true);
+  const [isFetching, setIsFetching] = useState(!isEmpty(props.initialActivity) ? false : true);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
-  const [data, setData] = useState(DEFAULT_DATA);
+  const [data, setData] = useState(!isEmpty(props.initialActivity) ?  props.initialActivity : DEFAULT_DATA);
 
-  useEffect(() => {
-    const fetchActivityFeed = async () => {
-      setIsFetching(true);
-      const hubIds =
-        feed === 1
-          ? subscribedHubs.map((hub) => hub.id)
-          : hub
-          ? [hub.id]
-          : null;
-      const resData = await fetchLatestActivity({ hubIds });
-      if (!resData.error) {
-        setData(resData);
-      }
-      setIsFetching(false);
-    };
-
-    if (auth.authChecked) {
-      fetchActivityFeed();
-    }
-  }, [auth.authChecked, hubId, feed]);
+//   useEffect(() => {
+//     const fetchActivityFeed = async () => {
+//       setIsFetching(true);
+//       const hubIds =
+//         feed === 1
+//           ? subscribedHubs.map((hub) => hub.id)
+//           : hub
+//           ? [hub.id]
+//           : null;
+//       const resData = await fetchLatestActivity({ hubIds });
+//       if (!resData.error) {
+//         setData(resData);
+//       }
+//       setIsFetching(false);
+//     };
+// 
+//     if (auth.authChecked) {
+//       fetchActivityFeed();
+//     }
+//   }, [auth.authChecked, hubId, feed]);
 
   const loadMore = () => {
     const { next } = data;

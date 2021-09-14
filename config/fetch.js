@@ -176,7 +176,7 @@ export const fetchPaperDraft = ({ paperId }) => {
   );
 };
 
-export const fetchLatestActivity = ({ hubIds }) => {
+export const fetchLatestActivity = ({ hubIds = null }) => {
   return fetch(
     API.USER({ route: "following_latest_activity", hubIds }),
     API.GET_CONFIG()

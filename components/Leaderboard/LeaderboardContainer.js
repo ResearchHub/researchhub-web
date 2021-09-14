@@ -22,28 +22,28 @@ const LeaderboardContainer = (props) => {
     props.initialUsers ? false : true
   );
 
-  useEffect(() => {
-    fetchLeaderboard();
-  }, [props.hubId]);
-
-  const fetchLeaderboard = () => {
-    setFetchingUsers(true);
-    return fetch(
-      API.LEADERBOARD({
-        limit: 10,
-        page: 1,
-        hubId: props.hubId,
-        timeframe: "past_week",
-      }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setFetchingUsers(false);
-        setUsers(res.results);
-      });
-  };
+//   useEffect(() => {
+//     fetchLeaderboard();
+//   }, [props.hubId]);
+// 
+//   const fetchLeaderboard = () => {
+//     setFetchingUsers(true);
+//     return fetch(
+//       API.LEADERBOARD({
+//         limit: 10,
+//         page: 1,
+//         hubId: props.hubId,
+//         timeframe: "past_week",
+//       }),
+//       API.GET_CONFIG()
+//     )
+//       .then(Helpers.checkStatus)
+//       .then(Helpers.parseJSON)
+//       .then((res) => {
+//         setFetchingUsers(false);
+//         setUsers(res.results);
+//       });
+//   };
 
   const renderLeaderboardUsers = (users) => {
     return users.map((user, index) => {

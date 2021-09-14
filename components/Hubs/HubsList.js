@@ -21,8 +21,8 @@ class HubsList extends Component {
     super(props);
     this.state = {
       hubs:
-        this.props.initialHubList && this.props.initialHubList.results
-          ? this.props.initialHubList.results
+        this.props.initialHubList && this.props.initialHubList
+          ? this.props.initialHubList
           : [],
       reveal: true,
     };
