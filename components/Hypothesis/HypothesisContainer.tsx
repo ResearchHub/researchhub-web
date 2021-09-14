@@ -5,7 +5,7 @@ import {
   isNullOrUndefined,
 } from "../../config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
-import { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
 // Components
@@ -15,6 +15,7 @@ import DiscussionTab from "../Paper/Tabs/DiscussionTab";
 import Head from "../Head";
 import HypothesisPageCard from "./HypothesisPageCard";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
+import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 
 type Props = {};
 
@@ -34,18 +35,33 @@ export default function HypothesisContainer(
     });
   }, [hypothesisID, setHypothesis]);
 
-  const { created_by = {}, hubs, id, slug, title } = hypothesis || {};
+  const {
+    aggregate_citation_consensus: aggreCitationCons,
+    created_by = {},
+    hubs,
+    id,
+    slug,
+    title,
+  } = hypothesis || {};
 
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <Head
         title={title}
         description={title}
-        canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${slug ||
-          ""}`}
+        canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${
+          slug || ""
+        }`}
       />
       <div className={css(styles.container)}>
         <HypothesisPageCard hypothesis={hypothesis} />
+        <HypothesisCitationConsensusCard
+          aggregateCitationConsensus={{
+            citationCount: aggreCitationCons?.citation_count ?? 0,
+            downCount: aggreCitationCons?.down_count ?? 0,
+            upCount: aggreCitationCons?.up_count ?? 0,
+          }}
+        />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown
             authors={[created_by.author_profile]}
