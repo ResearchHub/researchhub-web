@@ -15,15 +15,17 @@ type ApiArgs = {
 export function getCaseCounts({
   onSuccess,
   onError = emptyFncWithMsg,
-}: ApiArgs): void {
-  fetch(API.MODERATORS_AUTHOR_CLAIM_CASE_COUNT(), API.GET_CONFIG())
+}: ApiArgs): any {
+  return fetch(API.MODERATORS_AUTHOR_CLAIM_CASE_COUNT(), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response: any) => {
-      onSuccess({
+      const ret = {
         CLOSED: response.closed_count || 0,
         OPEN: response.open_count || 0,
-      });
+      };
+      onSuccess && onSuccess(ret);
+      return ret;
     })
     .catch((e) => onError(e));
 }
