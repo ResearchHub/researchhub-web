@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 15,
-    paddingRight: 7,
+    paddingRight: 16,
     cursor: "pointer",
   },
   error: {
