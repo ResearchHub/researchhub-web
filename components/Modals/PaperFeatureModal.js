@@ -68,8 +68,7 @@ class PaperFeatureModal extends Component {
     let { props, isOpen } = this.props.modals.openPaperFeatureModal;
     if (
       !prevProps.modals.openPaperFeatureModal.isOpen &&
-      isOpen &&
-      props.tab === "summary"
+      (isOpen && props.tab === "summary")
     ) {
       this.initializeSummary();
     }
@@ -297,9 +296,8 @@ class PaperFeatureModal extends Component {
       .then((res) => {
         showMessage({ show: false });
         let { paper } = this.props;
-        let localStorageKey = `editorState-${paper.id}-${
-          paper.summary && paper.summary.id
-        }`;
+        let localStorageKey = `editorState-${paper.id}-${paper.summary &&
+          paper.summary.id}`;
         if (localStorage.getItem(localStorageKey)) {
           localStorage.removeItem(localStorageKey);
         }
@@ -645,7 +643,6 @@ class PaperFeatureModal extends Component {
           return (
             <div className={css(styles.dndContainer)}>
               <FormDND
-                urlView={false}
                 handleDrop={this.handleFileDrop}
                 // onSearch={checkSearchResults}
               />
