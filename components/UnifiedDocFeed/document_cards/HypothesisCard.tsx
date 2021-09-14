@@ -92,7 +92,6 @@ function HypothesisCard({
   if (created_by == null) {
     return null;
   }
-  // debugger;
   const {
     author_profile: { first_name, last_name, author },
   } = created_by;
