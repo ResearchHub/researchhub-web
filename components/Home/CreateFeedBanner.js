@@ -15,7 +15,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { sendAmpEvent } from "~/config/fetch";
 
-const removeUserBanner = () => {
+const isBannerRemoved = () => {
   const cookies = parseCookies();
   if (typeof window === "undefined") {
     return cookies.bannerPref && cookies.bannerPref === "false";
@@ -30,11 +30,11 @@ const removeUserBanner = () => {
 
 const CreateFeedBanner = (props) => {
   const { loggedIn } = props;
-  const [remove, setRemove] = useState(removeUserBanner());
+  const [isRemoved, setIsRemoved] = useState(true);
   const buttonRef = useRef();
 
   useEffect(() => {
-    setRemove(removeUserBanner());
+    setIsRemoved(isBannerRemoved());
   }, []);
 
   const navigateToUserOnboardPage = () => {
@@ -57,7 +57,7 @@ const CreateFeedBanner = (props) => {
 
     setCookie(null, "bannerPref", "false");
     localStorage.setItem("researchhub.banner.pref", "false");
-    setRemove(true);
+    setIsRemoved(true);
   };
 
   const onBannerClick = (e) => {
@@ -128,13 +128,13 @@ const CreateFeedBanner = (props) => {
     );
   };
 
-  if (remove || loggedIn) {
+  if (isRemoved || loggedIn) {
     return null;
   }
 
   return (
     <div
-      className={css(styles.column, remove && styles.remove)}
+      className={css(styles.column, isRemoved && styles.remove)}
       onClick={onBannerClick}
     >
       <span className={css(styles.closeButton)} onClick={onClose}>
