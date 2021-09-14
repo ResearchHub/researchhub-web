@@ -28,7 +28,7 @@ class FormDND extends Component {
     super(props);
     this.state = {
       // Toggle b/w DnD & Url
-      urlView: true,
+      urlView: this.props.urlView !== undefined ? this.props.urlView : true,
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
