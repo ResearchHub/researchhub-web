@@ -28,8 +28,6 @@ export function getDocumentCard({
       const shouldBlurDesktop =
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
 
-      console.warn("uniDoc: ", uniDoc);
-      console.warn("targetDoc: ", targetDoc);
       switch (formattedDocType) {
         case "post":
           return (

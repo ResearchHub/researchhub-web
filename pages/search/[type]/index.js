@@ -60,7 +60,7 @@ Index.getInitialProps = async (ctx) => {
   const config = {
     route: ctx.query.type,
   };
-  console.warn("{ filters, facets, config }: ", { filters, facets, config });
+
   return fetch(
     API.SEARCH({ filters, facets, config }),
     API.GET_CONFIG(authToken)

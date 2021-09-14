@@ -83,7 +83,7 @@ export const fetchUserVote = (unifiedDocs, isLoggedIn) => {
 
           const userVoteKey =
             formattedDocType + (formattedDocType !== "hypothesis" ? "s" : "");
-          console.warn("userVoteKey: ", userVoteKey);
+
           return isPost
             ? {
                 ...currUniDoc,
