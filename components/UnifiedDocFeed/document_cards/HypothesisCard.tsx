@@ -18,6 +18,7 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export type HypothesisCardProps = {
   boost_amount: number;
@@ -96,9 +97,11 @@ function HypothesisCard({
     author_profile: { first_name, last_name, author },
   } = created_by;
 
+  console.warn("userVote: ", userVote);
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
+  console.warn("voteState: ", voteState);
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
 
@@ -214,9 +217,9 @@ function HypothesisCard({
 
     const { increment, getUrl } = voteStrategies[voteType];
 
-    const handleVote = async (hypoId) => {
-      const response = await fetch(getUrl(hypoId), API.POST_CONFIG()).catch(
-        (err) => console.log(err)
+    const handleVote = async () => {
+      const response = await fetch(getUrl, API.POST_CONFIG()).catch((err) =>
+        emptyFncWithMsg(err)
       );
 
       return response;
@@ -226,24 +229,15 @@ function HypothesisCard({
       e.stopPropagation();
 
       if (user && user.author_profile.id === created_by.author_profile.id) {
-        console.log("Not logged in or Attempted to vote own post");
+        emptyFncWithMsg("Not logged in or Attempted to vote own post");
         return;
       }
 
       if (voteState === voteType) {
-        /**
-         * Deselect
-         * NOTE: This will never be called with the current implementation of
-         * VoteWidget, because it disables the onVote/onDownvote callback
-         * if the button is already selected.
-         */
-        setVoteState(null);
-        setScore(score - increment); // Undo the vote
+        return;
       } else {
         setVoteState(voteType);
-        if (voteState === UPVOTE || voteState === DOWNVOTE) {
-          // If post was already upvoted / downvoted by user, then voting
-          // oppoistely will reverse the score by twice as much
+        if (Boolean(voteState) /* implies user already voted */) {
           setScore(score + increment * 2);
         } else {
           // User has not voted, so regular vote
@@ -251,7 +245,7 @@ function HypothesisCard({
         }
       }
 
-      await handleVote(id);
+      await handleVote();
     };
   };
 
