@@ -122,7 +122,7 @@ const getTabs = (author, transactions) =>
   ]);
 
 function AuthorPage(props) {
-  const { auth, author, hostname, user, transactions } = props;
+  const { auth, author, hostname, user, transactions, fetchedAuthor } = props;
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
@@ -139,8 +139,10 @@ function AuthorPage(props) {
   const [eduSummary, setEduSummary] = useState(
     author && createUserSummary(author)
   );
-  const [description, setDescription] = useState("");
-  const [name, setName] = useState("");
+  const [description, setDescription] = useState(fetchedAuthor.description);
+  const [name, setName] = useState(
+    fetchedAuthor.first_name + " " + fetchedAuthor.last_name
+  );
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
   // FetchingState
@@ -1071,14 +1073,48 @@ function AuthorPage(props) {
   );
 }
 
-AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
-  const { host } = absoluteUrl(req);
-  const hostname = host;
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+}
 
-  await store.dispatch(AuthorActions.getAuthor({ authorId: query.authorId }));
-
-  return { isServer, hostname };
+const fetchAuthor = ({ authorId }) => {
+  return fetch(API.AUTHOR({ authorId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
 };
+
+export async function getStaticProps(ctx) {
+  const { authorId } = ctx.params;
+  const fetchedAuthor = await fetchAuthor({ authorId });
+
+  if (fetchedAuthor.merged_with) {
+    return {
+      redirect: {
+        destination: `/user/${fetchedAuthor.merged_with}/overview`,
+        permanent: true,
+      },
+    };
+  }
+
+  return {
+    props: {
+      fetchedAuthor,
+    },
+    revalidate: 600,
+  };
+}
+
+// AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
+//   const { host } = absoluteUrl(req);
+//   const hostname = host;
+
+//   await store.dispatch();
+
+//   return { isServer, hostname };
+// };
 
 const styles = StyleSheet.create({
   root: {

@@ -16,7 +16,7 @@ AuthorPageRedirect.getInitialProps = async (ctx) => {
     let authorProfile = store.getState().auth.user.author_profile;
     return { redirectPath: `${authorProfile.id}/posts` };
   } else {
-    let redirectPath = "contributions";
+    let redirectPath = "overview";
     redirect(ctx, "authorId", redirectPath);
     return { redirectPath };
   }

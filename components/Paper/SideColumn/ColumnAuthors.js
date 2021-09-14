@@ -121,6 +121,7 @@ class ColumnAuthors extends Component {
     const { auth, authors, paper } = this.props;
     const { pages, page, ready, shouldOpenAuthorClaimModal } = this.state;
     const hasManyAuthors = authors.length > 1;
+    console.log(authors);
     const claimableAuthors = authors.filter(
       // checks if this author is NOT an "raw_author"
       (author) => !Boolean(author.is_claimed) || isNullOrUndefined(author.id)
