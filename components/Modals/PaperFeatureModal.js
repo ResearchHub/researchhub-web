@@ -643,6 +643,7 @@ class PaperFeatureModal extends Component {
           return (
             <div className={css(styles.dndContainer)}>
               <FormDND
+                urlView:false
                 handleDrop={this.handleFileDrop}
                 // onSearch={checkSearchResults}
               />
