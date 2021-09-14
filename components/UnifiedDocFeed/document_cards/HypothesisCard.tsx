@@ -102,7 +102,7 @@ function HypothesisCard({
   );
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
-  console.warn("initialScore: ", initialScore);
+
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
