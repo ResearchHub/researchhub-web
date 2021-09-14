@@ -1107,15 +1107,6 @@ export async function getStaticProps(ctx) {
   };
 }
 
-// AuthorPage.getInitialProps = async ({ isServer, req, store, query }) => {
-//   const { host } = absoluteUrl(req);
-//   const hostname = host;
-
-//   await store.dispatch();
-
-//   return { isServer, hostname };
-// };
-
 const styles = StyleSheet.create({
   root: {
     background: "#FFF",
