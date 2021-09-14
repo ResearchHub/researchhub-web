@@ -327,7 +327,6 @@ function PaperuploadV2Create({
               <span className={css(formGenericStyles.asterick)}>{"*"}</span>
             </div>
             <FormDND
-              update={false}
               handleDrop={handlePDFUpload}
               onDrop={null}
               onDuplicate={(): void =>

@@ -29,6 +29,10 @@ class FormDND extends Component {
     this.state = {
       // Toggle b/w DnD & Url
       urlView: this.props.urlView !== undefined ? this.props.urlView : true,
+      showUrlOption:
+        this.props.showUrlOption !== undefined
+          ? this.props.showUrlOption
+          : true,
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -128,7 +132,7 @@ class FormDND extends Component {
 
   fetchCSL = async (value) => {
     if (value === "") return;
-    const param = { url: value, update: this.props.update };
+    const param = { url: value };
     this.setState({ inputDisabled: true, fetching: true });
     await fetch(API.SEARCH_BY_URL, API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
@@ -482,14 +486,22 @@ class FormDND extends Component {
   };
 
   render() {
+    let { showUrlOption } = this.state;
+    const renderAlternateOption = () => {
+      if (showUrlOption) {
+        return (
+          <Ripples
+            className={css(styles.urlButton, this.calculateButtonStyle())}
+            onClick={this.toggleFormatState}
+          >
+            {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
+          </Ripples>
+        );
+      }
+    };
     return (
       <div className={css(styles.componentContainer)}>
-        <Ripples
-          className={css(styles.urlButton, this.calculateButtonStyle())}
-          onClick={this.toggleFormatState}
-        >
-          {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
-        </Ripples>
+        {renderAlternateOption()}
         {this.renderContent()}
         {this.renderSearchResult()}
       </div>
