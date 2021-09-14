@@ -194,6 +194,24 @@ class FormDND extends Component {
       });
   };
 
+  fetchPDF = async (value) => {
+    if (value === "") return;
+    const param = { url: value };
+    this.setState({ inputDisabled: true, fetching: true });
+    await fetch(API.SEARCH_FOR_PDF, API.POST_CONFIG(param))
+      .then(Helpers.checkStatus)
+      .then((res) => {
+        console.log(res);
+        let paperMetaData = this.formatFileToPaperObj(res);
+        // this.props.handleDrop &&
+        //   this.props.handleDrop(res, paperMetaData);
+        this.setState({
+          fileDropped: true,
+          fileIsPdf: true,
+        });
+      });
+  };
+
   /**
    * search user input among paper titles or DOI
    * @param {String} value - the paper title the user is typing
@@ -283,6 +301,7 @@ class FormDND extends Component {
           urlInput: value,
         },
         () => {
+          // if (this.props.)
           this.fetchCSL(value);
         }
       );
@@ -290,6 +309,7 @@ class FormDND extends Component {
   };
 
   handleFileDrop = async (acceptedFiles) => {
+    debugger;
     if (acceptedFiles.length < 1) {
       return this.setState({
         fileIsPdf: false,

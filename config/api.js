@@ -655,6 +655,7 @@ const routes = (BASE_URL) => {
     },
     GET_CSL_ITEM: BASE_URL + "paper/get_csl_item/",
     SEARCH_BY_URL: BASE_URL + "paper/search_by_url/",
+    SEARCH_FOR_PDF: BASE_URL + "paper/search_for_pdf/",
     USER_VERIFICATION: ({ route }) => {
       let url = BASE_URL + "user_verification/";
 
