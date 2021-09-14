@@ -143,6 +143,7 @@ function AuthorPage(props) {
   const [name, setName] = useState(
     fetchedAuthor.first_name + " " + fetchedAuthor.last_name
   );
+
   const [socialLinks, setSocialLinks] = useState({});
   const [allowEdit, setAllowEdit] = useState(false);
   // FetchingState
@@ -317,9 +318,15 @@ function AuthorPage(props) {
     ) {
       setAllowEdit(true);
     }
-    setDescription(author.description);
+
+    if (author.description) {
+      setDescription(author.description);
+    }
     setEduSummary(createUserSummary(author));
-    setName(`${author.first_name} ${author.last_name}`);
+
+    if (author.first_name) {
+      setName(`${author.first_name} ${author.last_name}`);
+    }
     setSocialLinks({
       facebook: author.facebook,
       linkedin: author.linkedin,
@@ -954,23 +961,20 @@ function AuthorPage(props) {
         !author.description && styles.defaultDescription
       )}
     >
-      {!author.description && allowEdit && (
+      {description && (
+        <span property="description">
+          {description
+            ? description
+            : `${name} hasn't added a description yet.`}
+        </span>
+      )}
+      {allowEdit && !description && (
         <span
           className={css(styles.addDescriptionText)}
           onClick={onOpenUserInfoModal}
         >
           Add description
         </span>
-      )}
-      {!author.description && !allowEdit && (
-        <span property="description">
-          {author.description
-            ? author.description
-            : `${author.first_name} ${author.last_name} hasn't added a description yet.`}
-        </span>
-      )}
-      {author.description && (
-        <span property="description">{author.description}</span>
       )}
     </div>
   );
@@ -1025,7 +1029,7 @@ function AuthorPage(props) {
                 className={css(styles.authorName, styles.editButtonContainer)}
                 property="name"
               >
-                {author.first_name} {author.last_name}
+                { name }
               </h1>
               {userLinks}
             </div>
@@ -1268,6 +1272,7 @@ const styles = StyleSheet.create({
   description: {
     marginBottom: 15,
     justifyContent: "center",
+    flexDirection: 'column',
     width: "100%",
     color: "#241F3A",
     lineHeight: 1.5,
