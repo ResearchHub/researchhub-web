@@ -41,7 +41,9 @@ export default function HypothesisCitationConsensusCard({
                 <img src="/static/icons/check.svg" />
               ) : sentiment < 0 ? (
                 <span>{icons.timesCircle}</span>
-              ) : null}
+              ) : (
+                <span>{icons.minusCircle}</span>
+              )}
             </span>
             <span>{`Probably ${
               downCount === upCount
