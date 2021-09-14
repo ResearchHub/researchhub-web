@@ -20,6 +20,7 @@ type CitationConsensusItemProps = {
   citationID: ID;
   consensusMeta: ConsensusMeta;
   currentUser?: any; // Redux
+  disableText?: boolean;
 };
 
 type SentimentBarProps = {
@@ -47,6 +48,7 @@ function SentimentBar({
 function CitationConsensusItem({
   citationID,
   consensusMeta,
+  disableText,
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
   const [localConsensusMeta, setLocalConsensusMeta] =
     useState<ConsensusMeta>(consensusMeta);
@@ -125,7 +127,12 @@ function CitationConsensusItem({
   const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
   const consensusBar = (
     <div className={css(styles.consensusWrap)}>
-      <div className={css(styles.resultWrap)}>
+      <div
+        className={css(
+          styles.resultWrap,
+          Boolean(disableText ?? true) && styles.hideText
+        )}
+      >
         {doesMajoritySupport ? (
           <img
             className={css(styles.resultImg)}
@@ -209,6 +216,9 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     width: "50%",
+  },
+  hideText: {
+    display: "none",
   },
   buttonText: {
     display: "block",
