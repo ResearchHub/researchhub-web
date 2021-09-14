@@ -130,7 +130,7 @@ function CitationConsensusItem({
       <div
         className={css(
           styles.resultWrap,
-          Boolean(disableText ?? true) && styles.hideText
+          Boolean(disableText ?? false) && styles.hideText
         )}
       >
         {doesMajoritySupport ? (

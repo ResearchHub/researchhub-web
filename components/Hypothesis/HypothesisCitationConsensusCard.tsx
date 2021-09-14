@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     height: 128,
     marginTop: 30,
-    padding: "20px 30px 30px 20px",
+    padding: "24px 30px",
     "@media only screen and (max-width: 1024px)": {
       borderBottom: "none",
       borderRadius: "4px 4px 0px 0px",
