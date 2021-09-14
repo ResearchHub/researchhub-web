@@ -204,18 +204,18 @@ function HypothesisCard({
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        getUrl: API.RH_POST_UPVOTE,
+        getUrl: API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
       },
       [DOWNVOTE]: {
         increment: -1,
-        getUrl: API.RH_POST_DOWNVOTE,
+        getUrl: API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
       },
     };
 
     const { increment, getUrl } = voteStrategies[voteType];
 
-    const handleVote = async (postId) => {
-      const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
+    const handleVote = async (hypoId) => {
+      const response = await fetch(getUrl(hypoId), API.POST_CONFIG()).catch(
         (err) => console.log(err)
       );
 
