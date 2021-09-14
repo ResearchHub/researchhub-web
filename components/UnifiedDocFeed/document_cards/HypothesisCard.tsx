@@ -37,7 +37,7 @@ export type HypothesisCardProps = {
   titleAsHtml: any;
   unified_document_id: number;
   unified_document: any;
-  user_vote: any; // TODO: briansantoso - define type for user_vote
+  user_vote: any;
   user: any;
 };
 
@@ -82,22 +82,17 @@ function HypothesisCard({
   style,
   title,
   slug,
-  unified_document: unifiedDocument,
-  unified_document_id: unifiedDocumentId,
   formattedDocType,
   user,
   user_vote: userVote,
   styleVariation,
-  /*
-    In some contexts we want to wrap the title/renderable_text 
-    with html. e.g. rendering search highlights.
-  */
   titleAsHtml,
   renderableTextAsHtml,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
   }
+  // debugger;
   const {
     author_profile: { first_name, last_name, author },
   } = created_by;
@@ -105,16 +100,19 @@ function HypothesisCard({
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
-  const [score, setScore] = useState<number>(initialScore + (boostAmount || 0));
+  const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
-
+  console.warn("initialScore: ", initialScore);
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
 
   const creatorName = first_name + " " + last_name;
   const mainTitle = (
-    <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
+    <Link
+      href={"/[docType]/[documentId]/[title]"}
+      as={`/${formattedDocType}/${id}/${slug}`}
+    >
       <a
         className={css(styles.link)}
         onClick={(e) => {
@@ -347,10 +345,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HypothesisCard);
+export default connect(mapStateToProps, mapDispatchToProps)(HypothesisCard);
 
 /**
  * Styles taken from PaperEntryCard.js

@@ -8,6 +8,7 @@ import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
 
 const calculateTimeScope = (scope) => {
   const result = {
@@ -18,15 +19,9 @@ const calculateTimeScope = (scope) => {
   const scopeId = scope.value;
   const now = moment();
   const today = moment().startOf("day");
-  const week = moment()
-    .startOf("day")
-    .subtract(7, "days");
-  const month = moment()
-    .startOf("day")
-    .subtract(30, "days");
-  const year = moment()
-    .startOf("day")
-    .subtract(365, "days");
+  const week = moment().startOf("day").subtract(7, "days");
+  const month = moment().startOf("day").subtract(30, "days");
+  const year = moment().startOf("day").subtract(365, "days");
 
   scope.end = now.unix();
   if (scopeId === "day") {
@@ -47,21 +42,28 @@ const calculateTimeScope = (scope) => {
 };
 
 export const fetchUserVote = (unifiedDocs, isLoggedIn) => {
-  const [paperIds, postIds] = [[], []];
+  const userVoteIds = { hypothesis: [], paper: [], post: [] };
   unifiedDocs.forEach(({ documents, document_type }) => {
-    if (document_type === "PAPER") {
-      paperIds.push(documents.id);
-    } else {
+    const formattedDocType = getUnifiedDocType(document_type);
+    if (formattedDocType === "post") {
       // below assumes we are only getting the first version of post
-      documents.length > 0 && postIds.push(documents[0].id);
+      documents.length > 0 && userVoteIds.post.push(documents[0].id);
+    } else {
+      userVoteIds[formattedDocType]?.push(documents.id);
     }
   });
-  if (paperIds.length < 1 && postIds.length < 1) {
+  const {
+    hypothesis: hypothesisIds,
+    paper: paperIds,
+    post: postIds,
+  } = userVoteIds;
+
+  if (hypothesisIds.length < 1 && paperIds.length < 1 && postIds.length < 1) {
     emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
     return unifiedDocs;
   }
   return fetch(
-    API.CHECK_USER_VOTE_DOCUMENTS({ postIds, paperIds }),
+    API.CHECK_USER_VOTE_DOCUMENTS({ hypothesisIds, postIds, paperIds }),
     API.GET_CONFIG()
   )
     .then(helpers.checkStatus)
@@ -69,28 +71,36 @@ export const fetchUserVote = (unifiedDocs, isLoggedIn) => {
     .then((res) => {
       return filterNull(
         unifiedDocs.map((currUniDoc) => {
-          const isPaper = currUniDoc.document_type === "PAPER";
-          const relatedDocs = currUniDoc.documents;
-          const uniDocId = isPaper
-            ? relatedDocs.id
-            : relatedDocs.length > 0
-            ? relatedDocs[0].id
-            : null;
-          if (uniDocId == null) {
+          const formattedDocType = getUnifiedDocType(currUniDoc.document_type);
+          const isPost = formattedDocType === "post";
+          const targetDoc = isPost
+            ? (currUniDoc.documents ?? [])[0] ?? null
+            : currUniDoc.documents;
+
+          if (isNullOrUndefined(targetDoc)) {
             return null;
-          } else if (isPaper) {
-            return {
-              ...currUniDoc,
-              documents: { ...relatedDocs, user_vote: res.papers[uniDocId] },
-            };
-          } else {
-            return {
-              ...currUniDoc,
-              documents: [
-                { ...relatedDocs[0], user_vote: res.posts[uniDocId] },
-              ],
-            };
           }
+
+          const userVoteKey =
+            formattedDocType + (formattedDocType !== "hypothesis" ? "s" : "");
+          console.warn("userVoteKey: ", userVoteKey);
+          return isPost
+            ? {
+                ...currUniDoc,
+                documents: [
+                  {
+                    ...targetDoc,
+                    user_vote: res[userVoteKey][targetDoc.id],
+                  },
+                ],
+              }
+            : {
+                ...currUniDoc,
+                documents: {
+                  ...targetDoc,
+                  user_vote: res[userVoteKey][targetDoc.id],
+                },
+              };
         })
       );
     })
@@ -99,18 +109,6 @@ export const fetchUserVote = (unifiedDocs, isLoggedIn) => {
       return unifiedDocs;
     });
 };
-
-// TODO: calvinhlee - make this into a TS file so there's no confusion going forward
-// type FetchUnifiedDocsArgs = {
-//   docTypeFilter: any;
-//   hubID: any;
-//   isLoggedIn: any;
-//   onError: any;
-//   onSuccess: any;
-//   page: any;
-//   subscribedHubs: any;
-//   subFilters: any;
-// }
 
 export default function fetchUnifiedDocs({
   docTypeFilter,
