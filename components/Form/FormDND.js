@@ -29,10 +29,6 @@ class FormDND extends Component {
     this.state = {
       // Toggle b/w DnD & Url
       urlView: this.props.urlView !== undefined ? this.props.urlView : true,
-      showUrlOption:
-        this.props.showUrlOption !== undefined
-          ? this.props.showUrlOption
-          : true,
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -486,7 +482,7 @@ class FormDND extends Component {
   };
 
   render() {
-    let { showUrlOption } = this.state;
+    let { showUrlOption } = this.props;
     const renderAlternateOption = () => {
       if (showUrlOption) {
         return (
