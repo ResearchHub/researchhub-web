@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment, useRef } from "react";
+import { useEffect, useState, Fragment, useRef, useContext } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -32,6 +32,7 @@ import colors from "~/config/themes/colors";
 import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
+import { NavbarContext } from "~/pages/Base";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -62,6 +63,8 @@ const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
+
+  const { numNavInteractions } = useContext(NavbarContext);
 
   const {
     isLoggedIn,
@@ -95,9 +98,12 @@ const Navbar = (props) => {
   };
 
   useEffect(async () => {
-    document.addEventListener("mousedown", handleOutsideClick);
     const counts = await getCaseCounts({});
     setOpenCaseCounts(counts["OPEN"]);
+  }, [numNavInteractions]);
+
+  useEffect(async () => {
+    document.addEventListener("mousedown", handleOutsideClick);
 
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);

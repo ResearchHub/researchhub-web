@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { Component, createContext, useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 
 // NPM Modules
@@ -26,18 +26,22 @@ const DynamicAlertTemplate = dynamic(() =>
 const DynamicFooter = dynamic(() => import("./footer"));
 const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 
-class Base extends Component {
-  componentDidMount = async () => {
-    const {
-      fetchPermissions,
-      getUser,
-      getUniversities,
-      getWithdrawals,
-      getTopHubs,
-      getNotifications,
-      auth,
-    } = this.props;
+export const NavbarContext = createContext();
 
+function Base({
+  fetchPermissions,
+  getUser,
+  getUniversities,
+  getWithdrawals,
+  getTopHubs,
+  getNotifications,
+  auth,
+  Component,
+  pageProps,
+}) {
+  const [numNavInteractions, setNumNavInteractions] = useState(0);
+
+  useEffect(async () => {
     getUniversities();
     await getUser();
     getTopHubs(auth);
@@ -46,7 +50,7 @@ class Base extends Component {
       getNotifications();
     }
     fetchPermissions();
-  };
+  }, []);
 
   /*
     This component is used in situations where we fetch data through
@@ -55,7 +59,7 @@ class Base extends Component {
     trigger a reload of the current page programatically which then runs the
     fetch on the client side and allow to intercept.
   */
-  SPEC__reloadClientSideData() {
+  const SPEC__reloadClientSideData = () => {
     const _reloadPage = () =>
       Router.push({ pathname: Router.pathname, query: Router.query });
     return (
@@ -65,18 +69,19 @@ class Base extends Component {
         data-test="reload-client-side-data"
       ></span>
     );
-  }
+  };
 
-  render() {
-    const { Component, pageProps } = this.props;
-    const options = {
-      position: positions.MIDDLE,
-      transition: transitions.SCALE,
-    };
+  const options = {
+    position: positions.MIDDLE,
+    transition: transitions.SCALE,
+  };
 
-    return (
-      <AlertProvider template={DynamicAlertTemplate} {...options}>
-        {isDevEnv() && this.SPEC__reloadClientSideData()}
+  return (
+    <AlertProvider template={DynamicAlertTemplate} {...options}>
+      <NavbarContext.Provider
+        value={{ numNavInteractions, setNumNavInteractions }}
+      >
+        {isDevEnv() && SPEC__reloadClientSideData()}
         <div className={css(styles.pageWrapper)}>
           <DynamicPermissionNotification />
           <DynamicNavbar />
@@ -84,9 +89,9 @@ class Base extends Component {
           <DynamicMessage />
         </div>
         <DynamicFooter />
-      </AlertProvider>
-    );
-  }
+      </NavbarContext.Provider>
+    </AlertProvider>
+  );
 }
 
 const styles = StyleSheet.create({
