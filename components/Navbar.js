@@ -641,7 +641,7 @@ const styles = StyleSheet.create({
     height: 80,
     background: "#fff",
     alignItems: "center",
-    borderBottom: "1px solid #eaeaef",
+    borderBottom: "1px solid #e8e8ef",
     justifyContent: "space-around",
     position: "sticky",
     zIndex: 4,
