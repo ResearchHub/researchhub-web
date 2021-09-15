@@ -13,10 +13,8 @@ type Props = {
 };
 
 export default function HypothesisCitationConsensusCard({
-  aggregateCitationConsensus,
   aggregateCitationConsensus: { citationCount, downCount, upCount },
 }: Props): ReactElement<"div"> | null {
-  console.warn("aggregateCitationConsensus: ", aggregateCitationConsensus);
   if (citationCount === 0) {
     return null;
   }
