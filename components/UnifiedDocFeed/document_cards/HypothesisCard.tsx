@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import { transformDate } from "~/redux/utils";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import API from "~/config/api";
@@ -19,8 +19,10 @@ import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVot
 import Ripples from "react-ripples";
 import Router from "next/router";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 
 export type HypothesisCardProps = {
+  aggregate_citation_consensus: any;
   boost_amount: number;
   created_by: any;
   created_date: any;
@@ -72,23 +74,24 @@ const renderUploadedDate = (created_date, mobile) => {
 };
 
 function HypothesisCard({
+  aggregate_citation_consensus: aggreCitationCons,
+  boost_amount: boostAmount,
   created_by,
   created_date,
+  formattedDocType,
   hubs,
   id,
   preview_img: previewImg,
   renderable_text: renderableText,
-  score: initialScore,
-  boost_amount: boostAmount,
-  style,
-  title,
-  slug,
-  formattedDocType,
-  user,
-  user_vote: userVote,
-  styleVariation,
-  titleAsHtml,
   renderableTextAsHtml,
+  score: initialScore,
+  slug,
+  style,
+  styleVariation,
+  title,
+  titleAsHtml,
+  user_vote: userVote,
+  user,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
@@ -101,10 +104,9 @@ function HypothesisCard({
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
-  console.warn("voteState: ", voteState);
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
-
+  console.warn("aggreCitationCons: ", aggreCitationCons);
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
@@ -162,16 +164,6 @@ function HypothesisCard({
           border="2px solid #F1F1F1"
         />
       </LazyLoad>
-    </div>
-  );
-
-  const summary = (
-    <div className={css(styles.summary) + " clamp2"}>
-      {renderableTextAsHtml
-        ? renderableTextAsHtml
-        : renderableText
-        ? renderableText
-        : ""}
     </div>
   );
 
@@ -305,7 +297,26 @@ function HypothesisCard({
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
-            {summary}
+            <div className={css(styles.summaryWrap)}>
+              <div className={css(styles.summary) + " clamp2"}>
+                {renderableTextAsHtml
+                  ? renderableTextAsHtml
+                  : renderableText
+                  ? renderableText
+                  : ""}
+              </div>
+              <div className={css(styles.consensusContainer)}>
+                <CitationConsensusItem
+                  citationID={null}
+                  consensusMeta={{
+                    downCount: aggreCitationCons?.down_count ?? 0,
+                    upCount: aggreCitationCons?.up_count ?? 0,
+                    userVote: {},
+                  }}
+                  disableText
+                />
+              </div>
+            </div>
             {mobileCreatorTag}
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
@@ -315,15 +326,11 @@ function HypothesisCard({
             <DesktopOnly> {creatorTag} </DesktopOnly>
           </div>
           <DesktopOnly>
-            <div className={css(styles.row)}>
-              {/* TODO: briansantoso - Hub tags go here */}
-              {hubTags}
-            </div>
+            <div className={css(styles.row)}>{hubTags}</div>
           </DesktopOnly>
         </div>
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* TODO: briansantoso - Hub tags go here */}
             {hubTags}
           </div>
         </MobileOnly>
@@ -449,6 +456,9 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
+  consensusContainer: {
+    width: "15%",
+  },
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -519,9 +529,9 @@ const styles = StyleSheet.create({
     },
   },
   summary: {
-    width: "100%",
-    minWidth: "100%",
-    maxWidth: "100%",
+    width: "85%",
+    minWidth: "85%",
+    maxWidth: "85%",
     color: colors.BLACK(0.8),
     fontSize: 14,
     lineHeight: 1.3,
@@ -529,6 +539,12 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
+  },
+  summaryWrap: {
+    width: "100%",
+    minWidth: "100%",
+    maxWidth: "100%",
+    display: "flex",
   },
   row: {
     display: "flex",
