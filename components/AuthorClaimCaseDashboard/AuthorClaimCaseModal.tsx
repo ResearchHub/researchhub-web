@@ -1,4 +1,4 @@
-import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { Fragment, ReactElement, SyntheticEvent, useContext, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Modal from "react-modal";
 
@@ -13,6 +13,7 @@ import { breakpoints } from "../../config/themes/screen";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
+import { NavbarContext } from "~/pages/Base";
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
 
 export type AuthorClaimCaseProps = {
@@ -33,6 +34,7 @@ export default function AuthorClaimModal({
   setOpenModalType,
 }: AuthorClaimCaseProps): ReactElement<typeof Modal> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const { setNumNavInteractions, numNavInteractions } = useContext(NavbarContext);
 
   const createAcceptReject = (actionType) => {
     return (event: SyntheticEvent) => {
@@ -41,6 +43,7 @@ export default function AuthorClaimModal({
       updateCaseStatus({
         payload: { caseID, updateStatus: actionType },
         onSuccess: () => {
+          setNumNavInteractions(numNavInteractions + 1)
           setIsSubmitting(false);
           setLastFetchTime(Date.now());
           closeModal(event);

@@ -1,4 +1,4 @@
-import { useEffect, useState, Fragment, useRef } from "react";
+import { useEffect, useState, Fragment, useRef, useContext } from "react";
 
 // NPM Components
 import Link from "next/link";
@@ -24,14 +24,15 @@ import Search from "./Search/Search";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { RHLogo } from "~/config/themes/icons";
+import icons, { RHLogo, voteWidgetIcons } from "~/config/themes/icons";
 
 // Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import colors from "~/config/themes/colors";
-import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { isDevEnv } from "~/config/utils/env";
-import { breakpoints } from "~/config/themes/screen"
+import { breakpoints } from "~/config/themes/screen";
+import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
+import { NavbarContext } from "~/pages/Base";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -61,6 +62,9 @@ const Notification = dynamic(() =>
 const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
+  const [openCaseCounts, setOpenCaseCounts] = useState(0);
+
+  const { numNavInteractions } = useContext(NavbarContext);
 
   const {
     isLoggedIn,
@@ -93,12 +97,18 @@ const Navbar = (props) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
+    const counts = await getCaseCounts({});
+    setOpenCaseCounts(counts["OPEN"]);
+  }, [numNavInteractions]);
+
+  useEffect(async () => {
     document.addEventListener("mousedown", handleOutsideClick);
+
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  });
+  }, []);
 
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
@@ -134,6 +144,11 @@ const Navbar = (props) => {
           label: "Mods",
           route: "/moderators/author-claim-case-dashboard?case_status=OPEN",
           icon: "info-circle",
+          extra: () => {
+            return (
+              <div className={css(styles.notifications)}>{openCaseCounts}</div>
+            );
+          },
         }
       : null,
   ];
@@ -236,15 +251,18 @@ const Navbar = (props) => {
 
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <div
-            className={css(
-              styles.tab,
-              index === 0 && styles.firstTab,
-              styles[tab.className]
-            )}
-          >
-            {tab.label}
-          </div>
+          <a className={css(styles.tabLink)}>
+            <div
+              className={css(
+                styles.tab,
+                index === 0 && styles.firstTab,
+                styles[tab.className]
+              )}
+            >
+              {tab.label}
+              {tab.extra && tab.extra()}
+            </div>
+          </a>
         </Link>
       );
     });
@@ -456,7 +474,11 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search overrideStyle={styles.navbarSearchOverride} navbarRef={navbarRef} id="navbarSearch" />
+        <Search
+          overrideStyle={styles.navbarSearchOverride}
+          navbarRef={navbarRef}
+          id="navbarSearch"
+        />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -759,6 +781,22 @@ const styles = StyleSheet.create({
   tabLink: {
     color: "#000",
     textDecoration: "none",
+    position: "relative",
+  },
+  notifications: {
+    width: 12,
+    height: 12,
+    fontSize: 12,
+    backgroundColor: colors.RED(),
+    borderRadius: "50%",
+    position: "absolute",
+    top: -6,
+    right: 0,
+    color: "#fff",
+    padding: 3,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   caret: {
     marginLeft: 10,
@@ -958,8 +996,8 @@ const styles = StyleSheet.create({
   navbarSearchOverride: {
     [`@media only screen and (max-width: ${breakpoints.medium.int}px)`]: {
       marginRight: 10,
-    }
-  }
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
