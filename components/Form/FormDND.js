@@ -28,7 +28,7 @@ class FormDND extends Component {
     super(props);
     this.state = {
       // Toggle b/w DnD & Url
-      urlView: this.props.urlView !== undefined ? this.props.urlView : true,
+      urlView: Boolean(this.props?.urlView ?? true),
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -483,18 +483,14 @@ class FormDND extends Component {
 
   render() {
     let { showUrlOption } = this.props;
-    const renderAlternateOption = () => {
-      if (showUrlOption) {
-        return (
-          <Ripples
-            className={css(styles.urlButton, this.calculateButtonStyle())}
-            onClick={this.toggleFormatState}
-          >
-            {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
-          </Ripples>
-        );
-      }
-    };
+    const renderAlternateOption = showUrlOption ? (
+      <Ripples
+        className={css(styles.urlButton, this.calculateButtonStyle())}
+        onClick={this.toggleFormatState}
+      >
+        {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
+      </Ripples>
+    ) : null;
     return (
       <div className={css(styles.componentContainer)}>
         {renderAlternateOption()}
