@@ -293,14 +293,10 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   editorContainer: {
-    height: "calc(100vh - 80px)",
     marginLeft: "max(min(16%, 300px), 240px)",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      height: "calc(100vh - 66px)",
     },
   },
   editor: {
