@@ -148,6 +148,8 @@ function PaperTab(props) {
           <Fragment>
             <div className={css(styles.dndContainer)}>
               <FormDND
+                urlView={false}
+                showUrlOption={false}
                 handleDrop={handleFileDrop}
                 onSearch={checkSearchResults}
               />
