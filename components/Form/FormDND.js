@@ -493,7 +493,7 @@ class FormDND extends Component {
     ) : null;
     return (
       <div className={css(styles.componentContainer)}>
-        {renderAlternateOption()}
+        {renderAlternateOption}
         {this.renderContent()}
         {this.renderSearchResult()}
       </div>
