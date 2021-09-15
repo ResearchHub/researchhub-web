@@ -100,13 +100,11 @@ function HypothesisCard({
     author_profile: { first_name, last_name, author },
   } = created_by;
 
-  console.warn("userVote: ", userVote);
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
-  console.warn("aggreCitationCons: ", aggreCitationCons);
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
