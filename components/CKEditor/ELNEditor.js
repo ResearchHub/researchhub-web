@@ -40,6 +40,7 @@ export const ELNEditor = ({ user }) => {
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const [refetchNotes, setRefetchNotes] = useState(false);
+  const [hideNotes, setHideNotes] = useState(false);
   const [notes, fetched] = useFetchNotes(refetchNotes);
   const [titles, setTitles] = useState({});
 
@@ -203,7 +204,9 @@ export const ELNEditor = ({ user }) => {
     }
   };
 
-  const toggleSidebarSection = () => {};
+  const toggleSidebarSection = () => {
+    setHideNotes(!hideNotes);
+  };
 
   const handleCreateNewNote = () => {
     const params = {
@@ -244,27 +247,31 @@ export const ELNEditor = ({ user }) => {
           {`${user.first_name} ${user.last_name}'s Notes`}
         </div>
         <div
-          className={css(styles.sidebarSection)}
+          className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
           onClick={toggleSidebarSection}
         >
           Notes
-          <span className={css(styles.chevronDown)}>
-            {icons.chevronDownLeft}
+          <span className={css(styles.chevron)}>
+            {hideNotes ? icons.chevronDown: icons.chevronUp}
           </span>
         </div>
-        {notes.map((note, index) => (
-          <Link href={`/notebook/${note.id}`} key={note.id.toString()}>
-            <a
-              className={css(
-                styles.sidebarSectionContent,
-                note.id.toString() === currentNoteId && styles.active,
-                index === notes.length - 1 && styles.lastSection
-              )}
-            >
-              {titles[note.id.toString()]}
-            </a>
-          </Link>
-        ))}
+        {!hideNotes && (
+          <div>
+            {notes.map(note => (
+              <Link href={`/notebook/${note.id}`} key={note.id.toString()}>
+                <a
+                  className={css(
+                    styles.sidebarSectionContent,
+                    note.id.toString() === currentNoteId && styles.active,
+                  )}
+                >
+                  <div className={css(styles.noteIcon)}>{icons.paper}</div>
+                  {titles[note.id.toString()]}
+                </a>
+              </Link>
+            ))}
+          </div>
+        )}
         <div
           className={css(styles.sidebarNewNote)}
           onClick={handleCreateNewNote}
@@ -304,7 +311,7 @@ const styles = StyleSheet.create({
   },
   sidebar: {
     background: "#f9f9fc",
-    borderRight: "1px solid #f0f0f0",
+    borderRight: `1px solid ${colors.GREY(0.3)}`,
     display: "flex",
     flexDirection: "column",
     height: "calc(100vh - 80px)",
@@ -328,36 +335,38 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   sidebarSection: {
-    borderTop: "1px solid #f0f0f0",
+    borderTop: `1px solid ${colors.GREY(0.3)}`,
     color: colors.BLACK(),
     cursor: "pointer",
     display: "flex",
     fontSize: 18,
     fontWeight: 500,
     padding: 20,
+    userSelect: "none",
   },
   sidebarSectionContent: {
-    borderTop: "1px solid #f0f0f0",
+    backgroundClip: "padding-box",
+    borderTop: `1px solid ${colors.GREY(0.3)}`,
     color: colors.BLACK(),
     cursor: "pointer",
+    display: "flex",
     fontSize: 14,
     fontWeight: 500,
     padding: 20,
     textDecoration: "none",
+    wordBreak: "break-word",
     ":hover": {
-      background: colors.GREY(0.3),
-      borderTop: `1px solid transparent`,
+      backgroundColor: colors.GREY(0.3),
+    },
+    ":last-child": {
+      borderBottom: `1px solid ${colors.GREY(0.3)}`,
     },
   },
   active: {
-    background: colors.GREY(0.3),
-    borderTop: `1px solid transparent`,
-  },
-  lastSection: {
-    borderBottom: "1px solid #f0f0f0",
+    backgroundColor: colors.GREY(0.3),
   },
   sidebarNewNote: {
-    borderTop: "1px solid #f0f0f0",
+    borderTop: `1px solid ${colors.GREY(0.3)}`,
     color: colors.BLUE(),
     cursor: "pointer",
     display: "flex",
@@ -397,8 +406,15 @@ const styles = StyleSheet.create({
       width: 31,
     },
   },
-  chevronDown: {
+  showBottomBorder: {
+    borderBottom: `1px solid ${colors.GREY(0.3)}`,
+  },
+  chevron: {
     marginLeft: "auto",
+  },
+  noteIcon: {
+    color: colors.GREY(),
+    marginRight: 10,
   },
   presenceList: {
     display: "none",

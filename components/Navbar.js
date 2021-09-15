@@ -665,7 +665,7 @@ const styles = StyleSheet.create({
     height: 80,
     background: "#fff",
     alignItems: "center",
-    borderBottom: "rgb(151,151,151, .2) 1px solid",
+    borderBottom: "1px solid #eaeaef",
     justifyContent: "space-around",
     position: "sticky",
     zIndex: 4,

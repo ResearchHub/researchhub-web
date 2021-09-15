@@ -424,8 +424,16 @@
   word-break: break-word;
 }
 
+.ck-content *::selection {
+  background: #e1f7ff;
+}
+
 .ck-content h1 {
   line-height: 38px;
+}
+
+.ck-content a {
+  text-decoration: none;
 }
 
 .ck-editor__editable_inline {
