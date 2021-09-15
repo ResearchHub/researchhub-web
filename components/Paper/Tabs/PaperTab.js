@@ -51,6 +51,7 @@ function PaperTab(props) {
    */
   function handleFileDrop(acceptedFiles, paperMetaData) {
     let paperFile = acceptedFiles[0];
+    debugger;
     dispatch(PaperActions.uploadPaperToState(paperFile, paperMetaData));
     setPaperFile(paperFile);
   }
@@ -148,8 +149,7 @@ function PaperTab(props) {
           <Fragment>
             <div className={css(styles.dndContainer)}>
               <FormDND
-                urlView={false}
-                showUrlOption={false}
+                pdfSearch={true}
                 handleDrop={handleFileDrop}
                 onSearch={checkSearchResults}
               />

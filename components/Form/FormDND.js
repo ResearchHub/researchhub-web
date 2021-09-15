@@ -28,7 +28,7 @@ class FormDND extends Component {
     super(props);
     this.state = {
       // Toggle b/w DnD & Url
-      urlView: this.props.urlView !== undefined ? this.props.urlView : true,
+      urlView: true,
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -201,13 +201,45 @@ class FormDND extends Component {
     await fetch(API.SEARCH_FOR_PDF, API.POST_CONFIG(param))
       .then(Helpers.checkStatus)
       .then((res) => {
-        console.log(res);
-        let paperMetaData = this.formatFileToPaperObj(res);
-        // this.props.handleDrop &&
-        //   this.props.handleDrop(res, paperMetaData);
+        return res.blob().then((data) => {
+          let file = new File([data], `${value}.pdf`, {
+            type: "application/pdf",
+          });
+          file.path = value;
+          let paperMetaData = this.formatFileToPaperObj(file);
+          this.setState({
+            fileDropped: true,
+            fileIsPdf: true,
+            fetching: false,
+            urlIsValid: true,
+          });
+          this.props.handleDrop && this.props.handleDrop([file], paperMetaData);
+        });
+      })
+      .catch((err) => {
+        let { messageActions } = this.props;
+        if (!err.response || err.response.status === 400) {
+          messageActions.setMessage(
+            "We can't find the PDF from your link. Upload the PDF or use another link."
+          );
+          messageActions.showMessage({ show: true, error: true });
+          this.setState({
+            fetching: false,
+            urlIsValid: false,
+            inputDisabled: false,
+          });
+          return;
+        }
+
+        if (err.response.status === 429) {
+          this.props.modalActions.openRecaptchaPrompt(true);
+        } else if (err.response.status === 401) {
+          this.props.modalActions.openLoginModal(true);
+        }
         this.setState({
-          fileDropped: true,
-          fileIsPdf: true,
+          fetching: false,
+          urlIsValid: false,
+          inputDisabled: false,
         });
       });
   };
@@ -301,15 +333,17 @@ class FormDND extends Component {
           urlInput: value,
         },
         () => {
-          // if (this.props.)
-          this.fetchCSL(value);
+          if (this.props.pdfSearch) {
+            this.fetchPDF(value);
+          } else {
+            this.fetchCSL(value);
+          }
         }
       );
     }
   };
 
   handleFileDrop = async (acceptedFiles) => {
-    debugger;
     if (acceptedFiles.length < 1) {
       return this.setState({
         fileIsPdf: false,
@@ -502,22 +536,14 @@ class FormDND extends Component {
   };
 
   render() {
-    let { showUrlOption } = this.props;
-    const renderAlternateOption = () => {
-      if (showUrlOption) {
-        return (
-          <Ripples
-            className={css(styles.urlButton, this.calculateButtonStyle())}
-            onClick={this.toggleFormatState}
-          >
-            {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
-          </Ripples>
-        );
-      }
-    };
     return (
       <div className={css(styles.componentContainer)}>
-        {renderAlternateOption()}
+        <Ripples
+          className={css(styles.urlButton, this.calculateButtonStyle())}
+          onClick={this.toggleFormatState}
+        >
+          {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
+        </Ripples>
         {this.renderContent()}
         {this.renderSearchResult()}
       </div>
