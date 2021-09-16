@@ -13,6 +13,7 @@ export type CitationTableRowItemProps = {
   source: string;
   type: string;
   year: string;
+  updateLastFetchTime: Function;
 };
 
 type ItemColumnProps = {
@@ -44,6 +45,7 @@ export default function CitationTableRowItem({
   source,
   type,
   year,
+  updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
   return (
     <div className={css(styles.tableRowItem)}>
@@ -59,6 +61,7 @@ export default function CitationTableRowItem({
           <CitationConsensusItem
             citationID={citationID}
             consensusMeta={consensusMeta}
+            updateLastFetchTime={updateLastFetchTime}
           />
         }
         width={tableWidths.CONSENSUS}
