@@ -26,7 +26,7 @@ const items = [
   killswitch("hypothesis")
     ? {
         header: "Create a Hypothesis",
-        description: "Make a claim and back it up citing relevant papers.",
+        description: "Propose an explanation to an observation and back it up by citing relevant academic papers.",
         imgSrc: "/static/icons/publishProject.png",
         route: "/hypothesis/create",
       }

@@ -118,12 +118,6 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
     e.preventDefault();
     if (Object.values(formErrors).some((el: boolean): boolean => el)) {
       setShouldDisplayError(true);
-    } else if (!isPost && !mutableFormFields.title.includes('?')) {
-      setFormErrors({
-        ...formErrors,
-        title: true,
-      })
-      setShouldDisplayError(true);
     } else {
       setShouldDisplayError(false);
       setIsSubmitting(true);
@@ -195,19 +189,19 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           />
           <FormInput
             containerStyle={[styles.titleInputContainer, !isPost && styles.hypothesisTitle]}
-            placeholder={"Does the earth revolve around the sun?"}
+            placeholder={"The earth revolves around the sun"}
             error={
               shouldDisplayError &&
               formErrors.title 
                 ? isPost
                   ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
-                  : `You must ask a scientific question`
+                  : ``
                 : null
             }
             errorStyle={styles.errorText}
             id="title"
             inputStyle={shouldDisplayError && formErrors.title && styles.error}
-            label={documentType === "hypothesis" ? "Ask a Scientific Question" : "Title"}
+            label={documentType === "hypothesis" ? "Hypothesis" : "Title"}
             labelStyle={styles.label}
             onChange={handleOnChangeFields}
             required
@@ -273,6 +267,9 @@ const styles = StyleSheet.create({
     border: "1px solid #DEDEE6",
     borderRadius: "3px",
     padding: "20px 40px 30px 40px",
+    "@media only screen and (min-width: 1024px)": {
+      minWidth: 720,
+    },
     "@media only screen and (max-width: 1209px)": {
       paddingLeft: "5vw",
       paddingRight: "5vw",
