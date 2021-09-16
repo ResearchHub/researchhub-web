@@ -143,14 +143,6 @@ const PaperEntryCard = (props) => {
     });
   }
 
-  function navigateToSubmitter(e) {
-    e && e.stopPropagation();
-    let { author_profile } = uploaded_by;
-    let authorId = author_profile && author_profile.id;
-    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/overview`);
-    onClick && onClick();
-  }
-
   function renderContributers() {
     const users = getUsersFromPaper(paper, (user) => user.profile_image);
 
