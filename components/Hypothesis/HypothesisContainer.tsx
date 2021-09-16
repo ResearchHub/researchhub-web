@@ -25,14 +25,17 @@ export default function HypothesisContainer(
   const router = useRouter();
   const [hypothesis, setHypothesis] = useState<any>(null);
   const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [discussionCount, setDiscussionCount] = useState(0);
   const hypothesisID = castUriID(router.query.documentId);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchHypothesis({
       hypothesisID,
       onSuccess: (hypothesis: any): void => {
         setHypothesis(hypothesis);
+        setIsLoading(false);
       },
       onError: emptyFncWithMsg,
     });
@@ -65,6 +68,7 @@ export default function HypothesisContainer(
             downCount: aggreCitationCons?.down_count ?? 0,
             upCount: aggreCitationCons?.up_count ?? 0,
           }}
+          isLoading={isLoading}
         />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown
