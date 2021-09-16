@@ -350,7 +350,7 @@ function UnifiedDocFeedContainer({
           </div>
         </div>
       ) : null}
-      {
+      {/* {
         newFeatureActive &&
         <FeedNewFeatureBox 
           bannerExists={!hasSubscribed}
@@ -358,8 +358,7 @@ function UnifiedDocFeedContainer({
           featureHeadline={featureHeadlines[whichFeatureActive]}
           description={featureDescriptions[whichFeatureActive]}
         />
-
-      }
+      } */}
       {needsInitialFetch ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
