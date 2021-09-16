@@ -138,14 +138,16 @@ const acceptRejectStyles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-    width: "525px",
     height: "110px",
     background: "#FAFAFA",
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     borderRadius: "4px",
-
     marginTop: 52,
+
+    "@media only screen and (max-width: 1024px)": {
+      width: "525px",
+    }
   },
   requestorContainer: {
     display: "flex",

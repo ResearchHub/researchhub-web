@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     fontFamily: "Roboto",
-    height: 128,
+    // height: 128,
     marginTop: 30,
     padding: "24px 30px",
     "@media only screen and (max-width: 1024px)": {
@@ -126,10 +126,23 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
+  based: {
+    flex: 1,
+
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 8,
+    },
+  },
   consensusTextGroup: {
     alignItems: "center",
     display: "flex",
     fontSize: 14,
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+      width: "100%",
+      alignItems: "flex-start",
+    },
   },
   title: {
     fontSize: 20,
@@ -142,15 +155,31 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
   },
   hypoConsensusRightSide: {
     alignItems: "center",
     display: "flex",
     justifyContent: "flex-end",
     width: 172,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 16,
+      width: "100%",
+    },
   },
   icon: { marginRight: 4 },
-  dot: { color: colors.TEXT_GREY(1), margin: "0 8px", fontSize: 20 },
+  dot: {
+    color: colors.TEXT_GREY(1),
+    margin: "0 8px",
+    fontSize: 20,
+
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
   positiveGreen: {
     color: colors.GREEN(1),
   },
