@@ -42,9 +42,9 @@ export default function AddNewSourceBodySearch({
   return (
     <div
       className={css(
-        styles.addNewSourceBodySearch,
         formGenericStyles.pageContent,
-        formGenericStyles.noBorder
+        formGenericStyles.noBorder,
+        styles.addNewSourceBodySearch,
       )}
     >
       <div className={css(styles.title)}>{"Add a new Source"}</div>
@@ -148,8 +148,20 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    minHeight: 320,
-    width: 600,
+    marginTop: 0,
+    boxSizing: 'border-box',
+
+    "@media only screen and (max-width: 935px)": {
+      marginTop: 0,
+      paddingTop: 0,
+      width: '100%',
+      padding: 16,
+    },
+
+    [`@media only screen and (min-width: ${breakpoints.medium.str}`]: {
+      minHeight: 320,
+      width: 600,  
+    }
   },
   buttonCustomStyle: {
     height: "50px",

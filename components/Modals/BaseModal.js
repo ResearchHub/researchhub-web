@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     top: 8,
     right: 8,
+    zIndex: 2,
   },
   titleContainer: {
     display: "flex",

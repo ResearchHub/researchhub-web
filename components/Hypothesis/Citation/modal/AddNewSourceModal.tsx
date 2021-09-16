@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
+    overflow: 'unset',
     position: "relative",
     backgroundColor: "#fff",
     padding: 24,
