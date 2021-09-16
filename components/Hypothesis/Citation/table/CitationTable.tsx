@@ -92,21 +92,23 @@ export default function CitationTable({
   );
 
   return (
-    <div className={css(styles.citationTable)}>
-      <div className={css(styles.columnHeaderWrap)}>
-        <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
-        <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
-        <CitationTableHeaderItem label="Year" width={tableWidths.YEAR} />
-        <CitationTableHeaderItem
-          label="Consensus"
-          width={tableWidths.CONSENSUS}
-        />
-        <CitationTableHeaderItem
-          label="Cited by"
-          width={tableWidths.CITED_BY}
-        />
+    <>
+      <div className={css(styles.citationTable)}>
+        <div className={css(styles.columnHeaderWrap)}>
+          <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
+          <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
+          <CitationTableHeaderItem label="Year" width={tableWidths.YEAR} />
+          <CitationTableHeaderItem
+            label="Consensus"
+            width={tableWidths.CONSENSUS}
+          />
+          <CitationTableHeaderItem
+            label="Cited by"
+            width={tableWidths.CITED_BY}
+          />
+        </div>
+        <div className={css(styles.itemsWrap)}>{rowItems}</div>
       </div>
-      <div className={css(styles.itemsWrap)}>{rowItems}</div>
       {citationItems.length > 0 ? (
         <div className={css(styles.addCitation)}>
           <CitationAddNewButton
@@ -116,7 +118,7 @@ export default function CitationTable({
           />
         </div>
       ) : null}
-    </div>
+    </>
   );
 }
 
@@ -125,16 +127,20 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: "8px 0 24px",
     minHeight: 120,
+    overflow: 'auto',
+    marginBottom: 0,
   },
   columnHeaderWrap: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
     height: 52,
+    minWidth: 600,
   },
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
+    minWidth: 600,
   },
   citationNoResults: {
     display: "flex",

@@ -37,6 +37,11 @@ const styles = StyleSheet.create({
     marginTop: 30,
     padding: 30,
     width: "100%",
+
+
+    "@media only screen and (max-width: 767px)": {
+      padding: 16,
+    }
   },
   header: {
     fontFamily: "Roboto",
