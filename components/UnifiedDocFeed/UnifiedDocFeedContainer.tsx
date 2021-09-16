@@ -25,6 +25,7 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
+import TabNewFeature from "../NewFeature/TabNewFeature";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -279,12 +280,14 @@ function UnifiedDocFeedContainer({
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         const filterValue = UnifiedDocFilters[filterKey];
         return (
-          <UnifiedDocFeedFilterButton
-            isActive={docTypeFilter === filterValue}
-            key={filterKey}
-            label={UnifiedDocFilterLabels[filterKey]}
-            onClick={() => handleDocTypeChange(filterValue)}
-          />
+          <div className={css(styles.newFeatureContainer)}>
+            <UnifiedDocFeedFilterButton
+              isActive={docTypeFilter === filterValue}
+              key={filterKey}
+              label={UnifiedDocFilterLabels[filterKey]}
+              onClick={() => handleDocTypeChange(filterValue)}
+            />
+          </div>
         );
       }
     );
@@ -404,6 +407,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: "inherit",
+  },
+  newFeatureContainer: {
+    marginRight: 24,
   },
   subFilters: {
     alignItems: "center",
