@@ -57,7 +57,12 @@ export default function HypothesisCitationConsensusCard({
         <div className={css(styles.hypoConsensusRightSide)}>
           <CitationConsensusItem
             citationID={null}
-            consensusMeta={{ downCount, upCount, userVote: {} }}
+            consensusMeta={{
+              downCount,
+              neutralCount: citationCount - (downCount + upCount),
+              upCount,
+              userVote: {},
+            }}
             disableText
           />
         </div>

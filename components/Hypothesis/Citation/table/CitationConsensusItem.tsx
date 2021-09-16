@@ -12,6 +12,7 @@ import icons from "~/config/themes/icons";
 
 export type ConsensusMeta = {
   downCount: number;
+  neutralCount: number;
   upCount: number;
   userVote: Object;
 };
@@ -52,8 +53,16 @@ function CitationConsensusItem({
 }: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
   const [localConsensusMeta, setLocalConsensusMeta] =
     useState<ConsensusMeta>(consensusMeta);
-  const { downCount, upCount, userVote } = localConsensusMeta ?? {};
-  const [totalCount, setTotalCount] = useState<number>(downCount + upCount);
+  const {
+    downCount = 0,
+    neutralCount = 0,
+    upCount = 0,
+    userVote,
+  } = localConsensusMeta ?? {};
+  const [totalCount, setTotalCount] = useState<number>(
+    downCount + upCount + neutralCount
+  );
+  console.warn("localConsensusMeta: ", localConsensusMeta);
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
@@ -121,53 +130,82 @@ function CitationConsensusItem({
     upCount,
   ]);
 
-  const doesMajoritySupport = majority === UPVOTE;
+  const isNeutral = upCount === downCount;
+  const doesMajoritySupport = !isNeutral && majority === UPVOTE;
   const majorityPercent =
     (doesMajoritySupport ? upCount : downCount) / totalCount;
-  const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
-  const consensusBar = (
-    <div className={css(styles.consensusWrap)}>
-      <div
-        className={css(
-          styles.resultWrap,
-          Boolean(disableText ?? false) && styles.hideText
-        )}
-      >
-        {doesMajoritySupport ? (
-          <img
-            className={css(styles.resultImg)}
-            src="/static/icons/check.svg"
-          />
-        ) : (
-          <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
-        )}
+  const weightedPercent = (majorityPercent / 2) * 100; // each sentimentbar consists 50% of the full bar
+  console.warn("weightedPercent: ", weightedPercent);
+  const consensusBar =
+    totalCount > 0 ? (
+      <div className={css(styles.consensusWrap)}>
         <div
-          className={css(styles.consensusText)}
-          style={{
-            color: doesMajoritySupport ? colors.GREEN(1) : colors.RED(1),
-          }}
-        >{`${Math.floor(majorityPercent * 100)}% of researchers think ${
-          doesMajoritySupport ? "yes" : "no"
-        }`}</div>
+          className={css(
+            styles.resultWrap,
+            Boolean(disableText ?? false) && styles.hideText
+          )}
+        >
+          {isNeutral ? (
+            <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
+          ) : doesMajoritySupport ? (
+            <img
+              className={css(styles.resultImg)}
+              src="/static/icons/check.svg"
+            />
+          ) : (
+            <span className={css(styles.noSupportImg)}>
+              {icons.timesCircle}
+            </span>
+          )}
+          <div
+            className={css(styles.consensusText)}
+            style={{
+              color: isNeutral
+                ? colors.TEXT_GREY(1)
+                : doesMajoritySupport
+                ? colors.GREEN(1)
+                : colors.RED(1),
+            }}
+          >
+            {isNeutral
+              ? `${totalCount} researcher(s) are split`
+              : `${Math.floor(majorityPercent * 100)}% of researchers think ${
+                  doesMajoritySupport ? "yes" : "no"
+                }`}
+          </div>
+        </div>
+        <Fragment>
+          {isNeutral ? (
+            <div className={css(styles.consensusInnerWrap)}>
+              <SentimentBar color={colors.LIGHT_GREY_BORDER} width={25} />
+              <div className={css(styles.sentimentMidpoint)} />
+              <SentimentBar
+                color={colors.LIGHT_GREY_BORDER}
+                width={25}
+                pointRight
+              />
+            </div>
+          ) : (
+            <div className={css(styles.consensusInnerWrap)}>
+              <SentimentBar
+                color={colors.RED(1)}
+                width={doesMajoritySupport ? 0 : weightedPercent}
+              />
+              <div className={css(styles.sentimentMidpoint)} />
+              <SentimentBar
+                color={colors.GREEN(1)}
+                width={doesMajoritySupport ? weightedPercent : 0}
+                pointRight
+              />
+            </div>
+          )}
+        </Fragment>
       </div>
-      <div className={css(styles.consensusBar)}>
-        <SentimentBar
-          color={colors.RED(1)}
-          width={doesMajoritySupport ? 0 : weightedPercent * 100}
-        />
-        <div className={css(styles.sentimentMidpoint)} />
-        <SentimentBar
-          color={colors.GREEN(1)}
-          width={doesMajoritySupport ? weightedPercent * 100 : 0}
-          pointRight
-        />
-      </div>
-    </div>
-  );
+    ) : null;
 
   return (
     <div className={css(styles.citationConsensusItem)}>
-      {totalCount > 0 ? consensusBar : null}
+      {consensusBar}
       {hasCurrUserVoted ? null : (
         <div className={css(styles.voteWrap)}>
           <div
@@ -229,7 +267,8 @@ const styles = StyleSheet.create({
   centerVote: {
     marginLeft: 10,
   },
-  consensusBar: {
+  consensusBar: {},
+  consensusInnerWrap: {
     alignItems: "center",
     background: colors.LIGHT_GREY_BACKGROUND,
     borderRadius: 8,
@@ -298,6 +337,12 @@ const styles = StyleSheet.create({
   },
   noSupportImg: {
     color: colors.RED(1),
+    fontSize: 10,
+    height: 10,
+    width: 10,
+    marginRight: 4,
+  },
+  neutralImg: {
     fontSize: 10,
     height: 10,
     width: 10,

@@ -58,7 +58,6 @@ export default function CitationTable({
     hypothesisID,
     lastFetchTime,
     setCitationItems,
-    updateLastFetchTime,
     onSuccess: () => setIsLoading(false),
   });
   const rowItems = isLoading ? (
