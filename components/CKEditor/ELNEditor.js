@@ -1,6 +1,7 @@
 import API from "~/config/api";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
+import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
@@ -31,18 +32,43 @@ function useFetchNotes(refetchNotes) {
   return [notes, fetched];
 }
 
+function useFetchOrganizations(user) {
+  const [organizations, setOrganizations] = useState([]);
+
+  useEffect(() => {
+    if (user.id) {
+      fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((data) => {
+          setOrganizations(data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [user]);
+
+  return organizations;
+}
+
 export const ELNEditor = ({ user }) => {
   const router = useRouter();
+
   const editorRef = useRef();
-  const sidebarElementRef = useRef();
   const presenceListElementRef = useRef();
-  const [editorLoaded, setEditorLoaded] = useState(false);
+  const sidebarElementRef = useRef();
+
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
-  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [refetchNotes, setRefetchNotes] = useState(false);
+  const [editorLoaded, setEditorLoaded] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
-  const [notes, fetched] = useFetchNotes(refetchNotes);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [refetchNotes, setRefetchNotes] = useState(false);
   const [titles, setTitles] = useState({});
+
+  const [notes, fetched] = useFetchNotes(refetchNotes);
+  const organizations = useFetchOrganizations(user);
+  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
 
   useEffect(() => {
     editorRef.current = {
@@ -68,6 +94,86 @@ export const ELNEditor = ({ user }) => {
   useEffect(() => {
     setCurrentNoteId(router.query.noteId);
   }, [router.query.noteId]);
+
+  function saveData(editor, noteId) {
+    const noteParams = {
+      title: editor.plugins.get("Title").getTitle() || "Untitled",
+    };
+    fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+
+    const noteContentParams = {
+      full_src: editor.getData(),
+      plain_text: "",
+      note: noteId,
+    };
+    fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON);
+  }
+
+  function manualSaveData(data) {
+    console.log("manualSaveData: " + data);
+  }
+
+  const refreshDisplayMode = (editor) => {
+    const annotationsUIs = editor.plugins.get("AnnotationsUIs");
+    const sidebarElement = sidebarElementRef.current;
+
+    if (window.innerWidth < 1070) {
+      sidebarElement.classList.remove("narrow");
+      sidebarElement.classList.add("hidden");
+      annotationsUIs.switchTo("inline");
+    } else if (window.innerWidth < 1300) {
+      sidebarElement.classList.remove("hidden");
+      sidebarElement.classList.add("narrow");
+      annotationsUIs.switchTo("narrowSidebar");
+    } else {
+      sidebarElement.classList.remove("hidden", "narrow");
+      annotationsUIs.switchTo("wideSidebar");
+    }
+  };
+
+  const checkPendingActions = (editor, domEvt) => {
+    if (editor.plugins.get("PendingActions").hasAny) {
+      domEvt.preventDefault();
+      domEvt.returnValue = true;
+    }
+  };
+
+  const toggleSidebarSection = () => {
+    setHideNotes(!hideNotes);
+  };
+
+  const handleCreateNewNote = () => {
+    const params = {
+      title: "Untitled",
+    };
+
+    fetch(API.NOTE({}), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((note) => {
+        setRefetchNotes(!refetchNotes);
+        setTitles({
+          [note.id.toString()]: note.title,
+          ...titles
+        });
+        router.push(`/notebook/${note.id}`);
+      });
+  };
+
+  const handleInput = (editor) => {
+    const updatedTitles = {};
+    for (const key in titles) {
+      updatedTitles[key] =
+        key === editor.config._config.collaboration.channelId
+          ? editor.plugins.get("Title").getTitle() || "Untitled"
+          : titles[key];
+    }
+    setTitles(updatedTitles);
+  };
 
   const editors = notes.map(note => {
     const editorConfiguration = {
@@ -157,102 +263,57 @@ export const ELNEditor = ({ user }) => {
     );
   });
 
-  function saveData(editor, noteId) {
-    const noteParams = {
-      title: editor.plugins.get("Title").getTitle() || "Untitled",
-    };
-    fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
-
-    const noteContentParams = {
-      full_src: editor.getData(),
-      plain_text: "",
-      note: noteId,
-    };
-    fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
-  }
-
-  function manualSaveData(data) {
-    console.log("manualSaveData: " + data);
-  }
-
-  const refreshDisplayMode = (editor) => {
-    const annotationsUIs = editor.plugins.get("AnnotationsUIs");
-    const sidebarElement = sidebarElementRef.current;
-
-    if (window.innerWidth < 1070) {
-      sidebarElement.classList.remove("narrow");
-      sidebarElement.classList.add("hidden");
-      annotationsUIs.switchTo("inline");
-    } else if (window.innerWidth < 1300) {
-      sidebarElement.classList.remove("hidden");
-      sidebarElement.classList.add("narrow");
-      annotationsUIs.switchTo("narrowSidebar");
-    } else {
-      sidebarElement.classList.remove("hidden", "narrow");
-      annotationsUIs.switchTo("wideSidebar");
-    }
-  };
-
-  const checkPendingActions = (editor, domEvt) => {
-    if (editor.plugins.get("PendingActions").hasAny) {
-      domEvt.preventDefault();
-      domEvt.returnValue = true;
-    }
-  };
-
-  const toggleSidebarSection = () => {
-    setHideNotes(!hideNotes);
-  };
-
-  const handleCreateNewNote = () => {
-    const params = {
-      title: "Untitled",
-    };
-
-    fetch(API.NOTE({}), API.POST_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((note) => {
-        setRefetchNotes(!refetchNotes);
-        setTitles({
-          [note.id.toString()]: note.title,
-          ...titles
-        });
-        router.push(`/notebook/${note.id}`);
-      });
-  };
-
-  const handleInput = (editor) => {
-    const updatedTitles = {};
-    for (const key in titles) {
-      updatedTitles[key] =
-        key === editor.config._config.collaboration.channelId
-          ? editor.plugins.get("Title").getTitle() || "Untitled"
-          : titles[key];
-    }
-    setTitles(updatedTitles);
-  };
-
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
       </div>
       <div className={css(styles.sidebar)}>
-        <div className={css(styles.sidebarHeader)}>
-          {`${user.first_name} ${user.last_name}'s Notes`}
+        <div>
+          <ResearchHubPopover
+            isOpen={isPopoverOpen}
+            popoverContent={
+              <div className={css(styles.popoverBodyContent)}>
+                <div className={css(styles.popoverBodyItem)}>
+                  <img className={css(styles.popoverBodyItemImage)} src={user?.author_profile?.profile_image} draggable="false" />
+                  <div className={css(styles.popoverBodyItemTitle)}>Personal Notes</div>
+                </div>
+                {organizations.map(org => (
+                  <div className={css(styles.popoverBodyItem)}>
+                    <img className={css(styles.popoverBodyItemImage)} src={org.cover_image} draggable="false" />
+                    <div className={css(styles.popoverBodyItemText)}>
+                      <div className={css(styles.popoverBodyItemTitle)}>{org.name}</div>
+                      <div className={css(styles.popoverBodyItemSubtitle)}>{"1 member"}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            }
+            positions={["bottom"]}
+            setIsPopoverOpen={setIsPopoverOpen}
+            targetContent={
+              <div
+                className={css(styles.popoverTarget)}
+                onClick={() => {
+                  setIsPopoverOpen(!isPopoverOpen);
+                }}
+              >
+                <img className={css(styles.popoverBodyItemImage)} src={user?.author_profile?.profile_image} draggable="false" />
+                {"Personal Notes"}
+                <span className={css(styles.sortIcon)}>
+                  {icons.sort}
+                </span>
+              </div>
+            }
+          />
         </div>
         <div
           className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
           onClick={toggleSidebarSection}
         >
           Notes
-          <span className={css(styles.chevron)}>
-            {hideNotes ? icons.chevronDown: icons.chevronUp}
+          <span className={css(styles.chevronIcon)}>
+            {hideNotes ? icons.chevronDown : icons.chevronUp}
           </span>
         </div>
         {!hideNotes && (
@@ -321,14 +382,67 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
-  sidebarHeader: {
+  popoverTarget: {
+    alignItems: "center",
     color: colors.BLACK(0.6),
-    cursor: "default",
+    cursor: "pointer",
+    display: "flex",
     fontSize: 14,
     fontWeight: 500,
     letterSpacing: 1.2,
     padding: 20,
     textTransform: "uppercase",
+    userSelect: "none",
+    wordBreak: "break-word",
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    },
+  },
+  popoverBodyContent: {
+    backgroundColor: "#fff",
+    borderRadius: 4,
+    boxShadow: "0px 0px 10px 0px #00000026",
+    display: "flex",
+    flexDirection: "column",
+    marginLeft: 10,
+    marginTop: -10,
+    userSelect: "none",
+    width: 270,
+  },
+  popoverBodyItem: {
+    alignItems: "center",
+    cursor: "pointer",
+    display: "flex",
+    padding: 16,
+    wordBreak: "break-word",
+    ":hover": {
+      backgroundColor: colors.GREY(0.2),
+    },
+    ":first-child": {
+      borderRadius: "4px 4px 0px 0px",
+    },
+    ":last-child": {
+      borderRadius: "0px 0px 4px 4px",
+    },
+  },
+  popoverBodyItemImage: {
+    borderRadius: "50%",
+    height: 30,
+    marginRight: 10,
+    objectFit: "cover",
+    width: 30,
+  },
+  popoverBodyItemText: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  popoverBodyItemTitle: {
+    fontWeight: 500,
+  },
+  popoverBodyItemSubtitle: {
+    color: colors.BLACK(0.5),
+    fontSize: 13,
+    marginTop: 2,
   },
   sidebarSection: {
     borderTop: `1px solid ${colors.GREY(0.3)}`,
@@ -405,7 +519,10 @@ const styles = StyleSheet.create({
   showBottomBorder: {
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
   },
-  chevron: {
+  sortIcon: {
+    marginLeft: 10,
+  },
+  chevronIcon: {
     marginLeft: "auto",
   },
   noteIcon: {
