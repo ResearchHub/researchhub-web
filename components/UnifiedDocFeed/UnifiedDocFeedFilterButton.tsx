@@ -48,7 +48,7 @@ function UnifiedDocFeedFilterButton({
   const buttonClicked = (e) => {
     onClick && onClick(e);
 
-    setClickedNewFeature(true);
+    // setClickedNewFeature(true);
     if (auth.isLoggedIn) {
       const params = {
         user: auth.user.id, feature: label.toLocaleLowerCase()
