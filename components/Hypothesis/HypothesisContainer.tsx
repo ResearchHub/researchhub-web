@@ -61,6 +61,7 @@ export default function HypothesisContainer(
         <HypothesisCitationConsensusCard
           aggregateCitationConsensus={{
             citationCount: aggreCitationCons?.citation_count ?? 0,
+            neutralCount: aggreCitationCons?.neutral_count ?? 0,
             downCount: aggreCitationCons?.down_count ?? 0,
             upCount: aggreCitationCons?.up_count ?? 0,
           }}

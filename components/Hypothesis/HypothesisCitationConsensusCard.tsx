@@ -9,18 +9,25 @@ type Props = {
   aggregateCitationConsensus: {
     citationCount: number;
     downCount: number;
+    neutralCount: number;
     upCount: number;
   };
 };
 
 export default function HypothesisCitationConsensusCard({
-  aggregateCitationConsensus: { citationCount, downCount, upCount },
+  aggregateCitationConsensus: {
+    citationCount,
+    downCount,
+    neutralCount,
+    upCount,
+  },
 }: Props): ReactElement<"div"> | null {
   if (citationCount === 0) {
     return null;
   }
 
   const sentiment = upCount - downCount;
+  const totalVoteCount = downCount + neutralCount + upCount;
 
   return (
     <div className={css(styles.hypothesisCitationConsensusCard)}>
@@ -54,14 +61,18 @@ export default function HypothesisCitationConsensusCard({
             }`}</span>
           </span>
           <span className={css(styles.dot)}>{"\u2022"}</span>
-          <span>{`Base on ${citationCount} Sources and ${citationCount} researcher votes.`}</span>
+          <span>{`Base on ${citationCount} source${
+            citationCount > 1 ? "s" : ""
+          } and ${totalVoteCount} researcher vote${
+            totalVoteCount > 1 ? "s" : ""
+          }.`}</span>
         </div>
         <div className={css(styles.hypoConsensusRightSide)}>
           <CitationConsensusItem
             citationID={null}
             consensusMeta={{
               downCount,
-              neutralCount: citationCount - (upCount + downCount),
+              neutralCount,
               upCount,
               userVote: {},
             }}
