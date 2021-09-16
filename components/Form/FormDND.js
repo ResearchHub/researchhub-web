@@ -482,8 +482,9 @@ class FormDND extends Component {
   };
 
   render() {
-    let { showUrlOption } = this.props;
-    const renderAlternateOption = showUrlOption ? (
+    const { showUrlOption } = this.props;
+    const localShowUrlOption = Boolean(showUrlOption ?? true);
+    const renderAlternateOption = localShowUrlOption ? (
       <Ripples
         className={css(styles.urlButton, this.calculateButtonStyle())}
         onClick={this.toggleFormatState}
