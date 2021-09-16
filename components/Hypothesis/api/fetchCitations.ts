@@ -30,15 +30,15 @@ export function fetchCitationsOnHypothesis({
           if (document_type === "PAPER") {
             const { paper_title, title } = documents;
             const { author_profile } = created_by;
-            const {
-              down_count: downCount,
-              up_count: upCount,
-              user_vote: userVote,
-            } = consensus_meta;
             return {
               // @ts-ignore id here is int
               citationID: id,
-              consensusMeta: { downCount, upCount, userVote }, // need to get voting info
+              consensusMeta: {
+                downCount: consensus_meta?.down_count ?? 0,
+                neutralCount: consensus_meta?.neutral_count ?? 0,
+                upCount: consensus_meta?.up_count ?? 0,
+                userVote: consensus_meta?.user_vote ?? null,
+              }, // need to get voting info
               citedBy: [author_profile],
               source: title || paper_title,
               type: document_type,

@@ -1,11 +1,13 @@
 export const COMPANY_NAME = "ResearchHub";
 
 export const AUTH_TOKEN = "researchhub.auth.token";
-export const UPVOTE = "upvote";
 export const DOWNVOTE = "downvote";
+export const NEUTRALVOTE = "neutralvote";
+export const UPVOTE = "upvote";
 
-export const UPVOTE_ENUM = 1;
 export const DOWNVOTE_ENUM = 2;
+export const NEUTRALVOTE_ENUM = 0;
+export const UPVOTE_ENUM = 1;
 
 export const userVoteToConstant = (userVote) => {
   if (userVote) {
@@ -14,6 +16,8 @@ export const userVoteToConstant = (userVote) => {
         return UPVOTE;
       case DOWNVOTE_ENUM:
         return DOWNVOTE;
+      case NEUTRALVOTE_ENUM:
+        return NEUTRAL_VOTE;
       default:
         return null;
     }
