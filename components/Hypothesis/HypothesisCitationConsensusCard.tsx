@@ -52,6 +52,7 @@ export default function HypothesisCitationConsensusCard({
           <div className={css(styles.consensusTextGroup)}>
             <span
               className={css(
+                styles.icon,
                 sentiment > 0
                   ? styles.positiveGreen
                   : sentiment < 0
@@ -59,22 +60,22 @@ export default function HypothesisCitationConsensusCard({
                   : null
               )}
             >
-              <span className={css(styles.icon)}>
-                {sentiment > 0 ? (
-                  <img src="/static/icons/check.svg" />
-                ) : sentiment < 0 ? (
-                  <span>{icons.timesCircle}</span>
-                ) : (
-                  <span>{icons.minusCircle}</span>
-                )}
-              </span>
-              <span>{`Probably ${
+              {sentiment > 0 ? (
+                <img src="/static/icons/check.svg" />
+              ) : sentiment < 0 ? (
+                icons.timesCircle
+              ) : (
+                icons.minusCircle
+              )}
+            </span>
+            <span>
+              {`Probably ${
                 downCount === upCount
                   ? "neutral"
                   : downCount > upCount
                   ? "no"
                   : "yes"
-              }`}</span>
+              }`}
             </span>
             <span className={css(styles.dot)}>{"\u2022"}</span>
             <span>{`Base on ${citationCount} source${
@@ -112,7 +113,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     fontFamily: "Roboto",
-    // height: 128,
     marginTop: 30,
     padding: "24px 30px",
     "@media only screen and (max-width: 1024px)": {
@@ -128,7 +128,6 @@ const styles = StyleSheet.create({
   },
   based: {
     flex: 1,
-
     "@media only screen and (max-width: 767px)": {
       marginTop: 8,
     },
@@ -137,7 +136,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       width: "100%",
@@ -155,7 +153,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
     },
@@ -170,12 +167,14 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  icon: { marginRight: 4 },
+  icon: {
+    marginRight: 4,
+    display: "flex",
+  },
   dot: {
     color: colors.TEXT_GREY(1),
     margin: "0 8px",
     fontSize: 20,
-
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
