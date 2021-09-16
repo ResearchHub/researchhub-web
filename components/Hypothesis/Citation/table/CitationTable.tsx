@@ -60,6 +60,7 @@ export default function CitationTable({
     setCitationItems,
     onSuccess: () => setIsLoading(false),
   });
+  
   const rowItems = isLoading ? (
     [
       <CitationTableRowItemPlaceholder key="citation-table-item-1" />,
@@ -72,7 +73,11 @@ export default function CitationTable({
         propPayload: CitationTableRowItemProps,
         index: number
       ): ReactElement<typeof CitationTableRowItem> => (
-        <CitationTableRowItem {...propPayload} key={index} />
+        <CitationTableRowItem
+          {...propPayload}
+          key={index}
+          updateLastFetchTime={updateLastFetchTime}
+        />
       )
     )
   ) : (

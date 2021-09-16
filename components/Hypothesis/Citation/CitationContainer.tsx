@@ -4,13 +4,14 @@ import { ReactElement, useCallback, useState } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
 
-export default function CitationContainer(): ReactElement<"div"> {
+type Props = { lastFetchTime: number; onCitationUpdate: Function };
+
+export default function CitationContainer({
+  lastFetchTime,
+  onCitationUpdate,
+}: Props): ReactElement<"div"> {
   const router = useRouter();
   const hypothesisID = castUriID(router.query.documentId);
-  const [lastFetchTime, setLastFetchTime] = useState<number | null>(null);
-  const updateLastFetchTime = useCallback(() => setLastFetchTime(Date.now()), [
-    setLastFetchTime,
-  ]);
 
   return (
     <div className={css(styles.citationContainer)}>
@@ -18,7 +19,7 @@ export default function CitationContainer(): ReactElement<"div"> {
       <CitationTable
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}
-        updateLastFetchTime={updateLastFetchTime}
+        updateLastFetchTime={onCitationUpdate}
       />
     </div>
   );
