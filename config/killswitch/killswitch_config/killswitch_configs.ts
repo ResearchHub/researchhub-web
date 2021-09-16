@@ -11,8 +11,8 @@ const KillswtichConfigs: SwitchConfigs = {
   paperSummary: {
     development: false,
     staging: false,
-    production: false,    
-  },  
+    production: false,
+  },
   paperUploadV2: {
     development: true,
     staging: true,
