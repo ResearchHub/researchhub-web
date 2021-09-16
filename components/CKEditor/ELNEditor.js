@@ -230,7 +230,7 @@ export const ELNEditor = ({ user }) => {
     const updatedTitles = {};
     for (const key in titles) {
       updatedTitles[key] =
-        key === currentNoteId
+        key === editor.config._config.collaboration.channelId
           ? editor.plugins.get("Title").getTitle() || "Untitled"
           : titles[key];
     }
