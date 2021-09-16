@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import React, { ReactElement } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 
 type Props = {
@@ -18,8 +19,9 @@ export default function HypothesisCitationConsensusCard({
   if (citationCount === 0) {
     return null;
   }
-  const totalCount = downCount + upCount;
+
   const sentiment = upCount - downCount;
+
   return (
     <div className={css(styles.hypothesisCitationConsensusCard)}>
       <div className={css(styles.title)}>{"Current conclusion"}</div>
@@ -52,18 +54,19 @@ export default function HypothesisCitationConsensusCard({
             }`}</span>
           </span>
           <span className={css(styles.dot)}>{"\u2022"}</span>
-          <span>{`Base on ${citationCount} Sources and ${totalCount} researcher votes.`}</span>
+          <span>{`Base on ${citationCount} Sources and ${citationCount} researcher votes.`}</span>
         </div>
         <div className={css(styles.hypoConsensusRightSide)}>
           <CitationConsensusItem
             citationID={null}
             consensusMeta={{
               downCount,
-              neutralCount: citationCount - (downCount + upCount),
+              neutralCount: citationCount - (upCount + downCount),
               upCount,
               userVote: {},
             }}
             disableText
+            updateLastFetchTime={silentEmptyFnc}
           />
         </div>
       </div>

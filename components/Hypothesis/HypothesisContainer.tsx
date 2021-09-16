@@ -5,7 +5,7 @@ import {
   isNullOrUndefined,
 } from "../../config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 
 // Components
@@ -24,16 +24,19 @@ export default function HypothesisContainer(
 ): ReactElement<"div"> | null {
   const router = useRouter();
   const [hypothesis, setHypothesis] = useState<any>(null);
+  const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
   const [discussionCount, setDiscussionCount] = useState(0);
   const hypothesisID = castUriID(router.query.documentId);
 
   useEffect(() => {
     fetchHypothesis({
       hypothesisID,
-      onSuccess: setHypothesis,
+      onSuccess: (hypothesis: any): void => {
+        setHypothesis(hypothesis);
+      },
       onError: emptyFncWithMsg,
     });
-  }, [hypothesisID, setHypothesis]);
+  }, [hypothesisID, lastFetchTime, setHypothesis]);
 
   const {
     aggregate_citation_consensus: aggreCitationCons,
@@ -70,7 +73,12 @@ export default function HypothesisContainer(
             paperId={id}
           />
         </div>
-        <CitationContainer />
+        <CitationContainer
+          lastFetchTime={lastFetchTime}
+          onCitationUpdate={(): void => {
+            setLastFetchTime(Date.now());
+          }}
+        />
         <div className={css(styles.space)}>
           <DiscussionTab
             calculatedCount={discussionCount}
