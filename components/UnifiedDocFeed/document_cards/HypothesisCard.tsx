@@ -18,7 +18,7 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 
 export type HypothesisCardProps = {
@@ -313,6 +313,7 @@ function HypothesisCard({
                     userVote: {},
                   }}
                   disableText
+                  updateLastFetchTime={silentEmptyFnc}
                 />
               </div>
             </div>

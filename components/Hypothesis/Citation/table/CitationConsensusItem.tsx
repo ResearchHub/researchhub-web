@@ -384,8 +384,8 @@ const styles = StyleSheet.create({
     width: "100%",
 
     "@media only screen and (max-width: 767px)": {
-      maxWidth: 'unset',
-    }
+      maxWidth: "unset",
+    },
   },
   iconWrap: {
     // marginRight: 4,
