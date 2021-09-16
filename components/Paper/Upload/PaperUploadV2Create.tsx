@@ -27,7 +27,13 @@ import Button from "../../Form/Button";
 import FormDND from "../../Form/FormDND";
 import FormInput from "../../Form/FormInput";
 import FormSelect from "../../Form/FormSelect";
-import { Fragment, ReactElement, SyntheticEvent, useEffect, useState } from "react";
+import {
+  Fragment,
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type ComponentProps = {
@@ -371,22 +377,6 @@ function PaperuploadV2Create({
             placeholder="Jargon free version of the title that the average person would understand"
             value={title || ""}
           />
-          <div className={css(formGenericStyles.section)}>
-            <div className={css(formGenericStyles.row)}>
-              <span className={css(formGenericStyles.doi)}>
-                <FormInput
-                  containerStyle={formGenericStyles.doiInput}
-                  id="doi"
-                  label="DOI"
-                  labelStyle={formGenericStyles.labelStyle}
-                  onChange={handleInputChange}
-                  placeholder="Enter DOI of paper"
-                  required
-                  value={doi}
-                />
-              </span>
-            </div>
-          </div>
           <FormSelect
             containerStyle={formGenericStyles.container}
             error={formErrors.hubs}
@@ -404,6 +394,22 @@ function PaperuploadV2Create({
             required
             value={selectedHubs}
           />
+          <div className={css(formGenericStyles.section)}>
+            <div className={css(formGenericStyles.row)}>
+              <span className={css(formGenericStyles.doi)}>
+                <FormInput
+                  containerStyle={formGenericStyles.doiInput}
+                  id="doi"
+                  label="DOI"
+                  labelStyle={formGenericStyles.labelStyle}
+                  onChange={handleInputChange}
+                  placeholder="Enter DOI of paper"
+                  required
+                  value={doi}
+                />
+              </span>
+            </div>
+          </div>
         </div>
       </div>
       <div
