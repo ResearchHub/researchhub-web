@@ -37,7 +37,7 @@ export function fetchCitationsOnHypothesis({
                 downCount: consensus_meta?.down_count ?? 0,
                 neutralCount: consensus_meta?.neutral_count ?? 0,
                 upCount: consensus_meta?.up_count ?? 0,
-                userVote: consensus_meta?.userVote ?? null,
+                userVote: consensus_meta?.user_vote ?? null,
               }, // need to get voting info
               citedBy: [author_profile],
               source: title || paper_title,
