@@ -27,6 +27,7 @@ import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import TabNewFeature from "../NewFeature/TabNewFeature";
 import FeedNewFeatureBox from "../NewFeature/FeedNewFeatureBox";
+import killswitch from "~/config/killswitch/killswitch";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -35,14 +36,14 @@ type PaginationInfo = {
 };
 
 const featureHeadlines = {
-  Hypothesis: 'a tool to get an unbiased view of ...',
+  Hypothesis: "a tool to get an unbiased view of ...",
 };
 
 const featureDescriptions = {
   Hypothesis: `We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows users put a stake in the ground and make a claim, while backing it up with scientific research. 
   
-Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place anyone looks at to find the consensus of specific topics.`
-}
+Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place anyone looks at to find the consensus of specific topics.`,
+};
 
 const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
@@ -110,10 +111,10 @@ function UnifiedDocFeedContainer({
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  const needsInitialFetch = useMemo((): Boolean => page === 1 && isLoading, [
-    page,
-    isLoading,
-  ]);
+  const needsInitialFetch = useMemo(
+    (): Boolean => page === 1 && isLoading,
+    [page, isLoading]
+  );
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
@@ -288,6 +289,11 @@ function UnifiedDocFeedContainer({
     };
   };
 
+  if (!killswitch("hypothesis")) {
+    // @ts-ignore intentional removing for KS
+    delete UnifiedDocFilters.HYPOTHESIS;
+  }
+
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
@@ -338,9 +344,7 @@ function UnifiedDocFeedContainer({
         </div>
       </div>
       <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>
-          {docTypeFilterButtons}
-        </div>
+        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
       {!hasSubscribed ? (
         <div>
