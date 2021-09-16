@@ -217,7 +217,10 @@ export const formGenericStyles = StyleSheet.create({
     },
   },
   inputStyle: {
-    width: 570,
+    // width: '100%',
+    // "@media only screen and (min-width: 1024px)": {
+    //   width: 570,
+    // }
   },
   inputMax: {
     width: "100%",

@@ -31,9 +31,10 @@ export const itemStyle = StyleSheet.create({
     color: "black",
     cursor: "pointer",
     display: "flex",
-    minHeight: 37,
+    minHeight: 55,
+    // minHeight: 37,
     overflow: "hidden",
-    padding: "0 12px",
+    padding: "16px",
     whiteSpace: "nowrap",
     width: "100%",
     ":hover": {

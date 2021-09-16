@@ -329,7 +329,7 @@ const styles = StyleSheet.create({
   voteWrap: {
     alignItems: "center",
     display: "flex",
-    justifyContent: "center",
+    // justifyContent: "center",
     marginTop: 8,
     maxWidth: 166,
     width: "inherit",
@@ -339,10 +339,10 @@ const styles = StyleSheet.create({
     color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
     display: "flex",
-    justifyContent: "center",
+    // justifyContent: "center",
     flexDirection: "column",
     margin: "0 8px",
-    width: "20%",
+    // width: "33%",
   },
   hideText: {
     display: "none",
@@ -382,9 +382,14 @@ const styles = StyleSheet.create({
     maxHeight: 28,
     maxWidth: 166,
     width: "100%",
+
+    "@media only screen and (max-width: 767px)": {
+      maxWidth: 'unset',
+    }
   },
   iconWrap: {
-    marginRight: 4,
+    // marginRight: 4,
+    marginBottom: 2,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 18,
       marginRight: 0,
@@ -396,6 +401,8 @@ const styles = StyleSheet.create({
   },
   red: {
     color: colors.RED(1),
+    marginLeft: 0,
+    marginRight: 12,
   },
   sentimentBar: {
     height: "inherit",

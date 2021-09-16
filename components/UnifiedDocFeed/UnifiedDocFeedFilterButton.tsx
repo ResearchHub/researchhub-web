@@ -28,6 +28,7 @@ function UnifiedDocFeedFilterButton({
 
   const [newFeatureActive, _] = useState(newFeature(label.toLocaleLowerCase()));
   const [clickedNewFeature, setClickedNewFeature] = useState(false);
+  const [featureFetched, setFeatureFetched] = useState(false);
 
   useEffect(() => {
     setNewFeatureActive && setNewFeatureActive(!!newFeatureActive && !clickedNewFeature);
@@ -41,9 +42,14 @@ function UnifiedDocFeedFilterButton({
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then(res => {
+          setFeatureFetched(true);
           setClickedNewFeature(res.clicked);
-        });
+        })
+        .catch(error => {
+          setFeatureFetched(true);
+        })
       } else {
+        setFeatureFetched(true);
         const hypothesis_clicked = window.localStorage && window.localStorage.getItem(`feature_${label.toLocaleLowerCase()}_clicked`) === 'true';
         setClickedNewFeature(hypothesis_clicked);
       }
@@ -51,6 +57,8 @@ function UnifiedDocFeedFilterButton({
 
     if (newFeatureActive) {
       fetchClickedNewFeature();
+    } else {
+      setFeatureFetched(true);
     }
   }, [auth.isLoggedIn]);
 
@@ -71,22 +79,26 @@ function UnifiedDocFeedFilterButton({
   }
 
   return (
-    <div className={css(styles.container)} onClick={buttonClicked}>
-      <div
-        className={css(
-          styles.unifiedDocFeedFilterButton,
-          isActive && styles.isButtonActive
-        )}
-        role="button"
-      >
-        {label}
-      </div>
-      {!!newFeatureActive && !clickedNewFeature &&
-        <div className={css(styles.tabFeature)}>
-          <TabNewFeature />
+    <>
+      {featureFetched && 
+        <div className={css(styles.container)} onClick={buttonClicked}>
+          <div
+            className={css(
+              styles.unifiedDocFeedFilterButton,
+              isActive && styles.isButtonActive
+            )}
+            role="button"
+          >
+            {label}
+          </div>
+          {!!newFeatureActive && !clickedNewFeature &&
+            <div className={css(styles.tabFeature)}>
+              <TabNewFeature />
+            </div>
+          }
         </div>
       }
-    </div>
+    </>
   );
 }
 
