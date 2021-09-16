@@ -1,5 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
-import { Fragment, ReactElement, useCallback, useState } from "react";
+import {
+  Fragment,
+  ReactElement,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { connect } from "react-redux";
 import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
@@ -22,6 +28,7 @@ type CitationConsensusItemProps = {
   consensusMeta: ConsensusMeta;
   currentUser?: any; // Redux
   disableText?: boolean;
+  updateLastFetchTime: Function;
 };
 
 type SentimentBarProps = {
@@ -46,19 +53,55 @@ function SentimentBar({
   );
 }
 
+function useEffectSyncLocalConsensusMeta({
+  consensusMeta,
+  consensusMeta: {
+    downCount: downCountProp,
+    neutralCount: neutralCountProp,
+    upCount: upCountProp,
+    userVote: userVoteProp,
+  },
+  localConsensusMeta: { downCount, neutralCount, upCount, userVote },
+  setLocalConsensusMeta,
+}: {
+  consensusMeta: ConsensusMeta;
+  localConsensusMeta: ConsensusMeta;
+  setLocalConsensusMeta: Function;
+}): void {
+  useEffect((): void => {
+    if (
+      downCountProp !== downCount ||
+      neutralCountProp !== neutralCount ||
+      upCountProp !== upCount ||
+      userVoteProp !== userVote
+    ) {
+      setLocalConsensusMeta(consensusMeta);
+    }
+  }, [downCountProp, neutralCountProp, upCountProp, userVoteProp]);
+}
+
 function CitationConsensusItem({
   citationID,
   consensusMeta,
   disableText,
+  updateLastFetchTime,
 }: CitationConsensusItemProps): ReactElement<"div"> | null {
   const [localConsensusMeta, setLocalConsensusMeta] =
     useState<ConsensusMeta>(consensusMeta);
+
   const {
     downCount = 0,
     neutralCount = 0,
     upCount = 0,
     userVote,
   } = localConsensusMeta ?? {};
+
+  useEffectSyncLocalConsensusMeta({
+    consensusMeta,
+    localConsensusMeta,
+    setLocalConsensusMeta,
+  });
+
   const [totalCount, setTotalCount] = useState<number>(
     downCount + upCount + neutralCount
   );
@@ -86,6 +129,7 @@ function CitationConsensusItem({
           ...updatedMeta,
           userVote,
         });
+        updateLastFetchTime();
       },
       onError: emptyFncWithMsg,
       voteType: DOWNVOTE,
@@ -115,6 +159,7 @@ function CitationConsensusItem({
           ...updatedMeta,
           userVote,
         });
+        updateLastFetchTime();
       },
       onError: emptyFncWithMsg,
       voteType: NEUTRALVOTE,
@@ -145,6 +190,7 @@ function CitationConsensusItem({
           ...updatedMeta,
           userVote,
         });
+        updateLastFetchTime();
       },
       onError: emptyFncWithMsg,
       voteType: UPVOTE,
