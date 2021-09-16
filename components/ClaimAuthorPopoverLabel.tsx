@@ -68,6 +68,7 @@ export default function ClaimAuthorPopoverLabel({
               </PermissionNotificationWrapper>
             </div>
           }
+          positions={["top"]}
           setIsPopoverOpen={setIsPopoverOpen}
           targetContent={
             <div
@@ -87,6 +88,7 @@ export default function ClaimAuthorPopoverLabel({
               </span>
             </div>
           }
+          withArrow
         />
       </div>
     </Fragment>
