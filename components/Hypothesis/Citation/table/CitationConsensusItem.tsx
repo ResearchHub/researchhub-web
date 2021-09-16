@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment, ReactElement, useCallback, useState } from "react";
 import { connect } from "react-redux";
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
+import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import { getCurrentUser } from "~/config/utils/user";
@@ -59,10 +59,10 @@ function CitationConsensusItem({
     upCount = 0,
     userVote,
   } = localConsensusMeta ?? {};
+
   const [totalCount, setTotalCount] = useState<number>(
     downCount + upCount + neutralCount
   );
-  console.warn("localConsensusMeta: ", localConsensusMeta);
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
@@ -90,6 +90,35 @@ function CitationConsensusItem({
       },
       onError: emptyFncWithMsg,
       voteType: DOWNVOTE,
+    });
+  }, [
+    downCount,
+    localConsensusMeta,
+    setMajority,
+    setTotalCount,
+    totalCount,
+    upCount,
+  ]);
+
+  const handleNeutralVote = useCallback((): void => {
+    const updatedMeta = {
+      ...localConsensusMeta,
+      neutralCount: neutralCount + 1,
+    };
+    setLocalConsensusMeta(updatedMeta);
+    setTotalCount(totalCount + 1);
+    setHasCurrUserVoted(true);
+    postCitationVote({
+      citationID,
+      onSuccess: (userVote: Object): void => {
+        // NOTE: optimistic update.
+        setLocalConsensusMeta({
+          ...updatedMeta,
+          userVote,
+        });
+      },
+      onError: emptyFncWithMsg,
+      voteType: NEUTRALVOTE,
     });
   }, [
     downCount,
@@ -209,20 +238,28 @@ function CitationConsensusItem({
       {hasCurrUserVoted ? null : (
         <div className={css(styles.voteWrap)}>
           <div
-            className={css(styles.button)}
+            className={css(styles.button, styles.red)}
             onClick={handleReject}
             role="button"
           >
-            <span className={css(styles.iconWrap)}>{icons.timesCircle}</span>
-            <span className={css(styles.buttonText)}>{"Reject"}</span>
+            <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
+            <div className={css(styles.buttonText)}>{"Reject"}</div>
+          </div>
+          <div
+            className={css(styles.button)}
+            onClick={handleNeutralVote}
+            role="button"
+          >
+            <div className={css(styles.iconWrap)}>{icons.minusCircle}</div>
+            <div className={css(styles.buttonText)}>{"Neutral"}</div>
           </div>
           <div
             className={css(styles.button, styles.green)}
             onClick={handleSupport}
             role="button"
           >
-            <span className={css(styles.iconWrap)}>{icons.checkCircle}</span>
-            <span className={css(styles.buttonText)}>{"Support"}</span>
+            <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
+            <div className={css(styles.buttonText)}>{"Support"}</div>
           </div>
         </div>
       )}
@@ -253,13 +290,16 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     justifyContent: "center",
-    width: "50%",
+    flexDirection: "column",
+    margin: "0 8px",
+    width: "20%",
   },
   hideText: {
     display: "none",
   },
   buttonText: {
     display: "block",
+    fontSize: 10,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "none",
     },
@@ -303,6 +343,9 @@ const styles = StyleSheet.create({
   green: {
     color: colors.GREEN(1),
     marginRight: 0,
+  },
+  red: {
+    color: colors.RED(1),
   },
   sentimentBar: {
     height: "inherit",
