@@ -215,10 +215,6 @@ function CitationConsensusItem({
     (doesMajoritySupport ? upCount : downCount) / totalCount;
   const weightedPercent = (majorityPercent / 2) * 100; // each sentimentbar consists 50% of the full bar
 
-  if (disableText) {
-    console.warn("isNeutral: ", isNeutral);
-    console.warn("localConsensusMeta: ", localConsensusMeta);
-  }
   const consensusBar =
     totalCount > 0 ? (
       <div className={css(styles.consensusWrap)}>
