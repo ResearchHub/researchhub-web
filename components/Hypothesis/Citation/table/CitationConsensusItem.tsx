@@ -158,7 +158,8 @@ function CitationConsensusItem({
     upCount,
   ]);
 
-  if (totalCount === 0) {
+  // This is a way to avoid NaN & not return any element
+  if (totalCount === 0 && Boolean(userVote)) {
     return null;
   }
 
