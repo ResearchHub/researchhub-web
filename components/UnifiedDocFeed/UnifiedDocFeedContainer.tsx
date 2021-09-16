@@ -26,12 +26,23 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import TabNewFeature from "../NewFeature/TabNewFeature";
+import FeedNewFeatureBox from "../NewFeature/FeedNewFeatureBox";
 
 type PaginationInfo = {
   isLoading: Boolean;
   isLoadingMore: Boolean;
   page: number;
 };
+
+const featureHeadlines = {
+  Hypothesis: 'a tool to get an unbiased view of ...',
+};
+
+const featureDescriptions = {
+  Hypothesis: `We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows users put a stake in the ground and make a claim, while backing it up with scientific research. 
+  
+Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place anyone looks at to find the consensus of specific topics.`
+}
 
 const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
@@ -103,6 +114,8 @@ function UnifiedDocFeedContainer({
     page,
     isLoading,
   ]);
+  const [newFeatureActive, setNewFeatureActive] = useState(false);
+  const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
   const formattedMainHeader = useMemo(
     (): string =>
@@ -286,6 +299,8 @@ function UnifiedDocFeedContainer({
               key={filterKey}
               label={UnifiedDocFilterLabels[filterKey]}
               onClick={() => handleDocTypeChange(filterValue)}
+              setNewFeatureActive={setNewFeatureActive}
+              setWhichFeatureActive={setWhichFeatureActive}
             />
           </div>
         );
@@ -323,7 +338,9 @@ function UnifiedDocFeedContainer({
         </div>
       </div>
       <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
+        <div className={css(styles.mainFilters)}>
+          {docTypeFilterButtons}
+        </div>
       </div>
       {!hasSubscribed ? (
         <div>
@@ -333,6 +350,16 @@ function UnifiedDocFeedContainer({
           </div>
         </div>
       ) : null}
+      {
+        newFeatureActive &&
+        <FeedNewFeatureBox 
+          bannerExists={!hasSubscribed}
+          feature={whichFeatureActive}
+          featureHeadline={featureHeadlines[whichFeatureActive]}
+          description={featureDescriptions[whichFeatureActive]}
+        />
+
+      }
       {needsInitialFetch ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />

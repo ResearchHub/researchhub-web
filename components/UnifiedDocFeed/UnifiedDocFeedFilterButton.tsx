@@ -13,17 +13,26 @@ type Props = {
   label: string;
   onClick: (e) => void;
   auth: any;
+  setNewFeatureActive?: (bool) => void;
+  setWhichFeatureActive?: (feature) => void;
 };
 
 function UnifiedDocFeedFilterButton({
   isActive,
   label,
   onClick,
-  auth
+  auth,
+  setNewFeatureActive,
+  setWhichFeatureActive,
 }: Props): ReactElement<"div"> {
 
-  const [newFeatureActive, setNewFeatureActive] = useState(newFeature(label.toLocaleLowerCase()));
+  const [newFeatureActive, _] = useState(newFeature(label.toLocaleLowerCase()));
   const [clickedNewFeature, setClickedNewFeature] = useState(false);
+
+  useEffect(() => {
+    setNewFeatureActive && setNewFeatureActive(!!newFeatureActive && !clickedNewFeature);
+    setWhichFeatureActive && setWhichFeatureActive(label);
+  }, [newFeatureActive, clickedNewFeature])
 
   useEffect(() => {
     const fetchClickedNewFeature = () => {
