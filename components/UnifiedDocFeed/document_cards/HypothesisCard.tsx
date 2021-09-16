@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import { transformDate } from "~/redux/utils";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import API from "~/config/api";
@@ -18,8 +18,11 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 
 export type HypothesisCardProps = {
+  aggregate_citation_consensus: any;
   boost_amount: number;
   created_by: any;
   created_date: any;
@@ -71,28 +74,28 @@ const renderUploadedDate = (created_date, mobile) => {
 };
 
 function HypothesisCard({
+  aggregate_citation_consensus: aggreCitationCons,
+  boost_amount: boostAmount,
   created_by,
   created_date,
+  formattedDocType,
   hubs,
   id,
   preview_img: previewImg,
   renderable_text: renderableText,
-  score: initialScore,
-  boost_amount: boostAmount,
-  style,
-  title,
-  slug,
-  formattedDocType,
-  user,
-  user_vote: userVote,
-  styleVariation,
-  titleAsHtml,
   renderableTextAsHtml,
+  score: initialScore,
+  slug,
+  style,
+  styleVariation,
+  title,
+  titleAsHtml,
+  user_vote: userVote,
+  user,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
   }
-  // debugger;
   const {
     author_profile: { first_name, last_name, author },
   } = created_by;
@@ -102,7 +105,6 @@ function HypothesisCard({
   );
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
-
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
@@ -163,16 +165,6 @@ function HypothesisCard({
     </div>
   );
 
-  const summary = (
-    <div className={css(styles.summary) + " clamp2"}>
-      {renderableTextAsHtml
-        ? renderableTextAsHtml
-        : renderableText
-        ? renderableText
-        : ""}
-    </div>
-  );
-
   const hubTags = useMemo(() => {
     const firstTagSet = hubs
       .slice(0, 3)
@@ -205,19 +197,19 @@ function HypothesisCard({
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        getUrl: API.RH_POST_UPVOTE,
+        getUrl: API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
       },
       [DOWNVOTE]: {
         increment: -1,
-        getUrl: API.RH_POST_DOWNVOTE,
+        getUrl: API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
       },
     };
 
     const { increment, getUrl } = voteStrategies[voteType];
 
-    const handleVote = async (postId) => {
-      const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
-        (err) => console.log(err)
+    const handleVote = async () => {
+      const response = await fetch(getUrl, API.POST_CONFIG()).catch((err) =>
+        emptyFncWithMsg(err)
       );
 
       return response;
@@ -227,24 +219,15 @@ function HypothesisCard({
       e.stopPropagation();
 
       if (user && user.author_profile.id === created_by.author_profile.id) {
-        console.log("Not logged in or Attempted to vote own post");
+        emptyFncWithMsg("Not logged in or Attempted to vote own post");
         return;
       }
 
       if (voteState === voteType) {
-        /**
-         * Deselect
-         * NOTE: This will never be called with the current implementation of
-         * VoteWidget, because it disables the onVote/onDownvote callback
-         * if the button is already selected.
-         */
-        setVoteState(null);
-        setScore(score - increment); // Undo the vote
+        return;
       } else {
         setVoteState(voteType);
-        if (voteState === UPVOTE || voteState === DOWNVOTE) {
-          // If post was already upvoted / downvoted by user, then voting
-          // oppoistely will reverse the score by twice as much
+        if (Boolean(voteState) /* implies user already voted */) {
           setScore(score + increment * 2);
         } else {
           // User has not voted, so regular vote
@@ -252,7 +235,7 @@ function HypothesisCard({
         }
       }
 
-      await handleVote(id);
+      await handleVote();
     };
   };
 
@@ -312,7 +295,27 @@ function HypothesisCard({
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
-            {summary}
+            <div className={css(styles.summaryWrap)}>
+              <div className={css(styles.summary) + " clamp2"}>
+                {renderableTextAsHtml
+                  ? renderableTextAsHtml
+                  : renderableText
+                  ? renderableText
+                  : ""}
+              </div>
+              <div className={css(styles.consensusContainer)}>
+                <CitationConsensusItem
+                  citationID={null}
+                  consensusMeta={{
+                    downCount: aggreCitationCons?.down_count ?? 0,
+                    neutralCount: aggreCitationCons?.neutral_count ?? 0,
+                    upCount: aggreCitationCons?.up_count ?? 0,
+                    userVote: {},
+                  }}
+                  disableText
+                />
+              </div>
+            </div>
             {mobileCreatorTag}
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
@@ -322,15 +325,11 @@ function HypothesisCard({
             <DesktopOnly> {creatorTag} </DesktopOnly>
           </div>
           <DesktopOnly>
-            <div className={css(styles.row)}>
-              {/* TODO: briansantoso - Hub tags go here */}
-              {hubTags}
-            </div>
+            <div className={css(styles.row)}>{hubTags}</div>
           </DesktopOnly>
         </div>
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* TODO: briansantoso - Hub tags go here */}
             {hubTags}
           </div>
         </MobileOnly>
@@ -456,6 +455,9 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
+  consensusContainer: {
+    width: "15%",
+  },
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -526,9 +528,9 @@ const styles = StyleSheet.create({
     },
   },
   summary: {
-    width: "100%",
-    minWidth: "100%",
-    maxWidth: "100%",
+    width: "85%",
+    minWidth: "85%",
+    maxWidth: "85%",
     color: colors.BLACK(0.8),
     fontSize: 14,
     lineHeight: 1.3,
@@ -536,6 +538,12 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
+  },
+  summaryWrap: {
+    width: "100%",
+    minWidth: "100%",
+    maxWidth: "100%",
+    display: "flex",
   },
   row: {
     display: "flex",
