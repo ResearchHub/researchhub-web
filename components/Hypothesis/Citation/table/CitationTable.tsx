@@ -60,7 +60,7 @@ export default function CitationTable({
     setCitationItems,
     onSuccess: () => setIsLoading(false),
   });
-  
+
   const rowItems = isLoading ? (
     [
       <CitationTableRowItemPlaceholder key="citation-table-item-1" />,
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: "8px 0 24px",
     minHeight: 120,
-    overflow: 'auto',
+    overflow: "auto",
     marginBottom: 0,
   },
   columnHeaderWrap: {
