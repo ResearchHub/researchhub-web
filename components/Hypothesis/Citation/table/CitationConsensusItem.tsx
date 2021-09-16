@@ -50,7 +50,7 @@ function CitationConsensusItem({
   citationID,
   consensusMeta,
   disableText,
-}: CitationConsensusItemProps): ReactElement<"div" | typeof Fragment> {
+}: CitationConsensusItemProps): ReactElement<"div"> | null {
   const [localConsensusMeta, setLocalConsensusMeta] =
     useState<ConsensusMeta>(consensusMeta);
   const {
@@ -59,7 +59,6 @@ function CitationConsensusItem({
     upCount = 0,
     userVote,
   } = localConsensusMeta ?? {};
-
   const [totalCount, setTotalCount] = useState<number>(
     downCount + upCount + neutralCount
   );
@@ -159,12 +158,16 @@ function CitationConsensusItem({
     upCount,
   ]);
 
+  if (totalCount === 0) {
+    return null;
+  }
+
   const isNeutral = upCount === downCount;
   const doesMajoritySupport = !isNeutral && majority === UPVOTE;
   const majorityPercent =
     (doesMajoritySupport ? upCount : downCount) / totalCount;
   const weightedPercent = (majorityPercent / 2) * 100; // each sentimentbar consists 50% of the full bar
-  console.warn("weightedPercent: ", weightedPercent);
+
   const consensusBar =
     totalCount > 0 ? (
       <div className={css(styles.consensusWrap)}>
