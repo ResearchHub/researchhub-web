@@ -5,6 +5,7 @@ const colors = {
   GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
+  ICY_BLUE: "#E9EFFF",
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
   LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`,
   LIGHT_GREY_BACKGROUND: "#EDEDED",
@@ -19,6 +20,7 @@ const colors = {
   PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
   TEXT_GREY: (opacity = 1) => `rgba(128, 126, 134, ${opacity})`,
+  TEXT_DARKER_GREY: "#241F3A",
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
 };
 
@@ -61,6 +63,6 @@ export const bannerColor = {
 
 export const iconColors = {
   BACKGROUND: colors.LIGHT_GREY(),
-}
+};
 
 export default colors;
