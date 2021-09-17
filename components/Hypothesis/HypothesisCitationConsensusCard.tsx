@@ -95,7 +95,6 @@ export default function HypothesisCitationConsensusCard({
                 upCount,
                 userVote: {},
               }}
-              disableText
               updateLastFetchTime={silentEmptyFnc}
             />
           </div>
@@ -175,7 +174,10 @@ const styles = StyleSheet.create({
   },
   iconGroup: {
     display: 'flex',
-    marginBottom: 16,
+
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 16,
+    }
   },
   dot: {
     color: colors.TEXT_GREY(1),
