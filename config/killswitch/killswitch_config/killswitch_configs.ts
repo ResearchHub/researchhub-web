@@ -21,7 +21,7 @@ const KillswtichConfigs: SwitchConfigs = {
   hypothesis: {
     development: true,
     staging: true,
-    production: false,
+    production: true,
   },
 };
 
