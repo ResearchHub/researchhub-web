@@ -50,37 +50,39 @@ export default function HypothesisCitationConsensusCard({
       ) : (
         <div className={css(styles.body)}>
           <div className={css(styles.consensusTextGroup)}>
-            <span
-              className={css(
-                styles.icon,
-                sentiment > 0
-                  ? styles.positiveGreen
-                  : sentiment < 0
-                  ? styles.negativeRed
-                  : null
-              )}
-            >
-              {sentiment > 0 ? (
-                <img src="/static/icons/check.svg" />
-              ) : sentiment < 0 ? (
-                icons.timesCircle
-              ) : (
-                icons.minusCircle
-              )}
-            </span>
-            <span>
-              {`Probably ${
-                downCount === upCount
-                  ? "neutral"
-                  : downCount > upCount
-                  ? "no"
-                  : "yes"
-              }`}
-            </span>
+            <div className={css(styles.iconGroup)}>
+              <span
+                className={css(
+                  styles.icon,
+                  sentiment > 0
+                    ? styles.positiveGreen
+                    : sentiment < 0
+                    ? styles.negativeRed
+                    : null
+                )}
+              >
+                {sentiment > 0 ? (
+                  <img src="/static/icons/check.svg" />
+                ) : sentiment < 0 ? (
+                  icons.timesCircle
+                ) : (
+                  icons.minusCircle
+                )}
+              </span>
+              <span>
+                {`Probably ${
+                  downCount === upCount
+                    ? "neutral"
+                    : downCount > upCount
+                    ? "no"
+                    : "yes"
+                }`}
+              </span>
+            </div>
             <span className={css(styles.dot)}>{"\u2022"}</span>
             <span>{`Based on ${citationCount} source${
               citationCount > 1 ? "s" : ""
-            } and ${totalVoteCount} researcher vote${
+            } and ${totalVoteCount} consensus vote${
               totalVoteCount > 1 ? "s" : ""
             }.`}</span>
           </div>
@@ -170,6 +172,10 @@ const styles = StyleSheet.create({
   icon: {
     marginRight: 4,
     display: "flex",
+  },
+  iconGroup: {
+    display: 'flex',
+    marginBottom: 16,
   },
   dot: {
     color: colors.TEXT_GREY(1),

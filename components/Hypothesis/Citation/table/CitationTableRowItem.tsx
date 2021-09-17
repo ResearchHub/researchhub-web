@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: "20px 0px",
     justifyContent: "flex-start",
-    paddingRight: 8,
+    paddingRight: 16,
     fontFamily: "Roboto",
     size: 16,
     fontStyle: "normal",

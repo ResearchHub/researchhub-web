@@ -135,12 +135,12 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     height: 52,
-    minWidth: 600,
+    minWidth: 820,
   },
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    minWidth: 600,
+    minWidth: 820,
   },
   citationNoResults: {
     display: "flex",
