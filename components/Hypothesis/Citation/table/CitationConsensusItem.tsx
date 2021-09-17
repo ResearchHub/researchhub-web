@@ -443,6 +443,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 11,
     fontWeight: 500,
+    alignItems: 'center',
   },
   noSupportImg: {
     color: colors.RED(1),
