@@ -284,35 +284,37 @@ function CitationConsensusItem({
 
   return (
     <div className={css(styles.citationConsensusItem)}>
-      {consensusBar}
-      {hasCurrUserVoted ? null : (
-        <div className={css(styles.voteWrap)}>
-          <div
-            className={css(styles.button, styles.red)}
-            onClick={handleReject}
-            role="button"
-          >
-            <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
-            <div className={css(styles.buttonText)}>{"Reject"}</div>
+      <div className={css(styles.wrapper)}>
+        {consensusBar}
+        {hasCurrUserVoted ? null : (
+          <div className={css(styles.voteWrap)}>
+            <div
+              className={css(styles.button, styles.red)}
+              onClick={handleReject}
+              role="button"
+            >
+              <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
+              <div className={css(styles.buttonText)}>{"Reject"}</div>
+            </div>
+            <div
+              className={css(styles.button)}
+              onClick={handleNeutralVote}
+              role="button"
+            >
+              <div className={css(styles.iconWrap)}>{icons.minusCircle}</div>
+              <div className={css(styles.buttonText)}>{"Neutral"}</div>
+            </div>
+            <div
+              className={css(styles.button, styles.green)}
+              onClick={handleSupport}
+              role="button"
+            >
+              <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
+              <div className={css(styles.buttonText)}>{"Support"}</div>
+            </div>
           </div>
-          <div
-            className={css(styles.button)}
-            onClick={handleNeutralVote}
-            role="button"
-          >
-            <div className={css(styles.iconWrap)}>{icons.minusCircle}</div>
-            <div className={css(styles.buttonText)}>{"Neutral"}</div>
-          </div>
-          <div
-            className={css(styles.button, styles.green)}
-            onClick={handleSupport}
-            role="button"
-          >
-            <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
-            <div className={css(styles.buttonText)}>{"Support"}</div>
-          </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }
@@ -323,36 +325,39 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     height: "100%",
-    justifyContent: "center",
     width: "100%",
+  },
+  wrapper: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   voteWrap: {
     alignItems: "center",
     display: "flex",
-    // justifyContent: "center",
-    marginTop: 8,
-    maxWidth: 166,
+    justifyContent: "center",
+    marginTop: 16,
     width: "inherit",
+    marginLeft: 6,
   },
   button: {
     alignItems: "center",
     color: colors.LIGHT_GREY_TEXT,
     cursor: "pointer",
     display: "flex",
-    // justifyContent: "center",
     flexDirection: "column",
     margin: "0 8px",
-    // width: "33%",
   },
   hideText: {
     display: "none",
   },
   buttonText: {
     display: "block",
-    fontSize: 10,
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      display: "none",
-    },
+    fontSize: 12,
+    // [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+    //   display: "none",
+    // },
   },
   centerVote: {
     marginLeft: 10,
@@ -412,14 +417,15 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.GREY(1)}`,
     borderRadius: "50%",
     height: 10,
-    left: "calc(50% - 2px) ",
+    left: "50%",
+    transform: 'translateX(-50%)',
     position: "absolute",
     width: 10,
     zIndex: 2,
   },
   pointRightBorder: {
     borderRadius: "0 8px 8px 0",
-    left: "calc(50% + 4px)",
+    left: "50%",
     position: "absolute",
     zIndex: 1,
   },
