@@ -17,7 +17,6 @@ export function postNewFeatureNotifiedToUser({
       user: auth.user.id,
       feature: featureName.toLocaleLowerCase(),
     };
-    debugger;
     fetch(api.NEW_FEATURE({}), api.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
