@@ -78,7 +78,7 @@ export default function HypothesisCitationConsensusCard({
               }`}
             </span>
             <span className={css(styles.dot)}>{"\u2022"}</span>
-            <span>{`Base on ${citationCount} source${
+            <span>{`Based on ${citationCount} source${
               citationCount > 1 ? "s" : ""
             } and ${totalVoteCount} researcher vote${
               totalVoteCount > 1 ? "s" : ""
