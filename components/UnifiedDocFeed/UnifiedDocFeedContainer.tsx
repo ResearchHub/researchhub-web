@@ -598,7 +598,8 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   bannerContainer: {
-    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    marginBottom: 16,
+    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
     "@media only screen and (max-width: 415px)": {
       padding: 0,
       width: "100%",
