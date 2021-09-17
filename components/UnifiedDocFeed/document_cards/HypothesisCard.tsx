@@ -457,6 +457,10 @@ const styles = StyleSheet.create({
   },
   consensusContainer: {
     width: "15%",
+
+    "@media only screen and (max-width: 767px)": {
+      width: '100%',
+    }
   },
   bottomBar: {
     display: "flex",
@@ -544,6 +548,12 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     maxWidth: "100%",
     display: "flex",
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: 'column',
+      marginTop: 16,
+      marginBottom: 16,
+    }
   },
   row: {
     display: "flex",
