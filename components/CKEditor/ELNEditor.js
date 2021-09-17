@@ -8,67 +8,24 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
-
-function useFetchNotes(refetchNotes) {
-  const [notes, setNotes] = useState([]);
-  const [fetched, setFetched] = useState(false);
-
-  useEffect(() => {
-    fetch(API.NOTE({}), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        setNotes(data.results.sort((a, b) => new Date(b.created_date) - new Date(a.created_date)));
-        if (!fetched) {
-          setFetched(true);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [refetchNotes]);
-
-  return [notes, fetched];
-}
-
-function useFetchOrganizations(user) {
-  const [organizations, setOrganizations] = useState([]);
-
-  useEffect(() => {
-    if (user.id) {
-      fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((data) => {
-          setOrganizations(data);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [user]);
-
-  return organizations;
-}
 
 export const ELNEditor = ({ user }) => {
   const router = useRouter();
-
   const editorRef = useRef();
   const presenceListElementRef = useRef();
   const sidebarElementRef = useRef();
-
+  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
+  const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [notes, setNotes] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
   const [refetchNotes, setRefetchNotes] = useState(false);
   const [titles, setTitles] = useState({});
-
-  const [notes, fetched] = useFetchNotes(refetchNotes);
-  const organizations = useFetchOrganizations(user);
-  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
 
   useEffect(() => {
     editorRef.current = {
@@ -84,18 +41,95 @@ export const ELNEditor = ({ user }) => {
   }, []);
 
   useEffect(() => {
-    const updatedTitles = {};
-    for (const note of notes) {
-      updatedTitles[note.id.toString()] = note.title;
+    fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((data) => {
+        setOrganizations(data);
+        setCurrentOrganizationId(getCurrentOrganizationId(data));
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (!isNullOrUndefined(currentOrganizationId)) {
+      fetch(API.NOTE({ orgId: currentOrganizationId }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((data) => {
+          const sortedNotes = data.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+          setNotes(sortedNotes);
+          const updatedTitles = {};
+          for (const note of sortedNotes) {
+            updatedTitles[note.id.toString()] = note.title;
+          }
+          setTitles(updatedTitles);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
-    setTitles(updatedTitles);
-  }, [fetched]);
+  }, [refetchNotes, currentOrganizationId]);
+
+  useEffect(() => {
+    setCurrentOrganizationId(getCurrentOrganizationId(organizations));
+    router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
+  }, [router.query.orgName]);
 
   useEffect(() => {
     setCurrentNoteId(router.query.noteId);
   }, [router.query.noteId]);
 
-  function saveData(editor, noteId) {
+  const getCurrentOrganizationId = (orgs) => {
+    const orgName = router.query.orgName;
+    if (orgName === "personal") {
+      return 0; // orgId of 0 for personal notes
+    } else {
+      for (const org of orgs) {
+        if (orgName === org.slug) {
+          return org.id;
+        }
+      }
+    }
+  };
+
+  const toggleSidebarSection = () => {
+    setHideNotes(!hideNotes);
+  };
+
+  const handleCreateNewNote = () => {
+    const params = {
+      organization: currentOrganizationId,
+      title: "Untitled",
+    };
+
+    fetch(API.NOTE({}), API.POST_CONFIG(params))
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((note) => {
+        setRefetchNotes(!refetchNotes);
+        setTitles({
+          [note.id.toString()]: note.title,
+          ...titles
+        });
+        router.push(`/notebook/${router.query.orgName}/${note.id}`);
+      });
+  };
+
+  const handleInput = (editor) => {
+    const updatedTitles = {};
+    for (const key in titles) {
+      updatedTitles[key] =
+        key === editor.config._config.collaboration.channelId
+          ? editor.plugins.get("Title").getTitle() || "Untitled"
+          : titles[key];
+    }
+    setTitles(updatedTitles);
+  };
+
+  const saveData = (editor, noteId) => {
     const noteParams = {
       title: editor.plugins.get("Title").getTitle() || "Untitled",
     };
@@ -111,68 +145,6 @@ export const ELNEditor = ({ user }) => {
     fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
-  }
-
-  function manualSaveData(data) {
-    console.log("manualSaveData: " + data);
-  }
-
-  const refreshDisplayMode = (editor) => {
-    const annotationsUIs = editor.plugins.get("AnnotationsUIs");
-    const sidebarElement = sidebarElementRef.current;
-
-    if (window.innerWidth < 1070) {
-      sidebarElement.classList.remove("narrow");
-      sidebarElement.classList.add("hidden");
-      annotationsUIs.switchTo("inline");
-    } else if (window.innerWidth < 1300) {
-      sidebarElement.classList.remove("hidden");
-      sidebarElement.classList.add("narrow");
-      annotationsUIs.switchTo("narrowSidebar");
-    } else {
-      sidebarElement.classList.remove("hidden", "narrow");
-      annotationsUIs.switchTo("wideSidebar");
-    }
-  };
-
-  const checkPendingActions = (editor, domEvt) => {
-    if (editor.plugins.get("PendingActions").hasAny) {
-      domEvt.preventDefault();
-      domEvt.returnValue = true;
-    }
-  };
-
-  const toggleSidebarSection = () => {
-    setHideNotes(!hideNotes);
-  };
-
-  const handleCreateNewNote = () => {
-    const params = {
-      title: "Untitled",
-    };
-
-    fetch(API.NOTE({}), API.POST_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((note) => {
-        setRefetchNotes(!refetchNotes);
-        setTitles({
-          [note.id.toString()]: note.title,
-          ...titles
-        });
-        router.push(`/notebook/${note.id}`);
-      });
-  };
-
-  const handleInput = (editor) => {
-    const updatedTitles = {};
-    for (const key in titles) {
-      updatedTitles[key] =
-        key === editor.config._config.collaboration.channelId
-          ? editor.plugins.get("Title").getTitle() || "Untitled"
-          : titles[key];
-    }
-    setTitles(updatedTitles);
   };
 
   const editors = notes.map(note => {
@@ -263,6 +235,20 @@ export const ELNEditor = ({ user }) => {
     );
   });
 
+  let organizationName;
+  let organizationImage;
+  if (currentOrganizationId === 0) {
+    organizationName = "Personal Notes";
+    organizationImage = user.author_profile.profile_image;
+  } else if (currentOrganizationId) {
+    for (const org of organizations) {
+      if (org.id === currentOrganizationId) {
+        organizationName = org.name;
+        organizationImage = org.cover_image;
+      }
+    }
+  }
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
@@ -274,32 +260,31 @@ export const ELNEditor = ({ user }) => {
             isOpen={isPopoverOpen}
             popoverContent={
               <div className={css(styles.popoverBodyContent)}>
-                <div className={css(styles.popoverBodyItem)}>
-                  <img className={css(styles.popoverBodyItemImage)} src={user?.author_profile?.profile_image} draggable="false" />
-                  <div className={css(styles.popoverBodyItemTitle)}>Personal Notes</div>
-                </div>
+                <Link href={`/notebook/personal/200`}>
+                  <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+                    <img className={css(styles.popoverBodyItemImage)} draggable="false" src={user.author_profile.profile_image} />
+                    <div className={css(styles.popoverBodyItemTitle)}>Personal Notes</div>
+                  </a>
+                </Link>
                 {organizations.map(org => (
-                  <div className={css(styles.popoverBodyItem)}>
-                    <img className={css(styles.popoverBodyItemImage)} src={org.cover_image} draggable="false" />
-                    <div className={css(styles.popoverBodyItemText)}>
-                      <div className={css(styles.popoverBodyItemTitle)}>{org.name}</div>
-                      <div className={css(styles.popoverBodyItemSubtitle)}>{"1 member"}</div>
-                    </div>
-                  </div>
+                  <Link href={`/notebook/${org.slug}/200`} key={org.id.toString()}>
+                    <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+                      <img className={css(styles.popoverBodyItemImage)} draggable="false" src={org.cover_image} />
+                      <div className={css(styles.popoverBodyItemText)}>
+                        <div className={css(styles.popoverBodyItemTitle)}>{org.name}</div>
+                        <div className={css(styles.popoverBodyItemSubtitle)}>{"1 member"}</div>
+                      </div>
+                    </a>
+                  </Link>
                 ))}
               </div>
             }
             positions={["bottom"]}
             setIsPopoverOpen={setIsPopoverOpen}
             targetContent={
-              <div
-                className={css(styles.popoverTarget)}
-                onClick={() => {
-                  setIsPopoverOpen(!isPopoverOpen);
-                }}
-              >
-                <img className={css(styles.popoverBodyItemImage)} src={user?.author_profile?.profile_image} draggable="false" />
-                {"Personal Notes"}
+              <div className={css(styles.popoverTarget)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
+                <img className={css(styles.popoverBodyItemImage)} draggable="false" src={organizationImage} />
+                {organizationName}
                 <span className={css(styles.sortIcon)}>
                   {icons.sort}
                 </span>
@@ -319,7 +304,7 @@ export const ELNEditor = ({ user }) => {
         {!hideNotes && (
           <div>
             {notes.map(note => (
-              <Link href={`/notebook/${note.id}`} key={note.id.toString()}>
+              <Link href={`/notebook/${router.query.orgName}/${note.id}`} key={note.id.toString()}>
                 <a
                   className={css(
                     styles.sidebarSectionContent,
@@ -414,6 +399,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     padding: 16,
+    textDecoration: "none",
     wordBreak: "break-word",
     ":hover": {
       backgroundColor: colors.GREY(0.2),
@@ -437,6 +423,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   popoverBodyItemTitle: {
+    color: colors.BLACK(),
     fontWeight: 500,
   },
   popoverBodyItemSubtitle: {
