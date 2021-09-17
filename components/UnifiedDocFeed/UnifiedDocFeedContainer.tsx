@@ -28,6 +28,8 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import TabNewFeature from "../NewFeature/TabNewFeature";
 import FeedNewFeatureBox from "../NewFeature/FeedNewFeatureBox";
 import killswitch from "~/config/killswitch/killswitch";
+import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
+import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -294,22 +296,51 @@ function UnifiedDocFeedContainer({
     delete UnifiedDocFilters.HYPOTHESIS;
   }
 
+  const [shouldAlertHypo, setShouldAlertHypo] =
+    useEffectNewFeatureShouldAlertUser({
+      auth,
+      featureName: "hypothesis",
+    });
+  console.warn("shouldAlertHypo:", shouldAlertHypo);
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         const filterValue = UnifiedDocFilters[filterKey];
-        return (
-          <div className={css(styles.newFeatureContainer)}>
-            <UnifiedDocFeedFilterButton
-              isActive={docTypeFilter === filterValue}
-              key={filterKey}
-              label={UnifiedDocFilterLabels[filterKey]}
-              onClick={() => handleDocTypeChange(filterValue)}
-              setNewFeatureActive={setNewFeatureActive}
-              setWhichFeatureActive={setWhichFeatureActive}
-            />
-          </div>
-        );
+        if (filterKey === "hypothesis") {
+          return (
+            <div className={css(styles.newFeatureContainer)}>
+              <UnifiedDocFeedFilterButton
+                isActive={docTypeFilter === filterValue}
+                key={filterKey}
+                label={UnifiedDocFilterLabels[filterKey]}
+                onClick={(): void => {
+                  setShouldAlertHypo(true); // optimistic update
+                  postNewFeatureNotifiedToUser({
+                    auth,
+                    featureName: "hypothesis",
+                  });
+                  handleDocTypeChange(filterValue);
+                }}
+              />
+              {shouldAlertHypo ? (
+                <div className={css(styles.tabFeature)}>
+                  <TabNewFeature />
+                </div>
+              ) : null}
+            </div>
+          );
+        } else {
+          return (
+            <div className={css(styles.newFeatureContainer)}>
+              <UnifiedDocFeedFilterButton
+                isActive={docTypeFilter === filterValue}
+                key={filterKey}
+                label={UnifiedDocFilterLabels[filterKey]}
+                onClick={() => handleDocTypeChange(filterValue)}
+              />
+            </div>
+          );
+        }
       }
     );
   }, [docTypeFilter, router]);
@@ -535,5 +566,9 @@ const styles = StyleSheet.create({
   feedPosts: {
     position: "relative",
     minHeight: 200,
+  },
+  tabFeature: {
+    marginLeft: 8,
+    marginRight: 24,
   },
 });
