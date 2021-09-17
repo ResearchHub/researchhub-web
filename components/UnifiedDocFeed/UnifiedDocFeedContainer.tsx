@@ -14,7 +14,14 @@ import {
 } from "./constants/UnifiedDocFilters";
 import { connect } from "react-redux";
 import { getDocumentCard, UnifiedCard } from "./utils/getDocumentCard";
-import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
+import {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  Fragment,
+} from "react";
 import colors from "../../config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
@@ -297,7 +304,7 @@ function UnifiedDocFeedContainer({
     delete UnifiedDocFilters.HYPOTHESIS;
   }
 
-  const [shouldAlertHypo, setShouldAlertHypo] =
+  const [shouldAlertHypo, _setShouldAlertHypo] =
     useEffectNewFeatureShouldAlertUser({
       auth,
       featureName: "hypothesis",
@@ -353,9 +360,32 @@ function UnifiedDocFeedContainer({
       setUnifiedDocuments,
       unifiedDocumentData: unifiedDocuments,
     });
-    if (shouldAlertHypo) {
+    if (shouldAlertHypo && docTypeFilter === "hypothesis") {
       cards.unshift(
-        <SiteWideBannerTall body={undefined} header={undefined} imgSrc={""} />
+        <SiteWideBannerTall
+          body={
+            <Fragment>
+              <span>
+                {
+                  "We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows users to put a stake in the ground and make a claim while backing it up with scientific research."
+                }
+              </span>
+              <br />
+              <br />
+              <span>
+                {
+                  "Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place aпуone looks at to find the consensus of вресific topic"
+                }
+              </span>
+            </Fragment>
+          }
+          button={{
+            label: "Learn more",
+            href: undefined /* TODO: Pat add Notion link */,
+          }}
+          header={"Introducing Hypothesis"}
+          imgSrc={""}
+        />
       );
     }
     return cards;
