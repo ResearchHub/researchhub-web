@@ -169,9 +169,11 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
-    NOTE: ({ noteId }) => {
+    NOTE: ({ noteId, orgId }) => {
       let url;
-      if (noteId) {
+      if (!isNullOrUndefined(orgId)) {
+        url = `${BASE_URL}note/${orgId}/get_organization_notes/`;
+      } else if (!isNullOrUndefined(noteId)) {
         url = `${BASE_URL}note/${noteId}/`;
       } else {
         url = `${BASE_URL}note/`;
