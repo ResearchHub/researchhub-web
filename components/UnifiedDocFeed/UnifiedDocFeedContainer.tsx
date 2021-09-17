@@ -503,6 +503,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
+    overflow: 'auto',
   },
   mainFilters: {
     alignItems: "center",
@@ -611,7 +612,6 @@ const styles = StyleSheet.create({
   },
   tabFeature: {
     marginLeft: 8,
-    marginRight: 24,
     width: 38,
   },
   hypoFeedButton: {
