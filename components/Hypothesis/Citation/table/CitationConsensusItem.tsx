@@ -332,6 +332,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
   },
   voteWrap: {
     alignItems: "center",
