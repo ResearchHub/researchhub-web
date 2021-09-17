@@ -12,11 +12,12 @@ export function postNewFeatureNotifiedToUser({
   auth,
   featureName,
 }: PostNewFeatureNotifiedArgs): void {
-  if (auth?.isLoggedIn ?? false) {
+  if (Boolean(auth?.isLoggedIn)) {
     const params = {
       user: auth.user.id,
       feature: featureName.toLocaleLowerCase(),
     };
+    debugger;
     fetch(api.NEW_FEATURE({}), api.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);

@@ -30,6 +30,7 @@ import FeedNewFeatureBox from "../NewFeature/FeedNewFeatureBox";
 import killswitch from "~/config/killswitch/killswitch";
 import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
+import SiteWideBannerTall from "../SiteWideBannerTall";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -301,23 +302,22 @@ function UnifiedDocFeedContainer({
       auth,
       featureName: "hypothesis",
     });
-  console.warn("shouldAlertHypo:", shouldAlertHypo);
+
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         const filterValue = UnifiedDocFilters[filterKey];
-        if (filterKey === "hypothesis") {
+        if (filterValue === "hypothesis") {
           return (
-            <div className={css(styles.newFeatureContainer)}>
+            <div className={css(styles.hypoFeedButton)}>
               <UnifiedDocFeedFilterButton
                 isActive={docTypeFilter === filterValue}
                 key={filterKey}
                 label={UnifiedDocFilterLabels[filterKey]}
                 onClick={(): void => {
-                  setShouldAlertHypo(true); // optimistic update
                   postNewFeatureNotifiedToUser({
                     auth,
-                    featureName: "hypothesis",
+                    featureName: filterValue,
                   });
                   handleDocTypeChange(filterValue);
                 }}
@@ -331,7 +331,7 @@ function UnifiedDocFeedContainer({
           );
         } else {
           return (
-            <div className={css(styles.newFeatureContainer)}>
+            <div className={css(styles.feedButtonContainer)}>
               <UnifiedDocFeedFilterButton
                 isActive={docTypeFilter === filterValue}
                 key={filterKey}
@@ -343,19 +343,29 @@ function UnifiedDocFeedContainer({
         }
       }
     );
-  }, [docTypeFilter, router]);
+  }, [docTypeFilter, router, shouldAlertHypo]);
 
-  const documentCards = useMemo(
-    (): UnifiedCard[] =>
-      getDocumentCard({
-        hasSubscribed,
-        isLoggedIn,
-        isOnMyHubsTab,
-        setUnifiedDocuments,
-        unifiedDocumentData: unifiedDocuments,
-      }),
-    [getDocumentCard, setUnifiedDocuments, unifiedDocuments, isLoggedIn]
-  );
+  const documentCards = useMemo((): UnifiedCard[] | any[] => {
+    const cards = getDocumentCard({
+      hasSubscribed,
+      isLoggedIn,
+      isOnMyHubsTab,
+      setUnifiedDocuments,
+      unifiedDocumentData: unifiedDocuments,
+    });
+    if (shouldAlertHypo) {
+      cards.unshift(
+        <SiteWideBannerTall body={undefined} header={undefined} imgSrc={""} />
+      );
+    }
+    return cards;
+  }, [
+    getDocumentCard,
+    setUnifiedDocuments,
+    unifiedDocuments,
+    isLoggedIn,
+    shouldAlertHypo,
+  ]);
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -469,7 +479,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
   },
-  newFeatureContainer: {
+  feedButtonContainer: {
     marginRight: 24,
   },
   subFilters: {
@@ -569,6 +579,12 @@ const styles = StyleSheet.create({
   },
   tabFeature: {
     marginLeft: 8,
+    marginRight: 24,
+    width: 38,
+  },
+  hypoFeedButton: {
+    alignItems: "center",
+    display: "flex",
     marginRight: 24,
   },
 });

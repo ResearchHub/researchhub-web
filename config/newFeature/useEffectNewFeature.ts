@@ -26,14 +26,16 @@ export function useEffectNewFeatureShouldAlertUser({
         )
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then((res: any): void => setShouldAlert(!res?.clicked ?? true))
+          .then((res: any): void => {
+            setShouldAlert(!res?.clicked ?? true);
+          })
           .catch((error: Error): void => setShouldAlert(true));
       } else {
-        setShouldAlert(
+        const localStorageValue =
           window?.localStorage?.getItem(
             `feature_${featureName.toLocaleLowerCase()}_clicked`
-          ) === "true" ?? true
-        );
+          ) ?? "false";
+        setShouldAlert(localStorageValue === "false");
       }
     }
   }, [auth, auth?.isLoggedIn]);
