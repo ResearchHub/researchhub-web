@@ -312,7 +312,6 @@ function HypothesisCard({
                     upCount: aggreCitationCons?.up_count ?? 0,
                     userVote: {},
                   }}
-                  disableText
                   updateLastFetchTime={silentEmptyFnc}
                 />
               </div>
