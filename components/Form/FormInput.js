@@ -147,13 +147,13 @@ class FormInput extends Component {
 const styles = StyleSheet.create({
   inputContainer: {
     minHeight: 75,
-    width: 525,
     display: "flex",
     flexDirection: "column",
     alignItems: "space-between",
     marginTop: 20,
     marginBottom: 20,
     position: "relative",
+    width: "100%",
   },
   inputLabel: {
     fontWeight: 500,

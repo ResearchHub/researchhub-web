@@ -62,8 +62,6 @@ class LiveFeed extends Component {
     }
   };
 
-  componentDidUpdate(prevProps) {}
-
   componentWillUnmount() {
     clearInterval(this.state.intervalPing);
     window.removeEventListener("scroll", this.scrollListener);
@@ -234,8 +232,9 @@ class LiveFeed extends Component {
         return currentHubNotifications.map((notification, i) => {
           // TODO: remove when hypothesis is properly returning unified document
           if (
-            isNullOrUndefined(notification.item.unified_document) ||
-            isNullOrUndefined(notification.item.unified_document.document_type)
+            isNullOrUndefined(
+              notification?.item?.unified_document?.document_type
+            )
           ) {
             return null;
           }
@@ -613,7 +612,4 @@ const mapDispatchToProps = {
   getLivefeed: NotificationActions.getLivefeed,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LiveFeed);
+export default connect(mapStateToProps, mapDispatchToProps)(LiveFeed);

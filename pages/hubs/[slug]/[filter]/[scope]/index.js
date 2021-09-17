@@ -1,12 +1,11 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
-import { getInitialScope } from "~/config/utils/dates";
+import { getInitialScope, calculateScopeFromSlug } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
 import { slugToFilterQuery } from "~/config/utils/routing";
-import { calculateScopeFromSlug } from "~/config/utils/dates";
 import API from "~/config/api";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
@@ -17,7 +16,7 @@ import Router from "next/router";
 class Index extends Component {
   // NOTE: calvinhlee - no longer called
   static async getInitialProps(ctx) {
-    let { query } = ctx;
+    let { query, query: urlQuery } = ctx;
 
     let page = query.page ? query.page : 1;
     let filter = query.filter && slugToFilterQuery(query.filter);
@@ -32,12 +31,14 @@ class Index extends Component {
       const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
         .then((res) => res.json())
         .then((body) => body.results[0]);
+      const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
 
       const PARAMS = {
-        ordering: filter,
-        timePeriod: scope,
-        page: page || 1,
         hubId: currentHub.id,
+        ordering: filter,
+        page: page || 1,
+        timePeriod: scope,
+        type: urlDocType,
       };
 
       if (filter === "pulled-papers") {

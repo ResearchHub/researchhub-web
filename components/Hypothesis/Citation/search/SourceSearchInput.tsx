@@ -195,12 +195,16 @@ const styles = StyleSheet.create({
     top: 104,
     display: "flex",
     flexDirection: "column",
-    maxHeight: 120,
+    maxHeight: 300,
     minHeight: 40,
     overflowY: "scroll",
     position: "absolute",
     width: "inherit",
     zIndex: 2,
+
+    "@media only screen and (max-width: 767px)": {
+      maxHeight: 200,
+    }
   },
   selectedItemCard: { marginBottom: 8 },
   uploadAPaper: {

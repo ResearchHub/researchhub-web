@@ -4,24 +4,16 @@ export type SwitchConfigs = {
     development?: boolean;
     production?: boolean;
     staging?: boolean;
+    startDate?: string;
   };
 };
 
 const KillswtichConfigs: SwitchConfigs = {
-  paperSummary: {
-    development: false,
-    staging: false,
-    production: false,
-  },
-  paperUploadV2: {
-    development: true,
-    staging: true,
-    production: true,
-  },
   hypothesis: {
     development: true,
     staging: true,
-    production: false,
+    production: true,
+    startDate: '9/15/2021',
   },
 };
 
