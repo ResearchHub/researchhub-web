@@ -1,4 +1,5 @@
 import { StyleSheet } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
 import colors from "../../../../config/themes/colors";
 
 export const customStyles = {
@@ -86,17 +87,17 @@ export const formGenericStyles = StyleSheet.create({
     borderRadius: 4,
     padding: "30px 60px",
     marginTop: 40,
-    "@media only screen and (max-width: 935px)": {
-      minWidth: "unset",
+    overflowY: "scroll",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: 600,
-      padding: 40,
+      padding: 32,
       marginTop: 16,
     },
-    "@media only screen and (max-width: 665px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "calc(100% - 16px)",
       padding: 16,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       borderTop: "unset",
     },
   },
@@ -217,7 +218,10 @@ export const formGenericStyles = StyleSheet.create({
     },
   },
   inputStyle: {
-    width: 570,
+    // width: '100%',
+    // "@media only screen and (min-width: 1024px)": {
+    //   width: 570,
+    // }
   },
   inputMax: {
     width: "100%",

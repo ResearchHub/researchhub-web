@@ -412,8 +412,9 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           return (
             <UserPostCard
               {...post}
-              user_vote={post.user_vote}
-              key={post.id || index}
+              formattedDocType="post"
+              key={post?.id || index}
+              user_vote={post?.user_vote}
               styleVariation={
                 context === "best-results" ? "noBorderVariation" : null
               }

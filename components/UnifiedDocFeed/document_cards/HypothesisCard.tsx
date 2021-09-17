@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import { transformDate } from "~/redux/utils";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import API from "~/config/api";
@@ -15,11 +15,14 @@ import icons from "~/config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
-import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
+import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 
-export type UserPostCardProps = {
+export type HypothesisCardProps = {
+  aggregate_citation_consensus: any;
   boost_amount: number;
   created_by: any;
   created_date: any;
@@ -37,7 +40,7 @@ export type UserPostCardProps = {
   titleAsHtml: any;
   unified_document_id: number;
   unified_document: any;
-  user_vote: any; // TODO: briansantoso - define type for user_vote
+  user_vote: any;
   user: any;
 };
 
@@ -70,33 +73,26 @@ const renderUploadedDate = (created_date, mobile) => {
   }
 };
 
-function UserPostCard(props: UserPostCardProps) {
-  const {
-    created_by,
-    created_date,
-    hubs,
-    id,
-    preview_img: previewImg,
-    renderable_text: renderableText,
-    score: initialScore,
-    boost_amount: boostAmount,
-    style,
-    title,
-    slug,
-    unified_document: unifiedDocument,
-    unified_document_id: unifiedDocumentId,
-    formattedDocType,
-    user,
-    user_vote: userVote,
-    styleVariation,
-    /*
-      In some contexts we want to wrap the title/renderable_text 
-      with html. e.g. rendering search highlights.
-    */
-    titleAsHtml,
-    renderableTextAsHtml,
-  } = props;
-
+function HypothesisCard({
+  aggregate_citation_consensus: aggreCitationCons,
+  boost_amount: boostAmount,
+  created_by,
+  created_date,
+  formattedDocType,
+  hubs,
+  id,
+  preview_img: previewImg,
+  renderable_text: renderableText,
+  renderableTextAsHtml,
+  score: initialScore,
+  slug,
+  style,
+  styleVariation,
+  title,
+  titleAsHtml,
+  user_vote: userVote,
+  user,
+}: HypothesisCardProps) {
   if (created_by == null) {
     return null;
   }
@@ -107,16 +103,18 @@ function UserPostCard(props: UserPostCardProps) {
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
-  const [score, setScore] = useState<number>(initialScore + (boostAmount || 0));
+  const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
-
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
 
   const creatorName = first_name + " " + last_name;
   const mainTitle = (
-    <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
+    <Link
+      href={"/[docType]/[documentId]/[title]"}
+      as={`/${formattedDocType}/${id}/${slug}`}
+    >
       <a
         className={css(styles.link)}
         onClick={(e) => {
@@ -167,16 +165,6 @@ function UserPostCard(props: UserPostCardProps) {
     </div>
   );
 
-  const summary = (
-    <div className={css(styles.summary) + " clamp2"}>
-      {renderableTextAsHtml
-        ? renderableTextAsHtml
-        : renderableText
-        ? renderableText
-        : ""}
-    </div>
-  );
-
   const hubTags = useMemo(() => {
     const firstTagSet = hubs
       .slice(0, 3)
@@ -209,19 +197,19 @@ function UserPostCard(props: UserPostCardProps) {
     const voteStrategies = {
       [UPVOTE]: {
         increment: 1,
-        getUrl: API.RH_POST_UPVOTE,
+        getUrl: API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
       },
       [DOWNVOTE]: {
         increment: -1,
-        getUrl: API.RH_POST_DOWNVOTE,
+        getUrl: API.HYPOTHESIS_VOTE({ hypothesisID: id, voteType }),
       },
     };
 
     const { increment, getUrl } = voteStrategies[voteType];
 
-    const handleVote = async (postId) => {
-      const response = await fetch(getUrl(postId), API.POST_CONFIG()).catch(
-        (err) => console.log(err)
+    const handleVote = async () => {
+      const response = await fetch(getUrl, API.POST_CONFIG()).catch((err) =>
+        emptyFncWithMsg(err)
       );
 
       return response;
@@ -231,24 +219,15 @@ function UserPostCard(props: UserPostCardProps) {
       e.stopPropagation();
 
       if (user && user.author_profile.id === created_by.author_profile.id) {
-        console.log("Not logged in or Attempted to vote own post");
+        emptyFncWithMsg("Not logged in or Attempted to vote own post");
         return;
       }
 
       if (voteState === voteType) {
-        /**
-         * Deselect
-         * NOTE: This will never be called with the current implementation of
-         * VoteWidget, because it disables the onVote/onDownvote callback
-         * if the button is already selected.
-         */
-        setVoteState(null);
-        setScore(score - increment); // Undo the vote
+        return;
       } else {
         setVoteState(voteType);
-        if (voteState === UPVOTE || voteState === DOWNVOTE) {
-          // If post was already upvoted / downvoted by user, then voting
-          // oppoistely will reverse the score by twice as much
+        if (Boolean(voteState) /* implies user already voted */) {
           setScore(score + increment * 2);
         } else {
           // User has not voted, so regular vote
@@ -256,7 +235,7 @@ function UserPostCard(props: UserPostCardProps) {
         }
       }
 
-      await handleVote(id);
+      await handleVote();
     };
   };
 
@@ -297,7 +276,7 @@ function UserPostCard(props: UserPostCardProps) {
   return (
     <Ripples
       className={css(
-        styles.userPostCard,
+        styles.HypothesisCard,
         styleVariation && styles[styleVariation],
         style && style,
         isHubsOpen && styles.overflow
@@ -316,7 +295,28 @@ function UserPostCard(props: UserPostCardProps) {
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
-            {summary}
+            <div className={css(styles.summaryWrap)}>
+              <div className={css(styles.summary) + " clamp2"}>
+                {renderableTextAsHtml
+                  ? renderableTextAsHtml
+                  : renderableText
+                  ? renderableText
+                  : ""}
+              </div>
+              <div className={css(styles.consensusContainer)}>
+                <CitationConsensusItem
+                  citationID={null}
+                  consensusMeta={{
+                    downCount: aggreCitationCons?.down_count ?? 0,
+                    neutralCount: aggreCitationCons?.neutral_count ?? 0,
+                    upCount: aggreCitationCons?.up_count ?? 0,
+                    userVote: {},
+                  }}
+                  disableText
+                  updateLastFetchTime={silentEmptyFnc}
+                />
+              </div>
+            </div>
             {mobileCreatorTag}
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
@@ -326,15 +326,11 @@ function UserPostCard(props: UserPostCardProps) {
             <DesktopOnly> {creatorTag} </DesktopOnly>
           </div>
           <DesktopOnly>
-            <div className={css(styles.row)}>
-              {/* TODO: briansantoso - Hub tags go here */}
-              {hubTags}
-            </div>
+            <div className={css(styles.row)}>{hubTags}</div>
           </DesktopOnly>
         </div>
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* TODO: briansantoso - Hub tags go here */}
             {hubTags}
           </div>
         </MobileOnly>
@@ -349,10 +345,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserPostCard);
+export default connect(mapStateToProps, mapDispatchToProps)(HypothesisCard);
 
 /**
  * Styles taken from PaperEntryCard.js
@@ -360,7 +353,7 @@ export default connect(
  * are behaving the same way. If not, refer to PaperEntryCard.js styles
  */
 const styles = StyleSheet.create({
-  userPostCard: {
+  HypothesisCard: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "flex-start",
@@ -463,6 +456,9 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
+  consensusContainer: {
+    width: "15%",
+  },
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
@@ -533,9 +529,9 @@ const styles = StyleSheet.create({
     },
   },
   summary: {
-    width: "100%",
-    minWidth: "100%",
-    maxWidth: "100%",
+    width: "85%",
+    minWidth: "85%",
+    maxWidth: "85%",
     color: colors.BLACK(0.8),
     fontSize: 14,
     lineHeight: 1.3,
@@ -543,6 +539,12 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
+  },
+  summaryWrap: {
+    width: "100%",
+    minWidth: "100%",
+    maxWidth: "100%",
+    display: "flex",
   },
   row: {
     display: "flex",

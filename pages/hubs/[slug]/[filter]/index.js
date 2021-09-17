@@ -16,7 +16,7 @@ import { Component } from "react";
 class Index extends Component {
   // NOTE: calvinhlee - no longer called
   static async getInitialProps(ctx) {
-    let { query } = ctx;
+    let { query, query: urlQuery } = ctx;
 
     let page = query.page ? query.page : 1;
     let filter = query.filter && slugToFilterQuery(query.filter);
@@ -28,12 +28,14 @@ class Index extends Component {
       const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
         .then((res) => res.json())
         .then((body) => body.results[0]);
+      const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
 
       const PARAMS = {
         ordering: filter,
         timePeriod: getInitialScope(),
         page: page || 1,
         hubId: currentHub.id,
+        type: urlDocType,
       };
 
       if (filter === "pulled-papers") {

@@ -37,7 +37,7 @@ export default function AboutQuestionCard({
       >
         <ul>
           <li>
-            Ask a relevant scientific question in order to start a discussion
+            Make a hypothesis -- a proposed explanation for an observation.
           </li>
           <li>
             After you create the hypothesis, add relevant papers to support or reject the hypothesis

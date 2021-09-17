@@ -11,10 +11,10 @@ export default function CitationNoResult(): ReactElement<"div"> {
         alt="Empty State Icon"
       />
       <span className={css(styles.emptyPlaceholderText)}>
-        {"There are no posted sources related to this hypothesis"}
+        {"There are no sources related to this hypothesis"}
       </span>
       <span className={css(styles.emptyPlaceholderSubtitle)}>
-        {"Be the first to add a citation / source"}
+        {"Be the first to add a source"}
       </span>
     </div>
   );

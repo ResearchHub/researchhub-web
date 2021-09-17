@@ -476,7 +476,6 @@ const routes = (BASE_URL) => {
       return url;
     },
     SORTED_HUB: (params = {}) => {
-      const { filter } = params;
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
 
@@ -623,6 +622,22 @@ const routes = (BASE_URL) => {
         url += `?search=${search}`;
       }
 
+      return url;
+    },
+    NEW_FEATURE: ({
+      route,
+      feature,
+    }) => {
+      let url = BASE_URL + 'new_feature_release/';
+      let params = {
+        querystring: {
+          feature,
+        },
+        rest: {
+          route: route,
+        },
+      };
+      url = prepURL(url, params);
       return url;
     },
     EMAIL_PREFERENCE: ({ update_or_create, emailRecipientId }) => {
@@ -887,36 +902,31 @@ const routes = (BASE_URL) => {
       return url + query;
     },
 
-    CHECK_USER_VOTE_DOCUMENTS: ({ paperIds = [], postIds = [] }) => {
-      let url = BASE_URL + "researchhub_unified_documents/check_user_vote/";
-      let query;
-      if (paperIds.length) {
+    CHECK_USER_VOTE_DOCUMENTS: ({
+      hypothesisIds = [],
+      paperIds = [],
+      postIds = [],
+    }) => {
+      // NOTE: calvinhlee - this is a terrible way to handle vote. There has to be a better way
+      const url = BASE_URL + "researchhub_unified_documents/check_user_vote/";
+      let query = null;
+      if (paperIds.length > 0) {
         query = `?paper_ids=`;
-
-        paperIds.forEach((id, i) => {
-          query += id;
-          if (i < paperIds.length - 1) {
-            query += ",";
-          }
-        });
+        query += paperIds.join(",");
       }
-
-      if (postIds.length) {
-        if (query) {
-          query += `&post_ids=`;
-        } else {
-          query = `?post_ids=`;
-        }
-
-        postIds.forEach((id, i) => {
-          query += id;
-          if (i < postIds.length - 1) {
-            query += ",";
-          }
-        });
+      if (postIds.length > 0) {
+        Boolean(query) ? (query += `&post_ids=`) : (query = `?post_ids=`);
+        query += postIds.join(",");
+      }
+      if (hypothesisIds.length > 0) {
+        Boolean(query)
+          ? (query += `&hypothesis_ids=`)
+          : (query = `?hypothesis_ids=`);
+        query += hypothesisIds.join(",");
       }
       return url + query;
     },
+
     SUPPORT: BASE_URL + "support/",
   };
 
