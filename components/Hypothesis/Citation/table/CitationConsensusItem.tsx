@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: "inherit",
     marginLeft: 6,
+    maxWidth: 166,
   },
   button: {
     alignItems: "center",
@@ -374,6 +375,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     width: "100%",
+    minWidth: 166,
   },
   consensusText: {
     width: "100%",
