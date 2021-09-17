@@ -99,7 +99,9 @@ const Navbar = (props) => {
 
   useEffect(async () => {
     const counts = await getCaseCounts({});
-    setOpenCaseCounts(counts["OPEN"]);
+    if (counts) {
+      setOpenCaseCounts(counts["OPEN"]);
+    }
   }, [numNavInteractions]);
 
   useEffect(async () => {

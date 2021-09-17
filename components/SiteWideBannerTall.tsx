@@ -47,14 +47,14 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     fontFamily: "Roboto",
-    height: 341,
+    // height: 341,
     alignItems: "baseline",
     "@media only screen and (max-width: 767px)": {
       height: "unset",
     },
   },
   contentWrap: {
-    alignItems: "center",
+    alignItems: "flex-end",
     display: "flex",
     height: "100%",
     justifyContent: "space-between",
@@ -73,6 +73,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     fontSize: 30,
     marginTop: 16,
+    marginBottom: 16,
     "@media only screen and (max-width: 1199px)": {
       fontSize: 18,
     },
@@ -84,10 +85,10 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "space-around",
-    padding: 12,
     height: "100%",
     boxSizing: "border-box",
     width: 448,
+    padding: 16,
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       padding: "12px 0px",
@@ -101,6 +102,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 400,
     color: colors.TEXT_DARKER_GREY,
+    opacity: .8,
+    marginBottom: 16,
+    lineHeight: '20px',
     "@media only screen and (max-width: 1199px)": {
       fontSize: 14,
     },

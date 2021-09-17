@@ -508,6 +508,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: "inherit",
+    width: '100%',
   },
   feedButtonContainer: {
     marginRight: 24,
