@@ -33,7 +33,7 @@ export default function SiteWideBannerTall({
         <div className={css(styles.imgWrap)}>
           <img
             className={css(styles.bannerImg)}
-            src={imgSrc ? imgSrc : "/static/icons/person-lightbulb-hypo.png"}
+            src={imgSrc ? imgSrc : "/static/icons/person-lightbulb-hypo.webp"}
           />
         </div>
       </div>
