@@ -818,7 +818,7 @@ var styles = StyleSheet.create({
       padding: "0px 20px",
     },
     "@media only screen and (max-width: 767px)": {
-      padding: "0px 8px",
+      padding: "0px 16px",
       maxWidth: 550,
       display: "block",
       minWidth: "unset",
