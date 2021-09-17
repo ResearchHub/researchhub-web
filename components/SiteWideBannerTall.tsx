@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     // height: 341,
     alignItems: "baseline",
+    borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       height: "unset",
     },
