@@ -367,23 +367,23 @@ function UnifiedDocFeedContainer({
             <Fragment>
               <span>
                 {
-                  "We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows users to put a stake in the ground and make a claim while backing it up with scientific research."
+                  "We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows you to put a stake in the ground and make a claim while backing it up with scientific research."
                 }
               </span>
               <br />
               <br />
               <span>
                 {
-                  "Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place aпуone looks at to find the consensus of вресific topic"
+                  "Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place aпуone looks at to find the consensus of sресific topics."
                 }
               </span>
             </Fragment>
           }
-          button={{
-            label: "Learn more",
-            href: undefined /* TODO: Pat add Notion link */,
-          }}
-          header={"Introducing Hypothesis"}
+          // button={{
+          //   label: "Learn more",
+          //   href: undefined /* TODO: Pat add Notion link */,
+          // }}
+          header={"Introducing Hypotheses"}
           imgSrc={""}
         />
       );
