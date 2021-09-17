@@ -8,7 +8,7 @@ export const UnifiedDocFilters = {
 
 export const UnifiedDocFilterLabels = {
   ALL: "All",
-  HYPOTHESIS: "Hypothesis",
+  HYPOTHESIS: "hypotheses",
   PAPER: "Papers",
   POSTS: "Posts",
 };
