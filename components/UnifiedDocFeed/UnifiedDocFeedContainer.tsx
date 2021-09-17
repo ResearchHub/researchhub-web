@@ -14,7 +14,14 @@ import {
 } from "./constants/UnifiedDocFilters";
 import { connect } from "react-redux";
 import { getDocumentCard, UnifiedCard } from "./utils/getDocumentCard";
-import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
+import {
+  ReactElement,
+  useEffect,
+  useMemo,
+  useState,
+  useRef,
+  Fragment,
+} from "react";
 import colors from "../../config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
@@ -28,6 +35,9 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import TabNewFeature from "../NewFeature/TabNewFeature";
 import FeedNewFeatureBox from "../NewFeature/FeedNewFeatureBox";
 import killswitch from "~/config/killswitch/killswitch";
+import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
+import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
+import SiteWideBannerTall from "../SiteWideBannerTall";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -294,37 +304,98 @@ function UnifiedDocFeedContainer({
     delete UnifiedDocFilters.HYPOTHESIS;
   }
 
+  const [shouldAlertHypo, _setShouldAlertHypo] =
+    useEffectNewFeatureShouldAlertUser({
+      auth,
+      featureName: "hypothesis",
+    });
+
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         const filterValue = UnifiedDocFilters[filterKey];
-        return (
-          <div className={css(styles.newFeatureContainer)}>
-            <UnifiedDocFeedFilterButton
-              isActive={docTypeFilter === filterValue}
-              key={filterKey}
-              label={UnifiedDocFilterLabels[filterKey]}
-              onClick={() => handleDocTypeChange(filterValue)}
-              setNewFeatureActive={setNewFeatureActive}
-              setWhichFeatureActive={setWhichFeatureActive}
-            />
-          </div>
-        );
+        if (filterValue === "hypothesis") {
+          return (
+            <div className={css(styles.hypoFeedButton)}>
+              <UnifiedDocFeedFilterButton
+                isActive={docTypeFilter === filterValue}
+                key={filterKey}
+                label={UnifiedDocFilterLabels[filterKey]}
+                onClick={(): void => {
+                  postNewFeatureNotifiedToUser({
+                    auth,
+                    featureName: filterValue,
+                  });
+                  handleDocTypeChange(filterValue);
+                }}
+              />
+              {shouldAlertHypo ? (
+                <div className={css(styles.tabFeature)}>
+                  <TabNewFeature />
+                </div>
+              ) : null}
+            </div>
+          );
+        } else {
+          return (
+            <div className={css(styles.feedButtonContainer)}>
+              <UnifiedDocFeedFilterButton
+                isActive={docTypeFilter === filterValue}
+                key={filterKey}
+                label={UnifiedDocFilterLabels[filterKey]}
+                onClick={() => handleDocTypeChange(filterValue)}
+              />
+            </div>
+          );
+        }
       }
     );
-  }, [docTypeFilter, router]);
+  }, [docTypeFilter, router, shouldAlertHypo]);
 
-  const documentCards = useMemo(
-    (): UnifiedCard[] =>
-      getDocumentCard({
-        hasSubscribed,
-        isLoggedIn,
-        isOnMyHubsTab,
-        setUnifiedDocuments,
-        unifiedDocumentData: unifiedDocuments,
-      }),
-    [getDocumentCard, setUnifiedDocuments, unifiedDocuments, isLoggedIn]
-  );
+  const documentCards = useMemo((): UnifiedCard[] | any[] => {
+    const cards = getDocumentCard({
+      hasSubscribed,
+      isLoggedIn,
+      isOnMyHubsTab,
+      setUnifiedDocuments,
+      unifiedDocumentData: unifiedDocuments,
+    });
+    if (shouldAlertHypo && docTypeFilter === "hypothesis") {
+      cards.unshift(
+        <SiteWideBannerTall
+          body={
+            <Fragment>
+              <span>
+                {
+                  "We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows you to put a stake in the ground and make a claim while backing it up with scientific research."
+                }
+              </span>
+              <br />
+              <br />
+              <span>
+                {
+                  "Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place aпуone looks at to find the consensus of sресific topics."
+                }
+              </span>
+            </Fragment>
+          }
+          // button={{
+          //   label: "Learn more",
+          //   href: undefined /* TODO: Pat add Notion link */,
+          // }}
+          header={"Introducing Hypotheses"}
+          imgSrc={""}
+        />
+      );
+    }
+    return cards;
+  }, [
+    getDocumentCard,
+    setUnifiedDocuments,
+    unifiedDocuments,
+    isLoggedIn,
+    shouldAlertHypo,
+  ]);
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -437,8 +508,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     height: "inherit",
+    width: '100%',
   },
-  newFeatureContainer: {
+  feedButtonContainer: {
     marginRight: 24,
   },
   subFilters: {
@@ -535,5 +607,15 @@ const styles = StyleSheet.create({
   feedPosts: {
     position: "relative",
     minHeight: 200,
+  },
+  tabFeature: {
+    marginLeft: 8,
+    marginRight: 24,
+    width: 38,
+  },
+  hypoFeedButton: {
+    alignItems: "center",
+    display: "flex",
+    marginRight: 24,
   },
 });
