@@ -92,8 +92,10 @@ export default function NewPostModal({
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>{"Select your post type"}</div>
             </div>
-            <div className={css(styles.list)}>{optionCards}</div>
-            <div className={css(styles.buttonContainer)}>
+            <div className={css(styles.list)}>
+              {optionCards}
+            </div>
+            <div>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
@@ -123,6 +125,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
+    flex: '0 0 auto',
   },
   modalStyle: {
     maxHeight: "95vh",
@@ -167,11 +170,6 @@ const styles = StyleSheet.create({
       width: "160px",
       height: "50px",
     },
-  },
-  buttonContainer: {
-    display: "flex",
-    width: "auto",
-    justifyContent: "center",
   },
   rippleClass: {
     width: "100%",
