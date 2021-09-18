@@ -6,6 +6,8 @@ import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
 import { CloseIcon } from "~/config/themes/icons";
 
+import "./Stylesheets/Modal.module.css";
+
 // Redux
 import { ModalActions } from "../../redux/modals";
 
