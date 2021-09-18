@@ -95,6 +95,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "flex-start",
     alignSelf: "stretch",
+    // height: '100%',
+    // height: 500,
     borderRadius: "4px",
     backgroundColor: "#FAFAFA",
     border: "1.5px solid #F0F0F0",
