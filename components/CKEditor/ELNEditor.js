@@ -11,6 +11,24 @@ import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 
+const saveData = (editor, noteId) => {
+  const noteParams = {
+    title: editor.plugins.get("Title").getTitle() || "Untitled",
+  };
+  fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+
+  const noteContentParams = {
+    full_src: editor.getData(),
+    plain_text: "",
+    note: noteId,
+  };
+  fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const ELNEditor = ({ user }) => {
   const router = useRouter();
   const editorRef = useRef();
@@ -129,24 +147,6 @@ export const ELNEditor = ({ user }) => {
     setTitles(updatedTitles);
   };
 
-  const saveData = (editor, noteId) => {
-    const noteParams = {
-      title: editor.plugins.get("Title").getTitle() || "Untitled",
-    };
-    fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
-
-    const noteContentParams = {
-      full_src: editor.getData(),
-      plain_text: "",
-      note: noteId,
-    };
-    fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
-  };
-
   const editors = notes.map(note => {
     const editorConfiguration = {
       title: {
@@ -240,7 +240,7 @@ export const ELNEditor = ({ user }) => {
   if (currentOrganizationId === 0) {
     organizationName = "Personal Notes";
     organizationImage = user.author_profile.profile_image;
-  } else if (currentOrganizationId) {
+  } else if (currentOrganizationId > 0) {
     for (const org of organizations) {
       if (org.id === currentOrganizationId) {
         organizationName = org.name;
