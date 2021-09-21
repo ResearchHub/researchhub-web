@@ -318,6 +318,20 @@ export const ELNEditor = ({ user }) => {
             ))}
           </div>
         )}
+        <div className={css(styles.sidebarButtonsContainer)}>
+          <div className={css(styles.sidebarButton)}>
+            {icons.shapes}
+            <span className={css(styles.sidebarButtonText)}>
+              Templates
+            </span>
+          </div>
+          <div className={css(styles.sidebarButton)}>
+            {icons.fileImport}
+            <span className={css(styles.sidebarButtonText)}>
+              Import
+            </span>
+          </div>
+        </div>
         <div
           className={css(styles.sidebarNewNote)}
           onClick={handleCreateNewNote}
@@ -505,6 +519,24 @@ const styles = StyleSheet.create({
   },
   showBottomBorder: {
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
+  },
+  sidebarButtonsContainer: {
+    margin: 10,
+  },
+  sidebarButton: {
+    border: "none",
+    color: colors.BLACK(0.5),
+    cursor: "pointer",
+    fontSize: 14,
+    fontWeight: 500,
+    maxWidth: "fit-content",
+    padding: 10,
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  sidebarButtonText: {
+    marginLeft: 10,
   },
   sortIcon: {
     marginLeft: 10,
