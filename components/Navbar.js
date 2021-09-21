@@ -890,7 +890,6 @@ const styles = StyleSheet.create({
     left: 6,
   },
   logo: {
-    objectFit: "contain",
     marginBottom: 8,
   },
   reputation: {

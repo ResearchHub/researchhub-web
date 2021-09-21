@@ -2,6 +2,7 @@ import { iconColors } from "~/config/themes/colors";
 import { StyleSheet, css } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { library } from "@fortawesome/fontawesome-svg-core";
+import Image from "next/image";
 import {
   faAngleLeft,
   faAngleRight,
@@ -411,12 +412,14 @@ export const textEditorIcons = {
 
 export const RHLogo = ({ iconStyle, white }) => {
   return (
-    <img
-      src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
-      className={css(styles.logo, iconStyle && iconStyle)}
-      draggable={false}
-      alt="RH Logo"
-    />
+    <span className={css(styles.logo, iconStyle && iconStyle)}>
+      <Image
+        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
+        draggable={false}
+        alt="RH Logo"
+        layout="fill"
+      />
+    </span>
   );
 };
 
@@ -699,6 +702,7 @@ const styles = StyleSheet.create({
   logo: {
     transform: "scale(1)",
     height: 33,
+    width: 144.08,
   },
   coinStack: {},
   iconPartyPopper: {

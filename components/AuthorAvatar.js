@@ -4,75 +4,45 @@ import Link from "next/link";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { useHasMounted } from "~/config/utils/hooks";
+import Image from "next/image";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
-  const hasMounted = useHasMounted();
-
-  // fixes an error with `style` Prop not matching on Server/Client
-  if (!hasMounted) {
-    return null;
-  }
 
   const {
     author,
-    size = 30,
+    size = 35,
     disableLink,
     showModeratorBadge,
     twitterUrl,
-    trueSize,
     border,
     dropShadow,
   } = props;
   let deviceWidth = null;
-  if (process.browser) {
-    if (window.outerHeight) {
-      deviceWidth = window.outerWidth;
-    } else {
-      deviceWidth = document.body.clientWidth;
-    }
-  }
 
   const authorId = author && author.id;
 
   function renderAvatar() {
-    let finalSize = size;
-    if (deviceWidth < 768 && !trueSize) {
-      finalSize = size - 5;
-    }
-
     return (
-      <>
+      <div style={{ height: size, width: size }}>
         {author && author.profile_image && !error ? (
-          <img
+          <Image
             src={author.profile_image}
-            style={{
-              minWidth: finalSize,
-              width: finalSize,
-              maxWidth: finalSize,
-              minHeight: finalSize,
-              height: finalSize,
-              maxHeight: finalSize,
-              objectFit: "cover",
-              borderRadius: "50%",
-              border,
-              // border: border ? border : "3px solid #F1F1F1",
-              boxShadow: dropShadow && "0px 2px 4px rgba(185, 185, 185, 0.25)",
-            }}
-            onError={(e) => {
-              setError(true);
-            }}
+            layout="fill"
+            className={css(
+              styles.avatarImg,
+              border && styles.avatarImgWithBorder,
+              dropShadow && styles.avatarImgWithShadow
+            )}
             alt={"Author Profile Avatar"}
-            loading="lazy"
           />
         ) : (
           <span
             className={css(styles.userIcon)}
             style={{
-              width: finalSize,
-              height: finalSize,
-              fontSize: finalSize + 1,
+              width: size,
+              height: size,
+              fontSize: size + 1,
               // border: "3px solid transparent",
             }}
           >
@@ -80,12 +50,13 @@ const AuthorAvatar = (props) => {
           </span>
         )}
         {showModeratorBadge && (
-          <img
+          <Image
+            layout="fill"
             src={"/static/icons/moderatorBadge.png"}
             className={css(styles.moderatorBadge)}
           />
         )}
-      </>
+      </div>
     );
   }
 
@@ -127,6 +98,15 @@ const AuthorAvatar = (props) => {
 };
 
 const styles = StyleSheet.create({
+  avatarImg: {
+    borderRadius: "50%",
+  },
+  avatarImgWithBorder: {
+    border: "3px solid #F1F1F1",
+  },
+  avatarImgWithShadow: {
+    border: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+  },
   avatar: {
     cursor: "pointer",
     display: "flex",

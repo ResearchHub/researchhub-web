@@ -85,11 +85,7 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
-
-console.log('----------');
-console.log(preloadedDocData);
-console.log('----------');
-
+  
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["/my-hubs"].includes(router.pathname),

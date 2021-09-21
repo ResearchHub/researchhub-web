@@ -38,7 +38,7 @@ class FeedList extends Component {
         ),
         href: "/my-hubs",
         as: "/my-hubs",
-      }
+      },
     ];
   }
 
@@ -243,6 +243,7 @@ const styles = StyleSheet.create({
     },
   },
   icon: {
+    width: 20,
     fontSize: 22,
     marginRight: 12,
     marginLeft: 8,
