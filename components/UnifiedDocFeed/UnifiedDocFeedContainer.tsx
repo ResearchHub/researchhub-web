@@ -153,20 +153,20 @@ function UnifiedDocFeedContainer({
 
   // Switching from "all" => slug hub unmounts the component
   // to mitigate, we need to figure out if a fetch is needed.
-  // useEffect((): void => {
-  //   if (preloadedDocData) {
-  //     setPaginationInfo({
-  //       isLoadingMore: false,
-  //       isLoading: false,
-  //       page: 1,
-  //     });
-  //   } else {
-  //     resetState();
-  //     fetchUnifiedDocs({ ...getFetchParams() });
-  //   }
+  useEffect((): void => {
+    if (preloadedDocData) {
+      setPaginationInfo({
+        isLoadingMore: false,
+        isLoading: false,
+        page: 1,
+      });
+    } else {
+      resetState();
+      fetchUnifiedDocs({ ...getFetchParams() });
+    }
 
-  //   prefetchNextPage({ nextPage: 2 });
-  // }, []);
+    prefetchNextPage({ nextPage: 2 });
+  }, []);
 
   const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
     fetchUnifiedDocs({

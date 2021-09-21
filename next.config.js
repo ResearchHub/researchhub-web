@@ -13,6 +13,9 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
   eslint: {
     ignoreDuringBuilds: true,
   },
+  images: {
+    domains: ['researchhub-paper-dev1.s3.amazonaws.com', 'lh3.googleusercontent.com', 'researchhub.com'],
+  },  
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     config.resolve.fallback = {
       fs: false,
