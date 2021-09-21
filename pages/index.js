@@ -1,5 +1,5 @@
 import { AUTH_TOKEN } from "~/config/constants";
-import { fetchUnifiedDocFeed } from "~/config/fetch";
+import { fetchUnifiedDocFeed, fetchLatestActivity } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 import { getInitialScope } from "~/config/utils/dates";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
@@ -7,7 +7,6 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { fetchLatestActivity } from "~/config/fetch";
 
 const Index = (props) => {
   return <HubPage home={true} {...props} />;
@@ -43,7 +42,7 @@ const fetchTopHubs = () => {
 
       return topHubs;
     });
-}
+};
 
 export async function getStaticProps(ctx) {
   const defaultProps = {
@@ -56,40 +55,25 @@ export async function getStaticProps(ctx) {
   const initialActivityPromise = fetchLatestActivity({});
   const initialHubListPromise = fetchTopHubs();
   const leaderboardPromise = fetchLeaderboard();
-  const initialFeedPromise = fetchUnifiedDocFeed(
-    {
-      hubId: null,
-      ordering: "hot",
-      page: 1,
-      subscribedHubs: false,
-      timePeriod: getInitialScope(),
-      type: "all",
-    }
-  );  
-
-
-  let leaderboardFeed, initialFeed, initialHubList, initialActivity;
-  try {
-    const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
-    const initialFeed = await fetchUnifiedDocFeed(
-      {
-        hubId: null,
-        ordering: "hot",
-        page: 1,
-        subfilters: filterObj,
-        subscribedHubs: false,
-        timePeriod: getInitialScope(),
-        type: urlDocType,
-      },
-      authToken,
-      !isNullOrUndefined(authToken) /* withVotes */
-    );
-    
-    [leaderboardFeed, initialFeed, initialHubList, initialActivity] = await Promise.all([leaderboardPromise, initialFeedPromise, initialHubListPromise, initialActivityPromise]);
-  }
-  catch(err) {
-    console.log(err);
-  }
+  const initialFeedPromise = fetchUnifiedDocFeed({
+    hubId: null,
+    ordering: "hot",
+    page: 1,
+    subscribedHubs: false,
+    timePeriod: getInitialScope(),
+    type: "all",
+  });
+  const [
+    leaderboardFeed,
+    initialFeed,
+    initialHubList,
+    initialActivity,
+  ] = await Promise.all([
+    leaderboardPromise,
+    initialFeedPromise,
+    initialHubListPromise,
+    initialActivityPromise,
+  ]);
 
   return {
     revalidate: 10,
@@ -100,8 +84,8 @@ export async function getStaticProps(ctx) {
       initialHubList,
       initialActivity,
       feed: 0,
-    }
-  };  
+    },
+  };
 }
 
 export default Index;

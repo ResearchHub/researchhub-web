@@ -177,6 +177,7 @@ MyApp.getInitialProps = async (appContext) => {
     "/paper/[paperId]/[paperName]",
     "/hubs",
     "/user/[authorId]/[tabName]",
+    "/",
   ];
 
   if (process.browser || !staticPropsPaths.includes(appContext.router.route)) {
