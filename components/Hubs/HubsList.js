@@ -4,6 +4,7 @@ import Link from "next/link";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
+import Image from "next/image";
 
 // Component
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
@@ -132,8 +133,10 @@ class HubsList extends Component {
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
           >
             <a className={css(styles.hubLink)}>
-              <img
+              <Image
                 className={css(styles.hubImage)}
+                height={35}
+                width={35}
                 src={
                   hub_image
                     ? hub_image
@@ -141,7 +144,7 @@ class HubsList extends Component {
                 }
                 alt={hub.name}
               />
-              <span className={"clamp1"}>{name}</span>
+              <span className={`clamp1 ${css(styles.hubName)}`}>{name}</span>
             </a>
           </Link>
         </Ripples>
@@ -251,13 +254,8 @@ const styles = StyleSheet.create({
     },
   },
   hubImage: {
-    height: 35,
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35,
     borderRadius: 4,
     objectFit: "cover",
-    marginRight: 10,
     background: "#EAEAEA",
     border: "1px solid #ededed",
   },
@@ -269,6 +267,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     padding: "10px 20px",
+  },
+  hubName: {
+    marginLeft: 10,
   },
   current: {
     color: colors.NEW_BLUE(),
