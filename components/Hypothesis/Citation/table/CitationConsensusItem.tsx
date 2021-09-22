@@ -247,8 +247,10 @@ function CitationConsensusItem({
             }}
           >
             {isNeutral
-              ? `${totalCount} researcher(s) are split`
-              : `${Math.floor(majorityPercent * 100)}% of researchers think ${
+              ? `${totalCount} reader${totalCount > 1 ? "s" : ""} ${
+                  totalCount > 1 ? "are" : "is"
+                } ${totalCount > 1 ? "split" : "neutral"}`
+              : `${Math.floor(majorityPercent * 100)}% of readers think ${
                   doesMajoritySupport ? "yes" : "no"
                 }`}
           </div>
@@ -328,11 +330,11 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   wrapper: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '100%',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   voteWrap: {
     alignItems: "center",
@@ -421,7 +423,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     height: 10,
     left: "50%",
-    transform: 'translateX(-50%)',
+    transform: "translateX(-50%)",
     position: "absolute",
     width: 10,
     zIndex: 2,
@@ -443,7 +445,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 11,
     fontWeight: 500,
-    alignItems: 'center',
+    alignItems: "center",
   },
   noSupportImg: {
     color: colors.RED(1),
