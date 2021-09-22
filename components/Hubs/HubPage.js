@@ -611,7 +611,7 @@ class HubPage extends Component {
       leaderboardFeed,
       initialFeed,
     } = this.props;
-
+console.log('hub', hub);
     if (auth.user.moderator && filterOptions.length < 5) {
       filterOptions.push(
         {
@@ -671,7 +671,7 @@ class HubPage extends Component {
                   onHubSelect={this.onHubSelect}
                 />
                 <LeaderboardContainer
-                  hubId={0}
+                  hubId={hub ? hub.id : 0}
                   initialUsers={leaderboardFeed}
                 />
               </div>

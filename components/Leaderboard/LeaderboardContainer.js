@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -11,6 +11,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { isDevEnv } from "~/config/utils/env";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState(
@@ -22,28 +23,31 @@ const LeaderboardContainer = (props) => {
     props.initialUsers ? false : true
   );
 
-//   useEffect(() => {
-//     fetchLeaderboard();
-//   }, [props.hubId]);
-// 
-//   const fetchLeaderboard = () => {
-//     setFetchingUsers(true);
-//     return fetch(
-//       API.LEADERBOARD({
-//         limit: 10,
-//         page: 1,
-//         hubId: props.hubId,
-//         timeframe: "past_week",
-//       }),
-//       API.GET_CONFIG()
-//     )
-//       .then(Helpers.checkStatus)
-//       .then(Helpers.parseJSON)
-//       .then((res) => {
-//         setFetchingUsers(false);
-//         setUsers(res.results);
-//       });
-//   };
+  useEffect(() => {
+    if (props.hubId !== 0) {
+      fetchLeaderboard();  
+    }
+  }, [props.hubId]);
+
+  const fetchLeaderboard = () => {
+    setFetchingUsers(true);
+
+    return fetch(
+      API.LEADERBOARD({
+      limit: 10,
+      page: 1,
+      hubId: props.hubId,
+      timeframe: "past_week",
+    }),
+    API.GET_CONFIG()
+    )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((res) => {
+      setFetchingUsers(false);
+      setUsers(res.results);
+    });
+  };
 
   const renderLeaderboardUsers = (users) => {
     return users.map((user, index) => {
@@ -76,7 +80,6 @@ const LeaderboardContainer = (props) => {
     >
       <h3 className={css(styles.title)}>Trending Users</h3>
       <ReactPlaceholder
-        ready={false}
         ready={!fetchingUsers}
         customPlaceholder={<LeaderboardPlaceholder color="#efefef" rows={5} />}
       >
