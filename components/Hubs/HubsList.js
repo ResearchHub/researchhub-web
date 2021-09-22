@@ -35,9 +35,9 @@ class HubsList extends Component {
       this.setState({ hubs: [...this.props.hubs] });
     }
 
-    if (auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
+    // if (auth.isLoggedIn) {
+    //   this.updateTopHubs();
+    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -46,15 +46,15 @@ class HubsList extends Component {
         hubs: this.props.hubs,
       });
     }
-    if (prevProps.hubs !== this.props.hubs) {
+    else if (prevProps.hubs !== this.props.hubs) {
       this.setState({ hubs: [...this.props.hubs] });
     }
-    if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-      this.updateTopHubs();
-    }
-    if (prevProps.auth.user !== this.props.auth.user) {
-      this.updateTopHubs();
-    }
+    // if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
+    //   this.updateTopHubs();
+    // }
+    // if (prevProps.auth.user !== this.props.auth.user) {
+    //   this.updateTopHubs();
+    // }
   }
 
   componentWillUnmount() {
@@ -77,32 +77,33 @@ class HubsList extends Component {
     }
   }
 
-  updateTopHubs = (state) => {
-    let hubState = this.props.hubState;
-    if (this.props.auth.isLoggedIn) {
-      let subscribed = hubState.subscribedHubs || [];
-      let subscribedHubs = {};
-      subscribed.forEach((hub) => {
-        subscribedHubs[hub.id] = true;
-      });
-
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        if (subscribedHubs[hub.id]) {
-          hub.user_is_subscribed = true;
-        }
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    } else {
-      let updatedTopHubs = this.props.hubs.map((hub) => {
-        hub.user_is_subscribed = false;
-        return hub;
-      });
-
-      this.props.updateTopHubs(updatedTopHubs);
-    }
-  };
+// Kobe 09/22/20: Do we need this?
+//   updateTopHubs = (state) => {
+//     let hubState = this.props.hubState;
+//     if (this.props.auth.isLoggedIn) {
+//       let subscribed = hubState.subscribedHubs || [];
+//       let subscribedHubs = {};
+//       subscribed.forEach((hub) => {
+//         subscribedHubs[hub.id] = true;
+//       });
+// 
+//       let updatedTopHubs = this.props.hubs.map((hub) => {
+//         if (subscribedHubs[hub.id]) {
+//           hub.user_is_subscribed = true;
+//         }
+//         return hub;
+//       });
+// 
+//       this.props.updateTopHubs(updatedTopHubs);
+//     } else {
+//       let updatedTopHubs = this.props.hubs.map((hub) => {
+//         hub.user_is_subscribed = false;
+//         return hub;
+//       });
+// 
+//       this.props.updateTopHubs(updatedTopHubs);
+//     }
+//   };
 
   revealTransition = () => {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
@@ -133,18 +134,19 @@ class HubsList extends Component {
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
           >
             <a className={css(styles.hubLink)}>
-              <Image
-                className={css(styles.hubImage)}
-                height={35}
-                width={35}
-                priority={true}
-                src={
-                  hub_image
-                    ? hub_image
-                    : "/static/background/hub-placeholder.svg"
-                }
-                alt={hub.name}
-              />
+              <div className={css(styles.imageWrapper)}>
+                <Image
+                  className={css(styles.hubImage)}
+                  layout="fill"
+                  priority={true}
+                  src={
+                    hub_image
+                      ? hub_image
+                      : "/static/background/hub-placeholder.svg"
+                  }
+                  alt={hub.name}
+                />
+              </div>
               <span className={`clamp1 ${css(styles.hubName)}`}>{name}</span>
             </a>
           </Link>
@@ -220,7 +222,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 300,
     width: 35,
-    height: 35,
+    padding: "10px 20px",
     cursor: "pointer",
     textTransform: "capitalize",
     display: "flex",
@@ -250,12 +252,16 @@ const styles = StyleSheet.create({
   },
   hubImage: {
     borderRadius: 4,
-    width: 35,
-    height: 35,
     objectFit: "cover",
     background: "#EAEAEA",
     border: "1px solid #ededed",
     overflow: "visible",
+  },
+  imageWrapper: {
+    width: 35,
+    height: 35,
+    minWidth: 35,
+    position: "relative",
   },
   hubLink: {
     textDecoration: "none",
@@ -264,7 +270,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: 500,
-    padding: "10px 20px",
   },
   hubName: {
     marginLeft: 10,
