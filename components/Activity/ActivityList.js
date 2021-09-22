@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
+import { useRouter } from "next/router";
 
 // Component
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
@@ -68,31 +69,32 @@ const RenderViewMore = ({ data, loadMore, isLoadingNext }) => {
 };
 
 const ActivityList = (props) => {
+  const router = useRouter();
   const { auth, subscribedHubs, feed, hub, hubId } = props;
   const [isFetching, setIsFetching] = useState(!isEmpty(props.initialActivity) ? false : true);
   const [isLoadingNext, setIsLoadingNext] = useState(false);
   const [data, setData] = useState(!isEmpty(props.initialActivity) ?  props.initialActivity : DEFAULT_DATA);
 
-//   useEffect(() => {
-//     const fetchActivityFeed = async () => {
-//       setIsFetching(true);
-//       const hubIds =
-//         feed === 1
-//           ? subscribedHubs.map((hub) => hub.id)
-//           : hub
-//           ? [hub.id]
-//           : null;
-//       const resData = await fetchLatestActivity({ hubIds });
-//       if (!resData.error) {
-//         setData(resData);
-//       }
-//       setIsFetching(false);
-//     };
-// 
-//     if (auth.authChecked) {
-//       fetchActivityFeed();
-//     }
-//   }, [auth.authChecked, hubId, feed]);
+  useEffect(() => {
+    const fetchActivityFeed = async () => {
+      setIsFetching(true);
+      const hubIds =
+        feed === 1
+          ? subscribedHubs.map((hub) => hub.id)
+          : hub
+          ? [hub.id]
+          : null;
+      const resData = await fetchLatestActivity({ hubIds });
+      if (!resData.error) {
+        setData(resData);
+      }
+      setIsFetching(false);
+    };
+
+    if (router.pathname !== "/") {
+      fetchActivityFeed();
+    }
+  }, [hubId, feed]);
 
   const loadMore = () => {
     const { next } = data;

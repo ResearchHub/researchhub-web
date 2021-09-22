@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
+import { useRouter } from "next/router";
 import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "../Placeholders/LeaderboardPlaceholder";
 import LeaderboardUser from "./LeaderboardUser";
@@ -14,6 +15,7 @@ import { isDevEnv } from "~/config/utils/env";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const LeaderboardContainer = (props) => {
+  const router = useRouter();
   const [users, setUsers] = useState(
     props.initialUsers && props.initialUsers.results
       ? props.initialUsers.results
@@ -24,7 +26,7 @@ const LeaderboardContainer = (props) => {
   );
 
   useEffect(() => {
-    if (props.hubId !== 0) {
+    if (!isNullOrUndefined(props.hubId) && router.pathname !== "/") {
       fetchLeaderboard();  
     }
   }, [props.hubId]);
