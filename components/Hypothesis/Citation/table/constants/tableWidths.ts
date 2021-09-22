@@ -3,5 +3,5 @@ export const tableWidths = {
   CONSENSUS: "22%",
   SOURCE: "35%",
   TYPE: "10%",
-  YEAR: "8%",
+  YEAR: "9%",
 };
