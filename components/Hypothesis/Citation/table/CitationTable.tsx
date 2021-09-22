@@ -97,7 +97,10 @@ export default function CitationTable({
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
           <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
-          <CitationTableHeaderItem label="Year" width={tableWidths.YEAR} />
+          <CitationTableHeaderItem
+            label="Cited Year"
+            width={tableWidths.YEAR}
+          />
           <CitationTableHeaderItem
             label="Consensus"
             width={tableWidths.CONSENSUS}

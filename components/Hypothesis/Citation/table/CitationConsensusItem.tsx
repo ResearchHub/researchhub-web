@@ -332,7 +332,6 @@ const styles = StyleSheet.create({
   wrapper: {
     display: "flex",
     flexDirection: "column",
-    alignItems: "center",
     justifyContent: "center",
     width: "100%",
   },
