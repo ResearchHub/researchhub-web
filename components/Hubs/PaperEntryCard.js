@@ -980,6 +980,7 @@ const styles = StyleSheet.create({
     },
   },
   journalTagContainer: {
+    minHeight: 28,
     "@media only screen and (max-width: 767px)": {
       marginTop: 10,
     },

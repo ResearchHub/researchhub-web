@@ -137,6 +137,7 @@ class HubsList extends Component {
                 className={css(styles.hubImage)}
                 height={35}
                 width={35}
+                priority={true}
                 src={
                   hub_image
                     ? hub_image
@@ -154,7 +155,7 @@ class HubsList extends Component {
 
   render() {
     const { overrideStyle } = this.props;
-
+    console.log('this.state.hubs', this.state.hubs);
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
@@ -162,15 +163,7 @@ class HubsList extends Component {
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
-            <ReactPlaceholder
-              showLoadingAnimation
-              ready={this.state.hubs && this.state.hubs.length > 0}
-              customPlaceholder={
-                <HubEntryPlaceholder color="#efefef" rows={5} />
-              }
-            >
               {this.renderHubEntry()}
-            </ReactPlaceholder>
             <Link href={"/hubs"} as={"/hubs"}>
               <a className={css(styles.link)}>View all hubs</a>
             </Link>
@@ -226,6 +219,8 @@ const styles = StyleSheet.create({
   hubEntry: {
     fontSize: 16,
     fontWeight: 300,
+    width: 35,
+    height: 35,
     cursor: "pointer",
     textTransform: "capitalize",
     display: "flex",
@@ -255,9 +250,12 @@ const styles = StyleSheet.create({
   },
   hubImage: {
     borderRadius: 4,
+    width: 35,
+    height: 35,
     objectFit: "cover",
     background: "#EAEAEA",
     border: "1px solid #ededed",
+    overflow: "visible",
   },
   hubLink: {
     textDecoration: "none",

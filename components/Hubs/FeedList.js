@@ -3,7 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-
+import Image from "next/image";
 import SubscribedHubList from "../Home/SubscribedHubList";
 
 // Config
@@ -31,9 +31,13 @@ class FeedList extends Component {
       {
         label: "My Hubs",
         icon: (
-          <img
+          <Image
             src={"/static/ResearchHubIcon.png"}
             className={css(styles.rhIcon)}
+            priority={true}
+            height={26}
+            width={17}
+
           />
         ),
         href: "/my-hubs",
@@ -257,12 +261,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-  },
-  rhIcon: {
-    height: 26,
-    marginLeft: 3,
-    marginRight: 2,
-    width: 17,
   },
   space: {
     height: 50,
