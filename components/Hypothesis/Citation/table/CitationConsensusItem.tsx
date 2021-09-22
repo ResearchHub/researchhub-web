@@ -1,4 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
   Fragment,
   ReactElement,
@@ -6,14 +9,11 @@ import {
   useEffect,
   useState,
 } from "react";
-import { connect } from "react-redux";
-import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
-import colors from "~/config/themes/colors";
-import { breakpoints } from "~/config/themes/screen";
 import { getCurrentUser } from "~/config/utils/user";
 import { ID } from "~/config/types/root_types";
-import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { postCitationVote } from "../../api/postCitationVote";
+import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
+import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 export type ConsensusMeta = {
