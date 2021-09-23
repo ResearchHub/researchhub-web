@@ -148,13 +148,12 @@ const routes = (BASE_URL) => {
       let url = `${BASE_URL}hypothesis/${
         !isNullOrUndefined(hypothesis_id) ? hypothesis_id + "/" : ""
       }${upsert ? "upsert/" : ""}`;
-      // let params = {
-      //   querystring: {
-      //     created_by,
-      //   },
-      // };
-      return url;
-      // url = prepURL(url, params);
+      let params = {
+        querystring: {
+          created_by,
+        },
+      };
+      url = prepURL(url, params);
       return url;
     },
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
