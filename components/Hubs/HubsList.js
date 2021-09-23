@@ -21,10 +21,7 @@ class HubsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubs:
-        this.props.initialHubList && this.props.initialHubList
-          ? this.props.initialHubList
-          : [],
+      hubs: this.props?.initialHubList?.results ?? [],
       reveal: true,
     };
   }
@@ -109,6 +106,7 @@ class HubsList extends Component {
   };
 
   renderHubEntry = () => {
+    console.log("this.state.hubs", this.state.hubs);
     const selectedHubs = this.state.hubs.slice(0, 5);
 
     return selectedHubs.map((hub, i) => {
