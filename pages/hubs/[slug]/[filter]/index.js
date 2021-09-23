@@ -28,7 +28,7 @@ class Index extends Component {
       const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
         .then((res) => res.json())
         .then((body) => body.results[0]);
-      const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
+      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
 
       const PARAMS = {
         ordering: filter,

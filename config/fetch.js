@@ -132,7 +132,9 @@ export const fetchUnifiedDocFeed = async (
   if (!withVotes) {
     return docPayload;
   } else {
-    return await fetchUserVote(docPayload, authToken);
+    const formattedResults = await fetchUserVote(docPayload.results, authToken);
+    docPayload.results = formattedResults;
+    return docPayload;
   }
 };
 
