@@ -144,16 +144,17 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
-    HYPOTHESIS: ({ created_by, hypothesis_id }) => {
+    HYPOTHESIS: ({ created_by, hypothesis_id, upsert }) => {
       let url = `${BASE_URL}hypothesis/${
         !isNullOrUndefined(hypothesis_id) ? hypothesis_id + "/" : ""
-      }`;
-      let params = {
-        querystring: {
-          created_by,
-        },
-      };
-      url = prepURL(url, params);
+      }${upsert ? "upsert/" : ""}`;
+      // let params = {
+      //   querystring: {
+      //     created_by,
+      //   },
+      // };
+      return url;
+      // url = prepURL(url, params);
       return url;
     },
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
@@ -624,11 +625,8 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    NEW_FEATURE: ({
-      route,
-      feature,
-    }) => {
-      let url = BASE_URL + 'new_feature_release/';
+    NEW_FEATURE: ({ route, feature }) => {
+      let url = BASE_URL + "new_feature_release/";
       let params = {
         querystring: {
           feature,
