@@ -170,7 +170,7 @@ export const ELNEditor = ({ user }) => {
       },
       cloudServices: {
         tokenUrl:
-          "https://80957.cke-cs.com/token/dev/f7269818e72213ec0c800718cd4aeeed27eaa131ec5f5b60f3339fdeeecc",
+          "https://80957.cke-cs.com/token/dev/3d646c4223d2d642814d04dc9d1d748beba883a1646f419aff5d61d61efa",
         webSocketUrl: "wss://80957.cke-cs.com/ws",
       },
       collaboration: {
