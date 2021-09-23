@@ -46,7 +46,9 @@ class Index extends Component {
     }
 
     try {
+      console.warn("urlQuery.type: ", urlQuery.type);
       const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
+      console.warn("urlDocType:  ", urlDocType);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
           {
