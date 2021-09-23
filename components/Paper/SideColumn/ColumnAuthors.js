@@ -14,6 +14,7 @@ import AuthorClaimModal from "~/components/AuthorClaimModal/AuthorClaimModal";
 import colors from "~/config/themes/colors";
 import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
 import { breakpoints } from "~/config/themes/screen";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 const DEFAULT_PAGE_SIZE = 5;
 
@@ -185,18 +186,21 @@ class ColumnAuthors extends Component {
                     alt="Pot of Gold"
                   />
                 </div>
-                <div
-                  className={css(styles.claimButton)}
+                <PermissionNotificationWrapper
+                  hideRipples
+                  loginRequired
+                  modalMessage="claim your author profile"
                   onClick={() =>
                     this.setState({
                       ...this.state,
                       shouldOpenAuthorClaimModal: true,
                     })
                   }
-                  role="button"
                 >
-                  {"Claim"}
-                </div>
+                  <button className={css(styles.claimButton)} role="button">
+                    {"Claim"}
+                  </button>
+                </PermissionNotificationWrapper>
               </div>
             )}
           </div>
@@ -229,6 +233,7 @@ const styles = StyleSheet.create({
   claimButton: {
     alignItems: "center",
     backgroundColor: colors.NEW_BLUE(1),
+    border: 0,
     borderRadius: 4,
     color: "#fff",
     cursor: "pointer",
