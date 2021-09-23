@@ -535,6 +535,8 @@ const styles = StyleSheet.create({
     width: "85%",
     minWidth: "85%",
     maxWidth: "85%",
+    boxSizing: 'border-box',
+    paddingRight: 16,
     color: colors.BLACK(0.8),
     fontSize: 14,
     lineHeight: 1.3,
