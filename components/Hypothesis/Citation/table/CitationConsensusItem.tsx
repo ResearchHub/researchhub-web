@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 16,
     width: "inherit",
-    marginLeft: 6,
+    marginLeft: 3,
     maxWidth: 166,
   },
   button: {
