@@ -376,7 +376,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     position: "relative",
     width: "100%",
-    // minWidth: 166,
   },
   consensusText: {
     width: "100%",
