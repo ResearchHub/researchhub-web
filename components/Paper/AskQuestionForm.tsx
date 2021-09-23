@@ -1,18 +1,19 @@
+import { connect } from "react-redux";
+import { firstImageFromHtml } from "~/config/utils/getFirstImageOfHtml";
+import { Helpers } from "@quantfive/js-web-config";
+import { useRouter } from "next/router";
+import { StyleSheet, css } from "aphrodite";
+import { SyntheticEvent, useEffect, useState } from "react";
 import API from "../../config/api";
 import Button from "../Form/Button";
+import colors from "../../config/themes/colors";
+import dynamic from "next/dynamic";
 import FormInput from "../Form/FormInput";
 import FormSelect from "../Form/FormSelect";
-import { SyntheticEvent, useEffect, useState } from "react";
-import colors from "../../config/themes/colors";
-import removeMd from "remove-markdown";
-import { Helpers } from "@quantfive/js-web-config";
-import { Router, useRouter } from "next/router";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import ReactHtmlParser from "react-html-parser";
-import dynamic from "next/dynamic";
-const DynamicComponent = dynamic(() =>
-  import("../../components/CKEditor/SimpleEditor")
+import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
+
+const DynamicComponent = dynamic(
+  () => import("../../components/CKEditor/SimpleEditor")
 );
 
 type FormFields = {
@@ -46,24 +47,10 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-function firstImageFromHtml(text: string): string | null {
-  const elements = ReactHtmlParser(text);
-  for (const element of elements) {
-    if (element.type === "figure") {
-      return element.props.children[0].props.src;
-    }
-  }
-  return null;
-}
-
 export type AskQuestionFormProps = {
   documentType: string;
   user: any;
 };
-
-function toPlaintext(text: string): string {
-  return removeMd(text).replace(/&nbsp;/g, " ");
-}
 
 function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
   const router = useRouter();
@@ -146,7 +133,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       hubs: mutableFormFields.hubs.map((hub) => hub.id),
       is_public: !draft,
       preview_img: firstImageFromHtml(mutableFormFields.text),
-      renderable_text: toPlaintext(mutableFormFields.text),
+      renderable_text: getPlainTextFromMarkdown(mutableFormFields.text),
       title: mutableFormFields.title,
       viewers: null,
     };
@@ -173,8 +160,13 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       <form>
         <div className={css(!isPost && styles.columnReverse)}>
           <FormSelect
-            containerStyle={[styles.chooseHub, !isPost && styles.hypothesisChooseHub]}
-            error={shouldDisplayError && formErrors.hubs && `Please select a hub`}
+            containerStyle={[
+              styles.chooseHub,
+              !isPost && styles.hypothesisChooseHub,
+            ]}
+            error={
+              shouldDisplayError && formErrors.hubs && `Please select a hub`
+            }
             errorStyle={styles.errorText}
             id="hubs"
             inputStyle={shouldDisplayError && formErrors.hubs && styles.error}
@@ -188,11 +180,13 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
             required
           />
           <FormInput
-            containerStyle={[styles.titleInputContainer, !isPost && styles.hypothesisTitle]}
+            containerStyle={[
+              styles.titleInputContainer,
+              !isPost && styles.hypothesisTitle,
+            ]}
             placeholder={"The earth revolves around the sun"}
             error={
-              shouldDisplayError &&
-              formErrors.title 
+              shouldDisplayError && formErrors.title
                 ? isPost
                   ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
                   : ``
@@ -244,7 +238,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
             customButtonStyle={styles.buttonStyle}
             disabled={isSubmitting}
             isWhite={false}
-            label={isPost ? "Post" : 'Create Hypothesis'}
+            label={isPost ? "Post" : "Create Hypothesis"}
             onClick={handlePost}
           />
         </div>
@@ -276,8 +270,8 @@ const styles = StyleSheet.create({
     },
   },
   columnReverse: {
-    display: 'flex',
-    flexDirection: 'column-reverse',
+    display: "flex",
+    flexDirection: "column-reverse",
   },
   buttonsContainer: {
     width: "auto",

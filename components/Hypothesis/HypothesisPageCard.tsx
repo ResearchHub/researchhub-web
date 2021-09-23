@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
 import {
   DOWNVOTE,
   DOWNVOTE_ENUM,
@@ -10,8 +11,9 @@ import {
   filterNull,
   isNullOrUndefined,
 } from "~/config/utils/nullchecks";
+import { ID } from "~/config/types/root_types";
 import { formatPublishedDate } from "~/config/utils/dates";
-import React, {
+import {
   Fragment,
   ReactElement,
   ReactNode,
@@ -20,17 +22,16 @@ import React, {
   useState,
 } from "react";
 import { postHypothesisVote } from "./api/postHypothesisVote";
+import { updateHypothesis } from "./api/updateHypothesis";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
 import dynamic from "next/dynamic";
+import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import ReactHtmlParser from "react-html-parser";
 import VoteWidget from "~/components/VoteWidget";
-import icons from "~/config/themes/icons";
-import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import { connect } from "react-redux";
-import { ID } from "~/config/types/root_types";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -168,6 +169,7 @@ function HypothesisPageCard({
   const {
     created_by: createdBy,
     full_markdown: fullMarkdown,
+    title = "",
     vote_meta: voteMeta,
   } = hypothesis || {};
   const {
@@ -181,10 +183,11 @@ function HypothesisPageCard({
     upCount: upCount || 0,
     userVote: userVote || null,
   });
-  const [localHypothesisBody, setLocalHypothesisBody] = useState(fullMarkdown);
+  const [displayableMarkdown, setDisplayableMarkdown] = useState(fullMarkdown);
+  const [updatedMarkdown, setUpdatedMarkdown] = useState(fullMarkdown);
 
   useEffect(() => {
-    setLocalHypothesisBody(fullMarkdown);
+    setDisplayableMarkdown(fullMarkdown);
   }, [fullMarkdown]);
 
   const actionButtons = getActionButtons({
@@ -204,26 +207,44 @@ function HypothesisPageCard({
       <Fragment>
         <DynamicCKEditor
           id="text"
-          initialData={localHypothesisBody}
+          initialData={displayableMarkdown}
           labelStyle={styles.label}
           onChange={(_id: ID, editorData: any): void =>
-            setLocalHypothesisBody(editorData)
+            setUpdatedMarkdown(editorData)
           }
         />
         <div className={css(styles.editButtonRow)}>
           <Button
             isWhite={true}
             label="Cancel"
-            onClick={(): void => setShowHypothesisEditor(false)}
+            onClick={(): void => {
+              setDisplayableMarkdown(fullMarkdown); // revert back to fetched markdown
+              setShowHypothesisEditor(false);
+            }}
             size="small"
           />
-          <Button label="Save" onClick={() => alert("HIHI!!")} size="small" />
+          <Button
+            label="Save"
+            onClick={() =>
+              updateHypothesis({
+                hypothesisID: hypothesis?.id,
+                hypothesisTitle: title,
+                onError: emptyFncWithMsg,
+                onSuccess: () => {
+                  setDisplayableMarkdown(updatedMarkdown); // optimistic update
+                  setShowHypothesisEditor(false);
+                },
+                updatedMarkdown,
+              })
+            }
+            size="small"
+          />
         </div>
       </Fragment>
     ) : (
       <Fragment>
-        {!isNullOrUndefined(fullMarkdown)
-          ? ReactHtmlParser(fullMarkdown)
+        {!isNullOrUndefined(displayableMarkdown)
+          ? ReactHtmlParser(displayableMarkdown)
           : null}
         <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>
@@ -234,7 +255,12 @@ function HypothesisPageCard({
         </div>
       </Fragment>
     );
-  }, [fullMarkdown, localHypothesisBody, showHypothesisEditor]);
+  }, [
+    actionButtons,
+    displayableMarkdown,
+    displayableMarkdown,
+    showHypothesisEditor,
+  ]);
 
   return (
     <div className={css(styles.hypothesisCard)}>
@@ -248,7 +274,7 @@ function HypothesisPageCard({
               <div className={css(styles.titleHeader)}>
                 <div className={css(styles.row)}>
                   <h1 className={css(styles.title)} property={"headline"}>
-                    {hypothesis.title}
+                    {title}
                   </h1>
                 </div>
               </div>
