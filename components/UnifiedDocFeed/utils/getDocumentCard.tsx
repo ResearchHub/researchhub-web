@@ -1,5 +1,5 @@
 import { filterNull } from "~/config/utils/nullchecks";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { StyleSheet } from "aphrodite";
 import HypothesisCard from "../document_cards/HypothesisCard";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";

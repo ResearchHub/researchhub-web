@@ -2,7 +2,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocTypes } from "~/config/utils/getUnifiedDocTypes";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
@@ -44,9 +44,8 @@ class Index extends Component {
         currentHub,
       };
     }
-
     try {
-      const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
+      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
           {
@@ -80,7 +79,6 @@ class Index extends Component {
       if (res) {
         res.statusCode = 404;
       }
-
       return {
         slug: null,
         name: null,

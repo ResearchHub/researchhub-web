@@ -12,7 +12,7 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 import { NotificationActions } from "~/redux/notification";
 
 // Config
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -104,12 +104,8 @@ class Notification extends Component {
   };
 
   formatNotification = (notification) => {
-    const {
-      action_user,
-      action,
-      created_date,
-      unified_document,
-    } = notification;
+    const { action_user, action, created_date, unified_document } =
+      notification;
     const { content_type = null, item: actonItem } = action ?? {};
     const { amount, plain_text } = actonItem ?? {};
     const formattedDocumentType = getUnifiedDocType(

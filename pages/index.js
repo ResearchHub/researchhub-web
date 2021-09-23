@@ -2,7 +2,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocTypes } from "~/config/utils/getUnifiedDocTypes";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
@@ -41,7 +41,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const urlDocType = getUnifiedDocTypes(urlQuery.type) || "all";
+    const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
     const initialFeed = await fetchUnifiedDocFeed(
       {
         hubId: null,

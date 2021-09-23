@@ -33,6 +33,7 @@ import {
 } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
@@ -41,29 +42,15 @@ class HubPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      count:
-        this.props.initialFeed && this.props.initialFeed.count
-          ? this.props.initialFeed.count
-          : 0,
-      papers:
-        this.props.initialFeed && this.props.initialFeed.results.data
-          ? this.props.initialFeed.results.data
-          : [],
-      noResults:
-        this.props.initialFeed && this.props.initialFeed.results.no_results
-          ? this.props.initialFeed.results.no_results
-          : false,
-      next:
-        this.props.initialFeed && this.props.initialFeed.next
-          ? this.props.initialFeed.next
-          : null,
+      count: this.props.initialFeed?.count ?? 0,
+      papers: this.props.initialFeed?.results?.data ?? [],
+      noResults: this.props.initialFeed?.results?.no_results ?? faLessThanEqual,
+      next: this.props.initialFeed?.next ?? null,
       page: this.props.page || 2,
       doneFetching: this.props.initialFeed ? true : false,
       filterBy: this.props.filter ? this.props.filter : defaultFilter,
       scope: this.props.scope ? this.props.scope : defaultScope,
-      feedType: this.props.initialFeed
-        ? this.props.initialFeed.results.feed_type
-        : "subscribed",
+      feedType: this.props.initialFeed?.results?.feed_type ?? "subscribed",
       disableScope: this.props.filter ? this.props.filter.disableScope : true,
       feed: this.props.feed,
       papersLoading: false,
@@ -435,15 +422,9 @@ class HubPage extends Component {
 
     const now = moment();
     const today = moment().startOf("day");
-    const week = moment()
-      .startOf("day")
-      .subtract(7, "days");
-    const month = moment()
-      .startOf("day")
-      .subtract(30, "days");
-    const year = moment()
-      .startOf("day")
-      .subtract(365, "days");
+    const week = moment().startOf("day").subtract(7, "days");
+    const month = moment().startOf("day").subtract(30, "days");
+    const year = moment().startOf("day").subtract(365, "days");
 
     scope.end = now.unix();
 
@@ -1162,7 +1143,4 @@ const mapDispatchToProps = {
   getTopHubs: HubActions.getTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HubPage);
+export default connect(mapStateToProps, mapDispatchToProps)(HubPage);

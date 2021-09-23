@@ -8,7 +8,7 @@ import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
 import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocTypes";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 const calculateTimeScope = (scope) => {
   const result = {
@@ -41,7 +41,7 @@ const calculateTimeScope = (scope) => {
   return scope;
 };
 
-export const fetchUserVote = (unifiedDocs, isLoggedIn) => {
+export const fetchUserVote = (unifiedDocs = [], isLoggedIn) => {
   const userVoteIds = { hypothesis: [], paper: [], post: [] };
   unifiedDocs.forEach(({ documents, document_type }) => {
     const formattedDocType = getUnifiedDocType(document_type);
