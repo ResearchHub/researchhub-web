@@ -31,7 +31,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
-const DynamicComponent = dynamic(() =>
+const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
 );
 const AuthorSupportModal = dynamic(() =>
@@ -187,7 +187,6 @@ class PostPageCard extends Component {
       created_by: this.props.user.id,
       document_type: "DISCUSSION",
       full_src: postBody,
-      /* @ts-ignore */
       preview_img: this.firstImageFromHtml(postBody),
       renderable_text: this.toPlaintext(postBody),
       title: post.title,
@@ -203,7 +202,7 @@ class PostPageCard extends Component {
   renderPostEditor = () => {
     return (
       <>
-        <DynamicComponent
+        <DynamicCKEditor
           id="text"
           initialData={this.state.postBody}
           labelStyle={styles.label}
@@ -307,14 +306,8 @@ class PostPageCard extends Component {
   };
 
   renderActions = () => {
-    const {
-      post,
-      isModerator,
-      flagged,
-      setFlag,
-      isSubmitter,
-      user,
-    } = this.props;
+    const { post, isModerator, flagged, setFlag, isSubmitter, user } =
+      this.props;
     const uploadedById = post && post.created_by && post.created_by.id;
     const isUploaderSuspended =
       post && post.created_by && post.created_by.is_suspended;
@@ -672,14 +665,8 @@ class PostPageCard extends Component {
 
   render() {
     const { post } = this.props;
-    const {
-      fetching,
-      figureUrls,
-      postBody,
-      previews,
-      score,
-      voteState,
-    } = this.state;
+    const { fetching, figureUrls, postBody, previews, score, voteState } =
+      this.state;
 
     const voteWidget = (horizontalView) => (
       <VoteWidget
@@ -1500,7 +1487,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PostPageCard);
+export default connect(mapStateToProps, mapDispatchToProps)(PostPageCard);

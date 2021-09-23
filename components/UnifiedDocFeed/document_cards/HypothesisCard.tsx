@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import { transformDate } from "~/redux/utils";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import API from "~/config/api";
@@ -18,7 +18,11 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 
 export type HypothesisCardProps = {
@@ -91,11 +95,12 @@ function HypothesisCard({
   title,
   titleAsHtml,
   user_vote: userVote,
-  user,
+  user: currentUser,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
   }
+
   const {
     author_profile: { first_name, last_name, author },
   } = created_by;
@@ -105,11 +110,11 @@ function HypothesisCard({
   );
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
+
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
 
-  const creatorName = first_name + " " + last_name;
   const mainTitle = (
     <Link
       href={"/[docType]/[documentId]/[title]"}
@@ -218,8 +223,11 @@ function HypothesisCard({
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
 
-      if (user && user.author_profile.id === created_by.author_profile.id) {
-        emptyFncWithMsg("Not logged in or Attempted to vote own post");
+      if (
+        !isNullOrUndefined(currentUser) &&
+        currentUser?.id === created_by?.id
+      ) {
+        emptyFncWithMsg("Not logged in or Attempted to vote own hypothesis");
         return;
       }
 
@@ -459,8 +467,8 @@ const styles = StyleSheet.create({
     width: "15%",
 
     "@media only screen and (max-width: 767px)": {
-      width: '100%',
-    }
+      width: "100%",
+    },
   },
   bottomBar: {
     display: "flex",
@@ -552,10 +560,10 @@ const styles = StyleSheet.create({
     display: "flex",
 
     "@media only screen and (max-width: 767px)": {
-      flexDirection: 'column',
+      flexDirection: "column",
       marginTop: 16,
       marginBottom: 16,
-    }
+    },
   },
   row: {
     display: "flex",
