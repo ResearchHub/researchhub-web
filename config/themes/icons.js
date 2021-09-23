@@ -418,6 +418,7 @@ export const RHLogo = ({ iconStyle, white }) => {
         draggable={false}
         alt="RH Logo"
         layout="fill"
+        loading="eager"
         priority={true}
       />
     </span>

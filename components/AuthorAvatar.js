@@ -26,14 +26,19 @@ const AuthorAvatar = (props) => {
     return (
       <div style={{ height: size, width: size }}>
         {author && author.profile_image && !error ? (
-          <Image
+          <img
             src={author.profile_image}
-            layout="fill"
+            style={{
+              maxHeight: size,
+            }}
             className={css(
               styles.avatarImg,
               border && styles.avatarImgWithBorder,
               dropShadow && styles.avatarImgWithShadow
             )}
+            onError={(e) => {
+              setError(true);
+            }}
             alt={"Author Profile Avatar"}
           />
         ) : (
@@ -100,6 +105,7 @@ const AuthorAvatar = (props) => {
 const styles = StyleSheet.create({
   avatarImg: {
     borderRadius: "50%",
+    objectFit: "cover",
   },
   avatarImgWithBorder: {
     border: "3px solid #F1F1F1",
