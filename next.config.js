@@ -16,7 +16,7 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
   images: {
     domains: [
       "researchhub-paper-dev1.s3.amazonaws.com",
-      "https://researchhub-paper-prod.s3.amazonaws.com",
+      "researchhub-paper-prod.s3.amazonaws.com",
       "researchhub.com",
     ],
   },
