@@ -1,21 +1,83 @@
 import { css, StyleSheet } from "aphrodite";
-import { formatPublishedDate } from "~/config/utils/dates";
-import { ReactElement, useEffect, useState } from "react";
-import colors from "~/config/themes/colors";
-import dayjs from "dayjs";
-import ReactHtmlParser from "react-html-parser";
-
-// Components
-import VoteWidget from "~/components/VoteWidget";
-import PaperMetadata from "~/components/Paper/PaperMetadata";
 import {
   DOWNVOTE,
   DOWNVOTE_ENUM,
   UPVOTE,
   UPVOTE_ENUM,
 } from "~/config/constants";
+import {
+  emptyFncWithMsg,
+  filterNull,
+  isNullOrUndefined,
+} from "~/config/utils/nullchecks";
+import { formatPublishedDate } from "~/config/utils/dates";
+import React, {
+  Fragment,
+  ReactElement,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { postHypothesisVote } from "./api/postHypothesisVote";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
+import dayjs from "dayjs";
+import dynamic from "next/dynamic";
+import PaperMetadata from "~/components/Paper/PaperMetadata";
+import ReactHtmlParser from "react-html-parser";
+import VoteWidget from "~/components/VoteWidget";
+import icons from "~/config/themes/icons";
+import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
+import { connect } from "react-redux";
+import { ID } from "~/config/types/root_types";
+
+const DynamicCKEditor = dynamic(
+  () => import("~/components/CKEditor/SimpleEditor")
+);
+
+const getActionButtons = ({
+  createdBy,
+  currentUser,
+  setShowHypothesisEditor,
+}: {
+  currentUser: any;
+  createdBy: any;
+  setShowHypothesisEditor: (flag: boolean) => void;
+}): ReactNode => {
+  const actionConfigs = [
+    {
+      active: !isNullOrUndefined(createdBy) && currentUser.id === createdBy.id,
+      button: (
+        <PermissionNotificationWrapper
+          hideRipples
+          loginRequired
+          modalMessage="edit hypothesis"
+          onClick={(): void => setShowHypothesisEditor(true)}
+          permissionKey="UpdatePaper"
+          styling={styles.borderRadius}
+        >
+          <div className={css(styles.actionIcon)} data-tip={"Edit Hypothesis"}>
+            {icons.pencil}
+          </div>
+        </PermissionNotificationWrapper>
+      ),
+    },
+  ];
+  return filterNull(
+    actionConfigs.map((config, index: number): any => {
+      if (config.active) {
+        return (
+          <span key={index} className={css(styles.actionButtonMargin)}>
+            {config.button}
+          </span>
+        );
+      } else {
+        return null;
+      }
+    })
+  );
+};
 
 const getMetaData = (hypothesis: any): ReactElement<"div"> => {
   const created_date = hypothesis.created_date;
@@ -99,32 +161,80 @@ const getVoteWidgetProps = ({
   };
 };
 
-export default function HypothesisPageCard({
+function HypothesisPageCard({
   hypothesis,
+  user: currentUser,
 }): ReactElement<"div"> {
-  const { vote_meta: voteMeta } = hypothesis || {};
-  const { down_count: downCount, up_count: upCount, user_vote: userVote } =
-    voteMeta || {};
+  const {
+    created_by: createdBy,
+    full_markdown: fullMarkdown,
+    vote_meta: voteMeta,
+  } = hypothesis || {};
+  const {
+    down_count: downCount,
+    up_count: upCount,
+    user_vote: userVote,
+  } = voteMeta || {};
   const [showHypothesisEditor, setShowHypothesisEditor] = useState(false);
   const [localVoteMeta, setLocalVoteMeta] = useState({
     downCount: downCount || 0,
     upCount: upCount || 0,
     userVote: userVote || null,
   });
-  const [hypothesisBody, setHypothesisBody] = useState(
-    hypothesis.full_markdown
-  );
+  const [localHypothesisBody, setLocalHypothesisBody] = useState(fullMarkdown);
 
   useEffect(() => {
-    setHypothesisBody(hypothesis.full_markdown);
-  }, [hypothesis]);
+    setLocalHypothesisBody(fullMarkdown);
+  }, [fullMarkdown]);
 
+  const actionButtons = getActionButtons({
+    createdBy,
+    currentUser,
+    setShowHypothesisEditor,
+  });
   const formattedMetaData = getMetaData(hypothesis);
   const voteWidgetProps = getVoteWidgetProps({
     hypothesis,
     localVoteMeta,
     setLocalVoteMeta,
   });
+
+  const hypoContent = useMemo((): ReactElement<typeof Fragment> => {
+    return showHypothesisEditor ? (
+      <Fragment>
+        <DynamicCKEditor
+          id="text"
+          initialData={localHypothesisBody}
+          labelStyle={styles.label}
+          onChange={(_id: ID, editorData: any): void =>
+            setLocalHypothesisBody(editorData)
+          }
+        />
+        <div className={css(styles.editButtonRow)}>
+          <Button
+            isWhite={true}
+            label="Cancel"
+            onClick={(): void => setShowHypothesisEditor(false)}
+            size="small"
+          />
+          <Button label="Save" onClick={() => alert("HIHI!!")} size="small" />
+        </div>
+      </Fragment>
+    ) : (
+      <Fragment>
+        {!isNullOrUndefined(fullMarkdown)
+          ? ReactHtmlParser(fullMarkdown)
+          : null}
+        <div className={css(styles.bottomContainer)}>
+          <div className={css(styles.bottomRow)}>
+            <div className={css(styles.actions) + " action-bars"}>
+              {actionButtons}
+            </div>
+          </div>
+        </div>
+      </Fragment>
+    );
+  }, [fullMarkdown, localHypothesisBody, showHypothesisEditor]);
 
   return (
     <div className={css(styles.hypothesisCard)}>
@@ -143,11 +253,7 @@ export default function HypothesisPageCard({
                 </div>
               </div>
               <div className={css(styles.column)}>{formattedMetaData}</div>
-              <div className="ck-content">
-                {showHypothesisEditor ? null : (
-                  <>{hypothesisBody && ReactHtmlParser(hypothesisBody)}</>
-                )}
-              </div>
+              <div className="ck-content">{hypoContent}</div>
             </div>
           </div>
           <div className={css(styles.rightColumn, styles.mobile)}>
@@ -160,6 +266,12 @@ export default function HypothesisPageCard({
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps, {})(HypothesisPageCard);
 
 const styles = StyleSheet.create({
   hypothesisCard: {
@@ -301,6 +413,84 @@ const styles = StyleSheet.create({
     width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
+    },
+  },
+  actionIcon: {
+    padding: 5,
+    borderRadius: "50%",
+    backgroundColor: "rgba(36, 31, 58, 0.03)",
+    color: "rgba(36, 31, 58, 0.35)",
+    width: 20,
+    minWidth: 20,
+    maxWidth: 20,
+    height: 20,
+    minHeight: 20,
+    maxHeight: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 15,
+    cursor: "pointer",
+    border: "1px solid rgba(36, 31, 58, 0.1)",
+    ":hover": {
+      color: "rgba(36, 31, 58, 0.8)",
+      backgroundColor: "#EDEDF0",
+      borderColor: "#d8d8de",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
+    },
+  },
+  borderRadius: {
+    borderRadius: "50%",
+  },
+  actionButtonMargin: {
+    marginRight: 10,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 500,
+    color: "#241F3A",
+    width: 120,
+    opacity: 0.7,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+  },
+  editButtonRow: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
+  actions: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-start",
+    opacity: 1,
+    transition: "all ease-in-out 0.2s",
+  },
+  bottomContainer: {
+    width: "100%",
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end",
+    marginTop: 20,
+    "@media only screen and (max-width: 767px)": {
+      margin: 0,
+    },
+  },
+  bottomRow: {
+    maxWidth: "100%",
+    display: "flex",
+    alignItems: "center",
+    "@media only screen and (max-width: 767px)": {
+      // display: "none",
     },
   },
 });
