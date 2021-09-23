@@ -11,14 +11,14 @@ const PaperUserAvatars = ({ paper, users = [] }) => {
   const renderUserAvatars = () => {
     return paperContributers.map((user, index) => {
       const classNames = [styles.root];
-console.log("1111");
+
       if (!user.profile_image) {
         // default avatar image need padding for alignment
         classNames.push(index === 0 ? styles.default : styles.hidden);
       }
 
       const avatarStyle = {};
-console.log(":sdfdsfs");
+
       if (index > 0) {
         // style used to have overlapping UI
         avatarStyle.marginLeft = -8;
@@ -33,7 +33,7 @@ console.log(":sdfdsfs");
       );
     });
   };
-console.log("sdfsfsdfsfdxfsd");
+
   return <div className={css(styles.root)}>{renderUserAvatars()}</div>;
 };
 

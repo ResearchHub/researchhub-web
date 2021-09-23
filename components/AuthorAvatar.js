@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     objectFit: "cover",
   },
   avatarImgWithBorder: {
-    border: "3px solid #F1F1F1",
+    border: `3px solid ${colors.LIGHT_GREY()}`,
   },
   avatarImgWithShadow: {
     border: "0px 2px 4px rgba(185, 185, 185, 0.25)",
@@ -121,7 +121,6 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
     borderRadius: "50%",
-    // border: "3px solid #F1F1F1",
   },
   moderatorBadge: {
     position: "absolute",

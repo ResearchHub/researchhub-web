@@ -71,9 +71,13 @@ const RenderViewMore = ({ data, loadMore, isLoadingNext }) => {
 const ActivityList = (props) => {
   const router = useRouter();
   const { auth, subscribedHubs, feed, hub, hubId } = props;
-  const [isFetching, setIsFetching] = useState(!isEmpty(props.initialActivity) ? false : true);
+  const [isFetching, setIsFetching] = useState(
+    isEmpty(props.initialActivity) ? true : false
+  );
   const [isLoadingNext, setIsLoadingNext] = useState(false);
-  const [data, setData] = useState(!isEmpty(props.initialActivity) ?  props.initialActivity : DEFAULT_DATA);
+  const [data, setData] = useState(
+    isEmpty(props.initialActivity) ? DEFAULT_DATA : props.initialActivity
+  );
 
   useEffect(() => {
     const fetchActivityFeed = async () => {

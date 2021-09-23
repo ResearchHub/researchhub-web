@@ -27,7 +27,7 @@ const LeaderboardContainer = (props) => {
 
   useEffect(() => {
     if (!isNullOrUndefined(props.hubId) && router.pathname !== "/") {
-      fetchLeaderboard();  
+      fetchLeaderboard();
     }
   }, [props.hubId]);
 
@@ -36,19 +36,19 @@ const LeaderboardContainer = (props) => {
 
     return fetch(
       API.LEADERBOARD({
-      limit: 10,
-      page: 1,
-      hubId: props.hubId,
-      timeframe: "past_week",
-    }),
-    API.GET_CONFIG()
+        limit: 10,
+        page: 1,
+        hubId: props.hubId,
+        timeframe: "past_week",
+      }),
+      API.GET_CONFIG()
     )
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      setFetchingUsers(false);
-      setUsers(res.results);
-    });
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setFetchingUsers(false);
+        setUsers(res.results);
+      });
   };
 
   const renderLeaderboardUsers = (users) => {
