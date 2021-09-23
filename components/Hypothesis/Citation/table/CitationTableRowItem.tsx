@@ -72,7 +72,7 @@ export default function CitationTableRowItem({
             as={citationTitleLinkUri}
             passHref
           >
-            <a target="_blank">{displayTitle}</a>
+            <a target="_blank" className={css(styles.link)}>{displayTitle}</a>
           </Link>
         }
         width={tableWidths.SOURCE}
@@ -128,5 +128,9 @@ const styles = StyleSheet.create({
   },
   capitalize: {
     textTransform: "capitalize",
+  },
+  link: {
+    color: colors.BLUE(1),
+    textDecoration: 'none',
   },
 });
