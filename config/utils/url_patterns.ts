@@ -1,6 +1,6 @@
 import { ID } from "../types/root_types";
-import { getUnifiedDocType } from "./getUnifiedDocTypes";
-import { emptyFncWithMsg, isNullOrUndefined, nullthrows } from "./nullchecks";
+import { getUnifiedDocType } from "./getUnifiedDocType";
+import { isNullOrUndefined, nullthrows } from "./nullchecks";
 
 export const UNIFIED_DOC_PAGE_URL_PATTERN =
   "/[documentType]/[documentId]/[slug]";
