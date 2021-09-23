@@ -213,9 +213,6 @@ function AuthorClaimPromptEmail({
 
 const verifStyles = StyleSheet.create({
   rootContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
     alignItems: "center",
     backgroundColor: "#fff",
     padding: "50px 40px",
