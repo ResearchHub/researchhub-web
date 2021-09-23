@@ -24,6 +24,7 @@ import {
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
+import { breakpoints } from "~/config/themes/screen";
 
 export type HypothesisCardProps = {
   aggregate_citation_consensus: any;
@@ -391,7 +392,7 @@ const styles = StyleSheet.create({
   postCreatedBy: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 8,
     },
   },
@@ -400,7 +401,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
     marginLeft: 8,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
     },
   },
@@ -449,7 +450,7 @@ const styles = StyleSheet.create({
   metadataText: {
     fontSize: 13,
     color: colors.BLACK(0.5),
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 13,
     },
   },
@@ -458,15 +459,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 8,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
   consensusContainer: {
-    width: "15%",
-
-    "@media only screen and (max-width: 767px)": {
+    width: "20%",
+    marginRight: 4,
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
   },
@@ -479,7 +481,7 @@ const styles = StyleSheet.create({
   },
   mobileHubTags: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       width: "100%",
       justifyContent: "flex-end",
@@ -500,7 +502,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
       paddingBottom: 10,
     },
@@ -533,7 +535,7 @@ const styles = StyleSheet.create({
     maxWidth: "unset",
   },
   previewColumn: {
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
       alignItems: "center",
       width: "100%",
@@ -549,8 +551,16 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 1.3,
     marginTop: 5,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 13,
+      width: "70%",
+      minWidth: "70%",
+      maxWidth: "70%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "100%",
+      minWidth: "100%",
+      maxWidth: "100%",
     },
   },
   summaryWrap: {
@@ -558,8 +568,10 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     maxWidth: "100%",
     display: "flex",
-
-    "@media only screen and (max-width: 767px)": {
+    justifyContent: "space-between",
+    paddingRight: 8,
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       marginTop: 16,
       marginBottom: 16,
@@ -568,7 +580,7 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       height: "unset",
       alignItems: "flex-start",
@@ -597,7 +609,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 970px)": {
       flexWrap: "wrap",
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       margin: 0,
       padding: 0,
       width: "fit-content",
