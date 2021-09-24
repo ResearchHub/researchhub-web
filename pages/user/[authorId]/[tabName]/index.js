@@ -884,62 +884,61 @@ function AuthorPage(props) {
 
       <div className={css(styles.modActions)}>
         {filterNull([
-                  isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
-                    <div className={css(styles.editProfileButton)} key="banOrReinstate">
-                      <ModeratorDeleteButton
-                        actionType="user"
-                        containerStyle={styles.moderatorButton}
-                        icon={
-                          !fetchedUser
-                            ? " "
-                            : isAuthorUserSuspended
-                            ? icons.userPlus
-                            : icons.userSlash
-                        }
-                        iconStyle={styles.moderatorIcon}
-                        key="user"
-                        labelStyle={styles.moderatorLabel}
-                        label={
-                          !fetchedUser ? (
-                            <Loader loading={true} color={"#FFF"} size={15} />
-                          ) : isAuthorUserSuspended ? (
-                            "Reinstate User"
-                          ) : (
-                            "Ban User"
-                          )
-                        }
-                        metaData={{
-                          authorId: router.query.authorId,
-                          isSuspended: isAuthorUserSuspended,
-                          setIsSuspended: () =>
-                            setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
-                        }}
-                      />
-                    </div>
-                  ) : null,
-                  /* current user should not be able to ban / reinstate themselves */
-                  isCurrentUserModerator ? (
-                    <div
-                      className={css(styles.editProfileButton, styles.siftButton)}
-                      key="SiftButton"
-                    >
-                      <Button
-                        customButtonStyle={styles.editButtonCustom}
-                        label={() => (
-                          <Fragment>
-                            <span style={{ marginRight: 10, userSelect: "none" }}>
-                              {icons.user}
-                            </span>
-                            Sift Profile
-                          </Fragment>
-                        )}
-                        onClick={() => window.open(props.author.sift_link, "_blank")}
-                        rippleClass={styles.rippleClass}
-                      />
-                    </div>
-                  ) : null,          
-        ])
-        }
+          isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
+            <div className={css(styles.editProfileButton)} key="banOrReinstate">
+              <ModeratorDeleteButton
+                actionType="user"
+                containerStyle={styles.moderatorButton}
+                icon={
+                  !fetchedUser
+                    ? " "
+                    : isAuthorUserSuspended
+                    ? icons.userPlus
+                    : icons.userSlash
+                }
+                iconStyle={styles.moderatorIcon}
+                key="user"
+                labelStyle={styles.moderatorLabel}
+                label={
+                  !fetchedUser ? (
+                    <Loader loading={true} color={"#FFF"} size={15} />
+                  ) : isAuthorUserSuspended ? (
+                    "Reinstate User"
+                  ) : (
+                    "Ban User"
+                  )
+                }
+                metaData={{
+                  authorId: router.query.authorId,
+                  isSuspended: isAuthorUserSuspended,
+                  setIsSuspended: () =>
+                    setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+                }}
+              />
+            </div>
+          ) : null,
+          /* current user should not be able to ban / reinstate themselves */
+          isCurrentUserModerator ? (
+            <div
+              className={css(styles.editProfileButton, styles.siftButton)}
+              key="SiftButton"
+            >
+              <Button
+                customButtonStyle={styles.editButtonCustom}
+                label={() => (
+                  <Fragment>
+                    <span style={{ marginRight: 10, userSelect: "none" }}>
+                      {icons.user}
+                    </span>
+                    Sift Profile
+                  </Fragment>
+                )}
+                onClick={() => window.open(props.author.sift_link, "_blank")}
+                rippleClass={styles.rippleClass}
+              />
+            </div>
+          ) : null,
+        ])}
       </div>
     </div>
   );
