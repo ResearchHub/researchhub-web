@@ -103,7 +103,7 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-console.log('preloadedDocData', preloadedDocData);
+
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
@@ -126,9 +126,7 @@ console.log('preloadedDocData', preloadedDocData);
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
-  console.log('page', page);
-  console.log('isLoading', isLoading);
-  console.log('needsFetch', needsFetch);
+
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
@@ -148,7 +146,6 @@ console.log('preloadedDocData', preloadedDocData);
     const currPath = router.asPath;
 
     if (prevPath !== currPath) {
-      console.log("different path yo");
       resetState({ isLoading: false });
       fetchUnifiedDocs({ ...getFetchParams() });
       setPrevPath(router.asPath);

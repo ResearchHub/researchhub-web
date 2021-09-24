@@ -31,10 +31,6 @@ class HubsList extends Component {
     if (this.props.hubs.length) {
       this.setState({ hubs: [...this.props.hubs] });
     }
-
-    // if (auth.isLoggedIn) {
-    //   this.updateTopHubs();
-    // }
   }
 
   componentDidUpdate(prevProps) {
@@ -45,12 +41,6 @@ class HubsList extends Component {
     } else if (prevProps.hubs !== this.props.hubs) {
       this.setState({ hubs: [...this.props.hubs] });
     }
-    // if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
-    //   this.updateTopHubs();
-    // }
-    // if (prevProps.auth.user !== this.props.auth.user) {
-    //   this.updateTopHubs();
-    // }
   }
 
   componentWillUnmount() {
@@ -73,40 +63,11 @@ class HubsList extends Component {
     }
   }
 
-  // Kobe 09/22/20: Do we need this?
-  //   updateTopHubs = (state) => {
-  //     let hubState = this.props.hubState;
-  //     if (this.props.auth.isLoggedIn) {
-  //       let subscribed = hubState.subscribedHubs || [];
-  //       let subscribedHubs = {};
-  //       subscribed.forEach((hub) => {
-  //         subscribedHubs[hub.id] = true;
-  //       });
-  //
-  //       let updatedTopHubs = this.props.hubs.map((hub) => {
-  //         if (subscribedHubs[hub.id]) {
-  //           hub.user_is_subscribed = true;
-  //         }
-  //         return hub;
-  //       });
-  //
-  //       this.props.updateTopHubs(updatedTopHubs);
-  //     } else {
-  //       let updatedTopHubs = this.props.hubs.map((hub) => {
-  //         hub.user_is_subscribed = false;
-  //         return hub;
-  //       });
-  //
-  //       this.props.updateTopHubs(updatedTopHubs);
-  //     }
-  //   };
-
   revealTransition = () => {
     setTimeout(() => this.setState({ reveal: true }), DEFAULT_TRANSITION_TIME);
   };
 
   renderHubEntry = () => {
-    console.log("this.state.hubs", this.state.hubs);
     const selectedHubs = this.state.hubs.slice(0, 5);
 
     return selectedHubs.map((hub, i) => {
