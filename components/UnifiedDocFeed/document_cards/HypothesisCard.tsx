@@ -466,8 +466,11 @@ const styles = StyleSheet.create({
   },
   consensusContainer: {
     width: "20%",
-    marginRight: 4,
     boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      fontSize: 13,
+      width: "30%",
+    },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 16,
       width: "100%",
@@ -543,9 +546,7 @@ const styles = StyleSheet.create({
     },
   },
   summary: {
-    width: "85%",
-    minWidth: "85%",
-    maxWidth: "85%",
+    width: "80%",
     boxSizing: "border-box",
     paddingRight: 16,
     color: colors.BLACK(0.8),
@@ -570,7 +571,6 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     justifyContent: "space-between",
-    paddingRight: 8,
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
