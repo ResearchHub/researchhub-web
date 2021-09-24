@@ -122,11 +122,13 @@ console.log('preloadedDocData', preloadedDocData);
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
-  const needsInitialFetch = useMemo(
+  const needsFetch = useMemo(
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
-  console.log('needsInitialFetch', needsInitialFetch);
+  console.log('page', page);
+  console.log('isLoading', isLoading);
+  console.log('needsFetch', needsFetch);
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
@@ -146,7 +148,8 @@ console.log('preloadedDocData', preloadedDocData);
     const currPath = router.asPath;
 
     if (prevPath !== currPath) {
-      resetState();
+      console.log("different path yo");
+      resetState({ isLoading: false });
       fetchUnifiedDocs({ ...getFetchParams() });
       setPrevPath(router.asPath);
     }
@@ -162,7 +165,7 @@ console.log('preloadedDocData', preloadedDocData);
         page: 1,
       });
     } else {
-      resetState();
+      resetState({});
       fetchUnifiedDocs({ ...getFetchParams() });
     }
 
@@ -202,7 +205,7 @@ console.log('preloadedDocData', preloadedDocData);
   };
 
   const handleDocTypeChange = (docTypeValue: string): void => {
-    resetState();
+    resetState({});
     setDocTypeFilter(docTypeValue);
 
     fetchUnifiedDocs({
@@ -226,7 +229,7 @@ console.log('preloadedDocData', preloadedDocData);
   const handleFilterSelect = (_type: string, filterBy: any): void => {
     const updatedSubFilters = { filterBy, scope: subFilters.scope };
 
-    resetState();
+    resetState({});
     setSubFilters(updatedSubFilters);
     fetchUnifiedDocs({
       ...getFetchParams(),
@@ -242,7 +245,7 @@ console.log('preloadedDocData', preloadedDocData);
   const handleScopeSelect = (_type: string, scope: any): void => {
     const updatedSubFilters = { filterBy: subFilters.filterBy, scope };
 
-    resetState();
+    resetState({});
     setSubFilters(updatedSubFilters);
     fetchUnifiedDocs({
       ...getFetchParams(),
@@ -254,9 +257,9 @@ console.log('preloadedDocData', preloadedDocData);
     });
   };
 
-  const resetState = (): void => {
+  const resetState = ({ isLoading = true}): void => {
     setPaginationInfo({
-      isLoading: true,
+      isLoading,
       isLoadingMore: false,
       page: 1,
     });
@@ -436,7 +439,7 @@ console.log('preloadedDocData', preloadedDocData);
           description={featureDescriptions[whichFeatureActive]}
         />
       } */}
-      {needsInitialFetch ? (
+      {needsFetch ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />

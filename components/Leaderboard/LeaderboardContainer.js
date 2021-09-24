@@ -21,35 +21,6 @@ const LeaderboardContainer = (props) => {
       ? props.initialUsers.results
       : []
   );
-  const [fetchingUsers, setFetchingUsers] = useState(
-    props.initialUsers ? false : true
-  );
-
-  useEffect(() => {
-    if (!isNullOrUndefined(props.hubId) && router.pathname !== "/") {
-      fetchLeaderboard();
-    }
-  }, [props.hubId]);
-
-  const fetchLeaderboard = () => {
-    setFetchingUsers(true);
-
-    return fetch(
-      API.LEADERBOARD({
-        limit: 10,
-        page: 1,
-        hubId: props.hubId,
-        timeframe: "past_week",
-      }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setFetchingUsers(false);
-        setUsers(res.results);
-      });
-  };
 
   const renderLeaderboardUsers = (users) => {
     return users.map((user, index) => {
@@ -81,19 +52,14 @@ const LeaderboardContainer = (props) => {
       data-test={isDevEnv() ? `leaderboard` : undefined}
     >
       <h3 className={css(styles.title)}>Trending Users</h3>
-      <ReactPlaceholder
-        ready={!fetchingUsers}
-        customPlaceholder={<LeaderboardPlaceholder color="#efefef" rows={5} />}
-      >
-        <div className={css(styles.leaderboardUsers)}>
-          {renderLeaderboardUsers(users)}
-          <div className={css(styles.linkContainer)}>
-            <Link href={"/leaderboard/[type]"} as={"/leaderboard/users"}>
-              <a className={css(styles.link)}>View Leaderboard</a>
-            </Link>
-          </div>
+      <div className={css(styles.leaderboardUsers)}>
+        {renderLeaderboardUsers(users)}
+        <div className={css(styles.linkContainer)}>
+          <Link href={"/leaderboard/[type]"} as={"/leaderboard/users"}>
+            <a className={css(styles.link)}>View Leaderboard</a>
+          </Link>
         </div>
-      </ReactPlaceholder>
+      </div>
     </div>
   );
 };
