@@ -469,6 +469,7 @@ const styles = StyleSheet.create({
     marginRight: 4,
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 16,
       width: "100%",
     },
   },
@@ -557,7 +558,7 @@ const styles = StyleSheet.create({
       minWidth: "70%",
       maxWidth: "70%",
     },
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       minWidth: "100%",
       maxWidth: "100%",
