@@ -22,7 +22,7 @@ export type CitationTableRowItemProps = {
     slug?: string | null;
   };
   type: string;
-  year: string;
+  publish_date: string;
   updateLastFetchTime: Function;
 };
 
@@ -54,7 +54,7 @@ export default function CitationTableRowItem({
   consensusMeta,
   source: { displayTitle, docType, documentID, slug },
   type,
-  year,
+  publish_date,
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
   const citationTitleLinkUri = formatUnifiedDocPageUrl({
@@ -82,7 +82,7 @@ export default function CitationTableRowItem({
         value={type && type.toLocaleLowerCase()}
         width={tableWidths.TYPE}
       />
-      <ItemColumn value={year} width={tableWidths.YEAR} />
+      <ItemColumn value={publish_date} width={tableWidths.YEAR} />
       <ItemColumn
         value={
           <CitationConsensusItem

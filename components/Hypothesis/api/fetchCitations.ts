@@ -24,6 +24,7 @@ export function fetchCitationsOnHypothesis({
             consensus_meta,
             created_by,
             id,
+            publish_date,
             source: { document_type, documents },
           } = item;
           if (document_type === "PAPER") {
@@ -32,7 +33,6 @@ export function fetchCitationsOnHypothesis({
               paper_title,
               slug = " ",
               title,
-              paper_publish_date,
               created_date,
             } = documents;
             const { author_profile } = created_by;
@@ -53,7 +53,7 @@ export function fetchCitationsOnHypothesis({
                 slug,
               },
               type: document_type,
-              year: (paper_publish_date ?? created_date ?? "").split("-")[0],
+              publish_date: (publish_date ?? publish_date ?? "").split("-")[0],
             };
           } else {
             // TODO: calvinhlee - work on this after search
