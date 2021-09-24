@@ -25,10 +25,16 @@ export function fetchCitationsOnHypothesis({
             created_by,
             id,
             source: { document_type, documents },
-            updated_date,
           } = item;
           if (document_type === "PAPER") {
-            const { paper_title, title } = documents;
+            const {
+              id: documentID,
+              paper_title,
+              slug = " ",
+              title,
+              paper_publish_date,
+              created_date,
+            } = documents;
             const { author_profile } = created_by;
             return {
               // @ts-ignore id here is int
@@ -40,9 +46,14 @@ export function fetchCitationsOnHypothesis({
                 userVote: consensus_meta?.user_vote ?? null,
               }, // need to get voting info
               citedBy: [author_profile],
-              source: title || paper_title,
+              source: {
+                displayTitle: title || paper_title,
+                docType: document_type,
+                documentID: documentID ?? null,
+                slug,
+              },
               type: document_type,
-              year: updated_date.split("-")[0],
+              year: (paper_publish_date ?? created_date ?? "").split("-")[0],
             };
           } else {
             // TODO: calvinhlee - work on this after search

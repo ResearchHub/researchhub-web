@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
-import React, { SyntheticEvent, useState, useEffect, useMemo } from "react";
+import { SyntheticEvent, useState, useEffect, useMemo } from "react";
 import { transformDate } from "~/redux/utils";
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import API from "~/config/api";
@@ -18,8 +18,13 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import { emptyFncWithMsg, silentEmptyFnc } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
+import { breakpoints } from "~/config/themes/screen";
 
 export type HypothesisCardProps = {
   aggregate_citation_consensus: any;
@@ -91,11 +96,12 @@ function HypothesisCard({
   title,
   titleAsHtml,
   user_vote: userVote,
-  user,
+  user: currentUser,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
   }
+
   const {
     author_profile: { first_name, last_name, author },
   } = created_by;
@@ -105,11 +111,11 @@ function HypothesisCard({
   );
   const [score, setScore] = useState<number>(initialScore + (boostAmount ?? 0));
   const [isHubsOpen, setIsHubsOpen] = useState(false);
+
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
 
-  const creatorName = first_name + " " + last_name;
   const mainTitle = (
     <Link
       href={"/[docType]/[documentId]/[title]"}
@@ -218,8 +224,11 @@ function HypothesisCard({
     return async (e: SyntheticEvent) => {
       e.stopPropagation();
 
-      if (user && user.author_profile.id === created_by.author_profile.id) {
-        emptyFncWithMsg("Not logged in or Attempted to vote own post");
+      if (
+        !isNullOrUndefined(currentUser) &&
+        currentUser?.id === created_by?.id
+      ) {
+        emptyFncWithMsg("Not logged in or Attempted to vote own hypothesis");
         return;
       }
 
@@ -383,7 +392,7 @@ const styles = StyleSheet.create({
   postCreatedBy: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 8,
     },
   },
@@ -392,7 +401,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 400,
     marginLeft: 8,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
     },
   },
@@ -441,7 +450,7 @@ const styles = StyleSheet.create({
   metadataText: {
     fontSize: 13,
     color: colors.BLACK(0.5),
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 13,
     },
   },
@@ -450,17 +459,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 8,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
   consensusContainer: {
-    width: "15%",
-
-    "@media only screen and (max-width: 767px)": {
-      width: '100%',
-    }
+    width: "20%",
+    marginRight: 4,
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "100%",
+    },
   },
   bottomBar: {
     display: "flex",
@@ -471,7 +481,7 @@ const styles = StyleSheet.create({
   },
   mobileHubTags: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       width: "100%",
       justifyContent: "flex-end",
@@ -492,7 +502,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
       paddingBottom: 10,
     },
@@ -525,7 +535,7 @@ const styles = StyleSheet.create({
     maxWidth: "unset",
   },
   previewColumn: {
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
       alignItems: "center",
       width: "100%",
@@ -535,14 +545,22 @@ const styles = StyleSheet.create({
     width: "85%",
     minWidth: "85%",
     maxWidth: "85%",
-    boxSizing: 'border-box',
+    boxSizing: "border-box",
     paddingRight: 16,
     color: colors.BLACK(0.8),
     fontSize: 14,
     lineHeight: 1.3,
     marginTop: 5,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 13,
+      width: "70%",
+      minWidth: "70%",
+      maxWidth: "70%",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "100%",
+      minWidth: "100%",
+      maxWidth: "100%",
     },
   },
   summaryWrap: {
@@ -550,17 +568,19 @@ const styles = StyleSheet.create({
     minWidth: "100%",
     maxWidth: "100%",
     display: "flex",
-
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: 'column',
+    justifyContent: "space-between",
+    paddingRight: 8,
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
       marginTop: 16,
       marginBottom: 16,
-    }
+    },
   },
   row: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       height: "unset",
       alignItems: "flex-start",
@@ -589,7 +609,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 970px)": {
       flexWrap: "wrap",
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       margin: 0,
       padding: 0,
       width: "fit-content",

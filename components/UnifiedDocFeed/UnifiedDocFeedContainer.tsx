@@ -22,22 +22,21 @@ import {
   useRef,
   Fragment,
 } from "react";
+import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
+import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import colors from "../../config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
+import killswitch from "~/config/killswitch/killswitch";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
+import SiteWideBannerTall from "../SiteWideBannerTall";
+import TabNewFeature from "../NewFeature/TabNewFeature";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
-import TabNewFeature from "../NewFeature/TabNewFeature";
-import FeedNewFeatureBox from "../NewFeature/FeedNewFeatureBox";
-import killswitch from "~/config/killswitch/killswitch";
-import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
-import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
-import SiteWideBannerTall from "../SiteWideBannerTall";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -425,15 +424,6 @@ function UnifiedDocFeedContainer({
           </div>
         </div>
       ) : null}
-      {/* {
-        newFeatureActive &&
-        <FeedNewFeatureBox 
-          bannerExists={!hasSubscribed}
-          feature={whichFeatureActive}
-          featureHeadline={featureHeadlines[whichFeatureActive]}
-          description={featureDescriptions[whichFeatureActive]}
-        />
-      } */}
       {needsInitialFetch ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -503,13 +493,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
-    overflow: 'auto',
+    overflow: "auto",
   },
   mainFilters: {
     alignItems: "center",
     display: "flex",
     height: "inherit",
-    width: '100%',
+    width: "100%",
   },
   feedButtonContainer: {
     marginRight: 24,

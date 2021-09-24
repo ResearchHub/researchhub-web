@@ -1,16 +1,26 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, ReactNode } from "react";
-import colors from "~/config/themes/colors";
 import { ID } from "~/config/types/root_types";
+import { ReactElement, ReactNode } from "react";
+import { tableWidths } from "./constants/tableWidths";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
-import { tableWidths } from "./constants/tableWidths";
+import colors from "~/config/themes/colors";
+import Link from "next/link";
+import {
+  formatUnifiedDocPageUrl,
+  UNIFIED_DOC_PAGE_URL_PATTERN,
+} from "~/config/utils/url_patterns";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
   citedBy: Object[];
   consensusMeta: ConsensusMeta;
-  source: string;
+  source: {
+    displayTitle: string;
+    docType: string;
+    documentID: ID;
+    slug?: string | null;
+  };
   type: string;
   year: string;
   updateLastFetchTime: Function;
@@ -42,14 +52,31 @@ export default function CitationTableRowItem({
   citationID,
   citedBy,
   consensusMeta,
-  source,
+  source: { displayTitle, docType, documentID, slug },
   type,
   year,
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
+  const citationTitleLinkUri = formatUnifiedDocPageUrl({
+    docType,
+    documentID,
+    slug,
+  });
   return (
     <div className={css(styles.tableRowItem)}>
-      <ItemColumn bold value={source} width={tableWidths.SOURCE} />
+      <ItemColumn
+        bold
+        value={
+          <Link
+            href={UNIFIED_DOC_PAGE_URL_PATTERN}
+            as={citationTitleLinkUri}
+            passHref
+          >
+            <a target="_blank" className={css(styles.link)}>{displayTitle}</a>
+          </Link>
+        }
+        width={tableWidths.SOURCE}
+      />
       <ItemColumn
         className={styles.capitalize}
         value={type && type.toLocaleLowerCase()}
@@ -101,5 +128,9 @@ const styles = StyleSheet.create({
   },
   capitalize: {
     textTransform: "capitalize",
+  },
+  link: {
+    color: colors.BLUE(1),
+    textDecoration: 'none',
   },
 });
