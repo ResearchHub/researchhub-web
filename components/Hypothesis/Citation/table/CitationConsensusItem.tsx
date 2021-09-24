@@ -342,7 +342,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     width: "inherit",
     marginLeft: 3,
-    maxWidth: 166,
+    "@media only screen and (min-width: 1024px)": {
+      maxWidth: 166,
+    },
   },
   button: {
     alignItems: "center",
@@ -388,8 +390,10 @@ const styles = StyleSheet.create({
   consensusWrap: {
     height: "100%",
     maxHeight: 28,
-    maxWidth: 166,
     width: "100%",
+    "@media only screen and (min-width: 1024px)": {
+      maxWidth: 166,
+    },
 
     "@media only screen and (max-width: 767px)": {
       maxWidth: "unset",
