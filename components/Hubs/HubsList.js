@@ -21,7 +21,7 @@ class HubsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      hubs: this.props?.initialHubList?.results ?? [],
+      hubs: this.props?.initialHubList ?? [],
       reveal: true,
     };
   }

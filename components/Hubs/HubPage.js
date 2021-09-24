@@ -637,7 +637,7 @@ class HubPage extends Component {
         }
       );
     }
-
+    console.log("initialActivity", initialActivity);
     const sampleFeed = this.state.feedType !== "subscribed" && feed === 0;
 
     const hasSubscribed = process.browser

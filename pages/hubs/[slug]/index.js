@@ -1,6 +1,5 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
-import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Helpers } from "@quantfive/js-web-config";
@@ -12,83 +11,15 @@ import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
-
-const isServer = () => typeof window === "undefined";
+import {
+  fetchUnifiedDocFeed,
+  fetchLatestActivity,
+  fetchLeaderboard,
+  fetchTopHubs,
+} from "~/config/fetch";
+import { getHubs } from "~/components/Hubs/api/fetchHubs";
 
 class Index extends Component {
-  static async getInitialProps(ctx) {
-    const { query, query: urlQuery } = ctx;
-    const { res, slug, name } = query;
-    const cookies = nookies.get(ctx);
-    const authToken = cookies[AUTH_TOKEN];
-
-    let defaultProps = {
-      initialFeed: null,
-      leaderboardFeed: null,
-      initialHubList: null,
-    };
-
-    const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
-      .then((res) => res.json())
-      .then((body) => body.results[0]);
-
-    if (!currentHub) {
-      throw 404;
-    }
-
-    if (!isServer()) {
-      return {
-        slug,
-        name,
-        initialProps: {},
-        currentHub,
-      };
-    }
-    try {
-      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
-      const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetchUnifiedDocFeed(
-          {
-            // Initial Feed
-            hubId: currentHub.id,
-            ordering: "hot",
-            timePeriod: getInitialScope(),
-            type: urlDocType,
-          },
-          authToken,
-          !isNullOrUndefined(authToken) /* withVotes */
-        ),
-        fetch(
-          API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
-          API.GET_CONFIG()
-        ).then((res) => res.json()),
-        fetch(API.SORTED_HUB({}), API.GET_CONFIG()).then((res) => res.json()),
-      ]);
-
-      return {
-        slug,
-        name,
-        currentHub,
-        initialProps: {
-          initialFeed,
-          leaderboardFeed,
-          initialHubList,
-        },
-      };
-    } catch (e) {
-      if (res) {
-        res.statusCode = 404;
-      }
-      return {
-        slug: null,
-        name: null,
-        currentHub,
-        initialProps: { ...defaultProps },
-        error: true,
-      };
-    }
-  }
-
   constructor(props) {
     super(props);
     this.state = {
@@ -96,9 +27,9 @@ class Index extends Component {
       currentHub: this.props.currentHub
         ? this.props.currentHub
         : {
-            name: this.props.name
-              ? this.props.name
-                ? decodeURIComponent(this.props.name)
+            name: this.props.currentHub.name
+              ? this.props.currentHub.name
+                ? decodeURIComponent(this.props.currentHub.name)
                 : "ResearchHub"
               : "",
             slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
@@ -109,51 +40,32 @@ class Index extends Component {
     };
   }
 
-  componentDidMount() {
-    if (!this.props.initialProps.initialFeed) {
-      this.fetchHubInfo(this.state.slug);
-    }
-  }
-
   componentDidUpdate(prevProps, prevState) {
     if (prevProps.slug !== this.props.slug) {
-      this.setState(
-        {
-          slug: Router.router.query.slug,
-        },
-        () => {
-          this.fetchHubInfo(Router.router.query.slug);
-        }
-      );
-    }
-  }
-
-  fetchHubInfo = async (name) => {
-    const currentHub = await fetchHub(name);
-    if (currentHub) {
       this.setState({
-        currentHub,
-        hubDescription: this.props.hub && this.props.hub.name,
+        slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
+        currentHub: this.props.currentHub
+          ? this.props.currentHub
+          : {
+              name: this.props.currentHub.name
+                ? this.props.currentHub.name
+                  ? decodeURIComponent(this.props.currentHub.name)
+                  : "ResearchHub"
+                : "",
+              slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
+            },
+        hubDescription: this.props.currentHub
+          ? "Discuss and Discover " + toTitleCase(this.props.currentHub.name)
+          : "Discuss and Discover " + toTitleCase(this.props.slug),
       });
     }
-  };
-
-  renderHub = () => {
-    const { currentHub, slug } = this.state;
-
-    return (
-      <HubPage
-        hub={currentHub}
-        slug={this.props.slug}
-        {...this.props.initialProps}
-      />
-    );
-  };
+  }
 
   render() {
     const { currentHub, slug } = this.state;
+
     if (this.props.error) {
-      return <Error statusCode={404} />;
+      return <Error statusCode={this.props.error.code} />;
     }
 
     return (
@@ -178,8 +90,7 @@ class Index extends Component {
             }
           />
         )}
-        {/* {this.renderHub()} */}
-        <HubPage hub={currentHub} slug={slug} {...this.props.initialProps} />
+        <HubPage hub={currentHub} slug={slug} {...this.props} />
       </div>
     );
   }
@@ -192,6 +103,153 @@ function fetchHub(slug) {
     .then((res) => {
       return res.results[0]; // TODO: Shim and catch errors
     });
+}
+
+//   static async getInitialProps(ctx) {
+//     const { query, query: urlQuery } = ctx;
+//     const { res, slug, name } = query;
+//     const cookies = nookies.get(ctx);
+//     const authToken = cookies[AUTH_TOKEN];
+//
+//     let defaultProps = {
+//       initialFeed: null,
+//       leaderboardFeed: null,
+//       initialHubList: null,
+//     };
+//
+//     const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
+//       .then((res) => res.json())
+//       .then((body) => body.results[0]);
+//
+//     if (!currentHub) {
+//       throw 404;
+//     }
+//
+//     if (!isServer()) {
+//       return {
+//         slug,
+//         name,
+//         initialProps: {},
+//         currentHub,
+//       };
+//     }
+//     try {
+//       const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+//       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
+//         fetchUnifiedDocFeed(
+//           {
+//             // Initial Feed
+//             hubId: currentHub.id,
+//             ordering: "hot",
+//             timePeriod: getInitialScope(),
+//             type: urlDocType,
+//           },
+//           authToken,
+//           !isNullOrUndefined(authToken) /* withVotes */
+//         ),
+//         fetch(
+//           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
+//           API.GET_CONFIG()
+//         ).then((res) => res.json()),
+//         fetch(API.SORTED_HUB({}), API.GET_CONFIG()).then((res) => res.json()),
+//       ]);
+//
+//       return {
+//         slug,
+//         name,
+//         currentHub,
+//         initialProps: {
+//           initialFeed,
+//           leaderboardFeed,
+//           initialHubList,
+//         },
+//       };
+//     } catch (e) {
+//       if (res) {
+//         res.statusCode = 404;
+//       }
+//       return {
+//         slug: null,
+//         name: null,
+//         currentHub,
+//         initialProps: { ...defaultProps },
+//         error: true,
+//       };
+//     }
+//   }
+
+export async function getStaticPaths(ctx) {
+  const hubsRes = await getHubs();
+
+  return {
+    paths: hubsRes.hubs.map((h) => `/hubs/${h.slug}`),
+    fallback: "blocking",
+  };
+}
+
+export async function getStaticProps(ctx) {
+  const { res, slug, name } = ctx.params;
+
+  const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
+    .then((res) => res.json())
+    .then((body) => body.results[0]);
+
+  if (!currentHub) {
+    return {
+      props: {
+        error: {
+          code: 404,
+        },
+      },
+    };
+  }
+
+  const defaultProps = {
+    initialFeed: null,
+    leaderboardFeed: null,
+    initialHubList: null,
+  };
+
+  const initialActivityPromise = fetchLatestActivity({});
+  const initialHubListPromise = fetchTopHubs();
+  const leaderboardPromise = fetchLeaderboard({
+    limit: 10,
+    page: 1,
+    hubId: currentHub.id,
+    timeframe: "past_week",
+  });
+  const initialFeedPromise = fetchUnifiedDocFeed({
+    hubId: currentHub.id,
+    ordering: "hot",
+    page: 1,
+    subscribedHubs: false,
+    timePeriod: getInitialScope(),
+    type: "all",
+  });
+  const [
+    leaderboardFeed,
+    initialFeed,
+    initialHubList,
+    initialActivity,
+  ] = await Promise.all([
+    leaderboardPromise,
+    initialFeedPromise,
+    initialHubListPromise,
+    initialActivityPromise,
+  ]);
+
+  return {
+    revalidate: 10,
+    props: {
+      ...defaultProps,
+      initialFeed,
+      leaderboardFeed,
+      initialHubList,
+      initialActivity,
+      currentHub,
+      slug,
+    },
+  };
 }
 
 export default Index;

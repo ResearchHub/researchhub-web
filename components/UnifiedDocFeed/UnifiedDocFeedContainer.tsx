@@ -103,7 +103,7 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-
+console.log('preloadedDocData', preloadedDocData);
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
@@ -126,6 +126,7 @@ function UnifiedDocFeedContainer({
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
+  console.log('needsInitialFetch', needsInitialFetch);
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 

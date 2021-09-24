@@ -138,14 +138,23 @@ export const fetchUnifiedDocFeed = async (
   }
 };
 
-export const fetchLeaderboard = async (PARAMS) => {
-  fetch(API.LEADERBOARD(PARAMS), API.GET_CONFIG())
+export const fetchTopHubs = () => {
+  return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      let topHubs = [...resp.results];
+      topHubs = topHubs.map((hub) => {
+        hub.user_is_subscribed = false;
+        return hub;
+      });
+
+      return topHubs;
+    });
 };
 
-export const fetchTopHubs = async () => {
-  fetch(API.SORTED_HUB(), API.GET_CONFIG())
+export const fetchLeaderboard = async (PARAMS) => {
+  return fetch(API.LEADERBOARD(PARAMS), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };

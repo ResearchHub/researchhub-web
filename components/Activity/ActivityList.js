@@ -95,7 +95,7 @@ const ActivityList = (props) => {
       setIsFetching(false);
     };
 
-    if (router.pathname !== "/") {
+    if (isEmpty(props.initialActivity)) {
       fetchActivityFeed();
     }
   }, [hubId, feed]);
