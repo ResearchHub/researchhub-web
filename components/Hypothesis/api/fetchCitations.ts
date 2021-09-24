@@ -25,15 +25,15 @@ export function fetchCitationsOnHypothesis({
             created_by,
             id,
             source: { document_type, documents },
-            updated_date,
           } = item;
-          // debugger;
           if (document_type === "PAPER") {
             const {
               id: documentID,
               paper_title,
               slug = " ",
               title,
+              paper_publish_date,
+              created_date,
             } = documents;
             const { author_profile } = created_by;
             return {
@@ -53,7 +53,7 @@ export function fetchCitationsOnHypothesis({
                 slug,
               },
               type: document_type,
-              year: updated_date.split("-")[0],
+              year: (paper_publish_date ?? created_date ?? "").split("-")[0],
             };
           } else {
             // TODO: calvinhlee - work on this after search
