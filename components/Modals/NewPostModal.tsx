@@ -32,7 +32,7 @@ const items = [
     header: "Publish a Research Project",
     description: "Publish lab notes, original research, metastudies, etc.",
     imgSrc: "/static/icons/publishProject.png",
-    route: "/notebook",
+    route: "/notebook/personal/1",
   },
 ];
 
