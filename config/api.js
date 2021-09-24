@@ -183,6 +183,10 @@ const routes = (BASE_URL) => {
       let url = `${BASE_URL}note_content/`;
       return url;
     },
+    NOTE_TEMPLATE: () => {
+      let url = `${BASE_URL}note_template/`;
+      return url;
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
       filters,

@@ -1,15 +1,18 @@
 import API from "~/config/api";
 import Link from "next/link";
-import React, { useEffect, useRef, useState } from "react";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
+import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
+
+const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplateModal"));
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -44,6 +47,7 @@ export const ELNEditor = ({ user }) => {
   const [organizations, setOrganizations] = useState([]);
   const [refetchNotes, setRefetchNotes] = useState(false);
   const [titles, setTitles] = useState({});
+  const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
 
   useEffect(() => {
     editorRef.current = {
@@ -251,6 +255,14 @@ export const ELNEditor = ({ user }) => {
 
   return (
     <div className={css(styles.container)}>
+      <NoteTemplateModal
+        currentOrganizationId={currentOrganizationId}
+        isOpen={isNoteTemplateModalOpen}
+        setIsOpen={setIsNoteTemplateModalOpen}
+        user={user}
+        refetchNotes={refetchNotes}
+        setRefetchNotes={setRefetchNotes}
+      />
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
       </div>
@@ -319,7 +331,10 @@ export const ELNEditor = ({ user }) => {
           </div>
         )}
         <div className={css(styles.sidebarButtonsContainer)}>
-          <div className={css(styles.sidebarButton)}>
+          <div
+            className={css(styles.sidebarButton)}
+            onClick={() => setIsNoteTemplateModalOpen(true)}
+          >
             {icons.shapes}
             <span className={css(styles.sidebarButtonText)}>
               Templates
