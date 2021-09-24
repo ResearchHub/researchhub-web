@@ -25,8 +25,10 @@ import { Helpers } from "@quantfive/js-web-config";
 import { getNestedValue } from "~/config/utils/misc";
 import { formatPaperSlug } from "~/config/utils/document";
 import { doesNotExist } from "~/config/utils/nullchecks";
-
-const HREF_PATTERN = "/[documentType]/[documentId]/[slug]";
+import {
+  formatUnifiedDocPageUrl,
+  UNIFIED_DOC_PAGE_URL_PATTERN,
+} from "~/config/utils/url_patterns";
 
 const getNotifMetadata = (notification) => {
   // Grab notification metadata for Discussions, Papers, and Comments + Replies on both.
@@ -50,14 +52,16 @@ const getNotifMetadata = (notification) => {
       ? unifiedDocument.documents // For papers, documents is an object :
       : unifiedDocument.documents[0]; // For other documents, it's an array of objects
   const { id: documentID, paper_title, slug, title } = targetDoc ?? {};
-  const uriResolvedDocType = (
-    (documentType === "DISCUSSION" ? "POST" : documentType) ?? ""
-  ).toLowerCase();
-  const hrefAs = `/${uriResolvedDocType}/${documentID}/${slug ?? ""}`;
+
+  const hrefAs = formatUnifiedDocPageUrl({
+    docType: documentType,
+    documentID,
+    slug,
+  });
 
   return {
     authorId,
-    href: HREF_PATTERN,
+    href: UNIFIED_DOC_PAGE_URL_PATTERN,
     hrefAs: !shouldLeadToComments ? hrefAs : hrefAs + "#comments",
     notifType,
     postId: documentID,

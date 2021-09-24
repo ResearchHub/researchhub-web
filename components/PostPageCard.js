@@ -1,37 +1,36 @@
-import { createRef, Component } from "react";
-import { StyleSheet, css } from "aphrodite";
-import * as moment from "dayjs";
-import Router from "next/router";
-import Link from "next/link";
-import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
+import { createRef, Component } from "react";
+import { formatPublishedDate } from "~/config/utils/dates";
+import { Helpers } from "@quantfive/js-web-config";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { MessageActions } from "../redux/message";
+import { ModalActions } from "~/redux/modals";
+import { StyleSheet, css } from "aphrodite";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
+import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
-import HubTag from "~/components/Hubs/HubTag";
-import VoteWidget from "~/components/VoteWidget";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import ShareAction from "~/components/ShareAction";
+import ActionButton from "~/components/ActionButton";
+import API from "~/config/api";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Button from "~/components/Form/Button";
-import PaperMetadata from "./Paper/PaperMetadata";
-import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
+import HubTag from "~/components/Hubs/HubTag";
 import icons from "~/config/themes/icons";
-import { Helpers } from "@quantfive/js-web-config";
-import { formatPublishedDate } from "~/config/utils/dates";
-import { MessageActions } from "../redux/message";
-import ReactHtmlParser from "react-html-parser";
-import removeMd from "remove-markdown";
-// import { SimpleEditor } from "~/components/CKEditor/SimpleEditor";
-import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
-import ActionButton from "~/components/ActionButton";
+import Link from "next/link";
+import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import ReactHtmlParser from "react-html-parser";
+import ReactTooltip from "react-tooltip";
+import removeMd from "remove-markdown";
+import Router from "next/router";
+import ShareAction from "~/components/ShareAction";
+import VoteWidget from "~/components/VoteWidget";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
-const DynamicComponent = dynamic(() =>
+const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
 );
 const AuthorSupportModal = dynamic(() =>
@@ -187,7 +186,6 @@ class PostPageCard extends Component {
       created_by: this.props.user.id,
       document_type: "DISCUSSION",
       full_src: postBody,
-      /* @ts-ignore */
       preview_img: this.firstImageFromHtml(postBody),
       renderable_text: this.toPlaintext(postBody),
       title: post.title,
@@ -203,7 +201,7 @@ class PostPageCard extends Component {
   renderPostEditor = () => {
     return (
       <>
-        <DynamicComponent
+        <DynamicCKEditor
           id="text"
           initialData={this.state.postBody}
           labelStyle={styles.label}
@@ -307,14 +305,8 @@ class PostPageCard extends Component {
   };
 
   renderActions = () => {
-    const {
-      post,
-      isModerator,
-      flagged,
-      setFlag,
-      isSubmitter,
-      user,
-    } = this.props;
+    const { post, isModerator, flagged, setFlag, isSubmitter, user } =
+      this.props;
     const uploadedById = post && post.created_by && post.created_by.id;
     const isUploaderSuspended =
       post && post.created_by && post.created_by.is_suspended;
@@ -672,14 +664,8 @@ class PostPageCard extends Component {
 
   render() {
     const { post } = this.props;
-    const {
-      fetching,
-      figureUrls,
-      postBody,
-      previews,
-      score,
-      voteState,
-    } = this.state;
+    const { fetching, figureUrls, postBody, previews, score, voteState } =
+      this.state;
 
     const voteWidget = (horizontalView) => (
       <VoteWidget
@@ -1500,7 +1486,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PostPageCard);
+export default connect(mapStateToProps, mapDispatchToProps)(PostPageCard);

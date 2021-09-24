@@ -1,19 +1,20 @@
+import { AUTH_TOKEN } from "~/config/constants";
 import { Fragment, useState, useEffect, useRef } from "react";
 import { StyleSheet, css } from "aphrodite";
-import colors from "../../config/themes/colors";
 import API from "~/config/api";
-import { AUTH_TOKEN } from "~/config/constants";
+import colors from "../../config/themes/colors";
 
-export default function SimpleEditor({
-  id,
-  containerStyle,
-  onChange,
-  initialData,
-  label,
-  labelStyle,
-  required,
-  placeholder,
-}) {
+export default function SimpleEditor(props) {
+  const {
+    id,
+    containerStyle,
+    onChange,
+    initialData,
+    label,
+    labelStyle,
+    required,
+    placeholder,
+  } = props;
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
