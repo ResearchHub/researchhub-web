@@ -179,12 +179,20 @@ function fetchHub(slug) {
 //   }
 
 export async function getStaticPaths(ctx) {
-  const hubsRes = await getHubs();
+   // const hubsRes = await getHubs();
+ 
+  // return {
+  //   paths: hubsRes.hubs.map((h) => `/hubs/${h.slug}`),
+  //   fallback: "blocking",
+  // };
+
+  const topHubs = await fetchTopHubs();
 
   return {
-    paths: hubsRes.hubs.map((h) => `/hubs/${h.slug}`),
+    paths: topHubs.slice(0,5).map((h) => `/hubs/${h.slug}`),
     fallback: "blocking",
   };
+
 }
 
 export async function getStaticProps(ctx) {
@@ -226,17 +234,28 @@ export async function getStaticProps(ctx) {
     timePeriod: getInitialScope(),
     type: "all",
   });
-  const [
-    leaderboardFeed,
-    initialFeed,
-    initialHubList,
-    initialActivity,
-  ] = await Promise.all([
-    leaderboardPromise,
-    initialFeedPromise,
-    initialHubListPromise,
-    initialActivityPromise,
-  ]);
+  let leaderboardFeed, initialFeed, initialHubList, initialActivity;
+
+  try {
+    [
+      leaderboardFeed,
+      initialFeed,
+      initialHubList,
+      initialActivity,
+    ] = await Promise.all([
+      leaderboardPromise,
+      initialFeedPromise,
+      initialHubListPromise,
+      initialActivityPromise,
+    ]);
+  }
+  catch(err) {
+    console.log('err', err);
+    console.log(leaderboardFeed);
+    console.log(initialFeed);
+    console.log(initialHubList);
+    console.log(initialActivity);
+  }
 
   return {
     revalidate: 10,
