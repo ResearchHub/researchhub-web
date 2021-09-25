@@ -82,7 +82,7 @@ export default function CitationTableRowItem({
         value={type && type.toLocaleLowerCase()}
         width={tableWidths.TYPE}
       />
-      <ItemColumn value={publish_date} width={tableWidths.YEAR} />
+      {/* <ItemColumn value={publish_date} width={tableWidths.YEAR} /> */}
       <ItemColumn
         value={
           <CitationConsensusItem
