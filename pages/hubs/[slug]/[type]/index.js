@@ -21,6 +21,9 @@ import { getHubs } from "~/components/Hubs/api/fetchHubs";
 
 class Index extends Component {
   constructor(props) {
+
+    console.log('props', props);
+
     super(props);
     this.state = {
       slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",
@@ -111,13 +114,13 @@ export async function getStaticPaths(ctx) {
   const topHubs = await fetchTopHubs();
 
   return {
-    paths: topHubs.slice(0,5).map((h) => `/hubs/${h.slug}`),
+    paths: [], //topHubs.slice(0,5).map((h) => `/hubs/${h.slug}`),
     fallback: "blocking",
   };
 }
 
 export async function getStaticProps(ctx) {
-  const { slug, name } = ctx.params;
+  const { slug, type, name } = ctx.params;
 
   const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
     .then((res) => res.json())
@@ -153,7 +156,7 @@ export async function getStaticProps(ctx) {
     page: 1,
     subscribedHubs: false,
     timePeriod: getInitialScope(),
-    type: "all",
+    type,
   });
 
   const [

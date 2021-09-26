@@ -140,7 +140,7 @@ function UnifiedDocFeedContainer({
       }),
     [hubName, feed, filterBy, isHomePage]
   );
-
+console.log('router', router);
   // When the hub changes, we want to automatically fetch new docs
   useEffect((): void => {
     const currPath = router.asPath;
@@ -214,13 +214,15 @@ function UnifiedDocFeedContainer({
       fetchParams: { docTypeFilter: docTypeValue },
     });
 
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, type: docTypeValue },
-      },
-      router.pathname + `?type=${docTypeValue}`
-    );
+    const typeForUrl = docTypeValue === "all"
+      ? ""
+      : docTypeValue;
+
+    const pathname = router.query.slug
+      ? `/hubs/${router.query.slug}/${typeForUrl}`
+      : `/${typeForUrl}`;
+
+    router.push(pathname);
   };
 
   const handleFilterSelect = (_type: string, filterBy: any): void => {
