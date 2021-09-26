@@ -140,7 +140,7 @@ function UnifiedDocFeedContainer({
       }),
     [hubName, feed, filterBy, isHomePage]
   );
-console.log('router', router);
+
   // When the hub changes, we want to automatically fetch new docs
   useEffect((): void => {
     const currPath = router.asPath;
@@ -202,7 +202,7 @@ console.log('router', router);
   };
 
   const handleDocTypeChange = (docTypeValue: string): void => {
-    resetState({});
+    resetState({ isLoading: false });
     setDocTypeFilter(docTypeValue);
 
     fetchUnifiedDocs({
