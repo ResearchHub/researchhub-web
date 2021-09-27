@@ -3,15 +3,12 @@ import { filterOptions, scopeOptions } from "../../config/utils/options";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
-  nullthrows,
+  isEmpty,
   silentEmptyFnc,
 } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { NextRouter, useRouter } from "next/router";
-import {
-  UnifiedDocFilterLabels,
-  UnifiedDocFilters,
-} from "./constants/UnifiedDocFilters";
+import { unifiedDocTabs } from "./constants/UnifiedDocTabs";
 import { connect } from "react-redux";
 import { getDocumentCard, UnifiedCard } from "./utils/getDocumentCard";
 import {
@@ -38,6 +35,7 @@ import killswitch from "~/config/killswitch/killswitch";
 import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
 import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
 import SiteWideBannerTall from "../SiteWideBannerTall";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -55,13 +53,14 @@ const featureDescriptions = {
 Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place anyone looks at to find the consensus of specific topics.`,
 };
 
-const getFilterFromRouter = (router: NextRouter): string => {
-  const docType = router.query.type;
-  return isNullOrUndefined(docType)
-    ? UnifiedDocFilters.ALL
-    : Array.isArray(docType)
-    ? nullthrows(docType[0])
-    : nullthrows(docType);
+const getDocTypeFilterFromRouter = (router: NextRouter): string => {
+  // The last part of the path is a url friendly doc type.
+  // e.g. "posts" (not "post")
+  const urlDocType = router.pathname.split('/').pop();
+
+  const docTypeFilterForApi = getUnifiedDocType(urlDocType);
+
+  return docTypeFilterForApi;
 };
 
 const usePrevious = (value: any): any => {
@@ -92,8 +91,8 @@ function UnifiedDocFeedContainer({
     [router.pathname]
   );
 
-  const [docTypeFilter, setDocTypeFilter] = useState<string>(
-    getFilterFromRouter(router)
+  const [selectedDocTypeFilter, setSelectedDocTypeFilter] = useState<string>(
+    getDocTypeFilterFromRouter(router)
   );
 
   const [prevPath, setPrevPath] = useState<string>(router.asPath);
@@ -126,7 +125,8 @@ function UnifiedDocFeedContainer({
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
-
+console.log('needsFetch', needsFetch);
+console.log('preloadedDocData', preloadedDocData);
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
@@ -201,26 +201,22 @@ function UnifiedDocFeedContainer({
     }
   };
 
-  const handleDocTypeChange = (docTypeValue: string): void => {
+  const handleTabChange = (tab: any): void => {
     resetState({ isLoading: false });
-    setDocTypeFilter(docTypeValue);
+    setSelectedDocTypeFilter(tab.filterValue);
 
     fetchUnifiedDocs({
       ...getFetchParams(),
-      docTypeFilter: docTypeValue,
+      docTypeFilter: tab.filterValue,
     });
     prefetchNextPage({
       nextPage: 2,
-      fetchParams: { docTypeFilter: docTypeValue },
+      fetchParams: { docTypeFilter: tab.filterValue },
     });
 
-    const typeForUrl = docTypeValue === "all"
-      ? ""
-      : docTypeValue;
-
     const pathname = router.query.slug
-      ? `/hubs/${router.query.slug}/${typeForUrl}`
-      : `/${typeForUrl}`;
+      ? `/hubs/${router.query.slug}/${tab.href}`
+      : `/${tab.href}`;
 
     router.push(pathname);
   };
@@ -293,7 +289,7 @@ function UnifiedDocFeedContainer({
     return {
       hubID,
       prevDocuments: unifiedDocuments,
-      docTypeFilter,
+      docTypeFilter: selectedDocTypeFilter,
       subFilters,
       isLoggedIn,
       onSuccess: onFetchSuccess,
@@ -303,11 +299,6 @@ function UnifiedDocFeedContainer({
     };
   };
 
-  if (!killswitch("hypothesis")) {
-    // @ts-ignore intentional removing for KS
-    delete UnifiedDocFilters.HYPOTHESIS;
-  }
-
   const [shouldAlertHypo, _setShouldAlertHypo] =
     useEffectNewFeatureShouldAlertUser({
       auth,
@@ -315,22 +306,21 @@ function UnifiedDocFeedContainer({
     });
 
   const docTypeFilterButtons = useMemo(() => {
-    return Object.keys(UnifiedDocFilters).map(
-      (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
-        const filterValue = UnifiedDocFilters[filterKey];
-        if (filterValue === "hypothesis") {
+    return unifiedDocTabs.map(
+      (tab: any): ReactElement<typeof UnifiedDocFeedFilterButton> => {
+        if (tab.filterValue === "hypothesis") {
           return (
             <div className={css(styles.hypoFeedButton)}>
               <UnifiedDocFeedFilterButton
-                isActive={docTypeFilter === filterValue}
-                key={filterKey}
-                label={UnifiedDocFilterLabels[filterKey]}
+                isActive={selectedDocTypeFilter === tab.filterValue}
+                key={tab.label}
+                label={tab.label}
                 onClick={(): void => {
                   postNewFeatureNotifiedToUser({
                     auth,
-                    featureName: filterValue,
+                    featureName: tab.filterValue,
                   });
-                  handleDocTypeChange(filterValue);
+                  handleTabChange(tab);
                 }}
               />
               {shouldAlertHypo ? (
@@ -344,17 +334,17 @@ function UnifiedDocFeedContainer({
           return (
             <div className={css(styles.feedButtonContainer)}>
               <UnifiedDocFeedFilterButton
-                isActive={docTypeFilter === filterValue}
-                key={filterKey}
-                label={UnifiedDocFilterLabels[filterKey]}
-                onClick={() => handleDocTypeChange(filterValue)}
+                isActive={selectedDocTypeFilter === tab.filterValue}
+                key={tab.label}
+                label={tab.label}
+                onClick={() => handleTabChange(tab)}
               />
             </div>
           );
         }
       }
     );
-  }, [docTypeFilter, router, shouldAlertHypo]);
+  }, [selectedDocTypeFilter, router, shouldAlertHypo]);
 
   const documentCards = useMemo((): UnifiedCard[] | any[] => {
     const cards = getDocumentCard({
@@ -364,7 +354,7 @@ function UnifiedDocFeedContainer({
       setUnifiedDocuments,
       unifiedDocumentData: unifiedDocuments,
     });
-    if (shouldAlertHypo && docTypeFilter === "hypothesis") {
+    if (shouldAlertHypo && selectedDocTypeFilter === "hypothesis") {
       cards.unshift(
         <SiteWideBannerTall
           body={

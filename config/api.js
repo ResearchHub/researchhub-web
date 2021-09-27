@@ -535,6 +535,8 @@ const routes = (BASE_URL) => {
           type,
         },
       };
+      console.log("url", url);
+      console.log("params", params);
       return prepURL(url, params);
     },
     UNIFIED_DOC: ({ id }) => {
@@ -624,11 +626,8 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    NEW_FEATURE: ({
-      route,
-      feature,
-    }) => {
-      let url = BASE_URL + 'new_feature_release/';
+    NEW_FEATURE: ({ route, feature }) => {
+      let url = BASE_URL + "new_feature_release/";
       let params = {
         querystring: {
           feature,
