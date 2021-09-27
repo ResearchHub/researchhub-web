@@ -535,9 +535,10 @@ const routes = (BASE_URL) => {
           type,
         },
       };
-      console.log("url", url);
-      console.log("params", params);
-      return prepURL(url, params);
+
+      const finalUrl = prepURL(url, params);
+      console.log("finalUrl", finalUrl);
+      return finalUrl;
     },
     UNIFIED_DOC: ({ id }) => {
       const url = BASE_URL + "researchhub_unified_documents/";

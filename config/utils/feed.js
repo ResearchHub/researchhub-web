@@ -28,7 +28,7 @@ export function buildStaticPropsForFeed({ docType = "all" }) {
       hubId: null,
       timeframe: "past_week",
     });
-    console.log("type", docType);
+
     const initialFeedPromise = fetchUnifiedDocFeed({
       hubId: null,
       ordering: "hot",
@@ -48,7 +48,6 @@ export function buildStaticPropsForFeed({ docType = "all" }) {
       initialHubListPromise,
       initialActivityPromise,
     ]);
-    console.log("initialFeed", initialFeed);
     return {
       revalidate: 10,
       props: {

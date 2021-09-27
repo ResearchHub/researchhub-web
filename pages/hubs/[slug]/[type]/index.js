@@ -21,9 +21,6 @@ import { getHubs } from "~/components/Hubs/api/fetchHubs";
 
 class Index extends Component {
   constructor(props) {
-
-    console.log('props', props);
-
     super(props);
     this.state = {
       slug: this.props.slug ? decodeURIComponent(this.props.slug) : "",

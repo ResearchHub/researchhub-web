@@ -59,7 +59,7 @@ const getDocTypeFilterFromRouter = (router: NextRouter): string => {
   const urlDocType = router.pathname.split('/').pop();
 
   const docTypeFilterForApi = getUnifiedDocType(urlDocType);
-
+console.log('docTypeFilterForApi', docTypeFilterForApi);
   return docTypeFilterForApi;
 };
 
@@ -126,7 +126,7 @@ function UnifiedDocFeedContainer({
     [page, isLoading]
   );
 console.log('needsFetch', needsFetch);
-console.log('preloadedDocData', preloadedDocData);
+
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
