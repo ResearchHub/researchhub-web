@@ -153,7 +153,7 @@ export async function getStaticProps(ctx) {
     page: 1,
     subscribedHubs: false,
     timePeriod: getInitialScope(),
-    type,
+    type: getUnifiedDocType(type),
   });
 
   const [
@@ -178,6 +178,7 @@ export async function getStaticProps(ctx) {
       initialActivity,
       currentHub,
       slug,
+      key: getUnifiedDocType(type),
     },
   };
 }

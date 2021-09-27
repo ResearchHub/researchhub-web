@@ -19,7 +19,7 @@ function FeedBlurWithButton(
   const { auth, currentAuthorId, hubState, isLoggedIn } = props;
   const router = useRouter();
 
-  const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
+  const isOnMyHubsTab = router.asPath.includes("/my-hubs");
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]

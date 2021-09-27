@@ -56,19 +56,11 @@ Whether you're just starting your research in a new field, or have been research
 const getDocTypeFilterFromRouter = (router: NextRouter): string => {
   // The last part of the path is a url friendly doc type.
   // e.g. "posts" (not "post")
-  const urlDocType = router.pathname.split('/').pop();
+  const urlDocType = router.asPath.split('/').pop();
 
   const docTypeFilterForApi = getUnifiedDocType(urlDocType);
-console.log('docTypeFilterForApi', docTypeFilterForApi);
-  return docTypeFilterForApi;
-};
 
-const usePrevious = (value: any): any => {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
+  return docTypeFilterForApi;
 };
 
 function UnifiedDocFeedContainer({
@@ -87,7 +79,7 @@ function UnifiedDocFeedContainer({
   
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
-    (): Boolean => ["/my-hubs"].includes(router.pathname),
+    (): Boolean => router.asPath.includes("/my-hubs"),
     [router.pathname]
   );
 
@@ -96,7 +88,6 @@ function UnifiedDocFeedContainer({
   );
 
   const [prevPath, setPrevPath] = useState<string>(router.asPath);
-  const prevHub = usePrevious(hub);
 
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
@@ -125,8 +116,6 @@ function UnifiedDocFeedContainer({
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
-console.log('unifiedDocuments', unifiedDocuments);  
-console.log('needsFetch', needsFetch);
 
   const [newFeatureActive, setNewFeatureActive] = useState(false);
   const [whichFeatureActive, setWhichFeatureActive] = useState(false);
@@ -142,33 +131,29 @@ console.log('needsFetch', needsFetch);
     [hubName, feed, filterBy, isHomePage]
   );
 
-  // When the hub changes, we want to automatically fetch new docs
   useEffect((): void => {
-    const currPath = router.asPath;
-
-    if (prevPath !== currPath) {
-      resetState({ isLoading: false });
-      fetchUnifiedDocs({ ...getFetchParams() });
-      setPrevPath(router.asPath);
-    }
-  }, [hub]);
-
-  // Switching from "all" => slug hub unmounts the component
-  // to mitigate, we need to figure out if a fetch is needed.
-  useEffect((): void => {
-    if (preloadedDocData) {
-      setPaginationInfo({
-        isLoadingMore: false,
-        isLoading: false,
-        page: 1,
-      });
-    } else {
+    console.log('using effect');
+    if (isEmpty(preloadedDocData)) {
       resetState({});
       fetchUnifiedDocs({ ...getFetchParams() });
     }
-
     prefetchNextPage({ nextPage: 2 });
   }, []);
+
+  useEffect((): void => {
+    const currPath = router.asPath;
+
+console.log('currPath', currPath);
+console.log('prevPath', prevPath);
+
+    if (currPath.includes("/my-hubs") && prevPath !== currPath && !isEmpty(prevPath)) {
+      console.log("here yo");
+      resetState({ isLoading: false });
+      fetchUnifiedDocs({ ...getFetchParams() });
+    }
+
+    setPrevPath(router.asPath);
+  }, [router.asPath]);
 
   const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
     fetchUnifiedDocs({
@@ -203,11 +188,18 @@ console.log('needsFetch', needsFetch);
   };
 
   const handleTabChange = (tab: any): void => {
-    const pathname = router.query.slug
-      ? `/hubs/${router.query.slug}/${tab.href}`
-      : `/${tab.href}`;
 
-    router.push(pathname);
+    setSelectedDocTypeFilter(tab.filterValue);
+
+    if (router.pathname === '/hubs/[slug]' || router.pathname === '/hubs/[slug]/[type]') {
+      router.push(`/hubs/${router.query.slug}/${tab.href}`);
+    }
+    else if (router.pathname === '/my-hubs' || router.pathname === '/my-hubs/[type]') {
+      router.push(`/my-hubs/${tab.href}`);
+    }
+    else {
+      router.push(`/${tab.href}`);
+    }
   };
 
   const handleFilterSelect = (_type: string, filterBy: any): void => {
