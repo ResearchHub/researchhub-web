@@ -125,6 +125,7 @@ function UnifiedDocFeedContainer({
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
+console.log('unifiedDocuments', unifiedDocuments);  
 console.log('needsFetch', needsFetch);
 
   const [newFeatureActive, setNewFeatureActive] = useState(false);
@@ -202,18 +203,6 @@ console.log('needsFetch', needsFetch);
   };
 
   const handleTabChange = (tab: any): void => {
-    resetState({ isLoading: false });
-    setSelectedDocTypeFilter(tab.filterValue);
-
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      docTypeFilter: tab.filterValue,
-    });
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { docTypeFilter: tab.filterValue },
-    });
-
     const pathname = router.query.slug
       ? `/hubs/${router.query.slug}/${tab.href}`
       : `/${tab.href}`;
@@ -411,6 +400,7 @@ console.log('needsFetch', needsFetch);
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
+
       {!hasSubscribed ? (
         <div>
           <div className={css(styles.bannerContainer)} id="create-feed-banner">
@@ -419,15 +409,7 @@ console.log('needsFetch', needsFetch);
           </div>
         </div>
       ) : null}
-      {/* {
-        newFeatureActive &&
-        <FeedNewFeatureBox 
-          bannerExists={!hasSubscribed}
-          feature={whichFeatureActive}
-          featureHeadline={featureHeadlines[whichFeatureActive]}
-          description={featureDescriptions[whichFeatureActive]}
-        />
-      } */}
+
       {needsFetch ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -440,6 +422,7 @@ console.log('needsFetch', needsFetch);
           {documentCards.length > 0 ? documentCards : <EmptyFeedScreen />}
         </div>
       )}
+
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
       {!isLoggedIn && isOnMyHubsTab ? null : (
         <div className={css(styles.loadMoreWrap)}>
