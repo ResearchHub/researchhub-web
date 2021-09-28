@@ -139,7 +139,7 @@ export async function getStaticProps(ctx) {
     initialHubList: null,
   };
 
-  const initialActivityPromise = fetchLatestActivity({});
+  const initialActivityPromise = fetchLatestActivity({ hubIds: [currentHub.id] });
   const initialHubListPromise = fetchTopHubs();
   const leaderboardPromise = fetchLeaderboard({
     limit: 10,
