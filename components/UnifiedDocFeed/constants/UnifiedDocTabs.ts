@@ -18,5 +18,5 @@ export const unifiedDocTabs = [
     label: "Hypotheses",
     filterValue: "hypothesis",
     href: "hypotheses",
-  },  
-]
+  },
+];

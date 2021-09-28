@@ -422,15 +422,9 @@ class HubPage extends Component {
 
     const now = moment();
     const today = moment().startOf("day");
-    const week = moment()
-      .startOf("day")
-      .subtract(7, "days");
-    const month = moment()
-      .startOf("day")
-      .subtract(30, "days");
-    const year = moment()
-      .startOf("day")
-      .subtract(365, "days");
+    const week = moment().startOf("day").subtract(7, "days");
+    const month = moment().startOf("day").subtract(30, "days");
+    const year = moment().startOf("day").subtract(365, "days");
 
     scope.end = now.unix();
 
@@ -1151,7 +1145,4 @@ const mapDispatchToProps = {
   getTopHubs: HubActions.getTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HubPage);
+export default connect(mapStateToProps, mapDispatchToProps)(HubPage);

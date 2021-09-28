@@ -111,7 +111,7 @@ export async function getStaticPaths(ctx) {
   const topHubs = await fetchTopHubs();
 
   return {
-    paths: topHubs.slice(0,5).map((h) => `/hubs/${h.slug}`),
+    paths: topHubs.slice(0, 5).map((h) => `/hubs/${h.slug}`),
     fallback: "blocking",
   };
 }
@@ -139,7 +139,9 @@ export async function getStaticProps(ctx) {
     initialHubList: null,
   };
 
-  const initialActivityPromise = fetchLatestActivity({ hubIds: [currentHub.id] });
+  const initialActivityPromise = fetchLatestActivity({
+    hubIds: [currentHub.id],
+  });
   const initialHubListPromise = fetchTopHubs();
   const leaderboardPromise = fetchLeaderboard({
     limit: 10,
@@ -156,17 +158,13 @@ export async function getStaticProps(ctx) {
     type: "all",
   });
 
-  const [
-    leaderboardFeed,
-    initialFeed,
-    initialHubList,
-    initialActivity,
-  ] = await Promise.all([
-    leaderboardPromise,
-    initialFeedPromise,
-    initialHubListPromise,
-    initialActivityPromise,
-  ]);
+  const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
+    await Promise.all([
+      leaderboardPromise,
+      initialFeedPromise,
+      initialHubListPromise,
+      initialActivityPromise,
+    ]);
 
   return {
     revalidate: 10,

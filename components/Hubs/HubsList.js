@@ -285,7 +285,4 @@ const mapDispatchToProps = {
   updateTopHubs: HubActions.updateTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HubsList);
+export default connect(mapStateToProps, mapDispatchToProps)(HubsList);

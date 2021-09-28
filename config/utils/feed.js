@@ -37,17 +37,13 @@ export function buildStaticPropsForFeed({ docType = "all" }) {
       timePeriod: getInitialScope(),
       type: docType,
     });
-    const [
-      leaderboardFeed,
-      initialFeed,
-      initialHubList,
-      initialActivity,
-    ] = await Promise.all([
-      leaderboardPromise,
-      initialFeedPromise,
-      initialHubListPromise,
-      initialActivityPromise,
-    ]);
+    const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
+      await Promise.all([
+        leaderboardPromise,
+        initialFeedPromise,
+        initialHubListPromise,
+        initialActivityPromise,
+      ]);
     return {
       revalidate: 10,
       props: {

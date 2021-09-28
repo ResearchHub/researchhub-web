@@ -56,7 +56,7 @@ Whether you're just starting your research in a new field, or have been research
 const getDocTypeFilterFromRouter = (router: NextRouter): string => {
   // The last part of the path is a url friendly doc type.
   // e.g. "posts" (not "post")
-  const urlDocType = router.asPath.split('/').pop();
+  const urlDocType = router.asPath.split("/").pop();
 
   const docTypeFilterForApi = getUnifiedDocType(urlDocType);
 
@@ -76,7 +76,7 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
-  
+
   const router = useRouter();
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => router.asPath.includes("/my-hubs"),
@@ -132,7 +132,6 @@ function UnifiedDocFeedContainer({
   );
 
   useEffect((): void => {
-    console.log('using effect');
     if (isEmpty(preloadedDocData)) {
       resetState({});
       fetchUnifiedDocs({ ...getFetchParams() });
@@ -143,8 +142,11 @@ function UnifiedDocFeedContainer({
   useEffect((): void => {
     const currPath = router.asPath;
 
-    if (currPath.includes("/my-hubs") && prevPath !== currPath && !isEmpty(prevPath)) {
-      console.log("here yo");
+    if (
+      currPath.includes("/my-hubs") &&
+      prevPath !== currPath &&
+      !isEmpty(prevPath)
+    ) {
       resetState({ isLoading: false });
       fetchUnifiedDocs({ ...getFetchParams() });
     }
@@ -185,16 +187,19 @@ function UnifiedDocFeedContainer({
   };
 
   const handleTabChange = (tab: any): void => {
-
     setSelectedDocTypeFilter(tab.filterValue);
 
-    if (router.pathname === '/hubs/[slug]' || router.pathname === '/hubs/[slug]/[type]') {
+    if (
+      router.pathname === "/hubs/[slug]" ||
+      router.pathname === "/hubs/[slug]/[type]"
+    ) {
       router.push(`/hubs/${router.query.slug}/${tab.href}`);
-    }
-    else if (router.pathname === '/my-hubs' || router.pathname === '/my-hubs/[type]') {
+    } else if (
+      router.pathname === "/my-hubs" ||
+      router.pathname === "/my-hubs/[type]"
+    ) {
       router.push(`/my-hubs/${tab.href}`);
-    }
-    else {
+    } else {
       router.push(`/${tab.href}`);
     }
   };
@@ -230,7 +235,7 @@ function UnifiedDocFeedContainer({
     });
   };
 
-  const resetState = ({ isLoading = true}): void => {
+  const resetState = ({ isLoading = true }): void => {
     setPaginationInfo({
       isLoading,
       isLoadingMore: false,
@@ -469,13 +474,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
-    overflow: 'auto',
+    overflow: "auto",
   },
   mainFilters: {
     alignItems: "center",
     display: "flex",
     height: "inherit",
-    width: '100%',
+    width: "100%",
   },
   feedButtonContainer: {
     marginRight: 24,

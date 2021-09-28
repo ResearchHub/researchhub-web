@@ -537,7 +537,6 @@ const routes = (BASE_URL) => {
       };
 
       const finalUrl = prepURL(url, params);
-      console.log("finalUrl", finalUrl);
       return finalUrl;
     },
     UNIFIED_DOC: ({ id }) => {
