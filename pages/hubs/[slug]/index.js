@@ -178,6 +178,7 @@ export async function getStaticProps(ctx) {
       initialActivity,
       currentHub,
       slug,
+      key: slug,
     },
   };
 }

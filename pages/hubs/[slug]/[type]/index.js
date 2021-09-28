@@ -178,7 +178,7 @@ export async function getStaticProps(ctx) {
       initialActivity,
       currentHub,
       slug,
-      key: getUnifiedDocType(type),
+      key: `${slug}-${getUnifiedDocType(type)}`,
     },
   };
 }

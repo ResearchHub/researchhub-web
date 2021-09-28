@@ -143,9 +143,6 @@ function UnifiedDocFeedContainer({
   useEffect((): void => {
     const currPath = router.asPath;
 
-console.log('currPath', currPath);
-console.log('prevPath', prevPath);
-
     if (currPath.includes("/my-hubs") && prevPath !== currPath && !isEmpty(prevPath)) {
       console.log("here yo");
       resetState({ isLoading: false });
