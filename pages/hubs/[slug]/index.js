@@ -112,7 +112,7 @@ export async function getStaticPaths(ctx) {
   const topHubs = await fetchTopHubs();
 
   return {
-    paths: topHubs.slice(0, 5).map((h) => `/hubs/${h.slug}`),
+    paths: topHubs.map((h) => `/hubs/${h.slug}`),
     fallback: "blocking",
   };
 }
@@ -170,13 +170,8 @@ export async function getStaticProps(ctx) {
       ]);
   } catch (err) {
     console.log(err);
-    Sentry.captureException({
-      err,
-      leaderboardFeed,
-      initialFeed,
-      initialHubList,
-      initialActivity,
-    });
+    Sentry.captureException(err);
+    Sentry.captureException(err.message);
   }
 
   return {

@@ -13,6 +13,7 @@
     "test": "cypress run --project $PWD/tests",
     "build:prod": "docker build --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
     "build:staging": "docker build --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
+"b": "NODE_ENV=production SENTRY_RELEASE=staging REACT_APP_ENV=staging HOST=https://staging-web.researchhub.com   yarn run build",
     "deploy": "./scripts/deploy/production.sh deploy",
     "staging": "./scripts/deploy/staging.sh deploy",
     "run:staging": "docker run",
