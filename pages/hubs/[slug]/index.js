@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { getInitialScope } from "~/config/utils/dates";
@@ -158,13 +159,25 @@ export async function getStaticProps(ctx) {
     type: "all",
   });
 
-  const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
-    await Promise.all([
-      leaderboardPromise,
-      initialFeedPromise,
-      initialHubListPromise,
-      initialActivityPromise,
-    ]);
+  let leaderboardFeed, initialFeed, initialHubList, initialActivity;
+  try {
+    [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
+      await Promise.all([
+        leaderboardPromise,
+        initialFeedPromise,
+        initialHubListPromise,
+        initialActivityPromise,
+      ]);
+  } catch (err) {
+    console.log(err);
+    Sentry.captureException({
+      err,
+      leaderboardFeed,
+      initialFeed,
+      initialHubList,
+      initialActivity,
+    });
+  }
 
   return {
     revalidate: 10,
