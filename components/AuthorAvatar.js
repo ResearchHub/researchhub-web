@@ -54,7 +54,7 @@ const AuthorAvatar = (props) => {
             {icons.user}
           </span>
         )}
-        {true && (
+        {showModeratorBadge && (
           <img
             src={"/static/icons/moderatorBadge.png"}
             className={css(styles.moderatorBadge)}
