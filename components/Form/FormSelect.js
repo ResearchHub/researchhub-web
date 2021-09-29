@@ -191,6 +191,7 @@ class FormSelect extends Component {
           {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <Select
+          instanceId={id}
           components={{ ...configuredComponents }}
           options={options && options}
           onChange={(option) => this.handleOnChange(id, option)}

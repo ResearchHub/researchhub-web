@@ -293,10 +293,9 @@ function UnifiedDocFeedContainer({
       (tab: any): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         if (tab.filterValue === "hypothesis") {
           return (
-            <div className={css(styles.hypoFeedButton)}>
+            <div key={tab.label} className={css(styles.hypoFeedButton)}>
               <UnifiedDocFeedFilterButton
                 isActive={selectedDocTypeFilter === tab.filterValue}
-                key={tab.label}
                 label={tab.label}
                 onClick={(): void => {
                   postNewFeatureNotifiedToUser({
@@ -307,7 +306,7 @@ function UnifiedDocFeedContainer({
                 }}
               />
               {shouldAlertHypo ? (
-                <div className={css(styles.tabFeature)}>
+                <div key={tab.label} className={css(styles.tabFeature)}>
                   <TabNewFeature />
                 </div>
               ) : null}
@@ -315,10 +314,9 @@ function UnifiedDocFeedContainer({
           );
         } else {
           return (
-            <div className={css(styles.feedButtonContainer)}>
+            <div key={tab.label} className={css(styles.feedButtonContainer)}>
               <UnifiedDocFeedFilterButton
                 isActive={selectedDocTypeFilter === tab.filterValue}
-                key={tab.label}
                 label={tab.label}
                 onClick={() => handleTabChange(tab)}
               />
@@ -406,9 +404,9 @@ function UnifiedDocFeedContainer({
 
       {needsFetch ? (
         <div className={css(styles.initPlaceholder)}>
+          {/*<UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
-          <UnifiedDocFeedCardPlaceholder color="#efefef" />
-          <UnifiedDocFeedCardPlaceholder color="#efefef" />
+          <UnifiedDocFeedCardPlaceholder color="#efefef" />*/}
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>

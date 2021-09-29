@@ -28,7 +28,7 @@ import Router from "next/router";
 import VoteWidget from "../VoteWidget";
 import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
-import { parseMath } from "~/config/utils/latex";
+// import { parseMath } from "~/config/utils/latex";
 import { stripHTML } from "~/config/utils/string";
 
 // Dynamic modules
@@ -87,13 +87,13 @@ const PaperEntryCard = (props) => {
 
   abstract = useMemo(() => {
     abstract = stripHTML(abstract);
-    abstract = parseMath(abstract);
+    // abstract = parseMath(abstract);
     return abstract;
   }, [abstract]);
 
   title = useMemo(() => {
     title = stripHTML(title);
-    title = parseMath(title);
+    // title = parseMath(title);
     return title;
   }, [title]);  
 
@@ -576,6 +576,7 @@ const PaperEntryCard = (props) => {
       <Link
         href={"/paper/[paperId]/[paperName]"}
         as={`/paper/${id}/${paperSlug}`}
+        key={`link-${paperSlug}`}
       >
         <a
           className={css(styles.link)}
@@ -616,8 +617,8 @@ const PaperEntryCard = (props) => {
               {mobileOnly(renderVoteWidget(true))}
               {mobileOnly(renderPreregistrationTag())}
               {desktopOnly(renderMainTitle())}
-            </div>
-            {mobileOnly(renderMainTitle())}
+              {mobileOnly(renderMainTitle())}
+            </div>    
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
