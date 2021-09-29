@@ -1,4 +1,5 @@
 import App from "next/app";
+import * as Sentry from "@sentry/browser";
 import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
