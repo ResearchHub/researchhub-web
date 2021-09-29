@@ -5,6 +5,7 @@ const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
-export const getStaticProps = buildStaticPropsForFeed({ docType: "posts" });
-
+export async function getStaticProps(ctx) {
+  return buildStaticPropsForFeed({ docType: "posts", feed: 0 });
+}
 export default Index;

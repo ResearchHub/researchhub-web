@@ -18,6 +18,7 @@ import {
   fetchTopHubs,
 } from "~/config/fetch";
 import { getHubs } from "~/components/Hubs/api/fetchHubs";
+import { buildStaticPropsForFeed } from "~/config/utils/feed";
 
 class Index extends Component {
   constructor(props) {
@@ -96,85 +97,25 @@ class Index extends Component {
   }
 }
 
-function fetchHub(slug) {
-  return fetch(API.HUB({ slug }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res.results[0]; // TODO: Shim and catch errors
-    });
-}
-
 export async function getStaticPaths(ctx) {
+  const topHubs = await getHubs();
+
+  let paths = [];
+  for (let i = 0; i < topHubs.hubs.length; i++) {
+    paths.push(`/hubs/${topHubs.hubs[i].slug}/papers`);
+    paths.push(`/hubs/${topHubs.hubs[i].slug}/posts`);
+    paths.push(`/hubs/${topHubs.hubs[i].slug}/hypotheses`);
+  }
+
   return {
-    paths: [],
+    paths,
     fallback: "blocking",
   };
 }
 
 export async function getStaticProps(ctx) {
-  const { slug, type, name } = ctx.params;
-
-  const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
-    .then((res) => res.json())
-    .then((body) => body.results[0]);
-
-  if (!currentHub) {
-    return {
-      props: {
-        error: {
-          code: 404,
-        },
-      },
-    };
-  }
-
-  const defaultProps = {
-    initialFeed: null,
-    leaderboardFeed: null,
-    initialHubList: null,
-  };
-
-  const initialActivityPromise = fetchLatestActivity({
-    hubIds: [currentHub.id],
-  });
-  const initialHubListPromise = fetchTopHubs();
-  const leaderboardPromise = fetchLeaderboard({
-    limit: 10,
-    page: 1,
-    hubId: currentHub.id,
-    timeframe: "past_week",
-  });
-  const initialFeedPromise = fetchUnifiedDocFeed({
-    hubId: currentHub.id,
-    ordering: "hot",
-    page: 1,
-    subscribedHubs: false,
-    timePeriod: getInitialScope(),
-    type: getUnifiedDocType(type),
-  });
-
-  const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
-    await Promise.all([
-      leaderboardPromise,
-      initialFeedPromise,
-      initialHubListPromise,
-      initialActivityPromise,
-    ]);
-
-  return {
-    revalidate: 10,
-    props: {
-      ...defaultProps,
-      initialFeed,
-      leaderboardFeed,
-      initialHubList,
-      initialActivity,
-      currentHub,
-      slug,
-      key: `${slug}-${getUnifiedDocType(type)}`,
-    },
-  };
+  const { slug: hubSlug, type: docType } = ctx.params;
+  return buildStaticPropsForFeed({ docType, hubSlug });
 }
 
 export default Index;

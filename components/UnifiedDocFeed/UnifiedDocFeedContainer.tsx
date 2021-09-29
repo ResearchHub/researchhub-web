@@ -272,7 +272,7 @@ function UnifiedDocFeedContainer({
     return {
       hubID,
       prevDocuments: unifiedDocuments,
-      docTypeFilter: selectedDocTypeFilter,
+      docTypeFilter: (selectedDocTypeFilter === "post" ? "posts" : selectedDocTypeFilter),
       subFilters,
       isLoggedIn,
       onSuccess: onFetchSuccess,
