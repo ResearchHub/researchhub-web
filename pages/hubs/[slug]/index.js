@@ -1,4 +1,3 @@
-import * as Sentry from "@sentry/nextjs";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { getInitialScope } from "~/config/utils/dates";

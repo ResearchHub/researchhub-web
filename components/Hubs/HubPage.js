@@ -295,39 +295,6 @@ class HubPage extends Component {
       });
   };
 
-  loadMore = () => {
-    const { loadingMore, page, filterBy, feed } = this.state;
-    const { hub } = this.props;
-    if (loadingMore) return;
-
-    this.setState({
-      loadingMore: true,
-    });
-
-    fetchURL(this.state.next).then((res) => {
-      const { next, previous, results } = res;
-      const papers = results.data;
-      this.detectPromoted(papers);
-      this.setState(
-        {
-          papers: [...this.state.papers, ...papers],
-          next,
-          prev: previous,
-          page: page + 1,
-          loadingMore: false,
-        },
-        () => {
-          const pageParam = getFragmentParameterByName(
-            "page",
-            this.state.next ? this.state.next : this.state.prev
-          ); // grab page from backend response
-          const offset = this.state.next ? -1 : 1;
-          this.updateSlugs(Number(pageParam) + offset);
-        }
-      );
-    });
-  };
-
   updateSlugs = (page) => {
     let { href, as } = this.formatLink();
     if (page) {
@@ -572,31 +539,6 @@ class HubPage extends Component {
     });
   };
 
-  renderLoadMoreButton = () => {
-    const { next, loadingMore } = this.state;
-    if (next !== null) {
-      return (
-        <div className={css(styles.buttonContainer)}>
-          {!loadingMore ? (
-            <Ripples
-              className={css(styles.loadMoreButton)}
-              onClick={this.loadMore}
-            >
-              Load More Papers
-            </Ripples>
-          ) : (
-            <Loader
-              key={"paperLoader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          )}
-        </div>
-      );
-    }
-  };
-
   render() {
     const { feed, isLatestActivityShown } = this.state;
 
@@ -671,7 +613,7 @@ class HubPage extends Component {
                   onHubSelect={this.onHubSelect}
                 />
                 <LeaderboardContainer
-                  hubId={hub?.id ?? 0}
+                  hubId={0 /*Intentionally not setting to specific ID as this should not change per hub.*/}
                   initialUsers={leaderboardFeed}
                 />
               </div>
@@ -1101,24 +1043,6 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 768px)": {
       marginTop: 15,
       marginBottom: 15,
-    },
-  },
-  loadMoreButton: {
-    fontSize: 14,
-    border: `1px solid ${colors.BLUE()}`,
-    boxSizing: "border-box",
-    borderRadius: 4,
-    height: 45,
-    width: 155,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    color: colors.BLUE(),
-    cursor: "pointer",
-    userSelect: "none",
-    ":hover": {
-      color: "#FFF",
-      backgroundColor: colors.BLUE(),
     },
   },
   hidden: {

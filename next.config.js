@@ -4,7 +4,6 @@ const path = require("path");
 const withPlugins = require("next-compose-plugins");
 const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
-const { withSentryConfig } = require("@sentry/nextjs");
 
 const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
@@ -63,8 +62,4 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   },
 });
 
-const SentryWebpackPluginOptions = {
-  silent: true, // Suppresses all logs
-};
-
-module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions);
+module.exports = moduleExports
