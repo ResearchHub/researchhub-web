@@ -1,6 +1,6 @@
 import { API } from "@quantfive/js-web-config";
 
-import { AUTH_TOKEN } from "../config/constants";
+import { AUTH_TOKEN, RH_API_KEY } from "../config/constants";
 import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
 
 const apiRoot = {
@@ -106,7 +106,6 @@ const routes = (BASE_URL) => {
         },
       };
       url = prepURL(url, params);
-console.log('finalUrl', url);
       return url;
     },
     LEADERBOARD: ({ page, limit, hubId, timeframe, type, dateOption }) => {
@@ -537,7 +536,6 @@ console.log('finalUrl', url);
       };
 
       const finalUrl = prepURL(url, params);
-      console.log("finalUrl", finalUrl);
       return finalUrl;
     },
     UNIFIED_DOC: ({ id }) => {
@@ -965,12 +963,14 @@ const apiObj = API({
 
 const _GET_CONFIG = apiObj.GET_CONFIG;
 
+// Overriding quantfive's GET_CONFIG method
+// so that headers could be passed in.
 apiObj.GET_CONFIG = () => {
   const config = _GET_CONFIG();
   if (!process.browser) {
-    config.headers["RH-API-KEY"] = "VQ>u|_RMBQ8|K>G|T]7:`NVR0V`&>,"
+    config.headers["RH-API-KEY"] = RH_API_KEY;
   }
   return config;
-}
+};
 
 export default apiObj;
