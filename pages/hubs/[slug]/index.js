@@ -109,10 +109,10 @@ function fetchHub(slug) {
 export async function getStaticPaths(ctx) {
   // Note: Doing this for all hubs causes a timeout on the server.
   // For now, we will only focus on top five hubs.
-  const topHubs = await fetchTopHubs();
+  const topHubs = await getHubs();
 
   return {
-    paths: topHubs.map((h) => `/hubs/${h.slug}`),
+    paths: topHubs.hubs.map((h) => `/hubs/${h.slug}`),
     fallback: "blocking",
   };
 }
@@ -159,20 +159,13 @@ export async function getStaticProps(ctx) {
     type: "all",
   });
 
-  let leaderboardFeed, initialFeed, initialHubList, initialActivity;
-  try {
-    [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
-      await Promise.all([
-        leaderboardPromise,
-        initialFeedPromise,
-        initialHubListPromise,
-        initialActivityPromise,
-      ]);
-  } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-    Sentry.captureException(err.message);
-  }
+  const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
+    await Promise.all([
+      leaderboardPromise,
+      initialFeedPromise,
+      initialHubListPromise,
+      initialActivityPromise,
+    ]);
 
   return {
     revalidate: 10,

@@ -106,7 +106,7 @@ const routes = (BASE_URL) => {
         },
       };
       url = prepURL(url, params);
-
+console.log('finalUrl', url);
       return url;
     },
     LEADERBOARD: ({ page, limit, hubId, timeframe, type, dateOption }) => {
@@ -957,8 +957,20 @@ const routes = (BASE_URL) => {
   }
 };
 
-export default API({
+const apiObj = API({
   authTokenName: AUTH_TOKEN,
   apiRoot,
   routes,
 });
+
+const _GET_CONFIG = apiObj.GET_CONFIG;
+
+apiObj.GET_CONFIG = () => {
+  const config = _GET_CONFIG();
+  if (!process.browser) {
+    config.headers["RH-API-KEY"] = "some-api-key"
+  }
+  return config;
+}
+
+export default apiObj;
