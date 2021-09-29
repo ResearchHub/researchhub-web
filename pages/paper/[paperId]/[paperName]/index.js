@@ -613,6 +613,7 @@ export async function getStaticProps(ctx) {
           code: 500,
         },
       },
+      revalidate: 5,
     };
   }
 
@@ -623,6 +624,7 @@ export async function getStaticProps(ctx) {
           code: 404,
         },
       },
+      revalidate: 1,
     };
   } else {
     const slugFromQuery = ctx.params.paperName;
