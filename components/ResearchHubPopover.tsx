@@ -1,19 +1,23 @@
 import { ArrowContainer, Popover } from "react-tiny-popover";
 import { Fragment, ReactElement } from "react";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isNullOrUndefined } from "../config/utils/nullchecks";
 
 type Props = {
+  align: "start" | "center" | "end";
+  containerStyle: object;
   isOpen: boolean;
+  padding: number;
   popoverContent: ReactElement;
   positions: Array<"left" | "right" | "top" | "bottom">;
   setIsPopoverOpen: (flag: boolean) => void;
   targetContent: ReactElement;
   withArrow: boolean;
-  containerStyle: any;
 };
 
 export default function ResearchHubPopover({
+  align,
   isOpen,
+  padding,
   popoverContent,
   positions,
   setIsPopoverOpen,
@@ -26,6 +30,7 @@ export default function ResearchHubPopover({
   }
   return (
     <Popover
+      align={align}
       containerStyle={containerStyle}
       content={({ position, childRect, popoverRect }) => (
         withArrow ? (
@@ -44,6 +49,7 @@ export default function ResearchHubPopover({
       )}
       isOpen={isOpen}
       onClickOutside={(): void => setIsPopoverOpen(false)}
+      padding={padding}
       positions={positions} // preferred positions by priority
     >
       {targetContent}
