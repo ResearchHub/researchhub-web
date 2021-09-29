@@ -968,7 +968,7 @@ const _GET_CONFIG = apiObj.GET_CONFIG;
 apiObj.GET_CONFIG = () => {
   const config = _GET_CONFIG();
   if (!process.browser) {
-    config.headers["RH-API-KEY"] = "some-api-key"
+    config.headers["RH-API-KEY"] = "VQ>u|_RMBQ8|K>G|T]7:`NVR0V`&>,"
   }
   return config;
 }
