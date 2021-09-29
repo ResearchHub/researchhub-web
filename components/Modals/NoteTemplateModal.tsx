@@ -28,7 +28,7 @@ export default function NoteTemplateModal({
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const editorRef = useRef<any>();
-  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
+  const { CKEditor, Editor } = editorRef.current || {};
   const [fetched, setFetched] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [selected, setSelected] = useState(0);

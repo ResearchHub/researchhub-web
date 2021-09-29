@@ -1,6 +1,7 @@
 import API from "~/config/api";
 import Link from "next/link";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
+import SidebarSectionContent from "~/components/CKEditor/SidebarSectionContent";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
@@ -42,12 +43,12 @@ export const ELNEditor = ({ user }) => {
   const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
+  const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [notes, setNotes] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [refetchNotes, setRefetchNotes] = useState(false);
   const [titles, setTitles] = useState({});
-  const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
 
   useEffect(() => {
     editorRef.current = {
@@ -269,6 +270,7 @@ export const ELNEditor = ({ user }) => {
       <div className={css(styles.sidebar)}>
         <div>
           <ResearchHubPopover
+            containerStyle={{ marginLeft: "10px", marginTop: "-10px" }}
             isOpen={isPopoverOpen}
             popoverContent={
               <div className={css(styles.popoverBodyContent)}>
@@ -316,17 +318,12 @@ export const ELNEditor = ({ user }) => {
         {!hideNotes && (
           <div>
             {notes.map(note => (
-              <Link href={`/notebook/${router.query.orgName}/${note.id}`} key={note.id.toString()}>
-                <a
-                  className={css(
-                    styles.sidebarSectionContent,
-                    note.id.toString() === currentNoteId && styles.active,
-                  )}
-                >
-                  <div className={css(styles.noteIcon)}>{icons.paper}</div>
-                  {titles[note.id.toString()]}
-                </a>
-              </Link>
+              <SidebarSectionContent
+                currentNoteId={currentNoteId}
+                noteId={note.id.toString()}
+                orgName={router.query.orgName}
+                title={titles[note.id.toString()]}
+              />
             ))}
           </div>
         )}
@@ -418,8 +415,6 @@ const styles = StyleSheet.create({
     boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",
     flexDirection: "column",
-    marginLeft: 10,
-    marginTop: -10,
     userSelect: "none",
     width: 270,
   },
@@ -470,27 +465,6 @@ const styles = StyleSheet.create({
     padding: 20,
     userSelect: "none",
   },
-  sidebarSectionContent: {
-    backgroundClip: "padding-box",
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 14,
-    fontWeight: 500,
-    padding: 20,
-    textDecoration: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-    ":last-child": {
-      borderBottom: `1px solid ${colors.GREY(0.3)}`,
-    },
-  },
-  active: {
-    backgroundColor: colors.GREY(0.3),
-  },
   sidebarNewNote: {
     borderTop: `1px solid ${colors.GREY(0.3)}`,
     color: colors.BLUE(),
@@ -520,17 +494,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
     transition: "all ease-in-out 0.1s",
     width: 35,
-    //":hover": {
-    //  background: "#d8d8d8",
-    //},
-    "@media only screen and (max-width: 415px)": {
-      height: 33,
-      width: 33,
-    },
-    "@media only screen and (max-width: 321px)": {
-      height: 31,
-      width: 31,
-    },
   },
   showBottomBorder: {
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
@@ -558,10 +521,6 @@ const styles = StyleSheet.create({
   },
   chevronIcon: {
     marginLeft: "auto",
-  },
-  noteIcon: {
-    color: colors.GREY(),
-    marginRight: 10,
   },
   presenceList: {
     display: "none",

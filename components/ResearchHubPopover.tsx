@@ -3,7 +3,10 @@ import { Fragment, ReactElement } from "react";
 import { isNullOrUndefined } from "../config/utils/nullchecks";
 
 type Props = {
+  align: "start" | "center" | "end";
+  containerStyle: object;
   isOpen: boolean;
+  padding: number;
   popoverContent: ReactElement;
   positions: Array<"left" | "right" | "top" | "bottom">;
   setIsPopoverOpen: (flag: boolean) => void;
@@ -12,7 +15,10 @@ type Props = {
 };
 
 export default function ResearchHubPopover({
+  align,
+  containerStyle,
   isOpen,
+  padding,
   popoverContent,
   positions,
   setIsPopoverOpen,
@@ -24,6 +30,8 @@ export default function ResearchHubPopover({
   }
   return (
     <Popover
+      align={align}
+      containerStyle={containerStyle}
       content={({ position, childRect, popoverRect }) => (
         withArrow ? (
           <ArrowContainer
@@ -41,6 +49,7 @@ export default function ResearchHubPopover({
       )}
       isOpen={isOpen}
       onClickOutside={(): void => setIsPopoverOpen(false)}
+      padding={padding}
       positions={positions} // preferred positions by priority
     >
       {targetContent}
