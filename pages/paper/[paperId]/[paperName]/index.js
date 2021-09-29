@@ -1,4 +1,11 @@
-import { useEffect, useState, Fragment, useMemo } from "react";
+import {
+  useEffect,
+  useState,
+  Fragment,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
@@ -64,10 +71,6 @@ import {
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
-import { useRef, useCallback } from 'react'
-
-
-
 const steps = [
   {
     target: ".first-step",
@@ -114,7 +117,8 @@ const Paper = ({
   }
 
   // ENUM: NOT_FETCHED, FETCHING, COMPLETED
-  const [fetchFreshDataStatus, setFetchFreshDataStatus] = useState("NOT_FETCHED");
+  const [fetchFreshDataStatus, setFetchFreshDataStatus] =
+    useState("NOT_FETCHED");
   const [paper, setPaper] = useState({});
 
   const [summary, setSummary] = useState((paper && paper.summary) || {});
@@ -135,9 +139,10 @@ const Paper = ({
   const isSubmitter =
     paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  const structuredDataForSEO = useMemo(() => buildStructuredDataForSEO(), [
-    paper,
-  ]);
+  const structuredDataForSEO = useMemo(
+    () => buildStructuredDataForSEO(),
+    [paper]
+  );
 
   // Typically, this if statement would be created with a useEffect clause
   // but since useEffect does not work with SSG, we need a standard if statement.
@@ -155,7 +160,7 @@ const Paper = ({
     if (fetchFreshDataStatus === "NOT_FETCHED" && !isEmpty(paper)) {
       fetchFreshData(paper);
     }
-  }, [fetchFreshDataStatus, paper])
+  }, [fetchFreshDataStatus, paper]);
 
   if (killswitch("paperSummary")) {
     let summaryVoteChecked = false;
@@ -185,15 +190,15 @@ const Paper = ({
 
   function fetchFreshData(paper) {
     setFetchFreshDataStatus("FETCHING");
-    fetchPaper(API.PAPER({ paperId: paper.id }), API.GET_CONFIG())
-      .then((freshPaperData) => {
+    fetchPaper(API.PAPER({ paperId: paper.id }), API.GET_CONFIG()).then(
+      (freshPaperData) => {
         setFetchFreshDataStatus("COMPLETED");
         setScore(getNestedValue(freshPaperData, ["score"], 0));
         setFlag(freshPaperData.user_flag);
 
         const updatedPaper = shims.paper({
           ...freshPaperData,
-        })
+        });
 
         if (!isEmpty(freshPaperData.user_vote)) {
           setSelectedVoteType(userVoteToConstant(freshPaperData.user_vote));
@@ -201,7 +206,8 @@ const Paper = ({
 
         setPaper(shims.paper(freshPaperData));
         setUserVoteChecked(true);
-      });    
+      }
+    );
   }
 
   async function upvote() {
@@ -594,7 +600,9 @@ const PaperIndexWithUndux = (props) => {
 
 export async function getStaticPaths(ctx) {
   return {
-    paths: ["/paper/1266153/synaptic-mechanism-underlying-serotonin-modulation-of-transition-to-cocaine-addiction"],
+    paths: [
+      "/paper/1266153/synaptic-mechanism-underlying-serotonin-modulation-of-transition-to-cocaine-addiction",
+    ],
     fallback: true,
   };
 }
@@ -613,6 +621,7 @@ export async function getStaticProps(ctx) {
           code: 500,
         },
       },
+      revalidate: 5,
     };
   }
 
@@ -623,6 +632,7 @@ export async function getStaticProps(ctx) {
           code: 404,
         },
       },
+      revalidate: 1,
     };
   } else {
     const slugFromQuery = ctx.params.paperName;
