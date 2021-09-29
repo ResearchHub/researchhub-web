@@ -600,9 +600,7 @@ const PaperIndexWithUndux = (props) => {
 
 export async function getStaticPaths(ctx) {
   return {
-    paths: [
-      "/paper/1266153/synaptic-mechanism-underlying-serotonin-modulation-of-transition-to-cocaine-addiction",
-    ],
+    paths: [],
     fallback: true,
   };
 }
