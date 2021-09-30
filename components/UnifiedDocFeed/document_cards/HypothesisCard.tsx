@@ -465,7 +465,6 @@ const styles = StyleSheet.create({
     },
   },
   consensusContainer: {
-    width: "20%",
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 13,
