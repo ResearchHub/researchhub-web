@@ -81,5 +81,3 @@ Hypothesis: What question does this paper attempt to answer?
 Conclusion: What conclusion did the paper reach?
 
 Significance: What does this paper make possible in the world, and what should be tried from here?`;
-
-export const RH_API_KEY = "VQ>u|_RMBQ8|K>G|T]7:`NVR0V`&>,";

@@ -1,7 +1,11 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN, RH_API_KEY } from "../config/constants";
-import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  doesNotExist,
+  isEmpty,
+} from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -965,10 +969,10 @@ const _GET_CONFIG = apiObj.GET_CONFIG;
 
 // Overriding quantfive's GET_CONFIG method
 // so that headers could be passed in.
-apiObj.GET_CONFIG = () => {
-  const config = _GET_CONFIG();
-  if (!process.browser) {
-    config.headers["RH-API-KEY"] = RH_API_KEY;
+apiObj.GET_CONFIG = (authToken, headers) => {
+  const config = _GET_CONFIG(authToken);
+  if (!isEmpty(headers)) {
+    config.headers = headers;
   }
   return config;
 };

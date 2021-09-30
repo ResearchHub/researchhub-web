@@ -216,7 +216,7 @@ function UnifiedDocFeedContainer({
   const handleFilterSelect = (_type: string, filterBy: any): void => {
     const updatedSubFilters = { filterBy, scope: subFilters.scope };
 
-    resetState({});
+    resetState({ });
     setSubFilters(updatedSubFilters);
     fetchUnifiedDocs({
       ...getFetchParams(),
@@ -409,9 +409,9 @@ function UnifiedDocFeedContainer({
 
       {needsFetch ? (
         <div className={css(styles.initPlaceholder)}>
-          {/*<UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
-          <UnifiedDocFeedCardPlaceholder color="#efefef" />*/}
+          <UnifiedDocFeedCardPlaceholder color="#efefef" />
+          <UnifiedDocFeedCardPlaceholder color="#efefef" />
         </div>
       ) : (
         <div className={css(styles.feedPosts)}>

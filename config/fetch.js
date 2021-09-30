@@ -121,11 +121,12 @@ export const fetchPaperFeed = async (PARAMS, authToken = null) => {
 export const fetchUnifiedDocFeed = async (
   PARAMS,
   authToken = null,
-  withVotes = false
+  withVotes = false,
+  headers = {}
 ) => {
   const docPayload = await fetch(
     API.GET_UNIFIED_DOCS(PARAMS),
-    API.GET_CONFIG(authToken)
+    API.GET_CONFIG(authToken, headers)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
@@ -138,8 +139,8 @@ export const fetchUnifiedDocFeed = async (
   }
 };
 
-export const fetchTopHubs = () => {
-  return fetch(API.SORTED_HUB({}), API.GET_CONFIG())
+export const fetchTopHubs = (headers) => {
+  return fetch(API.SORTED_HUB({}), API.GET_CONFIG(null, headers))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((resp) => {
@@ -153,8 +154,8 @@ export const fetchTopHubs = () => {
     });
 };
 
-export const fetchLeaderboard = async (PARAMS) => {
-  return fetch(API.LEADERBOARD(PARAMS), API.GET_CONFIG())
+export const fetchLeaderboard = async (PARAMS, headers) => {
+  return fetch(API.LEADERBOARD(PARAMS), API.GET_CONFIG(null, headers))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -185,10 +186,10 @@ export const fetchPaperDraft = ({ paperId }) => {
   );
 };
 
-export const fetchLatestActivity = ({ hubIds = null }) => {
+export const fetchLatestActivity = ({ hubIds = null, headers = {} }) => {
   return fetch(
     API.USER({ route: "following_latest_activity", hubIds }),
-    API.GET_CONFIG()
+    API.GET_CONFIG(null, headers)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

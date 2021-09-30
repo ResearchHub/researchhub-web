@@ -44,26 +44,37 @@ export function buildStaticPropsForFeed({
     }
 
     let docTypeForApi = getUnifiedDocType(docType);
-    docTypeForApi = (docTypeForApi === "post") ? "posts" : docTypeForApi
+    docTypeForApi = docTypeForApi === "post" ? "posts" : docTypeForApi;
 
     const initialActivityPromise = fetchLatestActivity({
       hubIds: currentHub ? [currentHub.id] : null,
+      headers: { "RH-API-KEY": process.env.RH_API_KEY },
     });
-    const initialHubListPromise = fetchTopHubs();
-    const leaderboardPromise = fetchLeaderboard({
-      limit: 10,
-      page: 1,
-      hubId: currentHub?.id ?? null,
-      timeframe: "past_week",
+    const initialHubListPromise = fetchTopHubs({
+      "RH-API-KEY": process.env.RH_API_KEY,
     });
-    const initialFeedPromise = fetchUnifiedDocFeed({
-      hubId: currentHub?.id ?? null,
-      ordering: "hot",
-      page: 1,
-      subscribedHubs: false,
-      timePeriod: getInitialScope(),
-      type: docTypeForApi,
-    });
+    const leaderboardPromise = fetchLeaderboard(
+      {
+        limit: 10,
+        page: 1,
+        hubId: currentHub?.id ?? null,
+        timeframe: "past_week",
+      },
+      { "RH-API-KEY": process.env.RH_API_KEY }
+    );
+    const initialFeedPromise = fetchUnifiedDocFeed(
+      {
+        hubId: currentHub?.id ?? null,
+        ordering: "hot",
+        page: 1,
+        subscribedHubs: false,
+        timePeriod: getInitialScope(),
+        type: docTypeForApi,
+      },
+      null,
+      false,
+      { "RH-API-KEY": process.env.RH_API_KEY }
+    );
 
     const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
       await Promise.all([

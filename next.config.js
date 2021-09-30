@@ -4,7 +4,7 @@ const path = require("path");
 const withPlugins = require("next-compose-plugins");
 const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
-
+console.log("process.env.RH_API_KEY", process.env.RH_API_KEY);
 const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
   typescript: {
@@ -62,4 +62,4 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   },
 });
 
-module.exports = moduleExports
+module.exports = moduleExports;
