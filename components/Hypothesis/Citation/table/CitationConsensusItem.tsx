@@ -11,6 +11,7 @@ import React, {
   Fragment,
   ReactElement,
   ReactNode,
+  SyntheticEvent,
   useCallback,
   useEffect,
   useState,
@@ -18,7 +19,15 @@ import React, {
 import { getCurrentUser } from "~/config/utils/user";
 import { ID } from "~/config/types/root_types";
 import { postCitationVote } from "../../api/postCitationVote";
-import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
+import {
+  UPVOTE,
+  DOWNVOTE,
+  NEUTRALVOTE,
+  userVoteToConstant,
+  DOWNVOTE_ENUM,
+  NEUTRALVOTE_ENUM,
+  UPVOTE_ENUM,
+} from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
@@ -27,7 +36,7 @@ export type ConsensusMeta = {
   downCount: number;
   neutralCount: number;
   upCount: number;
-  userVote: Object;
+  userVote: any;
 };
 
 type CitationConsensusItemProps = {
@@ -41,7 +50,7 @@ type CitationConsensusItemProps = {
 
 type SentimentBarProps = {
   color: string;
-  onClick?: (() => void) | null;
+  onClick?: ((event: SyntheticEvent) => void) | null;
   pointRight?: boolean;
   width: number | string;
 };
@@ -191,22 +200,36 @@ function CitationConsensusItem({
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
-  const [hasCurrUserVoted, setHasCurrUserVoted] = useState<boolean>(
-    !isNullOrUndefined(userVote)
-  );
 
-  const handleReject = useCallback((): void => {
-    if (!shouldAllowVote) {
+  // This is a way to avoid NaN & not return any element
+  if (totalCount === 0 && Boolean(userVote)) {
+    return null;
+  }
+
+  const currentUserVoteType = userVoteToConstant(userVote);
+  console.warn("userVote: ", userVote);
+
+  console.warn("currentUserVoteType: ", currentUserVoteType);
+  const hasCurrUserVoted = !isNullOrUndefined(currentUserVoteType);
+
+  const handleReject = (event: SyntheticEvent): void => {
+    event.stopPropagation();
+    if (!shouldAllowVote || currentUserVoteType === DOWNVOTE) {
       return;
     }
     const updatedMeta = {
       ...localConsensusMeta,
       downCount: downCount + 1,
+      neutralCount:
+        currentUserVoteType === NEUTRALVOTE ? neutralCount - 1 : neutralCount,
+      upCount: currentUserVoteType === UPVOTE ? upCount - 1 : upCount,
+      userVote: { ...userVote, vote_type: DOWNVOTE_ENUM },
     };
     setLocalConsensusMeta(updatedMeta);
-    setTotalCount(totalCount + 1);
-    setMajority(upCount >= downCount + 1 ? UPVOTE : DOWNVOTE);
-    setHasCurrUserVoted(true);
+    setTotalCount(hasCurrUserVoted ? totalCount : totalCount + 1);
+    setMajority(
+      updatedMeta.upCount >= updatedMeta.downCount ? UPVOTE : DOWNVOTE
+    );
     postCitationVote({
       citationID,
       onSuccess: (userVote: Object): void => {
@@ -220,27 +243,25 @@ function CitationConsensusItem({
       onError: emptyFncWithMsg,
       voteType: DOWNVOTE,
     });
-  }, [
-    downCount,
-    localConsensusMeta,
-    setMajority,
-    setTotalCount,
-    totalCount,
-    shouldAllowVote,
-    upCount,
-  ]);
+  };
 
-  const handleNeutralVote = useCallback((): void => {
-    if (!shouldAllowVote) {
+  const handleNeutralVote = (event: SyntheticEvent): void => {
+    event.stopPropagation();
+    if (!shouldAllowVote || currentUserVoteType === NEUTRALVOTE) {
       return;
     }
     const updatedMeta = {
       ...localConsensusMeta,
+      downCount: currentUserVoteType === DOWNVOTE ? downCount - 1 : downCount,
       neutralCount: neutralCount + 1,
+      upCount: currentUserVoteType === UPVOTE ? upCount - 1 : upCount,
+      userVote: { ...userVote, vote_type: NEUTRALVOTE_ENUM },
     };
     setLocalConsensusMeta(updatedMeta);
-    setTotalCount(totalCount + 1);
-    setHasCurrUserVoted(true);
+    setTotalCount(hasCurrUserVoted ? totalCount : totalCount + 1);
+    setMajority(
+      updatedMeta.upCount >= updatedMeta.downCount ? UPVOTE : DOWNVOTE
+    );
     postCitationVote({
       citationID,
       onSuccess: (userVote: Object): void => {
@@ -254,28 +275,26 @@ function CitationConsensusItem({
       onError: emptyFncWithMsg,
       voteType: NEUTRALVOTE,
     });
-  }, [
-    downCount,
-    localConsensusMeta,
-    setMajority,
-    setTotalCount,
-    shouldAllowVote,
-    totalCount,
-    upCount,
-  ]);
+  };
 
-  const handleSupport = useCallback((): void => {
-    if (!shouldAllowVote) {
+  const handleSupport = (event: SyntheticEvent): void => {
+    event.stopPropagation();
+    if (!shouldAllowVote || currentUserVoteType === UPVOTE) {
       return;
     }
     const updatedMeta = {
       ...localConsensusMeta,
+      downCount: currentUserVoteType === DOWNVOTE ? downCount - 1 : downCount,
+      neutralCount:
+        currentUserVoteType === NEUTRALVOTE ? neutralCount - 1 : neutralCount,
       upCount: upCount + 1,
+      userVote: { ...userVote, vote_type: UPVOTE_ENUM },
     };
     setLocalConsensusMeta(updatedMeta);
-    setTotalCount(totalCount + 1);
-    setMajority(upCount + 1 >= downCount ? UPVOTE : DOWNVOTE);
-    setHasCurrUserVoted(true);
+    setTotalCount(hasCurrUserVoted ? totalCount : totalCount + 1);
+    setMajority(
+      updatedMeta.upCount >= updatedMeta.downCount ? UPVOTE : DOWNVOTE
+    );
     postCitationVote({
       citationID,
       onSuccess: (userVote: Object): void => {
@@ -289,20 +308,7 @@ function CitationConsensusItem({
       onError: emptyFncWithMsg,
       voteType: UPVOTE,
     });
-  }, [
-    downCount,
-    localConsensusMeta,
-    setMajority,
-    setTotalCount,
-    totalCount,
-    shouldAllowVote,
-    upCount,
-  ]);
-
-  // This is a way to avoid NaN & not return any element
-  if (totalCount === 0 && Boolean(userVote)) {
-    return null;
-  }
+  };
 
   const isNeutral = (upCount ?? 0) === downCount;
   const doesMajoritySupport = !isNeutral && majority === UPVOTE;
@@ -346,9 +352,9 @@ function CitationConsensusItem({
           ) : (
             <div className={css(styles.consensusInnerWrap)}>
               <SentimentBar
-                color={colors.RED(1)}
+                color={doesMajoritySupport ? "transparent" : colors.RED(1)}
                 onClick={shouldAllowVote ? handleReject : null}
-                width={doesMajoritySupport ? 0 : weightedPercent}
+                width={doesMajoritySupport ? 100 : weightedPercent}
               />
               <div
                 className={css(
@@ -358,10 +364,10 @@ function CitationConsensusItem({
                 onClick={handleNeutralVote}
               />
               <SentimentBar
-                color={colors.GREEN(1)}
+                color={doesMajoritySupport ? colors.GREEN(1) : "transparent"}
                 onClick={shouldAllowVote ? handleSupport : null}
                 pointRight
-                width={doesMajoritySupport ? weightedPercent : 0}
+                width={doesMajoritySupport ? weightedPercent : 100}
               />
             </div>
           )}
@@ -373,7 +379,7 @@ function CitationConsensusItem({
     <div className={css(styles.citationConsensusItem)}>
       <div className={css(styles.wrapper)}>
         {consensusBar}
-        {hasCurrUserVoted ? null : (
+        {hasCurrUserVoted || !shouldAllowVote ? null : (
           <div className={css(styles.voteWrap)}>
             <div
               className={css(styles.button, styles.red)}
