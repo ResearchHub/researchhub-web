@@ -12,12 +12,8 @@ import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
 import {
-  fetchUnifiedDocFeed,
-  fetchLatestActivity,
-  fetchLeaderboard,
   fetchTopHubs,
 } from "~/config/fetch";
-import { getHubs } from "~/components/Hubs/api/fetchHubs";
 import { buildStaticPropsForFeed } from "~/config/utils/feed";
 
 class Index extends Component {
@@ -98,13 +94,13 @@ class Index extends Component {
 }
 
 export async function getStaticPaths(ctx) {
-  const topHubs = await getHubs();
+  const topHubs = await fetchTopHubs();
 
   let paths = [];
-  for (let i = 0; i < topHubs.hubs.length; i++) {
-    paths.push(`/hubs/${topHubs.hubs[i].slug}/papers`);
-    paths.push(`/hubs/${topHubs.hubs[i].slug}/posts`);
-    paths.push(`/hubs/${topHubs.hubs[i].slug}/hypotheses`);
+  for (let i = 0; i < topHubs.length; i++) {
+    paths.push(`/hubs/${topHubs[i].slug}/papers`);
+    paths.push(`/hubs/${topHubs[i].slug}/posts`);
+    paths.push(`/hubs/${topHubs[i].slug}/hypotheses`);
   }
 
   return {

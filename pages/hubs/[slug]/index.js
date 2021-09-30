@@ -12,12 +12,8 @@ import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
 import {
-  fetchUnifiedDocFeed,
-  fetchLatestActivity,
-  fetchLeaderboard,
   fetchTopHubs,
 } from "~/config/fetch";
-import { getHubs } from "~/components/Hubs/api/fetchHubs";
 import { buildStaticPropsForFeed } from "~/config/utils/feed";
 
 class Index extends Component {
@@ -100,8 +96,8 @@ class Index extends Component {
 export async function getStaticPaths() {
   // Note: Doing this for all hubs may cause a timeout on the server.
   // For now, we will only focus on top hubs.
-  const topHubs = await getHubs();
-  const paths = topHubs.hubs.map((h) => `/hubs/${h.slug}`);
+  const topHubs = await fetchTopHubs();
+  const paths = topHubs.map((h) => `/hubs/${h.slug}`);
 
   return {
     paths,
