@@ -406,9 +406,6 @@ const styles = StyleSheet.create({
   buttonText: {
     display: "block",
     fontSize: 12,
-    // [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-    //   display: "none",
-    // },
   },
   consensusDetailedText: {
     display: "flex",
@@ -442,10 +439,10 @@ const styles = StyleSheet.create({
     height: "100%",
     maxHeight: 28,
     width: "100%",
+    minWidth: 116,
     "@media only screen and (min-width: 1024px)": {
       maxWidth: 166,
     },
-
     "@media only screen and (max-width: 767px)": {
       maxWidth: "unset",
     },
