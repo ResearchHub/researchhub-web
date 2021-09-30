@@ -5,6 +5,7 @@ import {
   emptyFncWithMsg,
   isNullOrUndefined,
   nullthrows,
+  silentEmptyFnc,
 } from "~/config/utils/nullchecks";
 import React, {
   Fragment,
@@ -40,12 +41,14 @@ type CitationConsensusItemProps = {
 
 type SentimentBarProps = {
   color: string;
+  onClick?: (() => void) | null;
   pointRight?: boolean;
   width: number | string;
 };
 
 function SentimentBar({
   color,
+  onClick,
   pointRight = false,
   width,
 }: SentimentBarProps): ReactElement<"div"> {
@@ -53,10 +56,12 @@ function SentimentBar({
     <div
       className={css(
         styles.sentimentBar,
-        pointRight ? styles.pointRightBorder : styles.pointLeftBorder
+        pointRight ? styles.pointRightBorder : styles.pointLeftBorder,
+        Boolean(onClick) ? styles.cursorPointer : null
       )}
+      onClick={onClick ?? silentEmptyFnc}
       style={{ backgroundColor: color, width: `${width}%`, maxWidth: "50%" }}
-    ></div>
+    />
   );
 }
 
@@ -319,25 +324,44 @@ function CitationConsensusItem({
         <Fragment>
           {isNeutral ? (
             <div className={css(styles.consensusInnerWrap)}>
-              <SentimentBar color={colors.LIGHT_GREY_BORDER} width={25} />
-              <div className={css(styles.sentimentMidpoint)} />
               <SentimentBar
                 color={colors.LIGHT_GREY_BORDER}
+                onClick={shouldAllowVote ? handleReject : null}
                 width={25}
+              />
+              <div
+                className={css(
+                  styles.sentimentMidpoint,
+                  shouldAllowVote ? styles.cursorPointer : null
+                )}
+                onClick={handleNeutralVote}
+              />
+              <SentimentBar
+                color={colors.LIGHT_GREY_BORDER}
+                onClick={shouldAllowVote ? handleSupport : null}
                 pointRight
+                width={25}
               />
             </div>
           ) : (
             <div className={css(styles.consensusInnerWrap)}>
               <SentimentBar
                 color={colors.RED(1)}
+                onClick={shouldAllowVote ? handleReject : null}
                 width={doesMajoritySupport ? 0 : weightedPercent}
               />
-              <div className={css(styles.sentimentMidpoint)} />
+              <div
+                className={css(
+                  styles.sentimentMidpoint,
+                  shouldAllowVote ? styles.cursorPointer : null
+                )}
+                onClick={handleNeutralVote}
+              />
               <SentimentBar
                 color={colors.GREEN(1)}
-                width={doesMajoritySupport ? weightedPercent : 0}
+                onClick={shouldAllowVote ? handleSupport : null}
                 pointRight
+                width={doesMajoritySupport ? weightedPercent : 0}
               />
             </div>
           )}
@@ -527,6 +551,7 @@ const styles = StyleSheet.create({
     width: 10,
     marginRight: 4,
   },
+  cursorPointer: { cursor: "pointer" },
 });
 
 const mapStateToProps = (state) => ({
