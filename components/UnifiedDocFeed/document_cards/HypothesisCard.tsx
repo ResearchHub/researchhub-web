@@ -314,7 +314,7 @@ function HypothesisCard({
               </div>
               <div className={css(styles.consensusContainer)}>
                 <CitationConsensusItem
-                  citationID={null}
+                  citationID={`${id}-citation-placeholder`}
                   consensusMeta={{
                     downCount: aggreCitationCons?.down_count ?? 0,
                     neutralCount: aggreCitationCons?.neutral_count ?? 0,
