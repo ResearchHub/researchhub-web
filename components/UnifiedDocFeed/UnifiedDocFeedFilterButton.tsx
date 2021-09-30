@@ -1,30 +1,30 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import colors from "../../config/themes/colors";
+import Link from "next/link";
 
 type Props = {
   isActive: boolean;
   label: string;
-  onClick: (event: SyntheticEvent) => void;
+  id: string;
+  href: string;
 };
 
 function UnifiedDocFeedFilterButton({
   isActive,
   label,
-  onClick,
+  id,
+  href
 }: Props): ReactElement<"div"> {
   return (
-    <div className={css(styles.container)} onClick={onClick}>
-      <div
+    <Link className={css(styles.container)} href={href} key={id}>
+      <a
         className={css(
           styles.unifiedDocFeedFilterButton,
           isActive && styles.isButtonActive
         )}
-        role="button"
-      >
-        {label}
-      </div>
-    </div>
+      >{label}</a>
+    </Link>
   );
 }
 
@@ -47,10 +47,18 @@ const styles = StyleSheet.create({
     padding: "4px 0",
     // marginRight: 24,
     borderBottom: "2px solid transparent",
+    textDecoration: "none",
+    ":hover": {
+      borderBottom: `2px solid ${colors.LIGHT_GREY_BORDER}`,  
+      transition: "0.25s"
+    }
   },
   isButtonActive: {
     borderBottom: `2px solid ${colors.BLUE(1)}`,
     color: colors.BLUE(1),
+    ":hover": {
+      borderBottom: "2px solid",
+    }
   },
 });
 

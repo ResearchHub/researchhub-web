@@ -10,6 +10,7 @@ import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 export function buildStaticPropsForFeed({
   docType = "all",
@@ -42,6 +43,9 @@ export function buildStaticPropsForFeed({
       }
     }
 
+    let docTypeForApi = getUnifiedDocType(docType);
+    docTypeForApi = (docTypeForApi === "post") ? "posts" : docTypeForApi
+
     const initialActivityPromise = fetchLatestActivity({
       hubIds: currentHub ? [currentHub.id] : null,
     });
@@ -58,7 +62,7 @@ export function buildStaticPropsForFeed({
       page: 1,
       subscribedHubs: false,
       timePeriod: getInitialScope(),
-      type: docType,
+      type: docTypeForApi,
     });
 
     const [leaderboardFeed, initialFeed, initialHubList, initialActivity] =
@@ -77,7 +81,7 @@ export function buildStaticPropsForFeed({
         leaderboardFeed,
         initialHubList,
         initialActivity,
-        key: `${hubSlug}-${docType}`,
+        key: `${hubSlug}-${docTypeForApi}`,
         ...(currentHub && { currentHub }),
         ...(feed !== null && { feed }),
         ...(hubSlug && { slug: hubSlug }),

@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
+import Image from "next/image";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -31,10 +32,14 @@ const MobileFeedTabs = (props) => {
         className={css(styles.tab, styles.tabRight, activeRight && styles.active)}
         onClick={() => onClick(false)}
       >
-        <img
+        <Image
           src={"/static/ResearchHubIcon.png"}
-          className={css(styles.rhIcon)}
-        />
+          alt="My Hubs"
+          height={18}
+          width={12}
+          loading="eager"
+          priority={true}
+        />      
         My Hubs
       </div>
     </div>
@@ -77,9 +82,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
   },
   rhIcon: {
-    height: 18,
     marginRight: 6,
-    width: 12,
   },
   icon: {
     // fontSize: 1,

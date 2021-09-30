@@ -140,6 +140,17 @@ function UnifiedDocFeedContainer({
   }, []);
 
   useEffect((): void => {
+    const docType = router.asPath.split("/").pop();
+
+    if (docType === "hypothesis" && auth.authChecked) {
+      postNewFeatureNotifiedToUser({
+        auth,
+        featureName: "hypothesis",
+      });
+    }
+  }, [router.asPath, auth])
+
+  useEffect((): void => {
     const currPath = router.asPath;
 
     if (
@@ -186,21 +197,19 @@ function UnifiedDocFeedContainer({
     }
   };
 
-  const handleTabChange = (tab: any): void => {
-    setSelectedDocTypeFilter(tab.filterValue);
-
+  const getUrlForTab = (tab: any): void => {
     if (
       router.pathname === "/hubs/[slug]" ||
       router.pathname === "/hubs/[slug]/[type]"
     ) {
-      router.push(`/hubs/${router.query.slug}/${tab.href}`);
+      return `/hubs/${router.query.slug}/${tab.href}`;
     } else if (
       router.pathname === "/my-hubs" ||
       router.pathname === "/my-hubs/[type]"
     ) {
-      router.push(`/my-hubs/${tab.href}`);
+      return `/my-hubs/${tab.href}`;
     } else {
-      router.push(`/${tab.href}`);
+      return `/${tab.href}`;
     }
   };
 
@@ -297,13 +306,8 @@ function UnifiedDocFeedContainer({
               <UnifiedDocFeedFilterButton
                 isActive={selectedDocTypeFilter === tab.filterValue}
                 label={tab.label}
-                onClick={(): void => {
-                  postNewFeatureNotifiedToUser({
-                    auth,
-                    featureName: tab.filterValue,
-                  });
-                  handleTabChange(tab);
-                }}
+                id={`${router.asPath}-${tab.label}`}
+                href={getUrlForTab(tab)}
               />
               {shouldAlertHypo ? (
                 <div key={tab.label} className={css(styles.tabFeature)}>
@@ -318,7 +322,8 @@ function UnifiedDocFeedContainer({
               <UnifiedDocFeedFilterButton
                 isActive={selectedDocTypeFilter === tab.filterValue}
                 label={tab.label}
-                onClick={() => handleTabChange(tab)}
+                id={`${router.asPath}-${tab.label}`}
+                href={getUrlForTab(tab)}
               />
             </div>
           );
