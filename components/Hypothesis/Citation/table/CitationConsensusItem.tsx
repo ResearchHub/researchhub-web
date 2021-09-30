@@ -58,6 +58,7 @@ function SentimentBar({
     ></div>
   );
 }
+
 function getDetailedText({
   citationID,
   disableText,
