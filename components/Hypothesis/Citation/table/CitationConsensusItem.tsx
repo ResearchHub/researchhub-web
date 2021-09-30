@@ -34,6 +34,7 @@ type CitationConsensusItemProps = {
   consensusMeta: ConsensusMeta;
   currentUser?: any; // Redux
   disableText?: boolean;
+  shouldAllowVote: boolean;
   updateLastFetchTime: Function;
 };
 
@@ -160,6 +161,7 @@ function CitationConsensusItem({
   citationID,
   consensusMeta,
   disableText,
+  shouldAllowVote,
   updateLastFetchTime,
 }: CitationConsensusItemProps): ReactElement<"div"> | null {
   const [localConsensusMeta, setLocalConsensusMeta] =
@@ -189,6 +191,9 @@ function CitationConsensusItem({
   );
 
   const handleReject = useCallback((): void => {
+    if (!shouldAllowVote) {
+      return;
+    }
     const updatedMeta = {
       ...localConsensusMeta,
       downCount: downCount + 1,
@@ -216,10 +221,14 @@ function CitationConsensusItem({
     setMajority,
     setTotalCount,
     totalCount,
+    shouldAllowVote,
     upCount,
   ]);
 
   const handleNeutralVote = useCallback((): void => {
+    if (!shouldAllowVote) {
+      return;
+    }
     const updatedMeta = {
       ...localConsensusMeta,
       neutralCount: neutralCount + 1,
@@ -245,11 +254,15 @@ function CitationConsensusItem({
     localConsensusMeta,
     setMajority,
     setTotalCount,
+    shouldAllowVote,
     totalCount,
     upCount,
   ]);
 
   const handleSupport = useCallback((): void => {
+    if (!shouldAllowVote) {
+      return;
+    }
     const updatedMeta = {
       ...localConsensusMeta,
       upCount: upCount + 1,
@@ -277,6 +290,7 @@ function CitationConsensusItem({
     setMajority,
     setTotalCount,
     totalCount,
+    shouldAllowVote,
     upCount,
   ]);
 
