@@ -1,10 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
-import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
+import React, {
   Fragment,
   ReactElement,
+  ReactNode,
   useCallback,
   useEffect,
   useState,
@@ -15,6 +20,7 @@ import { postCitationVote } from "../../api/postCitationVote";
 import { UPVOTE, DOWNVOTE, NEUTRALVOTE } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import ReactTooltip from "react-tooltip";
 
 export type ConsensusMeta = {
   downCount: number;
@@ -50,6 +56,75 @@ function SentimentBar({
       )}
       style={{ backgroundColor: color, width: `${width}%`, maxWidth: "50%" }}
     ></div>
+  );
+}
+function getDetailedText({
+  citationID,
+  disableText,
+  doesMajoritySupport,
+  isNeutral,
+  totalCount,
+  majorityPercent,
+}: {
+  citationID: ID;
+  disableText: boolean;
+  doesMajoritySupport: boolean;
+  isNeutral: boolean;
+  totalCount: number;
+  majorityPercent: number;
+}): ReactNode {
+  const isPlural = totalCount > 1;
+  const answer = doesMajoritySupport ? "yes" : "no";
+  return (
+    <div
+      className={css(
+        styles.resultWrap,
+        Boolean(disableText ?? false) && styles.hideText
+      )}
+    >
+      {isNeutral ? (
+        <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
+      ) : doesMajoritySupport ? (
+        <img className={css(styles.resultImg)} src="/static/icons/check.svg" />
+      ) : (
+        <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
+      )}
+      <div
+        className={css(styles.consensusText)}
+        style={{
+          color: isNeutral
+            ? colors.TEXT_GREY(1)
+            : doesMajoritySupport
+            ? colors.GREEN(1)
+            : colors.RED(1),
+        }}
+      >
+        <span
+          data-tip
+          data-for={`consensus-detailed-text-${nullthrows(citationID)}`}
+        >{`${
+          isNeutral
+            ? "Neutral"
+            : majorityPercent > 75
+            ? `Most likely ${answer}`
+            : `Leaning towards ${answer}`
+        }`}</span>
+        <ReactTooltip
+          backgroundColor="#E69A8DFF"
+          effect="solid"
+          id={`consensus-detailed-text-${nullthrows(citationID)}`}
+          place="top"
+          textColor="#5F4B8BFF"
+          type="dark"
+        >
+          {isNeutral
+            ? `${totalCount} researcher${isPlural ? "s" : ""} ${
+                isPlural ? "are split" : "is neutral"
+              }`
+            : `${Math.floor(majorityPercent)}% of researchers think ${answer}`}
+        </ReactTooltip>
+      </div>
+    </div>
   );
 }
 
@@ -209,52 +284,23 @@ function CitationConsensusItem({
     return null;
   }
 
-  const isNeutral = upCount === downCount;
+  const isNeutral = (upCount ?? 0) === downCount;
   const doesMajoritySupport = !isNeutral && majority === UPVOTE;
   const majorityPercent =
-    (doesMajoritySupport ? upCount : downCount) / totalCount;
-  const weightedPercent = (majorityPercent / 2) * 100; // each sentimentbar consists 50% of the full bar
-
+    ((doesMajoritySupport ? upCount : downCount) / totalCount) * 100;
+  const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
+  const consensusDetailText = getDetailedText({
+    citationID,
+    disableText: Boolean(disableText),
+    doesMajoritySupport,
+    isNeutral,
+    majorityPercent,
+    totalCount,
+  });
   const consensusBar =
     totalCount > 0 ? (
       <div className={css(styles.consensusWrap)}>
-        <div
-          className={css(
-            styles.resultWrap,
-            Boolean(disableText ?? false) && styles.hideText
-          )}
-        >
-          {isNeutral ? (
-            <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
-          ) : doesMajoritySupport ? (
-            <img
-              className={css(styles.resultImg)}
-              src="/static/icons/check.svg"
-            />
-          ) : (
-            <span className={css(styles.noSupportImg)}>
-              {icons.timesCircle}
-            </span>
-          )}
-          <div
-            className={css(styles.consensusText)}
-            style={{
-              color: isNeutral
-                ? colors.TEXT_GREY(1)
-                : doesMajoritySupport
-                ? colors.GREEN(1)
-                : colors.RED(1),
-            }}
-          >
-            {isNeutral
-              ? `${totalCount} reader${totalCount > 1 ? "s" : ""} ${
-                  totalCount > 1 ? "are" : "is"
-                } ${totalCount > 1 ? "split" : "neutral"}`
-              : `${Math.floor(majorityPercent * 100)}% of readers think ${
-                  doesMajoritySupport ? "yes" : "no"
-                }`}
-          </div>
-        </div>
+        {consensusDetailText}
         <Fragment>
           {isNeutral ? (
             <div className={css(styles.consensusInnerWrap)}>
@@ -364,6 +410,12 @@ const styles = StyleSheet.create({
     //   display: "none",
     // },
   },
+  consensusDetailedText: {
+    display: "flex",
+    width: "inherit",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   centerVote: {
     marginLeft: 10,
   },
@@ -381,7 +433,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   consensusText: {
-    width: "100%",
     maxWidth: "inherit",
     textOverflow: "ellipsis",
     overflow: "hidden",
@@ -448,6 +499,8 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: 500,
     alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
   noSupportImg: {
     color: colors.RED(1),
