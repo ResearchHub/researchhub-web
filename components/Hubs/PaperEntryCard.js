@@ -617,8 +617,8 @@ const PaperEntryCard = (props) => {
               {mobileOnly(renderVoteWidget(true))}
               {mobileOnly(renderPreregistrationTag())}
               {desktopOnly(renderMainTitle())}
-              {mobileOnly(renderMainTitle())}
             </div>    
+            {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
