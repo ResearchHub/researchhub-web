@@ -98,6 +98,7 @@ export default function HypothesisCitationConsensusCard({
                 upCount,
                 userVote: {},
               }}
+              shouldAllowVote={false}
               updateLastFetchTime={silentEmptyFnc}
             />
           </div>

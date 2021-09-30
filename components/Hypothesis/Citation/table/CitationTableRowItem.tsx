@@ -72,7 +72,9 @@ export default function CitationTableRowItem({
             as={citationTitleLinkUri}
             passHref
           >
-            <a target="_blank" className={css(styles.link)}>{displayTitle}</a>
+            <a target="_blank" className={css(styles.link)}>
+              {displayTitle}
+            </a>
           </Link>
         }
         width={tableWidths.SOURCE}
@@ -82,12 +84,12 @@ export default function CitationTableRowItem({
         value={type && type.toLocaleLowerCase()}
         width={tableWidths.TYPE}
       />
-      {/* <ItemColumn value={publish_date} width={tableWidths.YEAR} /> */}
       <ItemColumn
         value={
           <CitationConsensusItem
             citationID={citationID}
             consensusMeta={consensusMeta}
+            shouldAllowVote
             updateLastFetchTime={updateLastFetchTime}
           />
         }
@@ -131,6 +133,6 @@ const styles = StyleSheet.create({
   },
   link: {
     color: colors.BLUE(1),
-    textDecoration: 'none',
+    textDecoration: "none",
   },
 });
