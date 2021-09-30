@@ -207,9 +207,6 @@ function CitationConsensusItem({
   }
 
   const currentUserVoteType = userVoteToConstant(userVote);
-  console.warn("userVote: ", userVote);
-
-  console.warn("currentUserVoteType: ", currentUserVoteType);
   const hasCurrUserVoted = !isNullOrUndefined(currentUserVoteType);
 
   const handleReject = (event: SyntheticEvent): void => {
