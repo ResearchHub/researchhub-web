@@ -11,7 +11,7 @@ import ManageUsers from "./ManageUsers";
 
 const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) => {
   const [orgName, setOrgName] = useState("");
-  const [flowStep, setFlowStep] = useState("INVITE");
+  const [flowStep, setFlowStep] = useState("ORG_CREATE");
   const [org, setOrg] = useState(org);
 
   const handleSubmit = async (e) => {
@@ -19,7 +19,6 @@ const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) =>
 
     try {
       const org = await createOrg({ name: orgName, description: "sdfsd" });
-      console.log('org', org);
       setOrg(org);
       showMessage({ show: true, error: false });
       setFlowStep("INVITE");
@@ -76,6 +75,7 @@ const styles = StyleSheet.create({
   body: {
     minWidth: 500,
     maxWidth: 800,
+    marginTop: 40,
   },
   button: {
     width: "auto",
