@@ -17,7 +17,7 @@ export const userVoteToConstant = (userVote) => {
       case DOWNVOTE_ENUM:
         return DOWNVOTE;
       case NEUTRALVOTE_ENUM:
-        return NEUTRAL_VOTE;
+        return NEUTRALVOTE;
       default:
         return null;
     }
