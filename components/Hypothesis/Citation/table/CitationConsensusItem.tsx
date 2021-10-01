@@ -12,7 +12,6 @@ import React, {
   ReactElement,
   ReactNode,
   SyntheticEvent,
-  useCallback,
   useEffect,
   useState,
 } from "react";
@@ -30,6 +29,7 @@ import {
 } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import Image from "next/image";
 import ReactTooltip from "react-tooltip";
 
 export type ConsensusMeta = {
@@ -101,7 +101,7 @@ function getDetailedText({
       {isNeutral ? (
         <span className={css(styles.neutralImg)}>{icons.minusCircle}</span>
       ) : doesMajoritySupport ? (
-        <img className={css(styles.resultImg)} src="/static/icons/check.svg" />
+        <Image width={10} height={10} src="/static/icons/check.svg" />
       ) : (
         <span className={css(styles.noSupportImg)}>{icons.timesCircle}</span>
       )}
@@ -116,6 +116,7 @@ function getDetailedText({
         }}
       >
         <span
+          className={css(styles.resultText)}
           data-tip
           data-for={`consensus-detailed-text-${nullthrows(citationID)}`}
         >{`${
@@ -533,11 +534,12 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   resultImg: { fontSize: 10, height: 10, width: 10, marginRight: 4 },
+  resultText: { marginLeft: 4 },
   resultWrap: {
+    alignItems: "center",
     display: "flex",
     fontSize: 11,
     fontWeight: 500,
-    alignItems: "center",
     justifyContent: "center",
     width: "100%",
   },
@@ -546,13 +548,11 @@ const styles = StyleSheet.create({
     fontSize: 10,
     height: 10,
     width: 10,
-    marginRight: 4,
   },
   neutralImg: {
     fontSize: 10,
     height: 10,
     width: 10,
-    marginRight: 4,
   },
   cursorPointer: { cursor: "pointer" },
 });
