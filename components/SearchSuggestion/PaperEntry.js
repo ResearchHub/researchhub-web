@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import * as moment from "dayjs";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 
 const PaperEntry = ({
   data,
@@ -95,7 +95,7 @@ const PaperEntry = ({
     return (
       <Link
         href={"/paper/[paperId]/[paperName]"}
-        as={`/paper/${paperId}/${formatPaperSlug(title)}`}
+        as={`/paper/${paperId}/${buildSlug(title)}`}
       >
         <div
           className={css(

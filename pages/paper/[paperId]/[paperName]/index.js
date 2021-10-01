@@ -49,7 +49,7 @@ import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxS
 // Config
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { absoluteUrl } from "~/config/utils/routing";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 import { getVoteType } from "~/config/utils/reputation";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
@@ -646,7 +646,7 @@ Paper.getInitialProps = async (ctx) => {
     // redirect paper if paperName does not match slug
     let paperName = paperSlug
       ? paperSlug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+      : buildSlug(paper.paper_title ? paper.paper_title : paper.title);
 
     if (paperName === query.paperName) {
       // catch multiple redirect when slug does not exist
