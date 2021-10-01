@@ -9,6 +9,7 @@ type Props = {
   setIsPopoverOpen: (flag: boolean) => void;
   targetContent: ReactElement;
   withArrow: boolean;
+  containerStyle: any;
 };
 
 export default function ResearchHubPopover({
@@ -18,12 +19,14 @@ export default function ResearchHubPopover({
   setIsPopoverOpen,
   targetContent,
   withArrow,
+  containerStyle
 }: Props): ReactElement<typeof Fragment | typeof Popover> {
   if (isNullOrUndefined(typeof window)) {
     return <Fragment />;
   }
   return (
     <Popover
+      containerStyle={containerStyle}
       content={({ position, childRect, popoverRect }) => (
         withArrow ? (
           <ArrowContainer

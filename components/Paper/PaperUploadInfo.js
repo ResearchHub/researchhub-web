@@ -33,7 +33,7 @@ import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import * as Options from "~/config/utils/options";
 import FormTextArea from "../Form/FormTextArea";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 
 class PaperUploadInfo extends Component {
   constructor(props) {
@@ -944,7 +944,7 @@ class PaperUploadInfo extends Component {
       : this.props.paper.postedPaper.id;
     let paperName = paper.slug
       ? paper.slug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+      : buildSlug(paper.paper_title ? paper.paper_title : paper.title);
     this.props.paperActions.clearPostedPaper();
     this.props.paperActions.removePaperFromState();
     Router.push(
@@ -961,7 +961,7 @@ class PaperUploadInfo extends Component {
       let paperId = paper.id;
       let paperName = paper.slug
         ? paper.slug
-        : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+        : buildSlug(paper.paper_title ? paper.paper_title : paper.title);
       Router.push(
         "/paper/[paperId]/[paperName]",
         `/paper/${paperId}/${paperName}`

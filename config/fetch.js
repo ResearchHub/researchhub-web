@@ -3,6 +3,30 @@ import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
+export const inviteUserToOrg = ({ orgId, email, expire = 4320, accessType = "EDITOR" }) => {
+  return fetch(API.INVITE_TO_ORG({ orgId }), API.POST_CONFIG({ email, expire, access_type: accessType }))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
+export const createOrg = (payload) => {
+  return fetch(API.ORGANIZATION({}), API.POST_CONFIG(payload))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
+export const fetchOrgUsers = ({ orgId }) => {
+  return fetch(API.ORGANIZATION_USERS({ orgId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
+export const fetchOrg = ({ orgId }) => {
+  return fetch(API.ORGANIZATION({ orgId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
 export const fetchEmailPreference = async () => {
   const params = API.GET_CONFIG();
   const data = await fetch(API.EMAIL_PREFERENCE({}), params)

@@ -13,6 +13,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplateModal"));
+const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
+const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -40,6 +42,9 @@ export const ELNEditor = ({ user }) => {
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
+  const [currentOrganization, setCurrentOrganization] = useState(null);
+  const [showNewOrgModal, setShowNewOrgModal] = useState(false);
+  const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -97,6 +102,7 @@ export const ELNEditor = ({ user }) => {
 
   useEffect(() => {
     setCurrentOrganizationId(getCurrentOrganizationId(organizations));
+    setCurrentOrganization(getCurrentOrganization(organizations));
     router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
   }, [router.query.orgName]);
 
@@ -116,6 +122,16 @@ export const ELNEditor = ({ user }) => {
       }
     }
   };
+
+  const getCurrentOrganization = (orgs) => {
+    const orgName = router.query.orgName;
+    if (orgName === "personal") {
+      return null;
+    }
+    else {
+      return orgs.find(org => org.slug === orgName);
+    }
+  };  
 
   const toggleSidebarSection = () => {
     setHideNotes(!hideNotes);
@@ -252,7 +268,7 @@ export const ELNEditor = ({ user }) => {
       }
     }
   }
-
+console.log('currentOrganization', currentOrganization);
   return (
     <div className={css(styles.container)}>
       <NoteTemplateModal
@@ -263,6 +279,10 @@ export const ELNEditor = ({ user }) => {
         refetchNotes={refetchNotes}
         setRefetchNotes={setRefetchNotes}
       />
+      <NewOrgModal isOpen={showNewOrgModal} closeModal={() => setShowNewOrgModal(false)} />
+      {currentOrganizationId !== 0 /* not personal */ &&
+        <ManageOrgModal org={currentOrganization} isOpen={showManageOrgModal} closeModal={() => setShowManageOrgModal(false)} />
+      }
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
       </div>
@@ -289,6 +309,7 @@ export const ELNEditor = ({ user }) => {
                     </a>
                   </Link>
                 ))}
+                <div onClick={() => setShowNewOrgModal(true)}>+ New Org</div>
               </div>
             }
             positions={["bottom"]}
@@ -304,6 +325,19 @@ export const ELNEditor = ({ user }) => {
             }
           />
         </div>
+        {currentOrganizationId !== 0 /* not personal */ &&
+          <div className={css(styles.sidebarButtonsContainer, styles.orgButtonsContainer)}>
+            <div
+              className={css(styles.sidebarButton, styles.orgButton)}
+              onClick={() => setShowManageOrgModal(true)}
+            >
+              {icons.cog}
+              <span className={css(styles.sidebarButtonText, styles.orgButtonText)}>
+                Settings & Members
+              </span>
+            </div>
+          </div>
+        }
         <div
           className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
           onClick={toggleSidebarSection}
@@ -363,7 +397,17 @@ export const ELNEditor = ({ user }) => {
   );
 };
 
+
 const styles = StyleSheet.create({
+  orgButtonsContainer: {
+    marginTop: 0
+  },
+  orgButton: {
+    paddingLeft: 17,
+  },
+  orgButtonText: {
+    marginLeft: 20,
+  },
   container: {
     display: "flex",
   },
