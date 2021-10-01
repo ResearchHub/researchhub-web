@@ -1,6 +1,6 @@
-export function formatPaperSlug(paperTitle) {
-  if (paperTitle && typeof paperTitle === "string") {
-    let slug = paperTitle.replace(/[^a-zA-Z ]/g, ""); // remove special characters regex
+export function buildSlug(str) {
+  if (str && typeof str === "string") {
+    let slug = str.replace(/[^a-zA-Z ]/g, ""); // remove special characters regex
     slug = slug
       .split(" ")
       .filter((el) => el !== "")

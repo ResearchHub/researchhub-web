@@ -1,4 +1,4 @@
-import { formatPaperSlug } from "../../../../config/utils/document";
+import { buildSlug } from "../../../../config/utils/document";
 import { FormState } from "../types/UploadComponentTypes";
 import { ID } from "../../../../config/types/root_types";
 import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
@@ -36,7 +36,7 @@ export async function uploadNewPaper({
     const { id: paperID, paper_title, slug, title } = postedPaper || {};
     const paperName = !isNullOrUndefined(slug)
       ? slug
-      : formatPaperSlug(paper_title ? paper_title : title);
+      : buildSlug(paper_title ? paper_title : title);
     onSuccess({ paperID, paperName });
   } else {
     onError(resPayload);

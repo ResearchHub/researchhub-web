@@ -1,28 +1,25 @@
-import { connect, useDispatch, useStore } from "react-redux";
-import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { formatPaperSlug } from "~/config/utils/document";
-import { getNestedValue } from "~/config/utils/misc";
-import { HyperLink, TimeStamp } from "./NotificationHelpers";
-import { ModeratorBounty, ContributorBounty } from "./BountyNotifications";
-import { NotificationActions } from "~/redux/notification";
-import { reviewBounty } from "~/config/fetch";
-import { StyleSheet, css } from "aphrodite";
-import { timeAgoStamp } from "~/config/utils/dates";
 import { useState } from "react";
-import AuthorAvatar from "../AuthorAvatar";
-import colors from "../../config/themes/colors";
 import Link from "next/link";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import { StyleSheet, css } from "aphrodite";
+
+import { connect, useDispatch, useStore } from "react-redux";
+import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { HyperLink, TimeStamp } from "./NotificationHelpers";
+import { NotificationActions } from "~/redux/notification";
+
+// Config
+import colors from "../../config/themes/colors";
+import { buildSlug } from "~/config/utils/document";
+import { timeAgoStamp } from "~/config/utils/dates";
+import AuthorAvatar from "../AuthorAvatar";
 
 const NotificationEntry = (props) => {
-  const { notification, data, updateNotification } = props;
+  const { notification, data } = props;
   const [isRead, toggleRead] = useState(data.read);
-  const [pendingApproval, setPendingApproval] = useState(false);
-  const [pendingDenial, setPendingDenial] = useState(false);
 
   const dispatch = useDispatch();
-  const store = useStore();
 
   if (isNullOrUndefined(notification)) {
     // if no notification object is passed, dont render anything
@@ -68,7 +65,7 @@ const NotificationEntry = (props) => {
 
     const formattedSlug = !isNullOrUndefined(slug)
       ? slug
-      : formatPaperSlug(paper_official_title ?? paper_title);
+      : buildSlug(paper_official_title ?? paper_title);
     const isComment = ["thread", "comment", "reply"].includes(support_type);
     // TODO: calvinhlee check with leo with parent_content_type
     const documentType = isComment ? parent_content_type : document_type;
@@ -118,7 +115,7 @@ const NotificationEntry = (props) => {
     } = created_by;
 
     const authorId = creatorProfile?.id ?? null;
-    const formattedSlug = slug ?? formatPaperSlug(document_title);
+    const formattedSlug = slug ?? buildSlug(document_title);
     const creatorName = creatorFName ?? "" + creatorLName ?? "";
 
     const onClick = (e) => {
@@ -265,7 +262,7 @@ const NotificationEntry = (props) => {
       author_profile: creatorProfile,
     } = created_by;
 
-    const formattedSlug = slug ?? formatPaperSlug(documentType);
+    const formattedSlug = slug ?? buildSlug(documentType);
     const creatorName = creatorFName ?? "" + creatorLName ?? "";
 
     const formatLink = () => {

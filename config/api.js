@@ -81,15 +81,23 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
-    ORGANIZATION: ({ userId }) => {
+    ORGANIZATION: ({ userId, orgId }) => {
       let url;
       if (userId) {
         url = `${BASE_URL}organization/${userId}/get_user_organizations/`;
       } else {
-        url = `${BASE_URL}organization/`;
+        url = `${BASE_URL}organization/${orgId ? orgId : ""}`;
       }
       return url;
     },
+    ORGANIZATION_USERS: ({ orgId })=> {
+      return `${BASE_URL}organization/${orgId}/get_organization_users`
+    },
+    INVITE_TO_ORG: ({ orgId }) => {
+      let url;
+      return `${BASE_URL}organization/${orgId}/invite_user/`
+    },
+
     USER: ({
       userId,
       authorId,
