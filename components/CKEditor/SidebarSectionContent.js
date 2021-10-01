@@ -1,18 +1,78 @@
+import API from "~/config/api";
 import Link from "next/link";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { Helpers } from "@quantfive/js-web-config";
 import { css, StyleSheet } from "aphrodite";
+import { useAlert } from "react-alert";
 import { useState } from "react";
 
 const SidebarSectionContent = ({
   currentNoteId,
+  currentOrganizationId,
+  handleDeleteNote,
+  noteBody,
   noteId,
   orgName,
+  refetchTemplates,
+  setRefetchTemplates,
   title,
 }) => {
+  const alert = useAlert();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const menuItems = [
+    {
+      text: "Make private",
+      icon: icons.lock,
+      hoverStyle: styles.blueHover,
+      onClick: () => setIsPopoverOpen(!isPopoverOpen),
+    },
+    {
+      text: "Duplicate",
+      icon: icons.clone,
+      hoverStyle: styles.blueHover,
+      onClick: () => setIsPopoverOpen(!isPopoverOpen),
+    },
+    {
+      text: "Save as template",
+      icon: icons.shapes,
+      hoverStyle: styles.blueHover,
+      onClick: () => {
+        const params = {
+          full_src: noteBody,
+          is_default: false,
+          name: title,
+          organization: currentOrganizationId,
+        };
+
+        fetch(API.NOTE_TEMPLATE({}), API.POST_CONFIG(params))
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((data) => {
+            console.log(data);
+            setRefetchTemplates(!refetchTemplates);
+          });
+
+        setIsPopoverOpen(!isPopoverOpen);
+      },
+    },
+    {
+      text: "Delete",
+      icon: icons.trash,
+      hoverStyle: styles.redHover,
+      onClick: () => {
+        setIsPopoverOpen(!isPopoverOpen);
+        alert.show({
+          text: `Permanently delete '${title}'? This cannot be undone.`,
+          buttonText: "Yes",
+          onClick: () => handleDeleteNote(noteId),
+        })
+      },
+    },
+  ];
 
   return (
     <>
@@ -34,27 +94,15 @@ const SidebarSectionContent = ({
               padding={5}
               popoverContent={
                 <div className={css(styles.popoverBodyContent)}>
-                  <div
-                    className={css(styles.popoverBodyItem, styles.blueHover)}
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                  >
-                    <div className={css(styles.popoverBodyIcon)}>{icons.lock}</div>
-                    <div>Make private</div>
-                  </div>
-                  <div
-                    className={css(styles.popoverBodyItem, styles.blueHover)}
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                  >
-                    <div className={css(styles.popoverBodyIcon)}>{icons.clone}</div>
-                    <div>Duplicate</div>
-                  </div>
-                  <div
-                    className={css(styles.popoverBodyItem, styles.redHover)}
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                  >
-                    <div className={css(styles.popoverBodyIcon)}>{icons.trash}</div>
-                    <div>Delete</div>
-                  </div>
+                  {menuItems.map(item =>
+                    <div
+                      className={css(styles.popoverBodyItem, item.hoverStyle)}
+                      onClick={item.onClick}
+                    >
+                      <div className={css(styles.popoverBodyIcon)}>{item.icon}</div>
+                      <div className={css(styles.popoverBodyText)}>{item.text}</div>
+                    </div>
+                  )}
                 </div>
               }
               positions={["bottom"]}
@@ -163,6 +211,9 @@ const styles = StyleSheet.create({
   },
   popoverBodyIcon: {
     marginRight: 10,
+  },
+  popoverBodyText: {
+    fontSize: 14,
   },
 });
 

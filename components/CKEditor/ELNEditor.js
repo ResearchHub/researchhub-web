@@ -39,7 +39,6 @@ export const ELNEditor = ({ user }) => {
   const presenceListElementRef = useRef();
   const sidebarElementRef = useRef();
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
@@ -48,7 +47,9 @@ export const ELNEditor = ({ user }) => {
   const [notes, setNotes] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [refetchNotes, setRefetchNotes] = useState(false);
+  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
+  const [editorInstances, setEditorInstances] = useState([]);
 
   useEffect(() => {
     editorRef.current = {
@@ -57,10 +58,6 @@ export const ELNEditor = ({ user }) => {
       CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
     };
     setEditorLoaded(true);
-    return () => {
-      //window.removeEventListener("resize", boundRefreshDisplayMode);
-      //window.removeEventListener("beforeunload", boundCheckPendingActions);
-    };
   }, []);
 
   useEffect(() => {
@@ -98,12 +95,8 @@ export const ELNEditor = ({ user }) => {
 
   useEffect(() => {
     setCurrentOrganizationId(getCurrentOrganizationId(organizations));
-    router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
+    setEditorInstances([]);
   }, [router.query.orgName]);
-
-  useEffect(() => {
-    setCurrentNoteId(router.query.noteId);
-  }, [router.query.noteId]);
 
   const getCurrentOrganizationId = (orgs) => {
     const orgName = router.query.orgName;
@@ -118,11 +111,7 @@ export const ELNEditor = ({ user }) => {
     }
   };
 
-  const toggleSidebarSection = () => {
-    setHideNotes(!hideNotes);
-  };
-
-  const handleCreateNewNote = () => {
+  const handleCreateNote = () => {
     const params = {
       organization: currentOrganizationId,
       title: "Untitled",
@@ -138,6 +127,21 @@ export const ELNEditor = ({ user }) => {
           ...titles
         });
         router.push(`/notebook/${router.query.orgName}/${note.id}`);
+      });
+  };
+
+  const handleDeleteNote = (noteId) => {
+    fetch(API.NOTE_DELETE({ noteId }), API.POST_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((deleted_note) => {
+        const newNotes = notes.filter(note => note.id !== deleted_note.id);
+        setNotes(newNotes);
+        const newEditorInstances = editorInstances.filter(
+          editor => editor.config._config.collaboration.channelId !== deleted_note.id.toString()
+        );
+        setEditorInstances(newEditorInstances);
+        router.push(`/notebook/${router.query.orgName}/${newNotes[0].id}`);
       });
   };
 
@@ -198,7 +202,7 @@ export const ELNEditor = ({ user }) => {
       <div
         className={css(
           styles.editor,
-          currentNoteId !== note.id.toString() && styles.hideEditor,
+          router.query.noteId !== note.id.toString() && styles.hideEditor,
         )}
         key={note.id.toString()}
       >
@@ -210,7 +214,7 @@ export const ELNEditor = ({ user }) => {
           onReady={(editor) => {
             console.log("Editor is ready to use!", editor);
             //CKEditorInspector.attach(editor);
-
+            setEditorInstances([...editorInstances, editor]);
             editor.editing.view.change((writer) => {
               writer.setStyle(
                 {
@@ -219,21 +223,6 @@ export const ELNEditor = ({ user }) => {
                 editor.editing.view.document.getRoot()
               );
             });
-
-            //// Switch between inline and sidebar annotations according to the window size.
-            //const boundRefreshDisplayMode = refreshDisplayMode.bind(
-            //  this,
-            //  editor
-            //);
-            //// Prevent closing the tab when any action is pending.
-            //const boundCheckPendingActions = checkPendingActions.bind(
-            //  this,
-            //  editor
-            //);
-
-            //window.addEventListener("resize", boundRefreshDisplayMode);
-            //window.addEventListener("beforeunload", boundCheckPendingActions);
-            //refreshDisplayMode(editor);
           }}
         />
       </div>
@@ -259,10 +248,12 @@ export const ELNEditor = ({ user }) => {
       <NoteTemplateModal
         currentOrganizationId={currentOrganizationId}
         isOpen={isNoteTemplateModalOpen}
-        setIsOpen={setIsNoteTemplateModalOpen}
-        user={user}
         refetchNotes={refetchNotes}
+        refetchTemplates={refetchTemplates}
+        setIsOpen={setIsNoteTemplateModalOpen}
         setRefetchNotes={setRefetchNotes}
+        setRefetchTemplates={setRefetchTemplates}
+        user={user}
       />
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
@@ -308,7 +299,7 @@ export const ELNEditor = ({ user }) => {
         </div>
         <div
           className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
-          onClick={toggleSidebarSection}
+          onClick={() => setHideNotes(!hideNotes)}
         >
           Notes
           <span className={css(styles.chevronIcon)}>
@@ -317,14 +308,27 @@ export const ELNEditor = ({ user }) => {
         </div>
         {!hideNotes && (
           <div>
-            {notes.map(note => (
-              <SidebarSectionContent
-                currentNoteId={currentNoteId}
-                noteId={note.id.toString()}
-                orgName={router.query.orgName}
-                title={titles[note.id.toString()]}
-              />
-            ))}
+            {notes.map(note => {
+              let editorInstance;
+              for (const editor of editorInstances) {
+                if (note.id.toString() === editor.config._config.collaboration.channelId) {
+                  editorInstance = editor;
+                }
+              }
+              return (
+                <SidebarSectionContent
+                  currentNoteId={router.query.noteId}
+                  currentOrganizationId={currentOrganizationId}
+                  handleDeleteNote={handleDeleteNote}
+                  noteBody={editorInstance?.getData() ?? ""}
+                  noteId={note.id.toString()}
+                  orgName={router.query.orgName}
+                  refetchTemplates={refetchTemplates}
+                  setRefetchTemplates={setRefetchTemplates}
+                  title={titles[note.id.toString()]}
+                />
+              );
+            })}
           </div>
         )}
         <div className={css(styles.sidebarButtonsContainer)}>
@@ -346,7 +350,7 @@ export const ELNEditor = ({ user }) => {
         </div>
         <div
           className={css(styles.sidebarNewNote)}
-          onClick={handleCreateNewNote}
+          onClick={handleCreateNote}
         >
           <div className={css(styles.actionButton)}>{icons.plus}</div>
           <div className={css(styles.newNoteText)}>Create New Note</div>

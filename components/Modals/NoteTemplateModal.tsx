@@ -9,22 +9,27 @@ import { Helpers } from "@quantfive/js-web-config";
 import { ReactElement, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 
 export type NoteTemplateModalProps = {
   currentOrganizationId: number;
   isOpen: boolean;
-  setIsOpen: (flag: boolean) => void;
   refetchNotes: any;
+  refetchTemplates: any;
+  setIsOpen: (flag: boolean) => void;
   setRefetchNotes: any;
+  setRefetchTemplates: any;
 };
 
 export default function NoteTemplateModal({
   currentOrganizationId,
   isOpen,
-  setIsOpen,
   refetchNotes,
+  refetchTemplates,
+  setIsOpen,
   setRefetchNotes,
+  setRefetchTemplates,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const editorRef = useRef<any>();
@@ -44,23 +49,25 @@ export default function NoteTemplateModal({
   }, []);
 
   useEffect(() => {
-    fetch(API.NOTE_TEMPLATE(), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        const fetchedTemplates = {};
-        for (const template of data.results) {
-          fetchedTemplates[template.id.toString()] = template;
-        }
-        setTemplateContents(fetchedTemplates);
-        setTemplates(data.results);
-        setSelected(data.results[0].id);
-        setFetched(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (!isNullOrUndefined(currentOrganizationId)) {
+      fetch(API.NOTE_TEMPLATE({ orgId: currentOrganizationId }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((templates) => {
+          const fetchedTemplates = {};
+          for (const template of templates) {
+            fetchedTemplates[template.id.toString()] = template;
+          }
+          setTemplateContents(fetchedTemplates);
+          setTemplates(templates);
+          setSelected(templates[0].id);
+          setFetched(true);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [refetchTemplates, currentOrganizationId]);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
@@ -93,10 +100,6 @@ export default function NoteTemplateModal({
     closeModal(e);
   };
 
-  const toggleSidebarSection = () => {
-    setHideNotes(!hideNotes);
-  };
-
   const handleInput = (editor) => {};
 
   const editorConfiguration = {
@@ -127,7 +130,7 @@ export default function NoteTemplateModal({
           {fetched && (
             <CKEditor
               config={editorConfiguration}
-              data={templateContents[selected].src}
+              data={templateContents[selected]?.src ?? ""}
               editor={Editor}
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
@@ -155,7 +158,7 @@ export default function NoteTemplateModal({
           </div>
           <div
             className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
-            onClick={toggleSidebarSection}
+            onClick={() => setHideNotes(!hideNotes)}
           >
             Academic
             <span className={css(styles.chevronIcon)}>
@@ -244,7 +247,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
   },
   modalStyle: {
-    maxHeight: "80vh",
+    height: "80vh",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
