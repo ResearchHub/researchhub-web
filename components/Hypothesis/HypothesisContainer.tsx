@@ -66,6 +66,7 @@ export default function HypothesisContainer(
             downCount: aggreCitationCons?.down_count ?? 0,
             upCount: aggreCitationCons?.up_count ?? 0,
           }}
+          hypothesisID={hypothesisID}
           isLoading={isLoading}
         />
         <div className={css(styles.metaContainerMobile)}>

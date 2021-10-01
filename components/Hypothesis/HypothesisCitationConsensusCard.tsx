@@ -1,10 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
-import React, { ReactElement } from "react";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import { TextRow } from "react-placeholder/lib/placeholders";
+import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
-import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
+import React, { ReactElement } from "react";
+import { ID } from "~/config/types/root_types";
 
 type Props = {
   aggregateCitationConsensus: {
@@ -13,6 +14,7 @@ type Props = {
     neutralCount: number;
     upCount: number;
   };
+  hypothesisID: ID;
   isLoading?: boolean;
 };
 
@@ -23,6 +25,7 @@ export default function HypothesisCitationConsensusCard({
     neutralCount,
     upCount,
   },
+  hypothesisID,
   isLoading,
 }: Props): ReactElement<"div"> | null {
   if (citationCount === 0) {
@@ -88,13 +91,14 @@ export default function HypothesisCitationConsensusCard({
           </div>
           <div className={css(styles.hypoConsensusRightSide)}>
             <CitationConsensusItem
-              citationID={null}
+              citationID={`${hypothesisID}-citation-placeholder`}
               consensusMeta={{
                 downCount,
                 neutralCount,
                 upCount,
                 userVote: {},
               }}
+              shouldAllowVote={false}
               updateLastFetchTime={silentEmptyFnc}
             />
           </div>
@@ -173,11 +177,11 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   iconGroup: {
-    display: 'flex',
+    display: "flex",
 
     "@media only screen and (max-width: 767px)": {
       marginBottom: 16,
-    }
+    },
   },
   dot: {
     color: colors.TEXT_GREY(1),
