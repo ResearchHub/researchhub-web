@@ -180,13 +180,18 @@ const routes = (BASE_URL) => {
       }
       return url;
     },
-    NOTE_CONTENT: () => {
-      let url = `${BASE_URL}note_content/`;
-      return url;
+    NOTE_DELETE: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/delete/`;
     },
-    NOTE_TEMPLATE: () => {
-      let url = `${BASE_URL}note_template/`;
-      return url;
+    NOTE_CONTENT: () => {
+      return `${BASE_URL}note_content/`;
+    },
+    NOTE_TEMPLATE: ({ orgId }) => {
+      if (!isNullOrUndefined(orgId)) {
+        return `${BASE_URL}note_template/${orgId}/get_organization_templates/`;
+      } else {
+        return `${BASE_URL}note_template/`;
+      }
     },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
