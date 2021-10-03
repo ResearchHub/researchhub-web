@@ -7,7 +7,7 @@ import Button from "~/components/Form/Button";
 import { createOrg } from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
-import ManageUsers from "./ManageUsers";
+import ManageOrgUsers from "./ManageOrgUsers";
 
 const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) => {
   const [orgName, setOrgName] = useState("");
@@ -18,7 +18,7 @@ const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) =>
     e.preventDefault();
 
     try {
-      const org = await createOrg({ name: orgName, description: "sdfsd" });
+      const org = await createOrg({ name: orgName });
       setOrg(org);
       showMessage({ show: true, error: false });
       setFlowStep("INVITE");
@@ -54,7 +54,7 @@ const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) =>
           )
         : flowStep === "INVITE"
         ? (
-            <ManageUsers org={org} />
+            <ManageOrgUsers org={org} />
           )
         : null
       }

@@ -86,12 +86,18 @@ const routes = (BASE_URL) => {
       if (userId) {
         url = `${BASE_URL}organization/${userId}/get_user_organizations/`;
       } else {
-        url = `${BASE_URL}organization/${orgId ? orgId : ""}`;
+        url = `${BASE_URL}organization/${orgId ? orgId + "/" : ""}`;
       }
       return url;
     },
     ORGANIZATION_USERS: ({ orgId })=> {
       return `${BASE_URL}organization/${orgId}/get_organization_users`
+    },
+    REMOVE_USER_FROM_ORG: ({ orgId })=> {
+      return `${BASE_URL}organization/${orgId}/remove_user/`;
+    },
+    REMOVE_INVITED_USER_FROM_ORG: ({ orgId })=> {
+      return `${BASE_URL}organization/${orgId}/remove_invited_user/`;
     },
     INVITE_TO_ORG: ({ orgId }) => {
       let url;
