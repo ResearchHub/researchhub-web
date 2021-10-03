@@ -15,6 +15,26 @@ export const createOrg = (payload) => {
     .then(Helpers.parseJSON)
 }
 
+export const updateOrgDetails = ({ orgId, updatedName }) => {
+  return fetch(API.ORGANIZATION({ orgId }), API.PATCH_CONFIG({ name: updatedName }))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
+export const removeUserFromOrg = ({ orgId, userId }) => {
+  const config = {...API.DELETE_CONFIG(), body: JSON.stringify({user: userId})};
+  return fetch(API.REMOVE_USER_FROM_ORG({ orgId }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
+export const removeInvitedUserFromOrg = ({ orgId, email }) => {
+  const config = {...API.PATCH_CONFIG(), body: JSON.stringify({email})};
+  return fetch(API.REMOVE_INVITED_USER_FROM_ORG({ orgId }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
 export const fetchOrgUsers = ({ orgId }) => {
   return fetch(API.ORGANIZATION_USERS({ orgId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)

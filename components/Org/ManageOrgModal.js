@@ -1,24 +1,47 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import { fetchOrg } from "~/config/fetch";
-import ManageUsers from "./ManageUsers";
+import ManageOrgUsers from "./ManageOrgUsers";
+import ManageOrgDetails from "./ManageOrgDetails";
 import BaseModal from "~/components/Modals/BaseModal";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isEmpty } from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
+import Loader from "~/components/Loader/Loader";
 
-const ManageOrgModal = ({ org, currentUser, closeModal, showMessage, setMessage, isOpen = false }) => {
+const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false }) => {
   const [_org, _setOrg] = useState(org);
+  const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
-    if (!isNullOrUndefined(org) || org?.id !== _org?.id) {
+    if (!isEmpty(org) && org?.id !== _org?.id) {
       _setOrg(org);
+      setShowLoader(false);
     }
   }, [org]);
 
+
   const modalBody = (
     <div className={css(styles.body)}>
-      <ManageUsers org={_org} />  
+      {isEmpty(org)
+        ? <Loader
+            key={"loader"}
+            loading={true}
+            size={25}
+            color={colors.BLUE()}
+          />
+        : (
+            <Fragment>
+              <div className={css(styles.section)}>
+                <ManageOrgDetails org={_org} />  
+              </div>
+              <div className={css(styles.section)}>
+                <ManageOrgUsers org={_org} />
+              </div>
+            </Fragment>        
+          )
+      }
     </div>
   )
 
@@ -27,7 +50,7 @@ const ManageOrgModal = ({ org, currentUser, closeModal, showMessage, setMessage,
       children={modalBody}
       closeModal={closeModal}
       isOpen={isOpen}
-      title={"Manage Organization"}
+      title={"Settings & Members"}
     />        
   )
 }
@@ -36,16 +59,18 @@ const styles = StyleSheet.create({
   body: {
     minWidth: 500,
     maxWidth: 800,
+    minHeight: 100,
     marginTop: 40,
   },
+  section: {
+    marginBottom: 40,
+  }
 });
 
 const mapStateToProps = (state) => ({
   currentUser: state.auth.user,
 })
 const mapDispatchToProps = {
-  showMessage: MessageActions.showMessage,
-  setMessage: MessageActions.setMessage,
 }
 
 export default connect(
