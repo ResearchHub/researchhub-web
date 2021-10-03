@@ -68,6 +68,7 @@ export const ELNEditor = ({ user }) => {
   }, []);
 
   useEffect(() => {
+    console.log("remounting");
     fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -105,7 +106,7 @@ export const ELNEditor = ({ user }) => {
     setCurrentOrganization(getCurrentOrganization(organizations));
     router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
   }, [router.query.orgName]);
-
+console.log('currentOrganization', currentOrganization);
   useEffect(() => {
     setCurrentNoteId(router.query.noteId);
   }, [router.query.noteId]);
@@ -268,7 +269,7 @@ export const ELNEditor = ({ user }) => {
       }
     }
   }
-console.log('currentOrganization', currentOrganization);
+
   return (
     <div className={css(styles.container)}>
       <NoteTemplateModal

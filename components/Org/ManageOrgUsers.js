@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import { StyleSheet, css } from "aphrodite";
-import { inviteUserToOrg, fetchOrgUsers } from "~/config/fetch";
+import { inviteUserToOrg, fetchOrgUsers, removeUserFromOrg, removeInvitedUserFromOrg } from "~/config/fetch";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -11,7 +11,7 @@ import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-const ManageUsers = ({ currentUser, org, setMessage, showMessage }) => {
+const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
   const [orgUsers, setOrgUsers] = useState({});
   const [orgUserCount, setOrgUserCount] = useState(0);
@@ -47,6 +47,24 @@ const ManageUsers = ({ currentUser, org, setMessage, showMessage }) => {
     catch(err) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });      
+    }
+  }
+
+  const handleRemoveUser = async (user, org) => {
+    try {
+      if (!isNullOrUndefined(user.recipient_email)) {
+        removeInvitedUserFromOrg({ orgId: org.id, email: user.recipient_email })
+      }
+      else {
+        removeUserFromOrg({ orgId: org.id, userId: user.id }) 
+      }
+
+      setNeedsFetch(true);
+      showMessage({ show: true, error: false });
+    }
+    catch(err) {
+      setMessage("Failed to remove user");
+      showMessage({ show: true, error: true })
     }
   }
 
@@ -104,12 +122,12 @@ const ManageUsers = ({ currentUser, org, setMessage, showMessage }) => {
                         </div>
                       }
                       {perm !== "Invitation Pending" &&
-                        <div className={css(styles.permOpt, styles.permOptRemove)}>
+                        <div className={css(styles.permOpt, styles.permOptRemove)} onClick={() => handleRemoveUser(user, org)}>
                           <div className={css(styles.permTitle)}>Remove from organization</div>
                         </div>
                       }
                       {perm === "Invitation Pending" &&
-                        <div className={css(styles.permOpt, styles.permOptRemove)}>
+                        <div className={css(styles.permOpt, styles.permOptRemove)} onClick={() => handleRemoveUser(user, org)}>
                           <div className={css(styles.permTitle)}>Cancel Invitation</div>
                         </div>                      
                       }
@@ -270,4 +288,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(ManageUsers);
+)(ManageOrgUsers);
