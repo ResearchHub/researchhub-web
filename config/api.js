@@ -108,6 +108,9 @@ const routes = (BASE_URL) => {
     ACCEPT_ORG_INVITE: ({ token }) => {
       return `${BASE_URL}invite/organization/${token}/accept_invite/`
     },
+    ORG_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}organization/${token}/get_organization_by_key/`
+    },
 
     USER: ({
       userId,
