@@ -17,7 +17,7 @@ type CitationCommentSidebarProps = {
 const MEDIA_WIDTH_LIMIT = 1199; /* arbitary iPad size */
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
-  const hypothesisUnduxStore = HypothesisUnduxStore?.useStore();
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
   );
@@ -72,8 +72,7 @@ function CitationCommentSidebar({
         </div>
       </div>
       <CitationCommentThreadComposer
-        shouldShowContextTitle={shouldShowContextTitle}
-        citationID={inlineComment}
+        citationID={citationID}
         citationThreadID={citationThreadID}
       />
     </div>

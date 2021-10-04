@@ -1,13 +1,5 @@
-import Router from "next/router";
-import killswitch from "~/config/killswitch/killswitch";
-import HypothesisContainer from "~/components/Hypothesis/HypothesisContainer";
-
-const isServer = () => typeof window === "undefined";
+import HypothesisContainerWithRedux from "~/components/Hypothesis/HypothesisContainer";
 
 export default function Hypothesis(props) {
-  if (!killswitch("hypothesis") && !isServer()) {
-    Router.push("/");
-  }
-
-  return <HypothesisContainer />;
+  return <HypothesisContainerWithRedux />;
 }
