@@ -11,6 +11,7 @@ import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 
 const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurrentOrganization }) => {
+
   const [_org, _setOrg] = useState(org);
   const [showLoader, setShowLoader] = useState(true);
 
@@ -39,6 +40,10 @@ const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurre
               <div className={css(styles.section)}>
                 <ManageOrgUsers org={_org} />
               </div>
+              <div>
+                <div className={css(styles.subheader)}>Danger Zone</div>
+                [Placeholder: Remove account]
+              </div>
             </Fragment>        
           )
       }
@@ -64,7 +69,13 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 40,
-  }
+  },
+  subheader: {
+    fontWeight: 500,
+    marginTop: 20,
+    marginBottom: 20,
+    color: "red",
+  },  
 });
 
 const mapStateToProps = (state) => ({

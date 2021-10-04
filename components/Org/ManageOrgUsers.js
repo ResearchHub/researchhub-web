@@ -11,12 +11,14 @@ import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { getOrgUserCount } from "~/config/utils/org";
+import Loader from "~/components/Loader/Loader";
 
 const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
   const [orgUsers, setOrgUsers] = useState({});
   const [orgUserCount, setOrgUserCount] = useState(0);
   const [needsFetch, setNeedsFetch] = useState(true);
+  const [isInviteInProgress, setIsInviteInProgress] = useState(false);
   const [statusDropdownOpenForUser, setStatusDropdownOpenForUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [_currentUser, _setCurrentUser] = useState(null);
@@ -38,8 +40,8 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   }, [currentUser]);
 
   const handleInvite = async (e) => {
-    e.preventDefault();
-
+    e && e.preventDefault();
+    setIsInviteInProgress(true);
     try {
       const invitedUser = await inviteUserToOrg({ orgId: org.id, email: userToBeInvitedEmail });
       setNeedsFetch(true);
@@ -49,6 +51,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     catch(err) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });      
+    }
+
+    setIsInviteInProgress(false);
+  }
+
+  const handleKeyDown = (e) => {
+    if (e?.key === 13 /*Enter*/) {
+      handleInvite();
     }
   }
 
@@ -170,13 +180,22 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           inputStyle={styles.inputStyle}
           placeholder="User's email"
           type="email"
+          onKeyDown={handleKeyDown}
         />
-        <Button
-          type="submit"
-          customButtonStyle={styles.button}
-          label="Invite"
-        >
-        </Button>
+        {isInviteInProgress ?
+              <Loader
+                key={"loader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />   
+              :        
+              <Button
+                type="submit"
+                customButtonStyle={styles.button}
+                label="Invite"
+              />
+        }
       </form>
       {orgUserCount > 0 &&
         <div>
@@ -246,7 +265,7 @@ const styles = StyleSheet.create({
   },
   userRow: {
     display: "flex",
-    marginBottom: 10,
+    marginBottom: 15,
   },
   user: {
     display: "flex",
