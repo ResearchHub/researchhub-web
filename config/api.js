@@ -100,8 +100,10 @@ const routes = (BASE_URL) => {
       return `${BASE_URL}organization/${orgId}/remove_invited_user/`;
     },
     INVITE_TO_ORG: ({ orgId }) => {
-      let url;
       return `${BASE_URL}organization/${orgId}/invite_user/`
+    },
+    ACCEPT_ORG_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/organization/${token}/accept_invite/`
     },
 
     USER: ({

@@ -8,7 +8,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isNullOrUndefined, isEmpty } from "~/config/utils/nullchecks";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
@@ -43,6 +43,7 @@ export const ELNEditor = ({ user }) => {
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
   const [currentOrganization, setCurrentOrganization] = useState(null);
+  // const [currentOrgName, setCurrentOrgName] = useState(null);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [editorLoaded, setEditorLoaded] = useState(false);
@@ -101,12 +102,16 @@ export const ELNEditor = ({ user }) => {
     }
   }, [refetchNotes, currentOrganizationId]);
 
-  useEffect(() => {
-    setCurrentOrganizationId(getCurrentOrganizationId(organizations));
-    setCurrentOrganization(getCurrentOrganization(organizations));
-    router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
-  }, [router.query.orgName]);
-console.log('currentOrganization', currentOrganization);
+  useEffect(async () => {
+    if (!isEmpty(organizations) && router.query.orgName !== currentOrganization?.name) {
+      const currentOrg = getCurrentOrganization(organizations);
+      setCurrentOrganization(currentOrg);
+      setCurrentOrganizationId(currentOrg.id);
+
+      // router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
+    }
+  }, [router.query.orgName, organizations]);
+
   useEffect(() => {
     setCurrentNoteId(router.query.noteId);
   }, [router.query.noteId]);
@@ -256,19 +261,22 @@ console.log('currentOrganization', currentOrganization);
     );
   });
 
-  let organizationName;
-  let organizationImage;
-  if (currentOrganizationId === 0) {
-    organizationName = "Personal Notes";
-    organizationImage = user.author_profile.profile_image;
-  } else if (currentOrganizationId > 0) {
-    for (const org of organizations) {
-      if (org.id === currentOrganizationId) {
-        organizationName = org.name;
-        organizationImage = org.cover_image;
-      }
-    }
-  }
+  // let organizationName;
+  // let organizationImage;
+  // if (currentOrganizationId === 0) {
+  //   organizationName = "Personal Notes";
+  //   organizationImage = user.author_profile.profile_image;
+  // } else if (currentOrganizationId > 0) {
+  //   for (const org of organizations) {
+  //     if (org.id === currentOrganizationId) {
+  //       organizationName = org.name;
+  //       organizationImage = org.cover_image;
+  //     }
+  //   }
+  // }
+
+  const orgName = currentOrganizationId === 0 ? "Personal Notes" : currentOrganization?.name;
+  const orgImg = currentOrganizationId === 0 ? user.author_profile.profile_image : currentOrganization?.cover_image;
 
   return (
     <div className={css(styles.container)}>
@@ -282,7 +290,12 @@ console.log('currentOrganization', currentOrganization);
       />
       <NewOrgModal isOpen={showNewOrgModal} closeModal={() => setShowNewOrgModal(false)} />
       {currentOrganizationId !== 0 /* not personal */ &&
-        <ManageOrgModal org={currentOrganization} isOpen={showManageOrgModal} closeModal={() => setShowManageOrgModal(false)} />
+        <ManageOrgModal
+          org={currentOrganization}
+          isOpen={showManageOrgModal}
+          closeModal={() => setShowManageOrgModal(false)}
+          setCurrentOrganization={setCurrentOrganization}
+        />
       }
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
@@ -305,7 +318,7 @@ console.log('currentOrganization', currentOrganization);
                       <img className={css(styles.popoverBodyItemImage)} draggable="false" src={org.cover_image} />
                       <div className={css(styles.popoverBodyItemText)}>
                         <div className={css(styles.popoverBodyItemTitle)}>{org.name}</div>
-                        <div className={css(styles.popoverBodyItemSubtitle)}>{"1 member"}</div>
+                        <div className={css(styles.popoverBodyItemSubtitle)}>{"{placeholder} member"}</div>
                       </div>
                     </a>
                   </Link>
@@ -317,8 +330,8 @@ console.log('currentOrganization', currentOrganization);
             setIsPopoverOpen={setIsPopoverOpen}
             targetContent={
               <div className={css(styles.popoverTarget)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                <img className={css(styles.popoverBodyItemImage)} draggable="false" src={organizationImage} />
-                {organizationName}
+                <img className={css(styles.popoverBodyItemImage)} draggable="false" src={orgImg} />
+                {orgName}
                 <span className={css(styles.sortIcon)}>
                   {icons.sort}
                 </span>

@@ -10,6 +10,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { getOrgUserCount } from "~/config/utils/org";
 
 const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
@@ -22,7 +23,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 
   useEffect(async() => {
     if (needsFetch && _currentUser && !isNullOrUndefined(org)) {
-      const orgUsers = await fetchOrgUsers({ orgId: org.id })
+      const orgUsers = await fetchOrgUsers({ orgId: org.id });
       setNeedsFetch(false);
       setOrgUsers(orgUsers);
       setOrgUserCount(getOrgUserCount(orgUsers))
@@ -43,6 +44,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       const invitedUser = await inviteUserToOrg({ orgId: org.id, email: userToBeInvitedEmail });
       setNeedsFetch(true);
       showMessage({ show: true, error: false });
+      setUserToBeInvitedEmail("");
     }
     catch(err) {
       setMessage("Failed to invite user");
@@ -53,10 +55,10 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const handleRemoveUser = async (user, org) => {
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
-        removeInvitedUserFromOrg({ orgId: org.id, email: user.recipient_email })
+        await removeInvitedUserFromOrg({ orgId: org.id, email: user.recipient_email })
       }
       else {
-        removeUserFromOrg({ orgId: org.id, userId: user.id }) 
+        await removeUserFromOrg({ orgId: org.id, userId: user.id }) 
       }
 
       setNeedsFetch(true);
@@ -66,10 +68,6 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       setMessage("Failed to remove user");
       showMessage({ show: true, error: true })
     }
-  }
-
-  const getOrgUserCount = (orgUsers) => {
-    return (orgUsers?.admins?.length || 0) + (orgUsers?.editors?.length || 0) + (orgUsers?.viewers?.length || 0) + (orgUsers?.invited_users?.length || 0);
   }
 
   const isCurrentUserOrgAdmin = (currentUser, orgUsers) => {
@@ -93,7 +91,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       <div className={css(styles.userRow)} key={key}>
         <div className={css(styles.user)}>
           <AuthorAvatar author={user.author_profile} />
-          <span className={css(styles.name)}>{displayName} {isCurrentUser ? "(you)" : ""}</span>
+          <div className={css(styles.nameWrapper)}>
+            <span className={css(styles.name)}>{displayName} {isCurrentUser ? "(you)" : ""}</span>
+            {perm !== "Invitation Pending" &&
+              <span className={css(styles.email)}>{currentUser.email}</span>
+            }
+          </div>
         </div>
         <div className={css(styles.status)}>
           {isAdmin && !isCurrentUser
@@ -249,8 +252,16 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
+  nameWrapper: {
+    display: "flex",
+    flexDirection: "column",
+    marginLeft: 10,
+  },
   name: {
-    marginLeft: 7,
+    
+  },
+  email: {
+    color: colors.BLACK(0.5),
   },
   status: {
     display: "flex",
