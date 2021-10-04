@@ -169,6 +169,9 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    CKEDITOR_TOKEN: () => {
+      return `${BASE_URL}ckeditor_token/`;
+    },
     NOTE: ({ noteId, orgId }) => {
       let url;
       if (!isNullOrUndefined(orgId)) {
