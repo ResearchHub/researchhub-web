@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   commentsIcon: {
+    cursor: "pointer",
     fontSize: 20,
   },
   paddingRight16: {
