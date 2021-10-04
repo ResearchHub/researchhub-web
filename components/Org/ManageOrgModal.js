@@ -10,7 +10,7 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 
-const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false }) => {
+const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurrentOrganization }) => {
   const [_org, _setOrg] = useState(org);
   const [showLoader, setShowLoader] = useState(true);
 
@@ -34,7 +34,7 @@ const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false }) => {
         : (
             <Fragment>
               <div className={css(styles.section)}>
-                <ManageOrgDetails org={_org} />  
+                <ManageOrgDetails org={_org} setCurrentOrganization={setCurrentOrganization} />  
               </div>
               <div className={css(styles.section)}>
                 <ManageOrgUsers org={_org} />

@@ -3,6 +3,12 @@ import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
+export const acceptInviteToOrg = ({ token }) => {
+  return fetch(API.ACCEPT_ORG_INVITE({ token }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)  
+}
+
 export const inviteUserToOrg = ({ orgId, email, expire = 4320, accessType = "EDITOR" }) => {
   return fetch(API.INVITE_TO_ORG({ orgId }), API.POST_CONFIG({ email, expire, access_type: accessType }))
     .then(Helpers.checkStatus)
