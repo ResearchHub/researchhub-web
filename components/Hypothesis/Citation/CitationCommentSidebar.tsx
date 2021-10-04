@@ -7,6 +7,7 @@ import CitationCommentThreadComposer from "./CitationCommentThreadComposer";
 import colors from "~/config/themes/colors";
 import HypothesisUnduxStore from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
+import { useEffectOnScreenResize } from "~/config/utils/useEffectOnScreenResize";
 
 type CitationCommentSidebarProps = {
   citationID: ID;
@@ -23,24 +24,17 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
   );
   const { citationID, citationThreadID } = targetCitationComment ?? {};
 
-  const currMediaWidth =
-    window?.innerWidth ??
-    document?.documentElement?.clientWidth ??
-    document?.body?.clientWidth;
-
   const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
-    currMediaWidth <= MEDIA_WIDTH_LIMIT
+    (window?.innerWidth ??
+      document?.documentElement?.clientWidth ??
+      document?.body?.clientWidth ??
+      0) <= MEDIA_WIDTH_LIMIT
   );
 
-  useEffect((): void => {
-    window.addEventListener("resize", () => {
-      const newMediaWidth =
-        window?.innerWidth ??
-        document?.documentElement?.clientWidth ??
-        document?.body?.clientWidth;
-      setShouldRenderWithSlide(newMediaWidth <= MEDIA_WIDTH_LIMIT);
-    });
-  }, []);
+  useEffectOnScreenResize({
+    onResize: (newMediaWidth) =>
+      setShouldRenderWithSlide(newMediaWidth <= MEDIA_WIDTH_LIMIT),
+  });
 
   return shouldRenderWithSlide ? (
     <div className={css(styles.citationCommentMobile)}>
