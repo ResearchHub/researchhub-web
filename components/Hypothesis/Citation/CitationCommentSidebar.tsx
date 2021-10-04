@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 import CitationCommentThreadComposer from "./CitationCommentThreadComposer";
 import colors from "~/config/themes/colors";
@@ -22,14 +22,28 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     "targetCitationComment"
   );
   const { citationID, citationThreadID } = targetCitationComment ?? {};
-  const shouldDisplayCitationCommentBar = !isNullOrUndefined(citationID);
 
   const currMediaWidth =
-    document?.documentElement?.clientWidth ?? document?.body?.clientWidth;
-  const shouldRenderWithSlide = currMediaWidth <= MEDIA_WIDTH_LIMIT;
+    window?.innerWidth ??
+    document?.documentElement?.clientWidth ??
+    document?.body?.clientWidth;
 
-  return !shouldDisplayCitationCommentBar ? null : shouldRenderWithSlide ? (
-    <div className={css(styles.mobile)}>
+  const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
+    currMediaWidth <= MEDIA_WIDTH_LIMIT
+  );
+
+  useEffect((): void => {
+    window.addEventListener("resize", () => {
+      const newMediaWidth =
+        window?.innerWidth ??
+        document?.documentElement?.clientWidth ??
+        document?.body?.clientWidth;
+      setShouldRenderWithSlide(newMediaWidth <= MEDIA_WIDTH_LIMIT);
+    });
+  }, []);
+
+  return shouldRenderWithSlide ? (
+    <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
         right
         width={"100%"}
@@ -176,7 +190,6 @@ const styles = StyleSheet.create({
     positioin: "relative",
     marginBottom: 16,
     "@media only screen and (max-width: 1199px)": {
-      // height: 50,
       padding: 16,
     },
   },
@@ -200,7 +213,7 @@ const styles = StyleSheet.create({
   marginLeft8: {
     marginLeft: 8,
   },
-  mobile: {
+  citationCommentMobile: {
     display: "none",
     "@media only screen and (max-width: 1199px)": {
       display: "block",
