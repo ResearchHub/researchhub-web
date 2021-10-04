@@ -6,18 +6,22 @@ import { updateOrgDetails } from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 
-const ManageOrgDetails = ({ org, setMessage, showMessage }) => {
+const ManageOrgDetails = ({ org, setMessage, showMessage, setCurrentOrganization }) => {
 
-  const [latestOrg, setLatestOrg] = useState(org);
+  const [updatedOrg, setUpdatedOrg] = useState(org);
   const [orgName, setOrgName] = useState(org.name);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const latest = await updateOrgDetails({ orgId: org.id, updatedName: orgName });
-      setLatestOrg(latest);
+      const updatedOrg = await updateOrgDetails({ orgId: org.id, updatedName: orgName });
+      setUpdatedOrg(updatedOrg);
       showMessage({ show: true, error: false });
+
+      if (typeof(setCurrentOrganization) === "function") {
+        setCurrentOrganization(updatedOrg);
+      }
     }
     catch(err) {
       setMessage("Failed to update org.");
