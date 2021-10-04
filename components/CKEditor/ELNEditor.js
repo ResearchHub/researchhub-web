@@ -323,7 +323,7 @@ export const ELNEditor = ({ user }) => {
                     </a>
                   </Link>
                 ))}
-                <div onClick={() => setShowNewOrgModal(true)}>+ New Org</div>
+                <div className={css(styles.newOrgButton)} onClick={() => setShowNewOrgModal(true)}>+ New Org</div>
               </div>
             }
             positions={["bottom"]}
@@ -548,6 +548,9 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.GREY(0.3),
+  },
+  newOrgButton: {
+    cursor: "pointer",
   },
   sidebarNewNote: {
     borderTop: `1px solid ${colors.GREY(0.3)}`,
