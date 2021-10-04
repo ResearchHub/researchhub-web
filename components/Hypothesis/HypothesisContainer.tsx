@@ -99,10 +99,12 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
             setCount={setDiscussionCount}
           />
         </div>
-        <div className={css(styles.sidebar)}>
-          {shouldDisplayCitationCommentBar ? (
+        {shouldDisplayCitationCommentBar ? (
+          <div className={css(styles.citationCommentSidebar)}>
             <CitationCommentSidebarWithMedia />
-          ) : (
+          </div>
+        ) : (
+          <div className={css(styles.regSidebar)}>
             <PaperSideColumn
               authors={[created_by.author_profile]}
               hubs={hubs}
@@ -110,8 +112,8 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
               paper={hypothesis}
               paperId={id}
             />
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   ) : null;
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
       width: "90%",
     },
   },
-  sidebar: {
+  regSidebar: {
     boxSizing: "border-box",
     display: "table-cell",
     position: "relative",
@@ -166,6 +168,13 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1024px)": {
       display: "none",
     },
+  },
+  citationCommentSidebar: {
+    boxSizing: "border-box",
+    display: "table-cell",
+    position: "relative",
+    verticalAlign: "top",
+    width: 280,
   },
   metaContainerMobile: {
     display: "none",
