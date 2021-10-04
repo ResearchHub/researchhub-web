@@ -32,7 +32,7 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
   );
 
   useEffectOnScreenResize({
-    onResize: (newMediaWidth) =>
+    onResize: (newMediaWidth): void =>
       setShouldRenderWithSlide(newMediaWidth <= MEDIA_WIDTH_LIMIT),
   });
 
