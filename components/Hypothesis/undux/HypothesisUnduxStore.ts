@@ -11,7 +11,7 @@ export type State = {
 export type HypothesisStore = Store<State>;
 
 const initialState: State = {
-  targetCitationComment: null,
+  targetCitationComment: { citationID: 1 },
 };
 
 export default createConnectedStore(initialState);

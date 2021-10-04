@@ -19,15 +19,19 @@ import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 
 type Props = {};
 
-export default function HypothesisContainer(
-  props: Props
-): ReactElement<"div"> | null {
+function HypothesisContainer(props: Props): ReactElement<"div"> | null {
   const router = useRouter();
-  const [hypothesis, setHypothesis] = useState<any>(null);
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [discussionCount, setDiscussionCount] = useState(0);
   const hypothesisID = castUriID(router.query.documentId);
+  const targetCitationComment = hypothesisUnduxStore.get(
+    "targetCitationComment"
+  );
+  const { citationID } = targetCitationComment ?? {};
+  const shouldDisplayCitationCommentBar = !isNullOrUndefined(citationID);
+  const [hypothesis, setHypothesis] = useState<any>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -51,53 +55,54 @@ export default function HypothesisContainer(
   } = hypothesis || {};
 
   return !isNullOrUndefined(hypothesis) ? (
-    <HypothesisUnduxStore.Container>
-      <div className={css(styles.hypothesisContainer)}>
-        <CitationCommentSidebarWithMedia />
-        <Head
-          title={title}
-          description={title}
-          canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${
-            slug || ""
-          }`}
+    <div className={css(styles.hypothesisContainer)}>
+      <Head
+        title={title}
+        description={title}
+        canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${
+          slug || ""
+        }`}
+      />
+      <div className={css(styles.container)}>
+        <HypothesisPageCard hypothesis={hypothesis} />
+        <HypothesisCitationConsensusCard
+          aggregateCitationConsensus={{
+            citationCount: aggreCitationCons?.citation_count ?? 0,
+            neutralCount: aggreCitationCons?.neutral_count ?? 0,
+            downCount: aggreCitationCons?.down_count ?? 0,
+            upCount: aggreCitationCons?.up_count ?? 0,
+          }}
+          hypothesisID={hypothesisID}
+          isLoading={isLoading}
         />
-        <div className={css(styles.container)}>
-          <HypothesisPageCard hypothesis={hypothesis} />
-          <HypothesisCitationConsensusCard
-            aggregateCitationConsensus={{
-              citationCount: aggreCitationCons?.citation_count ?? 0,
-              neutralCount: aggreCitationCons?.neutral_count ?? 0,
-              downCount: aggreCitationCons?.down_count ?? 0,
-              upCount: aggreCitationCons?.up_count ?? 0,
-            }}
-            hypothesisID={hypothesisID}
-            isLoading={isLoading}
+        <div className={css(styles.metaContainerMobile)}>
+          <AuthorStatsDropdown
+            authors={[created_by.author_profile]}
+            hubs={hubs}
+            paper={hypothesis}
+            paperId={id}
           />
-          <div className={css(styles.metaContainerMobile)}>
-            <AuthorStatsDropdown
-              authors={[created_by.author_profile]}
-              hubs={hubs}
-              paper={hypothesis}
-              paperId={id}
-            />
-          </div>
-          <CitationContainer
-            lastFetchTime={lastFetchTime}
-            onCitationUpdate={(): void => {
-              setLastFetchTime(Date.now());
-            }}
+        </div>
+        <CitationContainer
+          lastFetchTime={lastFetchTime}
+          onCitationUpdate={(): void => {
+            setLastFetchTime(Date.now());
+          }}
+        />
+        <div className={css(styles.space)}>
+          <DiscussionTab
+            calculatedCount={discussionCount}
+            documentType={"hypothesis"}
+            hypothesis={hypothesis}
+            hypothesisId={id}
+            isCollapsible={false}
+            setCount={setDiscussionCount}
           />
-          <div className={css(styles.space)}>
-            <DiscussionTab
-              calculatedCount={discussionCount}
-              documentType={"hypothesis"}
-              hypothesis={hypothesis}
-              hypothesisId={id}
-              isCollapsible={false}
-              setCount={setDiscussionCount}
-            />
-          </div>
-          <div className={css(styles.sidebar)}>
+        </div>
+        <div className={css(styles.sidebar)}>
+          {shouldDisplayCitationCommentBar ? (
+            <CitationCommentSidebarWithMedia />
+          ) : (
             <PaperSideColumn
               authors={[created_by.author_profile]}
               hubs={hubs}
@@ -105,13 +110,22 @@ export default function HypothesisContainer(
               paper={hypothesis}
               paperId={id}
             />
-          </div>
+          )}
         </div>
       </div>
-    </HypothesisUnduxStore.Container>
+    </div>
   ) : null;
 }
 
+export default function HypothesisContainerWithUndux(
+  props: Props
+): ReactElement<typeof HypothesisUnduxStore.Container> {
+  return (
+    <HypothesisUnduxStore.Container>
+      <HypothesisContainer {...props} />
+    </HypothesisUnduxStore.Container>
+  );
+}
 const styles = StyleSheet.create({
   hypothesisContainer: {
     height: "100%",
@@ -161,5 +175,9 @@ const styles = StyleSheet.create({
   },
   space: {
     marginTop: 30,
+  },
+  hypothesisContainerWrap: {
+    display: "flex",
+    position: "relative",
   },
 });
