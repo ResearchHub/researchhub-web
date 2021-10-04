@@ -9,6 +9,12 @@ export const acceptInviteToOrg = ({ token }) => {
     .then(Helpers.parseJSON)  
 }
 
+export const fetchOrgByInviteToken = ({ token }) => {
+  return fetch(API.ORG_INVITE_DETAILS({ token }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
 export const inviteUserToOrg = ({ orgId, email, expire = 4320, accessType = "EDITOR" }) => {
   return fetch(API.INVITE_TO_ORG({ orgId }), API.POST_CONFIG({ email, expire, access_type: accessType }))
     .then(Helpers.checkStatus)
