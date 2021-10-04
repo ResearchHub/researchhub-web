@@ -1,4 +1,4 @@
-import { acceptInviteToOrg } from "~/config/fetch";
+import { acceptInviteToOrg, fetchOrgByInviteToken } from "~/config/fetch";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -7,39 +7,50 @@ import { StyleSheet, css } from "aphrodite";
 import Loader from "~/components/Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 const Index = ({ auth, showMessage, setMessage }) => {
   const router = useRouter();
-  console.log('auth', auth);
+  const [org, setOrg] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(async () => {
+    try {
+      const org = await fetchOrgByInviteToken({ token: router.query.token });
+      setOrg(org);
+    }
+    catch(err) {
+    }
 
-  useEffect(() => {
-    console.log(router.query);
-    // acceptInviteToOrg({ token: router.query.token })
+    setIsLoading(false);
   }, []);
 
-  useEffect(() => {
+  const joinOrg = async (e) => {
+    e.stopPropagation();
 
-  }, [])
-
-  const joinOrg = async () => {
     try {
       setIsLoading(true);
       await acceptInviteToOrg({ token: router.query.token })
       showMessage({ show: true, error: false });
+
+      router.push(`/org/${org.slug}/`)
     }
     catch(err) {
       setIsLoading(false);
-      setMessage(`Failed to join organization. ${err}`);
+
+      if (err.message === "Invitation has expired") {
+        setMessage(`Invitation has expired`);  
+      }
+      
       showMessage({ show: true, error: true });
     }
-
   }
 
   return (
     <div className={css(styles.container)}>
-      <div className={css(styles.inviteText)}>{`X Org`} Invited you to join.</div>
+      {org && 
+        <div className={css(styles.inviteText)}>{org.name} invited you to join its organization.</div>
+      }
       {isLoading ? 
         <Loader
           key={"loader"}
@@ -47,7 +58,16 @@ const Index = ({ auth, showMessage, setMessage }) => {
           size={25}
           color={colors.BLUE()}
         />
-        : <Button onClick={joinOrg} label={`Join Org`} />
+        : (
+          <PermissionNotificationWrapper
+            loginRequired
+            modalMessage="join [organization]"
+            onClick={joinOrg}
+            styling={styles.rippleClass}
+          >
+            <Button label={`Join Org`} hideRipples={true} />
+          </PermissionNotificationWrapper>
+        )
       }
     </div>
   );
