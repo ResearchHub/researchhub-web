@@ -44,7 +44,7 @@ export default function NoteTemplateModal({
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleInlineEditor,
+      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
     };
   }, []);
 

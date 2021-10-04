@@ -94,9 +94,10 @@ const SidebarSectionContent = ({
               padding={5}
               popoverContent={
                 <div className={css(styles.popoverBodyContent)}>
-                  {menuItems.map(item =>
+                  {menuItems.map((item, index) =>
                     <div
                       className={css(styles.popoverBodyItem, item.hoverStyle)}
+                      key={index}
                       onClick={item.onClick}
                     >
                       <div className={css(styles.popoverBodyIcon)}>{item.icon}</div>

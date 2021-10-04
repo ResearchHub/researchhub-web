@@ -187,6 +187,9 @@ const routes = (BASE_URL) => {
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
       return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
     },
+    CKEDITOR_TOKEN: () => {
+      return `${BASE_URL}ckeditor_token/`;
+    },
     NOTE: ({ noteId, orgId }) => {
       let url;
       if (!isNullOrUndefined(orgId)) {
