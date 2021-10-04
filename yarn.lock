@@ -1036,10 +1036,10 @@
     "@testing-library/dom" "^6.15.0"
     "@types/testing-library__react" "^9.1.2"
 
-"@thomasvu/ckeditor5-custom-build@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@thomasvu/ckeditor5-custom-build/-/ckeditor5-custom-build-0.0.12.tgz#12032b1bcb3c60975747c609a4be81de33cf0884"
-  integrity sha512-VOSqyiIl6vjjbBbkS5dzHabeNVda8JwcEbCMwh4/pWHvXcxf7boYLIewIWI5aNgcOYlughfkqbZTvroXSe+R2Q==
+"@thomasvu/ckeditor5-custom-build@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@thomasvu/ckeditor5-custom-build/-/ckeditor5-custom-build-0.0.16.tgz#5fa5a49a61b5465e51174745b94eed8b755b238d"
+  integrity sha512-Yo2QNzQm19majeAbywesCseu6W95EjLWuKcW/4R6pFRvnHqEhCp5WngbWEy/m+xPvMqM0+Fv3IaddXZ8WZiYug==
 
 "@tootallnate/once@1":
   version "1.1.2"
