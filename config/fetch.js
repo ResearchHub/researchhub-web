@@ -3,6 +3,37 @@ import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
+export const createNewNote = ({ orgId }) => {
+  const params = {
+    organization: orgId,
+    title: "Untitled",
+  };
+
+  return fetch(API.NOTE({}), API.POST_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((note) => {
+      setRefetchNotes(!refetchNotes);
+      setTitles({
+        [note.id.toString()]: note.title,
+        ...titles
+      });
+      router.push(`/notebook/${router.query.orgName}/${note.id}`);
+    });
+}
+
+export const fetchOrgNotes = ({ orgId }) => {
+  return fetch(API.NOTE({ orgId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
+export const fetchUserOrgs = ({ user }) => {
+  return fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+}
+
 export const acceptInviteToOrg = ({ token }) => {
   return fetch(API.ACCEPT_ORG_INVITE({ token }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
