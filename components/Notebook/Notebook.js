@@ -6,6 +6,8 @@ import Loader from "~/components/Loader/Loader";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 import OrgSidebar from "~/components/Org/OrgSidebar";
+import ELNEditor from "~/components/CKEditor/ELNEditor";
+import { getNotePathname } from '~/config/utils/org';
 
 /*
 * TODO:
@@ -76,7 +78,9 @@ const Notebook = ({ user, isPrivateNotebook }) => {
       [note.id.toString()]: note.title,
       ...titles
     });
-    router.push(`/notebook/${currentOrganization.slug}/${note.id}`);
+
+    const path = getNotePathname({ note, org: currentOrganization });
+    router.push(path);
   }
 
   const onOrgChange = (org, needNoteFetch = false) => {
@@ -116,7 +120,14 @@ const Notebook = ({ user, isPrivateNotebook }) => {
               onNoteCreate={onNoteCreate}
               needNoteFetch={needNoteFetch}
               setNeedNoteFetch={setNeedNoteFetch}
-            />            
+            />
+            <ELNEditor
+              user={currentUser}
+              notes={notes}
+              titles={titles}
+              setTitles={setTitles}
+              currentNoteId={currentNoteId}
+            />
           </Fragment>
         )
       }
