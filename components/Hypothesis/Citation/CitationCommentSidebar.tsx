@@ -1,13 +1,16 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
+import {
+  getCurrMediaWidth,
+  useEffectOnScreenResize,
+} from "~/config/utils/useEffectOnScreenResize";
 import CitationCommentThreadComposer from "./CitationCommentThreadComposer";
 import colors from "~/config/themes/colors";
 import HypothesisUnduxStore from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
-import { useEffectOnScreenResize } from "~/config/utils/useEffectOnScreenResize";
 
 type CitationCommentSidebarProps = {
   citationID: ID;
@@ -15,7 +18,7 @@ type CitationCommentSidebarProps = {
   shouldShowContextTitle: boolean;
 };
 
-const MEDIA_WIDTH_LIMIT = 1199; /* arbitary iPad size */
+const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
   const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
@@ -25,15 +28,12 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
   const { citationID, citationThreadID } = targetCitationComment ?? {};
 
   const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
-    (window?.innerWidth ??
-      document?.documentElement?.clientWidth ??
-      document?.body?.clientWidth ??
-      0) <= MEDIA_WIDTH_LIMIT
+    MEDIA_WIDTH_LIMIT > getCurrMediaWidth()
   );
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void =>
-      setShouldRenderWithSlide(newMediaWidth <= MEDIA_WIDTH_LIMIT),
+      setShouldRenderWithSlide(MEDIA_WIDTH_LIMIT > newMediaWidth),
   });
 
   return shouldRenderWithSlide ? (
