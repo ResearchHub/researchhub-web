@@ -26,6 +26,15 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
     setHideNotes(!hideNotes);
   };
 
+  const getNotePathname = (note) => {
+    if (isPrivateNotebook) {
+      return `/me/notebook/${note.id}`;
+    }
+    else {
+      return `/${currentOrg.slug}/notebook/${note.id}`;
+    }
+  }
+
   const handleCreateNewNote = async () => {
     const note = await createNewNote({ orgId: currentOrg.id });
     return onNoteCreate(note);
@@ -65,7 +74,10 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
                 </a>
               </Link>
               {orgs.map(org => (
-                <Link href={`${org.slug}/notebook/`} key={org.id.toString()}>
+                <Link href={{
+                  pathname: `${org.slug}/notebook/`,
+                  query: { orgSlug: org.slug }
+                }} key={org.id.toString()}>
                   <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
                     <img className={css(styles.popoverBodyItemImage)} draggable="false" src={org.cover_image} />
                     <div className={css(styles.popoverBodyItemText)}>
@@ -116,7 +128,9 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
       {!hideNotes && (
         <div>
           {notes.map(note => (
-            <Link href={`/notebook/${router.query.orgName}/${note.id}`} key={note.id.toString()}>
+            <Link href={{
+              pathname: getNotePathname(note),
+            }} key={note.id.toString()}>
               <a
                 className={css(
                   styles.sidebarSectionContent,

@@ -1,7 +1,7 @@
 import NotebookPage from "~/components/Notebook/Notebook";
 
 const Index = () => {
-  return <NotebookPage />
+  return <NotebookPage isPrivateNotebook={true} />
 }
 
 export default Index;
