@@ -47,7 +47,6 @@ const PermissionNotificationWrapper = (props) => {
         onClick && onClick(e);
       }
     } else {
-      console.log("here");
       dispatch(
         ModalActions.openLoginModal(true, `Please sign in to ${modalMessage}`)
       );
@@ -84,7 +83,7 @@ const PermissionNotificationWrapper = (props) => {
     return (
       <div className={css(styling)}>
         <Ripples
-          className={css(styling) + "  eeeee"}
+          className={css(styling)}
           onClick={executeIfUserMeetsRequirement}
         >
           {props.children}
