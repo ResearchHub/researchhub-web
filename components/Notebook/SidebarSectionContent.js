@@ -5,23 +5,44 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { css, StyleSheet } from "aphrodite";
+import { getNotePathname } from "~/config/utils/org";
 import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const SidebarSectionContent = ({
   currentNoteId,
-  currentOrganizationId,
-  handleDeleteNote,
+  currentOrg,
+  editorInstances,
   noteBody,
   noteId,
-  orgName,
+  notes,
+  pathname,
   refetchTemplates,
+  setEditorInstances,
+  setNotes,
   setRefetchTemplates,
   title,
 }) => {
   const alert = useAlert();
+  const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const handleDeleteNote = (noteId) => {
+    fetch(API.NOTE_DELETE({ noteId }), API.POST_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((deleted_note) => {
+        const newNotes = notes.filter(note => note.id !== deleted_note.id);
+        setNotes(newNotes);
+        const newEditorInstances = editorInstances.filter(
+          editor => editor.config._config.collaboration.channelId !== deleted_note.id.toString()
+        );
+        setEditorInstances(newEditorInstances);
+        router.push(getNotePathname({ noteId: newNotes[0].id, org: currentOrg }));
+      });
+  };
 
   const menuItems = [
     {
@@ -45,14 +66,13 @@ const SidebarSectionContent = ({
           full_src: noteBody,
           is_default: false,
           name: title,
-          organization: currentOrganizationId,
+          organization: currentOrg?.id,
         };
 
         fetch(API.NOTE_TEMPLATE({}), API.POST_CONFIG(params))
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((data) => {
-            console.log(data);
             setRefetchTemplates(!refetchTemplates);
           });
 
@@ -76,7 +96,7 @@ const SidebarSectionContent = ({
 
   return (
     <>
-      <Link href={`/notebook/${orgName}/${noteId}`} key={noteId}>
+      <Link href={pathname}>
         <a
           className={css(
             styles.sidebarSectionContent,

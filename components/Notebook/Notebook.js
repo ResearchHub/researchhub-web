@@ -1,25 +1,26 @@
-import { useState, useEffect, Fragment } from "react";
-import { useRouter } from "next/router";
-import { connect } from "react-redux";
-import { fetchUserOrgs, fetchOrgNotes } from "~/config/fetch";
-import Loader from "~/components/Loader/Loader";
-import { css, StyleSheet } from "aphrodite";
-import colors from "~/config/themes/colors";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import ELNEditor from "~/components/CKEditor/ELNEditor";
+import Loader from "~/components/Loader/Loader";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
+import colors from "~/config/themes/colors";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
+import { fetchUserOrgs, fetchOrgNotes } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
+import { useRouter } from "next/router";
+import { useState, useEffect, Fragment } from "react";
 
 const Notebook = ({ user }) => {
   const router = useRouter();
-  const [currentOrganization, setCurrentOrganization] = useState(null);
-  const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
-  const [organizations, setOrganizations] = useState([]);
   const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
+  const [currentOrganization, setCurrentOrganization] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [editorInstances, setEditorInstances] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [notes, setNotes] = useState([]);
+  const [organizations, setOrganizations] = useState([]);
+  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
-  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(async () => {
     if (user?.id && !currentUser) {
@@ -80,20 +81,15 @@ const Notebook = ({ user }) => {
     }
   }, [router.asPath, currentOrganization]);
 
-  useEffect(() => {
-    if (router.query.noteId !== currentNoteId) {
-      setCurrentNoteId(router.query.noteId);
-    }
-  }, [router.query.noteId]);
-
   const onNoteCreate = (note) => {
+    const noteId = note.id.toString();
     setNeedNoteFetch(true);
     setTitles({
-      [note.id.toString()]: note.title,
+      [noteId]: note.title,
       ...titles,
     });
 
-    const path = getNotePathname({ note, org: currentOrganization });
+    const path = getNotePathname({ noteId, org: currentOrganization });
     router.push(path);
   };
 
@@ -125,31 +121,37 @@ const Notebook = ({ user }) => {
       ) : (
         <Fragment>
           <NotebookSidebar
-            user={currentUser}
-            orgs={organizations}
+            currentNoteId={router.query.noteId}
             currentOrg={currentOrganization}
-            currentNoteId={currentNoteId}
+            editorInstances={editorInstances}
             isPrivateNotebook={isPrivateContext()}
-            notes={notes}
-            titles={titles}
-            onOrgChange={onOrgChange}
-            onNoteCreate={onNoteCreate}
             needNoteFetch={needNoteFetch}
+            notes={notes}
+            onNoteCreate={onNoteCreate}
+            onOrgChange={onOrgChange}
+            orgs={organizations}
+            refetchTemplates={refetchTemplates}
+            setEditorInstances={setEditorInstances}
             setNeedNoteFetch={setNeedNoteFetch}
+            setNotes={setNotes}
+            setRefetchTemplates={setRefetchTemplates}
+            titles={titles}
+            user={currentUser}
           />
           <ELNEditor
-            user={currentUser}
+            currentNoteId={router.query.noteId}
+            currentOrganizationId={currentOrganization?.id}
+            editorInstances={editorInstances}
             notes={notes}
-            titles={titles}
+            setEditorInstances={setEditorInstances}
             setTitles={setTitles}
-            currentNoteId={currentNoteId}
+            titles={titles}
+            user={currentUser}
           />
         </Fragment>
       )}
     </div>
   );
-
-  return null;
 };
 
 const mapStateToProps = (state) => ({

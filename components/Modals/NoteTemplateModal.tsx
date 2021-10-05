@@ -9,10 +9,12 @@ import { Helpers } from "@quantfive/js-web-config";
 import { ReactElement, SyntheticEvent, useEffect, useRef, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
+import { getNotePathname } from "~/config/utils/org";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 
 export type NoteTemplateModalProps = {
+  currentOrg: any;
   currentOrganizationId: number;
   isOpen: boolean;
   refetchNotes: any;
@@ -23,13 +25,13 @@ export type NoteTemplateModalProps = {
 };
 
 export default function NoteTemplateModal({
+  currentOrg,
   currentOrganizationId,
   isOpen,
   refetchNotes,
   refetchTemplates,
   setIsOpen,
   setRefetchNotes,
-  setRefetchTemplates,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const editorRef = useRef<any>();
@@ -93,7 +95,8 @@ export default function NoteTemplateModal({
         .then(Helpers.parseJSON)
         .then((data) => {
           setRefetchNotes(!refetchNotes);
-          router.push(`/notebook/${router.query.orgName}/${data.note}`);
+          const path = getNotePathname({ noteId: data.note, org: currentOrg });
+          router.push(path);
         });
 
     e && e.preventDefault();

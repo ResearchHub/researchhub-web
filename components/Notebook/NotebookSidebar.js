@@ -1,14 +1,15 @@
-import icons from "~/config/themes/icons";
-import { useEffect, useState } from "react";
-import { breakpoints } from "~/config/themes/screen";
-import { css, StyleSheet } from "aphrodite";
-import dynamic from "next/dynamic";
-import colors from "~/config/themes/colors";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
 import Link from "next/link";
+import ResearchHubPopover from "~/components/ResearchHubPopover";
+import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
+import colors from "~/config/themes/colors";
+import dynamic from "next/dynamic";
+import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
-import { useRouter } from "next/router";
+import { css, StyleSheet } from "aphrodite";
 import { getNotePathname } from "~/config/utils/org";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -17,17 +18,21 @@ const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
 const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
 const NotebookSidebar = ({
-  user,
-  orgs,
-  notes,
-  titles,
   currentOrg,
+  editorInstances,
   isPrivateNotebook,
-  onOrgChange,
-  onNoteCreate,
   needNoteFetch,
+  notes,
+  onNoteCreate,
+  onOrgChange,
+  orgs,
+  refetchTemplates,
+  setEditorInstances,
   setNeedNoteFetch,
-  currentNoteId,
+  setNotes,
+  setRefetchTemplates,
+  titles,
+  user,
 }) => {
   const router = useRouter();
 
@@ -73,11 +78,13 @@ const NotebookSidebar = ({
       />
       <NoteTemplateModal
         currentOrganizationId={isPrivateNotebook ? 0 : currentOrg.id}
+        currentOrg={currentOrg}
         isOpen={isNoteTemplateModalOpen}
-        setIsOpen={setIsNoteTemplateModalOpen}
-        user={user}
         refetchNotes={needNoteFetch}
+        refetchTemplates={refetchTemplates}
+        setIsOpen={setIsNoteTemplateModalOpen}
         setRefetchNotes={setNeedNoteFetch}
+        user={user}
       />
       <div>
         <ResearchHubPopover
@@ -186,24 +193,29 @@ const NotebookSidebar = ({
       </div>
       {!hideNotes && (
         <div>
-          {notes.map((note) => (
-            <Link
-              href={{
-                pathname: getNotePathname({ note, org: currentOrg }),
-              }}
-              key={note.id.toString()}
-            >
-              <a
-                className={css(
-                  styles.sidebarSectionContent,
-                  note.id.toString() === currentNoteId && styles.active
-                )}
-              >
-                <div className={css(styles.noteIcon)}>{icons.paper}</div>
-                {titles[note.id.toString()]}
-              </a>
-            </Link>
-          ))}
+          {notes.map(note => {
+            const noteId = note.id.toString();
+            const editorInstance = editorInstances.find(editor =>
+              noteId === editor.config._config.collaboration.channelId
+            );
+            return (
+              <SidebarSectionContent
+                currentNoteId={router.query.noteId}
+                currentOrg={currentOrg}
+                editorInstances={editorInstances}
+                key={noteId}
+                noteBody={editorInstance?.getData() ?? ""}
+                noteId={noteId}
+                notes={notes}
+                pathname={getNotePathname({ noteId, org: currentOrg })}
+                refetchTemplates={refetchTemplates}
+                setEditorInstances={setEditorInstances}
+                setNotes={setNotes}
+                setRefetchTemplates={setRefetchTemplates}
+                title={titles[noteId]}
+              />
+            );
+          })}
         </div>
       )}
       <div className={css(styles.sidebarButtonsContainer)}>
