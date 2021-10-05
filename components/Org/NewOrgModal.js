@@ -17,7 +17,14 @@ const NewOrgModal = ({
 }) => {
   const [orgName, setOrgName] = useState("");
   const [flowStep, setFlowStep] = useState("ORG_CREATE");
-  const [org, setOrg] = useState(org);
+  const [org, setOrg] = useState(null);
+
+  const handleCloseModal = () => {
+    setOrg(null);
+    setFlowStep("ORG_CREATE");
+    setOrgName("");
+    closeModal();
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
