@@ -45,7 +45,7 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
 
   return (
     <div className={css(styles.sidebar)}>
-      {isPrivateNotebook &&
+      {!isPrivateNotebook &&
         <ManageOrgModal
           org={currentOrg}
           isOpen={showManageOrgModal}
