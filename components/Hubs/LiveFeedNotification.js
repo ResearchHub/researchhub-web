@@ -23,7 +23,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { getNestedValue } from "~/config/utils/misc";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 import { doesNotExist } from "~/config/utils/nullchecks";
 
 const getNotifMetadata = (notification) => {
@@ -167,7 +167,7 @@ class LiveFeedNotification extends Component {
     let route;
     let slug = notification.slug
       ? notification.slug
-      : formatPaperSlug(
+      : buildSlug(
           notification.paper_official_title
             ? notification.paper_official_title
             : notification.paper_title

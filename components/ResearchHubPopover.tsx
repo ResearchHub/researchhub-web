@@ -12,6 +12,7 @@ type Props = {
   setIsPopoverOpen: (flag: boolean) => void;
   targetContent: ReactElement;
   withArrow: boolean;
+  containerStyle: any;
 };
 
 export default function ResearchHubPopover({

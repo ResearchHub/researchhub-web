@@ -51,6 +51,7 @@ class FormInput extends Component {
       autoComplete,
       subtitle,
       onClick,
+      onKeyDown,
     } = this.props;
 
     return (
@@ -103,6 +104,7 @@ class FormInput extends Component {
           )}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
+          onKeyDown={onKeyDown}
           autoCapitalize="off"
           autoComplete={autoComplete}
         />

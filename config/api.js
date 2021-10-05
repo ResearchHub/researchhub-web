@@ -1,7 +1,11 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import { isNullOrUndefined, doesNotExist, nullthrows } from "~/config/utils/nullchecks";
+import {
+  isNullOrUndefined,
+  doesNotExist,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -84,15 +88,34 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
-    ORGANIZATION: ({ userId }) => {
+    ORGANIZATION: ({ userId, orgId }) => {
       let url;
       if (userId) {
         url = `${BASE_URL}organization/${userId}/get_user_organizations/`;
       } else {
-        url = `${BASE_URL}organization/`;
+        url = `${BASE_URL}organization/${orgId ? orgId + "/" : ""}`;
       }
       return url;
     },
+    ORGANIZATION_USERS: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/get_organization_users`;
+    },
+    REMOVE_USER_FROM_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/remove_user/`;
+    },
+    REMOVE_INVITED_USER_FROM_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/remove_invited_user/`;
+    },
+    INVITE_TO_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/invite_user/`;
+    },
+    ACCEPT_ORG_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/organization/${token}/accept_invite/`;
+    },
+    ORG_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}organization/${token}/get_organization_by_key/`;
+    },
+
     USER: ({
       userId,
       authorId,

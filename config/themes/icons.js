@@ -619,7 +619,7 @@ export const CloseIcon = ({ onClick, width = 14, height = 14, withAnimation = tr
 
 export const DownIcon = ({ onClick, withAnimation = true, overrideStyle = null }) => {
   return (
-    <span onClick={onClick} className={css(styles.iconWrapper, withAnimation && styles.withAnimation, overrideStyle && overrideStyle)}>
+    <span onClick={onClick || undefined} className={css(styles.iconWrapper, withAnimation && styles.withAnimation, overrideStyle && overrideStyle)}>
       {icons.chevronDown}
     </span>
   );

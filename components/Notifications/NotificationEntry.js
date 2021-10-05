@@ -20,7 +20,7 @@ import { NotificationActions } from "~/redux/notification";
 import colors from "../../config/themes/colors";
 import { doesNotExist } from "~/config/utils/nullchecks";
 import { getNestedValue } from "~/config/utils/misc";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 import { timeAgoStamp } from "~/config/utils/dates";
 import { reviewBounty } from "~/config/fetch";
 
@@ -72,7 +72,7 @@ const NotificationEntry = (props) => {
     const paperId = id;
     const title = slug
       ? slug
-      : formatPaperSlug(
+      : buildSlug(
           notification.paper_official_title
             ? notification.paper_official_title
             : notification.paper_title
@@ -144,7 +144,7 @@ const NotificationEntry = (props) => {
     const authorId = getNestedValue(created_by, ["author_profile", "id"]);
     const title = slug
       ? slug
-      : formatPaperSlug(
+      : buildSlug(
           paper_official_title ? paper_official_title : paper_title
         );
     const paperTip = notification.paper_title
