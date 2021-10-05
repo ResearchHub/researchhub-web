@@ -1,9 +1,6 @@
 import API from "~/config/api";
-import Link from "next/link";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
-import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
@@ -11,10 +8,7 @@ import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined, isEmpty } from "~/config/utils/nullchecks";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-
-const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplateModal"));
-const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
-const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
+import OrgSidebar from "~/components/Org/OrgSidebar";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -44,16 +38,15 @@ export const ELNEditor = ({ user }) => {
   const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   // const [currentOrgName, setCurrentOrgName] = useState(null);
-  const [showNewOrgModal, setShowNewOrgModal] = useState(false);
-  const [showManageOrgModal, setShowManageOrgModal] = useState(false);
+
   const [editorLoaded, setEditorLoaded] = useState(false);
-  const [hideNotes, setHideNotes] = useState(false);
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  
+   
   const [notes, setNotes] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [refetchNotes, setRefetchNotes] = useState(false);
   const [titles, setTitles] = useState({});
-  const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
+  
 
   useEffect(() => {
     editorRef.current = {
@@ -68,19 +61,6 @@ export const ELNEditor = ({ user }) => {
     };
   }, []);
 
-  useEffect(() => {
-    console.log("remounting");
-    fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((data) => {
-        setOrganizations(data);
-        setCurrentOrganizationId(getCurrentOrganizationId(data));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
 
   useEffect(() => {
     if (!isNullOrUndefined(currentOrganizationId)) {
@@ -138,29 +118,6 @@ export const ELNEditor = ({ user }) => {
       return orgs.find(org => org.slug === orgName);
     }
   };  
-
-  const toggleSidebarSection = () => {
-    setHideNotes(!hideNotes);
-  };
-
-  const handleCreateNewNote = () => {
-    const params = {
-      organization: currentOrganizationId,
-      title: "Untitled",
-    };
-
-    fetch(API.NOTE({}), API.POST_CONFIG(params))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((note) => {
-        setRefetchNotes(!refetchNotes);
-        setTitles({
-          [note.id.toString()]: note.title,
-          ...titles
-        });
-        router.push(`/notebook/${router.query.orgName}/${note.id}`);
-      });
-  };
 
   const handleInput = (editor) => {
     const updatedTitles = {};
@@ -261,148 +218,19 @@ export const ELNEditor = ({ user }) => {
     );
   });
 
-  // let organizationName;
-  // let organizationImage;
-  // if (currentOrganizationId === 0) {
-  //   organizationName = "Personal Notes";
-  //   organizationImage = user.author_profile.profile_image;
-  // } else if (currentOrganizationId > 0) {
-  //   for (const org of organizations) {
-  //     if (org.id === currentOrganizationId) {
-  //       organizationName = org.name;
-  //       organizationImage = org.cover_image;
-  //     }
-  //   }
-  // }
-
-  const orgName = currentOrganizationId === 0 ? "Personal Notes" : currentOrganization?.name;
-  const orgImg = currentOrganizationId === 0 ? user.author_profile.profile_image : currentOrganization?.cover_image;
-
   return (
     <div className={css(styles.container)}>
-      <NoteTemplateModal
-        currentOrganizationId={currentOrganizationId}
-        isOpen={isNoteTemplateModalOpen}
-        setIsOpen={setIsNoteTemplateModalOpen}
-        user={user}
-        refetchNotes={refetchNotes}
-        setRefetchNotes={setRefetchNotes}
-      />
-      <NewOrgModal isOpen={showNewOrgModal} closeModal={() => setShowNewOrgModal(false)} />
-      {currentOrganizationId !== 0 /* not personal */ &&
-        <ManageOrgModal
-          org={currentOrganization}
-          isOpen={showManageOrgModal}
-          closeModal={() => setShowManageOrgModal(false)}
-          setCurrentOrganization={setCurrentOrganization}
-        />
-      }
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
       </div>
-      <div className={css(styles.sidebar)}>
-        <div>
-          <ResearchHubPopover
-            isOpen={isPopoverOpen}
-            popoverContent={
-              <div className={css(styles.popoverBodyContent)}>
-                <Link href={`/notebook/personal/200`}>
-                  <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                    <img className={css(styles.popoverBodyItemImage)} draggable="false" src={user.author_profile.profile_image} />
-                    <div className={css(styles.popoverBodyItemTitle)}>Personal Notes</div>
-                  </a>
-                </Link>
-                {organizations.map(org => (
-                  <Link href={`/notebook/${org.slug}/200`} key={org.id.toString()}>
-                    <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                      <img className={css(styles.popoverBodyItemImage)} draggable="false" src={org.cover_image} />
-                      <div className={css(styles.popoverBodyItemText)}>
-                        <div className={css(styles.popoverBodyItemTitle)}>{org.name}</div>
-                        <div className={css(styles.popoverBodyItemSubtitle)}>{"{placeholder} member"}</div>
-                      </div>
-                    </a>
-                  </Link>
-                ))}
-                <div className={css(styles.newOrgButton)} onClick={() => setShowNewOrgModal(true)}>+ New Org</div>
-              </div>
-            }
-            positions={["bottom"]}
-            setIsPopoverOpen={setIsPopoverOpen}
-            targetContent={
-              <div className={css(styles.popoverTarget)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                <img className={css(styles.popoverBodyItemImage)} draggable="false" src={orgImg} />
-                {orgName}
-                <span className={css(styles.sortIcon)}>
-                  {icons.sort}
-                </span>
-              </div>
-            }
-          />
-        </div>
-        {currentOrganizationId !== 0 /* not personal */ &&
-          <div className={css(styles.sidebarButtonsContainer, styles.orgButtonsContainer)}>
-            <div
-              className={css(styles.sidebarButton, styles.orgButton)}
-              onClick={() => setShowManageOrgModal(true)}
-            >
-              {icons.cog}
-              <span className={css(styles.sidebarButtonText, styles.orgButtonText)}>
-                Settings & Members
-              </span>
-            </div>
-          </div>
-        }
-        <div
-          className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
-          onClick={toggleSidebarSection}
-        >
-          Notes
-          <span className={css(styles.chevronIcon)}>
-            {hideNotes ? icons.chevronDown : icons.chevronUp}
-          </span>
-        </div>
-        {!hideNotes && (
-          <div>
-            {notes.map(note => (
-              <Link href={`/notebook/${router.query.orgName}/${note.id}`} key={note.id.toString()}>
-                <a
-                  className={css(
-                    styles.sidebarSectionContent,
-                    note.id.toString() === currentNoteId && styles.active,
-                  )}
-                >
-                  <div className={css(styles.noteIcon)}>{icons.paper}</div>
-                  {titles[note.id.toString()]}
-                </a>
-              </Link>
-            ))}
-          </div>
-        )}
-        <div className={css(styles.sidebarButtonsContainer)}>
-          <div
-            className={css(styles.sidebarButton)}
-            onClick={() => setIsNoteTemplateModalOpen(true)}
-          >
-            {icons.shapes}
-            <span className={css(styles.sidebarButtonText)}>
-              Templates
-            </span>
-          </div>
-          <div className={css(styles.sidebarButton)}>
-            {icons.fileImport}
-            <span className={css(styles.sidebarButtonText)}>
-              Import
-            </span>
-          </div>
-        </div>
-        <div
-          className={css(styles.sidebarNewNote)}
-          onClick={handleCreateNewNote}
-        >
-          <div className={css(styles.actionButton)}>{icons.plus}</div>
-          <div className={css(styles.newNoteText)}>Create New Note</div>
-        </div>
-      </div>
+      <OrgSidebar
+        orgs={organizations}
+        currentOrg={currentOrganization}
+        isPrivateNotebook={false}
+        setCurrentOrg={setCurrentOrganization}
+        refetchNotes={refetchNotes}
+        setRefetchNotes={setRefetchNotes}
+      />
       <div className={css(styles.editorContainer)}>
         {editorLoaded && editors}
       </div>
