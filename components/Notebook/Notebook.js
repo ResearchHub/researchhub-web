@@ -9,7 +9,7 @@ import { getNotePathname } from "~/config/utils/org";
 import { useRouter } from "next/router";
 import { useState, useEffect, Fragment } from "react";
 
-const Notebook = ({ user }) => {
+const Notebook = ({ user, isPrivateNotebook }) => {
   const router = useRouter();
   const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
@@ -36,11 +36,11 @@ const Notebook = ({ user }) => {
   }, [user]);
 
   useEffect(async () => {
-    if (needNoteFetch && (currentOrganization || isPrivateContext())) {
+    if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
       let response;
       let notes;
 
-      if (isPrivateContext()) {
+      if (isPrivateNotebook) {
         response = await fetchOrgNotes({ orgId: 0 });
         notes = response;
       } else {
@@ -93,10 +93,6 @@ const Notebook = ({ user }) => {
     router.push(path);
   };
 
-  const isPrivateContext = () => {
-    return currentOrgSlug === "me";
-  };
-
   const onOrgChange = (org, needNoteFetch = false) => {
     setCurrentOrganization(org);
     setNeedNoteFetch(needNoteFetch);
@@ -124,7 +120,7 @@ const Notebook = ({ user }) => {
             currentNoteId={router.query.noteId}
             currentOrg={currentOrganization}
             editorInstances={editorInstances}
-            isPrivateNotebook={isPrivateContext()}
+            isPrivateNotebook={isPrivateNotebook}
             needNoteFetch={needNoteFetch}
             notes={notes}
             onNoteCreate={onNoteCreate}
