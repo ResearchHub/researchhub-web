@@ -22,7 +22,6 @@ const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurre
     }
   }, [org]);
 
-
   const modalBody = (
     <div className={css(styles.body)}>
       {isEmpty(org)
