@@ -27,7 +27,7 @@ const saveData = (editor, noteId) => {
     .then(Helpers.parseJSON);
 };
 
-export const ELNEditor = ({
+const ELNEditor = ({
   currentNoteId,
   user,
   notes,
