@@ -12,14 +12,6 @@ export const createNewNote = ({ orgId }) => {
   return fetch(API.NOTE({}), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((note) => {
-      setRefetchNotes(!refetchNotes);
-      setTitles({
-        [note.id.toString()]: note.title,
-        ...titles
-      });
-      router.push(`/notebook/${router.query.orgName}/${note.id}`);
-    });
 }
 
 export const fetchOrgNotes = ({ orgId }) => {
