@@ -14,7 +14,7 @@ const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplate
 const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
 const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
-const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, onOrgChange, onNoteCreate, needNoteFetch, setNeedNoteFetch, currentNoteId }) => {
+const NotebookSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, onOrgChange, onNoteCreate, needNoteFetch, setNeedNoteFetch, currentNoteId }) => {
   const router = useRouter();
 
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
@@ -368,4 +368,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OrgSidebar;
+export default NotebookSidebar;

@@ -5,17 +5,12 @@ import { fetchUserOrgs, fetchOrgNotes } from "~/config/fetch";
 import Loader from "~/components/Loader/Loader";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
-import OrgSidebar from "~/components/Org/OrgSidebar";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import ELNEditor from "~/components/CKEditor/ELNEditor";
 import { getNotePathname } from '~/config/utils/org';
 
-/*
-* TODO:
-* Handle 404, 500s
-*/
-
 const Notebook = ({ user, isPrivateNotebook }) => {
-  console.log('isPrivateNotebook', isPrivateNotebook);
+
   const router = useRouter();
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
@@ -120,7 +115,7 @@ const Notebook = ({ user, isPrivateNotebook }) => {
         )
         : (
           <Fragment>
-            <OrgSidebar
+            <NotebookSidebar
               user={currentUser}
               orgs={organizations}
               currentOrg={currentOrganization}

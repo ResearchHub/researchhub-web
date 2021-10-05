@@ -8,7 +8,6 @@ import { css, StyleSheet } from "aphrodite";
 import { isNullOrUndefined, isEmpty } from "~/config/utils/nullchecks";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import OrgSidebar from "~/components/Org/OrgSidebar";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -36,9 +35,6 @@ export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => 
 
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const [editorLoaded, setEditorLoaded] = useState(false); 
-
-console.log('currentNoteId', currentNoteId);  
-console.log('notes', notes);  
 
   useEffect(() => {
     editorRef.current = {
