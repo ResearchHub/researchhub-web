@@ -129,8 +129,7 @@ const Navbar = (props) => {
     {
       label: "Help",
       route: "",
-      link:
-        "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
       icon: "help",
       className: "lessImportantTab",
     },
@@ -180,8 +179,7 @@ const Navbar = (props) => {
       {
         label: "Help",
         route: "",
-        link:
-          "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
         icon: "help",
       },
       {
@@ -198,7 +196,7 @@ const Navbar = (props) => {
           href: "/user/[authorId]/[tabName]",
         },
         icon: "user",
-      }, 
+      },
       {
         label: "Settings",
         route: {
@@ -544,7 +542,7 @@ const Navbar = (props) => {
                         </span>
                         Notebook
                       </div>
-                    </Link>                    
+                    </Link>
                     <Link href={"/user/settings"} as={`/user/settings`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
@@ -1029,7 +1027,4 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

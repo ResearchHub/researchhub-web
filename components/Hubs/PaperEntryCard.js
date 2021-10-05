@@ -1123,7 +1123,4 @@ const mapDispatchToProps = {
   openPaperPDFModal: ModalActions.openPaperPDFModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperEntryCard);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperEntryCard);

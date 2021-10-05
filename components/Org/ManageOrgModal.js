@@ -10,8 +10,13 @@ import { isEmpty } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 
-const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurrentOrganization }) => {
-
+const ManageOrgModal = ({
+  org,
+  currentUser,
+  closeModal,
+  isOpen = false,
+  setCurrentOrganization,
+}) => {
   const [_org, _setOrg] = useState(org);
   const [showLoader, setShowLoader] = useState(true);
 
@@ -24,30 +29,27 @@ const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurre
 
   const modalBody = (
     <div className={css(styles.body)}>
-      {isEmpty(org)
-        ? <Loader
-            key={"loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
-        : (
-            <Fragment>
-              <div className={css(styles.section)}>
-                <ManageOrgDetails org={_org} setCurrentOrganization={setCurrentOrganization} />  
-              </div>
-              <div className={css(styles.section)}>
-                <ManageOrgUsers org={_org} />
-              </div>
-              <div>
-                <div className={css(styles.subheader)}>Danger Zone</div>
-                [Placeholder: Remove account]
-              </div>
-            </Fragment>        
-          )
-      }
+      {isEmpty(org) ? (
+        <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
+      ) : (
+        <Fragment>
+          <div className={css(styles.section)}>
+            <ManageOrgDetails
+              org={_org}
+              setCurrentOrganization={setCurrentOrganization}
+            />
+          </div>
+          <div className={css(styles.section)}>
+            <ManageOrgUsers org={_org} />
+          </div>
+          <div>
+            <div className={css(styles.subheader)}>Danger Zone</div>
+            [Placeholder: Remove account]
+          </div>
+        </Fragment>
+      )}
     </div>
-  )
+  );
 
   return (
     <BaseModal
@@ -55,9 +57,9 @@ const ManageOrgModal = ({ org, currentUser, closeModal, isOpen = false, setCurre
       closeModal={closeModal}
       isOpen={isOpen}
       title={"Settings & Members"}
-    />        
-  )
-}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   body: {
@@ -74,16 +76,12 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 20,
     color: "red",
-  },  
+  },
 });
 
 const mapStateToProps = (state) => ({
   currentUser: state.auth.user,
-})
-const mapDispatchToProps = {
-}
+});
+const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ManageOrgModal);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageOrgModal);

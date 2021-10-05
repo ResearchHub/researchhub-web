@@ -6,8 +6,12 @@ import { updateOrgDetails } from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 
-const ManageOrgDetails = ({ org, setMessage, showMessage, setCurrentOrganization }) => {
-
+const ManageOrgDetails = ({
+  org,
+  setMessage,
+  showMessage,
+  setCurrentOrganization,
+}) => {
   const [updatedOrg, setUpdatedOrg] = useState(org);
   const [orgName, setOrgName] = useState(org.name);
 
@@ -15,20 +19,21 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, setCurrentOrganization
     e.preventDefault();
 
     try {
-      const updatedOrg = await updateOrgDetails({ orgId: org.id, updatedName: orgName });
+      const updatedOrg = await updateOrgDetails({
+        orgId: org.id,
+        updatedName: orgName,
+      });
       setUpdatedOrg(updatedOrg);
       showMessage({ show: true, error: false });
 
-      if (typeof(setCurrentOrganization) === "function") {
+      if (typeof setCurrentOrganization === "function") {
         setCurrentOrganization(updatedOrg);
       }
-    }
-    catch(err) {
+    } catch (err) {
       setMessage("Failed to update org.");
       showMessage({ show: true, error: true });
     }
-  }
-
+  };
 
   return (
     <form className={css(styles.form)} onSubmit={(e) => handleSubmit(e)}>
@@ -47,11 +52,10 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, setCurrentOrganization
         label="Update Organization"
         rippleClass={styles.buttonWrapper}
         size={"small"}
-      >
-      </Button>
-    </form>    
-  )
-}
+      ></Button>
+    </form>
+  );
+};
 
 const styles = StyleSheet.create({
   button: {
@@ -60,23 +64,20 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   inputContainer: {
-    width: "100%"
+    width: "100%",
   },
   buttonWrapper: {
     display: "flex",
   },
   inputStyle: {
-    textAlign: "left"
+    textAlign: "left",
   },
 });
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({});
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
-}
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ManageOrgDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageOrgDetails);
