@@ -49,6 +49,18 @@ const Notebook = ({ user, isPrivateNotebook }) => {
     }
   }, [needNoteFetch, currentOrganization])
 
+  useEffect(() => {
+    if (router.query.orgSlug) {
+      const currentOrg = getCurrentOrgFromRouter(organizations);
+      if (!currentOrg) {
+        return console.error("Org could not be found in user's orgs");
+      }
+
+      setCurrentOrganization(currentOrg);
+      setNeedNoteFetch(true);
+    }
+  }, [router.asPath])
+
   const onNoteCreate = (note) => {
     setNeedNoteFetch(true);
     setTitles({
@@ -56,6 +68,11 @@ const Notebook = ({ user, isPrivateNotebook }) => {
       ...titles
     });
     router.push(`/notebook/${currentOrganization.slug}/${note.id}`);
+  }
+
+  const onOrgChange = (org, needNoteFetch = false) => {
+    setCurrentOrganization(org);
+    setNeedNoteFetch(needNoteFetch);
   }
 
   const getCurrentOrgFromRouter = (orgs) => {
@@ -84,9 +101,9 @@ const Notebook = ({ user, isPrivateNotebook }) => {
               currentOrg={currentOrganization}
               currentNoteId={currentNoteId}
               isPrivateNotebook={isPrivateNotebook}
-              setCurrentOrg={setCurrentOrganization}
               notes={notes}
               titles={titles}
+              onOrgChange={onOrgChange}
               onNoteCreate={onNoteCreate}
               needNoteFetch={needNoteFetch}
               setNeedNoteFetch={setNeedNoteFetch}

@@ -13,7 +13,7 @@ const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplate
 const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
 const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
-const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, setCurrentOrg, onNoteCreate, needNoteFetch, setNeedNoteFetch, currentNoteId }) => {
+const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, onOrgChange, onNoteCreate, needNoteFetch, setNeedNoteFetch, currentNoteId }) => {
   const router = useRouter();
 
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
@@ -50,7 +50,7 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
           org={currentOrg}
           isOpen={showManageOrgModal}
           closeModal={() => setShowManageOrgModal(false)}
-          setCurrentOrganization={setCurrentOrg}
+          setCurrentOrganization={onOrgChange}
         />
       }
       <NewOrgModal isOpen={showNewOrgModal} closeModal={() => setShowNewOrgModal(false)} />
@@ -75,8 +75,7 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
               </Link>
               {orgs.map(org => (
                 <Link href={{
-                  pathname: `${org.slug}/notebook/`,
-                  query: { orgSlug: org.slug }
+                  pathname: `/${org.slug}/notebook/`,
                 }} key={org.id.toString()}>
                   <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
                     <img className={css(styles.popoverBodyItemImage)} draggable="false" src={org.cover_image} />
