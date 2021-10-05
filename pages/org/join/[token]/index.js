@@ -31,7 +31,7 @@ const Index = ({ auth, showMessage, setMessage }) => {
       await acceptInviteToOrg({ token: router.query.token });
       showMessage({ show: true, error: false });
 
-      router.push(`/org/${org.slug}/`);
+      router.push(`/${org.slug}/notebook`);
     } catch (err) {
       setIsLoading(false);
 

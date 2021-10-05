@@ -9,11 +9,12 @@ import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import ELNEditor from "~/components/CKEditor/ELNEditor";
 import { getNotePathname } from "~/config/utils/org";
 
-const Notebook = ({ user, isPrivateNotebook }) => {
+const Notebook = ({ user }) => {
   const router = useRouter();
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const [organizations, setOrganizations] = useState([]);
+  const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
   const [isLoading, setIsLoading] = useState(true);
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -23,7 +24,7 @@ const Notebook = ({ user, isPrivateNotebook }) => {
   useEffect(async () => {
     if (user?.id && !currentUser) {
       const userOrgs = await fetchUserOrgs({ user });
-      const currOrg = await getCurrentOrgFromRouter(userOrgs);
+      const currOrg = getCurrentOrgFromRouter(userOrgs);
 
       setCurrentUser(user);
       setOrganizations(userOrgs);
@@ -34,11 +35,11 @@ const Notebook = ({ user, isPrivateNotebook }) => {
   }, [user]);
 
   useEffect(async () => {
-    if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
+    if (needNoteFetch && (currentOrganization || isPrivateContext())) {
       let response;
       let notes;
 
-      if (isPrivateNotebook) {
+      if (isPrivateContext()) {
         response = await fetchOrgNotes({});
         notes = response.results;
       } else {
@@ -61,18 +62,21 @@ const Notebook = ({ user, isPrivateNotebook }) => {
   }, [needNoteFetch, currentOrganization]);
 
   useEffect(() => {
-    const orgChanged =
-      currentOrganization &&
-      router.query.orgSlug &&
-      router.query.orgSlug !== currentOrganization.slug;
-    if (orgChanged) {
-      const currentOrg = getCurrentOrgFromRouter(organizations);
-      if (!currentOrg) {
-        return console.error("Org could not be found in user's orgs");
-      }
+    if (router.query.orgSlug !== currentOrgSlug) {
+      if (router.query.orgSlug === "me") {
+        setCurrentOrganization(null);
+        setCurrentOrgSlug("me");
+        setNeedNoteFetch(true);
+      } else {
+        const currentOrg = getCurrentOrgFromRouter(organizations);
+        if (!currentOrg) {
+          return console.error("Org could not be found in user's orgs");
+        }
 
-      setCurrentOrganization(currentOrg);
-      setNeedNoteFetch(true);
+        setCurrentOrganization(currentOrg);
+        setCurrentOrgSlug(router.query.orgSlug);
+        setNeedNoteFetch(true);
+      }
     }
   }, [router.asPath, currentOrganization]);
 
@@ -91,6 +95,10 @@ const Notebook = ({ user, isPrivateNotebook }) => {
 
     const path = getNotePathname({ note, org: currentOrganization });
     router.push(path);
+  };
+
+  const isPrivateContext = () => {
+    return currentOrgSlug === "me";
   };
 
   const onOrgChange = (org, needNoteFetch = false) => {
@@ -121,7 +129,7 @@ const Notebook = ({ user, isPrivateNotebook }) => {
             orgs={organizations}
             currentOrg={currentOrganization}
             currentNoteId={currentNoteId}
-            isPrivateNotebook={isPrivateNotebook}
+            isPrivateNotebook={isPrivateContext()}
             notes={notes}
             titles={titles}
             onOrgChange={onOrgChange}
