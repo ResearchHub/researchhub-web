@@ -15,18 +15,20 @@ import OrgSidebar from "~/components/Org/OrgSidebar";
 const Notebook = ({ user, isPrivateNotebook }) => {
   const router = useRouter();
   const [currentOrganization, setCurrentOrganization] = useState(null);
-  const [currentNoteId, setCurrentNoteId] = useState(router.query.id);
+  const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
   const [organizations, setOrganizations] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [notes, setNotes] = useState([]);
   const [titles, setTitles] = useState({});
+  const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(async () => {
-    if (user?.id) {
+    if (user?.id && !currentUser) {
       const userOrgs = await fetchUserOrgs({ user });
       const currOrg = await getCurrentOrgFromRouter(userOrgs);
 
+      setCurrentUser(user);
       setOrganizations(userOrgs);
       setCurrentOrganization(currOrg);
       setNeedNoteFetch(true);
@@ -50,7 +52,8 @@ const Notebook = ({ user, isPrivateNotebook }) => {
   }, [needNoteFetch, currentOrganization])
 
   useEffect(() => {
-    if (router.query.orgSlug) {
+    const orgChanged = currentOrganization && router.query.orgSlug && router.query.orgSlug !== currentOrganization.slug
+    if (orgChanged) {
       const currentOrg = getCurrentOrgFromRouter(organizations);
       if (!currentOrg) {
         return console.error("Org could not be found in user's orgs");
@@ -59,7 +62,13 @@ const Notebook = ({ user, isPrivateNotebook }) => {
       setCurrentOrganization(currentOrg);
       setNeedNoteFetch(true);
     }
-  }, [router.asPath])
+  }, [router.asPath, currentOrganization])
+
+  useEffect(() => {
+    if (router.query.noteId !== currentNoteId) {
+      setCurrentNoteId(router.query.noteId);
+    }
+  }, [router.query.noteId]);
 
   const onNoteCreate = (note) => {
     setNeedNoteFetch(true);
@@ -96,7 +105,7 @@ const Notebook = ({ user, isPrivateNotebook }) => {
         : (
           <Fragment>
             <OrgSidebar
-              user={user}
+              user={currentUser}
               orgs={organizations}
               currentOrg={currentOrganization}
               currentNoteId={currentNoteId}
