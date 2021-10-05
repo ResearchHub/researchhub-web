@@ -7,14 +7,28 @@ import colors from "~/config/themes/colors";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import Link from "next/link";
 import { createNewNote } from "~/config/fetch";
-import { useRouter } from 'next/router';
-import { getNotePathname } from '~/config/utils/org';
+import { useRouter } from "next/router";
+import { getNotePathname } from "~/config/utils/org";
 
-const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplateModal"));
+const NoteTemplateModal = dynamic(() =>
+  import("~/components/Modals/NoteTemplateModal")
+);
 const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
 const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
-const NotebookSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, onOrgChange, onNoteCreate, needNoteFetch, setNeedNoteFetch, currentNoteId }) => {
+const NotebookSidebar = ({
+  user,
+  orgs,
+  notes,
+  titles,
+  currentOrg,
+  isPrivateNotebook,
+  onOrgChange,
+  onNoteCreate,
+  needNoteFetch,
+  setNeedNoteFetch,
+  currentNoteId,
+}) => {
   const router = useRouter();
 
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
@@ -31,28 +45,32 @@ const NotebookSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNoteb
     let note;
     if (isPrivateNotebook) {
       note = await createNewNote({});
-    }
-    else {
+    } else {
       note = await createNewNote({ orgId: currentOrg.id });
     }
 
     return onNoteCreate(note);
   };
 
-  const orgName = isPrivateNotebook ? "Personal Notes" : currentOrg.name ;
-  const orgImg = isPrivateNotebook ? user.author_profile.profile_image : currentOrg;
+  const orgName = isPrivateNotebook ? "Personal Notes" : currentOrg.name;
+  const orgImg = isPrivateNotebook
+    ? user.author_profile.profile_image
+    : currentOrg;
 
   return (
     <div className={css(styles.sidebar)}>
-      {!isPrivateNotebook &&
+      {!isPrivateNotebook && (
         <ManageOrgModal
           org={currentOrg}
           isOpen={showManageOrgModal}
           closeModal={() => setShowManageOrgModal(false)}
           setCurrentOrganization={onOrgChange}
         />
-      }
-      <NewOrgModal isOpen={showNewOrgModal} closeModal={() => setShowNewOrgModal(false)} />
+      )}
+      <NewOrgModal
+        isOpen={showNewOrgModal}
+        closeModal={() => setShowNewOrgModal(false)}
+      />
       <NoteTemplateModal
         currentOrganizationId={isPrivateNotebook ? 0 : currentOrg.id}
         isOpen={isNoteTemplateModalOpen}
@@ -60,62 +78,105 @@ const NotebookSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNoteb
         user={user}
         refetchNotes={needNoteFetch}
         setRefetchNotes={setNeedNoteFetch}
-      />      
+      />
       <div>
         <ResearchHubPopover
           isOpen={isPopoverOpen}
           popoverContent={
             <div className={css(styles.popoverBodyContent)}>
               <Link href={`me/notebook`}>
-                <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                  <img className={css(styles.popoverBodyItemImage)} draggable="false" src={user.author_profile.profile_image} />
-                  <div className={css(styles.popoverBodyItemTitle)}>Personal Notes</div>
+                <a
+                  className={css(styles.popoverBodyItem)}
+                  onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                >
+                  <img
+                    className={css(styles.popoverBodyItemImage)}
+                    draggable="false"
+                    src={user.author_profile.profile_image}
+                  />
+                  <div className={css(styles.popoverBodyItemTitle)}>
+                    Personal Notes
+                  </div>
                 </a>
               </Link>
-              {orgs.map(org => (
-                <Link href={{
-                  pathname: `/${org.slug}/notebook/`,
-                }} key={org.id.toString()}>
-                  <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-                    <img className={css(styles.popoverBodyItemImage)} draggable="false" src={org.cover_image} />
+              {orgs.map((org) => (
+                <Link
+                  href={{
+                    pathname: `/${org.slug}/notebook/`,
+                  }}
+                  key={org.id.toString()}
+                >
+                  <a
+                    className={css(styles.popoverBodyItem)}
+                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                  >
+                    <img
+                      className={css(styles.popoverBodyItemImage)}
+                      draggable="false"
+                      src={org.cover_image}
+                    />
                     <div className={css(styles.popoverBodyItemText)}>
-                      <div className={css(styles.popoverBodyItemTitle)}>{org.name}</div>
-                      <div className={css(styles.popoverBodyItemSubtitle)}>{"{count} members"}</div>
+                      <div className={css(styles.popoverBodyItemTitle)}>
+                        {org.name}
+                      </div>
+                      <div className={css(styles.popoverBodyItemSubtitle)}>
+                        {"{count} members"}
+                      </div>
                     </div>
                   </a>
                 </Link>
               ))}
-              <div className={css(styles.newOrgButton)} onClick={() => setShowNewOrgModal(true)}>+ New Org</div>
+              <div
+                className={css(styles.newOrgButton)}
+                onClick={() => setShowNewOrgModal(true)}
+              >
+                + New Org
+              </div>
             </div>
           }
           positions={["bottom"]}
           setIsPopoverOpen={setIsPopoverOpen}
           targetContent={
-            <div className={css(styles.popoverTarget)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
-              <img className={css(styles.popoverBodyItemImage)} draggable="false" src={orgImg} />
+            <div
+              className={css(styles.popoverTarget)}
+              onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+            >
+              <img
+                className={css(styles.popoverBodyItemImage)}
+                draggable="false"
+                src={orgImg}
+              />
               {orgName}
-              <span className={css(styles.sortIcon)}>
-                {icons.sort}
-              </span>
+              <span className={css(styles.sortIcon)}>{icons.sort}</span>
             </div>
           }
         />
       </div>
-      {!isPrivateNotebook &&
-        <div className={css(styles.sidebarButtonsContainer, styles.orgButtonsContainer)}>
+      {!isPrivateNotebook && (
+        <div
+          className={css(
+            styles.sidebarButtonsContainer,
+            styles.orgButtonsContainer
+          )}
+        >
           <div
             className={css(styles.sidebarButton, styles.orgButton)}
             onClick={() => setShowManageOrgModal(true)}
           >
             {icons.cog}
-            <span className={css(styles.sidebarButtonText, styles.orgButtonText)}>
+            <span
+              className={css(styles.sidebarButtonText, styles.orgButtonText)}
+            >
               Settings & Members
             </span>
           </div>
         </div>
-      }
+      )}
       <div
-        className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
+        className={css(
+          styles.sidebarSection,
+          hideNotes && styles.showBottomBorder
+        )}
         onClick={toggleSidebarSection}
       >
         Notes
@@ -125,14 +186,17 @@ const NotebookSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNoteb
       </div>
       {!hideNotes && (
         <div>
-          {notes.map(note => (
-            <Link href={{
-              pathname: getNotePathname({ note, org: currentOrg }),
-            }} key={note.id.toString()}>
+          {notes.map((note) => (
+            <Link
+              href={{
+                pathname: getNotePathname({ note, org: currentOrg }),
+              }}
+              key={note.id.toString()}
+            >
               <a
                 className={css(
                   styles.sidebarSectionContent,
-                  note.id.toString() === currentNoteId && styles.active,
+                  note.id.toString() === currentNoteId && styles.active
                 )}
               >
                 <div className={css(styles.noteIcon)}>{icons.paper}</div>
@@ -148,31 +212,24 @@ const NotebookSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNoteb
           onClick={() => setIsNoteTemplateModalOpen(true)}
         >
           {icons.shapes}
-          <span className={css(styles.sidebarButtonText)}>
-            Templates
-          </span>
+          <span className={css(styles.sidebarButtonText)}>Templates</span>
         </div>
         <div className={css(styles.sidebarButton)}>
           {icons.fileImport}
-          <span className={css(styles.sidebarButtonText)}>
-            Import
-          </span>
+          <span className={css(styles.sidebarButtonText)}>Import</span>
         </div>
       </div>
-      <div
-        className={css(styles.sidebarNewNote)}
-        onClick={handleCreateNewNote}
-      >
+      <div className={css(styles.sidebarNewNote)} onClick={handleCreateNewNote}>
         <div className={css(styles.actionButton)}>{icons.plus}</div>
         <div className={css(styles.newNoteText)}>Create New Note</div>
       </div>
-    </div>  
-  )
-}
+    </div>
+  );
+};
 
 const styles = StyleSheet.create({
   orgButtonsContainer: {
-    marginTop: 0
+    marginTop: 0,
   },
   orgButton: {
     paddingLeft: 17,

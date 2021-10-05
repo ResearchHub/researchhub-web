@@ -9,7 +9,12 @@ import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import ManageOrgUsers from "./ManageOrgUsers";
 
-const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) => {
+const NewOrgModal = ({
+  closeModal,
+  showMessage,
+  setMessage,
+  isOpen = false,
+}) => {
   const [orgName, setOrgName] = useState("");
   const [flowStep, setFlowStep] = useState("ORG_CREATE");
   const [org, setOrg] = useState(org);
@@ -22,44 +27,37 @@ const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) =>
       setOrg(org);
       showMessage({ show: true, error: false });
       setFlowStep("INVITE");
-    }
-    catch(err) {
+    } catch (err) {
       setMessage("Failed to create org. Please try again.");
       showMessage({ show: true, error: true });
     }
-  }
+  };
 
   const modalBody = (
     <div className={css(styles.body)}>
-      {flowStep === "ORG_CREATE"
-        ? (
-            <form className={css(styles.form)} onSubmit={(e) => handleSubmit(e)}>
-              <FormInput
-                label="Organization Name"
-                id="org-name-input"
-                required={true}
-                onChange={(id, val) => setOrgName(val)} 
-                containerStyle={null}
-                value={orgName}
-                inputStyle={styles.inputStyle}
-              />
-              <Button
-                type="submit"
-                customButtonStyle={styles.button}
-                label="Create Organization"
-                rippleClass={styles.buttonWrapper}
-              >
-              </Button>
-            </form>
-          )
-        : flowStep === "INVITE"
-        ? (
-            <ManageOrgUsers org={org} />
-          )
-        : null
-      }
+      {flowStep === "ORG_CREATE" ? (
+        <form className={css(styles.form)} onSubmit={(e) => handleSubmit(e)}>
+          <FormInput
+            label="Organization Name"
+            id="org-name-input"
+            required={true}
+            onChange={(id, val) => setOrgName(val)}
+            containerStyle={null}
+            value={orgName}
+            inputStyle={styles.inputStyle}
+          />
+          <Button
+            type="submit"
+            customButtonStyle={styles.button}
+            label="Create Organization"
+            rippleClass={styles.buttonWrapper}
+          ></Button>
+        </form>
+      ) : flowStep === "INVITE" ? (
+        <ManageOrgUsers org={org} />
+      ) : null}
     </div>
-  )
+  );
 
   return (
     <BaseModal
@@ -67,9 +65,9 @@ const NewOrgModal = ({ closeModal, showMessage, setMessage, isOpen = false }) =>
       closeModal={closeModal}
       isOpen={isOpen}
       title={flowStep === "ORG_CREATE" ? "Create Organization" : "Invite users"}
-    />    
-  )
-}
+    />
+  );
+};
 
 const styles = StyleSheet.create({
   body: {
@@ -90,17 +88,14 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   inputStyle: {
-    textAlign: "left"
+    textAlign: "left",
   },
 });
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({});
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
-}
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(NewOrgModal);
+export default connect(mapStateToProps, mapDispatchToProps)(NewOrgModal);

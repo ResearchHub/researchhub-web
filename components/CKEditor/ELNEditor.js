@@ -27,14 +27,20 @@ const saveData = (editor, noteId) => {
     .then(Helpers.parseJSON);
 };
 
-export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => {
+export const ELNEditor = ({
+  currentNoteId,
+  user,
+  notes,
+  titles,
+  setTitles,
+}) => {
   const router = useRouter();
   const editorRef = useRef();
   const presenceListElementRef = useRef();
   const sidebarElementRef = useRef();
 
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [editorLoaded, setEditorLoaded] = useState(false); 
+  const [editorLoaded, setEditorLoaded] = useState(false);
 
   useEffect(() => {
     editorRef.current = {
@@ -49,7 +55,6 @@ export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => 
     };
   }, []);
 
-
   const handleInput = (editor) => {
     const updatedTitles = {};
     for (const key in titles) {
@@ -61,7 +66,7 @@ export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => 
     setTitles(updatedTitles);
   };
 
-  const editors = notes.map(note => {
+  const editors = notes.map((note) => {
     const editorConfiguration = {
       title: {
         placeholder: "Untitled",
@@ -107,7 +112,7 @@ export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => 
       <div
         className={css(
           styles.editor,
-          currentNoteId !== note.id.toString() && styles.hideEditor,
+          currentNoteId !== note.id.toString() && styles.hideEditor
         )}
         key={note.id.toString()}
       >
@@ -153,15 +158,14 @@ export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => 
     <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
-      </div>  
+      </div>
       <div className={css(styles.editorContainer)}>
         {editorLoaded && editors}
       </div>
-      <div ref={sidebarElementRef} className="sidebar"></div>  
-    </div>  
-  )
+      <div ref={sidebarElementRef} className="sidebar"></div>
+    </div>
+  );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -171,8 +175,7 @@ const styles = StyleSheet.create({
       marginLeft: 0,
     },
   },
-  editorContainer: {
-  },
+  editorContainer: {},
   editor: {
     height: "100%",
   },

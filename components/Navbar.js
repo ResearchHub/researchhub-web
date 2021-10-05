@@ -31,7 +31,7 @@ import { ROUTES as WS_ROUTES } from "~/config/ws";
 import colors from "~/config/themes/colors";
 import icons, { voteWidgetIcons } from "~/config/themes/icons";
 import { isDevEnv } from "~/config/utils/env";
-import { breakpoints } from "~/config/themes/screen"
+import { breakpoints } from "~/config/themes/screen";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -117,8 +117,7 @@ const Navbar = (props) => {
     {
       label: "Help",
       route: "",
-      link:
-        "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
       icon: "help",
       className: "lessImportantTab",
     },
@@ -163,8 +162,7 @@ const Navbar = (props) => {
       {
         label: "Help",
         route: "",
-        link:
-          "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
         icon: "help",
       },
       {
@@ -181,7 +179,7 @@ const Navbar = (props) => {
           href: "/user/[authorId]/[tabName]",
         },
         icon: "user",
-      }, 
+      },
       {
         label: "Settings",
         route: {
@@ -456,7 +454,11 @@ const Navbar = (props) => {
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search overrideStyle={styles.navbarSearchOverride} navbarRef={navbarRef} id="navbarSearch" />
+        <Search
+          overrideStyle={styles.navbarSearchOverride}
+          navbarRef={navbarRef}
+          id="navbarSearch"
+        />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -520,7 +522,7 @@ const Navbar = (props) => {
                         </span>
                         Notebook
                       </div>
-                    </Link>                    
+                    </Link>
                     <Link href={"/user/settings"} as={`/user/settings`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
@@ -966,8 +968,8 @@ const styles = StyleSheet.create({
   navbarSearchOverride: {
     [`@media only screen and (max-width: ${breakpoints.medium.int}px)`]: {
       marginRight: 10,
-    }
-  }
+    },
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -989,7 +991,4 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);
