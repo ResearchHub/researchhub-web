@@ -11,76 +11,90 @@ export const createNewNote = ({ orgId }) => {
 
   return fetch(API.NOTE({}), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const fetchOrgNotes = ({ orgId }) => {
   return fetch(API.NOTE({ orgId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const fetchUserOrgs = ({ user }) => {
   return fetch(API.ORGANIZATION({ userId: user.id }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const acceptInviteToOrg = ({ token }) => {
   return fetch(API.ACCEPT_ORG_INVITE({ token }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)  
-}
+    .then(Helpers.parseJSON);
+};
 
 export const fetchOrgByInviteToken = ({ token }) => {
   return fetch(API.ORG_INVITE_DETAILS({ token }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
-export const inviteUserToOrg = ({ orgId, email, expire = 4320, accessType = "EDITOR" }) => {
-  return fetch(API.INVITE_TO_ORG({ orgId }), API.POST_CONFIG({ email, expire, access_type: accessType }))
+export const inviteUserToOrg = ({
+  orgId,
+  email,
+  expire = 4320,
+  accessType = "EDITOR",
+}) => {
+  return fetch(
+    API.INVITE_TO_ORG({ orgId }),
+    API.POST_CONFIG({ email, expire, access_type: accessType })
+  )
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const createOrg = (payload) => {
   return fetch(API.ORGANIZATION({}), API.POST_CONFIG(payload))
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const updateOrgDetails = ({ orgId, updatedName }) => {
-  return fetch(API.ORGANIZATION({ orgId }), API.PATCH_CONFIG({ name: updatedName }))
+  return fetch(
+    API.ORGANIZATION({ orgId }),
+    API.PATCH_CONFIG({ name: updatedName })
+  )
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const removeUserFromOrg = ({ orgId, userId }) => {
-  const config = {...API.DELETE_CONFIG(), body: JSON.stringify({user: userId})};
+  const config = {
+    ...API.DELETE_CONFIG(),
+    body: JSON.stringify({ user: userId }),
+  };
   return fetch(API.REMOVE_USER_FROM_ORG({ orgId }), config)
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const removeInvitedUserFromOrg = ({ orgId, email }) => {
-  const config = {...API.PATCH_CONFIG(), body: JSON.stringify({email})};
+  const config = { ...API.PATCH_CONFIG(), body: JSON.stringify({ email }) };
   return fetch(API.REMOVE_INVITED_USER_FROM_ORG({ orgId }), config)
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const fetchOrgUsers = ({ orgId }) => {
   return fetch(API.ORGANIZATION_USERS({ orgId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const fetchOrg = ({ orgId }) => {
   return fetch(API.ORGANIZATION({ orgId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-}
+    .then(Helpers.parseJSON);
+};
 
 export const fetchEmailPreference = async () => {
   const params = API.GET_CONFIG();

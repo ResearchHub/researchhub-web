@@ -18,9 +18,7 @@ const Index = ({ auth, showMessage, setMessage }) => {
     try {
       const org = await fetchOrgByInviteToken({ token: router.query.token });
       setOrg(org);
-    }
-    catch(err) {
-    }
+    } catch (err) {}
 
     setIsLoading(false);
   }, []);
@@ -30,48 +28,43 @@ const Index = ({ auth, showMessage, setMessage }) => {
 
     try {
       setIsLoading(true);
-      await acceptInviteToOrg({ token: router.query.token })
+      await acceptInviteToOrg({ token: router.query.token });
       showMessage({ show: true, error: false });
 
-      router.push(`/org/${org.slug}/`)
-    }
-    catch(err) {
+      router.push(`/org/${org.slug}/`);
+    } catch (err) {
       setIsLoading(false);
 
       if (err.message === "Invitation has expired") {
-        setMessage(`Invitation has expired`);  
+        setMessage(`Invitation has expired`);
       }
-      
+
       showMessage({ show: true, error: true });
     }
-  }
+  };
 
   return (
     <div className={css(styles.container)}>
-      {org && 
-        <div className={css(styles.inviteText)}>{org.name} invited you to join its organization.</div>
-      }
-      {isLoading ? 
-        <Loader
-          key={"loader"}
-          loading={true}
-          size={25}
-          color={colors.BLUE()}
-        />
-        : (
-          <PermissionNotificationWrapper
-            loginRequired
-            modalMessage="join [organization]"
-            onClick={joinOrg}
-            styling={styles.rippleClass}
-          >
-            <Button label={`Join Org`} hideRipples={true} />
-          </PermissionNotificationWrapper>
-        )
-      }
+      {org && (
+        <div className={css(styles.inviteText)}>
+          {org.name} invited you to join its organization.
+        </div>
+      )}
+      {isLoading ? (
+        <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
+      ) : (
+        <PermissionNotificationWrapper
+          loginRequired
+          modalMessage="join [organization]"
+          onClick={joinOrg}
+          styling={styles.rippleClass}
+        >
+          <Button label={`Join Org`} hideRipples={true} />
+        </PermissionNotificationWrapper>
+      )}
     </div>
   );
-}
+};
 
 const styles = StyleSheet.create({
   inviteText: {
@@ -82,7 +75,7 @@ const styles = StyleSheet.create({
     margin: "0 auto",
     marginTop: 100,
     textAlign: "center",
-  }
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -92,9 +85,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
-}
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
