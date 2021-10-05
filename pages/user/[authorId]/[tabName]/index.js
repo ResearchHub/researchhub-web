@@ -1147,6 +1147,11 @@ const styles = StyleSheet.create({
   modActions: {
     marginLeft: 'auto',
     display: 'flex',
+
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 'unset',
+      marginTop: 16,
+    }
   },
   moderatorButton: {
     display: "flex",
