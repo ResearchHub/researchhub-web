@@ -40,8 +40,8 @@ const Notebook = ({ user }) => {
       let notes;
 
       if (isPrivateContext()) {
-        response = await fetchOrgNotes({});
-        notes = response.results;
+        response = await fetchOrgNotes({ orgId: 0 });
+        notes = response;
       } else {
         response = await fetchOrgNotes({ orgId: currentOrganization.id });
         notes = response;
