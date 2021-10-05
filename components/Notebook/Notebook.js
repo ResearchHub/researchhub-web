@@ -12,7 +12,7 @@ import OrgSidebar from "~/components/Org/OrgSidebar";
 * Handle 404, 500s
 */
 
-const NotebookPage = ({ user }) => {
+const Notebook = ({ user, isPrivateNotebook }) => {
   const router = useRouter();
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(router.query.id);
@@ -83,7 +83,7 @@ const NotebookPage = ({ user }) => {
               orgs={organizations}
               currentOrg={currentOrganization}
               currentNoteId={currentNoteId}
-              isPrivateNotebook={false}
+              isPrivateNotebook={isPrivateNotebook}
               setCurrentOrg={setCurrentOrganization}
               notes={notes}
               titles={titles}
@@ -120,4 +120,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default connect(mapStateToProps)(NotebookPage);
+export default connect(mapStateToProps)(Notebook);
