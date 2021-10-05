@@ -8,6 +8,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import Link from "next/link";
 import { createNewNote } from "~/config/fetch";
 import { useRouter } from 'next/router';
+import { getNotePathname } from '~/config/utils/org';
 
 const NoteTemplateModal = dynamic(() => import("~/components/Modals/NoteTemplateModal"));
 const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
@@ -25,15 +26,6 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
   const toggleSidebarSection = () => {
     setHideNotes(!hideNotes);
   };
-
-  const getNotePathname = (note) => {
-    if (isPrivateNotebook) {
-      return `/me/notebook/${note.id}`;
-    }
-    else {
-      return `/${currentOrg.slug}/notebook/${note.id}`;
-    }
-  }
 
   const handleCreateNewNote = async () => {
     const note = await createNewNote({ orgId: currentOrg.id });
@@ -128,7 +120,7 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
         <div>
           {notes.map(note => (
             <Link href={{
-              pathname: getNotePathname(note),
+              pathname: getNotePathname({ note, org: currentOrg }),
             }} key={note.id.toString()}>
               <a
                 className={css(

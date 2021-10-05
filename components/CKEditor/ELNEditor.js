@@ -28,24 +28,14 @@ const saveData = (editor, noteId) => {
     .then(Helpers.parseJSON);
 };
 
-export const ELNEditor = ({ user }) => {
+export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => {
   const router = useRouter();
   const editorRef = useRef();
   const presenceListElementRef = useRef();
   const sidebarElementRef = useRef();
-  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
-  const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
-  const [currentOrganizationId, setCurrentOrganizationId] = useState(null);
-  const [currentOrganization, setCurrentOrganization] = useState(null);
-  // const [currentOrgName, setCurrentOrgName] = useState(null);
 
-  const [editorLoaded, setEditorLoaded] = useState(false);
-  
-   
-  const [notes, setNotes] = useState([]);
-  const [organizations, setOrganizations] = useState([]);
-  const [refetchNotes, setRefetchNotes] = useState(false);
-  const [titles, setTitles] = useState({});
+  const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
+  const [editorLoaded, setEditorLoaded] = useState(false); 
   
 
   useEffect(() => {
@@ -61,63 +51,6 @@ export const ELNEditor = ({ user }) => {
     };
   }, []);
 
-
-  useEffect(() => {
-    if (!isNullOrUndefined(currentOrganizationId)) {
-      fetch(API.NOTE({ orgId: currentOrganizationId }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((data) => {
-          const sortedNotes = data.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
-          setNotes(sortedNotes);
-          const updatedTitles = {};
-          for (const note of sortedNotes) {
-            updatedTitles[note.id.toString()] = note.title;
-          }
-          setTitles(updatedTitles);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [refetchNotes, currentOrganizationId]);
-
-  useEffect(async () => {
-    if (!isEmpty(organizations) && router.query.orgName !== currentOrganization?.name) {
-      const currentOrg = getCurrentOrganization(organizations);
-      setCurrentOrganization(currentOrg);
-      setCurrentOrganizationId(currentOrg.id);
-
-      // router.push(`/notebook/${router.query.orgName}/${router.query.noteId}`);
-    }
-  }, [router.query.orgName, organizations]);
-
-  useEffect(() => {
-    setCurrentNoteId(router.query.noteId);
-  }, [router.query.noteId]);
-
-  const getCurrentOrganizationId = (orgs) => {
-    const orgName = router.query.orgName;
-    if (orgName === "personal") {
-      return 0; // orgId of 0 for personal notes
-    } else {
-      for (const org of orgs) {
-        if (orgName === org.slug) {
-          return org.id;
-        }
-      }
-    }
-  };
-
-  const getCurrentOrganization = (orgs) => {
-    const orgName = router.query.orgName;
-    if (orgName === "personal") {
-      return null;
-    }
-    else {
-      return orgs.find(org => org.slug === orgName);
-    }
-  };  
 
   const handleInput = (editor) => {
     const updatedTitles = {};
@@ -222,43 +155,25 @@ export const ELNEditor = ({ user }) => {
     <div className={css(styles.container)}>
       <div className={css(styles.presenceList)}>
         <div ref={presenceListElementRef} className="presence"></div>
-      </div>
-      <OrgSidebar
-        orgs={organizations}
-        currentOrg={currentOrganization}
-        isPrivateNotebook={false}
-        setCurrentOrg={setCurrentOrganization}
-        refetchNotes={refetchNotes}
-        setRefetchNotes={setRefetchNotes}
-      />
+      </div>  
       <div className={css(styles.editorContainer)}>
         {editorLoaded && editors}
       </div>
-      <div ref={sidebarElementRef} className="sidebar"></div>
-    </div>
-  );
+      <div ref={sidebarElementRef} className="sidebar"></div>  
+    </div>  
+  )
 };
 
 
 const styles = StyleSheet.create({
-  orgButtonsContainer: {
-    marginTop: 0
-  },
-  orgButton: {
-    paddingLeft: 17,
-  },
-  orgButtonText: {
-    marginLeft: 20,
-  },
   container: {
-    display: "flex",
-  },
-  editorContainer: {
     marginLeft: "max(min(16%, 300px), 240px)",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
     },
+  },
+  editorContainer: {
   },
   editor: {
     height: "100%",
@@ -266,195 +181,11 @@ const styles = StyleSheet.create({
   hideEditor: {
     display: "none",
   },
-  sidebar: {
-    background: "#f9f9fc",
-    borderRight: `1px solid ${colors.GREY(0.3)}`,
-    display: "flex",
-    flexDirection: "column",
-    height: "calc(100vh - 80px)",
-    left: 0,
-    maxWidth: 300,
-    minWidth: 240,
-    position: "fixed",
-    top: 80,
-    width: "16%",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      display: "none",
-    },
-  },
-  popoverTarget: {
-    alignItems: "center",
-    color: colors.BLACK(0.6),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: 1.2,
-    padding: 20,
-    textTransform: "uppercase",
-    userSelect: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-  },
-  popoverBodyContent: {
-    backgroundColor: "#fff",
-    borderRadius: 4,
-    boxShadow: "0px 0px 10px 0px #00000026",
-    display: "flex",
-    flexDirection: "column",
-    marginLeft: 10,
-    marginTop: -10,
-    userSelect: "none",
-    width: 270,
-  },
-  popoverBodyItem: {
-    alignItems: "center",
-    cursor: "pointer",
-    display: "flex",
-    padding: 16,
-    textDecoration: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.2),
-    },
-    ":first-child": {
-      borderRadius: "4px 4px 0px 0px",
-    },
-    ":last-child": {
-      borderRadius: "0px 0px 4px 4px",
-    },
-  },
-  popoverBodyItemImage: {
-    borderRadius: "50%",
-    height: 30,
-    marginRight: 10,
-    objectFit: "cover",
-    width: 30,
-  },
-  popoverBodyItemText: {
-    display: "flex",
-    flexDirection: "column",
-  },
-  popoverBodyItemTitle: {
-    color: colors.BLACK(),
-    fontWeight: 500,
-  },
-  popoverBodyItemSubtitle: {
-    color: colors.BLACK(0.5),
-    fontSize: 13,
-    marginTop: 2,
-  },
-  sidebarSection: {
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 18,
-    fontWeight: 500,
-    padding: 20,
-    userSelect: "none",
-  },
-  sidebarSectionContent: {
-    backgroundClip: "padding-box",
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 14,
-    fontWeight: 500,
-    padding: 20,
-    textDecoration: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-    ":last-child": {
-      borderBottom: `1px solid ${colors.GREY(0.3)}`,
-    },
-  },
-  active: {
-    backgroundColor: colors.GREY(0.3),
-  },
-  newOrgButton: {
-    cursor: "pointer",
-  },
-  sidebarNewNote: {
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLUE(),
-    cursor: "pointer",
-    display: "flex",
-    marginTop: "auto",
-    padding: 20,
-    ":hover": {
-      color: "#3E43E8",
-    },
-  },
-  newNoteText: {
-    fontSize: 18,
-    fontWeight: 500,
-    margin: "auto",
-  },
-  actionButton: {
-    alignItems: "center",
-    background: colors.LIGHT_GREY(),
-    border: "1px solid #ddd",
-    borderRadius: "50%",
-    display: "flex",
-    fontSize: 16,
-    height: 35,
-    justifyContent: "center",
-    marginLeft: 5,
-    marginRight: 5,
-    transition: "all ease-in-out 0.1s",
-    width: 35,
-    //":hover": {
-    //  background: "#d8d8d8",
-    //},
-    "@media only screen and (max-width: 415px)": {
-      height: 33,
-      width: 33,
-    },
-    "@media only screen and (max-width: 321px)": {
-      height: 31,
-      width: 31,
-    },
-  },
-  showBottomBorder: {
-    borderBottom: `1px solid ${colors.GREY(0.3)}`,
-  },
-  sidebarButtonsContainer: {
-    margin: 10,
-  },
-  sidebarButton: {
-    border: "none",
-    color: colors.BLACK(0.5),
-    cursor: "pointer",
-    fontSize: 14,
-    fontWeight: 500,
-    maxWidth: "fit-content",
-    padding: 10,
-    ":hover": {
-      color: colors.BLUE(),
-    },
-  },
-  sidebarButtonText: {
-    marginLeft: 10,
-  },
-  sortIcon: {
-    marginLeft: 10,
-  },
-  chevronIcon: {
-    marginLeft: "auto",
-  },
-  noteIcon: {
-    color: colors.GREY(),
-    marginRight: 10,
-  },
   presenceList: {
     display: "none",
     marginBottom: 10,
     marginTop: 10,
   },
 });
+
+export default ELNEditor;
