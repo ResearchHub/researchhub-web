@@ -36,7 +36,9 @@ export const ELNEditor = ({ currentNoteId, user, notes, titles, setTitles }) => 
 
   const { CKEditor, Editor, CKEditorInspector } = editorRef.current || {};
   const [editorLoaded, setEditorLoaded] = useState(false); 
-  
+
+console.log('currentNoteId', currentNoteId);  
+console.log('notes', notes);  
 
   useEffect(() => {
     editorRef.current = {

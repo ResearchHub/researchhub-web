@@ -15,6 +15,7 @@ import { getNotePathname } from '~/config/utils/org';
 */
 
 const Notebook = ({ user, isPrivateNotebook }) => {
+  console.log('isPrivateNotebook', isPrivateNotebook);
   const router = useRouter();
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentNoteId, setCurrentNoteId] = useState(router.query.noteId);
@@ -39,9 +40,20 @@ const Notebook = ({ user, isPrivateNotebook }) => {
   }, [user]);
 
   useEffect(async () => {
-    if (needNoteFetch && currentOrganization) {
-      const response = await fetchOrgNotes({ orgId: currentOrganization.id });
-      const sortedNotes = response.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
+    if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
+      let response;
+      let notes;
+
+      if (isPrivateNotebook) {
+        response = await fetchOrgNotes({});
+        notes = response.results;
+      }
+      else {
+        response = await fetchOrgNotes({ orgId: currentOrganization.id });        
+        notes = response;
+      }
+
+      const sortedNotes = notes.sort((a, b) => new Date(b.created_date) - new Date(a.created_date));
       setNotes(sortedNotes);
 
       const updatedTitles = {};

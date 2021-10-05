@@ -28,7 +28,14 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
   };
 
   const handleCreateNewNote = async () => {
-    const note = await createNewNote({ orgId: currentOrg.id });
+    let note;
+    if (isPrivateNotebook) {
+      note = await createNewNote({});
+    }
+    else {
+      note = await createNewNote({ orgId: currentOrg.id });
+    }
+
     return onNoteCreate(note);
   };
 
@@ -59,7 +66,7 @@ const OrgSidebar = ({ user, orgs, notes, titles, currentOrg, isPrivateNotebook, 
           isOpen={isPopoverOpen}
           popoverContent={
             <div className={css(styles.popoverBodyContent)}>
-              <Link href={`me/notebook/`}>
+              <Link href={`me/notebook`}>
                 <a className={css(styles.popoverBodyItem)} onClick={() => setIsPopoverOpen(!isPopoverOpen)}>
                   <img className={css(styles.popoverBodyItemImage)} draggable="false" src={user.author_profile.profile_image} />
                   <div className={css(styles.popoverBodyItemTitle)}>Personal Notes</div>
