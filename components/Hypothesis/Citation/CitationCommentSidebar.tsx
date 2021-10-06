@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import React, { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 import {
   getCurrMediaWidth,
@@ -15,6 +15,8 @@ import HypothesisUnduxStore, {
 import icons from "~/config/themes/icons";
 import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 
+const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
+
 type CitationCommentSidebarProps = {
   citationID: ID;
   citationThreadEntries: ReactElement<typeof DiscussionEntry>[];
@@ -23,152 +25,19 @@ type CitationCommentSidebarProps = {
   setLastUpdateTime: (time: number) => void;
 };
 
-const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
+type UseEffectFetchCitationThreadsArgs = {
+  citationID: ID;
+  lastUpdateTime: number;
+  setCitationThreads: Function;
+};
 
-const yo = [
-  {
-    block_key: null,
-    comment_count: 0,
-    comments: [],
-    context_title: null,
-    created_by: {
-      id: 4,
-      author_profile: {
-        id: 2,
-        user: 4,
-        first_name: "Calvin",
-        last_name: "Lee",
-        created_date: "2021-03-15T17:39:35.850062Z",
-        updated_date: "2021-07-23T18:07:00.063609Z",
-        description: "Hello, I'm Calvin of Q5",
-        profile_image:
-          "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c",
-        author_score: 11,
-        university: null,
-        orcid_id: null,
-        orcid_account: null,
-        education: [],
-        headline: { title: "Test headline", isPublic: true },
-        facebook: null,
-        twitter: null,
-        linkedin: null,
-        academic_verification: null,
-        claimed: true,
-        merged_with: null,
-        claimed_by_user_author_id: 2,
-        is_claimed: true,
-        num_posts: 5,
-        reputation: 102,
-        sift_link: "https://console.sift.com/users/4?abuse_type=content_abuse",
-        total_score: 11,
-        wallet: null,
-      },
-    },
-    created_date: "2021-10-06T17:04:19.211603Z",
-    created_location: null,
-    entity_key: null,
-    external_metadata: null,
-    hypothesis: 3,
-    citation: null,
-    id: 196,
-    is_public: true,
-    is_removed: false,
-    paper_slug: null,
-    paper: null,
-    post_slug: null,
-    post: null,
-    plain_text: "This is comment for the hypothesis.",
-    promoted: false,
-    score: 1,
-    source: "researchhub",
-    text: { ops: [{ insert: "This is comment for the hypothesis.\n" }] },
-    title: null,
-    user_flag: null,
-    user_vote: {
-      id: 371,
-      content_type: 20,
-      created_by: 4,
-      created_date: "2021-10-06T17:04:19.379520Z",
-      vote_type: 1,
-      item: 196,
-    },
-    was_edited: false,
-    document_meta: { id: 3, title: "New Hypothesis", slug: "new-hypothesis" },
-  },
-  {
-    block_key: null,
-    comment_count: 0,
-    comments: [],
-    context_title: null,
-    created_by: {
-      id: 4,
-      author_profile: {
-        id: 2,
-        user: 4,
-        first_name: "Calvin",
-        last_name: "Lee",
-        created_date: "2021-03-15T17:39:35.850062Z",
-        updated_date: "2021-07-23T18:07:00.063609Z",
-        description: "Hello, I'm Calvin of Q5",
-        profile_image:
-          "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c",
-        author_score: 11,
-        university: null,
-        orcid_id: null,
-        orcid_account: null,
-        education: [],
-        headline: { title: "Test headline", isPublic: true },
-        facebook: null,
-        twitter: null,
-        linkedin: null,
-        academic_verification: null,
-        claimed: true,
-        merged_with: null,
-        claimed_by_user_author_id: 2,
-        is_claimed: true,
-        num_posts: 5,
-        reputation: 102,
-        sift_link: "https://console.sift.com/users/4?abuse_type=content_abuse",
-        total_score: 11,
-        wallet: null,
-      },
-    },
-    created_date: "2021-10-06T17:05:59.179255Z",
-    created_location: null,
-    entity_key: null,
-    external_metadata: null,
-    hypothesis: 3,
-    citation: null,
-    id: 197,
-    is_public: true,
-    is_removed: false,
-    paper_slug: null,
-    paper: null,
-    post_slug: null,
-    post: null,
-    plain_text: "This is comment for the hypothesis. COMMENT 2!",
-    promoted: false,
-    score: 1,
-    source: "researchhub",
-    text: {
-      ops: [{ insert: "This is comment for the hypothesis. COMMENT 2!\n" }],
-    },
-    title: null,
-    user_flag: null,
-    user_vote: {
-      id: 372,
-      content_type: 20,
-      created_by: 4,
-      created_date: "2021-10-06T17:05:59.269981Z",
-      vote_type: 1,
-      item: 197,
-    },
-    was_edited: false,
-    document_meta: { id: 3, title: "New Hypothesis", slug: "new-hypothesis" },
-  },
-];
-
-function useEffectFetchCitationThreads({}): void {}
+function useEffectFetchCitationThreads({
+  citationID,
+  lastUpdateTime,
+  setCitationThreads,
+}: UseEffectFetchCitationThreadsArgs): void {
+  useEffect((): void => {}, [citationID, lastUpdateTime]);
+}
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
   const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
@@ -261,9 +130,11 @@ function CitationCommentSidebar({
         }}
         onSubmitSuccess={(): void => setLastUpdateTime(Date.now())}
       />
-      <div className={css(styles.citationThreadEntriesWrap)}>
-        {citationThreadEntries}
-      </div>
+      {citationThreadEntries.length > 0 ? (
+        <div className={css(styles.citationThreadEntriesWrap)}>
+          {citationThreadEntries}
+        </div>
+      ) : null}
     </div>
   );
 }
