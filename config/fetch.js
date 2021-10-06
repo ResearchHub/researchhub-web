@@ -14,6 +14,12 @@ export const createNewNote = ({ orgId }) => {
     .then(Helpers.parseJSON);
 };
 
+export const deleteNote = (noteId) => {
+  return fetch(API.NOTE_DELETE({ noteId }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+};
+
 export const fetchOrgNotes = ({ orgId }) => {
   return fetch(API.NOTE({ orgId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
