@@ -71,7 +71,6 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         <DiscussionEntry
           data={citationThread}
           discussionCount={(citationThread.comments ?? []).length}
-          hoverEvents
           key={`citation-thread-entry-id-${citationThread.id}-${index}`}
           mediaOnly
           noVoteLine
@@ -88,7 +87,7 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
         customBurgerIcon={false}
-        isOpen={true}
+        isOpen
         right
         styles={burgerMenuStyle}
         width={"100%"}
@@ -198,7 +197,7 @@ const styles = StyleSheet.create({
   },
   inlineSticky: {
     position: "sticky",
-    top: 60,
+    top: 100,
   },
   marginLeft8: {
     marginLeft: 8,
