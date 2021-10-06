@@ -92,16 +92,19 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 
   const handleUpdatePermission = async (user, org, accessType) => {
     try {
-      await updateOrgUserPermissions({ userId: user.author_profile.id, accessType, orgId: org.id });
+      await updateOrgUserPermissions({
+        userId: user.author_profile.id,
+        accessType,
+        orgId: org.id,
+      });
       setNeedsFetch(true);
       setMessage("");
       showMessage({ show: true, error: false });
-    }
-    catch(err) {
+    } catch (err) {
       setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
     }
-  }
+  };
 
   const isCurrentUserOrgAdmin = (currentUser, orgUsers) => {
     if (!currentUser) {
@@ -150,7 +153,10 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
               popoverContent={
                 <div className={css(styles.popoverBodyContent, styles.perms)}>
                   {perm !== "Invitation Pending" && (
-                    <div className={css(styles.permOpt)} onClick={() => handleUpdatePermission(user, org, "ADMIN")}>
+                    <div
+                      className={css(styles.permOpt)}
+                      onClick={() => handleUpdatePermission(user, org, "ADMIN")}
+                    >
                       <div className={css(styles.permTitle)}>Admin</div>
                       <div className={css(styles.permDesc)}>
                         Can manage settings, edit documents and invite new
@@ -159,7 +165,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
                     </div>
                   )}
                   {perm !== "Invitation Pending" && (
-                    <div className={css(styles.permOpt)} onClick={() => handleUpdatePermission(user, org, "EDITOR")}>
+                    <div
+                      className={css(styles.permOpt)}
+                      onClick={() =>
+                        handleUpdatePermission(user, org, "EDITOR")
+                      }
+                    >
                       <div className={css(styles.permTitle)}>Editor</div>
                       <div className={css(styles.permDesc)}>
                         Can edit all documents. Cannot manage settings or invite
@@ -168,7 +179,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
                     </div>
                   )}
                   {perm !== "Invitation Pending" && (
-                    <div className={css(styles.permOpt)} onClick={() => handleUpdatePermission(user, org, "VIEWER")}>
+                    <div
+                      className={css(styles.permOpt)}
+                      onClick={() =>
+                        handleUpdatePermission(user, org, "VIEWER")
+                      }
+                    >
                       <div className={css(styles.permTitle)}>Viewer</div>
                       <div className={css(styles.permDesc)}>
                         Can view all documents in the organization.
@@ -281,7 +297,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   loaderWrapper: {
-    width: 75,
+    width: 80,
     height: 40,
   },
   popoverBodyContent: {
@@ -357,11 +373,11 @@ const styles = StyleSheet.create({
     alignItems: "end",
   },
   button: {
-    width: "auto",
     paddingLeft: 20,
     paddingRight: 20,
     borderRadius: 0,
     height: 51,
+    width: 100,
   },
   inputContainer: {
     margin: 0,
