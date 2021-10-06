@@ -5,9 +5,10 @@ import {
   isNullOrUndefined,
 } from "../../config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
-import React, { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
+import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
 import Head from "../Head";
@@ -15,7 +16,6 @@ import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
-import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 
 type Props = {};
 

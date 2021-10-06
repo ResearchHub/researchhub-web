@@ -1,5 +1,8 @@
 import { breakpoints } from "~/config/themes/screen";
+import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import { css, StyleSheet } from "aphrodite";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { fetchCitationsThreads } from "../api/fetchCitationThreads";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
@@ -9,14 +12,11 @@ import {
 } from "~/config/utils/useEffectOnScreenResize";
 import CitationCommentThreadComposer from "./CitationCommentThreadComposer";
 import colors from "~/config/themes/colors";
+import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import HypothesisUnduxStore, {
   HypothesisStore,
 } from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
-import DiscussionEntry from "~/components/Threads/DiscussionEntry";
-import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
-import { fetchCitationsThreads } from "../api/fetchCitationThreads";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
