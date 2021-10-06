@@ -8,21 +8,44 @@ export const updateOrgProfileImg = ({ orgId, file }) => {
   return fetch(API.ORGANIZATION({ orgId }), config)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-} 
+};
 
 export const updateOrgUserPermissions = ({ orgId, userId, accessType }) => {
-  return fetch(API.UPDATE_ORG_USER_PERMISSIONS({ orgId }), API.PATCH_CONFIG({ access_type: accessType, user: userId }))
+  return fetch(
+    API.UPDATE_ORG_USER_PERMISSIONS({ orgId }),
+    API.PATCH_CONFIG({ access_type: accessType, user: userId })
+  )
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);  
-}
+    .then(Helpers.parseJSON);
+};
 
-export const createNewNote = ({ orgId }) => {
+export const createNoteContent = ({ editorData, noteId }, authToken) => {
+  const noteContentParams = {
+    full_src: editorData,
+    plain_text: "",
+    note: noteId,
+  };
+  return fetch(
+    API.NOTE_CONTENT(),
+    API.POST_CONFIG(noteContentParams, authToken)
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const fetchNote = ({ noteId }, authToken) => {
+  return fetch(API.NOTE({ noteId }), API.GET_CONFIG(authToken))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const createNewNote = ({ orgId, title }, authToken) => {
   const params = {
     organization: orgId,
-    title: "Untitled",
+    title: title ? title : "Untitled",
   };
 
-  return fetch(API.NOTE({}), API.POST_CONFIG(params))
+  return fetch(API.NOTE({}), API.POST_CONFIG(params, authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -30,11 +53,11 @@ export const createNewNote = ({ orgId }) => {
 export const deleteNote = (noteId) => {
   return fetch(API.NOTE_DELETE({ noteId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
+    .then(Helpers.parseJSON);
 };
 
-export const fetchOrgNotes = ({ orgId }) => {
-  return fetch(API.NOTE({ orgId }), API.GET_CONFIG())
+export const fetchOrgNotes = ({ orgId, slug }, authToken) => {
+  return fetch(API.NOTE({ orgId }), API.GET_CONFIG(authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };

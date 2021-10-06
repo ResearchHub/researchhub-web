@@ -1,20 +1,23 @@
-import ELNEditor from "~/components/CKEditor/ELNEditor";
 import Loader from "~/components/Loader/Loader";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import colors from "~/config/themes/colors";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { fetchUserOrgs, fetchOrgNotes } from "~/config/fetch";
+import { fetchUserOrgs, fetchOrgNotes, fetchNote } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useRouter } from "next/router";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useCallback } from "react";
+import dynamic from "next/dynamic";
+
+const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
+  ssr: false,
+});
 
 const Notebook = ({ user }) => {
   const router = useRouter();
   const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [editorInstances, setEditorInstances] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [notes, setNotes] = useState([]);
@@ -24,6 +27,7 @@ const Notebook = ({ user }) => {
   const [isPrivateNotebook, setIsPrivateNotebook] = useState(
     router.query.orgSlug === "me"
   );
+  const [currentNote, setCurrentNote] = useState(null);
 
   useEffect(() => {
     const _fetchUserOrgs = async () => {
@@ -41,6 +45,15 @@ const Notebook = ({ user }) => {
       _fetchUserOrgs();
     }
   }, [user]);
+
+  const fetchNoteCallback = useCallback(async () => {
+    const note = await fetchNote({ noteId: router.query.noteId });
+    setCurrentNote(note);
+  });
+
+  useEffect(() => {
+    fetchNoteCallback();
+  }, [router.query.noteId, fetchNoteCallback]);
 
   useEffect(() => {
     const _fetchOrgNotes = async () => {
@@ -154,7 +167,6 @@ const Notebook = ({ user }) => {
           <NotebookSidebar
             currentNoteId={router.query.noteId}
             currentOrg={currentOrganization}
-            editorInstances={editorInstances}
             isPrivateNotebook={isPrivateNotebook}
             needNoteFetch={needNoteFetch}
             notes={notes}
@@ -162,23 +174,23 @@ const Notebook = ({ user }) => {
             onOrgChange={onOrgChange}
             orgs={organizations}
             refetchTemplates={refetchTemplates}
-            setEditorInstances={setEditorInstances}
             setNeedNoteFetch={setNeedNoteFetch}
             setNotes={setNotes}
             setRefetchTemplates={setRefetchTemplates}
             titles={titles}
             user={currentUser}
           />
-          <ELNEditor
-            currentNoteId={router.query.noteId}
-            currentOrganizationId={currentOrganization?.id}
-            editorInstances={editorInstances}
-            notes={notes}
-            setEditorInstances={setEditorInstances}
-            setTitles={setTitles}
-            titles={titles}
-            user={currentUser}
-          />
+          {currentNote && (
+            <ELNEditor
+              currentNoteId={router.query.noteId}
+              currentOrganizationId={currentOrganization?.id}
+              notes={notes}
+              setTitles={setTitles}
+              titles={titles}
+              user={currentUser}
+              currentNote={currentNote}
+            />
+          )}
         </Fragment>
       )}
     </div>

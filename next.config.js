@@ -21,6 +21,12 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
     ]
   },  
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+    // Load Markdown Configuration
+    config.module.rules.push({
+      test: /\.md$/,
+      use: "raw-loader",
+    });
+
     config.resolve.fallback = {
       fs: false,
       net: false,
@@ -54,10 +60,10 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
   async redirects() {
     return [
       {
-        source: '/all',
-        destination: '/',
+        source: "/all",
+        destination: "/",
         permanent: true,
       },
-    ]
-  },  
+    ];
+  },
 });

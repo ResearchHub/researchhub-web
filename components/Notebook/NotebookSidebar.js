@@ -20,7 +20,6 @@ const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
 const NotebookSidebar = ({
   currentOrg,
-  editorInstances,
   isPrivateNotebook,
   needNoteFetch,
   notes,
@@ -28,14 +27,12 @@ const NotebookSidebar = ({
   onOrgChange,
   orgs,
   refetchTemplates,
-  setEditorInstances,
   setNeedNoteFetch,
   setNotes,
   setRefetchTemplates,
   titles,
   user,
 }) => {
-
   if (!isPrivateNotebook && !currentOrg) {
     throw "Notebook sidebar could not be initialized";
   }
@@ -118,7 +115,7 @@ const NotebookSidebar = ({
                     >
                       <div className={css(styles.avatarWrapper)}>
                         <OrgAvatar org={org} />
-                      </div>                      
+                      </div>
                       <div className={css(styles.popoverBodyItemText)}>
                         <div className={css(styles.popoverBodyItemTitle)}>
                           {org.name}
@@ -137,10 +134,14 @@ const NotebookSidebar = ({
                     setIsPopoverOpen(false);
                   }}
                 >
-                  <div className={css(styles.actionButton, styles.newOrgButton)}>
+                  <div
+                    className={css(styles.actionButton, styles.newOrgButton)}
+                  >
                     {icons.plus}
                   </div>{" "}
-                  <span className={css(styles.newOrgText)}>New Organization</span>
+                  <span className={css(styles.newOrgText)}>
+                    New Organization
+                  </span>
                 </div>
               </div>
             }
@@ -151,26 +152,23 @@ const NotebookSidebar = ({
                 className={css(styles.popoverTarget)}
                 onClick={() => setIsPopoverOpen(!isPopoverOpen)}
               >
-                {isPrivateNotebook
-                  ? (
-                    <Fragment>
-                      <img
-                        className={css(styles.popoverBodyItemImage)}
-                        draggable="false"
-                        src={user.author_profile.profile_image}
-                      />
-                      {"Personal Notebook"}
-                    </Fragment>
-                  )
-                  : (
-                      <Fragment>
-                        <div className={css(styles.avatarWrapper)}>
-                          <OrgAvatar org={currentOrg} />
-                        </div>
-                        {currentOrg.name}
-                      </Fragment>
-                    )
-                }
+                {isPrivateNotebook ? (
+                  <Fragment>
+                    <img
+                      className={css(styles.popoverBodyItemImage)}
+                      draggable="false"
+                      src={user.author_profile.profile_image}
+                    />
+                    {"Personal Notebook"}
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <div className={css(styles.avatarWrapper)}>
+                      <OrgAvatar org={currentOrg} />
+                    </div>
+                    {currentOrg.name}
+                  </Fragment>
+                )}
                 <span className={css(styles.sortIcon)}>{icons.sort}</span>
               </div>
             }
@@ -216,24 +214,18 @@ const NotebookSidebar = ({
         </div>
         {!hideNotes && (
           <div>
-            {notes.map(note => {
+            {notes.map((note) => {
               const noteId = note.id.toString();
-              const editorInstance = editorInstances.find(editor =>
-                noteId === editor.config._config.collaboration.channelId
-              );
               return (
                 <SidebarSectionContent
                   currentNoteId={router.query.noteId}
                   currentOrg={currentOrg}
-                  editorInstances={editorInstances}
                   key={noteId}
-                  noteBody={editorInstance?.getData() ?? ""}
                   noteId={noteId}
                   notes={notes}
                   pathname={getNotePathname({ noteId, org: currentOrg })}
                   refetchNotes={needNoteFetch}
                   refetchTemplates={refetchTemplates}
-                  setEditorInstances={setEditorInstances}
                   setNotes={setNotes}
                   setRefetchNotes={setNeedNoteFetch}
                   setRefetchTemplates={setRefetchTemplates}
@@ -291,7 +283,7 @@ const styles = StyleSheet.create({
   newOrgText: {
     marginLeft: 5,
     paddingTop: 7,
-  },    
+  },
   orgButtonsContainer: {
     marginTop: 0,
   },
