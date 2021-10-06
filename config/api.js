@@ -172,7 +172,7 @@ const routes = (BASE_URL) => {
     NOTE: ({ noteId, orgId }) => {
       let url;
       if (!isNullOrUndefined(orgId)) {
-        url = `${BASE_URL}note/${orgId}/get_organization_notes/`;
+        url = `${BASE_URL}organization/${orgId}/get_organization_notes/`;
       } else if (!isNullOrUndefined(noteId)) {
         url = `${BASE_URL}note/${noteId}/`;
       } else {

@@ -86,7 +86,7 @@ export const ELNEditor = ({ user }) => {
           const updatedTitles = {};
           for (const note of sortedNotes) {
             const noteId = note.id.toString();
-            updatedContent[noteId] = note.latest_version.src;
+            updatedContent[noteId] = note?.latest_version?.src;
             updatedTitles[noteId] = note.title;
           }
           setContent(updatedContent);
