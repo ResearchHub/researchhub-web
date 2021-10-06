@@ -5,7 +5,7 @@ import { fetchUserOrgs, fetchOrgNotes } from "~/config/fetch";
 import Loader from "~/components/Loader/Loader";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
-import OrgSidebar from "~/components/Org/OrgSidebar";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import ELNEditor from "~/components/CKEditor/ELNEditor";
 import { getNotePathname } from "~/config/utils/org";
 
