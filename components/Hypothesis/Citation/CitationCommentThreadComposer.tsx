@@ -80,9 +80,8 @@ function CitationCommentThreadComposer({
 }
 
 const styles = StyleSheet.create({
-  citationCommentThreadCard: { overflow: "auto" },
+  citationCommentThreadCard: { marginBottom: 8 },
   columnContainer: {
-    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     width: "100%",
     padding: "20px 15px",
     minHeight: 100,

@@ -324,8 +324,8 @@ class DiscussionEntry extends Component {
   renderViewMore = () => {
     if (this.state.comments.length < this.props.data.commentCount) {
       let fetching = this.state.fetching;
-      let totalCount = this.props.data.commentCount;
-      let currentCount = this.state.comments.length;
+      let totalCount = this.props.data?.commentCount ?? 0;
+      let currentCount = this.state.comments?.length ?? 0;
       let fetchCount =
         totalCount - currentCount >= 10 ? 10 : totalCount - currentCount;
       return (
@@ -481,6 +481,8 @@ class DiscussionEntry extends Component {
       <div
         className={css(
           styles.discussionCard,
+          this.props.withBorder && styles.withBorder,
+          this.props.withPadding && styles.withPadding,
           this.state.highlight && styles.highlight
         )}
       >
@@ -825,6 +827,10 @@ const styles = StyleSheet.create({
     color: "rgb(35, 32, 56)",
     fontStyle: "italic",
   },
+  withPadding: {
+    padding: 16,
+    height: "unset",
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -847,7 +853,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionEntry);
