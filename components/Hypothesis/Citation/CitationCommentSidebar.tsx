@@ -199,12 +199,13 @@ function CitationCommentSidebar({}: CitationCommentSidebarProps): ReactElement<"
 
   const citationThreads = yo.map((yoyo, index) => (
     <DiscussionEntry
-      key={index}
       data={yoyo}
       discussionCount={0}
       hoverEvents
+      key={index}
       mediaOnly
       noVoteLine
+      shouldShowContextTitle
       withPadding
       // onRemoveSuccess={onRemoveSuccess}
       // shouldShowContextTitle={shouldShowContextTitle}
