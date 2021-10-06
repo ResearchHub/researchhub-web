@@ -69,7 +69,7 @@ const NotebookSidebar = ({
           org={currentOrg}
           isOpen={showManageOrgModal}
           closeModal={() => setShowManageOrgModal(false)}
-          setCurrentOrganization={onOrgChange}
+          onOrgChange={onOrgChange}
         />
       )}
       <NewOrgModal

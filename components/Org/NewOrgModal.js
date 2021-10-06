@@ -56,7 +56,7 @@ const NewOrgModal = ({
           <Button
             type="submit"
             customButtonStyle={styles.button}
-            label="Create Organization"
+            label="Next: Invite Members"
             rippleClass={styles.buttonWrapper}
           ></Button>
         </form>
@@ -71,7 +71,7 @@ const NewOrgModal = ({
       children={modalBody}
       closeModal={closeModal}
       isOpen={isOpen}
-      title={flowStep === "ORG_CREATE" ? "Create Organization" : "Invite users"}
+      title={flowStep === "ORG_CREATE" ? "Set up your organization" : "Invite users"}
     />
   );
 };
