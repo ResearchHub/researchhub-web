@@ -1,12 +1,9 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import {
-  isNullOrUndefined,
-  doesNotExist,
-} from "~/config/utils/nullchecks";
+import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
 
-const apiRoot = {
+export const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
   dev: "localhost:8000",
@@ -1015,8 +1012,10 @@ const routes = (BASE_URL) => {
   }
 };
 
-export default API({
+const api = API({
   authTokenName: AUTH_TOKEN,
   apiRoot,
   routes,
 });
+
+export default api;

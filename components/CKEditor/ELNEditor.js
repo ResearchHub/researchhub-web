@@ -1,10 +1,16 @@
-import API from "~/config/api";
-import { AUTH_TOKEN } from "~/config/constants";
-import { Helpers } from "@quantfive/js-web-config";
-import { breakpoints } from "~/config/themes/screen";
-import { css, StyleSheet } from "aphrodite";
 import { useEffect, useRef, useState } from "react";
+import { Helpers } from "@quantfive/js-web-config";
+import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
+import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
+import {
+  Context,
+  ELNEditor as CKELNEditor,
+} from "@thomasvu/ckeditor5-custom-build";
+
+import { AUTH_TOKEN } from "~/config/constants";
+import API, { apiRoot } from "~/config/api";
+import { breakpoints } from "~/config/themes/screen";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -26,37 +32,23 @@ const saveData = (editor, noteId) => {
 
 const ELNEditor = ({
   currentOrganizationId,
-  editorInstances,
-  notes,
-  setEditorInstances,
   setTitles,
   titles,
   user,
+  currentNote,
+  currentNoteId,
 }) => {
   const router = useRouter();
-  const editorRef = useRef();
   const presenceListElementRef = useRef();
   const sidebarElementRef = useRef();
-  const [editorLoaded, setEditorLoaded] = useState(false);
+
+  const [ELNLoaded, setELNLoaded] = useState(false);
 
   useEffect(() => {
-    editorRef.current = {
-      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      CKEditorContext: require("@ckeditor/ckeditor5-react").CKEditorContext,
-      //CKEditorInspector: require("@ckeditor/ckeditor5-inspector"),
-      Context: require("@thomasvu/ckeditor5-custom-build").Context,
-      ELNEditor: require("@thomasvu/ckeditor5-custom-build").ELNEditor,
-    };
-    setEditorLoaded(true);
+    setTimeout(() => {
+      setELNLoaded(true);
+    }, 50);
   }, []);
-
-  const {
-    CKEditor,
-    CKEditorContext,
-    //CKEditorInspector,
-    Context,
-    ELNEditor,
-  } = editorRef.current || {};
 
   const handleInput = (editor) => {
     const updatedTitles = {};
@@ -88,11 +80,16 @@ const ELNEditor = ({
             return resolve(xhrResponse);
           });
 
-          xhr.addEventListener("error", () => reject(new Error("Network error")));
+          xhr.addEventListener("error", () =>
+            reject(new Error("Network error"))
+          );
           xhr.addEventListener("abort", () => reject(new Error("Abort")));
           xhr.setRequestHeader(
             "Authorization",
-            "Token " + (typeof window !== "undefined" ? window.localStorage[AUTH_TOKEN] : ""),
+            "Token " +
+              (typeof window !== "undefined"
+                ? window.localStorage[AUTH_TOKEN]
+                : "")
           );
           xhr.send();
         });
@@ -101,7 +98,9 @@ const ELNEditor = ({
     },
     // Collaboration configuration for the context:
     collaboration: {
-      channelId: `${router.query.orgName}-${currentOrganizationId > 0 ? currentOrganizationId : user.id}`,
+      channelId: `${apiRoot}-${router.query.orgName}-${
+        currentOrganizationId > 0 ? currentOrganizationId : user.id
+      }`,
     },
     sidebar: {
       container: sidebarElementRef.current,
@@ -112,77 +111,90 @@ const ELNEditor = ({
     },
   };
 
-  const editors = notes.map(note => {
-    const noteId = note.id.toString();
-    return (
-      <div
-        className={css(
-          styles.editor,
-          router.query.noteId !== noteId && styles.hideEditor,
-        )}
-        key={noteId}
-      >
-        <CKEditor
-          config={{
-            title: {
-              placeholder: "Untitled",
-            },
-            placeholder:
-              "Start typing to continue with an empty page, or pick a template",
-            initialData: note.latest_version?.src ?? "",
-            simpleUpload: {
-              // The URL that the images are uploaded to.
-              uploadUrl: API.SAVE_IMAGE,
+  // const editors = notes.map((note) => {
+  //   const noteId = note.id.toString();
+  //   return (
 
-              // Headers sent along with the XMLHttpRequest to the upload server.
-              headers: {
-                Authorization:
-                  "Token " +
-                  (typeof window !== "undefined"
-                    ? window.localStorage[AUTH_TOKEN]
-                    : ""),
-              },
-            },
-            collaboration: {
-              channelId: noteId,
-            },
-            autosave: {
-              save(editor) {
-                return saveData(editor, noteId);
-              },
-            },
-          }}
-          editor={ELNEditor}
-          id={noteId}
-          onChange={(event, editor) => handleInput(editor)}
-          onReady={(editor) => {
-            console.log("Editor is ready to use!", editor);
-            //CKEditorInspector.attach(editor);
-            setEditorInstances([...editorInstances, editor]);
-            editor.editing.view.change((writer) => {
-              writer.setStyle(
-                {
-                  "min-height": "calc(100% - 227px)",
-                },
-                editor.editing.view.document.getRoot()
-              );
-            });
-          }}
-        />
-      </div>
-    );
-  });
+  //   );
+  // });
+
+  const noteId = currentNoteId;
+  const note = currentNote;
+
+  if (!process.browser) {
+    return null;
+  }
+
+  const CKConfig = {
+    title: {
+      placeholder: "Untitled",
+    },
+    placeholder:
+      "Start typing to continue with an empty page, or pick a template",
+    initialData: note.latest_version?.src ?? "",
+    simpleUpload: {
+      // The URL that the images are uploaded to.
+      uploadUrl: API.SAVE_IMAGE,
+
+      // Headers sent along with the XMLHttpRequest to the upload server.
+      headers: {
+        Authorization:
+          "Token " +
+          (typeof window !== "undefined"
+            ? window.localStorage[AUTH_TOKEN]
+            : ""),
+      },
+    },
+    collaboration: {
+      channelId: noteId,
+    },
+    autosave: {
+      save(editor) {
+        console.log("HERE");
+        return saveData(editor, noteId);
+      },
+    },
+  };
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.presenceListContainer)}>
-        <div ref={presenceListElementRef} className={css(styles.presenceList) + " presence"}></div>
+        <div
+          ref={presenceListElementRef}
+          className={css(styles.presenceList) + " presence"}
+        />
       </div>
-      {editorLoaded &&
+      {ELNLoaded && (
         <CKEditorContext config={contextConfiguration} context={Context}>
-          {editors}
+          {/* {editors} */}
+          <div
+            className={css(
+              styles.editor,
+              router.query.noteId !== noteId && styles.hideEditor
+            )}
+            key={noteId}
+          >
+            <CKEditor
+              config={CKConfig}
+              editor={CKELNEditor}
+              id={noteId}
+              onChange={(event, editor) => handleInput(editor)}
+              onReady={(editor) => {
+                console.log("Editor is ready to use!", editor);
+                //CKEditorInspector.attach(editor);
+                editor.editing.view.change((writer) => {
+                  writer.setStyle(
+                    {
+                      "min-height": "calc(100% - 227px)",
+                    },
+                    editor.editing.view.document.getRoot()
+                  );
+                });
+              }}
+            />
+          </div>
         </CKEditorContext>
-      }
+      )}
       <div ref={sidebarElementRef} className="sidebar"></div>
     </div>
   );

@@ -14,14 +14,12 @@ import { useState } from "react";
 const SidebarSectionContent = ({
   currentNoteId,
   currentOrg,
-  editorInstances,
   noteBody,
   noteId,
   notes,
   pathname,
   refetchNotes,
   refetchTemplates,
-  setEditorInstances,
   setNotes,
   setRefetchNotes,
   setRefetchTemplates,
@@ -31,6 +29,14 @@ const SidebarSectionContent = ({
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const handleDeleteNote = (noteId) => {
+    deleteNote(noteId).then((deletedNote) => {
+      const newNotes = notes.filter((note) => note.id !== deletedNote.id);
+      setNotes(newNotes);
+      router.push(getNotePathname({ noteId: newNotes[0].id, org: currentOrg }));
+    });
+  };
 
   const menuItems = [
     {
@@ -57,14 +63,21 @@ const SidebarSectionContent = ({
               plain_text: "",
               note: note.id,
             };
-            return fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams));
-          }).then(Helpers.checkStatus)
-            .then(Helpers.parseJSON)
-            .then((data) => {
-              setRefetchNotes(!refetchNotes);
-              const path = getNotePathname({ noteId: data.note, org: currentOrg });
-              router.push(path);
+            return fetch(
+              API.NOTE_CONTENT(),
+              API.POST_CONFIG(noteContentParams)
+            );
+          })
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((data) => {
+            setRefetchNotes(!refetchNotes);
+            const path = getNotePathname({
+              noteId: data.note,
+              org: currentOrg,
             });
+            router.push(path);
+          });
       },
     },
     {
@@ -98,18 +111,7 @@ const SidebarSectionContent = ({
         alert.show({
           text: `Permanently delete '${title}'? This cannot be undone.`,
           buttonText: "Yes",
-          onClick: () => {
-            deleteNote(noteId)
-              .then((deletedNote) => {
-                const newNotes = notes.filter(note => note.id !== deletedNote.id);
-                setNotes(newNotes);
-                const newEditorInstances = editorInstances.filter(
-                  editor => editor.config._config.collaboration.channelId !== deletedNote.id.toString()
-                );
-                setEditorInstances(newEditorInstances);
-                router.push(getNotePathname({ noteId: newNotes[0].id, org: currentOrg }));
-              });
-          },
+          onClick: () => handleDeleteNote(noteId),
         });
       },
     },
@@ -121,7 +123,7 @@ const SidebarSectionContent = ({
         <a
           className={css(
             styles.sidebarSectionContent,
-            noteId === currentNoteId && styles.active,
+            noteId === currentNoteId && styles.active
           )}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -135,23 +137,30 @@ const SidebarSectionContent = ({
               padding={5}
               popoverContent={
                 <div className={css(styles.popoverBodyContent)}>
-                  {menuItems.map((item, index) =>
+                  {menuItems.map((item, index) => (
                     <div
                       className={css(styles.popoverBodyItem, item.hoverStyle)}
                       key={index}
                       onClick={item.onClick}
                     >
-                      <div className={css(styles.popoverBodyIcon)}>{item.icon}</div>
-                      <div className={css(styles.popoverBodyText)}>{item.text}</div>
+                      <div className={css(styles.popoverBodyIcon)}>
+                        {item.icon}
+                      </div>
+                      <div className={css(styles.popoverBodyText)}>
+                        {item.text}
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               }
               positions={["bottom"]}
               setIsPopoverOpen={setIsPopoverOpen}
               targetContent={
                 <div
-                  className={css(styles.ellipsisButton, !isHovered && !isPopoverOpen && styles.hideEllipsis)}
+                  className={css(
+                    styles.ellipsisButton,
+                    !isHovered && !isPopoverOpen && styles.hideEllipsis
+                  )}
                   onClick={(e) => {
                     e && e.preventDefault();
                     setIsPopoverOpen(!isPopoverOpen);
