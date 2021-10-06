@@ -440,16 +440,18 @@ class DiscussionEntry extends Component {
     const {
       data,
       data: { context_title: contextTitle, id: commentThreadID },
+      documentType,
       hostname,
+      hypothesis,
+      mediaOnly,
       mobileView,
+      noRespond,
+      noVote,
+      noVoteLine,
       paper,
       path,
       post,
-      hypothesis,
-      documentType,
-      mediaOnly,
       shouldShowContextTitle = true,
-      noVoteLine,
       store: inlineCommentStore,
     } = this.props;
     const commentCount =
@@ -486,36 +488,38 @@ class DiscussionEntry extends Component {
           this.state.highlight && styles.highlight
         )}
       >
-        <div className={css(styles.column, styles.left)}>
-          <div className={css(styles.voteContainer)}>
-            <VoteWidget
-              score={this.state.score}
-              styles={styles.voteWidget}
-              onUpvote={this.upvote}
-              onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
-              type={"Discussion"}
-              fontSize={"16px"}
-              width={"44px"}
-              promoted={false}
-            />
-            <div
-              className={css(
-                styles.threadLineContainer,
-                noVoteLine && styles.hidden
-              )}
-              onClick={this.toggleCommentView}
-            >
+        {noVote ? null : (
+          <div className={css(styles.column, styles.left)}>
+            <div className={css(styles.voteContainer)}>
+              <VoteWidget
+                score={this.state.score}
+                styles={styles.voteWidget}
+                onUpvote={this.upvote}
+                onDownvote={this.downvote}
+                selected={this.state.selectedVoteType}
+                type={"Discussion"}
+                fontSize={"16px"}
+                width={"44px"}
+                promoted={false}
+              />
               <div
                 className={css(
-                  styles.threadline,
-                  this.state.revealComment && styles.activeThreadline,
-                  this.state.hovered && styles.hoverThreadline
+                  styles.threadLineContainer,
+                  noVoteLine && styles.hidden
                 )}
-              />
+                onClick={this.toggleCommentView}
+              >
+                <div
+                  className={css(
+                    styles.threadline,
+                    this.state.revealComment && styles.activeThreadline,
+                    this.state.hovered && styles.hoverThreadline
+                  )}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        )}
         <div
           className={css(styles.column)}
           ref={(element) => (this.divRef = element)}
@@ -598,22 +602,24 @@ class DiscussionEntry extends Component {
                 </div>
               </div>
             )}
-            <div className={css(styles.row, styles.bottom)}>
-              <ThreadActionBar
-                editing={this.state.editing}
-                toggleEdit={this.state.canEdit && this.toggleEdit}
-                title={title}
-                count={commentCount}
-                showChildrenState={this.state.revealComment}
-                onSubmit={this.submitComment}
-                onClick={this.toggleCommentView}
-                onCountHover={this.toggleHover}
-                mediaOnly={mediaOnly}
-                small={noVoteLine}
-                isRemoved={this.state.removed}
-                hideReply={data.source === "twitter"}
-              />
-            </div>
+            {noRespond ? null : (
+              <div className={css(styles.row, styles.bottom)}>
+                <ThreadActionBar
+                  editing={this.state.editing}
+                  toggleEdit={this.state.canEdit && this.toggleEdit}
+                  title={title}
+                  count={commentCount}
+                  showChildrenState={this.state.revealComment}
+                  onSubmit={this.submitComment}
+                  onClick={this.toggleCommentView}
+                  onCountHover={this.toggleHover}
+                  mediaOnly={mediaOnly}
+                  small={noVoteLine}
+                  isRemoved={this.state.removed}
+                  hideReply={data.source === "twitter"}
+                />
+              </div>
+            )}
           </div>
           <div className={css(styles.commentContainer)} id={"comments"}>
             {this.state.revealComment && (
