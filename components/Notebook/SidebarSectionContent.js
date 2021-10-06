@@ -19,9 +19,11 @@ const SidebarSectionContent = ({
   noteId,
   notes,
   pathname,
+  refetchNotes,
   refetchTemplates,
   setEditorInstances,
   setNotes,
+  setRefetchNotes,
   setRefetchTemplates,
   title,
 }) => {
@@ -29,19 +31,6 @@ const SidebarSectionContent = ({
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
-  const handleDeleteNote = (noteId) => {
-    deleteNote(noteId)
-      .then((deletedNote) => {
-        const newNotes = notes.filter(note => note.id !== deletedNote.id);
-        setNotes(newNotes);
-        const newEditorInstances = editorInstances.filter(
-          editor => editor.config._config.collaboration.channelId !== deletedNote.id.toString()
-        );
-        setEditorInstances(newEditorInstances);
-        router.push(getNotePathname({ noteId: newNotes[0].id, org: currentOrg }));
-      });
-  };
 
   const menuItems = [
     {
@@ -54,7 +43,29 @@ const SidebarSectionContent = ({
       text: "Duplicate",
       icon: icons.clone,
       hoverStyle: styles.blueHover,
-      onClick: () => setIsPopoverOpen(!isPopoverOpen),
+      onClick: () => {
+        const noteParams = {
+          organization: currentOrg?.id,
+          title: title,
+        };
+        fetch(API.NOTE({}), API.POST_CONFIG(noteParams))
+          .then(Helpers.checkStatus)
+          .then(Helpers.parseJSON)
+          .then((note) => {
+            const noteContentParams = {
+              full_src: noteBody,
+              plain_text: "",
+              note: note.id,
+            };
+            return fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams));
+          }).then(Helpers.checkStatus)
+            .then(Helpers.parseJSON)
+            .then((data) => {
+              setRefetchNotes(!refetchNotes);
+              const path = getNotePathname({ noteId: data.note, org: currentOrg });
+              router.push(path);
+            });
+      },
     },
     {
       text: "Save as template",
@@ -87,8 +98,19 @@ const SidebarSectionContent = ({
         alert.show({
           text: `Permanently delete '${title}'? This cannot be undone.`,
           buttonText: "Yes",
-          onClick: () => handleDeleteNote(noteId),
-        })
+          onClick: () => {
+            deleteNote(noteId)
+              .then((deletedNote) => {
+                const newNotes = notes.filter(note => note.id !== deletedNote.id);
+                setNotes(newNotes);
+                const newEditorInstances = editorInstances.filter(
+                  editor => editor.config._config.collaboration.channelId !== deletedNote.id.toString()
+                );
+                setEditorInstances(newEditorInstances);
+                router.push(getNotePathname({ noteId: newNotes[0].id, org: currentOrg }));
+              });
+          },
+        });
       },
     },
   ];
