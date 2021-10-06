@@ -760,9 +760,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,
