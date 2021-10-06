@@ -51,6 +51,9 @@ function CitationCommentThreadComposer({
   return (
     <div className={css([styles.citationCommentThreadCard])}>
       <ColumnContainer overrideStyles={styles.columnContainer}>
+        <div className={css(styles.citationTitleContainer)}>
+          <span className={css(styles.citationTitle)}>{citationTitle}</span>
+        </div>
         <DiscussionPostMetadata
           authorProfile={authorProfile}
           // @ts-ignore legacy code
@@ -81,6 +84,26 @@ function CitationCommentThreadComposer({
 
 const styles = StyleSheet.create({
   citationCommentThreadCard: { marginBottom: 8 },
+  citationTitleContainer: {
+    alignItems: "center",
+    borderLeft: `4px solid ${colors.GREY(1)}`,
+    boxSizing: "border-box",
+    display: "flex",
+    fontFamily: "CharterBT",
+    height: 20,
+    marginBottom: 16,
+  },
+  citationTitle: {
+    boxSizing: "border-box",
+    color: colors.GREY(1),
+    fontSize: 16,
+    fontStyle: "italic",
+    maxWidth: 860,
+    overflow: "hidden",
+    paddingLeft: 8,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+  },
   columnContainer: {
     width: "100%",
     padding: "20px 15px",
