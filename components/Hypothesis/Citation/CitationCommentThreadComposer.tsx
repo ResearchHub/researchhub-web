@@ -11,9 +11,7 @@ import { ID } from "~/config/types/root_types";
 type Props = {
   auth?: any; // redux
   citationID: ID;
-  citationThreadID?: ID;
   citationTitle: string;
-  citationUnidocID: ID;
   onSubmitSuccess: () => void;
   onCancel: () => void;
 };
