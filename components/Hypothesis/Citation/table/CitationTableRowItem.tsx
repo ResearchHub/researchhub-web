@@ -5,16 +5,18 @@ import {
   UNIFIED_DOC_PAGE_URL_PATTERN,
 } from "~/config/utils/url_patterns";
 import { tableWidths } from "./constants/tableWidths";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, SyntheticEvent } from "react";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import Image from "next/image";
 import Link from "next/link";
+import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
+  citationUnidocID: ID;
   citedBy: Object[];
   consensusMeta: ConsensusMeta;
   source: {
@@ -52,12 +54,14 @@ function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
 
 export default function CitationTableRowItem({
   citationID,
+  citationUnidocID,
   citedBy,
   consensusMeta,
   source: { displayTitle, docType, documentID, slug },
   type,
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const citationTitleLinkUri = formatUnifiedDocPageUrl({
     docType,
     documentID,
@@ -103,7 +107,22 @@ export default function CitationTableRowItem({
       />
       <ItemColumn
         className={styles.itemCenterAlign}
-        value={<div className={css(styles.commentsIcon)}>{icons.comments}</div>}
+        value={
+          <div
+            className={css(styles.commentsIcon)}
+            onClick={(event: SyntheticEvent): void => {
+              event.stopPropagation();
+              hypothesisUnduxStore.set("targetCitationComment")({
+                citationID,
+                citationUnidocID,
+                citationTitle: displayTitle,
+              });
+            }}
+            role="button"
+          >
+            {icons.comments}
+          </div>
+        }
         width={tableWidths.COMMENTS}
       />
     </div>

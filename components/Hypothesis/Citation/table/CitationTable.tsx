@@ -1,17 +1,17 @@
 import { css, StyleSheet } from "aphrodite";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { ID } from "~/config/types/root_types";
+import { ReactElement, useEffect, useState } from "react";
 import { tableWidths } from "./constants/tableWidths";
 import CitationNoResult from "./CitationNoResult";
+import CitationAddNewButton from "../CitationAddNewButton";
+import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import CitationTableRowItem, {
   CitationTableRowItemProps,
 } from "./CitationTableRowItem";
-import CitationTableHeaderItem from "./CitationTableHeaderItem";
-import colors from "~/config/themes/colors";
-import { ReactElement, useEffect, useState } from "react";
-import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
-import CitationAddNewButton from "../CitationAddNewButton";
+import colors from "~/config/themes/colors";
 
 type Props = {
   hypothesisID: ID;

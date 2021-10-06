@@ -12,21 +12,11 @@ import colors from "~/config/themes/colors";
 import HypothesisUnduxStore from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 
-type CitationCommentSidebarProps = {
-  citationID: ID;
-  citationThreadID?: ID;
-  shouldShowContextTitle: boolean;
-};
+type CitationCommentSidebarProps = {};
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
-  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
-  const targetCitationComment = hypothesisUnduxStore.get(
-    "targetCitationComment"
-  );
-  const { citationID, citationThreadID } = targetCitationComment ?? {};
-
   const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
     MEDIA_WIDTH_LIMIT > getCurrMediaWidth()
   );
@@ -45,29 +35,24 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         styles={burgerMenuStyle}
         customBurgerIcon={false}
       >
-        <CitationCommentSidebar
-          citationID={citationID}
-          citationThreadID={citationThreadID}
-          shouldShowContextTitle
-        />
+        <CitationCommentSidebar />
       </SlideMenu>
     </div>
   ) : (
     <div className={css(styles.inlineSticky)}>
-      <CitationCommentSidebar
-        citationID={citationID}
-        citationThreadID={citationThreadID}
-        shouldShowContextTitle
-      />
+      <CitationCommentSidebar />
     </div>
   );
 }
 
-function CitationCommentSidebar({
-  citationID,
-  citationThreadID,
-  shouldShowContextTitle,
-}: CitationCommentSidebarProps): ReactElement<"div"> {
+function CitationCommentSidebar({}: CitationCommentSidebarProps): ReactElement<"div"> {
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
+  const targetCitationComment = hypothesisUnduxStore.get(
+    "targetCitationComment"
+  );
+  const { citationID, citationThreadID, citationUnidocID, citationTitle } =
+    targetCitationComment ?? {};
+
   return (
     <div className={css(styles.citationCommentSidebar)}>
       <div className={css(styles.header)}>
@@ -82,6 +67,8 @@ function CitationCommentSidebar({
       <CitationCommentThreadComposer
         citationID={citationID}
         citationThreadID={citationThreadID}
+        citationUnidocID={citationUnidocID}
+        citationTitle={citationTitle ?? ""}
       />
     </div>
   );
