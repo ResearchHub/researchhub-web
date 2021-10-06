@@ -1,11 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
+import { ID } from "~/config/types/root_types";
+import { ReactElement } from "react";
 import { silentEmptyFnc } from "~/config/utils/nullchecks";
 import { TextRow } from "react-placeholder/lib/placeholders";
 import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import React, { ReactElement } from "react";
-import { ID } from "~/config/types/root_types";
 
 type Props = {
   aggregateCitationConsensus: {
