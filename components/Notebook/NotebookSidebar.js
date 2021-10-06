@@ -1,6 +1,7 @@
 import Link from "next/link";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
+import OrgAvatar from "~/components/Org/OrgAvatar";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
@@ -134,10 +135,16 @@ const NotebookSidebar = ({
                 </Link>
               ))}
               <div
-                className={css(styles.newOrgButton)}
-                onClick={() => setShowNewOrgModal(true)}
+                className={css(styles.newOrgContainer)}
+                onClick={() => {
+                  setShowNewOrgModal(true);
+                  setIsPopoverOpen(false);
+                }}
               >
-                + New Org
+                <div className={css(styles.actionButton, styles.newOrgButton)}>
+                  {icons.plus}
+                </div>{" "}
+                <span className={css(styles.newOrgText)}>New Organization</span>
               </div>
             </div>
           }
@@ -148,11 +155,9 @@ const NotebookSidebar = ({
               className={css(styles.popoverTarget)}
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}
             >
-              <img
-                className={css(styles.popoverBodyItemImage)}
-                draggable="false"
-                src={orgImg}
-              />
+              <div className={css(styles.currentOrgContainer)}>
+                <OrgAvatar org={currentOrg} />
+              </div>
               {orgName}
               <span className={css(styles.sortIcon)}>{icons.sort}</span>
             </div>
@@ -193,10 +198,11 @@ const NotebookSidebar = ({
       </div>
       {!hideNotes && (
         <div>
-          {notes.map(note => {
+          {notes.map((note) => {
             const noteId = note.id.toString();
-            const editorInstance = editorInstances.find(editor =>
-              noteId === editor.config._config.collaboration.channelId
+            const editorInstance = editorInstances.find(
+              (editor) =>
+                noteId === editor.config._config.collaboration.channelId
             );
             return (
               <SidebarSectionContent
@@ -245,6 +251,9 @@ const styles = StyleSheet.create({
   },
   orgButton: {
     paddingLeft: 17,
+  },
+  currentOrgContainer: {
+    marginRight: 10,
   },
   orgButtonText: {
     marginLeft: 20,
@@ -363,8 +372,24 @@ const styles = StyleSheet.create({
   active: {
     backgroundColor: colors.GREY(0.3),
   },
-  newOrgButton: {
+  newOrgContainer: {
     cursor: "pointer",
+    display: "flex",
+    padding: 16,
+    color: colors.BLUE(),
+    fontWeight: 500,
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    },
+  },
+  newOrgButton: {
+    width: 30,
+    height: 30,
+    marginLeft: 0,
+  },
+  newOrgText: {
+    marginLeft: 5,
+    paddingTop: 7,
   },
   sidebarNewNote: {
     borderTop: `1px solid ${colors.GREY(0.3)}`,

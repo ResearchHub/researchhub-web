@@ -8,12 +8,7 @@ import { connect } from "react-redux";
 import AvatarUpload from "~/components/AvatarUpload";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 
-const ManageOrgDetails = ({
-  org,
-  setMessage,
-  showMessage,
-  onOrgChange,
-}) => {
+const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
   const [currentOrg, setCurrentOrg] = useState(org);
   const [orgName, setOrgName] = useState(org.name);
   const [isAvatarUploadOpen, setIsAvatarUploadOpen] = useState(false);
@@ -56,17 +51,19 @@ const ManageOrgDetails = ({
 
     formData.append("cover_image", blob);
     try {
-      const updatedOrg = await updateOrgProfileImg({ orgId: currentOrg.id, file: formData })
+      const updatedOrg = await updateOrgProfileImg({
+        orgId: currentOrg.id,
+        file: formData,
+      });
       setCurrentOrg(updatedOrg);
       onOrgChange(updatedOrg);
       setMessage("");
       showMessage({ show: true, error: false });
       setIsAvatarUploadOpen(false);
-    }
-    catch (err) {
+    } catch (err) {
       console.error(err);
       setMessage("Failed to update image");
-      showMessage({ show: true, error: true });      
+      showMessage({ show: true, error: true });
     }
   };
 
@@ -74,16 +71,18 @@ const ManageOrgDetails = ({
     return (
       <Button
         onClick={() => saveProfilePicture(picture)}
-        label={'Save'}
+        label={"Save"}
         isWhite={true}
-      >
-      </Button>
+      ></Button>
     );
   };
 
   return (
     <div className={css(styles.container)}>
-      <form className={css(styles.detailsForm)} onSubmit={(e) => handleSubmit(e)}>
+      <form
+        className={css(styles.detailsForm)}
+        onSubmit={(e) => handleSubmit(e)}
+      >
         <FormInput
           label="Organization Name"
           id="org-name-input"
@@ -101,9 +100,12 @@ const ManageOrgDetails = ({
           size={"small"}
         ></Button>
       </form>
-      <form className={css(styles.avatarForm)} >
-        <div className={css(hoverStyles.avatarWrapper)} onClick={() => setIsAvatarUploadOpen(true)}>
-          <OrgAvatar org={org} />
+      <form className={css(styles.avatarForm)}>
+        <div
+          className={css(hoverStyles.avatarWrapper)}
+          onClick={() => setIsAvatarUploadOpen(true)}
+        >
+          <OrgAvatar org={currentOrg} size={110} fontSize={28} />
           <div className={css(styles.avatarOverlay)}>Change</div>
         </div>
         <AvatarUpload
@@ -119,7 +121,7 @@ const ManageOrgDetails = ({
 
 const styles = StyleSheet.create({
   container: {
-    display: "flex"
+    display: "flex",
   },
   avatarOverlay: {
     display: "none",
@@ -155,19 +157,18 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     textAlign: "left",
-  }, 
+  },
 });
 
 const hoverStyles = StyleSheet.create({
   avatarWrapper: {
     position: "relative",
     cursor: "pointer",
-    [ ':hover .' + (process.browser ? css(styles.avatarOverlay) : "")]: {
+    [":hover ." + (process.browser ? css(styles.avatarOverlay) : "")]: {
       display: "flex",
-    }
+    },
   },
-})
-
+});
 
 const mapStateToProps = (state) => ({});
 const mapDispatchToProps = {
