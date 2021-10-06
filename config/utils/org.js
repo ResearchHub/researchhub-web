@@ -7,10 +7,10 @@ export const getOrgUserCount = (orgUsers) => {
   );
 };
 
-export const getNotePathname = ({ org, note }) => {
+export const getNotePathname = ({ org, noteId }) => {
   if (org?.id) {
-    return `/${org.slug}/notebook/${note.id}`;
+    return `/${org.slug}/notebook/${noteId}`;
   } else {
-    return `/me/notebook/${note.id}`;
+    return `/me/notebook/${noteId}`;
   }
 };
