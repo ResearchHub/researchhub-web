@@ -9,11 +9,19 @@ import {
 } from "~/config/utils/useEffectOnScreenResize";
 import CitationCommentThreadComposer from "./CitationCommentThreadComposer";
 import colors from "~/config/themes/colors";
-import HypothesisUnduxStore from "../undux/HypothesisUnduxStore";
+import HypothesisUnduxStore, {
+  HypothesisStore,
+} from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 
-type CitationCommentSidebarProps = {};
+type CitationCommentSidebarProps = {
+  citationID: ID;
+  citationThreadEntries: ReactElement<typeof DiscussionEntry>[];
+  citationTitle: string;
+  hypothesisUnduxStore: HypothesisStore;
+  setLastUpdateTime: (time: number) => void;
+};
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
@@ -160,15 +168,51 @@ const yo = [
   },
 ];
 
+function useEffectFetchCitationThreads({}): void {}
+
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
   const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
     MEDIA_WIDTH_LIMIT > getCurrMediaWidth()
   );
 
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
+  const targetCitationComment = hypothesisUnduxStore.get(
+    "targetCitationComment"
+  );
+  const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
+  const [citationThreads, setCitationThreads] = useState<any>([]);
+  const { citationID, citationTitle = "" } = targetCitationComment ?? {};
+
+  useEffectFetchCitationThreads({
+    citationID,
+    lastUpdateTime,
+    setCitationThreads,
+  });
+
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void =>
       setShouldRenderWithSlide(MEDIA_WIDTH_LIMIT > newMediaWidth),
   });
+
+  const citationThreadEntries = citationThreads.map((yoyo, index) => (
+    <DiscussionEntry
+      key={index}
+      data={yoyo}
+      discussionCount={0}
+      hoverEvents
+      mediaOnly
+      noVoteLine
+      withPadding
+    />
+  ));
+
+  const citationCommentSidebarProps: CitationCommentSidebarProps = {
+    citationID,
+    citationThreadEntries,
+    citationTitle,
+    hypothesisUnduxStore,
+    setLastUpdateTime,
+  };
 
   return shouldRenderWithSlide ? (
     <div className={css(styles.citationCommentMobile)}>
@@ -179,38 +223,23 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         styles={burgerMenuStyle}
         customBurgerIcon={false}
       >
-        <CitationCommentSidebar />
+        <CitationCommentSidebar {...citationCommentSidebarProps} />
       </SlideMenu>
     </div>
   ) : (
     <div className={css(styles.inlineSticky)}>
-      <CitationCommentSidebar />
+      <CitationCommentSidebar {...citationCommentSidebarProps} />
     </div>
   );
 }
 
-function CitationCommentSidebar({}: CitationCommentSidebarProps): ReactElement<"div"> {
-  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
-  const targetCitationComment = hypothesisUnduxStore.get(
-    "targetCitationComment"
-  );
-  const { citationID, citationThreadID, citationUnidocID, citationTitle } =
-    targetCitationComment ?? {};
-
-  const citationThreads = yo.map((yoyo, index) => (
-    <DiscussionEntry
-      key={index}
-      data={yoyo}
-      discussionCount={0}
-      hoverEvents
-      mediaOnly
-      noVoteLine
-      withPadding
-      // onRemoveSuccess={onRemoveSuccess}
-      // shouldShowContextTitle={shouldShowContextTitle}
-    />
-  ));
-  
+function CitationCommentSidebar({
+  citationID,
+  citationThreadEntries,
+  citationTitle,
+  hypothesisUnduxStore,
+  setLastUpdateTime,
+}: CitationCommentSidebarProps): ReactElement<"div"> {
   return (
     <div className={css(styles.citationCommentSidebar)}>
       <div className={css(styles.header)}>
@@ -226,17 +255,15 @@ function CitationCommentSidebar({}: CitationCommentSidebarProps): ReactElement<"
       </div>
       <CitationCommentThreadComposer
         citationID={citationID}
-        citationThreadID={citationThreadID}
-        citationUnidocID={citationUnidocID}
         citationTitle={citationTitle ?? ""}
         onCancel={(): void => {
           hypothesisUnduxStore.set("targetCitationComment")(null);
         }}
-        onSubmitSuccess={(): void => {
-          hypothesisUnduxStore.set("targetCitationComment")(null);
-        }}
+        onSubmitSuccess={(): void => setLastUpdateTime(Date.now())}
       />
-      <div className={css(styles.citationThreadsWrap)}>{citationThreads}</div>
+      <div className={css(styles.citationThreadEntriesWrap)}>
+        {citationThreadEntries}
+      </div>
     </div>
   );
 }
@@ -330,7 +357,7 @@ const styles = StyleSheet.create({
       left: 20,
     },
   },
-  citationThreadsWrap: {
+  citationThreadEntriesWrap: {
     height: "100%",
     overflowY: "auto",
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
