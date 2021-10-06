@@ -39,6 +39,7 @@ export function fetchCitationsOnHypothesis({
             return {
               // @ts-ignore id here is int
               citationID: id,
+              citationUnidocID: documentID,
               consensusMeta: {
                 downCount: consensus_meta?.down_count ?? 0,
                 neutralCount: consensus_meta?.neutral_count ?? 0,

@@ -2,8 +2,10 @@ import { Store, createConnectedStore } from "undux";
 import { ID } from "~/config/types/root_types";
 
 export type TargetCitationComment = {
-  citationThreadID?: ID;
   citationID: ID;
+  citationThreadID?: ID;
+  citationTitle: string;
+  citationUnidocID: ID;
 } | null;
 export type State = {
   targetCitationComment: TargetCitationComment;
@@ -11,7 +13,7 @@ export type State = {
 export type HypothesisStore = Store<State>;
 
 const initialState: State = {
-  targetCitationComment: { citationID: 1 },
+  targetCitationComment: null,
 };
 
 export default createConnectedStore(initialState);
