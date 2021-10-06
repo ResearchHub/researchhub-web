@@ -15,13 +15,13 @@ const ManageOrgModal = ({
   currentUser,
   closeModal,
   isOpen = false,
-  setCurrentOrganization,
+  onOrgChange,
 }) => {
   const [_org, _setOrg] = useState(org);
   const [showLoader, setShowLoader] = useState(true);
 
   useEffect(() => {
-    if (!isEmpty(org) && org?.id !== _org?.id) {
+    if (!isEmpty(org)) {
       _setOrg(org);
       setShowLoader(false);
     }
@@ -36,7 +36,7 @@ const ManageOrgModal = ({
           <div className={css(styles.section)}>
             <ManageOrgDetails
               org={_org}
-              setCurrentOrganization={setCurrentOrganization}
+              onOrgChange={onOrgChange}
             />
           </div>
           <div className={css(styles.section)}>
