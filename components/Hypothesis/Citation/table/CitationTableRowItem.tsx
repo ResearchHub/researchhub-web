@@ -10,7 +10,6 @@ import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import Image from "next/image";
 import Link from "next/link";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 
