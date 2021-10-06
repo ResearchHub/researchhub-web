@@ -14,6 +14,7 @@ import HypothesisUnduxStore, {
 } from "../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 import DiscussionEntry from "~/components/Threads/DiscussionEntry";
+import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
@@ -40,16 +41,16 @@ function useEffectFetchCitationThreads({
 }
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
+  const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
+  const [citationThreads, setCitationThreads] = useState<any>([]);
   const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
     MEDIA_WIDTH_LIMIT > getCurrMediaWidth()
   );
 
-  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
   );
-  const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
-  const [citationThreads, setCitationThreads] = useState<any>([]);
   const { citationID, citationTitle = "" } = targetCitationComment ?? {};
 
   useEffectFetchCitationThreads({
@@ -63,21 +64,21 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
       setShouldRenderWithSlide(MEDIA_WIDTH_LIMIT > newMediaWidth),
   });
 
-  const citationThreadEntries = citationThreads.map((yoyo, index) => (
-    <DiscussionEntry
-      key={index}
-      data={yoyo}
-      discussionCount={0}
-      hoverEvents
-      mediaOnly
-      noVoteLine
-      withPadding
-    />
-  ));
-
   const citationCommentSidebarProps: CitationCommentSidebarProps = {
     citationID,
-    citationThreadEntries,
+    citationThreadEntries: citationThreads.map(
+      (citationThread: any, index: number) => (
+        <DiscussionEntry
+          data={citationThread}
+          discussionCount={(citationThread.comments ?? []).length}
+          hoverEvents
+          key={`citation-thread-entry-id-${citationThread.id}-${index}`}
+          mediaOnly
+          noVoteLine
+          withPadding
+        />
+      )
+    ),
     citationTitle,
     hypothesisUnduxStore,
     setLastUpdateTime,
@@ -86,11 +87,11 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
   return shouldRenderWithSlide ? (
     <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
-        right
-        width={"100%"}
-        isOpen={true}
-        styles={burgerMenuStyle}
         customBurgerIcon={false}
+        isOpen={true}
+        right
+        styles={burgerMenuStyle}
+        width={"100%"}
       >
         <CitationCommentSidebar {...citationCommentSidebarProps} />
       </SlideMenu>
@@ -138,71 +139,6 @@ function CitationCommentSidebar({
     </div>
   );
 }
-
-const burgerMenuStyle = {
-  bmBurgerBars: {
-    background: "#373a47",
-  },
-  bmBurgerBarsHover: {
-    background: "#a90000",
-  },
-  bmCrossButton: {
-    height: "26px",
-    width: "26px",
-    color: "#FFF",
-    display: "none",
-    visibility: "hidden",
-  },
-  bmCross: {
-    background: "#bdc3c7",
-    display: "none",
-    visibility: "hidden",
-  },
-  bmMenuWrap: {
-    position: "fixed",
-    top: 0,
-    zIndex: 10,
-    overflowY: "auto",
-    width: "85%",
-  },
-  bmMenu: {
-    background: "#fff",
-    fontSize: "1.15em",
-    overflowY: "auto",
-    width: "100%",
-  },
-  bmMorphShape: {
-    fill: "#373a47",
-  },
-  bmItemList: {
-    color: "#b8b7ad",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
-    overflow: "auto",
-    borderTop: "1px solid rgba(255,255,255,.2)",
-    ":focus": {
-      outline: "none",
-    },
-  },
-  bmItem: {
-    display: "inline-block",
-    margin: "15px 0 15px 0",
-    color: "#FFF",
-    ":focus": {
-      outline: "none",
-    },
-  },
-  bmOverlay: {
-    background: "rgba(0, 0, 0, 0.3)",
-    left: 0,
-    right: 0,
-    top: 0,
-    zIndex: 9,
-    bottom: 0,
-  },
-};
 
 const styles = StyleSheet.create({
   backButton: {
