@@ -15,6 +15,8 @@ import HypothesisUnduxStore, {
 import icons from "~/config/themes/icons";
 import DiscussionEntry from "~/components/Threads/DiscussionEntry";
 import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
+import { fetchCitationsThreads } from "../api/fetchCitationThreads";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 const MEDIA_WIDTH_LIMIT = breakpoints.large.int;
 
@@ -37,7 +39,15 @@ function useEffectFetchCitationThreads({
   lastUpdateTime,
   setCitationThreads,
 }: UseEffectFetchCitationThreadsArgs): void {
-  useEffect((): void => {}, [citationID, lastUpdateTime]);
+  useEffect(
+    (): void =>
+      fetchCitationsThreads({
+        onSuccess: (threads: any): void => setCitationThreads(threads),
+        onError: emptyFncWithMsg,
+        citationID,
+      }),
+    [citationID, lastUpdateTime]
+  );
 }
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
@@ -73,7 +83,9 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
           discussionCount={(citationThread.comments ?? []).length}
           key={`citation-thread-entry-id-${citationThread.id}-${index}`}
           mediaOnly
-          noVoteLine
+          noRespond
+          noVote
+          shouldShowContextTitle={false}
           withPadding
         />
       )

@@ -33,10 +33,7 @@ function CitationCommentThreadComposer({
   const handleSubmit = (text: string, plainText: string) => {
     postCitationThread({
       onError: (error: Error): void => console.warn("ERROR: ", error),
-      onSuccess: ({ threadID }): void => {
-        onSubmitSuccess();
-        alert(`success: ${threadID}`);
-      },
+      onSuccess: ({ threadID: _threadID }): void => onSubmitSuccess(),
       params: {
         context_title: citationTitle,
         documentID: citationID,
