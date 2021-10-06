@@ -21,13 +21,14 @@ export function postCitationThread({
   params,
 }: PostCitationThreadArgs) {
   const { documentID, source } = params;
+  // Note: calvinhlee - this is not scaleable at all we need to change this
   fetch(
     API.DISCUSSION({
       documentId: documentID,
       documentType: "citation",
       source: source,
     }),
-    API.POST_CONFIG(params)
+    API.POST_CONFIG({ ...params, citation: documentID })
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 import {
   getCurrMediaWidth,
@@ -69,6 +69,12 @@ function CitationCommentSidebar({}: CitationCommentSidebarProps): ReactElement<"
         citationThreadID={citationThreadID}
         citationUnidocID={citationUnidocID}
         citationTitle={citationTitle ?? ""}
+        onCancel={(): void => {
+          hypothesisUnduxStore.set("targetCitationComment")(null);
+        }}
+        onSubmitSuccess={(): void => {
+          hypothesisUnduxStore.set("targetCitationComment")(null);
+        }}
       />
     </div>
   );

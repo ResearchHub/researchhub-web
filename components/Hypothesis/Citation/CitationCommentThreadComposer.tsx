@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement } from "react";
+import { ReactElement, SyntheticEvent } from "react";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "~/components//DiscussionPostMetadata.js";
 import TextEditor from "~/components/TextEditor";
@@ -14,27 +14,36 @@ type Props = {
   citationThreadID?: ID;
   citationTitle: string;
   citationUnidocID: ID;
+  onSubmitSuccess: () => void;
+  onCancel: () => void;
 };
 
 function CitationCommentThreadComposer({
   auth,
-  citationUnidocID,
+  citationID,
   citationTitle,
+  onSubmitSuccess,
+  onCancel,
 }: Props): ReactElement<"div"> {
   const { user } = auth ?? {};
   const authorProfile = user?.author_profile ?? {};
   const { first_name: authorFirstName, last_name: authorLastName } =
     authorProfile;
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    onCancel();
+  };
   const handleSubmit = (text: string, plainText: string) => {
     postCitationThread({
       onError: (error: Error): void => console.warn("ERROR: ", error),
-      onSuccess: ({ threadID }): void => alert(`success: ${threadID}`),
+      onSuccess: ({ threadID }): void => {
+        onSubmitSuccess();
+        alert(`success: ${threadID}`);
+      },
       params: {
         context_title: citationTitle,
-        documentID: citationUnidocID,
+        documentID: citationID,
         plain_text: plainText,
-        source: "CITATION_COMMENT",
+        source: "citation_comment",
         text,
       },
     });

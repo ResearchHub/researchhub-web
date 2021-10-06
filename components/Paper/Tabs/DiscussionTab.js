@@ -190,6 +190,7 @@ const DiscussionTab = (props) => {
   };
 
   const save = (text, plain_text) => {
+    // Note: calvinhlee - this is not scaleable at all we need to change this
     let param;
     let documentId;
     if (documentType === "paper") {
@@ -299,7 +300,6 @@ const DiscussionTab = (props) => {
   };
 
   const handleDiscussionTextEditor = (editorState) => {
-
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
 
@@ -1088,7 +1088,4 @@ const mapDispatchToProps = {
   getHypothesisThreads: PaperActions.getHypothesisThreads,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionTab);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionTab);
