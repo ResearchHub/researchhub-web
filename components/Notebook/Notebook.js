@@ -50,14 +50,14 @@ const Notebook = ({ user }) => {
     }
   }, [user]);
 
-  const fetchNoteCallback = useCallback(async () => {
-    const note = await fetchNote({ noteId: router.query.noteId });
-    setCurrentNote(note);
-  });
-
   useEffect(() => {
+    const fetchNoteCallback = async () => {
+      const note = await fetchNote({ noteId: router.query.noteId });
+      setCurrentNote(note);
+    };
+
     fetchNoteCallback();
-  }, [router.query.noteId, fetchNoteCallback]);
+  }, [router.query.noteId]);
 
   useEffect(() => {
     const _fetchOrgNotes = async () => {
