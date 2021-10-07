@@ -1,6 +1,6 @@
 import { castUriID } from "../../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useCallback, useState } from "react";
+import { ReactElement } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
 

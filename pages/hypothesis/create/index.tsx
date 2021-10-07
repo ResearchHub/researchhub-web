@@ -1,44 +1,28 @@
 import AboutQuestionCard from "./AboutQuestionCard";
 import AskQuestionForm from "../../../components/Paper/AskQuestionForm";
 import Head from "../../../components/Head";
-import { Fragment, useEffect } from "react";
-import { useRouter } from "next/router";
-import killswitch from "../../../config/killswitch/killswitch";
+import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 
 export default function Index() {
-  const router = useRouter();
-  const enableHypothesis = killswitch("hypothesis");
-  useEffect(() => {
-    if (!enableHypothesis) {
-      router.push("/");
-    }
-  }, [enableHypothesis, router.pathname]);
-  if (enableHypothesis) {
-    return (
-      <Fragment>
-        <Head
-          title={`Create a Hypothesis on ResearchHub`}
-          description="Create a Hypothesis on ResearchHub"
-        />
-        <div className={css(styles.background)}>
-          <div className={css(styles.content)}>
-            <div className={css(styles.title)}>Create a Hypothesis</div>
-            <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
-            <div className={css(styles.row)}>
-              <AskQuestionForm documentType={"hypothesis"} />
-              <AboutQuestionCard
-                customStyle={styles.cardOnSide}
-                isOpen={true}
-              />
-            </div>
+  return (
+    <Fragment>
+      <Head
+        title={`Create a Hypothesis on ResearchHub`}
+        description="Create a Hypothesis on ResearchHub"
+      />
+      <div className={css(styles.background)}>
+        <div className={css(styles.content)}>
+          <div className={css(styles.title)}>Create a Hypothesis</div>
+          <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
+          <div className={css(styles.row)}>
+            <AskQuestionForm documentType={"hypothesis"} />
+            <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
           </div>
         </div>
-      </Fragment>
-    );
-  } else {
-    return null;
-  }
+      </div>
+    </Fragment>
+  );
 }
 
 const styles = StyleSheet.create({
