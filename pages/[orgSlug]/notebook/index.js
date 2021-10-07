@@ -27,14 +27,11 @@ export async function getServerSideProps(ctx) {
     results: [],
   };
   if (isPrivateNotebook) {
-    const response = await fetchOrgNotes({ orgId: 0 }, authToken);
-    notes = response;
+    const response = await fetchOrgNotes({ orgSlug: 0 }, authToken);
+    notes = response.results;
   } else {
-    const response = await fetchOrgNotes(
-      { orgId: currentOrganization.id },
-      authToken
-    );
-    notes = response;
+    const response = await fetchOrgNotes({ orgSlug }, authToken);
+    notes = response.results;
   }
 
   if (notes.length) {
@@ -45,7 +42,10 @@ export async function getServerSideProps(ctx) {
       },
     };
   } else {
-    const note = await handleCreateNewNote({ isPrivateNotebook }, authToken);
+    const note = await handleCreateNewNote(
+      { isPrivateNotebook, orgSlug },
+      authToken
+    );
 
     console.log(note);
     return {
@@ -57,13 +57,16 @@ export async function getServerSideProps(ctx) {
   }
 }
 
-const handleCreateNewNote = async ({ isPrivateNotebook }, authToken) => {
+const handleCreateNewNote = async (
+  { isPrivateNotebook, orgSlug },
+  authToken
+) => {
   const title = "Welcome to your new lab notebook!";
   let note;
   if (isPrivateNotebook) {
     note = await createNewNote({ title }, authToken);
   } else {
-    note = await createNewNote({ orgId: currentOrg.id, title }, authToken);
+    note = await createNewNote({ orgSlug, title }, authToken);
   }
 
   await createNoteContent(

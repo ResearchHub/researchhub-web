@@ -46,6 +46,8 @@ const NotebookSidebar = ({
 
   const router = useRouter();
 
+  const { orgSlug } = router.query;
+
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
@@ -58,7 +60,7 @@ const NotebookSidebar = ({
     if (isPrivateNotebook) {
       note = await createNewNote({});
     } else {
-      note = await createNewNote({ orgId: currentOrg.id });
+      note = await createNewNote({ orgSlug });
     }
 
     onCreateNoteComplete && onCreateNoteComplete();

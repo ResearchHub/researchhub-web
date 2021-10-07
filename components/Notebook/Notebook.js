@@ -15,7 +15,9 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
 
 const Notebook = ({ user }) => {
   const router = useRouter();
-  const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
+  const { orgSlug, noteId } = router.query;
+
+  const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -24,9 +26,7 @@ const Notebook = ({ user }) => {
   const [organizations, setOrganizations] = useState([]);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
-  const [isPrivateNotebook, setIsPrivateNotebook] = useState(
-    router.query.orgSlug === "me"
-  );
+  const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
   const [currentNote, setCurrentNote] = useState(null);
   const [createNoteLoading, setCreateNoteLoading] = useState(false);
   const [disableELN, setDisableELN] = useState(false);
@@ -52,12 +52,12 @@ const Notebook = ({ user }) => {
 
   useEffect(() => {
     const fetchNoteCallback = async () => {
-      const note = await fetchNote({ noteId: router.query.noteId });
+      const note = await fetchNote({ noteId });
       setCurrentNote(note);
     };
 
     fetchNoteCallback();
-  }, [router.query.noteId]);
+  }, [noteId]);
 
   useEffect(() => {
     const _fetchOrgNotes = async () => {
@@ -66,11 +66,11 @@ const Notebook = ({ user }) => {
 
       try {
         if (isPrivateNotebook) {
-          response = await fetchOrgNotes({ orgId: 0 });
-          notes = response;
+          response = await fetchOrgNotes({ orgSlug: 0 });
+          notes = response.results;
         } else {
-          response = await fetchOrgNotes({ orgId: currentOrganization.id });
-          notes = response;
+          response = await fetchOrgNotes({ orgSlug });
+          notes = response.results;
         }
 
         const sortedNotes = notes.sort(
@@ -97,8 +97,8 @@ const Notebook = ({ user }) => {
   }, [needNoteFetch, currentOrganization]);
 
   useEffect(() => {
-    if (router.query.orgSlug !== currentOrgSlug) {
-      if (router.query.orgSlug === "me") {
+    if (orgSlug !== currentOrgSlug) {
+      if (orgSlug === "me") {
         setCurrentOrganization(null);
         setCurrentOrgSlug("me");
         setIsPrivateNotebook(true);
@@ -110,7 +110,7 @@ const Notebook = ({ user }) => {
         }
 
         setCurrentOrganization(currentOrg);
-        setCurrentOrgSlug(router.query.orgSlug);
+        setCurrentOrgSlug(orgSlug);
         setNeedNoteFetch(true);
         setIsPrivateNotebook(false);
       }
@@ -151,8 +151,7 @@ const Notebook = ({ user }) => {
   };
 
   const getCurrentOrgFromRouter = (orgs) => {
-    const slug = router.query.orgSlug;
-    return orgs.find((org) => org.slug === slug);
+    return orgs.find((org) => org.slug === orgSlug);
   };
 
   useEffect(() => {
@@ -161,20 +160,12 @@ const Notebook = ({ user }) => {
     }
   }, [disableELNSwap]);
 
-  // useEffect(() => {
-  //   if (!firstSwapLoad.current) {
-  //     setDisableELNSwap(true);
-  //   } else {
-  //     firstSwapLoad.current = true;
-  //   }
-  // }, [router.query.noteId]);
-
   useEffect(async () => {
     setDisableELN(true);
-    const note = await fetchNote({ noteId: router.query.noteId });
+    const note = await fetchNote({ noteId });
     setDisableELN(false);
     setCurrentNote(note);
-  }, [router.query.noteId, fetchNote]);
+  }, [noteId, fetchNote]);
 
   const switchNote = () => {
     setNoteLoading(true);
@@ -210,7 +201,7 @@ const Notebook = ({ user }) => {
       ) : (
         <Fragment>
           <NotebookSidebar
-            currentNoteId={router.query.noteId}
+            currentNoteId={noteId}
             currentOrg={currentOrganization}
             isPrivateNotebook={isPrivateNotebook}
             needNoteFetch={needNoteFetch}
@@ -231,7 +222,7 @@ const Notebook = ({ user }) => {
           />
           {currentNote && (
             <ELNEditor
-              currentNoteId={router.query.noteId}
+              currentNoteId={noteId}
               currentOrganizationId={currentOrganization?.id}
               notes={notes}
               setTitles={setTitles}

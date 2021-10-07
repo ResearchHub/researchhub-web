@@ -111,7 +111,7 @@ const routes = (BASE_URL) => {
     },
     UPDATE_ORG_USER_PERMISSIONS: ({ orgId }) => {
       return `${BASE_URL}organization/${orgId}/update_user_permission/`;
-    },    
+    },
 
     USER: ({
       userId,
@@ -194,7 +194,7 @@ const routes = (BASE_URL) => {
     CKEDITOR_TOKEN: () => {
       return `${BASE_URL}ckeditor_token/`;
     },
-    NOTE: ({ noteId, orgId }) => {
+    NOTE: ({ noteId, orgId, orgSlug }) => {
       let url;
       if (!isNullOrUndefined(orgId)) {
         url = `${BASE_URL}organization/${orgId}/get_organization_notes/`;
@@ -203,6 +203,11 @@ const routes = (BASE_URL) => {
       } else {
         url = `${BASE_URL}note/`;
       }
+
+      if (!isNullOrUndefined(orgSlug)) {
+        url = `${BASE_URL}organization/${orgSlug}/get_organization_notes/`;
+      }
+
       return url;
     },
     NOTE_DELETE: ({ noteId }) => {
