@@ -50,6 +50,7 @@ const ELNEditor = ({
   const channelId = `${router.query.orgSlug}-${
     currentOrganizationId > 0 ? currentOrganizationId : user.id
   }-${currentNoteId}`;
+
   const INITIAL_CONTEXT_CONFIGURATION = {
     // The configuration for real-time collaboration features, shared between the editors:
     cloudServices: {
