@@ -8,19 +8,25 @@ import Loader from "~/components/Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
+import OrgAvatar from "~/components/Org/OrgAvatar";
 
 const Index = ({ auth, showMessage, setMessage }) => {
   const router = useRouter();
   const [org, setOrg] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(async () => {
-    try {
-      const org = await fetchOrgByInviteToken({ token: router.query.token });
-      setOrg(org);
-    } catch (err) {}
+  useEffect(() => {
+    const fetchOrg = async() => {
+      try {
+        const org = await fetchOrgByInviteToken({ token: router.query.token });
+        setOrg(org);
+        setIsLoading(false);
+      } catch (err) {
+        console.error(`Could not fetch org by ${router.query.token}`)
+      }
+    }
 
-    setIsLoading(false);
+    fetchOrg();
   }, []);
 
   const joinOrg = async (e) => {
@@ -46,8 +52,13 @@ const Index = ({ auth, showMessage, setMessage }) => {
   return (
     <div className={css(styles.container)}>
       {org && (
-        <div className={css(styles.inviteText)}>
-          {org.name} invited you to join its organization.
+        <div>
+          <div className={css(styles.OrgAvatarContainer)}>
+            <OrgAvatar org={org} size={150} />
+          </div>
+          <div className={css(styles.inviteText)}>
+            You have been invited to join {org.name}.
+          </div>
         </div>
       )}
       {isLoading ? (
@@ -67,8 +78,14 @@ const Index = ({ auth, showMessage, setMessage }) => {
 };
 
 const styles = StyleSheet.create({
+  OrgAvatarContainer: {
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: 20,
+  },
   inviteText: {
     marginBottom: 20,
+    fontSize: 18,
   },
   container: {
     width: 300,
