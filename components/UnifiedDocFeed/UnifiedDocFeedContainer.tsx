@@ -29,7 +29,6 @@ import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
-import killswitch from "~/config/killswitch/killswitch";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import SiteWideBannerTall from "../SiteWideBannerTall";
@@ -297,11 +296,6 @@ function UnifiedDocFeedContainer({
       page: 1,
     };
   };
-
-  if (!killswitch("hypothesis")) {
-    // @ts-ignore intentional removing for KS
-    delete UnifiedDocFilters.HYPOTHESIS;
-  }
 
   const [shouldAlertHypo, _setShouldAlertHypo] =
     useEffectNewFeatureShouldAlertUser({

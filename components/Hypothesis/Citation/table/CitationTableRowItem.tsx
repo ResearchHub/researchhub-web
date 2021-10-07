@@ -1,18 +1,21 @@
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, ReactNode } from "react";
-import { tableWidths } from "./constants/tableWidths";
-import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
-import colors from "~/config/themes/colors";
-import Link from "next/link";
 import {
   formatUnifiedDocPageUrl,
   UNIFIED_DOC_PAGE_URL_PATTERN,
 } from "~/config/utils/url_patterns";
+import { tableWidths } from "./constants/tableWidths";
+import { ReactElement, ReactNode, SyntheticEvent } from "react";
+import AuthorFacePile from "~/components/shared/AuthorFacePile";
+import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import Link from "next/link";
+import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
+  citationUnidocID: ID;
   citedBy: Object[];
   consensusMeta: ConsensusMeta;
   source: {
@@ -30,7 +33,7 @@ type ItemColumnProps = {
   bold?: boolean;
   value: ReactNode;
   width: string;
-  className?: Object;
+  className?: Object | Object[];
 };
 
 function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
@@ -50,13 +53,14 @@ function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
 
 export default function CitationTableRowItem({
   citationID,
+  citationUnidocID,
   citedBy,
   consensusMeta,
   source: { displayTitle, docType, documentID, slug },
   type,
-  publish_date,
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const citationTitleLinkUri = formatUnifiedDocPageUrl({
     docType,
     documentID,
@@ -96,8 +100,29 @@ export default function CitationTableRowItem({
         width={tableWidths.CONSENSUS}
       />
       <ItemColumn
+        className={[styles.itemCenterAlign, styles.paddingRight16]}
         value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
         width={tableWidths.CITED_BY}
+      />
+      <ItemColumn
+        className={styles.itemCenterAlign}
+        value={
+          <div
+            className={css(styles.commentsIcon)}
+            onClick={(event: SyntheticEvent): void => {
+              event.stopPropagation();
+              hypothesisUnduxStore.set("targetCitationComment")({
+                citationID,
+                citationUnidocID,
+                citationTitle: displayTitle,
+              });
+            }}
+            role="button"
+          >
+            {icons.comments}
+          </div>
+        }
+        width={tableWidths.COMMENTS}
       />
     </div>
   );
@@ -111,7 +136,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: "20px 0px",
     justifyContent: "flex-start",
-    paddingRight: 16,
     fontFamily: "Roboto",
     size: 16,
     fontStyle: "normal",
@@ -134,5 +158,19 @@ const styles = StyleSheet.create({
   link: {
     color: colors.BLUE(1),
     textDecoration: "none",
+  },
+  itemCenterAlign: {
+    alignItems: "center",
+    display: "flex",
+    height: "100%",
+    justifyContent: "center",
+    width: "100%",
+  },
+  commentsIcon: {
+    cursor: "pointer",
+    fontSize: 20,
+  },
+  paddingRight16: {
+    paddingRight: 16,
   },
 });

@@ -23,14 +23,13 @@ const items = [
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
   },
-  killswitch("hypothesis")
-    ? {
-        header: "Create a Hypothesis",
-        description: "Propose an explanation to an observation and back it up by citing relevant academic papers.",
-        imgSrc: "/static/icons/publishProject.png",
-        route: "/hypothesis/create",
-      }
-    : null,
+  {
+    header: "Create a Hypothesis",
+    description:
+      "Propose an explanation to an observation and back it up by citing relevant academic papers.",
+    imgSrc: "/static/icons/publishProject.png",
+    route: "/hypothesis/create",
+  },
   // {
   //   header: "Publish a Research Project",
   //   description: "Publish lab notes, original research, metastudies, etc.",
@@ -92,15 +91,13 @@ export default function NewPostModal({
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>{"Select your post type"}</div>
             </div>
-            <div className={css(styles.list)}>
-              {optionCards}
-            </div>
+            <div className={css(styles.list)}>{optionCards}</div>
             <div>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  <Link href={items[selected]?.route ?? ''}>
+                  <Link href={items[selected]?.route ?? ""}>
                     <div className={css(styles.buttonLabel)}>Continue</div>
                   </Link>
                 }
@@ -125,7 +122,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    flex: '0 0 auto',
+    flex: "0 0 auto",
   },
   modalStyle: {
     maxHeight: "95vh",
