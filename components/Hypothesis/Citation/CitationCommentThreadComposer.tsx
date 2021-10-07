@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
@@ -7,7 +8,6 @@ import colors from "~/config/themes/colors";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "~/components//DiscussionPostMetadata.js";
 import TextEditor from "~/components/TextEditor";
-import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   auth?: any; // redux
