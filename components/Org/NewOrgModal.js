@@ -73,7 +73,7 @@ const NewOrgModal = ({
       ) : flowStep === "INVITE" ? (
         <div>
           <p className={css(styles.text)}>
-            Invite uses to join{" "}
+            Invite users to join{" "}
             <Link href={`/${org.slug}/notebook`}>
               <a target="_blank" className={styles.link}>
                 {org.name}

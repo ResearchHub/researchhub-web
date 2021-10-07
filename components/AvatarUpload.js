@@ -28,7 +28,7 @@ const AvatarUpload = (props) => {
 
   return (
     <BaseModal
-      title={"Upload Profile Picture"}
+      title={"Upload Picture"}
       isOpen={isOpen}
       closeModal={closeModal}
     >
