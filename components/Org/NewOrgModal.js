@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import BaseModal from "~/components/Modals/BaseModal";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
@@ -13,6 +14,7 @@ const NewOrgModal = ({
   closeModal,
   showMessage,
   setMessage,
+  onOrgChange,
   isOpen = false,
 }) => {
   const [orgName, setOrgName] = useState("");
@@ -20,8 +22,8 @@ const NewOrgModal = ({
   const [org, setOrg] = useState(null);
 
   const handleCloseModal = () => {
-    setOrg(null);
     setFlowStep("ORG_CREATE");
+    setOrg(null);
     setOrgName("");
     closeModal();
   };
@@ -29,8 +31,9 @@ const NewOrgModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let org;
     try {
-      const org = await createOrg({ name: orgName });
+      org = await createOrg({ name: orgName });
       setOrg(org);
       showMessage({ show: true, error: false });
       setFlowStep("INVITE");
@@ -38,10 +41,17 @@ const NewOrgModal = ({
       setMessage("Failed to create org. Please try again.");
       showMessage({ show: true, error: true });
     }
+
+    onOrgChange(org, "CREATE");
   };
 
   const modalBody = (
-    <div className={css(styles.body)}>
+    <div
+      className={css(
+        styles.body,
+        flowStep === "INVITE" && styles.bodyForInvite
+      )}
+    >
       {flowStep === "ORG_CREATE" ? (
         <form className={css(styles.form)} onSubmit={(e) => handleSubmit(e)}>
           <FormInput
@@ -56,12 +66,25 @@ const NewOrgModal = ({
           <Button
             type="submit"
             customButtonStyle={styles.button}
-            label="Create Organization"
-            rippleClass={styles.buttonWrapper}
+            label="Next: Invite Members"
+            rippleClass={styles.buttonContainer}
           ></Button>
         </form>
       ) : flowStep === "INVITE" ? (
-        <ManageOrgUsers org={org} />
+        <div>
+          <p className={css(styles.text)}>
+            Invite users to join{" "}
+            <Link href={`/${org.slug}/notebook`}>
+              <a target="_blank" className={styles.link}>
+                {org.name}
+              </a>
+            </Link>{" "}
+            organization.
+          </p>
+          <div className={css(styles.manageUsersContainer)}>
+            <ManageOrgUsers org={org} />
+          </div>
+        </div>
       ) : null}
     </div>
   );
@@ -69,9 +92,11 @@ const NewOrgModal = ({
   return (
     <BaseModal
       children={modalBody}
-      closeModal={closeModal}
+      closeModal={handleCloseModal}
       isOpen={isOpen}
-      title={flowStep === "ORG_CREATE" ? "Create Organization" : "Invite users"}
+      title={
+        flowStep === "ORG_CREATE" ? "Set up a new organization" : "Invite Users"
+      }
     />
   );
 };
@@ -82,6 +107,12 @@ const styles = StyleSheet.create({
     maxWidth: 800,
     marginTop: 40,
   },
+  bodyForInvite: {
+    marginTop: 20,
+  },
+  text: {
+    textAlign: "center",
+  },
   button: {
     width: "auto",
     paddingLeft: 20,
@@ -90,9 +121,12 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
   },
-  buttonWrapper: {
+  buttonContainer: {
     display: "flex",
     justifyContent: "center",
+  },
+  manageUsersContainer: {
+    marginTop: 40,
   },
   inputStyle: {
     textAlign: "left",

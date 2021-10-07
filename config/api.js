@@ -111,6 +111,9 @@ const routes = (BASE_URL) => {
     ORG_INVITE_DETAILS: ({ token }) => {
       return `${BASE_URL}organization/${token}/get_organization_by_key/`;
     },
+    UPDATE_ORG_USER_PERMISSIONS: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/update_user_permission/`;
+    },    
 
     USER: ({
       userId,
