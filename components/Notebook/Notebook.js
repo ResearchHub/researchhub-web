@@ -9,7 +9,7 @@ import { getNotePathname } from "~/config/utils/org";
 import { useRouter } from "next/router";
 import { useState, useEffect, Fragment } from "react";
 
-const Notebook = ({ user, isPrivateNotebook }) => {
+const Notebook = ({ user }) => {
   const router = useRouter();
   const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
@@ -21,9 +21,12 @@ const Notebook = ({ user, isPrivateNotebook }) => {
   const [organizations, setOrganizations] = useState([]);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
+  const [isPrivateNotebook, setIsPrivateNotebook] = useState(
+    router.query.orgSlug === "me"
+  );
 
-  useEffect(async () => {
-    if (user?.id && !currentUser) {
+  useEffect(() => {
+    const _fetchUserOrgs = async () => {
       const userOrgs = await fetchUserOrgs({ user });
       const currOrg = getCurrentOrgFromRouter(userOrgs);
 
@@ -32,33 +35,47 @@ const Notebook = ({ user, isPrivateNotebook }) => {
       setCurrentOrganization(currOrg);
       setNeedNoteFetch(true);
       setIsLoading(false);
+    };
+
+    if (user?.id && !currentUser) {
+      _fetchUserOrgs();
     }
   }, [user]);
 
-  useEffect(async () => {
-    if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
+  useEffect(() => {
+    const _fetchOrgNotes = async () => {
       let response;
       let notes;
 
-      if (isPrivateNotebook) {
-        response = await fetchOrgNotes({ orgId: 0 });
-        notes = response;
-      } else {
-        response = await fetchOrgNotes({ orgId: currentOrganization.id });
-        notes = response;
+      try {
+        if (isPrivateNotebook) {
+          response = await fetchOrgNotes({ orgId: 0 });
+          notes = response;
+        } else {
+          response = await fetchOrgNotes({ orgId: currentOrganization.id });
+          notes = response;
+        }
+
+        const sortedNotes = notes.sort(
+          (a, b) => new Date(b.created_date) - new Date(a.created_date)
+        );
+
+        setNotes(sortedNotes);
+
+        const updatedTitles = {};
+        for (const note of sortedNotes) {
+          updatedTitles[note.id.toString()] = note.title;
+        }
+        setTitles(updatedTitles);
+      } catch (err) {
+        console.error("failed to fetch notes", err);
       }
 
-      const sortedNotes = notes.sort(
-        (a, b) => new Date(b.created_date) - new Date(a.created_date)
-      );
-      setNotes(sortedNotes);
-
-      const updatedTitles = {};
-      for (const note of sortedNotes) {
-        updatedTitles[note.id.toString()] = note.title;
-      }
-      setTitles(updatedTitles);
       setNeedNoteFetch(false);
+    };
+
+    if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
+      _fetchOrgNotes();
     }
   }, [needNoteFetch, currentOrganization]);
 
@@ -67,6 +84,7 @@ const Notebook = ({ user, isPrivateNotebook }) => {
       if (router.query.orgSlug === "me") {
         setCurrentOrganization(null);
         setCurrentOrgSlug("me");
+        setIsPrivateNotebook(true);
         setNeedNoteFetch(true);
       } else {
         const currentOrg = getCurrentOrgFromRouter(organizations);
@@ -77,6 +95,7 @@ const Notebook = ({ user, isPrivateNotebook }) => {
         setCurrentOrganization(currentOrg);
         setCurrentOrgSlug(router.query.orgSlug);
         setNeedNoteFetch(true);
+        setIsPrivateNotebook(false);
       }
     }
   }, [router.asPath, currentOrganization]);
@@ -93,20 +112,25 @@ const Notebook = ({ user, isPrivateNotebook }) => {
     router.push(path);
   };
 
-  const onOrgChange = (updatedOrg, needNoteFetch = false) => {
-    setCurrentOrganization(updatedOrg);
-    setNeedNoteFetch(needNoteFetch);
-
+  const onOrgChange = (updatedOrg, changeType, needNoteFetch = false) => {
     const userOrganizations = organizations;
-    for (let i = 0; i < userOrganizations.length; i++) {
-      const current = userOrganizations[i];
-      if (current.id === updatedOrg.id) {
-        userOrganizations[i] = updatedOrg;
-        break;
-      }
-    }
+    if (changeType === "UPDATE") {
+      const foundIdx = userOrganizations.findIndex(
+        (o) => o.id === updatedOrg.id
+      );
+      if (foundIdx > -1) {
+        userOrganizations[foundIdx] = updatedOrg;
 
-    setOrganizations(userOrganizations);
+        setCurrentOrganization(updatedOrg);
+        setOrganizations(userOrganizations);
+        setNeedNoteFetch(needNoteFetch);
+      } else {
+        console.error("Could not find org in user's orgs");
+      }
+    } else if (changeType === "CREATE") {
+      userOrganizations.push(updatedOrg);
+      setOrganizations(userOrganizations);
+    }
   };
 
   const getCurrentOrgFromRouter = (orgs) => {

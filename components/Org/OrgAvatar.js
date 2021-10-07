@@ -5,7 +5,10 @@ import colors from "config/themes/colors";
 const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
   const getOrgInitials = (org) => {
     return org.name
-      ? org.name.split(" ").map((s) => s.charAt(0).toUpperCase())
+      ? org.name
+          .split(" ")
+          .map((s) => s.charAt(0).toUpperCase())
+          .slice(0, 2)
       : "N/A";
   };
 

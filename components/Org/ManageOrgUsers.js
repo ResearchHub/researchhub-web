@@ -95,10 +95,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           email: user.recipient_email,
         });
       } else {
-        await removeUserFromOrg({ orgId: org.id, userId: user.id });
+        await removeUserFromOrg({
+          orgId: org.id,
+          userId: user.author_profile.id,
+        });
       }
 
       setNeedsFetch(true);
+      setMessage("");
       showMessage({ show: true, error: false });
     } catch (err) {
       setMessage("Failed to remove user");

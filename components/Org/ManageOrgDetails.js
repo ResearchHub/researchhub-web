@@ -25,7 +25,7 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
       showMessage({ show: true, error: false });
 
       if (typeof onOrgChange === "function") {
-        onOrgChange(updatedOrg);
+        onOrgChange(updatedOrg, "UPDATE");
       }
     } catch (err) {
       setMessage("Failed to update org.");
@@ -55,8 +55,12 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
         orgId: currentOrg.id,
         file: formData,
       });
+
+      if (typeof onOrgChange === "function") {
+        onOrgChange(updatedOrg, "UPDATE");
+      }
+
       setCurrentOrg(updatedOrg);
-      onOrgChange(updatedOrg);
       setMessage("");
       showMessage({ show: true, error: false });
       setIsAvatarUploadOpen(false);
