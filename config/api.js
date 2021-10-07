@@ -199,7 +199,7 @@ const routes = (BASE_URL) => {
     NOTE: ({ noteId, orgId }) => {
       let url;
       if (!isNullOrUndefined(orgId)) {
-        url = `${BASE_URL}note/${orgId}/get_organization_notes/`;
+        url = `${BASE_URL}organization/${orgId}/get_organization_notes/`;
       } else if (!isNullOrUndefined(noteId)) {
         url = `${BASE_URL}note/${noteId}/`;
       } else {
@@ -215,7 +215,7 @@ const routes = (BASE_URL) => {
     },
     NOTE_TEMPLATE: ({ orgId }) => {
       if (!isNullOrUndefined(orgId)) {
-        return `${BASE_URL}note_template/${orgId}/get_organization_templates/`;
+        return `${BASE_URL}organization/${orgId}/get_organization_templates/`;
       } else {
         return `${BASE_URL}note_template/`;
       }

@@ -14,6 +14,7 @@ const NewOrgModal = ({
   closeModal,
   showMessage,
   setMessage,
+  onOrgChange,
   isOpen = false,
 }) => {
   const [orgName, setOrgName] = useState("");
@@ -21,8 +22,8 @@ const NewOrgModal = ({
   const [org, setOrg] = useState(null);
 
   const handleCloseModal = () => {
-    setOrg(null);
     setFlowStep("ORG_CREATE");
+    setOrg(null);
     setOrgName("");
     closeModal();
   };
@@ -30,8 +31,9 @@ const NewOrgModal = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    let org;
     try {
-      const org = await createOrg({ name: orgName });
+      org = await createOrg({ name: orgName });
       setOrg(org);
       showMessage({ show: true, error: false });
       setFlowStep("INVITE");
@@ -39,6 +41,8 @@ const NewOrgModal = ({
       setMessage("Failed to create org. Please try again.");
       showMessage({ show: true, error: true });
     }
+
+    onOrgChange(org, "CREATE");
   };
 
   const modalBody = (
@@ -88,7 +92,7 @@ const NewOrgModal = ({
   return (
     <BaseModal
       children={modalBody}
-      closeModal={closeModal}
+      closeModal={handleCloseModal}
       isOpen={isOpen}
       title={
         flowStep === "ORG_CREATE" ? "Set up a new organization" : "Invite Users"
