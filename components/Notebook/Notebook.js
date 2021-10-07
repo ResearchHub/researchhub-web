@@ -93,9 +93,20 @@ const Notebook = ({ user, isPrivateNotebook }) => {
     router.push(path);
   };
 
-  const onOrgChange = (org, needNoteFetch = false) => {
-    setCurrentOrganization(org);
+  const onOrgChange = (updatedOrg, needNoteFetch = false) => {
+    setCurrentOrganization(updatedOrg);
     setNeedNoteFetch(needNoteFetch);
+
+    const userOrganizations = organizations;
+    for (let i = 0; i < userOrganizations.length; i++) {
+      const current = userOrganizations[i];
+      if (current.id === updatedOrg.id) {
+        userOrganizations[i] = updatedOrg;
+        break;
+      }
+    }
+
+    setOrganizations(userOrganizations);
   };
 
   const getCurrentOrgFromRouter = (orgs) => {
