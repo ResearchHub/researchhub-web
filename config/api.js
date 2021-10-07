@@ -3,7 +3,7 @@ import { API } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
 import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
 
-export const apiRoot = {
+const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
   dev: "localhost:8000",
@@ -69,6 +69,7 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 
 const routes = (BASE_URL) => {
   return {
+    BASE_URL,
     CITATIONS: ({ citationID, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)

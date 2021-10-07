@@ -9,8 +9,10 @@ import {
 } from "@thomasvu/ckeditor5-custom-build";
 
 import { AUTH_TOKEN } from "~/config/constants";
-import API, { apiRoot } from "~/config/api";
+import API from "~/config/api";
 import { breakpoints } from "~/config/themes/screen";
+import api from "~/config/api";
+import Loader from "../Loader/Loader";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -37,31 +39,18 @@ const ELNEditor = ({
   user,
   currentNote,
   currentNoteId,
+  onReady,
+  disableELN,
+  noteLoading,
 }) => {
   const router = useRouter();
   const presenceListElementRef = useRef();
   const sidebarElementRef = useRef();
 
-  const [ELNLoaded, setELNLoaded] = useState(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      setELNLoaded(true);
-    }, 50);
-  }, []);
-
-  const handleInput = (editor) => {
-    const updatedTitles = {};
-    for (const key in titles) {
-      updatedTitles[key] =
-        key === editor.config._config.collaboration.channelId
-          ? editor.plugins.get("Title").getTitle() || "Untitled"
-          : titles[key];
-    }
-    setTitles(updatedTitles);
-  };
-
-  const contextConfiguration = {
+  const channelId = `${router.query.orgSlug}-${
+    currentOrganizationId > 0 ? currentOrganizationId : user.id
+  }-${currentNoteId}`;
+  const INITIAL_CONTEXT_CONFIGURATION = {
     // The configuration for real-time collaboration features, shared between the editors:
     cloudServices: {
       tokenUrl: () => {
@@ -98,9 +87,7 @@ const ELNEditor = ({
     },
     // Collaboration configuration for the context:
     collaboration: {
-      channelId: `${apiRoot}-${router.query.orgName}-${
-        currentOrganizationId > 0 ? currentOrganizationId : user.id
-      }`,
+      channelId,
     },
     sidebar: {
       container: sidebarElementRef.current,
@@ -111,15 +98,30 @@ const ELNEditor = ({
     },
   };
 
-  // const editors = notes.map((note) => {
-  //   const noteId = note.id.toString();
-  //   return (
+  const [ELNLoaded, setELNLoaded] = useState(false);
 
-  //   );
-  // });
+  useEffect(() => {
+    if (disableELN) {
+      setELNLoaded(false);
+    } else {
+      setTimeout(() => {
+        setELNLoaded(true);
+      }, 50);
+    }
+  }, [disableELN]);
+
+  const handleInput = (editor) => {
+    const updatedTitles = {};
+    for (const key in titles) {
+      updatedTitles[key] =
+        key === editor.config._config.collaboration.channelId
+          ? editor.plugins.get("Title").getTitle() || "Untitled"
+          : titles[key];
+    }
+    setTitles(updatedTitles);
+  };
 
   const noteId = currentNoteId;
-  const note = currentNote;
 
   if (!process.browser) {
     return null;
@@ -131,7 +133,7 @@ const ELNEditor = ({
     },
     placeholder:
       "Start typing to continue with an empty page, or pick a template",
-    initialData: note.latest_version?.src ?? "",
+    initialData: currentNote.latest_version?.src ?? "",
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
@@ -146,11 +148,10 @@ const ELNEditor = ({
       },
     },
     collaboration: {
-      channelId: noteId,
+      channelId,
     },
     autosave: {
       save(editor) {
-        console.log("HERE");
         return saveData(editor, noteId);
       },
     },
@@ -165,7 +166,10 @@ const ELNEditor = ({
         />
       </div>
       {ELNLoaded && (
-        <CKEditorContext config={contextConfiguration} context={Context}>
+        <CKEditorContext
+          config={INITIAL_CONTEXT_CONFIGURATION}
+          context={Context}
+        >
           {/* {editors} */}
           <div
             className={css(
@@ -180,20 +184,16 @@ const ELNEditor = ({
               id={noteId}
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
-                console.log("Editor is ready to use!", editor);
-                //CKEditorInspector.attach(editor);
-                editor.editing.view.change((writer) => {
-                  writer.setStyle(
-                    {
-                      "min-height": "calc(100% - 227px)",
-                    },
-                    editor.editing.view.document.getRoot()
-                  );
-                });
+                onReady && onReady();
               }}
             />
           </div>
         </CKEditorContext>
+      )}
+      {noteLoading && (
+        <div className={css(styles.loaderContainer)}>
+          <Loader type="clip" />
+        </div>
       )}
       <div ref={sidebarElementRef} className="sidebar"></div>
     </div>
@@ -202,6 +202,7 @@ const ELNEditor = ({
 
 const styles = StyleSheet.create({
   container: {
+    position: "relative",
     marginLeft: "max(min(16%, 300px), 240px)",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
@@ -218,9 +219,22 @@ const styles = StyleSheet.create({
   presenceListContainer: {
     background: "#fff",
   },
+  loaderContainer: {
+    height: "calc(100vh - 216px)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+  },
   presenceList: {
-    marginLeft: 10,
-    marginTop: 5,
+    padding: 16,
+    // display: "flex",
+    // justifyContent: "flex-end",
+    // marginRight: 60,
   },
 });
 
