@@ -108,7 +108,7 @@ export default function CitationTableRowItem({
         className={styles.itemCenterAlign}
         value={
           <div
-            className={css(styles.commentsIcon)}
+            className={css(styles.commentsIcon, styles.paddingBottom4)}
             onClick={(event: SyntheticEvent): void => {
               event.stopPropagation();
               hypothesisUnduxStore.set("targetCitationComment")({
@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
   itemCenterAlign: {
     alignItems: "center",
     display: "flex",
-    height: "100%",
     justifyContent: "center",
     width: "100%",
+    padding: "unset",
   },
   commentsIcon: {
     cursor: "pointer",
@@ -172,5 +172,8 @@ const styles = StyleSheet.create({
   },
   paddingRight16: {
     paddingRight: 16,
+  },
+  paddingBottom4: {
+    paddingBottom: 4,
   },
 });
