@@ -7,6 +7,7 @@ import {
   fetchOrgUsers,
   removeUserFromOrg,
   removeInvitedUserFromOrg,
+  updateOrgUserPermissions,
 } from "~/config/fetch";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
@@ -49,11 +50,19 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     e && e.preventDefault();
     setIsInviteInProgress(true);
     try {
+      if (isUserAleadyInOrg(userToBeInvitedEmail, org)) {
+        setMessage("User already in org");
+        showMessage({ show: true, error: true });
+        setIsInviteInProgress(false);
+        return;
+      }
+
       const invitedUser = await inviteUserToOrg({
         orgId: org.id,
         email: userToBeInvitedEmail,
       });
       setNeedsFetch(true);
+      setMessage("");
       showMessage({ show: true, error: false });
       setUserToBeInvitedEmail("");
     } catch (err) {
@@ -70,6 +79,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     }
   };
 
+  const isUserAleadyInOrg = (email, org) => {
+    return Boolean(
+      [...orgUsers.admins, ...orgUsers.editors, ...orgUsers.viewers].find(
+        (u) => u.email === email
+      )
+    );
+  };
+
   const handleRemoveUser = async (user, org) => {
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
@@ -78,13 +95,33 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           email: user.recipient_email,
         });
       } else {
-        await removeUserFromOrg({ orgId: org.id, userId: user.id });
+        await removeUserFromOrg({
+          orgId: org.id,
+          userId: user.author_profile.id,
+        });
       }
 
       setNeedsFetch(true);
+      setMessage("");
       showMessage({ show: true, error: false });
     } catch (err) {
       setMessage("Failed to remove user");
+      showMessage({ show: true, error: true });
+    }
+  };
+
+  const handleUpdatePermission = async (user, org, accessType) => {
+    try {
+      await updateOrgUserPermissions({
+        userId: user.author_profile.id,
+        accessType,
+        orgId: org.id,
+      });
+      setNeedsFetch(true);
+      setMessage("");
+      showMessage({ show: true, error: false });
+    } catch (err) {
+      setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
     }
   };
@@ -124,7 +161,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
               {displayName} {isCurrentUser ? "(you)" : ""}
             </span>
             {perm !== "Invitation Pending" && (
-              <span className={css(styles.email)}>{currentUser.email}</span>
+              <span className={css(styles.email)}>{user.email}</span>
             )}
           </div>
         </div>
@@ -136,7 +173,10 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
               popoverContent={
                 <div className={css(styles.popoverBodyContent, styles.perms)}>
                   {perm !== "Invitation Pending" && (
-                    <div className={css(styles.permOpt)}>
+                    <div
+                      className={css(styles.permOpt)}
+                      onClick={() => handleUpdatePermission(user, org, "ADMIN")}
+                    >
                       <div className={css(styles.permTitle)}>Admin</div>
                       <div className={css(styles.permDesc)}>
                         Can manage settings, edit documents and invite new
@@ -145,7 +185,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
                     </div>
                   )}
                   {perm !== "Invitation Pending" && (
-                    <div className={css(styles.permOpt)}>
+                    <div
+                      className={css(styles.permOpt)}
+                      onClick={() =>
+                        handleUpdatePermission(user, org, "EDITOR")
+                      }
+                    >
                       <div className={css(styles.permTitle)}>Editor</div>
                       <div className={css(styles.permDesc)}>
                         Can edit all documents. Cannot manage settings or invite
@@ -154,7 +199,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
                     </div>
                   )}
                   {perm !== "Invitation Pending" && (
-                    <div className={css(styles.permOpt)}>
+                    <div
+                      className={css(styles.permOpt)}
+                      onClick={() =>
+                        handleUpdatePermission(user, org, "VIEWER")
+                      }
+                    >
                       <div className={css(styles.permTitle)}>Viewer</div>
                       <div className={css(styles.permDesc)}>
                         Can view all documents in the organization.
@@ -227,12 +277,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           onKeyDown={handleKeyDown}
         />
         {isInviteInProgress ? (
-          <Loader
-            key={"loader"}
-            loading={true}
-            size={25}
-            color={colors.BLUE()}
-          />
+          <div className={css(styles.loaderWrapper)}>
+            <Loader
+              key={"loader"}
+              loading={true}
+              size={25}
+              color={colors.BLUE()}
+            />
+          </div>
         ) : (
           <Button
             type="submit"
@@ -263,6 +315,10 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginTop: 20,
     marginBottom: 20,
+  },
+  loaderWrapper: {
+    width: 80,
+    height: 40,
   },
   popoverBodyContent: {
     backgroundColor: "#fff",
@@ -337,11 +393,11 @@ const styles = StyleSheet.create({
     alignItems: "end",
   },
   button: {
-    width: "auto",
     paddingLeft: 20,
     paddingRight: 20,
     borderRadius: 0,
     height: 51,
+    width: 100,
   },
   inputContainer: {
     margin: 0,

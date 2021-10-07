@@ -8,8 +8,9 @@ import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { getNotePathname } from "~/config/utils/org";
-import { useState } from "react";
+import { useState, Fragment } from "react";
 import { useRouter } from "next/router";
+import OrgAvatar from "~/components/Org/OrgAvatar";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -34,6 +35,11 @@ const NotebookSidebar = ({
   titles,
   user,
 }) => {
+
+  if (!isPrivateNotebook && !currentOrg) {
+    throw "Notebook sidebar could not be initialized";
+  }
+
   const router = useRouter();
 
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
@@ -53,11 +59,6 @@ const NotebookSidebar = ({
     return onNoteCreate(note);
   };
 
-  const orgName = isPrivateNotebook ? "Personal Notes" : currentOrg.name;
-  const orgImg = isPrivateNotebook
-    ? user.author_profile.profile_image
-    : currentOrg;
-
   return (
     <div className={css(styles.sidebar)}>
       {!isPrivateNotebook && (
@@ -65,12 +66,13 @@ const NotebookSidebar = ({
           org={currentOrg}
           isOpen={showManageOrgModal}
           closeModal={() => setShowManageOrgModal(false)}
-          setCurrentOrganization={onOrgChange}
+          onOrgChange={onOrgChange}
         />
       )}
       <NewOrgModal
         isOpen={showNewOrgModal}
         closeModal={() => setShowNewOrgModal(false)}
+        onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
         currentOrganizationId={isPrivateNotebook ? 0 : currentOrg.id}
@@ -114,11 +116,9 @@ const NotebookSidebar = ({
                       className={css(styles.popoverBodyItem)}
                       onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                     >
-                      <img
-                        className={css(styles.popoverBodyItemImage)}
-                        draggable="false"
-                        src={org.cover_image}
-                      />
+                      <div className={css(styles.avatarWrapper)}>
+                        <OrgAvatar org={org} />
+                      </div>                      
                       <div className={css(styles.popoverBodyItemText)}>
                         <div className={css(styles.popoverBodyItemTitle)}>
                           {org.name}
@@ -131,10 +131,16 @@ const NotebookSidebar = ({
                   </Link>
                 ))}
                 <div
-                  className={css(styles.newOrgButton)}
-                  onClick={() => setShowNewOrgModal(true)}
+                  className={css(styles.newOrgContainer)}
+                  onClick={() => {
+                    setShowNewOrgModal(true);
+                    setIsPopoverOpen(false);
+                  }}
                 >
-                  + New Org
+                  <div className={css(styles.actionButton, styles.newOrgButton)}>
+                    {icons.plus}
+                  </div>{" "}
+                  <span className={css(styles.newOrgText)}>New Organization</span>
                 </div>
               </div>
             }
@@ -145,12 +151,26 @@ const NotebookSidebar = ({
                 className={css(styles.popoverTarget)}
                 onClick={() => setIsPopoverOpen(!isPopoverOpen)}
               >
-                <img
-                  className={css(styles.popoverBodyItemImage)}
-                  draggable="false"
-                  src={orgImg}
-                />
-                {orgName}
+                {isPrivateNotebook
+                  ? (
+                    <Fragment>
+                      <img
+                        className={css(styles.popoverBodyItemImage)}
+                        draggable="false"
+                        src={user.author_profile.profile_image}
+                      />
+                      {"Personal Notebook"}
+                    </Fragment>
+                  )
+                  : (
+                      <Fragment>
+                        <div className={css(styles.avatarWrapper)}>
+                          <OrgAvatar org={currentOrg} />
+                        </div>
+                        {currentOrg.name}
+                      </Fragment>
+                    )
+                }
                 <span className={css(styles.sortIcon)}>{icons.sort}</span>
               </div>
             }
@@ -249,6 +269,29 @@ const styles = StyleSheet.create({
   sidebarOrgContainer: {
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
   },
+  avatarWrapper: {
+    marginRight: 10,
+  },
+  newOrgContainer: {
+    cursor: "pointer",
+    display: "flex",
+    padding: 16,
+    color: colors.BLUE(),
+    fontWeight: 500,
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    },
+  },
+  newOrgButton: {
+    width: 30,
+    height: 30,
+    marginLeft: 0,
+    cursor: "pointer",
+  },
+  newOrgText: {
+    marginLeft: 5,
+    paddingTop: 7,
+  },    
   orgButtonsContainer: {
     marginTop: 0,
   },
@@ -372,9 +415,6 @@ const styles = StyleSheet.create({
   },
   active: {
     backgroundColor: colors.GREY(0.3),
-  },
-  newOrgButton: {
-    cursor: "pointer",
   },
   sidebarNewNote: {
     borderTop: `1px solid ${colors.GREY(0.3)}`,

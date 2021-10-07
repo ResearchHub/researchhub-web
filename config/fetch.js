@@ -3,6 +3,19 @@ import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
+export const updateOrgProfileImg = ({ orgId, file }) => {
+  const config = API.PATCH_FILE_CONFIG(file);
+  return fetch(API.ORGANIZATION({ orgId }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+} 
+
+export const updateOrgUserPermissions = ({ orgId, userId, accessType }) => {
+  return fetch(API.UPDATE_ORG_USER_PERMISSIONS({ orgId }), API.PATCH_CONFIG({ access_type: accessType, user: userId }))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);  
+}
+
 export const createNewNote = ({ orgId }) => {
   const params = {
     organization: orgId,
