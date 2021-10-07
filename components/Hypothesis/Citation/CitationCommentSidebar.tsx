@@ -95,6 +95,10 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     setLastUpdateTime,
   };
 
+  const sidebarComponent = (
+    <CitationCommentSidebar {...citationCommentSidebarProps} />
+  );
+
   return shouldRenderWithSlide ? (
     <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
@@ -104,13 +108,11 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         styles={burgerMenuStyle}
         width={"100%"}
       >
-        <CitationCommentSidebar {...citationCommentSidebarProps} />
+        {sidebarComponent}
       </SlideMenu>
     </div>
   ) : (
-    <div className={css(styles.inlineSticky)}>
-      <CitationCommentSidebar {...citationCommentSidebarProps} />
-    </div>
+    <div className={css(styles.inlineSticky)}>{sidebarComponent}</div>
   );
 }
 
@@ -161,16 +163,16 @@ const styles = StyleSheet.create({
     },
     display: "flex",
     textDecoration: "none",
-    "@media only screen and (max-width: 1023px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       paddingLeft: 8,
       width: "100%",
       height: "100%",
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       top: -118,
       left: 0,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       top: -90,
       left: 20,
     },
@@ -190,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     positioin: "relative",
     marginBottom: 16,
-    "@media only screen and (max-width: 1199px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
       padding: 16,
     },
   },
@@ -203,7 +205,7 @@ const styles = StyleSheet.create({
     ":focus": {
       outline: "none",
     },
-    "@media only screen and (max-width: 1199px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
       width: "100%",
     },
   },
@@ -216,7 +218,7 @@ const styles = StyleSheet.create({
   },
   citationCommentMobile: {
     display: "none",
-    "@media only screen and (max-width: 1199px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
       display: "block",
     },
   },

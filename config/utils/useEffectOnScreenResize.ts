@@ -11,9 +11,13 @@ export const getCurrMediaWidth = (): number =>
   0;
 
 export function useEffectOnScreenResize({ onResize }: Args): void {
-  useEffect((): void => {
-    window.addEventListener("resize", (): void => {
-      onResize(getCurrMediaWidth());
-    });
+  const handleResize = (): void => {
+    onResize(getCurrMediaWidth());
+  };
+  useEffect((): (() => void) => {
+    window.addEventListener("resize", handleResize);
+    return (): void => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 }
