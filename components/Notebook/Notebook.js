@@ -6,7 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import { fetchUserOrgs, fetchOrgNotes, fetchNote } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useRouter } from "next/router";
-import { useState, useEffect, Fragment, useCallback } from "react";
+import { useState, useEffect, Fragment, useCallback, useRef } from "react";
 import dynamic from "next/dynamic";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
@@ -28,6 +28,10 @@ const Notebook = ({ user }) => {
     router.query.orgSlug === "me"
   );
   const [currentNote, setCurrentNote] = useState(null);
+  const [createNoteLoading, setCreateNoteLoading] = useState(false);
+  const [disableELN, setDisableELN] = useState(false);
+  const [disableELNSwap, setDisableELNSwap] = useState(false);
+  const [noteLoading, setNoteLoading] = useState(true);
 
   useEffect(() => {
     const _fetchUserOrgs = async () => {
@@ -151,8 +155,49 @@ const Notebook = ({ user }) => {
     return orgs.find((org) => org.slug === slug);
   };
 
+  useEffect(() => {
+    if (disableELNSwap) {
+      setDisableELNSwap(false);
+    }
+  }, [disableELNSwap]);
+
+  // useEffect(() => {
+  //   if (!firstSwapLoad.current) {
+  //     setDisableELNSwap(true);
+  //   } else {
+  //     firstSwapLoad.current = true;
+  //   }
+  // }, [router.query.noteId]);
+
+  useEffect(async () => {
+    setDisableELN(true);
+    const note = await fetchNote({ noteId: router.query.noteId });
+    setDisableELN(false);
+    setCurrentNote(note);
+  }, [router.query.noteId, fetchNote]);
+
+  const switchNote = () => {
+    setNoteLoading(true);
+    setDisableELNSwap(true);
+  };
+
+  const setELNReady = () => {
+    setNoteLoading(false);
+    setCreateNoteLoading(false);
+  };
+
+  const onCreateNote = () => {
+    setCurrentNote({});
+    setDisableELN(true);
+    setCreateNoteLoading(true);
+  };
+
+  const onCreateNoteComplete = () => {
+    setDisableELN(false);
+  };
+
   return (
-    <div className={css(styles.pageWrapper)}>
+    <div className={css(styles.container)}>
       {isLoading ? (
         <div className={css(styles.loaderWrapper)}>
           <Loader
@@ -179,6 +224,10 @@ const Notebook = ({ user }) => {
             setRefetchTemplates={setRefetchTemplates}
             titles={titles}
             user={currentUser}
+            onCreateNote={onCreateNote}
+            createNoteLoading={createNoteLoading}
+            onCreateNoteComplete={onCreateNoteComplete}
+            onNoteClick={switchNote}
           />
           {currentNote && (
             <ELNEditor
@@ -189,6 +238,9 @@ const Notebook = ({ user }) => {
               titles={titles}
               user={currentUser}
               currentNote={currentNote}
+              onReady={setELNReady}
+              disableELN={disableELN || disableELNSwap}
+              noteLoading={noteLoading}
             />
           )}
         </Fragment>
@@ -202,8 +254,11 @@ const mapStateToProps = (state) => ({
 });
 
 const styles = StyleSheet.create({
-  pageWrapper: {
+  container: {
     display: "flex",
+    minHeight: "100vh",
+    background: "#fff",
+    alignItems: "flex-start",
   },
   loaderWrapper: {
     width: 45,
