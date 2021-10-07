@@ -39,9 +39,9 @@ export const fetchNote = ({ noteId }, authToken) => {
     .then(Helpers.parseJSON);
 };
 
-export const createNewNote = ({ orgId, title }, authToken) => {
+export const createNewNote = ({ orgSlug, title }, authToken) => {
   const params = {
-    organization: orgId,
+    organization_slug: orgSlug,
     title: title ? title : "Untitled",
   };
 
@@ -56,8 +56,8 @@ export const deleteNote = (noteId) => {
     .then(Helpers.parseJSON);
 };
 
-export const fetchOrgNotes = ({ orgId, slug }, authToken) => {
-  return fetch(API.NOTE({ orgId }), API.GET_CONFIG(authToken))
+export const fetchOrgNotes = ({ orgId, slug, orgSlug }, authToken) => {
+  return fetch(API.NOTE({ orgId, slug, orgSlug }), API.GET_CONFIG(authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
