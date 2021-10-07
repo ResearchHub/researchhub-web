@@ -91,6 +91,7 @@ const styles = StyleSheet.create({
   },
   citationTitle: {
     boxSizing: "border-box",
+    color: "black",
     fontSize: 16,
     fontStyle: "italic",
     maxWidth: 860,

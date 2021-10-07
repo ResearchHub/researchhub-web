@@ -95,10 +95,6 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     setLastUpdateTime,
   };
 
-  const sidebarComponent = (
-    <CitationCommentSidebar {...citationCommentSidebarProps} />
-  );
-
   return shouldRenderWithSlide ? (
     <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
@@ -108,11 +104,13 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         styles={burgerMenuStyle}
         width={"100%"}
       >
-        {sidebarComponent}
+        <CitationCommentSidebar {...citationCommentSidebarProps} />
       </SlideMenu>
     </div>
   ) : (
-    <div className={css(styles.inlineSticky)}>{sidebarComponent}</div>
+    <div className={css(styles.inlineSticky)}>
+      <CitationCommentSidebar {...citationCommentSidebarProps} />
+    </div>
   );
 }
 
