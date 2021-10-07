@@ -7,6 +7,7 @@ import colors from "~/config/themes/colors";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "~/components//DiscussionPostMetadata.js";
 import TextEditor from "~/components/TextEditor";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   auth?: any; // redux
@@ -102,7 +103,7 @@ const styles = StyleSheet.create({
     width: "100%",
     padding: "20px 15px",
     minHeight: 100,
-    "@media only screen and (max-width: 1024px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       marginTop: 0,
     },
   },
@@ -114,7 +115,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   commentEditorStyles: {
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 14,
     },
     "@media only screen and (max-width: 321px)": {
