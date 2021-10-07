@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Link from "next/link";
 import BaseModal from "~/components/Modals/BaseModal";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
@@ -41,7 +42,12 @@ const NewOrgModal = ({
   };
 
   const modalBody = (
-    <div className={css(styles.body)}>
+    <div
+      className={css(
+        styles.body,
+        flowStep === "INVITE" && styles.bodyForInvite
+      )}
+    >
       {flowStep === "ORG_CREATE" ? (
         <form className={css(styles.form)} onSubmit={(e) => handleSubmit(e)}>
           <FormInput
@@ -57,11 +63,24 @@ const NewOrgModal = ({
             type="submit"
             customButtonStyle={styles.button}
             label="Next: Invite Members"
-            rippleClass={styles.buttonWrapper}
+            rippleClass={styles.buttonContainer}
           ></Button>
         </form>
       ) : flowStep === "INVITE" ? (
-        <ManageOrgUsers org={org} />
+        <div>
+          <p className={css(styles.text)}>
+            Invite uses to join{" "}
+            <Link href={`/${org.slug}/notebook`}>
+              <a target="_blank" className={styles.link}>
+                {org.name}
+              </a>
+            </Link>{" "}
+            organization.
+          </p>
+          <div className={css(styles.manageUsersContainer)}>
+            <ManageOrgUsers org={org} />
+          </div>
+        </div>
       ) : null}
     </div>
   );
@@ -71,7 +90,9 @@ const NewOrgModal = ({
       children={modalBody}
       closeModal={closeModal}
       isOpen={isOpen}
-      title={flowStep === "ORG_CREATE" ? "Set up your organization" : "Invite users"}
+      title={
+        flowStep === "ORG_CREATE" ? "Set up your organization" : "Invite Users"
+      }
     />
   );
 };
@@ -82,6 +103,12 @@ const styles = StyleSheet.create({
     maxWidth: 800,
     marginTop: 40,
   },
+  bodyForInvite: {
+    marginTop: 20,
+  },
+  text: {
+    textAlign: "center",
+  },
   button: {
     width: "auto",
     paddingLeft: 20,
@@ -90,9 +117,12 @@ const styles = StyleSheet.create({
   title: {
     textAlign: "center",
   },
-  buttonWrapper: {
+  buttonContainer: {
     display: "flex",
     justifyContent: "center",
+  },
+  manageUsersContainer: {
+    marginTop: 40,
   },
   inputStyle: {
     textAlign: "left",

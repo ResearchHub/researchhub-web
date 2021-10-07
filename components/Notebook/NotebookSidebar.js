@@ -118,11 +118,9 @@ const NotebookSidebar = ({
                     className={css(styles.popoverBodyItem)}
                     onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                   >
-                    <img
-                      className={css(styles.popoverBodyItemImage)}
-                      draggable="false"
-                      src={org.cover_image}
-                    />
+                    <div className={css(styles.avatarWrapper)}>
+                      <OrgAvatar org={org} />
+                    </div>
                     <div className={css(styles.popoverBodyItemText)}>
                       <div className={css(styles.popoverBodyItemTitle)}>
                         {org.name}
@@ -155,7 +153,7 @@ const NotebookSidebar = ({
               className={css(styles.popoverTarget)}
               onClick={() => setIsPopoverOpen(!isPopoverOpen)}
             >
-              <div className={css(styles.currentOrgContainer)}>
+              <div className={css(styles.avatarWrapper)}>
                 <OrgAvatar org={currentOrg} />
               </div>
               {orgName}
@@ -252,7 +250,7 @@ const styles = StyleSheet.create({
   orgButton: {
     paddingLeft: 17,
   },
-  currentOrgContainer: {
+  avatarWrapper: {
     marginRight: 10,
   },
   orgButtonText: {

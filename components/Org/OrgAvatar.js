@@ -28,6 +28,7 @@ const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
 const styles = StyleSheet.create({
   container: {
     position: "relative",
+    color: "black",
   },
   initialsContainer: {
     height: "100%",
