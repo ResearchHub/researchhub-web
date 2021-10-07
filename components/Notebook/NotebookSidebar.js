@@ -243,6 +243,7 @@ const NotebookSidebar = ({
                   setRefetchNotes={setNeedNoteFetch}
                   setRefetchTemplates={setRefetchTemplates}
                   title={titles[noteId]}
+                  onClick={onNoteClick}
                 />
               );
             })}
