@@ -91,7 +91,7 @@ const NewOrgModal = ({
       closeModal={closeModal}
       isOpen={isOpen}
       title={
-        flowStep === "ORG_CREATE" ? "Set up your organization" : "Invite Users"
+        flowStep === "ORG_CREATE" ? "Set up a new organization" : "Invite Users"
       }
     />
   );

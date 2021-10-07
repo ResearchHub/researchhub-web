@@ -50,11 +50,19 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     e && e.preventDefault();
     setIsInviteInProgress(true);
     try {
+      if (isUserAleadyInOrg(userToBeInvitedEmail, org)) {
+        setMessage("User already in org");
+        showMessage({ show: true, error: true });
+        setIsInviteInProgress(false);
+        return;
+      }
+
       const invitedUser = await inviteUserToOrg({
         orgId: org.id,
         email: userToBeInvitedEmail,
       });
       setNeedsFetch(true);
+      setMessage("");
       showMessage({ show: true, error: false });
       setUserToBeInvitedEmail("");
     } catch (err) {
@@ -69,6 +77,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     if (e?.key === 13 /*Enter*/) {
       handleInvite();
     }
+  };
+
+  const isUserAleadyInOrg = (email, org) => {
+    return Boolean(
+      [...orgUsers.admins, ...orgUsers.editors, ...orgUsers.viewers].find(
+        (u) => u.email === email
+      )
+    );
   };
 
   const handleRemoveUser = async (user, org) => {
