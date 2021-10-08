@@ -20,7 +20,6 @@ const Notebook = ({ user }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
-  const [createNoteLoading, setCreateNoteLoading] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
@@ -54,17 +53,6 @@ const Notebook = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
-    const fetchNoteCallback = async () => {
-      setIsCollaborativeReady(false);
-      const note = await fetchNote({ noteId });
-      setCurrentNote(note);
-      readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
-    };
-
-    fetchNoteCallback();
-  }, [noteId]);
-
-  useEffect(() => {
     const _fetchOrgNotes = async () => {
       let response;
       let notes;
@@ -83,6 +71,7 @@ const Notebook = ({ user }) => {
         );
 
         setNotes(sortedNotes);
+        setCurrentNote(sortedNotes.find((note) => note.id.toString() === noteId));
 
         const updatedTitles = {};
         for (const note of sortedNotes) {
@@ -122,18 +111,6 @@ const Notebook = ({ user }) => {
     }
   }, [router.asPath, currentOrganization]);
 
-  const onNoteCreate = (note) => {
-    const noteId = note.id.toString();
-    setNeedNoteFetch(true);
-    setTitles({
-      [noteId]: note.title,
-      ...titles,
-    });
-
-    const path = getNotePathname({ noteId, org: currentOrganization });
-    router.push(path);
-  };
-
   const onOrgChange = (updatedOrg, changeType, needNoteFetch = false) => {
     const userOrganizations = organizations;
     if (changeType === "UPDATE") {
@@ -159,34 +136,26 @@ const Notebook = ({ user }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
-  const onCreateNote = () => {
-    setCurrentNote({});
-    setCreateNoteLoading(true);
-  };
-
-  const onCreateNoteComplete = () => {
-    setCreateNoteLoading(false);
-  };
-
   return (
     <div className={css(styles.container)}>
-      <Fragment>
+      <>
         <NotebookSidebar
-          createNoteLoading={createNoteLoading}
           currentNoteId={noteId}
           currentOrg={currentOrganization}
           isPrivateNotebook={isPrivateNotebook}
           needNoteFetch={needNoteFetch}
           notes={notes}
-          onCreateNote={onCreateNote}
-          onCreateNoteComplete={onCreateNoteComplete}
-          onNoteCreate={onNoteCreate}
           onOrgChange={onOrgChange}
+          orgSlug={orgSlug}
           orgs={organizations}
+          readOnlyEditorInstance={readOnlyEditorInstance}
           refetchTemplates={refetchTemplates}
+          setCurrentNote={setCurrentNote}
+          setIsCollaborativeReady={setIsCollaborativeReady}
           setNeedNoteFetch={setNeedNoteFetch}
           setNotes={setNotes}
           setRefetchTemplates={setRefetchTemplates}
+          setTitles={setTitles}
           titles={titles}
           user={user}
         />
@@ -197,15 +166,22 @@ const Notebook = ({ user }) => {
             currentOrganizationId={currentOrganization?.id}
             isCollaborativeReady={isCollaborativeReady}
             notes={notes}
+            onOrgChange={onOrgChange}
             orgSlug={orgSlug}
+            orgs={organizations}
+            readOnlyEditorInstance={readOnlyEditorInstance}
+            refetchTemplates={refetchTemplates}
+            setCurrentNote={setCurrentNote}
             setIsCollaborativeReady={setIsCollaborativeReady}
-            setReadOnlyEditorInstance={setReadOnlyEditorInstance}
+            setNeedNoteFetch={setNeedNoteFetch}
+            setNotes={setNotes}
+            setRefetchTemplates={setRefetchTemplates}
             setTitles={setTitles}
             titles={titles}
             user={user}
           />
         )}
-      </Fragment>
+      </>
     </div>
   );
 };
