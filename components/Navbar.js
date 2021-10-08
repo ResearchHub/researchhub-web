@@ -33,6 +33,8 @@ import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -515,6 +517,20 @@ const Navbar = (props) => {
                       wsAuth={true}
                     />
                   </div>
+                  <div
+                    className={css(styles.notification)}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <Link href={"/me/notebook"}>
+                      <a>
+                        <img
+                          src={"/static/icons/notebook.svg"}
+                          height={24}
+                          width={24}
+                        />
+                      </a>
+                    </Link>
+                  </div>
                 </div>
                 {openMenu && (
                   <div
@@ -536,14 +552,6 @@ const Navbar = (props) => {
                           {icons.portrait}
                         </span>
                         Profile
-                      </div>
-                    </Link>
-                    <Link href={"/me/notebook"}>
-                      <div className={css(styles.option)}>
-                        <span className={css(styles.profileIcon)}>
-                          {icons.bookOpen}
-                        </span>
-                        Notebook
                       </div>
                     </Link>
                     <Link href={"/user/settings"} as={`/user/settings`}>
@@ -904,11 +912,11 @@ const styles = StyleSheet.create({
   },
   reputation: {
     marginLeft: 11,
-    minWidth: 56,
+    // minWidth: 56,
   },
   dropdown: {
     position: "absolute",
-    bottom: -265,
+    bottom: -225,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
@@ -1008,6 +1016,11 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.medium.int}px)`]: {
       marginRight: 10,
     },
+  },
+  notebookIcon: {
+    // fontSize: 18,
+    // marginTop: 2,
+    display: "flex",
   },
 });
 
