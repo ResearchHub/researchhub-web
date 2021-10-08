@@ -1,13 +1,13 @@
 import Loader from "~/components/Loader/Loader";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import colors from "~/config/themes/colors";
+import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { fetchUserOrgs, fetchOrgNotes, fetchNote } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useRouter } from "next/router";
-import { useState, useEffect, Fragment, useCallback, useRef } from "react";
-import dynamic from "next/dynamic";
+import { useState, useEffect } from "react";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
@@ -17,21 +17,20 @@ const Notebook = ({ user }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
+  const [createNoteLoading, setCreateNoteLoading] = useState(false);
+  const [currentNote, setCurrentNote] = useState(null);
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
+  const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [notes, setNotes] = useState([]);
   const [organizations, setOrganizations] = useState([]);
+  const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
-  const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
-  const [currentNote, setCurrentNote] = useState(null);
-  const [createNoteLoading, setCreateNoteLoading] = useState(false);
-  const [disableELN, setDisableELN] = useState(false);
-  const [disableELNSwap, setDisableELNSwap] = useState(false);
-  const [noteLoading, setNoteLoading] = useState(true);
 
   useEffect(() => {
     const _fetchUserOrgs = async () => {
@@ -52,8 +51,10 @@ const Notebook = ({ user }) => {
 
   useEffect(() => {
     const fetchNoteCallback = async () => {
+      setIsCollaborativeReady(false);
       const note = await fetchNote({ noteId });
       setCurrentNote(note);
+      readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
     };
 
     fetchNoteCallback();
@@ -154,41 +155,12 @@ const Notebook = ({ user }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
-  useEffect(() => {
-    if (disableELNSwap) {
-      setDisableELNSwap(false);
-    }
-  }, [disableELNSwap]);
-
-  useEffect(() => {
-    const fetchNoteCallback = async () => {
-      setDisableELN(true);
-      const note = await fetchNote({ noteId });
-      setDisableELN(false);
-      setCurrentNote(note);
-    };
-
-    fetchNoteCallback();
-  }, [noteId]);
-
-  const switchNote = () => {
-    setNoteLoading(true);
-    setDisableELNSwap(true);
-  };
-
-  const setELNReady = () => {
-    setNoteLoading(false);
-    setCreateNoteLoading(false);
-  };
-
   const onCreateNote = () => {
     setCurrentNote({});
-    setDisableELN(true);
     setCreateNoteLoading(true);
   };
 
   const onCreateNoteComplete = () => {
-    setDisableELN(false);
   };
 
   return (
@@ -203,7 +175,7 @@ const Notebook = ({ user }) => {
           />
         </div>
       ) : (
-        <Fragment>
+        <>
           <NotebookSidebar
             currentNoteId={noteId}
             currentOrg={currentOrganization}
@@ -222,7 +194,6 @@ const Notebook = ({ user }) => {
             onCreateNote={onCreateNote}
             createNoteLoading={createNoteLoading}
             onCreateNoteComplete={onCreateNoteComplete}
-            onNoteClick={switchNote}
           />
           {currentNote && (
             <ELNEditor
@@ -233,12 +204,12 @@ const Notebook = ({ user }) => {
               titles={titles}
               user={currentUser}
               currentNote={currentNote}
-              onReady={setELNReady}
-              disableELN={disableELN || disableELNSwap}
-              noteLoading={noteLoading}
+              isCollaborativeReady={isCollaborativeReady}
+              setIsCollaborativeReady={setIsCollaborativeReady}
+              setReadOnlyEditorInstance={setReadOnlyEditorInstance}
             />
           )}
-        </Fragment>
+        </>
       )}
     </div>
   );
