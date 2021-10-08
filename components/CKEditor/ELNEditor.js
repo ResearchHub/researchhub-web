@@ -34,6 +34,7 @@ const ELNEditor = ({
   currentNote,
   currentNoteId,
   currentOrganizationId,
+  currentOrganization,
   isCollaborativeReady,
   orgSlug,
   setIsCollaborativeReady,
@@ -41,7 +42,6 @@ const ELNEditor = ({
   setTitles,
   titles,
   user,
-  currentNoteId,
 }) => {
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
@@ -69,14 +69,18 @@ const ELNEditor = ({
 
   return (
     <div className={css(styles.container)}>
-      <div className={css(styles.presenceListContainer)}>
-        <div
-          ref={onRefChange}
-          className={
-            css(styles.presenceList, isCollaborativeReady && styles.green) +
-            " presence"
-          }
-        />
+
+      <div className={css(styles.noteHeader)}>
+        <div className={css(styles.presenceListContainer)}>
+          <div
+            ref={onRefChange}
+            className={
+              css(styles.presenceList, isCollaborativeReady && styles.green) +
+              " presence"
+            }
+          />
+        </div>
+        <NoteShareButton noteId={currentNoteId} org={currentOrganization} />
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
@@ -195,12 +199,10 @@ const styles = StyleSheet.create({
     display: "none",
   },
   noteHeader: {
-    background: "#fff",
-    height: 80,
+    display: "flex",
+    justifyContent: "flex-end",
+    padding: "0px 30px",
   },
-  //green: {
-  //  background: "#0f0",
-  //},
   loaderContainer: {
     height: "calc(100vh - 216px)",
     display: "flex",
@@ -214,9 +216,6 @@ const styles = StyleSheet.create({
   },
   presenceList: {
     padding: 16,
-    // display: "flex",
-    // justifyContent: "flex-end",
-    // marginRight: 60,
   },
   hideReadOnlyEditor: {
     display: "none",
