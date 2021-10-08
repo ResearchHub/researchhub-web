@@ -4,7 +4,7 @@ import { useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import Button from "~/components/Form/Button";
 
-const NoteShareButton = ({ noteId }) => {
+const NoteShareButton = ({ noteId, org = null }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,41 +13,49 @@ const NoteShareButton = ({ noteId }) => {
       isOpen={isOpen}
       popoverContent={
         <div className={css(styles.popoverContainer)}>
-          <ManageNotePermissions noteId={noteId} />
-        </div>   
+          <ManageNotePermissions org={org} noteId={noteId} />
+        </div>
       }
       positions={["bottom", "top"]}
       setIsPopoverOpen={() => setIsOpen(false)}
       targetContent={
-        <div
-          className={css(styles.buttonContainer)}
-        >
+        <div className={css(styles.buttonContainer)}>
           <Button
-            onClick={() => setIsOpen(true)}
+            onClick={() => setIsOpen(!isOpen)}
             size={"xsmall"}
             label={`Share`}
-            isWhite={true}>Share
+            hideRipples={true}
+            isWhite={true}
+          >
+            Share
           </Button>
         </div>
       }
-      withArrow
     />
-  )
-}
+  );
+};
 
 const styles = StyleSheet.create({
   popoverContainer: {
     background: "white",
-    width: 400,
+    width: "auto",
     minHeight: 50,
-    border: "1px solid"
+    padding: 20,
+    backgroundColor: "#fff",
+    borderRadius: 4,
+    boxShadow: "0px 0px 10px 0px #00000026",
+    display: "flex",
+    flexDirection: "column",
+    userSelect: "none",
+    marginTop: 10,
+    marginRight: 20,
   },
   buttonContainer: {
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-    marginLeft: 20,    
-  }
+    marginLeft: 20,
+  },
 });
 
 export default NoteShareButton;

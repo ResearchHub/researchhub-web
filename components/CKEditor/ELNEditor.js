@@ -179,8 +179,6 @@ const ELNEditor = ({
 };
 
 const styles = StyleSheet.create({
-
-
   container: {
     position: "relative",
     marginLeft: "max(min(16%, 300px), 240px)",
@@ -224,6 +222,5 @@ const styles = StyleSheet.create({
     display: "none",
   },
 });
-
 
 export default ELNEditor;
