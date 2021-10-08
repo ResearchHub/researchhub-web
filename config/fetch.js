@@ -57,6 +57,12 @@ export const acceptNoteInvite = ({ token }) => {
     .then(Helpers.parseJSON);
 };
 
+export const fetchInvitedNoteUsers = ({ noteId }) => {
+  return fetch(API.NOTE_INVITED_USERS({ noteId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const removeInvitedUserFromNote = ({ noteId, email }) => {
   return fetch(
     API.NOTE_REMOVE_INVITED_USER({ noteId }),

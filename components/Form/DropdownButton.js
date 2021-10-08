@@ -9,6 +9,7 @@ const DropdownButton = ({
   onSelect,
   label,
   onClose,
+  selected = null,
   positions = ["bottom", "top"],
   isOpen = false,
   overridePopoverStyle = null,
@@ -26,10 +27,13 @@ const DropdownButton = ({
               onClick={() => onSelect(o.value)}
               key={`opt-${i}`}
             >
-              <div className={css(styles.optTitle, o.titleStyle)}>
-                {o.title}
+              <div className={css(styles.infoContainer)}>
+                <div className={css(styles.optTitle, o.titleStyle)}>
+                  {o.title}
+                </div>
+                <div className={css(styles.optDesc)}>{o.description}</div>
               </div>
-              <div className={css(styles.optDesc)}>{o.description}</div>
+              <div className={css(styles.selectionContainer)}></div>
             </div>
           ))}
         </div>
@@ -47,7 +51,6 @@ const DropdownButton = ({
           </div>
         </div>
       }
-      withArrow
     />
   );
 };
@@ -60,7 +63,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     marginLeft: 10,
-    marginTop: -10,
+    marginTop: 5,
     userSelect: "none",
     width: 270,
   },
@@ -81,6 +84,10 @@ const styles = StyleSheet.create({
   },
   optDesc: {
     fontSize: 14,
+  },
+  infoContainer: {},
+  selectionContainer: {
+    display: "flex",
   },
   targetBtn: {
     padding: "7px 10px",

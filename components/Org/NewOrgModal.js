@@ -35,7 +35,9 @@ const NewOrgModal = ({
     try {
       org = await createOrg({ name: orgName });
       setOrg(org);
+      setFlowStep("INVITE");
     } catch (err) {
+      console.error(err);
       setMessage("Failed to create org. Please try again.");
       showMessage({ show: true, error: true });
     }

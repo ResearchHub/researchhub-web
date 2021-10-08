@@ -12,14 +12,42 @@ import {
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { getOrgUserCount } from "~/config/utils/org";
 import Loader from "~/components/Loader/Loader";
+import DropdownButton from "~/components/Form/DropdownButton";
 
 const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
+  const dropdownOpts = [
+    {
+      title: "Admin",
+      description:
+        "Can change organization settings and invite new members to the organization.",
+      value: "ADMIN",
+    },
+    {
+      title: "Member",
+      description:
+        "Cannot change organization settings or invite new members to the organization.",
+      value: "MEMBER",
+    },
+    {
+      title: "Remove from organization",
+      titleStyle: styles.deleteOpt,
+      value: "REMOVE",
+    },
+  ];
+
+  const dropdownOptsForInvited = [
+    {
+      title: "Cancel invite",
+      titleStyle: styles.deleteOpt,
+      value: "REMOVE",
+    },
+  ];
+
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
   const [orgUsers, setOrgUsers] = useState({});
   const [orgUserCount, setOrgUserCount] = useState(0);
@@ -31,21 +59,19 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const [_currentUser, _setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const _fetchPerms = async() => {
+    const _fetchPerms = async () => {
       try {
         const orgUsers = await fetchOrgUsers({ orgId: org.id });
         setNeedsFetch(false);
         setOrgUsers(orgUsers);
         setOrgUserCount(getOrgUserCount(orgUsers));
         setIsAdmin(isCurrentUserOrgAdmin(currentUser, orgUsers));
-
-      }
-      catch(err) {
+      } catch (err) {
         console.error(err);
         setMessage("Unexpected error");
-        showMessage({ show: true, error: true });        
+        showMessage({ show: true, error: true });
       }
-    }
+    };
 
     if (needsFetch && _currentUser && !isNullOrUndefined(org)) {
       _fetchPerms();
@@ -62,6 +88,9 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     e && e.preventDefault();
     setIsInviteInProgress(true);
     try {
+      console.log("here");
+      console.log("userToBeInvitedEmail", userToBeInvitedEmail);
+      console.log("org", org);
       if (isUserAleadyInOrg(userToBeInvitedEmail, org)) {
         setMessage("User already in org");
         showMessage({ show: true, error: true });
@@ -76,7 +105,8 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       setNeedsFetch(true);
       setUserToBeInvitedEmail("");
     } catch (err) {
-      setMessage("Failed to invite user");
+      console.log("Failed to invite user", err);
+      setMessage("Unexpected error");
       showMessage({ show: true, error: true });
     }
 
@@ -91,13 +121,11 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 
   const isUserAleadyInOrg = (email, org) => {
     return Boolean(
-      [...orgUsers.admins, ...orgUsers.editors, ...orgUsers.viewers].find(
-        (u) => u.email === email
-      )
+      [...orgUsers.admins, ...orgUsers.members].find((u) => u.email === email)
     );
   };
 
-  const handleRemoveUser = async (user, org) => {
+  const removeUser = async (user, org) => {
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
         await removeInvitedUserFromOrg({
@@ -118,20 +146,26 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     }
   };
 
-  const handleUpdatePermission = async (user, org, accessType) => {
-    try {
-      await updateOrgUserPermissions({
-        userId: user.author_profile.id,
-        accessType,
-        orgId: org.id,
-      });
-      setNeedsFetch(true);
-      setMessage("");
-      showMessage({ show: true, error: false });
-    } catch (err) {
-      setMessage("Failed to update permission");
-      showMessage({ show: true, error: true });
+  const handleUpdatePermission = async ({ selectedPerm, user, org }) => {
+    if (selectedPerm === "REMOVE") {
+      removeUser(user, org);
+    } else {
+      try {
+        await updateOrgUserPermissions({
+          userId: user.author_profile.id,
+          accessType: selectedPerm,
+          orgId: org.id,
+        });
+
+        setNeedsFetch(true);
+      } catch (err) {
+        console.error("Failed to update permissions", err);
+        setMessage("Unexpected error");
+        showMessage({ show: true, error: true });
+      }
     }
+
+    setStatusDropdownOpenForUser(null);
   };
 
   const isCurrentUserOrgAdmin = (currentUser, orgUsers) => {
@@ -175,89 +209,19 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
         </div>
         <div className={css(styles.status)}>
           {isAdmin && !isCurrentUser ? (
-            <ResearchHubPopover
-              containerStyle={{ "z-index": 100 }}
+            <DropdownButton
+              opts={
+                perm === "Invitation Pending"
+                  ? dropdownOptsForInvited
+                  : dropdownOpts
+              }
+              label={perm}
               isOpen={key === statusDropdownOpenForUser}
-              popoverContent={
-                <div className={css(styles.popoverBodyContent, styles.perms)}>
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt)}
-                      onClick={() => handleUpdatePermission(user, org, "ADMIN")}
-                    >
-                      <div className={css(styles.permTitle)}>Admin</div>
-                      <div className={css(styles.permDesc)}>
-                        Can manage settings, edit documents and invite new
-                        members to the organization.
-                      </div>
-                    </div>
-                  )}
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt)}
-                      onClick={() =>
-                        handleUpdatePermission(user, org, "EDITOR")
-                      }
-                    >
-                      <div className={css(styles.permTitle)}>Editor</div>
-                      <div className={css(styles.permDesc)}>
-                        Can edit all documents. Cannot manage settings or invite
-                        new members.
-                      </div>
-                    </div>
-                  )}
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt)}
-                      onClick={() =>
-                        handleUpdatePermission(user, org, "VIEWER")
-                      }
-                    >
-                      <div className={css(styles.permTitle)}>Viewer</div>
-                      <div className={css(styles.permDesc)}>
-                        Can view all documents in the organization.
-                      </div>
-                    </div>
-                  )}
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt, styles.permOptRemove)}
-                      onClick={() => handleRemoveUser(user, org)}
-                    >
-                      <div className={css(styles.permTitle)}>
-                        Remove from organization
-                      </div>
-                    </div>
-                  )}
-                  {perm === "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt, styles.permOptRemove)}
-                      onClick={() => handleRemoveUser(user, org)}
-                    >
-                      <div className={css(styles.permTitle)}>
-                        Cancel Invitation
-                      </div>
-                    </div>
-                  )}
-                </div>
+              onClick={() => setStatusDropdownOpenForUser(key)}
+              onSelect={(selectedPerm) =>
+                handleUpdatePermission({ selectedPerm, user, org })
               }
-              positions={["bottom", "top"]}
-              setIsPopoverOpen={() => setStatusDropdownOpenForUser(null)}
-              targetContent={
-                <div
-                  className={css(styles.popoverTarget)}
-                  onClick={() => setStatusDropdownOpenForUser(key)}
-                >
-                  <div className={css(styles.permBtn)}>
-                    {perm}
-                    <DownIcon
-                      withAnimation={false}
-                      overrideStyle={styles.downIcon}
-                    />
-                  </div>
-                </div>
-              }
-              withArrow
+              onClose={() => setStatusDropdownOpenForUser(null)}
             />
           ) : (
             <div className={css(styles.permJustText)}>{perm}</div>
@@ -309,8 +273,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
               renderOrgUser(u, "Invitation Pending")
             )}
             {(orgUsers.admins || []).map((u) => renderOrgUser(u, "Admin"))}
-            {(orgUsers.editors || []).map((u) => renderOrgUser(u, "Editor"))}
-            {(orgUsers.viewers || []).map((u) => renderOrgUser(u, "Viewer"))}
+            {(orgUsers.members || []).map((u) => renderOrgUser(u, "Member"))}
           </div>
         </div>
       )}
@@ -412,6 +375,9 @@ const styles = StyleSheet.create({
   },
   inputStyle: {
     textAlign: "left",
+  },
+  deleteOpt: {
+    color: colors.RED(),
   },
 });
 
