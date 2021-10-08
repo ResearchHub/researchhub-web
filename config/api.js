@@ -216,9 +216,9 @@ const routes = (BASE_URL) => {
     NOTE_CONTENT: () => {
       return `${BASE_URL}note_content/`;
     },
-    NOTE_TEMPLATE: ({ orgId }) => {
-      if (!isNullOrUndefined(orgId)) {
-        return `${BASE_URL}organization/${orgId}/get_organization_templates/`;
+    NOTE_TEMPLATE: ({ orgSlug }) => {
+      if (!isNullOrUndefined(orgSlug)) {
+        return `${BASE_URL}organization/${orgSlug}/get_organization_templates/`;
       } else {
         return `${BASE_URL}note_template/`;
       }

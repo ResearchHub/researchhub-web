@@ -1,11 +1,11 @@
 import API from "~/config/api";
-import Link from "next/link";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { css, StyleSheet } from "aphrodite";
 import { deleteNote } from "~/config/fetch";
+import { fetchNote } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
@@ -17,9 +17,11 @@ const SidebarSectionContent = ({
   noteBody,
   noteId,
   notes,
-  pathname,
+  readOnlyEditorInstance,
   refetchNotes,
   refetchTemplates,
+  setCurrentNote,
+  setIsCollaborativeReady,
   setNotes,
   setRefetchNotes,
   setRefetchTemplates,
@@ -29,6 +31,14 @@ const SidebarSectionContent = ({
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
+  const handleSwitchNote = async () => {
+    setIsCollaborativeReady(false);
+    const note = await fetchNote({ noteId });
+    setCurrentNote(note);
+    readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
+    router.push(getNotePathname({ noteId: note.id, org: currentOrg }));
+  };
 
   const handleDeleteNote = (noteId) => {
     deleteNote(noteId).then((deletedNote) => {
@@ -118,62 +128,59 @@ const SidebarSectionContent = ({
   ];
 
   return (
-    <>
-      <Link href={pathname}>
-        <a
-          className={css(
-            styles.sidebarSectionContent,
-            noteId === currentNoteId && styles.active
-          )}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <div className={css(styles.noteIcon)}>{icons.paper}</div>
-          {title}
-          <div>
-            <ResearchHubPopover
-              align={"end"}
-              isOpen={isPopoverOpen}
-              padding={5}
-              popoverContent={
-                <div className={css(styles.popoverBodyContent)}>
-                  {menuItems.map((item, index) => (
-                    <div
-                      className={css(styles.popoverBodyItem, item.hoverStyle)}
-                      key={index}
-                      onClick={item.onClick}
-                    >
-                      <div className={css(styles.popoverBodyIcon)}>
-                        {item.icon}
-                      </div>
-                      <div className={css(styles.popoverBodyText)}>
-                        {item.text}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              }
-              positions={["bottom"]}
-              setIsPopoverOpen={setIsPopoverOpen}
-              targetContent={
+    <a
+      className={css(
+        styles.sidebarSectionContent,
+        noteId === currentNoteId && styles.active
+      )}
+      onClick={handleSwitchNote}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div className={css(styles.noteIcon)}>{icons.paper}</div>
+      {title}
+      <div>
+        <ResearchHubPopover
+          align={"end"}
+          isOpen={isPopoverOpen}
+          padding={5}
+          popoverContent={
+            <div className={css(styles.popoverBodyContent)}>
+              {menuItems.map((item, index) => (
                 <div
-                  className={css(
-                    styles.ellipsisButton,
-                    !isHovered && !isPopoverOpen && styles.hideEllipsis
-                  )}
-                  onClick={(e) => {
-                    e && e.preventDefault();
-                    setIsPopoverOpen(!isPopoverOpen);
-                  }}
+                  className={css(styles.popoverBodyItem, item.hoverStyle)}
+                  key={index}
+                  onClick={item.onClick}
                 >
-                  {icons.ellipsisV}
+                  <div className={css(styles.popoverBodyIcon)}>
+                    {item.icon}
+                  </div>
+                  <div className={css(styles.popoverBodyText)}>
+                    {item.text}
+                  </div>
                 </div>
-              }
-            />
-          </div>
-        </a>
-      </Link>
-    </>
+              ))}
+            </div>
+          }
+          positions={["bottom"]}
+          setIsPopoverOpen={setIsPopoverOpen}
+          targetContent={
+            <div
+              className={css(
+                styles.ellipsisButton,
+                !isHovered && !isPopoverOpen && styles.hideEllipsis
+              )}
+              onClick={(e) => {
+                e && e.preventDefault();
+                setIsPopoverOpen(!isPopoverOpen);
+              }}
+            >
+              {icons.ellipsisV}
+            </div>
+          }
+        />
+      </div>
+    </a>
   );
 };
 
