@@ -1,10 +1,7 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import {
-  isNullOrUndefined,
-  doesNotExist,
-} from "~/config/utils/nullchecks";
+import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -72,6 +69,7 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 
 const routes = (BASE_URL) => {
   return {
+    BASE_URL,
     CITATIONS: ({ citationID, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)
@@ -113,7 +111,7 @@ const routes = (BASE_URL) => {
     },
     UPDATE_ORG_USER_PERMISSIONS: ({ orgId }) => {
       return `${BASE_URL}organization/${orgId}/update_user_permission/`;
-    },    
+    },
 
     USER: ({
       userId,
@@ -196,7 +194,7 @@ const routes = (BASE_URL) => {
     CKEDITOR_TOKEN: () => {
       return `${BASE_URL}ckeditor_token/`;
     },
-    NOTE: ({ noteId, orgId }) => {
+    NOTE: ({ noteId, orgId, orgSlug }) => {
       let url;
       if (!isNullOrUndefined(orgId)) {
         url = `${BASE_URL}organization/${orgId}/get_organization_notes/`;
@@ -205,6 +203,11 @@ const routes = (BASE_URL) => {
       } else {
         url = `${BASE_URL}note/`;
       }
+
+      if (!isNullOrUndefined(orgSlug)) {
+        url = `${BASE_URL}organization/${orgSlug}/get_organization_notes/`;
+      }
+
       return url;
     },
     NOTE_DELETE: ({ noteId }) => {
@@ -1015,8 +1018,10 @@ const routes = (BASE_URL) => {
   }
 };
 
-export default API({
+const api = API({
   authTokenName: AUTH_TOKEN,
   apiRoot,
   routes,
 });
+
+export default api;

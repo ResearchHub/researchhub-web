@@ -1,29 +1,37 @@
-import ELNEditor from "~/components/CKEditor/ELNEditor";
 import Loader from "~/components/Loader/Loader";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import colors from "~/config/themes/colors";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { fetchUserOrgs, fetchOrgNotes } from "~/config/fetch";
+import { fetchUserOrgs, fetchOrgNotes, fetchNote } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useRouter } from "next/router";
-import { useState, useEffect, Fragment } from "react";
+import { useState, useEffect, Fragment, useCallback, useRef } from "react";
+import dynamic from "next/dynamic";
+
+const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
+  ssr: false,
+});
 
 const Notebook = ({ user }) => {
   const router = useRouter();
-  const [currentOrgSlug, setCurrentOrgSlug] = useState(router.query.orgSlug);
+  const { orgSlug, noteId } = router.query;
+
+  const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
-  const [editorInstances, setEditorInstances] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [notes, setNotes] = useState([]);
   const [organizations, setOrganizations] = useState([]);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
-  const [isPrivateNotebook, setIsPrivateNotebook] = useState(
-    router.query.orgSlug === "me"
-  );
+  const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
+  const [currentNote, setCurrentNote] = useState(null);
+  const [createNoteLoading, setCreateNoteLoading] = useState(false);
+  const [disableELN, setDisableELN] = useState(false);
+  const [disableELNSwap, setDisableELNSwap] = useState(false);
+  const [noteLoading, setNoteLoading] = useState(true);
 
   useEffect(() => {
     const _fetchUserOrgs = async () => {
@@ -43,17 +51,26 @@ const Notebook = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
+    const fetchNoteCallback = async () => {
+      const note = await fetchNote({ noteId });
+      setCurrentNote(note);
+    };
+
+    fetchNoteCallback();
+  }, [noteId]);
+
+  useEffect(() => {
     const _fetchOrgNotes = async () => {
       let response;
       let notes;
 
       try {
         if (isPrivateNotebook) {
-          response = await fetchOrgNotes({ orgId: 0 });
-          notes = response;
+          response = await fetchOrgNotes({ orgSlug: 0 });
+          notes = response.results;
         } else {
-          response = await fetchOrgNotes({ orgId: currentOrganization.id });
-          notes = response;
+          response = await fetchOrgNotes({ orgSlug });
+          notes = response.results;
         }
 
         const sortedNotes = notes.sort(
@@ -80,8 +97,8 @@ const Notebook = ({ user }) => {
   }, [needNoteFetch, currentOrganization]);
 
   useEffect(() => {
-    if (router.query.orgSlug !== currentOrgSlug) {
-      if (router.query.orgSlug === "me") {
+    if (orgSlug !== currentOrgSlug) {
+      if (orgSlug === "me") {
         setCurrentOrganization(null);
         setCurrentOrgSlug("me");
         setIsPrivateNotebook(true);
@@ -93,7 +110,7 @@ const Notebook = ({ user }) => {
         }
 
         setCurrentOrganization(currentOrg);
-        setCurrentOrgSlug(router.query.orgSlug);
+        setCurrentOrgSlug(orgSlug);
         setNeedNoteFetch(true);
         setIsPrivateNotebook(false);
       }
@@ -134,12 +151,48 @@ const Notebook = ({ user }) => {
   };
 
   const getCurrentOrgFromRouter = (orgs) => {
-    const slug = router.query.orgSlug;
-    return orgs.find((org) => org.slug === slug);
+    return orgs.find((org) => org.slug === orgSlug);
+  };
+
+  useEffect(() => {
+    if (disableELNSwap) {
+      setDisableELNSwap(false);
+    }
+  }, [disableELNSwap]);
+
+  useEffect(() => {
+    const fetchNoteCallback = async () => {
+      setDisableELN(true);
+      const note = await fetchNote({ noteId });
+      setDisableELN(false);
+      setCurrentNote(note);
+    };
+
+    fetchNoteCallback();
+  }, [noteId]);
+
+  const switchNote = () => {
+    setNoteLoading(true);
+    setDisableELNSwap(true);
+  };
+
+  const setELNReady = () => {
+    setNoteLoading(false);
+    setCreateNoteLoading(false);
+  };
+
+  const onCreateNote = () => {
+    setCurrentNote({});
+    setDisableELN(true);
+    setCreateNoteLoading(true);
+  };
+
+  const onCreateNoteComplete = () => {
+    setDisableELN(false);
   };
 
   return (
-    <div className={css(styles.pageWrapper)}>
+    <div className={css(styles.container)}>
       {isLoading ? (
         <div className={css(styles.loaderWrapper)}>
           <Loader
@@ -152,9 +205,8 @@ const Notebook = ({ user }) => {
       ) : (
         <Fragment>
           <NotebookSidebar
-            currentNoteId={router.query.noteId}
+            currentNoteId={noteId}
             currentOrg={currentOrganization}
-            editorInstances={editorInstances}
             isPrivateNotebook={isPrivateNotebook}
             needNoteFetch={needNoteFetch}
             notes={notes}
@@ -162,23 +214,30 @@ const Notebook = ({ user }) => {
             onOrgChange={onOrgChange}
             orgs={organizations}
             refetchTemplates={refetchTemplates}
-            setEditorInstances={setEditorInstances}
             setNeedNoteFetch={setNeedNoteFetch}
             setNotes={setNotes}
             setRefetchTemplates={setRefetchTemplates}
             titles={titles}
             user={currentUser}
+            onCreateNote={onCreateNote}
+            createNoteLoading={createNoteLoading}
+            onCreateNoteComplete={onCreateNoteComplete}
+            onNoteClick={switchNote}
           />
-          <ELNEditor
-            currentNoteId={router.query.noteId}
-            currentOrganizationId={currentOrganization?.id}
-            editorInstances={editorInstances}
-            notes={notes}
-            setEditorInstances={setEditorInstances}
-            setTitles={setTitles}
-            titles={titles}
-            user={currentUser}
-          />
+          {currentNote && (
+            <ELNEditor
+              currentNoteId={noteId}
+              currentOrganizationId={currentOrganization?.id}
+              notes={notes}
+              setTitles={setTitles}
+              titles={titles}
+              user={currentUser}
+              currentNote={currentNote}
+              onReady={setELNReady}
+              disableELN={disableELN || disableELNSwap}
+              noteLoading={noteLoading}
+            />
+          )}
         </Fragment>
       )}
     </div>
@@ -190,8 +249,11 @@ const mapStateToProps = (state) => ({
 });
 
 const styles = StyleSheet.create({
-  pageWrapper: {
+  container: {
     display: "flex",
+    minHeight: "100vh",
+    background: "#fff",
+    alignItems: "flex-start",
   },
   loaderWrapper: {
     width: 45,
