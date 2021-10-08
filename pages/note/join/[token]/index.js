@@ -1,4 +1,4 @@
-import { acceptInviteToOrg, fetchOrgByInviteToken } from "~/config/fetch";
+import { acceptNoteInvite, fetchOrgByInviteToken } from "~/config/fetch";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -31,19 +31,19 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
     };
 
     if (auth.authChecked && !org) {
-      _fetchOrg();
+      // _fetchOrg();
     }
   }, [auth]);
 
-  const handleJoinOrg = async (e) => {
+  const handleJoin = async (e) => {
     e && e.stopPropagation();
 
     try {
       setIsLoading(true);
-      await acceptInviteToOrg({ token: router.query.token });
+      await acceptNoteInvite({ token: router.query.token });
       showMessage({ show: true, error: false });
 
-      router.push(`/${org.slug}/notebook`);
+      // router.push(`/${org.slug}/notebook`);
     } catch (err) {
       setIsLoading(false);
 
@@ -67,18 +67,22 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
           </div>
         </div>
       )}
-      {isLoading ? (
+      {false ? (
         <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
       ) : (
         <div className={css(styles.buttonContainer)}>
           {auth.isLoggedIn ? (
-            <Button onClick={handleJoinOrg} label={`Join Org`} hideRipples={true} />
+            <Button
+              onClick={handleJoin}
+              label={`Accept Invite`}
+              hideRipples={true}
+            />
           ) : (
             <GoogleLoginButton
               styles={styles.googleLoginButton}
               googleLogin={googleLogin}
               getUser={getUser}
-              loginCallback={handleJoinOrg}
+              loginCallback={handleJoin}
               customLabel={"Sign in with Google to join"}
             />
           )}

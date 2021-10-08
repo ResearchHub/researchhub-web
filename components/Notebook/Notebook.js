@@ -164,6 +164,7 @@ const Notebook = ({ user }) => {
             currentNote={currentNote}
             currentNoteId={noteId}
             currentOrganizationId={currentOrganization?.id}
+            currentOrganization={currentOrganization}
             isCollaborativeReady={isCollaborativeReady}
             notes={notes}
             onOrgChange={onOrgChange}
