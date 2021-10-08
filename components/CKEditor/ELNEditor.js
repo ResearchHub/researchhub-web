@@ -1,7 +1,11 @@
 import API from "~/config/api";
 import { AUTH_TOKEN } from "~/config/constants";
 import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
-import { Context, ELNEditor as CKELNEditor, SimpleBalloonEditor } from "@thomasvu/ckeditor5-custom-build";
+import {
+  Context,
+  ELNEditor as CKELNEditor,
+  SimpleBalloonEditor,
+} from "@thomasvu/ckeditor5-custom-build";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
@@ -66,7 +70,10 @@ const ELNEditor = ({
       <div className={css(styles.presenceListContainer)}>
         <div
           ref={onRefChange}
-          className={css(styles.presenceList, isCollaborativeReady && styles.green) + " presence"}
+          className={
+            css(styles.presenceList, isCollaborativeReady && styles.green) +
+            " presence"
+          }
         />
       </div>
       {presenceListElement !== null && (
@@ -93,7 +100,9 @@ const ELNEditor = ({
                   xhr.addEventListener("error", () =>
                     reject(new Error("Network error"))
                   );
-                  xhr.addEventListener("abort", () => reject(new Error("Abort")));
+                  xhr.addEventListener("abort", () =>
+                    reject(new Error("Abort"))
+                  );
                   xhr.setRequestHeader(
                     "Authorization",
                     "Token " +
@@ -120,10 +129,7 @@ const ELNEditor = ({
           }}
           context={Context}
         >
-          <div
-            className={css(styles.editor)}
-            key={currentNoteId}
-          >
+          <div className={css(styles.editor)} key={currentNoteId}>
             <CKEditor
               config={{
                 title: {
