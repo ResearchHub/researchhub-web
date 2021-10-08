@@ -12,38 +12,71 @@ import {
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import AuthorAvatar from "~/components/AuthorAvatar";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
-import colors, { iconColors } from "~/config/themes/colors";
-import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import Loader from "~/components/Loader/Loader";
+import OrgAvatar from "~/components/Org/OrgAvatar";
+import colors, { iconColors } from "~/config/themes/colors";
+import DropdownButton from "~/components/Form/DropdownButton";
 
-const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage }) => {
+const ManageNotePermissions = ({
+  currentUser,
+  noteId,
+  org = null,
+  setMessage,
+  showMessage,
+}) => {
+  const opts = [
+    {
+      title: "Admin",
+      description: "Can edit and share with others.",
+      value: "ADMIN",
+    },
+    {
+      title: "Editor",
+      description: "Can edit but not share with others.",
+      value: "EDITOR",
+    },
+    {
+      title: "Viewer",
+      description: "Cannot edit or share.",
+      value: "VIEWER",
+    },
+    {
+      title: "Remove",
+      titleStyle: styles.deleteOpt,
+      value: "REMOVE",
+    },
+  ];
+
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
+  const [userToBeInvitedPerm, setUserToBeInvitedPerm] = useState("EDITOR");
+  const [isUserToBeInvitedPermDdownOpen, setIsUserToBeInvitedPermDdownOpen] =
+    useState(false);
+
   const [noteAccessList, setNoteAccessList] = useState([]);
   const [needsFetch, setNeedsFetch] = useState(true);
   const [isInviteInProgress, setIsInviteInProgress] = useState(false);
-  const [statusDropdownOpenForUser, setStatusDropdownOpenForUser] =
+  const [statusDropdownOpenForEntity, setStatusDropdownOpenForEntity] =
     useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [_currentUser, _setCurrentUser] = useState(null);
+  const [currentOrg, setCurrentOrg] = useState(org);
 
   useEffect(() => {
-    const _fetchNotePermissions = async() => {
+    const _fetchNotePermissions = async () => {
       try {
         const noteAccessList = await fetchNotePermissions({ noteId });
 
         setNoteAccessList(noteAccessList);
         setIsAdmin(isCurrentUserNoteAdmin(currentUser, noteAccessList));
-      }
-      catch {
+      } catch {
         console.error("Failed to fetch note permissions");
         setMessage("Unexpected error");
         showMessage({ show: true, error: true });
       }
 
       setNeedsFetch(false);
-    }
+    };
 
     if (needsFetch && _currentUser && noteId) {
       _fetchNotePermissions();
@@ -56,12 +89,16 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
     }
   }, [currentUser]);
 
+  useEffect(() => {
+    console.log("mount");
+  }, []);
+
   const handleInvite = async (e) => {
     e && e.preventDefault();
     setIsInviteInProgress(true);
 
     try {
-      if (doesUserHaveAccess(userToBeInvitedEmail, noteId)) {
+      if (doesUserHaveAccess(userToBeInvitedEmail)) {
         setMessage("User already in org");
         showMessage({ show: true, error: true });
         setIsInviteInProgress(false);
@@ -69,7 +106,7 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
       }
 
       const invitedUser = await inviteUserToNote({
-        note: noteId,
+        noteId,
         email: userToBeInvitedEmail,
       });
 
@@ -89,15 +126,13 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
     }
   };
 
-  const doesUserHaveAccess = (email, noteId) => {
+  const doesUserHaveAccess = (email) => {
     return Boolean(
-      [...noteId.admins, ...noteId.editors, ...noteId.viewers].find(
-        (u) => u.email === email
-      )
+      noteAccessList.find((accessObj) => accessObj?.user?.email === email)
     );
   };
 
-  const handleRemoveUser = async (user, noteId) => {  
+  const handleRemoveUser = async (user, noteId) => {
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
         await removeInvitedUserFromNote({
@@ -149,127 +184,83 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
 
   const getDisplayName = (accessObj) => {
     if (accessObj.user) {
-      return `${user?.author_profile?.first_name} ${user?.author_profile?.last_name}`;
-    }
-    else if (accessObj.organization) {
-      return accessObj.name;
-    }
-    else {
+      return `${accessObj.user?.author_profile?.first_name} ${accessObj.user?.author_profile?.last_name}`;
+    } else if (accessObj.organization) {
+      return accessObj.organization.name;
+    } else {
       return "Invited";
     }
-  }
+  };
+
+  const canEditPermission = (accessObj) => {
+    const noteBelongsToCurrOrg = currentOrg ? true : false;
+    const userIsCurrOrgMember = ["ADMIN", "MEMBER"].includes(
+      currentOrg.user_permission.access_type
+    );
+    if (noteBelongsToCurrOrg && userIsCurrOrgMember) {
+      return true;
+    }
+
+    if (accessObj.organization) {
+      if (
+        currentOrg &&
+        accessObj.organization.slug === currentOrg.slug &&
+        ["ADMIN", "MEMBER"].includes(currentOrg.user_permission.access_type)
+      ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  };
 
   const renderAccessRow = (accessObj) => {
     const displayName = getDisplayName(accessObj);
 
-    const key =
-      perm === "Invitation Pending"
-        ? `user-${user.recipient_email}`
-        : `user-${user?.author_profile?.id}`;
+    const forEntity = accessObj.organization ? "org" : "user";
+    const key = accessObj.organization
+      ? `access-org-${accessObj.organization.slug}`
+      : `access-user-${accessObj.user?.author_profile?.id}`;
+
+    const _canEditPermission = canEditPermission(accessObj);
+    const perm = accessObj.access_type.toLowerCase();
+
+    console.log("accessObj", accessObj);
 
     return (
       <div className={css(styles.userRow)} key={key}>
-        <div className={css(styles.user)}>
-          <AuthorAvatar author={user.author_profile} />
-          <div className={css(styles.nameWrapper)}>
-            <span className={css(styles.name)}>
-              {displayName} {isCurrentUser ? "(you)" : ""}
-            </span>
-            {perm !== "Invitation Pending" && (
-              <span className={css(styles.email)}>{user.email}</span>
-            )}
+        {forEntity === "user" ? (
+          <div className={css(styles.entity)}>
+            <AuthorAvatar author={accessObj.user.author_profile} />
+            <div className={css(styles.nameWrapper)}>
+              <span className={css(styles.name)}>{displayName}</span>
+            </div>
           </div>
-        </div>
-        <div className={css(styles.status)}>
-          {isAdmin && !isCurrentUser ? (
-            <ResearchHubPopover
-              containerStyle={{ "z-index": 100 }}
-              isOpen={key === statusDropdownOpenForUser}
-              popoverContent={
-                <div className={css(styles.popoverBodyContent, styles.perms)}>
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt)}
-                      onClick={() => handleUpdatePermission(user, org, "ADMIN")}
-                    >
-                      <div className={css(styles.permTitle)}>Admin</div>
-                      <div className={css(styles.permDesc)}>
-                        Can manage settings, edit documents and invite new
-                        members to the organization.
-                      </div>
-                    </div>
-                  )}
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt)}
-                      onClick={() =>
-                        handleUpdatePermission(user, org, "EDITOR")
-                      }
-                    >
-                      <div className={css(styles.permTitle)}>Editor</div>
-                      <div className={css(styles.permDesc)}>
-                        Can edit all documents. Cannot manage settings or invite
-                        new members.
-                      </div>
-                    </div>
-                  )}
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt)}
-                      onClick={() =>
-                        handleUpdatePermission(user, org, "VIEWER")
-                      }
-                    >
-                      <div className={css(styles.permTitle)}>Viewer</div>
-                      <div className={css(styles.permDesc)}>
-                        Can view all documents in the organization.
-                      </div>
-                    </div>
-                  )}
-                  {perm !== "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt, styles.permOptRemove)}
-                      onClick={() => handleRemoveUser(user, org)}
-                    >
-                      <div className={css(styles.permTitle)}>
-                        Remove from organization
-                      </div>
-                    </div>
-                  )}
-                  {perm === "Invitation Pending" && (
-                    <div
-                      className={css(styles.permOpt, styles.permOptRemove)}
-                      onClick={() => handleRemoveUser(user, org)}
-                    >
-                      <div className={css(styles.permTitle)}>
-                        Cancel Invitation
-                      </div>
-                    </div>
-                  )}
-                </div>
-              }
-              positions={["bottom", "top"]}
-              setIsPopoverOpen={() => setStatusDropdownOpenForUser(null)}
-              targetContent={
-                <div
-                  className={css(styles.popoverTarget)}
-                  onClick={() => setStatusDropdownOpenForUser(key)}
-                >
-                  <div className={css(styles.permBtn)}>
-                    {perm}
-                    <DownIcon
-                      withAnimation={false}
-                      overrideStyle={styles.downIcon}
-                    />
-                  </div>
-                </div>
-              }
-              withArrow
-            />
-          ) : (
-            <div className={css(styles.permJustText)}>{perm}</div>
-          )}
-        </div>
+        ) : forEntity === "org" ? (
+          <div className={css(styles.entity)}>
+            <OrgAvatar org={currentOrg} />
+            <div className={css(styles.nameWrapper)}>
+              <span className={css(styles.name)}>{displayName}</span>
+            </div>
+          </div>
+        ) : null}
+
+        {_canEditPermission ? (
+          <DropdownButton
+            opts={opts}
+            label={perm}
+            isOpen={key === statusDropdownOpenForEntity}
+            onClick={() => setStatusDropdownOpenForEntity(key)}
+            onSelect={(selectedPerm) =>
+              handleUpdatePermission(accessObj, selectedPerm)
+            }
+            onClose={() => setStatusDropdownOpenForEntity(null)}
+          />
+        ) : (
+          <div className={css(styles.permJustText)}>{perm}</div>
+        )}
       </div>
     );
   };
@@ -280,8 +271,16 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
         className={css(styles.inviteForm)}
         onSubmit={(e) => handleInvite(e)}
       >
+        <DropdownButton
+          opts={opts.slice(0, opts.length - 1)}
+          label={userToBeInvitedPerm.toLowerCase()}
+          isOpen={isUserToBeInvitedPermDdownOpen}
+          onClick={() => setIsUserToBeInvitedPermDdownOpen(true)}
+          onSelect={(selectedPerm) => setUserToBeInvitedPerm(selectedPerm)}
+          onClose={() => setIsUserToBeInvitedPermDdownOpen(false)}
+          overrideTargetStyle={styles.newUserPermButton}
+        />
         <FormInput
-          label="Invite users (optional)"
           id="org-invite-user"
           onChange={(id, val) => setUserToBeInvitedEmail(val)}
           containerStyle={styles.inputContainer}
@@ -308,8 +307,7 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
           />
         )}
       </form>
-      {noteAccessList.map(accessObj => renderAccessRow(accessObj))}
-
+      {noteAccessList.map((accessObj) => renderAccessRow(accessObj))}
 
       {/*orgUserCount > 0 && (
         <div>
@@ -328,81 +326,47 @@ const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage })
 };
 
 const styles = StyleSheet.create({
+  container: {
+    width: 450,
+  },
   loaderWrapper: {
     width: 80,
     height: 40,
   },
-  popoverBodyContent: {
-    backgroundColor: "#fff",
-    borderRadius: 4,
-    boxShadow: "0px 0px 10px 0px #00000026",
-    display: "flex",
-    flexDirection: "column",
-    marginLeft: 10,
-    marginTop: -10,
-    userSelect: "none",
-    width: 270,
-  },
-  popoverTarget: {
-    cursor: "pointer",
-  },
-  permOpt: {
-    padding: "10px 14px",
-    ":hover": {
-      cursor: "pointer",
-      backgroundColor: colors.GREY(0.2),
-    },
-  },
-  permOptRemove: {
+  deleteOpt: {
     color: colors.RED(),
-  },
-  permTitle: {
-    fontWeight: 500,
-  },
-  permDesc: {
-    fontSize: 14,
-  },
-  permBtn: {
-    padding: "7px 10px",
-    ":hover": {
-      background: iconColors.BACKGROUND,
-      borderRadius: 3,
-      transition: "0.3s",
-    },
-  },
-  permJustText: {
-    marginRight: 27,
-  },
-  downIcon: {
-    padding: 4,
-    fontSize: 11,
   },
   userRow: {
     display: "flex",
     marginBottom: 15,
+    ":last-child": {
+      marginBottom: 0,
+    },
   },
-  user: {
+  entity: {
     display: "flex",
     alignItems: "center",
+  },
+  permJustText: {
+    textTransform: "capitalize",
+    color: colors.BLACK(0.8),
+    marginLeft: "auto",
+    marginRight: 28,
   },
   nameWrapper: {
     display: "flex",
     flexDirection: "column",
     marginLeft: 10,
   },
-  name: {},
-  email: {
-    color: colors.BLACK(0.5),
-  },
-  status: {
-    display: "flex",
-    alignItems: "center",
-    marginLeft: "auto",
-  },
   inviteForm: {
     display: "flex",
     justifyContent: "center",
-    alignItems: "end",
+    position: "relative",
+  },
+  newUserPermButton: {
+    position: "absolute",
+    top: 10,
+    right: 90,
   },
   button: {
     paddingLeft: 20,
@@ -427,4 +391,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageNotePermissions);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ManageNotePermissions);

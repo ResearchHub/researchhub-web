@@ -7,48 +7,64 @@ export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-}
+};
 
-export const updateNoteUserPermissions = ({ noteId, orgId, userId, accessType }) => {
+export const updateNoteUserPermissions = ({
+  noteId,
+  orgId,
+  userId,
+  accessType,
+}) => {
   const params = {
-    organization: (orgId || userId),
-    access_type: accessType
-  }
+    organization: orgId || userId,
+    access_type: accessType,
+  };
 
-  return fetch(API.NOTE_PERMISSIONS({ noteId, method: "PATCH" }), API.GET_CONFIG(params))
+  return fetch(
+    API.NOTE_PERMISSIONS({ noteId, method: "PATCH" }),
+    API.GET_CONFIG(params)
+  )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-}
+};
 
 export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
   return fetch(API.NOTE({ noteId }), API.DELETE_CONFIG({ user: userId }))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-}
+};
 
-export const inviteUserToNote = ({ noteId, email, expire = 4320, accessType = "EDITOR" }) => {
+export const inviteUserToNote = ({
+  noteId,
+  email,
+  expire = 4320,
+  accessType = "EDITOR",
+}) => {
   const params = {
     email,
     expire,
-    access_type: accessType
-  }
+    access_type: accessType,
+  };
 
   return fetch(API.NOTE_INVITE_USER({ noteId }), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-}
+};
 
-export const acceptNoteInvite = ({ key }) => {
-  return fetch(API.NOTE_ACCEPT_INVITE({ key }), API.POST_CONFIG())
+export const acceptNoteInvite = ({ token }) => {
+  return fetch(API.NOTE_ACCEPT_INVITE({ token }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-}
+};
 
 export const removeInvitedUserFromNote = ({ noteId, email }) => {
-  return fetch(API.NOTE_REMOVE_INVITED_USER({ noteId }), API.PATCH_CONFIG({ email }))
+  return fetch(
+    API.NOTE_REMOVE_INVITED_USER({ noteId }),
+    API.PATCH_CONFIG({ email })
+  )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
-}
+};
 
 export const updateOrgProfileImg = ({ orgId, file }) => {
   const config = API.PATCH_FILE_CONFIG(file);
@@ -131,7 +147,7 @@ export const inviteUserToOrg = ({
   orgId,
   email,
   expire = 4320,
-  accessType = "EDITOR",
+  accessType = "MEMBER",
 }) => {
   return fetch(
     API.INVITE_TO_ORG({ orgId }),

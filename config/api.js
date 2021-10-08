@@ -226,23 +226,21 @@ const routes = (BASE_URL) => {
     NOTE_PERMISSIONS: ({ noteId, method = "GET" }) => {
       if (method === "GET") {
         return `${BASE_URL}note/${noteId}/get_note_permissions/`;
-      }
-      else if (method === "PATCH") {
+      } else if (method === "PATCH") {
         return `${BASE_URL}note/${noteId}/update_permissions/`;
-      }
-      else if (method === "DELETE") {
-        return `${BASE_URL}note/${noteId}/remove_user_permission/`;        
+      } else if (method === "DELETE") {
+        return `${BASE_URL}note/${noteId}/remove_user_permission/`;
       }
     },
     NOTE_INVITE_USER: ({ noteId }) => {
       return `${BASE_URL}note/${noteId}/invite_user/`;
     },
-    NOTE_ACCEPT_INVITE: ({ key }) => {
-      return `${BASE_URL}note/${key}/accept_invite/`;
+    NOTE_ACCEPT_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/note/${token}/accept_invite/`;
     },
     NOTE_REMOVE_INVITED_USER: ({ noteId }) => {
       return `${BASE_URL}note/${noteId}/remove_invited_user/`;
-    },    
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
       filters,
