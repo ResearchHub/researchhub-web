@@ -14,6 +14,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 
 export type NoteTemplateModalProps = {
+  currentNote: any;
   currentOrg: any;
   currentOrganizationId: number;
   isOpen: boolean;
@@ -28,10 +29,14 @@ export default function NoteTemplateModal({
   currentOrg,
   currentOrganizationId,
   isOpen,
-  refetchNotes,
+  notes,
+  orgSlug,
   refetchTemplates,
+  setCurrentNote,
   setIsOpen,
-  setRefetchNotes,
+  setNotes,
+  setTitles,
+  titles,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const editorRef = useRef<any>();
@@ -52,7 +57,7 @@ export default function NoteTemplateModal({
 
   useEffect(() => {
     if (!isNullOrUndefined(currentOrganizationId)) {
-      fetch(API.NOTE_TEMPLATE({ orgId: currentOrganizationId }), API.GET_CONFIG())
+      fetch(API.NOTE_TEMPLATE({ orgSlug }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((templates) => {
@@ -94,9 +99,22 @@ export default function NoteTemplateModal({
       }).then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((data) => {
-          setRefetchNotes(!refetchNotes);
-          const path = getNotePathname({ noteId: data.note, org: currentOrg });
-          router.push(path);
+          return fetch(API.NOTE({ noteId: data.note }), API.GET_CONFIG())
+            .then(Helpers.checkStatus)
+            .then(Helpers.parseJSON)
+            .then((note) => {
+              console.log(note);
+              const noteId = note.id;
+
+              setTitles({
+                [noteId]: note.title,
+                ...titles,
+              });
+              setNotes([note, ...notes]);
+              setCurrentNote(note);
+
+              router.push(getNotePathname({ noteId, org: currentOrg }));
+            })
         });
 
     e && e.preventDefault();
