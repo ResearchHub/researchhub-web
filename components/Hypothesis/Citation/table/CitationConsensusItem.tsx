@@ -390,7 +390,7 @@ function CitationConsensusItem({
               role="button"
             >
               <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
-              <div className={css(styles.buttonText)}>{"Reject"}</div>
+              <div className={css(styles.buttonText)}>{"Rejects"}</div>
             </div>
             <div
               className={css(styles.button)}
@@ -406,7 +406,7 @@ function CitationConsensusItem({
               role="button"
             >
               <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
-              <div className={css(styles.buttonText)}>{"Support"}</div>
+              <div className={css(styles.buttonText)}>{"Supports"}</div>
             </div>
           </div>
         )}
