@@ -12,6 +12,9 @@ import { useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 
+// Component
+import Loader from "~/components/Loader/Loader";
+
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
 );
@@ -20,7 +23,6 @@ const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
 const NotebookSidebar = ({
   currentOrg,
-  editorInstances,
   isPrivateNotebook,
   needNoteFetch,
   notes,
@@ -28,19 +30,23 @@ const NotebookSidebar = ({
   onOrgChange,
   orgs,
   refetchTemplates,
-  setEditorInstances,
   setNeedNoteFetch,
   setNotes,
   setRefetchTemplates,
   titles,
   user,
+  createNoteLoading,
+  onCreateNote,
+  onCreateNoteComplete,
+  onNoteClick,
 }) => {
-
   if (!isPrivateNotebook && !currentOrg) {
     throw "Notebook sidebar could not be initialized";
   }
 
   const router = useRouter();
+
+  const { orgSlug } = router.query;
 
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
@@ -49,13 +55,15 @@ const NotebookSidebar = ({
   const [hideNotes, setHideNotes] = useState(false);
 
   const handleCreateNewNote = async () => {
+    onCreateNote && onCreateNote();
     let note;
     if (isPrivateNotebook) {
       note = await createNewNote({});
     } else {
-      note = await createNewNote({ orgId: currentOrg.id });
+      note = await createNewNote({ orgSlug });
     }
 
+    onCreateNoteComplete && onCreateNoteComplete();
     return onNoteCreate(note);
   };
 
@@ -118,7 +126,7 @@ const NotebookSidebar = ({
                     >
                       <div className={css(styles.avatarWrapper)}>
                         <OrgAvatar org={org} />
-                      </div>                      
+                      </div>
                       <div className={css(styles.popoverBodyItemText)}>
                         <div className={css(styles.popoverBodyItemTitle)}>
                           {org.name}
@@ -137,10 +145,14 @@ const NotebookSidebar = ({
                     setIsPopoverOpen(false);
                   }}
                 >
-                  <div className={css(styles.actionButton, styles.newOrgButton)}>
+                  <div
+                    className={css(styles.actionButton, styles.newOrgButton)}
+                  >
                     {icons.plus}
                   </div>{" "}
-                  <span className={css(styles.newOrgText)}>New Organization</span>
+                  <span className={css(styles.newOrgText)}>
+                    New Organization
+                  </span>
                 </div>
               </div>
             }
@@ -151,26 +163,23 @@ const NotebookSidebar = ({
                 className={css(styles.popoverTarget)}
                 onClick={() => setIsPopoverOpen(!isPopoverOpen)}
               >
-                {isPrivateNotebook
-                  ? (
-                    <Fragment>
-                      <img
-                        className={css(styles.popoverBodyItemImage)}
-                        draggable="false"
-                        src={user.author_profile.profile_image}
-                      />
-                      {"Personal Notebook"}
-                    </Fragment>
-                  )
-                  : (
-                      <Fragment>
-                        <div className={css(styles.avatarWrapper)}>
-                          <OrgAvatar org={currentOrg} />
-                        </div>
-                        {currentOrg.name}
-                      </Fragment>
-                    )
-                }
+                {isPrivateNotebook ? (
+                  <Fragment>
+                    <img
+                      className={css(styles.popoverBodyItemImage)}
+                      draggable="false"
+                      src={user.author_profile.profile_image}
+                    />
+                    {"Personal Notebook"}
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <div className={css(styles.avatarWrapper)}>
+                      <OrgAvatar org={currentOrg} />
+                    </div>
+                    {currentOrg.name}
+                  </Fragment>
+                )}
                 <span className={css(styles.sortIcon)}>{icons.sort}</span>
               </div>
             }
@@ -201,43 +210,42 @@ const NotebookSidebar = ({
         <div
           className={css(
             styles.sidebarSection,
-            (hideNotes || notes.length === 0) && styles.showBottomBorder
+            hideNotes && styles.showBottomBorder
           )}
-          onClick={() => {
-            if (notes.length > 0) {
-              setHideNotes(!hideNotes);
-            }
-          }}
         >
           Notes
           <span className={css(styles.chevronIcon)}>
-            {hideNotes ? icons.chevronDown : icons.chevronUp}
+            {createNoteLoading ? (
+              <Loader type="clip" size={23} />
+            ) : (
+              <div
+                className={css(styles.actionButton)}
+                onClick={handleCreateNewNote}
+              >
+                {icons.plus}
+              </div>
+            )}
           </span>
         </div>
         {!hideNotes && (
           <div>
-            {notes.map(note => {
+            {notes.map((note) => {
               const noteId = note.id.toString();
-              const editorInstance = editorInstances.find(editor =>
-                noteId === editor.config._config.collaboration.channelId
-              );
               return (
                 <SidebarSectionContent
                   currentNoteId={router.query.noteId}
                   currentOrg={currentOrg}
-                  editorInstances={editorInstances}
                   key={noteId}
-                  noteBody={editorInstance?.getData() ?? ""}
                   noteId={noteId}
                   notes={notes}
                   pathname={getNotePathname({ noteId, org: currentOrg })}
                   refetchNotes={needNoteFetch}
                   refetchTemplates={refetchTemplates}
-                  setEditorInstances={setEditorInstances}
                   setNotes={setNotes}
                   setRefetchNotes={setNeedNoteFetch}
                   setRefetchTemplates={setRefetchTemplates}
                   title={titles[noteId]}
+                  onClick={onNoteClick}
                 />
               );
             })}
@@ -256,10 +264,6 @@ const NotebookSidebar = ({
             <span className={css(styles.sidebarButtonText)}>Import</span>
           </div>
         </div>
-      </div>
-      <div className={css(styles.sidebarNewNote)} onClick={handleCreateNewNote}>
-        <div className={css(styles.actionButton)}>{icons.plus}</div>
-        <div className={css(styles.newNoteText)}>Create New Note</div>
       </div>
     </div>
   );
@@ -291,7 +295,7 @@ const styles = StyleSheet.create({
   newOrgText: {
     marginLeft: 5,
     paddingTop: 7,
-  },    
+  },
   orgButtonsContainer: {
     marginTop: 0,
   },
@@ -395,6 +399,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     padding: 20,
     userSelect: "none",
+    alignItems: "center",
   },
   sidebarSectionContent: {
     borderTop: `1px solid ${colors.GREY(0.3)}`,
@@ -417,12 +422,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.GREY(0.3),
   },
   sidebarNewNote: {
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
+    // borderTop: `1px solid ${colors.GREY(0.3)}`,
     color: colors.BLUE(),
     cursor: "pointer",
     display: "flex",
     marginTop: "auto",
-    padding: 20,
+    // padding: 20,
     ":hover": {
       color: "#3E43E8",
     },
@@ -435,24 +440,15 @@ const styles = StyleSheet.create({
   actionButton: {
     alignItems: "center",
     background: colors.LIGHT_GREY(),
+    color: colors.PURPLE(1),
     border: "1px solid #ddd",
     borderRadius: "50%",
     display: "flex",
     fontSize: 16,
-    height: 35,
+    height: 25,
+    width: 25,
     justifyContent: "center",
-    marginLeft: 5,
-    marginRight: 5,
     transition: "all ease-in-out 0.1s",
-    width: 35,
-    "@media only screen and (max-width: 415px)": {
-      height: 33,
-      width: 33,
-    },
-    "@media only screen and (max-width: 321px)": {
-      height: 31,
-      width: 31,
-    },
   },
   showBottomBorder: {
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
