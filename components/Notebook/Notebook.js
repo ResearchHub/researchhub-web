@@ -1,13 +1,16 @@
-import Loader from "~/components/Loader/Loader";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
-import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { useRouter } from "next/router";
+import { useState, useEffect, Fragment, useCallback, useRef } from "react";
+
 import { fetchUserOrgs, fetchOrgNotes, fetchNote } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
-import { useRouter } from "next/router";
-import { useState, useEffect } from "react";
+import ReactPlaceholder from "react-placeholder/lib";
+import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
+import Loader from "~/components/Loader/Loader";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
+import colors from "~/config/themes/colors";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
@@ -21,7 +24,6 @@ const Notebook = ({ user }) => {
   const [currentNote, setCurrentNote] = useState(null);
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
-  const [currentUser, setCurrentUser] = useState(null);
   const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
@@ -32,19 +34,21 @@ const Notebook = ({ user }) => {
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [titles, setTitles] = useState({});
 
+  const orgsFetched = useRef();
+
   useEffect(() => {
     const _fetchUserOrgs = async () => {
       const userOrgs = await fetchUserOrgs({ user });
       const currOrg = getCurrentOrgFromRouter(userOrgs);
 
-      setCurrentUser(user);
       setOrganizations(userOrgs);
       setCurrentOrganization(currOrg);
       setNeedNoteFetch(true);
       setIsLoading(false);
+      orgsFetched.current = true;
     };
 
-    if (user?.id && !currentUser) {
+    if (user?.id && !orgsFetched.current) {
       _fetchUserOrgs();
     }
   }, [user]);
@@ -161,57 +165,47 @@ const Notebook = ({ user }) => {
   };
 
   const onCreateNoteComplete = () => {
+    setCreateNoteLoading(false);
   };
 
   return (
     <div className={css(styles.container)}>
-      {isLoading ? (
-        <div className={css(styles.loaderWrapper)}>
-          <Loader
-            key={"loader"}
-            loading={true}
-            size={35}
-            color={colors.BLUE()}
-          />
-        </div>
-      ) : (
-        <>
-          <NotebookSidebar
-            createNoteLoading={createNoteLoading}
+      <Fragment>
+        <NotebookSidebar
+          createNoteLoading={createNoteLoading}
+          currentNoteId={noteId}
+          currentOrg={currentOrganization}
+          isPrivateNotebook={isPrivateNotebook}
+          needNoteFetch={needNoteFetch}
+          notes={notes}
+          onCreateNote={onCreateNote}
+          onCreateNoteComplete={onCreateNoteComplete}
+          onNoteCreate={onNoteCreate}
+          onOrgChange={onOrgChange}
+          orgs={organizations}
+          refetchTemplates={refetchTemplates}
+          setNeedNoteFetch={setNeedNoteFetch}
+          setNotes={setNotes}
+          setRefetchTemplates={setRefetchTemplates}
+          titles={titles}
+          user={user}
+        />
+        {currentNote && !isLoading && (
+          <ELNEditor
+            currentNote={currentNote}
             currentNoteId={noteId}
-            currentOrg={currentOrganization}
-            isPrivateNotebook={isPrivateNotebook}
-            needNoteFetch={needNoteFetch}
+            currentOrganizationId={currentOrganization?.id}
+            isCollaborativeReady={isCollaborativeReady}
             notes={notes}
-            onCreateNote={onCreateNote}
-            onCreateNoteComplete={onCreateNoteComplete}
-            onNoteCreate={onNoteCreate}
-            onOrgChange={onOrgChange}
-            orgs={organizations}
-            refetchTemplates={refetchTemplates}
-            setNeedNoteFetch={setNeedNoteFetch}
-            setNotes={setNotes}
-            setRefetchTemplates={setRefetchTemplates}
+            orgSlug={orgSlug}
+            setIsCollaborativeReady={setIsCollaborativeReady}
+            setReadOnlyEditorInstance={setReadOnlyEditorInstance}
+            setTitles={setTitles}
             titles={titles}
-            user={currentUser}
+            user={user}
           />
-          {currentNote && (
-            <ELNEditor
-              currentNote={currentNote}
-              currentNoteId={noteId}
-              currentOrganizationId={currentOrganization?.id}
-              isCollaborativeReady={isCollaborativeReady}
-              notes={notes}
-              orgSlug={orgSlug}
-              setIsCollaborativeReady={setIsCollaborativeReady}
-              setReadOnlyEditorInstance={setReadOnlyEditorInstance}
-              setTitles={setTitles}
-              titles={titles}
-              user={currentUser}
-            />
-          )}
-        </>
-      )}
+        )}
+      </Fragment>
     </div>
   );
 };
