@@ -10,7 +10,7 @@ function Button(props) {
     type,
     label,
     isWhite,
-    size, // size is a enum; type string: ['small', 'med', 'big']
+    size, // size is a enum; type string: ['xsmall', 'small', 'med', 'big']
     disabled,
     isLink,
     customButtonStyle,
@@ -156,6 +156,12 @@ const styles = StyleSheet.create({
   },
   isWhiteLabel: {
     color: "inherit",
+  },
+  xsmall: {
+    height: 30,
+    width: "auto",
+    paddingLeft: 10,
+    paddingRight: 10,    
   },
   small: {
     width: 126,

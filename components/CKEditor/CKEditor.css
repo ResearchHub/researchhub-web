@@ -20,6 +20,8 @@
   --ck-image-style-spacing: 1.5em;
   --ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2);
   --ck-todo-list-checkmark-size: 16px;
+  --ck-user-avatar-background: none;
+  --ck-user-avatar-size: 30px !important;
 }
 
 /* ckeditor5-font/theme/fontsize.css */
@@ -447,4 +449,8 @@
   .ck-editor__editable_inline {
     padding: 0px 30px 225px 30px !important;
   }
+}
+
+.ck-presence-list__counter {
+  display: none;
 }

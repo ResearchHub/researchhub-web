@@ -3,11 +3,11 @@ import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import { StyleSheet, css } from "aphrodite";
 import {
-  inviteUserToOrg,
-  fetchOrgUsers,
-  removeUserFromOrg,
-  removeInvitedUserFromOrg,
-  updateOrgUserPermissions,
+  fetchNotePermissions,
+  updateNoteUserPermissions,
+  removeUserPermissionsFromNote,
+  removeInvitedUserFromNote,
+  inviteUserToNote,
 } from "~/config/fetch";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
@@ -16,13 +16,11 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { getOrgUserCount } from "~/config/utils/org";
 import Loader from "~/components/Loader/Loader";
 
-const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
+const ManageNotePermissions = ({ currentUser, noteId, setMessage, showMessage }) => {
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
-  const [orgUsers, setOrgUsers] = useState({});
-  const [orgUserCount, setOrgUserCount] = useState(0);
+  const [noteAccessList, setNoteAccessList] = useState([]);
   const [needsFetch, setNeedsFetch] = useState(true);
   const [isInviteInProgress, setIsInviteInProgress] = useState(false);
   const [statusDropdownOpenForUser, setStatusDropdownOpenForUser] =
@@ -31,26 +29,26 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const [_currentUser, _setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const _fetchPerms = async() => {
+    const _fetchNotePermissions = async() => {
       try {
-        const orgUsers = await fetchOrgUsers({ orgId: org.id });
-        setNeedsFetch(false);
-        setOrgUsers(orgUsers);
-        setOrgUserCount(getOrgUserCount(orgUsers));
-        setIsAdmin(isCurrentUserOrgAdmin(currentUser, orgUsers));
+        const noteAccessList = await fetchNotePermissions({ noteId });
 
+        setNoteAccessList(noteAccessList);
+        setIsAdmin(isCurrentUserNoteAdmin(currentUser, noteAccessList));
       }
-      catch(err) {
-        console.error(err);
+      catch {
+        console.error("Failed to fetch note permissions");
         setMessage("Unexpected error");
-        showMessage({ show: true, error: true });        
+        showMessage({ show: true, error: true });
       }
+
+      setNeedsFetch(false);
     }
 
-    if (needsFetch && _currentUser && !isNullOrUndefined(org)) {
-      _fetchPerms();
+    if (needsFetch && _currentUser && noteId) {
+      _fetchNotePermissions();
     }
-  }, [needsFetch, _currentUser, org]);
+  }, [needsFetch, _currentUser, noteId]);
 
   useEffect(() => {
     if (!_currentUser) {
@@ -61,18 +59,20 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const handleInvite = async (e) => {
     e && e.preventDefault();
     setIsInviteInProgress(true);
+
     try {
-      if (isUserAleadyInOrg(userToBeInvitedEmail, org)) {
+      if (doesUserHaveAccess(userToBeInvitedEmail, noteId)) {
         setMessage("User already in org");
         showMessage({ show: true, error: true });
         setIsInviteInProgress(false);
         return;
       }
 
-      const invitedUser = await inviteUserToOrg({
-        orgId: org.id,
+      const invitedUser = await inviteUserToNote({
+        note: noteId,
         email: userToBeInvitedEmail,
       });
+
       setNeedsFetch(true);
       setUserToBeInvitedEmail("");
     } catch (err) {
@@ -89,24 +89,24 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     }
   };
 
-  const isUserAleadyInOrg = (email, org) => {
+  const doesUserHaveAccess = (email, noteId) => {
     return Boolean(
-      [...orgUsers.admins, ...orgUsers.editors, ...orgUsers.viewers].find(
+      [...noteId.admins, ...noteId.editors, ...noteId.viewers].find(
         (u) => u.email === email
       )
     );
   };
 
-  const handleRemoveUser = async (user, org) => {
+  const handleRemoveUser = async (user, noteId) => {  
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
-        await removeInvitedUserFromOrg({
-          orgId: org.id,
+        await removeInvitedUserFromNote({
+          noteId: noteId,
           email: user.recipient_email,
         });
       } else {
-        await removeUserFromOrg({
-          orgId: org.id,
+        await removeUserPermissionsFromNote({
+          noteId: noteId,
           userId: user.author_profile.id,
         });
       }
@@ -118,23 +118,22 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     }
   };
 
-  const handleUpdatePermission = async (user, org, accessType) => {
+  const handleUpdatePermission = async (entity, noteId, accessType) => {
     try {
-      await updateOrgUserPermissions({
+      await updateNoteUserPermissions({
         userId: user.author_profile.id,
+        noteId: noteId,
         accessType,
-        orgId: org.id,
       });
+
       setNeedsFetch(true);
-      setMessage("");
-      showMessage({ show: true, error: false });
     } catch (err) {
       setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
     }
   };
 
-  const isCurrentUserOrgAdmin = (currentUser, orgUsers) => {
+  const isCurrentUserNoteAdmin = (currentUser, noteAccessList) => {
     if (!currentUser) {
       return false;
     }
@@ -142,19 +141,27 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     const uid = currentUser.author_profile.id;
     const isCurrentUserAdmin =
       uid ===
-      (orgUsers.admins || []).find((a) => a.author_profile.id === uid)
+      (noteAccessList.admins || []).find((a) => a.author_profile.id === uid)
         ?.author_profile.id;
 
     return isCurrentUserAdmin ? true : false;
   };
 
-  const renderOrgUser = (user, perm) => {
-    const displayName =
-      perm === "Invitation Pending"
-        ? user.recipient_email
-        : `${user?.author_profile?.first_name} ${user?.author_profile?.last_name}`;
-    const isCurrentUser =
-      user?.author_profile?.id === currentUser?.author_profile?.id;
+  const getDisplayName = (accessObj) => {
+    if (accessObj.user) {
+      return `${user?.author_profile?.first_name} ${user?.author_profile?.last_name}`;
+    }
+    else if (accessObj.organization) {
+      return accessObj.name;
+    }
+    else {
+      return "Invited";
+    }
+  }
+
+  const renderAccessRow = (accessObj) => {
+    const displayName = getDisplayName(accessObj);
+
     const key =
       perm === "Invitation Pending"
         ? `user-${user.recipient_email}`
@@ -301,29 +308,26 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           />
         )}
       </form>
-      {orgUserCount > 0 && (
+      {noteAccessList.map(accessObj => renderAccessRow(accessObj))}
+
+
+      {/*orgUserCount > 0 && (
         <div>
-          <div className={css(styles.subheader)}>Organization members</div>
           <div className={css(styles.userList)}>
             {(orgUsers.invited_users || []).map((u) =>
-              renderOrgUser(u, "Invitation Pending")
+              renderAccessRow(u, "Invitation Pending")
             )}
             {(orgUsers.admins || []).map((u) => renderOrgUser(u, "Admin"))}
             {(orgUsers.editors || []).map((u) => renderOrgUser(u, "Editor"))}
             {(orgUsers.viewers || []).map((u) => renderOrgUser(u, "Viewer"))}
           </div>
         </div>
-      )}
+      )*/}
     </div>
   );
 };
 
 const styles = StyleSheet.create({
-  subheader: {
-    fontWeight: 500,
-    marginTop: 20,
-    marginBottom: 20,
-  },
   loaderWrapper: {
     width: 80,
     height: 40,
@@ -423,4 +427,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageOrgUsers);
+export default connect(mapStateToProps, mapDispatchToProps)(ManageNotePermissions);

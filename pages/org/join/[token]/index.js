@@ -72,7 +72,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
       ) : (
         <div className={css(styles.buttonContainer)}>
           {auth.isLoggedIn ? (
-            <Button label={`Join Org`} hideRipples={true} />
+            <Button onClick={handleJoinOrg} label={`Join Org`} hideRipples={true} />
           ) : (
             <GoogleLoginButton
               styles={styles.googleLoginButton}
