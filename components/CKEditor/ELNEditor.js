@@ -10,6 +10,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useCallback } from "react";
+import NoteShareButton from "~/components/Notebook/NoteShareButton";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -40,6 +41,7 @@ const ELNEditor = ({
   setTitles,
   titles,
   user,
+  currentNoteId,
 }) => {
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
@@ -177,6 +179,8 @@ const ELNEditor = ({
 };
 
 const styles = StyleSheet.create({
+
+
   container: {
     position: "relative",
     marginLeft: "max(min(16%, 300px), 240px)",
@@ -192,7 +196,7 @@ const styles = StyleSheet.create({
   hideEditor: {
     display: "none",
   },
-  presenceListContainer: {
+  noteHeader: {
     background: "#fff",
     height: 80,
   },
@@ -220,5 +224,6 @@ const styles = StyleSheet.create({
     display: "none",
   },
 });
+
 
 export default ELNEditor;

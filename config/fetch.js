@@ -3,6 +3,53 @@ import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
+export const fetchNotePermissions = ({ noteId }) => {
+  return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+}
+
+export const updateNoteUserPermissions = ({ noteId, orgId, userId, accessType }) => {
+  const params = {
+    organization: (orgId || userId),
+    access_type: accessType
+  }
+
+  return fetch(API.NOTE_PERMISSIONS({ noteId, method: "PATCH" }), API.GET_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+}
+
+export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
+  return fetch(API.NOTE({ noteId }), API.DELETE_CONFIG({ user: userId }))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+}
+
+export const inviteUserToNote = ({ noteId, email, expire = 4320, accessType = "EDITOR" }) => {
+  const params = {
+    email,
+    expire,
+    access_type: accessType
+  }
+
+  return fetch(API.NOTE_INVITE_USER({ noteId }), API.POST_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+}
+
+export const acceptNoteInvite = ({ key }) => {
+  return fetch(API.NOTE_ACCEPT_INVITE({ key }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+}
+
+export const removeInvitedUserFromNote = ({ noteId, email }) => {
+  return fetch(API.NOTE_REMOVE_INVITED_USER({ noteId }), API.PATCH_CONFIG({ email }))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+}
+
 export const updateOrgProfileImg = ({ orgId, file }) => {
   const config = API.PATCH_FILE_CONFIG(file);
   return fetch(API.ORGANIZATION({ orgId }), config)
