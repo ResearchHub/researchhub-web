@@ -194,7 +194,6 @@ const Notebook = ({ user }) => {
             onCreateNote={onCreateNote}
             createNoteLoading={createNoteLoading}
             onCreateNoteComplete={onCreateNoteComplete}
-            readOnlyEditorInstance={readOnlyEditorInstance}
           />
           {currentNote && (
             <ELNEditor
