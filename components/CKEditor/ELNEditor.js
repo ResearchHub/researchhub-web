@@ -70,30 +70,6 @@ const ELNEditor = ({
           className={css(styles.presenceList, isCollaborativeReady && styles.green) + " presence"}
         />
       </div>
-      <div className={css(isCollaborativeReady && styles.hideReadOnlyEditor)}>
-        <CKEditor
-          config={{
-            title: {
-              placeholder: "Untitled",
-            },
-            placeholder:
-              "Start typing to continue with an empty page, or pick a template",
-            initialData: currentNote.latest_version?.src ?? "",
-          }}
-          editor={SimpleBalloonEditor}
-          onReady={(editor) => {
-            setReadOnlyEditorInstance(editor);
-            editor.isReadOnly = true
-            editor.editing.view.change((writer) => {
-              writer.setStyle(
-                "background",
-                "#fff",
-                editor.editing.view.document.getRoot()
-              );
-            });
-          }}
-        />
-      </div>
       {presenceListElement !== null && (
         <CKEditorContext
           config={{
