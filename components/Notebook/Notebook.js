@@ -160,12 +160,16 @@ const Notebook = ({ user }) => {
     }
   }, [disableELNSwap]);
 
-  useEffect(async () => {
-    setDisableELN(true);
-    const note = await fetchNote({ noteId });
-    setDisableELN(false);
-    setCurrentNote(note);
-  }, [noteId, fetchNote]);
+  useEffect(() => {
+    const fetchNoteCallback = async () => {
+      setDisableELN(true);
+      const note = await fetchNote({ noteId });
+      setDisableELN(false);
+      setCurrentNote(note);
+    };
+
+    fetchNoteCallback();
+  }, [noteId]);
 
   const switchNote = () => {
     setNoteLoading(true);
