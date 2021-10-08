@@ -88,9 +88,6 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     e && e.preventDefault();
     setIsInviteInProgress(true);
     try {
-      console.log("here");
-      console.log("userToBeInvitedEmail", userToBeInvitedEmail);
-      console.log("org", org);
       if (isUserAleadyInOrg(userToBeInvitedEmail, org)) {
         setMessage("User already in org");
         showMessage({ show: true, error: true });
