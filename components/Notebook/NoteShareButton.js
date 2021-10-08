@@ -2,7 +2,7 @@ import ManageNotePermissions from "./ManageNotePermissions";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import { useState } from "react";
 import { css, StyleSheet } from "aphrodite";
-import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
 
 const NoteShareButton = ({ noteId, org = null }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,15 +20,12 @@ const NoteShareButton = ({ noteId, org = null }) => {
       setIsPopoverOpen={() => setIsOpen(false)}
       targetContent={
         <div className={css(styles.buttonContainer)}>
-          <Button
+          <span
+            className={css(styles.shareLink)}
             onClick={() => setIsOpen(!isOpen)}
-            size={"xsmall"}
-            label={`Share`}
-            hideRipples={true}
-            isWhite={true}
           >
             Share
-          </Button>
+          </span>
         </div>
       }
     />
@@ -47,7 +44,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     userSelect: "none",
-    marginTop: 10,
     marginRight: 20,
   },
   buttonContainer: {
@@ -55,6 +51,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     marginLeft: 20,
+  },
+  shareLink: {
+    fontSize: 16,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
 });
 
