@@ -4,8 +4,8 @@ import colors from "config/themes/colors";
 
 const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
   const getOrgInitials = (org) => {
-    return org.name
-      ? org.name
+    return org?.name
+      ? org?.name
           .split(" ")
           .map((s) => s.charAt(0).toUpperCase())
           .slice(0, 2)
@@ -17,8 +17,8 @@ const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
       className={css(styles.container)}
       style={{ width: size, height: size, fontSize }}
     >
-      {org.cover_image ? (
-        <Image layout="fill" src={org.cover_image} />
+      {org?.cover_image ? (
+        <Image layout="fill" src={org?.cover_image} />
       ) : (
         <div className={css(styles.initialsContainer)}>
           <div className={css(styles.initials)}>{getOrgInitials(org)}</div>

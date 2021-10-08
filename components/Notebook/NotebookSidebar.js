@@ -41,9 +41,9 @@ const NotebookSidebar = ({
   titles,
   user,
 }) => {
-  if (!isPrivateNotebook && !currentOrg) {
-    throw "Notebook sidebar could not be initialized";
-  }
+  // if (!isPrivateNotebook && !currentOrg) {
+  //   throw "Notebook sidebar could not be initialized";
+  // }
 
   const router = useRouter();
 
@@ -94,7 +94,7 @@ const NotebookSidebar = ({
       />
       <NoteTemplateModal
         currentOrg={currentOrg}
-        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg.id}
+        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
         refetchTemplates={refetchTemplates}
@@ -195,7 +195,7 @@ const NotebookSidebar = ({
                     <div className={css(styles.avatarWrapper)}>
                       <OrgAvatar org={currentOrg} />
                     </div>
-                    {currentOrg.name}
+                    {currentOrg?.name}
                   </Fragment>
                 )}
                 <span className={css(styles.sortIcon)}>{icons.sort}</span>
