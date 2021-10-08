@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
   },
   error: {
-    backgroundColor: "rgb(251, 251, 253)",
+    backgroundColor: colors.ICY_GREY,
     border: "1px solid rgb(232, 232, 242)",
     overflow: "hidden",
     paddingLeft: 15,
