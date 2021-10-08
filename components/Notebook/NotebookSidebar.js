@@ -146,7 +146,11 @@ const NotebookSidebar = ({
                           {org.name}
                         </div>
                         <div className={css(styles.popoverBodyItemSubtitle)}>
-                          {"{count} members"}
+                          {!org.member_count
+                            ? ""
+                            : org.member_count === 1
+                            ? "1 member"
+                            : `${org.member_count} members`}
                         </div>
                       </div>
                     </a>
@@ -318,9 +322,7 @@ const styles = StyleSheet.create({
   orgButton: {
     paddingLeft: 17,
   },
-  orgButtonText: {
-    marginLeft: 20,
-  },
+  orgButtonText: {},
   container: {
     display: "flex",
   },

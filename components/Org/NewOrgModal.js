@@ -35,9 +35,9 @@ const NewOrgModal = ({
     try {
       org = await createOrg({ name: orgName });
       setOrg(org);
-      showMessage({ show: true, error: false });
       setFlowStep("INVITE");
     } catch (err) {
+      console.error(err);
       setMessage("Failed to create org. Please try again.");
       showMessage({ show: true, error: true });
     }
@@ -66,7 +66,7 @@ const NewOrgModal = ({
           <Button
             type="submit"
             customButtonStyle={styles.button}
-            label="Next: Invite Members"
+            label="Create Organization"
             rippleClass={styles.buttonContainer}
           ></Button>
         </form>
