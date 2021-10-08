@@ -137,9 +137,11 @@ import {
   faUserCircle,
   faPlus as faPlusDuo,
   faDotCircle,
+  faPenSquare,
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faPenSquare,
   faDotCircle,
   faPlusReg,
   faPlusDuo,
