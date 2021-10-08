@@ -50,16 +50,18 @@ function CitationCommentThreadComposer({
         <div className={css(styles.citationTitleContainer)}>
           <span className={css(styles.citationTitle)}>{citationTitle}</span>
         </div>
-        <DiscussionPostMetadata
-          authorProfile={authorProfile}
-          // @ts-ignore legacy code
-          data={{
-            created_by: user,
-          }}
-          noTimeStamp
-          smaller
-          username={authorFirstName + " " + authorLastName}
-        />
+        <div className={css(styles.postMetaWrap)}>
+          <DiscussionPostMetadata
+            authorProfile={authorProfile}
+            // @ts-ignore legacy code
+            data={{
+              created_by: user,
+            }}
+            noTimeStamp
+            smaller
+            username={authorFirstName + " " + authorLastName}
+          />
+        </div>
         <div className={css(styles.threadComposerContainer)}>
           <TextEditor
             canEdit
@@ -88,6 +90,7 @@ const styles = StyleSheet.create({
     fontFamily: "CharterBT",
     height: 20,
     marginBottom: 16,
+    backgroundColor: colors.LIGHT_GREY_BACKGROUND,
   },
   citationTitle: {
     boxSizing: "border-box",
@@ -108,13 +111,6 @@ const styles = StyleSheet.create({
       marginTop: 0,
     },
   },
-  threadComposerContainer: {
-    alignItems: "center",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    paddingTop: 4,
-  },
   commentEditorStyles: {
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 14,
@@ -123,7 +119,20 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
+  postMetaWrap: {
+    width: "100%",
+    height: "100%",
+    backgroundColor: "#fff",
+  },
+  threadComposerContainer: {
+    alignItems: "center",
+    backgroundColor: colors.ICY_GREY,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+  },
 });
+
 const mapStateToProps = ({ auth }: any) => ({
   auth,
 });
