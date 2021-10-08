@@ -177,11 +177,14 @@ const Notebook = ({ user }) => {
       ) : (
         <>
           <NotebookSidebar
+            createNoteLoading={createNoteLoading}
             currentNoteId={noteId}
             currentOrg={currentOrganization}
             isPrivateNotebook={isPrivateNotebook}
             needNoteFetch={needNoteFetch}
             notes={notes}
+            onCreateNote={onCreateNote}
+            onCreateNoteComplete={onCreateNoteComplete}
             onNoteCreate={onNoteCreate}
             onOrgChange={onOrgChange}
             orgs={organizations}
@@ -191,22 +194,20 @@ const Notebook = ({ user }) => {
             setRefetchTemplates={setRefetchTemplates}
             titles={titles}
             user={currentUser}
-            onCreateNote={onCreateNote}
-            createNoteLoading={createNoteLoading}
-            onCreateNoteComplete={onCreateNoteComplete}
           />
           {currentNote && (
             <ELNEditor
+              currentNote={currentNote}
               currentNoteId={noteId}
               currentOrganizationId={currentOrganization?.id}
+              isCollaborativeReady={isCollaborativeReady}
               notes={notes}
+              orgSlug={orgSlug}
+              setIsCollaborativeReady={setIsCollaborativeReady}
+              setReadOnlyEditorInstance={setReadOnlyEditorInstance}
               setTitles={setTitles}
               titles={titles}
               user={currentUser}
-              currentNote={currentNote}
-              isCollaborativeReady={isCollaborativeReady}
-              setIsCollaborativeReady={setIsCollaborativeReady}
-              setReadOnlyEditorInstance={setReadOnlyEditorInstance}
             />
           )}
         </>

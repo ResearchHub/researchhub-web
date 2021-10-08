@@ -6,7 +6,6 @@ import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useCallback } from "react";
-import { useRouter } from "next/router";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -31,19 +30,15 @@ const ELNEditor = ({
   currentNoteId,
   currentOrganizationId,
   isCollaborativeReady,
+  orgSlug,
   setIsCollaborativeReady,
   setReadOnlyEditorInstance,
   setTitles,
   titles,
   user,
 }) => {
-  const router = useRouter();
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
-
-  const channelId = `${router.query.orgSlug}-${
-    currentOrganizationId > 0 ? currentOrganizationId : user.id
-  }-${currentNoteId}`;
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -51,13 +46,17 @@ const ELNEditor = ({
     }
   }, []);
 
+  const channelId = `${orgSlug}-${
+    currentOrganizationId > 0 ? currentOrganizationId : user.id
+  }-${currentNoteId}`;
+
   const handleInput = (editor) => {
     const updatedTitles = {};
-    for (const key in titles) {
-      updatedTitles[key] =
-        key === editor.config._config.collaboration.channelId
+    for (const noteId in titles) {
+      updatedTitles[noteId] =
+        noteId === currentNoteId
           ? editor.plugins.get("Title").getTitle() || "Untitled"
-          : titles[key];
+          : titles[noteId];
     }
     setTitles(updatedTitles);
   };
