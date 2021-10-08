@@ -105,7 +105,7 @@ const NotebookSidebar = ({
                     <img
                       className={css(styles.popoverBodyItemImage)}
                       draggable="false"
-                      src={user.author_profile.profile_image}
+                      src={user?.author_profile?.profile_image}
                     />
                     <div className={css(styles.popoverBodyItemTitle)}>
                       Personal Notes
@@ -167,7 +167,7 @@ const NotebookSidebar = ({
                     <img
                       className={css(styles.popoverBodyItemImage)}
                       draggable="false"
-                      src={user.author_profile.profile_image}
+                      src={user?.author_profile?.profile_image}
                     />
                     {"Personal Notebook"}
                   </Fragment>
