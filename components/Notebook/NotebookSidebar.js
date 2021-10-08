@@ -22,22 +22,24 @@ const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
 const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
 const NotebookSidebar = ({
+  currentNoteId,
   currentOrg,
   isPrivateNotebook,
   needNoteFetch,
   notes,
-  onNoteCreate,
   onOrgChange,
+  orgSlug,
   orgs,
+  readOnlyEditorInstance,
   refetchTemplates,
+  setCurrentNote,
+  setIsCollaborativeReady,
   setNeedNoteFetch,
   setNotes,
   setRefetchTemplates,
+  setTitles,
   titles,
   user,
-  createNoteLoading,
-  onCreateNote,
-  onCreateNoteComplete,
 }) => {
   if (!isPrivateNotebook && !currentOrg) {
     throw "Notebook sidebar could not be initialized";
@@ -45,25 +47,34 @@ const NotebookSidebar = ({
 
   const router = useRouter();
 
-  const { orgSlug } = router.query;
-
-  const [showNewOrgModal, setShowNewOrgModal] = useState(false);
-  const [showManageOrgModal, setShowManageOrgModal] = useState(false);
+  const [createNoteLoading, setCreateNoteLoading] = useState(false);
+  const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [hideNotes, setHideNotes] = useState(false);
+  const [showManageOrgModal, setShowManageOrgModal] = useState(false);
+  const [showNewOrgModal, setShowNewOrgModal] = useState(false);
 
   const handleCreateNewNote = async () => {
-    onCreateNote && onCreateNote();
+    setCreateNoteLoading(true);
     let note;
     if (isPrivateNotebook) {
       note = await createNewNote({});
     } else {
       note = await createNewNote({ orgSlug });
     }
+    setCreateNoteLoading(false);
+    const noteId = note.id;
 
-    onCreateNoteComplete && onCreateNoteComplete();
-    return onNoteCreate(note);
+    setTitles({
+      [noteId]: note.title,
+      ...titles,
+    });
+    setNotes([note, ...notes]);
+
+    setCurrentNote(note);
+
+    const path = getNotePathname({ noteId, org: currentOrg });
+    router.push(path);
   };
 
   return (
@@ -82,14 +93,18 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
-        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg.id}
         currentOrg={currentOrg}
+        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg.id}
         isOpen={isNoteTemplateModalOpen}
-        refetchNotes={needNoteFetch}
+        orgSlug={orgSlug}
         refetchTemplates={refetchTemplates}
         setIsOpen={setIsNoteTemplateModalOpen}
-        setRefetchNotes={setNeedNoteFetch}
         user={user}
+        setTitles={setTitles}
+        setNotes={setNotes}
+        setCurrentNote={setCurrentNote}
+        titles={titles}
+        notes={notes}
       />
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
@@ -232,14 +247,17 @@ const NotebookSidebar = ({
               const noteId = note.id.toString();
               return (
                 <SidebarSectionContent
-                  currentNoteId={router.query.noteId}
+                  currentNoteId={currentNoteId}
                   currentOrg={currentOrg}
                   key={noteId}
+                  noteBody={note.latest_version?.src ?? ""}
                   noteId={noteId}
                   notes={notes}
-                  pathname={getNotePathname({ noteId, org: currentOrg })}
+                  readOnlyEditorInstance={readOnlyEditorInstance}
                   refetchNotes={needNoteFetch}
                   refetchTemplates={refetchTemplates}
+                  setCurrentNote={setCurrentNote}
+                  setIsCollaborativeReady={setIsCollaborativeReady}
                   setNotes={setNotes}
                   setRefetchNotes={setNeedNoteFetch}
                   setRefetchTemplates={setRefetchTemplates}
