@@ -24,7 +24,6 @@ const SidebarSectionContent = ({
   setRefetchNotes,
   setRefetchTemplates,
   title,
-  onClick,
 }) => {
   const alert = useAlert();
   const router = useRouter();
@@ -126,7 +125,6 @@ const SidebarSectionContent = ({
             styles.sidebarSectionContent,
             noteId === currentNoteId && styles.active
           )}
-          onClick={onClick}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >

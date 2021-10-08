@@ -38,7 +38,6 @@ const NotebookSidebar = ({
   createNoteLoading,
   onCreateNote,
   onCreateNoteComplete,
-  onNoteClick,
 }) => {
   if (!isPrivateNotebook && !currentOrg) {
     throw "Notebook sidebar could not be initialized";
@@ -245,7 +244,6 @@ const NotebookSidebar = ({
                   setRefetchNotes={setNeedNoteFetch}
                   setRefetchTemplates={setRefetchTemplates}
                   title={titles[noteId]}
-                  onClick={onNoteClick}
                 />
               );
             })}
