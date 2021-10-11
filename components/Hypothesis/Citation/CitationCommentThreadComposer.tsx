@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontFamily: "CharterBT",
     height: 20,
-    marginBottom: 16,
+    marginBottom: 8,
     backgroundColor: colors.LIGHT_GREY_BACKGROUND,
   },
   citationTitle: {
@@ -127,9 +127,11 @@ const styles = StyleSheet.create({
   threadComposerContainer: {
     alignItems: "center",
     backgroundColor: colors.ICY_GREY,
+    border: `1px solid ${colors.LIGHT_GREY(1)}`,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
+    marginTop: 8,
   },
 });
 
