@@ -17,7 +17,7 @@ const NoteShareButton = ({ noteId, org = null }) => {
         </div>
       }
       positions={["bottom", "top"]}
-      setIsPopoverOpen={() => setIsOpen(false)}
+      setIsPopoverOpen={() => setIsOpen(true)}
       targetContent={
         <div className={css(styles.buttonContainer)}>
           <span

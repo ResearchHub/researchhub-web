@@ -9,6 +9,12 @@ export const fetchNotePermissions = ({ noteId }) => {
     .then(Helpers.parseJSON);
 };
 
+export const fetchNoteByInviteToken = ({ token }) => {
+  return fetch(API.NOTE_INVITE_DETAILS({ token }), API.GET_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const updateNoteUserPermissions = ({
   noteId,
   orgId,
