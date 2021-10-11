@@ -1,4 +1,4 @@
-import { acceptNoteInvite, fetchOrgByInviteToken } from "~/config/fetch";
+import { acceptNoteInvite, fetchNoteByInviteToken } from "~/config/fetch";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -13,14 +13,16 @@ import { AuthActions } from "~/redux/auth";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();
-  const [org, setOrg] = useState(null);
+  const [note, setNote] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const _fetchOrg = async () => {
+    const _fetchNote = async () => {
       try {
-        const org = await fetchOrgByInviteToken({ token: router.query.token });
-        setOrg(org);
+        const note = await fetchNoteByInviteToken({
+          token: router.query.token,
+        });
+        setNote(note);
         setIsLoading(false);
       } catch (err) {
         setMessage(`Failed to fetch invite`);
@@ -30,8 +32,8 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
       }
     };
 
-    if (auth.authChecked && !org) {
-      // _fetchOrg();
+    if (auth.authChecked && !note) {
+      _fetchNote();
     }
   }, [auth]);
 
@@ -47,17 +49,14 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
     } catch (err) {
       setIsLoading(false);
 
-      if (err.message === "Invitation has expired") {
-        setMessage(`Invitation has expired`);
-      }
-
+      setMessage(`Invitation invalid or expired.`);
       showMessage({ show: true, error: true });
     }
   };
 
   return (
     <div className={css(styles.container)}>
-      {org && (
+      {/*org && (
         <div>
           <div className={css(styles.OrgAvatarContainer)}>
             <OrgAvatar org={org} size={110} fontSize={28} />
@@ -66,7 +65,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
             You have been invited to join <strong>{org.name}</strong>.
           </div>
         </div>
-      )}
+      )*/}
       {false ? (
         <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
       ) : (

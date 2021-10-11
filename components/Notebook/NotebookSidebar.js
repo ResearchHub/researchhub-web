@@ -210,17 +210,24 @@ const NotebookSidebar = ({
               styles.orgButtonsContainer
             )}
           >
-            <div
-              className={css(styles.sidebarButton, styles.orgButton)}
-              onClick={() => setShowManageOrgModal(true)}
-            >
-              {icons.cog}
-              <span
-                className={css(styles.sidebarButtonText, styles.orgButtonText)}
+            {["MEMBER", "ADMIN"].includes(
+              currentOrg?.user_permission?.access_type
+            ) && (
+              <div
+                className={css(styles.sidebarButton, styles.orgButton)}
+                onClick={() => setShowManageOrgModal(true)}
               >
-                Settings & Members
-              </span>
-            </div>
+                {icons.cog}
+                <span
+                  className={css(
+                    styles.sidebarButtonText,
+                    styles.orgButtonText
+                  )}
+                >
+                  Settings & Members
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -311,13 +318,11 @@ const styles = StyleSheet.create({
     height: 30,
     marginLeft: 0,
     cursor: "pointer",
+    boxSizing: "border-box",
   },
   newOrgText: {
-    marginLeft: 5,
+    marginLeft: 10,
     paddingTop: 7,
-  },
-  orgButtonsContainer: {
-    marginTop: 0,
   },
   orgButton: {
     paddingLeft: 17,
@@ -473,6 +478,10 @@ const styles = StyleSheet.create({
   },
   sidebarButtonsContainer: {
     margin: 10,
+  },
+  orgButtonsContainer: {
+    margin: 0,
+    marginLeft: 10,
   },
   sidebarButton: {
     border: "none",
