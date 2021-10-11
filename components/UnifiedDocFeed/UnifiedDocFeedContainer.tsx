@@ -43,16 +43,6 @@ type PaginationInfo = {
   page: number;
 };
 
-const featureHeadlines = {
-  Hypothesis: "a tool to get an unbiased view of ...",
-};
-
-const featureDescriptions = {
-  Hypothesis: `We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows users put a stake in the ground and make a claim, while backing it up with scientific research. 
-  
-Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place anyone looks at to find the consensus of specific topics.`,
-};
-
 const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
   return isNullOrUndefined(docType)
@@ -123,8 +113,6 @@ function UnifiedDocFeedContainer({
     (): Boolean => page === 1 && isLoading,
     [page, isLoading]
   );
-  const [newFeatureActive, setNewFeatureActive] = useState(false);
-  const [whichFeatureActive, setWhichFeatureActive] = useState(false);
 
   const formattedMainHeader = useMemo(
     (): string =>
@@ -297,98 +285,31 @@ function UnifiedDocFeedContainer({
     };
   };
 
-  const [shouldAlertHypo, _setShouldAlertHypo] =
-    useEffectNewFeatureShouldAlertUser({
-      auth,
-      featureName: "hypothesis",
-    });
-
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
         const filterValue = UnifiedDocFilters[filterKey];
-        if (filterValue === "hypothesis") {
-          return (
-            <div className={css(styles.hypoFeedButton)}>
-              <UnifiedDocFeedFilterButton
-                isActive={docTypeFilter === filterValue}
-                key={filterKey}
-                label={UnifiedDocFilterLabels[filterKey]}
-                onClick={(): void => {
-                  postNewFeatureNotifiedToUser({
-                    auth,
-                    featureName: filterValue,
-                  });
-                  handleDocTypeChange(filterValue);
-                }}
-              />
-              {shouldAlertHypo ? (
-                <div className={css(styles.tabFeature)}>
-                  <TabNewFeature />
-                </div>
-              ) : null}
-            </div>
-          );
-        } else {
-          return (
-            <div className={css(styles.feedButtonContainer)}>
-              <UnifiedDocFeedFilterButton
-                isActive={docTypeFilter === filterValue}
-                key={filterKey}
-                label={UnifiedDocFilterLabels[filterKey]}
-                onClick={() => handleDocTypeChange(filterValue)}
-              />
-            </div>
-          );
-        }
+        return (
+          <div className={css(styles.feedButtonContainer)}>
+            <UnifiedDocFeedFilterButton
+              isActive={docTypeFilter === filterValue}
+              key={filterKey}
+              label={UnifiedDocFilterLabels[filterKey]}
+              onClick={() => handleDocTypeChange(filterValue)}
+            />
+          </div>
+        );
       }
     );
-  }, [docTypeFilter, router, shouldAlertHypo]);
+  }, [docTypeFilter, router]);
 
-  const documentCards = useMemo((): UnifiedCard[] | any[] => {
-    const cards = getDocumentCard({
-      hasSubscribed,
-      isLoggedIn,
-      isOnMyHubsTab,
-      setUnifiedDocuments,
-      unifiedDocumentData: unifiedDocuments,
-    });
-    if (shouldAlertHypo && docTypeFilter === "hypothesis") {
-      cards.unshift(
-        <SiteWideBannerTall
-          body={
-            <Fragment>
-              <span>
-                {
-                  "We love introducing exciting new features in order to help push and further science. Our new hypothesis feature allows you to put a stake in the ground and make a claim while backing it up with scientific research."
-                }
-              </span>
-              <br />
-              <br />
-              <span>
-                {
-                  "Whether you're just starting your research in a new field, or have been researching for a while, we hope to be the first place aпуone looks at to find the consensus of sресific topics."
-                }
-              </span>
-            </Fragment>
-          }
-          // button={{
-          //   label: "Learn more",
-          //   href: undefined /* TODO: Pat add Notion link */,
-          // }}
-          header={"Introducing Hypotheses"}
-          imgSrc={""}
-        />
-      );
-    }
-    return cards;
-  }, [
-    getDocumentCard,
-    setUnifiedDocuments,
-    unifiedDocuments,
+  const cards = getDocumentCard({
+    hasSubscribed,
     isLoggedIn,
-    shouldAlertHypo,
-  ]);
+    isOnMyHubsTab,
+    setUnifiedDocuments,
+    unifiedDocumentData: unifiedDocuments,
+  });
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -427,7 +348,7 @@ function UnifiedDocFeedContainer({
       ) : (
         <div className={css(styles.feedPosts)}>
           <FeedBlurWithButton />
-          {documentCards.length > 0 ? documentCards : <EmptyFeedScreen />}
+          {cards.length > 0 ? cards : <EmptyFeedScreen />}
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}

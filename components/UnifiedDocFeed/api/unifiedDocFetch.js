@@ -41,7 +41,7 @@ const calculateTimeScope = (scope) => {
   return scope;
 };
 
-export const fetchUserVote = (unifiedDocs = [], isLoggedIn) => {
+export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   const userVoteIds = { hypothesis: [], paper: [], post: [] };
   unifiedDocs.forEach(({ documents, document_type }) => {
     const formattedDocType = getUnifiedDocType(document_type);
@@ -57,14 +57,13 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn) => {
     paper: paperIds,
     post: postIds,
   } = userVoteIds;
-
   if (hypothesisIds.length < 1 && paperIds.length < 1 && postIds.length < 1) {
     emptyFncWithMsg("Empty Post & Paper IDs. Probable cause: faulty data");
     return unifiedDocs;
   }
   return fetch(
     API.CHECK_USER_VOTE_DOCUMENTS({ hypothesisIds, postIds, paperIds }),
-    API.GET_CONFIG()
+    !isNullOrUndefined(authToken) ? API.GET_CONFIG(authToken) : API.GET_CONFIG()
   )
     .then(helpers.checkStatus)
     .then(helpers.parseJSON)
