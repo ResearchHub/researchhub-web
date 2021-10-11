@@ -11,6 +11,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useCallback } from "react";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
+import { PERMS } from "~/components/Notebook/utils/notePermissions";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -33,6 +34,7 @@ const saveData = (editor, noteId) => {
 const ELNEditor = ({
   currentNote,
   currentNoteId,
+  userNoteAccess,
   currentOrganizationId,
   currentOrganization,
   isCollaborativeReady,
@@ -69,7 +71,6 @@ const ELNEditor = ({
 
   return (
     <div className={css(styles.container)}>
-
       <div className={css(styles.noteHeader)}>
         <div className={css(styles.presenceListContainer)}>
           <div

@@ -4,33 +4,45 @@ import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, useEffect, Fragment, useCallback, useRef } from "react";
 
-import { fetchUserOrgs, fetchOrgNotes, fetchNote } from "~/config/fetch";
+import {
+  fetchUserOrgs,
+  fetchNotePermissions,
+  fetchOrgNotes,
+  fetchNote,
+} from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import ReactPlaceholder from "react-placeholder/lib";
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import colors from "~/config/themes/colors";
+import { getUserNoteAccess } from "./utils/notePermissions";
+import Error from "next/error";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user }) => {
+const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
   const [currentNote, setCurrentNote] = useState(null);
+  const [currentNotePerms, setCurrentNotePerms] = useState(null);
+  const [userNoteAccess, setUserNoteAccess] = useState(null);
+  const [notes, setNotes] = useState([]);
+
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
-  const [notes, setNotes] = useState([]);
+  const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
   const [organizations, setOrganizations] = useState([]);
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
+  const [error, setError] = useState(null);
   const [titles, setTitles] = useState({});
 
   const orgsFetched = useRef();
@@ -53,6 +65,35 @@ const Notebook = ({ user }) => {
   }, [user]);
 
   useEffect(() => {
+    const _fetchNotePermissions = async () => {
+      try {
+        const perms = await fetchNotePermissions({ noteId });
+        setCurrentNotePerms(perms);
+
+        const access = getUserNoteAccess({
+          user,
+          userOrgs: organizations,
+          notePerms: currentNotePerms,
+        });
+        setUserNoteAccess(access);
+      } catch (err) {
+        console.error("Failed to fetch note permissions", err);
+        setError({ code: 500 });
+      } finally {
+        setNeedNotePermsFetch(false);
+      }
+    };
+
+    if (noteId && user?.id && needNotePermsFetch) {
+      _fetchNotePermissions();
+    }
+  }, [noteId, needNotePermsFetch, user]);
+
+  useEffect(() => {
+    setNeedNotePermsFetch(true);
+  }, [noteId]);
+
+  useEffect(() => {
     const _fetchOrgNotes = async () => {
       let response;
       let notes;
@@ -71,7 +112,9 @@ const Notebook = ({ user }) => {
         );
 
         setNotes(sortedNotes);
-        setCurrentNote(sortedNotes.find((note) => note.id.toString() === noteId));
+        setCurrentNote(
+          sortedNotes.find((note) => note.id.toString() === noteId)
+        );
 
         const updatedTitles = {};
         for (const note of sortedNotes) {
@@ -102,7 +145,6 @@ const Notebook = ({ user }) => {
         if (!currentOrg) {
           return console.error("Org could not be found in user's orgs");
         }
-
         setCurrentOrganization(currentOrg);
         setCurrentOrgSlug(orgSlug);
         setNeedNoteFetch(true);
@@ -136,6 +178,10 @@ const Notebook = ({ user }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
+  if (error) {
+    <Error statusCode={error.code} />;
+  }
+
   return (
     <div className={css(styles.container)}>
       <>
@@ -161,6 +207,7 @@ const Notebook = ({ user }) => {
         />
         {currentNote && !isLoading && (
           <ELNEditor
+            userNoteAccess={userNoteAccess}
             currentNote={currentNote}
             currentNoteId={noteId}
             currentOrganizationId={currentOrganization?.id}

@@ -212,13 +212,18 @@ const ManageNotePermissions = ({
   };
 
   const canEditPermission = ({ accessObj = null, invitedUser = null }) => {
-    const noteBelongsToCurrOrg = currentOrg ? true : false;
-    const userIsCurrOrgMember = ["ADMIN", "MEMBER"].includes(
-      currentOrg.user_permission.access_type
-    );
+    const isOrgContext = Boolean(currentOrg);
+    const isPrivateContext = !isOrgContext;
 
-    if (noteBelongsToCurrOrg && userIsCurrOrgMember) {
-      return true;
+    if (isOrgContext) {
+      const userIsCurrOrgMember = ["ADMIN", "MEMBER"].includes(
+        currentOrg.user_permission.access_type
+      );
+
+      if (userIsCurrOrgMember) {
+        return true;
+      }
+    } else if (isPrivateContext) {
     }
 
     return false;
