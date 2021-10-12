@@ -27,8 +27,6 @@ const saveData = (editor, noteId) => {
     note: noteId,
   };
 
-  console.log("noteContentParams", noteContentParams);
-
   fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);

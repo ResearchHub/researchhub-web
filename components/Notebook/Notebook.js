@@ -30,6 +30,7 @@ const Notebook = ({ user, note, currentOrg }) => {
   const [currentNotePerms, setCurrentNotePerms] = useState(null);
   const [userNoteAccess, setUserNoteAccess] = useState(null);
   const [notes, setNotes] = useState([note]);
+  const [titles, setTitles] = useState({ [note.id]: note.title });
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
@@ -44,8 +45,6 @@ const Notebook = ({ user, note, currentOrg }) => {
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
-  const [titles, setTitles] = useState({ [note.id]: note.title });
-
   const orgsFetched = useRef();
 
   useEffect(() => {
@@ -141,7 +140,6 @@ const Notebook = ({ user, note, currentOrg }) => {
         setCurrentOrganization(null);
         setCurrentOrgSlug("me");
         setIsPrivateNotebook(true);
-        setNeedNoteFetch(true);
       } else {
         const currentOrg = getCurrentOrgFromRouter(organizations);
         if (!currentOrg) {
@@ -149,11 +147,20 @@ const Notebook = ({ user, note, currentOrg }) => {
         }
         setCurrentOrganization(currentOrg);
         setCurrentOrgSlug(orgSlug);
-        setNeedNoteFetch(true);
         setIsPrivateNotebook(false);
       }
+
+      resetToInitialState();
     }
   }, [router.asPath, currentOrganization]);
+
+  const resetToInitialState = () => {
+    setNeedNoteFetch(true);
+    setDidInitialNotesLoad(false);
+    setNotes([note]);
+    setTitles({ [note.id]: note.title });
+    setCurrentNote(note);
+  };
 
   const onOrgChange = (updatedOrg, changeType, needNoteFetch = false) => {
     const userOrganizations = organizations;
