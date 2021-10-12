@@ -23,7 +23,7 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
+const Notebook = ({ user }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
@@ -31,15 +31,17 @@ const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
   const [currentNotePerms, setCurrentNotePerms] = useState(null);
   const [userNoteAccess, setUserNoteAccess] = useState(null);
   const [notes, setNotes] = useState([]);
+  const [needNoteFetch, setNeedNoteFetch] = useState(false);
+  const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
+  const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
   const [currentOrganization, setCurrentOrganization] = useState(null);
+  const [organizations, setOrganizations] = useState([]);
+
   const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
-  const [needNoteFetch, setNeedNoteFetch] = useState(false);
-  const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
-  const [organizations, setOrganizations] = useState([]);
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
@@ -125,6 +127,7 @@ const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
         console.error("failed to fetch notes", err);
       }
 
+      setDidInitialNotesLoad(true);
       setNeedNoteFetch(false);
     };
 
@@ -201,6 +204,7 @@ const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
     <div className={css(styles.container)}>
       <>
         <NotebookSidebar
+          didInitialNotesLoad={didInitialNotesLoad}
           currentNoteId={noteId}
           currentOrg={currentOrganization}
           isPrivateNotebook={isPrivateNotebook}
