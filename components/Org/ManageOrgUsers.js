@@ -170,13 +170,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       return false;
     }
 
-    const uid = currentUser.author_profile.id;
+    const cuid = currentUser.author_profile.id;
     const isCurrentUserAdmin =
-      uid ===
-      (orgUsers.admins || []).find((a) => a.author_profile.id === uid)
+      cuid ===
+      (orgUsers.admins || []).find((a) => a.author_profile.id === cuid)
         ?.author_profile.id;
 
-    return isCurrentUserAdmin ? true : false;
+
+    return isCurrentUserAdmin;
   };
 
   const renderOrgUser = (user, perm) => {
@@ -330,6 +331,7 @@ const styles = StyleSheet.create({
   },
   permJustText: {
     marginRight: 27,
+    color: colors.BLACK(0.8),
   },
   downIcon: {
     padding: 4,
