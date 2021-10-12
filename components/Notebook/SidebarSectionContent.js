@@ -4,8 +4,12 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { css, StyleSheet } from "aphrodite";
-import { deleteNote } from "~/config/fetch";
-import { fetchNote } from "~/config/fetch";
+import {
+  deleteNote,
+  fetchNote,
+  createNewNote,
+  createNoteContent,
+} from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";
@@ -17,6 +21,7 @@ const SidebarSectionContent = ({
   noteBody,
   noteId,
   notes,
+  onNoteCreate,
   readOnlyEditorInstance,
   refetchNotes,
   refetchTemplates,
@@ -26,6 +31,7 @@ const SidebarSectionContent = ({
   setRefetchNotes,
   setRefetchTemplates,
   title,
+  isPrivateNotebook,
 }) => {
   const alert = useAlert();
   const router = useRouter();
@@ -59,35 +65,23 @@ const SidebarSectionContent = ({
       text: "Duplicate",
       icon: icons.clone,
       hoverStyle: styles.blueHover,
-      onClick: () => {
-        const noteParams = {
-          organization: currentOrg?.id,
-          title: title,
-        };
-        fetch(API.NOTE({}), API.POST_CONFIG(noteParams))
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((note) => {
-            const noteContentParams = {
-              full_src: noteBody,
-              plain_text: "",
-              note: note.id,
-            };
-            return fetch(
-              API.NOTE_CONTENT(),
-              API.POST_CONFIG(noteContentParams)
-            );
-          })
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((data) => {
-            setRefetchNotes(!refetchNotes);
-            const path = getNotePathname({
-              noteId: data.note,
-              org: currentOrg,
-            });
-            router.push(path);
-          });
+      onClick: async () => {
+        let params;
+
+        if (isPrivateNotebook) {
+          params = { title };
+        } else {
+          params = { orgSlug: currentOrg.slug, title };
+        }
+
+        setIsPopoverOpen(false);
+        const note = await createNewNote(params);
+        const noteContent = await createNoteContent({
+          editorData: noteBody,
+          noteId: note.id,
+        });
+        setRefetchNotes(true);
+        onNoteCreate(note);
       },
     },
     {
@@ -152,12 +146,8 @@ const SidebarSectionContent = ({
                   key={index}
                   onClick={item.onClick}
                 >
-                  <div className={css(styles.popoverBodyIcon)}>
-                    {item.icon}
-                  </div>
-                  <div className={css(styles.popoverBodyText)}>
-                    {item.text}
-                  </div>
+                  <div className={css(styles.popoverBodyIcon)}>{item.icon}</div>
+                  <div className={css(styles.popoverBodyText)}>{item.text}</div>
                 </div>
               ))}
             </div>

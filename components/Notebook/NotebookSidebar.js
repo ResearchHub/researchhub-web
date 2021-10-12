@@ -28,6 +28,7 @@ const NotebookSidebar = ({
   needNoteFetch,
   notes,
   onOrgChange,
+  onNoteCreate,
   orgSlug,
   orgs,
   readOnlyEditorInstance,
@@ -56,25 +57,17 @@ const NotebookSidebar = ({
 
   const handleCreateNewNote = async () => {
     setCreateNoteLoading(true);
-    let note;
+
+    let params;
     if (isPrivateNotebook) {
-      note = await createNewNote({});
+      params = {};
     } else {
-      note = await createNewNote({ orgSlug });
+      params = { orgSlug };
     }
+
+    const note = await createNewNote(params);
+    onNoteCreate(note);
     setCreateNoteLoading(false);
-    const noteId = note.id;
-
-    setTitles({
-      [noteId]: note.title,
-      ...titles,
-    });
-    setNotes([note, ...notes]);
-
-    setCurrentNote(note);
-
-    const path = getNotePathname({ noteId, org: currentOrg });
-    router.push(path);
   };
 
   return (
@@ -258,8 +251,10 @@ const NotebookSidebar = ({
               const noteId = note.id.toString();
               return (
                 <SidebarSectionContent
+                  isPrivateNotebook={isPrivateNotebook}
                   currentNoteId={currentNoteId}
                   currentOrg={currentOrg}
+                  onNoteCreate={onNoteCreate}
                   key={noteId}
                   noteBody={note.latest_version?.src ?? ""}
                   noteId={noteId}
