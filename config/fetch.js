@@ -100,6 +100,7 @@ export const createNoteContent = ({ editorData, noteId }, authToken) => {
     plain_text: "",
     note: noteId,
   };
+
   return fetch(
     API.NOTE_CONTENT(),
     API.POST_CONFIG(noteContentParams, authToken)

@@ -174,6 +174,21 @@ const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
     }
   };
 
+  const onNoteCreate = (note) => {
+    // setCurrentNote(note);
+    setNotes([note, ...notes]);
+    setTitles({
+      [note.id]: note.title,
+      ...titles,
+    });
+    const path = getNotePathname({
+      noteId: note.id,
+      org: currentOrganization,
+    });
+
+    router.push(path);
+  };
+
   const getCurrentOrgFromRouter = (orgs) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
@@ -192,6 +207,7 @@ const Notebook = ({ user, initialUserOrgs, initialNotePerms }) => {
           needNoteFetch={needNoteFetch}
           notes={notes}
           onOrgChange={onOrgChange}
+          onNoteCreate={onNoteCreate}
           orgSlug={orgSlug}
           orgs={organizations}
           readOnlyEditorInstance={readOnlyEditorInstance}
