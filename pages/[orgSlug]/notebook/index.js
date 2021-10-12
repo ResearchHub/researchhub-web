@@ -47,7 +47,6 @@ export async function getServerSideProps(ctx) {
       authToken
     );
 
-    console.log(note);
     return {
       redirect: {
         destination: `/${orgSlug}/notebook/${note.id}`,
