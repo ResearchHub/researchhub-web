@@ -178,7 +178,6 @@ const Notebook = ({ user }) => {
   };
 
   const onNoteCreate = (note) => {
-    // setCurrentNote(note);
     setNotes([note, ...notes]);
     setTitles({
       [note.id]: note.title,
