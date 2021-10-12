@@ -181,7 +181,7 @@ export default function NoteTemplateModal({
             className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
             onClick={() => setHideNotes(!hideNotes)}
           >
-            Academic
+            Templates
             <span className={css(styles.chevronIcon)}>
               {hideNotes ? icons.chevronDown : icons.chevronUp}
             </span>

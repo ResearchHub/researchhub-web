@@ -19,6 +19,7 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
   useEffect(() => {
     if (!isEmpty(org)) {
       _setOrg(org);
+      setCurrentUserPerm(org?.user_permission?.access_type);
       setShowLoader(false);
     }
   }, [org]);
