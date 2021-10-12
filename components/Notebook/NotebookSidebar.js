@@ -11,6 +11,8 @@ import { getNotePathname } from "~/config/utils/org";
 import { useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import OrgAvatar from "~/components/Org/OrgAvatar";
+import ReactPlaceholder from "react-placeholder/lib";
+import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 
 // Component
 import Loader from "~/components/Loader/Loader";
@@ -26,6 +28,7 @@ const NotebookSidebar = ({
   currentOrg,
   isPrivateNotebook,
   needNoteFetch,
+  didInitialNotesLoad,
   notes,
   onOrgChange,
   onNoteCreate,
@@ -245,34 +248,40 @@ const NotebookSidebar = ({
             )}
           </span>
         </div>
-        {!hideNotes && (
-          <div>
-            {notes.map((note) => {
-              const noteId = note.id.toString();
-              return (
-                <SidebarSectionContent
-                  isPrivateNotebook={isPrivateNotebook}
-                  currentNoteId={currentNoteId}
-                  currentOrg={currentOrg}
-                  onNoteCreate={onNoteCreate}
-                  key={noteId}
-                  noteBody={note.latest_version?.src ?? ""}
-                  noteId={noteId}
-                  notes={notes}
-                  readOnlyEditorInstance={readOnlyEditorInstance}
-                  refetchNotes={needNoteFetch}
-                  refetchTemplates={refetchTemplates}
-                  setCurrentNote={setCurrentNote}
-                  setIsCollaborativeReady={setIsCollaborativeReady}
-                  setNotes={setNotes}
-                  setRefetchNotes={setNeedNoteFetch}
-                  setRefetchTemplates={setRefetchTemplates}
-                  title={titles[noteId]}
-                />
-              );
-            })}
-          </div>
-        )}
+        <ReactPlaceholder
+          ready={didInitialNotesLoad}
+          showLoadingAnimation
+          customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
+        >
+          {!hideNotes && (
+            <div>
+              {notes.map((note) => {
+                const noteId = note.id.toString();
+                return (
+                  <SidebarSectionContent
+                    isPrivateNotebook={isPrivateNotebook}
+                    currentNoteId={currentNoteId}
+                    currentOrg={currentOrg}
+                    onNoteCreate={onNoteCreate}
+                    key={noteId}
+                    noteBody={note.latest_version?.src ?? ""}
+                    noteId={noteId}
+                    notes={notes}
+                    readOnlyEditorInstance={readOnlyEditorInstance}
+                    refetchNotes={needNoteFetch}
+                    refetchTemplates={refetchTemplates}
+                    setCurrentNote={setCurrentNote}
+                    setIsCollaborativeReady={setIsCollaborativeReady}
+                    setNotes={setNotes}
+                    setRefetchNotes={setNeedNoteFetch}
+                    setRefetchTemplates={setRefetchTemplates}
+                    title={titles[noteId]}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </ReactPlaceholder>
         <div className={css(styles.sidebarButtonsContainer)}>
           <div
             className={css(styles.sidebarButton)}
