@@ -170,16 +170,17 @@ const MyApp = ({ Component, pageProps, store }) => {
 };
 
 // FIXME: This approach is only needed while there are pages containg
-// getStaticPrpos and others containing getInitialProps. Once all pages
-// migrated to getStaticProps, this can be removed safely.
+// getStaticProps or getServerSideProps and also others containing getInitialProps. Once all calls
+// to getInitialProps removed, this can be removed safely.
 MyApp.getInitialProps = async (appContext) => {
-  const staticPropsPaths = [
+  const staticOrServerSidePropsPaths = [
     "/paper/[paperId]/[paperName]",
     "/hubs",
     "/user/[authorId]/[tabName]",
+    "/[orgSlug]/notebook/[noteId]",
   ];
 
-  if (process.browser || !staticPropsPaths.includes(appContext.router.route)) {
+  if (process.browser || !staticOrServerSidePropsPaths.includes(appContext.router.route)) {
     const appProps = await App.getInitialProps(appContext);
     return { ...appProps };
   }

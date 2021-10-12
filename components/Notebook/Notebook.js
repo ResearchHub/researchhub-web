@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
 import { useState, useEffect, Fragment, useCallback, useRef } from "react";
-
 import {
   fetchUserOrgs,
   fetchNotePermissions,
@@ -23,20 +22,20 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user }) => {
+const Notebook = ({ user, note, currentOrg }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
-  const [currentNote, setCurrentNote] = useState(null);
+  const [currentNote, setCurrentNote] = useState(note);
   const [currentNotePerms, setCurrentNotePerms] = useState(null);
   const [userNoteAccess, setUserNoteAccess] = useState(null);
-  const [notes, setNotes] = useState([]);
+  const [notes, setNotes] = useState([note]);
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
-  const [currentOrganization, setCurrentOrganization] = useState(null);
+  const [currentOrganization, setCurrentOrganization] = useState(currentOrg);
   const [organizations, setOrganizations] = useState([]);
 
   const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
@@ -45,7 +44,7 @@ const Notebook = ({ user }) => {
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
-  const [titles, setTitles] = useState({});
+  const [titles, setTitles] = useState({ [note.id]: note.title });
 
   const orgsFetched = useRef();
 
