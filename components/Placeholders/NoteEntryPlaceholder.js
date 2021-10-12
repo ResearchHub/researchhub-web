@@ -31,9 +31,8 @@ const NoteEntryPlaceholder = ({ color, rows = 5 }) => {
 const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
-    padding: "23px 15px",
     padding: "10px 20px 10px 20px",
-    display: "flex",
+    display: "flex"
   },
   noteIcon: {
     color: colors.GREY(),

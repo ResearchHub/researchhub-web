@@ -45,10 +45,6 @@ const NotebookSidebar = ({
   titles,
   user,
 }) => {
-  // if (!isPrivateNotebook && !currentOrg) {
-  //   throw "Notebook sidebar could not be initialized";
-  // }
-
   const router = useRouter();
 
   const [createNoteLoading, setCreateNoteLoading] = useState(false);
@@ -69,8 +65,9 @@ const NotebookSidebar = ({
     }
 
     const note = await createNewNote(params);
-    onNoteCreate(note);
+    setCurrentNote(note);
     setCreateNoteLoading(false);
+    onNoteCreate(note);
   };
 
   return (
