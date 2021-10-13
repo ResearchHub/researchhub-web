@@ -17,6 +17,7 @@ import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import colors from "~/config/themes/colors";
 import { getUserNoteAccess } from "./utils/notePermissions";
 import Error from "next/error";
+import { Helpers } from "@quantfive/js-web-config";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
@@ -32,7 +33,7 @@ const Notebook = ({ user }) => {
   const [notes, setNotes] = useState([]);
   const [titles, setTitles] = useState({});
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
-  const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
+  const [needNotePermsFetch, setNeedNotePermsFetch] = useState(false);
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
@@ -64,16 +65,28 @@ const Notebook = ({ user }) => {
 
   useEffect(() => {
     const _fetchNotePermissions = async () => {
-      try {
-        const perms = await fetchNotePermissions({ noteId });
-        setCurrentNotePerms(perms);
+      let response;
+      let perms;
 
-        const access = getUserNoteAccess({
-          user,
-          userOrgs: organizations,
-          notePerms: currentNotePerms,
-        });
-        setUserNoteAccess(access);
+      try {
+        response = await fetchNotePermissions({ noteId });
+
+        if (response.ok) {
+          perms = await Helpers.parseJSON(response);
+          setCurrentNotePerms(perms);
+
+          const access = getUserNoteAccess({
+            user,
+            userOrgs: [currentNote.organization] || [],
+            notePerms: perms,
+          });
+
+          setUserNoteAccess(access);
+        } else if (response.status === 404) {
+          setError({ code: 404 });
+        } else {
+          setError({ code: 500 });
+        }
       } catch (err) {
         console.error("Failed to fetch note permissions", err);
         setError({ code: 500 });
@@ -90,17 +103,27 @@ const Notebook = ({ user }) => {
   useEffect(() => {
     const _fetchNote = async () => {
       let note;
+      let response;
+
       try {
-        note = await fetchNote({ noteId });
+        response = await fetchNote({ noteId });
+
+        if (response.ok) {
+          note = await Helpers.parseJSON(response);
+
+          setCurrentNote(note);
+          setIsCollaborativeReady(false);
+          readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
+          setNeedNotePermsFetch(true);
+        } else if (response.status === 404) {
+          setError({ code: 404 });
+        } else {
+          setError({ code: 500 });
+        }
       } catch (err) {
         console.error(`Error fetching note ${noteId}`, err);
-        setError({ code: 404 });
+        setError({ code: 500 });
       }
-
-      setCurrentNote(note);
-      setIsCollaborativeReady(false);
-      readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
-      setNeedNotePermsFetch(true);
     };
 
     _fetchNote();
@@ -212,35 +235,35 @@ const Notebook = ({ user }) => {
   };
 
   if (error) {
-    <Error statusCode={error.code} />;
+    return <Error statusCode={error.code} />;
   }
 
   return (
     <div className={css(styles.container)}>
-      <>
-        <NotebookSidebar
-          didInitialNotesLoad={didInitialNotesLoad}
-          currentNoteId={noteId}
-          currentOrg={currentOrganization}
-          isPrivateNotebook={isPrivateNotebook}
-          needNoteFetch={needNoteFetch}
-          notes={notes}
-          onOrgChange={onOrgChange}
-          onNoteCreate={onNoteCreate}
-          orgSlug={orgSlug}
-          orgs={organizations}
-          readOnlyEditorInstance={readOnlyEditorInstance}
-          refetchTemplates={refetchTemplates}
-          setCurrentNote={setCurrentNote}
-          setIsCollaborativeReady={setIsCollaborativeReady}
-          setNeedNoteFetch={setNeedNoteFetch}
-          setNotes={setNotes}
-          setRefetchTemplates={setRefetchTemplates}
-          setTitles={setTitles}
-          titles={titles}
-          user={user}
-        />
-        {currentNote && (
+      {currentNote && (
+        <>
+          <NotebookSidebar
+            didInitialNotesLoad={didInitialNotesLoad}
+            currentNoteId={noteId}
+            currentOrg={currentOrganization}
+            isPrivateNotebook={isPrivateNotebook}
+            needNoteFetch={needNoteFetch}
+            notes={notes}
+            onOrgChange={onOrgChange}
+            onNoteCreate={onNoteCreate}
+            orgSlug={orgSlug}
+            orgs={organizations}
+            readOnlyEditorInstance={readOnlyEditorInstance}
+            refetchTemplates={refetchTemplates}
+            setCurrentNote={setCurrentNote}
+            setIsCollaborativeReady={setIsCollaborativeReady}
+            setNeedNoteFetch={setNeedNoteFetch}
+            setNotes={setNotes}
+            setRefetchTemplates={setRefetchTemplates}
+            setTitles={setTitles}
+            titles={titles}
+            user={user}
+          />
           <ELNEditor
             currentNote={currentNote}
             currentOrganizationId={currentOrganization?.id}
@@ -253,8 +276,8 @@ const Notebook = ({ user }) => {
             titles={titles}
             user={user}
           />
-        )}
-      </>
+        </>
+      )}
     </div>
   );
 };

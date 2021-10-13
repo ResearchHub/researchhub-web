@@ -4,12 +4,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { css, StyleSheet } from "aphrodite";
-import {
-  deleteNote,
-  fetchNote,
-  createNewNote,
-  createNoteContent,
-} from "~/config/fetch";
+import { deleteNote, createNewNote, createNoteContent } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useAlert } from "react-alert";
 import { useRouter } from "next/router";

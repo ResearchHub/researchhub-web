@@ -13,6 +13,7 @@ const NoteEntryPlaceholder = ({ color, rows = 5 }) => {
   for (let i = 0; i < rows; i++) {
     html.push(
       <div
+        key={`noteplacholder-${i}`}
         className={css(styles.placeholderContainer) + " show-loading-animation"}
       >
         <div className={css(styles.noteIcon)}>{icons.paper}</div>
