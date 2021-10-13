@@ -88,7 +88,7 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
         onSubmit={(e) => handleSubmit(e)}
       >
         <FormInput
-          label="Organization Name"
+          label="Organization Name:"
           id="org-name-input"
           required={true}
           onChange={(id, val) => setOrgName(val)}
@@ -174,10 +174,9 @@ const hoverStyles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({});
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageOrgDetails);
+export default connect(null, mapDispatchToProps)(ManageOrgDetails);

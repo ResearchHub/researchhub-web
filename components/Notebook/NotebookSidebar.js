@@ -11,6 +11,9 @@ import { getNotePathname } from "~/config/utils/org";
 import { useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import OrgAvatar from "~/components/Org/OrgAvatar";
+import ReactPlaceholder from "react-placeholder/lib";
+import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
+import AuthorAvatar from "~/components/AuthorAvatar";
 
 // Component
 import Loader from "~/components/Loader/Loader";
@@ -26,8 +29,10 @@ const NotebookSidebar = ({
   currentOrg,
   isPrivateNotebook,
   needNoteFetch,
+  didInitialNotesLoad,
   notes,
   onOrgChange,
+  onNoteCreate,
   orgSlug,
   orgs,
   readOnlyEditorInstance,
@@ -41,10 +46,6 @@ const NotebookSidebar = ({
   titles,
   user,
 }) => {
-  // if (!isPrivateNotebook && !currentOrg) {
-  //   throw "Notebook sidebar could not be initialized";
-  // }
-
   const router = useRouter();
 
   const [createNoteLoading, setCreateNoteLoading] = useState(false);
@@ -56,25 +57,18 @@ const NotebookSidebar = ({
 
   const handleCreateNewNote = async () => {
     setCreateNoteLoading(true);
-    let note;
+
+    let params;
     if (isPrivateNotebook) {
-      note = await createNewNote({});
+      params = {};
     } else {
-      note = await createNewNote({ orgSlug });
+      params = { orgSlug };
     }
-    setCreateNoteLoading(false);
-    const noteId = note.id;
 
-    setTitles({
-      [noteId]: note.title,
-      ...titles,
-    });
-    setNotes([note, ...notes]);
-
+    const note = await createNewNote(params);
     setCurrentNote(note);
-
-    const path = getNotePathname({ noteId, org: currentOrg });
-    router.push(path);
+    setCreateNoteLoading(false);
+    onNoteCreate(note);
   };
 
   return (
@@ -117,11 +111,9 @@ const NotebookSidebar = ({
                     className={css(styles.popoverBodyItem)}
                     onClick={() => setIsPopoverOpen(!isPopoverOpen)}
                   >
-                    <img
-                      className={css(styles.popoverBodyItemImage)}
-                      draggable="false"
-                      src={user?.author_profile?.profile_image}
-                    />
+                    <div className={css(styles.avatarWrapper)}>
+                      <AuthorAvatar author={user?.author_profile} />
+                    </div>
                     <div className={css(styles.popoverBodyItemTitle)}>
                       Personal Notes
                     </div>
@@ -183,11 +175,9 @@ const NotebookSidebar = ({
               >
                 {isPrivateNotebook ? (
                   <Fragment>
-                    <img
-                      className={css(styles.popoverBodyItemImage)}
-                      draggable="false"
-                      src={user?.author_profile?.profile_image}
-                    />
+                    <div className={css(styles.avatarWrapper)}>
+                      <AuthorAvatar author={user?.author_profile} />
+                    </div>
                     {"Personal Notebook"}
                   </Fragment>
                 ) : (
@@ -210,17 +200,24 @@ const NotebookSidebar = ({
               styles.orgButtonsContainer
             )}
           >
-            <div
-              className={css(styles.sidebarButton, styles.orgButton)}
-              onClick={() => setShowManageOrgModal(true)}
-            >
-              {icons.cog}
-              <span
-                className={css(styles.sidebarButtonText, styles.orgButtonText)}
+            {["MEMBER", "ADMIN"].includes(
+              currentOrg?.user_permission?.access_type
+            ) && (
+              <div
+                className={css(styles.sidebarButton, styles.orgButton)}
+                onClick={() => setShowManageOrgModal(true)}
               >
-                Settings & Members
-              </span>
-            </div>
+                {icons.cog}
+                <span
+                  className={css(
+                    styles.sidebarButtonText,
+                    styles.orgButtonText
+                  )}
+                >
+                  Settings & Members
+                </span>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -245,32 +242,41 @@ const NotebookSidebar = ({
             )}
           </span>
         </div>
-        {!hideNotes && (
-          <div>
-            {notes.map((note) => {
-              const noteId = note.id.toString();
-              return (
-                <SidebarSectionContent
-                  currentNoteId={currentNoteId}
-                  currentOrg={currentOrg}
-                  key={noteId}
-                  noteBody={note.latest_version?.src ?? ""}
-                  noteId={noteId}
-                  notes={notes}
-                  readOnlyEditorInstance={readOnlyEditorInstance}
-                  refetchNotes={needNoteFetch}
-                  refetchTemplates={refetchTemplates}
-                  setCurrentNote={setCurrentNote}
-                  setIsCollaborativeReady={setIsCollaborativeReady}
-                  setNotes={setNotes}
-                  setRefetchNotes={setNeedNoteFetch}
-                  setRefetchTemplates={setRefetchTemplates}
-                  title={titles[noteId]}
-                />
-              );
-            })}
-          </div>
-        )}
+        <ReactPlaceholder
+          ready={didInitialNotesLoad}
+          showLoadingAnimation
+          customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
+        >
+          {!hideNotes && (
+            <div>
+              {notes.map((note) => {
+                const noteId = note.id.toString();
+                return (
+                  <SidebarSectionContent
+                    isPrivateNotebook={isPrivateNotebook}
+                    currentNoteId={currentNoteId}
+                    currentOrg={currentOrg}
+                    onNoteCreate={onNoteCreate}
+                    key={noteId}
+                    noteBody={note.latest_version?.src ?? ""}
+                    noteId={noteId}
+                    notes={notes}
+                    readOnlyEditorInstance={readOnlyEditorInstance}
+                    refetchNotes={needNoteFetch}
+                    refetchTemplates={refetchTemplates}
+                    setCurrentNote={setCurrentNote}
+                    setIsCollaborativeReady={setIsCollaborativeReady}
+                    setNotes={setNotes}
+                    setRefetchNotes={setNeedNoteFetch}
+                    setRefetchTemplates={setRefetchTemplates}
+                    title={titles[noteId]}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </ReactPlaceholder>
+
         <div className={css(styles.sidebarButtonsContainer)}>
           <div
             className={css(styles.sidebarButton)}
@@ -311,13 +317,11 @@ const styles = StyleSheet.create({
     height: 30,
     marginLeft: 0,
     cursor: "pointer",
+    boxSizing: "border-box",
   },
   newOrgText: {
-    marginLeft: 5,
+    marginLeft: 10,
     paddingTop: 7,
-  },
-  orgButtonsContainer: {
-    marginTop: 0,
   },
   orgButton: {
     paddingLeft: 17,
@@ -473,6 +477,10 @@ const styles = StyleSheet.create({
   },
   sidebarButtonsContainer: {
     margin: 10,
+  },
+  orgButtonsContainer: {
+    margin: 0,
+    marginLeft: 10,
   },
   sidebarButton: {
     border: "none",

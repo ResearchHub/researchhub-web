@@ -4,7 +4,11 @@ import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
 export const fetchNotePermissions = ({ noteId }) => {
-  return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG())
+  return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
+};
+
+export const fetchNoteByInviteToken = ({ token }) => {
+  return fetch(API.NOTE_INVITE_DETAILS({ token }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -94,6 +98,7 @@ export const createNoteContent = ({ editorData, noteId }, authToken) => {
     plain_text: "",
     note: noteId,
   };
+
   return fetch(
     API.NOTE_CONTENT(),
     API.POST_CONFIG(noteContentParams, authToken)
@@ -103,9 +108,7 @@ export const createNoteContent = ({ editorData, noteId }, authToken) => {
 };
 
 export const fetchNote = ({ noteId }, authToken) => {
-  return fetch(API.NOTE({ noteId }), API.GET_CONFIG(authToken))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+  return fetch(API.NOTE({ noteId }), API.GET_CONFIG(authToken));
 };
 
 export const createNewNote = ({ orgSlug, title }, authToken) => {

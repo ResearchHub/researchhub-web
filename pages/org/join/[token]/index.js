@@ -47,10 +47,9 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
     } catch (err) {
       setIsLoading(false);
 
-      if (err.message === "Invitation has expired") {
-        setMessage(`Invitation has expired`);
-      }
-
+      setMessage(
+        `Invitation invalid or expired.\n Contact organization's admin.`
+      );
       showMessage({ show: true, error: true });
     }
   };
@@ -72,7 +71,11 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
       ) : (
         <div className={css(styles.buttonContainer)}>
           {auth.isLoggedIn ? (
-            <Button onClick={handleJoinOrg} label={`Join Org`} hideRipples={true} />
+            <Button
+              onClick={handleJoinOrg}
+              label={`Join Org`}
+              hideRipples={true}
+            />
           ) : (
             <GoogleLoginButton
               styles={styles.googleLoginButton}

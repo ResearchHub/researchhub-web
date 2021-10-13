@@ -9,7 +9,7 @@ const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
           .split(" ")
           .map((s) => s.charAt(0).toUpperCase())
           .slice(0, 2)
-      : "N/A";
+      : "";
   };
 
   return (
