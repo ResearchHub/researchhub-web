@@ -37,7 +37,7 @@ export async function getServerSideProps(ctx) {
   if (notes.length) {
     return {
       redirect: {
-        destination: `/${orgSlug}/notebook/${notes[0].id}`,
+        destination: `/${orgSlug}/notebook/${notes[notes.length - 1].id}`,
         permanent: false,
       },
     };
@@ -47,7 +47,6 @@ export async function getServerSideProps(ctx) {
       authToken
     );
 
-    console.log(note);
     return {
       redirect: {
         destination: `/${orgSlug}/notebook/${note.id}`,

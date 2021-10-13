@@ -170,13 +170,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       return false;
     }
 
-    const uid = currentUser.author_profile.id;
+    const cuid = currentUser.author_profile.id;
     const isCurrentUserAdmin =
-      uid ===
-      (orgUsers.admins || []).find((a) => a.author_profile.id === uid)
+      cuid ===
+      (orgUsers.admins || []).find((a) => a.author_profile.id === cuid)
         ?.author_profile.id;
 
-    return isCurrentUserAdmin ? true : false;
+
+    return isCurrentUserAdmin;
   };
 
   const renderOrgUser = (user, perm) => {
@@ -230,41 +231,43 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 
   return (
     <div className={css(styles.container)}>
-      <form
-        className={css(styles.inviteForm)}
-        onSubmit={(e) => handleInvite(e)}
-      >
-        <FormInput
-          label="Invite users (optional)"
-          id="org-invite-user"
-          onChange={(id, val) => setUserToBeInvitedEmail(val)}
-          containerStyle={styles.inputContainer}
-          value={userToBeInvitedEmail}
-          inputStyle={styles.inputStyle}
-          placeholder="User's email"
-          type="email"
-          onKeyDown={handleKeyDown}
-        />
-        {isInviteInProgress ? (
-          <div className={css(styles.loaderWrapper)}>
-            <Loader
-              key={"loader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          </div>
-        ) : (
-          <Button
-            type="submit"
-            customButtonStyle={styles.button}
-            label="Invite"
+      {org.user_permission.access_type === "ADMIN" && (
+        <form
+          className={css(styles.inviteForm)}
+          onSubmit={(e) => handleInvite(e)}
+        >
+          <FormInput
+            label="Invite users (optional)"
+            id="org-invite-user"
+            onChange={(id, val) => setUserToBeInvitedEmail(val)}
+            containerStyle={styles.inputContainer}
+            value={userToBeInvitedEmail}
+            inputStyle={styles.inputStyle}
+            placeholder="User's email"
+            type="email"
+            onKeyDown={handleKeyDown}
           />
-        )}
-      </form>
+          {isInviteInProgress ? (
+            <div className={css(styles.loaderWrapper)}>
+              <Loader
+                key={"loader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />
+            </div>
+          ) : (
+            <Button
+              type="submit"
+              customButtonStyle={styles.button}
+              label="Invite"
+            />
+          )}
+        </form>
+      )}
       {orgUserCount > 0 && (
         <div>
-          <div className={css(styles.subheader)}>Organization members</div>
+          <div className={css(styles.subheader)}>Organization members:</div>
           <div className={css(styles.userList)}>
             {(orgUsers.invited_users || []).map((u) =>
               renderOrgUser(u, "Invitation Pending")
@@ -328,6 +331,7 @@ const styles = StyleSheet.create({
   },
   permJustText: {
     marginRight: 27,
+    color: colors.BLACK(0.8),
   },
   downIcon: {
     padding: 4,

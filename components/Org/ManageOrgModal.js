@@ -4,25 +4,22 @@ import ManageOrgUsers from "./ManageOrgUsers";
 import ManageOrgDetails from "./ManageOrgDetails";
 import BaseModal from "~/components/Modals/BaseModal";
 import { MessageActions } from "~/redux/message";
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { isEmpty } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 
-const ManageOrgModal = ({
-  org,
-  currentUser,
-  closeModal,
-  isOpen = false,
-  onOrgChange,
-}) => {
+const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
   const [_org, _setOrg] = useState(org);
   const [showLoader, setShowLoader] = useState(true);
+  const [currentUserPerm, setCurrentUserPerm] = useState(
+    org?.user_permission?.access_type
+  );
 
   useEffect(() => {
     if (!isEmpty(org)) {
       _setOrg(org);
+      setCurrentUserPerm(org?.user_permission?.access_type);
       setShowLoader(false);
     }
   }, [org]);
@@ -34,10 +31,16 @@ const ManageOrgModal = ({
       ) : (
         <Fragment>
           <div className={css(styles.section)}>
-            <ManageOrgDetails
-              org={_org}
-              onOrgChange={onOrgChange}
-            />
+            {currentUserPerm === "ADMIN" ? (
+              <ManageOrgDetails org={_org} onOrgChange={onOrgChange} />
+            ) : (
+              <div>
+                <span className={css(styles.sectionTitle)}>
+                  Organization Name:
+                </span>
+                <span className={css(styles.content)}>{org.name}</span>
+              </div>
+            )}
           </div>
           <div className={css(styles.section)}>
             <ManageOrgUsers org={_org} />
@@ -62,6 +65,11 @@ const ManageOrgModal = ({
 };
 
 const styles = StyleSheet.create({
+  sectionTitle: {
+    fontWeight: 500,
+    marginBottom: 20,
+    display: "block",
+  },
   body: {
     minWidth: 500,
     maxWidth: 800,
@@ -79,9 +87,4 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = (state) => ({
-  currentUser: state.auth.user,
-});
-const mapDispatchToProps = {};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ManageOrgModal);
+export default ManageOrgModal;

@@ -244,6 +244,9 @@ const routes = (BASE_URL) => {
     NOTE_INVITED_USERS: ({ noteId }) => {
       return `${BASE_URL}note/${noteId}/get_invited_users/`;
     },
+    NOTE_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}note/${token}/get_note_by_key/`;
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
       filters,
