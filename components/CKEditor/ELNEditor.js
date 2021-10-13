@@ -9,7 +9,7 @@ import {
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { useRef, useState, useEffect, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 
 const saveData = (editor, noteId) => {
@@ -42,9 +42,9 @@ const ELNEditor = ({
   titles,
   user,
 }) => {
+  const _currentNote = currentNote
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
-  const [_currentNote, _setCurrentNote] = useState(currentNote);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -67,12 +67,6 @@ const ELNEditor = ({
 
     setTitles(updatedTitles);
   };
-
-  useEffect(() => {
-    if (_currentNote?.id !== currentNote?.id) {
-      _setCurrentNote(currentNote);
-    }
-  }, [currentNote]);
 
   return (
     <div className={css(styles.container)}>
