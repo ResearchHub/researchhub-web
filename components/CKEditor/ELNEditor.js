@@ -11,7 +11,6 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useEffect, useCallback } from "react";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
-import { PERMS } from "~/components/Notebook/utils/notePermissions";
 
 const saveData = (editor, noteId) => {
   const noteParams = {

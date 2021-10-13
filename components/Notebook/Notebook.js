@@ -148,9 +148,6 @@ const Notebook = ({ user }) => {
         );
 
         setNotes(sortedNotes);
-        setCurrentNote(
-          sortedNotes.find((note) => note.id.toString() === noteId)
-        );
 
         const updatedTitles = {};
         for (const note of sortedNotes) {
@@ -186,14 +183,10 @@ const Notebook = ({ user }) => {
         setIsPrivateNotebook(false);
       }
 
-      resetToInitialState();
+      setNeedNoteFetch(true);
+      setDidInitialNotesLoad(false);
     }
   }, [router.asPath, currentOrganization]);
-
-  const resetToInitialState = () => {
-    setNeedNoteFetch(true);
-    setDidInitialNotesLoad(false);
-  };
 
   const onOrgChange = (updatedOrg, changeType, needNoteFetch = false) => {
     const userOrganizations = organizations;
