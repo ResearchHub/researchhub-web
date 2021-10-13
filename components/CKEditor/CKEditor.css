@@ -454,3 +454,8 @@
 .ck-presence-list__counter {
   display: none;
 }
+
+.ck .ck-user__marker:after {
+  font-family: Roboto, sans-serif !important;
+}
+
