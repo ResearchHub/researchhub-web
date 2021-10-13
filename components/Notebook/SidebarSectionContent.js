@@ -46,12 +46,12 @@ const SidebarSectionContent = ({
   };
 
   const menuItems = [
-    {
-      text: "Make private",
-      icon: icons.lock,
-      hoverStyle: styles.blueHover,
-      onClick: () => setIsPopoverOpen(!isPopoverOpen),
-    },
+    //{
+    //  text: "Make private",
+    //  icon: icons.lock,
+    //  hoverStyle: styles.blueHover,
+    //  onClick: () => setIsPopoverOpen(!isPopoverOpen),
+    //},
     {
       text: "Duplicate",
       icon: icons.clone,
