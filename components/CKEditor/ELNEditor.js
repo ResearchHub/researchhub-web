@@ -9,7 +9,7 @@ import {
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import { PERMS } from "~/components/Notebook/utils/notePermissions";
 
@@ -34,7 +34,6 @@ const saveData = (editor, noteId) => {
 
 const ELNEditor = ({
   currentNote,
-  currentNoteId,
   currentOrganizationId,
   currentOrganization,
   isCollaborativeReady,
@@ -46,6 +45,7 @@ const ELNEditor = ({
 }) => {
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
+  const [_currentNote, _setCurrentNote] = useState(currentNote);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -55,18 +55,25 @@ const ELNEditor = ({
 
   const channelId = `${orgSlug}-${
     currentOrganizationId > 0 ? currentOrganizationId : user.id
-  }-${currentNoteId}`;
+  }-${_currentNote.id}`;
 
   const handleInput = (editor) => {
     const updatedTitles = {};
     for (const noteId in titles) {
       updatedTitles[noteId] =
-        noteId === currentNoteId
+        String(noteId) === String(_currentNote.id)
           ? editor.plugins.get("Title").getTitle() || "Untitled"
           : titles[noteId];
     }
+
     setTitles(updatedTitles);
   };
+
+  useEffect(() => {
+    if (_currentNote?.id !== currentNote?.id) {
+      _setCurrentNote(currentNote);
+    }
+  }, [currentNote]);
 
   return (
     <div className={css(styles.container)}>
@@ -80,7 +87,7 @@ const ELNEditor = ({
             }
           />
         </div>
-        <NoteShareButton noteId={currentNoteId} org={currentOrganization} />
+        <NoteShareButton noteId={_currentNote.id} org={currentOrganization} />
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
@@ -135,7 +142,7 @@ const ELNEditor = ({
           }}
           context={Context}
         >
-          <div className={css(styles.editor)} key={currentNoteId}>
+          <div className={css(styles.editor)} key={_currentNote.id}>
             <CKEditor
               config={{
                 title: {
@@ -143,7 +150,7 @@ const ELNEditor = ({
                 },
                 placeholder:
                   "Start typing to continue with an empty page, or pick a template",
-                initialData: currentNote.latest_version?.src ?? "",
+                initialData: _currentNote.latest_version?.src ?? "",
                 simpleUpload: {
                   // The URL that the images are uploaded to.
                   uploadUrl: API.SAVE_IMAGE,
@@ -162,12 +169,12 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, currentNoteId);
+                    return saveData(editor, _currentNote.id);
                   },
                 },
               }}
               editor={CKELNEditor}
-              id={currentNoteId}
+              id={_currentNote.id}
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
                 console.log("Editor is ready to use!", editor);

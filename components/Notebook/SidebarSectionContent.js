@@ -39,11 +39,7 @@ const SidebarSectionContent = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const handleSwitchNote = async () => {
-    setIsCollaborativeReady(false);
-    const note = await fetchNote({ noteId });
-    setCurrentNote(note);
-    readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
-    router.push(getNotePathname({ noteId: note.id, org: currentOrg }));
+    router.push(getNotePathname({ noteId: noteId, org: currentOrg }));
   };
 
   const handleDeleteNote = (noteId) => {
