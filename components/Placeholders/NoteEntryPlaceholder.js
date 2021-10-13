@@ -7,7 +7,7 @@ import {
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
-const NoteEntryPlaceholder = ({ color, rows = 5 }) => {
+const NoteEntryPlaceholder = ({ color, rows = 2 }) => {
   const html = [];
 
   for (let i = 0; i < rows; i++) {
