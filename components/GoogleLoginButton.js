@@ -64,11 +64,16 @@ const GoogleLoginButton = (props) => {
               },
             };
             sendAmpEvent(payload);
-            // push user to onboarding - will eventually see the orcid modal
-            router.push(
-              "/user/[authorId]/onboard?internal=true",
-              `/user/${userAction.user.author_profile.id}/onboard`
-            );
+            // push user to onboarding if we are not on the notebook - will eventually see the orcid modal
+            if (
+              !router.route.includes("/notebook") ||
+              !router.route.includes("org/join")
+            ) {
+              router.push(
+                "/user/[authorId]/onboard?internal=true",
+                `/user/${userAction.user.author_profile.id}/onboard`
+              );
+            }
           }
         });
       }
@@ -206,7 +211,4 @@ const mapDispatchToProps = {
   removeBanner: BannerActions.removeBanner,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GoogleLoginButton);
+export default connect(mapStateToProps, mapDispatchToProps)(GoogleLoginButton);
