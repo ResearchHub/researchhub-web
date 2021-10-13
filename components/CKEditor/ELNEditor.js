@@ -35,13 +35,11 @@ const saveData = (editor, noteId) => {
 const ELNEditor = ({
   currentNote,
   currentNoteId,
-  userNoteAccess,
   currentOrganizationId,
   currentOrganization,
   isCollaborativeReady,
   orgSlug,
   setIsCollaborativeReady,
-  setReadOnlyEditorInstance,
   setTitles,
   titles,
   user,
