@@ -22,25 +22,24 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user, note, currentOrg }) => {
+const Notebook = ({ user }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
-  const [currentNote, setCurrentNote] = useState(note);
+  const [currentNote, setCurrentNote] = useState(null);
   const [currentNotePerms, setCurrentNotePerms] = useState(null);
   const [userNoteAccess, setUserNoteAccess] = useState(null);
-  const [notes, setNotes] = useState([note]);
-  const [titles, setTitles] = useState({ [note.id]: note.title });
+  const [notes, setNotes] = useState([]);
+  const [titles, setTitles] = useState({});
   const [needNoteFetch, setNeedNoteFetch] = useState(false);
   const [needNotePermsFetch, setNeedNotePermsFetch] = useState(true);
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
   const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
-  const [currentOrganization, setCurrentOrganization] = useState(currentOrg);
+  const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
 
   const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
   const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
@@ -55,7 +54,6 @@ const Notebook = ({ user, note, currentOrg }) => {
       setOrganizations(userOrgs);
       setCurrentOrganization(currOrg);
       setNeedNoteFetch(true);
-      setIsLoading(false);
       orgsFetched.current = true;
     };
 
@@ -90,7 +88,20 @@ const Notebook = ({ user, note, currentOrg }) => {
   }, [noteId, needNotePermsFetch, user]);
 
   useEffect(() => {
-    setNeedNotePermsFetch(true);
+    const _fetchNote = async () => {
+      let note;
+      try {
+        note = await fetchNote({ noteId });
+      } catch (err) {
+        console.error(`Error fetching note ${noteId}`, err);
+        setError({ code: 404 });
+      }
+
+      setCurrentNote(note);
+      setNeedNotePermsFetch(true);
+    };
+
+    _fetchNote();
   }, [noteId]);
 
   useEffect(() => {
@@ -157,9 +168,6 @@ const Notebook = ({ user, note, currentOrg }) => {
   const resetToInitialState = () => {
     setNeedNoteFetch(true);
     setDidInitialNotesLoad(false);
-    setNotes([note]);
-    setTitles({ [note.id]: note.title });
-    setCurrentNote(note);
   };
 
   const onOrgChange = (updatedOrg, changeType, needNoteFetch = false) => {
@@ -230,25 +238,16 @@ const Notebook = ({ user, note, currentOrg }) => {
           titles={titles}
           user={user}
         />
-        {currentNote && !isLoading && (
+        {currentNote && (
           <ELNEditor
-            userNoteAccess={userNoteAccess}
             currentNote={currentNote}
             currentNoteId={noteId}
             currentOrganizationId={currentOrganization?.id}
             currentOrganization={currentOrganization}
             isCollaborativeReady={isCollaborativeReady}
-            notes={notes}
-            onOrgChange={onOrgChange}
             orgSlug={orgSlug}
-            orgs={organizations}
-            readOnlyEditorInstance={readOnlyEditorInstance}
             refetchTemplates={refetchTemplates}
-            setCurrentNote={setCurrentNote}
             setIsCollaborativeReady={setIsCollaborativeReady}
-            setNeedNoteFetch={setNeedNoteFetch}
-            setNotes={setNotes}
-            setRefetchTemplates={setRefetchTemplates}
             setTitles={setTitles}
             titles={titles}
             user={user}
