@@ -98,6 +98,8 @@ const Notebook = ({ user }) => {
       }
 
       setCurrentNote(note);
+      setIsCollaborativeReady(false);
+      readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
       setNeedNotePermsFetch(true);
     };
 
@@ -241,7 +243,6 @@ const Notebook = ({ user }) => {
         {currentNote && (
           <ELNEditor
             currentNote={currentNote}
-            currentNoteId={noteId}
             currentOrganizationId={currentOrganization?.id}
             currentOrganization={currentOrganization}
             isCollaborativeReady={isCollaborativeReady}
