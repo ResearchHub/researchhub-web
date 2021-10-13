@@ -279,10 +279,12 @@ const NotebookSidebar = ({
             {icons.shapes}
             <span className={css(styles.sidebarButtonText)}>Templates</span>
           </div>
+          {/*
           <div className={css(styles.sidebarButton)}>
             {icons.fileImport}
             <span className={css(styles.sidebarButtonText)}>Import</span>
           </div>
+          */}
         </div>
       </div>
     </div>
