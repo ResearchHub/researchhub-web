@@ -88,7 +88,7 @@ function InlineCommentThreadsDisplayBar({
   );
 }
 
-const burgerMenuStyle = {
+export const burgerMenuStyle = {
   bmBurgerBars: {
     background: "#373a47",
   },

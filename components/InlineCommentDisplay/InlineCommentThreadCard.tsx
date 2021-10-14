@@ -63,16 +63,14 @@ function InlineCommentThreadCard({
   const paperDraftStore = PaperDraftUnduxStore.useStore();
   const paperID = inlineCommentStore.get("paperID");
 
-  const [isThreadReadOnly, setIsThreadReadOnly] = useState<boolean>(
-    doesCommentIdExist
-  );
+  const [isThreadReadOnly, setIsThreadReadOnly] =
+    useState<boolean>(doesCommentIdExist);
   const [fetchedThreadData, setFecthedThreadData] = useState<any>({
     created_by: { author_profile: {} },
   });
   const [isReadyForFetch, setIsReadyForFetch] = useState<boolean>(true);
-  const [isCommentDataFetched, setIsCommentDataFetched] = useState<boolean>(
-    false
-  );
+  const [isCommentDataFetched, setIsCommentDataFetched] =
+    useState<boolean>(false);
   const router = useRouter();
   const fetchedCommentData = fetchedThreadData.comments || [];
 
@@ -184,9 +182,9 @@ function InlineCommentThreadCard({
             <DiscussionEntry
               data={fetchedThreadData}
               discussionCount={fetchedCommentData.length}
-              hoverEvents={true}
-              noVoteLine={true}
-              mediaOnly={true}
+              hoverEvents
+              mediaOnly
+              noVoteLine
               onRemoveSuccess={onRemoveSuccess}
               shouldShowContextTitle={shouldShowContextTitle}
             />
@@ -197,8 +195,8 @@ function InlineCommentThreadCard({
                 data={{
                   created_by: auth.user,
                 }}
-                noTimeStamp={true}
-                smaller={true}
+                noTimeStamp
+                smaller
                 username={
                   auth.user.author_profile.first_name +
                   " " +

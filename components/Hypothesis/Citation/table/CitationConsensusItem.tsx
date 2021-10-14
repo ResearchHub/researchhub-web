@@ -378,14 +378,19 @@ function CitationConsensusItem({
       <div className={css(styles.wrapper)}>
         {consensusBar}
         {hasCurrUserVoted || !shouldAllowVote ? null : (
-          <div className={css(styles.voteWrap)}>
+          <div
+            className={css(
+              styles.voteWrap,
+              totalCount === 0 && styles.noMargin
+            )}
+          >
             <div
               className={css(styles.button, styles.red)}
               onClick={handleReject}
               role="button"
             >
               <div className={css(styles.iconWrap)}>{icons.timesCircle}</div>
-              <div className={css(styles.buttonText)}>{"Reject"}</div>
+              <div className={css(styles.buttonText)}>{"Rejects"}</div>
             </div>
             <div
               className={css(styles.button)}
@@ -401,7 +406,7 @@ function CitationConsensusItem({
               role="button"
             >
               <div className={css(styles.iconWrap)}>{icons.checkCircle}</div>
-              <div className={css(styles.buttonText)}>{"Support"}</div>
+              <div className={css(styles.buttonText)}>{"Supports"}</div>
             </div>
           </div>
         )}
@@ -491,12 +496,14 @@ const styles = StyleSheet.create({
     },
   },
   iconWrap: {
-    // marginRight: 4,
     marginBottom: 2,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       fontSize: 18,
       marginRight: 0,
     },
+  },
+  noMargin: {
+    margin: 0,
   },
   green: {
     color: colors.GREEN(1),
