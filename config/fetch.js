@@ -168,8 +168,6 @@ export const inviteUserToOrg = ({
 
 export const createOrg = (payload) => {
   return fetch(API.ORGANIZATION({}), API.POST_CONFIG(payload))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
 };
 
 export const updateOrgDetails = ({ orgId, updatedName }) => {
