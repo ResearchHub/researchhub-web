@@ -88,7 +88,9 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
+        isPrivateNotebook={isPrivateNotebook}
         currentOrg={currentOrg}
+        onNoteCreate={onNoteCreate}
         currentOrganizationId={isPrivateNotebook ? 0 : currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
