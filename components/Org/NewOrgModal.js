@@ -38,7 +38,8 @@ const NewOrgModal = ({
       response = await createOrg({ name: orgName });
 
       if (response.ok) {
-        setOrg(Helpers.parseJSON(response));
+        org = await Helpers.parseJSON(response);
+        setOrg(org);
         onOrgChange(org, "CREATE");
         setFlowStep("INVITE");
       }
