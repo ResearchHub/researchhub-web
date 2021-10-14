@@ -1,9 +1,9 @@
 import { connect, useStore } from "react-redux";
 import { ReactElement } from "react";
 import { useEffectCheckCredentials } from "../useEffectCheckCredentials";
-import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
+import PermissionsDashboard from "~/components/PermissionsDashboard/PermissionsDashboard";
 
-function PermissionsDashboardIndex(): ReactElement<
+export default function PermissionsDashboardIndex(): ReactElement<
   typeof PermissionsDashboard
 > | null {
   const reduxStore = useStore();
