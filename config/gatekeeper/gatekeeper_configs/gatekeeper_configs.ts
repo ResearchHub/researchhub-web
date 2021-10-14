@@ -3,7 +3,11 @@ export type GatekeeperConfigs = {
 };
 
 const gatekeeperConfigs: GatekeeperConfigs = {
-  ELN: new Set(["calvinhlee@quantfive.org"]),
+  ELN: new Set([
+    "calvinhlee@quantfive.org",
+    /* add account emails here*/
+    "",
+  ]),
 };
 
 export default gatekeeperConfigs;
