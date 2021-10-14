@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     position: "absolute",
     cursor: "pointer",
-    background: "rgb(251, 251, 253)",
+    background: colors.ICY_GREY,
     border: "1px solid rgb(232, 232, 242)",
     display: "flex",
     justifyContent: "center",

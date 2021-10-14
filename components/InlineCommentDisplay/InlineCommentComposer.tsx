@@ -19,9 +19,9 @@ function InlineCommentComposer({
   return (
     <TextEditor
       canEdit={true}
+      // @ts-ignore legacy code
       commentEditor={!isReadOnly}
       commentEditorStyles={styles.commentEditorStyles}
-      focusEditor={focus}
       mediaOnly={true}
       onCancel={onCancel}
       onSubmit={onSubmit}

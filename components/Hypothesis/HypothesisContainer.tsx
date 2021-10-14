@@ -8,24 +8,30 @@ import { fetchHypothesis } from "./api/fetchHypothesis";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
+import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
 import Head from "../Head";
 import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
+import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 
 type Props = {};
 
-export default function HypothesisContainer(
-  props: Props
-): ReactElement<"div"> | null {
+function HypothesisContainer(props: Props): ReactElement<"div"> | null {
   const router = useRouter();
-  const [hypothesis, setHypothesis] = useState<any>(null);
+  const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [discussionCount, setDiscussionCount] = useState(0);
   const hypothesisID = castUriID(router.query.documentId);
+  const targetCitationComment = hypothesisUnduxStore.get(
+    "targetCitationComment"
+  );
+  const { citationID } = targetCitationComment ?? {};
+  const shouldDisplayCitationCommentBar = !isNullOrUndefined(citationID);
+  const [hypothesis, setHypothesis] = useState<any>(null);
 
   useEffect(() => {
     setIsLoading(true);
@@ -93,20 +99,35 @@ export default function HypothesisContainer(
             setCount={setDiscussionCount}
           />
         </div>
-        <div className={css(styles.sidebar)}>
-          <PaperSideColumn
-            authors={[created_by.author_profile]}
-            hubs={hubs}
-            isPost={true}
-            paper={hypothesis}
-            paperId={id}
-          />
-        </div>
+        {shouldDisplayCitationCommentBar ? (
+          <div className={css(styles.citationCommentSidebar)}>
+            <CitationCommentSidebarWithMedia />
+          </div>
+        ) : (
+          <div className={css(styles.regSidebar)}>
+            <PaperSideColumn
+              authors={[created_by.author_profile]}
+              hubs={hubs}
+              isPost={true}
+              paper={hypothesis}
+              paperId={id}
+            />
+          </div>
+        )}
       </div>
     </div>
   ) : null;
 }
 
+export default function HypothesisContainerWithUndux(
+  props: Props
+): ReactElement<typeof HypothesisUnduxStore.Container> {
+  return (
+    <HypothesisUnduxStore.Container>
+      <HypothesisContainer {...props} />
+    </HypothesisUnduxStore.Container>
+  );
+}
 const styles = StyleSheet.create({
   hypothesisContainer: {
     height: "100%",
@@ -138,7 +159,7 @@ const styles = StyleSheet.create({
       width: "90%",
     },
   },
-  sidebar: {
+  regSidebar: {
     boxSizing: "border-box",
     display: "table-cell",
     position: "relative",
@@ -148,6 +169,13 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  citationCommentSidebar: {
+    boxSizing: "border-box",
+    display: "table-cell",
+    position: "relative",
+    verticalAlign: "top",
+    width: 280,
+  },
   metaContainerMobile: {
     display: "none",
     "@media only screen and (max-width: 1024px)": {
@@ -156,5 +184,9 @@ const styles = StyleSheet.create({
   },
   space: {
     marginTop: 30,
+  },
+  hypothesisContainerWrap: {
+    display: "flex",
+    position: "relative",
   },
 });
