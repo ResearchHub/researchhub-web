@@ -1,12 +1,22 @@
+import { connect, useStore } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
-export default function PermissionsDashboard(): ReactElement<"div"> {
+function PermissionsDashboard(): ReactElement<"div"> | null {
   const [_lastFetchTime, _setLastFetchTime] = useState<number>(Date.now());
-  gateKeepCurrentUser("ELN");
-  return <div className={css(styles.permissionsDashboard)} />;
+  const reduxStore = useStore();
+  const shouldRenderUI = gateKeepCurrentUser("ELN", reduxStore);
+  return shouldRenderUI ? (
+    <div className={css(styles.permissionsDashboard)} />
+  ) : null;
 }
+
+const mapStateToProps = (state) => ({
+  auth: state.auth,
+});
+
+export default connect(mapStateToProps)(PermissionsDashboard);
 
 const styles = StyleSheet.create({
   permissionsDashboard: {

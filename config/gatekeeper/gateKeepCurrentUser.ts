@@ -1,13 +1,13 @@
-import { connect, useStore } from "react-redux";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
 import gatekeeper from "./gatekeeper";
 
-function gateKeepCurrentUser(application: string): null {
+export default function gateKeepCurrentUser(
+  application: string,
+  reduxStore: any
+): boolean {
   const router = useRouter();
-  const reduxStore = useStore();
-
   const auth = reduxStore.getState().auth ?? null;
   const { user } = auth ?? {};
   const isReadyToCheck =
@@ -23,11 +23,5 @@ function gateKeepCurrentUser(application: string): null {
     }
   }, [isInGatekeeper, isLoggedIn, isReadyToCheck]);
 
-  return null;
+  return isInGatekeeper;
 }
-
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps)(gateKeepCurrentUser);
