@@ -80,7 +80,7 @@ const ELNEditor = ({
             }
           />
         </div>
-        <NoteShareButton noteId={_currentNote.id} org={currentOrganization} />
+        {/*<NoteShareButton noteId={_currentNote.id} org={currentOrganization} />*/}
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
