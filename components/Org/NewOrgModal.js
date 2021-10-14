@@ -9,6 +9,7 @@ import { createOrg } from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import ManageOrgUsers from "./ManageOrgUsers";
+import { Helpers } from "@quantfive/js-web-config";
 
 const NewOrgModal = ({
   closeModal,
@@ -32,17 +33,28 @@ const NewOrgModal = ({
     e.preventDefault();
 
     let org;
+    let response;
     try {
-      org = await createOrg({ name: orgName });
-      setOrg(org);
-      setFlowStep("INVITE");
+      response = await createOrg({ name: orgName });
+
+      if (response.ok) {
+        org = await Helpers.parseJSON(response);
+        setOrg(org);
+        onOrgChange(org, "CREATE");
+        setFlowStep("INVITE");
+      }
+      else if (response.status === 409) {
+        setMessage("Organization name already in use. Try a different name.");
+        showMessage({ show: true, error: true });
+      }
+      else {
+        throw "Org creation error";
+      }
     } catch (err) {
       console.error(err);
       setMessage("Failed to create org. Please try again.");
       showMessage({ show: true, error: true });
     }
-
-    onOrgChange(org, "CREATE");
   };
 
   const modalBody = (

@@ -39,6 +39,7 @@ const NotebookSidebar = ({
   refetchTemplates,
   setCurrentNote,
   setIsCollaborativeReady,
+  fetchAndSetOrg,
   setNeedNoteFetch,
   setNotes,
   setRefetchTemplates,
@@ -87,7 +88,9 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
+        isPrivateNotebook={isPrivateNotebook}
         currentOrg={currentOrg}
+        onNoteCreate={onNoteCreate}
         currentOrganizationId={isPrivateNotebook ? 0 : currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
@@ -205,7 +208,10 @@ const NotebookSidebar = ({
             ) && (
               <div
                 className={css(styles.sidebarButton, styles.orgButton)}
-                onClick={() => setShowManageOrgModal(true)}
+                onClick={() => {
+                  fetchAndSetOrg({ orgId: currentOrg.id });
+                  setShowManageOrgModal(true);
+                }}
               >
                 {icons.cog}
                 <span
