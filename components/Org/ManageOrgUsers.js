@@ -176,7 +176,6 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       (orgUsers.admins || []).find((a) => a.author_profile.id === cuid)
         ?.author_profile.id;
 
-
     return isCurrentUserAdmin;
   };
 
@@ -268,7 +267,12 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       {orgUserCount > 0 && (
         <div>
           <div className={css(styles.subheader)}>Organization members:</div>
-          <div className={css(styles.userList)}>
+          <div
+            className={css(
+              styles.userList,
+              orgUserCount > 4 && styles.userListScrollable
+            )}
+          >
             {(orgUsers.invited_users || []).map((u) =>
               renderOrgUser(u, "Invitation Pending")
             )}
@@ -301,6 +305,13 @@ const styles = StyleSheet.create({
     marginTop: -10,
     userSelect: "none",
     width: 270,
+  },
+  userListScrollable: {
+    border: `1px solid ${colors.BLACK(0.2)}`,
+    maxHeight: 200,
+    padding: 10,
+    borderRadius: "4px",
+    overflowY: "scroll",
   },
   popoverTarget: {
     cursor: "pointer",
