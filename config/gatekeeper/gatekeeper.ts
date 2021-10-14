@@ -1,7 +1,7 @@
 import { emptyFncWithMsg, isNullOrUndefined } from "../utils/nullchecks";
 import gatekeeperConfigs from "./gatekeeper_configs/gatekeeper_configs";
 
-export default function gatekeep(
+export default function gatekeeper(
   application: string,
   accountEmail: string
 ): boolean {
