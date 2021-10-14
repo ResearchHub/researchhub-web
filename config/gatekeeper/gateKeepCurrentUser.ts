@@ -17,7 +17,7 @@ export default function gateKeepCurrentUser(
   const isInGatekeeper = gatekeeper(application, user?.email) ?? false;
 
   useEffect(() => {
-    /*  sending back inappropriate user to home
+    /*  Sending back inappropriate users to home page
         Note redux propagates in the clientside; hense boolean checks need to be done like this */
     if (shouldRedirect && isReadyToCheck && (!isInGatekeeper || !isLoggedIn)) {
       router.push("/");
