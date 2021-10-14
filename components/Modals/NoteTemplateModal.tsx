@@ -6,12 +6,19 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
-import { ReactElement, SyntheticEvent, useEffect, useRef, useState } from "react";
+import {
+  ReactElement,
+  SyntheticEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { getNotePathname } from "~/config/utils/org";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
+import { createNewNote, createNoteContent } from "~/config/fetch";
 
 export type NoteTemplateModalProps = {
   currentNote: any;
@@ -23,6 +30,8 @@ export type NoteTemplateModalProps = {
   setIsOpen: (flag: boolean) => void;
   setRefetchNotes: any;
   setRefetchTemplates: any;
+  isPrivateNotebook: boolean;
+  onNoteCreate: any;
 };
 
 export default function NoteTemplateModal({
@@ -37,6 +46,8 @@ export default function NoteTemplateModal({
   setNotes,
   setTitles,
   titles,
+  isPrivateNotebook,
+  onNoteCreate,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const editorRef = useRef<any>();
@@ -81,43 +92,23 @@ export default function NoteTemplateModal({
     setIsOpen(false);
   };
 
-  const handleUseThisTemplate = (e: SyntheticEvent): void => {
+  const handleUseThisTemplate = async (e: SyntheticEvent): void => {
+    e && e.preventDefault();
+
     const noteParams = {
-      organization: currentOrganizationId,
       title: editorInstance?.plugins.get("Title").getTitle() || "Untitled",
     };
-    fetch(API.NOTE({}), API.POST_CONFIG(noteParams))
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((note) => {
-        const noteContentParams = {
-          full_src: templateContents[selected].src,
-          plain_text: "",
-          note: note.id,
-        };
-        return fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams));
-      }).then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((data) => {
-          return fetch(API.NOTE({ noteId: data.note }), API.GET_CONFIG())
-            .then(Helpers.checkStatus)
-            .then(Helpers.parseJSON)
-            .then((note) => {
-              console.log(note);
-              const noteId = note.id;
 
-              setTitles({
-                [noteId]: note.title,
-                ...titles,
-              });
-              setNotes([note, ...notes]);
-              setCurrentNote(note);
+    if (!isPrivateNotebook) {
+      noteParams.orgSlug = currentOrg.slug;
+    }
 
-              router.push(getNotePathname({ noteId, org: currentOrg }));
-            })
-        });
-
-    e && e.preventDefault();
+    const note = await createNewNote(noteParams);
+    const noteContent = await createNoteContent({
+      editorData: templateContents[selected].src,
+      noteId: note.id,
+    });
+    onNoteCreate(note);
     closeModal(e);
   };
 
@@ -172,13 +163,18 @@ export default function NoteTemplateModal({
             <Button
               customButtonStyle={styles.buttonCustomStyle}
               customLabelStyle={styles.buttonLabel}
-              label={<div className={css(styles.buttonLabel)}>Use this template</div>}
+              label={
+                <div className={css(styles.buttonLabel)}>Use this template</div>
+              }
               onClick={handleUseThisTemplate}
               rippleClass={styles.rippleClass}
             />
           </div>
           <div
-            className={css(styles.sidebarSection, hideNotes && styles.showBottomBorder)}
+            className={css(
+              styles.sidebarSection,
+              hideNotes && styles.showBottomBorder
+            )}
             onClick={() => setHideNotes(!hideNotes)}
           >
             Templates
@@ -188,11 +184,11 @@ export default function NoteTemplateModal({
           </div>
           {!hideNotes && (
             <div>
-              {templates.map(template => (
+              {templates.map((template) => (
                 <div
                   className={css(
                     styles.sidebarSectionContent,
-                    template.id === selected && styles.active,
+                    template.id === selected && styles.active
                   )}
                   key={template.id}
                   onClick={() => setSelected(template.id)}
