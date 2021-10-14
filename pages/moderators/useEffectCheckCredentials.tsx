@@ -14,7 +14,7 @@ export function useEffectCheckCredentials(reduxStore: any): boolean {
   const isCurrUserMod = isReadyToCheck ? Boolean(user.moderator) : false;
 
   useEffect(() => {
-    /*  sending back inappropriate user to home
+    /*  Sending back inappropriate users to home page
         intentional boolean checks as below since redux propagates in the clientside */
     if (isReadyToCheck && (!isCurrUserMod || !isLoggedIn)) {
       router.push("/");
