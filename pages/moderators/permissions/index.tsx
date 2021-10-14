@@ -3,20 +3,13 @@ import { ReactElement } from "react";
 import { useEffectCheckCredentials } from "../useEffectCheckCredentials";
 import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
 
-function AuthorClaimCaseDashboardIndex(): ReactElement<
-  typeof AuthorClaimCaseDashboard
+function PermissionsDashboardIndex(): ReactElement<
+  typeof PermissionsDashboard
 > | null {
   const reduxStore = useStore();
   const shouldRenderUI = useEffectCheckCredentials(reduxStore);
-  // debugger;
   if (!shouldRenderUI) {
     return null;
   }
-  return <AuthorClaimCaseDashboard />;
+  return <PermissionsDashboard />;
 }
-
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps)(AuthorClaimCaseDashboardIndex);
