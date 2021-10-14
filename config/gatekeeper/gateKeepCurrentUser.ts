@@ -5,7 +5,8 @@ import gatekeeper from "./gatekeeper";
 
 export default function gateKeepCurrentUser(
   application: string,
-  reduxStore: any
+  reduxStore: any,
+  shouldRedirect: boolean = true
 ): boolean {
   const router = useRouter();
   const auth = reduxStore.getState().auth ?? null;
@@ -18,7 +19,7 @@ export default function gateKeepCurrentUser(
   useEffect(() => {
     /*  sending back inappropriate user to home
         intentional boolean checks as below since redux propagates in the clientside */
-    if (isReadyToCheck && (!isInGatekeeper || !isLoggedIn)) {
+    if (shouldRedirect && isReadyToCheck && (!isInGatekeeper || !isLoggedIn)) {
       router.push("/");
     }
   }, [isInGatekeeper, isLoggedIn, isReadyToCheck]);
