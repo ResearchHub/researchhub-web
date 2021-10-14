@@ -8,6 +8,7 @@ import {
   fetchNotePermissions,
   fetchOrgNotes,
   fetchNote,
+  fetchOrg,
 } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -18,7 +19,6 @@ import colors from "~/config/themes/colors";
 import { getUserNoteAccess } from "./utils/notePermissions";
 import Error from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
-
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
@@ -188,21 +188,33 @@ const Notebook = ({ user }) => {
     }
   }, [router.asPath, currentOrganization]);
 
+  const fetchAndSetOrg = async ({ orgId }) => {
+    const org = await fetchOrg({ orgId });
+    updateUserOrgsLocalCache(org);
+
+    if (orgId === currentOrganization?.id) {
+      setCurrentOrganization(org);
+    }
+  };
+
+  const updateUserOrgsLocalCache = (updatedOrg) => {
+    const userOrganizations = organizations;
+    const foundIdx = userOrganizations.findIndex((o) => o.id === updatedOrg.id);
+
+    if (foundIdx > -1) {
+      userOrganizations[foundIdx] = updatedOrg;
+      setOrganizations(userOrganizations);
+    } else {
+      console.error("Could not find org in user's orgs");
+    }
+  };
+
   const onOrgChange = (updatedOrg, changeType, needNoteFetch = false) => {
     const userOrganizations = organizations;
     if (changeType === "UPDATE") {
-      const foundIdx = userOrganizations.findIndex(
-        (o) => o.id === updatedOrg.id
-      );
-      if (foundIdx > -1) {
-        userOrganizations[foundIdx] = updatedOrg;
-
-        setCurrentOrganization(updatedOrg);
-        setOrganizations(userOrganizations);
-        setNeedNoteFetch(needNoteFetch);
-      } else {
-        console.error("Could not find org in user's orgs");
-      }
+      updateUserOrgsLocalCache(updatedOrg);
+      setCurrentOrganization(updatedOrg);
+      setNeedNoteFetch(needNoteFetch);
     } else if (changeType === "CREATE") {
       userOrganizations.push(updatedOrg);
       setOrganizations(userOrganizations);
@@ -248,6 +260,7 @@ const Notebook = ({ user }) => {
             orgs={organizations}
             readOnlyEditorInstance={readOnlyEditorInstance}
             refetchTemplates={refetchTemplates}
+            fetchAndSetOrg={fetchAndSetOrg}
             setCurrentNote={setCurrentNote}
             setIsCollaborativeReady={setIsCollaborativeReady}
             setNeedNoteFetch={setNeedNoteFetch}

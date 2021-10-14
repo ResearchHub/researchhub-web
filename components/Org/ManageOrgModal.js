@@ -45,10 +45,6 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
           <div className={css(styles.section)}>
             <ManageOrgUsers org={_org} />
           </div>
-          {/* <div>
-            <div className={css(styles.subheader)}>Danger Zone</div>
-            [Placeholder: Remove account]
-          </div> */}
         </Fragment>
       )}
     </div>

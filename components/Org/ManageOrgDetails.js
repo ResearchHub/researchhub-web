@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
@@ -9,19 +9,25 @@ import AvatarUpload from "~/components/AvatarUpload";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 
 const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
-  const [currentOrg, setCurrentOrg] = useState(org);
   const [orgName, setOrgName] = useState(org.name);
   const [isAvatarUploadOpen, setIsAvatarUploadOpen] = useState(false);
+
+  useEffect(() => {
+    if (org.name !== orgName) {
+      setOrgName(org.name);
+    }
+  }, [org]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const updatedOrg = await updateOrgDetails({
-        orgId: currentOrg.id,
+        orgId: org.id,
         updatedName: orgName,
       });
-      setCurrentOrg(updatedOrg);
+
+      setMessage("");
       showMessage({ show: true, error: false });
 
       if (typeof onOrgChange === "function") {
@@ -52,7 +58,7 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
     formData.append("cover_image", blob);
     try {
       const updatedOrg = await updateOrgProfileImg({
-        orgId: currentOrg.id,
+        orgId: org.id,
         file: formData,
       });
 
@@ -60,7 +66,6 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
         onOrgChange(updatedOrg, "UPDATE");
       }
 
-      setCurrentOrg(updatedOrg);
       setMessage("");
       showMessage({ show: true, error: false });
       setIsAvatarUploadOpen(false);
@@ -109,7 +114,7 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
           className={css(hoverStyles.avatarWrapper)}
           onClick={() => setIsAvatarUploadOpen(true)}
         >
-          <OrgAvatar org={currentOrg} size={110} fontSize={28} />
+          <OrgAvatar org={org} size={110} fontSize={28} />
           <div className={css(styles.avatarOverlay)}>Change</div>
         </div>
         <AvatarUpload
