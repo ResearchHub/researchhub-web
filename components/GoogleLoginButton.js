@@ -66,7 +66,7 @@ const GoogleLoginButton = (props) => {
             sendAmpEvent(payload);
             // push user to onboarding if we are not on the notebook - will eventually see the orcid modal
             if (
-              !router.route.includes("/notebook") ||
+              !router.route.includes("/notebook") &&
               !router.route.includes("org/join")
             ) {
               router.push(
