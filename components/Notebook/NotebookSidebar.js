@@ -7,7 +7,6 @@ import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
-import { getNotePathname } from "~/config/utils/org";
 import { useState, Fragment } from "react";
 import { useRouter } from "next/router";
 import OrgAvatar from "~/components/Org/OrgAvatar";
@@ -35,7 +34,6 @@ const NotebookSidebar = ({
   onNoteDelete,
   orgSlug,
   orgs,
-  readOnlyEditorInstance,
   refetchTemplates,
   handleOrgSwitch,
   setNotes,
@@ -100,6 +98,7 @@ const NotebookSidebar = ({
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
           <ResearchHubPopover
+            containerStyle={{ marginLeft: "10px", marginTop: "-10px" }}
             isOpen={isPopoverOpen}
             popoverContent={
               <div className={css(styles.popoverBodyContent)}>
@@ -179,7 +178,7 @@ const NotebookSidebar = ({
                     <div className={css(styles.avatarWrapper)}>
                       <AuthorAvatar author={user?.author_profile} />
                     </div>
-                    {"Personal Notebook"}
+                    {"Personal Notes"}
                   </Fragment>
                 ) : (
                   <Fragment>
@@ -373,8 +372,6 @@ const styles = StyleSheet.create({
     boxShadow: "0px 0px 10px 0px #00000026",
     display: "flex",
     flexDirection: "column",
-    marginLeft: 10,
-    marginTop: -10,
     userSelect: "none",
     width: 270,
   },

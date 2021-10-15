@@ -37,8 +37,6 @@ const Notebook = ({ auth, user }) => {
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
 
-  const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
-  const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
@@ -110,10 +108,7 @@ const Notebook = ({ auth, user }) => {
 
         if (response.ok) {
           note = await Helpers.parseJSON(response);
-
           setCurrentNote(note);
-          setIsCollaborativeReady(false);
-          readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
         } else {
           captureError({
             statusCode: response.status,
@@ -324,41 +319,36 @@ const Notebook = ({ auth, user }) => {
 
   return (
     <div className={css(styles.container)}>
-      <>
-        <NotebookSidebar
-          didInitialNotesLoad={didInitialNotesLoad}
-          currentNoteId={noteId}
-          currentOrg={currentOrganization}
-          isPrivateNotebook={isPrivateNotebook}
-          notes={notes}
-          onOrgChange={onOrgChange}
-          onNoteCreate={onNoteCreate}
-          onNoteDelete={onNoteDelete}
-          handleOrgSwitch={fetchAndSetOrg}
+      <NotebookSidebar
+        didInitialNotesLoad={didInitialNotesLoad}
+        currentNoteId={noteId}
+        currentOrg={currentOrganization}
+        isPrivateNotebook={isPrivateNotebook}
+        notes={notes}
+        onOrgChange={onOrgChange}
+        onNoteCreate={onNoteCreate}
+        onNoteDelete={onNoteDelete}
+        handleOrgSwitch={fetchAndSetOrg}
+        orgSlug={orgSlug}
+        orgs={organizations}
+        refetchTemplates={refetchTemplates}
+        setRefetchTemplates={setRefetchTemplates}
+        setTitles={setTitles}
+        titles={titles}
+        user={user}
+      />
+      {currentNote && (
+        <ELNEditor
+          currentNote={currentNote}
+          currentOrganizationId={currentOrganization?.id}
+          currentOrganization={currentOrganization}
           orgSlug={orgSlug}
-          orgs={organizations}
-          readOnlyEditorInstance={readOnlyEditorInstance}
           refetchTemplates={refetchTemplates}
-          setRefetchTemplates={setRefetchTemplates}
           setTitles={setTitles}
           titles={titles}
           user={user}
         />
-        {currentNote && (
-          <ELNEditor
-            currentNote={currentNote}
-            currentOrganizationId={currentOrganization?.id}
-            currentOrganization={currentOrganization}
-            isCollaborativeReady={isCollaborativeReady}
-            orgSlug={orgSlug}
-            refetchTemplates={refetchTemplates}
-            setIsCollaborativeReady={setIsCollaborativeReady}
-            setTitles={setTitles}
-            titles={titles}
-            user={user}
-          />
-        )}
-      </>
+      )}
     </div>
   );
 };
@@ -372,7 +362,6 @@ const mapStateToProps = (state) => ({
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    minHeight: "100vh",
     background: "#fff",
     alignItems: "flex-start",
   },

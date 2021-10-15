@@ -205,7 +205,7 @@ const routes = (BASE_URL) => {
       return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
     },
     CKEDITOR_TOKEN: () => {
-      return `${BASE_URL}ckeditor_token/`;
+      return `${BASE_URL}ckeditor/token/`;
     },
     NOTE: ({ noteId, orgId, orgSlug }) => {
       let url;
