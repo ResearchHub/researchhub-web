@@ -1,39 +1,33 @@
-import API from "~/config/api";
 import Link from "next/link";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { deleteNote, createNewNote, createNoteContent } from "~/config/fetch";
+import { fetchNote, createNoteTemplate } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useAlert } from "react-alert";
-import { useRouter } from "next/router";
 import { useState } from "react";
 
 const SidebarSectionContent = ({
   currentNoteId,
   currentOrg,
-  noteBody,
-  noteId,
-  notes,
-  onNoteCreate,
-  refetchTemplates,
-  setRefetchTemplates,
-  title,
-  onNoteDelete,
   isPrivateNotebook,
+  noteId,
+  onNoteCreate,
+  onNoteDelete,
+  refetchTemplates,
+  setMessage,
+  setRefetchTemplates,
+  showMessage,
+  title,
 }) => {
   const alert = useAlert();
-  const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-
-  const handleDeleteNote = (noteId) => {
-    deleteNote(noteId).then((deletedNote) => {
-      onNoteDelete(deletedNote);
-    });
-  };
 
   const menuItems = [
     //{
@@ -47,6 +41,7 @@ const SidebarSectionContent = ({
       icon: icons.clone,
       hoverStyle: styles.blueHover,
       onClick: async () => {
+        setIsPopoverOpen(false);
         let params;
 
         if (isPrivateNotebook) {
@@ -55,7 +50,6 @@ const SidebarSectionContent = ({
           params = { orgSlug: currentOrg.slug, title };
         }
 
-        setIsPopoverOpen(false);
         const note = await createNewNote(params);
         const noteContent = await createNoteContent({
           editorData: noteBody,
@@ -69,21 +63,24 @@ const SidebarSectionContent = ({
       icon: icons.shapes,
       hoverStyle: styles.blueHover,
       onClick: () => {
-        const params = {
-          full_src: noteBody,
-          is_default: false,
-          name: title,
-          organization: currentOrg?.id,
-        };
-
-        fetch(API.NOTE_TEMPLATE({}), API.POST_CONFIG(params))
+        setIsPopoverOpen(!isPopoverOpen);
+        fetchNote({ noteId })
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((data) => {
-            setRefetchTemplates(!refetchTemplates);
+            const params = {
+              full_src: data.latest_version.src,
+              is_default: false,
+              name: title,
+              organization: currentOrg?.id,
+            };
+            createNoteTemplate(params)
+              .then((data) => {
+                setMessage("Template created!");
+                showMessage({ show: true, error: false });
+                setRefetchTemplates(!refetchTemplates);
+              });
           });
-
-        setIsPopoverOpen(!isPopoverOpen);
       },
     },
     {
@@ -95,7 +92,11 @@ const SidebarSectionContent = ({
         alert.show({
           text: `Permanently delete '${title}'? This cannot be undone.`,
           buttonText: "Yes",
-          onClick: () => handleDeleteNote(noteId),
+          onClick: () => {
+            deleteNote(noteId).then((deletedNote) => {
+              onNoteDelete(deletedNote);
+            });
+          },
         });
       },
     },
@@ -246,4 +247,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SidebarSectionContent;
+const mapStateToProps = (state) => ({});
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SidebarSectionContent);

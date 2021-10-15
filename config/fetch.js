@@ -122,6 +122,12 @@ export const createNewNote = ({ orgSlug, title }, authToken) => {
     .then(Helpers.parseJSON);
 };
 
+export const createNoteTemplate = (params) => {
+  return fetch(API.NOTE_TEMPLATE({}), API.POST_CONFIG(params))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const deleteNote = (noteId) => {
   return fetch(API.NOTE_DELETE({ noteId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
