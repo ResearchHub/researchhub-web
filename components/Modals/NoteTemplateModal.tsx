@@ -135,7 +135,7 @@ export default function NoteTemplateModal({
       removeDefault={true}
     >
       <div className={css(styles.rootContainer)}>
-        <div className={css(styles.editorContainer)}>
+        <div className={css(styles.editorContainer) + " eln"}>
           {fetched && (
             <CKEditor
               config={editorConfiguration}
@@ -144,6 +144,7 @@ export default function NoteTemplateModal({
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
                 setEditorInstance(editor);
+                editor.isReadOnly = true;
                 editor.editing.view.change((writer) => {
                   writer.setStyle(
                     "min-height",

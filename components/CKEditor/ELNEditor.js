@@ -3,13 +3,13 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import {
   Context,
-  ELNEditor as CKELNEditor,
-  SimpleBalloonEditor,
+  CKEditorCS as CKELNEditor,
 } from "@thomasvu/ckeditor5-custom-build";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 
 const saveData = (editor, noteId) => {
@@ -34,15 +34,12 @@ const saveData = (editor, noteId) => {
 const ELNEditor = ({
   currentNote,
   currentOrganizationId,
-  currentOrganization,
-  isCollaborativeReady,
   orgSlug,
-  setIsCollaborativeReady,
   setTitles,
   titles,
   user,
 }) => {
-  const _currentNote = currentNote;
+  const router = useRouter();
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
 
@@ -54,39 +51,31 @@ const ELNEditor = ({
 
   const channelId = `${orgSlug}-${
     currentOrganizationId > 0 ? currentOrganizationId : user.id
-  }-${_currentNote?.id}`;
+  }-${currentNote.id}`;
 
   const handleInput = (editor) => {
     const updatedTitles = {};
     for (const noteId in titles) {
       updatedTitles[noteId] =
-        String(noteId) === String(_currentNote?.id)
+        String(noteId) === String(currentNote.id)
           ? editor.plugins.get("Title").getTitle() || "Untitled"
           : titles[noteId];
     }
-
     setTitles(updatedTitles);
   };
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
-        <div className={css(styles.presenceListContainer)}>
-          <div
-            ref={onRefChange}
-            className={
-              css(styles.presenceList, isCollaborativeReady && styles.green) +
-              " presence"
-            }
-          />
-        </div>
-        {/*<NoteShareButton noteId={_currentNote.id} org={currentOrganization} />*/}
+        <div className={css(styles.presenceList) + " presence"} ref={onRefChange} />
+        {/*<NoteShareButton noteId={currentNote.id} org={currentOrganization} />*/}
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
           config={{
             // The configuration for real-time collaboration features, shared between the editors:
             cloudServices: {
+              bundleVersion: "editor-1.0.6",
               tokenUrl: () => {
                 return new Promise((resolve, reject) => {
                   const xhr = new XMLHttpRequest();
@@ -130,12 +119,12 @@ const ELNEditor = ({
             },
             presenceList: {
               container: presenceListElement,
-              onClick: (user, element) => console.log(user, element),
+              onClick: (user) => router.push(`/user/${user.id}/overview`),
             },
           }}
           context={Context}
         >
-          <div className={css(styles.editor)} key={_currentNote?.id}>
+          <div className={"eln"} key={currentNote.id}>
             <CKEditor
               config={{
                 title: {
@@ -143,7 +132,7 @@ const ELNEditor = ({
                 },
                 placeholder:
                   "Start typing to continue with an empty page, or pick a template",
-                initialData: _currentNote?.latest_version?.src ?? "",
+                initialData: currentNote.latest_version?.src ?? "",
                 simpleUpload: {
                   // The URL that the images are uploaded to.
                   uploadUrl: API.SAVE_IMAGE,
@@ -162,63 +151,41 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, _currentNote?.id);
+                    return saveData(editor, currentNote.id);
                   },
                 },
               }}
               editor={CKELNEditor}
-              id={_currentNote?.id}
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
                 console.log("Editor is ready to use!", editor);
-                setIsCollaborativeReady(true);
               }}
             />
           </div>
         </CKEditorContext>
       )}
-      <div ref={sidebarElementRef} className="sidebar"></div>
+      <div ref={sidebarElementRef} className="sidebar" />
     </div>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    position: "relative",
     marginLeft: "max(min(16%, 300px), 240px)",
+    position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
     },
   },
-  editorContainer: {},
-  editor: {
-    height: "100%",
-  },
-  hideEditor: {
-    display: "none",
-  },
   noteHeader: {
     display: "flex",
+    height: 68,
     justifyContent: "flex-end",
     padding: "0px 30px",
   },
-  loaderContainer: {
-    height: "calc(100vh - 216px)",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
   presenceList: {
     padding: 16,
-  },
-  hideReadOnlyEditor: {
-    display: "none",
   },
 });
 
