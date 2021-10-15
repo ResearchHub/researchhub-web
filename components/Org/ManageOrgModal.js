@@ -8,6 +8,8 @@ import { StyleSheet, css } from "aphrodite";
 import { isEmpty } from "~/config/utils/nullchecks";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
+import OrgAvatar from "~/components/Org/OrgAvatar";
+import { breakpoints } from "~/config/themes/screen";
 
 const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
   const [_org, _setOrg] = useState(org);
@@ -34,11 +36,16 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
             {currentUserPerm === "ADMIN" ? (
               <ManageOrgDetails org={_org} onOrgChange={onOrgChange} />
             ) : (
-              <div>
-                <span className={css(styles.sectionTitle)}>
-                  Organization Name:
-                </span>
-                <span className={css(styles.content)}>{org.name}</span>
+              <div className={css(styles.mainDetails)}>
+                <div>
+                  <span className={css(styles.sectionTitle)}>
+                    Organization Name:
+                  </span>
+                  <span className={css(styles.content)}>{org.name}</span>
+                </div>
+                <div className={css(styles.avatarWrapper)}>
+                  <OrgAvatar org={org} size={80} fontSize={24} />
+                </div>              
               </div>
             )}
           </div>
@@ -61,6 +68,13 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
 };
 
 const styles = StyleSheet.create({
+  mainDetails: {
+    display: "flex",
+  },
+  avatarWrapper: {
+    marginLeft: "auto",
+    marginTop: -10,
+  },
   sectionTitle: {
     fontWeight: 500,
     marginBottom: 20,
@@ -71,6 +85,12 @@ const styles = StyleSheet.create({
     maxWidth: 800,
     minHeight: 100,
     marginTop: 40,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      minWidth: "unset",
+      width: "100%",
+      boxSizing: "border-box",
+      padding: 15,
+    },    
   },
   section: {
     marginBottom: 40,
