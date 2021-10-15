@@ -269,8 +269,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           <div className={css(styles.subheader)}>Organization members:</div>
           <div
             className={css(
-              styles.userList,
-              orgUserCount > 4 && styles.userListScrollable
+              styles.userList
             )}
           >
             {(orgUsers.invited_users || []).map((u) =>
@@ -295,6 +294,13 @@ const styles = StyleSheet.create({
     width: 80,
     height: 40,
   },
+  userList: {
+    border: `1px solid ${colors.BLACK(0.1)}`,
+    maxHeight: 200,
+    padding: 20,
+    borderRadius: "2px",
+    overflowY: "scroll",
+  },
   popoverBodyContent: {
     backgroundColor: "#fff",
     borderRadius: 4,
@@ -305,13 +311,6 @@ const styles = StyleSheet.create({
     marginTop: -10,
     userSelect: "none",
     width: 270,
-  },
-  userListScrollable: {
-    border: `1px solid ${colors.BLACK(0.2)}`,
-    maxHeight: 200,
-    padding: 10,
-    borderRadius: "4px",
-    overflowY: "scroll",
   },
   popoverTarget: {
     cursor: "pointer",
