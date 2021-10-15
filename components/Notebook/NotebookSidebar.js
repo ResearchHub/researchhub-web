@@ -262,7 +262,6 @@ const NotebookSidebar = ({
                     onNoteCreate={onNoteCreate}
                     onNoteDelete={onNoteDelete}
                     key={noteId}
-                    noteBody={note.latest_version?.src ?? ""}
                     noteId={noteId}
                     notes={notes}
                     refetchTemplates={refetchTemplates}
