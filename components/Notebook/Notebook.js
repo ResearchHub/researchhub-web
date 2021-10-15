@@ -1,8 +1,5 @@
-import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import { useState, useEffect, Fragment, useCallback, useRef } from "react";
 import {
   fetchUserOrgs,
   fetchNotePermissions,
@@ -11,16 +8,15 @@ import {
   fetchOrg,
 } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
-import ReactPlaceholder from "react-placeholder/lib";
-import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
-import Loader from "~/components/Loader/Loader";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
-import colors from "~/config/themes/colors";
 import { getUserNoteAccess } from "./utils/notePermissions";
-import Error from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureError } from "~/config/utils/error";
+import { useRouter } from "next/router";
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+import Error from "next/error";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
