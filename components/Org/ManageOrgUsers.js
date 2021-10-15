@@ -351,6 +351,9 @@ const styles = StyleSheet.create({
   userRow: {
     display: "flex",
     marginBottom: 15,
+    ":last-child": {
+      marginBottom: 0,
+    }
   },
   user: {
     display: "flex",

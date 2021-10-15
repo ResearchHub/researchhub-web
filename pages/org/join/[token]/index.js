@@ -57,9 +57,9 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
 
   return (
     <div className={css(styles.container)}>
-      <HeadComponent title={`Join ${org.name}`} />
       {org && (
         <div>
+          <HeadComponent title={`Join ${org.name}`} />
           <div className={css(styles.OrgAvatarContainer)}>
             <OrgAvatar org={org} size={110} fontSize={28} />
           </div>
