@@ -168,11 +168,8 @@ export const createOrg = (payload) => {
   return fetch(API.ORGANIZATION({}), API.POST_CONFIG(payload));
 };
 
-export const updateOrgDetails = ({ orgId, updatedName }) => {
-  return fetch(
-    API.ORGANIZATION({ orgId }),
-    API.PATCH_CONFIG({ name: updatedName })
-  )
+export const updateOrgDetails = ({ orgId, params }, authToken) => {
+  return fetch(API.ORGANIZATION({ orgId }), API.PATCH_CONFIG(params, authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -200,8 +197,8 @@ export const fetchOrgUsers = ({ orgId }) => {
     .then(Helpers.parseJSON);
 };
 
-export const fetchOrg = ({ orgId }) => {
-  return fetch(API.ORGANIZATION({ orgId }), API.GET_CONFIG())
+export const fetchOrg = ({ orgId, orgSlug }, authToken) => {
+  return fetch(API.ORGANIZATION({ orgId, orgSlug }), API.GET_CONFIG(authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
