@@ -10,6 +10,7 @@ import colors from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
+import HeadComponent from "~/components/Head";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();
@@ -56,6 +57,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
 
   return (
     <div className={css(styles.container)}>
+      <HeadComponent title={`Join ${org.name}`} />
       {org && (
         <div>
           <div className={css(styles.OrgAvatarContainer)}>
