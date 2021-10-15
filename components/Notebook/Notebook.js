@@ -118,13 +118,6 @@ const Notebook = ({ user, auth }) => {
           });
           setError({ statusCode: response.status });
         }
-      } catch (error) {
-        captureError({
-          error,
-          msg: "Failed to fetch note",
-          data: { noteId, orgSlug, userId: user?.id },
-        });
-        setError({ statusCode: 500 });
       }
     };
 
@@ -293,7 +286,7 @@ const Notebook = ({ user, auth }) => {
     const newNotes = notes.filter((note) => note.id !== deletedNote.id);
     setNotes(newNotes);
     router.push(
-      getNotePathname({ noteId: newNotes[0].id, org: currentOrganization })
+      getNotePathname({ noteId: newNotes[0]?.id, org: currentOrganization })
     );
   };
 
@@ -321,27 +314,27 @@ const Notebook = ({ user, auth }) => {
 
   return (
     <div className={css(styles.container)}>
-      {currentNote && (
-        <>
-          <NotebookSidebar
-            didInitialNotesLoad={didInitialNotesLoad}
-            currentNoteId={noteId}
-            currentOrg={currentOrganization}
-            isPrivateNotebook={isPrivateNotebook}
-            notes={notes}
-            onOrgChange={onOrgChange}
-            onNoteCreate={onNoteCreate}
-            onNoteDelete={onNoteDelete}
-            handleOrgSwitch={fetchAndSetOrg}
-            orgSlug={orgSlug}
-            orgs={organizations}
-            readOnlyEditorInstance={readOnlyEditorInstance}
-            refetchTemplates={refetchTemplates}
-            setRefetchTemplates={setRefetchTemplates}
-            setTitles={setTitles}
-            titles={titles}
-            user={user}
-          />
+      <>
+        <NotebookSidebar
+          didInitialNotesLoad={didInitialNotesLoad}
+          currentNoteId={noteId}
+          currentOrg={currentOrganization}
+          isPrivateNotebook={isPrivateNotebook}
+          notes={notes}
+          onOrgChange={onOrgChange}
+          onNoteCreate={onNoteCreate}
+          onNoteDelete={onNoteDelete}
+          handleOrgSwitch={fetchAndSetOrg}
+          orgSlug={orgSlug}
+          orgs={organizations}
+          readOnlyEditorInstance={readOnlyEditorInstance}
+          refetchTemplates={refetchTemplates}
+          setRefetchTemplates={setRefetchTemplates}
+          setTitles={setTitles}
+          titles={titles}
+          user={user}          
+        />
+        {currentNote && (
           <ELNEditor
             currentNote={currentNote}
             currentOrganizationId={currentOrganization?.id}
@@ -354,8 +347,8 @@ const Notebook = ({ user, auth }) => {
             titles={titles}
             user={user}
           />
-        </>
-      )}
+        )}
+      </>
     </div>
   );
 };

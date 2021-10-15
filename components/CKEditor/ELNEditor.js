@@ -42,7 +42,7 @@ const ELNEditor = ({
   titles,
   user,
 }) => {
-  const _currentNote = currentNote
+  const _currentNote = currentNote;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
 
@@ -54,13 +54,13 @@ const ELNEditor = ({
 
   const channelId = `${orgSlug}-${
     currentOrganizationId > 0 ? currentOrganizationId : user.id
-  }-${_currentNote.id}`;
+  }-${_currentNote?.id}`;
 
   const handleInput = (editor) => {
     const updatedTitles = {};
     for (const noteId in titles) {
       updatedTitles[noteId] =
-        String(noteId) === String(_currentNote.id)
+        String(noteId) === String(_currentNote?.id)
           ? editor.plugins.get("Title").getTitle() || "Untitled"
           : titles[noteId];
     }
@@ -135,7 +135,7 @@ const ELNEditor = ({
           }}
           context={Context}
         >
-          <div className={css(styles.editor)} key={_currentNote.id}>
+          <div className={css(styles.editor)} key={_currentNote?.id}>
             <CKEditor
               config={{
                 title: {
@@ -143,7 +143,7 @@ const ELNEditor = ({
                 },
                 placeholder:
                   "Start typing to continue with an empty page, or pick a template",
-                initialData: _currentNote.latest_version?.src ?? "",
+                initialData: _currentNote?.latest_version?.src ?? "",
                 simpleUpload: {
                   // The URL that the images are uploaded to.
                   uploadUrl: API.SAVE_IMAGE,
@@ -162,12 +162,12 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, _currentNote.id);
+                    return saveData(editor, _currentNote?.id);
                   },
                 },
               }}
               editor={CKELNEditor}
-              id={_currentNote.id}
+              id={_currentNote?.id}
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
                 console.log("Editor is ready to use!", editor);

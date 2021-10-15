@@ -3,7 +3,9 @@ import Notebook from "~/components/Notebook/Notebook";
 import {
   createNewNote,
   createNoteContent,
+  fetchOrg,
   fetchOrgNotes,
+  updateOrgDetails,
 } from "~/config/fetch";
 import EmptyState from "~/components/CKEditor/EmptyState.md";
 import { AUTH_TOKEN, PRIVATE_ELN_ORG_PARAM } from "~/config/constants";
@@ -11,12 +13,19 @@ import Error from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureError } from "~/config/utils/error";
 
+import HeadComponent from "~/components/Head";
+
 const Index = ({ error }) => {
   if (error) {
     return <Error {...error} />;
   }
 
-  return <Notebook />;
+  return (
+    <>
+      <HeadComponent title={"ResearchHub Notebook"} />
+      <Notebook />
+    </>
+  );
 };
 
 export async function getServerSideProps(ctx) {
@@ -78,18 +87,31 @@ export async function getServerSideProps(ctx) {
       },
     };
   } else {
-    const note = await handleCreateNewNote(
-      { isPrivateNotebook, orgSlug },
-      authToken
-    );
+    const orgResponse = await fetchOrg({ orgSlug }, authToken);
+    const org = orgResponse.results[0];
+    if (!org.note_created) {
+      const note = await handleCreateNewNote(
+        { isPrivateNotebook, orgSlug },
+        authToken
+      );
 
-    return {
-      redirect: {
-        destination: `/${orgSlug}/notebook/${note.id}`,
-        permanent: false,
-      },
-    };
+      await updateOrgDetails(
+        { orgId: org.id, params: { note_created: true } },
+        authToken
+      );
+
+      return {
+        redirect: {
+          destination: `/${orgSlug}/notebook/${note.id}`,
+          permanent: false,
+        },
+      };
+    }
   }
+
+  return {
+    props: {},
+  };
 }
 
 const handleCreateNewNote = async (
