@@ -36,15 +36,6 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
 
-// if (process.env.NODE_ENV === "production") {
-//   Sentry.init({
-//     dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
-//     release: process.env.SENTRY_RELEASE,
-//     environment: "development"
-//       // process.env.REACT_APP_ENV === "staging" ? "staging" : "production",
-//   });
-// // }
-
 initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName:
