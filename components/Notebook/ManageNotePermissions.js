@@ -18,6 +18,7 @@ import Loader from "~/components/Loader/Loader";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import colors, { iconColors } from "~/config/themes/colors";
 import DropdownButton from "~/components/Form/DropdownButton";
+import { captureError } from "~/config/utils/error";
 
 const ManageNotePermissions = ({
   currentUser,
@@ -69,11 +70,15 @@ const ManageNotePermissions = ({
     const _fetchNotePermissions = async () => {
       try {
         const noteAccessList = await fetchNotePermissions({ noteId });
-
         setNoteAccessList(noteAccessList);
         setIsAdmin(isCurrentUserNoteAdmin(currentUser, noteAccessList));
-      } catch (err) {
-        console.error("Failed to fetch note permissions", err);
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note permissions",
+          data: { noteId, org, userId: _currentUser?.id },
+        });
+        console.error("Failed to fetch note permissions", error);
         setMessage("Unexpected error");
         showMessage({ show: true, error: true });
       }
@@ -92,13 +97,18 @@ const ManageNotePermissions = ({
         const invitedList = await fetchInvitedNoteUsers({ noteId });
 
         setInvitedUsersList(invitedList);
-      } catch (err) {
-        console.error("Failed to fetch invited list", err);
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch invited list",
+          data: { noteId, org, userId: _currentUser?.id },
+        });
+        console.error("Failed to fetch invited list", error);
         setMessage("Unexpected error");
         showMessage({ show: true, error: true });
+      } finally {
+        setNeedsInvitedFetch(false);
       }
-
-      setNeedsInvitedFetch(false);
     };
 
     if (needsInvitedFetch && _currentUser && noteId) {
@@ -131,12 +141,17 @@ const ManageNotePermissions = ({
 
       setNeedsInvitedFetch(true);
       setUserToBeInvitedEmail("");
-    } catch (err) {
+    } catch (error) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
+      captureError({
+        error,
+        msg: "Failed to invite user",
+        data: { noteId, org, userId: _currentUser?.id },
+      });
+    } finally {
+      setIsInviteInProgress(false);
     }
-
-    setIsInviteInProgress(false);
   };
 
   const handleKeyDown = (e) => {
@@ -166,9 +181,14 @@ const ManageNotePermissions = ({
       }
 
       setNeedsFetch(true);
-    } catch (err) {
+    } catch (error) {
       setMessage("Failed to remove user");
       showMessage({ show: true, error: true });
+      captureError({
+        error,
+        msg: "Failed to remove user",
+        data: { noteId, org, userIdToRemove: user.author_profile.id },
+      });
     }
   };
 
@@ -181,9 +201,19 @@ const ManageNotePermissions = ({
       });
 
       setNeedsFetch(true);
-    } catch (err) {
+    } catch (error) {
       setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
+      captureError({
+        error,
+        msg: "Failed to update permission",
+        data: {
+          noteId,
+          org,
+          accessType,
+          userIdToUpdate: user.author_profile.id,
+        },
+      });
     }
   };
 
