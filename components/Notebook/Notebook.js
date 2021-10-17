@@ -19,6 +19,7 @@ import colors from "~/config/themes/colors";
 import { getUserNoteAccess } from "./utils/notePermissions";
 import Error from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
+import { captureError } from "~/config/utils/error";
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
@@ -49,13 +50,24 @@ const Notebook = ({ user }) => {
 
   useEffect(() => {
     const _fetchUserOrgs = async () => {
-      const userOrgs = await fetchUserOrgs({ user });
-      const currOrg = getCurrentOrgFromRouter(userOrgs);
+      let userOrgs;
+      let currOrg;
+      try {
+        userOrgs = await fetchUserOrgs({ user });
+        currOrg = getCurrentOrgFromRouter(userOrgs);
 
-      setOrganizations(userOrgs);
-      setCurrentOrganization(currOrg);
-      setNeedNoteFetch(true);
-      orgsFetched.current = true;
+        setOrganizations(userOrgs);
+        setCurrentOrganization(currOrg);
+        setNeedNoteFetch(true);
+        orgsFetched.current = true;
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch user orgs",
+          data: { noteId, orgSlug, userNoteAccess, userId: user.id },
+        });
+        setError({ statusCode: 500 });
+      }
     };
 
     if (user?.id && !orgsFetched.current) {
@@ -82,14 +94,19 @@ const Notebook = ({ user }) => {
           });
 
           setUserNoteAccess(access);
-        } else if (response.status === 404) {
-          setError({ code: 404 });
         } else {
-          setError({ code: 500 });
+          captureError({
+            msg: "Failed to fetch note permissions",
+            data: { noteId, orgSlug, userNoteAccess, userId: user.id },
+          });
+          setError({ statusCode: response.status });
         }
-      } catch (err) {
-        console.error("Failed to fetch note permissions", err);
-        setError({ code: 500 });
+      } catch (error) {
+        captureError({
+          msg: "Failed to fetch note permissions",
+          data: { noteId, orgSlug, userNoteAccess, userId: user.id },
+        });
+        setError({ statusCode: 500 });
       } finally {
         setNeedNotePermsFetch(false);
       }
@@ -115,14 +132,21 @@ const Notebook = ({ user }) => {
           setIsCollaborativeReady(false);
           readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
           setNeedNotePermsFetch(true);
-        } else if (response.status === 404) {
-          setError({ code: 404 });
         } else {
-          setError({ code: 500 });
+          captureError({
+            statusCode: response.status,
+            msg: "could not fetch note",
+            data: { noteId, orgSlug, userId: user.id },
+          });
+          setError({ statusCode: response.status });
         }
-      } catch (err) {
-        console.error(`Error fetching note ${noteId}`, err);
-        setError({ code: 500 });
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note",
+          data: { noteId, orgSlug, userId: user.id },
+        });
+        setError({ statusCode: 500 });
       }
     };
 
@@ -135,12 +159,19 @@ const Notebook = ({ user }) => {
       let notes;
 
       try {
-        if (isPrivateNotebook) {
-          response = await fetchOrgNotes({ orgSlug: 0 });
-          notes = response.results;
+        const response = await fetchOrgNotes({
+          orgSlug: isPrivateNotebook ? 0 : orgSlug,
+        });
+        const parsed = await Helpers.parseJSON(response);
+        if (response.ok) {
+          notes = parsed.results;
         } else {
-          response = await fetchOrgNotes({ orgSlug });
-          notes = response.results;
+          setError({ statusCode: response.status });
+          captureError({
+            error,
+            msg: "Failed to fetch notes",
+            data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+          });
         }
 
         const sortedNotes = notes.sort(
@@ -154,12 +185,17 @@ const Notebook = ({ user }) => {
           updatedTitles[note.id.toString()] = note.title;
         }
         setTitles(updatedTitles);
-      } catch (err) {
-        console.error("failed to fetch notes", err);
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch notes",
+          data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+        });
+        setError({ statusCode: 500 });
+      } finally {
+        setDidInitialNotesLoad(true);
+        setNeedNoteFetch(false);
       }
-
-      setDidInitialNotesLoad(true);
-      setNeedNoteFetch(false);
     };
 
     if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
@@ -176,8 +212,18 @@ const Notebook = ({ user }) => {
       } else {
         const currentOrg = getCurrentOrgFromRouter(organizations);
         if (!currentOrg) {
-          return console.error("Org could not be found in user's orgs");
+          return captureError({
+            msg: "Could not find org in user's orgs",
+            data: {
+              noteId,
+              orgSlug,
+              currentOrg,
+              isPrivateNotebook,
+              userId: user.id,
+            },
+          });
         }
+
         setCurrentOrganization(currentOrg);
         setCurrentOrgSlug(orgSlug);
         setIsPrivateNotebook(false);
@@ -189,11 +235,19 @@ const Notebook = ({ user }) => {
   }, [router.asPath, currentOrganization]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
-    const org = await fetchOrg({ orgId });
-    updateUserOrgsLocalCache(org);
+    try {
+      const org = await fetchOrg({ orgId });
+      updateUserOrgsLocalCache(org);
 
-    if (orgId === currentOrganization?.id) {
-      setCurrentOrganization(org);
+      if (orgId === currentOrganization?.id) {
+        setCurrentOrganization(org);
+      }
+    } catch (error) {
+      captureError({
+        msg: "failed to fetch org",
+        data: { noteId, orgSlug, orgId, isPrivateNotebook, userId: user.id },
+      });
+      setError({ statusCode: 500 });
     }
   };
 
@@ -240,7 +294,7 @@ const Notebook = ({ user }) => {
   };
 
   if (error) {
-    return <Error statusCode={error.code} />;
+    return <Error {...error} />;
   }
 
   return (

@@ -4,8 +4,9 @@ const path = require("path");
 const withPlugins = require("next-compose-plugins");
 const withSourceMaps = require("@zeit/next-source-maps");
 const withTM = require("next-transpile-modules")(["@quantfive/js-web-config"]);
+const { withSentryConfig } = require("@sentry/nextjs");
 
-module.exports = withPlugins([[withTM], [withSourceMaps]], {
+const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
   typescript: {
     ignoreBuildErrors: true,
@@ -18,8 +19,8 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
       "researchhub-paper-dev1.s3.amazonaws.com",
       "researchhub-paper-prod.s3.amazonaws.com",
       "researchhub.com",
-    ]
-  },  
+    ],
+  },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     // Load Markdown Configuration
     config.module.rules.push({
@@ -67,3 +68,9 @@ module.exports = withPlugins([[withTM], [withSourceMaps]], {
     ];
   },
 });
+
+const SentryWebpackPluginOptions = {
+  silent: true,
+};
+
+module.exports = withSentryConfig(moduleExports, SentryWebpackPluginOptions);
