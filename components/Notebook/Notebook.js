@@ -24,7 +24,7 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user }) => {
+const Notebook = ({ user, auth }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
@@ -46,7 +46,22 @@ const Notebook = ({ user }) => {
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+
   const orgsFetched = useRef();
+
+  useEffect(() => {
+    // If user just logged in, refresh the page
+    const userLoggedIn =
+      auth.authChecked && isLoggedIn === false && auth.isLoggedIn;
+    if (userLoggedIn) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500); /* Arbitrary time to allow auth to be settled. Lower value may result in user being logged out. */
+    } else if (auth.authChecked && isLoggedIn === null) {
+      setIsLoggedIn(auth.isLoggedIn);
+    }
+  }, [auth]);
 
   useEffect(() => {
     const _fetchUserOrgs = async () => {
@@ -344,6 +359,7 @@ const Notebook = ({ user }) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
+  auth: state.auth,
 });
 
 const styles = StyleSheet.create({
