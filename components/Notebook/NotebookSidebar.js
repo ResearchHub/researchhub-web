@@ -28,19 +28,16 @@ const NotebookSidebar = ({
   currentNoteId,
   currentOrg,
   isPrivateNotebook,
-  needNoteFetch,
   didInitialNotesLoad,
   notes,
   onOrgChange,
   onNoteCreate,
+  onNoteDelete,
   orgSlug,
   orgs,
   readOnlyEditorInstance,
   refetchTemplates,
-  setCurrentNote,
-  setIsCollaborativeReady,
-  fetchAndSetOrg,
-  setNeedNoteFetch,
+  handleOrgSwitch,
   setNotes,
   setRefetchTemplates,
   setTitles,
@@ -67,7 +64,6 @@ const NotebookSidebar = ({
     }
 
     const note = await createNewNote(params);
-    setCurrentNote(note);
     setCreateNoteLoading(false);
     onNoteCreate(note);
   };
@@ -98,8 +94,6 @@ const NotebookSidebar = ({
         setIsOpen={setIsNoteTemplateModalOpen}
         user={user}
         setTitles={setTitles}
-        setNotes={setNotes}
-        setCurrentNote={setCurrentNote}
         titles={titles}
         notes={notes}
       />
@@ -209,7 +203,7 @@ const NotebookSidebar = ({
               <div
                 className={css(styles.sidebarButton, styles.orgButton)}
                 onClick={() => {
-                  fetchAndSetOrg({ orgId: currentOrg.id });
+                  handleOrgSwitch({ orgId: currentOrg.id });
                   setShowManageOrgModal(true);
                 }}
               >
@@ -263,17 +257,12 @@ const NotebookSidebar = ({
                     currentNoteId={currentNoteId}
                     currentOrg={currentOrg}
                     onNoteCreate={onNoteCreate}
+                    onNoteDelete={onNoteDelete}
                     key={noteId}
                     noteBody={note.latest_version?.src ?? ""}
                     noteId={noteId}
                     notes={notes}
-                    readOnlyEditorInstance={readOnlyEditorInstance}
-                    refetchNotes={needNoteFetch}
                     refetchTemplates={refetchTemplates}
-                    setCurrentNote={setCurrentNote}
-                    setIsCollaborativeReady={setIsCollaborativeReady}
-                    setNotes={setNotes}
-                    setRefetchNotes={setNeedNoteFetch}
                     setRefetchTemplates={setRefetchTemplates}
                     title={titles[noteId]}
                   />
