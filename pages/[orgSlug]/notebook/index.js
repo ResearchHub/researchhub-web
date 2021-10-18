@@ -1,5 +1,4 @@
 import nookies from "nookies";
-
 import Notebook from "~/components/Notebook/Notebook";
 import {
   createNewNote,
@@ -8,8 +7,15 @@ import {
 } from "~/config/fetch";
 import EmptyState from "~/components/CKEditor/EmptyState.md";
 import { AUTH_TOKEN, PRIVATE_ELN_ORG_PARAM } from "~/config/constants";
+import Error from "next/error";
+import { Helpers } from "@quantfive/js-web-config";
+import { captureError } from "~/config/utils/error";
 
-const Index = () => {
+const Index = ({ error }) => {
+  if (error) {
+    return <Error {...error} />;
+  }
+
   return <Notebook />;
 };
 
@@ -22,16 +28,46 @@ export async function getServerSideProps(ctx) {
   const authToken = cookies[AUTH_TOKEN];
 
   // Create a new note if no notes exist in org, otherwise push to first note.
-
   let notes = {
     results: [],
   };
-  if (isPrivateNotebook) {
-    const response = await fetchOrgNotes({ orgSlug: 0 }, authToken);
-    notes = response.results;
-  } else {
-    const response = await fetchOrgNotes({ orgSlug }, authToken);
-    notes = response.results;
+
+  try {
+    const response = await fetchOrgNotes(
+      { orgSlug: isPrivateNotebook ? 0 : orgSlug },
+      authToken
+    );
+    const parsed = await Helpers.parseJSON(response);
+
+    if (response.ok) {
+      notes = parsed.results;
+    } else {
+      captureError({
+        msg: "could not fetch org notes",
+        data: { orgSlug, isPrivateNotebook },
+      });
+
+      return {
+        props: {
+          error: {
+            statusCode: response.status,
+          },
+        },
+      };
+    }
+  } catch (error) {
+    captureError({
+      msg: "failed to fetch org notes",
+      data: { orgSlug, isPrivateNotebook },
+    });
+
+    return {
+      props: {
+        error: {
+          statusCode: 500,
+        },
+      },
+    };
   }
 
   if (notes.length) {

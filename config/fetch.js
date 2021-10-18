@@ -129,9 +129,7 @@ export const deleteNote = (noteId) => {
 };
 
 export const fetchOrgNotes = ({ orgId, slug, orgSlug }, authToken) => {
-  return fetch(API.NOTE({ orgId, slug, orgSlug }), API.GET_CONFIG(authToken))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+  return fetch(API.NOTE({ orgId, slug, orgSlug }), API.GET_CONFIG(authToken));
 };
 
 export const fetchUserOrgs = ({ user }) => {
@@ -167,7 +165,7 @@ export const inviteUserToOrg = ({
 };
 
 export const createOrg = (payload) => {
-  return fetch(API.ORGANIZATION({}), API.POST_CONFIG(payload))
+  return fetch(API.ORGANIZATION({}), API.POST_CONFIG(payload));
 };
 
 export const updateOrgDetails = ({ orgId, updatedName }) => {
