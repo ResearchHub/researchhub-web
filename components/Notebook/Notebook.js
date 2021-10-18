@@ -36,7 +36,7 @@ const Notebook = ({ user, auth }) => {
   const [titles, setTitles] = useState({});
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
-  const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
+  const [currentOrgSlug, setCurrentOrgSlug] = useState(null);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
 
@@ -66,14 +66,97 @@ const Notebook = ({ user, auth }) => {
   }, [auth]);
 
   useEffect(() => {
+    const _fetchAndSetUserOrgs = async () => {
+      let userOrgs;
+      let currOrg;
+
+      try {
+        userOrgs = await fetchUserOrgs({ user });
+        currOrg = getCurrentOrgFromRouter(userOrgs);
+
+        setOrganizations(userOrgs);
+        setCurrentOrganization(currOrg);
+        orgsFetched.current = true;
+
+        return Promise.resolve();
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch user orgs",
+          data: { noteId, orgSlug, userNoteAccess, userId: user.id },
+        });
+        setError({ statusCode: 500 });
+
+        return Promise.reject();
+      }
+    };
+
     if (user?.id && !orgsFetched.current) {
-      fetchAndSetUserOrgs().then(fetchAndSetCurrentOrgNotes);
+      _fetchAndSetUserOrgs();
     }
   }, [user]);
 
   useEffect(() => {
-    fetchAndSetCurrentNote();
-    fetchAndSetCurrentNotePermissions();
+    const _fetchAndSetCurrentNote = async () => {
+      let note;
+      let response;
+
+      try {
+        response = await fetchNote({ noteId });
+
+        if (response.ok) {
+          note = await Helpers.parseJSON(response);
+
+          setCurrentNote(note);
+          setIsCollaborativeReady(false);
+          readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
+        } else {
+          captureError({
+            statusCode: response.status,
+            msg: "could not fetch note",
+            data: { noteId, orgSlug, userId: user?.id },
+          });
+          setError({ statusCode: response.status });
+        }
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note",
+          data: { noteId, orgSlug, userId: user?.id },
+        });
+        setError({ statusCode: 500 });
+      }
+    };
+
+    const _fetchAndSetCurrentNotePermissions = async () => {
+      let response;
+      let perms;
+
+      try {
+        response = await fetchNotePermissions({ noteId });
+
+        if (response.ok) {
+          perms = await Helpers.parseJSON(response);
+          setCurrentNotePerms({ forNote: noteId, perms });
+        } else {
+          captureError({
+            msg: "Could not fetch note permissions",
+            data: { noteId, orgSlug, userId: user?.id },
+          });
+          setError({ statusCode: response.status });
+        }
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note permissions",
+          data: { noteId, orgSlug, userId: user?.id },
+        });
+        setError({ statusCode: 500 });
+      }
+    };
+
+    _fetchAndSetCurrentNote();
+    _fetchAndSetCurrentNotePermissions();
   }, [noteId]);
 
   useEffect(() => {
@@ -93,6 +176,51 @@ const Notebook = ({ user, auth }) => {
   }, [currentNote, currentNotePerms, user]);
 
   useEffect(() => {
+    const _fetchAndSetCurrentOrgNotes = async () => {
+      let response;
+      let notes;
+
+      try {
+        const response = await fetchOrgNotes({
+          orgSlug: isPrivateNotebook ? 0 : orgSlug,
+        });
+        const parsed = await Helpers.parseJSON(response);
+
+        if (response.ok) {
+          notes = parsed.results;
+
+          const sortedNotes = notes.sort(
+            (a, b) => new Date(b.created_date) - new Date(a.created_date)
+          );
+
+          const updatedTitles = {};
+          for (const note of sortedNotes) {
+            updatedTitles[note.id.toString()] = note.title;
+          }
+
+          setNotes(sortedNotes);
+          setTitles(updatedTitles);
+        } else {
+          setError({ statusCode: response.status });
+          captureError({
+            error,
+            msg: "Failed to fetch notes",
+            data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+          });
+        }
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch notes",
+          data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+        });
+        setError({ statusCode: 500 });
+      } finally {
+        setDidInitialNotesLoad(true);
+      }
+    };
+
+
     if (orgSlug !== currentOrgSlug) {
       if (orgSlug === "me") {
         setCurrentOrganization(null);
@@ -116,136 +244,10 @@ const Notebook = ({ user, auth }) => {
         setCurrentOrgSlug(orgSlug);
       }
 
-      fetchAndSetCurrentOrgNotes();
+      _fetchAndSetCurrentOrgNotes();
       setDidInitialNotesLoad(false);
     }
   }, [router.asPath, currentOrganization]);
-
-  const fetchAndSetCurrentNote = async () => {
-    let note;
-    let response;
-
-    try {
-      response = await fetchNote({ noteId });
-
-      if (response.ok) {
-        note = await Helpers.parseJSON(response);
-
-        setCurrentNote(note);
-        setIsCollaborativeReady(false);
-        readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
-      } else {
-        captureError({
-          statusCode: response.status,
-          msg: "could not fetch note",
-          data: { noteId, orgSlug, userId: user?.id },
-        });
-        setError({ statusCode: response.status });
-      }
-    } catch (error) {
-      captureError({
-        error,
-        msg: "Failed to fetch note",
-        data: { noteId, orgSlug, userId: user?.id },
-      });
-      setError({ statusCode: 500 });
-    }
-  };
-
-  const fetchAndSetCurrentNotePermissions = async () => {
-    let response;
-    let perms;
-
-    try {
-      response = await fetchNotePermissions({ noteId });
-
-      if (response.ok) {
-        perms = await Helpers.parseJSON(response);
-        setCurrentNotePerms({ forNote: noteId, perms });
-      } else {
-        captureError({
-          msg: "Could not fetch note permissions",
-          data: { noteId, orgSlug, userId: user?.id },
-        });
-        setError({ statusCode: response.status });
-      }
-    } catch (error) {
-      captureError({
-        error,
-        msg: "Failed to fetch note permissions",
-        data: { noteId, orgSlug, userId: user?.id },
-      });
-      setError({ statusCode: 500 });
-    }
-  };
-
-  const fetchAndSetCurrentOrgNotes = async () => {
-    let response;
-    let notes;
-
-    try {
-      const response = await fetchOrgNotes({
-        orgSlug: isPrivateNotebook ? 0 : orgSlug,
-      });
-      const parsed = await Helpers.parseJSON(response);
-
-      if (response.ok) {
-        notes = parsed.results;
-
-        const sortedNotes = notes.sort(
-          (a, b) => new Date(b.created_date) - new Date(a.created_date)
-        );
-
-        const updatedTitles = {};
-        for (const note of sortedNotes) {
-          updatedTitles[note.id.toString()] = note.title;
-        }
-
-        setNotes(sortedNotes);
-        setTitles(updatedTitles);
-      } else {
-        setError({ statusCode: response.status });
-        captureError({
-          error,
-          msg: "Failed to fetch notes",
-          data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
-        });
-      }
-    } catch (error) {
-      captureError({
-        error,
-        msg: "Failed to fetch notes",
-        data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
-      });
-      setError({ statusCode: 500 });
-    } finally {
-      setDidInitialNotesLoad(true);
-    }
-  };
-
-  const fetchAndSetUserOrgs = async () => {
-    let userOrgs;
-    let currOrg;
-    try {
-      userOrgs = await fetchUserOrgs({ user });
-      currOrg = getCurrentOrgFromRouter(userOrgs);
-
-      setOrganizations(userOrgs);
-      setCurrentOrganization(currOrg);
-      orgsFetched.current = true;
-
-      return Promise.resolve();
-    } catch (error) {
-      captureError({
-        error,
-        msg: "Failed to fetch user orgs",
-        data: { noteId, orgSlug, userNoteAccess, userId: user.id },
-      });
-      setError({ statusCode: 500 });
-
-      return Promise.reject();
-    }
-  };
 
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
@@ -284,10 +286,6 @@ const Notebook = ({ user, auth }) => {
     } else if (changeType === "CREATE") {
       userOrganizations.push(updatedOrg);
       setOrganizations(userOrganizations);
-    }
-
-    if (needNoteFetch) {
-      fetchAndSetCurrentOrgNotes();
     }
   };
 

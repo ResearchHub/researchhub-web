@@ -20,6 +20,7 @@ const SidebarSectionContent = ({
   refetchTemplates,
   setRefetchTemplates,
   title,
+  onNoteDelete,
   isPrivateNotebook,
 }) => {
   const alert = useAlert();

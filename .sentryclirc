@@ -4,5 +4,3 @@ token=ab8a83f3199142b187e8f97ac70c54b425e8e7d3a46a431699e8f196282c131d
 [defaults]
 project=researchhub-web
 org=quantfive
-[auth]
-token=f92756be48d7488ea00fcb4fbeb1433bc6a1eb6678314471880ae9c55f0ebd39
