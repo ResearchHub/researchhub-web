@@ -8,6 +8,7 @@ import colors from "~/config/themes/colors";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "~/components//DiscussionPostMetadata.js";
 import TextEditor from "~/components/TextEditor";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 type Props = {
   auth?: any; // redux
@@ -33,7 +34,7 @@ function CitationCommentThreadComposer({
   };
   const handleSubmit = (text: string, plainText: string) => {
     postCitationThread({
-      onError: (error: Error): void => console.warn("ERROR: ", error),
+      onError: (error: Error): void => emptyFncWithMsg(error),
       onSuccess: ({ threadID: _threadID }): void => onSubmitSuccess(),
       params: {
         context_title: citationTitle,

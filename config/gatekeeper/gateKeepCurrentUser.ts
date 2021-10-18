@@ -1,5 +1,5 @@
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import gatekeeper from "./gatekeeper";
 
@@ -13,19 +13,23 @@ export default function gateKeepCurrentUser({
   shouldRedirect?: boolean;
 }): boolean {
   const router = useRouter();
+  const [gkResult, setGKResult] = useState<boolean | null>(null);
   const { user } = auth ?? {};
-  const isReadyToCheck =
-    !isNullOrUndefined(auth) && !isNullOrUndefined(user?.id);
   const isLoggedIn = Boolean(auth?.isLoggedIn);
-  const isInGatekeeper = gatekeeper(application, user?.email) ?? false;
+  const isReadyToCheck =
+    !isNullOrUndefined(user?.id) && !isNullOrUndefined(gkResult);
+
+  if (isLoggedIn && isNullOrUndefined(gkResult)) {
+    gatekeeper(application, user?.email, setGKResult);
+  }
 
   useEffect(() => {
     /*  Sending back inappropriate users to home page
         Note redux propagates in the clientside; hense boolean checks need to be done like this */
-    if (shouldRedirect && isReadyToCheck && (!isInGatekeeper || !isLoggedIn)) {
+    if (shouldRedirect && isReadyToCheck && (!isLoggedIn || !gkResult)) {
       router.push("/");
     }
-  }, [isInGatekeeper, isLoggedIn, isReadyToCheck]);
+  }, [gkResult, isLoggedIn, isReadyToCheck]);
 
-  return isInGatekeeper;
+  return Boolean(gkResult);
 }
