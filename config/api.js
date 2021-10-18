@@ -82,13 +82,26 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
-    ORGANIZATION: ({ userId, orgId }) => {
-      let url;
+    ORGANIZATION: ({ userId, orgId, orgSlug }) => {
+      let url = `${BASE_URL}organization/`;
+      let restId = null;
       if (userId) {
-        url = `${BASE_URL}organization/${userId}/get_user_organizations/`;
+        restId = userId;
       } else {
-        url = `${BASE_URL}organization/${orgId ? orgId + "/" : ""}`;
+        restId = orgId;
       }
+
+      const params = {
+        querystring: {
+          slug: orgSlug,
+        },
+        rest: {
+          id: restId,
+          route: userId ? "get_user_organizations" : null,
+        },
+      };
+
+      url = prepURL(url, params);
       return url;
     },
     ORGANIZATION_USERS: ({ orgId }) => {
