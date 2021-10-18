@@ -19,11 +19,13 @@ import colors from "~/config/themes/colors";
 import { getUserNoteAccess } from "./utils/notePermissions";
 import Error from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
+import { captureError } from "~/config/utils/error";
+
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user }) => {
+const Notebook = ({ user, auth }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
@@ -32,76 +34,70 @@ const Notebook = ({ user }) => {
   const [userNoteAccess, setUserNoteAccess] = useState(null);
   const [notes, setNotes] = useState([]);
   const [titles, setTitles] = useState({});
-  const [needNoteFetch, setNeedNoteFetch] = useState(false);
-  const [needNotePermsFetch, setNeedNotePermsFetch] = useState(false);
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
-  const [currentOrgSlug, setCurrentOrgSlug] = useState(orgSlug);
+  const [currentOrgSlug, setCurrentOrgSlug] = useState(null);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
 
   const [isCollaborativeReady, setIsCollaborativeReady] = useState(false);
-  const [isPrivateNotebook, setIsPrivateNotebook] = useState(orgSlug === "me");
   const [readOnlyEditorInstance, setReadOnlyEditorInstance] = useState(null);
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+
   const orgsFetched = useRef();
+  const isPrivateNotebook = orgSlug === "me" ? true : false;
 
   useEffect(() => {
-    const _fetchUserOrgs = async () => {
-      const userOrgs = await fetchUserOrgs({ user });
-      const currOrg = getCurrentOrgFromRouter(userOrgs);
+    // If user just logged in, refresh the page
+    const userLoggedInNow =
+      auth.authChecked && isLoggedIn === false && auth.isLoggedIn;
+    const userIsLoggedOut = auth.authChecked && !auth.isLoggedIn;
 
-      setOrganizations(userOrgs);
-      setCurrentOrganization(currOrg);
-      setNeedNoteFetch(true);
-      orgsFetched.current = true;
+    if (userLoggedInNow) {
+      setTimeout(() => {
+        window.location.reload();
+      }, 2500); /* Arbitrary time to allow auth to be settled. Lower value may result in user being logged out. */
+    } else if (userIsLoggedOut) {
+      setError({ statusCode: 403 });
+      setIsLoggedIn(false);
+    }
+  }, [auth]);
+
+  useEffect(() => {
+    const _fetchAndSetUserOrgs = async () => {
+      let userOrgs;
+      let currOrg;
+
+      try {
+        userOrgs = await fetchUserOrgs({ user });
+        currOrg = getCurrentOrgFromRouter(userOrgs);
+
+        setOrganizations(userOrgs);
+        setCurrentOrganization(currOrg);
+        orgsFetched.current = true;
+
+        return Promise.resolve();
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch user orgs",
+          data: { noteId, orgSlug, userNoteAccess, userId: user.id },
+        });
+        setError({ statusCode: 500 });
+
+        return Promise.reject();
+      }
     };
 
     if (user?.id && !orgsFetched.current) {
-      _fetchUserOrgs();
+      _fetchAndSetUserOrgs();
     }
   }, [user]);
 
   useEffect(() => {
-    const _fetchNotePermissions = async () => {
-      let response;
-      let perms;
-
-      try {
-        response = await fetchNotePermissions({ noteId });
-
-        if (response.ok) {
-          perms = await Helpers.parseJSON(response);
-          setCurrentNotePerms(perms);
-
-          const access = getUserNoteAccess({
-            user,
-            userOrgs: [currentNote.organization] || [],
-            notePerms: perms,
-          });
-
-          setUserNoteAccess(access);
-        } else if (response.status === 404) {
-          setError({ code: 404 });
-        } else {
-          setError({ code: 500 });
-        }
-      } catch (err) {
-        console.error("Failed to fetch note permissions", err);
-        setError({ code: 500 });
-      } finally {
-        setNeedNotePermsFetch(false);
-      }
-    };
-
-    if (noteId && user?.id && needNotePermsFetch) {
-      _fetchNotePermissions();
-    }
-  }, [noteId, needNotePermsFetch, user]);
-
-  useEffect(() => {
-    const _fetchNote = async () => {
+    const _fetchAndSetCurrentNote = async () => {
       let note;
       let response;
 
@@ -114,86 +110,159 @@ const Notebook = ({ user }) => {
           setCurrentNote(note);
           setIsCollaborativeReady(false);
           readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
-          setNeedNotePermsFetch(true);
-        } else if (response.status === 404) {
-          setError({ code: 404 });
         } else {
-          setError({ code: 500 });
+          captureError({
+            statusCode: response.status,
+            msg: "could not fetch note",
+            data: { noteId, orgSlug, userId: user?.id },
+          });
+          setError({ statusCode: response.status });
         }
-      } catch (err) {
-        console.error(`Error fetching note ${noteId}`, err);
-        setError({ code: 500 });
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note",
+          data: { noteId, orgSlug, userId: user?.id },
+        });
+        setError({ statusCode: 500 });
       }
     };
 
-    _fetchNote();
+    const _fetchAndSetCurrentNotePermissions = async () => {
+      let response;
+      let perms;
+
+      try {
+        response = await fetchNotePermissions({ noteId });
+
+        if (response.ok) {
+          perms = await Helpers.parseJSON(response);
+          setCurrentNotePerms({ forNote: noteId, perms });
+        } else {
+          captureError({
+            msg: "Could not fetch note permissions",
+            data: { noteId, orgSlug, userId: user?.id },
+          });
+          setError({ statusCode: response.status });
+        }
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note permissions",
+          data: { noteId, orgSlug, userId: user?.id },
+        });
+        setError({ statusCode: 500 });
+      }
+    };
+
+    _fetchAndSetCurrentNote();
+    _fetchAndSetCurrentNotePermissions();
   }, [noteId]);
 
   useEffect(() => {
-    const _fetchOrgNotes = async () => {
+    const shouldCalcUserAccess =
+      user?.id &&
+      currentNote &&
+      parseInt(currentNotePerms?.forNote) === parseInt(currentNote?.id);
+    if (shouldCalcUserAccess) {
+      const access = getUserNoteAccess({
+        user,
+        userOrgs: [currentNote.organization] || [],
+        notePerms: currentNotePerms.perms,
+      });
+
+      setUserNoteAccess(access);
+    }
+  }, [currentNote, currentNotePerms, user]);
+
+  useEffect(() => {
+    const _fetchAndSetCurrentOrgNotes = async () => {
       let response;
       let notes;
 
       try {
-        if (isPrivateNotebook) {
-          response = await fetchOrgNotes({ orgSlug: 0 });
-          notes = response.results;
+        const response = await fetchOrgNotes({
+          orgSlug: isPrivateNotebook ? 0 : orgSlug,
+        });
+        const parsed = await Helpers.parseJSON(response);
+
+        if (response.ok) {
+          notes = parsed.results;
+
+          const sortedNotes = notes.sort(
+            (a, b) => new Date(b.created_date) - new Date(a.created_date)
+          );
+
+          const updatedTitles = {};
+          for (const note of sortedNotes) {
+            updatedTitles[note.id.toString()] = note.title;
+          }
+
+          setNotes(sortedNotes);
+          setTitles(updatedTitles);
         } else {
-          response = await fetchOrgNotes({ orgSlug });
-          notes = response.results;
+          setError({ statusCode: response.status });
+          captureError({
+            error,
+            msg: "Failed to fetch notes",
+            data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+          });
         }
-
-        const sortedNotes = notes.sort(
-          (a, b) => new Date(b.created_date) - new Date(a.created_date)
-        );
-
-        setNotes(sortedNotes);
-
-        const updatedTitles = {};
-        for (const note of sortedNotes) {
-          updatedTitles[note.id.toString()] = note.title;
-        }
-        setTitles(updatedTitles);
-      } catch (err) {
-        console.error("failed to fetch notes", err);
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch notes",
+          data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+        });
+        setError({ statusCode: 500 });
+      } finally {
+        setDidInitialNotesLoad(true);
       }
-
-      setDidInitialNotesLoad(true);
-      setNeedNoteFetch(false);
     };
 
-    if (needNoteFetch && (currentOrganization || isPrivateNotebook)) {
-      _fetchOrgNotes();
-    }
-  }, [needNoteFetch, currentOrganization]);
 
-  useEffect(() => {
     if (orgSlug !== currentOrgSlug) {
       if (orgSlug === "me") {
         setCurrentOrganization(null);
         setCurrentOrgSlug("me");
-        setIsPrivateNotebook(true);
       } else {
         const currentOrg = getCurrentOrgFromRouter(organizations);
         if (!currentOrg) {
-          return console.error("Org could not be found in user's orgs");
+          return captureError({
+            msg: "Could not find org in user's orgs",
+            data: {
+              noteId,
+              orgSlug,
+              currentOrg,
+              isPrivateNotebook,
+              userId: user.id,
+            },
+          });
         }
+
         setCurrentOrganization(currentOrg);
         setCurrentOrgSlug(orgSlug);
-        setIsPrivateNotebook(false);
       }
 
-      setNeedNoteFetch(true);
+      _fetchAndSetCurrentOrgNotes();
       setDidInitialNotesLoad(false);
     }
   }, [router.asPath, currentOrganization]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
-    const org = await fetchOrg({ orgId });
-    updateUserOrgsLocalCache(org);
+    try {
+      const org = await fetchOrg({ orgId });
+      updateUserOrgsLocalCache(org);
 
-    if (orgId === currentOrganization?.id) {
-      setCurrentOrganization(org);
+      if (orgId === currentOrganization?.id) {
+        setCurrentOrganization(org);
+      }
+    } catch (error) {
+      captureError({
+        msg: "failed to fetch org",
+        data: { noteId, orgSlug, orgId, isPrivateNotebook, userId: user.id },
+      });
+      setError({ statusCode: 500 });
     }
   };
 
@@ -214,11 +283,18 @@ const Notebook = ({ user }) => {
     if (changeType === "UPDATE") {
       updateUserOrgsLocalCache(updatedOrg);
       setCurrentOrganization(updatedOrg);
-      setNeedNoteFetch(needNoteFetch);
     } else if (changeType === "CREATE") {
       userOrganizations.push(updatedOrg);
       setOrganizations(userOrganizations);
     }
+  };
+
+  const onNoteDelete = (deletedNote) => {
+    const newNotes = notes.filter((note) => note.id !== deletedNote.id);
+    setNotes(newNotes);
+    router.push(
+      getNotePathname({ noteId: newNotes[0].id, org: currentOrganization })
+    );
   };
 
   const onNoteCreate = (note) => {
@@ -240,7 +316,7 @@ const Notebook = ({ user }) => {
   };
 
   if (error) {
-    return <Error statusCode={error.code} />;
+    return <Error {...error} />;
   }
 
   return (
@@ -252,19 +328,15 @@ const Notebook = ({ user }) => {
             currentNoteId={noteId}
             currentOrg={currentOrganization}
             isPrivateNotebook={isPrivateNotebook}
-            needNoteFetch={needNoteFetch}
             notes={notes}
             onOrgChange={onOrgChange}
             onNoteCreate={onNoteCreate}
+            onNoteDelete={onNoteDelete}
+            handleOrgSwitch={fetchAndSetOrg}
             orgSlug={orgSlug}
             orgs={organizations}
             readOnlyEditorInstance={readOnlyEditorInstance}
             refetchTemplates={refetchTemplates}
-            fetchAndSetOrg={fetchAndSetOrg}
-            setCurrentNote={setCurrentNote}
-            setIsCollaborativeReady={setIsCollaborativeReady}
-            setNeedNoteFetch={setNeedNoteFetch}
-            setNotes={setNotes}
             setRefetchTemplates={setRefetchTemplates}
             setTitles={setTitles}
             titles={titles}
@@ -290,6 +362,7 @@ const Notebook = ({ user }) => {
 
 const mapStateToProps = (state) => ({
   user: state.auth.user,
+  auth: state.auth,
 });
 
 const styles = StyleSheet.create({

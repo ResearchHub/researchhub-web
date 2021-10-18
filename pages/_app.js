@@ -36,15 +36,6 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
 
-if (process.env.NODE_ENV === "production") {
-  Sentry.init({
-    dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
-    release: process.env.SENTRY_RELEASE,
-    environment:
-      process.env.REACT_APP_ENV === "staging" ? "staging" : "production",
-  });
-}
-
 initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName:
@@ -155,11 +146,14 @@ const MyApp = ({ Component, pageProps, store }) => {
   };
 
   const uniqueId = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   };
 
   return (
@@ -178,9 +172,13 @@ MyApp.getInitialProps = async (appContext) => {
     "/hubs",
     "/user/[authorId]/[tabName]",
     "/[orgSlug]/notebook/[noteId]",
+    "/[orgSlug]/notebook",
   ];
 
-  if (process.browser || !staticOrServerSidePropsPaths.includes(appContext.router.route)) {
+  if (
+    process.browser ||
+    !staticOrServerSidePropsPaths.includes(appContext.router.route)
+  ) {
     const appProps = await App.getInitialProps(appContext);
     return { ...appProps };
   }
