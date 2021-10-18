@@ -47,7 +47,7 @@ const Notebook = ({ auth, user }) => {
   const isPrivateNotebook = orgSlug === "me" ? true : false;
 
   /* IMPORTANT */
-  const shouldShowELNButton = gateKeepCurrentUser({
+  const _shouldShowELN = gateKeepCurrentUser({
     application: "ELN" /* application */,
     auth,
     shouldRedirect: true /* should redirect */,

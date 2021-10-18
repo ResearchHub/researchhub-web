@@ -936,6 +936,8 @@ const routes = (BASE_URL) => {
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
+    GATEKEEPER_CURRENT_USER: ({ type }) =>
+      BASE_URL + `gatekeeper/check_current_user/?type=${type}`,
     GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
       let url = BASE_URL + "events/forward_event/";
       if (ignorePaper) {
