@@ -24,7 +24,9 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
     try {
       const updatedOrg = await updateOrgDetails({
         orgId: org.id,
-        updatedName: orgName,
+        params: {
+          name: orgName,
+        },
       });
 
       setMessage("");
