@@ -25,14 +25,6 @@ const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const usePrevious = (value) => {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-};
-
 const Notebook = ({ user, auth }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
