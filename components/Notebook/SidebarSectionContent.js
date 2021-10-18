@@ -17,15 +17,10 @@ const SidebarSectionContent = ({
   noteId,
   notes,
   onNoteCreate,
-  readOnlyEditorInstance,
-  refetchNotes,
   refetchTemplates,
-  setCurrentNote,
-  setIsCollaborativeReady,
-  setNotes,
-  setRefetchNotes,
   setRefetchTemplates,
   title,
+  onNoteDelete,
   isPrivateNotebook,
 }) => {
   const alert = useAlert();
@@ -39,9 +34,7 @@ const SidebarSectionContent = ({
 
   const handleDeleteNote = (noteId) => {
     deleteNote(noteId).then((deletedNote) => {
-      const newNotes = notes.filter((note) => note.id !== deletedNote.id);
-      setNotes(newNotes);
-      router.push(getNotePathname({ noteId: newNotes[0].id, org: currentOrg }));
+      onNoteDelete(deletedNote);
     });
   };
 
@@ -71,7 +64,6 @@ const SidebarSectionContent = ({
           editorData: noteBody,
           noteId: note.id,
         });
-        setRefetchNotes(true);
         onNoteCreate(note);
       },
     },
