@@ -42,6 +42,8 @@ const SidebarSectionContent = ({
       hoverStyle: styles.blueHover,
       onClick: async () => {
         setIsPopoverOpen(false);
+        const response = await fetchNote({ noteId });
+        const originalNote = await Helpers.parseJSON(response);
         let params;
 
         if (isPrivateNotebook) {
@@ -50,12 +52,12 @@ const SidebarSectionContent = ({
           params = { orgSlug: currentOrg.slug, title };
         }
 
-        const note = await createNewNote(params);
+        const duplicatedNote = await createNewNote(params);
         const noteContent = await createNoteContent({
-          editorData: noteBody,
-          noteId: note.id,
+          editorData: originalNote.latest_version.src,
+          noteId: duplicatedNote.id,
         });
-        onNoteCreate(note);
+        onNoteCreate(duplicatedNote);
       },
     },
     {
