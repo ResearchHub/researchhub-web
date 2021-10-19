@@ -15,7 +15,6 @@ import {
 } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { getNotePathname } from "~/config/utils/org";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import { createNewNote, createNoteContent } from "~/config/fetch";
