@@ -199,10 +199,6 @@ export const fetchOrgUsers = ({ orgId }) => {
 };
 
 export const fetchOrg = ({ orgId, orgSlug }, authToken) => {
-  console.log(
-    "API.ORGANIZATION({ orgId, orgSlug })",
-    API.ORGANIZATION({ orgId, orgSlug })
-  );
   return fetch(API.ORGANIZATION({ orgId, orgSlug }), API.GET_CONFIG(authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
