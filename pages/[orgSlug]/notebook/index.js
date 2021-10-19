@@ -29,9 +29,8 @@ const Index = ({ error }) => {
 };
 
 export async function getServerSideProps(ctx) {
-  const { query, req, params } = ctx;
+  const { params } = ctx;
   const { orgSlug } = params;
-  const isPrivateNotebook = orgSlug === PRIVATE_ELN_ORG_PARAM;
 
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
@@ -42,10 +41,7 @@ export async function getServerSideProps(ctx) {
   };
 
   try {
-    const response = await fetchOrgNotes(
-      { orgSlug: isPrivateNotebook ? 0 : orgSlug },
-      authToken
-    );
+    const response = await fetchOrgNotes({ orgSlug }, authToken);
     const parsed = await Helpers.parseJSON(response);
 
     if (response.ok) {
@@ -53,7 +49,7 @@ export async function getServerSideProps(ctx) {
     } else {
       captureError({
         msg: "could not fetch org notes",
-        data: { orgSlug, isPrivateNotebook },
+        data: { orgSlug },
       });
 
       return {
@@ -67,7 +63,7 @@ export async function getServerSideProps(ctx) {
   } catch (error) {
     captureError({
       msg: "failed to fetch org notes",
-      data: { orgSlug, isPrivateNotebook },
+      data: { orgSlug },
     });
 
     return {
@@ -90,10 +86,7 @@ export async function getServerSideProps(ctx) {
     const orgResponse = await fetchOrg({ orgSlug }, authToken);
     const org = orgResponse.results[0];
     if (!org.note_created) {
-      const note = await handleCreateNewNote(
-        { isPrivateNotebook, orgSlug },
-        authToken
-      );
+      const note = await handleCreateNewNote({ orgSlug }, authToken);
 
       await updateOrgDetails(
         { orgId: org.id, params: { note_created: true } },
@@ -114,17 +107,9 @@ export async function getServerSideProps(ctx) {
   };
 }
 
-const handleCreateNewNote = async (
-  { isPrivateNotebook, orgSlug },
-  authToken
-) => {
+const handleCreateNewNote = async ({ orgSlug }, authToken) => {
   const title = "Welcome to your new lab notebook!";
-  let note;
-  if (isPrivateNotebook) {
-    note = await createNewNote({ title }, authToken);
-  } else {
-    note = await createNewNote({ orgSlug, title }, authToken);
-  }
+  const note = await createNewNote({ orgSlug, title }, authToken);
 
   await createNoteContent(
     {
