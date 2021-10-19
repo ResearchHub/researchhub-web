@@ -529,7 +529,7 @@ const Navbar = (props) => {
                       className={css(styles.notification)}
                       onClick={(e) => e.stopPropagation()}
                     >
-                      <Link href={"/me/notebook"}>
+                      <Link href={`/${user.organization_slug}/notebook`}>
                         <a>
                           <img
                             src={"/static/icons/notebook.svg"}
