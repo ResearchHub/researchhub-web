@@ -3,13 +3,16 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import gatekeeper from "./gatekeeper";
 
-export default function gateKeepCurrentUser(
-  application: string,
-  reduxStore: any,
-  shouldRedirect: boolean = true
-): boolean {
+export default function gateKeepCurrentUser({
+  application,
+  auth = null,
+  shouldRedirect = true,
+}: {
+  application: string;
+  auth?: any /* most likely from redux */;
+  shouldRedirect?: boolean;
+}): boolean {
   const router = useRouter();
-  const auth = reduxStore.getState().auth ?? null;
   const { user } = auth ?? {};
   const isReadyToCheck =
     !isNullOrUndefined(auth) && !isNullOrUndefined(user?.id);
