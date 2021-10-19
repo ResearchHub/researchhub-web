@@ -1,8 +1,5 @@
-import dynamic from "next/dynamic";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import { useState, useEffect, Fragment, useCallback, useRef } from "react";
 import {
   fetchUserOrgs,
   fetchNotePermissions,
@@ -11,21 +8,21 @@ import {
   fetchOrg,
 } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
-import ReactPlaceholder from "react-placeholder/lib";
-import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
-import Loader from "~/components/Loader/Loader";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
-import colors from "~/config/themes/colors";
 import { getUserNoteAccess } from "./utils/notePermissions";
-import Error from "next/error";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureError } from "~/config/utils/error";
+import { useRouter } from "next/router";
+import { useState, useEffect, useRef } from "react";
+import dynamic from "next/dynamic";
+import Error from "next/error";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ user, auth }) => {
+const Notebook = ({ auth, user }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
@@ -48,6 +45,13 @@ const Notebook = ({ user, auth }) => {
 
   const orgsFetched = useRef();
   const isPrivateNotebook = orgSlug === "me" ? true : false;
+
+  /* IMPORTANT */
+  const _shouldShowELN = gateKeepCurrentUser({
+    application: "ELN" /* application */,
+    auth,
+    shouldRedirect: true /* should redirect */,
+  });
 
   useEffect(() => {
     // If user just logged in, refresh the page
@@ -118,8 +122,7 @@ const Notebook = ({ user, auth }) => {
           });
           setError({ statusCode: response.status });
         }
-      }
-      catch(error) {
+      } catch (error) {
         captureError({
           statusCode: 500,
           msg: "Failed to fetch note",
@@ -220,7 +223,6 @@ const Notebook = ({ user, auth }) => {
         setDidInitialNotesLoad(true);
       }
     };
-
 
     if (orgSlug !== currentOrgSlug) {
       if (orgSlug === "me") {
@@ -340,7 +342,7 @@ const Notebook = ({ user, auth }) => {
           setRefetchTemplates={setRefetchTemplates}
           setTitles={setTitles}
           titles={titles}
-          user={user}          
+          user={user}
         />
         {currentNote && (
           <ELNEditor
@@ -362,6 +364,7 @@ const Notebook = ({ user, auth }) => {
 };
 
 const mapStateToProps = (state) => ({
+  auth: state.auth,
   user: state.auth.user,
   auth: state.auth,
 });
