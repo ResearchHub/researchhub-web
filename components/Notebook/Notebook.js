@@ -17,7 +17,6 @@ import { captureError } from "~/config/utils/error";
 import dynamic from "next/dynamic";
 import Error from "next/error";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
