@@ -103,7 +103,9 @@ const NotebookSidebar = ({
             isOpen={isPopoverOpen}
             popoverContent={
               <div className={css(styles.popoverBodyContent)}>
-                <Link href={{ pathname: `/me/notebook` }}>
+                <Link
+                  href={{ pathname: `/${user.organization_slug}/notebook` }}
+                >
                   <a
                     className={css(styles.popoverBodyItem)}
                     onClick={() => setIsPopoverOpen(!isPopoverOpen)}
