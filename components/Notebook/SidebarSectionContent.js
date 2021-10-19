@@ -40,7 +40,8 @@ const SidebarSectionContent = ({
       text: "Duplicate",
       icon: icons.clone,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
+      onClick: async (e) => {
+        e && e.stopPropagation();
         setIsPopoverOpen(false);
         const response = await fetchNote({ noteId });
         const originalNote = await Helpers.parseJSON(response);
@@ -64,8 +65,9 @@ const SidebarSectionContent = ({
       text: "Save as template",
       icon: icons.shapes,
       hoverStyle: styles.blueHover,
-      onClick: () => {
-        setIsPopoverOpen(!isPopoverOpen);
+      onClick: (e) => {
+        e && e.stopPropagation();
+        setIsPopoverOpen(false);
         fetchNote({ noteId })
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
@@ -89,8 +91,9 @@ const SidebarSectionContent = ({
       text: "Delete",
       icon: icons.trash,
       hoverStyle: styles.redHover,
-      onClick: () => {
-        setIsPopoverOpen(!isPopoverOpen);
+      onClick: (e) => {
+        e && e.stopPropagation();
+        setIsPopoverOpen(false);
         alert.show({
           text: `Permanently delete '${title}'? This cannot be undone.`,
           buttonText: "Yes",
