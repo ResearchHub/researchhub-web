@@ -35,6 +35,7 @@ import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGet
 import { NavbarContext } from "~/pages/Base";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Image from "next/image";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -439,6 +440,12 @@ const Navbar = (props) => {
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
+  const shouldShowELNButton = gateKeepCurrentUser({
+    application: "ELN" /* application */,
+    auth,
+    shouldRedirect: false /* should redirect */,
+  });
+
   return (
     <Fragment>
       <Menu
@@ -517,20 +524,22 @@ const Navbar = (props) => {
                       wsAuth={true}
                     />
                   </div>
-                  <div
-                    className={css(styles.notification)}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Link href={"/me/notebook"}>
-                      <a>
-                        <img
-                          src={"/static/icons/notebook.svg"}
-                          height={24}
-                          width={24}
-                        />
-                      </a>
-                    </Link>
-                  </div>
+                  {shouldShowELNButton ? (
+                    <div
+                      className={css(styles.notification)}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Link href={"/me/notebook"}>
+                        <a>
+                          <img
+                            src={"/static/icons/notebook.svg"}
+                            height={24}
+                            width={24}
+                          />
+                        </a>
+                      </Link>
+                    </div>
+                  ) : null}
                 </div>
                 {openMenu && (
                   <div
