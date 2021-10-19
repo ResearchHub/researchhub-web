@@ -86,7 +86,13 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 
   const handleInvite = async (e) => {
     e && e.preventDefault();
+
+    if (userToBeInvitedEmail.length === 0) {
+      return;
+    }
+
     setIsInviteInProgress(true);
+
     try {
       if (isUserAleadyInOrg(userToBeInvitedEmail, org)) {
         setMessage("User already in org");
@@ -267,11 +273,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       {orgUserCount > 0 && (
         <div>
           <div className={css(styles.subheader)}>Organization members:</div>
-          <div
-            className={css(
-              styles.userList
-            )}
-          >
+          <div className={css(styles.userList)}>
             {(orgUsers.invited_users || []).map((u) =>
               renderOrgUser(u, "Invitation Pending")
             )}
@@ -287,8 +289,8 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
 const styles = StyleSheet.create({
   subheader: {
     fontWeight: 500,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 10,
+    marginBottom: 10,
   },
   loaderWrapper: {
     width: 80,
@@ -296,7 +298,7 @@ const styles = StyleSheet.create({
   },
   userList: {
     border: `1px solid ${colors.BLACK(0.1)}`,
-    maxHeight: 200,
+    maxHeight: 140,
     padding: 20,
     borderRadius: "2px",
     overflowY: "scroll",
@@ -352,7 +354,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     ":last-child": {
       marginBottom: 0,
-    }
+    },
   },
   user: {
     display: "flex",
@@ -376,6 +378,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "end",
+    marginBottom: 20,
   },
   button: {
     paddingLeft: 20,

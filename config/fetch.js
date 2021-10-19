@@ -169,9 +169,10 @@ export const createOrg = (payload) => {
 };
 
 export const updateOrgDetails = ({ orgId, params }, authToken) => {
-  return fetch(API.ORGANIZATION({ orgId }), API.PATCH_CONFIG(params, authToken))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+  return fetch(
+    API.ORGANIZATION({ orgId }),
+    API.PATCH_CONFIG(params, authToken)
+  );
 };
 
 export const removeUserFromOrg = ({ orgId, userId }) => {
@@ -198,6 +199,10 @@ export const fetchOrgUsers = ({ orgId }) => {
 };
 
 export const fetchOrg = ({ orgId, orgSlug }, authToken) => {
+  console.log(
+    "API.ORGANIZATION({ orgId, orgSlug })",
+    API.ORGANIZATION({ orgId, orgSlug })
+  );
   return fetch(API.ORGANIZATION({ orgId, orgSlug }), API.GET_CONFIG(authToken))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
