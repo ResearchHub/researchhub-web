@@ -2,8 +2,9 @@ import API from "~/config/api";
 import { AUTH_TOKEN } from "~/config/constants";
 import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import {
-  Context,
+  BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
+  Context,
 } from "@thomasvu/ckeditor5-custom-build";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
@@ -75,7 +76,7 @@ const ELNEditor = ({
           config={{
             // The configuration for real-time collaboration features, shared between the editors:
             cloudServices: {
-              bundleVersion: "editor-1.0.6",
+              bundleVersion: BUNDLE_VERSION,
               tokenUrl: () => {
                 return new Promise((resolve, reject) => {
                   const xhr = new XMLHttpRequest();
