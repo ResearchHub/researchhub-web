@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import { useEffectCheckCredentials } from "../useEffectCheckCredentials";
 import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
 
-function AuthorClaimCaseDashboardIndex(): ReactElement<
+export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard
 > | null {
   const reduxStore = useStore();
