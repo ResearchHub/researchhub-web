@@ -159,6 +159,7 @@ const Notebook = ({ auth, user }) => {
       }
     };
 
+    setCurrentNote(null);
     _fetchAndSetCurrentNote();
     _fetchAndSetCurrentNotePermissions();
   }, [noteId]);

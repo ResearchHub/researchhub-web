@@ -15,38 +15,30 @@ import {
 } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { useRouter } from "next/router";
 import { createNewNote, createNoteContent } from "~/config/fetch";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 export type NoteTemplateModalProps = {
-  currentNote: any;
   currentOrg: any;
   currentOrganizationId: number;
   isOpen: boolean;
-  refetchNotes: any;
-  refetchTemplates: any;
-  setIsOpen: (flag: boolean) => void;
-  setRefetchNotes: any;
-  setRefetchTemplates: any;
   isPrivateNotebook: boolean;
   onNoteCreate: any;
+  orgSlug: string;
+  refetchTemplates: any;
+  setIsOpen: (flag: boolean) => void;
 };
 
 export default function NoteTemplateModal({
   currentOrg,
   currentOrganizationId,
   isOpen,
-  notes,
+  isPrivateNotebook,
+  onNoteCreate,
   orgSlug,
   refetchTemplates,
   setIsOpen,
-  setTitles,
-  titles,
-  isPrivateNotebook,
-  onNoteCreate,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
-  const router = useRouter();
   const editorRef = useRef<any>();
   const { CKEditor, Editor } = editorRef.current || {};
   const [fetched, setFetched] = useState(false);
@@ -75,7 +67,9 @@ export default function NoteTemplateModal({
           }
           setTemplateContents(fetchedTemplates);
           setTemplates(templates);
-          setSelected(templates[0].id);
+          if (templates.length) {
+            setSelected(templates[0].id);
+          }
           setFetched(true);
         })
         .catch((err) => {
@@ -93,7 +87,7 @@ export default function NoteTemplateModal({
     e && e.preventDefault();
 
     const noteParams = {
-      title: editorInstance?.plugins.get("Title").getTitle() || "Untitled",
+      title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
     };
 
     if (!isPrivateNotebook) {
