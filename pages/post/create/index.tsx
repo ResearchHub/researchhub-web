@@ -7,7 +7,10 @@ import { css, StyleSheet } from "aphrodite";
 export default function Index() {
   return (
     <Fragment>
-      <Head title={`New Post`} description="Create a Post on ResearchHub" />
+      <Head
+        title={`Create a Post on ResearchHub`}
+        description="Create a Post on ResearchHub"
+      />
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Create a Post</div>

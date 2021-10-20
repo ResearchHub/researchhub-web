@@ -9,7 +9,10 @@ export default function Index() {
 
   return (
     <Fragment>
-      <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
+      <Head
+        title="Ask a Question on ResearchHub"
+        description="Ask a Question on ResearchHub"
+      />
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Ask a Question</div>

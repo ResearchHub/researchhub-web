@@ -14,7 +14,10 @@ class Index extends Component {
   render() {
     return (
       <Fragment>
-        <Head title="Upload Paper" description="Upload paper to ResearchHub" />
+        <Head
+          title="Upload a Paper to ResearchHub"
+          description="Upload a paper to ResearchHub"
+        />
         <UploadPaperModal />
       </Fragment>
     );

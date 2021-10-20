@@ -5,7 +5,10 @@ import { Fragment } from "react";
 const Index = () => {
   return (
     <Fragment>
-      <Head title="Upload Paper" description="Upload paper to ResearchHub" />
+      <Head
+        title="Upload a Paper to ResearchHub"
+        description="Upload a paper to ResearchHub"
+      />
       <PaperUploadV2Container />
     </Fragment>
   );
