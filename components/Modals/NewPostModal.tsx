@@ -89,7 +89,9 @@ export default function NewPostModal({
               src={"/static/icons/close.png"}
             />
             <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>{"Select your post type"}</div>
+              <div className={css(styles.title)}>
+                {"Select your content type"}
+              </div>
             </div>
             <div className={css(styles.list)}>{optionCards}</div>
             <div>
