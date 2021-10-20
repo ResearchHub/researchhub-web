@@ -3,38 +3,7 @@ import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
-
-const ABOUT_POST_CARD = {
-  title: "Posting to Research Hub",
-  sections: [
-    {
-      title: "What can you post here?",
-      items: [
-        "Ask a scientific question",
-        "Share a theory or hypothesis",
-        "Publish a research output",
-      ],
-    },
-    {
-      title: "What counts as research output?",
-      items: [
-        "Research posters",
-        "Conference proceedings",
-        "Experimental datasets",
-        "Peer-reviews",
-        "Unfinished works in progress",
-      ],
-    },
-    {
-      title: "Guidelines",
-      items: [
-        "Be civil",
-        "Offer suggestions and corrections",
-        "Back up your claims by linking to relevant sources",
-      ],
-    },
-  ],
-};
+import { ABOUT_POST_CARD } from "~/utils/constants";
 
 export default function Index() {
   return (

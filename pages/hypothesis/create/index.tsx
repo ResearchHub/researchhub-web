@@ -3,23 +3,7 @@ import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
-
-const ABOUT_HYPOTHESIS_CARD = {
-  title: "Creating a Hypothesis",
-  sections: [
-    {
-      title: "What can you post here?",
-      items: [
-        "Make a hypothesis -- a proposed explanation for an observation.",
-        "After you create the hypothesis, add relevant papers to support or reject the hypothesis",
-      ],
-    },
-    {
-      title: "Guidelines",
-      items: ["Be civil", "Offer suggestions and corrections"],
-    },
-  ],
-};
+import { ABOUT_HYPOTHESIS_CARD } from "~/utils/constants";
 
 export default function Index() {
   return (

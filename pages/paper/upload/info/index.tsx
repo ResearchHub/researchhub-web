@@ -3,41 +3,7 @@ import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
-
-const SUBMISSION_GUIDELINES = (
-  <>
-    <p>
-      When submitting a paper to ResearchHub, please use the following
-      guidelines:
-    </p>
-
-    <ul>
-      <li>
-        Use research that follows the scientific method
-        <ul>
-          <li>No anecdotes or opinions</li>
-          <li>No biased or sensational headlines</li>
-          <li>Use peer reviewed or in progress work</li>
-        </ul>
-      </li>
-      <li>
-        No illegal content
-        <ul>
-          <li>Upload pre-prints and public domain work only</li>
-          <li>Link to paywalls on other sites where needed</li>
-        </ul>
-      </li>
-      <li>No off-topic content (science only!)</li>
-    </ul>
-
-    <p>
-      In addition, **we ask that all paper uploads be written in English**. We
-      plan to add support for other languages in the future - but for the sake
-      of building a unified early-stage community we will focus on English
-      language papers while we grow.
-    </p>
-  </>
-);
+import { ABOUT_PAPER_CARD } from "~/utils/constants";
 
 export default function Index() {
   return (
@@ -52,16 +18,14 @@ export default function Index() {
           <CollapsableSectionsCard
             customStyle={styles.cardOnTop}
             isOpen={false}
-            title="Uploading a Paper"
-            before={SUBMISSION_GUIDELINES}
+            {...ABOUT_PAPER_CARD}
           />
           <div className={css(styles.row)}>
             <AskQuestionForm documentType={"post"} />
             <CollapsableSectionsCard
               customStyle={styles.cardOnSide}
               isOpen={true}
-              title="Uploading a Paper"
-              before={SUBMISSION_GUIDELINES}
+              {...ABOUT_PAPER_CARD}
             />
           </div>
         </div>
