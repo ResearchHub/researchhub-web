@@ -60,6 +60,7 @@ const NewOrgModal = ({
 
   const goToOrg = () => {
     router.push(`/${org.slug}/notebook`);
+    handleCloseModal();
   };
 
   const handleSubmit = async (e) => {
