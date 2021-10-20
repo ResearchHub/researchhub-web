@@ -6,8 +6,8 @@ const Index = () => {
   return (
     <Fragment>
       <Head
-        title="Upload a Paper to ResearchHub"
-        description="Upload a paper to ResearchHub"
+        title="Editing a Paper on ResearchHub"
+        description="Editing a paper on ResearchHub"
       />
       <PaperUploadV2Container />
     </Fragment>
