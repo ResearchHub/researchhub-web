@@ -21,7 +21,7 @@ const items = [
     description:
       "Non-published work, that must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
-    route: "/post/create/question",
+    route: "/post/create",
   },
   {
     header: "Create a Hypothesis",
