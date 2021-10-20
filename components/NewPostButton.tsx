@@ -4,6 +4,7 @@ import { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";
+import { ADD_NEW_TEXT } from "~/utils";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -39,7 +40,7 @@ export default function NewPostButton({
                 style={{ fontSize: "1.5em", marginRight: 8 }}
                 icon={faPlus}
               />
-              <span>{"New Post"}</span>
+              <span>{ADD_NEW_TEXT}</span>
             </div>
           }
           onClick={onClick && onClick}

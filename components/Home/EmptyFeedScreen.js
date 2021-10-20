@@ -2,6 +2,7 @@ import { connect } from "react-redux";
 import { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import NewPostButton from "../NewPostButton";
+import { ADD_NEW_TEXT } from "~/utils";
 
 import PropTypes from "prop-types";
 import Router from "next/router";
@@ -111,10 +112,7 @@ EmptyFeedScreen.propTypes = {
 
 EmptyFeedScreen.defaultProps = {
   title: "There are no posts found for this criteria",
-  subTitle: "Click ‘New Post’ button to create a post",
+  subTitle: `Click ‘${ADD_NEW_TEXT}’ button to create a post`,
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(EmptyFeedScreen);
+export default connect(mapStateToProps, null)(EmptyFeedScreen);
