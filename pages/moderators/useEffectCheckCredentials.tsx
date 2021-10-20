@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-export function useEffectCheckCredentials(reduxStore: any): boolean {
+export default function useEffectCheckCredentials(reduxStore: any): boolean {
   const [shouldRenderUI, setShouldRenderUI] = useState<boolean>(false);
   const auth = reduxStore.getState().auth ?? null;
   const router = useRouter();
