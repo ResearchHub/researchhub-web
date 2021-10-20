@@ -121,6 +121,13 @@ const Notebook = ({ auth, user }) => {
             });
             setError({ statusCode: response.status });
           }
+        } catch (error) {
+          captureError({
+            statusCode: 500,
+            msg: "Failed to fetch note",
+            data: { noteId, orgSlug, userId: user?.id },
+          });
+          setError({ statusCode: 500 });
         }
       }
     };
