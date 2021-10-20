@@ -1,8 +1,25 @@
-import AboutQuestionCard from "./AboutQuestionCard";
 import AskQuestionForm from "~/components/Paper/AskQuestionForm";
 import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
+import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
+
+const ABOUT_HYPOTHESIS_CARD = {
+  title: "Creating a Hypothesis",
+  sections: [
+    {
+      title: "What can you post here?",
+      items: [
+        "Make a hypothesis -- a proposed explanation for an observation.",
+        "After you create the hypothesis, add relevant papers to support or reject the hypothesis",
+      ],
+    },
+    {
+      title: "Guidelines",
+      items: ["Be civil", "Offer suggestions and corrections"],
+    },
+  ],
+};
 
 export default function Index() {
   return (
@@ -14,10 +31,18 @@ export default function Index() {
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
           <div className={css(styles.title)}>Create a Hypothesis</div>
-          <AboutQuestionCard customStyle={styles.cardOnTop} isOpen={false} />
+          <CollapsableSectionsCard
+            {...ABOUT_HYPOTHESIS_CARD}
+            customStyle={styles.cardOnTop}
+            isOpen={false}
+          />
           <div className={css(styles.row)}>
             <AskQuestionForm documentType={"hypothesis"} />
-            <AboutQuestionCard customStyle={styles.cardOnSide} isOpen={true} />
+            <CollapsableSectionsCard
+              {...ABOUT_HYPOTHESIS_CARD}
+              customStyle={styles.cardOnTop}
+              isOpen={true}
+            />
           </div>
         </div>
       </div>

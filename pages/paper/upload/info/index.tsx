@@ -4,59 +4,64 @@ import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
 
-const ABOUT_POST_CARD = {
-  title: "Posting to Research Hub",
-  sections: [
-    {
-      title: "What can you post here?",
-      items: [
-        "Ask a scientific question",
-        "Share a theory or hypothesis",
-        "Publish a research output",
-      ],
-    },
-    {
-      title: "What counts as research output?",
-      items: [
-        "Research posters",
-        "Conference proceedings",
-        "Experimental datasets",
-        "Peer-reviews",
-        "Unfinished works in progress",
-      ],
-    },
-    {
-      title: "Guidelines",
-      items: [
-        "Be civil",
-        "Offer suggestions and corrections",
-        "Back up your claims by linking to relevant sources",
-      ],
-    },
-  ],
-};
+const SUBMISSION_GUIDELINES = (
+  <>
+    <p>
+      When submitting a paper to ResearchHub, please use the following
+      guidelines:
+    </p>
+
+    <ul>
+      <li>
+        Use research that follows the scientific method
+        <ul>
+          <li>No anecdotes or opinions</li>
+          <li>No biased or sensational headlines</li>
+          <li>Use peer reviewed or in progress work</li>
+        </ul>
+      </li>
+      <li>
+        No illegal content
+        <ul>
+          <li>Upload pre-prints and public domain work only</li>
+          <li>Link to paywalls on other sites where needed</li>
+        </ul>
+      </li>
+      <li>No off-topic content (science only!)</li>
+    </ul>
+
+    <p>
+      In addition, **we ask that all paper uploads be written in English**. We
+      plan to add support for other languages in the future - but for the sake
+      of building a unified early-stage community we will focus on English
+      language papers while we grow.
+    </p>
+  </>
+);
 
 export default function Index() {
   return (
     <Fragment>
       <Head
-        title={`Create a Post on ResearchHub`}
-        description="Create a Post on ResearchHub"
+        title={`Upload a Paper to ResearchHub`}
+        description="Upload a Paper to ResearchHub"
       />
       <div className={css(styles.background)}>
         <div className={css(styles.content)}>
-          <div className={css(styles.title)}>Create a Post</div>
+          <div className={css(styles.title)}>Upload a Paper</div>
           <CollapsableSectionsCard
-            {...ABOUT_POST_CARD}
             customStyle={styles.cardOnTop}
             isOpen={false}
+            title="Uploading a Paper"
+            before={SUBMISSION_GUIDELINES}
           />
           <div className={css(styles.row)}>
             <AskQuestionForm documentType={"post"} />
             <CollapsableSectionsCard
-              {...ABOUT_POST_CARD}
               customStyle={styles.cardOnSide}
               isOpen={true}
+              title="Uploading a Paper"
+              before={SUBMISSION_GUIDELINES}
             />
           </div>
         </div>

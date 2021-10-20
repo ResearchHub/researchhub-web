@@ -13,13 +13,10 @@ import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { getIsFormValid } from "./util/getIsFormValid";
 import { ID } from "../../../config/types/root_types";
-import {
-  isNullOrUndefined,
-  nullthrows,
-} from "../../../config/utils/nullchecks";
-import { MessageActions } from "../../../redux/message";
-import { ModalActions } from "../../../redux/modals";
-import { PaperActions } from "../../../redux/paper";
+import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
+import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
+import { PaperActions } from "~/redux/paper";
 import { parseDate } from "./util/parseDate";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
@@ -27,13 +24,7 @@ import Button from "../../Form/Button";
 import FormDND from "../../Form/FormDND";
 import FormInput from "../../Form/FormInput";
 import FormSelect from "../../Form/FormSelect";
-import {
-  Fragment,
-  ReactElement,
-  SyntheticEvent,
-  useEffect,
-  useState,
-} from "react";
+import { FC, SyntheticEvent, useEffect, useState } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 
 type ComponentProps = {
@@ -136,7 +127,7 @@ const useEffectParseReduxToState = ({
   }, [formAuthors, formHubs, messageActions, setFormState, uploadedPaper]);
 };
 
-function PaperuploadV2Create({
+const PaperuploadV2Create: FC<ComponentProps> = ({
   authRedux,
   hypothesisID,
   messageActions,
@@ -145,7 +136,7 @@ function PaperuploadV2Create({
   onSubmitComplete,
   paperActions,
   paperRedux,
-}: ComponentProps): ReactElement<typeof Fragment> {
+}) => {
   const isPaperForHypothesis = !isNullOrUndefined(hypothesisID);
   const router = useRouter();
   const [componentState, setComponentState] = useState<ComponentState>(
@@ -295,7 +286,7 @@ function PaperuploadV2Create({
 
   return (
     <form
-      autoComplete={"off"}
+      autoComplete="off"
       className={css(formGenericStyles.form)}
       onSubmit={onFormSubmit}
     >
@@ -440,7 +431,7 @@ function PaperuploadV2Create({
       </div>
     </form>
   );
-}
+};
 
 const mapStateToProps = (state: any) => ({
   authRedux: state.auth,
