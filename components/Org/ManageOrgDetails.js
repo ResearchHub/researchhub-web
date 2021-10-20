@@ -2,11 +2,13 @@ import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
-import { updateOrgDetails, updateOrgProfileImg } from "~/config/fetch";
+import { updateOrgDetails } from "~/config/fetch";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
-import AvatarUpload from "~/components/AvatarUpload";
 import OrgAvatar from "~/components/Org/OrgAvatar";
+import OrgCoverImgModal from "~/components/Org/OrgCoverImgModal";
+import { captureError } from "~/config/utils/error";
+import { Helpers } from "@quantfive/js-web-config";
 
 const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
   const [orgName, setOrgName] = useState(org.name);
@@ -22,70 +24,45 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
     e.preventDefault();
 
     try {
-      const updatedOrg = await updateOrgDetails({
+      const response = await updateOrgDetails({
         orgId: org.id,
         params: {
           name: orgName,
         },
       });
 
-      setMessage("");
-      showMessage({ show: true, error: false });
+      if (response.ok) {
+        const updatedOrg = await Helpers.parseJSON(response);
+        setMessage("");
+        showMessage({ show: true, error: false });
 
-      if (typeof onOrgChange === "function") {
-        onOrgChange(updatedOrg, "UPDATE");
+        if (typeof onOrgChange === "function") {
+          onOrgChange(updatedOrg, "UPDATE");
+        }
+      } else {
+        setMessage("Failed to update org");
+        showMessage({ show: true, error: true });
+        captureError({
+          msg: "Could not update organization",
+          data: { org, orgName },
+        });
       }
-    } catch (err) {
-      setMessage("Failed to update org.");
+    } catch (error) {
+      setMessage("Failed to update org");
       showMessage({ show: true, error: true });
-    }
-  };
-
-  const saveProfilePicture = async (picture) => {
-    let formData = new FormData();
-    let byteCharacters;
-
-    if (picture.split(",")[0].indexOf("base64") >= 0)
-      byteCharacters = atob(picture.split(",")[1]);
-    else byteCharacters = unescape(picture.split(",")[1]);
-
-    let byteNumbers = new Array(byteCharacters.length);
-    for (let i = 0; i < byteCharacters.length; i++) {
-      byteNumbers[i] = byteCharacters.charCodeAt(i);
-    }
-
-    let byteArray = new Uint8Array(byteNumbers);
-    const blob = new Blob([byteArray], { type: "image/jpg" });
-
-    formData.append("cover_image", blob);
-    try {
-      const updatedOrg = await updateOrgProfileImg({
-        orgId: org.id,
-        file: formData,
+      captureError({
+        error,
+        msg: "Failed to update organization",
+        data: { org, orgName },
       });
-
-      if (typeof onOrgChange === "function") {
-        onOrgChange(updatedOrg, "UPDATE");
-      }
-
-      setMessage("");
-      showMessage({ show: true, error: false });
-      setIsAvatarUploadOpen(false);
-    } catch (err) {
-      console.error(err);
-      setMessage("Failed to update image");
-      showMessage({ show: true, error: true });
     }
   };
 
-  const renderSaveButton = (section, { picture }) => {
-    return (
-      <Button
-        onClick={() => saveProfilePicture(picture)}
-        label={"Save"}
-        isWhite={true}
-      ></Button>
-    );
+  const onImgSaveSuccess = (updatedOrg) => {
+    if (typeof onOrgChange === "function") {
+      onOrgChange(updatedOrg, "UPDATE");
+    }
+    setIsAvatarUploadOpen(false);
   };
 
   return (
@@ -119,12 +96,13 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
           <OrgAvatar org={org} size={110} fontSize={28} />
           <div className={css(styles.avatarOverlay)}>Change</div>
         </div>
-        <AvatarUpload
-          isOpen={isAvatarUploadOpen}
-          closeModal={() => setIsAvatarUploadOpen(false)}
-          saveButton={renderSaveButton}
-          section={"pictures"}
-        />
+        {isAvatarUploadOpen && (
+          <OrgCoverImgModal
+            onSuccess={onImgSaveSuccess}
+            orgId={org.id}
+            closeModal={() => setIsAvatarUploadOpen(false)}
+          />
+        )}
       </form>
     </div>
   );

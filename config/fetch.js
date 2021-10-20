@@ -169,9 +169,10 @@ export const createOrg = (payload) => {
 };
 
 export const updateOrgDetails = ({ orgId, params }, authToken) => {
-  return fetch(API.ORGANIZATION({ orgId }), API.PATCH_CONFIG(params, authToken))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+  return fetch(
+    API.ORGANIZATION({ orgId }),
+    API.PATCH_CONFIG(params, authToken)
+  );
 };
 
 export const removeUserFromOrg = ({ orgId, userId }) => {
