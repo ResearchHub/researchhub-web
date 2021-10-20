@@ -103,27 +103,25 @@ const Notebook = ({ auth, user }) => {
       let note;
       let response;
 
-      try {
-        response = await fetchNote({ noteId });
+      if (noteId) {
+        try {
+          response = await fetchNote({ noteId });
 
-        if (response.ok) {
-          note = await Helpers.parseJSON(response);
-          setCurrentNote(note);
-        } else {
-          captureError({
-            statusCode: response.status,
-            msg: "could not fetch note",
-            data: { noteId, orgSlug, userId: user?.id },
-          });
-          setError({ statusCode: response.status });
+          if (response.ok) {
+            note = await Helpers.parseJSON(response);
+
+            setCurrentNote(note);
+            setIsCollaborativeReady(false);
+            readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
+          } else {
+            captureError({
+              statusCode: response.status,
+              msg: "could not fetch note",
+              data: { noteId, orgSlug, userId: user?.id },
+            });
+            setError({ statusCode: response.status });
+          }
         }
-      } catch (error) {
-        captureError({
-          statusCode: 500,
-          msg: "Failed to fetch note",
-          data: { noteId, orgSlug, userId: user?.id },
-        });
-        setError({ statusCode: 500 });
       }
     };
 
@@ -131,26 +129,28 @@ const Notebook = ({ auth, user }) => {
       let response;
       let perms;
 
-      try {
-        response = await fetchNotePermissions({ noteId });
+      if (noteId) {
+        try {
+          response = await fetchNotePermissions({ noteId });
 
-        if (response.ok) {
-          perms = await Helpers.parseJSON(response);
-          setCurrentNotePerms({ forNote: noteId, perms });
-        } else {
+          if (response.ok) {
+            perms = await Helpers.parseJSON(response);
+            setCurrentNotePerms({ forNote: noteId, perms });
+          } else {
+            captureError({
+              msg: "Could not fetch note permissions",
+              data: { noteId, orgSlug, userId: user?.id },
+            });
+            setError({ statusCode: response.status });
+          }
+        } catch (error) {
           captureError({
-            msg: "Could not fetch note permissions",
+            error,
+            msg: "Failed to fetch note permissions",
             data: { noteId, orgSlug, userId: user?.id },
           });
-          setError({ statusCode: response.status });
+          setError({ statusCode: 500 });
         }
-      } catch (error) {
-        captureError({
-          error,
-          msg: "Failed to fetch note permissions",
-          data: { noteId, orgSlug, userId: user?.id },
-        });
-        setError({ statusCode: 500 });
       }
     };
 
@@ -313,7 +313,7 @@ const Notebook = ({ auth, user }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
-  if (error && noteId) {
+  if (error) {
     return <Error {...error} />;
   }
 
