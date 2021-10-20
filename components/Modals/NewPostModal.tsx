@@ -19,7 +19,7 @@ const items = [
   {
     header: "Create a Post",
     description:
-      "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
+      "Non-published work, that must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
     route: "/post/create/question",
   },
@@ -47,7 +47,7 @@ export default function NewPostModal({
   isOpen,
   setIsOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
-  let [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(0);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
