@@ -120,7 +120,15 @@ const ELNEditor = ({
             },
             presenceList: {
               container: presenceListElement,
-              onClick: (user) => router.push(`/user/${user.id}/overview`),
+              onClick: (user) => {
+                const e = window.event;
+                const url = `/user/${user.id}/overview`;
+                if (e.metaKey || e.shiftKey) {
+                  window.open(url);
+                } else {
+                  router.push(url);
+                }
+              },
             },
           }}
           context={Context}
