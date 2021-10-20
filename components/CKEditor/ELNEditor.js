@@ -15,7 +15,7 @@ import NoteShareButton from "~/components/Notebook/NoteShareButton";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
-    title: editor.plugins.get("Title").getTitle() || "Untitled",
+    title: editor.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
   };
   fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
     .then(Helpers.checkStatus)
@@ -34,11 +34,9 @@ const saveData = (editor, noteId) => {
 
 const ELNEditor = ({
   currentNote,
-  currentOrganizationId,
   orgSlug,
   setTitles,
   titles,
-  user,
 }) => {
   const router = useRouter();
   const sidebarElementRef = useRef();
@@ -50,20 +48,18 @@ const ELNEditor = ({
     }
   }, []);
 
-  const channelId = `${orgSlug}-${
-    currentOrganizationId > 0 ? currentOrganizationId : user.id
-  }-${currentNote.id}`;
-
   const handleInput = (editor) => {
     const updatedTitles = {};
     for (const noteId in titles) {
       updatedTitles[noteId] =
         String(noteId) === String(currentNote.id)
-          ? editor.plugins.get("Title").getTitle() || "Untitled"
+          ? editor.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled"
           : titles[noteId];
     }
     setTitles(updatedTitles);
   };
+
+  const channelId = `${orgSlug}-${currentNote.id}`;
 
   return (
     <div className={css(styles.container)}>
@@ -180,11 +176,15 @@ const ELNEditor = ({
 
 const styles = StyleSheet.create({
   container: {
+    height: "calc(100vh - 80px)",
     marginLeft: "max(min(16%, 300px), 240px)",
     position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: "calc(100vh - 66px)",
     },
   },
   noteHeader: {
