@@ -109,10 +109,7 @@ const Notebook = ({ auth, user }) => {
 
           if (response.ok) {
             note = await Helpers.parseJSON(response);
-
             setCurrentNote(note);
-            setIsCollaborativeReady(false);
-            readOnlyEditorInstance?.setData(note.latest_version?.src ?? "");
           } else {
             captureError({
               statusCode: response.status,
@@ -122,6 +119,7 @@ const Notebook = ({ auth, user }) => {
             setError({ statusCode: response.status });
           }
         } catch (error) {
+          console.log(error);
           captureError({
             statusCode: 500,
             msg: "Failed to fetch note",
