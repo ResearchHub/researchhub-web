@@ -118,35 +118,37 @@ const NotebookSidebar = ({
                     </div>
                   </a>
                 </Link>
-                {orgs.map((org) => (
-                  <Link
-                    href={{
-                      pathname: `/${org.slug}/notebook/`,
-                    }}
-                    key={org.id.toString()}
-                  >
-                    <a
-                      className={css(styles.popoverBodyItem)}
-                      onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                <div className={css(styles.userOrgs)}>
+                  {orgs.map((org) => (
+                    <Link
+                      href={{
+                        pathname: `/${org.slug}/notebook/`,
+                      }}
+                      key={org.id.toString()}
                     >
-                      <div className={css(styles.avatarWrapper)}>
-                        <OrgAvatar org={org} />
-                      </div>
-                      <div className={css(styles.popoverBodyItemText)}>
-                        <div className={css(styles.popoverBodyItemTitle)}>
-                          {org.name}
+                      <a
+                        className={css(styles.popoverBodyItem)}
+                        onClick={() => setIsPopoverOpen(!isPopoverOpen)}
+                      >
+                        <div className={css(styles.avatarWrapper)}>
+                          <OrgAvatar org={org} />
                         </div>
-                        <div className={css(styles.popoverBodyItemSubtitle)}>
-                          {!org.member_count
-                            ? ""
-                            : org.member_count === 1
-                            ? "1 member"
-                            : `${org.member_count} members`}
+                        <div className={css(styles.popoverBodyItemText)}>
+                          <div className={css(styles.popoverBodyItemTitle)}>
+                            {org.name}
+                          </div>
+                          <div className={css(styles.popoverBodyItemSubtitle)}>
+                            {!org.member_count
+                              ? ""
+                              : org.member_count === 1
+                              ? "1 member"
+                              : `${org.member_count} members`}
+                          </div>
                         </div>
-                      </div>
-                    </a>
-                  </Link>
-                ))}
+                      </a>
+                    </Link>
+                  ))}
+                </div>
                 <div
                   className={css(styles.newOrgContainer)}
                   onClick={() => {
@@ -300,6 +302,10 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: {
     marginRight: 10,
+  },
+  userOrgs: {
+    maxHeight: 300,
+    overflowY: "scroll",
   },
   newOrgContainer: {
     cursor: "pointer",
