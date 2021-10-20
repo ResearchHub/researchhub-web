@@ -16,7 +16,6 @@ import {
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { createNewNote, createNoteContent } from "~/config/fetch";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 export type NoteTemplateModalProps = {
   currentOrg: any;
@@ -31,7 +30,6 @@ export type NoteTemplateModalProps = {
 
 export default function NoteTemplateModal({
   currentOrg,
-  currentOrganizationId,
   isOpen,
   isPrivateNotebook,
   onNoteCreate,
@@ -42,7 +40,7 @@ export default function NoteTemplateModal({
   const editorRef = useRef<any>();
   const { CKEditor, Editor } = editorRef.current || {};
   const [fetched, setFetched] = useState(false);
-  const [hideNotes, setHideNotes] = useState(false);
+  const [hideTemplates, setHideTemplates] = useState(false);
   const [selected, setSelected] = useState(0);
   const [templates, setTemplates] = useState([]);
   const [templateContents, setTemplateContents] = useState({});
@@ -56,27 +54,25 @@ export default function NoteTemplateModal({
   }, []);
 
   useEffect(() => {
-    if (!isNullOrUndefined(currentOrganizationId)) {
-      fetch(API.NOTE_TEMPLATE({ orgSlug }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((templates) => {
-          const fetchedTemplates = {};
-          for (const template of templates) {
-            fetchedTemplates[template.id.toString()] = template;
-          }
-          setTemplateContents(fetchedTemplates);
-          setTemplates(templates);
-          if (templates.length) {
-            setSelected(templates[0].id);
-          }
-          setFetched(true);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, [refetchTemplates, currentOrganizationId]);
+    fetch(API.NOTE_TEMPLATE({ orgSlug }), API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((templates) => {
+        const fetchedTemplates = {};
+        for (const template of templates) {
+          fetchedTemplates[template.id.toString()] = template;
+        }
+        setTemplateContents(fetchedTemplates);
+        setTemplates(templates);
+        if (templates.length) {
+          setSelected(templates[0].id);
+        }
+        setFetched(true);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [refetchTemplates]);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
@@ -165,16 +161,16 @@ export default function NoteTemplateModal({
           <div
             className={css(
               styles.sidebarSection,
-              hideNotes && styles.showBottomBorder
+              hideTemplates && styles.showBottomBorder
             )}
-            onClick={() => setHideNotes(!hideNotes)}
+            onClick={() => setHideTemplates(!hideTemplates)}
           >
             Templates
             <span className={css(styles.chevronIcon)}>
-              {hideNotes ? icons.chevronDown : icons.chevronUp}
+              {hideTemplates ? icons.chevronDown : icons.chevronUp}
             </span>
           </div>
-          {!hideNotes && (
+          {!hideTemplates && (
             <div>
               {templates.map((template) => (
                 <div
