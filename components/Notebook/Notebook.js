@@ -318,7 +318,7 @@ const Notebook = ({ auth, user }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
-  if (error) {
+  if (error && noteId) {
     return <Error {...error} />;
   }
 
