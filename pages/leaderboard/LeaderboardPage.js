@@ -14,15 +14,15 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 // Components
-import ContentPage from "../../components/ContentPage/ContentPage";
+import ContentPage from "~/components/ContentPage/ContentPage";
 import FormSelect from "~/components/Form/FormSelect";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
-import LeaderboardFeedPlaceholder from "../../components/Placeholders/LeaderboardFeedPlaceholder";
-import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
+import LeaderboardFeedPlaceholder from "~/components/Placeholders/LeaderboardFeedPlaceholder";
+import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import Loader from "~/components/Loader/Loader";
-import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
+import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Head from "~/components/Head";
-import HeadComponent from "../../components/Head";
+import HeadComponent from "~/components/Head";
 import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
 

@@ -14,15 +14,15 @@ import Base from "./Base";
 
 // Stylesheets
 import "./stylesheets/App.css";
-import "../components/Paper/progressbar.css";
+import "~/components/Paper/progressbar.css";
 import "react-tagsinput/react-tagsinput.css";
-import "../components/SearchSuggestion/authorinput.css";
-import "../components/CKEditor/CKEditor.css";
+import "~/components/SearchSuggestion/authorinput.css";
+import "~/components/CKEditor/CKEditor.css";
 
-import "../components/Modals/Stylesheets/Dnd.css";
+import "~/components/Modals/Stylesheets/Dnd.css";
 import "react-quill/dist/quill.snow.css";
-import "../components/TextEditor/stylesheets/QuillTextEditor.css";
-import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
+import "~/components/TextEditor/stylesheets/QuillTextEditor.css";
+import "~/components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
@@ -155,11 +155,14 @@ const MyApp = ({ Component, pageProps, store }) => {
   };
 
   const uniqueId = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   };
 
   return (

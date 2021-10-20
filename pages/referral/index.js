@@ -9,16 +9,16 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 
 // Components
-import FormInput from "../../components/Form/FormInput";
+import FormInput from "~/components/Form/FormInput";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
-import EmptyState from "../../components/Placeholders/EmptyState";
-import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
+import EmptyState from "~/components/Placeholders/EmptyState";
+import LeaderboardUser from "~/components/Leaderboard/LeaderboardUser";
 import ReactPlaceholder from "react-placeholder/lib";
-import LeaderboardPlaceholder from "../../components/Placeholders/LeaderboardPlaceholder";
-import Button from "../../components/Form/Button";
-import Loader from "../../components/Loader/Loader";
-import HowItWorks from "../../components/Referral/HowItWorks";
+import LeaderboardPlaceholder from "~/components/Placeholders/LeaderboardPlaceholder";
+import Button from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
+import HowItWorks from "~/components/Referral/HowItWorks";
 
 const isServer = () => typeof window === "undefined";
 

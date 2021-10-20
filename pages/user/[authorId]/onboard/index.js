@@ -19,8 +19,8 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
-import VerificationForm from "../../../../components/Form/VerificationForm";
-import ComponentWrapper from "../../../../components/ComponentWrapper";
+import VerificationForm from "~/components/Form/VerificationForm";
+import ComponentWrapper from "~/components/ComponentWrapper";
 import { MessageActions } from "../../../../redux/message";
 
 const SEARCH_TIMEOUT = 400;

@@ -1,6 +1,6 @@
 import { StyleSheetServer } from "aphrodite";
 import * as Sentry from "@sentry/browser";
-import CustomHead from "../components/Head";
+import CustomHead from "~/components/Head";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 process.on("unhandledRejection", (err) => {

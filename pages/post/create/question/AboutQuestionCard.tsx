@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
-import Collapsible from "../../../../components/Form/Collapsible";
+import Collapsible from "~/components/Form/Collapsible";
 import icons from "../../../../config/themes/icons";
 
 export type AboutQuestionCardProps = {

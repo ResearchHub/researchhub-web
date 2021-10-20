@@ -17,7 +17,7 @@ import dynamic from "next/dynamic";
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
 import UserStateBanner from "./Banner/UserStateBanner";
-import GoogleLoginButton from "../components/GoogleLoginButton";
+import GoogleLoginButton from "~/components/GoogleLoginButton";
 import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
@@ -129,8 +129,7 @@ const Navbar = (props) => {
     {
       label: "Help",
       route: "",
-      link:
-        "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
       icon: "help",
       className: "lessImportantTab",
     },
@@ -180,8 +179,7 @@ const Navbar = (props) => {
       {
         label: "Help",
         route: "",
-        link:
-          "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
         icon: "help",
       },
       {
@@ -1021,7 +1019,4 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

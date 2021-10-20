@@ -3,7 +3,7 @@ import { StyleSheet } from "aphrodite";
 
 // Component
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import TextEditor from "../../components/TextEditor";
+import TextEditor from "~/components/TextEditor";
 
 // Config
 import colors from "~/config/themes/colors";

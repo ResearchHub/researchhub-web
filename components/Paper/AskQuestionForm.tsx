@@ -13,7 +13,7 @@ import FormSelect from "../Form/FormSelect";
 import { getPlainTextFromMarkdown } from "~/config/utils/getPlainTextFromMarkdown";
 
 const DynamicComponent = dynamic(
-  () => import("../../components/CKEditor/SimpleEditor")
+  () => import("~/components/CKEditor/SimpleEditor")
 );
 
 type FormFields = {
@@ -32,7 +32,7 @@ const MIN_TITLE_LENGTH = 1;
 const MAX_TITLE_LENGTH = 250;
 
 function validateFormField(fieldID: string, value: any): boolean {
-  let result: boolean = true;
+  const result = true;
   switch (fieldID) {
     case "title":
       return (
@@ -76,7 +76,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
       .then(Helpers.parseJSON)
       .then((resp) => {
         /* @ts-ignore */
-        let hubs = resp.results
+        const hubs = resp.results
           .map((hub, index) => {
             return {
               ...hub,

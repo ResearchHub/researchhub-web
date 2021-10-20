@@ -17,7 +17,7 @@ import PermissionActions from "../redux/permission";
 import { isDevEnv } from "~/config/utils/env";
 
 const DynamicPermissionNotification = dynamic(() =>
-  import("../components/PermissionNotification")
+  import("~/components/PermissionNotification")
 );
 const DynamicMessage = dynamic(() => import("~/components/Loader/Message"));
 const DynamicAlertTemplate = dynamic(() =>
@@ -120,7 +120,4 @@ const mapDispatchToProps = {
   getNotifications: NotificationActions.getNotifications,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Base);
+export default connect(mapStateToProps, mapDispatchToProps)(Base);

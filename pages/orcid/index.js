@@ -6,9 +6,9 @@ import Modal from "react-modal";
 
 import { AuthActions } from "../../redux/auth";
 
-import FormInput from "../../components/Form/FormInput";
-import Button from "../../components/Form/Button";
-import Loader from "../../components/Loader/Loader";
+import FormInput from "~/components/Form/FormInput";
+import Button from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";

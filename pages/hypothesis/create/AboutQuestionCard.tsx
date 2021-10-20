@@ -1,6 +1,6 @@
 import { Fragment, useEffect } from "react";
 import { css, StyleSheet } from "aphrodite";
-import Collapsible from "../../../components/Form/Collapsible";
+import Collapsible from "~/components/Form/Collapsible";
 import icons from "../../../config/themes/icons";
 
 export type AboutQuestionCardProps = {
@@ -40,7 +40,8 @@ export default function AboutQuestionCard({
             Make a hypothesis -- a proposed explanation for an observation.
           </li>
           <li>
-            After you create the hypothesis, add relevant papers to support or reject the hypothesis
+            After you create the hypothesis, add relevant papers to support or
+            reject the hypothesis
           </li>
         </ul>
       </Collapsible>

@@ -9,8 +9,8 @@ import { Helpers } from "@quantfive/js-web-config";
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
-import GoogleLoginButton from "../../../components/GoogleLoginButton";
-import HowItWorks from "../../../components/Referral/HowItWorks";
+import GoogleLoginButton from "~/components/GoogleLoginButton";
+import HowItWorks from "~/components/Referral/HowItWorks";
 import Router from "next/router";
 
 const Index = ({ code, user }) => {
