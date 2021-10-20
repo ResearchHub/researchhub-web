@@ -81,7 +81,7 @@ class PaperPromotionBanner extends Component {
               className={css(styles.backgroundImage)}
               src={"/static/background/background-modal.png"}
               draggable={false}
-              alt="ResearchHub Modal Backgroundd"
+              alt="ResearchHub Modal Background"
             />
             <div className={css(styles.contentContainer)}>
               <h3 className={css(styles.content)}>
