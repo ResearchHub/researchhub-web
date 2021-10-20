@@ -41,7 +41,7 @@ const Index = ({ apiResponse, hasError }) => {
 
   return (
     <Fragment>
-      <Head title={buildPageTitle()} description={"Search Researchhub"} />
+      <Head title={buildPageTitle()} description={"Search ResearchHub"} />
       <SearchResults apiResponse={apiResponse} />
     </Fragment>
   );

@@ -292,8 +292,8 @@ class LiveFeed extends Component {
     return (
       <div className={css(styles.livefeedComponent)}>
         <Head
-          title={"Live on Researchhub"}
-          description={"View the latest contributions on Researchhub"}
+          title={"Live on ResearchHub"}
+          description={"View the latest contributions on ResearchHub"}
         />
         <div className={css(styles.topContainer)}>
           <div className={css(styles.content)}>

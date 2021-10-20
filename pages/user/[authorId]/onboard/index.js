@@ -302,8 +302,8 @@ const Index = (props) => {
   return (
     <div className={css(styles.root)}>
       <Head
-        title={"Onboard onto Researchhub"}
-        description={"Welcome to Researchhub!"}
+        title={"Onboard onto ResearchHub"}
+        description={"Welcome to ResearchHub!"}
       />
       <div className={css(styles.titleContainer)}>
         <h1 className={css(styles.title)}>{formatStep()}</h1>
@@ -495,7 +495,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

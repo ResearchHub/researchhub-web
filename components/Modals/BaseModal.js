@@ -144,7 +144,7 @@ class BaseModal extends Component {
               className={css(styles.backgroundImage)}
               src={"/static/background/background-modal.png"}
               draggable={false}
-              alt="Researchhub Modal Background"
+              alt="ResearchHub Modal Background"
             />
           )}
           {!this.props.removeDefault && (
@@ -324,7 +324,4 @@ const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BaseModal);
+export default connect(mapStateToProps, mapDispatchToProps)(BaseModal);

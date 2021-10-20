@@ -26,7 +26,8 @@
     "no-console": "warn",
     "no-unused-vars": "warn",
     "react/react-in-jsx-scope": "off",
-    "@typescript-eslint/no-var-requires": 0 // this is specifically used for ck editor
+    "@typescript-eslint/no-var-requires": 0, // this is specifically used for ck editor
+    "@typescript-eslint/no-empty-function": "warn"
   },
   "settings": {
     "parser": { "@typescript-eslint/parser": [".ts", ".tsx"] },

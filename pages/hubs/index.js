@@ -142,7 +142,7 @@ class Index extends Component {
     if (!hubsByCategory[key]) {
       return null;
     } else {
-      hubsByCategory[key].sort(function(a, b) {
+      hubsByCategory[key].sort(function (a, b) {
         return a.name.localeCompare(b.name);
       });
       let subscribed = user.subscribed ? user.subscribed : [];
@@ -181,12 +181,8 @@ class Index extends Component {
   };
 
   render() {
-    const {
-      finishedLoading,
-      categories,
-      activeCategory,
-      clickedTab,
-    } = this.state;
+    const { finishedLoading, categories, activeCategory, clickedTab } =
+      this.state;
 
     return (
       <div className={css(styles.row, styles.body)}>
@@ -202,8 +198,8 @@ class Index extends Component {
           <EditHubModal editHub={this.editHub} />
           <Message />
           <Head
-            title={"Hubs on Researchhub"}
-            description={"View all of the communities on Researchhub"}
+            title={"Hubs on ResearchHub"}
+            description={"View all of the communities on ResearchHub"}
           />
           <div className={css(styles.titleContainer)}>
             <span className={css(styles.title)}>Hubs</span>
@@ -392,12 +388,9 @@ export async function getStaticProps() {
   return {
     props: {
       categories,
-      hubsByCategory 
-    }
-  }
+      hubsByCategory,
+    },
+  };
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

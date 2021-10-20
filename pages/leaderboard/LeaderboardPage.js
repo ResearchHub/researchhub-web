@@ -688,8 +688,8 @@ class Index extends Component {
     return (
       <Fragment>
         <Head
-          title={"Leaderboard on Researchhub"}
-          description={"View the top categories on Researchhub"}
+          title={"Leaderboard on ResearchHub"}
+          description={"View the top categories on ResearchHub"}
         />
         <ContentPage
           mainFeed={mainFeed}
@@ -1410,7 +1410,4 @@ const mapDispatchToProps = {
   getHubs: HubActions.getHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);
