@@ -237,9 +237,9 @@ const Body = (props) => {
     } else if (isQuillDelta(props.text)) {
       text = convertDeltaToText(props.text);
     } else {
-      text = convertToEditorValue(props.text).document.text;
-    }  
-  } catch(e) {
+      text = convertToEditorValue(props.text)?.document?.text;
+    }
+  } catch (e) {
     console.log(e);
     return null;
   }
