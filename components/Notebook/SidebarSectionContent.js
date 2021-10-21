@@ -60,7 +60,7 @@ const SidebarSectionContent = ({
 
         const duplicatedNote = await createNewNote(params);
         const noteContent = await createNoteContent({
-          editorData: originalNote.latest_version.src,
+          editorData: originalNote.latest_version?.src ?? "",
           noteId: duplicatedNote.id,
         });
         onNoteCreate(duplicatedNote);
@@ -161,7 +161,6 @@ const SidebarSectionContent = ({
                 )}
                 onClick={(e) => {
                   e && e.preventDefault();
-                  e && e.stopPropagation();
                   setIsPopoverOpen(!isPopoverOpen);
                 }}
               >
