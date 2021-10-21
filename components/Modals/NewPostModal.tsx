@@ -7,6 +7,7 @@ import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
 import killswitch from "../../config/killswitch/killswitch";
 import { filterNull } from "~/config/utils/nullchecks";
+import { ROUTES } from "~/utils/routes";
 
 const items = [
   {
@@ -14,21 +15,21 @@ const items = [
     description:
       "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
     imgSrc: "/static/icons/uploadPaper.png",
-    route: "/paper/upload/info",
+    route: ROUTES.paper.upload,
   },
   {
     header: "Create a Post",
     description:
       "Non-published work, that must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
     imgSrc: "/static/icons/askQuestion.png",
-    route: "/post/create",
+    route: ROUTES.post.create,
   },
   {
     header: "Create a Hypothesis",
     description:
       "Propose an explanation to an observation and back it up by citing relevant academic papers.",
     imgSrc: "/static/icons/publishProject.png",
-    route: "/hypothesis/create",
+    route: ROUTES.hypothesis.create,
   },
   // {
   //   header: "Publish a Research Project",
