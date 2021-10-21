@@ -249,9 +249,7 @@ const PaperEntryCard = (props) => {
 
       fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {})
-        .catch((err) => {});
+        .then(Helpers.parseJSON);
     }
   }
 
