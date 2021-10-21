@@ -160,6 +160,7 @@ const Notebook = ({ auth, user }) => {
     };
 
     setCurrentNote(null);
+    setELNLoading(true);
     _fetchAndSetCurrentNote();
     _fetchAndSetCurrentNotePermissions();
   }, [noteId]);
@@ -301,26 +302,33 @@ const Notebook = ({ auth, user }) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
 
+  const handleEditorInput = (editor) => {
+    const updatedTitles = {};
+    for (const noteId in titles) {
+      updatedTitles[noteId] =
+        String(noteId) === String(currentNote.id)
+          ? editor.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled"
+          : titles[noteId];
+    }
+    setTitles(updatedTitles);
+  };
+
   if (error) {
     return <Error {...error} />;
   }
 
-  const onELNReady = () => {
-    setELNLoading(false);
-  };
-
   return (
     <div className={css(styles.container)}>
       <NotebookSidebar
-        didInitialNotesLoad={didInitialNotesLoad}
         currentNoteId={noteId}
         currentOrg={currentOrganization}
+        didInitialNotesLoad={didInitialNotesLoad}
+        handleOrgSwitch={fetchAndSetOrg}
         isPrivateNotebook={isPrivateNotebook}
         notes={notes}
-        onOrgChange={onOrgChange}
         onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}
-        handleOrgSwitch={fetchAndSetOrg}
+        onOrgChange={onOrgChange}
         orgSlug={orgSlug}
         orgs={organizations}
         refetchTemplates={refetchTemplates}
@@ -328,21 +336,13 @@ const Notebook = ({ auth, user }) => {
         setTitles={setTitles}
         titles={titles}
         user={user}
-        sidebarClick={() => {
-          setELNLoading(true);
-        }}
       />
       <ELNEditor
-        currentNote={currentNote}
-        currentOrganizationId={currentOrganization?.id}
-        currentOrganization={currentOrganization}
-        orgSlug={orgSlug}
-        refetchTemplates={refetchTemplates}
-        setTitles={setTitles}
-        titles={titles}
-        user={user}
-        onELNReady={onELNReady}
         ELNLoading={ELNLoading}
+        currentNote={currentNote}
+        handleEditorInput={handleEditorInput}
+        orgSlug={orgSlug}
+        setELNLoading={setELNLoading}
       />
     </div>
   );
@@ -351,24 +351,11 @@ const Notebook = ({ auth, user }) => {
 const mapStateToProps = (state) => ({
   auth: state.auth,
   user: state.auth.user,
-  auth: state.auth,
 });
 
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    background: "#fff",
-    alignItems: "flex-start",
-  },
-  loaderWrapper: {
-    width: 45,
-    height: 45,
-    margin: "0 auto",
-    position: "absolute",
-    left: "50%",
-    top: "50%",
-    marginLeft: -12,
-    marginTop: -12,
   },
 });
 
