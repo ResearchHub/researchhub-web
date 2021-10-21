@@ -49,6 +49,7 @@ class FormInput extends Component {
       onClick,
       onFocus,
       placeholder,
+      spellCheck,
       required,
       search,
       size,
@@ -92,6 +93,7 @@ class FormInput extends Component {
         <input
           autoCapitalize="off"
           autoComplete={autoComplete}
+          spellCheck={spellCheck}
           className={css(
             styles.input,
             inputStyle && inputStyle,

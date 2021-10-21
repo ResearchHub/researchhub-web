@@ -7,7 +7,7 @@ import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
 import killswitch from "../../config/killswitch/killswitch";
 import { filterNull } from "~/config/utils/nullchecks";
-import { ROUTES } from "~/utils/routes";
+import { ROUTES } from "~/config/routes";
 
 const items = [
   {

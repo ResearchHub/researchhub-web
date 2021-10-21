@@ -4,7 +4,7 @@ import { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { css, StyleSheet } from "aphrodite";
-import { ADD_NEW_TEXT } from "~/utils/constants";
+import { ADD_NEW_TEXT } from "~/config/constants";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
