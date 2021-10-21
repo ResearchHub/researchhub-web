@@ -12,10 +12,15 @@ import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
+import Loader from "../Loader/Loader";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
-    title: editor.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
+    title:
+      editor.plugins
+        .get("Title")
+        .getTitle()
+        .replace(/&nbsp;/g, " ") || "Untitled",
   };
   fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
     .then(Helpers.checkStatus)
@@ -37,6 +42,8 @@ const ELNEditor = ({
   orgSlug,
   setTitles,
   titles,
+  onELNReady,
+  ELNLoading,
 }) => {
   const router = useRouter();
   const sidebarElementRef = useRef();
@@ -52,22 +59,32 @@ const ELNEditor = ({
     const updatedTitles = {};
     for (const noteId in titles) {
       updatedTitles[noteId] =
-        String(noteId) === String(currentNote.id)
-          ? editor.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled"
+        String(noteId) === String(currentNote?.id)
+          ? editor.plugins
+              .get("Title")
+              .getTitle()
+              .replace(/&nbsp;/g, " ") || "Untitled"
           : titles[noteId];
     }
     setTitles(updatedTitles);
   };
 
-  const channelId = `${orgSlug}-${currentNote.id}`;
+  const channelId = `${orgSlug}-${currentNote?.id}`;
+
+  if (currentNote) {
+    console.log("CURRENT NOTE: ", Date.now());
+  }
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
-        <div className={css(styles.presenceList) + " presence"} ref={onRefChange} />
-        {/*<NoteShareButton noteId={currentNote.id} org={currentOrganization} />*/}
+        <div
+          className={css(styles.presenceList) + " presence"}
+          ref={onRefChange}
+        />
+        {/*<NoteShareButton noteId={currentNote?.id} org={currentOrganization} />*/}
       </div>
-      {presenceListElement !== null && (
+      {presenceListElement !== null && currentNote && (
         <CKEditorContext
           config={{
             // The configuration for real-time collaboration features, shared between the editors:
@@ -129,7 +146,7 @@ const ELNEditor = ({
           }}
           context={Context}
         >
-          <div className={"eln"} key={currentNote.id}>
+          <div className={"eln"} key={currentNote?.id}>
             <CKEditor
               config={{
                 title: {
@@ -137,7 +154,7 @@ const ELNEditor = ({
                 },
                 placeholder:
                   "Start typing to continue with an empty page, or pick a template",
-                initialData: currentNote.latest_version?.src ?? "",
+                initialData: currentNote?.latest_version?.src ?? "",
                 simpleUpload: {
                   // The URL that the images are uploaded to.
                   uploadUrl: API.SAVE_IMAGE,
@@ -156,20 +173,28 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, currentNote.id);
+                    return saveData(editor, currentNote?.id);
                   },
                 },
               }}
               editor={CKELNEditor}
               onChange={(event, editor) => handleInput(editor)}
               onReady={(editor) => {
-                console.log("Editor is ready to use!", editor);
+                onELNReady && onELNReady();
+                console.log("Editor is ready to use! ", Date.now());
               }}
             />
           </div>
         </CKEditorContext>
       )}
       <div ref={sidebarElementRef} className="sidebar" />
+      {ELNLoading && (
+        <div className={css(styles.loader)}>
+          <div className={css(styles.loaderInner)}>
+            <Loader type="clip" size={50} />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -193,6 +218,19 @@ const styles = StyleSheet.create({
   },
   presenceList: {
     margin: "auto 60px 0px auto",
+  },
+  loader: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  loaderInner: {
+    marginBottom: "10%",
   },
 });
 

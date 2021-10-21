@@ -26,6 +26,7 @@ const Notebook = ({ auth, user }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
+  const [ELNLoading, setELNLoading] = useState(false);
   const [currentNote, setCurrentNote] = useState(null);
   const [currentNotePerms, setCurrentNotePerms] = useState(null);
   const [userNoteAccess, setUserNoteAccess] = useState(null);
@@ -33,7 +34,6 @@ const Notebook = ({ auth, user }) => {
   const [titles, setTitles] = useState({});
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
-  const [currentOrgSlug, setCurrentOrgSlug] = useState(null);
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
 
@@ -187,7 +187,7 @@ const Notebook = ({ auth, user }) => {
 
       try {
         const response = await fetchOrgNotes({
-          orgSlug: isPrivateNotebook ? 0 : orgSlug,
+          orgSlug,
         });
         const parsed = await Helpers.parseJSON(response);
 
@@ -225,33 +225,15 @@ const Notebook = ({ auth, user }) => {
       }
     };
 
-    if (orgSlug !== currentOrgSlug) {
-      if (orgSlug === "me") {
-        setCurrentOrganization(null);
-        setCurrentOrgSlug("me");
-      } else {
-        const currentOrg = getCurrentOrgFromRouter(organizations);
-        if (!currentOrg) {
-          return captureError({
-            msg: "Could not find org in user's orgs",
-            data: {
-              noteId,
-              orgSlug,
-              currentOrg,
-              isPrivateNotebook,
-              userId: user.id,
-            },
-          });
-        }
-
+    if (orgSlug !== currentOrganization?.slug) {
+      const currentOrg = getCurrentOrgFromRouter(organizations);
+      if (currentOrg) {
         setCurrentOrganization(currentOrg);
-        setCurrentOrgSlug(orgSlug);
+        _fetchAndSetCurrentOrgNotes();
+        setDidInitialNotesLoad(false);
       }
-
-      _fetchAndSetCurrentOrgNotes();
-      setDidInitialNotesLoad(false);
     }
-  }, [router.asPath, currentOrganization]);
+  }, [orgSlug, currentOrganization, organizations]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
@@ -323,6 +305,10 @@ const Notebook = ({ auth, user }) => {
     return <Error {...error} />;
   }
 
+  const onELNReady = () => {
+    setELNLoading(false);
+  };
+
   return (
     <div className={css(styles.container)}>
       <NotebookSidebar
@@ -342,19 +328,22 @@ const Notebook = ({ auth, user }) => {
         setTitles={setTitles}
         titles={titles}
         user={user}
+        sidebarClick={() => {
+          setELNLoading(true);
+        }}
       />
-      {currentNote && (
-        <ELNEditor
-          currentNote={currentNote}
-          currentOrganizationId={currentOrganization?.id}
-          currentOrganization={currentOrganization}
-          orgSlug={orgSlug}
-          refetchTemplates={refetchTemplates}
-          setTitles={setTitles}
-          titles={titles}
-          user={user}
-        />
-      )}
+      <ELNEditor
+        currentNote={currentNote}
+        currentOrganizationId={currentOrganization?.id}
+        currentOrganization={currentOrganization}
+        orgSlug={orgSlug}
+        refetchTemplates={refetchTemplates}
+        setTitles={setTitles}
+        titles={titles}
+        user={user}
+        onELNReady={onELNReady}
+        ELNLoading={ELNLoading}
+      />
     </div>
   );
 };
