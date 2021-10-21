@@ -13,7 +13,7 @@ import {
   fetchNote,
   createNoteTemplate,
 } from "~/config/fetch";
-import { getNotePathname } from "~/config/utils/org";
+import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import { useAlert } from "react-alert";
 import { useState } from "react";
 

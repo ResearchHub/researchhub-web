@@ -1,17 +1,4 @@
-export const PERMS = {
-  NO_ACCESS: 0,
-  VIEWER: 1,
-  COMMENTER: 2,
-  EDITOR: 3,
-  ADMIN: 4,
-  getEnumByVal: function (val) {
-    for (const k in this) {
-      if (this[k] === val) {
-        return k;
-      }
-    }
-  },
-};
+import { PERMS } from "../config/notebookConstants";
 
 // Returns the greatest permission
 // e.g. ADMIN over VIEWER if both are present
@@ -34,4 +21,8 @@ export const getUserNoteAccess = ({ user, userOrgs, notePerms }) => {
   }
 
   return userAccess;
+};
+
+export const isNoteSharedWithUser = ({ email, notePerms }) => {
+  return Boolean(notePerms.find((o) => o?.user?.email === email));
 };

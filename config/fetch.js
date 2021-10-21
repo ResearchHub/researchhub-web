@@ -7,7 +7,7 @@ export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
 };
 
-export const fetchNoteByInviteToken = ({ token }) => {
+export const fetchNoteInviteByToken = ({ token }) => {
   return fetch(API.NOTE_INVITE_DETAILS({ token }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);

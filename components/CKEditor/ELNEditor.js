@@ -40,8 +40,10 @@ const saveData = (editor, noteId) => {
 const ELNEditor = ({
   ELNLoading,
   currentNote,
+  notePerms,
   handleEditorInput,
-  orgSlug,
+  currentOrganization,
+  userOrgs,
   setELNLoading,
 }) => {
   const router = useRouter();
@@ -54,7 +56,7 @@ const ELNEditor = ({
     }
   }, []);
 
-  const channelId = `${orgSlug}-${currentNote.id}`;
+  const channelId = `${currentOrganization.slug}-${currentNote.id}`;
 
   return (
     <div className={css(styles.container)}>
@@ -63,7 +65,12 @@ const ELNEditor = ({
           className={css(styles.presenceList) + " presence"}
           ref={onRefChange}
         />
-        {/*<NoteShareButton noteId={currentNote.id} org={currentOrganization} />*/}
+        <NoteShareButton
+          noteId={currentNote.id}
+          notePerms={notePerms}
+          org={currentOrganization}
+          userOrgs={userOrgs}
+        />
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
