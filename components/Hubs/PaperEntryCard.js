@@ -254,12 +254,16 @@ const PaperEntryCard = (props) => {
   }
 
   function navigateToPage(e) {
+    console.log(`/paper/${id}/${paperSlug}`);
+    debugger;
     if (e.metaKey || e.ctrlKey) {
       window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {
       postEvent();
-      console.log(`/paper/${id}/${paperSlug}`);
-      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
+      Router.push({
+        pathname: "/paper/[paperId]/[paperName]",
+        query: { paperId: id, paperName: paperSlug },
+      });
     }
     onClick && onClick();
   }
