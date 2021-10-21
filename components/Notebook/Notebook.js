@@ -74,7 +74,8 @@ const Notebook = ({ auth, user }) => {
 
       try {
         userOrgs = await fetchUserOrgs({ user });
-
+        currOrg = getCurrentOrgFromRouter(userOrgs);
+        setCurrentOrganization(currOrg);
         setOrganizations(userOrgs);
         orgsFetched.current = true;
       } catch (error) {
@@ -104,7 +105,6 @@ const Notebook = ({ auth, user }) => {
           if (response.ok) {
             note = await Helpers.parseJSON(response);
             setCurrentNote(note);
-            setCurrentOrganization(note.organization);
           } else {
             captureError({
               statusCode: response.status,
