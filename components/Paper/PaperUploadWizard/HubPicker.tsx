@@ -9,6 +9,7 @@ type HubPickerProps = {
   id: string;
   label?: string;
   placeholder?: string;
+  required?: boolean;
   value: Hub[];
   onChange: (id: string, value: Hub[]) => void;
 };
@@ -19,6 +20,7 @@ export const HubPicker: FC<HubPickerProps> = ({
   onChange,
   label = "Hubs",
   placeholder = "Search Hubs",
+  required,
 }) => {
   const [suggestedHubs, setSuggestedHubs] = useState<Hub[]>([]);
 
@@ -57,7 +59,7 @@ export const HubPicker: FC<HubPickerProps> = ({
       onChange={(id, value) => onChange(id, value)}
       options={suggestedHubs}
       placeholder={placeholder}
-      required
+      required={required}
     />
   );
 };

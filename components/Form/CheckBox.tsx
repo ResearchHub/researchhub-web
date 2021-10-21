@@ -1,10 +1,27 @@
+import { FC } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
+type CheckBoxProps = {
+  id: string;
+  active: boolean;
+  label: string;
+  isSquare?: boolean;
+  labelStyle?: any;
+  onChange?: (id: string, active: boolean) => void;
+};
+
+const CheckBox: FC<CheckBoxProps> = ({
+  id,
+  active,
+  label,
+  isSquare = false,
+  onChange,
+  labelStyle,
+}) => {
   return (
     <div className={css(styles.checkboxContainer)}>
       <div
@@ -14,7 +31,7 @@ const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
           isSquare && styles.square
         )}
         onClick={() => {
-          let state = !active;
+          const state = !active;
           onChange && onChange(id, state);
         }}
       >

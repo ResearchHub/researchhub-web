@@ -1,14 +1,12 @@
 import { FC, useState } from "react";
 import Button from "../../Form/Button";
-import FormDND from "../../Form/FormDND";
-import FormInput from "../../Form/FormInput";
-import FormSelect from "../../Form/FormSelect";
 import { StepOne } from "./StepOne";
-import { ID, PaperAuthor, Hub } from "~/config/types/root_types";
+import { ID, Hub } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import { usePartialState } from "~/config/utils/usePartialState";
 import { StepTwo } from "./StepTwo";
 import { StepThree } from "./StepThree";
+import { Author } from "./AuthorsPicker";
 
 type PaperUploadWizardProps = {
   hypothesisId?: ID;
@@ -19,7 +17,7 @@ type WizardStep = "url-doi" | "details" | "confirmation";
 export type PaperDetails = {
   url: string;
   doi: string;
-  authors: PaperAuthor[];
+  authors: Author[];
   abstract: string;
   pubYear: number | null;
   pubMonth: number | null;

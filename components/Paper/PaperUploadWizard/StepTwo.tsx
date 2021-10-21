@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from "react";
+import { FC } from "react";
 import FormInput from "../../Form/FormInput";
 import FormDND from "../../Form/FormDND";
 import FormSelect from "../../Form/FormSelect";
@@ -6,6 +6,7 @@ import * as Options from "../../../config/utils/options";
 import FormTextArea from "../../Form/FormTextArea";
 import { PaperDetails } from "./PaperUploadWizard";
 import { HubPicker } from "./HubPicker";
+import { AuthorsPicker } from "./AuthorsPicker";
 
 type StepTwoProps = {
   details: PaperDetails;
@@ -76,7 +77,12 @@ export const StepTwo: FC<StepTwoProps> = ({
         required={false}
         value={pubMonth}
       />
-      <HubPicker value={hubs} onChange={handleFieldChange("hubs")} />
+      <HubPicker value={hubs} onChange={handleFieldChange("hubs")} id="hubs" />
+      <AuthorsPicker
+        id="authors"
+        value={authors}
+        onChange={handleFieldChange("authors")}
+      />
     </div>
   );
 };
