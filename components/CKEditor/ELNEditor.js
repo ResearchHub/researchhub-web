@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   container: {
     height: "calc(100vh - 80px)",
     marginLeft: "max(min(16%, 300px), 240px)",
-    position: "relative",
+    overflow: "auto",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginLeft: 0,
@@ -189,12 +189,10 @@ const styles = StyleSheet.create({
   },
   noteHeader: {
     display: "flex",
-    height: 68,
-    justifyContent: "flex-end",
-    padding: "0px 30px",
+    height: 50,
   },
   presenceList: {
-    padding: 16,
+    margin: "auto 60px 0px auto",
   },
 });
 
