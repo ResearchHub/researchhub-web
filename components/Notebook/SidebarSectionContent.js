@@ -20,7 +20,6 @@ import { useState } from "react";
 const SidebarSectionContent = ({
   currentNoteId,
   currentOrg,
-  isPrivateNotebook,
   noteId,
   onNoteCreate,
   onNoteDelete,
@@ -50,13 +49,7 @@ const SidebarSectionContent = ({
         setIsPopoverOpen(false);
         const response = await fetchNote({ noteId });
         const originalNote = await Helpers.parseJSON(response);
-        let params;
-
-        if (isPrivateNotebook) {
-          params = { title };
-        } else {
-          params = { orgSlug: currentOrg.slug, title };
-        }
+        const params = { orgSlug: currentOrg.slug, title };
 
         const duplicatedNote = await createNewNote(params);
         const noteContent = await createNoteContent({

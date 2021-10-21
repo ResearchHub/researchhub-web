@@ -1,0 +1,5 @@
+export const NOTE_GROUPS = {
+  WORKSPACE: "WORKSPACE",
+  PRIVATE: "PRIVATE",
+  SHARED: "SHARED",
+};
