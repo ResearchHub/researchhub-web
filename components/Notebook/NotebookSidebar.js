@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
   },
   userOrgs: {
     maxHeight: 300,
-    overflowY: "scroll",
+    overflowY: "auto",
   },
   newOrgContainer: {
     cursor: "pointer",
@@ -412,7 +412,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   scrollable: {
-    overflow: "scroll",
+    overflow: "auto",
   },
   sidebarSection: {
     color: colors.BLACK(),
