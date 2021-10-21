@@ -37,6 +37,15 @@ export const StepTwo: FC<StepTwoProps> = ({
   return (
     <div>
       <FormInput
+        id="doi"
+        label="DOI"
+        placeholder="DOI"
+        value={doi}
+        onChange={handleFieldChange("doi")}
+        required={true}
+        spellCheck={false}
+      />
+      <FormInput
         id="ed_title"
         label="Editorialized Title (optional)"
         placeholder="Jargon free version of the title that the average person would understand"
@@ -72,15 +81,6 @@ export const StepTwo: FC<StepTwoProps> = ({
           value={pubMonth}
         />
       </div>
-      <FormInput
-        id="doi"
-        label="DOI"
-        placeholder="DOI"
-        value={doi}
-        onChange={handleFieldChange("doi")}
-        required={true}
-        spellCheck={false}
-      />
       <HubPicker value={hubs} onChange={handleFieldChange("hubs")} id="hubs" />
       <FormTextArea
         id="abstract"
