@@ -36,8 +36,6 @@ const styles = StyleSheet.create({
     minWidth: 30,
   },
   textRow: {
-    // marginBottom: 0,
-    // marginRight: 0,
     marginTop: 7,
     marginLeft: 10,
   },
