@@ -95,7 +95,7 @@ const PaperEntryCard = (props) => {
     title = stripHTML(title);
     title = parseMath(title);
     return title;
-  }, [title]);  
+  }, [title]);
 
   /**
    * Whether or not THIS PaperPDFModal is open.
@@ -260,6 +260,7 @@ const PaperEntryCard = (props) => {
       window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {
       postEvent();
+      console.log(`/paper/${id}/${paperSlug}`);
       Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
     }
     onClick && onClick();
@@ -1123,7 +1124,4 @@ const mapDispatchToProps = {
   openPaperPDFModal: ModalActions.openPaperPDFModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperEntryCard);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperEntryCard);
