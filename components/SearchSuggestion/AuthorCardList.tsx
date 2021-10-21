@@ -1,51 +1,45 @@
-import { Component } from "react";
+import { Component, ReactNode } from "react";
 import { StyleSheet, css } from "aphrodite";
-
 import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
-
-// Component
 import Loader from "../Loader/Loader";
+import { Author } from "../Paper/PaperUploadWizard/AuthorsPicker";
 
 const DEFAULT_TRANSITION_TIME = 0.4;
 
-class AuthorCardList extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      removed: {},
-    };
-  }
+type AuthorCardListProps = {
+  onAuthorClick: (author: Author) => void;
+  show: boolean;
+  loading: boolean;
+  authors: Author[];
+  addAuthor: () => void;
+};
 
-  componentWillUpdate = (prevProps) => {
+type AuthorCardListState = {
+  removed: Record<Author["id"], boolean>;
+};
+
+class AuthorCardList extends Component<
+  AuthorCardListProps,
+  AuthorCardListState
+> {
+  state = {
+    removed: {},
+  };
+
+  componentWillUpdate = (prevProps: AuthorCardListProps): void => {
     if (prevProps !== this.props) {
       this.setState({ removed: {} });
     }
   };
 
-  getInitials = (first_name, last_name) => {
-    let initials = "";
-    initials += first_name[0];
-    initials += last_name[0];
-    return initials;
+  onRemove = (id: Author["id"]): void => {
+    this.setState({ removed: { ...this.state.removed, [id]: true } });
   };
 
-  onRemove = (id) => {
-    let removed = { ...this.state.removed };
-    removed[id] = true;
-    this.setState({ removed });
-  };
-
-  renderAuthorCard = (authors) => {
+  renderAuthorCard = (authors: Author[]): ReactNode => {
     return authors.map((author, i) => {
-      let {
-        first_name,
-        last_name,
-        email,
-        profile_image,
-        onRemove,
-        id,
-      } = author;
+      const { first_name, last_name, email, profile_image, id } = author;
       return (
         <div
           className={css(
@@ -66,7 +60,7 @@ class AuthorCardList extends Component {
           ) : (
             <div className={css(styles.avatar, styles.default)}>
               <p className={css(styles.initials)}>
-                {this.getInitials(first_name, last_name)}
+                {getInitials(first_name, last_name)}
               </p>
             </div>
           )}
@@ -91,8 +85,8 @@ class AuthorCardList extends Component {
   };
 
   render() {
-    let { authors, show, loading } = this.props;
-    let authorsList = authors.filter(
+    const { authors, show, loading } = this.props;
+    const authorsList = authors.filter(
       (author) => !this.state.removed[author.id]
     );
 
@@ -102,7 +96,8 @@ class AuthorCardList extends Component {
           styles.authorsList,
           show && styles.reveal,
           show &&
-            (authorsList.length < 2 && authorsList.length !== 0) &&
+            authorsList.length < 2 &&
+            authorsList.length !== 0 &&
             styles.minHeight,
           show && authorsList.length >= 2 && styles.maxHeight,
           loading && styles.loading
@@ -121,11 +116,7 @@ class AuthorCardList extends Component {
           className={css(styles.authorCard, styles.addAuthorCard)}
           onClick={this.props.addAuthor && this.props.addAuthor}
         >
-          <div className={css(styles.addButtonWrapper)}>
-            <span style={{ color: colors.BLUE(1), height: 12, width: 12 }}>
-              {icons.plus}
-            </span>
-          </div>
+          <div className={css(styles.addButtonWrapper)}>{icons.plus}</div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>
             <div className={css(styles.name)}>Add Author</div>
             <div className={css(styles.contact)}>
@@ -199,7 +190,7 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     marginLeft: 21,
     marginRight: 21,
-    justifyContent: " center",
+    justifyContent: "center",
     alignItems: "center",
     display: "flex",
     "@media only screen and (max-width: 415px)": {
@@ -249,6 +240,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
+    color: colors.BLUE(1),
     ":hover": {
       backgroundColor: "#fff",
     },
@@ -282,3 +274,10 @@ const styles = StyleSheet.create({
 });
 
 export default AuthorCardList;
+
+const getInitials = (first_name: string, last_name: string): string => {
+  let initials = "";
+  initials += first_name[0];
+  initials += last_name[0];
+  return initials;
+};
