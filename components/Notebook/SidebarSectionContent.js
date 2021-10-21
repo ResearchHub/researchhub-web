@@ -84,7 +84,7 @@ const SidebarSectionContent = ({
               organization: currentOrg?.id,
             };
             createNoteTemplate(params).then((data) => {
-              setMessage("Template created!");
+              setMessage("Template created");
               showMessage({ show: true, error: false });
               setRefetchTemplates(!refetchTemplates);
             });
