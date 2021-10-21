@@ -278,9 +278,11 @@ const Notebook = ({ auth, user }) => {
   const onNoteDelete = (deletedNote) => {
     const newNotes = notes.filter((note) => note.id !== deletedNote.id);
     setNotes(newNotes);
-    router.push(
-      getNotePathname({ noteId: newNotes[0]?.id, org: currentOrganization })
-    );
+    if (String(deletedNote.id) === noteId) {
+      router.push(
+        getNotePathname({ noteId: newNotes[0]?.id, org: currentOrganization })
+      );
+    }
   };
 
   const onNoteCreate = (note) => {
