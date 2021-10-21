@@ -11,8 +11,8 @@ import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import Loader from "../Loader/Loader";
+import NoteShareButton from "~/components/Notebook/NoteShareButton";
 
 const saveData = (editor, noteId) => {
   const noteParams = {
@@ -38,12 +38,11 @@ const saveData = (editor, noteId) => {
 };
 
 const ELNEditor = ({
-  currentNote,
-  orgSlug,
-  setTitles,
-  titles,
-  onELNReady,
   ELNLoading,
+  currentNote,
+  handleEditorInput,
+  orgSlug,
+  setELNLoading,
 }) => {
   const router = useRouter();
   const sidebarElementRef = useRef();
@@ -54,26 +53,6 @@ const ELNEditor = ({
       setPresenceListElement(node);
     }
   }, []);
-
-  const handleInput = (editor) => {
-    const updatedTitles = {};
-    for (const noteId in titles) {
-      updatedTitles[noteId] =
-        String(noteId) === String(currentNote?.id)
-          ? editor.plugins
-              .get("Title")
-              .getTitle()
-              .replace(/&nbsp;/g, " ") || "Untitled"
-          : titles[noteId];
-    }
-    setTitles(updatedTitles);
-  };
-
-  const channelId = `${orgSlug}-${currentNote?.id}`;
-
-  if (currentNote) {
-    console.log("CURRENT NOTE: ", Date.now());
-  }
 
   return (
     <div className={css(styles.container)}>
@@ -126,7 +105,7 @@ const ELNEditor = ({
             },
             // Collaboration configuration for the context:
             collaboration: {
-              channelId,
+              channelId: `${orgSlug}-${currentNote.id}`,
             },
             sidebar: {
               container: sidebarElementRef.current,
@@ -146,7 +125,7 @@ const ELNEditor = ({
           }}
           context={Context}
         >
-          <div className={"eln"} key={currentNote?.id}>
+          <div className={"eln"}>
             <CKEditor
               config={{
                 title: {
@@ -169,7 +148,7 @@ const ELNEditor = ({
                   },
                 },
                 collaboration: {
-                  channelId,
+                  channelId: `${orgSlug}-${currentNote.id}`,
                 },
                 autosave: {
                   save(editor) {
@@ -178,10 +157,10 @@ const ELNEditor = ({
                 },
               }}
               editor={CKELNEditor}
-              onChange={(event, editor) => handleInput(editor)}
+              onChange={(event, editor) => handleEditorInput(editor)}
               onReady={(editor) => {
-                onELNReady && onELNReady();
-                console.log("Editor is ready to use! ", Date.now());
+                setELNLoading(false);
+                console.log("Editor is ready to use!", editor);
               }}
             />
           </div>
@@ -190,9 +169,7 @@ const ELNEditor = ({
       <div ref={sidebarElementRef} className="sidebar" />
       {ELNLoading && (
         <div className={css(styles.loader)}>
-          <div className={css(styles.loaderInner)}>
-            <Loader type="clip" size={50} />
-          </div>
+          <Loader type="clip" size={50} />
         </div>
       )}
     </div>
@@ -222,15 +199,12 @@ const styles = StyleSheet.create({
   loader: {
     position: "absolute",
     top: 0,
-    left: 0,
+    left: "max(min(16%, 300px), 240px)",
     right: 0,
     bottom: 0,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-  },
-  loaderInner: {
-    marginBottom: "10%",
   },
 });
 
