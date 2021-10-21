@@ -8,6 +8,7 @@ import colors from "~/config/themes/colors";
 import AuthorCardList from "../../SearchSuggestion/AuthorCardList";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { debounce } from "~/config/utils/debounce";
 
 export type Author = {
   id: User["id"];
@@ -42,7 +43,7 @@ export const AuthorsPicker: FC<AuthorsPickerProps> = ({
     return state.auth;
   });
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useRef<any>();
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -97,7 +98,7 @@ export const AuthorsPicker: FC<AuthorsPickerProps> = ({
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((resp) => {
-          if (inputRef.current?.value !== query) {
+          if (inputRef.current?.input?.value !== query) {
             return;
           }
           setSuggestions((resp as unknown as { results: Author[] }).results);
@@ -105,9 +106,11 @@ export const AuthorsPicker: FC<AuthorsPickerProps> = ({
           setIsLoading(false);
         });
     };
+    const debouncedSearch = debounce(searchAuthors, 500);
 
     if (query) {
       setIsLoading(true);
+      debouncedSearch();
     }
     setShowSuggestions(false);
   }, [query]);
@@ -130,20 +133,18 @@ export const AuthorsPicker: FC<AuthorsPickerProps> = ({
           // className={error ? css(styles.error) : "react-tagsinput"}
           onClick={handleFocus}
           ref={inputRef}
-          renderTag={(author: Author) =>
-            renderEmail ? (
-              <span key={author.id}>
-                {author.email}
-                {!disabled && (
-                  <a onClick={() => handleRemoveAuthor(author.id)} />
-                )}
+          renderTag={({ tag }: { tag: Author }) =>
+            (() => {
+              return renderEmail;
+            })() ? (
+              <span key={tag.id}>
+                {tag.email}
+                {!disabled && <a onClick={() => handleRemoveAuthor(tag.id)} />}
               </span>
             ) : (
-              <span key={author.id}>
-                {`${author.first_name} ${author.last_name}`}
-                {!disabled && (
-                  <a onClick={() => handleRemoveAuthor(author.id)} />
-                )}
+              <span key={tag.id}>
+                {`${tag.first_name} ${tag.last_name}`}
+                {!disabled && <a onClick={() => handleRemoveAuthor(tag.id)} />}
               </span>
             )
           }
