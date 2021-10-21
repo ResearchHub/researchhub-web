@@ -29,7 +29,6 @@ const SidebarSectionContent = ({
   setRefetchTemplates,
   showMessage,
   title,
-  sidebarClick,
 }) => {
   const alert = useAlert();
   const [isHovered, setIsHovered] = useState(false);
@@ -121,9 +120,6 @@ const SidebarSectionContent = ({
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => {
-          sidebarClick && sidebarClick();
-        }}
       >
         <div className={css(styles.noteIcon)}>{icons.paper}</div>
         {title}

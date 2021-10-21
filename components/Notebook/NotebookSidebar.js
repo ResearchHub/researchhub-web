@@ -1,4 +1,9 @@
+import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
+import Loader from "~/components/Loader/Loader";
+import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
+import OrgAvatar from "~/components/Org/OrgAvatar";
+import ReactPlaceholder from "react-placeholder/lib";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import colors from "~/config/themes/colors";
@@ -8,14 +13,6 @@ import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { useState, Fragment } from "react";
-import { useRouter } from "next/router";
-import OrgAvatar from "~/components/Org/OrgAvatar";
-import ReactPlaceholder from "react-placeholder/lib";
-import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
-import AuthorAvatar from "~/components/AuthorAvatar";
-
-// Component
-import Loader from "~/components/Loader/Loader";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -26,25 +23,21 @@ const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 const NotebookSidebar = ({
   currentNoteId,
   currentOrg,
-  isPrivateNotebook,
   didInitialNotesLoad,
+  handleOrgSwitch,
+  isPrivateNotebook,
   notes,
-  onOrgChange,
   onNoteCreate,
   onNoteDelete,
+  onOrgChange,
   orgSlug,
   orgs,
   refetchTemplates,
-  handleOrgSwitch,
-  setNotes,
   setRefetchTemplates,
   setTitles,
   titles,
   user,
-  sidebarClick,
 }) => {
-  const router = useRouter();
-
   const [createNoteLoading, setCreateNoteLoading] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
@@ -261,7 +254,6 @@ const NotebookSidebar = ({
                     refetchTemplates={refetchTemplates}
                     setRefetchTemplates={setRefetchTemplates}
                     title={titles[noteId]}
-                    sidebarClick={sidebarClick}
                   />
                 );
               })}
