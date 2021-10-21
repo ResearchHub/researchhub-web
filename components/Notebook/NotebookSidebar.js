@@ -1,8 +1,8 @@
-import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 import OrgAvatar from "~/components/Org/OrgAvatar";
+import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
@@ -12,9 +12,8 @@ import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
-import { useState, Fragment } from "react";
-import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { useState } from "react";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -34,8 +33,6 @@ const NotebookSidebar = ({
   onOrgChange,
   orgSlug,
   orgs,
-  refetchTemplates,
-  setRefetchTemplates,
   setTitles,
   titles,
   user,
@@ -44,6 +41,7 @@ const NotebookSidebar = ({
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
 

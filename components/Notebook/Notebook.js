@@ -37,7 +37,6 @@ const Notebook = ({ auth, user }) => {
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
 
-  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [error, setError] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
@@ -331,8 +330,6 @@ const Notebook = ({ auth, user }) => {
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
         orgs={organizations}
-        refetchTemplates={refetchTemplates}
-        setRefetchTemplates={setRefetchTemplates}
         setTitles={setTitles}
         titles={titles}
         user={user}
