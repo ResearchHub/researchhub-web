@@ -72,7 +72,7 @@ export default function NoteTemplateModal({
       .catch((err) => {
         console.log(err);
       });
-  }, [refetchTemplates]);
+  }, [refetchTemplates, orgSlug]);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
