@@ -137,12 +137,13 @@ const NewOrgModal = ({
             value={orgName}
             inputStyle={styles.inputStyle}
           />
-          <Button
-            type="submit"
-            customButtonStyle={styles.button}
-            label="Next"
-            rippleClass={styles.buttonContainer}
-          ></Button>
+          <div className={css(styles.buttonContainer)}>
+            <Button
+              type="submit"
+              customButtonStyle={styles.button}
+              label="Next"
+            ></Button>
+          </div>
         </form>
       </div>
     );
@@ -183,12 +184,13 @@ const NewOrgModal = ({
               </span>
             </span>
           </div>
-          <Button
-            customButtonStyle={styles.button}
-            label="Next"
-            onClick={() => setFlowStep(STEPS.ORG_IMG)}
-            rippleClass={styles.buttonContainer}
-          ></Button>
+          <div className={css(styles.buttonContainer)}>
+            <Button
+              customButtonStyle={styles.button}
+              label="Next"
+              onClick={() => setFlowStep(STEPS.ORG_IMG)}
+            ></Button>
+          </div>
         </div>
       </div>
     );
@@ -342,8 +344,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     display: "flex",
-    justifyContent: "center",
-    marginLeft: "auto",
+    justifyContent: "flex-end",
   },
   prevStepButton: {
     display: "flex",
@@ -351,6 +352,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     cursor: "pointer",
     color: colors.BLUE(),
+    marginRight: "auto",
   },
   previousStepText: {
     marginLeft: 10,

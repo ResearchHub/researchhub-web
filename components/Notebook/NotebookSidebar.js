@@ -41,6 +41,7 @@ const NotebookSidebar = ({
   setTitles,
   titles,
   user,
+  sidebarClick,
 }) => {
   const router = useRouter();
 
@@ -68,14 +69,12 @@ const NotebookSidebar = ({
 
   return (
     <div className={css(styles.sidebar)}>
-      {!isPrivateNotebook && (
-        <ManageOrgModal
-          org={currentOrg}
-          isOpen={showManageOrgModal}
-          closeModal={() => setShowManageOrgModal(false)}
-          onOrgChange={onOrgChange}
-        />
-      )}
+      <ManageOrgModal
+        org={currentOrg}
+        isOpen={showManageOrgModal}
+        closeModal={() => setShowManageOrgModal(false)}
+        onOrgChange={onOrgChange}
+      />
       <NewOrgModal
         isOpen={showNewOrgModal}
         closeModal={() => setShowNewOrgModal(false)}
@@ -193,36 +192,31 @@ const NotebookSidebar = ({
             }
           />
         </div>
-        {!isPrivateNotebook && (
-          <div
-            className={css(
-              styles.sidebarButtonsContainer,
-              styles.orgButtonsContainer
-            )}
-          >
-            {["MEMBER", "ADMIN"].includes(
-              currentOrg?.user_permission?.access_type
-            ) && (
-              <div
-                className={css(styles.sidebarButton, styles.orgButton)}
-                onClick={() => {
-                  handleOrgSwitch({ orgId: currentOrg.id });
-                  setShowManageOrgModal(true);
-                }}
+        <div
+          className={css(
+            styles.sidebarButtonsContainer,
+            styles.orgButtonsContainer
+          )}
+        >
+          {["MEMBER", "ADMIN"].includes(
+            currentOrg?.user_permission?.access_type
+          ) && (
+            <div
+              className={css(styles.sidebarButton, styles.orgButton)}
+              onClick={() => {
+                handleOrgSwitch({ orgId: currentOrg.id });
+                setShowManageOrgModal(true);
+              }}
+            >
+              {icons.cog}
+              <span
+                className={css(styles.sidebarButtonText, styles.orgButtonText)}
               >
-                {icons.cog}
-                <span
-                  className={css(
-                    styles.sidebarButtonText,
-                    styles.orgButtonText
-                  )}
-                >
-                  Settings & Members
-                </span>
-              </div>
-            )}
-          </div>
-        )}
+                Settings & Members
+              </span>
+            </div>
+          )}
+        </div>
       </div>
       <div className={css(styles.scrollable)}>
         <div
@@ -267,6 +261,7 @@ const NotebookSidebar = ({
                     refetchTemplates={refetchTemplates}
                     setRefetchTemplates={setRefetchTemplates}
                     title={titles[noteId]}
+                    sidebarClick={sidebarClick}
                   />
                 );
               })}
@@ -282,12 +277,6 @@ const NotebookSidebar = ({
             {icons.shapes}
             <span className={css(styles.sidebarButtonText)}>Templates</span>
           </div>
-          {/*
-          <div className={css(styles.sidebarButton)}>
-            {icons.fileImport}
-            <span className={css(styles.sidebarButtonText)}>Import</span>
-          </div>
-          */}
         </div>
       </div>
     </div>

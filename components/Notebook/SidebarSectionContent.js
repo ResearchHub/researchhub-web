@@ -6,8 +6,13 @@ import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { deleteNote, createNewNote, createNoteContent } from "~/config/fetch";
-import { fetchNote, createNoteTemplate } from "~/config/fetch";
+import {
+  deleteNote,
+  createNewNote,
+  createNoteContent,
+  fetchNote,
+  createNoteTemplate,
+} from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
 import { useAlert } from "react-alert";
 import { useState } from "react";
@@ -24,6 +29,7 @@ const SidebarSectionContent = ({
   setRefetchTemplates,
   showMessage,
   title,
+  sidebarClick,
 }) => {
   const alert = useAlert();
   const [isHovered, setIsHovered] = useState(false);
@@ -78,12 +84,11 @@ const SidebarSectionContent = ({
               name: title,
               organization: currentOrg?.id,
             };
-            createNoteTemplate(params)
-              .then((data) => {
-                setMessage("Template created!");
-                showMessage({ show: true, error: false });
-                setRefetchTemplates(!refetchTemplates);
-              });
+            createNoteTemplate(params).then((data) => {
+              setMessage("Template created!");
+              showMessage({ show: true, error: false });
+              setRefetchTemplates(!refetchTemplates);
+            });
           });
       },
     },
@@ -116,6 +121,9 @@ const SidebarSectionContent = ({
         )}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        onClick={() => {
+          sidebarClick && sidebarClick();
+        }}
       >
         <div className={css(styles.noteIcon)}>{icons.paper}</div>
         {title}
@@ -132,8 +140,12 @@ const SidebarSectionContent = ({
                     key={index}
                     onClick={item.onClick}
                   >
-                    <div className={css(styles.popoverBodyIcon)}>{item.icon}</div>
-                    <div className={css(styles.popoverBodyText)}>{item.text}</div>
+                    <div className={css(styles.popoverBodyIcon)}>
+                      {item.icon}
+                    </div>
+                    <div className={css(styles.popoverBodyText)}>
+                      {item.text}
+                    </div>
                   </div>
                 ))}
               </div>
@@ -148,6 +160,7 @@ const SidebarSectionContent = ({
                 )}
                 onClick={(e) => {
                   e && e.preventDefault();
+                  e && e.stopPropagation();
                   setIsPopoverOpen(!isPopoverOpen);
                 }}
               >
