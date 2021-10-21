@@ -1,9 +1,9 @@
-import AskQuestionForm from "~/components/Paper/AskQuestionForm";
 import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
-import { ABOUT_PAPER_CARD } from "~/utils/constants";
+import { ABOUT_PAPER_CARD } from "~/config/constants";
+import { PaperUploadWizard } from "~/components/Paper/PaperUploadWizard/PaperUploadWizard";
 
 export default function Index() {
   return (
@@ -21,7 +21,7 @@ export default function Index() {
             {...ABOUT_PAPER_CARD}
           />
           <div className={css(styles.row)}>
-            <AskQuestionForm documentType={"post"} />
+            <PaperUploadWizard />
             <CollapsableSectionsCard
               customStyle={styles.cardOnSide}
               isOpen={true}

@@ -3,7 +3,7 @@ import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { CollapsableSectionsCard } from "~/components/CollapsableSectionsCard";
-import { ABOUT_POST_CARD } from "~/utils/constants";
+import { ABOUT_POST_CARD } from "~/config/constants";
 
 export default function Index() {
   return (
