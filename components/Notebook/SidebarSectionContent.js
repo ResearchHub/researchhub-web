@@ -77,17 +77,22 @@ const SidebarSectionContent = ({
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((data) => {
-            const params = {
-              full_src: data.latest_version.src,
-              is_default: false,
-              name: title,
-              organization: currentOrg?.id,
-            };
-            createNoteTemplate(params).then((data) => {
-              setMessage("Template created");
-              showMessage({ show: true, error: false });
-              setRefetchTemplates(!refetchTemplates);
-            });
+            if (data.latest_version?.src) {
+              const params = {
+                full_src: data.latest_version.src,
+                is_default: false,
+                name: title,
+                organization: currentOrg?.id,
+              };
+              createNoteTemplate(params).then((data) => {
+                setMessage("Template created");
+                showMessage({ show: true, error: false });
+                setRefetchTemplates(!refetchTemplates);
+              });
+            } else {
+              setMessage("Cannot create an empty template");
+              showMessage({ show: true, error: true });
+            }
           });
       },
     },
