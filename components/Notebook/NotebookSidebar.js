@@ -13,6 +13,8 @@ import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { useState, Fragment } from "react";
+import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -94,21 +96,6 @@ const NotebookSidebar = ({
             isOpen={isPopoverOpen}
             popoverContent={
               <div className={css(styles.popoverBodyContent)}>
-                <Link
-                  href={{ pathname: `/${user.organization_slug}/notebook` }}
-                >
-                  <a
-                    className={css(styles.popoverBodyItem)}
-                    onClick={() => setIsPopoverOpen(!isPopoverOpen)}
-                  >
-                    <div className={css(styles.avatarWrapper)}>
-                      <AuthorAvatar author={user?.author_profile} />
-                    </div>
-                    <div className={css(styles.popoverBodyItemTitle)}>
-                      Personal Notes
-                    </div>
-                  </a>
-                </Link>
                 <div className={css(styles.userOrgs)}>
                   {orgs.map((org) => (
                     <Link
@@ -165,21 +152,18 @@ const NotebookSidebar = ({
                 className={css(styles.popoverTarget)}
                 onClick={() => setIsPopoverOpen(!isPopoverOpen)}
               >
-                {isPrivateNotebook ? (
-                  <Fragment>
-                    <div className={css(styles.avatarWrapper)}>
-                      <AuthorAvatar author={user?.author_profile} />
-                    </div>
-                    {"Personal Notes"}
-                  </Fragment>
-                ) : (
-                  <Fragment>
+                <>
+                  <ReactPlaceholder
+                    ready={!isEmpty(currentOrg)}
+                    showLoadingAnimation
+                    customPlaceholder={<OrgEntryPlaceholder color="#d3d3d3" />}
+                  >
                     <div className={css(styles.avatarWrapper)}>
                       <OrgAvatar org={currentOrg} />
                     </div>
                     {currentOrg?.name}
-                  </Fragment>
-                )}
+                  </ReactPlaceholder>
+                </>
                 <span className={css(styles.sortIcon)}>{icons.sort}</span>
               </div>
             }
@@ -480,7 +464,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   sortIcon: {
-    marginLeft: 10,
+    marginLeft: "auto",
   },
   chevronIcon: {
     marginLeft: "auto",
