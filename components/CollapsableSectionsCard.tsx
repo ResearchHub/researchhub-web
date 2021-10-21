@@ -8,13 +8,13 @@ export type CollapsableSectionsCard = {
   isOpen: boolean;
   title: string;
   before?: ReactNode;
-  after?: ReactNode;
   sections?: {
+    before?: ReactNode;
     title: string;
     items: ReactNode[];
-    before?: ReactNode;
     after?: ReactNode;
   }[];
+  after?: ReactNode;
 };
 
 export const CollapsableSectionsCard: FC<CollapsableSectionsCard> = ({
