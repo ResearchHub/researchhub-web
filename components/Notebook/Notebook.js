@@ -337,13 +337,15 @@ const Notebook = ({ auth, user }) => {
         titles={titles}
         user={user}
       />
-      <ELNEditor
-        ELNLoading={ELNLoading}
-        currentNote={currentNote}
-        handleEditorInput={handleEditorInput}
-        orgSlug={orgSlug}
-        setELNLoading={setELNLoading}
-      />
+      {currentNote && (
+        <ELNEditor
+          ELNLoading={ELNLoading}
+          currentNote={currentNote}
+          handleEditorInput={handleEditorInput}
+          orgSlug={orgSlug}
+          setELNLoading={setELNLoading}
+        />
+      )}
     </div>
   );
 };

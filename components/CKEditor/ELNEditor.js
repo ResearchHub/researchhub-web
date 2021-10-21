@@ -54,6 +54,8 @@ const ELNEditor = ({
     }
   }, []);
 
+  const channelId = `${orgSlug}-${currentNote.id}`;
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
@@ -61,9 +63,9 @@ const ELNEditor = ({
           className={css(styles.presenceList) + " presence"}
           ref={onRefChange}
         />
-        {/*<NoteShareButton noteId={currentNote?.id} org={currentOrganization} />*/}
+        {/*<NoteShareButton noteId={currentNote.id} org={currentOrganization} />*/}
       </div>
-      {presenceListElement !== null && currentNote && (
+      {presenceListElement !== null && (
         <CKEditorContext
           config={{
             // The configuration for real-time collaboration features, shared between the editors:
@@ -105,7 +107,7 @@ const ELNEditor = ({
             },
             // Collaboration configuration for the context:
             collaboration: {
-              channelId: `${orgSlug}-${currentNote.id}`,
+              channelId,
             },
             sidebar: {
               container: sidebarElementRef.current,
@@ -133,7 +135,7 @@ const ELNEditor = ({
                 },
                 placeholder:
                   "Start typing to continue with an empty page, or pick a template",
-                initialData: currentNote?.latest_version?.src ?? "",
+                initialData: currentNote.latest_version?.src ?? "",
                 simpleUpload: {
                   // The URL that the images are uploaded to.
                   uploadUrl: API.SAVE_IMAGE,
@@ -148,11 +150,11 @@ const ELNEditor = ({
                   },
                 },
                 collaboration: {
-                  channelId: `${orgSlug}-${currentNote.id}`,
+                  channelId,
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, currentNote?.id);
+                    return saveData(editor, currentNote.id);
                   },
                 },
               }}
