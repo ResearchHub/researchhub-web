@@ -16,6 +16,7 @@ import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
+import PaperBanner from "../Paper/PaperBanner";
 
 type Props = {};
 
@@ -52,19 +53,31 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     id,
     slug,
     title,
+    is_removed: isHypoRemoved,
   } = hypothesis || {};
 
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
+      <PaperBanner
+        paper={undefined}
+        post={hypothesis}
+        postType="hypothesis"
+        fetchBullets={false}
+        loadingPaper={false}
+      />
       <Head
         title={title}
         description={title}
+        noindex={Boolean(isHypoRemoved)}
         canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${
           slug || ""
         }`}
       />
       <div className={css(styles.container)}>
-        <HypothesisPageCard hypothesis={hypothesis} />
+        <HypothesisPageCard
+          hypothesis={hypothesis}
+          onUpdates={setLastFetchTime}
+        />
         <HypothesisCitationConsensusCard
           aggregateCitationConsensus={{
             citationCount: aggreCitationCons?.citation_count ?? 0,
