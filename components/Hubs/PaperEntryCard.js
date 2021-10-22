@@ -95,7 +95,7 @@ const PaperEntryCard = (props) => {
     title = stripHTML(title);
     title = parseMath(title);
     return title;
-  }, [title]);  
+  }, [title]);
 
   /**
    * Whether or not THIS PaperPDFModal is open.
@@ -249,18 +249,21 @@ const PaperEntryCard = (props) => {
 
       fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {})
-        .catch((err) => {});
+        .then(Helpers.parseJSON);
     }
   }
 
   function navigateToPage(e) {
+    console.log(`/paper/${id}/${paperSlug}`);
+    debugger;
     if (e.metaKey || e.ctrlKey) {
       window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {
       postEvent();
-      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
+      Router.push({
+        pathname: "/paper/[paperId]/[paperName]",
+        query: { paperId: id, paperName: paperSlug },
+      });
     }
     onClick && onClick();
   }

@@ -1,7 +1,7 @@
 import { connect, useStore } from "react-redux";
 import { ReactElement } from "react";
-import { useEffectCheckCredentials } from "../useEffectCheckCredentials";
 import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
+import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
 
 export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard

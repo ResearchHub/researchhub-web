@@ -1,12 +1,13 @@
 ## Setup
 
-1. `yarn install`
-2. `npm run dev`
+1. `nvm use` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
+2. `yarn install`
+3. `npm run dev`
 
 ## Contributing to the codebase
 
 - Follow this [short guide](https://www.notion.so/researchhub/Philosophy-758dd755003e4f49b55e78468bda35e3?p=91e1c8d75502434f9c0a4eda29f4b421&showMoveTo=true) to ensure our bundle sizes remain optimal
-- Write tests  
+- Write tests
 - Our pre-commit hooks will run automatically upon commit (i.e. linting)
 - To skip pre-commit hooks, add `--no-verify` flag to force commit (not recommended)
 

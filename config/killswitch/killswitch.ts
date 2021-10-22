@@ -1,8 +1,10 @@
 import { emptyFncWithMsg, isNullOrUndefined } from "../utils/nullchecks";
 import { getCurrServerEnv } from "../utils/env";
-import switchConfigs from "./killswitch_config/killswitch_configs";
+import switchConfigs, {
+  KillswitchApp,
+} from "./killswitch_config/killswitch_configs";
 
-export default function killswitch(application: string): boolean {
+export default function killswitch(application: KillswitchApp): boolean {
   const switchConfig = switchConfigs[application];
   if (isNullOrUndefined(switchConfig)) {
     emptyFncWithMsg(
