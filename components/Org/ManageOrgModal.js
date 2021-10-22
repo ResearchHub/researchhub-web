@@ -43,11 +43,11 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
                 </div>
                 <div className={css(styles.avatarWrapper)}>
                   <OrgAvatar org={org} size={80} fontSize={24} />
-                </div>              
+                </div>
               </div>
             )}
           </div>
-          <div className={css(styles.section)}>
+          <div>
             <ManageOrgUsers org={org} />
           </div>
         </Fragment>
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
       width: "100%",
       boxSizing: "border-box",
       padding: 15,
-    },    
+    },
   },
   section: {
     marginBottom: 40,
