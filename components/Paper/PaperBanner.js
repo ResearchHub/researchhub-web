@@ -11,14 +11,16 @@ import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
 import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 
-const PaperBanner = ({ paper, fetchBullets, loadingPaper, post, postType }) => {
+const PaperBanner = (props) => {
   // TODO: calvinhlee - refactor this component. This is rubbish
+  const { paper, fetchBullets, loadingPaper, post, postType, lastFetchTime } =
+    props;
   const [type, setType] = useState(null);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     configureBanner();
-  }, [paper, loadingPaper, post]);
+  }, [paper, loadingPaper, post, lastFetchTime]);
 
   const documentType = Boolean(paper) ? "paper" : postType;
   const configureBanner = () => {
