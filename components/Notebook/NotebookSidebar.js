@@ -13,7 +13,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -44,6 +44,13 @@ const NotebookSidebar = ({
   const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
+  const [allowCreateNote, setAllowCreateNote] = useState(false);  
+
+  useEffect(() => {
+    if (currentOrg) {
+      setAllowCreateNote(true);
+    }
+  }, [currentOrg]);
 
   const handleCreateNewNote = async () => {
     setCreateNoteLoading(true);
@@ -201,18 +208,20 @@ const NotebookSidebar = ({
           )}
         >
           Notes
-          <span className={css(styles.chevronIcon)}>
-            {createNoteLoading ? (
-              <Loader type="clip" size={23} />
-            ) : (
-              <div
-                className={css(styles.actionButton)}
-                onClick={handleCreateNewNote}
-              >
-                {icons.plus}
-              </div>
-            )}
-          </span>
+          {allowCreateNote &&
+            <span className={css(styles.chevronIcon)}>
+              {createNoteLoading ? (
+                <Loader type="clip" size={23} />
+              ) : (
+                <div
+                  className={css(styles.actionButton)}
+                  onClick={handleCreateNewNote}
+                >
+                  {icons.plus}
+                </div>
+              )}
+            </span>
+          }
         </div>
         <ReactPlaceholder
           ready={didInitialNotesLoad}
