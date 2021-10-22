@@ -49,14 +49,16 @@ const getNotifMetadata = (notification) => {
   );
   const targetDoc = ["HYPOTHESIS", "PAPER"].includes(documentType)
     ? unifiedDocument.documents // For papers, documents is an object :
-    : unifiedDocument.documents[0]; // For other documents, it's an array of objects
+    : (unifiedDocument.documents ?? [])[0]; // For other documents, it's an array of objects
   const { id: documentID, paper_title, slug, title } = targetDoc ?? {};
-
-  const hrefAs = formatUnifiedDocPageUrl({
-    docType: documentType,
-    documentID,
-    slug,
-  });
+  const hrefAs =
+    notifType === "hypothesis"
+      ? `/hypothesis/${unifiedDocument?.id ?? ""}/${item?.slug ?? ""}`
+      : formatUnifiedDocPageUrl({
+          docType: documentType,
+          documentID,
+          slug,
+        });
 
   return {
     authorId,
@@ -64,7 +66,7 @@ const getNotifMetadata = (notification) => {
     hrefAs: !shouldLeadToComments ? hrefAs : hrefAs + "#comments",
     notifType,
     postId: documentID,
-    postTitle: title ?? paper_title,
+    postTitle: title ?? paper_title ?? item?.title,
     slug: slug,
     sourceType: documentType,
     timestamp,
@@ -168,7 +170,14 @@ class LiveFeedNotification extends Component {
     if (type === "summary") {
       route = `/paper/${paper_id}/${slug}`;
     } else if (
-      ["paper", "researchhub post", "thread", "comment", "reply"].includes(type)
+      [
+        "comment",
+        "hypothesis",
+        "paper",
+        "reply",
+        "researchhub post",
+        "thread",
+      ].includes(type)
     ) {
       route = getNotifMetadata(notification)?.hrefAs;
     } else if (type === "bullet_point") {
@@ -219,6 +228,13 @@ class LiveFeedNotification extends Component {
           plainText: "",
         };
         break;
+      case "hypothesis":
+        verb = "created a new hypothesis";
+        subject = {
+          linkText: this.truncatePaperTitle(postTitle),
+          plainText: "",
+        };
+        break;
       case "thread":
         const plainText = notification.item.plain_text;
         verb = "left a";
@@ -256,7 +272,6 @@ class LiveFeedNotification extends Component {
         };
         break;
     }
-
     return (
       <div className={css(styles.message)}>
         <Link
@@ -532,10 +547,12 @@ class LiveFeedNotification extends Component {
       }
     } else {
       let unifiedDocument = notification.item.unified_document;
-      let document_type = unifiedDocument.document_type;
-
+      let document_type =
+        unifiedDocument?.document_type ?? notification?.content_type;
       if (document_type === "DISCUSSION") {
         metaData.postId = unifiedDocument.documents[0].id;
+      } else if (document_type === "hypothesis") {
+        metaData.hypoId = unifiedDocument.id;
       } else {
         metaData.paperId = unifiedDocument.documents.id;
       }
