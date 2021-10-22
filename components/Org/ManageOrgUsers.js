@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     // border: `1px solid ${colors.BLACK(0.1)}`,
     // maxHeight: 140,
     // padding: 20,
-    height: 255,
+    height: 155,
     paddingTop: 8,
     borderRadius: "2px",
     overflowY: "scroll",
