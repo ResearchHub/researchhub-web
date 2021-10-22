@@ -284,18 +284,16 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           )}
         </form>
       )}
-      {orgUserCount > 0 && (
-        <div>
-          <div className={css(styles.subheader)}>Organization members:</div>
-          <div className={css(styles.userList)}>
-            {(orgUsers.invited_users || []).map((u) =>
-              renderOrgUser(u, "Invitation Pending")
-            )}
-            {(orgUsers.admins || []).map((u) => renderOrgUser(u, "Admin"))}
-            {(orgUsers.members || []).map((u) => renderOrgUser(u, "Member"))}
-          </div>
+      <div>
+        <div className={css(styles.subheader)}>Organization members:</div>
+        <div className={css(styles.userList)}>
+          {(orgUsers.invited_users || []).map((u) =>
+            renderOrgUser(u, "Invitation Pending")
+          )}
+          {(orgUsers.admins || []).map((u) => renderOrgUser(u, "Admin"))}
+          {(orgUsers.members || []).map((u) => renderOrgUser(u, "Member"))}
         </div>
-      )}
+      </div>
     </div>
   );
 };
