@@ -75,8 +75,8 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
           </div>
         </div>
       )}
-      {isLoading ? (
-        <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
+      {true ? (
+        <Loader key={"loader"} size={35} color={colors.BLUE()} />
       ) : (
         <div className={css(styles.buttonContainer)}>
           {auth.isLoggedIn ? (
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   container: {
     width: 300,
     margin: "0 auto",
-    marginTop: 100,
+    marginTop: 150,
     textAlign: "center",
   },
   buttonContainer: {
