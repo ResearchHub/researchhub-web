@@ -18,6 +18,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { getOrgUserCount } from "~/config/utils/org";
 import Loader from "~/components/Loader/Loader";
 import DropdownButton from "~/components/Form/DropdownButton";
+import { captureError } from "~/config/utils/error";
 
 const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const dropdownOpts = [
@@ -30,7 +31,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     {
       title: "Member",
       description:
-        "Cannot change organization settings or invite new members to the organization.",
+        "Can contribute but not change organization settings or invite new members to the organization.",
       value: "MEMBER",
     },
     {
@@ -59,22 +60,27 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const [_currentUser, _setCurrentUser] = useState(null);
 
   useEffect(() => {
-    const _fetchPerms = async () => {
+    const fetchAndSetOrgUsers = async () => {
       try {
         const orgUsers = await fetchOrgUsers({ orgId: org.id });
+
         setNeedsFetch(false);
         setOrgUsers(orgUsers);
         setOrgUserCount(getOrgUserCount(orgUsers));
         setIsAdmin(isCurrentUserOrgAdmin(currentUser, orgUsers));
-      } catch (err) {
-        console.error(err);
-        setMessage("Unexpected error");
+      } catch (error) {
+        setMessage("Failed to fetch data");
         showMessage({ show: true, error: true });
+        captureError({
+          error,
+          msg: "Failed to fetch org users",
+          data: { org },
+        });
       }
     };
 
     if (needsFetch && _currentUser && !isNullOrUndefined(org)) {
-      _fetchPerms();
+      fetchAndSetOrgUsers();
     }
   }, [needsFetch, _currentUser, org]);
 
@@ -107,10 +113,14 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       });
       setNeedsFetch(true);
       setUserToBeInvitedEmail("");
-    } catch (err) {
-      console.log("Failed to invite user", err);
-      setMessage("Unexpected error");
+    } catch (error) {
+      setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
+      captureError({
+        error,
+        msg: "Failed to invite user",
+        data: { org, userToBeInvitedEmail },
+      });
     }
 
     setIsInviteInProgress(false);
@@ -138,7 +148,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       } else {
         await removeUserFromOrg({
           orgId: org.id,
-          userId: user.author_profile.id,
+          userId: user.id,
         });
       }
 
@@ -155,16 +165,20 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     } else {
       try {
         await updateOrgUserPermissions({
-          userId: user.author_profile.id,
+          userId: user.id,
           accessType: selectedPerm,
           orgId: org.id,
         });
 
         setNeedsFetch(true);
-      } catch (err) {
-        console.error("Failed to update permissions", err);
-        setMessage("Unexpected error");
+      } catch (error) {
+        setMessage("Failed to update permission");
         showMessage({ show: true, error: true });
+        captureError({
+          error,
+          msg: "Failed to update user permission",
+          data: { org },
+        });
       }
     }
 
