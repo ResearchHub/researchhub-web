@@ -56,7 +56,6 @@ const getActionButtons = ({
   onUpdates: Function;
   setShowHypothesisEditor: (flag: boolean) => void;
 }): ReactNode => {
-  // debugger;
   const {
     id: hypoID,
     is_removed: isHypoRemoved,
@@ -100,13 +99,13 @@ const getActionButtons = ({
                 restoreHypothesis({
                   hypoUniDocID,
                   onError: (error: Error) => emptyFncWithMsg(error),
-                  onSuccess: onUpdates,
+                  onSuccess: (): void => onUpdates(Date.now()),
                 });
               } else {
                 removeHypothesis({
                   hypoUniDocID,
                   onError: (error: Error) => emptyFncWithMsg(error),
-                  onSuccess: onUpdates,
+                  onSuccess: (): void => onUpdates(Date.now()),
                 });
               }
             }}

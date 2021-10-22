@@ -64,6 +64,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         postType="hypothesis"
         fetchBullets={false}
         loadingPaper={false}
+        lastFetchTime={lastFetchTime}
       />
       <Head
         title={title}
