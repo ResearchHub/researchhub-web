@@ -28,7 +28,7 @@ class FormDND extends Component {
     super(props);
     this.state = {
       // Toggle b/w DnD & Url
-      urlView: Boolean(this.props?.urlView ?? true),
+      urlView: this.props.urlView,
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -654,7 +654,4 @@ const mapDispatchToProps = (dispatch) => ({
   messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FormDND);
+export default connect(mapStateToProps, mapDispatchToProps)(FormDND);

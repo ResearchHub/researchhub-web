@@ -91,3 +91,14 @@ export type AuthStore = {
   uuid: null | string;
   walletLink: any; // TODO
 };
+
+export type PaperMetadata = {
+  csl_item: {
+    URL: string;
+    name: string;
+    title: string;
+    type: string;
+  };
+  isFile: boolean;
+  url_is_pdf: boolean;
+};

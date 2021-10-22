@@ -9,6 +9,7 @@ import { HubPicker } from "./HubPicker";
 import { AuthorsPicker } from "./AuthorsPicker";
 import { css } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
+import { PaperMetadata } from "~/config/types/root_types";
 
 type StepTwoProps = {
   details: PaperDetails;
@@ -34,8 +35,23 @@ export const StepTwo: FC<StepTwoProps> = ({
     };
   }
 
+  const handleFileDrop = (
+    acceptedFiles: File[],
+    paperMetadata: PaperMetadata
+  ) => {
+    // const paperFile = acceptedFiles[0];
+    // this.props.uploadPaperToState(paperFile, paperMetaData);
+    // paperActions.uploadPaperToState(metaData, { ...res })
+  };
+
   return (
     <div>
+      <FormDND
+        handleDrop={handleFileDrop}
+        urlView={false}
+        showUrlOption={false}
+      />
+
       <FormInput
         id="doi"
         label="DOI"
