@@ -75,7 +75,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
           </div>
         </div>
       )}
-      {true ? (
+      {isLoading ? (
         <Loader key={"loader"} size={35} color={colors.BLUE()} />
       ) : (
         <div className={css(styles.buttonContainer)}>
