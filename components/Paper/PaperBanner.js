@@ -12,7 +12,7 @@ import colors, { bannerColor } from "~/config/themes/colors";
 import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 
 const PaperBanner = (props) => {
-  // TODO: calvinhlee - refactor this component. This is rubbish
+  // TODO: calvinhlee - refactor this component.
   const { paper, fetchBullets, loadingPaper, post, postType, lastFetchTime } =
     props;
   const [type, setType] = useState(null);
