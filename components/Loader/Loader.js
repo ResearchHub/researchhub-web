@@ -9,6 +9,7 @@ const Loader = (props) => {
     size,
     sizeUnit,
     loaderStyle,
+    style,
     containerStyle,
     type,
   } = props;
@@ -22,6 +23,7 @@ const Loader = (props) => {
             size={size ? size : 60}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
       case "clip":
@@ -32,6 +34,7 @@ const Loader = (props) => {
             size={size ? size : 35}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
       case "beat":
@@ -42,6 +45,7 @@ const Loader = (props) => {
             size={size ? size : 20}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
 
@@ -53,6 +57,7 @@ const Loader = (props) => {
             size={size ? size : 35}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
     }

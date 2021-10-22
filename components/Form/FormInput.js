@@ -54,6 +54,7 @@ class FormInput extends Component {
       size,
       subtitle,
       type,
+      onKeyDown,
     } = this.props;
 
     return (
@@ -111,6 +112,7 @@ class FormInput extends Component {
           required={required ? required : false}
           type={type ? type : "text"}
           value={this.props.value}
+          onKeyDown={onKeyDown}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && (

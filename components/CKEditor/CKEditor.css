@@ -20,6 +20,8 @@
   --ck-image-style-spacing: 1.5em;
   --ck-inline-image-style-spacing: calc(var(--ck-image-style-spacing) / 2);
   --ck-todo-list-checkmark-size: 16px;
+  --ck-user-avatar-background: none;
+  --ck-user-avatar-size: 30px !important;
 }
 
 /* ckeditor5-font/theme/fontsize.css */
@@ -407,7 +409,52 @@
   }
 }
 
-.ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
+/* Custom CSS */
+.eln .ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
   position: absolute !important;
   z-index: 0 !important;
+}
+
+.eln .ck.ck-editor__editable:not(.ck-editor__nested-editable).ck-focused {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.eln .ck-content {
+  border: none !important;
+  line-height: 24px;
+  word-break: break-word;
+}
+
+.eln .ck-content *::selection {
+  background: #e1f7ff;
+}
+
+.eln .ck-content h1 {
+  line-height: 38px;
+}
+
+.eln .ck-content a {
+  text-decoration: none;
+}
+
+.eln .ck-editor__editable_inline {
+  padding-top: 25px !important;
+  padding-bottom: 200px !important;
+  padding-left: calc(max((100% - 900px) / 2, 60px)) !important;
+  padding-right: calc(max((100% - 900px) / 2, 60px)) !important;
+}
+
+@media only screen and (max-width: 900px) {
+  .eln .ck-editor__editable_inline {
+    padding: 0px 30px 225px 30px !important;
+  }
+}
+
+.ck-presence-list__counter {
+  display: none;
+}
+
+.ck .ck-user__marker:after {
+  font-family: Roboto, sans-serif !important;
 }
