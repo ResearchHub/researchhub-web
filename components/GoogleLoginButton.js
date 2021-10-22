@@ -47,18 +47,18 @@ const GoogleLoginButton = (props) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
       } else {
-        getUser().then((userAction) => {
+        getUser().then(({ user }) => {
+          const isNewSignup = !user?.has_seen_orcid_connect_modal;
+console.log('user', user);
           props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
-          if (
-            userAction.user &&
-            !userAction.user.has_seen_orcid_connect_modal
-          ) {
+
+          if (isNewSignup) {
             const payload = {
               event_type: "user_signup",
               time: +new Date(),
-              user_id: userAction.user.id,
-              insert_id: `user_${userAction.user.id}`,
+              user_id: user.id,
+              insert_id: `user_${user.id}`,
               event_properties: {
                 interaction: "User Signup",
               },
@@ -71,7 +71,7 @@ const GoogleLoginButton = (props) => {
             ) {
               router.push(
                 "/user/[authorId]/onboard?internal=true",
-                `/user/${userAction.user.author_profile.id}/onboard`
+                `/user/${user.author_profile.id}/onboard`
               );
             }
           }
@@ -83,19 +83,23 @@ const GoogleLoginButton = (props) => {
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
+
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
       } else {
-        getUser().then((userAction) => {
+        getUser().then(({ user }) => {
+          const isNewSignup = !user?.has_seen_orcid_connect_modal;
+
           props.loginCallback && props.loginCallback();
           props.showSignupBanner && props.removeBanner();
-          if (!userAction.user.has_seen_orcid_connect_modal) {
+
+          if (isNewSignup) {
             let payload = {
               event_type: "user_signup",
               time: +new Date(),
-              user_id: userAction.user.id,
-              insert_id: `user_${userAction.user.id}`,
+              user_id: user.id,
+              insert_id: `user_${user.id}`,
               event_properties: {
                 interaction: "User Signup",
               },
@@ -105,7 +109,7 @@ const GoogleLoginButton = (props) => {
             // push user to onboarding - will eventually see the orcid modal
             router.push(
               "/user/[authorId]/onboard?internal=true",
-              `/user/${userAction.user.author_profile.id}/onboard`
+              `/user/${user.author_profile.id}/onboard`
             );
           }
         });
