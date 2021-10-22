@@ -47,6 +47,8 @@ const ELNEditor = ({
   setELNLoading,
 }) => {
   const router = useRouter();
+  const { orgSlug } = router.query;
+
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
 
@@ -56,7 +58,7 @@ const ELNEditor = ({
     }
   }, []);
 
-  const channelId = `${currentOrganization.slug}-${currentNote.id}`;
+  const channelId = `${orgSlug}-${currentNote.id}`;
 
   return (
     <div className={css(styles.container)}>

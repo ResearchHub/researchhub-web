@@ -75,6 +75,7 @@ const Notebook = ({ auth, user }) => {
       try {
         userOrgs = await fetchUserOrgs({ user });
         currOrg = getCurrentOrgFromRouter(userOrgs);
+
         setCurrentOrganization(currOrg);
         setOrganizations(userOrgs);
         orgsFetched.current = true;

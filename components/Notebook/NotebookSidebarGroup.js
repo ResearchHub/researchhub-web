@@ -11,6 +11,7 @@ import { captureError } from "~/config/utils/error";
 
 const NotebookSidebarGroup = ({
   groupKey,
+  availGroups,
   notes,
   titles,
   currentNoteId,
@@ -22,11 +23,11 @@ const NotebookSidebarGroup = ({
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
 
-  const handleCreateNewNote = async (groupKey = NOTE_GROUPS.WORKSPACE) => {
+  const handleCreateNewNote = async (groupKey) => {
     setCreateNoteIsLoading(true);
 
     try {
-      const note = await createNewNote({ orgSlug: currentOrg.slug });
+      const note = await createNewNote({ orgSlug: currentOrg.slug, grouping: groupKey });
 
       // TODO: Remove once Leo adds this to endpoint
       note.access = groupKey;
@@ -62,32 +63,28 @@ const NotebookSidebarGroup = ({
                 {icons.plus}
               </div>
             )}
-          </div>
+        </div>
         )}
       </div>
-      {notes.map((note) => {
-        const noteId = note.id.toString();
-
-        return (
-          <SidebarSectionContent
-            key={noteId}
-            currentOrg={currentOrg}
-            currentNoteId={currentNoteId}
-            noteId={noteId}
-            onNoteCreate={onNoteCreate}
-            onNoteDelete={onNoteDelete}
-            refetchTemplates={refetchTemplates}
-            setRefetchTemplates={setRefetchTemplates}
-            title={titles[noteId]}
-          />
-        );
-      })}
+      {notes.map((note) => (
+        <SidebarSectionContent
+          key={note.id}
+          currentOrg={currentOrg}
+          currentNoteId={currentNoteId}
+          noteId={note.id.toString()}
+          onNoteCreate={onNoteCreate}
+          onNoteDelete={onNoteDelete}
+          refetchTemplates={refetchTemplates}
+          setRefetchTemplates={setRefetchTemplates}
+          title={titles[note.id]}
+        />
+      ))}
     </div>
   );
 };
 
 NotebookSidebarGroup.propTypes = {
-  groupKey: PropTypes.oneOf(["WORKSPACE", "SHARED", "PRIVATE"]),
+  groupKey: PropTypes.oneOf([NOTE_GROUPS.WORKSPACE, NOTE_GROUPS.SHARED, NOTE_GROUPS.PRIVATE]),
   notes: PropTypes.array,
 };
 

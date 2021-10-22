@@ -9,12 +9,13 @@ import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import { isEmpty } from "~/config/utils/nullchecks";
 import groupBy from "lodash/groupBy";
+import { NOTE_GROUPS } from "./config/notebookConstants";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -40,13 +41,37 @@ const NotebookSidebar = ({
   titles,
   user,
 }) => {
+
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
+  const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
 
-  const groupedNotes = groupBy(notes, "access");
+  const getSidebarGroupKeys = () => {
+    const groupedNoteKeys = Object.keys(groupedNotes);
+    const defaultGroups = [NOTE_GROUPS.WORKSPACE];
+    return Array.from(new Set([...defaultGroups, ...groupedNoteKeys]));
+  }
+
+  const buildHtmlForGroup = ({ groupKey }) => {
+    return (
+      <NotebookSidebarGroup
+        key={groupKey}
+        groupKey={groupKey}
+        availGroups={Object.keys(groupedNotes)}
+        notes={groupedNotes[groupKey] || []}
+        titles={titles}
+        currentNoteId={currentNoteId}
+        currentOrg={currentOrg}
+        onNoteCreate={onNoteCreate}
+        onNoteDelete={onNoteDelete}
+        refetchTemplates={refetchTemplates}
+        setRefetchTemplates={setRefetchTemplates}
+      />
+    )
+  }
 
   return (
     <div className={css(styles.sidebar)}>
@@ -183,23 +208,12 @@ const NotebookSidebar = ({
       </div>
       <div className={css(styles.scrollable)}>
         <ReactPlaceholder
-          ready={didInitialNotesLoad}
+          ready={didInitialNotesLoad && !isEmpty(currentOrg)}
           showLoadingAnimation
           customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
         >
-          {Object.keys(groupedNotes).map((groupKey) => (
-            <NotebookSidebarGroup
-              key={groupKey}
-              groupKey={groupKey}
-              notes={groupedNotes[groupKey]}
-              titles={titles}
-              currentNoteId={currentNoteId}
-              currentOrg={currentOrg}
-              onNoteCreate={onNoteCreate}
-              onNoteDelete={onNoteDelete}
-              refetchTemplates={refetchTemplates}
-              setRefetchTemplates={setRefetchTemplates}
-            />
+          {getSidebarGroupKeys().map((groupKey) => (
+            buildHtmlForGroup({ groupKey })
           ))}
         </ReactPlaceholder>
 
