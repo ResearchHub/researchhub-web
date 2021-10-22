@@ -47,10 +47,9 @@ const getNotifMetadata = (notification) => {
   const shouldLeadToComments = ["thread", "comment", "reply"].includes(
     notifType
   );
-  const targetDoc =
-    documentType === "PAPER"
-      ? unifiedDocument.documents // For papers, documents is an object :
-      : unifiedDocument.documents[0]; // For other documents, it's an array of objects
+  const targetDoc = ["HYPOTHESIS", "PAPER"].includes(documentType)
+    ? unifiedDocument.documents // For papers, documents is an object :
+    : unifiedDocument.documents[0]; // For other documents, it's an array of objects
   const { id: documentID, paper_title, slug, title } = targetDoc ?? {};
 
   const hrefAs = formatUnifiedDocPageUrl({
@@ -157,9 +156,6 @@ class LiveFeedNotification extends Component {
     let { content_type, paper_id, thread_id } = notification;
     let type = content_type;
 
-    let paperId = paper_id;
-    let threadId = thread_id;
-    let href;
     let route;
     let slug = notification.slug
       ? notification.slug
@@ -170,20 +166,16 @@ class LiveFeedNotification extends Component {
         );
 
     if (type === "summary") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${slug}`;
+      route = `/paper/${paper_id}/${slug}`;
     } else if (
       ["paper", "researchhub post", "thread", "comment", "reply"].includes(type)
     ) {
-      const metaData = getNotifMetadata(notification);
-      href = metaData.href;
-      route = metaData.hrefAs;
+      route = getNotifMetadata(notification)?.hrefAs;
     } else if (type === "bullet_point") {
-      href = "/paper/[paperId]/[paperName]";
       route = `/paper/${paperId}/${slug}#takeaways`;
     }
 
-    href && route && Router.push(href, route);
+    route && Router.push(UNIFIED_DOC_PAGE_URL_PATTERN, route);
     document.body.scrollTop = 0; // For Safari
     return (document.documentElement.scrollTop = 0);
   };
@@ -331,20 +323,18 @@ class LiveFeedNotification extends Component {
         const slug = notification.item.source.slug;
         const sourceId = notification.item.source.id;
 
+        const href = UNIFIED_DOC_PAGE_URL_PATTERN;
         let formattedSupportType;
-        let href;
         let as;
         let title;
         let plainText;
         let doc;
         if (supportType === "paper") {
           formattedSupportType = "paper";
-          href = "/paper/[paperId]/[paperName]";
           as = `/paper/${sourceId}/${slug}`;
           title = notification.item.source.paper_title;
         } else if (supportType === "researchhubpost") {
           formattedSupportType = "post";
-          href = "/post/[documentId]/[title]";
           as = `/post/${sourceId}/${slug}`;
           title = notification.item.source.title;
         } else if (supportType === "bulletpoint") {
@@ -364,9 +354,6 @@ class LiveFeedNotification extends Component {
 
           formattedSupportType = "comment";
           plainText = this.truncateComment(notification.item.source.plain_text);
-          href = commentOnPaper
-            ? "/paper/[paperId]/[paperName]"
-            : "/post/[documentId]/[title]";
           as = commentOnPaper
             ? `/paper/${doc.id}/${doc.slug}`
             : `/post/${doc.id}/${doc.slug}`;

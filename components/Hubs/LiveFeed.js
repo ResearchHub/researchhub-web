@@ -230,6 +230,7 @@ class LiveFeed extends Component {
         );
       } else {
         return currentHubNotifications.map((notification, i) => {
+          console.warn("notification: ", notification);
           // TODO: remove when hypothesis is properly returning unified document
           if (
             isNullOrUndefined(
