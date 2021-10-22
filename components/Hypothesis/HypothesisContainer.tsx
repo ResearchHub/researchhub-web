@@ -1,9 +1,6 @@
-import { castUriID } from "../../config/utils/castUriID";
+import { castUriID } from "~/config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-} from "../../config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
