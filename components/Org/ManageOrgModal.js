@@ -12,7 +12,6 @@ import OrgAvatar from "~/components/Org/OrgAvatar";
 import { breakpoints } from "~/config/themes/screen";
 
 const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
-  const [_org, _setOrg] = useState(org);
   const [showLoader, setShowLoader] = useState(true);
   const [currentUserPerm, setCurrentUserPerm] = useState(
     org?.user_permission?.access_type
@@ -20,7 +19,6 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
 
   useEffect(() => {
     if (!isEmpty(org)) {
-      _setOrg(org);
       setCurrentUserPerm(org?.user_permission?.access_type);
       setShowLoader(false);
     }
@@ -28,13 +26,13 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
 
   const modalBody = (
     <div className={css(styles.body)}>
-      {isEmpty(org) ? (
+      {showLoader ? (
         <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
       ) : (
         <Fragment>
           <div className={css(styles.section)}>
             {currentUserPerm === "ADMIN" ? (
-              <ManageOrgDetails org={_org} onOrgChange={onOrgChange} />
+              <ManageOrgDetails org={org} onOrgChange={onOrgChange} />
             ) : (
               <div className={css(styles.mainDetails)}>
                 <div>
@@ -50,7 +48,7 @@ const ManageOrgModal = ({ org, closeModal, isOpen = false, onOrgChange }) => {
             )}
           </div>
           <div className={css(styles.section)}>
-            <ManageOrgUsers org={_org} />
+            <ManageOrgUsers org={org} />
           </div>
         </Fragment>
       )}
