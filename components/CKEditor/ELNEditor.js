@@ -103,7 +103,7 @@ const ELNEditor = ({
                   xhr.send();
                 });
               },
-              webSocketUrl: "wss://80957.cke-cs.com/ws",
+              webSocketUrl: "wss://83764.cke-cs.com/ws",
             },
             // Collaboration configuration for the context:
             collaboration: {
