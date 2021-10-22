@@ -90,7 +90,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown
-            authors={[created_by.author_profile]}
+            authors={[created_by?.author_profile ?? {}]}
             hubs={hubs}
             paper={hypothesis}
             paperId={id}
@@ -119,7 +119,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         ) : (
           <div className={css(styles.regSidebar)}>
             <PaperSideColumn
-              authors={[created_by.author_profile]}
+              authors={[created_by?.author_profile ?? {}]}
               hubs={hubs}
               isPost={true}
               paper={hypothesis}
