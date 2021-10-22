@@ -42,6 +42,7 @@ export const PaperUploadWizard: FC<PaperUploadWizardProps> = ({}) => {
 
   const handleFetchSuccess = (details: Partial<PaperDetails>) => {
     setDetails(details);
+    setCurrentStep("details");
   };
 
   switch (currentStep) {
@@ -55,10 +56,16 @@ export const PaperUploadWizard: FC<PaperUploadWizardProps> = ({}) => {
     case "details": {
       return (
         <div className={css(styles.container)}>
-          <div>
-            <StepTwo details={details} setDetails={setDetails} />
-          </div>
-          <div className={css(styles.buttonsContainer)}>(back) (submit)</div>
+          <StepTwo
+            details={details}
+            setDetails={setDetails}
+            onBack={() => {
+              setCurrentStep("url-doi");
+            }}
+            onSubmit={() => {
+              setCurrentStep("confirmation");
+            }}
+          />
         </div>
       );
     }
@@ -89,16 +96,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1209px)": {
       paddingLeft: "5vw",
       paddingRight: "5vw",
-    },
-  },
-  buttonsContainer: {
-    width: "auto",
-    display: "flex",
-    justifyContent: "flex-end",
-    marginTop: "30px",
-    "@media only screen and (max-width: 767px)": {
-      width: "auto",
-      justifyContent: "center",
     },
   },
 });

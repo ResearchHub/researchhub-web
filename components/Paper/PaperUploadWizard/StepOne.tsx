@@ -15,6 +15,8 @@ export const StepOne: FC<StepOneProps> = ({ onFetchSuccess }) => {
   const valueRef = useRef("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [error, setError] = useState("");
+
   const handleInputChange = (id: string, value: string) => {
     setValue(value);
     setIsLoading(true);
@@ -30,7 +32,7 @@ export const StepOne: FC<StepOneProps> = ({ onFetchSuccess }) => {
       setIsLoading(false);
       // TODO duplicate
       // TODO success
-      // TODO fail (no meta, invalid doi or url)
+      // TODO fail (no meta, invalid doi or url) TODO display error
 
       onFetchSuccess({
         // TODO
