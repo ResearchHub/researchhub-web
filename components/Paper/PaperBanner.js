@@ -9,16 +9,10 @@ import { MessageActions } from "~/redux/message";
 // Config
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
+import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 
-const PaperBanner = ({
-  paper,
-  fetchBullets,
-  loadingPaper,
-  post,
-  postType,
-  openPaperFeatureModal,
-  bullets,
-}) => {
+const PaperBanner = ({ paper, fetchBullets, loadingPaper, post, postType }) => {
+  // TODO: calvinhlee - refactor this component. This is rubbish
   const [type, setType] = useState(null);
   const [showBanner, setShowBanner] = useState(false);
 
@@ -26,8 +20,9 @@ const PaperBanner = ({
     configureBanner();
   }, [paper, loadingPaper, post]);
 
+  const documentType = Boolean(paper) ? "paper" : postType;
   const configureBanner = () => {
-    if (postType == "post") {
+    if (documentType === "post" || documentType === "hypothesis") {
       if (!post || Object.keys(post).length === 0) {
         setShowBanner(false);
         return;
@@ -46,7 +41,10 @@ const PaperBanner = ({
         }
       }
     }
-    const isRemoved = postType === "post" ? post.is_removed : paper.is_removed;
+    const isRemoved =
+      documentType === "post" || "hypothesis"
+        ? post.is_removed
+        : paper.is_removed;
 
     if (isRemoved) {
       setType("removed");
@@ -67,21 +65,21 @@ const PaperBanner = ({
           <div className={css(styles.removedMessage)}>
             <h3 className={css(styles.header)}>
               {renderIcon(true)}
-              {post ? "Post" : "Paper"} Removed
+              {upCaseFirstLetter(documentType)} Removed
             </h3>
-            This {post ? "post" : "paper"} has been removed by the submitter or
-            for having poor quality content and not adhering to guidelines.
+            {`This ${documentType} has been removed by the submitter or for having
+            poor quality content and not adhering to guidelines. `}
             <br />
-            Please visit our{" "}
+            {"Please visit our "}
             <a
               style={{ color: "#4E53FF" }}
               href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
               target="_blank"
               rel="noreferrer noopener"
             >
-              {post ? "Post" : "Paper"} Submission Guidelines
-            </a>{" "}
-            to review our standard.
+              {`${documentType} Submission Guidelines`}
+            </a>
+            {" to review our standard."}
           </div>
         );
       default:
@@ -309,7 +307,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperBanner);
