@@ -84,7 +84,6 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
           type="submit"
           customButtonStyle={styles.button}
           label="Update Organization"
-          rippleClass={styles.buttonWrapper}
           size={"small"}
         ></Button>
       </form>
@@ -140,9 +139,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     width: "100%",
-  },
-  buttonWrapper: {
-    display: "flex",
   },
   inputStyle: {
     textAlign: "left",

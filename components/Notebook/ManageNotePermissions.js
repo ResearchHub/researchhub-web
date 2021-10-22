@@ -78,7 +78,6 @@ const ManageNotePermissions = ({
           msg: "Failed to fetch note permissions",
           data: { noteId, org, userId: _currentUser?.id },
         });
-        console.error("Failed to fetch note permissions", error);
         setMessage("Unexpected error");
         showMessage({ show: true, error: true });
       }
