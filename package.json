@@ -5,6 +5,7 @@
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
+    "start-staging": "REACT_APP_ENV=staging next start",
     "sentry": "node ./scripts/sentry.js",
     "analyze": "ANALYZE=true yarn run build",
     "analyze:maps": "source-map-explorer .next/static/**/*.js",
