@@ -224,7 +224,6 @@ function HypothesisPageCard({
     title = "",
     vote_meta: voteMeta,
   } = hypothesis || {};
-  console.warn("hypothesis: ", hypothesis);
   const {
     down_count: downCount,
     up_count: upCount,
