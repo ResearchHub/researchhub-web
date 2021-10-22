@@ -1,13 +1,14 @@
 export type ENV = "development" | "production" | "staging";
-export type SwitchConfigs = {
-  [application: string]: {
-    development?: boolean;
-    production?: boolean;
-    staging?: boolean;
-  };
+export type AppSwitchConfig = {
+  development?: boolean;
+  production?: boolean;
+  staging?: boolean;
 };
 
-const KillswtichConfigs: SwitchConfigs = {
+const KillsiwtchApps = ["paperSummary", "paperUploadV2"] as const;
+export type KillswitchApp = typeof KillsiwtchApps[number];
+
+const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   paperSummary: {
     development: false,
     staging: false,
@@ -18,6 +19,6 @@ const KillswtichConfigs: SwitchConfigs = {
     staging: true,
     production: true,
   },
-};
+} as const;
 
 export default KillswtichConfigs;
