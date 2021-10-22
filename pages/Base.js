@@ -120,7 +120,4 @@ const mapDispatchToProps = {
   getNotifications: NotificationActions.getNotifications,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Base);
+export default connect(mapStateToProps, mapDispatchToProps)(Base);

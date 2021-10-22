@@ -3,7 +3,7 @@ import { ReactElement } from "react";
 import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
 import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
 
-function AuthorClaimCaseDashboardIndex(): ReactElement<
+export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard
 > | null {
   const reduxStore = useStore();
@@ -14,9 +14,3 @@ function AuthorClaimCaseDashboardIndex(): ReactElement<
   }
   return <AuthorClaimCaseDashboard />;
 }
-
-const mapStateToProps = (state) => ({
-  auth: state.auth,
-});
-
-export default connect(mapStateToProps)(AuthorClaimCaseDashboardIndex);

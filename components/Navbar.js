@@ -33,6 +33,9 @@ import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -129,8 +132,7 @@ const Navbar = (props) => {
     {
       label: "Help",
       route: "",
-      link:
-        "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
       icon: "help",
       className: "lessImportantTab",
     },
@@ -180,8 +182,7 @@ const Navbar = (props) => {
       {
         label: "Help",
         route: "",
-        link:
-          "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
         icon: "help",
       },
       {
@@ -283,7 +284,10 @@ const Navbar = (props) => {
     let { href, as } = route;
     if (href) {
       if (href === "/user/[authorId]/[tabName]") {
-        Router.push(href, `/user/${user.author_profile.id}/overview`);
+        Router.push(
+          href,
+          `/user/${user.author_profile && user.author_profile.id}/overview`
+        );
       } else {
         Router.push(href, as);
       }
@@ -436,6 +440,12 @@ const Navbar = (props) => {
     Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
+  const shouldShowELNButton = gateKeepCurrentUser({
+    application: "ELN" /* application */,
+    auth,
+    shouldRedirect: false /* should redirect */,
+  });
+
   return (
     <Fragment>
       <Menu
@@ -514,6 +524,22 @@ const Navbar = (props) => {
                       wsAuth={true}
                     />
                   </div>
+                  {shouldShowELNButton ? (
+                    <div
+                      className={css(styles.notification)}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Link href={`/${user.organization_slug}/notebook`}>
+                        <a>
+                          <img
+                            src={"/static/icons/notebook.svg"}
+                            height={24}
+                            width={24}
+                          />
+                        </a>
+                      </Link>
+                    </div>
+                  ) : null}
                 </div>
                 {openMenu && (
                   <div
@@ -665,7 +691,7 @@ const styles = StyleSheet.create({
     height: 80,
     background: "#fff",
     alignItems: "center",
-    borderBottom: "rgb(151,151,151, .2) 1px solid",
+    borderBottom: "1px solid #e8e8ef",
     justifyContent: "space-around",
     position: "sticky",
     zIndex: 4,
@@ -895,11 +921,11 @@ const styles = StyleSheet.create({
   },
   reputation: {
     marginLeft: 11,
-    minWidth: 56,
+    // minWidth: 56,
   },
   dropdown: {
     position: "absolute",
-    bottom: -215,
+    bottom: -225,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
@@ -1000,6 +1026,11 @@ const styles = StyleSheet.create({
       marginRight: 10,
     },
   },
+  notebookIcon: {
+    // fontSize: 18,
+    // marginTop: 2,
+    display: "flex",
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -1021,7 +1052,4 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

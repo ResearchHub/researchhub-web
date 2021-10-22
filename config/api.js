@@ -69,6 +69,7 @@ const prepURL = (url, params, arrayParamSeparator = ",") => {
 
 const routes = (BASE_URL) => {
   return {
+    BASE_URL,
     CITATIONS: ({ citationID, hypothesisID }, requestType) => {
       if (requestType === "get") {
         return !isNullOrUndefined(citationID)
@@ -81,6 +82,50 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
+    ORGANIZATION: ({ userId, orgId, orgSlug }) => {
+      let url = `${BASE_URL}organization/`;
+      let restId = null;
+      if (userId) {
+        restId = userId;
+      } else {
+        restId = orgId;
+      }
+
+      const params = {
+        querystring: {
+          slug: orgSlug,
+        },
+        rest: {
+          id: restId,
+          route: userId ? "get_user_organizations" : null,
+        },
+      };
+
+      url = prepURL(url, params);
+      return url;
+    },
+    ORGANIZATION_USERS: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/get_organization_users`;
+    },
+    REMOVE_USER_FROM_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/remove_user/`;
+    },
+    REMOVE_INVITED_USER_FROM_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/remove_invited_user/`;
+    },
+    INVITE_TO_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/invite_user/`;
+    },
+    ACCEPT_ORG_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/organization/${token}/accept_invite/`;
+    },
+    ORG_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}organization/${token}/get_organization_by_key/`;
+    },
+    UPDATE_ORG_USER_PERMISSIONS: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/update_user_permission/`;
+    },
+
     USER: ({
       userId,
       authorId,
@@ -158,6 +203,62 @@ const routes = (BASE_URL) => {
     },
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
       return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
+    },
+    CKEDITOR_TOKEN: () => {
+      return `${BASE_URL}ckeditor/token/`;
+    },
+    NOTE: ({ noteId, orgId, orgSlug }) => {
+      let url;
+      if (!isNullOrUndefined(orgId)) {
+        url = `${BASE_URL}organization/${orgId}/get_organization_notes/`;
+      } else if (!isNullOrUndefined(noteId)) {
+        url = `${BASE_URL}note/${noteId}/`;
+      } else {
+        url = `${BASE_URL}note/`;
+      }
+
+      if (!isNullOrUndefined(orgSlug)) {
+        url = `${BASE_URL}organization/${orgSlug}/get_organization_notes/`;
+      }
+
+      return url;
+    },
+    NOTE_DELETE: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/delete/`;
+    },
+    NOTE_CONTENT: () => {
+      return `${BASE_URL}note_content/`;
+    },
+    NOTE_TEMPLATE: ({ orgSlug }) => {
+      if (!isNullOrUndefined(orgSlug)) {
+        return `${BASE_URL}organization/${orgSlug}/get_organization_templates/`;
+      } else {
+        return `${BASE_URL}note_template/`;
+      }
+    },
+    NOTE_PERMISSIONS: ({ noteId, method = "GET" }) => {
+      if (method === "GET") {
+        return `${BASE_URL}note/${noteId}/get_note_permissions/`;
+      } else if (method === "PATCH") {
+        return `${BASE_URL}note/${noteId}/update_permissions/`;
+      } else if (method === "DELETE") {
+        return `${BASE_URL}note/${noteId}/remove_user_permission/`;
+      }
+    },
+    NOTE_INVITE_USER: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/invite_user/`;
+    },
+    NOTE_ACCEPT_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/note/${token}/accept_invite/`;
+    },
+    NOTE_REMOVE_INVITED_USER: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/remove_invited_user/`;
+    },
+    NOTE_INVITED_USERS: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/get_invited_users/`;
+    },
+    NOTE_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}note/${token}/get_note_by_key/`;
     },
     SIGNOUT: BASE_URL + "auth/logout/",
     SEARCH: ({
@@ -835,6 +936,8 @@ const routes = (BASE_URL) => {
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
+    GATEKEEPER_CURRENT_USER: ({ type }) =>
+      BASE_URL + `gatekeeper/check_current_user/?type=${type}`,
     GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
       let url = BASE_URL + "events/forward_event/";
       if (ignorePaper) {
@@ -954,8 +1057,10 @@ const routes = (BASE_URL) => {
   }
 };
 
-export default API({
+const api = API({
   authTokenName: AUTH_TOKEN,
   apiRoot,
   routes,
 });
+
+export default api;

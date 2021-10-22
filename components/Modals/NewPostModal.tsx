@@ -30,12 +30,6 @@ const items = [
     imgSrc: "/static/icons/publishProject.png",
     route: "/hypothesis/create",
   },
-  // {
-  //   header: "Publish a Research Project",
-  //   description: "Publish lab notes, original research, metastudies, etc.",
-  //   imgSrc: "/static/icons/publishProject.png",
-  //   route: "/notebook",
-  // },
 ];
 
 export type NewPostModalProps = {

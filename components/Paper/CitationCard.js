@@ -12,7 +12,7 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 import icons from "~/config/themes/icons";
 
 class CitationCard extends Component {
@@ -53,7 +53,7 @@ class CitationCard extends Component {
     let { citation } = this.props;
     let paperId = citation.id;
     let title = citation.paper_title ? citation.paper_title : citation.title;
-    return `/paper/${paperId}/${formatPaperSlug(title)}`;
+    return `/paper/${paperId}/${buildSlug(title)}`;
   };
 
   renderPreview = () => {

@@ -58,7 +58,8 @@ import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxS
 // Config
 import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import { absoluteUrl } from "~/config/utils/routing";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
+import { getVoteType } from "~/config/utils/reputation";
 import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";

@@ -6,7 +6,10 @@ import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 function PermissionsDashboard(): ReactElement<"div"> | null {
   const [_lastFetchTime, _setLastFetchTime] = useState<number>(Date.now());
   const reduxStore = useStore();
-  const shouldRenderUI = gateKeepCurrentUser("ELN", reduxStore);
+  const shouldRenderUI = gateKeepCurrentUser({
+    application: "PERMISSIONS_DASH",
+    auth: reduxStore?.getState()?.auth ?? null,
+  });
   return shouldRenderUI ? (
     <div className={css(styles.permissionsDashboard)} />
   ) : null;

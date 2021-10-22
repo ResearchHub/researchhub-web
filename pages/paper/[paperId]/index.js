@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import Router from "next/router";
 import Error from "next/error";
 import Loader from "~/components/Loader/Loader";
-import { formatPaperSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/document";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -32,7 +32,7 @@ Paper.getInitialProps = async (ctx) => {
   }
   const paperName = paper.slug
     ? paper.slug
-    : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+    : buildSlug(paper.paper_title ? paper.paper_title : paper.title);
 
   const redirectPath = `/paper/${paper.id}/${paperName}`;
 
