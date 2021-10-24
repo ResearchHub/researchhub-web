@@ -641,7 +641,7 @@ export async function getStaticProps(ctx) {
     if (paper.slug && paper.slug !== slugFromQuery) {
       return {
         redirect: {
-          destination: paper.slug,
+          destination: `/paper/${paperId}/${paper.slug}`,
           permanent: true,
         },
       };
