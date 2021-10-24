@@ -49,7 +49,7 @@ const GoogleLoginButton = (props) => {
       } else {
         getUser().then(({ user }) => {
           const isNewSignup = !user?.has_seen_orcid_connect_modal;
-console.log('user', user);
+
           props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
 
