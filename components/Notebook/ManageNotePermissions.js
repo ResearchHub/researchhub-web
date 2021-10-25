@@ -3,7 +3,6 @@ import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import { StyleSheet, css } from "aphrodite";
 import {
-  fetchNotePermissions,
   updateNoteUserPermissions,
   removeUserPermissionsFromNote,
   removeInvitedUserFromNote,
@@ -23,7 +22,7 @@ import {
   getUserNoteAccess,
   isNoteSharedWithUser,
 } from "~/components/Notebook/utils/notePermissions";
-import { PERMS } from "~/components/Notebook/config/notebookConstants";
+import { PERMS, ENTITIES } from "~/components/Notebook/config/notebookConstants";
 
 const ManageNotePermissions = ({
   currentUser,
@@ -68,23 +67,10 @@ const ManageNotePermissions = ({
     useState(null);
 
   useEffect(() => {
-    const fetchAndSetInvitedNoteUsers = async () => {
-      try {
-        const invitedList = await fetchInvitedNoteUsers({ noteId });
-
-        setInvitedUsersList(invitedList);
-      } catch (error) {
-        captureError({
-          error,
-          msg: "Failed to fetch invited list",
-          data: { noteId, currentOrg, userId: currentUser?.id },
-        });
-        setMessage("Unexpected error");
-        showMessage({ show: true, error: true });
-      }
-    };
-
-    fetchAndSetInvitedNoteUsers();
+    _fetchInvitedNoteUsers()
+      .then((invitedUsers) => {
+        setInvitedUsersList(invitedUsers)
+      });
   }, []);
 
   const handleInvite = async (e) => {
@@ -92,13 +78,14 @@ const ManageNotePermissions = ({
     setIsInviteInProgress(true);
 
     const userAlreadyInvitedOrInOrg = isNoteSharedWithUser({
-      email: userToBeInvitedPerm,
+      email: userToBeInvitedEmail,
+      invitedUsers: invitedUsersList,
       notePerms,
     });
 
     try {
       if (userAlreadyInvitedOrInOrg) {
-        setMessage("User already in org");
+        setMessage("User already invited or in org");
         showMessage({ show: true, error: true });
         setIsInviteInProgress(false);
         return;
@@ -109,8 +96,11 @@ const ManageNotePermissions = ({
         email: userToBeInvitedEmail,
       });
 
-      fetchAndSetInvitedNoteUsers();
-      setUserToBeInvitedEmail("");
+      _fetchInvitedNoteUsers()
+        .then((invitedUsers) => {
+          setInvitedUsersList(invitedUsers)
+          setUserToBeInvitedEmail("");
+        });
     } catch (error) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
@@ -130,6 +120,22 @@ const ManageNotePermissions = ({
     }
   };
 
+  const _fetchInvitedNoteUsers = async () => {
+    try {
+      const invitedList = await fetchInvitedNoteUsers({ noteId });
+      return Promise.resolve(invitedList);
+    } catch (error) {
+      captureError({
+        error,
+        msg: "Failed to fetch invited list",
+        data: { noteId, currentOrg, userId: currentUser?.id },
+      });
+      setMessage("Failed to invite user");
+      showMessage({ show: true, error: true });
+      Promise.reject(error);
+    }
+  };
+
   const handleRemoveUser = async (user, noteId) => {
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
@@ -143,8 +149,6 @@ const ManageNotePermissions = ({
           userId: user.author_profile.id,
         });
       }
-
-      setNeedsFetch(true);
     } catch (error) {
       setMessage("Failed to remove user");
       showMessage({ show: true, error: true });
@@ -156,15 +160,28 @@ const ManageNotePermissions = ({
     }
   };
 
-  const handleUpdatePermission = async (entity, noteId, accessType) => {
-    try {
-      await updateNoteUserPermissions({
-        userId: user.author_profile.id,
-        noteId: noteId,
-        accessType,
-      });
+  const handleUpdatePermission = async ({ entity, entityType, newPerm }) => {
 
-      setNeedsFetch(true);
+     try {
+      if (entityType === ENTITIES.USER_INVITE) {
+        // TODO: Waiting on LEO to implement endpoint
+        setMessage("Failed to update permission");
+        showMessage({ show: true, error: true });      
+      }
+      else if (entityType === ENTITIES.USER) {
+        await updateNoteUserPermissions({
+          userId: entity.id,
+          noteId: noteId,
+          accessType: newPerm,
+        });
+      }
+      else if (entityType === ENTITIES.ORG) {
+        await updateNoteUserPermissions({
+          orgId: entity.id,
+          noteId: noteId,
+          accessType: newPerm,
+        });
+      }      
     } catch (error) {
       setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
@@ -173,17 +190,20 @@ const ManageNotePermissions = ({
         msg: "Failed to update permission",
         data: {
           noteId,
-          currentOrg,
-          accessType,
-          userIdToUpdate: user.author_profile.id,
+          entityType,
+          entity,
+          newPerm,
         },
       });
-    }
+    }    
   };
 
   const getDisplayName = (accessObj) => {
+    const isCurrentUser =
+      accessObj.user?.id === currentUser?.id;
+
     if (accessObj.user) {
-      return `${accessObj.user?.author_profile?.first_name} ${accessObj.user?.author_profile?.last_name}`;
+      return `${accessObj.user?.author_profile?.first_name} ${accessObj.user?.author_profile?.last_name} ${isCurrentUser ? "(you)" : ""}`;
     } else if (accessObj.organization) {
       return accessObj.organization.name;
     } else {
@@ -192,9 +212,14 @@ const ManageNotePermissions = ({
   };
 
   const renderInvitedUser = (invitedUser) => {
-    const _canEditPermission = canEditPermission({ invitedUser });
-    const perm = "Editor"; // temp
+    const perm = invitedUser?.invite_type.toLowerCase(); // temp
     const key = `invited-user-${invitedUser.recipient_email}`;
+
+    const currentUserAccess = getUserNoteAccess({
+      user: currentUser,
+      notePerms: notePerms,
+      userOrgs,
+    });
 
     return (
       <div className={css(styles.userRow)} key={key}>
@@ -207,14 +232,14 @@ const ManageNotePermissions = ({
           </div>
         </div>
 
-        {_canEditPermission ? (
+        {currentUserAccess === PERMS.ADMIN ? (
           <DropdownButton
             opts={permDropdownOpts}
             label={perm}
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
-            onSelect={(selectedPerm) =>
-              handleUpdatePermission({ selectedPerm, forUser: invitedUser })
+            onSelect={(newPerm) =>
+              handleUpdatePermission({ entity: invitedUser, entityType: ENTITIES.USER_INVITE, newPerm })
             }
             onClose={() => setPermDropdownOpenForEntity(null)}
           />
@@ -228,41 +253,51 @@ const ManageNotePermissions = ({
   const renderAccessRow = (accessObj) => {
     const displayName = getDisplayName(accessObj);
 
-    const key = accessObj.organization
-      ? `access-org-${accessObj.organization.slug}`
-      : `access-user-${accessObj.user?.author_profile?.id}`;
+    const isCurrentUser =
+      accessObj.user?.id === currentUser?.id;
+    const forEntity = accessObj.user ? ENTITIES.USER : ENTITIES.ORG;
+    const key = forEntity === ENTITIES.USER
+      ? `access-user-${accessObj.user?.author_profile?.id}`
+      : `access-org-${accessObj.organization?.slug}`;
 
-    const userAccess = getUserNoteAccess({
+    const currentUserAccess = getUserNoteAccess({
       user: currentUser,
       notePerms: notePerms,
       userOrgs,
     });
 
     const perm = accessObj.access_type.toLowerCase();
-    console.log("access", userAccess);
 
     return (
       <div className={css(styles.userRow)} key={key}>
-        <div className={css(styles.entity)}>
-          <OrgAvatar org={accessObj.organization} />
-          <div className={css(styles.nameWrapper)}>
-            <span className={css(styles.name)}>{displayName}</span>
+        {forEntity === ENTITIES.USER ? (
+          <div className={css(styles.entity)}>
+            <AuthorAvatar author={accessObj.user.author_profile} />
+            <div className={css(styles.nameWrapper)}>
+              <span className={css(styles.name)}>{displayName}</span>
+              <span className={css(styles.email)}>{accessObj.user.email}</span>
+            </div>
           </div>
-        </div>
+        ) : forEntity === ENTITIES.ORG ? (
+          <div className={css(styles.entity)}>
+            <OrgAvatar org={currentOrg} />
+            <div className={css(styles.nameWrapper)}>
+              <span className={css(styles.name)}>{displayName}</span>
+            </div>
+          </div>
+        ) : null}
 
-        {userAccess === PERMS.ADMIN ? (
+        {currentUserAccess === PERMS.ADMIN && !isCurrentUser ? (
           <DropdownButton
             opts={permDropdownOpts}
             label={perm}
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
-            onSelect={(selectedPerm) =>
+            onSelect={(newPerm) =>
               handleUpdatePermission({
-                selectedPerm,
-                entity:
-                  forEntity === "user"
-                    ? accessObj.user.author_profile.id
-                    : accessObj.organization.slug,
+                entity: forEntity === ENTITIES.USER ? accessObj.user : accessObj.organization,
+                entityType: forEntity,
+                newPerm,
               })
             }
             onClose={() => setPermDropdownOpenForEntity(null)}
@@ -317,7 +352,7 @@ const ManageNotePermissions = ({
         )}
       </form>
       {notePerms.map((accessObj) => renderAccessRow(accessObj))}
-      {/*invitedUsersList.map((invitedUser) => renderInvitedUser(invitedUser))*/}
+      {invitedUsersList.map((invitedUser) => renderInvitedUser(invitedUser))}
     </div>
   );
 };
@@ -333,6 +368,9 @@ const styles = StyleSheet.create({
   deleteOpt: {
     color: colors.RED(),
   },
+  email: {
+    color: colors.BLACK(0.5),
+  },  
   userRow: {
     display: "flex",
     marginBottom: 15,

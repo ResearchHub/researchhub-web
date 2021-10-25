@@ -1,3 +1,9 @@
+export const ENTITIES = {
+  "USER": "USER",
+  "USER_INVITE": "USER_INVITE",
+  "ORG": "ORG",
+}
+
 export const NOTE_GROUPS = {
   WORKSPACE: "WORKSPACE",
   PRIVATE: "PRIVATE",

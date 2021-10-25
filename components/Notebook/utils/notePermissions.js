@@ -23,6 +23,8 @@ export const getUserNoteAccess = ({ user, userOrgs, notePerms }) => {
   return userAccess;
 };
 
-export const isNoteSharedWithUser = ({ email, notePerms }) => {
-  return Boolean(notePerms.find((o) => o?.user?.email === email));
+export const isNoteSharedWithUser = ({ email, notePerms, invitedUsers = [] }) => {
+  const hasAccess = Boolean(notePerms.find((p) => p?.user?.email === email));
+  const isInvited = Boolean(invitedUsers.find((u) => u.recipient_email === email));
+  return hasAccess || isInvited;
 };
