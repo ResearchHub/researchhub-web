@@ -45,6 +45,7 @@ const ELNEditor = ({
   currentNote,
   handleEditorInput,
   setELNLoading,
+  refetchNotePerms,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -71,6 +72,7 @@ const ELNEditor = ({
           notePerms={notePerms}
           org={currentOrganization}
           userOrgs={userOrgs}
+          refetchNotePerms={refetchNotePerms}
         />
       </div>
       {presenceListElement !== null && (

@@ -1,7 +1,7 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import {
   fetchUserOrgs,
   fetchNotePermissions,
@@ -125,39 +125,10 @@ const Notebook = ({ auth, user }) => {
       }
     };
 
-    const _fetchAndSetCurrentNotePermissions = async () => {
-      let response;
-      let perms;
-
-      if (noteId) {
-        try {
-          response = await fetchNotePermissions({ noteId });
-
-          if (response.ok) {
-            perms = await Helpers.parseJSON(response);
-            setCurrentNotePerms({ forNote: noteId, list: perms });
-          } else {
-            captureError({
-              msg: "Could not fetch note permissions",
-              data: { noteId, orgSlug, userId: user?.id },
-            });
-            setError({ statusCode: response.status });
-          }
-        } catch (error) {
-          captureError({
-            error,
-            msg: "Failed to fetch note permissions",
-            data: { noteId, orgSlug, userId: user?.id },
-          });
-          setError({ statusCode: 500 });
-        }
-      }
-    };
-
     setCurrentNote(null);
     setELNLoading(true);
     _fetchAndSetCurrentNote();
-    _fetchAndSetCurrentNotePermissions();
+    fetchAndSetCurrentNotePermissions();
   }, [noteId]);
 
   useEffect(() => {
@@ -226,6 +197,35 @@ const Notebook = ({ auth, user }) => {
       setDidInitialNotesLoad(false);
     }
   }, [orgSlug, currentOrganization]);
+
+  const fetchAndSetCurrentNotePermissions = useCallback(async () => {
+    let response;
+    let perms;
+
+    if (noteId) {
+      try {
+        response = await fetchNotePermissions({ noteId });
+
+        if (response.ok) {
+          perms = await Helpers.parseJSON(response);
+          setCurrentNotePerms({ forNote: noteId, list: perms });
+        } else {
+          captureError({
+            msg: "Could not fetch note permissions",
+            data: { noteId, userId: user?.id },
+          });
+          setError({ statusCode: response.status });
+        }
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch note permissions",
+          data: { noteId, userId: user?.id },
+        });
+        setError({ statusCode: 500 });
+      }
+    }
+  }, [noteId, user]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
@@ -337,6 +337,7 @@ const Notebook = ({ auth, user }) => {
           handleEditorInput={handleEditorInput}
           currentOrganization={currentOrganization}
           setELNLoading={setELNLoading}
+          refetchNotePerms={fetchAndSetCurrentNotePermissions}
         />
       )}
     </div>
