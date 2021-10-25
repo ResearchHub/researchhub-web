@@ -20,13 +20,14 @@ export const updateNoteUserPermissions = ({
   accessType,
 }) => {
   const params = {
-    organization: orgId || userId,
+    ...(orgId && { organization: orgId }),
+    ...(userId && { user: userId }),
     access_type: accessType,
   };
 
   return fetch(
     API.NOTE_PERMISSIONS({ noteId, method: "PATCH" }),
-    API.GET_CONFIG(params)
+    API.PATCH_CONFIG(params)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
