@@ -4,7 +4,7 @@ import { useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 
-const NoteShareButton = ({ noteId, org = null }) => {
+const NoteShareButton = ({ noteId, notePerms, currentOrg, userOrgs }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,7 +13,12 @@ const NoteShareButton = ({ noteId, org = null }) => {
       isOpen={isOpen}
       popoverContent={
         <div className={css(styles.popoverContainer)}>
-          <ManageNotePermissions org={org} noteId={noteId} />
+          <ManageNotePermissions
+            notePerms={notePerms}
+            currentOrg={currentOrg}
+            userOrgs={userOrgs}
+            noteId={noteId}
+          />
         </div>
       }
       positions={["bottom", "top"]}

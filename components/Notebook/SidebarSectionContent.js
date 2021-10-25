@@ -13,15 +13,13 @@ import {
   fetchNote,
   createNoteTemplate,
 } from "~/config/fetch";
-import { getNotePathname } from "~/config/utils/org";
+import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import { useAlert } from "react-alert";
 import { useState } from "react";
-import Loader from "../Loader/Loader";
 
 const SidebarSectionContent = ({
   currentNoteId,
   currentOrg,
-  isPrivateNotebook,
   noteId,
   onNoteCreate,
   onNoteDelete,
@@ -34,7 +32,6 @@ const SidebarSectionContent = ({
   const alert = useAlert();
   const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [menuLoading, setMenuLoading] = useState(false);
 
   const menuItems = [
     //{
@@ -50,23 +47,15 @@ const SidebarSectionContent = ({
       onClick: async (e) => {
         e && e.stopPropagation();
         setIsPopoverOpen(false);
-        setMenuLoading(true);
         const response = await fetchNote({ noteId });
         const originalNote = await Helpers.parseJSON(response);
-        let params;
-
-        if (isPrivateNotebook) {
-          params = { title };
-        } else {
-          params = { orgSlug: currentOrg.slug, title };
-        }
+        const params = { orgSlug: currentOrg.slug, title };
 
         const duplicatedNote = await createNewNote(params);
         const noteContent = await createNoteContent({
-          editorData: originalNote.latest_version?.src ?? "",
+          editorData: originalNote.latest_version.src,
           noteId: duplicatedNote.id,
         });
-        setMenuLoading(false);
         onNoteCreate(duplicatedNote);
       },
     },
@@ -76,30 +65,22 @@ const SidebarSectionContent = ({
       hoverStyle: styles.blueHover,
       onClick: (e) => {
         e && e.stopPropagation();
-        setMenuLoading(true);
         setIsPopoverOpen(false);
         fetchNote({ noteId })
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((data) => {
-            if (data.latest_version?.src) {
-              const params = {
-                full_src: data.latest_version.src,
-                is_default: false,
-                name: title,
-                organization: currentOrg?.id,
-              };
-              createNoteTemplate(params).then((data) => {
-                setMessage("Template created");
-                showMessage({ show: true, error: false });
-                setRefetchTemplates(!refetchTemplates);
-                setMenuLoading(false);
-              });
-            } else {
-              setMenuLoading(false);
-              setMessage("Cannot create an empty template");
-              showMessage({ show: true, error: true });
-            }
+            const params = {
+              full_src: data.latest_version.src,
+              is_default: false,
+              name: title,
+              organization: currentOrg?.id,
+            };
+            createNoteTemplate(params).then((data) => {
+              setMessage("Template created");
+              showMessage({ show: true, error: false });
+              setRefetchTemplates(!refetchTemplates);
+            });
           });
       },
     },
@@ -168,10 +149,11 @@ const SidebarSectionContent = ({
                 )}
                 onClick={(e) => {
                   e && e.preventDefault();
+                  e && e.stopPropagation();
                   setIsPopoverOpen(!isPopoverOpen);
                 }}
               >
-                {menuLoading ? <Loader size={18} /> : icons.ellipsisV}
+                {icons.ellipsisV}
               </div>
             }
           />

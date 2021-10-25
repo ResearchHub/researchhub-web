@@ -15,7 +15,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { getOrgUserCount } from "~/config/utils/org";
+import { getOrgUserCount } from "./utils/orgHelper";
 import Loader from "~/components/Loader/Loader";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { captureError } from "~/config/utils/error";

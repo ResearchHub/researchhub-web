@@ -1,19 +1,21 @@
+import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
-import Loader from "~/components/Loader/Loader";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
-import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
-import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
+import { useState, useMemo } from "react";
+import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
+import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
+import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { useState, useEffect } from "react";
+import groupBy from "lodash/groupBy";
+import { NOTE_GROUPS } from "./config/notebookConstants";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -33,39 +35,43 @@ const NotebookSidebar = ({
   onOrgChange,
   orgSlug,
   orgs,
+  refetchTemplates,
+  setRefetchTemplates,
   setTitles,
   titles,
   user,
 }) => {
-  const [createNoteLoading, setCreateNoteLoading] = useState(false);
+
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
-  const [allowCreateNote, setAllowCreateNote] = useState(false);  
+  const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
 
-  useEffect(() => {
-    if (currentOrg) {
-      setAllowCreateNote(true);
-    }
-  }, [currentOrg]);
+  const getSidebarGroupKeys = () => {
+    const groupedNoteKeys = Object.keys(groupedNotes);
+    const defaultGroups = [NOTE_GROUPS.WORKSPACE];
+    return Array.from(new Set([...defaultGroups, ...groupedNoteKeys]));
+  }
 
-  const handleCreateNewNote = async () => {
-    setCreateNoteLoading(true);
-
-    let params;
-    if (isPrivateNotebook) {
-      params = {};
-    } else {
-      params = { orgSlug };
-    }
-
-    const note = await createNewNote(params);
-    setCreateNoteLoading(false);
-    onNoteCreate(note);
-  };
+  const buildHtmlForGroup = ({ groupKey }) => {
+    return (
+      <NotebookSidebarGroup
+        key={groupKey}
+        groupKey={groupKey}
+        availGroups={Object.keys(groupedNotes)}
+        notes={groupedNotes[groupKey] || []}
+        titles={titles}
+        currentNoteId={currentNoteId}
+        currentOrg={currentOrg}
+        onNoteCreate={onNoteCreate}
+        onNoteDelete={onNoteDelete}
+        refetchTemplates={refetchTemplates}
+        setRefetchTemplates={setRefetchTemplates}
+      />
+    )
+  }
 
   return (
     <div className={css(styles.sidebar)}>
@@ -201,55 +207,14 @@ const NotebookSidebar = ({
         </div>
       </div>
       <div className={css(styles.scrollable)}>
-        <div
-          className={css(
-            styles.sidebarSection,
-            hideNotes && styles.showBottomBorder
-          )}
-        >
-          Notes
-          {allowCreateNote &&
-            <span className={css(styles.chevronIcon)}>
-              {createNoteLoading ? (
-                <Loader type="clip" size={23} />
-              ) : (
-                <div
-                  className={css(styles.actionButton)}
-                  onClick={handleCreateNewNote}
-                >
-                  {icons.plus}
-                </div>
-              )}
-            </span>
-          }
-        </div>
         <ReactPlaceholder
-          ready={didInitialNotesLoad}
+          ready={didInitialNotesLoad && !isEmpty(currentOrg)}
           showLoadingAnimation
           customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
         >
-          {!hideNotes && (
-            <div>
-              {notes.map((note) => {
-                const noteId = note.id.toString();
-                return (
-                  <SidebarSectionContent
-                    isPrivateNotebook={isPrivateNotebook}
-                    currentNoteId={currentNoteId}
-                    currentOrg={currentOrg}
-                    onNoteCreate={onNoteCreate}
-                    onNoteDelete={onNoteDelete}
-                    key={noteId}
-                    noteId={noteId}
-                    notes={notes}
-                    refetchTemplates={refetchTemplates}
-                    setRefetchTemplates={setRefetchTemplates}
-                    title={titles[noteId]}
-                  />
-                );
-              })}
-            </div>
-          )}
+          {getSidebarGroupKeys().map((groupKey) => (
+            buildHtmlForGroup({ groupKey })
+          ))}
         </ReactPlaceholder>
 
         <div className={css(styles.sidebarButtonsContainer)}>
@@ -385,33 +350,6 @@ const styles = StyleSheet.create({
   },
   scrollable: {
     overflow: "auto",
-  },
-  sidebarSection: {
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 18,
-    fontWeight: 500,
-    padding: 20,
-    userSelect: "none",
-    alignItems: "center",
-  },
-  sidebarSectionContent: {
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 14,
-    fontWeight: 500,
-    padding: 20,
-    textDecoration: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-    ":last-child": {
-      borderBottom: `1px solid ${colors.GREY(0.3)}`,
-    },
   },
   active: {
     backgroundColor: colors.GREY(0.3),
