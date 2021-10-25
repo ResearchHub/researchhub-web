@@ -39,12 +39,15 @@ const saveData = (editor, noteId) => {
 
 const ELNEditor = ({
   ELNLoading,
+  notePerms,
+  currentOrganization,
+  userOrgs,  
   currentNote,
   handleEditorInput,
-  orgSlug,
   setELNLoading,
 }) => {
   const router = useRouter();
+  const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
 
@@ -63,7 +66,12 @@ const ELNEditor = ({
           className={css(styles.presenceList) + " presence"}
           ref={onRefChange}
         />
-        {/*<NoteShareButton noteId={currentNote.id} org={currentOrganization} />*/}
+        <NoteShareButton
+          noteId={currentNote.id}
+          notePerms={notePerms}
+          org={currentOrganization}
+          userOrgs={userOrgs}
+        />
       </div>
       {presenceListElement !== null && (
         <CKEditorContext

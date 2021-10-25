@@ -7,7 +7,7 @@ export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
 };
 
-export const fetchNoteByInviteToken = ({ token }) => {
+export const fetchNoteInviteByToken = ({ token }) => {
   return fetch(API.NOTE_INVITE_DETAILS({ token }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
@@ -111,10 +111,11 @@ export const fetchNote = ({ noteId }, authToken) => {
   return fetch(API.NOTE({ noteId }), API.GET_CONFIG(authToken));
 };
 
-export const createNewNote = ({ orgSlug, title }, authToken) => {
+export const createNewNote = ({ orgSlug, title, grouping }, authToken) => {
   const params = {
     organization_slug: orgSlug,
     title: title ? title : "Untitled",
+    ...(grouping && { grouping }),
   };
 
   return fetch(API.NOTE({}), API.POST_CONFIG(params, authToken))

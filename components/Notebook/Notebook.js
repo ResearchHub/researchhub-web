@@ -9,7 +9,7 @@ import {
   fetchNote,
   fetchOrg,
 } from "~/config/fetch";
-import { getNotePathname } from "~/config/utils/org";
+import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import { getUserNoteAccess } from "./utils/notePermissions";
 import { Helpers } from "@quantfive/js-web-config";
@@ -75,11 +75,9 @@ const Notebook = ({ auth, user }) => {
         userOrgs = await fetchUserOrgs({ user });
         currOrg = getCurrentOrgFromRouter(userOrgs);
 
-        setOrganizations(userOrgs);
         setCurrentOrganization(currOrg);
+        setOrganizations(userOrgs);
         orgsFetched.current = true;
-
-        return Promise.resolve();
       } catch (error) {
         captureError({
           error,
@@ -87,8 +85,6 @@ const Notebook = ({ auth, user }) => {
           data: { noteId, orgSlug, userNoteAccess, userId: user.id },
         });
         setError({ statusCode: 500 });
-
-        return Promise.reject();
       }
     };
 
@@ -139,7 +135,7 @@ const Notebook = ({ auth, user }) => {
 
           if (response.ok) {
             perms = await Helpers.parseJSON(response);
-            setCurrentNotePerms({ forNote: noteId, perms });
+            setCurrentNotePerms({ forNote: noteId, list: perms });
           } else {
             captureError({
               msg: "Could not fetch note permissions",
@@ -173,7 +169,7 @@ const Notebook = ({ auth, user }) => {
       const access = getUserNoteAccess({
         user,
         userOrgs: [currentNote.organization] || [],
-        notePerms: currentNotePerms.perms,
+        notePerms: currentNotePerms.list,
       });
 
       setUserNoteAccess(access);
@@ -226,14 +222,10 @@ const Notebook = ({ auth, user }) => {
     };
 
     if (orgSlug !== currentOrganization?.slug) {
-      const currentOrg = getCurrentOrgFromRouter(organizations);
-      if (currentOrg) {
-        setCurrentOrganization(currentOrg);
-        _fetchAndSetCurrentOrgNotes();
-        setDidInitialNotesLoad(false);
-      }
+      _fetchAndSetCurrentOrgNotes();
+      setDidInitialNotesLoad(false);
     }
-  }, [orgSlug, currentOrganization, organizations]);
+  }, [orgSlug, currentOrganization]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
@@ -338,10 +330,12 @@ const Notebook = ({ auth, user }) => {
       />
       {currentNote && (
         <ELNEditor
+          notePerms={currentNotePerms?.list || []}
           ELNLoading={ELNLoading}
+          userOrgs={organizations}
           currentNote={currentNote}
           handleEditorInput={handleEditorInput}
-          orgSlug={orgSlug}
+          currentOrganization={currentOrganization}
           setELNLoading={setELNLoading}
         />
       )}

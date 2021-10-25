@@ -8,7 +8,7 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import Link from "next/link";
 import { createNewNote } from "~/config/fetch";
 import { useRouter } from "next/router";
-import { getNotePathname } from "~/config/utils/org";
+import { getNotePathname } from "./utils/orgHelper";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
