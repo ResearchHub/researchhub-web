@@ -32,6 +32,7 @@ const ManageNotePermissions = ({
   setMessage,
   showMessage,
   notePerms,
+  refetchNotePerms,
 }) => {
   const permDropdownOpts = [
     {
@@ -55,6 +56,14 @@ const ManageNotePermissions = ({
       value: "REMOVE",
     },
   ];
+
+  const dropdownOptsForInvited = [
+    {
+      title: "Cancel invite",
+      titleStyle: styles.deleteOpt,
+      value: "REMOVE",
+    },
+  ];  
 
   const [userToBeInvitedEmail, setUserToBeInvitedEmail] = useState("");
   const [userToBeInvitedPerm, setUserToBeInvitedPerm] = useState("EDITOR");
@@ -101,6 +110,8 @@ const ManageNotePermissions = ({
           setInvitedUsersList(invitedUsers)
           setUserToBeInvitedEmail("");
         });
+
+      refetchNotePerms();
     } catch (error) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
@@ -136,26 +147,34 @@ const ManageNotePermissions = ({
     }
   };
 
-  const handleRemoveUser = async (user, noteId) => {
+  const handleRemoveUser = async (user) => {
     try {
       if (!isNullOrUndefined(user.recipient_email)) {
         await removeInvitedUserFromNote({
           noteId: noteId,
           email: user.recipient_email,
         });
+
+        const invitedUsers = await _fetchInvitedNoteUsers()
+        setInvitedUsersList(invitedUsers);
       } else {
         await removeUserPermissionsFromNote({
           noteId: noteId,
-          userId: user.author_profile.id,
+          userId: user.id,
         });
+
+        refetchNotePerms();
       }
+
+      setUserToBeInvitedEmail("");
+
     } catch (error) {
       setMessage("Failed to remove user");
       showMessage({ show: true, error: true });
       captureError({
         error,
         msg: "Failed to remove user",
-        data: { noteId, currentOrg, userIdToRemove: user.author_profile.id },
+        data: { noteId, currentOrg, userIdToRemove: user.id },
       });
     }
   };
@@ -234,13 +253,17 @@ const ManageNotePermissions = ({
 
         {currentUserAccess === PERMS.ADMIN ? (
           <DropdownButton
-            opts={permDropdownOpts}
+            opts={dropdownOptsForInvited}
             label={perm}
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
-            onSelect={(newPerm) =>
-              handleUpdatePermission({ entity: invitedUser, entityType: ENTITIES.USER_INVITE, newPerm })
-            }
+            onSelect={(newPerm) => {
+              if (newPerm === "REMOVE") {
+                handleRemoveUser(invitedUser);
+              } else {
+                handleUpdatePermission({ entity: invitedUser, entityType: ENTITIES.USER_INVITE, newPerm })
+              }
+            }}
             onClose={() => setPermDropdownOpenForEntity(null)}
           />
         ) : (
@@ -293,13 +316,17 @@ const ManageNotePermissions = ({
             label={perm}
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
-            onSelect={(newPerm) =>
-              handleUpdatePermission({
-                entity: forEntity === ENTITIES.USER ? accessObj.user : accessObj.organization,
-                entityType: forEntity,
-                newPerm,
-              })
-            }
+            onSelect={(newPerm) => {
+              if (newPerm === "REMOVE") {
+                handleRemoveUser(accessObj.user);
+              } else {
+                handleUpdatePermission({
+                  entity: forEntity === ENTITIES.USER ? accessObj.user : accessObj.organization,
+                  entityType: forEntity,
+                  newPerm,
+                })
+              }
+            }}            
             onClose={() => setPermDropdownOpenForEntity(null)}
           />
         ) : (

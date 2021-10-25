@@ -34,7 +34,12 @@ export const updateNoteUserPermissions = ({
 };
 
 export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
-  return fetch(API.NOTE({ noteId }), API.DELETE_CONFIG({ user: userId }))
+  const config = {
+    ...API.DELETE_CONFIG(),
+    body: JSON.stringify({ user: userId }),
+  };
+
+  return fetch(API.NOTE_PERMISSIONS({ noteId, method: "DELETE" }), config)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
