@@ -100,9 +100,6 @@ const styles = StyleSheet.create({
       transition: "0.3s",
     },
   },
-  permJustText: {
-    marginRight: 27,
-  },
   downIcon: {
     padding: 4,
     fontSize: 11,
