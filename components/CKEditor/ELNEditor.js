@@ -41,7 +41,7 @@ const ELNEditor = ({
   ELNLoading,
   notePerms,
   currentOrganization,
-  userOrgs,  
+  userOrgs,
   currentNote,
   handleEditorInput,
   setELNLoading,
@@ -204,6 +204,7 @@ const styles = StyleSheet.create({
   noteHeader: {
     display: "flex",
     height: 50,
+    userSelect: "none",
   },
   presenceList: {
     margin: "auto 60px 0px auto",

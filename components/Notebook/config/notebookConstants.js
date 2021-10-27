@@ -11,26 +11,33 @@ export const NOTE_GROUPS = {
 };
 
 export const PERMS = {
-  NO_ACCESS: 0,
-  VIEWER: 1,
-  COMMENTER: 2,
-  EDITOR: 3,
-  ADMIN: 4,
-  getEnumByVal: function (val) {
-    for (const k in this) {
-      if (this[k] === val) {
+  ORG: {
+    NO_ACCESS: 0,
+    MEMBER: 1,
+    ADMIN: 2,
+  },
+  NOTE: {
+    NO_ACCESS: 0,
+    VIEWER: 1,
+    COMMENTER: 2,
+    EDITOR: 3,
+    ADMIN: 4,
+  },
+  getEnumByVal: function ({ value, forEntity }) {
+    for (const k in this[forEntity]) {
+      if (this[forEntity][k] === value) {
         return k;
       }
     }
   },
-  getValByEnum: function (permEnum) {
+  getValByEnum: function ({ permEnum, forEntity }) {
     if (!permEnum) {
       return this.NO_ACCESS;
     }
 
-    for (const k in this) {
+    for (const k in this[forEntity]) {
       if (k === permEnum) {
-        return PERMS[k];
+        return PERMS[forEntity][k];
       }
     }
   },
