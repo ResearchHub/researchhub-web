@@ -1,8 +1,8 @@
 export const ENTITIES = {
-  "USER": "USER",
-  "USER_INVITE": "USER_INVITE",
-  "ORG": "ORG",
-}
+  USER: "USER",
+  USER_INVITE: "USER_INVITE",
+  ORG: "ORG",
+};
 
 export const NOTE_GROUPS = {
   WORKSPACE: "WORKSPACE",
@@ -20,6 +20,17 @@ export const PERMS = {
     for (const k in this) {
       if (this[k] === val) {
         return k;
+      }
+    }
+  },
+  getValByEnum: function (permEnum) {
+    if (!permEnum) {
+      return this.NO_ACCESS;
+    }
+
+    for (const k in this) {
+      if (k === permEnum) {
+        return PERMS[k];
       }
     }
   },
