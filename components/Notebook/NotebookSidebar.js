@@ -15,7 +15,7 @@ import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import { isEmpty } from "~/config/utils/nullchecks";
 import groupBy from "lodash/groupBy";
-import { NOTE_GROUPS } from "./config/notebookConstants";
+import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -41,7 +41,6 @@ const NotebookSidebar = ({
   titles,
   user,
 }) => {
-
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -50,10 +49,17 @@ const NotebookSidebar = ({
   const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
 
   const getSidebarGroupKeys = () => {
-    const groupedNoteKeys = Object.keys(groupedNotes);
-    const defaultGroups = [NOTE_GROUPS.WORKSPACE];
-    return Array.from(new Set([...defaultGroups, ...groupedNoteKeys]));
-  }
+    let groups = Object.keys(groupedNotes);
+
+    const orgAccess = PERMS.getValByEnum(
+      currentOrg?.user_permission?.access_type
+    );
+    if (orgAccess >= PERMS.EDITOR) {
+      groups = [NOTE_GROUPS.WORKSPACE, ...groups];
+    }
+
+    return groups;
+  };
 
   const buildHtmlForGroup = ({ groupKey }) => {
     return (
@@ -70,8 +76,8 @@ const NotebookSidebar = ({
         refetchTemplates={refetchTemplates}
         setRefetchTemplates={setRefetchTemplates}
       />
-    )
-  }
+    );
+  };
 
   return (
     <div className={css(styles.sidebar)}>
@@ -212,9 +218,9 @@ const NotebookSidebar = ({
           showLoadingAnimation
           customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
         >
-          {getSidebarGroupKeys().map((groupKey) => (
+          {getSidebarGroupKeys().map((groupKey) =>
             buildHtmlForGroup({ groupKey })
-          ))}
+          )}
         </ReactPlaceholder>
 
         <div className={css(styles.sidebarButtonsContainer)}>
