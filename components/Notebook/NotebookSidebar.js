@@ -15,7 +15,7 @@ import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import { isEmpty } from "~/config/utils/nullchecks";
 import groupBy from "lodash/groupBy";
-import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
+import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -51,10 +51,12 @@ const NotebookSidebar = ({
   const getSidebarGroupKeys = () => {
     let groups = Object.keys(groupedNotes);
 
-    const orgAccess = PERMS.getValByEnum(
-      currentOrg?.user_permission?.access_type
-    );
-    if (orgAccess >= PERMS.EDITOR) {
+    const orgAccess = PERMS.getValByEnum({
+      permEnum: currentOrg?.user_permission?.access_type,
+      forEntity: ENTITIES.ORG,
+    });
+
+    if (orgAccess >= PERMS.ORG.MEMBER) {
       groups = [NOTE_GROUPS.WORKSPACE, ...groups];
     }
 

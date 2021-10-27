@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import { StyleSheet, css } from "aphrodite";
@@ -82,7 +82,17 @@ const ManageNotePermissions = ({
     _fetchInvitedNoteUsers().then((invitedUsers) => {
       setInvitedUsersList(invitedUsers);
     });
+
+    refetchNotePerms();
   }, []);
+
+  const currentUserAccess = useMemo(() => {
+    return getUserNoteAccess({
+      user: currentUser,
+      notePerms: notePerms,
+      userOrgs,
+    });
+  }, [currentUser, notePerms, userOrgs]);
 
   const handleInvite = async (e) => {
     e && e.preventDefault();
@@ -194,6 +204,7 @@ const ManageNotePermissions = ({
           accessType: newPerm,
         });
       }
+      refetchNotePerms();
     } catch (error) {
       setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
@@ -228,12 +239,6 @@ const ManageNotePermissions = ({
     const perm = invitedUser?.invite_type.toLowerCase(); // temp
     const key = `invited-user-${invitedUser.recipient_email}`;
 
-    const currentUserAccess = getUserNoteAccess({
-      user: currentUser,
-      notePerms: notePerms,
-      userOrgs,
-    });
-
     return (
       <div className={css(styles.userRow)} key={key}>
         <div className={css(styles.entity)}>
@@ -245,7 +250,7 @@ const ManageNotePermissions = ({
           </div>
         </div>
 
-        {currentUserAccess === PERMS.ADMIN ? (
+        {currentUserAccess >= PERMS.NOTE.ADMIN ? (
           <DropdownButton
             opts={dropdownOptsForInvited}
             label={`Invitation Pending`}
@@ -281,12 +286,6 @@ const ManageNotePermissions = ({
         ? `access-user-${accessObj.user?.author_profile?.id}`
         : `access-org-${accessObj.organization?.slug}`;
 
-    const currentUserAccess = getUserNoteAccess({
-      user: currentUser,
-      notePerms: notePerms,
-      userOrgs,
-    });
-
     const perm = accessObj.access_type.toLowerCase();
 
     return (
@@ -308,7 +307,7 @@ const ManageNotePermissions = ({
           </div>
         ) : null}
 
-        {currentUserAccess === PERMS.ADMIN && !isCurrentUser ? (
+        {currentUserAccess >= PERMS.NOTE.ADMIN && !isCurrentUser ? (
           <DropdownButton
             opts={permDropdownOpts}
             label={perm}
@@ -339,46 +338,48 @@ const ManageNotePermissions = ({
 
   return (
     <div className={css(styles.container)}>
-      <form
-        className={css(styles.inviteForm)}
-        onSubmit={(e) => handleInvite(e)}
-      >
-        <DropdownButton
-          opts={permDropdownOpts.slice(0, permDropdownOpts.length - 1)}
-          label={userToBeInvitedPerm.toLowerCase()}
-          isOpen={isUserToBeInvitedPermDdownOpen}
-          onClick={() => setIsUserToBeInvitedPermDdownOpen(true)}
-          onSelect={(selectedPerm) => setUserToBeInvitedPerm(selectedPerm)}
-          onClose={() => setIsUserToBeInvitedPermDdownOpen(false)}
-          overrideTargetStyle={styles.newUserPermButton}
-        />
-        <FormInput
-          id="org-invite-user"
-          onChange={(id, val) => setUserToBeInvitedEmail(val)}
-          containerStyle={styles.inputContainer}
-          value={userToBeInvitedEmail}
-          inputStyle={styles.inputStyle}
-          placeholder="User's email"
-          type="email"
-          onKeyDown={handleKeyDown}
-        />
-        {isInviteInProgress ? (
-          <div className={css(styles.loaderWrapper)}>
-            <Loader
-              key={"loader"}
-              loading={true}
-              size={25}
-              color={colors.BLUE()}
-            />
-          </div>
-        ) : (
-          <Button
-            type="submit"
-            customButtonStyle={styles.button}
-            label="Invite"
+      {currentUserAccess >= PERMS.NOTE.ADMIN && (
+        <form
+          className={css(styles.inviteForm)}
+          onSubmit={(e) => handleInvite(e)}
+        >
+          <DropdownButton
+            opts={permDropdownOpts.slice(0, permDropdownOpts.length - 1)}
+            label={userToBeInvitedPerm.toLowerCase()}
+            isOpen={isUserToBeInvitedPermDdownOpen}
+            onClick={() => setIsUserToBeInvitedPermDdownOpen(true)}
+            onSelect={(selectedPerm) => setUserToBeInvitedPerm(selectedPerm)}
+            onClose={() => setIsUserToBeInvitedPermDdownOpen(false)}
+            overrideTargetStyle={styles.newUserPermButton}
           />
-        )}
-      </form>
+          <FormInput
+            id="org-invite-user"
+            onChange={(id, val) => setUserToBeInvitedEmail(val)}
+            containerStyle={styles.inputContainer}
+            value={userToBeInvitedEmail}
+            inputStyle={styles.inputStyle}
+            placeholder="User's email"
+            type="email"
+            onKeyDown={handleKeyDown}
+          />
+          {isInviteInProgress ? (
+            <div className={css(styles.loaderWrapper)}>
+              <Loader
+                key={"loader"}
+                loading={true}
+                size={25}
+                color={colors.BLUE()}
+              />
+            </div>
+          ) : (
+            <Button
+              type="submit"
+              customButtonStyle={styles.button}
+              label="Invite"
+            />
+          )}
+        </form>
+      )}
       {notePerms.map((accessObj) => renderAccessRow(accessObj))}
       {invitedUsersList.map((invitedUser) => renderInvitedUser(invitedUser))}
     </div>
