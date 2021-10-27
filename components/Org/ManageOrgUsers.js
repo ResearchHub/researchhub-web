@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     },
   },
   permJustText: {
-    marginRight: 27,
+    marginRight: 23,
     color: colors.BLACK(0.8),
   },
   downIcon: {
