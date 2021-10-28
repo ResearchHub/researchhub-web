@@ -13,28 +13,52 @@ import { useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import Loader from "../Loader/Loader";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
+import { connect } from "react-redux";
+import { MessageActions } from "~/redux/message";
+import { captureError } from "~/config/utils/error";
 
-const saveData = (editor, noteId) => {
-  const noteParams = {
-    title:
-      editor.plugins
-        .get("Title")
-        .getTitle()
-        .replace(/&nbsp;/g, " ") || "Untitled",
-  };
-  fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
+  try {
+    const noteParams = {
+      title:
+        editor.plugins
+          .get("Title")
+          .getTitle()
+          .replace(/&nbsp;/g, " ") || "Untitled",
+    };
 
-  const noteContentParams = {
-    full_src: editor.getData(),
-    plain_text: "",
-    note: noteId,
-  };
+    let noteResponse;
+    let contentResponse;
 
-  fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    noteResponse = await fetch(
+      API.NOTE({ noteId }),
+      API.PATCH_CONFIG(noteParams)
+    );
+
+    if (noteResponse.ok) {
+      const contentParams = {
+        full_src: editor.getData(),
+        plain_text: "",
+        note: noteId,
+      };
+
+      contentResponse = await fetch(
+        API.NOTE_CONTENT(),
+        API.POST_CONFIG(contentParams)
+      );
+      if (contentResponse.ok) {
+        return onSaveSuccess && onSaveSuccess(contentResponse);
+      }
+    }
+
+    return onSaveFail && onSaveFail(contentResponse || noteResponse);
+  } catch (error) {
+    captureError({
+      error,
+      msg: "Failed to save content",
+      data: { noteId },
+    });
+  }
 };
 
 const ELNEditor = ({
@@ -46,6 +70,8 @@ const ELNEditor = ({
   handleEditorInput,
   setELNLoading,
   refetchNotePerms,
+  setMessage,
+  showMessage,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -59,6 +85,18 @@ const ELNEditor = ({
   }, []);
 
   const channelId = `${orgSlug}-${currentNote.id}`;
+
+  const onSaveFail = (response) => {
+    if (response.status === 403) {
+      setMessage("You do not have permission to edit this document");
+      showMessage({ show: true, error: true });
+    } else {
+      captureError({
+        msg: "Could not save content",
+        data: { currentNote },
+      });
+    }
+  };
 
   return (
     <div className={css(styles.container)}>
@@ -164,7 +202,11 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, currentNote.id);
+                    return saveData({
+                      editor,
+                      noteId: currentNote.id,
+                      onSaveFail,
+                    });
                   },
                 },
               }}
@@ -172,7 +214,6 @@ const ELNEditor = ({
               onChange={(event, editor) => handleEditorInput(editor)}
               onReady={(editor) => {
                 setELNLoading(false);
-                console.log("Editor is ready to use!", editor);
               }}
             />
           </div>
@@ -221,4 +262,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ELNEditor;
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(null, mapDispatchToProps)(ELNEditor);
