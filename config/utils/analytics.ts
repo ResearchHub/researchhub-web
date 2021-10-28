@@ -1,6 +1,7 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AuthStore } from "../types/root_types";
+import { emptyFncWithMsg } from "./nullchecks";
 
 type Event =
   | {
@@ -31,7 +32,7 @@ type Event =
 type EventData = Event & {
   user: AuthStore["user"] | null;
   vendor: "amp" | "google";
-  interactionType?: null;
+  interactionType?: null | "click";
 };
 
 export const trackEvent = ({
@@ -42,16 +43,20 @@ export const trackEvent = ({
   interactionType = null,
 }: EventData): void => {
   try {
+    emptyFncWithMsg;
     switch (vendor) {
       case "amp":
         return trackAmplitudeEvent({ eventType, data, user, interactionType });
+      // doesn't seem to be used
       // case "google":
       //   return trackAmplitudeEvent();
       default:
-        console.warn("No vendor specified while tracking event");
+        throw new Error(
+          "No vendor or unhandled vendor specified while tracking event."
+        );
     }
   } catch (err) {
-    console.error("Exception while tracking event", err);
+    emptyFncWithMsg(err);
   }
 };
 
