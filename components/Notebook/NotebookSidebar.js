@@ -60,7 +60,22 @@ const NotebookSidebar = ({
       groups = [NOTE_GROUPS.WORKSPACE, ...groups];
     }
 
-    return groups;
+    return sortSidebarGroups(groups);
+  };
+
+  const sortSidebarGroups = (sidebarGroups) => {
+    const sorted = [];
+    if (sidebarGroups.includes(NOTE_GROUPS.WORKSPACE)) {
+      sorted.push(NOTE_GROUPS.WORKSPACE);
+    }
+    if (sidebarGroups.includes(NOTE_GROUPS.PRIVATE)) {
+      sorted.push(NOTE_GROUPS.PRIVATE);
+    }
+    if (sidebarGroups.includes(NOTE_GROUPS.SHARED)) {
+      sorted.push(NOTE_GROUPS.SHARED);
+    }
+
+    return sorted;
   };
 
   const buildHtmlForGroup = ({ groupKey }) => {
