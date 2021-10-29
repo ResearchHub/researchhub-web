@@ -39,6 +39,8 @@ const UserInfoModal = dynamic(() =>
 );
 
 // Config
+import { AUTH_TOKEN } from "~/config/constants";
+import { getCurrServerEnv } from "~/config/utils/env";
 import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { absoluteUrl } from "~/config/utils/routing";
@@ -340,8 +342,8 @@ function AuthorPage(props) {
     } else if (!prevProps && auth.isLoggedIn) {
       let papers = store.getState().author.authoredPapers.papers;
       checkUserVotes(papers, "authored");
-      let contributions = store.getState().author.userContributions
-        .contributions;
+      let contributions =
+        store.getState().author.userContributions.contributions;
       checkUserVotes(contributions, "contributions");
     }
     setPrevProps(auth.isLoggedIn);
@@ -658,6 +660,23 @@ function AuthorPage(props) {
     onCloseAvatarModal();
   };
 
+  const openJupyterHub = () => {
+    const currServerEnv = getCurrServerEnv();
+    let baseUrl;
+
+    if (currServerEnv === "production") {
+      baseUrl = "https://staging-jupyter.researchhub.com";
+    } else {
+      baseUrl = "https://jupyter.researchhub.com";
+    }
+
+    let authToken =
+      typeof window !== "undefined" ? window.localStorage[AUTH_TOKEN] : "";
+    let jupyterUrl = `${baseUrl}/login?researchhub-login=${authToken}`;
+
+    window.open(jupyterUrl, "_blank");
+  };
+
   const renderSocialEdit = (social) => {
     return (
       <div className={css(styles.socialEditContainer)}>
@@ -938,6 +957,26 @@ function AuthorPage(props) {
               />
             </div>
           ) : null,
+          isCurrentUserModerator ? (
+            <div
+              className={css(styles.editProfileButton, styles.jupyterButton)}
+              key="JupyterButton"
+            >
+              <Button
+                customButtonStyle={styles.editButtonCustom}
+                label={() => (
+                  <Fragment>
+                    <span style={{ marginRight: 10, userSelect: "none" }}>
+                      {icons.user}
+                    </span>
+                    JupyterHub
+                  </Fragment>
+                )}
+                onClick={openJupyterHub}
+                rippleClass={styles.rippleClass}
+              />
+            </div>
+          ) : null,
         ])}
       </div>
     </div>
@@ -1034,7 +1073,7 @@ function AuthorPage(props) {
                 className={css(styles.authorName, styles.editButtonContainer)}
                 property="name"
               >
-                { name }
+                {name}
               </h1>
               {userLinks}
             </div>
@@ -1145,13 +1184,13 @@ const styles = StyleSheet.create({
     },
   },
   modActions: {
-    marginLeft: 'auto',
-    display: 'flex',
+    marginLeft: "auto",
+    display: "flex",
 
     "@media only screen and (max-width: 767px)": {
-      marginLeft: 'unset',
+      marginLeft: "unset",
       marginTop: 16,
-    }
+    },
   },
   moderatorButton: {
     display: "flex",
@@ -1286,7 +1325,7 @@ const styles = StyleSheet.create({
   description: {
     marginBottom: 15,
     justifyContent: "center",
-    flexDirection: 'column',
+    flexDirection: "column",
     width: "100%",
     color: "#241F3A",
     lineHeight: 1.5,
@@ -1690,6 +1729,9 @@ const styles = StyleSheet.create({
     background: colors.NAVY(1),
     borderRadius: 4,
   },
+  jupyterButton: {
+    borderRadius: 4,
+  },
   editButtonCustom: {
     height: 35,
     width: 175,
@@ -1725,7 +1767,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthorPage);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorPage);
