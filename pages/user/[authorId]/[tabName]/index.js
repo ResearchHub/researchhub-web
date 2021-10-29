@@ -665,9 +665,9 @@ function AuthorPage(props) {
     let baseUrl;
 
     if (currServerEnv === "production") {
-      baseUrl = "https://staging-jupyter.researchhub.com";
-    } else {
       baseUrl = "https://jupyter.researchhub.com";
+    } else {
+      baseUrl = "https://staging-jupyter.researchhub.com";
     }
 
     let authToken =
