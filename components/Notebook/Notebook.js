@@ -300,7 +300,10 @@ const Notebook = ({ auth, user }) => {
     for (const noteId in titles) {
       updatedTitles[noteId] =
         String(noteId) === String(currentNote.id)
-          ? editor.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled"
+          ? editor.plugins
+              .get("Title")
+              .getTitle()
+              .replace(/&nbsp;/g, " ") || "Untitled"
           : titles[noteId];
     }
     setTitles(updatedTitles);
@@ -330,6 +333,7 @@ const Notebook = ({ auth, user }) => {
       />
       {currentNote && (
         <ELNEditor
+          user={user}
           notePerms={currentNotePerms?.list || []}
           ELNLoading={ELNLoading}
           userOrgs={organizations}
