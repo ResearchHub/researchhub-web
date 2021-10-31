@@ -7,26 +7,10 @@ import ActivityDescription from "./ActivityDescription";
 import colors from "~/config/themes/colors";
 import { getAuthorName } from "~/config/utils/misc";
 
-const ActivityHeader = ({ activity }) => {
+const ActivityHeader = ({ activity, user }) => {
   const { contribution_type: contributionType } = activity;
-
-  const user = getUser();
   const author = user["author_profile"];
   const username = getAuthorName(author);
-
-  function getUser() {
-    switch (contributionType) {
-      case "UPVOTER":
-      case "COMMENTER":
-      case "SUBMITTER":
-      case "CURATOR":
-        return activity["user"];
-      case "SUPPORTER":
-        return activity["user"];
-      default:
-        break;
-    }
-  }
 
   const activityAvatarProps = {
     size: 30,
