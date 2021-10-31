@@ -115,6 +115,7 @@ const ManageNotePermissions = ({
       const invitedUser = await inviteUserToNote({
         noteId,
         email: userToBeInvitedEmail,
+        accessType: userToBeInvitedPerm,
       });
 
       _fetchInvitedNoteUsers().then((invitedUsers) => {

@@ -9,13 +9,15 @@ import {
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { useRef, useState, useCallback } from "react";
+import { useRef, useState, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import Loader from "../Loader/Loader";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import { connect } from "react-redux";
 import { MessageActions } from "~/redux/message";
 import { captureError } from "~/config/utils/error";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
+import { PERMS } from "~/components/Notebook/config/notebookConstants";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   try {
@@ -72,6 +74,7 @@ const ELNEditor = ({
   refetchNotePerms,
   setMessage,
   showMessage,
+  user,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -83,6 +86,10 @@ const ELNEditor = ({
       setPresenceListElement(node);
     }
   }, []);
+
+  const currentUserAccess = useMemo(() => {
+    return getUserNoteAccess({ user, notePerms, userOrgs });
+  }, [user, notePerms, userOrgs]);
 
   const channelId = `${orgSlug}-${currentNote.id}`;
 
@@ -213,6 +220,10 @@ const ELNEditor = ({
               editor={CKELNEditor}
               onChange={(event, editor) => handleEditorInput(editor)}
               onReady={(editor) => {
+                if (currentUserAccess === PERMS.NOTE.VIEWER) {
+                  editor.isReadOnly = true;
+                }
+
                 setELNLoading(false);
               }}
             />
