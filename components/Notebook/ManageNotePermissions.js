@@ -36,6 +36,7 @@ const ManageNotePermissions = ({
   showMessage,
   notePerms,
   refetchNotePerms,
+  onNotePermChange,
 }) => {
   const permDropdownOpts = [
     {
@@ -176,6 +177,7 @@ const ManageNotePermissions = ({
         });
 
         refetchNotePerms();
+        onNotePermChange({ changeType: "REMOVE_USER" });
       }
 
       setUserToBeInvitedEmail("");
@@ -205,6 +207,7 @@ const ManageNotePermissions = ({
           accessType: newPerm,
         });
       }
+
       refetchNotePerms();
     } catch (error) {
       setMessage("Failed to update permission");

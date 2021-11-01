@@ -4,7 +4,14 @@ import { useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 
-const NoteShareButton = ({ noteId, notePerms, currentOrg, userOrgs, refetchNotePerms }) => {
+const NoteShareButton = ({
+  noteId,
+  notePerms,
+  currentOrg,
+  userOrgs,
+  refetchNotePerms,
+  onNotePermChange,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -19,6 +26,7 @@ const NoteShareButton = ({ noteId, notePerms, currentOrg, userOrgs, refetchNoteP
             userOrgs={userOrgs}
             noteId={noteId}
             refetchNotePerms={refetchNotePerms}
+            onNotePermChange={onNotePermChange}
           />
         </div>
       }
