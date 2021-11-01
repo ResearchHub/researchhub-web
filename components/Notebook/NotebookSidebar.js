@@ -12,7 +12,6 @@ import { css, StyleSheet } from "aphrodite";
 import { useState, useMemo } from "react";
 import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
-import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import { isEmpty } from "~/config/utils/nullchecks";
 import groupBy from "lodash/groupBy";
 import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
@@ -84,10 +83,12 @@ const NotebookSidebar = ({
         key={groupKey}
         groupKey={groupKey}
         availGroups={Object.keys(groupedNotes)}
+        currentOrg={currentOrg}
+        orgs={orgs}
+        user={user}
         notes={groupedNotes[groupKey] || []}
         titles={titles}
         currentNoteId={currentNoteId}
-        currentOrg={currentOrg}
         onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}
         refetchTemplates={refetchTemplates}

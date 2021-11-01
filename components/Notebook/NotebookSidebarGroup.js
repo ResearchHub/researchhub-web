@@ -8,14 +8,17 @@ import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 import { NOTE_GROUPS } from "./config/notebookConstants";
 import { captureError } from "~/config/utils/error";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
 
 const NotebookSidebarGroup = ({
   groupKey,
   availGroups,
   notes,
   titles,
-  currentNoteId,
+  orgs,
   currentOrg,
+  user,
+  currentNoteId,
   onNoteCreate,
   onNoteDelete,
   refetchTemplates,
@@ -27,7 +30,10 @@ const NotebookSidebarGroup = ({
     setCreateNoteIsLoading(true);
 
     try {
-      const note = await createNewNote({ orgSlug: currentOrg.slug, grouping: groupKey });
+      const note = await createNewNote({
+        orgSlug: currentOrg.slug,
+        grouping: groupKey,
+      });
 
       // TODO: Remove once Leo adds this to endpoint
       note.access = groupKey;
@@ -43,15 +49,18 @@ const NotebookSidebarGroup = ({
     }
   };
 
-  const allowCreateNote = [NOTE_GROUPS.WORKSPACE, NOTE_GROUPS.PRIVATE].includes(
-    groupKey
-  );
+  const allowedToCreateNote = [
+    NOTE_GROUPS.WORKSPACE,
+    NOTE_GROUPS.PRIVATE,
+  ].includes(groupKey);
+
+  const allowedToSeeOptions = isOrgMember({ user, org: currentOrg });
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.groupHead)}>
         <div className={css(styles.title)}>{groupKey}</div>
-        {allowCreateNote && (
+        {allowedToCreateNote && (
           <div className={css(styles.new)}>
             {createNoteIsLoading ? (
               <Loader type="clip" size={23} />
@@ -63,7 +72,7 @@ const NotebookSidebarGroup = ({
                 {icons.plus}
               </div>
             )}
-        </div>
+          </div>
         )}
       </div>
       {notes.map((note) => (
@@ -77,6 +86,7 @@ const NotebookSidebarGroup = ({
           refetchTemplates={refetchTemplates}
           setRefetchTemplates={setRefetchTemplates}
           title={titles[note.id]}
+          showOptions={allowedToSeeOptions}
         />
       ))}
     </div>
@@ -84,7 +94,11 @@ const NotebookSidebarGroup = ({
 };
 
 NotebookSidebarGroup.propTypes = {
-  groupKey: PropTypes.oneOf([NOTE_GROUPS.WORKSPACE, NOTE_GROUPS.SHARED, NOTE_GROUPS.PRIVATE]),
+  groupKey: PropTypes.oneOf([
+    NOTE_GROUPS.WORKSPACE,
+    NOTE_GROUPS.SHARED,
+    NOTE_GROUPS.PRIVATE,
+  ]),
   notes: PropTypes.array,
 };
 
