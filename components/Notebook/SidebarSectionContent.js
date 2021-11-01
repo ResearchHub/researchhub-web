@@ -28,6 +28,7 @@ const SidebarSectionContent = ({
   setRefetchTemplates,
   showMessage,
   title,
+  showOptions,
 }) => {
   const alert = useAlert();
   const [isHovered, setIsHovered] = useState(false);
@@ -116,48 +117,50 @@ const SidebarSectionContent = ({
       >
         <div className={css(styles.noteIcon)}>{icons.paper}</div>
         {title}
-        <div>
-          <ResearchHubPopover
-            align={"end"}
-            isOpen={isPopoverOpen}
-            padding={5}
-            popoverContent={
-              <div className={css(styles.popoverBodyContent)}>
-                {menuItems.map((item, index) => (
-                  <div
-                    className={css(styles.popoverBodyItem, item.hoverStyle)}
-                    key={index}
-                    onClick={item.onClick}
-                  >
-                    <div className={css(styles.popoverBodyIcon)}>
-                      {item.icon}
+        {showOptions && (
+          <div>
+            <ResearchHubPopover
+              align={"end"}
+              isOpen={isPopoverOpen}
+              padding={5}
+              popoverContent={
+                <div className={css(styles.popoverBodyContent)}>
+                  {menuItems.map((item, index) => (
+                    <div
+                      className={css(styles.popoverBodyItem, item.hoverStyle)}
+                      key={index}
+                      onClick={item.onClick}
+                    >
+                      <div className={css(styles.popoverBodyIcon)}>
+                        {item.icon}
+                      </div>
+                      <div className={css(styles.popoverBodyText)}>
+                        {item.text}
+                      </div>
                     </div>
-                    <div className={css(styles.popoverBodyText)}>
-                      {item.text}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            }
-            positions={["bottom"]}
-            setIsPopoverOpen={setIsPopoverOpen}
-            targetContent={
-              <div
-                className={css(
-                  styles.ellipsisButton,
-                  !isHovered && !isPopoverOpen && styles.hideEllipsis
-                )}
-                onClick={(e) => {
-                  e && e.preventDefault();
-                  e && e.stopPropagation();
-                  setIsPopoverOpen(!isPopoverOpen);
-                }}
-              >
-                {icons.ellipsisV}
-              </div>
-            }
-          />
-        </div>
+                  ))}
+                </div>
+              }
+              positions={["bottom"]}
+              setIsPopoverOpen={setIsPopoverOpen}
+              targetContent={
+                <div
+                  className={css(
+                    styles.ellipsisButton,
+                    !isHovered && !isPopoverOpen && styles.hideEllipsis
+                  )}
+                  onClick={(e) => {
+                    e && e.preventDefault();
+                    e && e.stopPropagation();
+                    setIsPopoverOpen(!isPopoverOpen);
+                  }}
+                >
+                  {icons.ellipsisV}
+                </div>
+              }
+            />
+          </div>
+        )}
       </a>
     </Link>
   );
