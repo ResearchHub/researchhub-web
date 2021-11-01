@@ -75,6 +75,7 @@ const ELNEditor = ({
   setMessage,
   showMessage,
   user,
+  onNotePermChange,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -118,6 +119,7 @@ const ELNEditor = ({
           org={currentOrganization}
           userOrgs={userOrgs}
           refetchNotePerms={refetchNotePerms}
+          onNotePermChange={onNotePermChange}
         />
       </div>
       {presenceListElement !== null && (
