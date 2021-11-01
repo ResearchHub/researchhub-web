@@ -47,7 +47,7 @@ export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
 export const inviteUserToNote = ({
   noteId,
   email,
-  expire = 4320,
+  expire = 10080,
   accessType = "EDITOR",
 }) => {
   const params = {
@@ -166,7 +166,7 @@ export const fetchOrgByInviteToken = ({ token }) => {
 export const inviteUserToOrg = ({
   orgId,
   email,
-  expire = 4320,
+  expire = 10080,
   accessType = "MEMBER",
 }) => {
   return fetch(
