@@ -1,9 +1,6 @@
-import { castUriID } from "../../config/utils/castUriID";
+import { castUriID } from "~/config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-} from "../../config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
@@ -16,6 +13,7 @@ import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
 import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
+import PaperBanner from "../Paper/PaperBanner";
 
 type Props = {};
 
@@ -52,19 +50,32 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     id,
     slug,
     title,
+    is_removed: isHypoRemoved,
   } = hypothesis || {};
 
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
+      <PaperBanner
+        paper={undefined}
+        post={hypothesis}
+        postType="hypothesis"
+        fetchBullets={false}
+        loadingPaper={false}
+        lastFetchTime={lastFetchTime}
+      />
       <Head
         title={title}
         description={title}
+        noindex={Boolean(isHypoRemoved)}
         canonical={`https://www.researchhub.com/hypothesis/${id || ""}/${
           slug || ""
         }`}
       />
       <div className={css(styles.container)}>
-        <HypothesisPageCard hypothesis={hypothesis} />
+        <HypothesisPageCard
+          hypothesis={hypothesis}
+          onUpdates={setLastFetchTime}
+        />
         <HypothesisCitationConsensusCard
           aggregateCitationConsensus={{
             citationCount: aggreCitationCons?.citation_count ?? 0,
@@ -77,7 +88,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown
-            authors={[created_by.author_profile]}
+            authors={[created_by?.author_profile ?? {}]}
             hubs={hubs}
             paper={hypothesis}
             paperId={id}
@@ -106,7 +117,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         ) : (
           <div className={css(styles.regSidebar)}>
             <PaperSideColumn
-              authors={[created_by.author_profile]}
+              authors={[created_by?.author_profile ?? {}]}
               hubs={hubs}
               isPost={true}
               paper={hypothesis}
