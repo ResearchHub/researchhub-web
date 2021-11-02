@@ -16,11 +16,13 @@ import {
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import { useAlert } from "react-alert";
 import { useState } from "react";
+import { NOTE_GROUPS } from "./config/notebookConstants";
 
 const SidebarSectionContent = ({
   currentNoteId,
   currentOrg,
   noteId,
+  groupKey,
   onNoteCreate,
   onNoteDelete,
   refetchTemplates,
@@ -50,13 +52,24 @@ const SidebarSectionContent = ({
         setIsPopoverOpen(false);
         const response = await fetchNote({ noteId });
         const originalNote = await Helpers.parseJSON(response);
-        const params = { orgSlug: currentOrg.slug, title };
+
+        let grouping =
+          groupKey === NOTE_GROUPS.SHARED ? NOTE_GROUPS.PRIVATE : groupKey;
+
+        const params = {
+          orgSlug: currentOrg.slug,
+          title,
+          grouping,
+        };
 
         const duplicatedNote = await createNewNote(params);
         const noteContent = await createNoteContent({
-          editorData: originalNote.latest_version.src,
+          editorData: originalNote?.latest_version?.src,
           noteId: duplicatedNote.id,
         });
+
+        duplicatedNote.access = grouping;
+
         onNoteCreate(duplicatedNote);
       },
     },
@@ -141,7 +154,7 @@ const SidebarSectionContent = ({
                   ))}
                 </div>
               }
-              positions={["bottom"]}
+              positions={["bottom", "top"]}
               setIsPopoverOpen={setIsPopoverOpen}
               targetContent={
                 <div
