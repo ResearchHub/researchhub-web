@@ -78,6 +78,7 @@ const NotebookSidebarGroup = ({
       {notes.map((note) => (
         <SidebarSectionContent
           key={note.id}
+          groupKey={groupKey}
           currentOrg={currentOrg}
           currentNoteId={currentNoteId}
           noteId={note.id.toString()}
