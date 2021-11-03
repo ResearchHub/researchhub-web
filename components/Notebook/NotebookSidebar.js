@@ -35,8 +35,6 @@ const NotebookSidebar = ({
   onOrgChange,
   orgSlug,
   orgs,
-  refetchTemplates,
-  setRefetchTemplates,
   setTitles,
   titles,
   user,
@@ -46,6 +44,7 @@ const NotebookSidebar = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
+  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
   const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
