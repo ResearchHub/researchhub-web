@@ -1,6 +1,6 @@
-import AboutQuestionCard from "./AboutQuestionCard";
-import AskQuestionForm from "../../../../components/Paper/AskQuestionForm";
-import Head from "../../../../components/Head";
+import AboutQuestionCard from "~/pages/post/create/AboutQuestionCard";
+import AskQuestionForm from "~/components/Paper/AskQuestionForm";
+import Head from "~/components/Head";
 import { Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 

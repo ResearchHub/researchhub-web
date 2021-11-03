@@ -2,9 +2,9 @@
 <p>Do research with your lab-mates and collaborators in real-time</p>
 <h3>Get started by:</h3>
 <ol>
-  <li>Clicking `Create New Note`</li>
-  <li>Browsing the left side-bar to see all of your lab's notes</li>
-  <li>Selecting a template or importing a text file</li>
+  <li>Clicking the (+) button in the sidebar to create a new note</li>
+  <li>Browsing the sidebar to see all of your lab's notes</li>
+  <li>Selecting a template</li>
 </ol>
 <p>If you have any ideas or issues to share send a message to <a href="mailto:hello@ResearchHub.com">hello@ResearchHub.com</a>. We love all of the feedback we can get our hands on :)</p>
 <h3>How it works</h3>

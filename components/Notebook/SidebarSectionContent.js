@@ -111,7 +111,7 @@ const SidebarSectionContent = ({
         e && e.stopPropagation();
         setIsPopoverOpen(false);
         alert.show({
-          text: `Permanently delete '${title}'? This cannot be undone.`,
+          text: <div>Permanently delete <b>{title}</b>? This cannot be undone.</div>,
           buttonText: "Yes",
           onClick: () => {
             deleteNote(noteId).then((deletedNote) => {

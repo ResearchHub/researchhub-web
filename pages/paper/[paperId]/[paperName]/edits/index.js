@@ -101,7 +101,7 @@ class PaperEditHistory extends Component {
       .then((res) => {
         updatePaperState("summary", summary);
         showMessage({ show: false });
-        setMessage("Summary succesfully updated!");
+        setMessage("Summary successfully updated!");
         showMessage({ show: true });
         callback();
       })
