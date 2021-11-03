@@ -109,18 +109,20 @@ const ELNEditor = ({
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
-        <div
-          className={css(styles.presenceList) + " presence"}
-          ref={onRefChange}
-        />
-        <NoteShareButton
-          noteId={currentNote.id}
-          notePerms={notePerms}
-          org={currentOrganization}
-          userOrgs={userOrgs}
-          refetchNotePerms={refetchNotePerms}
-          onNotePermChange={onNotePermChange}
-        />
+        <div className={css(styles.noteHeaderOpts)}>
+          <div
+            className={css(styles.presenceList) + " presence"}
+            ref={onRefChange}
+          />
+          <NoteShareButton
+            noteId={currentNote.id}
+            notePerms={notePerms}
+            org={currentOrganization}
+            userOrgs={userOrgs}
+            refetchNotePerms={refetchNotePerms}
+            onNotePermChange={onNotePermChange}
+          />
+        </div>
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
@@ -257,12 +259,18 @@ const styles = StyleSheet.create({
   },
   noteHeader: {
     display: "flex",
-    height: 50,
     userSelect: "none",
+    margin: "auto 30px 0px auto",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    paddingTop: 10,
   },
-  presenceList: {
-    margin: "auto 60px 0px auto",
+  noteHeaderOpts: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
+  presenceList: {},
   loader: {
     position: "absolute",
     top: 0,

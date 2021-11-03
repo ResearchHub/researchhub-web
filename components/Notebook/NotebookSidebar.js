@@ -182,7 +182,7 @@ const NotebookSidebar = ({
               </div>
             }
             positions={["bottom"]}
-            setIsPopoverOpen={setIsPopoverOpen}
+            onClickOutside={() => setIsPopoverOpen(false)}
             targetContent={
               <div
                 className={css(styles.popoverTarget)}

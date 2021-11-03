@@ -155,7 +155,7 @@ const SidebarSectionContent = ({
                 </div>
               }
               positions={["bottom", "top"]}
-              setIsPopoverOpen={setIsPopoverOpen}
+              onClickOutside={() => setIsPopoverOpen(false)}
               targetContent={
                 <div
                   className={css(
