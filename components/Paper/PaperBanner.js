@@ -45,8 +45,8 @@ const PaperBanner = (props) => {
     }
     const isRemoved =
       documentType === "post" || "hypothesis"
-        ? post.is_removed
-        : paper.is_removed;
+        ? Boolean(post?.is_removed)
+        : Boolean(paper?.is_removed);
 
     if (isRemoved) {
       setType("removed");
