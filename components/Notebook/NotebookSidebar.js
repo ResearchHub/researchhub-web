@@ -15,6 +15,7 @@ import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import { isEmpty } from "~/config/utils/nullchecks";
 import groupBy from "lodash/groupBy";
 import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -46,6 +47,7 @@ const NotebookSidebar = ({
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
+  const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
   const getSidebarGroupKeys = () => {
     let groups = Object.keys(groupedNotes);
@@ -210,9 +212,7 @@ const NotebookSidebar = ({
             styles.orgButtonsContainer
           )}
         >
-          {["MEMBER", "ADMIN"].includes(
-            currentOrg?.user_permission?.access_type
-          ) && (
+          {_isOrgMember && (
             <div
               className={css(styles.sidebarButton, styles.orgButton)}
               onClick={() => {
@@ -241,15 +241,17 @@ const NotebookSidebar = ({
           )}
         </ReactPlaceholder>
 
-        <div className={css(styles.sidebarButtonsContainer)}>
-          <div
-            className={css(styles.sidebarButton)}
-            onClick={() => setIsNoteTemplateModalOpen(true)}
-          >
-            {icons.shapes}
-            <span className={css(styles.sidebarButtonText)}>Templates</span>
+        {_isOrgMember && (
+          <div className={css(styles.sidebarButtonsContainer)}>
+            <div
+              className={css(styles.sidebarButton)}
+              onClick={() => setIsNoteTemplateModalOpen(true)}
+            >
+              {icons.shapes}
+              <span className={css(styles.sidebarButtonText)}>Templates</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
