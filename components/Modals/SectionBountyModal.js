@@ -67,7 +67,7 @@ class ContentSupportModal extends Component {
   showSuccessMessage = () => {
     const { setMessage, showMessage } = this.props;
     showMessage({ show: false });
-    setMessage("Bounty succesfully set!");
+    setMessage("Bounty successfully set!");
     showMessage({ show: true });
   };
 
