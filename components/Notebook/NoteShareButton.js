@@ -31,7 +31,15 @@ const NoteShareButton = ({
         </div>
       }
       positions={["bottom", "top"]}
-      setIsPopoverOpen={() => setIsOpen(true)}
+      onClickOutside={(e) => {
+        const childPopoverFound = e.path.find((el) =>
+          (el.className || "").includes("perm-popover")
+        );
+
+        if (!childPopoverFound) {
+          setIsOpen(false);
+        }
+      }}
       targetContent={
         <div className={css(styles.buttonContainer)}>
           <span

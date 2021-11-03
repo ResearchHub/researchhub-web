@@ -354,6 +354,7 @@ const ManageNotePermissions = ({
             onClick={() => setIsUserToBeInvitedPermDdownOpen(true)}
             onSelect={(selectedPerm) => setUserToBeInvitedPerm(selectedPerm)}
             onClose={() => setIsUserToBeInvitedPermDdownOpen(false)}
+            dropdownClassName="perm-popover"
             overrideTargetStyle={styles.newUserPermButton}
           />
           <FormInput

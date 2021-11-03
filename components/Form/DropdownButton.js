@@ -9,12 +9,17 @@ const DropdownButton = ({
   onSelect,
   label,
   onClose,
+  onClickOutside,
+  dropdownClassName,
   selected = null,
   positions = ["bottom", "top"],
   isOpen = false,
   overridePopoverStyle = null,
   overrideTargetStyle = null,
+  closeAfterSelect = true,
 }) => {
+  console.log("onClose", onClose);
+  console.log("isOpen", isOpen);
   return (
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}
@@ -24,7 +29,12 @@ const DropdownButton = ({
           {opts.map((o, i) => (
             <div
               className={css(styles.optContainer)}
-              onClick={() => onSelect(o.value)}
+              onClick={() => {
+                onSelect(o.value);
+                if (closeAfterSelect) {
+                  onClose();
+                }
+              }}
               key={`opt-${i}`}
             >
               <div className={css(styles.infoContainer)}>
@@ -39,7 +49,8 @@ const DropdownButton = ({
         </div>
       }
       positions={positions}
-      setIsPopoverOpen={onClose}
+      onClickOutside={onClickOutside}
+      className={dropdownClassName}
       targetContent={
         <div
           className={css(styles.dropdownContainer, overrideTargetStyle)}
