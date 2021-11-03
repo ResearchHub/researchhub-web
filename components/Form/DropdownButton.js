@@ -18,8 +18,6 @@ const DropdownButton = ({
   overrideTargetStyle = null,
   closeAfterSelect = true,
 }) => {
-  console.log("onClose", onClose);
-  console.log("isOpen", isOpen);
   return (
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}
