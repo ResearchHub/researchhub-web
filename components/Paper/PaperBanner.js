@@ -37,7 +37,7 @@ const PaperBanner = (props) => {
         setShowBanner(false);
         return;
       } else {
-        if (!paper.is_removed && (!fetchBullets || loadingPaper)) {
+        if (!Boolean(paper?.is_removed) && (!fetchBullets || loadingPaper)) {
           setShowBanner(false);
           return;
         }
