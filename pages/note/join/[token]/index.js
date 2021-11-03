@@ -56,7 +56,9 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
       setMessage("");
       showMessage({ show: true, error: false });
 
-      // router.push(`/${org.slug}/notebook`);
+      router.push(
+        `/${invite.note.organization.slug}/notebook/${invite.note.id}`
+      );
     } catch (error) {
       captureError({
         error,
@@ -82,7 +84,9 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
           <div className={css(styles.inviteText)}>
             {`${invite.inviter.author_profile.first_name} ${invite.inviter.author_profile.last_name} `}
             invited you to collaborate on note{" "}
-            <strong>{invite.note.title}</strong>.
+            <strong>{invite.note.title}</strong> as{" "}
+            {invite.invite_type === "VIEWER" ? "a" : "an"}{" "}
+            <strong>{invite.invite_type}</strong>.
           </div>
         </div>
       )}
