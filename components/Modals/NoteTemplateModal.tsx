@@ -16,6 +16,7 @@ import {
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { createNewNote, createNoteContent } from "~/config/fetch";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 
 export type NoteTemplateModalProps = {
   currentOrg: any;
@@ -84,6 +85,7 @@ export default function NoteTemplateModal({
 
     const noteParams = {
       title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
+      grouping: NOTE_GROUPS.WORKSPACE,
     };
 
     if (!isPrivateNotebook) {
