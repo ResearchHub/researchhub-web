@@ -342,7 +342,9 @@ const ManageNotePermissions = ({
           </div>
         ) : null}
 
-        {currentUserAccess >= PERMS.NOTE.ADMIN && !isCurrentUser ? (
+        {currentUserAccess >= PERMS.NOTE.ADMIN &&
+        !isCurrentUser &&
+        !forEntity === ENTITIES.ORG ? (
           <DropdownButton
             opts={permDropdownOpts}
             label={perm}
