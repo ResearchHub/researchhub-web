@@ -58,7 +58,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [_currentUser, _setCurrentUser] = useState(null);
-  console.log("orgUsers", orgUsers);
+
   useEffect(() => {
     const fetchAndSetOrgUsers = async () => {
       try {

@@ -97,6 +97,11 @@ const ManageNotePermissions = ({
 
   const handleInvite = async (e) => {
     e && e.preventDefault();
+
+    if (userToBeInvitedEmail.length === 0) {
+      return;
+    }
+
     setIsInviteInProgress(true);
 
     const userAlreadyInvitedOrInOrg = isNoteSharedWithUser({
@@ -425,6 +430,7 @@ const styles = StyleSheet.create({
   loaderWrapper: {
     width: 80,
     height: 40,
+    paddingTop: 10,
   },
   deleteOpt: {
     color: colors.RED(),
