@@ -41,7 +41,6 @@ const Notebook = ({ auth, user }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const orgsFetched = useRef();
-  const isPrivateNotebook = orgSlug === "me" ? true : false;
 
   /* IMPORTANT */
   const _shouldShowELN = gateKeepCurrentUser({
@@ -149,6 +148,8 @@ const Notebook = ({ auth, user }) => {
 
   useEffect(() => {
     if (orgSlug !== currentOrganization?.slug) {
+      const newOrg = getCurrentOrgFromRouter(organizations);
+      setCurrentOrganization(newOrg);
       fetchAndSetCurrentOrgNotes();
       setDidInitialNotesLoad(false);
     }
@@ -183,20 +184,20 @@ const Notebook = ({ auth, user }) => {
         captureError({
           error,
           msg: "Failed to fetch notes",
-          data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+          data: { orgSlug, userId: user.id },
         });
       }
     } catch (error) {
       captureError({
         error,
         msg: "Failed to fetch notes",
-        data: { noteId, orgSlug, isPrivateNotebook, userId: user.id },
+        data: { orgSlug, userId: user.id },
       });
       setError({ statusCode: 500 });
     } finally {
       setDidInitialNotesLoad(true);
     }
-  }, []);
+  }, [orgSlug]);
 
   const fetchAndSetCurrentNotePermissions = useCallback(async () => {
     let response;
@@ -228,6 +229,7 @@ const Notebook = ({ auth, user }) => {
   }, [noteId, user]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
+    console.log("org", orgId);
     try {
       const org = await fetchOrg({ orgId });
       updateUserOrgsLocalCache(org);
@@ -238,7 +240,7 @@ const Notebook = ({ auth, user }) => {
     } catch (error) {
       captureError({
         msg: "failed to fetch org",
-        data: { noteId, orgSlug, orgId, isPrivateNotebook, userId: user.id },
+        data: { noteId, orgSlug, orgId, userId: user.id },
       });
       setError({ statusCode: 500 });
     }
@@ -325,8 +327,7 @@ const Notebook = ({ auth, user }) => {
         currentNoteId={noteId}
         currentOrg={currentOrganization}
         didInitialNotesLoad={didInitialNotesLoad}
-        handleOrgSwitch={fetchAndSetOrg}
-        isPrivateNotebook={isPrivateNotebook}
+        fetchAndSetOrg={fetchAndSetOrg}
         notes={notes}
         onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}

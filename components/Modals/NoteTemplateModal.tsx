@@ -22,7 +22,6 @@ export type NoteTemplateModalProps = {
   currentOrg: any;
   currentOrganizationId: number;
   isOpen: boolean;
-  isPrivateNotebook: boolean;
   onNoteCreate: any;
   orgSlug: string;
   refetchTemplates: any;
@@ -32,7 +31,6 @@ export type NoteTemplateModalProps = {
 export default function NoteTemplateModal({
   currentOrg,
   isOpen,
-  isPrivateNotebook,
   onNoteCreate,
   orgSlug,
   refetchTemplates,
@@ -86,11 +84,8 @@ export default function NoteTemplateModal({
     const noteParams = {
       title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
       grouping: NOTE_GROUPS.WORKSPACE,
+      orgSlug: currentOrg.slug,
     };
-
-    if (!isPrivateNotebook) {
-      noteParams.orgSlug = currentOrg.slug;
-    }
 
     const note = await createNewNote(noteParams);
     const noteContent = await createNoteContent({

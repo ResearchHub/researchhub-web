@@ -11,6 +11,7 @@ const DropdownButton = ({
   onClose,
   onClickOutside,
   dropdownClassName,
+  customButtonClassName,
   selected = null,
   positions = ["bottom", "top"],
   isOpen = false,
@@ -54,7 +55,7 @@ const DropdownButton = ({
           className={css(styles.dropdownContainer, overrideTargetStyle)}
           onClick={() => (isOpen ? onClose() : onClick())}
         >
-          <div className={css(styles.targetBtn)}>
+          <div className={css(styles.targetBtn, customButtonClassName)}>
             {label}
             <DownIcon withAnimation={false} overrideStyle={styles.downIcon} />
           </div>

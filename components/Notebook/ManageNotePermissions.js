@@ -228,12 +228,12 @@ const ManageNotePermissions = ({
   const getDisplayName = (accessObj) => {
     const isCurrentUser = accessObj.user?.id === currentUser?.id;
 
-    if (accessObj.user) {
+    if (accessObj.organization) {
+      return `Everyone at ${accessObj.organization.name}`;
+    } else if (accessObj.user) {
       return `${accessObj.user?.author_profile?.first_name} ${
         accessObj.user?.author_profile?.last_name
       } ${isCurrentUser ? "(you)" : ""}`;
-    } else if (accessObj.organization) {
-      return accessObj.organization.name;
     } else {
       return "Invited";
     }
@@ -259,6 +259,7 @@ const ManageNotePermissions = ({
             opts={dropdownOptsForInvited}
             label={`Invitation Pending`}
             isOpen={key === permDropdownOpenForEntity}
+            customButtonClassName={styles.dropdownButtonNoPadding}
             onClick={() => setPermDropdownOpenForEntity(key)}
             onSelect={(newPerm) => {
               if (newPerm === "REMOVE") {
@@ -324,6 +325,7 @@ const ManageNotePermissions = ({
             label={perm}
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
+            customButtonClassName={styles.dropdownButtonNoPadding}
             onSelect={(newPerm) => {
               if (newPerm === "REMOVE") {
                 handleRemoveUser(accessObj.user);
@@ -427,7 +429,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     color: colors.BLACK(0.8),
     marginLeft: "auto",
-    marginRight: 28,
+    // marginRight: 28,
     display: "flex",
     alignItems: "center",
   },
@@ -440,6 +442,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     marginLeft: 10,
+    marginRight: 30,
   },
   inviteForm: {
     display: "flex",
@@ -457,6 +460,9 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     height: 51,
     width: 100,
+  },
+  dropdownButtonNoPadding: {
+    paddingRight: 0,
   },
   inputContainer: {
     margin: 0,
