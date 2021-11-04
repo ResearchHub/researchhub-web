@@ -55,9 +55,7 @@ export default function AddNewSourceBodySearch({
   const isReadyToSubmit =
     Boolean(selectedItem) && Boolean(selectedCitationType);
   const citationTypeInputValue = !isNullOrUndefined(selectedCitationType)
-    ? citationTypeOptions.find(
-        (el) => el.value === nullthrows(selectedCitationType)
-      )
+    ? citationTypeOptions.find((el) => el.value === selectedCitationType)
     : null;
 
   return (
