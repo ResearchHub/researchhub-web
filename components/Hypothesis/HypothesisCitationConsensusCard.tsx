@@ -96,6 +96,7 @@ export default function HypothesisCitationConsensusCard({
           <div className={css(styles.hypoConsensusRightSide)}>
             {hasNoConsensus && shouldShowUploadButton ? (
               <CitationAddNewButton
+                citationType={null}
                 hypothesisID={hypothesisID}
                 lastFetchTime={nullthrows(lastFetchTime)}
                 updateLastFetchTime={(): void =>

@@ -3,21 +3,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useState } from "react";
+import { ValidCitationType } from "./modal/AddNewSourceBodySearch";
 import AddNewSourceModal from "./modal/AddNewSourceModal";
 import Button from "../../Form/Button";
 import colors from "~/config/themes/colors";
 
 type Props = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
 };
 
 export default function CitationAddNewButton({
+  citationType,
   hypothesisID,
   updateLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
+
   return (
     <Button
       customButtonStyle={styles.citationAddNewButton}
@@ -26,6 +30,7 @@ export default function CitationAddNewButton({
       label={
         <div className={css(styles.buttonInner)}>
           <AddNewSourceModal
+            citationType={citationType}
             hypothesisID={hypothesisID}
             isModalOpen={shouldOpenModal}
             onCloseModal={(event: SyntheticEvent): void => {
