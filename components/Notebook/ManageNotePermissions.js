@@ -15,7 +15,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import Loader from "~/components/Loader/Loader";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import colors, { iconColors } from "~/config/themes/colors";
+import colors, { iconColors, genericCardColors } from "~/config/themes/colors";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { captureError } from "~/config/utils/error";
 import {
@@ -259,8 +259,8 @@ const ManageNotePermissions = ({
             opts={dropdownOptsForInvited}
             label={`Invitation Pending`}
             isOpen={key === permDropdownOpenForEntity}
-            customButtonClassName={styles.dropdownButtonNoPadding}
             onClick={() => setPermDropdownOpenForEntity(key)}
+            dropdownClassName="perm-popover"
             onSelect={(newPerm) => {
               if (newPerm === "REMOVE") {
                 handleRemoveUser(invitedUser);
@@ -292,9 +292,27 @@ const ManageNotePermissions = ({
         : `access-org-${accessObj.organization?.slug}`;
 
     const perm = accessObj.access_type.toLowerCase();
+    const canEdit =
+      currentUserAccess >= PERMS.NOTE.ADMIN && !isCurrentUser
+        ? true
+        : undefined;
 
     return (
-      <div className={css(styles.userRow)} key={key}>
+      <div
+        className={css(styles.userRow, canEdit && styles.userRowActive)}
+        key={key}
+        onClick={
+          canEdit &&
+          (() => {
+            const isOpen = key === permDropdownOpenForEntity;
+            if (!isOpen) {
+              setPermDropdownOpenForEntity(key);
+            } else {
+              setPermDropdownOpenForEntity(null);
+            }
+          })
+        }
+      >
         {forEntity === ENTITIES.USER ? (
           <div className={css(styles.entity)}>
             <AuthorAvatar author={accessObj.user.author_profile} />
@@ -325,7 +343,7 @@ const ManageNotePermissions = ({
             label={perm}
             isOpen={key === permDropdownOpenForEntity}
             onClick={() => setPermDropdownOpenForEntity(key)}
-            customButtonClassName={styles.dropdownButtonNoPadding}
+            dropdownClassName="perm-popover"
             onSelect={(newPerm) => {
               if (newPerm === "REMOVE") {
                 handleRemoveUser(accessObj.user);
@@ -416,9 +434,18 @@ const styles = StyleSheet.create({
   },
   userRow: {
     display: "flex",
-    marginBottom: 15,
+    padding: 8,
     ":last-child": {
       marginBottom: 0,
+    },
+    ":hover": {
+      background: genericCardColors.BACKGROUND,
+      transition: "0.2s",
+    },
+  },
+  userRowActive: {
+    ":hover": {
+      cursor: "pointer",
     },
   },
   entity: {
@@ -429,7 +456,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     color: colors.BLACK(0.8),
     marginLeft: "auto",
-    // marginRight: 28,
+    marginRight: 17,
     display: "flex",
     alignItems: "center",
   },
@@ -460,9 +487,6 @@ const styles = StyleSheet.create({
     borderRadius: 0,
     height: 51,
     width: 100,
-  },
-  dropdownButtonNoPadding: {
-    paddingRight: 0,
   },
   inputContainer: {
     margin: 0,
