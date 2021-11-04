@@ -13,7 +13,9 @@ export const getUserNoteAccess = ({ user, userOrgs, notePerms }) => {
             ? userAccess
             : PERMS.NOTE[p.access_type];
       }
-    } else if (p.organization) {
+    }
+
+    if (p.organization) {
       const foundUserOrg = userOrgs.find((o) => p.organization.id === o.id);
       const userOrgAccess = PERMS.getValByEnum({
         permEnum: foundUserOrg?.user_permission?.access_type,
