@@ -107,7 +107,7 @@ const ELNEditor = ({
       });
     }
   };
-  console.log("onPublishClick", onPublishClick);
+
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
