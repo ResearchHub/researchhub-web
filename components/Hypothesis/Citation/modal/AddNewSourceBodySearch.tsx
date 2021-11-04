@@ -15,19 +15,31 @@ import FormSelect from "~/components//Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import SourceSearchInput from "../search/SourceSearchInput";
 import { postCitationFromSearch } from "../../api/postCitationFromSearch";
-import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const { NEW_PAPER_UPLOAD } = NEW_SOURCE_BODY_TYPES;
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
 const docTypeOptions = [
   { label: SearchFilterDocTypeLabel[PAPER_KEY], value: PAPER_KEY },
 ];
+const citationTypeOptions = [
+  { label: "Reject", value: "REJECT" },
+  { label: "Support", value: "SUPPORT" },
+];
+
+export type ValidCitationType = null | "REJECT" | "SUPPORT";
 
 type Props = {
   hypothesisID: ID;
   onCancel: (event: SyntheticEvent) => void;
   onSubmitComplete: (event: SyntheticEvent) => void;
+  selectedCitationType: ValidCitationType;
   setBodyType: (bodyType: BodyTypeVals) => void;
+  setSelectedCitationType: (citationType: ValidCitationType) => void;
 };
 
 export default function AddNewSourceBodySearch({
@@ -35,10 +47,14 @@ export default function AddNewSourceBodySearch({
   onCancel,
   onSubmitComplete,
   setBodyType,
+  selectedCitationType,
+  setSelectedCitationType,
 }: Props): ReactElement<"div"> {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const isItemSelected = Boolean(selectedItem);
+  const isReadyToSubmit =
+    Boolean(selectedItem) && Boolean(selectedCitationType);
+
   return (
     <div
       className={css(
@@ -58,6 +74,21 @@ export default function AddNewSourceBodySearch({
         placeholder="Select search type"
         required
         value={docTypeOptions[0]}
+      />
+      <FormSelect
+        id="citation-type"
+        inputStyle={formGenericStyles.inputMax}
+        label="Support or Reject hypothesis"
+        labelStyle={formGenericStyles.labelStyle}
+        onChange={setSelectedCitationType}
+        options={citationTypeOptions}
+        placeholder="Select search type"
+        required
+        value={
+          !isNullOrUndefined(selectedCitationType)
+            ? citationTypeOptions[nullthrows(selectedCitationType)]
+            : null
+        }
       />
       <SourceSearchInput
         inputPlaceholder="Search for a paper or upload"
@@ -108,7 +139,7 @@ export default function AddNewSourceBodySearch({
         <Button
           customButtonStyle={styles.buttonCustomStyle}
           customLabelStyle={styles.buttonLabel}
-          disabled={!isItemSelected || isSubmitting}
+          disabled={!isReadyToSubmit || isSubmitting}
           label={
             !isSubmitting ? (
               "Add source"
