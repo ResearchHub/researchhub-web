@@ -14,6 +14,7 @@ import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
 
 type Props = {
+  citationType: "ALL" | "REJECT" | "SUPPORT";
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
@@ -45,6 +46,7 @@ function useEffectGetCitations({
 }
 
 export default function CitationTable({
+  citationType,
   hypothesisID,
   lastFetchTime,
   updateLastFetchTime,
@@ -82,7 +84,7 @@ export default function CitationTable({
     )
   ) : (
     <div className={css(styles.citationNoResults)}>
-      <CitationNoResult />
+      <CitationNoResult citationType={citationType} />
       <CitationAddNewButton
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}

@@ -85,6 +85,9 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           }}
           hypothesisID={hypothesisID}
           isLoading={isLoading}
+          lastFetchTime={lastFetchTime}
+          setLastFetchTime={setLastFetchTime}
+          shouldShowUploadButton
         />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown

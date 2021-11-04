@@ -15,18 +15,43 @@ export default function CitationContainer({
 
   return (
     <div className={css(styles.citationContainer)}>
-      <div className={css(styles.header)}>{"Relevant Sources"}</div>
-      <CitationTable
-        hypothesisID={hypothesisID}
-        lastFetchTime={lastFetchTime}
-        updateLastFetchTime={onCitationUpdate}
-      />
+      <div className={css(styles.citationGroup)}>
+        <div className={css(styles.header)}>{"Supporting Sources"}</div>
+        <CitationTable
+          citationType="SUPPORT"
+          hypothesisID={hypothesisID}
+          lastFetchTime={lastFetchTime}
+          updateLastFetchTime={onCitationUpdate}
+        />
+      </div>
+      <div className={css(styles.citationGroup)}>
+        <div className={css(styles.header)}>{"Rejecting Sources"}</div>
+        <CitationTable
+          citationType="REJECT"
+          hypothesisID={hypothesisID}
+          lastFetchTime={lastFetchTime}
+          updateLastFetchTime={onCitationUpdate}
+        />
+      </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
   citationContainer: {
+    alignItems: "flex-start",
+    display: "flex",
+    justifyContent: "space-between",
+    marginTop: 30,
+    width: "100%",
+  },
+  header: {
+    fontFamily: "Roboto",
+    fontSize: 20,
+    fontStyle: "normal",
+    fontWeight: 500,
+  },
+  citationGroup: {
     backgroundColor: "#fff",
     border: "1.5px solid #F0F0F0", // copying existing cards for borders
     borderRadius: 3,
@@ -34,18 +59,10 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    marginTop: 30,
     padding: 30,
-    width: "100%",
-
+    width: "49%",
     "@media only screen and (max-width: 767px)": {
       padding: 16,
     },
-  },
-  header: {
-    fontFamily: "Roboto",
-    fontSize: 20,
-    fontStyle: "normal",
-    fontWeight: 500,
   },
 });
