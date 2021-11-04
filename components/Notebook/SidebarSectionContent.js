@@ -54,7 +54,7 @@ const SidebarSectionContent = ({
         const originalNote = await Helpers.parseJSON(response);
 
         let grouping =
-          groupKey === NOTE_GROUPS.SHARED ? NOTE_GROUPS.PRIVATE : groupKey;
+          groupKey === NOTE_GROUPS.SHARED ? NOTE_GROUPS.WORKSPACE : groupKey;
 
         const params = {
           orgSlug: currentOrg.slug,
