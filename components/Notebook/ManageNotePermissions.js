@@ -284,7 +284,7 @@ const ManageNotePermissions = ({
     const displayName = getDisplayName(accessObj);
 
     const isCurrentUser = accessObj.user?.id === currentUser?.id;
-    const forEntity = accessObj.user ? ENTITIES.USER : ENTITIES.ORG;
+    const forEntity = accessObj.organization ? ENTITIES.ORG : ENTITIES.USER;
     const key =
       forEntity === ENTITIES.USER
         ? `access-user-${accessObj.user?.author_profile?.id}`
@@ -307,6 +307,13 @@ const ManageNotePermissions = ({
             <OrgAvatar org={currentOrg} />
             <div className={css(styles.nameWrapper)}>
               <span className={css(styles.name)}>{displayName}</span>
+              <div className={css(styles.memberCount)}>
+                {!accessObj.organization.member_count
+                  ? "{X members}"
+                  : accessObj.organization.member_count === 1
+                  ? "1 member"
+                  : `${accessObj.organization.member_count} members`}
+              </div>
             </div>
           </div>
         ) : null}
@@ -421,6 +428,13 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.8),
     marginLeft: "auto",
     marginRight: 28,
+    display: "flex",
+    alignItems: "center",
+  },
+  memberCount: {
+    color: colors.BLACK(0.5),
+    fontSize: 13,
+    marginTop: 2,
   },
   nameWrapper: {
     display: "flex",
