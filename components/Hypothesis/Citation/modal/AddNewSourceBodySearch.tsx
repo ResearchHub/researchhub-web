@@ -85,7 +85,7 @@ export default function AddNewSourceBodySearch({
         inputStyle={formGenericStyles.inputMax}
         label="Support or Reject hypothesis"
         labelStyle={formGenericStyles.labelStyle}
-        // onChange={setSelectedCitationType}
+        onChange={setSelectedCitationType}
         options={citationTypeOptions}
         placeholder="Select search type"
         required
