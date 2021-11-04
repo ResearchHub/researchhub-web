@@ -56,7 +56,11 @@ const NotebookSidebar = ({
     });
 
     if (orgAccess >= PERMS.ORG.MEMBER) {
-      groups = [NOTE_GROUPS.WORKSPACE, ...groups];
+      groups.push(NOTE_GROUPS.WORKSPACE);
+    }
+
+    if (currentOrg?.member_count > 0) {
+      groups.push(NOTE_GROUPS.PRIVATE);
     }
 
     return sortSidebarGroups(groups);
