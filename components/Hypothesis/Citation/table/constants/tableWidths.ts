@@ -1,7 +1,7 @@
 export const tableWidths = {
-  CITED_BY: "7%",
-  CONSENSUS: "20%",
-  SOURCE: "52%",
+  CITED_BY: "14%",
+  CONSENSUS: "22%",
+  SOURCE: "45%",
   TYPE: "10%",
-  COMMENTS: "7%",
+  COMMENTS: "6%",
 };

@@ -109,7 +109,7 @@ export default function CitationTable({
             width={tableWidths.CITED_BY}
           />
           <CitationTableHeaderItem
-            label="Comments"
+            label="Notes"
             width={tableWidths.COMMENTS}
           />
         </div>
@@ -118,6 +118,7 @@ export default function CitationTable({
       {citationItems.length > 0 ? (
         <div className={css(styles.addCitation)}>
           <CitationAddNewButton
+            citationType={citationType === "ALL" ? null : citationType}
             hypothesisID={hypothesisID}
             lastFetchTime={lastFetchTime}
             updateLastFetchTime={updateLastFetchTime}
@@ -141,12 +142,10 @@ const styles = StyleSheet.create({
     display: "flex",
     width: "100%",
     height: 52,
-    minWidth: 820,
   },
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    minWidth: 820,
   },
   citationNoResults: {
     display: "flex",
