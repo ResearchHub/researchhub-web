@@ -20,6 +20,7 @@ export default function CitationContainer({
         <CitationTable
           citationType="SUPPORT"
           hypothesisID={hypothesisID}
+          key="citation-support"
           lastFetchTime={lastFetchTime}
           updateLastFetchTime={onCitationUpdate}
         />
@@ -29,6 +30,7 @@ export default function CitationContainer({
         <CitationTable
           citationType="REJECT"
           hypothesisID={hypothesisID}
+          key="citation-reject"
           lastFetchTime={lastFetchTime}
           updateLastFetchTime={onCitationUpdate}
         />

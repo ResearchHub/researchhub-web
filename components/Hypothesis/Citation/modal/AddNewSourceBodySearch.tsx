@@ -54,6 +54,11 @@ export default function AddNewSourceBodySearch({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const isReadyToSubmit =
     Boolean(selectedItem) && Boolean(selectedCitationType);
+  const citationTypeInputValue = !isNullOrUndefined(selectedCitationType)
+    ? citationTypeOptions.find(
+        (el) => el.value === nullthrows(selectedCitationType)
+      )
+    : null;
 
   return (
     <div
@@ -80,15 +85,11 @@ export default function AddNewSourceBodySearch({
         inputStyle={formGenericStyles.inputMax}
         label="Support or Reject hypothesis"
         labelStyle={formGenericStyles.labelStyle}
-        onChange={setSelectedCitationType}
+        // onChange={setSelectedCitationType}
         options={citationTypeOptions}
         placeholder="Select search type"
         required
-        value={
-          !isNullOrUndefined(selectedCitationType)
-            ? citationTypeOptions[nullthrows(selectedCitationType)]
-            : null
-        }
+        value={citationTypeInputValue}
       />
       <SourceSearchInput
         inputPlaceholder="Search for a paper or upload"

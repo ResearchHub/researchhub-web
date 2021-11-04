@@ -4,8 +4,8 @@ import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { tableWidths } from "./constants/tableWidths";
-import CitationNoResult from "./CitationNoResult";
 import CitationAddNewButton from "../CitationAddNewButton";
+import CitationNoResult from "./CitationNoResult";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import CitationTableRowItem, {
   CitationTableRowItemProps,
@@ -86,6 +86,7 @@ export default function CitationTable({
     <div className={css(styles.citationNoResults)}>
       <CitationNoResult citationType={citationType} />
       <CitationAddNewButton
+        citationType={citationType === "ALL" ? null : citationType}
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}
         updateLastFetchTime={updateLastFetchTime}
