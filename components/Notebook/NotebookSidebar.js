@@ -27,8 +27,7 @@ const NotebookSidebar = ({
   currentNoteId,
   currentOrg,
   didInitialNotesLoad,
-  handleOrgSwitch,
-  isPrivateNotebook,
+  fetchAndSetOrg,
   notes,
   onNoteCreate,
   onNoteDelete,
@@ -112,10 +111,9 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
-        isPrivateNotebook={isPrivateNotebook}
         currentOrg={currentOrg}
         onNoteCreate={onNoteCreate}
-        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg?.id}
+        currentOrganizationId={currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
         refetchTemplates={refetchTemplates}
@@ -215,7 +213,7 @@ const NotebookSidebar = ({
             <div
               className={css(styles.sidebarButton, styles.orgButton)}
               onClick={() => {
-                handleOrgSwitch({ orgId: currentOrg.id });
+                fetchAndSetOrg({ orgId: currentOrg.id });
                 setShowManageOrgModal(true);
               }}
             >
