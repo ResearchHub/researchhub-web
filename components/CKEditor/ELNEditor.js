@@ -18,6 +18,7 @@ import { MessageActions } from "~/redux/message";
 import { captureError } from "~/config/utils/error";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
+import Button from "~/components/Form/Button";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   try {
@@ -76,6 +77,7 @@ const ELNEditor = ({
   showMessage,
   user,
   onNotePermChange,
+  onPublishClick,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -105,23 +107,30 @@ const ELNEditor = ({
       });
     }
   };
-
+  console.log("onPublishClick", onPublishClick);
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
         <div className={css(styles.noteHeaderOpts)}>
-          <div
-            className={css(styles.presenceList) + " presence"}
-            ref={onRefChange}
-          />
-          <NoteShareButton
-            noteId={currentNote.id}
-            notePerms={notePerms}
-            org={currentOrganization}
-            userOrgs={userOrgs}
-            refetchNotePerms={refetchNotePerms}
-            onNotePermChange={onNotePermChange}
-          />
+          <div className={css(styles.option)}>
+            <div
+              className={css(styles.presenceList) + " presence"}
+              ref={onRefChange}
+            />
+          </div>
+          <div className={css(styles.option)}>
+            <NoteShareButton
+              noteId={currentNote.id}
+              notePerms={notePerms}
+              org={currentOrganization}
+              userOrgs={userOrgs}
+              refetchNotePerms={refetchNotePerms}
+              onNotePermChange={onNotePermChange}
+            />
+          </div>
+          <div className={css(styles.option)}>
+            <Button onClick={onPublishClick} label="Publish" size="xsmall" />
+          </div>
         </div>
       </div>
       {presenceListElement !== null && (
@@ -269,6 +278,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
+  },
+  option: {
+    marginLeft: 20,
   },
   presenceList: {},
   loader: {

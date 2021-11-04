@@ -17,6 +17,9 @@ import { captureError } from "~/config/utils/error";
 import dynamic from "next/dynamic";
 import Error from "next/error";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+const PublishModal = dynamic(() =>
+  import("~/components/Notebook/PublishModal")
+);
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
@@ -33,6 +36,7 @@ const Notebook = ({ auth, user }) => {
   const [notes, setNotes] = useState([]);
   const [titles, setTitles] = useState({});
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
+  const [showPublishModal, setShowPublishModal] = useState(false);
 
   const [currentOrganization, setCurrentOrganization] = useState(null);
   const [organizations, setOrganizations] = useState([]);
@@ -318,9 +322,14 @@ const Notebook = ({ auth, user }) => {
   if (error) {
     return <Error {...error} />;
   }
-
+  console.log("showPublishModal", showPublishModal);
   return (
     <div className={css(styles.container)}>
+      <PublishModal
+        note={currentNote}
+        isOpen={showPublishModal}
+        closeModal={() => setShowPublishModal(false)}
+      />
       <NotebookSidebar
         currentNoteId={noteId}
         currentOrg={currentOrganization}
@@ -349,6 +358,7 @@ const Notebook = ({ auth, user }) => {
           setELNLoading={setELNLoading}
           refetchNotePerms={fetchAndSetCurrentNotePermissions}
           onNotePermChange={onNotePermChange}
+          onPublishClick={() => setShowPublishModal(true)}
         />
       )}
     </div>

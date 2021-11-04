@@ -72,7 +72,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     flexDirection: "column",
-    marginLeft: 20,
   },
   shareLink: {
     fontSize: 16,

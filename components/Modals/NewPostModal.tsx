@@ -1,3 +1,4 @@
+import { connect } from "react-redux";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import Link from "next/link";
@@ -7,9 +8,14 @@ import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { StyleSheet, css } from "aphrodite";
 import killswitch from "../../config/killswitch/killswitch";
 import { filterNull } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
+import { createNewNote } from "~/config/fetch";
+import { captureError } from "~/config/utils/error";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 
 const items = [
   {
+    value: "UPLOAD",
     header: "Upload a Paper",
     description:
       "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
@@ -17,6 +23,7 @@ const items = [
     route: "/paper/upload/info",
   },
   {
+    value: "POST",
     header: "Create a Post",
     description:
       "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
@@ -24,6 +31,7 @@ const items = [
     route: "/post/create/question",
   },
   {
+    value: "HYPOTHESIS",
     header: "Create a Hypothesis",
     description:
       "Propose an explanation to an observation and back it up by citing relevant academic papers.",
@@ -37,19 +45,46 @@ export type NewPostModalProps = {
   setIsOpen: (flag: boolean) => void;
 };
 
-export default function NewPostModal({
+function NewPostModal({
   isOpen,
   setIsOpen,
+  user,
 }: NewPostModalProps): ReactElement<typeof Modal> {
+  const router = useRouter();
   let [selected, setSelected] = useState(0);
+
+console.log('user', user);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setIsOpen(false);
   };
 
-  const handleContinue = (e: SyntheticEvent): void => {
+  const handleContinue = async (e: SyntheticEvent): void => {
     e && e.preventDefault();
+    console.log('selected', selected);
+
+    let nextPage;
+    try {
+      switch(items[selected].value) {
+        case "HYPOTHESIS":
+          const note = await createNewNote({
+            orgSlug: user.organization_slug,
+            grouping: NOTE_GROUPS.WORKSPACE,
+          });
+
+          nextPage = `/${user.organization_slug}/notebook/${note.id}`;
+      }
+    }
+    catch(error) {
+      captureError({
+        error,
+        msg: "Failed to make primary modal selection",
+        data: { userId: user?.id, selection: items[selected]?.value },
+      });
+    }
+
+    router.push(nextPage);
     closeModal(e);
   };
 
@@ -90,11 +125,7 @@ export default function NewPostModal({
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
-                label={
-                  <Link href={items[selected]?.route ?? ""}>
-                    <div className={css(styles.buttonLabel)}>Continue</div>
-                  </Link>
-                }
+                label="Continue"
                 onClick={handleContinue}
                 rippleClass={styles.rippleClass}
               />
@@ -200,3 +231,9 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps)(NewPostModal);
