@@ -3,7 +3,9 @@ import { breakpoints } from "~/config/themes/screen";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState } from "react";
 import { StyleSheet } from "aphrodite";
-import AddNewSourceBodySearch from "./AddNewSourceBodySearch";
+import AddNewSourceBodySearch, {
+  ValidCitationType,
+} from "./AddNewSourceBodySearch";
 import AddNewSourceBodyStandBy from "./AddNewSourceBodyStandBy";
 import BaseModal from "~/components/Modals/BaseModal";
 import PaperUploadV2Create from "~/components/Paper/Upload/PaperUploadV2Create";
@@ -11,6 +13,7 @@ import PaperUploadV2Create from "~/components/Paper/Upload/PaperUploadV2Create";
 const { NEW_PAPER_UPLOAD, SEARCH, STAND_BY } = NEW_SOURCE_BODY_TYPES;
 
 type ComponentProps = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   isModalOpen: boolean;
   onCloseModal: (event: SyntheticEvent) => void;
@@ -21,7 +24,9 @@ type GetModalBodyArgs = {
   bodyType: BodyTypeVals;
   hypothesisID: ID;
   onCloseModal: (event: SyntheticEvent) => void;
+  selectedCitationType: ValidCitationType;
   setBodyType: (bodyType: BodyTypeVals) => void;
+  setSelectedCitationType: (citationType: ValidCitationType) => void;
   updateLastFetchTime: Function;
 };
 
@@ -29,7 +34,9 @@ function getModalBody({
   bodyType,
   hypothesisID,
   onCloseModal,
+  selectedCitationType,
   setBodyType,
+  setSelectedCitationType,
   updateLastFetchTime,
 }: GetModalBodyArgs): ReactElement<typeof AddNewSourceBodyStandBy> | null {
   switch (bodyType) {
@@ -53,7 +60,9 @@ function getModalBody({
             updateLastFetchTime();
             onCloseModal(event);
           }}
+          selectedCitationType={selectedCitationType}
           setBodyType={setBodyType}
+          setSelectedCitationType={setSelectedCitationType}
         />
       );
     case STAND_BY:
@@ -64,12 +73,16 @@ function getModalBody({
 }
 
 export default function AddNewSourceModal({
+  citationType,
   hypothesisID,
   isModalOpen,
   onCloseModal,
   updateLastFetchTime,
 }: ComponentProps): ReactElement<typeof BaseModal> {
   const [bodyType, setBodyType] = useState<BodyTypeVals>(SEARCH);
+  const [selectedCitationType, setSelectedCitationType] =
+    useState<ValidCitationType>(citationType);
+
   const modalBody = getModalBody({
     bodyType,
     hypothesisID,
@@ -77,6 +90,8 @@ export default function AddNewSourceModal({
       setBodyType(SEARCH);
       onCloseModal(event);
     },
+    selectedCitationType,
+    setSelectedCitationType,
     setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
     updateLastFetchTime,
   });
@@ -102,7 +117,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    overflow: 'unset',
+    overflow: "unset",
     position: "relative",
     backgroundColor: "#fff",
     padding: 24,
