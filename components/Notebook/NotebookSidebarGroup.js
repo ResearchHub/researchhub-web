@@ -66,7 +66,7 @@ const NotebookSidebarGroup = ({
               <Loader type="clip" size={23} />
             ) : (
               <div
-                className={css(styles.actionButton)}
+                className={css(styles.actionButton) + " actionButton"}
                 onClick={() => handleCreateNewNote(groupKey)}
               >
                 {icons.plus}
@@ -75,6 +75,15 @@ const NotebookSidebarGroup = ({
           </div>
         )}
       </div>
+      {notes.length === 0 && (
+        <div
+          className={css(styles.newNoteButton)}
+          onClick={() => handleCreateNewNote(groupKey)}
+        >
+          <span className={css(styles.plusIcon)}>{icons.plus}</span> Create new
+          note
+        </div>
+      )}
       {notes.map((note) => (
         <SidebarSectionContent
           key={note.id}
@@ -104,6 +113,24 @@ NotebookSidebarGroup.propTypes = {
 };
 
 const styles = StyleSheet.create({
+  newNoteButton: {
+    color: colors.PURPLE(1),
+    fontSize: 14,
+    fontWeight: 500,
+    padding: "20px 40px 20px 20px",
+    borderTop: `1px solid ${colors.GREY(0.3)}`,
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    },
+    ":last-child": {
+      borderBottom: `1px solid ${colors.GREY(0.3)}`,
+    },
+  },
+  plusIcon: {
+    fontSize: 16,
+    marginRight: 5,
+  },
   groupHead: {
     color: colors.BLACK(),
     cursor: "pointer",
@@ -112,10 +139,14 @@ const styles = StyleSheet.create({
     padding: "20px 10px 20px 20px",
     userSelect: "none",
     alignItems: "center",
+    ":hover .actionButton": {
+      opacity: 1,
+    },
   },
   title: {
     textTransform: "capitalize",
     fontSize: 14,
+    fontWeight: 600,
     color: colors.BLACK(0.5),
   },
   new: {
@@ -133,6 +164,10 @@ const styles = StyleSheet.create({
     width: 25,
     justifyContent: "center",
     transition: "all ease-in-out 0.1s",
+    opacity: 0,
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    },
   },
 });
 
