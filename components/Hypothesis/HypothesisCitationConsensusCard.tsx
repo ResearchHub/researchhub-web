@@ -1,11 +1,12 @@
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ReactElement } from "react";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
 import { TextRow } from "react-placeholder/lib/placeholders";
 import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import CitationAddNewButton from "./Citation/CitationAddNewButton";
 
 type Props = {
   aggregateCitationConsensus: {
@@ -16,6 +17,9 @@ type Props = {
   };
   hypothesisID: ID;
   isLoading?: boolean;
+  lastFetchTime?: number;
+  setLastFetchTime?: Function;
+  shouldShowUploadButton?: boolean;
 };
 
 export default function HypothesisCitationConsensusCard({
@@ -27,11 +31,11 @@ export default function HypothesisCitationConsensusCard({
   },
   hypothesisID,
   isLoading,
+  lastFetchTime,
+  setLastFetchTime,
+  shouldShowUploadButton = false,
 }: Props): ReactElement<"div"> | null {
-  if (citationCount === 0) {
-    return null;
-  }
-
+  const hasNoConsensus = citationCount === 0;
   const sentiment = upCount - downCount;
   const totalVoteCount = downCount + neutralCount + upCount;
 
@@ -90,17 +94,27 @@ export default function HypothesisCitationConsensusCard({
             }.`}</span>
           </div>
           <div className={css(styles.hypoConsensusRightSide)}>
-            <CitationConsensusItem
-              citationID={`${hypothesisID}-citation-placeholder`}
-              consensusMeta={{
-                downCount,
-                neutralCount,
-                upCount,
-                userVote: {},
-              }}
-              shouldAllowVote={false}
-              updateLastFetchTime={silentEmptyFnc}
-            />
+            {hasNoConsensus && shouldShowUploadButton ? (
+              <CitationAddNewButton
+                hypothesisID={hypothesisID}
+                lastFetchTime={nullthrows(lastFetchTime)}
+                updateLastFetchTime={(): void =>
+                  nullthrows(setLastFetchTime)(Date.now())
+                }
+              />
+            ) : (
+              <CitationConsensusItem
+                citationID={`${hypothesisID}-citation-placeholder`}
+                consensusMeta={{
+                  downCount,
+                  neutralCount,
+                  upCount,
+                  userVote: {},
+                }}
+                shouldAllowVote={false}
+                updateLastFetchTime={silentEmptyFnc}
+              />
+            )}
           </div>
         </div>
       )}
