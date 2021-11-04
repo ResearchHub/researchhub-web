@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
 
@@ -44,8 +45,13 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     display: "flex",
     justifyContent: "space-between",
+    boxSizing: "border-box",
     marginTop: 30,
     width: "100%",
+    maxWidth: "100%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      flexDirection: "column",
+    },
   },
   header: {
     fontFamily: "Roboto",
@@ -62,8 +68,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 30,
-    width: "49%",
-    "@media only screen and (max-width: 767px)": {
+    width: "49.5%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "100%",
+      marginBottom: 16,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
     },
   },
