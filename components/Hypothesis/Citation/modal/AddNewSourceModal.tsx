@@ -43,6 +43,7 @@ function getModalBody({
     case NEW_PAPER_UPLOAD:
       return (
         <PaperUploadV2Create
+          citationType={selectedCitationType}
           hypothesisID={hypothesisID}
           onCancelComplete={onCloseModal}
           onSubmitComplete={(event: SyntheticEvent): void => {
@@ -82,7 +83,6 @@ export default function AddNewSourceModal({
   const [bodyType, setBodyType] = useState<BodyTypeVals>(SEARCH);
   const [selectedCitationType, setSelectedCitationType] =
     useState<ValidCitationType>(citationType);
-
   const modalBody = getModalBody({
     bodyType,
     hypothesisID,

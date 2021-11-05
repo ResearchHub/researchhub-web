@@ -35,9 +35,11 @@ import {
   useState,
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
+import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
 
 type ComponentProps = {
   authRedux: any;
+  citationType?: ValidCitationType;
   hypothesisID?: ID;
   messageActions: any;
   modalActions: any;
@@ -48,6 +50,7 @@ type ComponentProps = {
 };
 
 type ParseReduxToStateArgs = {
+  citationType: ValidCitationType;
   componentState: ComponentState;
   formState: FormState;
   hypothesisID: ID;
@@ -71,6 +74,7 @@ const useEffectHandleInit = ({
 };
 
 const useEffectParseReduxToState = ({
+  citationType,
   formState,
   hypothesisID,
   messageActions,
@@ -122,6 +126,7 @@ const useEffectParseReduxToState = ({
     setFormState({
       abstract: formattedAbstract,
       author: formAuthors,
+      citation_type: citationType,
       doi: formattedDOI,
       hubs: formHubs,
       hypothesis_id: hypothesisID,
@@ -139,6 +144,7 @@ const useEffectParseReduxToState = ({
 function PaperuploadV2Create({
   authRedux,
   hypothesisID,
+  citationType,
   messageActions,
   modalActions,
   onCancelComplete,
@@ -153,9 +159,18 @@ function PaperuploadV2Create({
   );
   const [formState, setFormState] = useState<FormState>(
     isPaperForHypothesis
-      ? { ...defaultFormState, hypothesis_id: hypothesisID }
+      ? {
+          ...defaultFormState,
+          hypothesis_id: hypothesisID,
+          citation_type: nullthrows(
+            citationType,
+            "Attempting to post Citation without type"
+          ),
+        }
       : defaultFormState
   );
+  console.warn("selectedCitationType: ", formState.citation_type);
+
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
@@ -224,6 +239,7 @@ function PaperuploadV2Create({
       formErrors,
       setFormErrors,
     });
+    citationType;
     if (isFormValid) {
       messageActions.showMessage({ load: true, show: true });
       uploadNewPaper({
@@ -284,6 +300,7 @@ function PaperuploadV2Create({
   });
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   useEffectParseReduxToState({
+    citationType: citationType ?? null,
     componentState,
     messageActions,
     formState,

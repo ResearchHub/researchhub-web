@@ -1,3 +1,4 @@
+import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
 import { ID } from "../../../../config/types/root_types";
 
 export type ComponentState = {
@@ -37,6 +38,7 @@ export type FormState = {
   abstract: any;
   author: any;
   authors?: any[]; // only used for update. Often referred to as selectedAuthors in FE
+  citation_type?: ValidCitationType;
   doi: ID;
   file?: any; // most likely only used for create
   hubs: any[];
