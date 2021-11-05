@@ -1,20 +1,23 @@
 import { CitationTableRowItemProps } from "../Citation/table/CitationTableRowItem";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "~/config/types/root_types";
+import { ValidCitationType } from "../Citation/modal/AddNewSourceBodySearch";
 import API from "~/config/api";
 
 type FetchCitationsOnHypothesisArgs = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   onError: Function;
   onSuccess: Function;
 };
 
 export function fetchCitationsOnHypothesis({
+  citationType,
   hypothesisID,
   onError,
   onSuccess,
 }: FetchCitationsOnHypothesisArgs): void {
-  fetch(API.CITATIONS({ hypothesisID }, "get"), API.GET_CONFIG())
+  fetch(API.CITATIONS({ hypothesisID, citationType }, "get"), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((result: any): void => {

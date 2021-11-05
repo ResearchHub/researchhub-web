@@ -69,9 +69,11 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: 30,
     width: "49.5%",
+    minHeight: 353,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       width: "100%",
       marginBottom: 16,
+      minHeight: "unset",
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
