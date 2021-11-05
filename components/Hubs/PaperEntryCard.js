@@ -255,7 +255,6 @@ const PaperEntryCard = (props) => {
 
   function navigateToPage(e) {
     console.log(`/paper/${id}/${paperSlug}`);
-    debugger;
     if (e.metaKey || e.ctrlKey) {
       window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {

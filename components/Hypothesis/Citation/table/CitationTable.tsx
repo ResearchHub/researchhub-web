@@ -4,6 +4,7 @@ import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { tableWidths } from "./constants/tableWidths";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import CitationAddNewButton from "../CitationAddNewButton";
 import CitationNoResult from "./CitationNoResult";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
@@ -14,13 +15,14 @@ import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
 
 type Props = {
-  citationType: "ALL" | "REJECT" | "SUPPORT";
+  citationType: ValidCitationType;
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
 };
 
 type UseEffectGetCitationsArgs = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   lastFetchTime: number | null;
   setCitationItems: (items: CitationTableRowItemProps[]) => void;
@@ -28,6 +30,7 @@ type UseEffectGetCitationsArgs = {
 };
 
 function useEffectGetCitations({
+  citationType,
   hypothesisID,
   lastFetchTime,
   setCitationItems,
@@ -35,6 +38,7 @@ function useEffectGetCitations({
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
     fetchCitationsOnHypothesis({
+      citationType,
       hypothesisID,
       onError: (error: Error): void => emptyFncWithMsg(error),
       onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
@@ -57,6 +61,7 @@ export default function CitationTable({
 
   const [isLoading, setIsLoading] = useState(true);
   useEffectGetCitations({
+    citationType,
     hypothesisID,
     lastFetchTime,
     setCitationItems,
@@ -86,7 +91,7 @@ export default function CitationTable({
     <div className={css(styles.citationNoResults)}>
       <CitationNoResult citationType={citationType} />
       <CitationAddNewButton
-        citationType={citationType === "ALL" ? null : citationType}
+        citationType={citationType}
         hypothesisID={hypothesisID}
         lastFetchTime={lastFetchTime}
         updateLastFetchTime={updateLastFetchTime}
@@ -95,7 +100,7 @@ export default function CitationTable({
   );
 
   return (
-    <>
+    <div className={css(styles.citationTableWrap)}>
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
@@ -108,28 +113,26 @@ export default function CitationTable({
             label="Cited by"
             width={tableWidths.CITED_BY}
           />
-          <CitationTableHeaderItem
-            label="Notes"
-            width={tableWidths.COMMENTS}
-          />
+          <CitationTableHeaderItem label="Notes" width={tableWidths.COMMENTS} />
         </div>
         <div className={css(styles.itemsWrap)}>{rowItems}</div>
       </div>
       {citationItems.length > 0 ? (
         <div className={css(styles.addCitation)}>
           <CitationAddNewButton
-            citationType={citationType === "ALL" ? null : citationType}
+            citationType={citationType}
             hypothesisID={hypothesisID}
             lastFetchTime={lastFetchTime}
             updateLastFetchTime={updateLastFetchTime}
           />
         </div>
       ) : null}
-    </>
+    </div>
   );
 }
 
 const styles = StyleSheet.create({
+  citationTableWrap: {},
   citationTable: {
     boxSizing: "border-box",
     margin: "8px 0 24px",
