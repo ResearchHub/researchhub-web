@@ -10,13 +10,13 @@ import { logFetchError } from "~/config/utils/misc";
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
- 
+
 export const PaperActions = {
   postUpvote: (paperId) => {
     const isUpvote = true;
 
     return async (dispatch, getState) => {
-      await fetch(API.UPVOTE('paper', paperId), API.POST_CONFIG())
+      await fetch(API.UPVOTE("paper", paperId), API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -51,7 +51,7 @@ export const PaperActions = {
     const isUpvote = false;
 
     return async (dispatch, getState) => {
-      await fetch(API.DOWNVOTE('paper', paperId), API.POST_CONFIG())
+      await fetch(API.DOWNVOTE("paper", paperId), API.POST_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {

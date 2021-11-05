@@ -158,6 +158,7 @@ export default function AddNewSourceBodySearch({
                   selectedItem?.unified_doc_id,
                   "Selected item must have unifiedDocID"
                 ),
+                type: selectedCitationType,
               },
               onSuccess: (): void => {
                 setIsSubmitting(false);

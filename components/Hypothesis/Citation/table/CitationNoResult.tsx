@@ -1,14 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 
 export default function CitationNoResult({
   citationType,
 }: {
-  citationType: string;
+  citationType: ValidCitationType;
 }): ReactElement<"div"> {
   const formattedTypeText =
     citationType?.length ?? 0 > 0
-      ? ` ${citationType.toLocaleLowerCase()}ing`
+      ? ` ${citationType?.toLocaleLowerCase()}ing`
       : "";
   return (
     <div className={css(styles.citationNotResult)}>
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   emptyPlaceholderImage: {
-    width: 200,
+    width: 100,
     objectFit: "contain",
     marginTop: 20,
     "@media only screen and (max-width: 415px)": {
