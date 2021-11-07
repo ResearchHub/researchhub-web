@@ -54,7 +54,9 @@ const ELNEditor = ({
     }
   }, []);
 
-  const channelId = `${orgSlug}-${currentNote.id}`.slice(0, 60);
+  const noteIdLength = `${currentNote.id}`.length;
+
+  const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
 
   return (
     <div className={css(styles.container)}>
