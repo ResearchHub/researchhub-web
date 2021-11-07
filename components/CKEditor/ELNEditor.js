@@ -54,7 +54,7 @@ const ELNEditor = ({
     }
   }, []);
 
-  const channelId = `${orgSlug}-${currentNote.id}`;
+  const channelId = `${orgSlug}-${currentNote.id}`.slice(0, 60);
 
   return (
     <div className={css(styles.container)}>
