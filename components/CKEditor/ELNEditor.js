@@ -20,6 +20,10 @@ import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
+  if (editor.isReadOnly) {
+    return false;
+  }
+
   try {
     const noteParams = {
       title:

@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     userSelect: "none",
     marginRight: 20,
+    marginTop: 10,
   },
   buttonContainer: {
     display: "flex",
