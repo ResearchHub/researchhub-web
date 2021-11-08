@@ -21,11 +21,12 @@ function CitationVoteItem({
   voteMeta,
   updateLastFetchTime,
 }: Props): ReactElement<"div"> {
+  console.warn("currentUser: ", currentUser);
   return (
     <div className={css(styles.citationVoteItem)}>
       <VoteWidgetV2
         downVoteAPI={API.CITATIONS_VOTE({ citationID, voteType: DOWNVOTE })}
-        shouldAllowVote={!isNullOrUndefined(currentUser)}
+        shouldAllowVote={!isNullOrUndefined(currentUser?.id)}
         upVoteAPI={API.CITATIONS_VOTE({ citationID, voteType: UPVOTE })}
         voteMeta={voteMeta}
         onUpdateSuccess={updateLastFetchTime}
