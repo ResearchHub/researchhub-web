@@ -19,17 +19,12 @@ export const getUserNoteAccess = ({ user, userOrgs, notePerms }) => {
       const foundUserOrg = userOrgs.find((o) => p.organization.id === o.id);
       const userOrgAccess = PERMS.getValByEnum({
         permEnum: foundUserOrg?.user_permission?.access_type,
-        forEntity: ENTITIES.NOTE,
+        forEntity: ENTITIES.ORG,
       });
 
       // Org members have implicit ADMIN note access
       if ([PERMS.ORG.MEMBER, PERMS.ORG.ADMIN].includes(userOrgAccess)) {
         userAccess = PERMS.NOTE.ADMIN;
-      } else {
-        userAccess =
-          userAccess > PERMS.NOTE[p.access_type]
-            ? userAccess
-            : PERMS.NOTE[p.access_type];
       }
     }
   }

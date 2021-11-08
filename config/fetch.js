@@ -33,10 +33,13 @@ export const updateNoteUserPermissions = ({
     .then(Helpers.parseJSON);
 };
 
-export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
+export const removePermissionsFromNote = ({ noteId, userId, orgId }) => {
   const config = {
     ...API.DELETE_CONFIG(),
-    body: JSON.stringify({ user: userId }),
+    body: JSON.stringify({
+      ...(orgId && { organization: orgId }),
+      ...(userId && { user: userId }),
+    }),
   };
 
   return fetch(API.NOTE_PERMISSIONS({ noteId, method: "DELETE" }), config)

@@ -294,9 +294,7 @@ const Notebook = ({ auth, user }) => {
   };
 
   const onNotePermChange = ({ changeType }) => {
-    if (changeType === "REMOVE_USER") {
-      fetchAndSetCurrentOrgNotes();
-    }
+    fetchAndSetCurrentOrgNotes();
   };
 
   const getCurrentOrgFromRouter = (orgs) => {

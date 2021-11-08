@@ -59,7 +59,7 @@ const NotebookSidebar = ({
       groups.push(NOTE_GROUPS.WORKSPACE);
     }
 
-    if (currentOrg?.member_count > 0) {
+    if (currentOrg?.member_count > 1 && orgAccess >= PERMS.ORG.MEMBER) {
       groups.push(NOTE_GROUPS.PRIVATE);
     }
 

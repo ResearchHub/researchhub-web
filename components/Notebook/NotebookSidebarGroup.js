@@ -164,7 +164,6 @@ const styles = StyleSheet.create({
     width: 25,
     justifyContent: "center",
     transition: "all ease-in-out 0.1s",
-    opacity: 0,
     ":hover": {
       backgroundColor: colors.GREY(0.3),
     },
