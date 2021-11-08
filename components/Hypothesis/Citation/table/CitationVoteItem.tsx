@@ -21,7 +21,6 @@ function CitationVoteItem({
   voteMeta,
   updateLastFetchTime,
 }: Props): ReactElement<"div"> {
-  console.warn("currentUser: ", currentUser);
   return (
     <div className={css(styles.citationVoteItem)}>
       <VoteWidgetV2
