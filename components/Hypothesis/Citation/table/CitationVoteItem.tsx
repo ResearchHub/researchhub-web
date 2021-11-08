@@ -10,7 +10,8 @@ import VoteWidgetV2, { VoteMeta } from "~/components/VoteWidgetV2";
 
 type Props = {
   citationID: ID;
-  currentUser: any; // Redux
+  currentUser?: any; // Redux
+  updateLastFetchTime: Function;
   voteMeta: VoteMeta;
 };
 
@@ -18,14 +19,16 @@ function CitationVoteItem({
   citationID,
   currentUser,
   voteMeta,
+  updateLastFetchTime,
 }: Props): ReactElement<"div"> {
   return (
     <div className={css(styles.citationVoteItem)}>
       <VoteWidgetV2
-        shouldAllowVote={!isNullOrUndefined(currentUser)}
         downVoteAPI={API.CITATIONS_VOTE({ citationID, voteType: DOWNVOTE })}
+        shouldAllowVote={!isNullOrUndefined(currentUser)}
         upVoteAPI={API.CITATIONS_VOTE({ citationID, voteType: UPVOTE })}
         voteMeta={voteMeta}
+        onUpdateSuccess={updateLastFetchTime}
       />
     </div>
   );
