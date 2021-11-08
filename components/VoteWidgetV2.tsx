@@ -183,7 +183,7 @@ export default function VoteWidgetV2({
                 styles.marginRight,
                 currentUserVoteType === UPVOTE && styles.selected,
               ])
-            : css(styles.iconDisabled)
+            : css(styles.iconDisabled, styles.marginRight)
         }
         onClick={(event: SyntheticEvent) => {
           event.stopPropagation();
@@ -208,7 +208,7 @@ export default function VoteWidgetV2({
                 styles.marginLeft,
                 currentUserVoteType === DOWNVOTE && styles.selectedDown,
               ])
-            : css(styles.iconDisabled)
+            : css(styles.iconDisabled, styles.marginLeft)
         }
         onClick={(event: SyntheticEvent) => {
           event.stopPropagation();
@@ -254,6 +254,8 @@ const styles = StyleSheet.create({
   },
   iconDisabled: {
     color: voteWidgetColors.ARROW,
+    cursor: "unset",
+    fontSize: 20,
   },
   selected: {
     color: colors.GREEN(),
