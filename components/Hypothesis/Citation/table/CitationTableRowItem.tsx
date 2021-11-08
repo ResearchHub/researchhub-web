@@ -12,6 +12,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
+import CitationVoteItem from "./CitationVoteItem";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
@@ -90,12 +91,16 @@ export default function CitationTableRowItem({
       />
       <ItemColumn
         value={
-          <CitationConsensusItem
+          <CitationVoteItem
             citationID={citationID}
-            consensusMeta={consensusMeta}
-            shouldAllowVote
-            updateLastFetchTime={updateLastFetchTime}
+            voteMeta={{ ...consensusMeta }}
           />
+          // <CitationConsensusItem
+          // citationID={citationID}
+          //   consensusMeta={consensusMeta}
+          //   shouldAllowVote
+          //   updateLastFetchTime={updateLastFetchTime}
+          // />
         }
         width={tableWidths.CONSENSUS}
       />
