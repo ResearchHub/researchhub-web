@@ -46,6 +46,7 @@ class Index extends Component {
     }
     try {
       const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+      const fetchFeedWithVotes = !isNullOrUndefined(authToken);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
           {
@@ -56,7 +57,7 @@ class Index extends Component {
             type: urlDocType,
           },
           authToken,
-          !isNullOrUndefined(authToken) /* withVotes */
+          fetchFeedWithVotes /* withVotes */
         ),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
@@ -76,6 +77,7 @@ class Index extends Component {
         },
       };
     } catch (e) {
+      console.log(e);
       if (res) {
         res.statusCode = 404;
       }

@@ -2,6 +2,7 @@ import { emailPreference } from "./shims";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
+import { isNullOrUndefined } from "./utils/nullchecks";
 
 export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
@@ -341,7 +342,7 @@ export const fetchUnifiedDocFeed = async (
   } else {
     const formattedResults = await fetchUserVote(
       docPayload.results,
-      isNullOrUndefined(isLoggedIn) /* isLoggedIn */,
+      null,
       authToken
     );
     docPayload.results = formattedResults;
