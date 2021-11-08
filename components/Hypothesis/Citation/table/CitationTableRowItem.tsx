@@ -93,6 +93,7 @@ export default function CitationTableRowItem({
         value={
           <CitationVoteItem
             citationID={citationID}
+            updateLastFetchTime={updateLastFetchTime}
             voteMeta={{ ...consensusMeta }}
           />
           // <CitationConsensusItem
