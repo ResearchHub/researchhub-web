@@ -111,6 +111,7 @@ export default function HypothesisCitationConsensusCard({
                   neutralCount,
                   upCount,
                   userVote: {},
+                  totalCount: downCount + upCount + neutralCount,
                 }}
                 shouldAllowVote={false}
                 updateLastFetchTime={silentEmptyFnc}

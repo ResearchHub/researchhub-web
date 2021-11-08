@@ -36,7 +36,7 @@ export type ConsensusMeta = {
   downCount: number;
   neutralCount: number;
   upCount: number;
-  totalCount?: number;
+  totalCount: number;
   userVote: any;
 };
 
