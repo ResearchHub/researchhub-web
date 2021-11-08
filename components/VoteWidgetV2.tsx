@@ -6,7 +6,11 @@ import {
   UPVOTE_ENUM,
   userVoteToConstant,
 } from "~/config/constants";
-import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { Helpers } from "@quantfive/js-web-config";
 import {
   Fragment,
@@ -21,9 +25,26 @@ import colors, { voteWidgetColors } from "~/config/themes/colors";
 
 export type VoteMeta = {
   downCount: number;
-  upCount: number;
   totalCount: number;
+  upCount: number;
   userVote: any /* BE payload to determine what vote currUser casted */;
+};
+
+type HandleVoteArgs = {
+  currentUserVoteType: string | null;
+  localVoteMeta: VoteMeta;
+  onUpdateSuccess?: Function;
+  setLocalVoteMeta: (VoteMeta: VoteMeta) => void;
+  shouldAllowVote: Boolean;
+  voteAPI: string;
+};
+
+type ComponentProp = {
+  downVoteAPI: string;
+  onUpdateSuccess?: Function;
+  shouldAllowVote: Boolean;
+  upVoteAPI: string;
+  voteMeta: VoteMeta;
 };
 
 function useEffectSyncLocalvoteMeta({
@@ -51,17 +72,10 @@ function useEffectSyncLocalvoteMeta({
   }, [downCountProp, upCountProp, userVoteProp]);
 }
 
-type HandleVoteArgs = {
-  currentUserVoteType: string | null;
-  localVoteMeta: VoteMeta;
-  setLocalVoteMeta: (VoteMeta: VoteMeta) => void;
-  shouldAllowVote: Boolean;
-  voteAPI: string;
-};
-
 const handleDownvote = ({
   currentUserVoteType,
   localVoteMeta,
+  onUpdateSuccess,
   setLocalVoteMeta,
   shouldAllowVote,
   voteAPI,
@@ -90,6 +104,9 @@ const handleDownvote = ({
         ...updatedMeta,
         userVote,
       });
+      if (!isNullOrUndefined(onUpdateSuccess)) {
+        nullthrows(onUpdateSuccess)();
+      }
     })
     .catch((error: Error): void => {
       emptyFncWithMsg(error); // TODO: calvinhlee - consider adding sentry?
@@ -99,6 +116,7 @@ const handleDownvote = ({
 const handleUpvote = ({
   currentUserVoteType,
   localVoteMeta,
+  onUpdateSuccess,
   setLocalVoteMeta,
   shouldAllowVote,
   voteAPI,
@@ -126,6 +144,9 @@ const handleUpvote = ({
         ...updatedMeta,
         userVote,
       });
+      if (!isNullOrUndefined(onUpdateSuccess)) {
+        nullthrows(onUpdateSuccess)();
+      }
     })
     .catch((error: Error): void => {
       emptyFncWithMsg(error); // TODO: calvinhlee - consider adding sentry?
@@ -134,15 +155,11 @@ const handleUpvote = ({
 
 export default function VoteWidgetV2({
   downVoteAPI,
+  onUpdateSuccess,
   shouldAllowVote,
   upVoteAPI,
   voteMeta,
-}: {
-  downVoteAPI: string;
-  shouldAllowVote: Boolean;
-  upVoteAPI: string;
-  voteMeta: VoteMeta;
-}): ReactElement<typeof Fragment> {
+}: ComponentProp): ReactElement<typeof Fragment> {
   const [localVoteMeta, setLocalVoteMeta] = useState<VoteMeta>(voteMeta);
 
   useEffectSyncLocalvoteMeta({
@@ -173,6 +190,7 @@ export default function VoteWidgetV2({
           handleUpvote({
             currentUserVoteType,
             localVoteMeta,
+            onUpdateSuccess,
             setLocalVoteMeta,
             shouldAllowVote,
             voteAPI: upVoteAPI,
@@ -197,6 +215,7 @@ export default function VoteWidgetV2({
           handleDownvote({
             currentUserVoteType,
             localVoteMeta,
+            onUpdateSuccess,
             setLocalVoteMeta,
             shouldAllowVote,
             voteAPI: downVoteAPI,
