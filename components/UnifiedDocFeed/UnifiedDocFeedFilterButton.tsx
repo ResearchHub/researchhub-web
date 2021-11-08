@@ -5,7 +5,7 @@ import colors from "../../config/themes/colors";
 type Props = {
   isActive: boolean;
   label: string;
-  onClick: (event: SyntheticEvent) => void;
+  onClick?: (event: SyntheticEvent) => void;
 };
 
 function UnifiedDocFeedFilterButton({
