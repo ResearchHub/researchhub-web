@@ -73,6 +73,7 @@ function UnifiedDocFeedContainer({
   );
 
   const [prevPath, setPrevPath] = useState<string>(router.asPath);
+  const afterFirstLoad = useRef(false);
   const prevHub = usePrevious(hub);
 
   const [subFilters, setSubFilters] = useState({
@@ -95,19 +96,23 @@ function UnifiedDocFeedContainer({
   const [nextResultSet, setNextResultSet] = useState<any>([]);
 
   useEffect((): void => {
-    const filterValue = getFilterFromRouter(router);
+    if (afterFirstLoad.current) {
+      const filterValue = getFilterFromRouter(router);
 
-    resetState();
-    setDocTypeFilter(filterValue);
+      resetState();
+      setDocTypeFilter(filterValue);
 
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      docTypeFilter: filterValue,
-    });
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { docTypeFilter: filterValue },
-    });
+      fetchUnifiedDocs({
+        ...getFetchParams(),
+        docTypeFilter: filterValue,
+      });
+      prefetchNextPage({
+        nextPage: 2,
+        fetchParams: { docTypeFilter: filterValue },
+      });
+    } else {
+      afterFirstLoad.current = true;
+    }
   }, [router.query.type]);
 
   const hasSubscribed = useMemo(
@@ -166,7 +171,6 @@ function UnifiedDocFeedContainer({
       onSuccess: ({ documents }) => {
         setNextResultSet(documents);
         setPaginationInfo({
-          isLoading: false,
           isLoadingMore: false,
           page: nextPage,
         });
