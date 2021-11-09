@@ -8,6 +8,7 @@ import {
   fetchOrgNotes,
   fetchNote,
   fetchOrg,
+  fetchOrgTemplates,
 } from "~/config/fetch";
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
@@ -32,6 +33,7 @@ const Notebook = ({ auth, user }) => {
   const [userNoteAccess, setUserNoteAccess] = useState(null);
   const [notes, setNotes] = useState([]);
   const [titles, setTitles] = useState({});
+  const [templates, setTemplates] = useState([]);
   const [didInitialNotesLoad, setDidInitialNotesLoad] = useState(false);
 
   const [currentOrganization, setCurrentOrganization] = useState(null);
@@ -151,9 +153,16 @@ const Notebook = ({ auth, user }) => {
       const newOrg = getCurrentOrgFromRouter(organizations);
       setCurrentOrganization(newOrg);
       fetchAndSetCurrentOrgNotes();
+      fetchAndSetOrgTemplates();
       setDidInitialNotesLoad(false);
     }
   }, [orgSlug, currentOrganization]);
+
+  const fetchAndSetOrgTemplates = useCallback(async () => {
+    const templates = await fetchOrgTemplates(orgSlug);
+    console.log("templates!", templates);
+    setTemplates(templates);
+  }, [orgSlug]);
 
   const fetchAndSetCurrentOrgNotes = useCallback(async () => {
     let response;
@@ -229,7 +238,6 @@ const Notebook = ({ auth, user }) => {
   }, [noteId, user]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
-    console.log("org", orgId);
     try {
       const org = await fetchOrg({ orgId });
       updateUserOrgsLocalCache(org);
@@ -335,6 +343,8 @@ const Notebook = ({ auth, user }) => {
         setTitles={setTitles}
         titles={titles}
         user={user}
+        templates={templates}
+        refetchTemplates={fetchAndSetOrgTemplates}
       />
       {currentNote && (
         <ELNEditor
@@ -348,6 +358,9 @@ const Notebook = ({ auth, user }) => {
           setELNLoading={setELNLoading}
           refetchNotePerms={fetchAndSetCurrentNotePermissions}
           onNotePermChange={onNotePermChange}
+          onNoteCreate={onNoteCreate}
+          onNoteDelete={onNoteDelete}
+          refetchTemplates={fetchAndSetOrgTemplates}
         />
       )}
     </div>

@@ -35,15 +35,19 @@ export default function NoteTemplateModal({
   orgSlug,
   refetchTemplates,
   setIsOpen,
+  templates,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const editorRef = useRef<any>();
   const { CKEditor, Editor } = editorRef.current || {};
   const [fetched, setFetched] = useState(false);
   const [hideTemplates, setHideTemplates] = useState(false);
-  const [selected, setSelected] = useState(0);
-  const [templates, setTemplates] = useState([]);
-  const [templateContents, setTemplateContents] = useState({});
+  const [selected, setSelected] = useState((templates || [])[0]?.id);
   const [editorInstance, setEditorInstance] = useState(null);
+
+  const templateMap = {};
+  for (const template of templates) {
+    templateMap[template.id.toString()] = template;
+  }
 
   useEffect(() => {
     editorRef.current = {
@@ -53,25 +57,10 @@ export default function NoteTemplateModal({
   }, []);
 
   useEffect(() => {
-    fetch(API.NOTE_TEMPLATE({ orgSlug }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((templates) => {
-        const fetchedTemplates = {};
-        for (const template of templates) {
-          fetchedTemplates[template.id.toString()] = template;
-        }
-        setTemplateContents(fetchedTemplates);
-        setTemplates(templates);
-        if (templates.length) {
-          setSelected(templates[0].id);
-        }
-        setFetched(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [refetchTemplates, orgSlug]);
+    if (isOpen) {
+      refetchTemplates();
+    }
+  }, [isOpen]);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
@@ -89,7 +78,7 @@ export default function NoteTemplateModal({
 
     const note = await createNewNote(noteParams);
     const noteContent = await createNoteContent({
-      editorData: templateContents[selected].src,
+      editorData: templateMap[selected].src,
       noteId: note.id,
     });
     onNoteCreate(note);
@@ -123,25 +112,23 @@ export default function NoteTemplateModal({
     >
       <div className={css(styles.rootContainer)}>
         <div className={css(styles.editorContainer) + " eln"}>
-          {fetched && (
-            <CKEditor
-              config={editorConfiguration}
-              data={templateContents[selected]?.src ?? ""}
-              editor={Editor}
-              onChange={(event, editor) => handleInput(editor)}
-              onReady={(editor) => {
-                setEditorInstance(editor);
-                editor.isReadOnly = true;
-                editor.editing.view.change((writer) => {
-                  writer.setStyle(
-                    "min-height",
-                    "200px",
-                    editor.editing.view.document.getRoot()
-                  );
-                });
-              }}
-            />
-          )}
+          <CKEditor
+            config={editorConfiguration}
+            data={templateMap[selected]?.src ?? ""}
+            editor={Editor}
+            onChange={(event, editor) => handleInput(editor)}
+            onReady={(editor) => {
+              setEditorInstance(editor);
+              editor.isReadOnly = true;
+              editor.editing.view.change((writer) => {
+                writer.setStyle(
+                  "min-height",
+                  "200px",
+                  editor.editing.view.document.getRoot()
+                );
+              });
+            }}
+          />
         </div>
         <div className={css(styles.sidebar)}>
           <div className={css(styles.buttonContainer)}>

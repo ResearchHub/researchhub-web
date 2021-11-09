@@ -1,11 +1,5 @@
-import Link from "next/link";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
-import { css, StyleSheet } from "aphrodite";
 import {
   deleteNote,
   createNewNote,
@@ -13,36 +7,38 @@ import {
   fetchNote,
   createNoteTemplate,
 } from "~/config/fetch";
-import { getNotePathname } from "~/components/Org/utils/orgHelper";
+import colors from "~/config/themes/colors";
+import { Helpers } from "@quantfive/js-web-config";
+import { NOTE_GROUPS } from "./config/notebookConstants";
+import ResearchHubPopover from "~/components/ResearchHubPopover";
+import icons from "~/config/themes/icons";
+import { css, StyleSheet } from "aphrodite";
 import { useAlert } from "react-alert";
 import { useState } from "react";
-import { NOTE_GROUPS } from "./config/notebookConstants";
 
-const SidebarSectionContent = ({
-  currentNoteId,
+const NoteOptionsMenuButton = ({
   currentOrg,
-  noteId,
-  groupKey,
+  note,
+  title,
   onNoteCreate,
   onNoteDelete,
-  refetchTemplates,
+  onNotePermChange,
   setMessage,
-  setRefetchTemplates,
   showMessage,
-  title,
-  showOptions,
+  show,
+  size = 20,
 }) => {
-  const alert = useAlert();
-  const [isHovered, setIsHovered] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const alert = useAlert();
+  const noteId = String(note.id);
 
   const menuItems = [
-    //{
-    //  text: "Make private",
-    //  icon: icons.lock,
-    //  hoverStyle: styles.blueHover,
-    //  onClick: () => setIsPopoverOpen(!isPopoverOpen),
-    //},
+    {
+      text: "Make private",
+      icon: icons.lock,
+      hoverStyle: styles.blueHover,
+      onClick: () => setIsPopoverOpen(!isPopoverOpen),
+    },
     {
       text: "Duplicate",
       icon: icons.clone,
@@ -54,11 +50,13 @@ const SidebarSectionContent = ({
         const originalNote = await Helpers.parseJSON(response);
 
         let grouping =
-          groupKey === NOTE_GROUPS.SHARED ? NOTE_GROUPS.WORKSPACE : groupKey;
+          note.access === NOTE_GROUPS.SHARED
+            ? NOTE_GROUPS.WORKSPACE
+            : note.access;
 
         const params = {
           orgSlug: currentOrg.slug,
-          title,
+          title: title,
           grouping,
         };
 
@@ -93,7 +91,6 @@ const SidebarSectionContent = ({
             createNoteTemplate(params).then((data) => {
               setMessage("Template created");
               showMessage({ show: true, error: false });
-              setRefetchTemplates(!refetchTemplates);
             });
           });
       },
@@ -119,68 +116,50 @@ const SidebarSectionContent = ({
   ];
 
   return (
-    <Link href={getNotePathname({ noteId: noteId, org: currentOrg })}>
-      <a
-        className={css(
-          styles.sidebarSectionContent,
-          noteId === currentNoteId && styles.active
-        )}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <div className={css(styles.noteIcon)}>{icons.paper}</div>
-        {title}
-        {showOptions && (
-          <div>
-            <ResearchHubPopover
-              align={"end"}
-              isOpen={isPopoverOpen}
-              padding={5}
-              popoverContent={
-                <div className={css(styles.popoverBodyContent)}>
-                  {menuItems.map((item, index) => (
-                    <div
-                      className={css(styles.popoverBodyItem, item.hoverStyle)}
-                      key={index}
-                      onClick={item.onClick}
-                    >
-                      <div className={css(styles.popoverBodyIcon)}>
-                        {item.icon}
-                      </div>
-                      <div className={css(styles.popoverBodyText)}>
-                        {item.text}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              }
-              positions={["bottom", "top"]}
-              onClickOutside={() => setIsPopoverOpen(false)}
-              targetContent={
-                <div
-                  className={css(
-                    styles.ellipsisButton,
-                    !isHovered && !isPopoverOpen && styles.hideEllipsis
-                  )}
-                  onClick={(e) => {
-                    e && e.preventDefault();
-                    e && e.stopPropagation();
-                    setIsPopoverOpen(!isPopoverOpen);
-                  }}
-                >
-                  {icons.ellipsisV}
-                </div>
-              }
-            />
+    <div>
+      <ResearchHubPopover
+        align={"end"}
+        isOpen={isPopoverOpen}
+        padding={5}
+        popoverContent={
+          <div className={css(styles.popoverBodyContent)}>
+            {menuItems.map((item, index) => (
+              <div
+                className={css(styles.popoverBodyItem, item.hoverStyle)}
+                key={index}
+                onClick={item.onClick}
+              >
+                <div className={css(styles.popoverBodyIcon)}>{item.icon}</div>
+                <div className={css(styles.popoverBodyText)}>{item.text}</div>
+              </div>
+            ))}
           </div>
-        )}
-      </a>
-    </Link>
+        }
+        positions={["bottom", "top"]}
+        onClickOutside={() => setIsPopoverOpen(false)}
+        targetContent={
+          <div
+            style={{ fontSize: size }}
+            className={css(
+              styles.ellipsisButton,
+              !show && !isPopoverOpen && styles.hideEllipsis
+            )}
+            onClick={(e) => {
+              e && e.preventDefault();
+              e && e.stopPropagation();
+              setIsPopoverOpen(!isPopoverOpen);
+            }}
+          >
+            {icons.ellipsisH}
+          </div>
+        }
+      />
+    </div>
   );
 };
 
 const styles = StyleSheet.create({
-  sidebarSectionContent: {
+  entry: {
     backgroundClip: "padding-box",
     borderTop: `1px solid ${colors.GREY(0.3)}`,
     color: colors.BLACK(),
@@ -208,20 +187,17 @@ const styles = StyleSheet.create({
   },
   ellipsisButton: {
     alignItems: "center",
+    cursor: "pointer",
     borderRadius: "50%",
     bottom: 0,
     color: colors.BLACK(0.7),
     display: "flex",
-    fontSize: 20,
-    height: 27,
     justifyContent: "center",
     margin: "auto",
-    position: "absolute",
-    right: 7,
-    top: 0,
-    width: 27,
+    padding: "3px 3px",
     ":hover": {
       backgroundColor: colors.GREY(0.7),
+      transition: "0.2s",
     },
   },
   hideEllipsis: {
@@ -279,4 +255,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(SidebarSectionContent);
+)(NoteOptionsMenuButton);

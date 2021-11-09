@@ -37,13 +37,14 @@ const NotebookSidebar = ({
   setTitles,
   titles,
   user,
+  templates,
+  refetchTemplates,
 }) => {
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
-  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
   const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
@@ -95,8 +96,6 @@ const NotebookSidebar = ({
         currentNoteId={currentNoteId}
         onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}
-        refetchTemplates={refetchTemplates}
-        setRefetchTemplates={setRefetchTemplates}
       />
     );
   };
@@ -120,12 +119,13 @@ const NotebookSidebar = ({
         currentOrganizationId={currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
-        refetchTemplates={refetchTemplates}
         setIsOpen={setIsNoteTemplateModalOpen}
         user={user}
         setTitles={setTitles}
         titles={titles}
         notes={notes}
+        templates={templates}
+        refetchTemplates={refetchTemplates}
       />
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
