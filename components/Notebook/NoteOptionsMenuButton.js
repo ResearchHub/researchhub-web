@@ -6,6 +6,7 @@ import {
   createNoteContent,
   fetchNote,
   createNoteTemplate,
+  removePermissionsFromNote,
 } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
@@ -37,7 +38,26 @@ const NoteOptionsMenuButton = ({
       text: "Make private",
       icon: icons.lock,
       hoverStyle: styles.blueHover,
-      onClick: () => setIsPopoverOpen(!isPopoverOpen),
+      onClick: async () => {
+        setIsPopoverOpen(!isPopoverOpen);
+
+        try {
+          await removePermissionsFromNote({
+            noteId: noteId,
+            orgId: currentOrg.id,
+          });
+
+          onNotePermChange({ changeType: "REMOVE_PERM" });
+        } catch (error) {
+          setMessage("Failed to make private");
+          showMessage({ show: true, error: true });
+          captureError({
+            error,
+            msg: "Failed to make private",
+            data: { noteId, currentOrg },
+          });
+        }
+      },
     },
     {
       text: "Duplicate",
