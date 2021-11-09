@@ -114,7 +114,6 @@ function UserPostCard(props: UserPostCardProps) {
     setVoteState(userVoteToConstant(userVote));
   }, [userVote]);
 
-  const creatorName = first_name + " " + last_name;
   const mainTitle = (
     <Link href={"/post/[documentId]/[title]"} as={`/post/${id}/${slug}`}>
       <a
@@ -286,7 +285,7 @@ function UserPostCard(props: UserPostCardProps) {
       window.open(`/${formattedDocType}/${id}/${slug}`, "_blank");
     } else {
       Router.push(
-        "/[documentType]/[documentId]/[title]",
+        "/post/[documentId]/[title]",
         `/${formattedDocType}/${id}/${slug}`
       );
     }
@@ -349,10 +348,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserPostCard);
+export default connect(mapStateToProps, mapDispatchToProps)(UserPostCard);
 
 /**
  * Styles taken from PaperEntryCard.js
