@@ -17,7 +17,7 @@ const isServer = () => typeof window === "undefined";
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
   const { query, query: urlQuery } = ctx;
-  const { filter, page } = query;
+  const { type, page, filter } = query;
   const filterObj = filterOptions.filter((el) => el.value === filter)[0];
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
@@ -41,7 +41,7 @@ Index.getInitialProps = async (ctx) => {
   }
 
   try {
-    const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+    const urlDocType = type || "all";
     const initialFeed = await fetchUnifiedDocFeed(
       {
         hubId: null,

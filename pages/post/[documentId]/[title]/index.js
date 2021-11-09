@@ -1,81 +1,36 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
-import * as Sentry from "@sentry/browser";
-import { Waypoint } from "react-waypoint";
 
 // Components
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
-import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
-import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
 import PostPageCard from "~/components/PostPageCard";
-import PaperSections from "~/components/Paper/SideColumn/PaperSections";
 import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
-import PaperTab from "~/components/Paper/Tabs/PaperTab";
-import PaperTabBar from "~/components/PaperTabBar";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import TableOfContent from "~/components/PaperDraft/TableOfContent";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
-const PaperFeatureModal = dynamic(() =>
-  import("~/components/Modals/PaperFeatureModal")
-);
-const PaperPDFModal = dynamic(() =>
-  import("~/components/Modals/PaperPDFModal")
-);
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
 );
 
 // Redux
-import helpers from "@quantfive/js-web-config/helpers";
 import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
-import VoteActions from "~/redux/vote";
 import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
 
 // Config
-import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
 import { absoluteUrl } from "~/config/utils/routing";
-import { getNestedValue } from "~/config/utils/misc";
-import { buildSlug } from "~/config/utils/document";
-import { getVoteType } from "~/config/utils/reputation";
-import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import {
-  convertToEditorValue,
-  convertDeltaToText,
-  isQuillDelta,
-} from "~/config/utils/editor";
-import { getAuthorName } from "~/config/utils/misc";
-
-const isServer = () => typeof window === "undefined";
-const steps = [
-  {
-    target: ".first-step",
-    title: "Edit Paper Info",
-    content:
-      "Add or edit the paper information. This includes authors, publication date, hubs, and more!",
-    disableBeacon: true,
-  },
-  {
-    target: ".second-step",
-    title: "Add Paper Summary",
-    content: "Add a summary to help others understand what the paper is about.",
-    disableBeacon: true,
-  },
-];
 
 function useEffectFetchPost({ post, setPost, query }) {
   useEffect(() => {
@@ -716,7 +671,4 @@ const mapDispatchToProps = {
   getBullets: BulletActions.getBullets,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Post);
+export default connect(mapStateToProps, mapDispatchToProps)(Post);
