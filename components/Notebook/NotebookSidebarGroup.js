@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PropTypes from "prop-types";
-import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
+import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
 import { css, StyleSheet } from "aphrodite";
 import { createNewNote } from "~/config/fetch";
 import icons from "~/config/themes/icons";
@@ -21,8 +21,6 @@ const NotebookSidebarGroup = ({
   currentNoteId,
   onNoteCreate,
   onNoteDelete,
-  refetchTemplates,
-  setRefetchTemplates,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
 
@@ -42,7 +40,7 @@ const NotebookSidebarGroup = ({
       captureError({
         error,
         msg: "Failed to create note",
-        data: { currentNoteId, groupKey, orgSlug: currentOrg.slug },
+        data: { groupKey, orgSlug: currentOrg.slug },
       });
     } finally {
       setCreateNoteIsLoading(false);
@@ -85,16 +83,15 @@ const NotebookSidebarGroup = ({
         </div>
       )}
       {notes.map((note) => (
-        <SidebarSectionContent
+        <NotebookSidebarEntry
           key={note.id}
+          note={note}
+          titles={titles}
           groupKey={groupKey}
           currentOrg={currentOrg}
-          currentNoteId={currentNoteId}
-          noteId={note.id.toString()}
           onNoteCreate={onNoteCreate}
+          currentNoteId={currentNoteId}
           onNoteDelete={onNoteDelete}
-          refetchTemplates={refetchTemplates}
-          setRefetchTemplates={setRefetchTemplates}
           title={titles[note.id]}
           showOptions={allowedToSeeOptions}
         />

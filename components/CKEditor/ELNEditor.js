@@ -18,6 +18,7 @@ import { MessageActions } from "~/redux/message";
 import { captureError } from "~/config/utils/error";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
+import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -80,6 +81,8 @@ const ELNEditor = ({
   showMessage,
   user,
   onNotePermChange,
+  onNoteCreate,
+  onNoteDelete,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -126,6 +129,18 @@ const ELNEditor = ({
             refetchNotePerms={refetchNotePerms}
             onNotePermChange={onNotePermChange}
           />
+          <div className={css(styles.optionsMenuWrapper)}>
+            <NoteOptionsMenuButton
+              note={currentNote}
+              title={currentNote.title}
+              currentOrg={currentOrganization}
+              onNoteCreate={onNoteCreate}
+              onNoteDelete={onNoteDelete}
+              onNotePermChange={onNotePermChange}
+              show={true}
+              size={28}
+            />
+          </div>
         </div>
       </div>
       {presenceListElement !== null && (
@@ -260,6 +275,9 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "calc(100vh - 66px)",
     },
+  },
+  optionsMenuWrapper: {
+    marginLeft: 17,
   },
   noteHeader: {
     display: "flex",
