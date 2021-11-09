@@ -138,7 +138,7 @@ const ELNEditor = ({
               onNoteDelete={onNoteDelete}
               onNotePermChange={onNotePermChange}
               show={true}
-              size={28}
+              size={24}
             />
           </div>
         </div>
