@@ -13,6 +13,7 @@ import CitationTableRowItem, {
 } from "./CitationTableRowItem";
 import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   citationType: ValidCitationType;
@@ -104,29 +105,32 @@ export default function CitationTable({
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem
-            className={styles.paddingLeft8}
             label=""
             maxWidth={tableMaxWidths.CONSENSUS}
             width={tableWidths.CONSENSUS}
           />
           <CitationTableHeaderItem
+            className={styles.sourceTitle}
             label="Paper"
             maxWidth={tableMaxWidths.SOURCE}
             width={tableWidths.SOURCE}
           />
           <CitationTableHeaderItem
+            className={styles.smallScreenControl}
             center
             label="Type"
             maxWidth={tableMaxWidths.TYPE}
             width={tableWidths.TYPE}
           />
           <CitationTableHeaderItem
+            className={styles.smallScreenControl}
             center
             label="Cited by"
             maxWidth={tableMaxWidths.CITED_BY}
             width={tableWidths.CITED_BY}
           />
           <CitationTableHeaderItem
+            className={styles.smallScreenControl}
             center
             label="Discussions"
             maxWidth={tableMaxWidths.COMMENTS}
@@ -169,7 +173,19 @@ const styles = StyleSheet.create({
   addCitation: {
     marginTop: 20,
   },
-  paddingLeft8: {
+  sourceTitle: {
     paddingLeft: 8,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "22%",
+    },
+  },
+  smallScreenControl: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "120px",
+      minWidth: "120px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      minWidth: "unset",
+    },
   },
 });
