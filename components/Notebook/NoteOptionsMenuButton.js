@@ -7,6 +7,8 @@ import {
   fetchNote,
   createNoteTemplate,
   removePermissionsFromNote,
+  updateNoteUserPermissions,
+  makeNotePrivate,
 } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
@@ -16,6 +18,7 @@ import icons from "~/config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
 import { useAlert } from "react-alert";
 import { useState } from "react";
+import { captureError } from "~/config/utils/error";
 
 const NoteOptionsMenuButton = ({
   currentOrg,
@@ -37,15 +40,13 @@ const NoteOptionsMenuButton = ({
     {
       text: "Make private",
       icon: icons.lock,
+      show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
       onClick: async () => {
         setIsPopoverOpen(!isPopoverOpen);
 
         try {
-          await removePermissionsFromNote({
-            noteId: noteId,
-            orgId: currentOrg.id,
-          });
+          await makeNotePrivate({ noteId: noteId });
 
           onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
@@ -60,8 +61,36 @@ const NoteOptionsMenuButton = ({
       },
     },
     {
+      text: "Move to Workspace",
+      icon: icons.friends,
+      show: note.access === NOTE_GROUPS.PRIVATE,
+      hoverStyle: styles.blueHover,
+      onClick: async () => {
+        setIsPopoverOpen(!isPopoverOpen);
+
+        try {
+          await updateNoteUserPermissions({
+            orgId: currentOrg.id,
+            noteId: noteId,
+            accessType: "ADMIN",
+          });
+
+          onNotePermChange({ changeType: "REMOVE_PERM" });
+        } catch (error) {
+          setMessage("Failed to update permission");
+          showMessage({ show: true, error: true });
+          captureError({
+            error,
+            msg: "Failed to update permission",
+            data: { noteId, currentOrg },
+          });
+        }
+      },
+    },
+    {
       text: "Duplicate",
       icon: icons.clone,
+      show: true,
       hoverStyle: styles.blueHover,
       onClick: async (e) => {
         e && e.stopPropagation();
@@ -94,6 +123,7 @@ const NoteOptionsMenuButton = ({
     {
       text: "Save as template",
       icon: icons.shapes,
+      show: true,
       hoverStyle: styles.blueHover,
       onClick: (e) => {
         e && e.stopPropagation();
@@ -118,6 +148,7 @@ const NoteOptionsMenuButton = ({
     {
       text: "Delete",
       icon: icons.trash,
+      show: true,
       hoverStyle: styles.redHover,
       onClick: (e) => {
         e && e.stopPropagation();
@@ -133,7 +164,7 @@ const NoteOptionsMenuButton = ({
         });
       },
     },
-  ];
+  ].filter((item) => item.show);
 
   return (
     <div>
@@ -230,7 +261,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     userSelect: "none",
-    width: 175,
+    width: 185,
   },
   popoverBodyItem: {
     alignItems: "center",

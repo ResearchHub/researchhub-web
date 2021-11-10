@@ -48,6 +48,7 @@ import {
   faUser,
   faUserEdit,
   faUserPlus,
+  faUsers,
   faPlus as faPlusThick,
 } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -370,6 +371,7 @@ const icons = {
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
+  friends: <FontAwesomeIcon icon={faUsers} />,
   // customIcons
   coinStack: ({ styles, grey }) => (
     <img
