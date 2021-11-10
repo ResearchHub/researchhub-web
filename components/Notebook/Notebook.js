@@ -332,9 +332,7 @@ const Notebook = ({ auth, user }) => {
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
         orgs={organizations}
-        setTitles={setTitles}
         titles={titles}
-        user={user}
       />
       {currentNote && (
         <ELNEditor

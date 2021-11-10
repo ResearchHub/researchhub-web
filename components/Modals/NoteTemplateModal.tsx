@@ -6,6 +6,9 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
+import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { createNewNote, createNoteContent } from "~/config/fetch";
 import {
   ReactElement,
   SyntheticEvent,
@@ -13,15 +16,9 @@ import {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { breakpoints } from "~/config/themes/screen";
-import { createNewNote, createNoteContent } from "~/config/fetch";
 
 export type NoteTemplateModalProps = {
-  currentOrg: any;
-  currentOrganizationId: number;
   isOpen: boolean;
-  isPrivateNotebook: boolean;
   onNoteCreate: any;
   orgSlug: string;
   refetchTemplates: any;
@@ -29,9 +26,7 @@ export type NoteTemplateModalProps = {
 };
 
 export default function NoteTemplateModal({
-  currentOrg,
   isOpen,
-  isPrivateNotebook,
   onNoteCreate,
   orgSlug,
   refetchTemplates,
@@ -83,12 +78,9 @@ export default function NoteTemplateModal({
     e && e.preventDefault();
 
     const noteParams = {
+      orgSlug,
       title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
     };
-
-    if (!isPrivateNotebook) {
-      noteParams.orgSlug = currentOrg.slug;
-    }
 
     const note = await createNewNote(noteParams);
     const noteContent = await createNoteContent({
@@ -101,22 +93,6 @@ export default function NoteTemplateModal({
 
   const handleInput = (editor) => {};
 
-  const editorConfiguration = {
-    simpleUpload: {
-      // The URL that the images are uploaded to.
-      uploadUrl: API.SAVE_IMAGE,
-
-      // Headers sent along with the XMLHttpRequest to the upload server.
-      headers: {
-        Authorization:
-          "Token " +
-          (typeof window !== "undefined"
-            ? window.localStorage[AUTH_TOKEN]
-            : ""),
-      },
-    },
-  };
-
   return (
     <BaseModal
       closeModal={closeModal}
@@ -128,7 +104,21 @@ export default function NoteTemplateModal({
         <div className={css(styles.editorContainer) + " eln"}>
           {fetched && (
             <CKEditor
-              config={editorConfiguration}
+              config={{
+                simpleUpload: {
+                  // The URL that the images are uploaded to.
+                  uploadUrl: API.SAVE_IMAGE,
+
+                  // Headers sent along with the XMLHttpRequest to the upload server.
+                  headers: {
+                    Authorization:
+                      "Token " +
+                      (typeof window !== "undefined"
+                        ? window.localStorage[AUTH_TOKEN]
+                        : ""),
+                  },
+                },
+              }}
               data={templateContents[selected]?.src ?? ""}
               editor={Editor}
               onChange={(event, editor) => handleInput(editor)}
