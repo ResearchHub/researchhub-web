@@ -33,9 +33,7 @@ const NotebookSidebar = ({
   onOrgChange,
   orgSlug,
   orgs,
-  setTitles,
   titles,
-  user,
 }) => {
   const [createNoteLoading, setCreateNoteLoading] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
@@ -81,18 +79,11 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
-        isPrivateNotebook={isPrivateNotebook}
-        currentOrg={currentOrg}
-        onNoteCreate={onNoteCreate}
-        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
+        onNoteCreate={onNoteCreate}
         orgSlug={orgSlug}
         refetchTemplates={refetchTemplates}
         setIsOpen={setIsNoteTemplateModalOpen}
-        user={user}
-        setTitles={setTitles}
-        titles={titles}
-        notes={notes}
       />
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
