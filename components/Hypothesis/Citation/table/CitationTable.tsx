@@ -114,16 +114,6 @@ export default function CitationTable({
         </div>
         <div className={css(styles.itemsWrap)}>{rowItems}</div>
       </div>
-      {citationItems.length > 0 ? (
-        <div className={css(styles.addCitation)}>
-          <CitationAddNewButton
-            citationType={citationType}
-            hypothesisID={hypothesisID}
-            lastFetchTime={lastFetchTime}
-            updateLastFetchTime={updateLastFetchTime}
-          />
-        </div>
-      ) : null}
     </div>
   );
 }
