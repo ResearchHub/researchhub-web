@@ -4,6 +4,7 @@ import colors from "~/config/themes/colors";
 
 type Props = {
   center?: boolean;
+  className?: Object;
   label: string;
   maxWidth?: string;
   width: string;
@@ -11,13 +12,18 @@ type Props = {
 
 export default function CitationTableHeaderItem({
   center,
+  className,
   label,
   maxWidth,
   width,
 }: Props): ReactElement<"div"> {
   return (
     <div
-      className={css(styles.headerItem, center ? styles.center : null)}
+      className={css(
+        styles.headerItem,
+        center ? styles.center : null,
+        className
+      )}
       style={{
         maxWidth: maxWidth ?? width,
         width,

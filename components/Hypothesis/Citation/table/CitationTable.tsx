@@ -104,6 +104,7 @@ export default function CitationTable({
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem
+            className={styles.paddingLeft8}
             label=""
             maxWidth={tableMaxWidths.CONSENSUS}
             width={tableWidths.CONSENSUS}
@@ -167,5 +168,8 @@ const styles = StyleSheet.create({
   },
   addCitation: {
     marginTop: 20,
+  },
+  paddingLeft8: {
+    paddingLeft: 8,
   },
 });
