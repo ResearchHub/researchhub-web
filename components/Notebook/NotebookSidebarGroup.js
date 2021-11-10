@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
 import { css, StyleSheet } from "aphrodite";
 import { createNewNote } from "~/config/fetch";
-import icons from "~/config/themes/icons";
+import icons, { UpIcon, DownIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
 import { NOTE_GROUPS } from "./config/notebookConstants";
@@ -23,6 +23,7 @@ const NotebookSidebarGroup = ({
   onNoteDelete,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
+  const [isHidden, setIsHidden] = useState(false);
 
   const handleCreateNewNote = async (groupKey) => {
     setCreateNoteIsLoading(true);
@@ -36,6 +37,7 @@ const NotebookSidebarGroup = ({
       // TODO: Remove once Leo adds this to endpoint
       note.access = groupKey;
       onNoteCreate(note);
+      setIsHidden(false);
     } catch (error) {
       captureError({
         error,
@@ -57,7 +59,17 @@ const NotebookSidebarGroup = ({
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.groupHead)}>
-        <div className={css(styles.title)}>{groupKey}</div>
+        <div
+          onClick={() => setIsHidden(!isHidden)}
+          className={css(styles.title)}
+        >
+          {groupKey}{" "}
+          {isHidden ? (
+            <UpIcon withAnimation={false} />
+          ) : (
+            <DownIcon withAnimation={false} />
+          )}
+        </div>
         {allowedToCreateNote && (
           <div className={css(styles.new)}>
             {createNoteIsLoading ? (
@@ -82,20 +94,21 @@ const NotebookSidebarGroup = ({
           note
         </div>
       )}
-      {notes.map((note) => (
-        <NotebookSidebarEntry
-          key={note.id}
-          note={note}
-          titles={titles}
-          groupKey={groupKey}
-          currentOrg={currentOrg}
-          onNoteCreate={onNoteCreate}
-          currentNoteId={currentNoteId}
-          onNoteDelete={onNoteDelete}
-          title={titles[note.id]}
-          showOptions={allowedToSeeOptions}
-        />
-      ))}
+      {!isHidden &&
+        notes.map((note) => (
+          <NotebookSidebarEntry
+            key={note.id}
+            note={note}
+            titles={titles}
+            groupKey={groupKey}
+            currentOrg={currentOrg}
+            onNoteCreate={onNoteCreate}
+            currentNoteId={currentNoteId}
+            onNoteDelete={onNoteDelete}
+            title={titles[note.id]}
+            showOptions={allowedToSeeOptions}
+          />
+        ))}
     </div>
   );
 };
@@ -145,6 +158,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 600,
     color: colors.BLACK(0.5),
+    ":hover": {
+      color: colors.PURPLE(1),
+    },
   },
   new: {
     marginLeft: "auto",
