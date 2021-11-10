@@ -32,6 +32,7 @@ const NotebookSidebar = ({
   onNoteCreate,
   onNoteDelete,
   onOrgChange,
+  onNotePermChange,
   orgSlug,
   orgs,
   setTitles,
@@ -96,6 +97,7 @@ const NotebookSidebar = ({
         currentNoteId={currentNoteId}
         onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}
+        onNotePermChange={onNotePermChange}
       />
     );
   };

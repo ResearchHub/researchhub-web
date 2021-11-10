@@ -17,6 +17,7 @@ const NotebookSidebarEntry = ({
   showMessage,
   title,
   showOptions,
+  onNotePermChange,
 }) => {
   const noteId = String(note.id);
   const [isHovered, setIsHovered] = useState(false);
@@ -39,6 +40,7 @@ const NotebookSidebarEntry = ({
               currentOrg={currentOrg}
               onNoteCreate={onNoteCreate}
               onNoteDelete={onNoteDelete}
+              onNotePermChange={onNotePermChange}
               show={isHovered}
             />
           </div>

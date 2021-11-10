@@ -70,6 +70,12 @@ export const acceptNoteInvite = ({ token }) => {
     .then(Helpers.parseJSON);
 };
 
+export const makeNotePrivate = ({ noteId }) => {
+  return fetch(API.NOTE_PRIVATE({ noteId }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const fetchInvitedNoteUsers = ({ noteId }) => {
   return fetch(API.NOTE_INVITED_USERS({ noteId }), API.GET_CONFIG())
     .then(Helpers.checkStatus)

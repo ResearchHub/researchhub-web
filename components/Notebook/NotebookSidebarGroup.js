@@ -21,6 +21,7 @@ const NotebookSidebarGroup = ({
   currentNoteId,
   onNoteCreate,
   onNoteDelete,
+  onNotePermChange,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -107,6 +108,7 @@ const NotebookSidebarGroup = ({
             onNoteDelete={onNoteDelete}
             title={titles[note.id]}
             showOptions={allowedToSeeOptions}
+            onNotePermChange={onNotePermChange}
           />
         ))}
     </div>
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     },
   },
   plusIcon: {
-    fontSize: 16,
+    fontSize: 17,
     marginRight: 5,
   },
   groupHead: {

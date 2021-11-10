@@ -223,6 +223,9 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    NOTE_PRIVATE: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/make_private/`;
+    },
     NOTE_DELETE: ({ noteId }) => {
       return `${BASE_URL}note/${noteId}/delete/`;
     },

@@ -338,6 +338,7 @@ const Notebook = ({ auth, user }) => {
         onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}
         onOrgChange={onOrgChange}
+        onNotePermChange={onNotePermChange}
         orgSlug={orgSlug}
         orgs={organizations}
         setTitles={setTitles}
