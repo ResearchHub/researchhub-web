@@ -207,15 +207,10 @@ const NotebookSidebar = ({
             }
           />
         </div>
-        <div
-          className={css(
-            styles.sidebarButtonsContainer,
-            styles.orgButtonsContainer
-          )}
-        >
+        <div className={css(styles.sidebarButtonsContainer)}>
           {_isOrgMember && (
             <div
-              className={css(styles.sidebarButton, styles.orgButton)}
+              className={css(styles.sidebarButton)}
               onClick={() => {
                 fetchAndSetOrg({ orgId: currentOrg.id });
                 setShowManageOrgModal(true);
@@ -230,18 +225,6 @@ const NotebookSidebar = ({
             </div>
           )}
         </div>
-      </div>
-      <div className={css(styles.scrollable)}>
-        <ReactPlaceholder
-          ready={didInitialNotesLoad && !isEmpty(currentOrg)}
-          showLoadingAnimation
-          customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
-        >
-          {getSidebarGroupKeys().map((groupKey) =>
-            buildHtmlForGroup({ groupKey })
-          )}
-        </ReactPlaceholder>
-
         {_isOrgMember && (
           <div className={css(styles.sidebarButtonsContainer)}>
             <div
@@ -253,6 +236,17 @@ const NotebookSidebar = ({
             </div>
           </div>
         )}
+      </div>
+      <div className={css(styles.scrollable)}>
+        <ReactPlaceholder
+          ready={didInitialNotesLoad && !isEmpty(currentOrg)}
+          showLoadingAnimation
+          customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
+        >
+          {getSidebarGroupKeys().map((groupKey) =>
+            buildHtmlForGroup({ groupKey })
+          )}
+        </ReactPlaceholder>
       </div>
     </div>
   );
@@ -272,7 +266,7 @@ const styles = StyleSheet.create({
   newOrgContainer: {
     cursor: "pointer",
     display: "flex",
-    padding: 16,
+    padding: 15,
     color: colors.BLUE(),
     fontWeight: 500,
     ":hover": {
@@ -289,9 +283,6 @@ const styles = StyleSheet.create({
   newOrgText: {
     marginLeft: 10,
     paddingTop: 7,
-  },
-  orgButton: {
-    paddingLeft: 17,
   },
   orgButtonText: {},
   container: {
@@ -321,7 +312,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     letterSpacing: 1.2,
-    padding: 20,
+    padding: "15px 20px",
     textTransform: "uppercase",
     userSelect: "none",
     wordBreak: "break-word",
@@ -342,7 +333,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     display: "flex",
-    padding: 16,
+    padding: 15,
     textDecoration: "none",
     wordBreak: "break-word",
     ":hover": {
@@ -414,9 +405,6 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
   },
   sidebarButtonsContainer: {
-    margin: 10,
-  },
-  orgButtonsContainer: {
     margin: 0,
     marginLeft: 10,
   },
@@ -428,6 +416,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     maxWidth: "fit-content",
     padding: 10,
+    paddingLeft: 17,
     ":hover": {
       color: colors.BLUE(),
     },

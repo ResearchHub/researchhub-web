@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 14,
     fontWeight: 500,
-    padding: "20px 40px 20px 20px",
+    padding: "15px 40px 15px 20px",
     position: "relative",
     textDecoration: "none",
     wordBreak: "break-word",
