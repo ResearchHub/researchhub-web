@@ -103,12 +103,9 @@ export default function CitationTable({
     <div className={css(styles.citationTableWrap)}>
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
+          <CitationTableHeaderItem label="" width={tableWidths.CONSENSUS} />
           <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
           <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
-          <CitationTableHeaderItem
-            label="Consensus"
-            width={tableWidths.CONSENSUS}
-          />
           <CitationTableHeaderItem
             label="Cited by"
             width={tableWidths.CITED_BY}
