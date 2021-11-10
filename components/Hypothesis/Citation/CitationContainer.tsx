@@ -5,6 +5,7 @@ import { ReactElement, useState } from "react";
 import { useRouter } from "next/router";
 import { ValidCitationType } from "./modal/AddNewSourceBodySearch";
 import CitationTable from "./table/CitationTable";
+import CitationAddNewButton from "./CitationAddNewButton";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
 
@@ -19,7 +20,16 @@ export default function CitationContainer({
   return (
     <div className={css(styles.citationContainer)}>
       <div className={css(styles.citationGroup)}>
-        <div className={css(styles.header)}>{"Sources"}</div>
+        <div className={css(styles.header)}>
+          <div>{"Sources"}</div>
+          <CitationAddNewButton
+            citationType={citationType}
+            hypothesisID={hypothesisID}
+            lastFetchTime={lastFetchTime}
+            updateLastFetchTime={onCitationUpdate}
+            noText
+          />
+        </div>
         <CitationTable
           citationType={citationType}
           hypothesisID={hypothesisID}
@@ -45,10 +55,13 @@ const styles = StyleSheet.create({
     },
   },
   header: {
+    display: "flex",
     fontFamily: "Roboto",
     fontSize: 20,
     fontStyle: "normal",
     fontWeight: 500,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   citationGroup: {
     backgroundColor: "#fff",
