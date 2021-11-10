@@ -119,10 +119,12 @@ export default function CitationTableRowItem({
         width={tableWidths.TYPE}
       />
       <ItemColumn
+        className={[styles.itemCenterAlign]}
         value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
         width={tableWidths.CITED_BY}
       />
       <ItemColumn
+        className={styles.itemCenterAlign}
         value={
           <div
             className={css(styles.commentsIcon, styles.paddingBottom4)}
