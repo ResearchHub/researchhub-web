@@ -52,7 +52,18 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     title,
     is_removed: isHypoRemoved,
   } = hypothesis || {};
-
+  const authors = [created_by?.author_profile ?? {}];
+  // (
+  //   <div className={css(styles.regSidebar)}>
+  //     <PaperSideColumn
+  //       authors={authors}
+  //       hubs={hubs}
+  //       isPost={true}
+  //       paper={hypothesis}
+  //       paperId={id}
+  //     />
+  //   </div>
+  // )
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
@@ -73,6 +84,8 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
       />
       <div className={css(styles.container)}>
         <HypothesisPageCard
+          authors={authors}
+          hubs={hubs}
           hypothesis={hypothesis}
           onUpdates={setLastFetchTime}
         />
@@ -89,14 +102,6 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           setLastFetchTime={setLastFetchTime}
           shouldShowUploadButton
         />
-        <div className={css(styles.metaContainerMobile)}>
-          <AuthorStatsDropdown
-            authors={[created_by?.author_profile ?? {}]}
-            hubs={hubs}
-            paper={hypothesis}
-            paperId={id}
-          />
-        </div>
         <CitationContainer
           lastFetchTime={lastFetchTime}
           onCitationUpdate={(): void => {
@@ -117,17 +122,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           <div className={css(styles.citationCommentSidebar)}>
             <CitationCommentSidebarWithMedia />
           </div>
-        ) : (
-          <div className={css(styles.regSidebar)}>
-            <PaperSideColumn
-              authors={[created_by?.author_profile ?? {}]}
-              hubs={hubs}
-              isPost={true}
-              paper={hypothesis}
-              paperId={id}
-            />
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   ) : null;
