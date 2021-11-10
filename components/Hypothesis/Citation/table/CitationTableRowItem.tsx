@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
   },
   padding8: {
     padding: 8,
+    paddingLeft: 0,
   },
   itemCenterAlign: {
     alignItems: "center",
