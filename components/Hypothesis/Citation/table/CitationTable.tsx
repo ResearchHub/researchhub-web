@@ -3,7 +3,7 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import { tableWidths } from "./constants/tableWidths";
+import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import CitationAddNewButton from "../CitationAddNewButton";
 import CitationNoResult from "./CitationNoResult";
@@ -103,17 +103,32 @@ export default function CitationTable({
     <div className={css(styles.citationTableWrap)}>
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
-          <CitationTableHeaderItem label="" width={tableWidths.CONSENSUS} />
-          <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
-          <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
+          <CitationTableHeaderItem
+            label=""
+            maxWidth={tableMaxWidths.CONSENSUS}
+            width={tableWidths.CONSENSUS}
+          />
+          <CitationTableHeaderItem
+            label="Paper"
+            maxWidth={tableMaxWidths.SOURCE}
+            width={tableWidths.SOURCE}
+          />
+          <CitationTableHeaderItem
+            center
+            label="Type"
+            maxWidth={tableMaxWidths.TYPE}
+            width={tableWidths.TYPE}
+          />
           <CitationTableHeaderItem
             center
             label="Cited by"
+            maxWidth={tableMaxWidths.CITED_BY}
             width={tableWidths.CITED_BY}
           />
           <CitationTableHeaderItem
             center
             label="Discussions"
+            maxWidth={tableMaxWidths.COMMENTS}
             width={tableWidths.COMMENTS}
           />
         </div>
