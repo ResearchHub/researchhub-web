@@ -29,17 +29,15 @@ const ColumnHubs = (props) => {
       ready={!!(hubs && hubs.length > 0)} // needs to be boolean, not undefined
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
     >
-      <div>
-        {paper && (hubs && hubs.length > 0) && (
-          <Fragment>
-            <SideColumnTitle
-              title={`${hubs.length > 1 ? "Hubs" : "Hub"}`}
-              overrideStyles={styles.title}
-            />
-            {renderHubEntry()}
-          </Fragment>
-        )}
-      </div>
+      {paper && hubs && hubs.length > 0 && (
+        <Fragment>
+          <SideColumnTitle
+            title={`${hubs.length > 1 ? "Hubs" : "Hub"}`}
+            overrideStyles={styles.title}
+          />
+          {renderHubEntry()}
+        </Fragment>
+      )}
     </ReactPlaceholder>
   );
 };
