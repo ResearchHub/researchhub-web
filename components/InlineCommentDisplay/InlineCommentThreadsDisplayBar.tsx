@@ -1,13 +1,13 @@
-import colors from "../../config/themes/colors";
 import { css, StyleSheet } from "aphrodite";
+import { ReactElement } from "react";
+import { slide as SlideMenu } from "@quantfive/react-burger-menu";
+import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import InlineCommentUnduxStore, {
   cleanupStoreAndCloseDisplay,
   InlineComment,
 } from "../PaperDraftInlineComment/undux/InlineCommentUnduxStore";
 import InlineCommentThreadCard from "./InlineCommentThreadCard";
-import { ReactElement } from "react";
-import { slide as SlideMenu } from "@quantfive/react-burger-menu";
 
 type Props = {
   shouldShowContextTitle?: boolean;
