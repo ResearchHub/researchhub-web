@@ -107,10 +107,15 @@ export default function CitationTable({
           <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
           <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
           <CitationTableHeaderItem
+            center
             label="Cited by"
             width={tableWidths.CITED_BY}
           />
-          <CitationTableHeaderItem label="Notes" width={tableWidths.COMMENTS} />
+          <CitationTableHeaderItem
+            center
+            label="Discussions"
+            width={tableWidths.COMMENTS}
+          />
         </div>
         <div className={css(styles.itemsWrap)}>{rowItems}</div>
       </div>
