@@ -95,40 +95,9 @@ const Notebook = ({ auth, user }) => {
   }, [user]);
 
   useEffect(() => {
-    const _fetchAndSetCurrentNote = async () => {
-      let note;
-      let response;
-
-      if (noteId) {
-        try {
-          response = await fetchNote({ noteId });
-
-          if (response.ok) {
-            note = await Helpers.parseJSON(response);
-            setCurrentNote(note);
-          } else {
-            captureError({
-              statusCode: response.status,
-              msg: "could not fetch note",
-              data: { noteId, orgSlug, userId: user?.id },
-            });
-            setError({ statusCode: response.status });
-          }
-        } catch (error) {
-          console.log(error);
-          captureError({
-            statusCode: 500,
-            msg: "Failed to fetch note",
-            data: { noteId, orgSlug, userId: user?.id },
-          });
-          setError({ statusCode: 500 });
-        }
-      }
-    };
-
     setCurrentNote(null);
     setELNLoading(true);
-    _fetchAndSetCurrentNote();
+    fetchAndSetCurrentNote();
     fetchAndSetCurrentNotePermissions();
   }, [noteId]);
 
@@ -237,6 +206,37 @@ const Notebook = ({ auth, user }) => {
     }
   }, [noteId, user]);
 
+  const fetchAndSetCurrentNote = useCallback(async () => {
+    let note;
+    let response;
+
+    if (noteId) {
+      try {
+        response = await fetchNote({ noteId });
+
+        if (response.ok) {
+          note = await Helpers.parseJSON(response);
+          setCurrentNote(note);
+        } else {
+          captureError({
+            statusCode: response.status,
+            msg: "could not fetch note",
+            data: { noteId, orgSlug, userId: user?.id },
+          });
+          setError({ statusCode: response.status });
+        }
+      } catch (error) {
+        console.log(error);
+        captureError({
+          statusCode: 500,
+          msg: "Failed to fetch note",
+          data: { noteId, orgSlug, userId: user?.id },
+        });
+        setError({ statusCode: 500 });
+      }
+    }
+  }, []);
+
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
       const org = await fetchOrg({ orgId });
@@ -303,6 +303,7 @@ const Notebook = ({ auth, user }) => {
 
   const onNotePermChange = ({ changeType }) => {
     fetchAndSetCurrentOrgNotes();
+    fetchAndSetCurrentNote();
   };
 
   const getCurrentOrgFromRouter = (orgs) => {
