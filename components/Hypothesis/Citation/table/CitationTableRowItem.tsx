@@ -7,7 +7,7 @@ import {
 import { breakpoints } from "~/config/themes/screen";
 import { ConsensusMeta } from "./CitationConsensusItem";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
-import { tableWidths } from "./constants/tableWidths";
+import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationVoteItem from "./CitationVoteItem";
@@ -34,12 +34,19 @@ export type CitationTableRowItemProps = {
 
 type ItemColumnProps = {
   bold?: boolean;
+  className?: Object | Object[];
+  maxWidth?: string;
   value: ReactNode;
   width: string;
-  className?: Object | Object[];
 };
 
-function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
+function ItemColumn({
+  bold,
+  className,
+  maxWidth,
+  value,
+  width,
+}: ItemColumnProps) {
   return (
     <div
       className={css(
@@ -47,7 +54,7 @@ function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
         Boolean(bold) && styles.bold,
         className
       )}
-      style={{ maxWidth: width, minWidth: width, width }}
+      style={{ maxWidth: maxWidth ?? width, width }}
     >
       {value}
     </div>
@@ -85,7 +92,8 @@ export default function CitationTableRowItem({
         width={tableWidths.CONSENSUS}
       />
       <ItemColumn
-        bold
+        className={styles.padding8}
+        maxWidth={tableMaxWidths.SOURCE}
         value={
           <Link
             href={UNIFIED_DOC_PAGE_URL_PATTERN}
@@ -100,7 +108,8 @@ export default function CitationTableRowItem({
         width={tableWidths.SOURCE}
       />
       <ItemColumn
-        className={styles.capitalize}
+        maxWidth={tableMaxWidths.TYPE}
+        className={[styles.capitalize, styles.itemCenterAlign]}
         value={
           <div
             className={css(
@@ -120,12 +129,14 @@ export default function CitationTableRowItem({
         width={tableWidths.TYPE}
       />
       <ItemColumn
+        maxWidth={tableMaxWidths.CITED_BY}
         className={[styles.itemCenterAlign]}
         value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
         width={tableWidths.CITED_BY}
       />
       <ItemColumn
-        className={styles.itemCenterAlign}
+        maxWidth={tableMaxWidths.COMMENTS}
+        className={[styles.itemCenterAlign, styles.maxWidthSmall]}
         value={
           <div
             className={css(styles.commentsIcon, styles.paddingBottom4)}
@@ -198,13 +209,18 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
+    padding: "8px 0",
   },
   capitalize: {
     textTransform: "capitalize",
   },
   link: {
     color: colors.BLUE(1),
+    fontWeight: "normal",
     textDecoration: "none",
+  },
+  padding8: {
+    padding: 8,
   },
   itemCenterAlign: {
     alignItems: "center",
