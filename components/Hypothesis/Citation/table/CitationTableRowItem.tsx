@@ -4,17 +4,17 @@ import {
   formatUnifiedDocPageUrl,
   UNIFIED_DOC_PAGE_URL_PATTERN,
 } from "~/config/utils/url_patterns";
-import { tableWidths } from "./constants/tableWidths";
+import { breakpoints } from "~/config/themes/screen";
+import { ConsensusMeta } from "./CitationConsensusItem";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
+import { tableWidths } from "./constants/tableWidths";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
+import CitationVoteItem from "./CitationVoteItem";
 import colors from "~/config/themes/colors";
+import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
-import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
-import CitationVoteItem from "./CitationVoteItem";
-import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
-import { breakpoints } from "~/config/themes/screen";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
