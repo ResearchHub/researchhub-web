@@ -235,7 +235,7 @@ const Notebook = ({ auth, user }) => {
         setError({ statusCode: 500 });
       }
     }
-  }, []);
+  }, [noteId, orgSlug, user]);
 
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
