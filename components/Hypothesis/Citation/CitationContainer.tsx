@@ -1,13 +1,23 @@
 import { breakpoints } from "~/config/themes/screen";
 import { castUriID } from "../../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import { ValidCitationType } from "./modal/AddNewSourceBodySearch";
 import CitationTable from "./table/CitationTable";
 import CitationAddNewButton from "./CitationAddNewButton";
+import TextDropdown, {
+  TextDropdownOption,
+  TextDropdownOptions,
+} from "~/components/shared/TextDropdown";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
+
+const TABLE_SORT_OPTIONS: TextDropdownOptions = [
+  /* logical ordering */
+  { label: "Sources", value: null },
+  { label: "Supporting Sources", value: "SUPPORT" },
+  { label: "Rejecting Sources", value: "REJECT" },
+];
 
 export default function CitationContainer({
   lastFetchTime,
@@ -15,13 +25,21 @@ export default function CitationContainer({
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const hypothesisID = castUriID(router.query.documentId);
-  const [citationType, setCitationType] = useState<ValidCitationType>(null);
+  const [sourceFilter, setSourceFilter] = useState<TextDropdownOption>(
+    TABLE_SORT_OPTIONS[0]
+  );
+  const { value: citationType } = sourceFilter;
+  useEffect((): void => onCitationUpdate(), [citationType]);
 
   return (
     <div className={css(styles.citationContainer)}>
       <div className={css(styles.citationGroup)}>
         <div className={css(styles.header)}>
-          <div>{"Sources"}</div>
+          <TextDropdown
+            onSelect={setSourceFilter}
+            options={TABLE_SORT_OPTIONS}
+            selected={sourceFilter}
+          />
           <CitationAddNewButton
             citationType={citationType}
             hypothesisID={hypothesisID}

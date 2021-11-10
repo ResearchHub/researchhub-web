@@ -90,12 +90,7 @@ export default function CitationTable({
     )
   ) : (
     <div className={css(styles.citationNoResults)}>
-      <CitationNoResult />
-      {/* <CitationAddNewButton
-        hypothesisID={hypothesisID}
-        lastFetchTime={lastFetchTime}
-        updateLastFetchTime={updateLastFetchTime}
-      /> */}
+      <CitationNoResult citationType={null} />
     </div>
   );
 
