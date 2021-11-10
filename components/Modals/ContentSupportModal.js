@@ -46,7 +46,7 @@ class ContentSupportModal extends Component {
   showSuccessMessage = () => {
     const { setMessage, showMessage } = this.props;
     showMessage({ show: false });
-    setMessage("ResearchCoin succesfully awarded!");
+    setMessage("ResearchCoin successfully awarded!");
     showMessage({ show: true });
   };
 

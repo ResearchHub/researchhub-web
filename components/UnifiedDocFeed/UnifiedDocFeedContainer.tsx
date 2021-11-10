@@ -13,17 +13,8 @@ import {
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
 import { connect } from "react-redux";
-import { getDocumentCard, UnifiedCard } from "./utils/getDocumentCard";
-import {
-  ReactElement,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-  Fragment,
-} from "react";
-import { postNewFeatureNotifiedToUser } from "~/config/newFeature/postNewFeatureNotified";
-import { useEffectNewFeatureShouldAlertUser } from "~/config/newFeature/useEffectNewFeature";
+import { getDocumentCard } from "./utils/getDocumentCard";
+import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
 import colors from "../../config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
@@ -31,8 +22,6 @@ import FeedBlurWithButton from "./FeedBlurWithButton";
 import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
-import SiteWideBannerTall from "../SiteWideBannerTall";
-import TabNewFeature from "../NewFeature/TabNewFeature";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
@@ -84,6 +73,7 @@ function UnifiedDocFeedContainer({
   );
 
   const [prevPath, setPrevPath] = useState<string>(router.asPath);
+  const afterFirstLoad = useRef(false);
   const prevHub = usePrevious(hub);
 
   const [subFilters, setSubFilters] = useState({
@@ -104,6 +94,26 @@ function UnifiedDocFeedContainer({
     preloadResults || []
   );
   const [nextResultSet, setNextResultSet] = useState<any>([]);
+
+  useEffect((): void => {
+    if (afterFirstLoad.current) {
+      const filterValue = getFilterFromRouter(router);
+
+      resetState();
+      setDocTypeFilter(filterValue);
+
+      fetchUnifiedDocs({
+        ...getFetchParams(),
+        docTypeFilter: filterValue,
+      });
+      prefetchNextPage({
+        nextPage: 2,
+        fetchParams: { docTypeFilter: filterValue },
+      });
+    } else {
+      afterFirstLoad.current = true;
+    }
+  }, [router.query.type]);
 
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
@@ -161,7 +171,6 @@ function UnifiedDocFeedContainer({
       onSuccess: ({ documents }) => {
         setNextResultSet(documents);
         setPaginationInfo({
-          isLoading: false,
           isLoadingMore: false,
           page: nextPage,
         });
@@ -188,15 +197,6 @@ function UnifiedDocFeedContainer({
   const handleDocTypeChange = (docTypeValue: string): void => {
     resetState();
     setDocTypeFilter(docTypeValue);
-
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      docTypeFilter: docTypeValue,
-    });
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { docTypeFilter: docTypeValue },
-    });
 
     router.push(
       {

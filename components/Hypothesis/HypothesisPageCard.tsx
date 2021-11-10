@@ -32,6 +32,12 @@ import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import ReactHtmlParser from "react-html-parser";
 import VoteWidget from "~/components/VoteWidget";
+import ActionButton from "../ActionButton";
+import { breakpoints } from "~/config/themes/screen";
+import {
+  removeHypothesis,
+  restoreHypothesis,
+} from "./api/postHypothesisStatus";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -40,15 +46,27 @@ const DynamicCKEditor = dynamic(
 const getActionButtons = ({
   createdBy,
   currentUser,
+  hypothesis,
+  onUpdates,
   setShowHypothesisEditor,
 }: {
   currentUser: any;
   createdBy: any;
+  hypothesis: any;
+  onUpdates: Function;
   setShowHypothesisEditor: (flag: boolean) => void;
 }): ReactNode => {
+  const {
+    id: hypoID,
+    is_removed: isHypoRemoved,
+    unified_document: hypoUniDocID,
+  } = hypothesis ?? {};
+  const { moderator: isModerator } = currentUser ?? {};
+  const isCurrUserSubmitter =
+    !isNullOrUndefined(createdBy) && currentUser.id === createdBy.id;
   const actionConfigs = [
     {
-      active: !isNullOrUndefined(createdBy) && currentUser.id === createdBy.id,
+      active: isCurrUserSubmitter,
       button: (
         <PermissionNotificationWrapper
           hideRipples
@@ -62,6 +80,39 @@ const getActionButtons = ({
             {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
+      ),
+    },
+    {
+      active: isModerator || isCurrUserSubmitter,
+      button: (
+        <span
+          className={css(styles.actionIcon, styles.moderatorAction)}
+          data-tip={isHypoRemoved ? "Restore Hypothesis" : "Remove Hypothesis"}
+        >
+          <ActionButton
+            isModerator={true}
+            paperId={hypoID}
+            restore={isHypoRemoved}
+            icon={isHypoRemoved ? icons.plus : icons.minus}
+            onAction={() => {
+              if (isHypoRemoved) {
+                restoreHypothesis({
+                  hypoUniDocID,
+                  onError: (error: Error) => emptyFncWithMsg(error),
+                  onSuccess: (): void => onUpdates(Date.now()),
+                });
+              } else {
+                removeHypothesis({
+                  hypoUniDocID,
+                  onError: (error: Error) => emptyFncWithMsg(error),
+                  onSuccess: (): void => onUpdates(Date.now()),
+                });
+              }
+            }}
+            containerStyle={styles.moderatorContainer}
+            iconStyle={styles.moderatorIcon}
+          />
+        </span>
       ),
     },
   ];
@@ -164,6 +215,7 @@ const getVoteWidgetProps = ({
 
 function HypothesisPageCard({
   hypothesis,
+  onUpdates,
   user: currentUser,
 }): ReactElement<"div"> {
   const {
@@ -193,6 +245,8 @@ function HypothesisPageCard({
   const actionButtons = getActionButtons({
     createdBy,
     currentUser,
+    hypothesis,
+    onUpdates,
     setShowHypothesisEditor,
   });
   const formattedMetaData = getMetaData(hypothesis);
@@ -313,7 +367,7 @@ const styles = StyleSheet.create({
       borderBottom: "none",
       borderRadius: "4px 4px 0px 0px",
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       borderRadius: "0px",
       borderTop: "none",
       padding: 20,
@@ -324,7 +378,7 @@ const styles = StyleSheet.create({
     display: "block",
     width: 65,
     fontSize: 16,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
@@ -364,7 +418,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 760px)": {
       fontSize: 24,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 22,
     },
     "@media only screen and (max-width: 321px)": {
@@ -377,7 +431,7 @@ const styles = StyleSheet.create({
   },
   mobile: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       marginLeft: 0,
       justifyContent: "space-between",
@@ -392,7 +446,7 @@ const styles = StyleSheet.create({
     margin: 0,
     padding: 0,
     fontWeight: "unset",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 14,
     },
   },
@@ -429,7 +483,7 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-end",
     marginLeft: 20,
-    "@media only screen and (max-width: 768px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
   },
@@ -437,7 +491,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },
   },
@@ -463,7 +517,7 @@ const styles = StyleSheet.create({
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 13,
       width: 15,
       minWidth: 15,
@@ -485,7 +539,7 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     width: 120,
     opacity: 0.7,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 14,
     },
   },
@@ -507,7 +561,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
     marginTop: 20,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       margin: 0,
     },
   },
@@ -515,8 +569,51 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       // display: "none",
+    },
+  },
+  moderatorIcon: {
+    color: colors.RED(0.6),
+    fontSize: 18,
+    cursor: "pointer",
+    ":hover": {
+      color: colors.RED(1),
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 14,
+    },
+  },
+  moderatorContainer: {
+    padding: 5,
+    borderRadius: "50%",
+    width: 22,
+    minWidth: 22,
+    maxWidth: 22,
+    height: 22,
+    minHeight: 22,
+    maxHeight: 22,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 15,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
+    },
+  },
+  moderatorAction: {
+    ":hover": {
+      backgroundColor: colors.RED(0.3),
+      borderColor: colors.RED(),
+    },
+    ":hover .modIcon": {
+      color: colors.RED(),
     },
   },
 });

@@ -101,7 +101,8 @@ const ELNEditor = ({
     return getUserNoteAccess({ user, notePerms, userOrgs });
   }, [user, notePerms, userOrgs]);
 
-  const channelId = `${orgSlug}-${currentNote.id}`;
+  const noteIdLength = `${currentNote.id}`.length;
+  const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
 
   const onSaveFail = (response) => {
     if (response.status === 403) {

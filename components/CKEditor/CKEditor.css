@@ -458,3 +458,8 @@
 .ck .ck-user__marker:after {
   font-family: Roboto, sans-serif !important;
 }
+
+/* For some reason, this is missing from the default katex.min.css we imported */
+.katex .mfrac .frac-line {
+  border-bottom-style: solid;
+}
