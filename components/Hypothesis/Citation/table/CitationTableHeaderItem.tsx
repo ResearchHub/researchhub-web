@@ -3,18 +3,24 @@ import { ReactElement } from "react";
 import colors from "~/config/themes/colors";
 
 type Props = {
+  center?: boolean;
   label: string;
   width: string;
 };
 
 export default function CitationTableHeaderItem({
+  center,
   label,
   width,
 }: Props): ReactElement<"div"> {
   return (
     <div
-      className={css(styles.headerItem)}
-      style={{ maxWidth: width, minWidth: width, width }}
+      className={css(styles.headerItem, center ? styles.center : null)}
+      style={{
+        maxWidth: width,
+        minWidth: width,
+        width,
+      }}
     >
       {label}
     </div>
@@ -33,5 +39,8 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     textTransform: "uppercase",
     wordWrap: "break-word",
+  },
+  center: {
+    justifyContent: "center",
   },
 });
