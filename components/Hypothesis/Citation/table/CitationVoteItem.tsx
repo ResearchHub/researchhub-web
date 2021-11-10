@@ -7,6 +7,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement } from "react";
 import API from "~/config/api";
 import VoteWidgetV2, { VoteMeta } from "~/components/VoteWidgetV2";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   citationID: ID;
@@ -47,6 +48,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     display: "flex",
     height: "100%",
-    width: 24,
+    width: "100%",
+    // [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+    //   marginLeft: -8,
+    // },
   },
 });
