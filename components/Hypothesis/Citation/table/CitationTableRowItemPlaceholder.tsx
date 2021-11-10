@@ -1,7 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
+import { ReactElement } from "react";
 import { TextRow } from "react-placeholder/lib/placeholders";
 import colors from "~/config/themes/colors";
-import { ReactElement, ReactNode } from "react";
 
 export default function CitationTableRowItemPlaceholder(): ReactElement<"div"> {
   return (
@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
-    margin: '0 auto',
+    margin: "0 auto",
     height: 40,
     justifyContent: "center",
     alignItems: "center",
