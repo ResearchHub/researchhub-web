@@ -13,6 +13,8 @@ import icons from "~/config/themes/icons";
 import Link from "next/link";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import CitationVoteItem from "./CitationVoteItem";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
+import { breakpoints } from "~/config/themes/screen";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
@@ -25,7 +27,7 @@ export type CitationTableRowItemProps = {
     documentID: ID;
     slug?: string | null;
   };
-  type: string;
+  type: ValidCitationType;
   publish_date: string;
   updateLastFetchTime: Function;
 };
@@ -67,8 +69,20 @@ export default function CitationTableRowItem({
     documentID,
     slug,
   });
+  const isSupportSource = type === "SUPPORT";
+
   return (
     <div className={css(styles.tableRowItem)}>
+      <ItemColumn
+        value={
+          <CitationVoteItem
+            citationID={citationID}
+            updateLastFetchTime={updateLastFetchTime}
+            voteMeta={{ ...consensusMeta }}
+          />
+        }
+        width={tableWidths.CONSENSUS}
+      />
       <ItemColumn
         bold
         value={
@@ -86,32 +100,29 @@ export default function CitationTableRowItem({
       />
       <ItemColumn
         className={styles.capitalize}
-        value={type && type.toLocaleLowerCase()}
+        value={
+          <div
+            className={css(
+              styles.typeIcon,
+              isSupportSource ? styles.green : styles.red
+            )}
+            role="none"
+          >
+            <div className={css(styles.iconWrap)}>
+              {isSupportSource ? icons.checkCircle : icons.timesCircle}
+            </div>
+            <div className={css(styles.typeText)}>
+              {isSupportSource ? "Support" : "Reject"}
+            </div>
+          </div>
+        }
         width={tableWidths.TYPE}
       />
       <ItemColumn
-        value={
-          <CitationVoteItem
-            citationID={citationID}
-            updateLastFetchTime={updateLastFetchTime}
-            voteMeta={{ ...consensusMeta }}
-          />
-          // <CitationConsensusItem
-          // citationID={citationID}
-          //   consensusMeta={consensusMeta}
-          //   shouldAllowVote
-          //   updateLastFetchTime={updateLastFetchTime}
-          // />
-        }
-        width={tableWidths.CONSENSUS}
-      />
-      <ItemColumn
-        className={[styles.itemCenterAlign, styles.paddingRight16]}
         value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
         width={tableWidths.CITED_BY}
       />
       <ItemColumn
-        className={styles.itemCenterAlign}
         value={
           <div
             className={css(styles.commentsIcon, styles.paddingBottom4)}
@@ -152,6 +163,33 @@ const styles = StyleSheet.create({
     size: 16,
     fontStyle: "normal",
     fontWeight: 500,
+  },
+  typeText: {
+    display: "block",
+    fontSize: 12,
+  },
+  typeIcon: {
+    alignItems: "center",
+    color: colors.LIGHT_GREY_TEXT,
+    display: "flex",
+    flexDirection: "column",
+    width: 36,
+  },
+  green: {
+    color: colors.GREEN(1),
+  },
+  red: {
+    color: colors.RED(1),
+  },
+  iconWrap: {
+    marginBottom: 2,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      fontSize: 18,
+      marginRight: 0,
+    },
+  },
+  marginRight8: {
+    marginRight: 8,
   },
   tableRowItem: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,

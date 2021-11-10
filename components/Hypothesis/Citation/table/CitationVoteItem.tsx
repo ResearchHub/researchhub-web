@@ -43,8 +43,10 @@ export default connect(mapStateToProps, null)(CitationVoteItem);
 const styles = StyleSheet.create({
   citationVoteItem: {
     alignItems: "center",
+    flexDirection: "column",
+    justifyContent: "center",
     display: "flex",
     height: "100%",
-    width: "100%",
+    width: 24,
   },
 });
