@@ -136,7 +136,7 @@ export default function CitationTableRowItem({
       />
       <ItemColumn
         maxWidth={tableMaxWidths.COMMENTS}
-        className={[styles.itemCenterAlign, styles.maxWidthSmall]}
+        className={[styles.itemCenterAlign]}
         value={
           <div
             className={css(styles.commentsIcon, styles.paddingBottom4)}
