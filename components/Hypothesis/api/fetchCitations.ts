@@ -29,6 +29,7 @@ export function fetchCitationsOnHypothesis({
             id,
             publish_date,
             source: { document_type, documents },
+            type,
           } = item;
           if (document_type === "PAPER") {
             const {
@@ -57,7 +58,7 @@ export function fetchCitationsOnHypothesis({
                 documentID: documentID ?? null,
                 slug,
               },
-              type: document_type,
+              type,
               publish_date: (publish_date ?? publish_date ?? "").split("-")[0],
             };
           } else {

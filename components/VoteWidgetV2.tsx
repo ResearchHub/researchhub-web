@@ -180,10 +180,9 @@ export default function VoteWidgetV2({
           shouldAllowVote
             ? css([
                 styles.icon,
-                styles.marginRight,
                 currentUserVoteType === UPVOTE && styles.selected,
               ])
-            : css(styles.iconDisabled, styles.marginRight)
+            : css(styles.iconDisabled)
         }
         onClick={(event: SyntheticEvent) => {
           event.stopPropagation();
@@ -205,10 +204,9 @@ export default function VoteWidgetV2({
           shouldAllowVote
             ? css([
                 styles.icon,
-                styles.marginLeft,
                 currentUserVoteType === DOWNVOTE && styles.selectedDown,
               ])
-            : css(styles.iconDisabled, styles.marginLeft)
+            : css(styles.iconDisabled)
         }
         onClick={(event: SyntheticEvent) => {
           event.stopPropagation();

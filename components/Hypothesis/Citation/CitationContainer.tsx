@@ -1,9 +1,10 @@
+import { breakpoints } from "~/config/themes/screen";
 import { castUriID } from "../../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
 import { useRouter } from "next/router";
+import { ValidCitationType } from "./modal/AddNewSourceBodySearch";
 import CitationTable from "./table/CitationTable";
-import { breakpoints } from "~/config/themes/screen";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
 
@@ -13,10 +14,11 @@ export default function CitationContainer({
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const hypothesisID = castUriID(router.query.documentId);
+  const [citationType, setCitationType] = useState<ValidCitationType>(null);
 
   return (
     <div className={css(styles.citationContainer)}>
-      <div className={css(styles.citationGroup)}>
+      {/* <div className={css(styles.citationGroup)}>
         <div className={css(styles.header)}>{"Supporting Sources"}</div>
         <CitationTable
           citationType="SUPPORT"
@@ -25,13 +27,13 @@ export default function CitationContainer({
           lastFetchTime={lastFetchTime}
           updateLastFetchTime={onCitationUpdate}
         />
-      </div>
+      </div> */}
       <div className={css(styles.citationGroup)}>
-        <div className={css(styles.header)}>{"Rejecting Sources"}</div>
+        <div className={css(styles.header)}>{"Sources"}</div>
         <CitationTable
-          citationType="REJECT"
+          citationType={citationType}
           hypothesisID={hypothesisID}
-          key="citation-reject"
+          // key="citation-reject"
           lastFetchTime={lastFetchTime}
           updateLastFetchTime={onCitationUpdate}
         />
@@ -68,7 +70,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 30,
-    width: "49.5%",
+    width: "100%",
     minHeight: 353,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       width: "100%",
