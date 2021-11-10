@@ -215,9 +215,6 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   citationCommentMobile: {
-    display: "none",
-    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
-      display: "block",
-    },
+    display: "block",
   },
 });

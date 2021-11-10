@@ -4,7 +4,6 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
 import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
@@ -12,7 +11,6 @@ import Head from "../Head";
 import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
-import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 import PaperBanner from "../Paper/PaperBanner";
 
 type Props = {};
@@ -53,17 +51,6 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     is_removed: isHypoRemoved,
   } = hypothesis || {};
   const authors = [created_by?.author_profile ?? {}];
-  // (
-  //   <div className={css(styles.regSidebar)}>
-  //     <PaperSideColumn
-  //       authors={authors}
-  //       hubs={hubs}
-  //       isPost={true}
-  //       paper={hypothesis}
-  //       paperId={id}
-  //     />
-  //   </div>
-  // )
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
