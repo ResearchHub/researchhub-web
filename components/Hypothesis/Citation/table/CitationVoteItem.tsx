@@ -49,8 +49,5 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "100%",
     width: "100%",
-    // [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-    //   marginLeft: -8,
-    // },
   },
 });
