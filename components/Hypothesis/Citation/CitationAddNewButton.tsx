@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
@@ -77,6 +78,12 @@ const styles = StyleSheet.create({
     height: 30,
     width: 30,
     userSelect: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: 30,
+      minHeight: "unset",
+      minWidth: "unset",
+      width: 30,
+    },
   },
   plus: {
     left: 5,
