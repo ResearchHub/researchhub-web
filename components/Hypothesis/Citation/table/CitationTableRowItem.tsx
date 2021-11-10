@@ -74,6 +74,7 @@ export default function CitationTableRowItem({
   return (
     <div className={css(styles.tableRowItem)}>
       <ItemColumn
+        className={styles.itemCenterAlign}
         value={
           <CitationVoteItem
             citationID={citationID}
