@@ -19,6 +19,7 @@ import { captureError } from "~/config/utils/error";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -88,6 +89,7 @@ const ELNEditor = ({
   const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
+  const _isOrgMember = isOrgMember({ user, org: currentOrganization });
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -129,18 +131,20 @@ const ELNEditor = ({
             refetchNotePerms={refetchNotePerms}
             onNotePermChange={onNotePermChange}
           />
-          <div className={css(styles.optionsMenuWrapper)}>
-            <NoteOptionsMenuButton
-              note={currentNote}
-              title={currentNote.title}
-              currentOrg={currentOrganization}
-              onNoteCreate={onNoteCreate}
-              onNoteDelete={onNoteDelete}
-              onNotePermChange={onNotePermChange}
-              show={true}
-              size={24}
-            />
-          </div>
+          {_isOrgMember && (
+            <div className={css(styles.optionsMenuWrapper)}>
+              <NoteOptionsMenuButton
+                note={currentNote}
+                title={currentNote.title}
+                currentOrg={currentOrganization}
+                onNoteCreate={onNoteCreate}
+                onNoteDelete={onNoteDelete}
+                onNotePermChange={onNotePermChange}
+                show={true}
+                size={24}
+              />
+            </div>
+          )}
         </div>
       </div>
       {presenceListElement !== null && (

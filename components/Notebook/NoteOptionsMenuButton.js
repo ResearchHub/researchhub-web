@@ -12,7 +12,7 @@ import {
 } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import { Helpers } from "@quantfive/js-web-config";
-import { NOTE_GROUPS } from "./config/notebookConstants";
+import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import icons from "~/config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
@@ -35,7 +35,6 @@ const NoteOptionsMenuButton = ({
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const alert = useAlert();
   const noteId = String(note.id);
-
   const menuItems = [
     {
       text: "Make private",
@@ -156,10 +155,19 @@ const NoteOptionsMenuButton = ({
         alert.show({
           text: `Permanently delete '${title}'? This cannot be undone.`,
           buttonText: "Yes",
-          onClick: () => {
-            deleteNote(noteId).then((deletedNote) => {
+          onClick: async () => {
+            try {
+              const deletedNote = await deleteNote(noteId);
               onNoteDelete(deletedNote);
-            });
+            } catch (error) {
+              setMessage("Failed to delete note");
+              showMessage({ show: true, error: true });
+              captureError({
+                error,
+                msg: "Failed to delete note",
+                data: { noteId, currentOrg },
+              });
+            }
           },
         });
       },
@@ -261,7 +269,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     userSelect: "none",
-    width: 185,
+    width: 190,
   },
   popoverBodyItem: {
     alignItems: "center",
