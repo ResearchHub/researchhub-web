@@ -8,7 +8,6 @@ export default function AuthorClaimCaseDashboardIndex(): ReactElement<
 > | null {
   const reduxStore = useStore();
   const shouldRenderUI = useEffectCheckCredentials(reduxStore);
-  // debugger;
   if (!shouldRenderUI) {
     return null;
   }
