@@ -6,25 +6,30 @@ import { createNewNote } from "~/config/fetch";
 import icons, { UpIcon, DownIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
-import { NOTE_GROUPS } from "./config/notebookConstants";
+import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
 import { captureError } from "~/config/utils/error";
 import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 
 const NotebookSidebarGroup = ({
   groupKey,
   availGroups,
   notes,
   titles,
-  orgs,
   currentOrg,
   user,
   currentNoteId,
   onNoteCreate,
   onNoteDelete,
   onNotePermChange,
+  showMessage,
+  setMessage,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
+  const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
   const handleCreateNewNote = async (groupKey) => {
     setCreateNoteIsLoading(true);
@@ -35,11 +40,11 @@ const NotebookSidebarGroup = ({
         grouping: groupKey,
       });
 
-      // TODO: Remove once Leo adds this to endpoint
-      note.access = groupKey;
       onNoteCreate(note);
       setIsHidden(false);
     } catch (error) {
+      setMessage("You do not have permission to create note");
+      showMessage({ show: true, error: true });
       captureError({
         error,
         msg: "Failed to create note",
@@ -50,12 +55,9 @@ const NotebookSidebarGroup = ({
     }
   };
 
-  const allowedToCreateNote = [
-    NOTE_GROUPS.WORKSPACE,
-    NOTE_GROUPS.PRIVATE,
-  ].includes(groupKey);
-
-  const allowedToSeeOptions = isOrgMember({ user, org: currentOrg });
+  const allowedToCreateNote =
+    [NOTE_GROUPS.WORKSPACE, NOTE_GROUPS.PRIVATE].includes(groupKey) &&
+    _isOrgMember;
 
   return (
     <div className={css(styles.container)}>
@@ -96,21 +98,23 @@ const NotebookSidebarGroup = ({
         </div>
       )}
       {!isHidden &&
-        notes.map((note) => (
-          <NotebookSidebarEntry
-            key={note.id}
-            note={note}
-            titles={titles}
-            groupKey={groupKey}
-            currentOrg={currentOrg}
-            onNoteCreate={onNoteCreate}
-            currentNoteId={currentNoteId}
-            onNoteDelete={onNoteDelete}
-            title={titles[note.id]}
-            showOptions={allowedToSeeOptions}
-            onNotePermChange={onNotePermChange}
-          />
-        ))}
+        notes.map((note) => {
+          return (
+            <NotebookSidebarEntry
+              key={note.id}
+              note={note}
+              titles={titles}
+              groupKey={groupKey}
+              currentOrg={currentOrg}
+              onNoteCreate={onNoteCreate}
+              currentNoteId={currentNoteId}
+              onNoteDelete={onNoteDelete}
+              title={titles[note.id]}
+              showOptions={_isOrgMember}
+              onNotePermChange={onNotePermChange}
+            />
+          );
+        })}
     </div>
   );
 };
@@ -185,4 +189,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotebookSidebarGroup;
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(null, mapDispatchToProps)(NotebookSidebarGroup);

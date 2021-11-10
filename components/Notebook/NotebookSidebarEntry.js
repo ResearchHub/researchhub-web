@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   optionsMenuWrapper: {
     position: "absolute",
     right: 7,
-    top: 13,
+    top: 11,
   },
 });
 

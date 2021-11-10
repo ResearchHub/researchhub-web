@@ -362,6 +362,7 @@ const ManageNotePermissions = ({
         : `access-org-${accessObj.organization?.slug}`;
 
     const perm = getPermLabel(accessObj.access_type);
+
     const canEdit =
       currentUserAccess >= PERMS.NOTE.ADMIN && !isCurrentUser
         ? true
@@ -584,6 +585,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   currentUser: state.auth.user,
 });
+
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
