@@ -18,22 +18,11 @@ export default function CitationContainer({
 
   return (
     <div className={css(styles.citationContainer)}>
-      {/* <div className={css(styles.citationGroup)}>
-        <div className={css(styles.header)}>{"Supporting Sources"}</div>
-        <CitationTable
-          citationType="SUPPORT"
-          hypothesisID={hypothesisID}
-          key="citation-support"
-          lastFetchTime={lastFetchTime}
-          updateLastFetchTime={onCitationUpdate}
-        />
-      </div> */}
       <div className={css(styles.citationGroup)}>
         <div className={css(styles.header)}>{"Sources"}</div>
         <CitationTable
           citationType={citationType}
           hypothesisID={hypothesisID}
-          // key="citation-reject"
           lastFetchTime={lastFetchTime}
           updateLastFetchTime={onCitationUpdate}
         />
