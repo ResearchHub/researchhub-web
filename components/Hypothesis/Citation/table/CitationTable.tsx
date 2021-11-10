@@ -141,6 +141,8 @@ const styles = StyleSheet.create({
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
+    maxHeight: 300,
+    overflowY: "auto",
   },
   citationNoResults: {
     display: "flex",
