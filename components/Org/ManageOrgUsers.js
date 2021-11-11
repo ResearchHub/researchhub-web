@@ -268,12 +268,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           />
           {isInviteInProgress ? (
             <div className={css(styles.loaderWrapper)}>
-              <Loader
-                key={"loader"}
-                loading={true}
-                size={25}
-                color={colors.BLUE()}
-              />
+              <Loader key={"loader"} loading={true} size={25} color={"white"} />
             </div>
           ) : (
             <Button
@@ -305,8 +300,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   loaderWrapper: {
-    width: 80,
+    width: 100,
     height: 40,
+    paddingTop: 11,
+    backgroundColor: colors.BLUE(1),
   },
   userList: {
     paddingTop: 8,

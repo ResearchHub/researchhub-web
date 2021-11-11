@@ -457,7 +457,7 @@ const ManageNotePermissions = ({
               0,
               permDropdownOptsForUser.length - 1
             )}
-            label={userToBeInvitedPerm.toLowerCase()}
+            label={getPermLabel(userToBeInvitedPerm)}
             isOpen={isUserToBeInvitedPermDdownOpen}
             onClick={() => setIsUserToBeInvitedPermDdownOpen(true)}
             onSelect={(selectedPerm) => setUserToBeInvitedPerm(selectedPerm)}
@@ -478,18 +478,14 @@ const ManageNotePermissions = ({
           />
           {isInviteInProgress ? (
             <div className={css(styles.loaderWrapper)}>
-              <Loader
-                key={"loader"}
-                loading={true}
-                size={25}
-                color={colors.BLUE()}
-              />
+              <Loader key={"loader"} loading={true} size={25} color={"white"} />
             </div>
           ) : (
             <Button
               type="submit"
               customButtonStyle={styles.button}
               label="Invite"
+              rippleClass={styles.rippleClass}
             />
           )}
         </form>
@@ -505,9 +501,10 @@ const styles = StyleSheet.create({
     width: 450,
   },
   loaderWrapper: {
-    width: 80,
+    width: 100,
     height: 40,
-    paddingTop: 10,
+    paddingTop: 11,
+    backgroundColor: colors.BLUE(1),
   },
   deleteOpt: {
     color: colors.RED(),
@@ -534,6 +531,8 @@ const styles = StyleSheet.create({
   entity: {
     display: "flex",
     alignItems: "center",
+    width: "60%",
+    overflowX: "scroll",
   },
   permDropdown: {
     marginRight: 30,
@@ -574,11 +573,15 @@ const styles = StyleSheet.create({
     height: 51,
     width: 100,
   },
+  rippleClass: {
+    height: 51,
+  },
   inputContainer: {
     margin: 0,
   },
   inputStyle: {
     textAlign: "left",
+    paddingRight: 120,
   },
 });
 
