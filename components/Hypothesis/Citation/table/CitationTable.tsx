@@ -98,11 +98,6 @@ export default function CitationTable({
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem
-            label=""
-            maxWidth={tableMaxWidths.CONSENSUS}
-            width={tableWidths.CONSENSUS}
-          />
-          <CitationTableHeaderItem
             className={styles.sourceTitle}
             label="Paper"
             maxWidth={tableMaxWidths.SOURCE}
