@@ -14,9 +14,9 @@ type Props = { lastFetchTime: number; onCitationUpdate: Function };
 
 const TABLE_SORT_OPTIONS: TextDropdownOptions = [
   /* logical ordering */
-  { label: "Sources", value: null },
-  { label: "Supporting Sources", value: "SUPPORT" },
-  { label: "Rejecting Sources", value: "REJECT" },
+  { label: "Sources", optionLabel: "All", value: null },
+  { label: "Supporting Sources", optionLabel: "Supporting", value: "SUPPORT" },
+  { label: "Rejecting Sources", optionLabel: "Rejecting", value: "REJECT" },
 ];
 
 export default function CitationContainer({
