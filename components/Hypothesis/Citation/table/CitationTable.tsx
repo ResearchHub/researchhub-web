@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
@@ -5,7 +6,6 @@ import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
-import CitationAddNewButton from "../CitationAddNewButton";
 import CitationNoResult from "./CitationNoResult";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import CitationTableRowItem, {
@@ -13,7 +13,6 @@ import CitationTableRowItem, {
 } from "./CitationTableRowItem";
 import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
-import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   citationType: ValidCitationType;

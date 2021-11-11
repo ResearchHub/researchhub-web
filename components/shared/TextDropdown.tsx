@@ -1,9 +1,9 @@
+import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
-import colors from "~/config/themes/colors";
 import { ValidCitationType } from "../Hypothesis/Citation/modal/AddNewSourceBodySearch";
+import colors from "~/config/themes/colors";
 import ResearchHubPopover from "../ResearchHubPopover";
 
 export type TextDropdownOption = {

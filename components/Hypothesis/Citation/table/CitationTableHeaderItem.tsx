@@ -1,7 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import colors from "~/config/themes/colors";
-import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   center?: boolean;
