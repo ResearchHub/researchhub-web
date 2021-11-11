@@ -1,4 +1,4 @@
-import { isNullOrUndefined } from "~/config/utils/nullchecks.ts";
+import { isNullOrUndefined, isEmpty } from "~/config/utils/nullchecks.ts";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import Link from "next/link";
@@ -138,17 +138,34 @@ const ActivityCard = (props) => {
     return true;
   };
 
+  const getUserFromContribution = () => {
+    switch (contributionType) {
+      case "UPVOTER":
+      case "COMMENTER":
+      case "SUBMITTER":
+      case "CURATOR":
+        return activity["user"];
+      case "SUPPORTER":
+        return activity["user"];
+      default:
+        break;
+    }
+  };
+
   if (isHidden) return null;
 
   const { href, hrefAs, postId } = getActivityMetadata(activity);
+  const user = getUserFromContribution(contributionType);
 
-  if (isNullOrUndefined(postId)) return null;
+  if (isNullOrUndefined(postId) || isEmpty(user)) {
+    return null;
+  }
 
   return (
     <Link href={href} as={hrefAs}>
       <a className={css(styles.link)}>
         <Ripples className={css(styles.root)}>
-          <ActivityHeader {...props} />
+          <ActivityHeader {...props} user={user} />
           <ActivityBody {...props} />
           <div className={css(styles.row, last && styles.noBorderBottom)}>
             {shouldRenderTimeStamp() ? (

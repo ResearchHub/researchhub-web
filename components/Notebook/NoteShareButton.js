@@ -4,7 +4,14 @@ import { useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
 
-const NoteShareButton = ({ noteId, org = null }) => {
+const NoteShareButton = ({
+  noteId,
+  notePerms,
+  currentOrg,
+  userOrgs,
+  refetchNotePerms,
+  onNotePermChange,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -13,16 +20,38 @@ const NoteShareButton = ({ noteId, org = null }) => {
       isOpen={isOpen}
       popoverContent={
         <div className={css(styles.popoverContainer)}>
-          <ManageNotePermissions org={org} noteId={noteId} />
+          <ManageNotePermissions
+            notePerms={notePerms}
+            currentOrg={currentOrg}
+            userOrgs={userOrgs}
+            noteId={noteId}
+            refetchNotePerms={refetchNotePerms}
+            onNotePermChange={onNotePermChange}
+          />
         </div>
       }
       positions={["bottom", "top"]}
-      setIsPopoverOpen={() => setIsOpen(true)}
+      onClickOutside={(e) => {
+        const childPopoverFound = e.path.find((el) => {
+          if (typeof el?.getAttribute === "function") {
+            if ((el.getAttribute("class") || "").includes("perm-popover")) {
+              return true;
+            }
+          }
+        });
+
+        if (!childPopoverFound) {
+          setIsOpen(false);
+        }
+      }}
       targetContent={
         <div className={css(styles.buttonContainer)}>
           <span
             className={css(styles.shareLink)}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={(e) => {
+              e && e.preventDefault();
+              setIsOpen(!isOpen);
+            }}
           >
             Share
           </span>
@@ -45,6 +74,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     userSelect: "none",
     marginRight: 20,
+    marginTop: 10,
   },
   buttonContainer: {
     display: "flex",

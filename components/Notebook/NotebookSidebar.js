@@ -1,19 +1,21 @@
+import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
-import Loader from "~/components/Loader/Loader";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
 import OrgAvatar from "~/components/Org/OrgAvatar";
-import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
-import SidebarSectionContent from "~/components/Notebook/SidebarSectionContent";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import { breakpoints } from "~/config/themes/screen";
-import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
+import { useState, useMemo } from "react";
+import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
+import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { useState, useEffect } from "react";
+import groupBy from "lodash/groupBy";
+import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
 
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
@@ -25,46 +27,79 @@ const NotebookSidebar = ({
   currentNoteId,
   currentOrg,
   didInitialNotesLoad,
-  handleOrgSwitch,
-  isPrivateNotebook,
+  fetchAndSetOrg,
   notes,
   onNoteCreate,
   onNoteDelete,
   onOrgChange,
+  onNotePermChange,
   orgSlug,
   orgs,
   setTitles,
   titles,
   user,
+  templates,
+  refetchTemplates,
 }) => {
-  const [createNoteLoading, setCreateNoteLoading] = useState(false);
   const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const [refetchTemplates, setRefetchTemplates] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
-  const [allowCreateNote, setAllowCreateNote] = useState(false);  
+  const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
+  const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
-  useEffect(() => {
-    if (currentOrg) {
-      setAllowCreateNote(true);
-    }
-  }, [currentOrg]);
+  const getSidebarGroupKeys = () => {
+    let groups = Object.keys(groupedNotes);
 
-  const handleCreateNewNote = async () => {
-    setCreateNoteLoading(true);
+    const orgAccess = PERMS.getValByEnum({
+      permEnum: currentOrg?.user_permission?.access_type,
+      forEntity: ENTITIES.ORG,
+    });
 
-    let params;
-    if (isPrivateNotebook) {
-      params = {};
-    } else {
-      params = { orgSlug };
+    if (orgAccess >= PERMS.ORG.MEMBER) {
+      groups.push(NOTE_GROUPS.WORKSPACE);
     }
 
-    const note = await createNewNote(params);
-    setCreateNoteLoading(false);
-    onNoteCreate(note);
+    if (currentOrg?.member_count > 1 && orgAccess >= PERMS.ORG.MEMBER) {
+      groups.push(NOTE_GROUPS.PRIVATE);
+    }
+
+    return sortSidebarGroups(groups);
+  };
+
+  const sortSidebarGroups = (sidebarGroups) => {
+    const sorted = [];
+    if (sidebarGroups.includes(NOTE_GROUPS.WORKSPACE)) {
+      sorted.push(NOTE_GROUPS.WORKSPACE);
+    }
+    if (sidebarGroups.includes(NOTE_GROUPS.PRIVATE)) {
+      sorted.push(NOTE_GROUPS.PRIVATE);
+    }
+    if (sidebarGroups.includes(NOTE_GROUPS.SHARED)) {
+      sorted.push(NOTE_GROUPS.SHARED);
+    }
+
+    return sorted;
+  };
+
+  const buildHtmlForGroup = ({ groupKey }) => {
+    return (
+      <NotebookSidebarGroup
+        key={groupKey}
+        groupKey={groupKey}
+        availGroups={Object.keys(groupedNotes)}
+        currentOrg={currentOrg}
+        orgs={orgs}
+        user={user}
+        notes={groupedNotes[groupKey] || []}
+        titles={titles}
+        currentNoteId={currentNoteId}
+        onNoteCreate={onNoteCreate}
+        onNoteDelete={onNoteDelete}
+        onNotePermChange={onNotePermChange}
+      />
+    );
   };
 
   return (
@@ -81,18 +116,18 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
-        isPrivateNotebook={isPrivateNotebook}
         currentOrg={currentOrg}
         onNoteCreate={onNoteCreate}
-        currentOrganizationId={isPrivateNotebook ? 0 : currentOrg?.id}
+        currentOrganizationId={currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
-        refetchTemplates={refetchTemplates}
         setIsOpen={setIsNoteTemplateModalOpen}
         user={user}
         setTitles={setTitles}
         titles={titles}
         notes={notes}
+        templates={templates}
+        refetchTemplates={refetchTemplates}
       />
       <div className={css(styles.sidebarOrgContainer)}>
         <div>
@@ -151,7 +186,7 @@ const NotebookSidebar = ({
               </div>
             }
             positions={["bottom"]}
-            setIsPopoverOpen={setIsPopoverOpen}
+            onClickOutside={() => setIsPopoverOpen(false)}
             targetContent={
               <div
                 className={css(styles.popoverTarget)}
@@ -174,19 +209,12 @@ const NotebookSidebar = ({
             }
           />
         </div>
-        <div
-          className={css(
-            styles.sidebarButtonsContainer,
-            styles.orgButtonsContainer
-          )}
-        >
-          {["MEMBER", "ADMIN"].includes(
-            currentOrg?.user_permission?.access_type
-          ) && (
+        <div className={css(styles.sidebarButtonsContainer)}>
+          {_isOrgMember && (
             <div
-              className={css(styles.sidebarButton, styles.orgButton)}
+              className={css(styles.sidebarButton)}
               onClick={() => {
-                handleOrgSwitch({ orgId: currentOrg.id });
+                fetchAndSetOrg({ orgId: currentOrg.id });
                 setShowManageOrgModal(true);
               }}
             >
@@ -199,68 +227,28 @@ const NotebookSidebar = ({
             </div>
           )}
         </div>
+        {_isOrgMember && (
+          <div className={css(styles.sidebarButtonsContainer)}>
+            <div
+              className={css(styles.sidebarButton)}
+              onClick={() => setIsNoteTemplateModalOpen(true)}
+            >
+              {icons.shapes}
+              <span className={css(styles.sidebarButtonText)}>Templates</span>
+            </div>
+          </div>
+        )}
       </div>
       <div className={css(styles.scrollable)}>
-        <div
-          className={css(
-            styles.sidebarSection,
-            hideNotes && styles.showBottomBorder
-          )}
-        >
-          Notes
-          {allowCreateNote &&
-            <span className={css(styles.chevronIcon)}>
-              {createNoteLoading ? (
-                <Loader type="clip" size={23} />
-              ) : (
-                <div
-                  className={css(styles.actionButton)}
-                  onClick={handleCreateNewNote}
-                >
-                  {icons.plus}
-                </div>
-              )}
-            </span>
-          }
-        </div>
         <ReactPlaceholder
-          ready={didInitialNotesLoad}
+          ready={didInitialNotesLoad && !isEmpty(currentOrg)}
           showLoadingAnimation
           customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
         >
-          {!hideNotes && (
-            <div>
-              {notes.map((note) => {
-                const noteId = note.id.toString();
-                return (
-                  <SidebarSectionContent
-                    isPrivateNotebook={isPrivateNotebook}
-                    currentNoteId={currentNoteId}
-                    currentOrg={currentOrg}
-                    onNoteCreate={onNoteCreate}
-                    onNoteDelete={onNoteDelete}
-                    key={noteId}
-                    noteId={noteId}
-                    notes={notes}
-                    refetchTemplates={refetchTemplates}
-                    setRefetchTemplates={setRefetchTemplates}
-                    title={titles[noteId]}
-                  />
-                );
-              })}
-            </div>
+          {getSidebarGroupKeys().map((groupKey) =>
+            buildHtmlForGroup({ groupKey })
           )}
         </ReactPlaceholder>
-
-        <div className={css(styles.sidebarButtonsContainer)}>
-          <div
-            className={css(styles.sidebarButton)}
-            onClick={() => setIsNoteTemplateModalOpen(true)}
-          >
-            {icons.shapes}
-            <span className={css(styles.sidebarButtonText)}>Templates</span>
-          </div>
-        </div>
       </div>
     </div>
   );
@@ -280,7 +268,7 @@ const styles = StyleSheet.create({
   newOrgContainer: {
     cursor: "pointer",
     display: "flex",
-    padding: 16,
+    padding: 15,
     color: colors.BLUE(),
     fontWeight: 500,
     ":hover": {
@@ -297,9 +285,6 @@ const styles = StyleSheet.create({
   newOrgText: {
     marginLeft: 10,
     paddingTop: 7,
-  },
-  orgButton: {
-    paddingLeft: 17,
   },
   orgButtonText: {},
   container: {
@@ -329,7 +314,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     letterSpacing: 1.2,
-    padding: 20,
+    padding: "15px 20px",
     textTransform: "uppercase",
     userSelect: "none",
     wordBreak: "break-word",
@@ -350,7 +335,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     cursor: "pointer",
     display: "flex",
-    padding: 16,
+    padding: 15,
     textDecoration: "none",
     wordBreak: "break-word",
     ":hover": {
@@ -385,33 +370,6 @@ const styles = StyleSheet.create({
   },
   scrollable: {
     overflow: "auto",
-  },
-  sidebarSection: {
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 18,
-    fontWeight: 500,
-    padding: 20,
-    userSelect: "none",
-    alignItems: "center",
-  },
-  sidebarSectionContent: {
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 14,
-    fontWeight: 500,
-    padding: 20,
-    textDecoration: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-    ":last-child": {
-      borderBottom: `1px solid ${colors.GREY(0.3)}`,
-    },
   },
   active: {
     backgroundColor: colors.GREY(0.3),
@@ -449,11 +407,11 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.GREY(0.3)}`,
   },
   sidebarButtonsContainer: {
-    margin: 10,
-  },
-  orgButtonsContainer: {
     margin: 0,
     marginLeft: 10,
+    ":last-child": {
+      paddingBottom: 20,
+    },
   },
   sidebarButton: {
     border: "none",
@@ -463,6 +421,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     maxWidth: "fit-content",
     padding: 10,
+    paddingLeft: 17,
     ":hover": {
       color: colors.BLUE(),
     },

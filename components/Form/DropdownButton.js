@@ -9,11 +9,15 @@ const DropdownButton = ({
   onSelect,
   label,
   onClose,
+  onClickOutside,
+  dropdownClassName,
+  customButtonClassName,
   selected = null,
   positions = ["bottom", "top"],
   isOpen = false,
   overridePopoverStyle = null,
   overrideTargetStyle = null,
+  closeAfterSelect = true,
 }) => {
   return (
     <ResearchHubPopover
@@ -24,7 +28,12 @@ const DropdownButton = ({
           {opts.map((o, i) => (
             <div
               className={css(styles.optContainer)}
-              onClick={() => onSelect(o.value)}
+              onClick={() => {
+                onSelect(o.value);
+                if (closeAfterSelect) {
+                  onClose();
+                }
+              }}
               key={`opt-${i}`}
             >
               <div className={css(styles.infoContainer)}>
@@ -39,13 +48,14 @@ const DropdownButton = ({
         </div>
       }
       positions={positions}
-      setIsPopoverOpen={onClose}
+      onClickOutside={onClickOutside}
+      className={dropdownClassName}
       targetContent={
         <div
           className={css(styles.dropdownContainer, overrideTargetStyle)}
           onClick={() => (isOpen ? onClose() : onClick())}
         >
-          <div className={css(styles.targetBtn)}>
+          <div className={css(styles.targetBtn, customButtonClassName)}>
             {label}
             <DownIcon withAnimation={false} overrideStyle={styles.downIcon} />
           </div>
@@ -99,9 +109,6 @@ const styles = StyleSheet.create({
       borderRadius: 3,
       transition: "0.3s",
     },
-  },
-  permJustText: {
-    marginRight: 27,
   },
   downIcon: {
     padding: 4,
