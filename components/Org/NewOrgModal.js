@@ -281,6 +281,7 @@ const styles = StyleSheet.create({
   body: {
     minWidth: 500,
     maxWidth: 800,
+    maxHeight: "70vh",
     marginTop: 30,
   },
   manageUsersContainer: {
@@ -341,6 +342,7 @@ const styles = StyleSheet.create({
   },
   bottomButtons: {
     display: "flex",
+    paddingBottom: 20,
   },
   buttonContainer: {
     display: "flex",
