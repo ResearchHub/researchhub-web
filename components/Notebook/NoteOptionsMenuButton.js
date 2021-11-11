@@ -153,7 +153,11 @@ const NoteOptionsMenuButton = ({
         e && e.stopPropagation();
         setIsPopoverOpen(false);
         alert.show({
-          text: <div>Permanently delete <b>{title}</b>? This cannot be undone.</div>,
+          text: (
+            <div>
+              Permanently delete <b>{title}</b>? This cannot be undone.
+            </div>
+          ),
           buttonText: "Yes",
           onClick: async () => {
             try {
@@ -205,7 +209,6 @@ const NoteOptionsMenuButton = ({
             )}
             onClick={(e) => {
               e && e.preventDefault();
-              e && e.stopPropagation();
               setIsPopoverOpen(!isPopoverOpen);
             }}
           >

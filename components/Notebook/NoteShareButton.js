@@ -32,9 +32,13 @@ const NoteShareButton = ({
       }
       positions={["bottom", "top"]}
       onClickOutside={(e) => {
-        const childPopoverFound = e.path.find((el) =>
-          (el.className || "").includes("perm-popover")
-        );
+        const childPopoverFound = e.path.find((el) => {
+          if (typeof el?.getAttribute === "function") {
+            if ((el.getAttribute("class") || "").includes("perm-popover")) {
+              return true;
+            }
+          }
+        });
 
         if (!childPopoverFound) {
           setIsOpen(false);
@@ -44,7 +48,11 @@ const NoteShareButton = ({
         <div className={css(styles.buttonContainer)}>
           <span
             className={css(styles.shareLink)}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={(e) => {
+              console.log("e", e);
+              e && e.preventDefault();
+              setIsOpen(!isOpen);
+            }}
           >
             Share
           </span>
