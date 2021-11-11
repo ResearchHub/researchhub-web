@@ -1,7 +1,12 @@
+import Error from "next/error";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
+import dynamic from "next/dynamic";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import withWebSocket from "~/components/withWebSocket";
+import { Helpers } from "@quantfive/js-web-config";
+import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import { useState, useEffect, useRef } from "react";
 import {
   fetchUserOrgs,
   fetchNotePermissions,
@@ -10,19 +15,16 @@ import {
   fetchOrg,
 } from "~/config/fetch";
 import { getNotePathname } from "~/config/utils/org";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import { getUserNoteAccess } from "./utils/notePermissions";
-import { Helpers } from "@quantfive/js-web-config";
-import { captureError } from "~/config/utils/error";
-import dynamic from "next/dynamic";
-import Error from "next/error";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
+import { useState, useEffect, useRef } from "react";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ auth, user }) => {
+const Notebook = ({ auth, user, wsResponse }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
@@ -42,6 +44,14 @@ const Notebook = ({ auth, user }) => {
 
   const orgsFetched = useRef();
   const isPrivateNotebook = orgSlug === "me" ? true : false;
+
+  useEffect(() => {
+    if (!isNullOrUndefined(wsResponse)) {
+      const response = JSON.parse(wsResponse);
+      const note = response?.data;
+      onNoteCreate(note, false);
+    }
+  }, [wsResponse]);
 
   /* IMPORTANT */
   const _shouldShowELN = gateKeepCurrentUser({
@@ -291,11 +301,13 @@ const Notebook = ({ auth, user }) => {
       [note.id]: note.title,
       ...titles,
     });
+  };
+
+  const redirectToNote = (note) => {
     const path = getNotePathname({
       noteId: note.id,
       org: currentOrganization,
     });
-
     router.push(path);
   };
 
@@ -327,11 +339,11 @@ const Notebook = ({ auth, user }) => {
         handleOrgSwitch={fetchAndSetOrg}
         isPrivateNotebook={isPrivateNotebook}
         notes={notes}
-        onNoteCreate={onNoteCreate}
         onNoteDelete={onNoteDelete}
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
         orgs={organizations}
+        redirectToNote={redirectToNote}
         titles={titles}
       />
       {currentNote && (
@@ -358,4 +370,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(Notebook);
+export default connect(mapStateToProps)(withWebSocket(Notebook));

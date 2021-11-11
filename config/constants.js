@@ -81,6 +81,3 @@ Hypothesis: What question does this paper attempt to answer?
 Conclusion: What conclusion did the paper reach?
 
 Significance: What does this paper make possible in the world, and what should be tried from here?`;
-
-// ELN
-export const PRIVATE_ELN_ORG_PARAM = "me";

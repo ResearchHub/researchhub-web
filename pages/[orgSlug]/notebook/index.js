@@ -1,5 +1,12 @@
-import nookies from "nookies";
+import EmptyState from "~/components/CKEditor/EmptyState.md";
+import Error from "next/error";
+import HeadComponent from "~/components/Head";
 import Notebook from "~/components/Notebook/Notebook";
+import nookies from "nookies";
+import { AUTH_TOKEN } from "~/config/constants";
+import { Helpers } from "@quantfive/js-web-config";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
+import { captureError } from "~/config/utils/error";
 import {
   createNewNote,
   createNoteContent,
@@ -7,15 +14,11 @@ import {
   fetchOrgNotes,
   updateOrgDetails,
 } from "~/config/fetch";
-import EmptyState from "~/components/CKEditor/EmptyState.md";
-import { AUTH_TOKEN, PRIVATE_ELN_ORG_PARAM } from "~/config/constants";
-import Error from "next/error";
-import { Helpers } from "@quantfive/js-web-config";
-import { captureError } from "~/config/utils/error";
-
-import HeadComponent from "~/components/Head";
+import { useRouter } from "next/router";
 
 const Index = ({ error }) => {
+  const router = useRouter();
+
   if (error) {
     return <Error {...error} />;
   }
@@ -23,7 +26,10 @@ const Index = ({ error }) => {
   return (
     <>
       <HeadComponent title={"ResearchHub Notebook"} />
-      <Notebook />
+      <Notebook
+        wsAuth={true}
+        wsUrl={WS_ROUTES.NOTE(router.query.orgSlug)}
+      />
     </>
   );
 };
