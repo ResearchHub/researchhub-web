@@ -1,16 +1,19 @@
+import { faCaretDown, faCaretUp } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { css, StyleDeclarationValue, StyleSheet } from "aphrodite";
 import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
+import colors from "~/config/themes/colors";
 import { ValidCitationType } from "../Hypothesis/Citation/modal/AddNewSourceBodySearch";
 import ResearchHubPopover from "../ResearchHubPopover";
 
 export type TextDropdownOption = {
   label: string;
+  optionLabel?: string;
   value: ValidCitationType;
 };
 export type TextDropdownOptions = TextDropdownOption[];
 
 type Props = {
-  className?: StyleDeclarationValue | StyleDeclarationValue[];
   dropdownStyle?: StyleDeclarationValue | StyleDeclarationValue[];
   labelStyle?: StyleDeclarationValue | StyleDeclarationValue[];
   onSelect: (selected: TextDropdownOption) => void;
@@ -19,10 +22,13 @@ type Props = {
 };
 
 function TextDropdownOption({ label, onSelect }) {
-  return <div onClick={onSelect}>{label}</div>;
+  return (
+    <div className={css(styles.optionElements)} onClick={onSelect}>
+      {label}
+    </div>
+  );
 }
 export default function TextDropdown({
-  className: classNameOverride,
   dropdownStyle: dropdownOverride,
   labelStyle: labelOverride,
   onSelect,
@@ -37,11 +43,11 @@ export default function TextDropdown({
         (
           option: TextDropdownOption
         ): ReactElement<typeof TextDropdownOption> => {
-          const { label, value } = option;
+          const { label, value, optionLabel } = option;
           return (
             <TextDropdownOption
               key={`${label}-${value}`}
-              label={label}
+              label={optionLabel ?? label}
               onSelect={(event: SyntheticEvent): void => {
                 event.stopPropagation();
                 onSelect(option);
@@ -64,14 +70,23 @@ export default function TextDropdown({
             setIsOpen(!isOpen);
           }}
         >
-          {currLabel}
+          <div className={css(styles.labelText)}>{currLabel}</div>
+          <div className={css(styles.labelArrow)}>
+            {isOpen ? (
+              <FontAwesomeIcon icon={faCaretUp} />
+            ) : (
+              <FontAwesomeIcon icon={faCaretDown} />
+            )}
+          </div>
         </div>
       }
       align="start"
       containerStyle={styles.textDropdown}
       padding={0}
       popoverContent={
-        <div className={css(styles.optionsContainer)}>{optionElements}</div>
+        <div className={css(styles.optionsContainer, dropdownOverride)}>
+          {optionElements}
+        </div>
       }
       positions={["bottom"]}
       setIsPopoverOpen={setIsOpen}
@@ -83,16 +98,45 @@ export default function TextDropdown({
 const styles = StyleSheet.create({
   textDropdown: {
     height: "100%",
-    position: "relative",
     width: "100%",
   },
   label: {
     cursor: "pointer",
+    display: "flex",
+  },
+  labelArrow: {
+    color: colors.TEXT_GREY(1),
+    fontSize: 18,
+    marginTop: 2,
+  },
+  labelText: {
+    marginRight: 8,
   },
   optionsContainer: {
+    backgroundColor: colors.ICY_GREY,
+    border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+    borderBottom: "none",
     display: "flex",
     flexDirection: "column",
-    width: 1000,
-    backgroundColor: "red",
+    position: "absolute",
+    width: 200,
+  },
+  optionElements: {
+    alignItems: "center",
+    borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
+    boxSizing: "border-box",
+    cursor: "pointer",
+    display: "flex",
+    fontSize: 14,
+    fontWeight: "normal",
+    height: 44,
+    maxWidth: 200,
+    overflow: "hidden",
+    padding: 16,
+    textOverflow: "ellipsis",
+    width: "100%",
+    ":hover": {
+      backgroundColor: colors.LIGHT_GREY_BACKGROUND,
+    },
   },
 });
