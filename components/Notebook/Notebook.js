@@ -45,14 +45,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
   const orgsFetched = useRef();
   const isPrivateNotebook = orgSlug === "me" ? true : false;
 
-  useEffect(() => {
-    if (!isNullOrUndefined(wsResponse)) {
-      const response = JSON.parse(wsResponse);
-      const note = response?.data;
-      onNoteCreate(note, false);
-    }
-  }, [wsResponse]);
-
   /* IMPORTANT */
   const _shouldShowELN = gateKeepCurrentUser({
     application: "ELN" /* application */,
@@ -245,6 +237,19 @@ const Notebook = ({ auth, user, wsResponse }) => {
     }
   }, [orgSlug, currentOrganization, organizations]);
 
+  useEffect(() => {
+    if (!isNullOrUndefined(wsResponse)) {
+      const response = JSON.parse(wsResponse);
+      const note = response.data;
+
+      setNotes([note, ...notes]);
+      setTitles({
+        [note.id]: note.title,
+        ...titles,
+      });
+    }
+  }, [wsResponse]);
+
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
       const org = await fetchOrg({ orgId });
@@ -293,14 +298,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
         getNotePathname({ noteId: newNotes[0]?.id, org: currentOrganization })
       );
     }
-  };
-
-  const onNoteCreate = (note) => {
-    setNotes([note, ...notes]);
-    setTitles({
-      [note.id]: note.title,
-      ...titles,
-    });
   };
 
   const redirectToNote = (note) => {
