@@ -15,7 +15,7 @@ const OrgAvatar = ({ org, size = 30, fontSize = 14 }) => {
   return (
     <div
       className={css(styles.container)}
-      style={{ width: size, height: size, fontSize }}
+      style={{ width: size, minWidth: size, height: size, fontSize }}
     >
       {org?.cover_image ? (
         <Image layout="fill" src={org?.cover_image} />

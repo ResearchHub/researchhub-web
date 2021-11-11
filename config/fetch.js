@@ -8,7 +8,7 @@ export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
 };
 
-export const fetchNoteByInviteToken = ({ token }) => {
+export const fetchNoteInviteByToken = ({ token }) => {
   return fetch(API.NOTE_INVITE_DETAILS({ token }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
@@ -21,20 +21,29 @@ export const updateNoteUserPermissions = ({
   accessType,
 }) => {
   const params = {
-    organization: orgId || userId,
+    ...(orgId && { organization: orgId }),
+    ...(userId && { user: userId }),
     access_type: accessType,
   };
 
   return fetch(
     API.NOTE_PERMISSIONS({ noteId, method: "PATCH" }),
-    API.GET_CONFIG(params)
+    API.PATCH_CONFIG(params)
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
 
-export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
-  return fetch(API.NOTE({ noteId }), API.DELETE_CONFIG({ user: userId }))
+export const removePermissionsFromNote = ({ noteId, userId, orgId }) => {
+  const config = {
+    ...API.DELETE_CONFIG(),
+    body: JSON.stringify({
+      ...(orgId && { organization: orgId }),
+      ...(userId && { user: userId }),
+    }),
+  };
+
+  return fetch(API.NOTE_PERMISSIONS({ noteId, method: "DELETE" }), config)
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -42,7 +51,7 @@ export const removeUserPermissionsFromNote = ({ noteId, userId }) => {
 export const inviteUserToNote = ({
   noteId,
   email,
-  expire = 4320,
+  expire = 10080,
   accessType = "EDITOR",
 }) => {
   const params = {
@@ -58,6 +67,12 @@ export const inviteUserToNote = ({
 
 export const acceptNoteInvite = ({ token }) => {
   return fetch(API.NOTE_ACCEPT_INVITE({ token }), API.POST_CONFIG())
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const makeNotePrivate = ({ noteId }) => {
+  return fetch(API.NOTE_PRIVATE({ noteId }), API.POST_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -112,13 +127,20 @@ export const fetchNote = ({ noteId }, authToken) => {
   return fetch(API.NOTE({ noteId }), API.GET_CONFIG(authToken));
 };
 
-export const createNewNote = ({ orgSlug, title }, authToken) => {
+export const createNewNote = ({ orgSlug, title, grouping }, authToken) => {
   const params = {
     organization_slug: orgSlug,
     title: title ? title : "Untitled",
+    ...(grouping && { grouping }),
   };
 
   return fetch(API.NOTE({}), API.POST_CONFIG(params, authToken))
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
+export const fetchOrgTemplates = (orgSlug) => {
+  return fetch(API.NOTE_TEMPLATE({ orgSlug }), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
@@ -160,7 +182,7 @@ export const fetchOrgByInviteToken = ({ token }) => {
 export const inviteUserToOrg = ({
   orgId,
   email,
-  expire = 4320,
+  expire = 10080,
   accessType = "MEMBER",
 }) => {
   return fetch(
