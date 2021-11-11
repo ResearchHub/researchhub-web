@@ -49,7 +49,6 @@ const NoteShareButton = ({
           <span
             className={css(styles.shareLink)}
             onClick={(e) => {
-              console.log("e", e);
               e && e.preventDefault();
               setIsOpen(!isOpen);
             }}

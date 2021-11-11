@@ -129,7 +129,6 @@ const Notebook = ({ auth, user }) => {
 
   const fetchAndSetOrgTemplates = useCallback(async () => {
     const templates = await fetchOrgTemplates(orgSlug);
-    console.log("templates!", templates);
     setTemplates(templates);
   }, [orgSlug]);
 

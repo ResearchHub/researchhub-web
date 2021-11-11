@@ -309,11 +309,8 @@ const styles = StyleSheet.create({
     height: 40,
   },
   userList: {
-    // border: `1px solid ${colors.BLACK(0.1)}`,
-    // maxHeight: 140,
-    // padding: 20,
-    height: 155,
     paddingTop: 8,
+    paddingBottom: 20,
     borderRadius: "2px",
     overflowY: "scroll",
   },

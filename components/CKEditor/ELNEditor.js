@@ -98,7 +98,6 @@ const ELNEditor = ({
   }, []);
 
   const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
-  console.log("currentNote", currentNote);
   const noteIdLength = `${currentNote.id}`.length;
   const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
 
