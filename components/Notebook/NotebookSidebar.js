@@ -409,6 +409,9 @@ const styles = StyleSheet.create({
   sidebarButtonsContainer: {
     margin: 0,
     marginLeft: 10,
+    ":last-child": {
+      paddingBottom: 20,
+    },
   },
   sidebarButton: {
     border: "none",
