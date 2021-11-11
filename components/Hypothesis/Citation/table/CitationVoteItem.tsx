@@ -7,7 +7,6 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement } from "react";
 import API from "~/config/api";
 import VoteWidgetV2, { VoteMeta } from "~/components/VoteWidgetV2";
-import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   citationID: ID;
