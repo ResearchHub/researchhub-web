@@ -245,8 +245,9 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   voteItemWrap: {
-    width: 40,
     marginRight: 8,
+    minWidth: 40,
+    width: 40,
   },
   sourceWrap: {
     display: "flex",
