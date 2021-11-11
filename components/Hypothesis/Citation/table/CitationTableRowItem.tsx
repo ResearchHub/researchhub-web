@@ -81,29 +81,27 @@ export default function CitationTableRowItem({
   return (
     <div className={css(styles.tableRowItem)}>
       <ItemColumn
-        className={styles.itemCenterAlign}
-        value={
-          <CitationVoteItem
-            citationID={citationID}
-            updateLastFetchTime={updateLastFetchTime}
-            voteMeta={{ ...consensusMeta }}
-          />
-        }
-        width={tableWidths.CONSENSUS}
-      />
-      <ItemColumn
-        className={styles.padding8}
+        className={[styles.paperPadding]}
         maxWidth={tableMaxWidths.SOURCE}
         value={
-          <Link
-            href={UNIFIED_DOC_PAGE_URL_PATTERN}
-            as={citationTitleLinkUri}
-            passHref
-          >
-            <a target="_blank" className={css(styles.link)}>
-              {displayTitle}
-            </a>
-          </Link>
+          <>
+            <div className={css(styles.voteItemWrap)}>
+              <CitationVoteItem
+                citationID={citationID}
+                updateLastFetchTime={updateLastFetchTime}
+                voteMeta={{ ...consensusMeta }}
+              />
+            </div>
+            <Link
+              href={UNIFIED_DOC_PAGE_URL_PATTERN}
+              as={citationTitleLinkUri}
+              passHref
+            >
+              <a target="_blank" className={css(styles.link)}>
+                {displayTitle}
+              </a>
+            </Link>
+          </>
         }
         width={tableWidths.SOURCE}
       />
@@ -219,8 +217,9 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     textDecoration: "none",
   },
-  padding8: {
+  paperPadding: {
     padding: 8,
+    paddingLeft: 0,
   },
   itemCenterAlign: {
     alignItems: "center",
@@ -238,5 +237,9 @@ const styles = StyleSheet.create({
   },
   paddingBottom4: {
     paddingBottom: 4,
+  },
+  voteItemWrap: {
+    width: 40,
+    marginRight: 8,
   },
 });
