@@ -57,6 +57,12 @@ export default function NoteTemplateModal({
   }, []);
 
   useEffect(() => {
+    if (templates && !selected) {
+      setSelected(templates[0]?.id)
+    }
+  }, [templates]);
+
+  useEffect(() => {
     if (isOpen) {
       refetchTemplates();
     }
