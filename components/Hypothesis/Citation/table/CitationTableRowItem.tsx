@@ -81,10 +81,9 @@ export default function CitationTableRowItem({
   return (
     <div className={css(styles.tableRowItem)}>
       <ItemColumn
-        className={[styles.paperPadding]}
         maxWidth={tableMaxWidths.SOURCE}
         value={
-          <>
+          <div className={css(styles.sourceWrap)}>
             <div className={css(styles.voteItemWrap)}>
               <CitationVoteItem
                 citationID={citationID}
@@ -92,16 +91,18 @@ export default function CitationTableRowItem({
                 voteMeta={{ ...consensusMeta }}
               />
             </div>
-            <Link
-              href={UNIFIED_DOC_PAGE_URL_PATTERN}
-              as={citationTitleLinkUri}
-              passHref
-            >
-              <a target="_blank" className={css(styles.link)}>
-                {displayTitle}
-              </a>
-            </Link>
-          </>
+            <div className={css(styles.titleControl)}>
+              <Link
+                href={UNIFIED_DOC_PAGE_URL_PATTERN}
+                as={citationTitleLinkUri}
+                passHref
+              >
+                <a target="_blank" className={css(styles.link)}>
+                  {displayTitle}
+                </a>
+              </Link>
+            </div>
+          </div>
         }
         width={tableWidths.SOURCE}
       />
@@ -163,7 +164,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-    padding: "20px 0px",
     justifyContent: "flex-start",
     fontFamily: "Roboto",
     size: 16,
@@ -186,6 +186,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: 36,
+  },
+  titleControl: {
+    boxSizing: "border-box",
+    maxHeight: 50,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   green: {
     color: colors.GREEN(1),
@@ -241,5 +247,11 @@ const styles = StyleSheet.create({
   voteItemWrap: {
     width: 40,
     marginRight: 8,
+  },
+  sourceWrap: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
 });
