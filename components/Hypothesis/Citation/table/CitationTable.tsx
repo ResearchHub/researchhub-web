@@ -143,7 +143,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: "8px 0 24px",
     minHeight: 120,
-    overflow: "auto",
     marginBottom: 0,
   },
   columnHeaderWrap: {
@@ -155,8 +154,6 @@ const styles = StyleSheet.create({
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    maxHeight: 300,
-    overflowY: "auto",
   },
   citationNoResults: {
     display: "flex",
