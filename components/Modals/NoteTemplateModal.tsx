@@ -19,16 +19,16 @@ import {
 
 export type NoteTemplateModalProps = {
   isOpen: boolean;
-  onNoteCreate: any;
   orgSlug: string;
+  redirectToNote: any;
   refetchTemplates: any;
   setIsOpen: (flag: boolean) => void;
 };
 
 export default function NoteTemplateModal({
   isOpen,
-  onNoteCreate,
   orgSlug,
+  redirectToNote,
   refetchTemplates,
   setIsOpen,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
@@ -87,7 +87,7 @@ export default function NoteTemplateModal({
       editorData: templateContents[selected].src,
       noteId: note.id,
     });
-    onNoteCreate(note);
+    redirectToNote(note);
     closeModal(e);
   };
 

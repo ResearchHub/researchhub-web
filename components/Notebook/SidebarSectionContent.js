@@ -23,8 +23,8 @@ const SidebarSectionContent = ({
   currentOrg,
   isPrivateNotebook,
   noteId,
-  onNoteCreate,
   onNoteDelete,
+  redirectToNote,
   refetchTemplates,
   setMessage,
   setRefetchTemplates,
@@ -67,7 +67,7 @@ const SidebarSectionContent = ({
           noteId: duplicatedNote.id,
         });
         setMenuLoading(false);
-        onNoteCreate(duplicatedNote);
+        redirectToNote(duplicatedNote);
       },
     },
     {

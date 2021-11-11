@@ -28,11 +28,11 @@ const NotebookSidebar = ({
   handleOrgSwitch,
   isPrivateNotebook,
   notes,
-  onNoteCreate,
   onNoteDelete,
   onOrgChange,
   orgSlug,
   orgs,
+  redirectToNote,
   titles,
 }) => {
   const [createNoteLoading, setCreateNoteLoading] = useState(false);
@@ -62,7 +62,7 @@ const NotebookSidebar = ({
 
     const note = await createNewNote(params);
     setCreateNoteLoading(false);
-    onNoteCreate(note);
+    redirectToNote(note);
   };
 
   return (
@@ -80,8 +80,8 @@ const NotebookSidebar = ({
       />
       <NoteTemplateModal
         isOpen={isNoteTemplateModalOpen}
-        onNoteCreate={onNoteCreate}
         orgSlug={orgSlug}
+        redirectToNote={redirectToNote}
         refetchTemplates={refetchTemplates}
         setIsOpen={setIsNoteTemplateModalOpen}
       />
@@ -225,14 +225,14 @@ const NotebookSidebar = ({
                 const noteId = note.id.toString();
                 return (
                   <SidebarSectionContent
-                    isPrivateNotebook={isPrivateNotebook}
                     currentNoteId={currentNoteId}
                     currentOrg={currentOrg}
-                    onNoteCreate={onNoteCreate}
-                    onNoteDelete={onNoteDelete}
+                    isPrivateNotebook={isPrivateNotebook}
                     key={noteId}
                     noteId={noteId}
                     notes={notes}
+                    onNoteDelete={onNoteDelete}
+                    redirectToNote={redirectToNote}
                     refetchTemplates={refetchTemplates}
                     setRefetchTemplates={setRefetchTemplates}
                     title={titles[noteId]}
