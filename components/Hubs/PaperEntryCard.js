@@ -271,7 +271,7 @@ const PaperEntryCard = (props) => {
   }
 
   const renderDiscussionCount = () => {
-    if (!discussionCount) {
+    if (!discussion_count) {
       return null;
     }
 
@@ -290,7 +290,7 @@ const PaperEntryCard = (props) => {
             <span className={css(styles.discussionIcon)} id={"discIcon"}>
               {icons.chat}
             </span>
-            <span className={css(styles.dicussionCount)} id={"discCount"}>
+            <span className={css(styles.discussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
             </span>
           </div>
@@ -843,7 +843,7 @@ const styles = StyleSheet.create({
     },
   },
   discussionIcon: {
-    color: colors.PURPLE(1),
+    color: "#ededed",
     fontSize: "2.5em",
   },
   metadata: {
@@ -887,12 +887,12 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
-  dicussionCount: {
+  discussionCount: {
     position: "absolute",
     left: "50%",
     top: "45%",
     transform: "translate(-50%, -50%)",
-    color: "#fff",
+    color: "rgb(71 82 93 / 80%)",
     fontWeight: "bold",
   },
   tags: {
