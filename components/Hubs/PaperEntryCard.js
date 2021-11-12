@@ -620,7 +620,7 @@ const PaperEntryCard = (props) => {
           >
             <div className={css(styles.topRow)}>
               {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderPreregistrationTag())}
+              {mobileOnly(renderDiscussionCount())}
               {desktopOnly(renderMainTitle())}
             </div>
             {mobileOnly(renderMainTitle())}
@@ -768,7 +768,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
-      justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
