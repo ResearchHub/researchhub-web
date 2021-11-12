@@ -261,6 +261,15 @@ const Notebook = ({ auth, user, wsResponse }) => {
             })
           );
         }
+      } else if (response.type === "update") {
+        if (note.id !== currentNote?.id) {
+          const updatedTitles = {};
+          for (const noteId in titles) {
+            updatedTitles[noteId] =
+              String(noteId) === String(note.id) ? note.title : titles[noteId];
+          }
+          setTitles(updatedTitles);
+        }
       }
     }
   }, [wsResponse]);
