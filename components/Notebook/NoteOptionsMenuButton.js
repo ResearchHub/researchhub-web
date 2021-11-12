@@ -23,7 +23,6 @@ import { useState } from "react";
 const NoteOptionsMenuButton = ({
   currentOrg,
   note,
-  onNoteDelete,
   onNotePermChange,
   redirectToNote,
   setMessage,
@@ -161,7 +160,6 @@ const NoteOptionsMenuButton = ({
           onClick: async () => {
             try {
               const deletedNote = await deleteNote(noteId);
-              onNoteDelete(deletedNote);
             } catch (error) {
               setMessage("Failed to delete note");
               showMessage({ show: true, error: true });
