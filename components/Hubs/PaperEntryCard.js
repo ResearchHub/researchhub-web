@@ -19,7 +19,7 @@ import colors, { genericCardColors } from "~/config/themes/colors";
 import HubDropDown from "./HubDropDown";
 import HubTag from "./HubTag";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+import icons, { PaperDiscussionIcon } from "~/config/themes/icons";
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
 import { useState, useEffect, useMemo, Fragment } from "react";
 import ReactTooltip from "react-tooltip";
@@ -267,12 +267,14 @@ const PaperEntryCard = (props) => {
   }
 
   function formatDiscussionCount() {
-    return `${discussion_count} ${
-      discussion_count === 1 ? "Comment" : "Comments"
-    }`;
+    return `${discussion_count}`;
   }
 
   const renderDiscussionCount = () => {
+    if (!discussion_count) {
+      return null;
+    }
+
     return (
       <Link
         href={"/paper/[paperId]/[paperName]"}
@@ -285,12 +287,12 @@ const PaperEntryCard = (props) => {
           }}
         >
           <div className={css(styles.discussion)}>
-            <span className={css(styles.icon)} id={"discIcon"}>
-              {icons.chat}
-            </span>
-            <span className={css(styles.dicussionCount)} id={"discCount"}>
+            <div className={css(styles.discussionIcon)} id={"discIcon"}>
+              {PaperDiscussionIcon({})}
+            </div>
+            <div className={css(styles.discussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
-            </span>
+            </div>
           </div>
         </a>
       </Link>
@@ -547,26 +549,24 @@ const PaperEntryCard = (props) => {
     return (
       <Fragment>
         {!promotionSummary && (
-          <div className={css(styles.column)}>
-            <span
-              className={css(styles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score + boost_amount}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                searchResult={searchResult}
-                isPaper={true}
-                styles={styles.voteWidget}
-                type={"Paper"}
-                paper={promoted ? paper : null}
-                promoted={promoted}
-                horizontalView={mobile}
-              />
-            </span>
-          </div>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score + boost_amount}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+              type={"Paper"}
+              paper={promoted ? paper : null}
+              promoted={promoted}
+              horizontalView={mobile}
+            />
+          </span>
         )}
       </Fragment>
     );
@@ -603,7 +603,12 @@ const PaperEntryCard = (props) => {
       data-test={isDevEnv() ? `document-${id}` : undefined}
     >
       <ReactTooltip />
-      {desktopOnly(renderVoteWidget())}
+      <div className={css(styles.leftSection, styles.desktop)}>
+        {renderVoteWidget()}
+        <div className={css(styles.discussionCountContainer)}>
+          {renderDiscussionCount()}
+        </div>
+      </div>
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -615,7 +620,7 @@ const PaperEntryCard = (props) => {
           >
             <div className={css(styles.topRow)}>
               {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderPreregistrationTag())}
+              {mobileOnly(renderDiscussionCount())}
               {desktopOnly(renderMainTitle())}
             </div>
             {mobileOnly(renderMainTitle())}
@@ -648,8 +653,6 @@ const PaperEntryCard = (props) => {
 const styles = StyleSheet.create({
   papercard: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
     padding: 15,
     boxSizing: "border-box",
     backgroundColor: "#FFF",
@@ -682,6 +685,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
+    minHeight: 102,
   },
   paperTitle: {
     fontSize: 13,
@@ -762,7 +766,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
-      justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
@@ -809,15 +812,13 @@ const styles = StyleSheet.create({
       width: "unset",
     },
   },
-  voteWidget: {
-    marginRight: 15,
-  },
+  voteWidget: {},
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginTop: 10,
+    marginTop: "auto",
   },
   link: {
     textDecoration: "none",
@@ -838,6 +839,9 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
+  discussionIcon: {
+    color: "#ededed",
+  },
   metadata: {
     fontSize: 13,
     color: colors.BLACK(0.5),
@@ -856,16 +860,26 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     maxWidth: "100%",
   },
+  leftSection: {
+    width: 60,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  discussionCountContainer: {
+    marginTop: 8,
+    marginRight: 17,
+  },
   discussion: {
     cursor: "pointer",
-    minWidth: 100,
+    position: "relative",
     fontSize: 14,
-    ":hover #discIcon": {
-      color: colors.BLUE(1),
-    },
-    ":hover #discCount": {
-      color: colors.BLUE(1),
-    },
+    background: "#F6F6F8",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 13,
     "@media only screen and (max-width: 967px)": {
       minWidth: "unset",
     },
@@ -873,9 +887,10 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
-  dicussionCount: {
-    color: "#918f9b",
-    marginLeft: 7,
+  discussionCount: {
+    color: "rgb(71 82 93 / 80%)",
+    fontWeight: "bold",
+    marginLeft: 6,
   },
   tags: {
     display: "flex",
@@ -922,6 +937,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   metaDataPreview: {
     "@media only screen and (min-width: 768px)": {
