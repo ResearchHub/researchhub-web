@@ -19,7 +19,7 @@ import colors, { genericCardColors } from "~/config/themes/colors";
 import HubDropDown from "./HubDropDown";
 import HubTag from "./HubTag";
 import Link from "next/link";
-import icons from "~/config/themes/icons";
+import icons, { PaperDiscussionIcon } from "~/config/themes/icons";
 import PaperUserAvatars from "../Paper/PaperUserAvatars";
 import { useState, useEffect, useMemo, Fragment } from "react";
 import ReactTooltip from "react-tooltip";
@@ -288,7 +288,7 @@ const PaperEntryCard = (props) => {
         >
           <div className={css(styles.discussion)}>
             <div className={css(styles.discussionIcon)} id={"discIcon"}>
-              {icons.chat}
+              {PaperDiscussionIcon({})}
             </div>
             <div className={css(styles.discussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
@@ -844,7 +844,6 @@ const styles = StyleSheet.create({
   },
   discussionIcon: {
     color: "#ededed",
-    fontSize: "2.5em",
   },
   metadata: {
     fontSize: 13,
@@ -868,18 +867,23 @@ const styles = StyleSheet.create({
     width: 60,
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
     flexDirection: "column",
     // marginRight: 16,
   },
   discussionCountContainer: {
-    marginTop: "auto",
+    marginTop: 8,
     marginRight: 17,
   },
   discussion: {
     cursor: "pointer",
     position: "relative",
     fontSize: 14,
+    background: "#F6F6F8",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: "8px",
+    borderRadius: 13,
     "@media only screen and (max-width: 967px)": {
       minWidth: "unset",
     },
@@ -888,12 +892,13 @@ const styles = StyleSheet.create({
     },
   },
   discussionCount: {
-    position: "absolute",
-    left: "50%",
-    top: "45%",
-    transform: "translate(-50%, -50%)",
+    // position: "absolute",
+    // left: "50%",
+    // top: "45%",
+    // transform: "translate(-50%, -50%)",
     color: "rgb(71 82 93 / 80%)",
     fontWeight: "bold",
+    marginLeft: 6,
   },
   tags: {
     display: "flex",
