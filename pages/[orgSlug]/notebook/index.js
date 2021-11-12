@@ -26,10 +26,7 @@ const Index = ({ error }) => {
   return (
     <>
       <HeadComponent title={"ResearchHub Notebook"} />
-      <Notebook
-        wsAuth={true}
-        wsUrl={WS_ROUTES.NOTE(router.query.orgSlug)}
-      />
+      <Notebook wsAuth={true} wsUrl={WS_ROUTES.NOTE(router.query.orgSlug)} />
     </>
   );
 };
@@ -49,7 +46,7 @@ export async function getServerSideProps(ctx) {
   try {
     const response = await fetchOrgNotes({ orgSlug }, authToken);
     const parsed = await Helpers.parseJSON(response);
-
+    console.log("response", response);
     if (response.ok) {
       notes = parsed.results;
     } else {

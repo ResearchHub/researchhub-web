@@ -1,4 +1,4 @@
-import { acceptNoteInvite, fetchNoteByInviteToken } from "~/config/fetch";
+import { acceptNoteInvite, fetchNoteInviteByToken } from "~/config/fetch";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
@@ -7,33 +7,42 @@ import { StyleSheet, css } from "aphrodite";
 import Loader from "~/components/Loader/Loader";
 import { MessageActions } from "~/redux/message";
 import colors from "~/config/themes/colors";
-import OrgAvatar from "~/components/Org/OrgAvatar";
+import AuthorAvatar from "~/components/AuthorAvatar";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
+import { captureError } from "~/config/utils/error";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();
-  const [note, setNote] = useState(null);
+  const [invite, setInvite] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const _fetchNote = async () => {
+    const _fetchInvite = async () => {
       try {
-        const note = await fetchNoteByInviteToken({
+        const invite = await fetchNoteInviteByToken({
           token: router.query.token,
         });
-        setNote(note);
+        setInvite(invite);
         setIsLoading(false);
-      } catch (err) {
+      } catch (error) {
+        captureError({
+          error,
+          msg: "Failed to fetch invite",
+          data: {
+            token: router.query.token,
+          },
+        });
+
         setMessage(`Failed to fetch invite`);
         showMessage({ show: true, error: true });
+      } finally {
         setIsLoading(false);
-        console.error(`Could not fetch org by ${router.query.token}`);
       }
     };
 
-    if (auth.authChecked && !note) {
-      _fetchNote();
+    if (auth.authChecked && !invite) {
+      _fetchInvite();
     }
   }, [auth]);
 
@@ -43,30 +52,45 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
     try {
       setIsLoading(true);
       await acceptNoteInvite({ token: router.query.token });
+
+      setMessage("");
       showMessage({ show: true, error: false });
 
-      // router.push(`/${org.slug}/notebook`);
-    } catch (err) {
-      setIsLoading(false);
-
-      setMessage(`Invitation invalid or expired.`);
+      router.push(
+        `/${invite.note.organization.slug}/notebook/${invite.note.id}`
+      );
+    } catch (error) {
+      captureError({
+        error,
+        msg: "Failed to accept invite",
+        data: {
+          token: router.query.token,
+        },
+      });
+      setMessage(`Invitation invalid or expired`);
       showMessage({ show: true, error: true });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className={css(styles.container)}>
-      {/*org && (
+      {invite && (
         <div>
-          <div className={css(styles.OrgAvatarContainer)}>
-            <OrgAvatar org={org} size={110} fontSize={28} />
+          <div className={css(styles.avatarContainer)}>
+            <AuthorAvatar size={80} author={invite.inviter.author_profile} />
           </div>
           <div className={css(styles.inviteText)}>
-            You have been invited to join <strong>{org.name}</strong>.
+            {`${invite.inviter.author_profile.first_name} ${invite.inviter.author_profile.last_name} `}
+            invited you to collaborate on note{" "}
+            <strong>{invite.note.title}</strong> as{" "}
+            {invite.invite_type === "VIEWER" ? "a" : "an"}{" "}
+            <strong>{invite.invite_type}</strong>.
           </div>
         </div>
-      )*/}
-      {false ? (
+      )}
+      {isLoading ? (
         <Loader key={"loader"} loading={true} size={25} color={colors.BLUE()} />
       ) : (
         <div className={css(styles.buttonContainer)}>
@@ -92,7 +116,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
 };
 
 const styles = StyleSheet.create({
-  OrgAvatarContainer: {
+  avatarContainer: {
     display: "flex",
     justifyContent: "center",
     marginBottom: 20,

@@ -1,52 +1,94 @@
 import API from "~/config/api";
+import Loader from "../Loader/Loader";
+import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
+import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import { AUTH_TOKEN } from "~/config/constants";
-import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import {
   BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
   Context,
 } from "@thomasvu/ckeditor5-custom-build";
-import { Helpers } from "@quantfive/js-web-config";
+import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
+import { MessageActions } from "~/redux/message";
+import { PERMS } from "~/components/Notebook/config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
+import { captureError } from "~/config/utils/error";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
 import { useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
-import Loader from "../Loader/Loader";
-import NoteShareButton from "~/components/Notebook/NoteShareButton";
 
-const saveData = (editor, noteId) => {
-  const noteParams = {
-    title:
-      editor.plugins
-        .get("Title")
-        .getTitle()
-        .replace(/&nbsp;/g, " ") || "Untitled",
-  };
-  fetch(API.NOTE({ noteId }), API.PATCH_CONFIG(noteParams))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
+  if (editor.isReadOnly) {
+    return false;
+  }
 
-  const noteContentParams = {
-    full_src: editor.getData(),
-    plain_text: "",
-    note: noteId,
-  };
+  try {
+    const noteParams = {
+      title:
+        editor.plugins
+          .get("Title")
+          .getTitle()
+          .replace(/&nbsp;/g, " ") || "Untitled",
+    };
 
-  fetch(API.NOTE_CONTENT(), API.POST_CONFIG(noteContentParams))
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    let noteResponse;
+    let contentResponse;
+
+    noteResponse = await fetch(
+      API.NOTE({ noteId }),
+      API.PATCH_CONFIG(noteParams)
+    );
+
+    if (noteResponse.ok) {
+      const contentParams = {
+        full_src: editor.getData(),
+        plain_text: "",
+        note: noteId,
+      };
+
+      contentResponse = await fetch(
+        API.NOTE_CONTENT(),
+        API.POST_CONFIG(contentParams)
+      );
+      if (contentResponse.ok) {
+        return onSaveSuccess && onSaveSuccess(contentResponse);
+      }
+    }
+
+    return onSaveFail && onSaveFail(contentResponse || noteResponse);
+  } catch (error) {
+    captureError({
+      error,
+      msg: "Failed to save content",
+      data: { noteId },
+    });
+  }
 };
 
 const ELNEditor = ({
   ELNLoading,
   currentNote,
+  currentOrganization,
   handleEditorInput,
-  orgSlug,
+  notePerms,
+  onNoteDelete,
+  onNotePermChange,
+  redirectToNote,
+  refetchNotePerms,
   setELNLoading,
+  setMessage,
+  showMessage,
+  user,
+  userOrgs,
 }) => {
   const router = useRouter();
+  const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
+  const _isOrgMember = isOrgMember({ user, org: currentOrganization });
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -54,18 +96,53 @@ const ELNEditor = ({
     }
   }, []);
 
+  const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
   const noteIdLength = `${currentNote.id}`.length;
-
   const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
+
+  const onSaveFail = (response) => {
+    if (response.status === 403) {
+      setMessage("You do not have permission to edit this document");
+      showMessage({ show: true, error: true });
+    } else {
+      captureError({
+        msg: "Could not save content",
+        data: { currentNote },
+      });
+    }
+  };
 
   return (
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
-        <div
-          className={css(styles.presenceList) + " presence"}
-          ref={onRefChange}
-        />
-        {/*<NoteShareButton noteId={currentNote.id} org={currentOrganization} />*/}
+        <div className={css(styles.noteHeaderOpts)}>
+          <div
+            className={css(styles.presenceList) + " presence"}
+            ref={onRefChange}
+          />
+          <NoteShareButton
+            noteId={currentNote.id}
+            notePerms={notePerms}
+            org={currentOrganization}
+            userOrgs={userOrgs}
+            refetchNotePerms={refetchNotePerms}
+            onNotePermChange={onNotePermChange}
+          />
+          {_isOrgMember && (
+            <div className={css(styles.optionsMenuWrapper)}>
+              <NoteOptionsMenuButton
+                note={currentNote}
+                title={currentNote.title}
+                currentOrg={currentOrganization}
+                redirectToNote={redirectToNote}
+                onNoteDelete={onNoteDelete}
+                onNotePermChange={onNotePermChange}
+                show={true}
+                size={24}
+              />
+            </div>
+          )}
+        </div>
       </div>
       {presenceListElement !== null && (
         <CKEditorContext
@@ -156,15 +233,22 @@ const ELNEditor = ({
                 },
                 autosave: {
                   save(editor) {
-                    return saveData(editor, currentNote.id);
+                    return saveData({
+                      editor,
+                      noteId: currentNote.id,
+                      onSaveFail,
+                    });
                   },
                 },
               }}
               editor={CKELNEditor}
               onChange={(event, editor) => handleEditorInput(editor)}
               onReady={(editor) => {
+                if (currentUserAccess === PERMS.NOTE.VIEWER) {
+                  editor.isReadOnly = true;
+                }
+
                 setELNLoading(false);
-                console.log("Editor is ready to use!", editor);
               }}
             />
           </div>
@@ -193,13 +277,23 @@ const styles = StyleSheet.create({
       height: "calc(100vh - 66px)",
     },
   },
+  optionsMenuWrapper: {
+    marginLeft: 17,
+  },
   noteHeader: {
     display: "flex",
-    height: 50,
+    userSelect: "none",
+    margin: "auto 30px 0px auto",
+    flexDirection: "column",
+    alignItems: "flex-end",
+    paddingTop: 10,
   },
-  presenceList: {
-    margin: "auto 60px 0px auto",
+  noteHeaderOpts: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
   },
+  presenceList: {},
   loader: {
     position: "absolute",
     top: 0,
@@ -212,4 +306,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ELNEditor;
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(null, mapDispatchToProps)(ELNEditor);

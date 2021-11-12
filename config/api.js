@@ -223,6 +223,9 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    NOTE_PRIVATE: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/make_private/`;
+    },
     NOTE_DELETE: ({ noteId }) => {
       return `${BASE_URL}note/${noteId}/delete/`;
     },
@@ -242,7 +245,7 @@ const routes = (BASE_URL) => {
       } else if (method === "PATCH") {
         return `${BASE_URL}note/${noteId}/update_permissions/`;
       } else if (method === "DELETE") {
-        return `${BASE_URL}note/${noteId}/remove_user_permission/`;
+        return `${BASE_URL}note/${noteId}/remove_permission/`;
       }
     },
     NOTE_INVITE_USER: ({ noteId }) => {

@@ -3,25 +3,19 @@ import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import colors from "~/config/themes/colors";
 
 const OrgEntryPlaceholder = ({ color, rows = 1 }) => {
-  const html = [];
-
-  for (let i = 0; i < rows; i++) {
-    html.push(
-      <div
-        key={`org-entry-placholder-${i}`}
-        className={css(styles.placeholderContainer) + " show-loading-animation"}
-      >
-        <RoundShape className={css(styles.round)} color={color} />
-        <RectShape
-          className={css(styles.textRow)}
-          color={color}
-          style={{ width: "100%", height: 17 }}
-        />
-      </div>
-    );
-  }
-
-  return html;
+  return Array.from({ length: rows }).map((k, i) => (
+    <div
+      key={`org-entry-placholder-${i}`}
+      className={css(styles.placeholderContainer) + " show-loading-animation"}
+    >
+      <RoundShape className={css(styles.round)} color={color} />
+      <RectShape
+        className={css(styles.textRow)}
+        color={color}
+        style={{ width: "100%", height: 17 }}
+      />
+    </div>
+  ));
 };
 
 const styles = StyleSheet.create({
