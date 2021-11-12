@@ -867,7 +867,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     flexDirection: "column",
-    // marginRight: 16,
   },
   discussionCountContainer: {
     marginTop: 8,
@@ -881,11 +880,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    padding: "8px 12px",
+    padding: 8,
     borderRadius: 13,
-    "@media only screen and (min-width: 768px)": {
-      flexDirection: "column",
-    },
     "@media only screen and (max-width: 967px)": {
       minWidth: "unset",
     },
@@ -900,12 +896,7 @@ const styles = StyleSheet.create({
     // transform: "translate(-50%, -50%)",
     color: "rgb(71 82 93 / 80%)",
     fontWeight: "bold",
-    marginTop: 6,
-
-    "@media only screen and (max-width: 767px)": {
-      marginLeft: 6,
-      marginTop: 0,
-    },
+    marginLeft: 6,
   },
   tags: {
     display: "flex",
