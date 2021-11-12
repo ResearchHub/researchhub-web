@@ -287,12 +287,12 @@ const PaperEntryCard = (props) => {
           }}
         >
           <div className={css(styles.discussion)}>
-            <span className={css(styles.discussionIcon)} id={"discIcon"}>
+            <div className={css(styles.discussionIcon)} id={"discIcon"}>
               {icons.chat}
-            </span>
-            <span className={css(styles.discussionCount)} id={"discCount"}>
+            </div>
+            <div className={css(styles.discussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
-            </span>
+            </div>
           </div>
         </a>
       </Link>
