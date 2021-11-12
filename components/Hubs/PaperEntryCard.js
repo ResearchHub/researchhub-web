@@ -653,8 +653,6 @@ const PaperEntryCard = (props) => {
 const styles = StyleSheet.create({
   papercard: {
     display: "flex",
-    // justifyContent: "flex-start",
-    // alignItems: "flex-start",
     padding: 15,
     boxSizing: "border-box",
     backgroundColor: "#FFF",
@@ -890,10 +888,6 @@ const styles = StyleSheet.create({
     },
   },
   discussionCount: {
-    // position: "absolute",
-    // left: "50%",
-    // top: "45%",
-    // transform: "translate(-50%, -50%)",
     color: "rgb(71 82 93 / 80%)",
     fontWeight: "bold",
     marginLeft: 6,
