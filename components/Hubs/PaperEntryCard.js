@@ -267,12 +267,14 @@ const PaperEntryCard = (props) => {
   }
 
   function formatDiscussionCount() {
-    return `${discussion_count} ${
-      discussion_count === 1 ? "Comment" : "Comments"
-    }`;
+    return `${discussion_count}`;
   }
 
   const renderDiscussionCount = () => {
+    if (!discussionCount) {
+      return null;
+    }
+
     return (
       <Link
         href={"/paper/[paperId]/[paperName]"}
@@ -285,7 +287,7 @@ const PaperEntryCard = (props) => {
           }}
         >
           <div className={css(styles.discussion)}>
-            <span className={css(styles.icon)} id={"discIcon"}>
+            <span className={css(styles.discussionIcon)} id={"discIcon"}>
               {icons.chat}
             </span>
             <span className={css(styles.dicussionCount)} id={"discCount"}>
@@ -547,26 +549,24 @@ const PaperEntryCard = (props) => {
     return (
       <Fragment>
         {!promotionSummary && (
-          <div className={css(styles.column)}>
-            <span
-              className={css(styles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score + boost_amount}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                searchResult={searchResult}
-                isPaper={true}
-                styles={styles.voteWidget}
-                type={"Paper"}
-                paper={promoted ? paper : null}
-                promoted={promoted}
-                horizontalView={mobile}
-              />
-            </span>
-          </div>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score + boost_amount}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+              type={"Paper"}
+              paper={promoted ? paper : null}
+              promoted={promoted}
+              horizontalView={mobile}
+            />
+          </span>
         )}
       </Fragment>
     );
@@ -603,7 +603,12 @@ const PaperEntryCard = (props) => {
       data-test={isDevEnv() ? `document-${id}` : undefined}
     >
       <ReactTooltip />
-      {desktopOnly(renderVoteWidget())}
+      <div className={css(styles.leftSection, styles.desktop)}>
+        {renderVoteWidget()}
+        <div className={css(styles.discussionCountContainer)}>
+          {renderDiscussionCount()}
+        </div>
+      </div>
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -648,8 +653,8 @@ const PaperEntryCard = (props) => {
 const styles = StyleSheet.create({
   papercard: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
+    // justifyContent: "flex-start",
+    // alignItems: "flex-start",
     padding: 15,
     boxSizing: "border-box",
     backgroundColor: "#FFF",
@@ -682,6 +687,7 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
+    minHeight: 102,
   },
   paperTitle: {
     fontSize: 13,
@@ -809,15 +815,13 @@ const styles = StyleSheet.create({
       width: "unset",
     },
   },
-  voteWidget: {
-    marginRight: 15,
-  },
+  voteWidget: {},
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginTop: 10,
+    marginTop: "auto",
   },
   link: {
     textDecoration: "none",
@@ -838,6 +842,10 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
+  discussionIcon: {
+    color: colors.PURPLE(1),
+    fontSize: "2.5em",
+  },
   metadata: {
     fontSize: 13,
     color: colors.BLACK(0.5),
@@ -856,16 +864,22 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     maxWidth: "100%",
   },
+  leftSection: {
+    width: 60,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    // marginRight: 16,
+  },
+  discussionCountContainer: {
+    marginTop: "auto",
+    marginRight: 17,
+  },
   discussion: {
     cursor: "pointer",
-    minWidth: 100,
+    position: "relative",
     fontSize: 14,
-    ":hover #discIcon": {
-      color: colors.BLUE(1),
-    },
-    ":hover #discCount": {
-      color: colors.BLUE(1),
-    },
     "@media only screen and (max-width: 967px)": {
       minWidth: "unset",
     },
@@ -874,8 +888,12 @@ const styles = StyleSheet.create({
     },
   },
   dicussionCount: {
-    color: "#918f9b",
-    marginLeft: 7,
+    position: "absolute",
+    left: "50%",
+    top: "45%",
+    transform: "translate(-50%, -50%)",
+    color: "#fff",
+    fontWeight: "bold",
   },
   tags: {
     display: "flex",
@@ -922,6 +940,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
   metaDataPreview: {
     "@media only screen and (min-width: 768px)": {
