@@ -5,10 +5,7 @@ import Modal from "react-modal";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
-import { Helpers } from "@quantfive/js-web-config";
-import { StyleSheet, css } from "aphrodite";
-import { breakpoints } from "~/config/themes/screen";
-import { createNewNote, createNoteContent } from "~/config/fetch";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import {
   ReactElement,
   SyntheticEvent,
@@ -16,6 +13,9 @@ import {
   useRef,
   useState,
 } from "react";
+import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { createNewNote, createNoteContent } from "~/config/fetch";
 
 export type NoteTemplateModalProps = {
   isOpen: boolean;
@@ -23,6 +23,7 @@ export type NoteTemplateModalProps = {
   redirectToNote: any;
   refetchTemplates: any;
   setIsOpen: (flag: boolean) => void;
+  templates: any;
 };
 
 export default function NoteTemplateModal({
@@ -31,15 +32,18 @@ export default function NoteTemplateModal({
   redirectToNote,
   refetchTemplates,
   setIsOpen,
+  templates,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const editorRef = useRef<any>();
   const { CKEditor, Editor } = editorRef.current || {};
-  const [fetched, setFetched] = useState(false);
   const [hideTemplates, setHideTemplates] = useState(false);
-  const [selected, setSelected] = useState(0);
-  const [templates, setTemplates] = useState([]);
-  const [templateContents, setTemplateContents] = useState({});
+  const [selected, setSelected] = useState((templates || [])[0]?.id);
   const [editorInstance, setEditorInstance] = useState(null);
+
+  const templateMap = {};
+  for (const template of templates) {
+    templateMap[template.id.toString()] = template;
+  }
 
   useEffect(() => {
     editorRef.current = {
@@ -49,25 +53,16 @@ export default function NoteTemplateModal({
   }, []);
 
   useEffect(() => {
-    fetch(API.NOTE_TEMPLATE({ orgSlug }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((templates) => {
-        const fetchedTemplates = {};
-        for (const template of templates) {
-          fetchedTemplates[template.id.toString()] = template;
-        }
-        setTemplateContents(fetchedTemplates);
-        setTemplates(templates);
-        if (templates.length) {
-          setSelected(templates[0].id);
-        }
-        setFetched(true);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, [refetchTemplates, orgSlug]);
+    if (templates && !selected) {
+      setSelected(templates[0]?.id)
+    }
+  }, [templates]);
+
+  useEffect(() => {
+    if (isOpen) {
+      refetchTemplates();
+    }
+  }, [isOpen]);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
@@ -78,13 +73,14 @@ export default function NoteTemplateModal({
     e && e.preventDefault();
 
     const noteParams = {
+      grouping: NOTE_GROUPS.WORKSPACE,
       orgSlug,
       title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
     };
 
     const note = await createNewNote(noteParams);
     const noteContent = await createNoteContent({
-      editorData: templateContents[selected].src,
+      editorData: templateMap[selected].src,
       noteId: note.id,
     });
     redirectToNote(note);
@@ -102,39 +98,37 @@ export default function NoteTemplateModal({
     >
       <div className={css(styles.rootContainer)}>
         <div className={css(styles.editorContainer) + " eln"}>
-          {fetched && (
-            <CKEditor
-              config={{
-                simpleUpload: {
-                  // The URL that the images are uploaded to.
-                  uploadUrl: API.SAVE_IMAGE,
+          <CKEditor
+            config={{
+              simpleUpload: {
+                // The URL that the images are uploaded to.
+                uploadUrl: API.SAVE_IMAGE,
 
-                  // Headers sent along with the XMLHttpRequest to the upload server.
-                  headers: {
-                    Authorization:
-                      "Token " +
-                      (typeof window !== "undefined"
-                        ? window.localStorage[AUTH_TOKEN]
-                        : ""),
-                  },
+                // Headers sent along with the XMLHttpRequest to the upload server.
+                headers: {
+                  Authorization:
+                    "Token " +
+                    (typeof window !== "undefined"
+                      ? window.localStorage[AUTH_TOKEN]
+                      : ""),
                 },
-              }}
-              data={templateContents[selected]?.src ?? ""}
-              editor={Editor}
-              onChange={(event, editor) => handleInput(editor)}
-              onReady={(editor) => {
-                setEditorInstance(editor);
-                editor.isReadOnly = true;
-                editor.editing.view.change((writer) => {
-                  writer.setStyle(
-                    "min-height",
-                    "200px",
-                    editor.editing.view.document.getRoot()
-                  );
-                });
-              }}
-            />
-          )}
+              },
+            }}
+            data={templateMap[selected]?.src ?? ""}
+            editor={Editor}
+            onChange={(event, editor) => handleInput(editor)}
+            onReady={(editor) => {
+              setEditorInstance(editor);
+              editor.isReadOnly = true;
+              editor.editing.view.change((writer) => {
+                writer.setStyle(
+                  "min-height",
+                  "200px",
+                  editor.editing.view.document.getRoot()
+                );
+              });
+            }}
+          />
         </div>
         <div className={css(styles.sidebar)}>
           <div className={css(styles.buttonContainer)}>

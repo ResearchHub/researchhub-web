@@ -15,7 +15,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { getOrgUserCount } from "~/config/utils/org";
+import { getOrgUserCount } from "./utils/orgHelper";
 import Loader from "~/components/Loader/Loader";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { captureError } from "~/config/utils/error";
@@ -268,12 +268,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
           />
           {isInviteInProgress ? (
             <div className={css(styles.loaderWrapper)}>
-              <Loader
-                key={"loader"}
-                loading={true}
-                size={25}
-                color={colors.BLUE()}
-              />
+              <Loader key={"loader"} loading={true} size={25} color={"white"} />
             </div>
           ) : (
             <Button
@@ -305,15 +300,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   loaderWrapper: {
-    width: 80,
+    width: 100,
     height: 40,
+    paddingTop: 11,
+    backgroundColor: colors.BLUE(1),
   },
   userList: {
-    // border: `1px solid ${colors.BLACK(0.1)}`,
-    // maxHeight: 140,
-    // padding: 20,
-    height: 155,
     paddingTop: 8,
+    paddingBottom: 20,
     borderRadius: "2px",
     overflowY: "scroll",
   },
@@ -356,7 +350,7 @@ const styles = StyleSheet.create({
     },
   },
   permJustText: {
-    marginRight: 27,
+    marginRight: 23,
     color: colors.BLACK(0.8),
   },
   downIcon: {

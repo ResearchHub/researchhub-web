@@ -20,9 +20,10 @@ export default function ResearchHubPopover({
   padding,
   popoverContent,
   positions,
-  setIsPopoverOpen,
   targetContent,
   withArrow,
+  className,
+  onClickOutside,
   containerStyle
 }: Props): ReactElement<typeof Fragment | typeof Popover> {
   if (isNullOrUndefined(typeof window)) {
@@ -48,7 +49,8 @@ export default function ResearchHubPopover({
         ) : popoverContent
       )}
       isOpen={isOpen}
-      onClickOutside={(): void => setIsPopoverOpen(false)}
+      containerClassName={className}
+      onClickOutside={onClickOutside}
       padding={padding}
       positions={positions} // preferred positions by priority
     >

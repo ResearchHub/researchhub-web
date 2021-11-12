@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     minWidth: 500,
     maxWidth: 800,
     minHeight: 100,
+    maxHeight: "70vh",
     marginTop: 40,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       minWidth: "unset",

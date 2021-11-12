@@ -69,7 +69,7 @@ export default function ClaimAuthorPopoverLabel({
             </div>
           }
           positions={["top"]}
-          setIsPopoverOpen={setIsPopoverOpen}
+          onClickOutside={() => setIsPopoverOpen(false)}
           targetContent={
             <div
               className={css(styles.popoverTarget)}
