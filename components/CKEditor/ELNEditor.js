@@ -74,7 +74,6 @@ const ELNEditor = ({
   currentOrganization,
   handleEditorInput,
   notePerms,
-  onNoteDelete,
   onNotePermChange,
   redirectToNote,
   refetchNotePerms,
@@ -135,7 +134,6 @@ const ELNEditor = ({
                 title={currentNote.title}
                 currentOrg={currentOrganization}
                 redirectToNote={redirectToNote}
-                onNoteDelete={onNoteDelete}
                 onNotePermChange={onNotePermChange}
                 show={true}
                 size={24}

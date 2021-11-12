@@ -243,11 +243,25 @@ const Notebook = ({ auth, user, wsResponse }) => {
       const response = JSON.parse(wsResponse);
       const note = response.data;
 
-      setNotes([note, ...notes]);
-      setTitles({
-        [note.id]: note.title,
-        ...titles,
-      });
+      if (response.type === "create") {
+        setNotes([note, ...notes]);
+        setTitles({
+          [note.id]: note.title,
+          ...titles,
+        });
+      } else if (response.type === "delete") {
+        const deletedNoteId = note.id;
+        const newNotes = notes.filter((note) => note.id !== deletedNoteId);
+        setNotes(newNotes);
+        if (String(deletedNoteId) === noteId) {
+          router.push(
+            getNotePathname({
+              noteId: newNotes[0]?.id,
+              org: currentOrganization,
+            })
+          );
+        }
+      }
     }
   }, [wsResponse]);
 
@@ -288,16 +302,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
     } else if (changeType === "CREATE") {
       userOrganizations.push(updatedOrg);
       setOrganizations(userOrganizations);
-    }
-  };
-
-  const onNoteDelete = (deletedNote) => {
-    const newNotes = notes.filter((note) => note.id !== deletedNote.id);
-    setNotes(newNotes);
-    if (String(deletedNote.id) === noteId) {
-      router.push(
-        getNotePathname({ noteId: newNotes[0]?.id, org: currentOrganization })
-      );
     }
   };
 
@@ -344,7 +348,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
         didInitialNotesLoad={didInitialNotesLoad}
         fetchAndSetOrg={fetchAndSetOrg}
         notes={notes}
-        onNoteDelete={onNoteDelete}
         onNotePermChange={onNotePermChange}
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
@@ -362,7 +365,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
           currentOrganization={currentOrganization}
           handleEditorInput={handleEditorInput}
           notePerms={currentNotePerms?.list || []}
-          onNoteDelete={onNoteDelete}
           onNotePermChange={onNotePermChange}
           redirectToNote={redirectToNote}
           refetchNotePerms={fetchAndSetCurrentNotePermissions}

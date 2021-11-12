@@ -10,7 +10,6 @@ const NotebookSidebarEntry = ({
   currentNoteId,
   currentOrg,
   note,
-  onNoteDelete,
   onNotePermChange,
   redirectToNote,
   showOptions,
@@ -34,7 +33,6 @@ const NotebookSidebarEntry = ({
               currentOrg={currentOrg}
               key={note.id}
               note={note}
-              onNoteDelete={onNoteDelete}
               onNotePermChange={onNotePermChange}
               redirectToNote={redirectToNote}
               show={isHovered}
