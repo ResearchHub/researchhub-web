@@ -261,7 +261,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
             })
           );
         }
-      } else if (response.type === "update") {
+      } else if (response.type === "update_title") {
         if (note.id !== currentNote?.id) {
           const updatedTitles = {};
           for (const noteId in titles) {
@@ -270,6 +270,9 @@ const Notebook = ({ auth, user, wsResponse }) => {
           }
           setTitles(updatedTitles);
         }
+      } else if (response.type === "update_permission") {
+        fetchAndSetCurrentOrgNotes();
+        fetchAndSetCurrentNote();
       }
     }
   }, [wsResponse]);
@@ -322,11 +325,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
     router.push(path);
   };
 
-  const onNotePermChange = ({ changeType }) => {
-    fetchAndSetCurrentOrgNotes();
-    fetchAndSetCurrentNote();
-  };
-
   const getCurrentOrgFromRouter = (orgs) => {
     return orgs.find((org) => org.slug === orgSlug);
   };
@@ -357,7 +355,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
         didInitialNotesLoad={didInitialNotesLoad}
         fetchAndSetOrg={fetchAndSetOrg}
         notes={notes}
-        onNotePermChange={onNotePermChange}
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
         orgs={organizations}
@@ -374,7 +371,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
           currentOrganization={currentOrganization}
           handleEditorInput={handleEditorInput}
           notePerms={currentNotePerms?.list || []}
-          onNotePermChange={onNotePermChange}
           redirectToNote={redirectToNote}
           refetchNotePerms={fetchAndSetCurrentNotePermissions}
           refetchTemplates={fetchAndSetOrgTemplates}
