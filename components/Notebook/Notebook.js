@@ -244,11 +244,13 @@ const Notebook = ({ auth, user, wsResponse }) => {
       const note = response.data;
 
       if (response.type === "create") {
-        setNotes([note, ...notes]);
-        setTitles({
-          [note.id]: note.title,
-          ...titles,
-        });
+        if (note.created_by === user.id || note.access !== "PRIVATE") {
+          setNotes([note, ...notes]);
+          setTitles({
+            [note.id]: note.title,
+            ...titles,
+          });
+        }
       } else if (response.type === "delete") {
         const deletedNoteId = note.id;
         const newNotes = notes.filter((note) => note.id !== deletedNoteId);
