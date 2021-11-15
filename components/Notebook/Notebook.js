@@ -244,7 +244,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
       const note = response.data;
 
       if (response.type === "create") {
-        if (note.created_by === user.id || note.access !== "PRIVATE") {
+        if (note.created_by === user.id || note.access === "WORKSPACE") {
           setNotes([note, ...notes]);
           setTitles({
             [note.id]: note.title,
