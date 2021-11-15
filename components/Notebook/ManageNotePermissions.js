@@ -36,7 +36,6 @@ const ManageNotePermissions = ({
   showMessage,
   notePerms,
   refetchNotePerms,
-  onNotePermChange,
 }) => {
   const permDropdownOptsForUser = [
     {
@@ -143,7 +142,6 @@ const ManageNotePermissions = ({
       });
 
       refetchNotePerms();
-      onNotePermChange({ changeType: "REMOVE_PERM" });
     } catch (error) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
@@ -196,7 +194,6 @@ const ManageNotePermissions = ({
         });
 
         refetchNotePerms();
-        onNotePermChange({ changeType: "REMOVE_PERM" });
       }
     } catch (error) {
       setMessage("Failed to change permission");
@@ -217,7 +214,6 @@ const ManageNotePermissions = ({
       });
 
       refetchNotePerms();
-      onNotePermChange({ changeType: "REMOVE_PERM" });
     } catch (error) {
       setMessage("Failed to change permission");
       showMessage({ show: true, error: true });
@@ -245,7 +241,6 @@ const ManageNotePermissions = ({
         });
       }
 
-      onNotePermChange({});
       refetchNotePerms();
     } catch (error) {
       setMessage("Failed to update permission");

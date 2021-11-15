@@ -74,7 +74,6 @@ const ELNEditor = ({
   currentOrganization,
   handleEditorInput,
   notePerms,
-  onNotePermChange,
   redirectToNote,
   refetchNotePerms,
   setELNLoading,
@@ -125,7 +124,6 @@ const ELNEditor = ({
             org={currentOrganization}
             userOrgs={userOrgs}
             refetchNotePerms={refetchNotePerms}
-            onNotePermChange={onNotePermChange}
           />
           {_isOrgMember && (
             <div className={css(styles.optionsMenuWrapper)}>
@@ -134,7 +132,6 @@ const ELNEditor = ({
                 title={currentNote.title}
                 currentOrg={currentOrganization}
                 redirectToNote={redirectToNote}
-                onNotePermChange={onNotePermChange}
                 show={true}
                 size={24}
               />

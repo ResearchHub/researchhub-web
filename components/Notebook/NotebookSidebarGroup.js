@@ -17,7 +17,6 @@ const NotebookSidebarGroup = ({
   currentOrg,
   groupKey,
   notes,
-  onNotePermChange,
   redirectToNote,
   setMessage,
   showMessage,
@@ -103,7 +102,6 @@ const NotebookSidebarGroup = ({
               groupKey={groupKey}
               key={note.id}
               note={note}
-              onNotePermChange={onNotePermChange}
               redirectToNote={redirectToNote}
               showOptions={_isOrgMember}
               title={titles[note.id]}

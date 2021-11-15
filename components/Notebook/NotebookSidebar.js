@@ -28,7 +28,6 @@ const NotebookSidebar = ({
   didInitialNotesLoad,
   fetchAndSetOrg,
   notes,
-  onNotePermChange,
   onOrgChange,
   orgSlug,
   orgs,
@@ -88,7 +87,6 @@ const NotebookSidebar = ({
         groupKey={groupKey}
         key={groupKey}
         notes={groupedNotes[groupKey] || []}
-        onNotePermChange={onNotePermChange}
         orgs={orgs}
         redirectToNote={redirectToNote}
         titles={titles}

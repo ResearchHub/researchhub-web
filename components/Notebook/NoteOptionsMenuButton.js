@@ -23,7 +23,6 @@ import { useState } from "react";
 const NoteOptionsMenuButton = ({
   currentOrg,
   note,
-  onNotePermChange,
   redirectToNote,
   setMessage,
   show,
@@ -45,8 +44,6 @@ const NoteOptionsMenuButton = ({
 
         try {
           await makeNotePrivate({ noteId: noteId });
-
-          onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
           setMessage("Failed to make private");
           showMessage({ show: true, error: true });
@@ -72,8 +69,6 @@ const NoteOptionsMenuButton = ({
             noteId: noteId,
             accessType: "ADMIN",
           });
-
-          onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
           setMessage("Failed to update permission");
           showMessage({ show: true, error: true });
