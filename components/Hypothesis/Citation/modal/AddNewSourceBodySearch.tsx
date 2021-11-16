@@ -27,8 +27,8 @@ const docTypeOptions = [
   { label: SearchFilterDocTypeLabel[PAPER_KEY], value: PAPER_KEY },
 ];
 const citationTypeOptions = [
-  { label: "Reject", value: "REJECT" },
-  { label: "Support", value: "SUPPORT" },
+  { label: "Rejects", value: "REJECT" },
+  { label: "Supports", value: "SUPPORT" },
 ];
 
 export type ValidCitationType = null | "REJECT" | "SUPPORT";
@@ -81,9 +81,11 @@ export default function AddNewSourceBodySearch({
       <FormSelect
         id="citation-type"
         inputStyle={formGenericStyles.inputMax}
-        label="Support or Reject hypothesis"
+        label="Supports or Rejects hypothesis"
         labelStyle={formGenericStyles.labelStyle}
-        onChange={setSelectedCitationType}
+        onChange={(_inputID, inputVal): void =>
+          setSelectedCitationType(inputVal.value)
+        }
         options={citationTypeOptions}
         placeholder="Select search type"
         required

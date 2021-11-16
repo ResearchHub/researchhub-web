@@ -1,6 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { ID } from "~/config/types/root_types";
 import { postCitationThread } from "../api/postCitationThread";
 import { ReactElement } from "react";
@@ -8,7 +9,6 @@ import colors from "~/config/themes/colors";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "~/components//DiscussionPostMetadata.js";
 import TextEditor from "~/components/TextEditor";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 type Props = {
   auth?: any; // redux

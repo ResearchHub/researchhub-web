@@ -38,6 +38,9 @@ import {
   removeHypothesis,
   restoreHypothesis,
 } from "./api/postHypothesisStatus";
+import ColumnAuthors from "../Paper/SideColumn/ColumnAuthors";
+import ColumnHubs from "../Paper/SideColumn/ColumnHubs";
+import AuthorFacePile from "../shared/AuthorFacePile";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -131,8 +134,15 @@ const getActionButtons = ({
   );
 };
 
-const getMetaData = (hypothesis: any): ReactElement<"div"> => {
-  const created_date = hypothesis.created_date;
+const getMetaData = ({
+  authors,
+  hypothesis,
+}: {
+  authors: any[];
+  hypothesis: any;
+}): ReactElement<"div"> => {
+  const { created_date } = hypothesis;
+  const { first_name = "", last_name = "" } = authors[0];
   const metadata = [
     {
       label: "Published",
@@ -142,6 +152,15 @@ const getMetaData = (hypothesis: any): ReactElement<"div"> => {
           property="datePublished"
         >
           {formatPublishedDate(dayjs(created_date), true)}
+        </span>
+      ),
+      active: created_date,
+    },
+    {
+      label: "Author",
+      value: (
+        <span className={css(styles.metadata) + " clamp2"} property="author">
+          {first_name + " " + last_name}
         </span>
       ),
       active: created_date,
@@ -214,6 +233,8 @@ const getVoteWidgetProps = ({
 };
 
 function HypothesisPageCard({
+  authors,
+  hubs,
   hypothesis,
   onUpdates,
   user: currentUser,
@@ -221,6 +242,7 @@ function HypothesisPageCard({
   const {
     created_by: createdBy,
     full_markdown: fullMarkdown,
+    id: hypothesisID,
     title = "",
     vote_meta: voteMeta,
   } = hypothesis || {};
@@ -249,7 +271,7 @@ function HypothesisPageCard({
     onUpdates,
     setShowHypothesisEditor,
   });
-  const formattedMetaData = getMetaData(hypothesis);
+  const formattedMetaData = getMetaData({ authors, hypothesis });
   const voteWidgetProps = getVoteWidgetProps({
     hypothesis,
     localVoteMeta,
@@ -321,27 +343,32 @@ function HypothesisPageCard({
       <div className={css(styles.voting)}>
         <VoteWidget {...voteWidgetProps} />
       </div>
+      <div className={css(styles.mobile)}>
+        <div className={css(styles.votingMobile)}>
+          <VoteWidget {...voteWidgetProps} horizontalView />
+        </div>
+      </div>
       <div className={css(styles.column)}>
-        <div className={css(styles.reverseRow)}>
-          <div className={css(styles.cardContainer)}>
-            <div className={css(styles.metaContainer)}>
-              <div className={css(styles.titleHeader)}>
-                <div className={css(styles.row)}>
-                  <h1 className={css(styles.title)} property={"headline"}>
-                    {title}
-                  </h1>
-                </div>
+        <div className={css(styles.cardContainer)}>
+          <div className={css(styles.metaContainer)}>
+            <div className={css(styles.titleHeader)}>
+              <div className={css(styles.row)}>
+                <h1 className={css(styles.title)} property={"headline"}>
+                  {title}
+                </h1>
               </div>
-              <div className={css(styles.column)}>{formattedMetaData}</div>
-              <div className="ck-content">{hypoContent}</div>
             </div>
-          </div>
-          <div className={css(styles.rightColumn, styles.mobile)}>
-            <div className={css(styles.votingMobile)}>
-              <VoteWidget {...voteWidgetProps} horizontalView />
-            </div>
+            <div className={css(styles.column)}>{formattedMetaData}</div>
+            <div className="ck-content">{hypoContent}</div>
           </div>
         </div>
+      </div>
+      <div className={css(styles.rightColumn)}>
+        <ColumnHubs
+          paper={hypothesis}
+          hubs={(hubs ?? []).slice(0, 3)}
+          paperId={hypothesisID}
+        />
       </div>
     </div>
   );
@@ -372,6 +399,7 @@ const styles = StyleSheet.create({
       borderTop: "none",
       padding: 20,
       width: "100%",
+      flexDirection: "column",
     },
   },
   voting: {
@@ -449,6 +477,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 14,
     },
+    marginRight: 16,
   },
   row: {
     display: "flex",
@@ -478,13 +507,12 @@ const styles = StyleSheet.create({
     },
   },
   rightColumn: {
+    alignItems: "flex-start",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-end",
-    marginLeft: 20,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%",
+      display: "none",
     },
   },
   reverseRow: {

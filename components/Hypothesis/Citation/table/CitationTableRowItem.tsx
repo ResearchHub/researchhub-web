@@ -4,15 +4,17 @@ import {
   formatUnifiedDocPageUrl,
   UNIFIED_DOC_PAGE_URL_PATTERN,
 } from "~/config/utils/url_patterns";
-import { tableWidths } from "./constants/tableWidths";
+import { breakpoints } from "~/config/themes/screen";
+import { ConsensusMeta } from "./CitationConsensusItem";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
+import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
+import CitationVoteItem from "./CitationVoteItem";
 import colors from "~/config/themes/colors";
+import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
-import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
-import CitationVoteItem from "./CitationVoteItem";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
@@ -25,19 +27,26 @@ export type CitationTableRowItemProps = {
     documentID: ID;
     slug?: string | null;
   };
-  type: string;
+  type: ValidCitationType;
   publish_date: string;
   updateLastFetchTime: Function;
 };
 
 type ItemColumnProps = {
   bold?: boolean;
+  className?: Object | Object[];
+  maxWidth?: string;
   value: ReactNode;
   width: string;
-  className?: Object | Object[];
 };
 
-function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
+function ItemColumn({
+  bold,
+  className,
+  maxWidth,
+  value,
+  width,
+}: ItemColumnProps) {
   return (
     <div
       className={css(
@@ -45,7 +54,7 @@ function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
         Boolean(bold) && styles.bold,
         className
       )}
-      style={{ maxWidth: width, minWidth: width, width }}
+      style={{ maxWidth: maxWidth ?? width, width }}
     >
       {value}
     </div>
@@ -67,51 +76,66 @@ export default function CitationTableRowItem({
     documentID,
     slug,
   });
+  const isSupportSource = type === "SUPPORT";
+
   return (
     <div className={css(styles.tableRowItem)}>
       <ItemColumn
-        bold
+        maxWidth={tableMaxWidths.SOURCE}
         value={
-          <Link
-            href={UNIFIED_DOC_PAGE_URL_PATTERN}
-            as={citationTitleLinkUri}
-            passHref
-          >
-            <a target="_blank" className={css(styles.link)}>
-              {displayTitle}
-            </a>
-          </Link>
+          <div className={css(styles.sourceWrap)}>
+            <div className={css(styles.voteItemWrap)}>
+              <CitationVoteItem
+                citationID={citationID}
+                updateLastFetchTime={updateLastFetchTime}
+                voteMeta={{ ...consensusMeta }}
+              />
+            </div>
+            <div className={css(styles.titleControl)}>
+              <Link
+                href={UNIFIED_DOC_PAGE_URL_PATTERN}
+                as={citationTitleLinkUri}
+                passHref
+              >
+                <a target="_blank" className={css(styles.link)}>
+                  {displayTitle}
+                </a>
+              </Link>
+            </div>
+          </div>
         }
         width={tableWidths.SOURCE}
       />
       <ItemColumn
-        className={styles.capitalize}
-        value={type && type.toLocaleLowerCase()}
+        maxWidth={tableMaxWidths.TYPE}
+        className={[styles.capitalize, styles.itemCenterAlign]}
+        value={
+          <div
+            className={css(
+              styles.typeIcon,
+              isSupportSource ? styles.green : styles.red
+            )}
+            role="none"
+          >
+            <div className={css(styles.iconWrap)}>
+              {isSupportSource ? icons.checkCircle : icons.timesCircle}
+            </div>
+            <div className={css(styles.typeText)}>
+              {isSupportSource ? "Support" : "Reject"}
+            </div>
+          </div>
+        }
         width={tableWidths.TYPE}
       />
       <ItemColumn
-        value={
-          <CitationVoteItem
-            citationID={citationID}
-            updateLastFetchTime={updateLastFetchTime}
-            voteMeta={{ ...consensusMeta }}
-          />
-          // <CitationConsensusItem
-          // citationID={citationID}
-          //   consensusMeta={consensusMeta}
-          //   shouldAllowVote
-          //   updateLastFetchTime={updateLastFetchTime}
-          // />
-        }
-        width={tableWidths.CONSENSUS}
-      />
-      <ItemColumn
-        className={[styles.itemCenterAlign, styles.paddingRight16]}
+        maxWidth={tableMaxWidths.CITED_BY}
+        className={[styles.itemCenterAlign]}
         value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
         width={tableWidths.CITED_BY}
       />
       <ItemColumn
-        className={styles.itemCenterAlign}
+        maxWidth={tableMaxWidths.COMMENTS}
+        className={[styles.itemCenterAlign]}
         value={
           <div
             className={css(styles.commentsIcon, styles.paddingBottom4)}
@@ -140,7 +164,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-    padding: "20px 0px",
     justifyContent: "flex-start",
     fontFamily: "Roboto",
     size: 16,
@@ -153,17 +176,56 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: 500,
   },
+  typeText: {
+    display: "block",
+    fontSize: 12,
+  },
+  typeIcon: {
+    alignItems: "center",
+    color: colors.LIGHT_GREY_TEXT,
+    display: "flex",
+    flexDirection: "column",
+    width: 36,
+  },
+  titleControl: {
+    boxSizing: "border-box",
+    maxHeight: 50,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+  },
+  green: {
+    color: colors.GREEN(1),
+  },
+  red: {
+    color: colors.RED(1),
+  },
+  iconWrap: {
+    marginBottom: 2,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      fontSize: 18,
+      marginRight: 0,
+    },
+  },
+  marginRight8: {
+    marginRight: 8,
+  },
   tableRowItem: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
+    padding: "8px 0",
   },
   capitalize: {
     textTransform: "capitalize",
   },
   link: {
     color: colors.BLUE(1),
+    fontWeight: "normal",
     textDecoration: "none",
+  },
+  paperPadding: {
+    padding: 8,
+    paddingLeft: 0,
   },
   itemCenterAlign: {
     alignItems: "center",
@@ -181,5 +243,16 @@ const styles = StyleSheet.create({
   },
   paddingBottom4: {
     paddingBottom: 4,
+  },
+  voteItemWrap: {
+    marginRight: 8,
+    minWidth: 40,
+    width: 40,
+  },
+  sourceWrap: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
 });
