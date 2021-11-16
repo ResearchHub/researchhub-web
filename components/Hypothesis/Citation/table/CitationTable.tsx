@@ -106,13 +106,6 @@ export default function CitationTable({
           <CitationTableHeaderItem
             className={styles.smallScreenControl}
             center
-            label="Type"
-            maxWidth={tableMaxWidths.TYPE}
-            width={tableWidths.TYPE}
-          />
-          <CitationTableHeaderItem
-            className={styles.smallScreenControl}
-            center
             label="Cited by"
             maxWidth={tableMaxWidths.CITED_BY}
             width={tableWidths.CITED_BY}

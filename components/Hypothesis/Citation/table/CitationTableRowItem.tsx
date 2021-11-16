@@ -91,41 +91,36 @@ export default function CitationTableRowItem({
                 voteMeta={{ ...consensusMeta }}
               />
             </div>
-            <div className={css(styles.titleControl)}>
-              <Link
-                href={UNIFIED_DOC_PAGE_URL_PATTERN}
-                as={citationTitleLinkUri}
-                passHref
+            <div className={css(styles.sourceWrapControl)}>
+              <div className={css(styles.sourceTitle)}>
+                <Link
+                  href={UNIFIED_DOC_PAGE_URL_PATTERN}
+                  as={citationTitleLinkUri}
+                  passHref
+                >
+                  <a target="_blank" className={css(styles.link)}>
+                    {displayTitle}
+                  </a>
+                </Link>
+              </div>
+              <div
+                className={css(
+                  styles.typeIcon,
+                  isSupportSource ? styles.green : styles.red
+                )}
+                role="none"
               >
-                <a target="_blank" className={css(styles.link)}>
-                  {displayTitle}
-                </a>
-              </Link>
+                <div className={css(styles.iconWrap)}>
+                  {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                </div>
+                <div className={css(styles.typeText)}>
+                  {isSupportSource ? "Support" : "Reject"}
+                </div>
+              </div>
             </div>
           </div>
         }
         width={tableWidths.SOURCE}
-      />
-      <ItemColumn
-        maxWidth={tableMaxWidths.TYPE}
-        className={[styles.capitalize, styles.itemCenterAlign]}
-        value={
-          <div
-            className={css(
-              styles.typeIcon,
-              isSupportSource ? styles.green : styles.red
-            )}
-            role="none"
-          >
-            <div className={css(styles.iconWrap)}>
-              {isSupportSource ? icons.checkCircle : icons.timesCircle}
-            </div>
-            <div className={css(styles.typeText)}>
-              {isSupportSource ? "Support" : "Reject"}
-            </div>
-          </div>
-        }
-        width={tableWidths.TYPE}
       />
       <ItemColumn
         maxWidth={tableMaxWidths.CITED_BY}
@@ -184,14 +179,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     color: colors.LIGHT_GREY_TEXT,
     display: "flex",
-    flexDirection: "column",
-    width: 36,
+    // flexDirection: "column",
+    fontSize: 12,
   },
-  titleControl: {
+  sourceWrapControl: {},
+  sourceTitle: {
     boxSizing: "border-box",
-    maxHeight: 50,
+    maxHeight: 32,
     overflow: "hidden",
     textOverflow: "ellipsis",
+    marginBottom: 4,
   },
   green: {
     color: colors.GREEN(1),
@@ -200,11 +197,7 @@ const styles = StyleSheet.create({
     color: colors.RED(1),
   },
   iconWrap: {
-    marginBottom: 2,
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      fontSize: 18,
-      marginRight: 0,
-    },
+    marginRight: 4,
   },
   marginRight8: {
     marginRight: 8,
