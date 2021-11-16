@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
@@ -5,7 +6,6 @@ import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
 import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
-import CitationAddNewButton from "../CitationAddNewButton";
 import CitationNoResult from "./CitationNoResult";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import CitationTableRowItem, {
@@ -89,13 +89,7 @@ export default function CitationTable({
     )
   ) : (
     <div className={css(styles.citationNoResults)}>
-      <CitationNoResult citationType={citationType} />
-      <CitationAddNewButton
-        citationType={citationType}
-        hypothesisID={hypothesisID}
-        lastFetchTime={lastFetchTime}
-        updateLastFetchTime={updateLastFetchTime}
-      />
+      <CitationNoResult citationType={null} />
     </div>
   );
 
@@ -104,29 +98,27 @@ export default function CitationTable({
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem
-            className={styles.paddingLeft8}
-            label=""
-            maxWidth={tableMaxWidths.CONSENSUS}
-            width={tableWidths.CONSENSUS}
-          />
-          <CitationTableHeaderItem
+            className={styles.sourceTitle}
             label="Paper"
             maxWidth={tableMaxWidths.SOURCE}
             width={tableWidths.SOURCE}
           />
           <CitationTableHeaderItem
+            className={styles.smallScreenControl}
             center
             label="Type"
             maxWidth={tableMaxWidths.TYPE}
             width={tableWidths.TYPE}
           />
           <CitationTableHeaderItem
+            className={styles.smallScreenControl}
             center
             label="Cited by"
             maxWidth={tableMaxWidths.CITED_BY}
             width={tableWidths.CITED_BY}
           />
           <CitationTableHeaderItem
+            className={styles.smallScreenControl}
             center
             label="Discussions"
             maxWidth={tableMaxWidths.COMMENTS}
@@ -145,7 +137,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: "8px 0 24px",
     minHeight: 120,
-    overflow: "auto",
     marginBottom: 0,
   },
   columnHeaderWrap: {
@@ -157,8 +148,6 @@ const styles = StyleSheet.create({
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    maxHeight: 300,
-    overflowY: "auto",
   },
   citationNoResults: {
     display: "flex",
@@ -169,7 +158,19 @@ const styles = StyleSheet.create({
   addCitation: {
     marginTop: 20,
   },
-  paddingLeft8: {
+  sourceTitle: {
     paddingLeft: 8,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "22%",
+    },
+  },
+  smallScreenControl: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "120px",
+      minWidth: "120px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      minWidth: "unset",
+    },
   },
 });

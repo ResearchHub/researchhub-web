@@ -81,29 +81,28 @@ export default function CitationTableRowItem({
   return (
     <div className={css(styles.tableRowItem)}>
       <ItemColumn
-        className={styles.itemCenterAlign}
-        value={
-          <CitationVoteItem
-            citationID={citationID}
-            updateLastFetchTime={updateLastFetchTime}
-            voteMeta={{ ...consensusMeta }}
-          />
-        }
-        width={tableWidths.CONSENSUS}
-      />
-      <ItemColumn
-        className={styles.padding8}
         maxWidth={tableMaxWidths.SOURCE}
         value={
-          <Link
-            href={UNIFIED_DOC_PAGE_URL_PATTERN}
-            as={citationTitleLinkUri}
-            passHref
-          >
-            <a target="_blank" className={css(styles.link)}>
-              {displayTitle}
-            </a>
-          </Link>
+          <div className={css(styles.sourceWrap)}>
+            <div className={css(styles.voteItemWrap)}>
+              <CitationVoteItem
+                citationID={citationID}
+                updateLastFetchTime={updateLastFetchTime}
+                voteMeta={{ ...consensusMeta }}
+              />
+            </div>
+            <div className={css(styles.titleControl)}>
+              <Link
+                href={UNIFIED_DOC_PAGE_URL_PATTERN}
+                as={citationTitleLinkUri}
+                passHref
+              >
+                <a target="_blank" className={css(styles.link)}>
+                  {displayTitle}
+                </a>
+              </Link>
+            </div>
+          </div>
         }
         width={tableWidths.SOURCE}
       />
@@ -165,7 +164,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-    padding: "20px 0px",
     justifyContent: "flex-start",
     fontFamily: "Roboto",
     size: 16,
@@ -188,6 +186,12 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     width: 36,
+  },
+  titleControl: {
+    boxSizing: "border-box",
+    maxHeight: 50,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
   },
   green: {
     color: colors.GREEN(1),
@@ -219,8 +223,9 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     textDecoration: "none",
   },
-  padding8: {
+  paperPadding: {
     padding: 8,
+    paddingLeft: 0,
   },
   itemCenterAlign: {
     alignItems: "center",
@@ -238,5 +243,16 @@ const styles = StyleSheet.create({
   },
   paddingBottom4: {
     paddingBottom: 4,
+  },
+  voteItemWrap: {
+    marginRight: 8,
+    minWidth: 40,
+    width: 40,
+  },
+  sourceWrap: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
   },
 });

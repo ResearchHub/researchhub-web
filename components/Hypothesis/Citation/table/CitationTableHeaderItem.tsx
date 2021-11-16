@@ -37,13 +37,14 @@ export default function CitationTableHeaderItem({
 const styles = StyleSheet.create({
   headerItem: {
     alignItems: "center",
+    boxSizing: "border-box",
     color: colors.LIGHT_GREY_TEXT,
     display: "flex",
+    fontSize: 12,
     fontWeight: 700,
     height: "100%",
-    fontSize: 12,
-    letterSpacing: "1.2px",
     justifyContent: "flex-start",
+    letterSpacing: "1.2px",
     textTransform: "uppercase",
     wordWrap: "break-word",
   },

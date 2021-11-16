@@ -185,4 +185,9 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "relative",
   },
+  citationcontainerWrap: {
+    display: "flex",
+    height: "100%",
+    width: "100%",
+  },
 });
