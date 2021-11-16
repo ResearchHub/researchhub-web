@@ -9,7 +9,7 @@ export const tableWidths = {
 export const tableMaxWidths = {
   CITED_BY: "120px",
   CONSENSUS: "100px",
-  SOURCE: "800px",
+  SOURCE: "840px",
   // TYPE: "120px",
   COMMENTS: "120px",
 };
