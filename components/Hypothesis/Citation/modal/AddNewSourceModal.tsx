@@ -88,6 +88,7 @@ export default function AddNewSourceModal({
     hypothesisID,
     onCloseModal: (event: SyntheticEvent) => {
       setBodyType(SEARCH);
+      setSelectedCitationType(null);
       onCloseModal(event);
     },
     selectedCitationType,
@@ -102,6 +103,7 @@ export default function AddNewSourceModal({
       closeModal={(event: SyntheticEvent): void => {
         // logical ordering
         setBodyType(SEARCH);
+        setSelectedCitationType(null);
         onCloseModal(event);
       }}
       isOpen={isModalOpen}
