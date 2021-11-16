@@ -29,6 +29,7 @@ export function fetchCitationsOnHypothesis({
             id,
             publish_date,
             source: { document_type, documents },
+            type,
           } = item;
           if (document_type === "PAPER") {
             const {
@@ -46,6 +47,7 @@ export function fetchCitationsOnHypothesis({
               consensusMeta: {
                 downCount: consensus_meta?.down_count ?? 0,
                 neutralCount: consensus_meta?.neutral_count ?? 0,
+                totalCount: consensus_meta?.total_count ?? 0,
                 upCount: consensus_meta?.up_count ?? 0,
                 userVote: consensus_meta?.user_vote ?? null,
               }, // need to get voting info
@@ -56,7 +58,7 @@ export function fetchCitationsOnHypothesis({
                 documentID: documentID ?? null,
                 slug,
               },
-              type: document_type,
+              type,
               publish_date: (publish_date ?? publish_date ?? "").split("-")[0],
             };
           } else {

@@ -4,7 +4,6 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
 import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
@@ -12,7 +11,6 @@ import Head from "../Head";
 import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
-import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 import PaperBanner from "../Paper/PaperBanner";
 
 type Props = {};
@@ -52,7 +50,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     title,
     is_removed: isHypoRemoved,
   } = hypothesis || {};
-
+  const authors = [created_by?.author_profile ?? {}];
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
@@ -73,6 +71,8 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
       />
       <div className={css(styles.container)}>
         <HypothesisPageCard
+          authors={authors}
+          hubs={hubs}
           hypothesis={hypothesis}
           onUpdates={setLastFetchTime}
         />
@@ -89,14 +89,6 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           setLastFetchTime={setLastFetchTime}
           shouldShowUploadButton
         />
-        <div className={css(styles.metaContainerMobile)}>
-          <AuthorStatsDropdown
-            authors={[created_by?.author_profile ?? {}]}
-            hubs={hubs}
-            paper={hypothesis}
-            paperId={id}
-          />
-        </div>
         <CitationContainer
           lastFetchTime={lastFetchTime}
           onCitationUpdate={(): void => {
@@ -117,17 +109,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           <div className={css(styles.citationCommentSidebar)}>
             <CitationCommentSidebarWithMedia />
           </div>
-        ) : (
-          <div className={css(styles.regSidebar)}>
-            <PaperSideColumn
-              authors={[created_by?.author_profile ?? {}]}
-              hubs={hubs}
-              isPost={true}
-              paper={hypothesis}
-              paperId={id}
-            />
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   ) : null;
@@ -202,5 +184,10 @@ const styles = StyleSheet.create({
   hypothesisContainerWrap: {
     display: "flex",
     position: "relative",
+  },
+  citationcontainerWrap: {
+    display: "flex",
+    height: "100%",
+    width: "100%",
   },
 });

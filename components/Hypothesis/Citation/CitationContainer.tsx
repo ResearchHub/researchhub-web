@@ -1,11 +1,23 @@
+import { breakpoints } from "~/config/themes/screen";
 import { castUriID } from "../../../config/utils/castUriID";
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement } from "react";
+import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CitationTable from "./table/CitationTable";
-import { breakpoints } from "~/config/themes/screen";
+import CitationAddNewButton from "./CitationAddNewButton";
+import TextDropdown, {
+  TextDropdownOption,
+  TextDropdownOptions,
+} from "~/components/shared/TextDropdown";
 
 type Props = { lastFetchTime: number; onCitationUpdate: Function };
+
+const TABLE_SORT_OPTIONS: TextDropdownOptions = [
+  /* logical ordering */
+  { label: "All Sources", optionLabel: "All", value: null },
+  { label: "Supporting Sources", optionLabel: "Supporting", value: "SUPPORT" },
+  { label: "Rejecting Sources", optionLabel: "Rejecting", value: "REJECT" },
+];
 
 export default function CitationContainer({
   lastFetchTime,
@@ -13,25 +25,32 @@ export default function CitationContainer({
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const hypothesisID = castUriID(router.query.documentId);
+  const [sourceFilter, setSourceFilter] = useState<TextDropdownOption>(
+    TABLE_SORT_OPTIONS[0]
+  );
+  const { value: citationType } = sourceFilter;
+  useEffect((): void => onCitationUpdate(), [citationType]);
 
   return (
     <div className={css(styles.citationContainer)}>
       <div className={css(styles.citationGroup)}>
-        <div className={css(styles.header)}>{"Supporting Sources"}</div>
+        <div className={css(styles.header)}>
+          <TextDropdown
+            onSelect={setSourceFilter}
+            options={TABLE_SORT_OPTIONS}
+            selected={sourceFilter}
+          />
+          <CitationAddNewButton
+            citationType={citationType}
+            hypothesisID={hypothesisID}
+            lastFetchTime={lastFetchTime}
+            updateLastFetchTime={onCitationUpdate}
+            noText
+          />
+        </div>
         <CitationTable
-          citationType="SUPPORT"
+          citationType={citationType}
           hypothesisID={hypothesisID}
-          key="citation-support"
-          lastFetchTime={lastFetchTime}
-          updateLastFetchTime={onCitationUpdate}
-        />
-      </div>
-      <div className={css(styles.citationGroup)}>
-        <div className={css(styles.header)}>{"Rejecting Sources"}</div>
-        <CitationTable
-          citationType="REJECT"
-          hypothesisID={hypothesisID}
-          key="citation-reject"
           lastFetchTime={lastFetchTime}
           updateLastFetchTime={onCitationUpdate}
         />
@@ -54,10 +73,13 @@ const styles = StyleSheet.create({
     },
   },
   header: {
+    display: "flex",
     fontFamily: "Roboto",
     fontSize: 20,
     fontStyle: "normal",
     fontWeight: 500,
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   citationGroup: {
     backgroundColor: "#fff",
@@ -68,7 +90,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: 30,
-    width: "49.5%",
+    width: "100%",
     minHeight: 353,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       width: "100%",

@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
@@ -13,18 +14,21 @@ type Props = {
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
+  noText?: Boolean;
 };
 
 export default function CitationAddNewButton({
   citationType,
   hypothesisID,
   updateLastFetchTime,
+  noText,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
-
   return (
     <Button
-      customButtonStyle={styles.citationAddNewButton}
+      customButtonStyle={
+        noText ? styles.buttonNoText : styles.citationAddNewButton
+      }
       onClick={(): void => setShouldOpenModal(true)}
       role="button"
       label={
@@ -44,9 +48,9 @@ export default function CitationAddNewButton({
           />
           <FontAwesomeIcon
             icon={"plus-circle"}
-            className={css(styles.plusCircle)}
+            className={css(noText ? null : styles.plusCircle)}
           />
-          <span>{"Add New Source"}</span>
+          {noText ? "" : <span>{"Add New Source"}</span>}
         </div>
       }
     />
@@ -64,14 +68,29 @@ const styles = StyleSheet.create({
     width: 180,
     userSelect: "none",
   },
+  buttonNoText: {
+    alignItems: "center",
+    justifyContent: "center",
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    display: "flex",
+    fontSize: 14,
+    height: 30,
+    width: 30,
+    userSelect: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: 30,
+      minHeight: "unset",
+      minWidth: "unset",
+      width: 30,
+    },
+  },
   plus: {
-    // color: colors.BLUE(1),
     left: 5,
     position: "absolute",
     top: -1,
   },
   plusCircle: {
-    // fontSize: ,
     marginRight: 6,
   },
   buttonInner: {
