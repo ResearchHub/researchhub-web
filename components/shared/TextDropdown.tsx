@@ -51,6 +51,7 @@ export default function TextDropdown({
               onSelect={(event: SyntheticEvent): void => {
                 event.stopPropagation();
                 onSelect(option);
+                setIsOpen(false);
               }}
             />
           );
