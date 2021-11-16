@@ -153,9 +153,6 @@ const styles = StyleSheet.create({
   },
   sourceTitle: {
     paddingLeft: 8,
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      width: "22%",
-    },
   },
   smallScreenControl: {
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
