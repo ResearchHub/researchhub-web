@@ -83,14 +83,18 @@ export default function AddNewSourceModal({
   const [bodyType, setBodyType] = useState<BodyTypeVals>(SEARCH);
   const [selectedCitationType, setSelectedCitationType] =
     useState<ValidCitationType>(citationType);
+
+  const onHandleCancel = (event: SyntheticEvent): void => {
+    // logical ordering
+    setBodyType(SEARCH);
+    setSelectedCitationType(null);
+    onCloseModal(event);
+  };
+
   const modalBody = getModalBody({
     bodyType,
     hypothesisID,
-    onCloseModal: (event: SyntheticEvent) => {
-      setBodyType(SEARCH);
-      setSelectedCitationType(null);
-      onCloseModal(event);
-    },
+    onCloseModal: onHandleCancel,
     selectedCitationType,
     setSelectedCitationType,
     setBodyType: (bodyType: BodyTypeVals): void => setBodyType(bodyType),
@@ -100,12 +104,7 @@ export default function AddNewSourceModal({
   return (
     <BaseModal
       children={modalBody}
-      closeModal={(event: SyntheticEvent): void => {
-        // logical ordering
-        setBodyType(SEARCH);
-        setSelectedCitationType(null);
-        onCloseModal(event);
-      }}
+      closeModal={onHandleCancel}
       isOpen={isModalOpen}
       modalContentStyle={styles.modalContentStyle}
       titleStyle={styles.titleStyle}
