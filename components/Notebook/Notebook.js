@@ -241,7 +241,11 @@ const Notebook = ({ auth, user, wsResponse }) => {
 
   useEffect(() => {
     if (!isNullOrUndefined(wsResponse)) {
-      const { data: note, type: responseType } = JSON.parse(wsResponse);
+      const {
+        data: note,
+        type: responseType,
+        requester,
+      } = JSON.parse(wsResponse);
 
       switch (responseType) {
         case "create":
@@ -282,8 +286,25 @@ const Notebook = ({ auth, user, wsResponse }) => {
           }
           break;
         case "update_permission":
+          if (
+            String(note.id) === noteId &&
+            note.access === NOTE_GROUPS.PRIVATE &&
+            requester !== user.id
+          ) {
+            const permissionChangedNoteId = note.id;
+            const newNotes = notes.filter(
+              (note) => note.id !== permissionChangedNoteId
+            );
+            router.push(
+              getNotePathname({
+                noteId: newNotes[0]?.id,
+                org: currentOrganization,
+              })
+            );
+          } else {
+            fetchAndSetCurrentNote();
+          }
           fetchAndSetCurrentOrgNotes();
-          fetchAndSetCurrentNote();
           break;
       }
     }
