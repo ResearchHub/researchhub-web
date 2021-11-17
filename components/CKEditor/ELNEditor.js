@@ -1,5 +1,5 @@
 import API from "~/config/api";
-import Loader from "../Loader/Loader";
+import Loader from "~/components/Loader/Loader";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import { AUTH_TOKEN } from "~/config/constants";

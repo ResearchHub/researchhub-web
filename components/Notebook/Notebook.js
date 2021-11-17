@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import withWebSocket from "~/components/withWebSocket";
 import { Helpers } from "@quantfive/js-web-config";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
@@ -16,7 +17,7 @@ import {
   fetchUserOrgs,
 } from "~/config/fetch";
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
-import { getUserNoteAccess } from "./utils/notePermissions";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -240,41 +241,50 @@ const Notebook = ({ auth, user, wsResponse }) => {
 
   useEffect(() => {
     if (!isNullOrUndefined(wsResponse)) {
-      const response = JSON.parse(wsResponse);
-      const note = response.data;
+      const { data: note, type: responseType } = JSON.parse(wsResponse);
 
-      if (response.type === "create") {
-        if (note.created_by === user.id || note.access === "WORKSPACE") {
-          setNotes([note, ...notes]);
-          setTitles({
-            [note.id]: note.title,
-            ...titles,
-          });
-        }
-      } else if (response.type === "delete") {
-        const deletedNoteId = note.id;
-        const newNotes = notes.filter((note) => note.id !== deletedNoteId);
-        setNotes(newNotes);
-        if (String(deletedNoteId) === noteId) {
-          router.push(
-            getNotePathname({
-              noteId: newNotes[0]?.id,
-              org: currentOrganization,
-            })
-          );
-        }
-      } else if (response.type === "update_title") {
-        if (note.id !== currentNote?.id) {
-          const updatedTitles = {};
-          for (const noteId in titles) {
-            updatedTitles[noteId] =
-              String(noteId) === String(note.id) ? note.title : titles[noteId];
+      switch (responseType) {
+        case "create":
+          if (
+            note.created_by === user.id ||
+            note.access === NOTE_GROUPS.WORKSPACE
+          ) {
+            setNotes([note, ...notes]);
+            setTitles({
+              [note.id]: note.title,
+              ...titles,
+            });
           }
-          setTitles(updatedTitles);
-        }
-      } else if (response.type === "update_permission") {
-        fetchAndSetCurrentOrgNotes();
-        fetchAndSetCurrentNote();
+          break;
+        case "delete":
+          const deletedNoteId = note.id;
+          const newNotes = notes.filter((note) => note.id !== deletedNoteId);
+          setNotes(newNotes);
+          if (String(deletedNoteId) === noteId) {
+            router.push(
+              getNotePathname({
+                noteId: newNotes[0]?.id,
+                org: currentOrganization,
+              })
+            );
+          }
+          break;
+        case "update_title":
+          if (note.id !== currentNote?.id) {
+            const updatedTitles = {};
+            for (const noteId in titles) {
+              updatedTitles[noteId] =
+                String(noteId) === String(note.id)
+                  ? note.title
+                  : titles[noteId];
+            }
+            setTitles(updatedTitles);
+          }
+          break;
+        case "update_permission":
+          fetchAndSetCurrentOrgNotes();
+          fetchAndSetCurrentNote();
+          break;
       }
     }
   }, [wsResponse]);
