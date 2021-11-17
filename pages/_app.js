@@ -18,6 +18,7 @@ import "../components/Paper/progressbar.css";
 import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
 import "../components/CKEditor/CKEditor.css";
+import "../components/CKEditor/JupyterViewer.css";
 
 import "../components/Modals/Stylesheets/Dnd.css";
 import "react-quill/dist/quill.snow.css";

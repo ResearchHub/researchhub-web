@@ -20,6 +20,9 @@ import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
 import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import JupyterViewer from "@thomasvu/react-jupyter-notebook";
+import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
+import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -261,6 +264,7 @@ const ELNEditor = ({
           <Loader type="clip" size={50} />
         </div>
       )}
+      <JupyterViewer rawIpynb={nb_test} />
     </div>
   );
 };

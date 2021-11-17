@@ -43,6 +43,7 @@
     "@sentry/cli": "^1.58.0",
     "@sentry/nextjs": "^6.13.3",
     "@thomasvu/ckeditor5-custom-build": "^0.0.23",
+    "@thomasvu/react-jupyter-notebook": "^0.3.5",
     "@types/react-sidebar": "^3.0.0",
     "@zeit/next-css": "^1.0.1",
     "@zeit/next-source-maps": "^0.0.3",
