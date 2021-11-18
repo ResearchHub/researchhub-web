@@ -7,9 +7,9 @@ type PostCitationFromSearchArgs = {
   onError: Function;
   onSuccess: Function;
   payload: {
+    citation_type: ValidCitationType;
     hypothesis_id: ID;
     source_id: ID;
-    type: ValidCitationType;
   };
 };
 

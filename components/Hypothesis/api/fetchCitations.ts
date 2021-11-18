@@ -29,7 +29,7 @@ export function fetchCitationsOnHypothesis({
             id,
             publish_date,
             source: { document_type, documents },
-            type,
+            citation_type,
           } = item;
           if (document_type === "PAPER") {
             const {
@@ -53,6 +53,7 @@ export function fetchCitationsOnHypothesis({
                 userVote: consensus_meta?.user_vote ?? null,
               }, // need to get voting info
               citedBy: [author_profile],
+              citationType: citation_type,
               source: {
                 displayTitle: title || paper_title,
                 docType: document_type,
@@ -60,7 +61,6 @@ export function fetchCitationsOnHypothesis({
                 doi,
                 slug,
               },
-              type,
               publish_date: (publish_date ?? publish_date ?? "").split("-")[0],
             };
           } else {
