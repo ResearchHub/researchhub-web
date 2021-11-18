@@ -1,11 +1,9 @@
-import { css, StyleSheet } from "aphrodite";
-import { ID } from "~/config/types/root_types";
-import {
-  formatUnifiedDocPageUrl,
-  UNIFIED_DOC_PAGE_URL_PATTERN,
-} from "~/config/utils/url_patterns";
+import { breakpoints } from "~/config/themes/screen";
 import { ConsensusMeta } from "./CitationConsensusItem";
-import { ReactElement, ReactNode, SyntheticEvent } from "react";
+import { css, StyleSheet } from "aphrodite";
+import { formatUnifiedDocPageUrl } from "~/config/utils/url_patterns";
+import { Fragment, ReactElement, ReactNode, SyntheticEvent } from "react";
+import { ID } from "~/config/types/root_types";
 import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
@@ -13,9 +11,7 @@ import CitationVoteItem from "./CitationVoteItem";
 import colors from "~/config/themes/colors";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
-import Link from "next/link";
-import { breakpoints } from "~/config/themes/screen";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 import Router from "next/router";
 
@@ -115,12 +111,25 @@ export default function CitationTableRowItem({
         <ItemColumn
           maxWidth={tableMaxWidths.DOI}
           value={
-            <div
-              className={css(styles.DOI)}
-              onClick={(event: SyntheticEvent) => event.stopPropagation()}
-            >
-              {doi}
-            </div>
+            <Fragment>
+              <div
+                data-tip
+                data-for={`consensus-doi-text-${doi}`}
+                className={css(styles.DOI)}
+                onClick={(event: SyntheticEvent) => event.stopPropagation()}
+              >
+                {doi}
+              </div>
+              <ReactTooltip
+                backgroundColor={colors.TOOLTIP_BACKGROUND_BLACK}
+                effect="solid"
+                id={`consensus-doi-text-${doi}`}
+                place="top"
+                textColor={colors.TOOLTIP_TEXT_COLOR_WHITE}
+                type="dark"
+                children={doi}
+              />
+            </Fragment>
           }
           width={tableWidths.DOI}
         />
