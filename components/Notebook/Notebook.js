@@ -1,29 +1,32 @@
+import Error from "next/error";
+import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
+import dynamic from "next/dynamic";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import withWebSocket from "~/components/withWebSocket";
+import { Helpers } from "@quantfive/js-web-config";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import { useState, useEffect, useRef, useCallback } from "react";
 import {
-  fetchUserOrgs,
-  fetchNotePermissions,
-  fetchOrgNotes,
   fetchNote,
+  fetchNotePermissions,
   fetchOrg,
+  fetchOrgNotes,
   fetchOrgTemplates,
+  fetchUserOrgs,
 } from "~/config/fetch";
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
-import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
-import { getUserNoteAccess } from "./utils/notePermissions";
-import { Helpers } from "@quantfive/js-web-config";
-import { captureError } from "~/config/utils/error";
-import dynamic from "next/dynamic";
-import Error from "next/error";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
+import { useState, useEffect, useRef, useCallback } from "react";
 
 const ELNEditor = dynamic(() => import("~/components/CKEditor/ELNEditor"), {
   ssr: false,
 });
 
-const Notebook = ({ auth, user }) => {
+const Notebook = ({ auth, user, wsResponse }) => {
   const router = useRouter();
   const { orgSlug, noteId } = router.query;
 
@@ -236,6 +239,75 @@ const Notebook = ({ auth, user }) => {
     }
   }, [noteId, orgSlug, user]);
 
+  useEffect(() => {
+    if (!isNullOrUndefined(wsResponse)) {
+      const {
+        data: note,
+        type: responseType,
+        requester,
+      } = JSON.parse(wsResponse);
+
+      switch (responseType) {
+        case "create":
+          if (
+            note.created_by === user.id ||
+            note.access === NOTE_GROUPS.WORKSPACE
+          ) {
+            setNotes([note, ...notes]);
+            setTitles({
+              [note.id]: note.title,
+              ...titles,
+            });
+          }
+          break;
+        case "delete":
+          const deletedNoteId = note.id;
+          const newNotes = notes.filter((note) => note.id !== deletedNoteId);
+          setNotes(newNotes);
+          if (String(deletedNoteId) === noteId) {
+            router.push(
+              getNotePathname({
+                noteId: newNotes[0]?.id,
+                org: currentOrganization,
+              })
+            );
+          }
+          break;
+        case "update_title":
+          if (note.id !== currentNote?.id) {
+            const updatedTitles = {};
+            for (const noteId in titles) {
+              updatedTitles[noteId] =
+                String(noteId) === String(note.id)
+                  ? note.title
+                  : titles[noteId];
+            }
+            setTitles(updatedTitles);
+          }
+          break;
+        case "update_permission":
+          if (
+            String(note.id) === noteId &&
+            note.access === NOTE_GROUPS.PRIVATE &&
+            requester !== user.id
+          ) {
+            const permissionChangedNoteId = note.id;
+            const newNotes = notes.filter(
+              (note) => note.id !== permissionChangedNoteId
+            );
+            router.push(
+              getNotePathname({
+                noteId: newNotes[0]?.id,
+                org: currentOrganization,
+              })
+            );
+          }
+          fetchAndSetCurrentOrgNotes();
+          break;
+      }
+    }
+  }, [wsResponse]);
+
   const fetchAndSetOrg = async ({ orgId }) => {
     try {
       const org = await fetchOrg({ orgId });
@@ -276,33 +348,12 @@ const Notebook = ({ auth, user }) => {
     }
   };
 
-  const onNoteDelete = (deletedNote) => {
-    const newNotes = notes.filter((note) => note.id !== deletedNote.id);
-    setNotes(newNotes);
-    if (String(deletedNote.id) === noteId) {
-      router.push(
-        getNotePathname({ noteId: newNotes[0]?.id, org: currentOrganization })
-      );
-    }
-  };
-
-  const onNoteCreate = (note) => {
-    setNotes([note, ...notes]);
-    setTitles({
-      [note.id]: note.title,
-      ...titles,
-    });
+  const redirectToNote = (note) => {
     const path = getNotePathname({
       noteId: note.id,
       org: currentOrganization,
     });
-
     router.push(path);
-  };
-
-  const onNotePermChange = ({ changeType }) => {
-    fetchAndSetCurrentOrgNotes();
-    fetchAndSetCurrentNote();
   };
 
   const getCurrentOrgFromRouter = (orgs) => {
@@ -335,33 +386,28 @@ const Notebook = ({ auth, user }) => {
         didInitialNotesLoad={didInitialNotesLoad}
         fetchAndSetOrg={fetchAndSetOrg}
         notes={notes}
-        onNoteCreate={onNoteCreate}
-        onNoteDelete={onNoteDelete}
         onOrgChange={onOrgChange}
-        onNotePermChange={onNotePermChange}
         orgSlug={orgSlug}
         orgs={organizations}
-        setTitles={setTitles}
+        redirectToNote={redirectToNote}
+        refetchTemplates={fetchAndSetOrgTemplates}
+        templates={templates}
         titles={titles}
         user={user}
-        templates={templates}
-        refetchTemplates={fetchAndSetOrgTemplates}
       />
       {currentNote && (
         <ELNEditor
-          user={user}
-          notePerms={currentNotePerms?.list || []}
           ELNLoading={ELNLoading}
-          userOrgs={organizations}
           currentNote={currentNote}
-          handleEditorInput={handleEditorInput}
           currentOrganization={currentOrganization}
-          setELNLoading={setELNLoading}
+          handleEditorInput={handleEditorInput}
+          notePerms={currentNotePerms?.list || []}
+          redirectToNote={redirectToNote}
           refetchNotePerms={fetchAndSetCurrentNotePermissions}
-          onNotePermChange={onNotePermChange}
-          onNoteCreate={onNoteCreate}
-          onNoteDelete={onNoteDelete}
           refetchTemplates={fetchAndSetOrgTemplates}
+          setELNLoading={setELNLoading}
+          user={user}
+          userOrgs={organizations}
         />
       )}
     </div>
@@ -379,4 +425,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default connect(mapStateToProps)(Notebook);
+export default connect(mapStateToProps)(withWebSocket(Notebook));

@@ -1,25 +1,24 @@
 import API from "~/config/api";
+import Loader from "~/components/Loader/Loader";
+import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
+import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import { AUTH_TOKEN } from "~/config/constants";
-import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import {
   BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
   Context,
 } from "@thomasvu/ckeditor5-custom-build";
-import { Helpers } from "@quantfive/js-web-config";
-import { breakpoints } from "~/config/themes/screen";
-import { css, StyleSheet } from "aphrodite";
-import { useRef, useState, useCallback, useMemo } from "react";
-import { useRouter } from "next/router";
-import Loader from "../Loader/Loader";
-import NoteShareButton from "~/components/Notebook/NoteShareButton";
-import { connect } from "react-redux";
+import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import { MessageActions } from "~/redux/message";
-import { captureError } from "~/config/utils/error";
-import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
-import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
+import { breakpoints } from "~/config/themes/screen";
+import { captureError } from "~/config/utils/error";
+import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import { useRef, useState, useCallback } from "react";
+import { useRouter } from "next/router";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -71,19 +70,17 @@ const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
 
 const ELNEditor = ({
   ELNLoading,
-  notePerms,
-  currentOrganization,
-  userOrgs,
   currentNote,
+  currentOrganization,
   handleEditorInput,
-  setELNLoading,
+  notePerms,
+  redirectToNote,
   refetchNotePerms,
+  setELNLoading,
   setMessage,
   showMessage,
   user,
-  onNotePermChange,
-  onNoteCreate,
-  onNoteDelete,
+  userOrgs,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
@@ -127,7 +124,6 @@ const ELNEditor = ({
             org={currentOrganization}
             userOrgs={userOrgs}
             refetchNotePerms={refetchNotePerms}
-            onNotePermChange={onNotePermChange}
           />
           {_isOrgMember && (
             <div className={css(styles.optionsMenuWrapper)}>
@@ -135,9 +131,7 @@ const ELNEditor = ({
                 note={currentNote}
                 title={currentNote.title}
                 currentOrg={currentOrganization}
-                onNoteCreate={onNoteCreate}
-                onNoteDelete={onNoteDelete}
-                onNotePermChange={onNotePermChange}
+                redirectToNote={redirectToNote}
                 show={true}
                 size={24}
               />

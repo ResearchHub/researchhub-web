@@ -1,27 +1,26 @@
-import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
 import NoteEntryPlaceholder from "~/components/Placeholders/NoteEntryPlaceholder";
+import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import OrgAvatar from "~/components/Org/OrgAvatar";
+import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
+import groupBy from "lodash/groupBy";
 import icons from "~/config/themes/icons";
+import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { useState, useMemo } from "react";
-import OrgEntryPlaceholder from "~/components/Placeholders/OrgEntryPlaceholder";
-import NotebookSidebarGroup from "~/components/Notebook/NotebookSidebarGroup";
 import { isEmpty } from "~/config/utils/nullchecks";
-import groupBy from "lodash/groupBy";
-import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import { useState, useMemo } from "react";
 
+const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
+const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 const NoteTemplateModal = dynamic(() =>
   import("~/components/Modals/NoteTemplateModal")
 );
-const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
-const NewOrgModal = dynamic(() => import("~/components/Org/NewOrgModal"));
 
 const NotebookSidebar = ({
   currentNoteId,
@@ -29,19 +28,15 @@ const NotebookSidebar = ({
   didInitialNotesLoad,
   fetchAndSetOrg,
   notes,
-  onNoteCreate,
-  onNoteDelete,
   onOrgChange,
-  onNotePermChange,
   orgSlug,
   orgs,
-  setTitles,
+  redirectToNote,
+  refetchTemplates,
+  templates,
   titles,
   user,
-  templates,
-  refetchTemplates,
 }) => {
-  const [hideNotes, setHideNotes] = useState(false);
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
@@ -86,18 +81,16 @@ const NotebookSidebar = ({
   const buildHtmlForGroup = ({ groupKey }) => {
     return (
       <NotebookSidebarGroup
-        key={groupKey}
-        groupKey={groupKey}
         availGroups={Object.keys(groupedNotes)}
-        currentOrg={currentOrg}
-        orgs={orgs}
-        user={user}
-        notes={groupedNotes[groupKey] || []}
-        titles={titles}
         currentNoteId={currentNoteId}
-        onNoteCreate={onNoteCreate}
-        onNoteDelete={onNoteDelete}
-        onNotePermChange={onNotePermChange}
+        currentOrg={currentOrg}
+        groupKey={groupKey}
+        key={groupKey}
+        notes={groupedNotes[groupKey] || []}
+        orgs={orgs}
+        redirectToNote={redirectToNote}
+        titles={titles}
+        user={user}
       />
     );
   };
@@ -116,18 +109,12 @@ const NotebookSidebar = ({
         onOrgChange={onOrgChange}
       />
       <NoteTemplateModal
-        currentOrg={currentOrg}
-        onNoteCreate={onNoteCreate}
-        currentOrganizationId={currentOrg?.id}
         isOpen={isNoteTemplateModalOpen}
         orgSlug={orgSlug}
-        setIsOpen={setIsNoteTemplateModalOpen}
-        user={user}
-        setTitles={setTitles}
-        titles={titles}
-        notes={notes}
-        templates={templates}
+        redirectToNote={redirectToNote}
         refetchTemplates={refetchTemplates}
+        setIsOpen={setIsNoteTemplateModalOpen}
+        templates={templates}
       />
       <div className={css(styles.sidebarOrgContainer)}>
         <div>

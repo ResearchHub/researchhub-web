@@ -1,31 +1,27 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
-import { css, StyleSheet } from "aphrodite";
-import { createNewNote } from "~/config/fetch";
-import icons, { UpIcon, DownIcon } from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
-import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
-import { captureError } from "~/config/utils/error";
-import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
+import PropTypes from "prop-types";
+import colors from "~/config/themes/colors";
+import icons, { UpIcon, DownIcon } from "~/config/themes/icons";
 import { MessageActions } from "~/redux/message";
+import { NOTE_GROUPS } from "./config/notebookConstants";
+import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
-import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
+import { createNewNote } from "~/config/fetch";
+import { css, StyleSheet } from "aphrodite";
+import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import { useState } from "react";
 
 const NotebookSidebarGroup = ({
-  groupKey,
-  availGroups,
-  notes,
-  titles,
-  currentOrg,
-  user,
   currentNoteId,
-  onNoteCreate,
-  onNoteDelete,
-  onNotePermChange,
-  showMessage,
+  currentOrg,
+  groupKey,
+  notes,
+  redirectToNote,
   setMessage,
+  showMessage,
+  titles,
+  user,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
@@ -40,7 +36,7 @@ const NotebookSidebarGroup = ({
         grouping: groupKey,
       });
 
-      onNoteCreate(note);
+      redirectToNote(note);
       setIsHidden(false);
     } catch (error) {
       setMessage("You do not have permission to create note");
@@ -101,17 +97,15 @@ const NotebookSidebarGroup = ({
         notes.map((note) => {
           return (
             <NotebookSidebarEntry
+              currentNoteId={currentNoteId}
+              currentOrg={currentOrg}
+              groupKey={groupKey}
               key={note.id}
               note={note}
-              titles={titles}
-              groupKey={groupKey}
-              currentOrg={currentOrg}
-              onNoteCreate={onNoteCreate}
-              currentNoteId={currentNoteId}
-              onNoteDelete={onNoteDelete}
-              title={titles[note.id]}
+              redirectToNote={redirectToNote}
               showOptions={_isOrgMember}
-              onNotePermChange={onNotePermChange}
+              title={titles[note.id]}
+              titles={titles}
             />
           );
         })}
