@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
     width: "100%",
-    padding: "8px 0",
+    padding: "8px",
   },
   capitalize: {
     textTransform: "capitalize",

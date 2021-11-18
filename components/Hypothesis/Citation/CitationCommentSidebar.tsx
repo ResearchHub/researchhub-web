@@ -106,6 +106,9 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         customBurgerIcon={false}
         disableCloseOnEsc
         isOpen={!isNullOrUndefined(citationID)}
+        onClose={() => {
+          alert("HI");
+        }}
         right
         styles={
           isRegScreenSize
