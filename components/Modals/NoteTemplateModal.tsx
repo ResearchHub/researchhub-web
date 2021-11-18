@@ -5,7 +5,7 @@ import Modal from "react-modal";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
-import { Helpers } from "@quantfive/js-web-config";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import {
   ReactElement,
   SyntheticEvent,
@@ -16,30 +16,26 @@ import {
 import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { createNewNote, createNoteContent } from "~/config/fetch";
-import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 
 export type NoteTemplateModalProps = {
-  currentOrg: any;
-  currentOrganizationId: number;
   isOpen: boolean;
-  onNoteCreate: any;
   orgSlug: string;
+  redirectToNote: any;
   refetchTemplates: any;
   setIsOpen: (flag: boolean) => void;
+  templates: any;
 };
 
 export default function NoteTemplateModal({
-  currentOrg,
   isOpen,
-  onNoteCreate,
   orgSlug,
+  redirectToNote,
   refetchTemplates,
   setIsOpen,
   templates,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const editorRef = useRef<any>();
   const { CKEditor, Editor } = editorRef.current || {};
-  const [fetched, setFetched] = useState(false);
   const [hideTemplates, setHideTemplates] = useState(false);
   const [selected, setSelected] = useState((templates || [])[0]?.id);
   const [editorInstance, setEditorInstance] = useState(null);
@@ -77,9 +73,9 @@ export default function NoteTemplateModal({
     e && e.preventDefault();
 
     const noteParams = {
-      title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
       grouping: NOTE_GROUPS.WORKSPACE,
-      orgSlug: currentOrg.slug,
+      orgSlug,
+      title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
     };
 
     const note = await createNewNote(noteParams);
@@ -87,27 +83,11 @@ export default function NoteTemplateModal({
       editorData: templateMap[selected].src,
       noteId: note.id,
     });
-    onNoteCreate(note);
+    redirectToNote(note);
     closeModal(e);
   };
 
   const handleInput = (editor) => {};
-
-  const editorConfiguration = {
-    simpleUpload: {
-      // The URL that the images are uploaded to.
-      uploadUrl: API.SAVE_IMAGE,
-
-      // Headers sent along with the XMLHttpRequest to the upload server.
-      headers: {
-        Authorization:
-          "Token " +
-          (typeof window !== "undefined"
-            ? window.localStorage[AUTH_TOKEN]
-            : ""),
-      },
-    },
-  };
 
   return (
     <BaseModal
@@ -119,7 +99,21 @@ export default function NoteTemplateModal({
       <div className={css(styles.rootContainer)}>
         <div className={css(styles.editorContainer) + " eln"}>
           <CKEditor
-            config={editorConfiguration}
+            config={{
+              simpleUpload: {
+                // The URL that the images are uploaded to.
+                uploadUrl: API.SAVE_IMAGE,
+
+                // Headers sent along with the XMLHttpRequest to the upload server.
+                headers: {
+                  Authorization:
+                    "Token " +
+                    (typeof window !== "undefined"
+                      ? window.localStorage[AUTH_TOKEN]
+                      : ""),
+                },
+              },
+            }}
             data={templateMap[selected]?.src ?? ""}
             editor={Editor}
             onChange={(event, editor) => handleInput(editor)}

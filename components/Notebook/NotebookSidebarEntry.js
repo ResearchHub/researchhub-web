@@ -1,23 +1,18 @@
 import Link from "next/link";
-import icons from "~/config/themes/icons";
 import NoteOptionsMenuButton from "./NoteOptionsMenuButton";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
 import { getNotePathname } from "~/components/Org/utils/orgHelper";
-import colors from "~/config/themes/colors";
 import { useState } from "react";
 
 const NotebookSidebarEntry = ({
-  note,
   currentNoteId,
   currentOrg,
-  groupKey,
-  onNoteCreate,
-  onNoteDelete,
-  setMessage,
-  showMessage,
-  title,
+  note,
+  redirectToNote,
   showOptions,
-  onNotePermChange,
+  title,
 }) => {
   const noteId = String(note.id);
   const [isHovered, setIsHovered] = useState(false);
@@ -34,14 +29,12 @@ const NotebookSidebarEntry = ({
         {showOptions && (
           <div className={css(styles.optionsMenuWrapper)}>
             <NoteOptionsMenuButton
+              currentOrg={currentOrg}
               key={note.id}
               note={note}
-              title={title}
-              currentOrg={currentOrg}
-              onNoteCreate={onNoteCreate}
-              onNoteDelete={onNoteDelete}
-              onNotePermChange={onNotePermChange}
+              redirectToNote={redirectToNote}
               show={isHovered}
+              title={title}
             />
           </div>
         )}

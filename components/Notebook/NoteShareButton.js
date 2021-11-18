@@ -10,7 +10,6 @@ const NoteShareButton = ({
   currentOrg,
   userOrgs,
   refetchNotePerms,
-  onNotePermChange,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -26,7 +25,6 @@ const NoteShareButton = ({
             userOrgs={userOrgs}
             noteId={noteId}
             refetchNotePerms={refetchNotePerms}
-            onNotePermChange={onNotePermChange}
           />
         </div>
       }

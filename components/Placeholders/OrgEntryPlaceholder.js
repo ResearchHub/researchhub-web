@@ -15,8 +15,8 @@ const OrgEntryPlaceholder = ({ color, rows = 1 }) => {
         style={{ width: "100%", height: 17 }}
       />
     </div>
-  ))
-}
+  ));
+};
 
 const styles = StyleSheet.create({
   placeholderContainer: {

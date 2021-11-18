@@ -1,36 +1,34 @@
+import ResearchHubPopover from "~/components/ResearchHubPopover";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
+import { NOTE_GROUPS } from "./config/notebookConstants";
+import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 import {
-  deleteNote,
   createNewNote,
   createNoteContent,
-  fetchNote,
   createNoteTemplate,
+  deleteNote,
+  fetchNote,
+  makeNotePrivate,
   removePermissionsFromNote,
   updateNoteUserPermissions,
-  makeNotePrivate,
 } from "~/config/fetch";
-import colors from "~/config/themes/colors";
-import { Helpers } from "@quantfive/js-web-config";
-import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
-import icons from "~/config/themes/icons";
-import { css, StyleSheet } from "aphrodite";
 import { useAlert } from "react-alert";
 import { useState } from "react";
-import { captureError } from "~/config/utils/error";
 
 const NoteOptionsMenuButton = ({
   currentOrg,
   note,
-  title,
-  onNoteCreate,
-  onNoteDelete,
-  onNotePermChange,
+  redirectToNote,
   setMessage,
-  showMessage,
   show,
+  showMessage,
   size = 20,
+  title,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const alert = useAlert();
@@ -41,13 +39,11 @@ const NoteOptionsMenuButton = ({
       icon: icons.lock,
       show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
+      onClick: async (e) => {
+        e && e.stopPropagation();
         setIsPopoverOpen(!isPopoverOpen);
-
         try {
           await makeNotePrivate({ noteId: noteId });
-
-          onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
           setMessage("Failed to make private");
           showMessage({ show: true, error: true });
@@ -64,17 +60,15 @@ const NoteOptionsMenuButton = ({
       icon: icons.friends,
       show: note.access === NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
+      onClick: async (e) => {
+        e && e.stopPropagation();
         setIsPopoverOpen(!isPopoverOpen);
-
         try {
           await updateNoteUserPermissions({
             orgId: currentOrg.id,
             noteId: noteId,
             accessType: "ADMIN",
           });
-
-          onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
           setMessage("Failed to update permission");
           showMessage({ show: true, error: true });
@@ -115,8 +109,7 @@ const NoteOptionsMenuButton = ({
         });
 
         duplicatedNote.access = grouping;
-
-        onNoteCreate(duplicatedNote);
+        redirectToNote(duplicatedNote);
       },
     },
     {
@@ -162,7 +155,6 @@ const NoteOptionsMenuButton = ({
           onClick: async () => {
             try {
               const deletedNote = await deleteNote(noteId);
-              onNoteDelete(deletedNote);
             } catch (error) {
               setMessage("Failed to delete note");
               showMessage({ show: true, error: true });
