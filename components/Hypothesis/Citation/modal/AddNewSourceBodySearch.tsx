@@ -152,6 +152,7 @@ export default function AddNewSourceBodySearch({
             setIsSubmitting(true);
             postCitationFromSearch({
               payload: {
+                citation_type: selectedCitationType,
                 hypothesis_id: nullthrows(
                   hypothesisID,
                   "Selected item must have HypothesisID"
@@ -160,7 +161,6 @@ export default function AddNewSourceBodySearch({
                   selectedItem?.unified_doc_id,
                   "Selected item must have unifiedDocID"
                 ),
-                type: selectedCitationType,
               },
               onSuccess: (): void => {
                 setIsSubmitting(false);
