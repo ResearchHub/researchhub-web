@@ -301,8 +301,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
                 org: currentOrganization,
               })
             );
-          } else {
-            fetchAndSetCurrentNote();
           }
           fetchAndSetCurrentOrgNotes();
           break;
