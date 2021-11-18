@@ -12,6 +12,8 @@ import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
 import PaperBanner from "../Paper/PaperBanner";
+import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
+import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 
 type Props = {};
 
@@ -89,6 +91,14 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           setLastFetchTime={setLastFetchTime}
           shouldShowUploadButton
         />
+        <div className={css(styles.metaContainerMobile)}>
+          <AuthorStatsDropdown
+            authors={[created_by?.author_profile ?? {}]}
+            hubs={hubs}
+            paper={hypothesis}
+            paperId={id}
+          />
+        </div>
         <CitationContainer
           lastFetchTime={lastFetchTime}
           onCitationUpdate={(): void => {
@@ -105,11 +115,16 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
             setCount={setDiscussionCount}
           />
         </div>
-        {shouldDisplayCitationCommentBar ? (
-          <div className={css(styles.citationCommentSidebar)}>
-            <CitationCommentSidebarWithMedia />
-          </div>
-        ) : null}
+        <CitationCommentSidebarWithMedia />
+        <div className={css(styles.regSidebar)}>
+          <PaperSideColumn
+            authors={[created_by?.author_profile ?? {}]}
+            hubs={hubs}
+            isPost={true}
+            paper={hypothesis}
+            paperId={id}
+          />
+        </div>
       </div>
     </div>
   ) : null;

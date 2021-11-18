@@ -4,7 +4,6 @@ import {
   formatUnifiedDocPageUrl,
   UNIFIED_DOC_PAGE_URL_PATTERN,
 } from "~/config/utils/url_patterns";
-import { breakpoints } from "~/config/themes/screen";
 import { ConsensusMeta } from "./CitationConsensusItem";
 import { ReactElement, ReactNode, SyntheticEvent } from "react";
 import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
@@ -110,10 +109,10 @@ export default function CitationTableRowItem({
                 )}
                 role="none"
               >
-                <div className={css(styles.iconWrap)}>
-                  {isSupportSource ? icons.checkCircle : icons.timesCircle}
-                </div>
                 <div className={css(styles.typeText)}>
+                  <span className={css(styles.iconWrap)}>
+                    {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                  </span>
                   {isSupportSource ? "Support" : "Reject"}
                 </div>
               </div>
@@ -176,11 +175,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   typeIcon: {
-    alignItems: "center",
-    color: colors.LIGHT_GREY_TEXT,
+    // alignItems: "center",
+    color: "#fff",
     display: "flex",
-    // flexDirection: "column",
-    fontSize: 12,
+    justifyContent: "center",
+    width: 72,
+    padding: 4,
+    borderRadius: 6,
+    fontSize: 10,
+    fontWeight: 500,
   },
   sourceWrapControl: {},
   sourceTitle: {
@@ -191,13 +194,14 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   green: {
-    color: colors.GREEN(1),
+    backgroundColor: colors.GREEN(1),
   },
   red: {
-    color: colors.RED(1),
+    backgroundColor: colors.RED(1),
   },
   iconWrap: {
     marginRight: 4,
+    // height: "inherit"
   },
   marginRight8: {
     marginRight: 8,

@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       marginTop: 0,
     },
+    boxShadow: "none",
   },
   commentEditorStyles: {
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   threadComposerContainer: {
     alignItems: "center",
     backgroundColor: colors.ICY_GREY,
-    border: `1px solid ${colors.LIGHT_GREY(1)}`,
+    // border: `1px solid ${colors.LIGHT_GREY(1)}`,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
