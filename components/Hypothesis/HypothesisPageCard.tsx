@@ -38,9 +38,7 @@ import {
   removeHypothesis,
   restoreHypothesis,
 } from "./api/postHypothesisStatus";
-import ColumnAuthors from "../Paper/SideColumn/ColumnAuthors";
 import ColumnHubs from "../Paper/SideColumn/ColumnHubs";
-import AuthorFacePile from "../shared/AuthorFacePile";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -362,13 +360,6 @@ function HypothesisPageCard({
             <div className="ck-content">{hypoContent}</div>
           </div>
         </div>
-      </div>
-      <div className={css(styles.rightColumn)}>
-        <ColumnHubs
-          paper={hypothesis}
-          hubs={(hubs ?? []).slice(0, 3)}
-          paperId={hypothesisID}
-        />
       </div>
     </div>
   );
