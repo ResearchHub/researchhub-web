@@ -38,6 +38,7 @@ export function fetchCitationsOnHypothesis({
               slug = " ",
               title,
               created_date,
+              doi,
             } = documents;
             const { author_profile } = created_by;
             return {
@@ -56,6 +57,7 @@ export function fetchCitationsOnHypothesis({
                 displayTitle: title || paper_title,
                 docType: document_type,
                 documentID: documentID ?? null,
+                doi,
                 slug,
               },
               type,

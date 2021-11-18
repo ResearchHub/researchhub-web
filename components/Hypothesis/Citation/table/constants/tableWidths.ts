@@ -1,15 +1,17 @@
 export const tableWidths = {
-  CITED_BY: "15%",
+  CITED_BY: "12%",
+  COMMENTS: "12%",
   CONSENSUS: "5.5%",
-  SOURCE: "50%",
-  TYPE: "15%",
-  COMMENTS: "15%",
+  DOI: "12%",
+  SOURCE: "40%",
+  TYPE: "12%",
 };
 
 export const tableMaxWidths = {
   CITED_BY: "100px",
+  COMMENTS: "100px",
   CONSENSUS: "100px",
+  DOI: "120px",
   SOURCE: "840px",
   TYPE: "100px",
-  COMMENTS: "100px",
 };

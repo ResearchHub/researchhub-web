@@ -28,6 +28,7 @@ export type CitationTableRowItemProps = {
     displayTitle: string;
     docType: string;
     documentID: ID;
+    doi: ID;
     slug?: string | null;
   };
   type: ValidCitationType;
@@ -69,7 +70,7 @@ export default function CitationTableRowItem({
   citationUnidocID,
   citedBy,
   consensusMeta,
-  source: { displayTitle, docType, documentID, slug },
+  source: { displayTitle, docType, documentID, doi, slug },
   type,
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
@@ -128,7 +129,19 @@ export default function CitationTableRowItem({
               </div>
             </div>
           }
-          width={tableWidths.CITED_BY}
+          width={tableWidths.TYPE}
+        />
+        <ItemColumn
+          maxWidth={tableMaxWidths.DOI}
+          value={
+            <div
+              className={css(styles.DOI)}
+              onClick={(event: SyntheticEvent) => event.stopPropagation()}
+            >
+              {doi}
+            </div>
+          }
+          width={tableWidths.DOI}
         />
         <ItemColumn
           maxWidth={tableMaxWidths.CITED_BY}
@@ -288,5 +301,13 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
       minWidth: "120px",
     },
+  },
+  DOI: {
+    boxSizing: "border-box",
+    maxHeight: 32,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    marginBottom: 4,
+    paddingLeft: 4,
   },
 });
