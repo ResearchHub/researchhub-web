@@ -111,6 +111,12 @@ export default function CitationTable({
             width={tableWidths.TYPE}
           />
           <CitationTableHeaderItem
+            className={styles.doiTitle}
+            label="DOI"
+            maxWidth={tableMaxWidths.DOI}
+            width={tableWidths.DOI}
+          />
+          <CitationTableHeaderItem
             className={styles.smallScreenControl}
             center
             label="Cited by"
@@ -161,6 +167,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   sourceTitle: {
+    paddingLeft: 8,
+    [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
+      minWidth: "unset",
+      width: "35%",
+    },
+  },
+  doiTitle: {
     paddingLeft: 8,
     [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
       minWidth: "unset",
