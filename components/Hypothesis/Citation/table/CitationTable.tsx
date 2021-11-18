@@ -104,11 +104,10 @@ export default function CitationTable({
             width={tableWidths.SOURCE}
           />
           <CitationTableHeaderItem
-            className={styles.smallScreenControl}
-            center
-            label="Type"
-            maxWidth={tableMaxWidths.TYPE}
-            width={tableWidths.TYPE}
+            className={styles.doiTitle}
+            label="DOI"
+            maxWidth={tableMaxWidths.DOI}
+            width={tableWidths.DOI}
           />
           <CitationTableHeaderItem
             className={styles.smallScreenControl}
@@ -125,10 +124,11 @@ export default function CitationTable({
             width={tableWidths.COMMENTS}
           />
           <CitationTableHeaderItem
-            className={styles.doiTitle}
-            label="DOI"
-            maxWidth={tableMaxWidths.DOI}
-            width={tableWidths.DOI}
+            className={styles.smallScreenControl}
+            center
+            label=""
+            maxWidth={tableMaxWidths.TYPE}
+            width={tableWidths.TYPE}
           />
         </div>
         <div className={css(styles.itemsWrap)}>{rowItems}</div>

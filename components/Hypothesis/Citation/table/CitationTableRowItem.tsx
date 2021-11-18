@@ -113,27 +113,16 @@ export default function CitationTableRowItem({
           width={tableWidths.SOURCE}
         />
         <ItemColumn
-          maxWidth={tableMaxWidths.TYPE}
-          className={[styles.itemCenterAlign]}
+          maxWidth={tableMaxWidths.DOI}
           value={
             <div
-              className={css(
-                styles.typeIcon,
-                isSupportSource ? styles.green : styles.red
-              )}
-              role="none"
+              className={css(styles.DOI)}
+              onClick={(event: SyntheticEvent) => event.stopPropagation()}
             >
-              <div className={css(styles.typeContent)}>
-                <span className={css(styles.iconWrap)}>
-                  {isSupportSource ? icons.checkCircle : icons.timesCircle}
-                </span>
-                <span className={css(styles.typeText)}>
-                  {isSupportSource ? "Support" : "Reject"}
-                </span>
-              </div>
+              {doi}
             </div>
           }
-          width={tableWidths.TYPE}
+          width={tableWidths.DOI}
         />
         <ItemColumn
           maxWidth={tableMaxWidths.CITED_BY}
@@ -169,16 +158,27 @@ export default function CitationTableRowItem({
           width={tableWidths.COMMENTS}
         />
         <ItemColumn
-          maxWidth={tableMaxWidths.DOI}
+          maxWidth={tableMaxWidths.TYPE}
+          className={[styles.itemCenterAlign]}
           value={
             <div
-              className={css(styles.DOI)}
-              onClick={(event: SyntheticEvent) => event.stopPropagation()}
+              className={css(
+                styles.typeIcon,
+                isSupportSource ? styles.green : styles.red
+              )}
+              role="none"
             >
-              {doi}
+              <div className={css(styles.typeContent)}>
+                <span className={css(styles.iconWrap)}>
+                  {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                </span>
+                <span className={css(styles.typeText)}>
+                  {isSupportSource ? "Support" : "Reject"}
+                </span>
+              </div>
             </div>
           }
-          width={tableWidths.DOI}
+          width={tableWidths.TYPE}
         />
       </div>
     </Ripples>
