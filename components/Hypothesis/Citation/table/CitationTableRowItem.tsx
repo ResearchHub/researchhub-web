@@ -85,9 +85,13 @@ export default function CitationTableRowItem({
   return (
     <Ripples
       className={css(styles.link)}
-      onClick={() =>
-        Router.push("/paper/[paperId]/[paperName]", citationTitleLinkUri)
-      }
+      onClick={(event: any) => {
+        if (event.metaKey || event.ctrlKey) {
+          window.open(citationTitleLinkUri, "_blank");
+        } else {
+          Router.push("/paper/[paperId]/[paperName]", citationTitleLinkUri);
+        }
+      }}
     >
       <div className={css(styles.tableRowItem)}>
         <ItemColumn
