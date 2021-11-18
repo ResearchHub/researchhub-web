@@ -12,6 +12,7 @@ const colors = {
   LIGHT_GREY_BACKGROUND: "#EDEDED",
   LIGHT_GREY_BORDER: "rgba(39, 39, 39, 0.07)",
   LIGHT_GREY_TEXT: "rgba(36, 31, 58, 0.39)",
+  LIGHTER_GREY_BACKGROUND: "#F6F6F8",
   LIGHT_GREY: (opacity = 1) => `rgba(242, 242, 246, ${opacity})`,
   LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`,
   NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`,
