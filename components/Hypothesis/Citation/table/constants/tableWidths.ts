@@ -11,7 +11,7 @@ export const tableMaxWidths = {
   CITED_BY: "100px",
   COMMENTS: "100px",
   CONSENSUS: "100px",
-  DOI: "120px",
+  DOI: "150px",
   SOURCE: "840px",
   TYPE: "100px",
 };
