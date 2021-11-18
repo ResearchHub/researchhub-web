@@ -104,6 +104,7 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
         customBurgerIcon={false}
+        disableCloseOnEsc
         isOpen={!isNullOrUndefined(citationID)}
         right
         styles={
@@ -112,10 +113,6 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
             : subLargeBurgerMenuStyleOverride
         }
         width={"100%"}
-        handleClose={() => {
-          alert("HI");
-          hypothesisUnduxStore.set("targetCitationComment")(null);
-        }}
       >
         <CitationCommentSidebar {...citationCommentSidebarProps} />
       </SlideMenu>

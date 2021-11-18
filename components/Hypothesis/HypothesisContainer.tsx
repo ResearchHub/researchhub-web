@@ -27,8 +27,6 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
   );
-  const { citationID } = targetCitationComment ?? {};
-  const shouldDisplayCitationCommentBar = !isNullOrUndefined(citationID);
   const [hypothesis, setHypothesis] = useState<any>(null);
 
   useEffect(() => {
