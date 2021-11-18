@@ -132,30 +132,14 @@ export default function CitationTableRowItem({
           width={tableWidths.TYPE}
         />
         <ItemColumn
-          maxWidth={tableMaxWidths.DOI}
-          value={
-            <div
-              className={css(styles.DOI)}
-              onClick={(event: SyntheticEvent) => event.stopPropagation()}
-            >
-              {doi}
-            </div>
-          }
-          width={tableWidths.DOI}
-        />
-        <ItemColumn
           maxWidth={tableMaxWidths.CITED_BY}
           className={[styles.itemCenterAlign]}
           value={
-            <div
-              onClick={
-                (event: SyntheticEvent): void =>
-                  event.stopPropagation() /* prevent ripple from navigating */
-              }
-              role="button"
-            >
-              <AuthorFacePile authorProfiles={citedBy} imgSize={24} />
-            </div>
+            <AuthorFacePile
+              authorProfiles={citedBy}
+              imgSize={24}
+              loadOffset={360}
+            />
           }
           width={tableWidths.CITED_BY}
         />
@@ -179,6 +163,18 @@ export default function CitationTableRowItem({
             </div>
           }
           width={tableWidths.COMMENTS}
+        />
+        <ItemColumn
+          maxWidth={tableMaxWidths.DOI}
+          value={
+            <div
+              className={css(styles.DOI)}
+              onClick={(event: SyntheticEvent) => event.stopPropagation()}
+            >
+              {doi}
+            </div>
+          }
+          width={tableWidths.DOI}
         />
       </div>
     </Ripples>

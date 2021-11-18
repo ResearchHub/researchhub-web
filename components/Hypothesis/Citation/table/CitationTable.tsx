@@ -111,12 +111,6 @@ export default function CitationTable({
             width={tableWidths.TYPE}
           />
           <CitationTableHeaderItem
-            className={styles.doiTitle}
-            label="DOI"
-            maxWidth={tableMaxWidths.DOI}
-            width={tableWidths.DOI}
-          />
-          <CitationTableHeaderItem
             className={styles.smallScreenControl}
             center
             label="Cited by"
@@ -129,6 +123,12 @@ export default function CitationTable({
             label="Comments"
             maxWidth={tableMaxWidths.COMMENTS}
             width={tableWidths.COMMENTS}
+          />
+          <CitationTableHeaderItem
+            className={styles.doiTitle}
+            label="DOI"
+            maxWidth={tableMaxWidths.DOI}
+            width={tableWidths.DOI}
           />
         </div>
         <div className={css(styles.itemsWrap)}>{rowItems}</div>
