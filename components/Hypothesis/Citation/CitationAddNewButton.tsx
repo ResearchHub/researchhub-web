@@ -1,5 +1,6 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -47,8 +48,8 @@ export default function CitationAddNewButton({
             updateLastFetchTime={updateLastFetchTime}
           />
           <FontAwesomeIcon
-            icon={"plus-circle"}
             className={css(noText ? null : styles.plusCircle)}
+            icon={faPlus}
           />
           {noText ? "" : <span>{"Add New Source"}</span>}
         </div>
