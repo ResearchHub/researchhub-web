@@ -22,6 +22,7 @@ import Router from "next/router";
 export type CitationTableRowItemProps = {
   citationID: ID;
   citationUnidocID: ID;
+  citationType: ValidCitationType;
   citedBy: Object[];
   consensusMeta: ConsensusMeta;
   source: {
@@ -31,7 +32,6 @@ export type CitationTableRowItemProps = {
     doi: ID;
     slug?: string | null;
   };
-  type: ValidCitationType;
   publish_date: string;
   updateLastFetchTime: Function;
 };
@@ -68,10 +68,10 @@ function ItemColumn({
 export default function CitationTableRowItem({
   citationID,
   citationUnidocID,
+  citationType,
   citedBy,
   consensusMeta,
   source: { displayTitle, docType, documentID, doi, slug },
-  type,
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
   const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
@@ -80,7 +80,7 @@ export default function CitationTableRowItem({
     documentID,
     slug,
   });
-  const isSupportSource = type === "SUPPORT";
+  const isSupportSource = citationType === "SUPPORT";
 
   return (
     <Ripples
