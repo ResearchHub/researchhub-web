@@ -14,6 +14,10 @@ import colors from "~/config/themes/colors";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
+import { breakpoints } from "~/config/themes/screen";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import Ripples from "react-ripples";
+import Router from "next/router";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
@@ -78,77 +82,93 @@ export default function CitationTableRowItem({
   const isSupportSource = type === "SUPPORT";
 
   return (
-    <div className={css(styles.tableRowItem)}>
-      <ItemColumn
-        maxWidth={tableMaxWidths.SOURCE}
-        value={
-          <div className={css(styles.sourceWrap)}>
-            <div className={css(styles.voteItemWrap)}>
-              <CitationVoteItem
-                citationID={citationID}
-                updateLastFetchTime={updateLastFetchTime}
-                voteMeta={{ ...consensusMeta }}
-              />
-            </div>
-            <div className={css(styles.sourceWrapControl)}>
-              <div className={css(styles.sourceTitle)}>
-                <Link
-                  href={UNIFIED_DOC_PAGE_URL_PATTERN}
-                  as={citationTitleLinkUri}
-                  passHref
-                >
-                  <a target="_blank" className={css(styles.link)}>
-                    {displayTitle}
-                  </a>
-                </Link>
+    <Ripples
+      className={css(styles.link)}
+      onClick={() =>
+        Router.push("/paper/[paperId]/[paperName]", citationTitleLinkUri)
+      }
+    >
+      <div className={css(styles.tableRowItem)}>
+        <ItemColumn
+          maxWidth={tableMaxWidths.SOURCE}
+          value={
+            <div className={css(styles.sourceWrap)}>
+              <div className={css(styles.voteItemWrap)}>
+                <CitationVoteItem
+                  citationID={citationID}
+                  updateLastFetchTime={updateLastFetchTime}
+                  voteMeta={{ ...consensusMeta }}
+                />
               </div>
-              <div
-                className={css(
-                  styles.typeIcon,
-                  isSupportSource ? styles.green : styles.red
-                )}
-                role="none"
-              >
-                <div className={css(styles.typeText)}>
-                  <span className={css(styles.iconWrap)}>
-                    {isSupportSource ? icons.checkCircle : icons.timesCircle}
-                  </span>
+              <div className={css(styles.sourceWrapControl)}>
+                <div className={css(styles.sourceTitle)}>{displayTitle}</div>
+              </div>
+            </div>
+          }
+          width={tableWidths.SOURCE}
+        />
+        <ItemColumn
+          maxWidth={tableMaxWidths.TYPE}
+          className={[styles.itemCenterAlign]}
+          value={
+            <div
+              className={css(
+                styles.typeIcon,
+                isSupportSource ? styles.green : styles.red
+              )}
+              role="none"
+            >
+              <div className={css(styles.typeContent)}>
+                <span className={css(styles.iconWrap)}>
+                  {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                </span>
+                <span className={css(styles.typeText)}>
                   {isSupportSource ? "Support" : "Reject"}
-                </div>
+                </span>
               </div>
             </div>
-          </div>
-        }
-        width={tableWidths.SOURCE}
-      />
-      <ItemColumn
-        maxWidth={tableMaxWidths.CITED_BY}
-        className={[styles.itemCenterAlign]}
-        value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
-        width={tableWidths.CITED_BY}
-      />
-      <ItemColumn
-        maxWidth={tableMaxWidths.COMMENTS}
-        className={[styles.itemCenterAlign]}
-        value={
-          <div
-            className={css(styles.commentsIcon, styles.paddingBottom4)}
-            onClick={(event: SyntheticEvent): void => {
-              event.stopPropagation();
-              hypothesisUnduxStore.set("targetCitationComment")({
-                citationID,
-                citationUnidocID,
-                citationTitle: displayTitle,
-              });
-            }}
-            role="button"
-          >
-            {icons.comments}
-          </div>
-        }
-        width={tableWidths.COMMENTS}
-      />
-    </div>
+          }
+          width={tableWidths.CITED_BY}
+        />
+        <ItemColumn
+          maxWidth={tableMaxWidths.CITED_BY}
+          className={[styles.itemCenterAlign]}
+          value={
+            <div
+              onClick={
+                (event: SyntheticEvent): void =>
+                  event.stopPropagation() /* prevent ripple from navigating */
+              }
+              role="button"
+            >
+              <AuthorFacePile authorProfiles={citedBy} imgSize={24} />
+            </div>
+          }
+          width={tableWidths.CITED_BY}
+        />
+        <ItemColumn
+          maxWidth={tableMaxWidths.COMMENTS}
+          className={[styles.itemCenterAlign]}
+          value={
+            <div
+              className={css(styles.commentsIcon, styles.paddingBottom4)}
+              onClick={(event: SyntheticEvent): void => {
+                event.stopPropagation();
+                hypothesisUnduxStore.set("targetCitationComment")({
+                  citationID,
+                  citationUnidocID,
+                  citationTitle: displayTitle,
+                });
+              }}
+              role="button"
+            >
+              {icons.comments}
+            </div>
+          }
+          width={tableWidths.COMMENTS}
+        />
+      </div>
+    </Ripples>
   );
 }
 
@@ -170,12 +190,17 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: 500,
   },
-  typeText: {
+  typeContent: {
     display: "block",
     fontSize: 12,
   },
+  typeText: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
+    },
+  },
   typeIcon: {
-    // alignItems: "center",
+    alignItems: "center",
     color: "#fff",
     display: "flex",
     justifyContent: "center",
@@ -184,6 +209,9 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     fontSize: 10,
     fontWeight: 500,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "unset",
+    },
   },
   sourceWrapControl: {},
   sourceTitle: {
@@ -201,7 +229,9 @@ const styles = StyleSheet.create({
   },
   iconWrap: {
     marginRight: 4,
-    // height: "inherit"
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      marginRight: 0,
+    },
   },
   marginRight8: {
     marginRight: 8,
@@ -216,9 +246,13 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
   },
   link: {
-    color: colors.BLUE(1),
+    color: "black",
     fontWeight: "normal",
     textDecoration: "none",
+    cursor: "pointer",
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
   },
   paperPadding: {
     padding: 8,
@@ -251,5 +285,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     height: "100%",
+    [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
+      minWidth: "120px",
+    },
   },
 });

@@ -106,6 +106,13 @@ export default function CitationTable({
           <CitationTableHeaderItem
             className={styles.smallScreenControl}
             center
+            label="Type"
+            maxWidth={tableMaxWidths.TYPE}
+            width={tableWidths.TYPE}
+          />
+          <CitationTableHeaderItem
+            className={styles.smallScreenControl}
+            center
             label="Cited by"
             maxWidth={tableMaxWidths.CITED_BY}
             width={tableWidths.CITED_BY}
@@ -113,7 +120,7 @@ export default function CitationTable({
           <CitationTableHeaderItem
             className={styles.smallScreenControl}
             center
-            label="Discussions"
+            label="Comments"
             maxWidth={tableMaxWidths.COMMENTS}
             width={tableWidths.COMMENTS}
           />
@@ -125,7 +132,9 @@ export default function CitationTable({
 }
 
 const styles = StyleSheet.create({
-  citationTableWrap: {},
+  citationTableWrap: {
+    overflowX: "auto",
+  },
   citationTable: {
     boxSizing: "border-box",
     margin: "8px 0 24px",
@@ -153,11 +162,15 @@ const styles = StyleSheet.create({
   },
   sourceTitle: {
     paddingLeft: 8,
+    [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
+      minWidth: "unset",
+      width: "35%",
+    },
   },
   smallScreenControl: {
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: "120px",
-      minWidth: "120px",
+      width: "100px",
+      minWidth: "100px",
     },
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       minWidth: "unset",
