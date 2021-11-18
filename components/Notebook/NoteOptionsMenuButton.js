@@ -39,9 +39,9 @@ const NoteOptionsMenuButton = ({
       icon: icons.lock,
       show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
+      onClick: async (e) => {
+        e && e.stopPropagation();
         setIsPopoverOpen(!isPopoverOpen);
-
         try {
           await makeNotePrivate({ noteId: noteId });
         } catch (error) {
@@ -60,9 +60,9 @@ const NoteOptionsMenuButton = ({
       icon: icons.friends,
       show: note.access === NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
+      onClick: async (e) => {
+        e && e.stopPropagation();
         setIsPopoverOpen(!isPopoverOpen);
-
         try {
           await updateNoteUserPermissions({
             orgId: currentOrg.id,
