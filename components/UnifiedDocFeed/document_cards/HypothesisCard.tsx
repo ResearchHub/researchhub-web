@@ -417,7 +417,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     position: "relative",
     fontSize: 14,
-    background: "#F6F6F8",
+    background: colors.LIGHTER_GREY_BACKGROUND,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
