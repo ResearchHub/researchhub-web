@@ -23,6 +23,8 @@ const colors = {
   TEXT_DARKER_GREY: "#241F3A",
   TEXT_GREY: (opacity = 1) => `rgba(128, 126, 134, ${opacity})`,
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
+  TOOLTIP_BACKGROUND_BLACK: "#E69A8DFF",
+  TOOLTIP_TEXT_COLOR_WHITE: "5F4B8BFF",
 };
 
 export const genericCardColors = {
