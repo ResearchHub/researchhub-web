@@ -236,12 +236,29 @@ const styles = StyleSheet.create({
     },
   },
   sourceWrapControl: {},
+  sourceWrap: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    height: "100%",
+    [`@media only screen and (max-width:${breakpoints.xsmall.str})`]: {
+      minWidth: 120,
+      maxWidth: 120,
+    },
+  },
   sourceTitle: {
     boxSizing: "border-box",
     maxHeight: 32,
     overflow: "hidden",
     textOverflow: "ellipsis",
     marginBottom: 4,
+    paddingRight: 16,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      paddingRight: 8,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      paddingRight: 2,
+    },
   },
   green: {
     backgroundColor: colors.GREEN(1),
@@ -301,15 +318,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
     minWidth: 40,
     width: 40,
-  },
-  sourceWrap: {
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-    [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
-      minWidth: "120px",
-    },
   },
   DOI: {
     boxSizing: "border-box",
