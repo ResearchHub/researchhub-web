@@ -1,5 +1,11 @@
+import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import { SyntheticEvent, useState, useEffect, useMemo } from "react";
@@ -18,13 +24,7 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-  silentEmptyFnc,
-} from "~/config/utils/nullchecks";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
-import { breakpoints } from "~/config/themes/screen";
 
 export type HypothesisCardProps = {
   aggregate_citation_consensus: any;
