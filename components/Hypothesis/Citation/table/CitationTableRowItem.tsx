@@ -8,7 +8,7 @@ import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationVoteItem from "./CitationVoteItem";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
 import icons from "~/config/themes/icons";
 import ReactTooltip from "react-tooltip";
@@ -290,7 +290,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     cursor: "pointer",
     ":hover": {
-      backgroundColor: "#FAFAFA",
+      backgroundColor: genericCardColors.BACKGROUND,
     },
   },
   paperPadding: {
