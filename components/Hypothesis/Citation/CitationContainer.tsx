@@ -48,12 +48,14 @@ export default function CitationContainer({
             noText
           />
         </div>
-        <CitationTable
-          citationType={citationType}
-          hypothesisID={hypothesisID}
-          lastFetchTime={lastFetchTime}
-          updateLastFetchTime={onCitationUpdate}
-        />
+        <div className={css(styles.tableHorizontalWrap)}>
+          <CitationTable
+            citationType={citationType}
+            hypothesisID={hypothesisID}
+            lastFetchTime={lastFetchTime}
+            updateLastFetchTime={onCitationUpdate}
+          />
+        </div>
       </div>
     </div>
   );
@@ -100,5 +102,10 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
     },
+  },
+  tableHorizontalWrap: {
+    width: "100%",
+    height: "100%",
+    overflowX: "auto",
   },
 });
