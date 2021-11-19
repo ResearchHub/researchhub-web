@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
 import LazyLoad from "react-lazyload";
-import { ReactElement, SyntheticEvent, useMemo } from "react";
+import { ReactElement, useMemo } from "react";
 
 type Props = {
   authorProfiles: Object[];
@@ -24,10 +24,6 @@ export default function AuthorFacePile({
               author={author}
               border={`2px solid ${colors.LIGHT_GREY(1)}`}
               key={index}
-              onClick={(event: SyntheticEvent): void => {
-                event.stopPropagation();
-                event.preventDefault();
-              }}
               size={imgSize}
             />
           );
