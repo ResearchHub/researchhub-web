@@ -4,7 +4,11 @@ import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
+import {
+  tableMaxWidths,
+  tableMinWidth,
+  tableWidths,
+} from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import CitationNoResult from "./CitationNoResult";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
@@ -110,21 +114,18 @@ export default function CitationTable({
             width={tableWidths.DOI}
           />
           <CitationTableHeaderItem
-            className={styles.smallScreenControl}
             center
             label="Cited by"
             maxWidth={tableMaxWidths.CITED_BY}
             width={tableWidths.CITED_BY}
           />
           <CitationTableHeaderItem
-            className={styles.smallScreenControl}
             center
             label="Comments"
             maxWidth={tableMaxWidths.COMMENTS}
             width={tableWidths.COMMENTS}
           />
           <CitationTableHeaderItem
-            className={styles.smallScreenControl}
             center
             label=""
             maxWidth={tableMaxWidths.TYPE}
@@ -150,8 +151,9 @@ const styles = StyleSheet.create({
   columnHeaderWrap: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
-    width: "100%",
     height: 52,
+    minWidth: tableMinWidth,
+    width: "100%",
   },
   itemsWrap: {
     display: "flex",
@@ -168,25 +170,9 @@ const styles = StyleSheet.create({
   },
   sourceTitle: {
     paddingLeft: 8,
-    [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
-      minWidth: "unset",
-      width: "35%",
-    },
   },
   doiTitle: {
     paddingLeft: 8,
-    [`@media only screen and (max-width:${breakpoints.xxsmall.str})`]: {
-      minWidth: "unset",
-      width: "35%",
-    },
   },
-  smallScreenControl: {
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      width: "100px",
-      minWidth: "100px",
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      minWidth: "unset",
-    },
-  },
+  smallScreenControl: {},
 });
