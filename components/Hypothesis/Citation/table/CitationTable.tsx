@@ -102,13 +102,11 @@ export default function CitationTable({
       <div className={css(styles.citationTable)}>
         <div className={css(styles.columnHeaderWrap)}>
           <CitationTableHeaderItem
-            className={styles.sourceTitle}
             label="Paper"
             maxWidth={tableMaxWidths.SOURCE}
             width={tableWidths.SOURCE}
           />
           <CitationTableHeaderItem
-            className={styles.doiTitle}
             label="DOI"
             maxWidth={tableMaxWidths.DOI}
             width={tableWidths.DOI}
@@ -168,11 +166,4 @@ const styles = StyleSheet.create({
   addCitation: {
     marginTop: 20,
   },
-  sourceTitle: {
-    paddingLeft: 8,
-  },
-  doiTitle: {
-    paddingLeft: 8,
-  },
-  smallScreenControl: {},
 });

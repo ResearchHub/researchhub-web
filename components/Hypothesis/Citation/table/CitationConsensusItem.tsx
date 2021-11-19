@@ -327,8 +327,9 @@ function CitationConsensusItem({
     doesMajoritySupport,
     isNeutral,
     majorityPercent,
-    localTotalCount,
+    totalCount: localTotalCount,
   });
+  
   const consensusBar =
     localTotalCount > 0 ? (
       <div className={css(styles.consensusWrap)}>
