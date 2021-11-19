@@ -1,7 +1,16 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 
-export default function CitationNoResult(): ReactElement<"div"> {
+export default function CitationNoResult({
+  citationType,
+}: {
+  citationType: ValidCitationType;
+}): ReactElement<"div"> {
+  const formattedTypeText =
+    citationType?.length ?? 0 > 0
+      ? ` ${citationType?.toLocaleLowerCase()}ing`
+      : "";
   return (
     <div className={css(styles.citationNotResult)}>
       <img
@@ -11,7 +20,7 @@ export default function CitationNoResult(): ReactElement<"div"> {
         alt="Empty State Icon"
       />
       <span className={css(styles.emptyPlaceholderText)}>
-        {"There are no sources related to this hypothesis"}
+        {`There are no${formattedTypeText} sources related to this hypothesis`}
       </span>
       <span className={css(styles.emptyPlaceholderSubtitle)}>
         {"Be the first to add a source"}
@@ -30,7 +39,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   emptyPlaceholderImage: {
-    width: 200,
+    width: 100,
     objectFit: "contain",
     marginTop: 20,
     "@media only screen and (max-width: 415px)": {

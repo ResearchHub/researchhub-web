@@ -7,11 +7,13 @@ import { ReactElement, useMemo } from "react";
 type Props = {
   authorProfiles: Object[];
   imgSize: number | string;
+  loadOffset?: number;
 };
 
 export default function AuthorFacePile({
   authorProfiles = [],
   imgSize,
+  loadOffset,
 }: Props): ReactElement<"div"> {
   const imgs = useMemo(
     () =>
@@ -31,7 +33,7 @@ export default function AuthorFacePile({
   );
   return (
     <div className={css(styles.facePile)}>
-      <LazyLoad offset={100} once>
+      <LazyLoad offset={loadOffset ?? 100} once>
         {imgs}
       </LazyLoad>
     </div>

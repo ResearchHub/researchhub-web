@@ -1,32 +1,42 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { ID } from "config/types/root_types";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useState } from "react";
+import { ValidCitationType } from "./modal/AddNewSourceBodySearch";
 import AddNewSourceModal from "./modal/AddNewSourceModal";
 import Button from "../../Form/Button";
 import colors from "~/config/themes/colors";
 
 type Props = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
+  noText?: Boolean;
 };
 
 export default function CitationAddNewButton({
+  citationType,
   hypothesisID,
   updateLastFetchTime,
+  noText,
 }: Props): ReactElement<"div"> {
   const [shouldOpenModal, setShouldOpenModal] = useState<boolean>(false);
   return (
     <Button
-      customButtonStyle={styles.citationAddNewButton}
+      customButtonStyle={
+        noText ? styles.buttonNoText : styles.citationAddNewButton
+      }
       onClick={(): void => setShouldOpenModal(true)}
       role="button"
       label={
         <div className={css(styles.buttonInner)}>
           <AddNewSourceModal
-          hypothesisID={hypothesisID}
+            citationType={citationType}
+            hypothesisID={hypothesisID}
             isModalOpen={shouldOpenModal}
             onCloseModal={(event: SyntheticEvent): void => {
               if (!isNullOrUndefined(event)) {
@@ -38,10 +48,10 @@ export default function CitationAddNewButton({
             updateLastFetchTime={updateLastFetchTime}
           />
           <FontAwesomeIcon
-            icon={"plus-circle"}
-            className={css(styles.plusCircle)}
+            className={css(noText ? null : styles.plusCircle)}
+            icon={faPlus}
           />
-          <span>{"Add New Source"}</span>
+          {noText ? "" : <span>{"Add New Source"}</span>}
         </div>
       }
     />
@@ -59,14 +69,29 @@ const styles = StyleSheet.create({
     width: 180,
     userSelect: "none",
   },
+  buttonNoText: {
+    alignItems: "center",
+    justifyContent: "center",
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    display: "flex",
+    fontSize: 14,
+    height: 30,
+    width: 30,
+    userSelect: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      height: 30,
+      minHeight: "unset",
+      minWidth: "unset",
+      width: 30,
+    },
+  },
   plus: {
-    // color: colors.BLUE(1),
     left: 5,
     position: "absolute",
     top: -1,
   },
   plusCircle: {
-    // fontSize: ,
     marginRight: 6,
   },
   buttonInner: {
