@@ -120,7 +120,10 @@ export default function CitationTableRowItem({
                     data-tip
                     data-for={`consensus-doi-text-${doi}`}
                     className={css(styles.DOI)}
-                    onClick={(event: SyntheticEvent) => event.stopPropagation()}
+                    onClick={(event: SyntheticEvent) => {
+                      event.stopPropagation();
+                      event.preventDefault();
+                    }}
                   >
                     {doi}
                   </span>
@@ -157,6 +160,7 @@ export default function CitationTableRowItem({
                   className={css(styles.commentsIcon, styles.paddingBottom4)}
                   onClick={(event: SyntheticEvent): void => {
                     event.stopPropagation();
+                    event.preventDefault();
                     hypothesisUnduxStore.set("targetCitationComment")({
                       citationID,
                       citationUnidocID,
@@ -335,7 +339,6 @@ const styles = StyleSheet.create({
     paddingLeft: 4,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    width: "100%",
     wordWrap: "break-word",
   },
 });

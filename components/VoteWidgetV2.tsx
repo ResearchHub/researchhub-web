@@ -186,6 +186,7 @@ export default function VoteWidgetV2({
         }
         onClick={(event: SyntheticEvent) => {
           event.stopPropagation();
+          event.preventDefault();
           handleUpvote({
             currentUserVoteType,
             localVoteMeta,
@@ -210,6 +211,7 @@ export default function VoteWidgetV2({
         }
         onClick={(event: SyntheticEvent) => {
           event.stopPropagation();
+          event.preventDefault();
           handleDownvote({
             currentUserVoteType,
             localVoteMeta,
