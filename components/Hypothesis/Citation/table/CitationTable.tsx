@@ -98,53 +98,49 @@ export default function CitationTable({
   );
 
   return (
-    <div className={css(styles.citationTableWrap)}>
-      <div className={css(styles.citationTable)}>
-        <div className={css(styles.columnHeaderWrap)}>
-          <CitationTableHeaderItem
-            label="Paper"
-            maxWidth={tableMaxWidths.SOURCE}
-            width={tableWidths.SOURCE}
-          />
-          <CitationTableHeaderItem
-            label="DOI"
-            maxWidth={tableMaxWidths.DOI}
-            width={tableWidths.DOI}
-          />
-          <CitationTableHeaderItem
-            center
-            label="Cited by"
-            maxWidth={tableMaxWidths.CITED_BY}
-            width={tableWidths.CITED_BY}
-          />
-          <CitationTableHeaderItem
-            center
-            label="Comments"
-            maxWidth={tableMaxWidths.COMMENTS}
-            width={tableWidths.COMMENTS}
-          />
-          <CitationTableHeaderItem
-            center
-            label=""
-            maxWidth={tableMaxWidths.TYPE}
-            width={tableWidths.TYPE}
-          />
-        </div>
-        <div className={css(styles.itemsWrap)}>{rowItems}</div>
+    <div className={css(styles.citationTable)}>
+      <div className={css(styles.columnHeaderWrap)}>
+        <CitationTableHeaderItem
+          label="Paper"
+          maxWidth={tableMaxWidths.SOURCE}
+          width={tableWidths.SOURCE}
+        />
+        <CitationTableHeaderItem
+          label="DOI"
+          maxWidth={tableMaxWidths.DOI}
+          width={tableWidths.DOI}
+        />
+        <CitationTableHeaderItem
+          center
+          label="Cited by"
+          maxWidth={tableMaxWidths.CITED_BY}
+          width={tableWidths.CITED_BY}
+        />
+        <CitationTableHeaderItem
+          center
+          label="Comments"
+          maxWidth={tableMaxWidths.COMMENTS}
+          width={tableWidths.COMMENTS}
+        />
+        <CitationTableHeaderItem
+          center
+          label=""
+          maxWidth={tableMaxWidths.TYPE}
+          width={tableWidths.TYPE}
+        />
       </div>
+      <div className={css(styles.itemsWrap)}>{rowItems}</div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
-  citationTableWrap: {
-    overflowX: "auto",
-  },
   citationTable: {
     boxSizing: "border-box",
     margin: "8px 0 24px",
     minHeight: 120,
     marginBottom: 0,
+    overflowX: "auto",
   },
   columnHeaderWrap: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
