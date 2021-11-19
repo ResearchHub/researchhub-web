@@ -352,7 +352,7 @@ function HypothesisCard({
                   consensusMeta={{
                     downCount: aggreCitationCons?.down_count ?? 0,
                     neutralCount: aggreCitationCons?.neutral_count ?? 0,
-                    totalCount: aggreCitationCons?.citation_count ?? 0,
+                    totalCount: null,
                     upCount: aggreCitationCons?.up_count ?? 0,
                     userVote: {},
                   }}

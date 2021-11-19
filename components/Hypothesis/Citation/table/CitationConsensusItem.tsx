@@ -36,7 +36,7 @@ export type ConsensusMeta = {
   downCount: number;
   neutralCount: number;
   upCount: number;
-  totalCount: number;
+  totalCount: number | null;
   userVote: any;
 };
 
@@ -90,7 +90,7 @@ function getDetailedText({
   totalCount: number;
   majorityPercent: number;
 }): ReactNode {
-  const isPlural = totalCount > 1;
+  const isPlural = !isNaN(totalCount) && totalCount > 1;
   const answer = doesMajoritySupport ? "yes" : "no";
   return (
     <div
@@ -329,7 +329,7 @@ function CitationConsensusItem({
     majorityPercent,
     totalCount: localTotalCount,
   });
-  
+
   const consensusBar =
     localTotalCount > 0 ? (
       <div className={css(styles.consensusWrap)}>
