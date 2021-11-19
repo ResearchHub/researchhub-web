@@ -4,7 +4,11 @@ import { css, StyleSheet } from "aphrodite";
 import { formatUnifiedDocPageUrl } from "~/config/utils/url_patterns";
 import { Fragment, ReactElement, ReactNode, SyntheticEvent } from "react";
 import { ID } from "~/config/types/root_types";
-import { tableMaxWidths, tableWidths } from "./constants/tableWidths";
+import {
+  tableMaxWidths,
+  tableMinWidth,
+  tableWidths,
+} from "./constants/tableWidths";
 import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
 import CitationVoteItem from "./CitationVoteItem";
@@ -54,7 +58,7 @@ function ItemColumn({
         Boolean(bold) && styles.bold,
         className
       )}
-      style={{ maxWidth: maxWidth ?? width, width }}
+      style={{ maxWidth: maxWidth ?? width, width, minWidth: width }}
     >
       {value}
     </div>
@@ -101,9 +105,7 @@ export default function CitationTableRowItem({
                   voteMeta={{ ...consensusMeta }}
                 />
               </div>
-              <div className={css(styles.sourceWrapControl)}>
-                <div className={css(styles.sourceTitle)}>{displayTitle}</div>
-              </div>
+              <div className={css(styles.sourceTitle)}>{displayTitle}</div>
             </div>
           }
           width={tableWidths.SOURCE}
@@ -112,14 +114,14 @@ export default function CitationTableRowItem({
           maxWidth={tableMaxWidths.DOI}
           value={
             <Fragment>
-              <div
+              <span
                 data-tip
                 data-for={`consensus-doi-text-${doi}`}
                 className={css(styles.DOI)}
                 onClick={(event: SyntheticEvent) => event.stopPropagation()}
               >
                 {doi}
-              </div>
+              </span>
               <ReactTooltip
                 backgroundColor={colors.TOOLTIP_BACKGROUND_BLACK}
                 effect="solid"
@@ -235,30 +237,23 @@ const styles = StyleSheet.create({
       width: "unset",
     },
   },
-  sourceWrapControl: {},
   sourceWrap: {
-    display: "flex",
     alignItems: "center",
-    width: "100%",
+    display: "flex",
     height: "100%",
-    [`@media only screen and (max-width:${breakpoints.xsmall.str})`]: {
-      minWidth: 120,
-      maxWidth: 120,
-    },
+    overflow: "hidden",
+    paddingRight: 16,
+    textOverflow: "ellipsis",
+    width: "100%",
+    wordWrap: "break-word",
   },
   sourceTitle: {
     boxSizing: "border-box",
+    marginBottom: 4,
     maxHeight: 32,
     overflow: "hidden",
     textOverflow: "ellipsis",
-    marginBottom: 4,
-    paddingRight: 16,
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      paddingRight: 8,
-    },
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      paddingRight: 2,
-    },
+    width: "100%",
   },
   green: {
     backgroundColor: colors.GREEN(1),
@@ -278,8 +273,9 @@ const styles = StyleSheet.create({
   tableRowItem: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
-    width: "100%",
+    minWidth: tableMinWidth,
     padding: "8px",
+    width: "100%",
   },
   capitalize: {
     textTransform: "capitalize",
@@ -288,6 +284,7 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "normal",
     textDecoration: "none",
+    overflow: "unset",
     cursor: "pointer",
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
@@ -315,16 +312,19 @@ const styles = StyleSheet.create({
     paddingBottom: 4,
   },
   voteItemWrap: {
-    marginRight: 8,
+    marginRight: 16,
     minWidth: 40,
     width: 40,
   },
   DOI: {
-    boxSizing: "border-box",
-    maxHeight: 32,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
     marginBottom: 4,
+    maxHeight: 32,
+    maxWidth: "inherit",
+    overflow: "hidden",
     paddingLeft: 4,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    width: "100%",
+    wordWrap: "break-word",
   },
 });

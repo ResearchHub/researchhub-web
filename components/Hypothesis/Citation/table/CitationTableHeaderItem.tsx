@@ -26,6 +26,7 @@ export default function CitationTableHeaderItem({
       )}
       style={{
         maxWidth: maxWidth ?? width,
+        minWidth: width,
         width,
       }}
     >
