@@ -38,7 +38,7 @@ export default function CitationTableHeaderItem({
 const styles = StyleSheet.create({
   headerItem: {
     alignItems: "center",
-    boxSizing: "border-box",
+    // boxSizing: "border-box",
     color: colors.LIGHT_GREY_TEXT,
     display: "flex",
     fontSize: 12,
