@@ -28,9 +28,11 @@ export const paper = (paper) => {
   };
 };
 
+// NOTE: calvinhlee - why was this even necessary?
 export const paperPost = ({
   abstract,
   authors,
+  citation_type,
   doi,
   file,
   hubs,
@@ -58,7 +60,6 @@ export const paperPost = ({
       });
     }
   }
-
   // NOTE - calvinhlee: formatting data like below results in unexpected update behavior.
   hubs &&
     hubs.forEach((hub) => {
@@ -76,6 +77,7 @@ export const paperPost = ({
   paper_title && formData.append("paper_title", paper_title);
   paper_type && formData.append("paper_type", paper_type);
   hypothesis_id && formData.append("hypothesis_id", hypothesis_id);
+  citation_type && formData.append("citation_type", citation_type);
   return formData;
 };
 

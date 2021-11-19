@@ -1,6 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { ID } from "~/config/types/root_types";
 import { postCitationThread } from "../api/postCitationThread";
 import { ReactElement } from "react";
@@ -8,7 +9,6 @@ import colors from "~/config/themes/colors";
 import ColumnContainer from "~/components/Paper/SideColumn/ColumnContainer";
 import DiscussionPostMetadata from "~/components//DiscussionPostMetadata.js";
 import TextEditor from "~/components/TextEditor";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 type Props = {
   auth?: any; // redux
@@ -111,6 +111,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       marginTop: 0,
     },
+    boxShadow: "none",
   },
   commentEditorStyles: {
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
@@ -128,7 +129,7 @@ const styles = StyleSheet.create({
   threadComposerContainer: {
     alignItems: "center",
     backgroundColor: colors.ICY_GREY,
-    border: `1px solid ${colors.LIGHT_GREY(1)}`,
+    // border: `1px solid ${colors.LIGHT_GREY(1)}`,
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",

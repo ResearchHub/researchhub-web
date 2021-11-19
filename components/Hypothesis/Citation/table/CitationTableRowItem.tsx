@@ -1,42 +1,56 @@
+import { breakpoints } from "~/config/themes/screen";
+import { ConsensusMeta } from "./CitationConsensusItem";
 import { css, StyleSheet } from "aphrodite";
+import { formatUnifiedDocPageUrl } from "~/config/utils/url_patterns";
+import { Fragment, ReactElement, ReactNode, SyntheticEvent } from "react";
 import { ID } from "~/config/types/root_types";
 import {
-  formatUnifiedDocPageUrl,
-  UNIFIED_DOC_PAGE_URL_PATTERN,
-} from "~/config/utils/url_patterns";
-import { tableWidths } from "./constants/tableWidths";
-import { ReactElement, ReactNode, SyntheticEvent } from "react";
+  tableMaxWidths,
+  tableMinWidth,
+  tableWidths,
+} from "./constants/tableWidths";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import AuthorFacePile from "~/components/shared/AuthorFacePile";
-import CitationConsensusItem, { ConsensusMeta } from "./CitationConsensusItem";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import Link from "next/link";
+import CitationVoteItem from "./CitationVoteItem";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import HypothesisUnduxStore from "../../undux/HypothesisUnduxStore";
+import icons from "~/config/themes/icons";
+import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
+import Link from "next/link";
 
 export type CitationTableRowItemProps = {
   citationID: ID;
   citationUnidocID: ID;
+  citationType: ValidCitationType;
   citedBy: Object[];
   consensusMeta: ConsensusMeta;
   source: {
     displayTitle: string;
     docType: string;
     documentID: ID;
+    doi: ID;
     slug?: string | null;
   };
-  type: string;
   publish_date: string;
   updateLastFetchTime: Function;
 };
 
 type ItemColumnProps = {
   bold?: boolean;
+  className?: Object | Object[];
+  maxWidth?: string;
   value: ReactNode;
   width: string;
-  className?: Object | Object[];
 };
 
-function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
+function ItemColumn({
+  bold,
+  className,
+  maxWidth,
+  value,
+  width,
+}: ItemColumnProps) {
   return (
     <div
       className={css(
@@ -44,7 +58,7 @@ function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
         Boolean(bold) && styles.bold,
         className
       )}
-      style={{ maxWidth: width, minWidth: width, width }}
+      style={{ maxWidth: maxWidth ?? width, width, minWidth: width }}
     >
       {value}
     </div>
@@ -54,10 +68,10 @@ function ItemColumn({ bold, value, width, className }: ItemColumnProps) {
 export default function CitationTableRowItem({
   citationID,
   citationUnidocID,
+  citationType,
   citedBy,
   consensusMeta,
-  source: { displayTitle, docType, documentID, slug },
-  type,
+  source: { displayTitle, docType, documentID, doi, slug },
   updateLastFetchTime,
 }: CitationTableRowItemProps): ReactElement<"div"> {
   const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
@@ -66,65 +80,123 @@ export default function CitationTableRowItem({
     documentID,
     slug,
   });
+  const isSupportSource = citationType === "SUPPORT";
+
   return (
-    <div className={css(styles.tableRowItem)}>
-      <ItemColumn
-        bold
-        value={
-          <Link
-            href={UNIFIED_DOC_PAGE_URL_PATTERN}
-            as={citationTitleLinkUri}
-            passHref
-          >
-            <a target="_blank" className={css(styles.link)}>
-              {displayTitle}
-            </a>
-          </Link>
-        }
-        width={tableWidths.SOURCE}
-      />
-      <ItemColumn
-        className={styles.capitalize}
-        value={type && type.toLocaleLowerCase()}
-        width={tableWidths.TYPE}
-      />
-      <ItemColumn
-        value={
-          <CitationConsensusItem
-            citationID={citationID}
-            consensusMeta={consensusMeta}
-            shouldAllowVote
-            updateLastFetchTime={updateLastFetchTime}
-          />
-        }
-        width={tableWidths.CONSENSUS}
-      />
-      <ItemColumn
-        className={[styles.itemCenterAlign, styles.paddingRight16]}
-        value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
-        width={tableWidths.CITED_BY}
-      />
-      <ItemColumn
-        className={styles.itemCenterAlign}
-        value={
-          <div
-            className={css(styles.commentsIcon, styles.paddingBottom4)}
-            onClick={(event: SyntheticEvent): void => {
-              event.stopPropagation();
-              hypothesisUnduxStore.set("targetCitationComment")({
-                citationID,
-                citationUnidocID,
-                citationTitle: displayTitle,
-              });
-            }}
-            role="button"
-          >
-            {icons.comments}
+    <Link
+      href={"/paper/[paperId]/[paperName]"}
+      as={citationTitleLinkUri}
+      passHref
+    >
+      <a className={css(styles.link)} target="_blank">
+        <Ripples className={css(styles.ripples)}>
+          <div className={css(styles.tableRowItem)}>
+            <ItemColumn
+              maxWidth={tableMaxWidths.SOURCE}
+              value={
+                <div className={css(styles.sourceWrap)}>
+                  <div className={css(styles.voteItemWrap)}>
+                    <CitationVoteItem
+                      citationID={citationID}
+                      updateLastFetchTime={updateLastFetchTime}
+                      voteMeta={{
+                        ...consensusMeta,
+                        totalCount:
+                          consensusMeta.totalCount ??
+                          consensusMeta.upCount + consensusMeta.downCount,
+                      }}
+                    />
+                  </div>
+                  <div className={css(styles.sourceTitle)}>{displayTitle}</div>
+                </div>
+              }
+              width={tableWidths.SOURCE}
+            />
+            <ItemColumn
+              maxWidth={tableMaxWidths.DOI}
+              value={
+                <Fragment>
+                  <span
+                    data-tip
+                    data-for={`consensus-doi-text-${doi}`}
+                    className={css(styles.DOI)}
+                    onClick={(event: SyntheticEvent) => event.stopPropagation()}
+                  >
+                    {doi}
+                  </span>
+                  <ReactTooltip
+                    backgroundColor={colors.TOOLTIP_BACKGROUND_BLACK}
+                    effect="solid"
+                    id={`consensus-doi-text-${doi}`}
+                    place="top"
+                    textColor={colors.TOOLTIP_TEXT_COLOR_WHITE}
+                    type="dark"
+                    children={doi}
+                  />
+                </Fragment>
+              }
+              width={tableWidths.DOI}
+            />
+            <ItemColumn
+              maxWidth={tableMaxWidths.CITED_BY}
+              className={[styles.itemCenterAlign]}
+              value={
+                <AuthorFacePile
+                  authorProfiles={citedBy}
+                  imgSize={24}
+                  loadOffset={360}
+                />
+              }
+              width={tableWidths.CITED_BY}
+            />
+            <ItemColumn
+              maxWidth={tableMaxWidths.COMMENTS}
+              className={[styles.itemCenterAlign]}
+              value={
+                <div
+                  className={css(styles.commentsIcon, styles.paddingBottom4)}
+                  onClick={(event: SyntheticEvent): void => {
+                    event.stopPropagation();
+                    hypothesisUnduxStore.set("targetCitationComment")({
+                      citationID,
+                      citationUnidocID,
+                      citationTitle: displayTitle,
+                    });
+                  }}
+                  role="button"
+                >
+                  {icons.comments}
+                </div>
+              }
+              width={tableWidths.COMMENTS}
+            />
+            <ItemColumn
+              maxWidth={tableMaxWidths.TYPE}
+              className={[styles.itemCenterAlign]}
+              value={
+                <div
+                  className={css(
+                    styles.typeIcon,
+                    isSupportSource ? styles.green : styles.red
+                  )}
+                  role="none"
+                >
+                  <div className={css(styles.typeContent)}>
+                    <span className={css(styles.iconWrap)}>
+                      {isSupportSource ? icons.checkCircle : icons.timesCircle}
+                    </span>
+                    <span className={css(styles.typeText)}>
+                      {isSupportSource ? "Support" : "Reject"}
+                    </span>
+                  </div>
+                </div>
+              }
+              width={tableWidths.TYPE}
+            />
           </div>
-        }
-        width={tableWidths.COMMENTS}
-      />
-    </div>
+        </Ripples>
+      </a>
+    </Link>
   );
 }
 
@@ -134,7 +206,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 14,
-    padding: "20px 0px",
     justifyContent: "flex-start",
     fontFamily: "Roboto",
     size: 16,
@@ -147,17 +218,92 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: 500,
   },
+  typeContent: {
+    display: "block",
+    fontSize: 12,
+  },
+  typeText: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      display: "none",
+    },
+  },
+  typeIcon: {
+    alignItems: "center",
+    color: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    width: 72,
+    padding: 4,
+    borderRadius: 6,
+    fontSize: 10,
+    fontWeight: 500,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      width: "unset",
+    },
+  },
+  sourceWrap: {
+    alignItems: "center",
+    display: "flex",
+    height: "100%",
+    overflow: "hidden",
+    paddingLeft: 12,
+    textOverflow: "ellipsis",
+    width: "100%",
+    wordWrap: "break-word",
+  },
+  sourceTitle: {
+    boxSizing: "border-box",
+    marginBottom: 4,
+    maxHeight: 32,
+    paddingRight: 12,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    width: "100%",
+  },
+  green: {
+    backgroundColor: colors.GREEN(1),
+  },
+  red: {
+    backgroundColor: colors.RED(1),
+  },
+  iconWrap: {
+    marginRight: 4,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      marginRight: 0,
+    },
+  },
+  marginRight8: {
+    marginRight: 8,
+  },
   tableRowItem: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
+    minWidth: tableMinWidth,
+    padding: "8px 0",
     width: "100%",
+    ":hover": {
+      backgroundColor: genericCardColors.BACKGROUND,
+    },
   },
   capitalize: {
     textTransform: "capitalize",
   },
   link: {
-    color: colors.BLUE(1),
+    color: "black",
+    cursor: "pointer",
     textDecoration: "none",
+    overflow: "unset",
+    width: "100%",
+  },
+  ripples: {
+    fontWeight: "normal",
+    overflowY: "hidden",
+    width: "100%",
+    minWidth: tableMinWidth,
+  },
+  paperPadding: {
+    padding: 8,
+    paddingLeft: 0,
   },
   itemCenterAlign: {
     alignItems: "center",
@@ -175,5 +321,21 @@ const styles = StyleSheet.create({
   },
   paddingBottom4: {
     paddingBottom: 4,
+  },
+  voteItemWrap: {
+    marginRight: 16,
+    minWidth: 40,
+    width: 40,
+  },
+  DOI: {
+    marginBottom: 4,
+    maxHeight: 32,
+    maxWidth: "inherit",
+    overflow: "hidden",
+    paddingLeft: 4,
+    textOverflow: "ellipsis",
+    whiteSpace: "nowrap",
+    width: "100%",
+    wordWrap: "break-word",
   },
 });

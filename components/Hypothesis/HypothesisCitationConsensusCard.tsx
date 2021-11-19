@@ -1,11 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ReactElement } from "react";
-import { silentEmptyFnc } from "~/config/utils/nullchecks";
-import { TextRow } from "react-placeholder/lib/placeholders";
+import { nullthrows, silentEmptyFnc } from "~/config/utils/nullchecks";
 import CitationConsensusItem from "./Citation/table/CitationConsensusItem";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import CitationAddNewButton from "./Citation/CitationAddNewButton";
 
 type Props = {
   aggregateCitationConsensus: {
@@ -16,6 +16,9 @@ type Props = {
   };
   hypothesisID: ID;
   isLoading?: boolean;
+  lastFetchTime?: number;
+  setLastFetchTime?: Function;
+  shouldShowUploadButton?: boolean;
 };
 
 export default function HypothesisCitationConsensusCard({
@@ -26,70 +29,66 @@ export default function HypothesisCitationConsensusCard({
     upCount,
   },
   hypothesisID,
-  isLoading,
+  lastFetchTime,
+  setLastFetchTime,
+  shouldShowUploadButton = false,
 }: Props): ReactElement<"div"> | null {
-  if (citationCount === 0) {
-    return null;
-  }
-
+  const hasNoConsensus = citationCount === 0;
   const sentiment = upCount - downCount;
   const totalVoteCount = downCount + neutralCount + upCount;
 
   return (
     <div className={css(styles.hypothesisCitationConsensusCard)}>
       <div className={css(styles.title)}>{"Current conclusion"}</div>
-      {Boolean(isLoading) ? (
-        <div className={css(styles.body)}>
-          <TextRow
-            color={colors.LIGHT_GREY_BORDER}
-            style={{
-              width: "100%",
-              height: 24,
-              margin: "0",
-              borderRadius: 4,
-            }}
-          />
-        </div>
-      ) : (
-        <div className={css(styles.body)}>
-          <div className={css(styles.consensusTextGroup)}>
-            <div className={css(styles.iconGroup)}>
-              <span
-                className={css(
-                  styles.icon,
-                  sentiment > 0
-                    ? styles.positiveGreen
-                    : sentiment < 0
-                    ? styles.negativeRed
-                    : null
-                )}
-              >
-                {sentiment > 0 ? (
-                  <img src="/static/icons/check.svg" />
-                ) : sentiment < 0 ? (
-                  icons.timesCircle
-                ) : (
-                  icons.minusCircle
-                )}
-              </span>
-              <span>
-                {`Probably ${
-                  downCount === upCount
-                    ? "neutral"
-                    : downCount > upCount
-                    ? "no"
-                    : "yes"
-                }`}
-              </span>
-            </div>
-            <span className={css(styles.dot)}>{"\u2022"}</span>
-            <span>{`Based on ${citationCount} source${
-              citationCount > 1 ? "s" : ""
-            } and ${totalVoteCount} consensus vote${
-              totalVoteCount > 1 ? "s" : ""
-            }.`}</span>
+      <div className={css(styles.body)}>
+        <div className={css(styles.consensusTextGroup)}>
+          <div className={css(styles.iconGroup)}>
+            <span
+              className={css(
+                styles.icon,
+                sentiment > 0
+                  ? styles.positiveGreen
+                  : sentiment < 0
+                  ? styles.negativeRed
+                  : null
+              )}
+            >
+              {sentiment > 0 ? (
+                <img src="/static/icons/check.svg" />
+              ) : sentiment < 0 ? (
+                icons.timesCircle
+              ) : (
+                icons.minusCircle
+              )}
+            </span>
+            <span>
+              {`Probably ${
+                downCount === upCount
+                  ? "neutral"
+                  : downCount > upCount
+                  ? "no"
+                  : "yes"
+              }`}
+            </span>
           </div>
-          <div className={css(styles.hypoConsensusRightSide)}>
+          <span className={css(styles.dot)}>{"\u2022"}</span>
+          <span>{`Based on ${citationCount} source${
+            citationCount > 1 ? "s" : ""
+          } and ${totalVoteCount} consensus vote${
+            totalVoteCount > 1 ? "s" : ""
+          }.`}</span>
+        </div>
+        <div className={css(styles.hypoConsensusRightSide)}>
+          {hasNoConsensus && shouldShowUploadButton ? (
+            <CitationAddNewButton
+              citationType={null}
+              hypothesisID={hypothesisID}
+              lastFetchTime={nullthrows(lastFetchTime)}
+              updateLastFetchTime={(): void =>
+                nullthrows(setLastFetchTime)(Date.now())
+              }
+            />
+          ) : (
             <CitationConsensusItem
               citationID={`${hypothesisID}-citation-placeholder`}
               consensusMeta={{
@@ -97,13 +96,14 @@ export default function HypothesisCitationConsensusCard({
                 neutralCount,
                 upCount,
                 userVote: {},
+                totalCount: downCount + upCount + neutralCount,
               }}
               shouldAllowVote={false}
               updateLastFetchTime={silentEmptyFnc}
             />
-          </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 }

@@ -36,6 +36,7 @@ export type ConsensusMeta = {
   downCount: number;
   neutralCount: number;
   upCount: number;
+  totalCount: number | null;
   userVote: any;
 };
 
@@ -89,7 +90,7 @@ function getDetailedText({
   totalCount: number;
   majorityPercent: number;
 }): ReactNode {
-  const isPlural = totalCount > 1;
+  const isPlural = !isNaN(totalCount) && totalCount > 1;
   const answer = doesMajoritySupport ? "yes" : "no";
   return (
     <div
@@ -186,6 +187,7 @@ function CitationConsensusItem({
     downCount = 0,
     neutralCount = 0,
     upCount = 0,
+    totalCount,
     userVote,
   } = localConsensusMeta ?? {};
 
@@ -195,15 +197,15 @@ function CitationConsensusItem({
     setLocalConsensusMeta,
   });
 
-  const [totalCount, setTotalCount] = useState<number>(
-    downCount + upCount + neutralCount
+  const [localTotalCount, setlocalTotalCount] = useState<number>(
+    totalCount ?? downCount + upCount + neutralCount
   );
   const [majority, setMajority] = useState<string>(
     upCount >= downCount ? UPVOTE : DOWNVOTE
   );
 
   // This is a way to avoid NaN & not return any element
-  if (totalCount === 0 && Boolean(userVote)) {
+  if (localTotalCount === 0 && Boolean(userVote)) {
     return null;
   }
 
@@ -224,7 +226,9 @@ function CitationConsensusItem({
       userVote: { ...userVote, vote_type: DOWNVOTE_ENUM },
     };
     setLocalConsensusMeta(updatedMeta);
-    setTotalCount(hasCurrUserVoted ? totalCount : totalCount + 1);
+    setlocalTotalCount(
+      hasCurrUserVoted ? localTotalCount : localTotalCount + 1
+    );
     setMajority(
       updatedMeta.upCount >= updatedMeta.downCount ? UPVOTE : DOWNVOTE
     );
@@ -256,7 +260,9 @@ function CitationConsensusItem({
       userVote: { ...userVote, vote_type: NEUTRALVOTE_ENUM },
     };
     setLocalConsensusMeta(updatedMeta);
-    setTotalCount(hasCurrUserVoted ? totalCount : totalCount + 1);
+    setlocalTotalCount(
+      hasCurrUserVoted ? localTotalCount : localTotalCount + 1
+    );
     setMajority(
       updatedMeta.upCount >= updatedMeta.downCount ? UPVOTE : DOWNVOTE
     );
@@ -289,7 +295,9 @@ function CitationConsensusItem({
       userVote: { ...userVote, vote_type: UPVOTE_ENUM },
     };
     setLocalConsensusMeta(updatedMeta);
-    setTotalCount(hasCurrUserVoted ? totalCount : totalCount + 1);
+    setlocalTotalCount(
+      hasCurrUserVoted ? localTotalCount : localTotalCount + 1
+    );
     setMajority(
       updatedMeta.upCount >= updatedMeta.downCount ? UPVOTE : DOWNVOTE
     );
@@ -311,7 +319,7 @@ function CitationConsensusItem({
   const isNeutral = (upCount ?? 0) === downCount;
   const doesMajoritySupport = !isNeutral && majority === UPVOTE;
   const majorityPercent =
-    ((doesMajoritySupport ? upCount : downCount) / totalCount) * 100;
+    ((doesMajoritySupport ? upCount : downCount) / localTotalCount) * 100;
   const weightedPercent = majorityPercent / 2; // each sentimentbar consists 50% of the full bar
   const consensusDetailText = getDetailedText({
     citationID,
@@ -319,10 +327,11 @@ function CitationConsensusItem({
     doesMajoritySupport,
     isNeutral,
     majorityPercent,
-    totalCount,
+    totalCount: localTotalCount,
   });
+
   const consensusBar =
-    totalCount > 0 ? (
+    localTotalCount > 0 ? (
       <div className={css(styles.consensusWrap)}>
         {consensusDetailText}
         <Fragment>
@@ -381,7 +390,7 @@ function CitationConsensusItem({
           <div
             className={css(
               styles.voteWrap,
-              totalCount === 0 && styles.noMargin
+              localTotalCount === 0 && styles.noMargin
             )}
           >
             <div

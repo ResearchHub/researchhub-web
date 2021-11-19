@@ -1,11 +1,16 @@
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "~/config/types/root_types";
+import { ValidCitationType } from "../Citation/modal/AddNewSourceBodySearch";
 import API from "~/config/api";
 
 type PostCitationFromSearchArgs = {
   onError: Function;
   onSuccess: Function;
-  payload: { hypothesis_id: ID; source_id: ID };
+  payload: {
+    citation_type: ValidCitationType;
+    hypothesis_id: ID;
+    source_id: ID;
+  };
 };
 
 export function postCitationFromSearch({
