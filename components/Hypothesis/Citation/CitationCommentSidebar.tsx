@@ -58,7 +58,6 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
   const [isRegScreenSize, setIsRegScreenSize] = useState<boolean>(
     getCurrMediaWidth() > MEDIA_WIDTH_LIMIT
   );
-
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
   );
@@ -74,10 +73,6 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     onResize: (newMediaWidth): void =>
       setIsRegScreenSize(newMediaWidth > MEDIA_WIDTH_LIMIT),
   });
-
-  if (isNullOrUndefined(citationID)) {
-    return null;
-  }
 
   const citationCommentSidebarProps: CitationCommentSidebarProps = {
     citationID,
@@ -106,9 +101,7 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
         customBurgerIcon={false}
         disableCloseOnEsc
         isOpen={!isNullOrUndefined(citationID)}
-        onClose={() => {
-          alert("HI");
-        }}
+        noOverlay
         right
         styles={
           isRegScreenSize
