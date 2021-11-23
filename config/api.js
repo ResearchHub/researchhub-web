@@ -204,6 +204,9 @@ const routes = (BASE_URL) => {
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
       return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
     },
+    JUPYTER: ({ noteId }) => {
+      return `${BASE_URL}jupyter_session/${noteId}/get_jupyterhub_file/`;
+    },
     CKEDITOR_TOKEN: () => {
       return `${BASE_URL}ckeditor/token/`;
     },

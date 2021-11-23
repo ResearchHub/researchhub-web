@@ -9,7 +9,7 @@ import {
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { useRef, useState, useCallback, useMemo } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import Loader from "../Loader/Loader";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
@@ -23,6 +23,7 @@ import { isOrgMember } from "~/components/Org/utils/orgHelper";
 import JupyterViewer from "@thomasvu/react-jupyter-notebook";
 import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
 import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
+import colors from "~/config/themes/colors";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -92,7 +93,26 @@ const ELNEditor = ({
   const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
+  const [jupyterContent, setJupyterContent] = useState(null);
   const _isOrgMember = isOrgMember({ user, org: currentOrganization });
+
+  useEffect(() => {
+    const _fetchJupyter = async () => {
+      const params = {
+        file_name: "RunningCode.ipynb",
+      };
+
+      const response = await fetch(
+        API.JUPYTER({ noteId: 264 }),
+        API.POST_CONFIG(params)
+      );
+      const parsed = await Helpers.parseJSON(response);
+
+      setJupyterContent(parsed.data.content);
+    };
+
+    _fetchJupyter();
+  }, []);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -264,7 +284,45 @@ const ELNEditor = ({
           <Loader type="clip" size={50} />
         </div>
       )}
-      <JupyterViewer rawIpynb={nb_test} />
+      <div
+        onClick={async () => {
+          const baseUrl = "https://staging-jupyter.researchhub.com";
+          //const authToken = typeof window !== "undefined" ? window.localStorage[AUTH_TOKEN] : "";
+          const authToken = "da1407bc28207a66f9d78cf60223fb62b355a495";
+          const jupyterUrl = `${baseUrl}/login?researchhub-login=${authToken}&note_id=${264}`;
+          window.open(jupyterUrl);
+        }}
+      >
+        Login
+      </div>
+      <div
+        className={css(styles.shareLink)}
+        onClick={async () => {
+          const params = {
+            file_name: "RunningCode.ipynb",
+          };
+
+          const response = await fetch(
+            API.JUPYTER({ noteId: 264 }),
+            API.POST_CONFIG(params)
+          );
+          const parsed = await Helpers.parseJSON(response);
+          console.log(parsed.data.content);
+          console.log(nb_test);
+          setJupyterContent(parsed.data.content);
+        }}
+      >
+        Refresh
+      </div>
+      <div
+        onClick={() => {
+          console.log(jupyterContent);
+          console.log(nb_test);
+        }}
+      >
+        Print
+      </div>
+      {jupyterContent !== null && <JupyterViewer rawIpynb={jupyterContent} />}
     </div>
   );
 };
@@ -308,6 +366,16 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  shareLink: {
+    cursor: "pointer",
+    fontSize: 16,
+    marginBottom: 20,
+    marginLeft: 30,
+    marginTop: -20,
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
 });
 
