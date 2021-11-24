@@ -311,17 +311,12 @@ function AuthorPage(props) {
   }, [fetchedUser]);
 
   useEffect(() => {
-    if (
+    setAllowEdit(
       !isNullOrUndefined(authorUserID) &&
       !isNullOrUndefined(user) &&
       authorUserID === user.id
-    ) {
-      setAllowEdit(true);
-    }
-
-    if (author.description) {
-      setDescription(author.description);
-    }
+    );
+    setDescription(author.description);
     setEduSummary(createUserSummary(author));
 
     if (author.first_name) {
@@ -340,8 +335,8 @@ function AuthorPage(props) {
     } else if (!prevProps && auth.isLoggedIn) {
       let papers = store.getState().author.authoredPapers.papers;
       checkUserVotes(papers, "authored");
-      let contributions = store.getState().author.userContributions
-        .contributions;
+      let contributions =
+        store.getState().author.userContributions.contributions;
       checkUserVotes(contributions, "contributions");
     }
     setPrevProps(auth.isLoggedIn);
@@ -1034,7 +1029,7 @@ function AuthorPage(props) {
                 className={css(styles.authorName, styles.editButtonContainer)}
                 property="name"
               >
-                { name }
+                {name}
               </h1>
               {userLinks}
             </div>
@@ -1145,13 +1140,13 @@ const styles = StyleSheet.create({
     },
   },
   modActions: {
-    marginLeft: 'auto',
-    display: 'flex',
+    marginLeft: "auto",
+    display: "flex",
 
     "@media only screen and (max-width: 767px)": {
-      marginLeft: 'unset',
+      marginLeft: "unset",
       marginTop: 16,
-    }
+    },
   },
   moderatorButton: {
     display: "flex",
@@ -1286,7 +1281,7 @@ const styles = StyleSheet.create({
   description: {
     marginBottom: 15,
     justifyContent: "center",
-    flexDirection: 'column',
+    flexDirection: "column",
     width: "100%",
     color: "#241F3A",
     lineHeight: 1.5,
@@ -1725,7 +1720,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthorPage);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorPage);
