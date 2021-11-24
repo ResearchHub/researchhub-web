@@ -43,17 +43,15 @@ const NoteShareButton = ({
         }
       }}
       targetContent={
-        <div className={css(styles.buttonContainer)}>
-          <span
-            className={css(styles.shareLink)}
-            onClick={(e) => {
-              e && e.preventDefault();
-              setIsOpen(!isOpen);
-            }}
-          >
-            Share
-          </span>
-        </div>
+        <span
+          className={css(styles.shareLink)}
+          onClick={(e) => {
+            e && e.preventDefault();
+            setIsOpen(!isOpen);
+          }}
+        >
+          Share
+        </span>
       }
     />
   );
@@ -74,15 +72,10 @@ const styles = StyleSheet.create({
     marginRight: 20,
     marginTop: 10,
   },
-  buttonContainer: {
-    display: "flex",
-    justifyContent: "center",
-    flexDirection: "column",
-    marginLeft: 20,
-  },
   shareLink: {
-    fontSize: 16,
     cursor: "pointer",
+    fontSize: 16,
+    margin: "0px 20px",
     ":hover": {
       color: colors.BLUE(),
     },

@@ -2,6 +2,7 @@ import API from "~/config/api";
 import Loader from "~/components/Loader/Loader";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
+import colors from "~/config/themes/colors";
 import { AUTH_TOKEN } from "~/config/constants";
 import {
   BUNDLE_VERSION,
@@ -16,7 +17,6 @@ import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
-import { isOrgMember } from "~/components/Org/utils/orgHelper";
 import { useRef, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 
@@ -73,6 +73,7 @@ const ELNEditor = ({
   currentNote,
   currentOrganization,
   handleEditorInput,
+  isOrgMember,
   notePerms,
   redirectToNote,
   refetchNotePerms,
@@ -86,7 +87,6 @@ const ELNEditor = ({
   const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
-  const _isOrgMember = isOrgMember({ user, org: currentOrganization });
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -114,28 +114,24 @@ const ELNEditor = ({
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
         <div className={css(styles.noteHeaderOpts)}>
-          <div
-            className={css(styles.presenceList) + " presence"}
-            ref={onRefChange}
-          />
+          <div className="presence" ref={onRefChange} />
           <NoteShareButton
             noteId={currentNote.id}
             notePerms={notePerms}
             org={currentOrganization}
-            userOrgs={userOrgs}
             refetchNotePerms={refetchNotePerms}
+            userOrgs={userOrgs}
           />
-          {_isOrgMember && (
-            <div className={css(styles.optionsMenuWrapper)}>
-              <NoteOptionsMenuButton
-                note={currentNote}
-                title={currentNote.title}
-                currentOrg={currentOrganization}
-                redirectToNote={redirectToNote}
-                show={true}
-                size={24}
-              />
-            </div>
+          {isOrgMember && (
+            <NoteOptionsMenuButton
+              currentOrg={currentOrganization}
+              customButtonStyles={styles.ellipsisButton}
+              note={currentNote}
+              redirectToNote={redirectToNote}
+              show={true}
+              size={24}
+              title={currentNote.title}
+            />
           )}
         </div>
       </div>
@@ -272,9 +268,6 @@ const styles = StyleSheet.create({
       height: "calc(100vh - 66px)",
     },
   },
-  optionsMenuWrapper: {
-    marginLeft: 17,
-  },
   noteHeader: {
     display: "flex",
     userSelect: "none",
@@ -288,7 +281,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  presenceList: {},
   loader: {
     position: "absolute",
     top: 0,
@@ -298,6 +290,23 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+  },
+  ellipsisButton: {
+    alignItems: "center",
+    borderRadius: "50%",
+    bottom: 0,
+    color: colors.BLACK(0.7),
+    cursor: "pointer",
+    display: "flex",
+    height: 30,
+    justifyContent: "center",
+    margin: "auto",
+    right: 7,
+    top: 0,
+    width: 30,
+    ":hover": {
+      backgroundColor: colors.GREY(0.5),
+    },
   },
 });
 
