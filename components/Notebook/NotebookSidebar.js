@@ -8,12 +8,11 @@ import ResearchHubPopover from "~/components/ResearchHubPopover";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import groupBy from "lodash/groupBy";
-import icons from "~/config/themes/icons";
+import icons, { DownIcon } from "~/config/themes/icons";
 import { NOTE_GROUPS, PERMS, ENTITIES } from "./config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { isEmpty } from "~/config/utils/nullchecks";
-import { isOrgMember } from "~/components/Org/utils/orgHelper";
 import { useState, useMemo } from "react";
 
 const ManageOrgModal = dynamic(() => import("~/components/Org/ManageOrgModal"));
@@ -27,6 +26,7 @@ const NotebookSidebar = ({
   currentOrg,
   didInitialNotesLoad,
   fetchAndSetOrg,
+  isOrgMember,
   notes,
   onOrgChange,
   orgSlug,
@@ -35,14 +35,12 @@ const NotebookSidebar = ({
   refetchTemplates,
   templates,
   titles,
-  user,
 }) => {
   const [isNoteTemplateModalOpen, setIsNoteTemplateModalOpen] = useState(false);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [showManageOrgModal, setShowManageOrgModal] = useState(false);
   const [showNewOrgModal, setShowNewOrgModal] = useState(false);
   const groupedNotes = useMemo(() => groupBy(notes, "access"), [notes]);
-  const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
   const getSidebarGroupKeys = () => {
     let groups = Object.keys(groupedNotes);
@@ -85,12 +83,12 @@ const NotebookSidebar = ({
         currentNoteId={currentNoteId}
         currentOrg={currentOrg}
         groupKey={groupKey}
+        isOrgMember={isOrgMember}
         key={groupKey}
         notes={groupedNotes[groupKey] || []}
         orgs={orgs}
         redirectToNote={redirectToNote}
         titles={titles}
-        user={user}
       />
     );
   };
@@ -155,20 +153,17 @@ const NotebookSidebar = ({
                   ))}
                 </div>
                 <div
-                  className={css(styles.newOrgContainer)}
+                  className={css(
+                    styles.popoverBodyItem,
+                    styles.newOrgContainer
+                  )}
                   onClick={() => {
                     setShowNewOrgModal(true);
                     setIsPopoverOpen(false);
                   }}
                 >
-                  <div
-                    className={css(styles.actionButton, styles.newOrgButton)}
-                  >
-                    {icons.plus}
-                  </div>{" "}
-                  <span className={css(styles.newOrgText)}>
-                    New Organization
-                  </span>
+                  <div className={css(styles.newOrgButton)}>{icons.plus}</div>
+                  New Organization
                 </div>
               </div>
             }
@@ -179,25 +174,23 @@ const NotebookSidebar = ({
                 className={css(styles.popoverTarget)}
                 onClick={() => setIsPopoverOpen(!isPopoverOpen)}
               >
-                <>
-                  <ReactPlaceholder
-                    ready={!isEmpty(currentOrg)}
-                    showLoadingAnimation
-                    customPlaceholder={<OrgEntryPlaceholder color="#d3d3d3" />}
-                  >
-                    <div className={css(styles.avatarWrapper)}>
-                      <OrgAvatar org={currentOrg} />
-                    </div>
-                    {currentOrg?.name}
-                  </ReactPlaceholder>
-                </>
-                <span className={css(styles.sortIcon)}>{icons.sort}</span>
+                <ReactPlaceholder
+                  ready={!isEmpty(currentOrg)}
+                  showLoadingAnimation
+                  customPlaceholder={<OrgEntryPlaceholder color="#d3d3d3" />}
+                >
+                  <div className={css(styles.avatarWrapper)}>
+                    <OrgAvatar org={currentOrg} />
+                  </div>
+                  {currentOrg?.name}
+                </ReactPlaceholder>
+                <DownIcon withAnimation={false} />
               </div>
             }
           />
         </div>
-        <div className={css(styles.sidebarButtonsContainer)}>
-          {_isOrgMember && (
+        {isOrgMember && (
+          <div className={css(styles.sidebarButtonsContainer)}>
             <div
               className={css(styles.sidebarButton)}
               onClick={() => {
@@ -206,16 +199,10 @@ const NotebookSidebar = ({
               }}
             >
               {icons.cog}
-              <span
-                className={css(styles.sidebarButtonText, styles.orgButtonText)}
-              >
+              <span className={css(styles.sidebarButtonText)}>
                 Settings & Members
               </span>
             </div>
-          )}
-        </div>
-        {_isOrgMember && (
-          <div className={css(styles.sidebarButtonsContainer)}>
             <div
               className={css(styles.sidebarButton)}
               onClick={() => setIsNoteTemplateModalOpen(true)}
@@ -253,29 +240,26 @@ const styles = StyleSheet.create({
     overflowY: "auto",
   },
   newOrgContainer: {
-    cursor: "pointer",
-    display: "flex",
-    padding: 15,
-    color: colors.BLUE(),
+    color: colors.PURPLE(),
     fontWeight: 500,
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
+    ":last-child": {
+      borderRadius: "0px 0px 4px 4px",
     },
   },
   newOrgButton: {
-    width: 30,
-    height: 30,
-    marginLeft: 0,
-    cursor: "pointer",
+    alignItems: "center",
+    background: colors.LIGHT_GREY(),
+    border: "1px solid #ddd",
+    borderRadius: "50%",
     boxSizing: "border-box",
-  },
-  newOrgText: {
-    marginLeft: 10,
-    paddingTop: 7,
-  },
-  orgButtonText: {},
-  container: {
+    cursor: "pointer",
     display: "flex",
+    fontSize: 16,
+    height: 30,
+    justifyContent: "center",
+    marginRight: 10,
+    transition: "all ease-in-out 0.1s",
+    width: 30,
   },
   sidebar: {
     background: "#f9f9fc",
@@ -299,9 +283,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     display: "flex",
     fontSize: 14,
-    fontWeight: 500,
-    letterSpacing: 1.2,
-    padding: "15px 20px",
+    fontWeight: 700,
+    letterSpacing: 1.1,
+    padding: 20,
     textTransform: "uppercase",
     userSelect: "none",
     wordBreak: "break-word",
@@ -331,16 +315,6 @@ const styles = StyleSheet.create({
     ":first-child": {
       borderRadius: "4px 4px 0px 0px",
     },
-    ":last-child": {
-      borderRadius: "0px 0px 4px 4px",
-    },
-  },
-  popoverBodyItemImage: {
-    borderRadius: "50%",
-    height: 30,
-    marginRight: 10,
-    objectFit: "cover",
-    width: 30,
   },
   popoverBodyItemText: {
     display: "flex",
@@ -358,73 +332,23 @@ const styles = StyleSheet.create({
   scrollable: {
     overflow: "auto",
   },
-  active: {
-    backgroundColor: colors.GREY(0.3),
-  },
-  sidebarNewNote: {
-    // borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLUE(),
-    cursor: "pointer",
-    display: "flex",
-    marginTop: "auto",
-    // padding: 20,
-    ":hover": {
-      color: "#3E43E8",
-    },
-  },
-  newNoteText: {
-    fontSize: 18,
-    fontWeight: 500,
-    margin: "auto",
-  },
-  actionButton: {
-    alignItems: "center",
-    background: colors.LIGHT_GREY(),
-    color: colors.PURPLE(1),
-    border: "1px solid #ddd",
-    borderRadius: "50%",
-    display: "flex",
-    fontSize: 16,
-    height: 25,
-    width: 25,
-    justifyContent: "center",
-    transition: "all ease-in-out 0.1s",
-  },
-  showBottomBorder: {
-    borderBottom: `1px solid ${colors.GREY(0.3)}`,
-  },
   sidebarButtonsContainer: {
-    margin: 0,
-    marginLeft: 10,
-    ":last-child": {
-      paddingBottom: 20,
-    },
+    margin: "0px 10px 10px 10px",
   },
   sidebarButton: {
     border: "none",
-    color: colors.BLACK(0.5),
+    color: colors.BLACK(0.6),
     cursor: "pointer",
     fontSize: 14,
     fontWeight: 500,
     maxWidth: "fit-content",
     padding: 10,
-    paddingLeft: 17,
     ":hover": {
       color: colors.BLUE(),
     },
   },
   sidebarButtonText: {
     marginLeft: 10,
-  },
-  sortIcon: {
-    marginLeft: "auto",
-  },
-  chevronIcon: {
-    marginLeft: "auto",
-  },
-  noteIcon: {
-    color: colors.GREY(),
-    marginRight: 10,
   },
 });
 

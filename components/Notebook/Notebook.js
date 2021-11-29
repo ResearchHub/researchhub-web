@@ -16,7 +16,7 @@ import {
   fetchOrgTemplates,
   fetchUserOrgs,
 } from "~/config/fetch";
-import { getNotePathname } from "~/components/Org/utils/orgHelper";
+import { getNotePathname, isOrgMember } from "~/components/Org/utils/orgHelper";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
@@ -301,6 +301,8 @@ const Notebook = ({ auth, user, wsResponse }) => {
                 org: currentOrganization,
               })
             );
+          } else {
+            fetchAndSetCurrentNote();
           }
           fetchAndSetCurrentOrgNotes();
           break;
@@ -378,6 +380,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
     return <Error {...error} />;
   }
 
+  const _isOrgMember = isOrgMember({ user, org: currentOrganization });
   return (
     <div className={css(styles.container)}>
       <NotebookSidebar
@@ -385,6 +388,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
         currentOrg={currentOrganization}
         didInitialNotesLoad={didInitialNotesLoad}
         fetchAndSetOrg={fetchAndSetOrg}
+        isOrgMember={_isOrgMember}
         notes={notes}
         onOrgChange={onOrgChange}
         orgSlug={orgSlug}
@@ -393,7 +397,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
         refetchTemplates={fetchAndSetOrgTemplates}
         templates={templates}
         titles={titles}
-        user={user}
       />
       {currentNote && (
         <ELNEditor
@@ -401,6 +404,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
           currentNote={currentNote}
           currentOrganization={currentOrganization}
           handleEditorInput={handleEditorInput}
+          isOrgMember={_isOrgMember}
           notePerms={currentNotePerms?.list || []}
           redirectToNote={redirectToNote}
           refetchNotePerms={fetchAndSetCurrentNotePermissions}
