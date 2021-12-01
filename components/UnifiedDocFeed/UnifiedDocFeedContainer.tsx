@@ -25,6 +25,7 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
+import { id } from "ethers/lib/utils";
 
 type PaginationInfo = {
   isLoading: Boolean;
@@ -41,13 +42,37 @@ const getFilterFromRouter = (router: NextRouter): string => {
     : nullthrows(docType);
 };
 
-const usePrevious = (value: any): any => {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-};
+const getFetchParams = ({
+  // see: NOTE (100)
+  bePage,
+  hubID,
+  isLoggedIn,
+  isOnMyHubsTab,
+  localPage,
+  setPaginationInfo,
+  setUnifiedDocuments,
+}): any => ({
+  hubID,
+  isLoggedIn,
+  onSuccess: ({ page: updatedPage, documents }): void => {
+    setUnifiedDocuments(documents);
+    setPaginationInfo({
+      isLoading: false,
+      isLoadingMore: false,
+      page: updatedPage,
+    });
+  },
+  onError: (error: Error): void => {
+    emptyFncWithMsg(error);
+    setPaginationInfo({
+      isLoading: false,
+      isLoadingMore: false,
+      page: bePage,
+    });
+  },
+  subscribedHubs: isOnMyHubsTab,
+  page: localPage,
+});
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -61,67 +86,58 @@ function UnifiedDocFeedContainer({
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
+  const { results: preloadResults } = preloadedDocData || {};
   const router = useRouter();
+  const routerFilterType = getFilterFromRouter(router);
   const isOnMyHubsTab = useMemo<Boolean>(
     (): Boolean => ["/my-hubs"].includes(router.pathname),
     [router.pathname]
   );
 
-  const [docTypeFilter, setDocTypeFilter] = useState<string>(
-    getFilterFromRouter(router)
-  );
-
-  const [prevPath, setPrevPath] = useState<string>(router.asPath);
-  const afterFirstLoad = useRef(false);
-  const prevHub = usePrevious(hub);
+  const [docTypeFilter, setDocTypeFilter] = useState<string>(routerFilterType);
 
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
+  const { filterBy } = subFilters;
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
     page: 1,
   });
-
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
+  localPage is used to increment by 10 items for UI optimization */
   const { page, isLoading, isLoadingMore } = paginationInfo;
-  const { filterBy } = subFilters;
-
+  const [localPage, setLocalPage] = useState<number>(1);
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
-  const [nextResultSet, setNextResultSet] = useState<any>([]);
+  const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
+  const shouldPrefetch = page * 2 === localPage;
+  const fetchParams = getFetchParams({
+    bePage: page,
+    hubID: hub?.id ?? null,
+    isLoggedIn,
+    isOnMyHubsTab,
+    localPage,
+    setPaginationInfo,
+    setUnifiedDocuments,
+  });
 
   useEffect((): void => {
-    if (afterFirstLoad.current) {
-      const filterValue = getFilterFromRouter(router);
-
-      resetState();
-      setDocTypeFilter(filterValue);
-
-      fetchUnifiedDocs({
-        ...getFetchParams(),
-        docTypeFilter: filterValue,
-      });
-      prefetchNextPage({
-        nextPage: 2,
-        fetchParams: { docTypeFilter: filterValue },
-      });
-    } else {
-      afterFirstLoad.current = true;
-    }
-  }, [router.query.type]);
+    setLocalPage(1);
+    fetchUnifiedDocs({
+      ...fetchParams,
+      docTypeFilter,
+      page: 1,
+    });
+  }, [docTypeFilter, hub]);
 
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
-  );
-  const needsInitialFetch = useMemo(
-    (): Boolean => page === 1 && isLoading,
-    [page, isLoading]
   );
 
   const formattedMainHeader = useMemo(
@@ -135,67 +151,17 @@ function UnifiedDocFeedContainer({
     [hubName, feed, filterBy, isHomePage]
   );
 
-  // When the hub changes, we want to automatically fetch new docs
-  useEffect((): void => {
-    const currPath = router.asPath;
-
-    if (prevPath !== currPath) {
-      resetState();
-      fetchUnifiedDocs({ ...getFetchParams() });
-      setPrevPath(router.asPath);
-    }
-  }, [hub]);
-
-  // Switching from "all" => slug hub unmounts the component
-  // to mitigate, we need to figure out if a fetch is needed.
-  useEffect((): void => {
-    if (preloadedDocData) {
-      setPaginationInfo({
-        isLoadingMore: false,
-        isLoading: false,
-        page: 1,
-      });
-    } else {
-      resetState();
-      fetchUnifiedDocs({ ...getFetchParams() });
-    }
-
-    prefetchNextPage({ nextPage: 2 });
-  }, []);
-
-  const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      ...fetchParams,
-      page: nextPage,
-      onSuccess: ({ documents }) => {
-        setNextResultSet(documents);
-        setPaginationInfo({
-          isLoadingMore: false,
-          page: nextPage,
-        });
-      },
-      onError: () => {
-        setNextResultSet([]);
-      },
-    });
-  };
-
   const handleLoadMore = (): void => {
     if (isLoadingMore) {
-      return silentEmptyFnc();
+      return;
     }
-
-    // If we have more results loaded, use them
-    if (nextResultSet.length > 0) {
+    if (shouldPrefetch) {
       setUnifiedDocuments([...unifiedDocuments, ...nextResultSet]);
-      setNextResultSet([]);
       prefetchNextPage({ nextPage: paginationInfo.page + 1 });
     }
   };
 
   const handleDocTypeChange = (docTypeValue: string): void => {
-    resetState();
     setDocTypeFilter(docTypeValue);
 
     router.push(
@@ -209,80 +175,12 @@ function UnifiedDocFeedContainer({
 
   const handleFilterSelect = (_type: string, filterBy: any): void => {
     const updatedSubFilters = { filterBy, scope: subFilters.scope };
-
-    resetState();
     setSubFilters(updatedSubFilters);
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      subFilters: updatedSubFilters,
-    });
-
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { subFilters: updatedSubFilters },
-    });
   };
 
   const handleScopeSelect = (_type: string, scope: any): void => {
     const updatedSubFilters = { filterBy: subFilters.filterBy, scope };
-
-    resetState();
     setSubFilters(updatedSubFilters);
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      subFilters: updatedSubFilters,
-    });
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { subFilters: updatedSubFilters },
-    });
-  };
-
-  const resetState = (): void => {
-    setPaginationInfo({
-      isLoading: true,
-      isLoadingMore: false,
-      page: 1,
-    });
-    setUnifiedDocuments([]);
-    setNextResultSet([]);
-  };
-
-  const getFetchParams = (): any => {
-    const hubID = hub ? hub.id : null;
-
-    const onFetchSuccess = ({ page, documents, prevDocuments }): void => {
-      page > 1
-        ? setUnifiedDocuments([...prevDocuments, ...documents])
-        : setUnifiedDocuments(documents);
-
-      setPaginationInfo({
-        isLoading: false,
-        isLoadingMore: false,
-        page,
-      });
-    };
-
-    const onFetchError = (error: Error): void => {
-      emptyFncWithMsg(error);
-      setPaginationInfo({
-        isLoading: false,
-        isLoadingMore: false,
-        page: paginationInfo.page,
-      });
-    };
-
-    return {
-      hubID,
-      prevDocuments: unifiedDocuments,
-      docTypeFilter,
-      subFilters,
-      isLoggedIn,
-      onSuccess: onFetchSuccess,
-      onError: onFetchError,
-      subscribedHubs: isOnMyHubsTab,
-      page: 1,
-    };
   };
 
   const docTypeFilterButtons = useMemo(() => {
@@ -339,7 +237,7 @@ function UnifiedDocFeedContainer({
           </div>
         </div>
       ) : null}
-      {needsInitialFetch ? (
+      {isLoading ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
