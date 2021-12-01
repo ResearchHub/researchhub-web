@@ -4,9 +4,6 @@ import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
 import "isomorphic-unfetch";
-import * as Sentry from "@sentry/browser";
-import ReactGA from "react-ga";
-import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";
 
 // Components
@@ -33,31 +30,6 @@ import "katex/dist/katex.min.css";
 // Redux
 import { MessageActions } from "~/redux/message";
 
-// Config
-import { SIFT_BEACON_KEY } from "~/config/constants";
-
-initApm({
-  // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
-  serviceName:
-    process.env.REACT_APP_ENV === "staging"
-      ? "researchhub-staging-web"
-      : process.env.NODE_ENV === "production"
-      ? "researchhub-production-web"
-      : "researchhub-development-web",
-  environment:
-    process.env.REACT_APP_ENV === "staging"
-      ? "staging"
-      : process.env.NODE_ENV === "production"
-      ? "production"
-      : "development",
-  // Set custom APM Server URL (default: http://localhost:8200)
-  serverUrl:
-    "https://d11bb2079f694eb996ddcfe6edb848f7.apm.us-west-2.aws.cloud.es.io:443",
-
-  // Set service version (required for sourcemap feature)
-  serviceVersion: process.env.SENTRY_RELEASE,
-});
-
 const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
 
@@ -77,84 +49,14 @@ const MyApp = ({ Component, pageProps, store }) => {
   }, [router.asPath]);
 
   useEffect(() => {
-    connectSift();
-    ReactGA.initialize("UA-106669204-1", {
-      testMode: process.env.NODE_ENV !== "production",
-    });
-
-    ReactGA.pageview(router.asPath);
-    router.events.on("routeChangeStart", (url) => {
-      store.dispatch(MessageActions.setMessage(""));
-      store.dispatch(MessageActions.showMessage({ show: true, load: true }));
-    });
-
     router.events.on("routeChangeComplete", (url) => {
-      connectSift();
-      ReactGA.pageview(router.asPath);
       store.dispatch(MessageActions.showMessage({ show: false }));
     });
 
     Router.events.on("routeChangeError", () => {
       store.dispatch(MessageActions.showMessage({ show: false }));
     });
-
-    return () => {
-      window.removeEventListener("load", loadSift);
-    };
   }, []);
-
-  const connectSift = () => {
-    let auth = getAuthProps();
-    if (auth.isLoggedIn) {
-      let _user_id = auth.user.id || "";
-      let _session_id = uniqueId();
-      let _sift = (window._sift = window._sift || []);
-      _sift.push(["_setAccount", SIFT_BEACON_KEY]);
-      _sift.push(["_setUserId", _user_id]);
-      _sift.push(["_setSessionId", _session_id]);
-      _sift.push(["_trackPageview"]);
-
-      if (window.attachEvent) {
-        window.attachEvent("onload", loadSift);
-      } else {
-        window.addEventListener("load", loadSift, false);
-      }
-
-      loadSift();
-    } else {
-      disconnectSift();
-    }
-  };
-
-  const getAuthProps = () => {
-    return store.getState().auth;
-  };
-
-  const disconnectSift = () => {
-    let sift = document.getElementById("sift");
-    sift && sift.parentNode.removeChild(sift);
-  };
-
-  const loadSift = () => {
-    if (!document.getElementById("sift")) {
-      // only attach script if it isn't there
-      let script = document.createElement("script");
-      script.setAttribute("id", "sift");
-      script.src = "https://cdn.sift.com/s.js";
-      document.body.appendChild(script);
-    }
-  };
-
-  const uniqueId = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
-      /[xy]/g,
-      function (c) {
-        var r = (Math.random() * 16) | 0,
-          v = c == "x" ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-      }
-    );
-  };
 
   return (
     <Provider store={store}>
