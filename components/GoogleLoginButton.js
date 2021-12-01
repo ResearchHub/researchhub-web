@@ -11,7 +11,6 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { BannerActions } from "~/redux/banner";
 
-import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
 import { useEffect } from "react";
 import { isDevEnv } from "~/config/utils/env";
