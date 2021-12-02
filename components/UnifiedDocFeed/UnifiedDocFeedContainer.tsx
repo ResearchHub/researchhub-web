@@ -28,6 +28,7 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { id } from "ethers/lib/utils";
 
 type PaginationInfo = {
+  hasMore: Boolean;
   isLoading: Boolean;
   isLoadingMore: Boolean;
   page: number;
@@ -103,6 +104,7 @@ function UnifiedDocFeedContainer({
   const { filterBy } = subFilters;
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
+    hasMore: isNullOrUndefined(preloadResults?.next),
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
     page: 1,
@@ -114,7 +116,6 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
-  const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const shouldPrefetch = page * 2 === localPage;
   const fetchParams = getFetchParams({
     bePage: page,
@@ -131,7 +132,7 @@ function UnifiedDocFeedContainer({
     fetchUnifiedDocs({
       ...fetchParams,
       docTypeFilter,
-      page: 1,
+      page: 1 /* when hubs or docType changes, start from page 1 */,
     });
   }, [docTypeFilter, hub]);
 
@@ -152,12 +153,8 @@ function UnifiedDocFeedContainer({
   );
 
   const handleLoadMore = (): void => {
-    if (isLoadingMore) {
-      return;
-    }
+    const newLocalPage = page;
     if (shouldPrefetch) {
-      setUnifiedDocuments([...unifiedDocuments, ...nextResultSet]);
-      prefetchNextPage({ nextPage: paginationInfo.page + 1 });
     }
   };
 
@@ -201,12 +198,13 @@ function UnifiedDocFeedContainer({
     );
   }, [docTypeFilter, router]);
 
+  const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     hasSubscribed,
     isLoggedIn,
     isOnMyHubsTab,
     setUnifiedDocuments,
-    unifiedDocumentData: unifiedDocuments,
+    unifiedDocumentData: renderableUniDoc,
   });
 
   return (
