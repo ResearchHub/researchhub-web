@@ -23,7 +23,7 @@ export default function AuthorClaimCaseCard({
   cardWidth,
   setLastFetchTime,
 }: Props): ReactElement<"div"> {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [openModalType, setOpenModalType] =
     useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
