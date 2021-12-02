@@ -598,7 +598,7 @@ class HubPage extends Component {
   };
 
   render() {
-    const { feed, isLatestActivityShown } = this.state;
+    const { feed } = this.state;
 
     const {
       auth,
@@ -606,9 +606,10 @@ class HubPage extends Component {
       hub,
       hubName,
       hubState,
+      initialFeed,
       initialHubList,
       leaderboardFeed,
-      initialFeed,
+      loggedIn,
     } = this.props;
 
     if (auth.user.moderator && filterOptions.length < 5) {
@@ -630,20 +631,6 @@ class HubPage extends Component {
         }
       );
     }
-
-    const sampleFeed = this.state.feedType !== "subscribed" && feed === 0;
-
-    const hasSubscribed = process.browser
-      ? auth.authChecked
-        ? hubState.subscribedHubs.length > 0
-        : this.props.loggedIn
-      : this.props.loggedIn;
-
-    const loggedIn = process.browser
-      ? auth.authChecked
-        ? auth.isLoggedIn
-        : this.props.loggedIn
-      : this.props.loggedIn;
 
     return (
       <Fragment>
@@ -677,12 +664,12 @@ class HubPage extends Component {
             </div>
             <UnifiedDocFeedContainer
               feed={feed}
-              home={this.props.home}
+              home={home}
               hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
               hubState={hubState}
               hub={hub}
               preloadedDocData={initialFeed}
-              loggedIn={this.props.loggedIn}
+              loggedIn={loggedIn}
               subscribeButton={
                 <SubscribeButton
                   {...this.props}
