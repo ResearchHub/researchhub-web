@@ -10,6 +10,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -128,8 +129,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     minHeight: 72,
     maxWidth: "90%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "90%",
       maxWidth: "unset",
     },
@@ -144,8 +144,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: "0px 16px",
     width: "100%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
     },
   },
@@ -159,7 +158,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       height: "unset",
       paddingRight: 0,
@@ -175,15 +174,14 @@ const styles = StyleSheet.create({
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
     width: "15%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "unset",
       height: "unset",
       paddingRight: 0,
     },
   },
   actions: {
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 16,
     },
   },
@@ -191,8 +189,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "unset",
       flexDirection: "column",
     },
@@ -231,7 +228,7 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flex: 1,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       marginTop: 16,
     },
