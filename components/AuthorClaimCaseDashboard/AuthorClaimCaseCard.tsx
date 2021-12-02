@@ -24,9 +24,8 @@ export default function AuthorClaimCaseCard({
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [openModalType, setOpenModalType] = useState<
-    ValueOf<typeof AUTHOR_CLAIM_STATUS>
-  >("");
+  const [openModalType, setOpenModalType] =
+    useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
   const { caseData, requestor, targetAuthor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
@@ -159,12 +158,11 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 72,
     justifyContent: "flex-start",
+    maxWidth: 500,
     overflow: "hidden",
     paddingRight: 16,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    width: "24%",
-
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       height: "unset",
