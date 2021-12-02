@@ -99,11 +99,6 @@ export default function AuthorClaimCaseCard({
             <div className={css(styles.cardMainSection, styles.fontGrey)}>
               {providedEmail}
             </div>
-            <div
-              className={css(styles.cardSmallerMainSection, styles.fontGrey)}
-            >
-              {createdDate.split("T")[0]}
-            </div>
           </div>
           <div className={css(styles.cardSmallerMainSection, styles.actions)}>
             {actionLabels}
@@ -112,6 +107,7 @@ export default function AuthorClaimCaseCard({
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
             <AuthorClaimCaseCardTargetAuthorSection
+              caseCreatedDate={createdDate.split("T")[0]}
               targetAuthor={targetAuthor}
             />
           </div>
