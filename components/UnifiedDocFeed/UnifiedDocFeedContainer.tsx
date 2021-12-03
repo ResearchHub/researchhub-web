@@ -3,11 +3,9 @@ import { filterOptions, scopeOptions } from "../../config/utils/options";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
-  nullthrows,
-  silentEmptyFnc,
 } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { NextRouter, useRouter } from "next/router";
+import { useRouter } from "next/router";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
@@ -25,55 +23,20 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
-import { id } from "ethers/lib/utils";
+import {
+  getFilterFromRouter,
+  UniDocFetchParams,
+  useEffectForceUpdate,
+  useEffectPrefetchNext,
+} from "./utils/UnifiedDocFeedUtil";
 
 type PaginationInfo = {
   hasMore: Boolean;
   isLoading: Boolean;
   isLoadingMore: Boolean;
-  page: number;
+  localPage: number; // for UI
+  page: number; // for BE
 };
-
-const getFilterFromRouter = (router: NextRouter): string => {
-  const docType = router.query.type;
-  return isNullOrUndefined(docType)
-    ? UnifiedDocFilters.ALL
-    : Array.isArray(docType)
-    ? nullthrows(docType[0])
-    : nullthrows(docType);
-};
-
-const getFetchParams = ({
-  // see: NOTE (100)
-  bePage,
-  hubID,
-  isLoggedIn,
-  isOnMyHubsTab,
-  localPage,
-  setPaginationInfo,
-  setUnifiedDocuments,
-}): any => ({
-  hubID,
-  isLoggedIn,
-  onSuccess: ({ page: updatedPage, documents }): void => {
-    setUnifiedDocuments(documents);
-    setPaginationInfo({
-      isLoading: false,
-      isLoadingMore: false,
-      page: updatedPage,
-    });
-  },
-  onError: (error: Error): void => {
-    emptyFncWithMsg(error);
-    setPaginationInfo({
-      isLoading: false,
-      isLoadingMore: false,
-      page: bePage,
-    });
-  },
-  subscribedHubs: isOnMyHubsTab,
-  page: localPage,
-});
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -107,34 +70,93 @@ function UnifiedDocFeedContainer({
     hasMore: isNullOrUndefined(preloadResults?.next),
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
+    localPage: 1,
     page: 1,
   });
+
   /* NOTE (100): paginationInfo (BE) increments by 20 items. 
   localPage is used to increment by 10 items for UI optimization */
-  const { page, isLoading, isLoadingMore } = paginationInfo;
-  const [localPage, setLocalPage] = useState<number>(1);
+  const { hasMore, isLoading, isLoadingMore, localPage, page } = paginationInfo;
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
-  const shouldPrefetch = page * 2 === localPage;
-  const fetchParams = getFetchParams({
-    bePage: page,
+
+  console.warn("FEED Doc count: ", unifiedDocuments.length);
+  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
+  const fetchParamsWithoutCallbacks = {
+    docTypeFilter,
     hubID: hub?.id ?? null,
     isLoggedIn,
-    isOnMyHubsTab,
-    localPage,
-    setPaginationInfo,
-    setUnifiedDocuments,
+    page,
+    subFilters,
+    subscribedHubs: isOnMyHubsTab,
+  };
+  const shouldPrefetch = page * 2 === localPage && hasMore;
+
+  useEffectPrefetchNext({
+    fetchParams: {
+      ...fetchParamsWithoutCallbacks,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          localPage,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents,
+      }): void => {
+        setUnifiedDocuments(documents);
+        setPaginationInfo({
+          hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          localPage,
+          page: updatedPage,
+        });
+      },
+      page: page + 1,
+    },
+    shouldPrefetch,
   });
 
-  useEffect((): void => {
-    setLocalPage(1);
-    fetchUnifiedDocs({
-      ...fetchParams,
-      docTypeFilter,
-      page: 1 /* when hubs or docType changes, start from page 1 */,
-    });
-  }, [docTypeFilter, hub]);
+  /* Force update when hubs or docType changes. start from page 1 */
+  useEffectForceUpdate({
+    fetchParams: {
+      ...fetchParamsWithoutCallbacks,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          localPage: 1,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents,
+      }): void => {
+        setUnifiedDocuments(documents);
+        setPaginationInfo({
+          hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          localPage: 1,
+          page: updatedPage,
+        });
+      },
+      page: 1,
+    },
+    updateOn: [docTypeFilter],
+  });
 
   const hasSubscribed = useMemo(
     (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
@@ -152,15 +174,8 @@ function UnifiedDocFeedContainer({
     [hubName, feed, filterBy, isHomePage]
   );
 
-  const handleLoadMore = (): void => {
-    const newLocalPage = page;
-    if (shouldPrefetch) {
-    }
-  };
-
   const handleDocTypeChange = (docTypeValue: string): void => {
     setDocTypeFilter(docTypeValue);
-
     router.push(
       {
         pathname: router.pathname,
@@ -257,10 +272,15 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : nextResultSet.length > 0 ? (
+          ) : canShowLoadMoreButton ? (
             <Ripples
               className={css(styles.loadMoreButton)}
-              onClick={handleLoadMore}
+              onClick={(): void =>
+                setPaginationInfo({
+                  ...paginationInfo,
+                  localPage: localPage + 1,
+                })
+              }
             >
               {"Load More"}
             </Ripples>
