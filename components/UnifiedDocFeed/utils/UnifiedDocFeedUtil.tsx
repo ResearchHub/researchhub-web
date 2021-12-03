@@ -33,7 +33,9 @@ export const useEffectPrefetchNext = ({
   shouldPrefetch: Boolean;
 }): void => {
   useEffect((): void => {
+    console.warn("shouldPrefetch: ", shouldPrefetch);
     if (shouldPrefetch) {
+      console.warn("fetchParams: ", fetchParams);
       fetchUnifiedDocs(fetchParams);
     }
   }, [fetchParams, shouldPrefetch]);
