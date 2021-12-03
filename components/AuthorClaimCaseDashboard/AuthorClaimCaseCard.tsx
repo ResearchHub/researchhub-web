@@ -1,16 +1,17 @@
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
+import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import { ValueOf } from "~/config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetAuthorSection";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
-import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
+import dayjs from "dayjs";
+import icons from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
@@ -35,7 +36,7 @@ export default function AuthorClaimCaseCard({
     providedEmail,
     requestorAuthorID,
   } = requestor || {};
-
+  const formattedCreatedDate = dayjs(createdDate).format("YYYY-MM-DD");
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -108,7 +109,7 @@ export default function AuthorClaimCaseCard({
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
             <AuthorClaimCaseCardTargetAuthorSection
-              caseCreatedDate={createdDate.split("T")[0]}
+              caseCreatedDate={formattedCreatedDate}
               targetAuthor={targetAuthor}
             />
           </div>
