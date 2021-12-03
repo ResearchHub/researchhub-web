@@ -27,7 +27,9 @@
     "prepare": "husky install"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-core": "^31.0.0",
     "@ckeditor/ckeditor5-react": "^3.0.2",
+    "@ckeditor/ckeditor5-widget": "^31.0.0",
     "@elastic/apm-rum": "^5.6.0",
     "@fortawesome/fontawesome-free-brands": "^5.1.0-3",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",

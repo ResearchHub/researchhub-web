@@ -24,6 +24,7 @@ import JupyterViewer from "@thomasvu/react-jupyter-notebook";
 import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
 import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
 import colors from "~/config/themes/colors";
+import ProductPreviewEditing from "./ckeditor/ProductPreviewEditing";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -233,6 +234,14 @@ const ELNEditor = ({
           <div className={"eln"}>
             <CKEditor
               config={{
+                plugins: [
+                  // A set of editor features to be enabled and made available to the user.
+                  Bold,
+                  Italic,
+                  Underline,
+                  // Your custom plugin implementing the widget is loaded here.
+                  ProductPreviewEditing,
+                ],
                 title: {
                   placeholder: "Untitled",
                 },
