@@ -68,7 +68,7 @@ export default function ClaimAuthorPopoverLabel({
               </PermissionNotificationWrapper>
             </div>
           }
-          positions={["top"]}
+          positions={["bottom", "top"]}
           onClickOutside={() => setIsPopoverOpen(false)}
           targetContent={
             <div

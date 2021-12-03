@@ -96,7 +96,7 @@ export function getCases({
               name: `${requestorFirstName} ${requestorLastName}`,
               profileImg: requestorProfileImg,
               providedEmail: provided_email,
-              requestorAuthorID: requestorID,
+              requestorAuthorID,
             },
           };
         }
