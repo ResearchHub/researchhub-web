@@ -47,7 +47,7 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
         </a>
       </div>
       <div className={css(styles.marginBottom)}>
-        <span className={css(styles.fontGrey)}>{"Case created - "}</span>
+        <span className={css(styles.fontGrey)}>{"Case Opened - "}</span>
         <span>{caseCreatedDate}</span>
       </div>
       {authorEducationSummary}
