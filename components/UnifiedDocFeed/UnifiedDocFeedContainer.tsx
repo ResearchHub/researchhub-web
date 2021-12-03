@@ -1,33 +1,32 @@
 import { css, StyleSheet } from "aphrodite";
+import { connect } from "react-redux";
 import { filterOptions, scopeOptions } from "../../config/utils/options";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
 } from "../../config/utils/nullchecks";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { useRouter } from "next/router";
-import {
-  UnifiedDocFilterLabels,
-  UnifiedDocFilters,
-} from "./constants/UnifiedDocFilters";
-import { connect } from "react-redux";
 import { getDocumentCard } from "./utils/getDocumentCard";
-import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
-import colors from "../../config/themes/colors";
-import CreateFeedBanner from "../Home/CreateFeedBanner";
-import EmptyFeedScreen from "../Home/EmptyFeedScreen";
-import FeedBlurWithButton from "./FeedBlurWithButton";
-import fetchUnifiedDocs from "./api/unifiedDocFetch";
-import Loader from "../Loader/Loader";
-import Ripples from "react-ripples";
-import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
-import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
-import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import {
   getFilterFromRouter,
   useEffectForceUpdate,
   useEffectPrefetchNext,
 } from "./utils/UnifiedDocFeedUtil";
+import { useRouter } from "next/router";
+import {
+  UnifiedDocFilterLabels,
+  UnifiedDocFilters,
+} from "./constants/UnifiedDocFilters";
+import { ReactElement, useMemo, useState } from "react";
+import colors from "../../config/themes/colors";
+import CreateFeedBanner from "../Home/CreateFeedBanner";
+import EmptyFeedScreen from "../Home/EmptyFeedScreen";
+import FeedBlurWithButton from "./FeedBlurWithButton";
+import Loader from "../Loader/Loader";
+import Ripples from "react-ripples";
+import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
+import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
+import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 
 type PaginationInfo = {
   hasMore: Boolean;

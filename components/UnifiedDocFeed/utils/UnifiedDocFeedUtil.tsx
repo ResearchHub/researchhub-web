@@ -1,13 +1,9 @@
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-  nullthrows,
-} from "~/config/utils/nullchecks";
+import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
+import { ID } from "~/config/types/root_types";
 import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
 import { useEffect } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
-import { ID } from "~/config/types/root_types";
 
 export type UniDocFetchParams = {
   docTypeFilter: null | string | undefined;
