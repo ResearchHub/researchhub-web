@@ -114,6 +114,7 @@ function UnifiedDocFeedContainer({
     shouldPrefetch,
   });
 
+  console.warn("docTypeFilter: ", docTypeFilter);
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
     fetchParams: {
@@ -142,7 +143,7 @@ function UnifiedDocFeedContainer({
           page: updatedPage,
         });
       },
-      page: 1,
+      page: 1, /* when force updating, start from page 1 */
     },
     updateOn: [docTypeFilter, subFilters],
   });

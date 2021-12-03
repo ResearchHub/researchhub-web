@@ -49,6 +49,7 @@ export const useEffectForceUpdate = ({
   updateOn: any[];
 }): void => {
   useEffect((): void => {
+    console.warn("useEffectForceUpdate Called: ", fetchParams);
     fetchUnifiedDocs(fetchParams);
   }, [...updateOn]);
 };
