@@ -25,7 +25,6 @@ import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import {
   getFilterFromRouter,
-  UniDocFetchParams,
   useEffectForceUpdate,
   useEffectPrefetchNext,
 } from "./utils/UnifiedDocFeedUtil";
@@ -52,20 +51,13 @@ function UnifiedDocFeedContainer({
 }): ReactElement<"div"> {
   const { results: preloadResults } = preloadedDocData || {};
   const router = useRouter();
-  const routerFilterType = getFilterFromRouter(router);
-  const isOnMyHubsTab = useMemo<Boolean>(
-    (): Boolean => ["/my-hubs"].includes(router.pathname),
-    [router.pathname]
+  const [docTypeFilter, setDocTypeFilter] = useState<string>(
+    getFilterFromRouter(router)
   );
-
-  const [docTypeFilter, setDocTypeFilter] = useState<string>(routerFilterType);
-
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-  const { filterBy } = subFilters;
-
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
     hasMore: isNullOrUndefined(preloadResults?.next),
     isLoading: isNullOrUndefined(preloadResults),
@@ -73,16 +65,14 @@ function UnifiedDocFeedContainer({
     localPage: 1,
     page: 1,
   });
-
-  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
-  localPage is used to increment by 10 items for UI optimization */
-  const { hasMore, isLoading, isLoadingMore, localPage, page } = paginationInfo;
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     preloadResults || []
   );
 
-  console.warn("FEED Doc count: ", unifiedDocuments.length);
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
+  const { hasMore, isLoading, isLoadingMore, localPage, page } = paginationInfo;
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
+  const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
   const fetchParamsWithoutCallbacks = {
     docTypeFilter,
     hubID: hub?.id ?? null,
@@ -155,7 +145,7 @@ function UnifiedDocFeedContainer({
       },
       page: 1,
     },
-    updateOn: [docTypeFilter],
+    updateOn: [docTypeFilter, subFilters],
   });
 
   const hasSubscribed = useMemo(
@@ -167,11 +157,11 @@ function UnifiedDocFeedContainer({
     (): string =>
       formatMainHeader({
         feed,
-        filterBy,
+        filterBy: subFilters.filterBy ?? null,
         hubName,
         isHomePage,
       }),
-    [hubName, feed, filterBy, isHomePage]
+    [hubName, feed, subFilters, isHomePage]
   );
 
   const handleDocTypeChange = (docTypeValue: string): void => {
@@ -183,16 +173,6 @@ function UnifiedDocFeedContainer({
       },
       router.pathname + `?type=${docTypeValue}`
     );
-  };
-
-  const handleFilterSelect = (_type: string, filterBy: any): void => {
-    const updatedSubFilters = { filterBy, scope: subFilters.scope };
-    setSubFilters(updatedSubFilters);
-  };
-
-  const handleScopeSelect = (_type: string, scope: any): void => {
-    const updatedSubFilters = { filterBy: subFilters.filterBy, scope };
-    setSubFilters(updatedSubFilters);
   };
 
   const docTypeFilterButtons = useMemo(() => {
@@ -233,8 +213,12 @@ function UnifiedDocFeedContainer({
         )}
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
-            onSubFilterSelect={handleFilterSelect}
-            onScopeSelect={handleScopeSelect}
+            onSubFilterSelect={(_type: string, filterBy: any): void =>
+              setSubFilters({ filterBy, scope: subFilters.scope })
+            }
+            onScopeSelect={(_type: string, scope: any): void =>
+              setSubFilters({ filterBy: subFilters.filterBy, scope })
+            }
             subFilters={subFilters}
           />
         </div>
@@ -245,7 +229,6 @@ function UnifiedDocFeedContainer({
       {!hasSubscribed ? (
         <div>
           <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            {/* @ts-ignore */}
             <CreateFeedBanner loggedIn={loggedIn} />
           </div>
         </div>
