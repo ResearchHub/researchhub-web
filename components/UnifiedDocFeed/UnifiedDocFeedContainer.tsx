@@ -229,6 +229,7 @@ function UnifiedDocFeedContainer({
       {!hasSubscribed ? (
         <div>
           <div className={css(styles.bannerContainer)} id="create-feed-banner">
+            {/* @ts-ignore */}
             <CreateFeedBanner loggedIn={loggedIn} />
           </div>
         </div>
