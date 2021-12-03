@@ -72,9 +72,10 @@ function UnifiedDocFeedContainer({
   const { hasMore, isLoading, isLoadingMore, localPage, page } = paginationInfo;
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
+  const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
     docTypeFilter,
-    hubID: hub?.id ?? null,
+    hubID,
     isLoggedIn,
     page,
     subFilters,
@@ -143,9 +144,9 @@ function UnifiedDocFeedContainer({
           page: updatedPage,
         });
       },
-      page: 1, /* when force updating, start from page 1 */
+      page: 1 /* when force updating, start from page 1 */,
     },
-    updateOn: [docTypeFilter, subFilters],
+    updateOn: [docTypeFilter, hubID, subFilters],
   });
 
   const hasSubscribed = useMemo(
