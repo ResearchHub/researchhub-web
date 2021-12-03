@@ -81,7 +81,7 @@ function UnifiedDocFeedContainer({
     subscribedHubs: isOnMyHubsTab,
   };
   const shouldPrefetch = page * 2 === localPage && hasMore;
-
+  console.warn("before fetching: ", page, localPage, hasMore);
   useEffectPrefetchNext({
     fetchParams: {
       ...fetchParamsWithoutCallbacks,
