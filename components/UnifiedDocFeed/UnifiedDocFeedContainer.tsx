@@ -98,9 +98,9 @@ function UnifiedDocFeedContainer({
       onSuccess: ({
         hasMore: nextPageHasMore,
         page: updatedPage,
-        documents,
+        documents: nextDocs,
       }): void => {
-        setUnifiedDocuments(documents);
+        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,
