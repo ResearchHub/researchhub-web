@@ -2,7 +2,6 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
@@ -48,6 +47,7 @@ Index.getInitialProps = async (ctx) => {
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
     );
+    console.warn("initialFeed: ", initialFeed);
     return {
       ...defaultProps,
       initialFeed,

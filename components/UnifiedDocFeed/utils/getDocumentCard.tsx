@@ -20,7 +20,6 @@ export function getDocumentCard({
   return filterNull(unifiedDocumentData).map(
     (uniDoc: any, arrIndex: number): UnifiedCard => {
       const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
-      console.warn("rendering card DocType: ", formattedDocType);
       const targetDoc =
         formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
       const docID = targetDoc.id;
