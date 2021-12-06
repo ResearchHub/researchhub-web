@@ -8,9 +8,12 @@ import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import {
+  PaginationInfo,
   getFilterFromRouter,
   useEffectForceUpdate,
   useEffectPrefetchNext,
+  getPaginationInfoFromServerLoaded,
+  useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useMemo, useState } from "react";
 import {
@@ -28,15 +31,6 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 
-type PaginationInfo = {
-  hasMore: Boolean;
-  isLoading: Boolean;
-  isLoadingMore: Boolean;
-  isServerLoaded: Boolean;
-  localPage: number; // for UI
-  page: number; // for BE
-};
-
 function UnifiedDocFeedContainer({
   auth, // redux
   feed,
@@ -44,13 +38,11 @@ function UnifiedDocFeedContainer({
   hub, // selected hub
   hubName,
   hubState, // hub data of current user
-  preloadedDocData, // Loaded on the server via getInitialProps on full page load
   isLoggedIn,
   loggedIn,
+  serverLoadedData, // Loaded on the server via getInitialProps on full page load
   subscribeButton,
 }): ReactElement<"div"> {
-  const { results: serverLoaded } = preloadedDocData || {};
-  console.warn("serverLoaded: ", serverLoaded.legn);
   const router = useRouter();
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -59,17 +51,19 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    hasMore: isNullOrUndefined(serverLoaded?.next),
-    isLoading: isNullOrUndefined(serverLoaded),
-    isLoadingMore: false,
-    isServerLoaded: isNullOrUndefined(serverLoaded),
-    localPage: 1,
-    page: 1,
-  });
-  const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
-    serverLoaded || []
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
+    getPaginationInfoFromServerLoaded(serverLoadedData)
   );
+  const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
+    serverLoadedData?.results || []
+  );
+
+  useEffectUpdateStatesOnServerChanges({
+    setUnifiedDocuments,
+    setPaginationInfo,
+    routePath: router.pathname,
+    serverLoadedData,
+  });
 
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
@@ -120,7 +114,6 @@ function UnifiedDocFeedContainer({
     shouldPrefetch,
   });
 
-  console.warn("docTypeFilter: ", docTypeFilter);
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
     fetchParams: {
@@ -210,7 +203,7 @@ function UnifiedDocFeedContainer({
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
-  console.warn("unifiedDocuments: ", unifiedDocuments.length);
+
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       <div className={css(styles.titleContainer)}>

@@ -577,8 +577,8 @@ class HubPage extends Component {
               hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
               hubState={hubState}
               hub={hub}
-              preloadedDocData={initialFeed}
               loggedIn={loggedIn}
+              serverLoadedData={initialFeed}
               subscribeButton={
                 <SubscribeButton
                   {...this.props}

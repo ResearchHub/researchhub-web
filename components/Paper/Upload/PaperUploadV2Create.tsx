@@ -169,7 +169,6 @@ function PaperuploadV2Create({
         }
       : defaultFormState
   );
-  console.warn("selectedCitationType: ", formState.citation_type);
 
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState

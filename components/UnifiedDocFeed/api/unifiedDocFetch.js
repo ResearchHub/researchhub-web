@@ -149,8 +149,6 @@ export default function fetchUnifiedDocs({
         filterNull(fetchedUnifiedDocs),
         isLoggedIn
       );
-      console.warn("FETCHED: ", fetchedUnifiedDocs.length);
-      console.warn("currentPageHasMore: ", !isNullOrUndefined(next));
       onSuccess({
         count,
         page,
