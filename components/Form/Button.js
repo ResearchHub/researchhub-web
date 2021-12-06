@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 415px)": {
       width: "unset",
       height: "unset",
       minHeight: 45,
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     height: 30,
     width: "auto",
     paddingLeft: 10,
-    paddingRight: 10,    
+    paddingRight: 10,
   },
   small: {
     width: 126,
