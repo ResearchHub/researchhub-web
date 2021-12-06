@@ -43,13 +43,17 @@ export const useEffectPrefetchNext = ({
 
 export const useEffectForceUpdate = ({
   fetchParams,
+  shouldEscape,
   updateOn,
 }: {
   fetchParams: UniDocFetchParams;
+  shouldEscape: Boolean;
   updateOn: any[];
 }): void => {
   useEffect((): void => {
-    console.warn("useEffectForceUpdate Called: ", fetchParams);
-    fetchUnifiedDocs(fetchParams);
+    if (!shouldEscape) {
+      console.warn("useEffectForceUpdate Called: ", fetchParams);
+      fetchUnifiedDocs(fetchParams);
+    }
   }, [...updateOn]);
 };

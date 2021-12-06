@@ -1,10 +1,10 @@
-import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
-import { filterOptions, scopeOptions } from "../../config/utils/options";
+import { css, StyleSheet } from "aphrodite";
 import {
   emptyFncWithMsg,
   isNullOrUndefined,
 } from "../../config/utils/nullchecks";
+import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import {
@@ -12,13 +12,13 @@ import {
   useEffectForceUpdate,
   useEffectPrefetchNext,
 } from "./utils/UnifiedDocFeedUtil";
-import { useRouter } from "next/router";
+import { ReactElement, useMemo, useState } from "react";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
-import { ReactElement, useMemo, useState } from "react";
-import colors from "../../config/themes/colors";
+import { useRouter } from "next/router";
+import colors from "~/config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
@@ -32,6 +32,7 @@ type PaginationInfo = {
   hasMore: Boolean;
   isLoading: Boolean;
   isLoadingMore: Boolean;
+  isServerLoaded: Boolean;
   localPage: number; // for UI
   page: number; // for BE
 };
@@ -49,6 +50,7 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const { results: preloadResults } = preloadedDocData || {};
+  console.warn("preloaded: ", preloadResults);
   const router = useRouter();
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -61,6 +63,7 @@ function UnifiedDocFeedContainer({
     hasMore: isNullOrUndefined(preloadResults?.next),
     isLoading: isNullOrUndefined(preloadResults),
     isLoadingMore: false,
+    isServerLoaded: isNullOrUndefined(preloadResults),
     localPage: 1,
     page: 1,
   });
@@ -69,7 +72,8 @@ function UnifiedDocFeedContainer({
   );
 
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
-  const { hasMore, isLoading, isLoadingMore, localPage, page } = paginationInfo;
+  const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
+    paginationInfo;
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
   const hubID = hub?.id ?? null;
@@ -92,6 +96,7 @@ function UnifiedDocFeedContainer({
           hasMore,
           isLoading: false,
           isLoadingMore: false,
+          isServerLoaded: false,
           localPage,
           page,
         });
@@ -106,6 +111,7 @@ function UnifiedDocFeedContainer({
           hasMore: nextPageHasMore,
           isLoading: false,
           isLoadingMore: false,
+          isServerLoaded: false,
           localPage,
           page: updatedPage,
         });
@@ -126,6 +132,7 @@ function UnifiedDocFeedContainer({
           hasMore,
           isLoading: false,
           isLoadingMore: false,
+          isServerLoaded: false,
           localPage: 1,
           page,
         });
@@ -140,13 +147,15 @@ function UnifiedDocFeedContainer({
           hasMore: nextPageHasMore,
           isLoading: false,
           isLoadingMore: false,
+          isServerLoaded: false,
           localPage: 1,
           page: updatedPage,
         });
       },
       page: 1 /* when force updating, start from page 1 */,
     },
-    updateOn: [docTypeFilter, hubID, subFilters],
+    shouldEscape: isServerLoaded,
+    updateOn: [docTypeFilter, hubID, subFilters, isServerLoaded],
   });
 
   const hasSubscribed = useMemo(
@@ -202,7 +211,7 @@ function UnifiedDocFeedContainer({
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
-
+  console.warn("unifiedDocuments: ", unifiedDocuments.length);
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       <div className={css(styles.titleContainer)}>

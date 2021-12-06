@@ -36,14 +36,6 @@ class Index extends Component {
       throw 404;
     }
 
-    if (!isServer()) {
-      return {
-        slug,
-        name,
-        initialProps: {},
-        currentHub,
-      };
-    }
     try {
       const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
