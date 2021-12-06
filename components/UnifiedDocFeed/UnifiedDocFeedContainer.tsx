@@ -49,8 +49,8 @@ function UnifiedDocFeedContainer({
   loggedIn,
   subscribeButton,
 }): ReactElement<"div"> {
-  const { results: preloadResults } = preloadedDocData || {};
-  console.warn("preloaded: ", preloadResults);
+  const { results: serverLoaded } = preloadedDocData || {};
+  console.warn("serverLoaded: ", serverLoaded.legn);
   const router = useRouter();
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -60,15 +60,15 @@ function UnifiedDocFeedContainer({
     scope: scopeOptions[0],
   });
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    hasMore: isNullOrUndefined(preloadResults?.next),
-    isLoading: isNullOrUndefined(preloadResults),
+    hasMore: isNullOrUndefined(serverLoaded?.next),
+    isLoading: isNullOrUndefined(serverLoaded),
     isLoadingMore: false,
-    isServerLoaded: isNullOrUndefined(preloadResults),
+    isServerLoaded: isNullOrUndefined(serverLoaded),
     localPage: 1,
     page: 1,
   });
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
-    preloadResults || []
+    serverLoaded || []
   );
 
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
@@ -86,7 +86,6 @@ function UnifiedDocFeedContainer({
     subscribedHubs: isOnMyHubsTab,
   };
   const shouldPrefetch = page * 2 === localPage && hasMore;
-  console.warn("before fetching: ", page, localPage, hasMore);
   useEffectPrefetchNext({
     fetchParams: {
       ...fetchParamsWithoutCallbacks,
