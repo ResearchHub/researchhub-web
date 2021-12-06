@@ -16,6 +16,15 @@ export type UniDocFetchParams = {
   subscribedHubs: Boolean;
 };
 
+export type PaginationInfo = {
+  hasMore: Boolean;
+  isLoading: Boolean;
+  isLoadingMore: Boolean;
+  isServerLoaded: Boolean;
+  localPage: number; // for UI
+  page: number; // for BE
+};
+
 export const getFilterFromRouter = (router: NextRouter): string => {
   const docType = router.query.type;
   return isNullOrUndefined(docType)
@@ -23,6 +32,31 @@ export const getFilterFromRouter = (router: NextRouter): string => {
     : Array.isArray(docType)
     ? nullthrows(docType[0])
     : nullthrows(docType);
+};
+
+export const getPaginationInfoFromServerLoaded = (
+  serverLoadedData: any
+): PaginationInfo => {
+  return {
+    hasMore: !isNullOrUndefined(serverLoadedData?.next),
+    isLoading: isNullOrUndefined(serverLoadedData),
+    isLoadingMore: false,
+    isServerLoaded: !isNullOrUndefined(serverLoadedData),
+    localPage: 1,
+    page: 1,
+  };
+};
+
+export const useEffectUpdateStatesOnServerChanges = ({
+  setPaginationInfo,
+  setUnifiedDocuments,
+  serverLoadedData,
+  routePath,
+}): void => {
+  useEffect((): void => {
+    setPaginationInfo(getPaginationInfoFromServerLoaded(serverLoadedData));
+    setUnifiedDocuments(serverLoadedData?.results || []);
+  }, [routePath, serverLoadedData]);
 };
 
 export const useEffectPrefetchNext = ({
@@ -33,9 +67,7 @@ export const useEffectPrefetchNext = ({
   shouldPrefetch: Boolean;
 }): void => {
   useEffect((): void => {
-    console.warn("shouldPrefetch: ", shouldPrefetch);
     if (shouldPrefetch) {
-      console.warn("fetchParams: ", fetchParams);
       fetchUnifiedDocs(fetchParams);
     }
   }, [fetchParams, shouldPrefetch]);
@@ -52,7 +84,6 @@ export const useEffectForceUpdate = ({
 }): void => {
   useEffect((): void => {
     if (!shouldEscape) {
-      console.warn("useEffectForceUpdate Called: ", fetchParams);
       fetchUnifiedDocs(fetchParams);
     }
   }, [...updateOn]);
