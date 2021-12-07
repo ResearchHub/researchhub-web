@@ -1,9 +1,6 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-} from "../../config/utils/nullchecks";
+import { emptyFncWithMsg } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
@@ -68,7 +65,6 @@ function UnifiedDocFeedContainer({
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
     paginationInfo;
-  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
@@ -79,6 +75,7 @@ function UnifiedDocFeedContainer({
     subFilters,
     subscribedHubs: isOnMyHubsTab,
   };
+  const canShowLoadMoreButton = localPage < page || hasMore;
   const shouldPrefetch = page * 2 === localPage && hasMore;
   useEffectPrefetchNext({
     fetchParams: {
