@@ -70,7 +70,7 @@ export const useEffectPrefetchNext = ({
     if (shouldPrefetch) {
       fetchUnifiedDocs(fetchParams);
     }
-  }, [fetchParams, shouldPrefetch]);
+  }, [shouldPrefetch]);
 };
 
 export const useEffectForceUpdate = ({

@@ -62,10 +62,8 @@ function UnifiedDocFeedContainer({
     serverLoadedData,
   });
 
-  /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
     paginationInfo;
-  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
@@ -76,6 +74,8 @@ function UnifiedDocFeedContainer({
     subFilters,
     subscribedHubs: isOnMyHubsTab,
   };
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
+  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
   useEffectPrefetchNext({
     fetchParams: {
@@ -144,7 +144,7 @@ function UnifiedDocFeedContainer({
       page: 1 /* when force updating, start from page 1 */,
     },
     shouldEscape: isServerLoaded,
-    updateOn: [docTypeFilter, hubID, subFilters, isServerLoaded],
+    updateOn: [docTypeFilter, hubID, isLoggedIn, subFilters],
   });
 
   const hasSubscribed = useMemo(
