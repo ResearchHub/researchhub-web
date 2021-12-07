@@ -47,7 +47,6 @@ Index.getInitialProps = async (ctx) => {
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
     );
-    console.warn("initialFeed: ", initialFeed);
     return {
       ...defaultProps,
       initialFeed,
