@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import {
   PaginationInfo,
@@ -41,6 +42,7 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const router = useRouter();
+  const routerPathName = router.pathname;
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
@@ -55,29 +57,29 @@ function UnifiedDocFeedContainer({
     serverLoadedData?.results || []
   );
 
-  useEffectUpdateStatesOnServerChanges({
-    setUnifiedDocuments,
-    setPaginationInfo,
-    routePath: router.pathname,
-    serverLoadedData,
-  });
-
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
     paginationInfo;
-  const isOnMyHubsTab = ["/my-hubs"].includes(router.pathname);
+  const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
-    docTypeFilter,
+    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
     hubID,
     isLoggedIn,
     page,
     subFilters,
     subscribedHubs: isOnMyHubsTab,
   };
+
+  useEffectUpdateStatesOnServerChanges({
+    setUnifiedDocuments,
+    setPaginationInfo,
+    routePath: routerPathName,
+    serverLoadedData,
+  });
+
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
- 
   useEffectPrefetchNext({
     fetchParams: {
       ...fetchParamsWithoutCallbacks,
