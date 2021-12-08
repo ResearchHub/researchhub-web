@@ -3,7 +3,6 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
 import {
   PaginationInfo,
@@ -62,7 +61,7 @@ function UnifiedDocFeedContainer({
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
-    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
+    docTypeFilter: docTypeFilter,
     hubID,
     isLoggedIn,
     page,
@@ -166,17 +165,6 @@ function UnifiedDocFeedContainer({
     [hubName, feed, subFilters, isHomePage]
   );
 
-  const handleDocTypeChange = (docTypeValue: string): void => {
-    setDocTypeFilter(docTypeValue);
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, type: docTypeValue },
-      },
-      router.pathname + `?type=${docTypeValue}`
-    );
-  };
-
   const docTypeFilterButtons = useMemo(() => {
     return Object.keys(UnifiedDocFilters).map(
       (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
@@ -187,13 +175,22 @@ function UnifiedDocFeedContainer({
               isActive={docTypeFilter === filterValue}
               key={filterKey}
               label={UnifiedDocFilterLabels[filterKey]}
-              onClick={() => handleDocTypeChange(filterValue)}
+              onClick={(): void => {
+                setDocTypeFilter(filterValue);
+                router.push(
+                  {
+                    pathname: routerPathName,
+                    query: { ...router.query, type: filterValue },
+                  },
+                  routerPathName + `?type=${filterValue}`
+                );
+              }}
             />
           </div>
         );
       }
     );
-  }, [docTypeFilter, router]);
+  }, [docTypeFilter, routerPathName]);
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
