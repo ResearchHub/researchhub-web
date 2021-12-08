@@ -24,7 +24,7 @@ import JupyterViewer from "@thomasvu/react-jupyter-notebook";
 import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
 import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
 import colors from "~/config/themes/colors";
-import ProductPreviewEditing from "./ckeditor/ProductPreviewEditing";
+import ReactDOM from "react-dom";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -169,7 +169,7 @@ const ELNEditor = ({
           )}
         </div>
       </div>
-      {presenceListElement !== null && (
+      {presenceListElement !== null && jupyterContent !== null && (
         <CKEditorContext
           config={{
             // The configuration for real-time collaboration features, shared between the editors:
@@ -234,14 +234,6 @@ const ELNEditor = ({
           <div className={"eln"}>
             <CKEditor
               config={{
-                plugins: [
-                  // A set of editor features to be enabled and made available to the user.
-                  Bold,
-                  Italic,
-                  Underline,
-                  // Your custom plugin implementing the widget is loaded here.
-                  ProductPreviewEditing,
-                ],
                 title: {
                   placeholder: "Untitled",
                 },
@@ -271,6 +263,15 @@ const ELNEditor = ({
                       noteId: currentNote.id,
                       onSaveFail,
                     });
+                  },
+                },
+                products: {
+                  productRenderer: (id, domElement) => {
+                    //const product = products.find((product) => product.id === id);
+                    ReactDOM.render(
+                      <JupyterViewer rawIpynb={jupyterContent} />,
+                      domElement
+                    );
                   },
                 },
               }}
@@ -305,7 +306,6 @@ const ELNEditor = ({
         Login
       </div>
       <div
-        className={css(styles.shareLink)}
         onClick={async () => {
           const params = {
             file_name: "RunningCode.ipynb",
