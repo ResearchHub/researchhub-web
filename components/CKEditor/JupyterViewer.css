@@ -8,16 +8,19 @@
   box-sizing: border-box;
   overflow: hidden;
 }
+
 .block .block-hidden {
   width: 100%;
   min-height: 20px;
 }
+
 .block .block-source {
   width: 100%;
   box-sizing: border-box;
   display: flex;
   flex-direction: row;
 }
+
 .block .block-output {
   width: 100%;
   margin: 5px 0 0 0;
@@ -25,27 +28,32 @@
   display: flex;
   flex-direction: row;
 }
+
 .block .block-output .block-output-content {
   width: 100%;
   overflow-y: auto;
 }
+
 .block .block-light {
   width: 8px;
   margin: 0 5px 0 0;
   border-radius: 2px;
   background-color: #fcfcfc;
 }
+
 .block .block-light-selected {
   width: 8px;
   margin: 0 5px 0 0;
   border-radius: 2px;
   background-color: rgba(66, 165, 245, 1);
 }
+
 .block .cell-row {
   width: 100%;
   display: flex;
   flex-direction: row;
 }
+
 .block .cell-row .cell-header {
   width: 64px;
   margin: 0 0 0 0;
@@ -53,43 +61,80 @@
   box-sizing: border-box;
   text-align: right;
 }
+
 .block .cell-row .cell-header.source {
   color: #307fc1;
 }
+
 .block .cell-row .cell-header.output {
   color: #bf5b3d;
 }
+
 .block .cell-row .cell-content {
   width: 100%;
   margin: 0 0 0 0;
   box-sizing: border-box;
   flex: 1;
 }
+
 .block .cell-row .cell-content.source-code {
   display: flex;
   flex-direction: row;
 }
+
 .block .cell-row .cell-content.source-code.source-code-main {
   flex: 1;
 }
+
 .block .cell-row .cell-content.source-markdown {
   padding: 0 20px 0 5px;
   box-sizing: border-box;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial,
     sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
 .block .cell-row .cell-content.output-std {
   padding: 5px 0 0 5px;
   box-sizing: border-box;
 }
+
 .block .cell-row .cell-content.output-err {
   padding: 5px 0 0 5px;
   box-sizing: border-box;
   background-color: #ffdddd;
 }
+
 .block .cell-row .cell-content.output-display {
   display: flex;
   flex-direction: row;
+}
+
+/* Custom CSS */
+
+.jupyter-viewer pre {
+  border: none !important;
+  min-width: inherit !important;
+  padding: 5px 0px !important;
+}
+
+.jupyter-viewer h1,
+.jupyter-viewer h2,
+.jupyter-viewer p {
+  margin: 5px 0px;
+}
+
+.source-code-main {
+  flex: 1 1;
+}
+
+.source-code-main pre,
+pre.output-err {
+  padding: 5px 10px !important;
+}
+
+pre.output-std,
+.cell-header {
+  background-color: #fff !important;
 }
 
 /*# sourceMappingURL=JupyterViewer.css.map */

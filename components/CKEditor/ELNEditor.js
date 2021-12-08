@@ -321,7 +321,6 @@ const ELNEditor = ({
       >
         Print
       </div>
-      {jupyterContent !== null && <JupyterViewer rawIpynb={jupyterContent} />}
     </div>
   );
 };
