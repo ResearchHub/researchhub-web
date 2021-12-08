@@ -25,11 +25,7 @@ import { HubActions } from "~/redux/hub";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import {
-  checkUserVotesOnPapers,
-  fetchUnifiedDocFeed,
-  fetchURL,
-} from "~/config/fetch";
+import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";

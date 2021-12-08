@@ -15,8 +15,8 @@ const isServer = () => typeof window === "undefined";
 
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
-  const { query, query: urlQuery } = ctx;
-  const { type, page, filter } = query;
+  const { query } = ctx;
+  const { type, filter } = ctx?.query ?? {};
   const filterObj = filterOptions.filter((el) => el.value === filter)[0];
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];

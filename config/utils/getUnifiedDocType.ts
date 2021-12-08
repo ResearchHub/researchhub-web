@@ -9,6 +9,8 @@ export function getUnifiedDocType(
   const lowerCasedInput = input?.toLowerCase() ?? null;
   switch (lowerCasedInput) {
     case "discussion":
+    case "post":
+    case "posts":
       return "post";
     case "hypothesis":
       return "hypothesis";

@@ -17,8 +17,8 @@ const isServer = () => typeof window === "undefined";
 
 class Index extends Component {
   static async getInitialProps(ctx) {
-    const { query, query: urlQuery } = ctx;
-    const { res, slug, name } = query;
+    const { query } = ctx;
+    const { res, slug, name, type } = query;
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
 
@@ -37,7 +37,7 @@ class Index extends Component {
     }
 
     try {
-      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+      const urlDocType = getUnifiedDocType(type) || "all";
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
