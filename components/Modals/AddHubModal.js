@@ -23,10 +23,6 @@ class AddHubModal extends Component {
     this.initialState = {
       hubDescription: "",
       hubName: "",
-      categories:
-        this.props.categories && this.props.categories.results
-          ? this.props.categories.results
-          : [],
       error: {
         upload: false,
         category: true,
@@ -140,10 +136,10 @@ class AddHubModal extends Component {
   };
 
   render() {
-    const { modals, openAddHubModal } = this.props;
-    const categories = this.props.categories.map((elem) => {
-      return { value: elem.id, label: elem.category_name };
-    });
+    const { categories, modals, openAddHubModal } = this.props;
+    const categoryOptions = categories
+      .filter((elem) => elem.category_name !== "Trending")
+      .map((elem) => ({ value: elem.id, label: elem.category_name }));
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -191,7 +187,7 @@ class AddHubModal extends Component {
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
-            options={categories}
+            options={categoryOptions}
             onChange={this.handleCategoryChange}
             error={this.state.error.category && this.state.error.changed}
           />
@@ -264,7 +260,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
-  categories: state.hubs.categories,
 });
 
 const mapDispatchToProps = {
@@ -274,7 +269,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddHubModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddHubModal);

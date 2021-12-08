@@ -1,30 +1,29 @@
 import API from "~/config/api";
+import JupyterViewer from "@thomasvu/react-jupyter-notebook";
+import Loader from "~/components/Loader/Loader";
+import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
+import NoteShareButton from "~/components/Notebook/NoteShareButton";
+import ReactDOM from "react-dom";
+import colors from "~/config/themes/colors";
+import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
+import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
 import { AUTH_TOKEN } from "~/config/constants";
-import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import {
   BUNDLE_VERSION,
   CKEditorCS as CKELNEditor,
   Context,
 } from "@thomasvu/ckeditor5-custom-build";
+import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "~/redux/message";
+import { PERMS } from "~/components/Notebook/config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
+import { captureError } from "~/config/utils/error";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
-import Loader from "../Loader/Loader";
-import NoteShareButton from "~/components/Notebook/NoteShareButton";
-import { connect } from "react-redux";
-import { MessageActions } from "~/redux/message";
-import { captureError } from "~/config/utils/error";
-import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
-import { PERMS } from "~/components/Notebook/config/notebookConstants";
-import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
-import { isOrgMember } from "~/components/Org/utils/orgHelper";
-import JupyterViewer from "@thomasvu/react-jupyter-notebook";
-import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
-import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
-import colors from "~/config/themes/colors";
-import ReactDOM from "react-dom";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
   if (editor.isReadOnly) {
@@ -76,26 +75,24 @@ const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
 
 const ELNEditor = ({
   ELNLoading,
-  notePerms,
-  currentOrganization,
-  userOrgs,
   currentNote,
+  currentOrganization,
   handleEditorInput,
-  setELNLoading,
+  isOrgMember,
+  notePerms,
+  redirectToNote,
   refetchNotePerms,
+  setELNLoading,
   setMessage,
   showMessage,
   user,
-  onNotePermChange,
-  onNoteCreate,
-  onNoteDelete,
+  userOrgs,
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
-  const [presenceListElement, setPresenceListElement] = useState(null);
   const [jupyterContent, setJupyterContent] = useState(null);
-  const _isOrgMember = isOrgMember({ user, org: currentOrganization });
+  const [presenceListElement, setPresenceListElement] = useState(null);
 
   useEffect(() => {
     const _fetchJupyter = async () => {
@@ -141,31 +138,24 @@ const ELNEditor = ({
     <div className={css(styles.container)}>
       <div className={css(styles.noteHeader)}>
         <div className={css(styles.noteHeaderOpts)}>
-          <div
-            className={css(styles.presenceList) + " presence"}
-            ref={onRefChange}
-          />
+          <div className="presence" ref={onRefChange} />
           <NoteShareButton
             noteId={currentNote.id}
             notePerms={notePerms}
             org={currentOrganization}
-            userOrgs={userOrgs}
             refetchNotePerms={refetchNotePerms}
-            onNotePermChange={onNotePermChange}
+            userOrgs={userOrgs}
           />
-          {_isOrgMember && (
-            <div className={css(styles.optionsMenuWrapper)}>
-              <NoteOptionsMenuButton
-                note={currentNote}
-                title={currentNote.title}
-                currentOrg={currentOrganization}
-                onNoteCreate={onNoteCreate}
-                onNoteDelete={onNoteDelete}
-                onNotePermChange={onNotePermChange}
-                show={true}
-                size={24}
-              />
-            </div>
+          {isOrgMember && (
+            <NoteOptionsMenuButton
+              currentOrg={currentOrganization}
+              customButtonStyles={styles.ellipsisButton}
+              note={currentNote}
+              redirectToNote={redirectToNote}
+              show={true}
+              size={24}
+              title={currentNote.title}
+            />
           )}
         </div>
       </div>
@@ -349,9 +339,6 @@ const styles = StyleSheet.create({
       height: "calc(100vh - 66px)",
     },
   },
-  optionsMenuWrapper: {
-    marginLeft: 17,
-  },
   noteHeader: {
     display: "flex",
     userSelect: "none",
@@ -365,7 +352,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
   },
-  presenceList: {},
   loader: {
     position: "absolute",
     top: 0,
@@ -384,6 +370,23 @@ const styles = StyleSheet.create({
     marginTop: -20,
     ":hover": {
       color: colors.BLUE(),
+    },
+  },
+  ellipsisButton: {
+    alignItems: "center",
+    borderRadius: "50%",
+    bottom: 0,
+    color: colors.BLACK(0.7),
+    cursor: "pointer",
+    display: "flex",
+    height: 30,
+    justifyContent: "center",
+    margin: "auto",
+    right: 7,
+    top: 0,
+    width: 30,
+    ":hover": {
+      backgroundColor: colors.GREY(0.5),
     },
   },
 });

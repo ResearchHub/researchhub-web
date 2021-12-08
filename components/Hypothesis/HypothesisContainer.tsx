@@ -4,7 +4,6 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { fetchHypothesis } from "./api/fetchHypothesis";
 import { ReactElement, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
 import CitationCommentSidebarWithMedia from "./Citation/CitationCommentSidebar";
 import CitationContainer from "./Citation/CitationContainer";
 import DiscussionTab from "../Paper/Tabs/DiscussionTab";
@@ -12,8 +11,9 @@ import Head from "../Head";
 import HypothesisCitationConsensusCard from "./HypothesisCitationConsensusCard";
 import HypothesisPageCard from "./HypothesisPageCard";
 import HypothesisUnduxStore from "./undux/HypothesisUnduxStore";
-import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 import PaperBanner from "../Paper/PaperBanner";
+import AuthorStatsDropdown from "../Paper/Tabs/AuthorStatsDropdown";
+import PaperSideColumn from "../Paper/SideColumn/PaperSideColumn";
 
 type Props = {};
 
@@ -27,8 +27,6 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
   );
-  const { citationID } = targetCitationComment ?? {};
-  const shouldDisplayCitationCommentBar = !isNullOrUndefined(citationID);
   const [hypothesis, setHypothesis] = useState<any>(null);
 
   useEffect(() => {
@@ -52,7 +50,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
     title,
     is_removed: isHypoRemoved,
   } = hypothesis || {};
-
+  const authors = [created_by?.author_profile ?? {}];
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
@@ -73,6 +71,8 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
       />
       <div className={css(styles.container)}>
         <HypothesisPageCard
+          authors={authors}
+          hubs={hubs}
           hypothesis={hypothesis}
           onUpdates={setLastFetchTime}
         />
@@ -85,6 +85,9 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
           }}
           hypothesisID={hypothesisID}
           isLoading={isLoading}
+          lastFetchTime={lastFetchTime}
+          setLastFetchTime={setLastFetchTime}
+          shouldShowUploadButton
         />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown
@@ -110,21 +113,16 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
             setCount={setDiscussionCount}
           />
         </div>
-        {shouldDisplayCitationCommentBar ? (
-          <div className={css(styles.citationCommentSidebar)}>
-            <CitationCommentSidebarWithMedia />
-          </div>
-        ) : (
-          <div className={css(styles.regSidebar)}>
-            <PaperSideColumn
-              authors={[created_by?.author_profile ?? {}]}
-              hubs={hubs}
-              isPost={true}
-              paper={hypothesis}
-              paperId={id}
-            />
-          </div>
-        )}
+        <CitationCommentSidebarWithMedia />
+        <div className={css(styles.regSidebar)}>
+          <PaperSideColumn
+            authors={[created_by?.author_profile ?? {}]}
+            hubs={hubs}
+            isPost={true}
+            paper={hypothesis}
+            paperId={id}
+          />
+        </div>
       </div>
     </div>
   ) : null;
@@ -199,5 +197,10 @@ const styles = StyleSheet.create({
   hypothesisContainerWrap: {
     display: "flex",
     position: "relative",
+  },
+  citationcontainerWrap: {
+    display: "flex",
+    height: "100%",
+    width: "100%",
   },
 });

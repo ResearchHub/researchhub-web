@@ -45,7 +45,7 @@ export default function withWebSocket(
     const [response, setResponse] = useState(null);
     const [stopped, setStopped] = useState(false);
 
-    useEffect(configureWebSocket, []);
+    useEffect(configureWebSocket, [url]);
     function configureWebSocket() {
       let token = null;
       if (props.wsAuth) {

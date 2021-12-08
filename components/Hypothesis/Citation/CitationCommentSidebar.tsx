@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { burgerMenuStyle } from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
 import { css, StyleSheet } from "aphrodite";
-import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { fetchCitationsThreads } from "../api/fetchCitationThreads";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
@@ -39,25 +39,25 @@ function useEffectFetchCitationThreads({
   lastUpdateTime,
   setCitationThreads,
 }: UseEffectFetchCitationThreadsArgs): void {
-  useEffect(
-    (): void =>
-      fetchCitationsThreads({
-        onSuccess: (threads: any): void => setCitationThreads(threads),
-        onError: emptyFncWithMsg,
-        citationID,
-      }),
-    [citationID, lastUpdateTime]
-  );
+  useEffect((): void => {
+    if (isNullOrUndefined(citationID)) {
+      return;
+    }
+    fetchCitationsThreads({
+      onSuccess: (threads: any): void => setCitationThreads(threads),
+      onError: emptyFncWithMsg,
+      citationID,
+    });
+  }, [citationID, lastUpdateTime]);
 }
 
 export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> | null {
   const hypothesisUnduxStore = HypothesisUnduxStore.useStore();
   const [lastUpdateTime, setLastUpdateTime] = useState<number>(Date.now());
   const [citationThreads, setCitationThreads] = useState<any>([]);
-  const [shouldRenderWithSlide, setShouldRenderWithSlide] = useState<boolean>(
-    MEDIA_WIDTH_LIMIT > getCurrMediaWidth()
+  const [isRegScreenSize, setIsRegScreenSize] = useState<boolean>(
+    getCurrMediaWidth() > MEDIA_WIDTH_LIMIT
   );
-
   const targetCitationComment = hypothesisUnduxStore.get(
     "targetCitationComment"
   );
@@ -71,7 +71,7 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
 
   useEffectOnScreenResize({
     onResize: (newMediaWidth): void =>
-      setShouldRenderWithSlide(MEDIA_WIDTH_LIMIT > newMediaWidth),
+      setIsRegScreenSize(newMediaWidth > MEDIA_WIDTH_LIMIT),
   });
 
   const citationCommentSidebarProps: CitationCommentSidebarProps = {
@@ -95,21 +95,23 @@ export default function CitationCommentSidebarWithMedia(): ReactElement<"div"> |
     setLastUpdateTime,
   };
 
-  return shouldRenderWithSlide ? (
+  return (
     <div className={css(styles.citationCommentMobile)}>
       <SlideMenu
         customBurgerIcon={false}
-        isOpen
+        disableCloseOnEsc
+        isOpen={!isNullOrUndefined(citationID)}
+        noOverlay
         right
-        styles={burgerMenuStyle}
+        styles={
+          isRegScreenSize
+            ? regBurgerMenuStyleOverride
+            : subLargeBurgerMenuStyleOverride
+        }
         width={"100%"}
       >
         <CitationCommentSidebar {...citationCommentSidebarProps} />
       </SlideMenu>
-    </div>
-  ) : (
-    <div className={css(styles.inlineSticky)}>
-      <CitationCommentSidebar {...citationCommentSidebarProps} />
     </div>
   );
 }
@@ -206,6 +208,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
       width: "100%",
     },
+    marginTop: 16,
   },
   inlineSticky: {
     position: "sticky",
@@ -215,9 +218,63 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
   citationCommentMobile: {
-    display: "none",
-    [`@media only screen and (max-width: ${breakpoints.large.int - 1}px)`]: {
-      display: "block",
-    },
+    display: "block",
   },
 });
+
+const regBurgerMenuStyleOverride = {
+  ...burgerMenuStyle,
+  bmOverlay: {
+    background: "transparent",
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 9,
+    bottom: 0,
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    top: 0,
+    zIndex: 10,
+    overflowY: "auto",
+    width: "30%",
+    maxWidth: 420 /* matched with citationCommentThreadComposer */,
+    borderLeft: `1px solid ${colors.LIGHT_GREY(1)}`,
+    boxShadow: `0px 0px 0px 4px rgb(0 0 0 / 2%)`,
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
+      maxWidth: "unset",
+      width: "85%",
+    },
+  },
+  bmItemList: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+};
+
+const subLargeBurgerMenuStyleOverride = {
+  ...burgerMenuStyle,
+  bmOverlay: {
+    background: "transparent",
+    left: 0,
+    right: 0,
+    top: 0,
+    zIndex: 9,
+    bottom: 0,
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    top: 0,
+    zIndex: 10,
+    overflowY: "auto",
+    borderLeft: `1px solid ${colors.LIGHT_GREY(1)}`,
+    boxShadow: `0px 0px 0px 4px rgb(0 0 0 / 2%)`,
+    width: "60%",
+  },
+  bmItemList: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+  },
+};

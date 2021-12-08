@@ -1,5 +1,11 @@
+import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
 import { formatUploadedDate } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import { SyntheticEvent, useState, useEffect, useMemo } from "react";
@@ -11,26 +17,21 @@ import colors, { genericCardColors } from "~/config/themes/colors";
 import DesktopOnly from "../../DesktopOnly";
 import HubDropDown from "../../Hubs/HubDropDown";
 import HubTag from "../../Hubs/HubTag";
-import icons from "~/config/themes/icons";
+import icons, { PaperDiscussionIcon } from "~/config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-  silentEmptyFnc,
-} from "~/config/utils/nullchecks";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
-import { breakpoints } from "~/config/themes/screen";
 
 export type HypothesisCardProps = {
   aggregate_citation_consensus: any;
   boost_amount: number;
   created_by: any;
   created_date: any;
+  discussion_count: number;
   formattedDocType: string | null;
   hubs: any[];
   id: number;
@@ -83,6 +84,7 @@ function HypothesisCard({
   boost_amount: boostAmount,
   created_by,
   created_date,
+  discussion_count: discussionCount,
   formattedDocType,
   hubs,
   id,
@@ -267,7 +269,31 @@ function HypothesisCard({
       voteState={voteState}
     />
   );
+
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
+  const discussionCountComponent =
+    discussionCount === 0 ? null : (
+      <Link
+        href={"/[documentType]/[documentId]/[title]"}
+        as={`/${formattedDocType}/${id}/${slug}`}
+      >
+        <a
+          className={css(styles.link)}
+          onClick={(e) => {
+            e.stopPropagation();
+          }}
+        >
+          <div className={css(styles.discussion)}>
+            <div className={css(styles.discussionIcon)} id={"discIcon"}>
+              {PaperDiscussionIcon({ color: undefined })}
+            </div>
+            <div className={css(styles.discussionCount)} id={"discCount"}>
+              {discussionCount}
+            </div>
+          </div>
+        </a>
+      </Link>
+    );
 
   const navigateToPage = (e) => {
     if (e.metaKey || e.ctrlKey) {
@@ -294,12 +320,20 @@ function HypothesisCard({
       key={`${formattedDocType}-${id}`}
       data-test={isDevEnv() ? `document-${id}` : undefined}
     >
-      {desktopVoteWidget}
+      <DesktopOnly>
+        <div className={css(styles.leftSection)}>
+          {desktopVoteWidget}
+          <div className={css(styles.discussionCountContainer)}>
+            {discussionCountComponent}
+          </div>
+        </div>
+      </DesktopOnly>
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
               {mobileVoteWidget}
+              <MobileOnly> {discussionCountComponent}</MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
@@ -318,6 +352,7 @@ function HypothesisCard({
                   consensusMeta={{
                     downCount: aggreCitationCons?.down_count ?? 0,
                     neutralCount: aggreCitationCons?.neutral_count ?? 0,
+                    totalCount: null,
                     upCount: aggreCitationCons?.up_count ?? 0,
                     userVote: {},
                   }}
@@ -378,6 +413,42 @@ const styles = StyleSheet.create({
       backgroundColor: "#FAFAFA",
     },
   },
+  discussion: {
+    cursor: "pointer",
+    position: "relative",
+    fontSize: 14,
+    background: colors.LIGHTER_GREY_BACKGROUND,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 13,
+    "@media only screen and (max-width: 967px)": {
+      minWidth: "unset",
+    },
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 13,
+    },
+  },
+  discussionCount: {
+    color: "rgb(71 82 93 / 80%)",
+    fontWeight: "bold",
+    marginLeft: 6,
+  },
+  discussionIcon: {
+    color: "#ededed",
+  },
+  discussionCountContainer: {
+    marginTop: 8,
+    marginRight: 17,
+  },
+  leftSection: {
+    width: 60,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+
   noBorderVariation: {
     border: 0,
     borderBottom: `1px solid ${genericCardColors.BORDER}`,

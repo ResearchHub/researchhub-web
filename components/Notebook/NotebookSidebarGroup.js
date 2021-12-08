@@ -1,35 +1,29 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
-import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
-import { css, StyleSheet } from "aphrodite";
-import { createNewNote } from "~/config/fetch";
-import icons, { UpIcon, DownIcon } from "~/config/themes/icons";
-import colors from "~/config/themes/colors";
 import Loader from "~/components/Loader/Loader";
-import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
-import { captureError } from "~/config/utils/error";
-import { isOrgMember } from "~/components/Org/utils/orgHelper";
+import NotebookSidebarEntry from "~/components/Notebook/NotebookSidebarEntry";
+import PropTypes from "prop-types";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import { MessageActions } from "~/redux/message";
+import { NOTE_GROUPS } from "./config/notebookConstants";
+import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
-import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
+import { createNewNote } from "~/config/fetch";
+import { css, StyleSheet } from "aphrodite";
+import { useState } from "react";
 
 const NotebookSidebarGroup = ({
-  groupKey,
-  availGroups,
-  notes,
-  titles,
-  currentOrg,
-  user,
   currentNoteId,
-  onNoteCreate,
-  onNoteDelete,
-  onNotePermChange,
-  showMessage,
+  currentOrg,
+  groupKey,
+  isOrgMember,
+  notes,
+  redirectToNote,
   setMessage,
+  showMessage,
+  titles,
 }) => {
   const [createNoteIsLoading, setCreateNoteIsLoading] = useState(false);
   const [isHidden, setIsHidden] = useState(false);
-  const _isOrgMember = isOrgMember({ user, org: currentOrg });
 
   const handleCreateNewNote = async (groupKey) => {
     setCreateNoteIsLoading(true);
@@ -40,7 +34,7 @@ const NotebookSidebarGroup = ({
         grouping: groupKey,
       });
 
-      onNoteCreate(note);
+      redirectToNote(note);
       setIsHidden(false);
     } catch (error) {
       setMessage("You do not have permission to create note");
@@ -57,7 +51,8 @@ const NotebookSidebarGroup = ({
 
   const allowedToCreateNote =
     [NOTE_GROUPS.WORKSPACE, NOTE_GROUPS.PRIVATE].includes(groupKey) &&
-    _isOrgMember;
+    isOrgMember;
+  const isNotesEmpty = notes.length === 0;
 
   return (
     <div className={css(styles.container)}>
@@ -66,14 +61,9 @@ const NotebookSidebarGroup = ({
           onClick={() => setIsHidden(!isHidden)}
           className={css(styles.title)}
         >
-          {groupKey}{" "}
-          {isHidden ? (
-            <UpIcon withAnimation={false} />
-          ) : (
-            <DownIcon withAnimation={false} />
-          )}
+          {groupKey}
         </div>
-        {allowedToCreateNote && (
+        {allowedToCreateNote && !isNotesEmpty && (
           <div className={css(styles.new)}>
             {createNoteIsLoading ? (
               <Loader type="clip" size={23} />
@@ -88,30 +78,28 @@ const NotebookSidebarGroup = ({
           </div>
         )}
       </div>
-      {notes.length === 0 && (
+      {isNotesEmpty && (
         <div
           className={css(styles.newNoteButton)}
           onClick={() => handleCreateNewNote(groupKey)}
         >
-          <span className={css(styles.plusIcon)}>{icons.plus}</span> Create new
-          note
+          <span className={css(styles.plusIcon)}>{icons.plus}</span>
+          Create new note
         </div>
       )}
       {!isHidden &&
         notes.map((note) => {
           return (
             <NotebookSidebarEntry
+              currentNoteId={currentNoteId}
+              currentOrg={currentOrg}
+              groupKey={groupKey}
+              isOrgMember={isOrgMember}
               key={note.id}
               note={note}
-              titles={titles}
-              groupKey={groupKey}
-              currentOrg={currentOrg}
-              onNoteCreate={onNoteCreate}
-              currentNoteId={currentNoteId}
-              onNoteDelete={onNoteDelete}
+              redirectToNote={redirectToNote}
               title={titles[note.id]}
-              showOptions={_isOrgMember}
-              onNotePermChange={onNotePermChange}
+              titles={titles}
             />
           );
         })}
@@ -129,46 +117,36 @@ NotebookSidebarGroup.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  newNoteButton: {
-    color: colors.PURPLE(1),
-    fontSize: 14,
-    fontWeight: 500,
-    padding: "20px 40px 20px 20px",
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    cursor: "pointer",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-    ":last-child": {
-      borderBottom: `1px solid ${colors.GREY(0.3)}`,
-    },
-  },
-  plusIcon: {
-    fontSize: 17,
-    marginRight: 5,
+  container: {
+    borderBottom: `1px solid ${colors.GREY(0.3)}`,
+    padding: "10px 0px",
   },
   groupHead: {
+    alignItems: "center",
     color: colors.BLACK(),
-    cursor: "pointer",
     display: "flex",
     fontWeight: 500,
-    padding: "20px 10px 20px 20px",
+    padding: "10px 10px 10px 15px",
     userSelect: "none",
-    alignItems: "center",
     ":hover .actionButton": {
       opacity: 1,
     },
   },
   title: {
+    borderRadius: 4,
+    color: colors.BLACK(0.4),
+    cursor: "pointer",
+    fontSize: 13,
+    fontWeight: 700,
+    letterSpacing: 1.1,
+    padding: 5,
     textTransform: "capitalize",
-    fontSize: 14,
-    fontWeight: 600,
-    color: colors.BLACK(0.5),
     ":hover": {
-      color: colors.PURPLE(1),
+      background: colors.GREY(0.3),
     },
   },
   new: {
+    cursor: "pointer",
     marginLeft: "auto",
   },
   actionButton: {
@@ -186,6 +164,20 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: colors.GREY(0.3),
     },
+  },
+  newNoteButton: {
+    color: colors.PURPLE(1),
+    cursor: "pointer",
+    fontSize: 15,
+    fontWeight: 500,
+    padding: "10px 40px 10px 20px",
+    ":hover": {
+      backgroundColor: colors.GREY(0.3),
+    },
+  },
+  plusIcon: {
+    fontSize: 15,
+    marginRight: 10,
   },
 });
 

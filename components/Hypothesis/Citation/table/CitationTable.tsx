@@ -1,11 +1,16 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchCitationsOnHypothesis } from "../../api/fetchCitations";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, useEffect, useState } from "react";
-import { tableWidths } from "./constants/tableWidths";
+import {
+  tableMaxWidths,
+  tableMinWidth,
+  tableWidths,
+} from "./constants/tableWidths";
+import { ValidCitationType } from "../modal/AddNewSourceBodySearch";
 import CitationNoResult from "./CitationNoResult";
-import CitationAddNewButton from "../CitationAddNewButton";
 import CitationTableHeaderItem from "./CitationTableHeaderItem";
 import CitationTableRowItem, {
   CitationTableRowItemProps,
@@ -14,12 +19,14 @@ import CitationTableRowItemPlaceholder from "./CitationTableRowItemPlaceholder";
 import colors from "~/config/themes/colors";
 
 type Props = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   lastFetchTime: number | null;
   updateLastFetchTime: Function;
 };
 
 type UseEffectGetCitationsArgs = {
+  citationType: ValidCitationType;
   hypothesisID: ID;
   lastFetchTime: number | null;
   setCitationItems: (items: CitationTableRowItemProps[]) => void;
@@ -27,6 +34,7 @@ type UseEffectGetCitationsArgs = {
 };
 
 function useEffectGetCitations({
+  citationType,
   hypothesisID,
   lastFetchTime,
   setCitationItems,
@@ -34,6 +42,7 @@ function useEffectGetCitations({
 }: UseEffectGetCitationsArgs): void {
   useEffect((): void => {
     fetchCitationsOnHypothesis({
+      citationType,
       hypothesisID,
       onError: (error: Error): void => emptyFncWithMsg(error),
       onSuccess: (formattedResult: CitationTableRowItemProps[]): void => {
@@ -45,6 +54,7 @@ function useEffectGetCitations({
 }
 
 export default function CitationTable({
+  citationType,
   hypothesisID,
   lastFetchTime,
   updateLastFetchTime,
@@ -55,6 +65,7 @@ export default function CitationTable({
 
   const [isLoading, setIsLoading] = useState(true);
   useEffectGetCitations({
+    citationType,
     hypothesisID,
     lastFetchTime,
     setCitationItems,
@@ -82,46 +93,44 @@ export default function CitationTable({
     )
   ) : (
     <div className={css(styles.citationNoResults)}>
-      <CitationNoResult />
-      <CitationAddNewButton
-        hypothesisID={hypothesisID}
-        lastFetchTime={lastFetchTime}
-        updateLastFetchTime={updateLastFetchTime}
-      />
+      <CitationNoResult citationType={null} />
     </div>
   );
 
   return (
-    <>
-      <div className={css(styles.citationTable)}>
-        <div className={css(styles.columnHeaderWrap)}>
-          <CitationTableHeaderItem label="Paper" width={tableWidths.SOURCE} />
-          <CitationTableHeaderItem label="Type" width={tableWidths.TYPE} />
-          <CitationTableHeaderItem
-            label="Consensus"
-            width={tableWidths.CONSENSUS}
-          />
-          <CitationTableHeaderItem
-            label="Cited by"
-            width={tableWidths.CITED_BY}
-          />
-          <CitationTableHeaderItem
-            label="Comments"
-            width={tableWidths.COMMENTS}
-          />
-        </div>
-        <div className={css(styles.itemsWrap)}>{rowItems}</div>
+    <div className={css(styles.citationTable)}>
+      <div className={css(styles.columnHeaderWrap)}>
+        <CitationTableHeaderItem
+          label="Paper"
+          maxWidth={tableMaxWidths.SOURCE}
+          width={tableWidths.SOURCE}
+        />
+        <CitationTableHeaderItem
+          label="DOI"
+          maxWidth={tableMaxWidths.DOI}
+          width={tableWidths.DOI}
+        />
+        <CitationTableHeaderItem
+          center
+          label="Cited by"
+          maxWidth={tableMaxWidths.CITED_BY}
+          width={tableWidths.CITED_BY}
+        />
+        <CitationTableHeaderItem
+          center
+          label="Comments"
+          maxWidth={tableMaxWidths.COMMENTS}
+          width={tableWidths.COMMENTS}
+        />
+        <CitationTableHeaderItem
+          center
+          label=""
+          maxWidth={tableMaxWidths.TYPE}
+          width={tableWidths.TYPE}
+        />
       </div>
-      {citationItems.length > 0 ? (
-        <div className={css(styles.addCitation)}>
-          <CitationAddNewButton
-            hypothesisID={hypothesisID}
-            lastFetchTime={lastFetchTime}
-            updateLastFetchTime={updateLastFetchTime}
-          />
-        </div>
-      ) : null}
-    </>
+      <div className={css(styles.itemsWrap)}>{rowItems}</div>
+    </div>
   );
 }
 
@@ -130,20 +139,19 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     margin: "8px 0 24px",
     minHeight: 120,
-    overflow: "auto",
     marginBottom: 0,
+    overflowX: "auto",
   },
   columnHeaderWrap: {
     borderBottom: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     display: "flex",
-    width: "100%",
     height: 52,
-    minWidth: 820,
+    minWidth: tableMinWidth,
+    width: "100%",
   },
   itemsWrap: {
     display: "flex",
     flexDirection: "column",
-    minWidth: 820,
   },
   citationNoResults: {
     display: "flex",

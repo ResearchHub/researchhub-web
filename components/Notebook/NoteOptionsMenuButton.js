@@ -1,39 +1,41 @@
+import Loader from "~/components/Loader/Loader";
+import ResearchHubPopover from "~/components/ResearchHubPopover";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
+import { NOTE_GROUPS } from "./config/notebookConstants";
+import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
+import { css, StyleSheet } from "aphrodite";
 import {
-  deleteNote,
   createNewNote,
   createNoteContent,
-  fetchNote,
   createNoteTemplate,
+  deleteNote,
+  fetchNote,
+  makeNotePrivate,
   removePermissionsFromNote,
   updateNoteUserPermissions,
-  makeNotePrivate,
 } from "~/config/fetch";
-import colors from "~/config/themes/colors";
-import { Helpers } from "@quantfive/js-web-config";
-import { NOTE_GROUPS, PERMS } from "./config/notebookConstants";
-import ResearchHubPopover from "~/components/ResearchHubPopover";
-import icons from "~/config/themes/icons";
-import { css, StyleSheet } from "aphrodite";
 import { useAlert } from "react-alert";
 import { useState } from "react";
-import { captureError } from "~/config/utils/error";
 
 const NoteOptionsMenuButton = ({
   currentOrg,
+  customButtonStyles,
   note,
-  title,
-  onNoteCreate,
-  onNoteDelete,
-  onNotePermChange,
+  redirectToNote,
   setMessage,
-  showMessage,
   show,
+  showMessage,
   size = 20,
+  title,
 }) => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const alert = useAlert();
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [menuLoading, setMenuLoading] = useState(false);
+
   const noteId = String(note.id);
   const menuItems = [
     {
@@ -41,13 +43,12 @@ const NoteOptionsMenuButton = ({
       icon: icons.lock,
       show: note.access !== NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
-        setIsPopoverOpen(!isPopoverOpen);
-
+      onClick: async (e) => {
+        e && e.stopPropagation();
+        setIsPopoverOpen(false);
+        setMenuLoading(true);
         try {
           await makeNotePrivate({ noteId: noteId });
-
-          onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
           setMessage("Failed to make private");
           showMessage({ show: true, error: true });
@@ -57,6 +58,7 @@ const NoteOptionsMenuButton = ({
             data: { noteId, currentOrg },
           });
         }
+        setMenuLoading(false);
       },
     },
     {
@@ -64,17 +66,16 @@ const NoteOptionsMenuButton = ({
       icon: icons.friends,
       show: note.access === NOTE_GROUPS.PRIVATE,
       hoverStyle: styles.blueHover,
-      onClick: async () => {
-        setIsPopoverOpen(!isPopoverOpen);
-
+      onClick: async (e) => {
+        e && e.stopPropagation();
+        setIsPopoverOpen(false);
+        setMenuLoading(true);
         try {
           await updateNoteUserPermissions({
             orgId: currentOrg.id,
             noteId: noteId,
             accessType: "ADMIN",
           });
-
-          onNotePermChange({ changeType: "REMOVE_PERM" });
         } catch (error) {
           setMessage("Failed to update permission");
           showMessage({ show: true, error: true });
@@ -84,6 +85,7 @@ const NoteOptionsMenuButton = ({
             data: { noteId, currentOrg },
           });
         }
+        setMenuLoading(false);
       },
     },
     {
@@ -94,6 +96,7 @@ const NoteOptionsMenuButton = ({
       onClick: async (e) => {
         e && e.stopPropagation();
         setIsPopoverOpen(false);
+        setMenuLoading(true);
         const response = await fetchNote({ noteId });
         const originalNote = await Helpers.parseJSON(response);
 
@@ -110,13 +113,13 @@ const NoteOptionsMenuButton = ({
 
         const duplicatedNote = await createNewNote(params);
         const noteContent = await createNoteContent({
-          editorData: originalNote?.latest_version?.src,
+          editorData: originalNote?.latest_version?.src ?? "",
           noteId: duplicatedNote.id,
         });
 
+        setMenuLoading(false);
         duplicatedNote.access = grouping;
-
-        onNoteCreate(duplicatedNote);
+        redirectToNote(duplicatedNote);
       },
     },
     {
@@ -127,20 +130,27 @@ const NoteOptionsMenuButton = ({
       onClick: (e) => {
         e && e.stopPropagation();
         setIsPopoverOpen(false);
+        setMenuLoading(true);
         fetchNote({ noteId })
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((data) => {
-            const params = {
-              full_src: data.latest_version.src,
-              is_default: false,
-              name: title,
-              organization: currentOrg?.id,
-            };
-            createNoteTemplate(params).then((data) => {
-              setMessage("Template created");
-              showMessage({ show: true, error: false });
-            });
+            if (data.latest_version?.src) {
+              const params = {
+                full_src: data.latest_version.src,
+                is_default: false,
+                name: title,
+                organization: currentOrg?.id,
+              };
+              createNoteTemplate(params).then((data) => {
+                setMessage("Template created");
+                showMessage({ show: true, error: false });
+              });
+            } else {
+              setMessage("Cannot create an empty template");
+              showMessage({ show: true, error: true });
+            }
+            setMenuLoading(false);
           });
       },
     },
@@ -160,9 +170,9 @@ const NoteOptionsMenuButton = ({
           ),
           buttonText: "Yes",
           onClick: async () => {
+            setMenuLoading(true);
             try {
               const deletedNote = await deleteNote(noteId);
-              onNoteDelete(deletedNote);
             } catch (error) {
               setMessage("Failed to delete note");
               showMessage({ show: true, error: true });
@@ -172,6 +182,7 @@ const NoteOptionsMenuButton = ({
                 data: { noteId, currentOrg },
               });
             }
+            setMenuLoading(false);
           },
         });
       },
@@ -204,15 +215,15 @@ const NoteOptionsMenuButton = ({
           <div
             style={{ fontSize: size }}
             className={css(
-              styles.ellipsisButton,
-              !show && !isPopoverOpen && styles.hideEllipsis
+              customButtonStyles ?? styles.ellipsisButton,
+              !show && !isPopoverOpen && styles.hide
             )}
             onClick={(e) => {
               e && e.preventDefault();
               setIsPopoverOpen(!isPopoverOpen);
             }}
           >
-            {icons.ellipsisH}
+            {menuLoading ? <Loader size={18} /> : icons.ellipsisH}
           </div>
         }
       />
@@ -221,48 +232,25 @@ const NoteOptionsMenuButton = ({
 };
 
 const styles = StyleSheet.create({
-  entry: {
-    backgroundClip: "padding-box",
-    borderTop: `1px solid ${colors.GREY(0.3)}`,
-    color: colors.BLACK(),
-    cursor: "pointer",
-    display: "flex",
-    fontSize: 14,
-    fontWeight: 500,
-    padding: "20px 40px 20px 20px",
-    position: "relative",
-    textDecoration: "none",
-    wordBreak: "break-word",
-    ":hover": {
-      backgroundColor: colors.GREY(0.3),
-    },
-    ":last-child": {
-      borderBottom: `1px solid ${colors.GREY(0.3)}`,
-    },
-  },
-  active: {
-    backgroundColor: colors.GREY(0.3),
-  },
-  noteIcon: {
-    color: colors.GREY(),
-    marginRight: 10,
-  },
   ellipsisButton: {
     alignItems: "center",
-    cursor: "pointer",
     borderRadius: "50%",
     bottom: 0,
     color: colors.BLACK(0.7),
+    cursor: "pointer",
     display: "flex",
+    height: 27,
     justifyContent: "center",
     margin: "auto",
-    padding: "3px 3px",
+    position: "absolute",
+    right: 7,
+    top: 0,
+    width: 27,
     ":hover": {
       backgroundColor: colors.GREY(0.7),
-      transition: "0.2s",
     },
   },
-  hideEllipsis: {
+  hide: {
     display: "none",
   },
   popoverBodyContent: {

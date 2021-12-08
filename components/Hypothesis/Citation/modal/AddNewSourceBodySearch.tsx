@@ -15,19 +15,31 @@ import FormSelect from "~/components//Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import SourceSearchInput from "../search/SourceSearchInput";
 import { postCitationFromSearch } from "../../api/postCitationFromSearch";
-import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
+import {
+  emptyFncWithMsg,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 
 const { NEW_PAPER_UPLOAD } = NEW_SOURCE_BODY_TYPES;
 const { PAPER: PAPER_KEY } = SearchFilterDocType;
 const docTypeOptions = [
   { label: SearchFilterDocTypeLabel[PAPER_KEY], value: PAPER_KEY },
 ];
+const citationTypeOptions = [
+  { label: "Rejects", value: "REJECT" },
+  { label: "Supports", value: "SUPPORT" },
+];
+
+export type ValidCitationType = null | "REJECT" | "SUPPORT";
 
 type Props = {
   hypothesisID: ID;
   onCancel: (event: SyntheticEvent) => void;
   onSubmitComplete: (event: SyntheticEvent) => void;
+  selectedCitationType: ValidCitationType;
   setBodyType: (bodyType: BodyTypeVals) => void;
+  setSelectedCitationType: (citationType: ValidCitationType) => void;
 };
 
 export default function AddNewSourceBodySearch({
@@ -35,10 +47,17 @@ export default function AddNewSourceBodySearch({
   onCancel,
   onSubmitComplete,
   setBodyType,
+  selectedCitationType,
+  setSelectedCitationType,
 }: Props): ReactElement<"div"> {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const isItemSelected = Boolean(selectedItem);
+  const isReadyToSubmit =
+    Boolean(selectedItem) && Boolean(selectedCitationType);
+  const citationTypeInputValue = !isNullOrUndefined(selectedCitationType)
+    ? citationTypeOptions.find((el) => el.value === selectedCitationType)
+    : null;
+
   return (
     <div
       className={css(
@@ -58,6 +77,19 @@ export default function AddNewSourceBodySearch({
         placeholder="Select search type"
         required
         value={docTypeOptions[0]}
+      />
+      <FormSelect
+        id="citation-type"
+        inputStyle={formGenericStyles.inputMax}
+        label="Supports or Rejects hypothesis"
+        labelStyle={formGenericStyles.labelStyle}
+        onChange={(_inputID, inputVal): void =>
+          setSelectedCitationType(inputVal.value)
+        }
+        options={citationTypeOptions}
+        placeholder="Select search type"
+        required
+        value={citationTypeInputValue}
       />
       <SourceSearchInput
         inputPlaceholder="Search for a paper or upload"
@@ -108,7 +140,7 @@ export default function AddNewSourceBodySearch({
         <Button
           customButtonStyle={styles.buttonCustomStyle}
           customLabelStyle={styles.buttonLabel}
-          disabled={!isItemSelected || isSubmitting}
+          disabled={!isReadyToSubmit || isSubmitting}
           label={
             !isSubmitting ? (
               "Add source"
@@ -120,6 +152,7 @@ export default function AddNewSourceBodySearch({
             setIsSubmitting(true);
             postCitationFromSearch({
               payload: {
+                citation_type: selectedCitationType,
                 hypothesis_id: nullthrows(
                   hypothesisID,
                   "Selected item must have HypothesisID"

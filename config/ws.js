@@ -1,6 +1,7 @@
 export const BASE_URL = setBaseUrl();
 
 export const ROUTES = {
+  NOTE: (orgSlug) => `${BASE_URL}${orgSlug}/notebook/`,
   NOTIFICATIONS: (userId) => `${BASE_URL}notifications/${userId}/`,
 };
 

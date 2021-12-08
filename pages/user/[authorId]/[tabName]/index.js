@@ -313,17 +313,12 @@ function AuthorPage(props) {
   }, [fetchedUser]);
 
   useEffect(() => {
-    if (
+    setAllowEdit(
       !isNullOrUndefined(authorUserID) &&
-      !isNullOrUndefined(user) &&
-      authorUserID === user.id
-    ) {
-      setAllowEdit(true);
-    }
-
-    if (author.description) {
-      setDescription(author.description);
-    }
+        !isNullOrUndefined(user) &&
+        authorUserID === user.id
+    );
+    setDescription(author.description);
     setEduSummary(createUserSummary(author));
 
     if (author.first_name) {
