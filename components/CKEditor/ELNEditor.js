@@ -1,12 +1,11 @@
 import API from "~/config/api";
-import JupyterViewer from "@thomasvu/react-jupyter-notebook";
+import CustomJupyterViewer from "~/components/CKEditor/CustomJupyterViewer";
 import Loader from "~/components/Loader/Loader";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import ReactDOM from "react-dom";
 import colors from "~/config/themes/colors";
 import nb_test from "./nb_test.json"; // You need to read the .ipynb file into a JSON Object.
-import test from "./test.json"; // You need to read the .ipynb file into a JSON Object.
 import { AUTH_TOKEN } from "~/config/constants";
 import {
   BUNDLE_VERSION,
@@ -22,7 +21,7 @@ import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { useRouter } from "next/router";
 
 const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
@@ -90,37 +89,15 @@ const ELNEditor = ({
 }) => {
   const router = useRouter();
   const { orgSlug } = router.query;
+  const jupyterViewerRef = useRef();
   const sidebarElementRef = useRef();
-  const [jupyterContent, setJupyterContent] = useState(null);
   const [presenceListElement, setPresenceListElement] = useState(null);
-
-  useEffect(() => {
-    const _fetchJupyter = async () => {
-      const params = {
-        file_name: "RunningCode.ipynb",
-      };
-
-      const response = await fetch(
-        API.JUPYTER({ noteId: 264 }),
-        API.POST_CONFIG(params)
-      );
-      const parsed = await Helpers.parseJSON(response);
-
-      setJupyterContent(parsed.data.content);
-    };
-
-    _fetchJupyter();
-  }, []);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
       setPresenceListElement(node);
     }
   }, []);
-
-  const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
-  const noteIdLength = `${currentNote.id}`.length;
-  const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
 
   const onSaveFail = (response) => {
     if (response.status === 403) {
@@ -133,6 +110,10 @@ const ELNEditor = ({
       });
     }
   };
+
+  const currentUserAccess = getUserNoteAccess({ user, notePerms, userOrgs });
+  const noteIdLength = `${currentNote.id}`.length;
+  const channelId = `${orgSlug.slice(0, 59 - noteIdLength)}-${currentNote.id}`;
 
   return (
     <div className={css(styles.container)}>
@@ -159,7 +140,28 @@ const ELNEditor = ({
           )}
         </div>
       </div>
-      {presenceListElement !== null && jupyterContent !== null && (
+      <div
+        onClick={async () => {
+          const params = {
+            file_name: "RunningCode.ipynb",
+          };
+
+          const response = await fetch(
+            API.JUPYTER({ noteId: 264 }),
+            API.POST_CONFIG(params)
+          );
+          const parsed = await Helpers.parseJSON(response);
+          jupyterViewerRef.current.updateJupyterContent(parsed.data.content);
+        }}
+      >
+        Refresh
+      </div>
+      <div
+        onClick={() => jupyterViewerRef.current.updateJupyterContent(nb_test)}
+      >
+        nb_test
+      </div>
+      {presenceListElement !== null && (
         <CKEditorContext
           config={{
             // The configuration for real-time collaboration features, shared between the editors:
@@ -259,7 +261,7 @@ const ELNEditor = ({
                   productRenderer: (id, domElement) => {
                     //const product = products.find((product) => product.id === id);
                     ReactDOM.render(
-                      <JupyterViewer rawIpynb={jupyterContent} />,
+                      <CustomJupyterViewer ref={jupyterViewerRef} />,
                       domElement
                     );
                   },
@@ -284,43 +286,6 @@ const ELNEditor = ({
           <Loader type="clip" size={50} />
         </div>
       )}
-      <div
-        onClick={async () => {
-          const baseUrl = "https://staging-jupyter.researchhub.com";
-          //const authToken = typeof window !== "undefined" ? window.localStorage[AUTH_TOKEN] : "";
-          const authToken = "da1407bc28207a66f9d78cf60223fb62b355a495";
-          const jupyterUrl = `${baseUrl}/login?researchhub-login=${authToken}&note_id=${264}`;
-          window.open(jupyterUrl);
-        }}
-      >
-        Login
-      </div>
-      <div
-        onClick={async () => {
-          const params = {
-            file_name: "RunningCode.ipynb",
-          };
-
-          const response = await fetch(
-            API.JUPYTER({ noteId: 264 }),
-            API.POST_CONFIG(params)
-          );
-          const parsed = await Helpers.parseJSON(response);
-          console.log(parsed.data.content);
-          console.log(nb_test);
-          setJupyterContent(parsed.data.content);
-        }}
-      >
-        Refresh
-      </div>
-      <div
-        onClick={() => {
-          console.log(jupyterContent);
-          console.log(nb_test);
-        }}
-      >
-        Print
-      </div>
     </div>
   );
 };
