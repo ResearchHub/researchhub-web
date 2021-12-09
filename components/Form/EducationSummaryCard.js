@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 import FormInput from "~/components/Form/FormInput";
@@ -44,7 +44,7 @@ const EducationSummaryCard = (props) => {
         onClick={() => onActive && onActive(index)}
       >
         {value.is_public && (
-          <i className={css(styles.checkIcon) + " far fa-check"} />
+          <span className={css(styles.checkIcon)}>{icons.check}</span>
         )}
       </div>
     </div>
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   checkboxContainer: {
     position: "absolute",
     cursor: "pointer",
-    background: "rgb(251, 251, 253)",
+    background: colors.ICY_GREY,
     border: "1px solid rgb(232, 232, 242)",
     display: "flex",
     justifyContent: "center",

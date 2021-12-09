@@ -1,22 +1,26 @@
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
+import get from "lodash/get";
 
 // Components
 import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
+import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { thread } from "../../../redux/discussion/shims";
 
-class UserDiscussionsTab extends React.Component {
+class UserDiscussionsTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -25,16 +29,16 @@ class UserDiscussionsTab extends React.Component {
   }
 
   loadMore = () => {
-    let { author, updateAuthorByKey } = this.props;
-    let { userDiscussions } = author;
+    const { author, updateAuthorByKey } = this.props;
+    const { userDiscussions } = author;
 
     this.setState({ fetching: true }, () => {
       fetch(userDiscussions.next, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          let newState = { ...userDiscussions };
-          let newThreads = res.results.map((result) => thread(result));
+          const newState = { ...userDiscussions };
+          const newThreads = res.results.map((result) => thread(result));
           newState.discussions = [...newState.discussions, ...newThreads];
           newState.next = res.next;
           updateAuthorByKey({
@@ -48,11 +52,11 @@ class UserDiscussionsTab extends React.Component {
   };
 
   renderLoadMoreButton = () => {
-    let { author } = this.props;
-    let { fetching } = this.state;
+    const { author } = this.props;
+    const { fetching } = this.state;
 
     if (author && author.userDiscussions) {
-      let { next } = author.userDiscussions;
+      const { next } = author.userDiscussions;
 
       if (next !== null) {
         return (
@@ -79,53 +83,57 @@ class UserDiscussionsTab extends React.Component {
   };
 
   render() {
-    let { author, hostname } = this.props;
+    const { author, hostname, maxCardsToRender } = this.props;
 
-    let discussions = author.userDiscussions.discussions.map(
-      (discussion, index) => {
-        let path = `/paper/${discussion.paper}/${discussion.paper_slug}/${discussion.id}`;
-        return (
-          <div
-            className={css(
-              styles.discussionContainer,
-              index === author.userDiscussions.discussions.length - 1 &&
-                styles.noBorder
-            )}
-          >
-            <DiscussionThreadCard
-              data={discussion}
-              hostname={hostname}
-              path={path}
-              paperId={discussion.paper}
-              key={`discThread-${discussion.id}-${index}`}
-              mobileView={this.props.mobileView}
-            />
-          </div>
-        );
+    const discussions = [];
+    for (
+      let i = 0;
+      i < get(author, "userDiscussions.discussions.length", 0);
+      i++
+    ) {
+      if (i === maxCardsToRender) break;
+
+      const discussion = author.userDiscussions.discussions[i];
+      let path;
+
+      if (discussion.paper) {
+        path = `/paper/${discussion.paper.id}/${discussion.paper.slug}`;
+      } else if (discussion.post) {
+        path = `/post/${discussion.post.id}/${discussion.post.slug}`;
+      } else {
+        continue;
       }
-    );
+      discussions.push(
+        <DiscussionThreadCard
+          data={discussion}
+          hostname={hostname}
+          path={path}
+          paperId={discussion.paper}
+          postId={discussion.post}
+          mobileView={this.props.mobileView}
+          key={`discThread-${discussion.id}-${i}`}
+        />
+      );
+    }
+
     return (
       <ReactPlaceholder
         ready={
-          this.props.author.discussionsDoneFetching && !this.props.fetching
+          !!(this.props.author.discussionsDoneFetching && !this.props.fetching) // needs to be boolean, not undefined
         }
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
         {discussions.length > 0 ? (
-          <React.Fragment>
+          <Fragment>
             <div className={css(styles.container)}>{discussions}</div>
-            {this.renderLoadMoreButton()}
-          </React.Fragment>
+            {!maxCardsToRender && this.renderLoadMoreButton()}
+          </Fragment>
         ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-comments" />
-            </div>
-            <h2 className={css(styles.noContent)}>
-              User has not created any discussions
-            </h2>
-          </div>
+          <EmptyState
+            message={"User has not made any comments"}
+            icon={icons.comments}
+          />
         )}
       </ReactPlaceholder>
     );
@@ -139,12 +147,15 @@ var styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     boxSizing: "border-box",
+    padding: 0,
   },
   discussionContainer: {
+    boxSizing: "border-box",
+    padding: "24px 15px",
     width: "100%",
     borderBottom: "1px solid rgba(36, 31, 58, 0.08)",
-    "@media only screen and (max-width: 415px)": {
-      borderBottom: "none",
+    ":last-child": {
+      borderBottom: 0,
     },
   },
   box: {
@@ -181,9 +192,6 @@ var styles = StyleSheet.create({
       marginBottom: 15,
     },
   },
-  noBorder: {
-    border: "none",
-  },
   loadMoreButton: {
     fontSize: 14,
     border: `1px solid ${colors.BLUE()}`,
@@ -212,7 +220,4 @@ const mapDispatchToProps = {
   updateAuthorByKey: AuthorActions.updateAuthorByKey,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserDiscussionsTab);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDiscussionsTab);

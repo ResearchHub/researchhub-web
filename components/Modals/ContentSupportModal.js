@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withAlert } from "react-alert";
@@ -7,7 +7,6 @@ import { withAlert } from "react-alert";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import { AmountInput, RecipientInput } from "../Form/RSCForm";
-import FormSelect from "../Form/FormSelect";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -15,17 +14,15 @@ import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
 
 // Config
-import API from "~/config/api";
 import { supportContent } from "../../config/fetch";
-import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
-import { sanitizeNumber } from "~/config/utils";
+import { sanitizeNumber } from "~/config/utils/form";
 
-class ContentSupportModal extends React.Component {
+class ContentSupportModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      amount: 0,
+      amount: 1,
       error: false,
     };
     this.state = {
@@ -36,22 +33,20 @@ class ContentSupportModal extends React.Component {
   closeModal = () => {
     this.props.openContentSupportModal(false, { data: {}, metaData: {} });
     this.setState({ ...this.initialState });
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   handleAmount = (e) => {
-    const amount = sanitizeNumber(e.target.value);
+    let amount = parseInt(sanitizeNumber(e.target.value), 10);
+    amount = amount || 0;
     this.setState({
-      amount: parseInt(amount, 10),
+      amount,
     });
   };
 
   showSuccessMessage = () => {
     const { setMessage, showMessage } = this.props;
     showMessage({ show: false });
-    setMessage("ResearchCoin succesfully awarded!");
+    setMessage("ResearchCoin successfully awarded!");
     showMessage({ show: true });
   };
 

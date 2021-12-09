@@ -1,18 +1,16 @@
-import React from "react";
 import { useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
 import AuthorAvatar from "~/components/AuthorAvatar";
-import "~/components/stylesheets/RSCForm.css";
 
 // Config
 import colors from "~/config/themes/colors";
+import { doesNotExist } from "~/config/utils/nullchecks";
 import {
   onKeyDownNumInput,
   onPasteNumInput,
   formatBalance,
-  doesNotExist,
-} from "~/config/utils";
+} from "~/config/utils/form";
 
 const AmountInput = (props) => {
   const { balance, placeholder, required } = props;

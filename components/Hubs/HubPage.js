@@ -1,72 +1,59 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
-import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
+import * as moment from "dayjs";
 import Ripples from "react-ripples";
 import * as Sentry from "@sentry/browser";
 import Router from "next/router";
 
 // Component
+import FeedList from "./FeedList";
 import HubsList from "~/components/Hubs/HubsList";
-import FormSelect from "~/components/Form/FormSelect";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import Loader from "~/components/Loader/Loader";
-import Button from "../Form/Button";
-import PaperPlaceholder from "../Placeholders/PaperPlaceholder";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-// import ResearchHubBanner from "../ResearchHubBanner";
 import Head from "~/components/Head";
 import LeaderboardContainer from "../Leaderboard/LeaderboardContainer";
+import SubscribeButton from "../Home/SubscribeButton";
+import MobileFeedTabs from "../Home/MobileFeedTabs";
+import ActivityList from "~/components/Activity/ActivityList";
+import UnifiedDocFeedContainer from "~/components/UnifiedDocFeed/UnifiedDocFeedContainer";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
 
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import { getFragmentParameterByName } from "~/config/utils";
+import {
+  checkUserVotesOnPapers,
+  fetchUnifiedDocFeed,
+  fetchURL,
+} from "~/config/fetch";
+import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
+import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
 
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
 
-class HubPage extends React.Component {
+class HubPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      count:
-        this.props.initialFeed && this.props.initialFeed.count
-          ? this.props.initialFeed.count
-          : 0,
-      papers:
-        this.props.initialFeed && this.props.initialFeed.results.data
-          ? this.props.initialFeed.results.data
-          : [],
-      noResults:
-        this.props.initialFeed && this.props.initialFeed.results.no_results
-          ? this.props.initialFeed.results.no_results
-          : false,
-      next:
-        this.props.initialFeed && this.props.initialFeed.next
-          ? this.props.initialFeed.next
-          : null,
+      count: this.props.initialFeed?.count ?? 0,
+      papers: this.props.initialFeed?.results?.data ?? [],
+      noResults: this.props.initialFeed?.results?.no_results ?? faLessThanEqual,
+      next: this.props.initialFeed?.next ?? null,
       page: this.props.page || 2,
       doneFetching: this.props.initialFeed ? true : false,
       filterBy: this.props.filter ? this.props.filter : defaultFilter,
       scope: this.props.scope ? this.props.scope : defaultScope,
-      disableScope: this.props.filter
-        ? this.props.filter.value === "hot" ||
-          this.props.filter.value === "newest"
-        : true,
+      feedType: this.props.initialFeed?.results?.feed_type ?? "subscribed",
+      disableScope: this.props.filter ? this.props.filter.disableScope : true,
+      feed: this.props.feed,
       papersLoading: false,
-      unsubscribeHover: false,
-      subscribeClicked: false,
       titleBoxShadow: false,
       leaderboardTop: 0,
     };
@@ -86,7 +73,7 @@ class HubPage extends React.Component {
    * title bar when we hit a certain height
    */
   scrollListener = () => {
-    let { auth } = this.props;
+    const { auth } = this.props;
     if (auth.showBanner && window.scrollY > 323) {
       this.setState({
         titleBoxShadow: true,
@@ -108,7 +95,6 @@ class HubPage extends React.Component {
 
   componentDidMount() {
     const { isLoggedIn, initialFeed, hubState } = this.props;
-
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
     } else {
@@ -119,8 +105,8 @@ class HubPage extends React.Component {
       this.checkUserVotes(this.state.papers);
     }
 
-    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
-    let subscribedHubs = {};
+    const subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+    const subscribedHubs = {};
     subscribed.forEach((hub) => {
       subscribedHubs[hub.id] = true;
     });
@@ -128,13 +114,13 @@ class HubPage extends React.Component {
     this.setState({
       subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
     });
-    window.addEventListener("scroll", this.scrollListener);
+    // window.addEventListener("scroll", this.scrollListener);
   }
 
   componentDidUpdate = async (prevProps, prevState) => {
-    const { auth, user, hubState } = this.props;
-    let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
-    let subscribedHubs = {};
+    const { hubState } = this.props;
+    const subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+    const subscribedHubs = {};
     subscribed.forEach((hub) => {
       subscribedHubs[hub.id] = true;
     });
@@ -165,7 +151,7 @@ class HubPage extends React.Component {
         fetch(API.HUB({ slug: this.props.slug }), API.GET_CONFIG())
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
-          .then((res) => {
+          .then((_) => {
             this.setState({
               subscribe: subscribedHubs[this.props.hub.id],
             });
@@ -179,118 +165,123 @@ class HubPage extends React.Component {
 
     if (
       prevState.scope !== this.state.scope ||
-      prevState.filterBy !== this.state.filterBy
+      prevState.filterBy !== this.state.filterBy ||
+      prevState.feed !== this.state.feed
     ) {
-      this.fetchPapers({ hub: this.props.hub });
+      if (!this.initialFeed) {
+        this.fetchPapers({ hub: this.props.hub });
+      }
     }
   };
 
-  componentWillUnmount() {
-    window.removeEventListener("scroll", this.scrollListener);
-  }
+  // componentWillUnmount() {
+  //   window.removeEventListener("scroll", this.scrollListener);
+  // }
 
   checkUserVotes = (papers) => {
-    let paperIds = papers.map((paper) => paper.id);
-    if (!paperIds || !paperIds.length) {
-      return null;
-    }
-    return fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let updates = { ...res };
-        let updatedPapers = papers.map((paper) => {
-          if (updates[paper.id]) {
-            paper.user_vote = updates[paper.id];
-          }
-          return paper;
-        });
+    if (!papers || !papers.length) return;
 
-        this.setState(
-          {
-            papers: [],
-          },
-          () => {
-            this.setState({ papers: updatedPapers });
-          }
-        );
+    const paperIds = papers.map((paper) => paper.id);
+    checkUserVotesOnPapers({ paperIds }).then((res) => {
+      const userVotes = { ...res };
+      const updatedPapers = papers.map((paper) => {
+        if (userVotes[paper.id]) {
+          paper.user_vote = userVotes[paper.id];
+        }
+        return paper;
       });
+
+      this.setState({
+        papers: updatedPapers,
+      });
+    });
   };
 
   detectPromoted = (papers) => {
-    papers.forEach((paper) => {
-      if (paper.promoted) {
-        let createdLocationMeta = this.state.filterBy;
-        if (createdLocationMeta === "hot") {
-          createdLocationMeta = "trending";
+    const promotedPapers = [];
+    if (papers) {
+      papers.forEach((paper) => {
+        if (paper.promoted) {
+          promotedPapers.push(paper.id);
         }
-        let payload = {
-          paper: paper.id,
-          paper_is_boosted: true,
-          interaction: "VIEW",
-          utc: new Date(),
-          created_location: "FEED",
-          created_location_meta: "trending",
-        };
-        fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {})
-          .catch((err) => {});
-      }
-    });
+      });
+    }
+
+    let createdLocationMeta = this.state.filterBy;
+    if (createdLocationMeta === "hot") {
+      createdLocationMeta = "trending";
+    }
+
+    const PAYLOAD = {
+      paper_ids: promotedPapers,
+      paper_is_boosted: true,
+      interaction: "VIEW",
+      created_location: "FEED",
+      created_location_meta: "trending",
+    };
+
+    // fetch(
+    //   API.PROMOTION_STATS({ route: "batch_views" }),
+    //   API.POST_CONFIG(PAYLOAD)
+    // )
+    //   .then(Helpers.checkStatus)
+    //   .then(Helpers.parseJSON);
   };
 
   fetchPapers = ({ hub }) => {
-    this.setState({ doneFetching: false });
-    if (this.state.papersLoading) {
+    const { papersLoading, filterBy, feed } = this.state;
+
+    if (papersLoading || (hub && !hub.id)) {
       return null;
     }
 
-    if (hub && !hub.id) {
-      return null;
-    }
-
-    this.state.doneFetching && this.setState({ doneFetching: false });
-    let hubId = 0;
-
-    if (hub) {
-      hubId = hub.id;
-    }
-    let scope = this.calculateScope();
     this.setState({
       papersLoading: true,
+      doneFetching: false,
     });
 
-    return fetch(
-      API.GET_HUB_PAPERS({
-        timePeriod: scope,
-        hubId: hubId,
-        ordering: this.state.filterBy.value,
-        page: this.state.page,
-      }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
+    const PARAMS = {
+      timePeriod: this.calculateScope(),
+      ordering: filterBy.value,
+      page: 1,
+    };
+
+    if (feed === 0) {
+      PARAMS.subscribedHubs = true;
+    } else {
+      PARAMS.hubId = hub ? hub.id : 0;
+    }
+
+    if (filterBy.value === "pulled-papers") {
+      PARAMS.externalSource = "True";
+      PARAMS.ordering = "hot";
+    }
+
+    fetchUnifiedDocFeed(PARAMS)
       .then((res) => {
-        this.detectPromoted([...res.results.data]);
-        this.setState({
-          count: res.count,
-          papers: res.results.data,
-          next: res.next,
-          page: this.state.page + 1,
-          papersLoading: false,
-          doneFetching: true,
-          noResults: res.results.no_results,
-        });
-        if (res.results.data.length > 0) {
-          this.checkUserVotes(res.results.data);
-        }
+        const { count, next, results } = res;
+        const papers = results.data;
+
+        this.detectPromoted(papers);
+        this.setState(
+          {
+            count,
+            next,
+            papers,
+            papersLoading: false,
+            doneFetching: true,
+            noResults: results.no_results,
+            feedType: results.feed_type,
+          },
+          () => {
+            this.checkUserVotes(papers);
+          }
+        );
       })
-      .catch((error) => {
+      .catch((err) => {
+        const { response } = err;
         // If we get a 401 error it means the token is expired.
-        if (error.response && error.response.status === 401) {
+        if (response && response.status === 401) {
           this.setState(
             {
               papersLoading: false,
@@ -300,124 +291,140 @@ class HubPage extends React.Component {
             }
           );
         }
-        Sentry.captureException(error);
+        Sentry.captureException(err);
       });
   };
 
   loadMore = () => {
-    let { hub } = this.props;
-    let hubId = 0;
-    if (hub) {
-      hubId = hub.id;
-    }
-
-    if (this.state.loadingMore) {
-      return;
-    }
+    const { loadingMore, page, filterBy, feed } = this.state;
+    const { hub } = this.props;
+    if (loadingMore) return;
 
     this.setState({
       loadingMore: true,
     });
 
-    let scope = this.calculateScope();
-
-    let url = API.GET_HUB_PAPERS({
-      timePeriod: scope,
-      hubId: hubId,
-      page: this.state.page,
-      ordering: this.state.filterBy.value,
+    fetchURL(this.state.next).then((res) => {
+      const { next, previous, results } = res;
+      const papers = results.data;
+      this.detectPromoted(papers);
+      this.setState(
+        {
+          papers: [...this.state.papers, ...papers],
+          next,
+          prev: previous,
+          page: page + 1,
+          loadingMore: false,
+        },
+        () => {
+          const pageParam = getFragmentParameterByName(
+            "page",
+            this.state.next ? this.state.next : this.state.prev
+          ); // grab page from backend response
+          const offset = this.state.next ? -1 : 1;
+          this.updateSlugs(Number(pageParam) + offset);
+        }
+      );
     });
-
-    return fetch(url, API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        this.detectPromoted([...res.results.data]);
-        this.setState(
-          {
-            papers: [...this.state.papers, ...res.results.data],
-            next: res.next,
-            prev: !res.next ? res.previous : null,
-            page: this.state.page + 1,
-            loadingMore: false,
-          },
-          () => {
-            let page = getFragmentParameterByName(
-              "page",
-              this.state.next ? this.state.next : this.state.prev
-            ); // grab page from backend response
-            let offset = this.state.next ? -1 : 1;
-            page = Number(page) + offset;
-            this.updateSlugs(page);
-          }
-        );
-      });
   };
 
   updateSlugs = (page) => {
-    let { filterBy, scope, disableScope } = this.state;
-
-    let filter = filterBy.label
-      .split(" ")
-      .join("-")
-      .toLowerCase();
-
-    let href, as;
-
-    if (disableScope) {
-      // if filter, but no scope
-      if (this.props.home) {
-        href = "/[filter]";
-        as = `/${filter}`;
-      } else {
-        // Hub Page
-        href = "/hubs/[slug]/[filter]";
-        as = `/hubs/${this.props.slug}/${filter}`;
-      }
-    } else {
-      // filter & scope
-      if (this.props.home) {
-        href = "/[filter]/[scope]";
-        as = `/${filter}/${scope.value}`;
-      } else {
-        href = "/hubs/[slug]/[filter]/[scope]";
-        as = `/hubs/${this.props.slug}/${filter}/${scope.value}`;
-      }
-    }
-
-    if (this.props.home && filter === "trending") {
-      href = "/";
-      as = "/";
-    } else if (!this.props.home && filter === "trending") {
-      href = "/hubs/[slug]";
-      as = `/hubs/${this.props.slug}`;
-    }
-
+    let { href, as } = this.formatLink();
     if (page) {
       as += `?page=${page}`;
     }
 
-    Router.push(href, as, { shallow: true });
+    const { filterBy } = this.state;
+    if (filterBy.href) {
+      Router.push(href, as, { shallow: true });
+    }
+  };
+
+  formatLink = () => {
+    const { home, slug } = this.props;
+    const { feed, filterBy, scope, disableScope } = this.state;
+    const filter = filterBy.href;
+    const filterRoute = `/${filter}`;
+    const scopeRoute = "/[scope]";
+    const hubNameRoute = "/[slug]";
+    const hubPrefix = "/hubs";
+    const allPrefix = "/";
+
+    const myFeed = feed === 0;
+    const trending = filter === "trending";
+
+    if (home && disableScope) {
+      if (myFeed && trending) {
+        // hide trending slug
+        return {
+          href: "/",
+          as: "/",
+        };
+      } else if (myFeed && !trending) {
+        // show filter slugs
+        return {
+          href: filterRoute,
+          as: `/${filter}`,
+        };
+      } else {
+        // all route with filters
+        if (trending) {
+          return {
+            href: allPrefix,
+            as: allPrefix,
+          };
+        }
+        return {
+          href: allPrefix + filterRoute,
+          as: allPrefix + `/${filter}`,
+        };
+      }
+    } else if (home && !disableScope) {
+      if (myFeed) {
+        // hide trending slug
+        return {
+          href: filterRoute + scopeRoute,
+          as: `/${filter}/${scope.value}`,
+        };
+      } else {
+        // all route with filters
+        return {
+          href: allPrefix + filterRoute + scopeRoute,
+          as: allPrefix + `/${filter}/${scope.value}`,
+        };
+      }
+    } else if (!home && disableScope) {
+      if (trending) {
+        return {
+          href: hubPrefix + hubNameRoute,
+          as: hubPrefix + `/${slug}`,
+        };
+      } else {
+        return {
+          href: hubPrefix + hubNameRoute + "/[filter]",
+          as: hubPrefix + `/${slug}/${filter}`,
+        };
+      }
+    } else if (!home && !disableScope) {
+      return {
+        href: hubPrefix + hubNameRoute + "/[filter]" + scopeRoute,
+        as: hubPrefix + `/${slug}/${filter}/${scope.value}`,
+      };
+    }
   };
 
   calculateScope = () => {
-    let scope = {
+    const scope = {
       start: 0,
       end: 0,
     };
-    let scopeId = this.state.scope.value;
+    const scopeId = this.state.scope.value;
 
-    let now = moment();
-    let today = moment().startOf("day");
-    let week = moment()
-      .startOf("day")
-      .subtract(7, "days");
-    let month = moment()
-      .startOf("day")
-      .subtract(30, "days");
-    let year = moment()
-      .startOf("day")
-      .subtract(365, "days");
+    const now = moment();
+    const today = moment().startOf("day");
+    const week = moment().startOf("day").subtract(7, "days");
+    const month = moment().startOf("day").subtract(30, "days");
+    const year = moment().startOf("day").subtract(365, "days");
 
     scope.end = now.unix();
 
@@ -430,22 +437,25 @@ class HubPage extends React.Component {
     } else if (scopeId === "year") {
       scope.start = year.unix();
     } else if (scopeId === "all-time") {
-      let start = "2019-01-01";
-      let diff = now.diff(start, "days") + 1;
-
-      let alltime = now.startOf("day").subtract(diff, "days");
+      const start = "2019-01-01";
+      const diff = now.diff(start, "days") + 1;
+      const alltime = now.startOf("day").subtract(diff, "days");
       scope.start = alltime.unix();
     }
 
     return scope;
   };
 
-  getTitle = () => {
-    let { filterBy } = this.state;
-    let value = filterBy.value;
-    let isHomePage = this.props.home;
-    var prefix = "";
-    switch (value) {
+  formatMainHeader = () => {
+    const { filterBy, feed } = this.state;
+
+    if (feed === 0) {
+      return "";
+    }
+
+    const isHomePage = this.props.home;
+    let prefix = "";
+    switch (filterBy.value) {
       case "removed":
         prefix = "Removed";
         break;
@@ -461,23 +471,24 @@ class HubPage extends React.Component {
       case "most_discussed":
         prefix = "Most Discussed";
         break;
+      case "pulled-papers":
+        prefix = "Pulled";
+        break;
     }
+
     return `${prefix} Papers ${isHomePage ? "on" : "in"} `;
   };
 
-  onFilterSelect = (option, type) => {
-    if (this.state[type].label === option.label) {
-      return;
-    }
-    let { showMessage } = this.props;
-    let param = {
-      page: 1,
-    };
-    param[type] = option;
-    showMessage({ show: true, load: true });
+  onFilterSelect = (type, option) => {
+    const { disableScope, label } = option;
+
+    if (this.state[type].label === label) return;
+
     this.setState(
       {
-        ...param,
+        page: 1,
+        [type]: option,
+        disableScope: disableScope || false,
       },
       () => {
         this.updateSlugs();
@@ -485,8 +496,40 @@ class HubPage extends React.Component {
     );
   };
 
+  onScopeSelect = (type, option) => {
+    const { label } = option;
+
+    if (this.state[type].label === label) return;
+
+    this.setState(
+      {
+        page: 1,
+        [type]: option,
+      },
+      () => {
+        this.updateSlugs();
+      }
+    );
+  };
+
+  onFeedSelect = (index) => {
+    this.setState(
+      {
+        feed: index,
+        page: 1,
+      },
+      () => {
+        this.updateSlugs();
+      }
+    );
+  };
+
+  // onHubSelect = (e) => {
+  //   this.setState({ feed: undefined });
+  // };
+
   voteCallback = (index, paper) => {
-    let papers = [...this.state.papers];
+    const papers = [...this.state.papers];
     papers[index] = paper;
     this.setState({
       papers,
@@ -495,7 +538,7 @@ class HubPage extends React.Component {
 
   updateSubscription = (subscribing) => {
     const { hub, hubState, updateSubscribedHubs } = this.props;
-    let subscribedHubs = [];
+    let subscribedHubs;
     if (subscribing) {
       subscribedHubs = JSON.parse(JSON.stringify(hubState.subscribedHubs));
       subscribedHubs.push(hub);
@@ -507,136 +550,26 @@ class HubPage extends React.Component {
     updateSubscribedHubs(subscribedHubs);
   };
 
-  onMouseEnterSubscribe = () => {
+  onSubscribe = (name = "") => {
+    const { showMessage, setMessage } = this.props;
+    this.updateSubscription(true);
+    setMessage(`Joined ${name}`);
+    showMessage({ show: true });
     this.setState({
-      unsubscribeHover: true,
+      transition: false,
+      subscribe: !this.state.subscribe,
     });
   };
 
-  onMouseExitSubscribe = () => {
+  onUnsubscribe = (name = "") => {
+    const { showMessage, setMessage } = this.props;
+    this.updateSubscription(false);
+    setMessage(`Left ${name}`);
+    showMessage({ show: true });
     this.setState({
-      unsubscribeHover: false,
-      subscribeClicked: false,
+      transition: false,
+      subscribe: !this.state.subscribe,
     });
-  };
-
-  renderSubscribeButton = () => {
-    if (this.state.subscribe) {
-      let text = this.state.unsubscribeHover ? (
-        this.state.subscribeClicked ? (
-          <span>
-            Subscribed <i className="fas fa-star" />
-          </span>
-        ) : (
-          "Unsubscribe"
-        )
-      ) : (
-        <span>
-          Subscribed <i className="fas fa-star" />
-        </span>
-      );
-      let hover = this.state.unsubscribeHover && !this.state.subscribeClicked;
-      return (
-        <Ripples
-          onClick={this.subscribeToHub}
-          className={css(styles.subscribe)}
-        >
-          <button
-            className={css(styles.subscribe, hover && styles.subscribeHover)}
-            onMouseEnter={this.onMouseEnterSubscribe}
-            onMouseLeave={this.onMouseExitSubscribe}
-          >
-            <span>
-              {!this.state.transition ? (
-                text
-              ) : (
-                <Loader
-                  key={"subscribeLoader"}
-                  loading={true}
-                  containerStyle={styles.loader}
-                  size={10}
-                  color={"#FFF"}
-                />
-              )}
-            </span>
-          </button>
-        </Ripples>
-      );
-    } else {
-      return (
-        <Ripples
-          onClick={this.subscribeToHub}
-          className={css(styles.subscribe)}
-        >
-          <button className={css(styles.subscribe)}>
-            <span>
-              {!this.state.transition ? (
-                "Subscribe"
-              ) : (
-                <Loader
-                  key={"subscribeLoader"}
-                  loading={true}
-                  containerStyle={styles.loader}
-                  size={10}
-                  color={"#FFF"}
-                />
-              )}
-            </span>
-          </button>
-        </Ripples>
-      );
-    }
-  };
-
-  subscribeToHub = () => {
-    let { hub, showMessage, setMessage, hubState } = this.props;
-    showMessage({ show: false });
-    this.setState({ transition: true }, () => {
-      let config = API.POST_CONFIG();
-      if (this.state.subscribe) {
-        return fetch(API.HUB_UNSUBSCRIBE({ hubId: hub.id }), config)
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            this.updateSubscription(false);
-            setMessage("Unsubscribed!");
-            showMessage({ show: true });
-            this.setState({
-              transition: false,
-              subscribe: !this.state.subscribe,
-              subscribeClicked: false,
-            });
-          })
-          .catch((err) => {
-            if (err.response.status === 429) {
-              this.props.openRecaptchaPrompt(true);
-            }
-          });
-      } else {
-        return fetch(API.HUB_SUBSCRIBE({ hubId: hub.id }), config)
-          .then(Helpers.checkStatus)
-          .then(Helpers.parseJSON)
-          .then((res) => {
-            this.updateSubscription(true);
-            setMessage("Subscribed!");
-            showMessage({ show: true });
-            this.setState({
-              transition: false,
-              subscribe: !this.state.subscribe,
-              subscribeClicked: true,
-            });
-          })
-          .catch((err) => {
-            if (err.response.status === 429) {
-              this.props.openRecaptchaPrompt(true);
-            }
-          });
-      }
-    });
-  };
-
-  navigateToPaperUploadPage = () => {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
   };
 
   renderLoadMoreButton = () => {
@@ -665,193 +598,124 @@ class HubPage extends React.Component {
   };
 
   render() {
-    const { auth } = this.props;
+    const { feed, isLatestActivityShown } = this.state;
+
+    const {
+      auth,
+      home,
+      hub,
+      hubName,
+      hubState,
+      initialHubList,
+      leaderboardFeed,
+      initialFeed,
+    } = this.props;
+
     if (auth.user.moderator && filterOptions.length < 5) {
-      filterOptions.push({ value: "removed", label: "Removed" });
+      filterOptions.push(
+        {
+          value: "removed",
+          label: "Removed",
+          href: "removed",
+        },
+        {
+          value: "pulled-papers",
+          href: "pulled-papers",
+          label: "Pulled Papers",
+          disableScope: true,
+        },
+        {
+          value: "user-uploaded",
+          label: "User Uploaded",
+        }
+      );
     }
+
+    const sampleFeed = this.state.feedType !== "subscribed" && feed === 0;
+
+    const hasSubscribed = process.browser
+      ? auth.authChecked
+        ? hubState.subscribedHubs.length > 0
+        : this.props.loggedIn
+      : this.props.loggedIn;
+
+    const loggedIn = process.browser
+      ? auth.authChecked
+        ? auth.isLoggedIn
+        : this.props.loggedIn
+      : this.props.loggedIn;
+
     return (
-      <div className={css(styles.content, styles.column)}>
-        <div className={css(styles.banner)}>
-          {/* <ResearchHubBanner home={this.props.home} hub={this.props.hub} /> */}
-          {this.props.home && <Head title={this.props.home && null} />}
-        </div>
-        <div className={css(styles.row, styles.body)}>
-          <div className={css(styles.column, styles.sidebar)}>
-            <HubsList
-              current={this.props.home ? null : this.props.hub}
-              initialHubList={this.props.initialHubList}
-            />
-            <LeaderboardContainer
-              hubId={0}
-              initialUsers={this.props.leaderboardFeed}
-            />
+      <Fragment>
+        <MobileFeedTabs
+          activeLeft={feed === 0}
+          activeRight={feed === 1}
+          onFeedSelect={this.onFeedSelect}
+        />
+        <div className={css(styles.content, styles.column)}>
+          <div className={css(styles.banner)}>
+            {home && <Head title={home && null} />}
           </div>
-          <div className={css(styles.column, styles.mainFeed)}>
-            <div
-              className={css(
-                styles.column,
-                styles.topbar,
-                this.state.titleBoxShadow && styles.titleBoxShadow,
-                this.props.home && styles.row
-              )}
-            >
-              <h1 className={css(styles.text, styles.feedTitle)}>
-                <span className={css(styles.fullWidth)}>
-                  {this.getTitle()}
-                  <span className={css(styles.hubName)}>
-                    {this.props.home ? "ResearchHub" : this.props.hub.name}
-                  </span>
-                </span>
-              </h1>
-              <div
-                className={css(
-                  styles.inputContainer,
-                  !this.props.home && styles.hubInputContainer,
-                  this.props.home && styles.homeInputContainer
-                )}
-              >
-                <div
-                  className={css(
-                    styles.subscribeContainer,
-                    this.props.home && styles.hideBanner
-                  )}
-                >
-                  {this.props.hub && this.renderSubscribeButton()}
-                </div>
-                <div className={css(styles.row, styles.inputs)}>
-                  <FormSelect
-                    id={"filterBy"}
-                    options={filterOptions}
-                    value={this.state.filterBy}
-                    containerStyle={styles.dropDownLeft}
-                    inputStyle={{
-                      fontWeight: 500,
-                      minHeight: "unset",
-                      backgroundColor: "#FFF",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                    onChange={(id, option) => {
-                      if (option.disableScope) {
-                        this.setState({
-                          disableScope: true,
-                        });
-                      } else {
-                        this.setState({
-                          disableScope: false,
-                        });
-                      }
-                      this.onFilterSelect(option, id);
-                    }}
-                    isSearchable={false}
-                  />
-                  <FormSelect
-                    id={"scope"}
-                    options={scopeOptions}
-                    value={this.state.scope}
-                    containerStyle={[
-                      styles.dropDown,
-                      this.state.disableScope && styles.disableScope,
-                    ]}
-                    inputStyle={{
-                      fontWeight: 500,
-                      minHeight: "unset",
-                      backgroundColor: "#FFF",
-                      display: "flex",
-                      justifyContent: "space-between",
-                    }}
-                    onChange={(id, option) => this.onFilterSelect(option, id)}
-                    isSearchable={false}
-                  />
-                </div>
+          <div className={css(styles.row, styles.body)}>
+            <div className={css(styles.column, styles.sidebar)}>
+              <div className={css(styles.leftSidebarContainer)}>
+                <FeedList
+                  activeFeed={feed}
+                  onFeedSelect={this.onFeedSelect}
+                  current={home ? null : hub}
+                />
+                <HubsList
+                  current={home ? null : hub}
+                  initialHubList={initialHubList}
+                  onHubSelect={this.onHubSelect}
+                />
+                <LeaderboardContainer
+                  hubId={0}
+                  initialUsers={leaderboardFeed}
+                />
               </div>
             </div>
-            <div className={css(styles.infiniteScroll)}>
-              {this.state.doneFetching ? (
-                this.state.papers.length > 0 ? (
-                  <Fragment>
-                    {this.state.papers.map((paper, i) => (
-                      <PaperEntryCard
-                        key={`${paper.id}-${i}`}
-                        paper={paper}
-                        index={i}
-                        hubName={this.props.hubName}
-                        voteCallback={this.voteCallback}
-                      />
-                    ))}
-                    {this.renderLoadMoreButton()}
-                  </Fragment>
-                ) : (
-                  <div
-                    className={css(styles.column)}
-                    style={{ height: this.state.height }}
-                  >
-                    <img
-                      className={css(styles.emptyPlaceholderImage)}
-                      src={"/static/background/homepage-empty-state.png"}
-                      loading="lazy"
-                      alt="Empty State Icon"
-                    />
-                    <div
-                      className={css(styles.text, styles.emptyPlaceholderText)}
-                    >
-                      There are no academic papers uploaded for this hub.
-                    </div>
-                    <div
-                      className={css(
-                        styles.text,
-                        styles.emptyPlaceholderSubtitle
-                      )}
-                    >
-                      Click ‘Upload paper’ button to upload a PDF
-                    </div>
-                    <PermissionNotificationWrapper
-                      onClick={this.navigateToPaperUploadPage}
-                      modalMessage="upload a paper"
-                      loginRequired={true}
-                      permissionKey="CreatePaper"
-                    >
-                      <Button label={"Upload Paper"} hideRipples={true} />
-                    </PermissionNotificationWrapper>
-                  </div>
-                )
-              ) : (
-                <div className={css(styles.placeholder)}>
-                  <ReactPlaceholder
-                    ready={false}
-                    showLoadingAnimation
-                    customPlaceholder={<PaperPlaceholder color="#efefef" />}
-                  >
-                    <div />
-                  </ReactPlaceholder>
-                  <div className={css(styles.placeholderBottom)}>
-                    <ReactPlaceholder
-                      ready={false}
-                      showLoadingAnimation
-                      customPlaceholder={<PaperPlaceholder color="#efefef" />}
-                    >
-                      <div />
-                    </ReactPlaceholder>
-                  </div>
-                </div>
-              )}
-            </div>
-            <div className={css(styles.mobileHubListContainer)}>
-              <HubsList
-                current={this.props.home ? null : this.props.hub}
-                overrideStyle={styles.mobileList}
-                initialHubList={this.props.initialHubList}
-              />
+            <UnifiedDocFeedContainer
+              feed={feed}
+              home={this.props.home}
+              hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
+              hubState={hubState}
+              hub={hub}
+              preloadedDocData={initialFeed}
+              loggedIn={this.props.loggedIn}
+              subscribeButton={
+                <SubscribeButton
+                  {...this.props}
+                  {...this.state}
+                  onClick={() => this.setState({ transition: true })}
+                  onSubscribe={this.onSubscribe}
+                  onUnsubscribe={this.onUnsubscribe}
+                />
+              }
+            />
+            <div className={css(styles.column, styles.sidebar)}>
+              <div className={css(styles.rightSidebarContainer)}>
+                <ActivityList
+                  // hubIds={
+                  //   feed === 0
+                  //     ? hubState.subscribedHubs.map((hub) => hub.id) // myHubs
+                  //     : hub ? [hub.id] : null // Single hub or All feed
+                  // }
+                  subscribedHubs={hubState.subscribedHubs}
+                  hub={hub}
+                  hubId={hub ? hub.id : null}
+                  feed={feed}
+                />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </Fragment>
     );
   }
 }
 
 var styles = StyleSheet.create({
-  content: {},
   column: {
     display: "flex",
     flexDirection: "column",
@@ -921,24 +785,85 @@ var styles = StyleSheet.create({
     },
   },
   body: {
-    backgroundColor: "#FCFCFC",
     width: "100%",
+    height: "100%",
+    marginTop: 28,
+    // display: "table",
+    // minWidth: "100vw",
+    borderSpacing: "20px 0px",
     alignItems: "flex-start",
-    display: "table",
+    boxSizing: "border-box",
+    paddingLeft: 16,
+    paddingRight: 16,
+    "@media only screen and (max-width: 990px)": {
+      padding: "0px 20px",
+    },
     "@media only screen and (max-width: 767px)": {
-      display: "flex",
+      padding: "0px 16px",
+      maxWidth: 550,
+      display: "block",
+      minWidth: "unset",
     },
   },
-  sidebar: {
-    backgroundColor: "#FFF",
-    width: "18%",
+  mainfeed: {
+    minHeight: "inherit",
     height: "100%",
-    display: "table-cell",
-    minWidth: 220,
-    paddingTop: 10,
+    width: "100%",
+    maxWidth: 1200,
+    // display: "table-cell",
+    flexDirection: "column",
+    "@media only screen and (min-width: 1920px)": {
+      minWidth: 1200,
+    },
     "@media only screen and (max-width: 990px)": {
+      width: "100%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
+    },
+  },
+  allFeedButton: {
+    position: "absolute",
+    bottom: 100,
+    left: "50%",
+    transform: "translateX(-50%)",
+    zIndex: 3,
+    cursor: "pointer",
+    boxSizing: "border-box",
+    width: "unset",
+    padding: "0px 15px",
+    boxShadow: "0 0 15px rgba(0, 0, 0, 0.14)",
+  },
+  sidebar: {
+    // display: "table-cell",
+    paddingBottom: 30,
+    // "@media only screen and (min-width: 1920px)": {
+    //   minWidth: 280,
+    // },
+    "@media only screen and (max-width: 1199px)": {
       display: "none",
     },
+  },
+  leftSidebarContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: 260,
+    minWidth: 260,
+    maxWidth: 260,
+    minHeight: "100%",
+    height: "100%",
+  },
+  rightSidebarContainer: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    width: 280,
+    minWidth: 280,
+    maxWidth: 280,
+    minHeight: "100%",
+    height: "100%",
   },
   subtext: {
     whiteSpace: "initial",
@@ -958,6 +883,21 @@ var styles = StyleSheet.create({
       width: 280,
     },
   },
+  feedPapers: {
+    position: "relative",
+  },
+  bannerContainer: {
+    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    "@media only screen and (max-width: 415px)": {
+      padding: 0,
+      width: "100%",
+    },
+  },
+  sampleFeed: {
+    height: "calc(100vh - 420px)",
+    minHeight: 600,
+    overflow: "hidden",
+  },
   banner: {
     width: "100%",
   },
@@ -974,76 +914,6 @@ var styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 0,
   },
-  iconStyle: {
-    height: 33,
-    width: 33,
-  },
-  coinIcon: {
-    height: 20,
-    marginLeft: 8,
-    "@media only screen and (max-width: 760px)": {
-      height: 18,
-    },
-    "@media only screen and (max-width: 415px)": {
-      height: 16,
-    },
-  },
-  /**
-   * MAIN FEED STYLES
-   */
-  mainFeed: {
-    display: "table-cell",
-    height: "100%",
-    width: "82%",
-    backgroundColor: "#FCFCFC",
-    borderLeft: "1px solid #ededed",
-    "@media only screen and (min-width: 900px)": {
-      width: "82%",
-    },
-    "@media only screen and (max-width: 768px)": {
-      width: "100%",
-    },
-  },
-  feedTitle: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    color: "#241F3A",
-    fontWeight: 400,
-    fontSize: 30,
-    flexWrap: "wrap",
-    whiteSpace: "pre-wrap",
-    width: "100%",
-    textAlign: "center",
-    padding: 0,
-    margin: 0,
-    "@media only screen and (min-width: 800px)": {
-      textAlign: "left",
-      paddingRight: 16,
-    },
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
-    },
-    "@media only screen and (max-width: 665px)": {
-      fontSize: 25,
-    },
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 25,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
-    },
-  },
-  feedSubtitle: {
-    fontSize: 14,
-    "@media only screen and (max-width: 665px)": {
-      display: "none",
-    },
-  },
-  fullWidth: {
-    width: "100%",
-    boxSizing: "border-box",
-  },
   titleBoxShadow: {
     boxShadow: "0 4px 41px -24px rgba(0,0,0,0.16)",
   },
@@ -1054,10 +924,9 @@ var styles = StyleSheet.create({
     paddingLeft: 70,
     paddingRight: 70,
     boxSizing: "border-box",
-    backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (min-width: 900px)": {
       paddingLeft: 25,
       paddingRight: 25,
@@ -1070,6 +939,8 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
+      paddingLeft: 0,
+      paddingRight: 0,
     },
     "@media only screen and (max-width: 665px)": {
       display: "flex",
@@ -1078,126 +949,20 @@ var styles = StyleSheet.create({
       alignItems: "center",
       paddingBottom: 20,
     },
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
-      width: "100%",
-      boxSizing: "border-box",
-    },
-    "@media only screen and (max-width: 416px)": {
-      paddingLeft: 30,
-      paddingRight: 30,
-    },
-  },
-  dropDown: {
-    width: 140,
-    margin: 0,
-    minHeight: "unset",
-    fontSize: 14,
-    "@media only screen and (max-width: 1343px)": {
-      height: "unset",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 150,
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
-      fontSize: 14,
-    },
-  },
-  dropDownLeft: {
-    width: 140,
-    margin: 0,
-    minHeight: "unset",
-    fontSize: 14,
-    marginRight: 10,
-    "@media only screen and (max-width: 1343px)": {
-      height: "unset",
-    },
-    "@media only screen and (max-width: 1149px)": {
-      width: 150,
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      width: "calc(50% - 5px)",
-    },
-  },
-  inputContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 779px)": {
-      flexDirection: "column",
-      alignItems: "flex-end",
-    },
-  },
-  hubInputContainer: {
-    width: "100%",
-    marginTop: 16,
-  },
-  homeInputContainer: {
-    justifyContent: "flex-end",
-
-    "@media only screen and (max-width: 799px)": {
-      width: "100%",
-      marginTop: 16,
-    },
-  },
-  smallerInputContainer: {
-    width: "unset",
-  },
-  inputs: {
-    "@media only screen and (max-width: 779px)": {
-      width: "100%",
-      justifyContent: "flex-end",
-      alignItems: "center",
-    },
   },
   /**
    * INFINITE SCROLL
    */
   infiniteScroll: {
+    minWidth: "100%",
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
-    backgroundColor: "#FCFCFC",
-    paddingLeft: 70,
-    paddingRight: 70,
-    paddingBottom: 30,
-    "@media only screen and (min-width: 900px)": {
-      paddingLeft: 25,
-      paddingRight: 25,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      paddingLeft: 50,
-      paddingRight: 50,
-    },
-    "@media only screen and (min-width: 800px)": {
-      paddingTop: 25,
-    },
-    "@media only screen and (max-width: 577px)": {
-      paddingLeft: 40,
-      paddingRight: 40,
-    },
-    "@media only screen and (max-width: 415px)": {
-      padding: 0,
-      width: "100%",
-    },
-  },
-  blur: {
-    height: 30,
     marginTop: 10,
-    backgroundColor: colors.BLUE(0.2),
-    width: "100%",
-    "-webkit-filter": "blur(6px)",
-    "-moz-filter": "blur(6px)",
-    "-ms-filter": "blur(6px)",
-    "-o-filter": "blur(6px)",
-    filter: "blur(6px)",
+    paddingBottom: 30,
+    "@media only screen and (min-width: 1920px)": {
+      minWidth: 1200,
+    },
   },
   blank: {
     opacity: 0,
@@ -1216,48 +981,12 @@ var styles = StyleSheet.create({
   mobileHubListContainer: {
     display: "none",
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 990px)": {
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      borderTop: "1px solid #EDEDED",
-    },
   },
   mobileList: {
     paddingTop: 20,
     width: "90%",
   },
-  emptyPlaceholderImage: {
-    width: 400,
-    objectFit: "contain",
-    marginTop: 40,
-    "@media only screen and (max-width: 415px)": {
-      width: "70%",
-    },
-  },
-  emptyPlaceholderText: {
-    width: 500,
-    textAlign: "center",
-    fontSize: 18,
-    color: "#241F3A",
-    marginTop: 20,
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
-  emptyPlaceholderSubtitle: {
-    width: 500,
-    textAlign: "center",
-    fontSize: 14,
-    color: "#4e4c5f",
-    marginTop: 10,
-    marginBottom: 15,
-    "@media only screen and (max-width: 415px)": {
-      width: "85%",
-    },
-  },
+
   optionContainer: {
     display: "flex",
     width: "100%",
@@ -1308,7 +1037,6 @@ var styles = StyleSheet.create({
     width: 120,
     height: 37,
     boxSizing: "border-box",
-    // padding: "5px 15px",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -1341,7 +1069,6 @@ var styles = StyleSheet.create({
   },
   leaderboard: {
     display: "none",
-    background: "#FCFCFC",
     "@media only screen and (min-width: 900px)": {
       display: "block",
       width: "20%",
@@ -1392,6 +1119,9 @@ var styles = StyleSheet.create({
       backgroundColor: colors.BLUE(),
     },
   },
+  hidden: {
+    display: "none",
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -1407,14 +1137,10 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   setUserBannerPreference: AuthActions.setUserBannerPreference,
-  openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
   updateSubscribedHubs: HubActions.updateSubscribedHubs,
   getTopHubs: HubActions.getTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HubPage);
+export default connect(mapStateToProps, mapDispatchToProps)(HubPage);

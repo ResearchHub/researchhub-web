@@ -1,19 +1,19 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
-import moment from "moment";
+import * as moment from "dayjs";
 
 // Components
 import { ScorePill } from "~/components/VoteWidget";
-import PromotionGraph from "./PromotionGraph";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { formatTransactionDate } from "~/config/utils";
+import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
-class PromotionCard extends React.Component {
+class PromotionCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -28,7 +28,7 @@ class PromotionCard extends React.Component {
   }
 
   setStateByKey = (key, value) => {
-    let newState = { [key]: value };
+    const newState = { [key]: value };
     if (key === "views") {
       newState["fetchingViews"] = false;
     } else {
@@ -76,7 +76,8 @@ class PromotionCard extends React.Component {
   };
 
   renderData = () => {
-    let { promotion } = this.props;
+    const { promotion } = this.props;
+
     return (
       <div className={css(styles.row)}>
         <div
@@ -90,7 +91,7 @@ class PromotionCard extends React.Component {
             className={css(styles.icon, this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            <i className="fas fa-eye" />
+            {icons.eye}
           </span>
           <div
             className={css(styles.stats, this.state.showViews && styles.active)}
@@ -111,7 +112,7 @@ class PromotionCard extends React.Component {
             className={css(styles.icon, !this.state.showViews && styles.active)}
             id={"statIcon"}
           >
-            <i className="fas fa-mouse-pointer" />
+            {icons.mousePointer}
           </span>
           <div
             className={css(
@@ -132,26 +133,29 @@ class PromotionCard extends React.Component {
      * show loading state,
      * add pagination
      */
-    let { promotion, paper } = this.props;
+    const { promotion, source, isLast } = this.props;
+
+    const isPost =
+      source.document_type && source.document_type === "DISCUSSION";
+
+    const href = isPost
+      ? "/post/[documentId]/[title]"
+      : "/paper/[paperId]/[paperName]";
+    const as = `/${isPost ? "post" : "paper"}/${source.id}/${source.slug}`;
 
     return (
-      <div className={css(styles.card)}>
+      <div className={css(styles.card, isLast && styles.removeBottomBorder)}>
         <div className={css(styles.metadata)}>
           <div className={css(styles.column, styles.vote)}>
             <ScorePill
-              score={paper.promoted ? paper.promoted : paper.score}
-              promoted={paper.promoted}
-              paper={paper}
-              type={"Paper"}
+              score={source.promoted ? source.promoted : source.score}
+              promoted={source.promoted}
             />
           </div>
           <div className={css(styles.column)}>
-            <Link
-              href={"/paper/[paperId]/[paperName]"}
-              as={`/paper/${paper.id}/${paper.slug}`}
-            >
+            <Link href={href} as={as}>
               <a className={css(styles.link)}>
-                <div className={css(styles.title)}>{paper.title}</div>
+                <div className={css(styles.title)}>{source.title}</div>
               </a>
             </Link>
             <div className={css(styles.metatext)}>
@@ -183,18 +187,6 @@ class PromotionCard extends React.Component {
                 alt="RSC Coin"
               />
             </div>
-            {this.renderData()}
-          </div>
-        </div>
-        <div className={css(styles.dataContainer)}>
-          <div className={css(styles.graph)}>
-            <PromotionGraph
-              paper={paper}
-              promotion={promotion}
-              clicks={promotion.stats.clicks ? promotion.stats.clicks : []}
-              views={promotion.stats.views ? promotion.stats.views : []}
-              showViews={this.state.showViews}
-            />
           </div>
         </div>
       </div>
@@ -204,9 +196,9 @@ class PromotionCard extends React.Component {
 
 const styles = StyleSheet.create({
   card: {
+    boxSizing: "border-box",
     width: "100%",
-    width: "100%",
-    padding: "27px 20px",
+    padding: "24px 15px",
     display: "flex",
     justifyContent: "space-between",
     cursor: "pointer",
@@ -215,12 +207,16 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "relative",
     "@media only screen and (max-width: 767px)": {
-      width: "85%",
       flexDirection: "column",
     },
     "@media only screen and (max-width: 620px)": {
       position: "relative",
+      paddingLeft: 0,
+      paddingRight: 0,
     },
+  },
+  removeBottomBorder: {
+    borderBottom: "none",
   },
   hide: {
     display: "none",
@@ -237,7 +233,7 @@ const styles = StyleSheet.create({
     color: "rgb(190, 190, 190)",
   },
   title: {
-    fontSize: 16,
+    fontSize: 20,
     marginBottom: 10,
     fontWeight: 500,
     width: "100%",
@@ -334,7 +330,6 @@ const styles = StyleSheet.create({
     textDecoration: "unset",
   },
   metadata: {
-    width: "55%",
     display: "flex",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
@@ -463,7 +458,4 @@ const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(PromotionCard);
+export default connect(mapStateToProps, null)(PromotionCard);

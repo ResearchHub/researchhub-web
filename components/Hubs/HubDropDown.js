@@ -1,11 +1,7 @@
 // NPM
-import React, { useRef, useEffect } from "react";
+import { useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import "~/components/Paper/CitationCard.css";
-
-// Component
-import HubTag from "./HubTag";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -13,7 +9,7 @@ import icons from "~/config/themes/icons";
 import { nameToUrl } from "~/config/constants";
 
 const HubDropDown = (props) => {
-  let { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
+  const { hubs, hubName, isOpen, setIsOpen, labelStyle } = props;
   let dropdown; // holds ref for dropdown
 
   /**
@@ -33,9 +29,9 @@ const HubDropDown = (props) => {
   };
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("mouseup", handleOutsideClick);
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("mouseup", handleOutsideClick);
     };
   });
 
@@ -43,6 +39,34 @@ const HubDropDown = (props) => {
     e.stopPropagation();
     setIsOpen(!isOpen);
   };
+
+  const dropdownComponent = hubs.map((hub, i) => {
+    let { id, name, hub_image, slug } = hub;
+
+    return (
+      <Link
+        href={"/hubs/[slug]"}
+        as={`/hubs/${nameToUrl(slug)}`}
+        key={`dropdown-${id}`}
+      >
+        <a className={css(styles.atag)}>
+          <img
+            className={css(styles.hubImage) + " hubImage"}
+            src={
+              hub_image ? hub_image : "/static/background/hub-placeholder.svg"
+            }
+            alt={name}
+          />
+          <span
+            key={`hub_dropdown${id}`}
+            className={css(styles.listItem) + " clamp1"}
+          >
+            {name}
+          </span>
+        </a>
+      </Link>
+    );
+  });
 
   return (
     <div
@@ -54,20 +78,7 @@ const HubDropDown = (props) => {
         {icons.ellipsisH}
       </div>
       <div className={css(styles.dropdown, isOpen && styles.open)}>
-        {hubs.map((hub, i) => {
-          return (
-            <Link href={"/hubs/[slug]"} as={`/hubs/${nameToUrl(hub.slug)}`}>
-              <a className={css(styles.atag)}>
-                <div
-                  key={`hub_dropdown${hub.id}`}
-                  className={css(styles.listItem) + " clamp1"}
-                >
-                  {hub.name}
-                </div>
-              </a>
-            </Link>
-          );
-        })}
+        {dropdownComponent}
       </div>
     </div>
   );
@@ -79,11 +90,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    padding: "5px 0",
   },
   dropdown: {
     minWidth: 200,
-    zIndex: 3,
     top: 20,
     right: -5,
     boxShadow: "0 0 24px rgba(0, 0, 0, 0.14)",
@@ -93,7 +102,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     boxSizing: "border-box",
     opacity: 0,
-    zIndex: -100,
     userSelect: "none",
     pointerEvents: "none",
     display: "flex",
@@ -115,6 +123,7 @@ const styles = StyleSheet.create({
     pointerEvents: "unset",
   },
   icon: {
+    fontSize: 14,
     cursor: "pointer",
     ":hover": {
       color: colors.BLUE(),
@@ -124,31 +133,53 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
   },
   listItem: {
-    boxSizing: "border-box",
-    padding: "8px 20px",
-    cursor: "pointer",
-    background: "#FAFAFA",
-    borderBottom: "1px solid rgb(237, 237, 237)",
-    color: colors.BLUE(),
-    width: "100%",
-    display: "flex",
-    justifyContent: "flex-start",
-    textTransform: "uppercase",
-    fontWeight: "bold",
-    letterSpacing: 1,
-    fontSize: 10,
-    ":hover": {
-      background: "#edeefe",
-    },
+    color: colors.BLACK(),
+    textTransform: "capitalize",
+    fontSize: 14,
+    fontWeight: 500,
     "@media only screen and (max-width: 415px)": {
-      fontSize: 8,
+      fontSize: 12,
       height: "unset",
     },
   },
+  hubImage: {
+    height: 20,
+    width: 20,
+    minWidth: 20,
+    minHeight: 20,
+    marginRight: 8,
+    objectFit: "cover",
+    borderRadius: 3,
+    dropShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    opacity: 1,
+    "@media only screen and (max-width: 767px)": {
+      height: 18,
+      width: 18,
+      minWidth: 18,
+      minHeight: 18,
+    },
+    "@media only screen and (max-width: 415px)": {
+      height: 15,
+      width: 15,
+      minWidth: 15,
+      minHeight: 15,
+      marginRight: 4,
+    },
+  },
   atag: {
+    display: "flex",
+    padding: 10,
+    alignItems: "center",
     color: "unset",
+    boxSizing: "border-box",
+    background: "#FAFAFA",
+    borderBottom: "1px solid rgb(237, 237, 237)",
     textDecoration: "unset",
     width: "100%",
+    cursor: "pointer",
+    ":hover": {
+      background: "#edeefe",
+    },
   },
 });
 

@@ -1,54 +1,73 @@
-import { useEffect, useState, Fragment } from "react";
+import { useEffect, useState, Fragment, useRef, useContext } from "react";
 
 // NPM Components
 import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { connect, useDispatch, useStore } from "react-redux";
-import "react-placeholder/lib/reactPlaceholder.css";
+import { connect } from "react-redux";
+
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import Collapsible from "react-collapsible";
 
 // Redux
-import { MessageActions } from "../redux/message";
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
+import dynamic from "next/dynamic";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import Button from "../components/Form/Button";
-import FirstVoteModal from "../components/Modals/FirstVoteModal";
+import UserStateBanner from "./Banner/UserStateBanner";
 import GoogleLoginButton from "../components/GoogleLoginButton";
-import InviteToHubModal from "../components/Modals/InviteToHubModal";
-import LoginModal from "../components/Modals/LoginModal";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
-import SectionBountyModal from "../components/Modals/SectionBountyModal";
-import WithdrawalModal from "../components/Modals/WithdrawalModal";
-import UploadPaperModal from "../components/Modals/UploadPaperModal";
-import Notification from "./Notifications/Notification";
-import DndModal from "../components/Modals/DndModal";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
-import PromotionInfoModal from "~/components/Modals/PromotionInfoModal";
-import ReCaptchaPrompt from "./Modals/ReCaptchaPrompt";
-import EducationModal from "./Modals/EducationModal";
-import AuthorSupportModal from "./Modals/AuthorSupportModal";
-import UserStateBanner from "./Banner/UserStateBanner";
-import ContentSupportModal from "./Modals/ContentSupportModal";
-import OrcidConnectModal from "./Modals/OrcidConnectModal";
 
 // Styles
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { RHLogo } from "~/config/themes/icons";
+import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
+import icons, { RHLogo, voteWidgetIcons } from "~/config/themes/icons";
+
+// Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import "./stylesheets/Navbar.css";
+import colors from "~/config/themes/colors";
+import { isDevEnv } from "~/config/utils/env";
+import { breakpoints } from "~/config/themes/screen";
+import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
+import { NavbarContext } from "~/pages/Base";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Image from "next/image";
+import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+
+// Dynamic modules
+const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
+const FirstVoteModal = dynamic(() =>
+  import("~/components/Modals/FirstVoteModal")
+);
+const LoginModal = dynamic(() => import("~/components/Modals/LoginModal"));
+const OrcidConnectModal = dynamic(() =>
+  import("~/components/Modals/OrcidConnectModal")
+);
+const PromotionInfoModal = dynamic(() =>
+  import("~/components/Modals/PromotionInfoModal")
+);
+const UploadPaperModal = dynamic(() =>
+  import("~/components/Modals/UploadPaperModal")
+);
+const WithdrawalModal = dynamic(() =>
+  import("~/components/Modals/WithdrawalModal")
+);
+const ReCaptchaPrompt = dynamic(() =>
+  import("~/components/Modals/ReCaptchaPrompt")
+);
+const Notification = dynamic(() =>
+  import("~/components/Notifications/Notification")
+);
 
 const Navbar = (props) => {
-  const dispatch = useDispatch();
   const router = useRouter();
+  const navbarRef = useRef(null);
+  const [openCaseCounts, setOpenCaseCounts] = useState(0);
+
+  const { numNavInteractions } = useContext(NavbarContext);
 
   const {
     isLoggedIn,
@@ -59,7 +78,9 @@ const Navbar = (props) => {
     auth,
     updateUser,
   } = props;
-
+  const isUserModerator = !isNullOrUndefined(user)
+    ? Boolean(user.moderator)
+    : false;
   let dropdown;
   let avatar;
 
@@ -79,12 +100,20 @@ const Navbar = (props) => {
     }
   };
 
-  useEffect(() => {
+  useEffect(async () => {
+    const counts = await getCaseCounts({});
+    if (counts) {
+      setOpenCaseCounts(counts["OPEN"]);
+    }
+  }, [numNavInteractions]);
+
+  useEffect(async () => {
     document.addEventListener("mousedown", handleOutsideClick);
+
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  });
+  }, []);
 
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
@@ -93,20 +122,48 @@ const Navbar = (props) => {
     { label: "Home", route: "/", icon: "home" },
     { label: "Hubs", route: "/hubs", icon: "hub" },
     { label: "About", route: "/about", icon: "info-circle" },
-    { label: "Help", route: "/help", icon: "help" },
+    {
+      label: "Blog",
+      route: "",
+      link: "https://medium.com/researchhub",
+      icon: "medium",
+      className: "lessImportantTab",
+    },
+    {
+      label: "Help",
+      route: "",
+      link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      icon: "help",
+      className: "lessImportantTab",
+    },
     { label: "Live", route: "/live", icon: "live" },
-    { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
+    {
+      label: "Leaderboard",
+      route: "/leaderboard/users",
+      icon: "trophy",
+      className: "lessImportantTab",
+    },
+    isUserModerator
+      ? {
+          label: "Mods",
+          route: "/moderators/author-claim-case-dashboard?case_status=OPEN",
+          icon: "info-circle",
+          extra: () => {
+            return (
+              <div className={css(styles.notifications)}>{openCaseCounts}</div>
+            );
+          },
+        }
+      : null,
   ];
 
   const menuTabsUpper = [
     {
       label: "Explore ResearchHub",
-      icon: "compass",
       key: "explore",
     },
     {
-      label: "Settings",
-      icon: "cog",
+      label: "Account",
       key: "settings",
     },
   ];
@@ -122,7 +179,18 @@ const Navbar = (props) => {
       { label: "Leaderboard", route: "/leaderboard/users", icon: "trophy" },
       { label: "Live", route: "/live", icon: "live" },
       { label: "About", route: "/about", icon: "info-circle" },
-      { label: "Help", route: "/help", icon: "help" },
+      {
+        label: "Help",
+        route: "",
+        link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        icon: "help",
+      },
+      {
+        label: "Blog",
+        route: "",
+        link: "https://medium.com/researchhub",
+        icon: "medium",
+      },
     ],
     settings: [
       {
@@ -133,9 +201,23 @@ const Navbar = (props) => {
         icon: "user",
       },
       {
-        label: "Profile Settings",
+        label: "Settings",
         route: {
           href: "/user/settings",
+        },
+        icon: "cog",
+      },
+      {
+        label: "Refer a Friend",
+        route: {
+          href: "/referral",
+        },
+        icon: "asterisk",
+      },
+      {
+        label: "Logout",
+        onClick: () => {
+          signout({ walletLink });
         },
         icon: "signOut",
       },
@@ -143,25 +225,24 @@ const Navbar = (props) => {
   };
 
   function renderTabs() {
-    let tabs = tabData.map((tab, index) => {
+    let tabs = filterNull(tabData).map((tab, index) => {
       if (tab.icon === "home") {
         return null;
       }
-      if (tab.label === "Help") {
+      if (tab.link) {
         return (
           <div
             key={index}
             className={css(
               styles.tab,
               index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab
+              index === 2 && styles.lastTab,
+              styles[tab.className]
             )}
           >
             <a
               className={css(styles.tabLink)}
-              href={
-                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
-              }
+              href={tab.link}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -173,21 +254,26 @@ const Navbar = (props) => {
 
       return (
         <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <div className={css(styles.tab, index === 0 && styles.firstTab)}>
-            {tab.label}
-          </div>
+          <a className={css(styles.tabLink)}>
+            <div
+              className={css(
+                styles.tab,
+                index === 0 && styles.firstTab,
+                styles[tab.className]
+              )}
+            >
+              {tab.label}
+              {tab.extra && tab.extra()}
+            </div>
+          </a>
         </Link>
       );
     });
     return tabs;
   }
 
-  function toggleMenu() {
+  function toggleMenu(e) {
     setOpenMenu(!openMenu);
-  }
-
-  function onAddPaperClick() {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
   }
 
   function toggleSideMenu() {
@@ -198,7 +284,10 @@ const Navbar = (props) => {
     let { href, as } = route;
     if (href) {
       if (href === "/user/[authorId]/[tabName]") {
-        Router.push(href, `/user/${user.author_profile.id}/contributions`);
+        Router.push(
+          href,
+          `/user/${user.author_profile && user.author_profile.id}/overview`
+        );
       } else {
         Router.push(href, as);
       }
@@ -207,23 +296,21 @@ const Navbar = (props) => {
     }
     if (props.modals.openUploadPaperModal) {
       props.openUploadPaperModal(false);
-      if (document.body.style) {
-        document.body.style.overflow = "scroll";
-      }
     }
     toggleSideMenu();
   }
 
   function renderCollapsible(tabs) {
     return tabs.map((tab, index) => {
-      if (tab.label === "Help") {
+      if (tab.link) {
         return (
-          <div className={css(styles.menuItem)} key={`navbar_tab_${index}`}>
+          <div
+            className={css(styles.menuItem, styles[tab.className])}
+            key={`navbar_tab_${index}`}
+          >
             <a
               className={css(styles.menuItem, styles.noMargin)}
-              href={
-                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
-              }
+              href={tab.link}
               target="_blank"
               rel="noreferrer noopener"
             >
@@ -245,7 +332,7 @@ const Navbar = (props) => {
       }
       return (
         <div
-          className={css(styles.menuItem)}
+          className={css(styles.menuItem, styles[tab.className])}
           onClick={
             tab.onClick
               ? tab.onClick
@@ -275,14 +362,10 @@ const Navbar = (props) => {
         <Collapsible
           trigger={
             <div className={css(styles.trigger)}>
-              <div>
-                <i
-                  className={css(styles.tabIcon) + ` fal fa-${tab.icon}`}
-                  aria-hidden="true"
-                ></i>
-                {tab.label}
-              </div>
-              <i className={css(styles.chevronDown) + " fal fa-chevron-down"} />
+              <div>{tab.label}</div>
+              <span className={css(styles.chevronDown)}>
+                {icons.chevronDownLeft}
+              </span>
             </div>
           }
           open={tab.key === "explore"}
@@ -296,22 +379,13 @@ const Navbar = (props) => {
     });
     return (
       <Fragment>
-        <Search
-          searchClass={styles.mobileSearch}
-          inputClass={styles.inputClass}
-          searchIconClass={styles.searchIconClass}
-          dropdownClass={styles.dropdownClass}
-          afterSearchClick={toggleSideMenu}
-        />
         {menuTabsRender}
         {!isLoggedIn ? (
           renderMenuLoginButtons(isLoggedIn)
         ) : (
-          <Button
-            label={"Add Paper"}
-            onClick={addPaperModal}
-            hideRipples={true}
-            customButtonStyle={[styles.addPaperButton]}
+          <NewPostButton
+            customButtonStyle={[styles.newPostButton]}
+            onClick={() => setSideMenu(!sideMenu)}
           />
         )}
       </Fragment>
@@ -352,65 +426,25 @@ const Navbar = (props) => {
     );
   }
 
-  function addPaperModal() {
-    Router.push(`/paper/upload/info`);
-    setSideMenu(!sideMenu);
-  }
-
   function openWithdrawalModal() {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
 
-  const burgerMenuStyle = {
-    bmBurgerBars: {
-      background: "#373a47",
-    },
-    bmBurgerBarsHover: {
-      background: "#a90000",
-    },
-    bmCrossButton: {
-      height: "26px",
-      width: "26px",
-      color: "#FFF",
-    },
-    bmCross: {
-      background: "#bdc3c7",
-    },
-    bmMenuWrap: {
-      position: "fixed",
-      width: "100%",
-      zIndex: 3147480000,
-      height: "unset",
-    },
-    bmMenu: {
-      background: "rgba(55, 58, 70, 1)",
-      fontSize: "1.15em",
-      padding: "2.5em .6em 32px",
-    },
-    bmMorphShape: {
-      fill: "#373a47",
-    },
-    bmItemList: {
-      color: "#b8b7ad",
-      display: "flex",
-      flexDirection: "column",
-      justifyContent: "flex-start",
-      alignItems: "flex-start",
-      height: "100%",
-      overflow: "auto",
-      borderTop: "1px solid rgba(255,255,255,.2)",
-      paddingTop: 16,
-    },
-    bmItem: {
-      display: "inline-block",
-      margin: "15px 0 15px 0",
-      color: "#FFF",
-    },
-    bmOverlay: {
-      background: "rgba(0, 0, 0, 0.3)",
-    },
-  };
+  function addPaperModal(e) {
+    Router.push(`/paper/upload/info`);
+    setSideMenu(!sideMenu);
+  }
+
+  function onAddPaperClick() {
+    Router.push(`/paper/upload/info`, `/paper/upload/info`);
+  }
+
+  const shouldShowELNButton = gateKeepCurrentUser({
+    application: "ELN" /* application */,
+    auth,
+    shouldRedirect: false /* should redirect */,
+  });
 
   return (
     <Fragment>
@@ -429,31 +463,34 @@ const Navbar = (props) => {
         {renderMenuItems()}
       </Menu>
       <div
+        ref={navbarRef}
         className={css(
           styles.navbarContainer,
-          router.route === "/paper/[paperId]/[paperName]" &&
+          (router.route === "/paper/[paperId]/[paperName]" ||
+            router.route === "/hubs") &&
             styles.unstickyNavbar
         )}
       >
         <UploadPaperModal />
         <LoginModal />
-        <InviteToHubModal />
         <WithdrawalModal />
         <FirstVoteModal auth={auth} updateUser={updateUser} />
         <OrcidConnectModal />
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
-        <AuthorSupportModal />
-        <ContentSupportModal />
-        <SectionBountyModal />
+        {/* <SectionBountyModal /> */}
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} />
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
-        <Search />
+        <Search
+          overrideStyle={styles.navbarSearchOverride}
+          navbarRef={navbarRef}
+          id="navbarSearch"
+        />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -467,12 +504,14 @@ const Navbar = (props) => {
                 >
                   <AuthorAvatar
                     author={user.author_profile}
-                    size={34}
+                    size={33}
                     textSizeRatio={2.5}
                     disableLink={true}
                     showModeratorBadge={user && user.moderator}
                   />
-                  <i className={css(styles.caret) + " fas fa-caret-down"}></i>
+                  <span className={css(styles.caret)}>
+                    {voteWidgetIcons.downvote}
+                  </span>
                   <div className={css(styles.reputation)}>
                     <Reputation showBalance={true} />
                   </div>
@@ -485,6 +524,22 @@ const Navbar = (props) => {
                       wsAuth={true}
                     />
                   </div>
+                  {shouldShowELNButton ? (
+                    <div
+                      className={css(styles.notification)}
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <Link href={`/${user.organization_slug}/notebook`}>
+                        <a>
+                          <img
+                            src={"/static/icons/notebook.svg"}
+                            height={24}
+                            width={24}
+                          />
+                        </a>
+                      </Link>
+                    </div>
+                  ) : null}
                 </div>
                 {openMenu && (
                   <div
@@ -494,23 +549,25 @@ const Navbar = (props) => {
                   >
                     <Link
                       href={"/user/[authorId]/[tabName]"}
-                      as={`/user/${user.author_profile.id}/contributions`}
+                      as={`/user/${user.author_profile.id}/overview`}
                     >
                       <div className={css(styles.option)}>
-                        <i
-                          className={
-                            css(styles.profileIcon, styles.portraitIcon) +
-                            " fas fa-portrait"
-                          }
-                        ></i>
+                        <span
+                          className={css(
+                            styles.profileIcon,
+                            styles.portraitIcon
+                          )}
+                        >
+                          {icons.portrait}
+                        </span>
                         Profile
                       </div>
                     </Link>
                     <Link href={"/user/settings"} as={`/user/settings`}>
                       <div className={css(styles.option)}>
-                        <i
-                          className={css(styles.profileIcon) + " fas fa-cog"}
-                        ></i>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.cog}
+                        </span>
                         Settings
                       </div>
                     </Link>
@@ -535,11 +592,9 @@ const Navbar = (props) => {
                       }}
                     >
                       <div className={css(styles.option)}>
-                        <i
-                          className={
-                            css(styles.profileIcon) + " fas fa-asterisk"
-                          }
-                        ></i>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.asterisk}
+                        </span>
                         Refer a Friend
                       </div>
                     </Link>
@@ -549,9 +604,9 @@ const Navbar = (props) => {
                         signout({ walletLink });
                       }}
                     >
-                      <i
-                        className={css(styles.profileIcon) + " fad fa-sign-out"}
-                      ></i>{" "}
+                      <span className={css(styles.profileIcon)}>
+                        {icons.signOut}
+                      </span>
                       <span>Logout</span>
                     </div>
                   </div>
@@ -559,26 +614,72 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <PermissionNotificationWrapper
-            onClick={onAddPaperClick}
-            modalMessage="upload a paper"
-            loginRequired={true}
-            permissionKey="CreatePaper"
-          >
-            <Button
-              customButtonStyle={{ ...styles.button, ...styles.addPaper }}
-              label={"Add Paper"}
-              hideRipples={true}
-            />
-          </PermissionNotificationWrapper>
+          <NewPostButton
+            customButtonStyle={{ ...styles.button, ...styles.newPost }}
+          />
         </div>
-        <div className={css(styles.menuIcon)} onClick={toggleSideMenu}>
+
+        <div
+          className={css(styles.menuIcon)}
+          onClick={toggleSideMenu}
+          data-test={isDevEnv() ? `navbar-mobile-trigger` : undefined}
+        >
           {icons.burgerMenu}
         </div>
       </div>
       <UserStateBanner />
     </Fragment>
   );
+};
+
+const burgerMenuStyle = {
+  bmBurgerBars: {
+    background: "#373a47",
+  },
+  bmBurgerBarsHover: {
+    background: "#a90000",
+  },
+  bmCrossButton: {
+    height: "26px",
+    width: "26px",
+    color: "#FFF",
+  },
+  bmCross: {
+    background: "#bdc3c7",
+  },
+  bmMenuWrap: {
+    position: "fixed",
+    width: "100%",
+    zIndex: 3147480000,
+    height: "unset",
+  },
+  bmMenu: {
+    background: "rgba(55, 58, 70, 1)",
+    fontSize: "1.15em",
+    padding: "2.5em .6em 32px",
+  },
+  bmMorphShape: {
+    fill: "#373a47",
+  },
+  bmItemList: {
+    color: "#b8b7ad",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    height: "100%",
+    overflow: "auto",
+    borderTop: "1px solid rgba(255,255,255,.2)",
+    paddingTop: 16,
+  },
+  bmItem: {
+    display: "inline-block",
+    margin: "15px 0 15px 0",
+    color: "#FFF",
+  },
+  bmOverlay: {
+    background: "rgba(0, 0, 0, 0.3)",
+  },
 };
 
 const styles = StyleSheet.create({
@@ -590,22 +691,20 @@ const styles = StyleSheet.create({
     height: 80,
     background: "#fff",
     alignItems: "center",
-    borderBottom: "rgb(151,151,151, .2) 1px solid",
+    borderBottom: "1px solid #e8e8ef",
     justifyContent: "space-around",
     position: "sticky",
     zIndex: 4,
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       justifyContent: "space-between",
-      position: "sticky",
-      zIndex: 4,
+      height: 66,
     },
   },
   unstickyNavbar: {
     position: "initial",
-    zIndex: "unset",
   },
   tabs: {
     display: "flex",
@@ -614,31 +713,20 @@ const styles = StyleSheet.create({
       display: "none",
     },
   },
+  lessImportantTab: {
+    "@media only screen and (min-width: 760px) and (max-width: 900px)": {
+      display: "none",
+    },
+  },
   buttonLeft: {
-    marginLeft: 35,
+    marginRight: 16,
     "@media only screen and (min-width: 1024px)": {
-      marginLeft: 70,
+      marginLeft: 20,
       marginRight: 16,
     },
   },
-  mobileSearch: {
-    width: "100%",
-    marginBottom: 16,
-    borderRadius: 32,
-    height: 32,
-    "@media only screen and (max-width: 1024px)": {
-      display: "flex",
-    },
-  },
-  searchIconClass: {
-    top: 7,
-  },
   loginContainer: {
     width: "100%",
-  },
-  tabIcon: {
-    marginRight: 8,
-    color: "#787c7e",
   },
   googleLoginButton: {
     margin: 0,
@@ -677,6 +765,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
   },
+  banner: {
+    textDecoration: "none",
+    // padding: 16,
+  },
   orcidIcon: {
     width: 25,
     height: 25,
@@ -706,32 +798,47 @@ const styles = StyleSheet.create({
     },
   },
   tab: {
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 15,
+    marginRight: 15,
     cursor: "pointer",
-    "@media only screen and (max-width: 840px)": {
-      margin: "0 15px 0 15px",
+    "@media only screen and (max-width: 1000px)": {
+      margin: "0 10px 0 10px",
       fontSize: 14,
     },
   },
   tabLink: {
     color: "#000",
     textDecoration: "none",
+    position: "relative",
+  },
+  notifications: {
+    width: 12,
+    height: 12,
+    fontSize: 12,
+    backgroundColor: colors.RED(),
+    borderRadius: "50%",
+    position: "absolute",
+    top: -6,
+    right: 0,
+    color: "#fff",
+    padding: 3,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
   },
   caret: {
     marginLeft: 10,
     color: "#aaa",
   },
   userDropdown: {
-    marginRight: 16,
     position: "relative",
     zIndex: 5,
     "@media only screen and (max-width: 760px)": {
       display: "none",
     },
-    width: 210,
+    // width: 210,
   },
-  addPaperButton: {
+  newPostButton: {
     width: "100%",
     height: 50,
 
@@ -739,24 +846,6 @@ const styles = StyleSheet.create({
       width: "100%",
       height: 50,
     },
-  },
-  searchbar: {
-    padding: 10,
-    boxSizing: "border-box",
-    height: "100%",
-    width: "100%",
-    background: "transparent",
-    border: "none",
-    outline: "none",
-    fontSize: 16,
-    position: "relative",
-  },
-  searchIcon: {
-    position: "absolute",
-    right: 10,
-    top: 13,
-    cursor: "text",
-    opacity: 0.4,
   },
   button: {
     width: 141,
@@ -794,7 +883,7 @@ const styles = StyleSheet.create({
       width: "100%",
     },
   },
-  addPaper: {
+  newPost: {
     background: colors.BLUE(),
     border: `${colors.BLUE()} 1px solid`,
     color: "#fff",
@@ -827,17 +916,16 @@ const styles = StyleSheet.create({
     left: 6,
   },
   logo: {
-    height: 30,
     objectFit: "contain",
     marginBottom: 8,
   },
   reputation: {
     marginLeft: 11,
-    minWidth: 56,
+    // minWidth: 56,
   },
   dropdown: {
     position: "absolute",
-    bottom: -215,
+    bottom: -225,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
@@ -880,10 +968,6 @@ const styles = StyleSheet.create({
     borderBottom: 0,
   },
   profileIcon: {
-    // position: "absolute",
-    // left: 16,
-    // top: "50%",
-    // transform: "translateY(-50%)",
     color: "#888A8C",
     marginRight: 16,
   },
@@ -916,28 +1000,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   notification: {
-    marginLeft: 16,
-  },
-  searchDropdown: {
-    width: "150%",
-    position: "absolute",
-    zIndex: 4,
-    top: 60,
-    maxHeight: 400,
-    left: "50%",
-    transform: "translateX(-50%)",
-    boxShadow: "0 5px 10px 0 #ddd",
-    background: "#fff",
-    overflow: "scroll",
-    borderRadius: 8,
-    padding: 16,
-    boxSizing: "border-box",
-  },
-  searchResult: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    borderBottom: "1px solid rgb(235, 235, 235)",
+    marginLeft: 15,
+    marginnRight: 15,
+    "@media only screen and (max-width: 900px)": {
+      marginLeft: 10,
+    },
   },
   menuIcon: {
     display: "none",
@@ -953,6 +1020,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     minWidth: 160,
+  },
+  navbarSearchOverride: {
+    [`@media only screen and (max-width: ${breakpoints.medium.int}px)`]: {
+      marginRight: 10,
+    },
+  },
+  notebookIcon: {
+    // fontSize: 18,
+    // marginTop: 2,
+    display: "flex",
   },
 });
 
@@ -975,7 +1052,4 @@ const mapDispatchToProps = {
   updateUser: AuthActions.updateUser,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Navbar);
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

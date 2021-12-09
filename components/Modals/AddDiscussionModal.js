@@ -1,8 +1,7 @@
 // NPM Modules
-import React, { useState } from "react";
+import { useState } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import { Value } from "slate";
 
 // Component
 import TextEditor from "~/components/TextEditor";
@@ -34,9 +33,6 @@ const AddDiscussionModal = (props) => {
 
   function cancel() {
     props.cancel && props.cancel();
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     props.openAddDiscussionModal(false);
   }
 
@@ -213,7 +209,4 @@ const mapDispatchToProps = {
   openAddDiscussionModal: ModalActions.openAddDiscussionModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddDiscussionModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddDiscussionModal);

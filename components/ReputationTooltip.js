@@ -22,12 +22,11 @@ const ReputationTooltip = (props) => {
             />
           </div>
           <div className={css(styles.paragraph, styles.description)}>
-            Earn research coins by participating in discussion, uploading
-            papers, upvoting papers, and updating summaries / adding notes to
-            papers.
+            Earn Research Coin by participating in discussion, uploading papers,
+            upvoting papers, and updating summaries / adding notes to papers.
           </div>
           <div className={css(styles.description)}>
-            With ResearchCoins, you can support your favorite scientific papers
+            With Research Coin, you can support your favorite scientific papers
             or put them towards funding areas of research.
           </div>
         </ReactTooltip>

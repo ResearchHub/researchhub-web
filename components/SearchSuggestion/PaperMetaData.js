@@ -1,10 +1,10 @@
-import React, { Fragment, useState, useEffect } from "react";
+import { Fragment, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 
 // Config
-import { convertNumToMonth, cslFields } from "../../config/utils/options";
+import { cslFields } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
@@ -29,13 +29,8 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
     toggleBlankState(metaData.csl_item.URL ? false : true);
   }, [metaData]);
   // Deconstruct the JSON returned from the backend
-  const {
-    url,
-    url_is_pdf,
-    url_is_unsupported_pdf,
-    pdf_location,
-    csl_item,
-  } = metaData;
+  const { url, url_is_pdf, url_is_unsupported_pdf, pdf_location, csl_item } =
+    metaData;
 
   const {
     URL,
@@ -62,13 +57,22 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
   const formatAuthors = (arr) => {
     if (arr.length > 5 && !url_is_pdf) {
       let firstAuthor = arr[0];
-      return `${firstAuthor.family}, ${firstAuthor.given &&
-        firstAuthor.given[0]}., et al`;
+
+      if (firstAuthor.literal) {
+        return `${firstAuthor.literal}, et al`;
+      }
+
+      return `${firstAuthor.family}, ${
+        firstAuthor.given && firstAuthor.given[0]
+      }., et al`;
     }
     return (
       arr &&
       arr
         .map((author) => {
+          if (author.literal) {
+            return author.literal;
+          }
           return `${author.family}, ${author.given && author.given[0]}.`;
         })
         .join(", ")
@@ -99,11 +103,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
         />
       );
     } else {
-      return (
-        <div className={css(styles.bookIcon)}>
-          <i className="fad fa-book" />
-        </div>
-      );
+      return <div className={css(styles.bookIcon)}>{icons.book}</div>;
     }
   };
 
@@ -232,7 +232,7 @@ const PaperMetaData = ({ metaData, onRemove, onEdit }) => {
             onClick={onRemove ? onRemove : null}
             // onClick={toggleEditState}
           >
-            <i className={"fas fa-pencil"} />
+            {icons.pencil}
           </div>
         </Ripples>
       );
@@ -281,9 +281,6 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     position: "relative",
     transition: "all ease-in-out 0.1s",
-    // ":hover": {
-    //   borderColor: "rgb(210, 210, 230)",
-    // },
   },
   blankState: {
     width: "100%",
@@ -300,7 +297,6 @@ const styles = StyleSheet.create({
     paddingBottom: 50,
     border: `1px dashed ${colors.BLUE(1)}`,
     borderColor: colors.BLUE(1),
-    // border: `0.5 dashed ${colors.BLUE(1)}`,
     backgroundColor: "#FFF",
   },
   blankStateImg: {

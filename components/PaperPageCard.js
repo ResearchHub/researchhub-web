@@ -1,69 +1,93 @@
-import { Fragment } from "react";
-import { StyleSheet, css } from "aphrodite";
-import moment from "moment";
-import Router from "next/router";
-import Link from "next/link";
-import Carousel from "nuka-carousel";
-import FsLightbox from "fslightbox-react";
-import Ripples from "react-ripples";
-import ReactTooltip from "react-tooltip";
-import { connect } from "react-redux";
-import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 import * as Sentry from "@sentry/browser";
+import * as moment from "dayjs";
+import Link from "next/link";
+import ReactPlaceholder from "react-placeholder/lib";
+import ReactTooltip from "react-tooltip";
+import Router from "next/router";
+import { StyleSheet, css } from "aphrodite";
+import { connect } from "react-redux";
+import { createRef, Component } from "react";
 
 // Components
+import ActionButton from "~/components/ActionButton";
+import AuthorAvatar from "~/components/AuthorAvatar";
+import DownloadPDFButton from "~/components/DownloadPDFButton";
+import FlagButton from "~/components/FlagButton";
 import HubTag from "~/components/Hubs/HubTag";
-import VoteWidget from "~/components/VoteWidget";
+import PaperMetadata from "./Paper/PaperMetadata";
+import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
+import PaperPromotionButton from "./Paper/PaperPromotionButton";
+import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
-import AuthorAvatar from "~/components/AuthorAvatar";
-import FlagButton from "~/components/FlagButton";
-import ActionButton from "~/components/ActionButton";
-import PreviewPlaceholder from "~/components/Placeholders/PreviewPlaceholder";
-import PaperPagePlaceholder from "~/components/Placeholders/PaperPagePlaceholder";
-import { BoltSvg } from "~/config/themes/icons";
-import Button from "~/components/Form/Button";
+import VoteWidget from "~/components/VoteWidget";
 
 // redux
 import { ModalActions } from "~/redux/modals";
 
-// Stylesheets
-import "./stylesheets/Carousel.css";
-
 // Config
-import colors from "~/config/themes/colors";
 import API from "~/config/api";
+import PaperPreview from "./Paper/SideColumn/PaperPreview";
+import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
-import { formatPublishedDate, openExternalLink } from "~/config/utils";
 import { MessageActions } from "../redux/message";
+import { formatPublishedDate } from "~/config/utils/dates";
+import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isDevEnv } from "~/config/utils/env";
+import { parseMath } from "~/config/utils/latex";
 
-class PaperPageCard extends React.Component {
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AuthorSupportModal = dynamic(() =>
+  import("~/components/Modals/AuthorSupportModal")
+);
+
+class PaperPageCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
       previews: [],
-      figureUrls: [],
+      previewAvailable: false,
       hovered: false,
       toggleLightbox: true,
       fetching: false,
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
       boostHover: false,
+      title: {
+        parsed: this.parseTitle(props?.paper?.title),
+        raw: props?.paper?.title,
+      },
     };
-    this.containerRef = React.createRef();
-    this.metaContainerRef = React.createRef();
+    this.containerRef = createRef();
+    this.metaContainerRef = createRef();
   }
-
-  componentDidMount = () => {
-    this.fetchFigures();
-  };
 
   componentWillUnmount() {
     if (document.body.style) {
       document.body.style.overflow = "scroll";
     }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const didTitleChange = this.props.paper?.title !== this.state.title.raw;
+
+    if (didTitleChange) {
+      this.setState({
+        title: {
+          parsed: this.parseTitle(this.props.paper?.title),
+          raw: this.props.paper?.title,
+        },
+      });
+    }
+  }
+
+  parseTitle(title) {
+    title = stripHTML(title);
+    title = parseMath(title);
+    return title;
   }
 
   revealPage = (timeout) => {
@@ -105,12 +129,8 @@ class PaperPageCard extends React.Component {
       restorePaper,
     } = this.props;
     let params = {};
-    if (isModerator) {
+    if (isModerator || isSubmitter) {
       params.is_removed = false;
-    }
-
-    if (isSubmitter) {
-      params.is_removed_by_user = false;
     }
 
     return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
@@ -133,12 +153,8 @@ class PaperPageCard extends React.Component {
       removePaper,
     } = this.props;
     let params = {};
-    if (isModerator) {
+    if (isModerator || isSubmitter) {
       params.is_removed = true;
-    }
-
-    if (isSubmitter) {
-      params.is_removed_by_user = true;
     }
 
     return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
@@ -151,41 +167,6 @@ class PaperPageCard extends React.Component {
       });
   };
 
-  fetchFigures = () => {
-    this.setState({ fetching: true }, () => {
-      let { paper, paperId } = this.props;
-      fetch(API.GET_PAPER_FIGURES({ paperId }), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          if (res.data.length === 0) {
-            return this.setState(
-              {
-                fetching: false,
-                previews: [],
-                figureUrls: [],
-              },
-              this.revealPage()
-            );
-          } else {
-            this.setState(
-              {
-                previews: res.data,
-                figureUrls: res.data.map((preview, index) => preview.file),
-              },
-              this.revealPage()
-            );
-          }
-        })
-        .catch((err) => {
-          this.setState({
-            fetching: false,
-          });
-          this.revealPage();
-        });
-    });
-  };
-
   toggleShowHubs = () => {
     this.setState({ showAllHubs: !this.state.showAllHubs });
   };
@@ -196,11 +177,6 @@ class PaperPageCard extends React.Component {
     let href = "/paper/upload/info/[paperId]";
     let as = `/paper/upload/info/${paperId}`;
     Router.push(href, as);
-  };
-
-  downloadPDF = () => {
-    let file = this.props.paper.file;
-    window.open(file, "_blank");
   };
 
   setHover = () => {
@@ -222,19 +198,83 @@ class PaperPageCard extends React.Component {
   navigateToSubmitter = () => {
     let { author_profile } = this.props.paper.uploaded_by;
     let authorId = author_profile && author_profile.id;
-    Router.push(
-      "/user/[authorId]/[tabName]",
-      `/user/${authorId}/contributions`
+    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/overview`);
+  };
+
+  renderMetadata = () => {
+    const { paper } = this.props;
+
+    this.metadata = [
+      {
+        label: "Published",
+        value: (
+          <span
+            className={css(styles.metadata) + " clamp1"}
+            property="datePublished"
+            dateTime={paper.paper_publish_date}
+          >
+            {this.renderPublishDate()}
+          </span>
+        ),
+        active: paper && paper.paper_publish_date,
+      },
+
+      {
+        label: "DOI",
+        value: (
+          <a
+            property="sameAs"
+            href={this.formatDoiUrl(paper.doi)}
+            target="_blank"
+            className={css(styles.metadata, styles.link) + " clamp1"}
+            rel="noreferrer noopener"
+            data-test={isDevEnv() ? `doi` : undefined}
+          >
+            {paper.doi}
+          </a>
+        ),
+        active: paper && paper.doi,
+      },
+    ];
+
+    const metadata = this.metadata.filter((data) => data.active);
+
+    return (
+      <div>
+        <div className={css(styles.row)}>
+          {metadata.map((props, i) => (
+            <PaperMetadata
+              key={`metadata-${i}`}
+              {...props}
+              containerStyles={i === 0 && styles.marginRight}
+            />
+          ))}
+        </div>
+        <div className={css(styles.row, styles.lastRow)}>
+          <PaperMetadata
+            label={"Paper Title"}
+            active={
+              paper.paper_title &&
+              removeLineBreaksInStr(paper.paper_title) !==
+                removeLineBreaksInStr(paper.title)
+            }
+            value={
+              <h3 className={css(styles.metadata)} property={"name"}>
+                {paper.paper_title}
+              </h3>
+            }
+          />
+        </div>
+      </div>
     );
   };
 
   renderUploadedBy = () => {
-    let { uploaded_by, external_source } = this.props.paper;
+    const { uploaded_by } = this.props.paper;
     if (uploaded_by) {
       let { author_profile } = uploaded_by;
       return (
         <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Submitted By:</span>
           <div
             onClick={this.navigateToSubmitter}
             className={css(styles.authorSection)}
@@ -248,81 +288,78 @@ class PaperPageCard extends React.Component {
           </div>
         </div>
       );
-    } else if (external_source) {
-      return (
-        <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Retrieved From:</span>
-          <span className={css(styles.capitalize, styles.labelText)}>
-            {external_source}
-          </span>
-        </div>
-      );
-    } else {
-      return (
-        <div className={css(styles.labelContainer)}>
-          <span className={css(styles.label)}>Submitted By:</span>
-          <span className={css(styles.labelText)}>ResearchHub</span>
-        </div>
-      );
     }
   };
 
   renderActions = () => {
-    let { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
-
-    let paperTitle = paper && paper.title;
-    return (
-      <div className={css(styles.actions)}>
-        <PermissionNotificationWrapper
-          modalMessage="edit papers"
-          onClick={this.navigateToEditPaperInfo}
-          permissionKey="UpdatePaper"
-          loginRequired={true}
-          hideRipples={true}
-          styling={styles.borderRadius}
-        >
-          <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
-            <i className="far fa-pencil" />
-          </div>
-        </PermissionNotificationWrapper>
-        <ShareAction
-          addRipples={true}
-          title={"Share this paper"}
-          subtitle={paperTitle}
-          url={this.props.shareUrl}
-          customButton={
-            <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
-              <i className="far fa-share-alt" />
+    const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const { paper_title, title, uploaded_by } = paper || {};
+    const uploadedById = uploaded_by && paper.uploaded_by.id;
+    const isUploaderSuspended =
+      paper && paper.uploaded_by && paper.uploaded_by.is_suspended;
+    const formattedPaperTitle =
+      !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
+    const actionButtons = [
+      {
+        active: true,
+        button: (
+          <PermissionNotificationWrapper
+            modalMessage="edit papers"
+            onClick={this.navigateToEditPaperInfo}
+            permissionKey="UpdatePaper"
+            loginRequired={true}
+            hideRipples={true}
+            styling={styles.borderRadius}
+          >
+            <div className={css(styles.actionIcon)} data-tip={"Edit Paper"}>
+              {icons.pencil}
             </div>
-          }
-        />
-        {paper && paper.file && (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={this.downloadPDF}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Download PDF"}
-            >
-              <i className="far fa-arrow-to-bottom" />
-            </span>
-          </Ripples>
-        )}
-        {paper && paper.url && (paper && !paper.file) && (
-          <Ripples
-            className={css(styles.actionIcon, styles.downloadActionIcon)}
-            onClick={() => openExternalLink(paper.url)}
-          >
-            <span
-              className={css(styles.downloadIcon)}
-              data-tip={"Open in External Link"}
-            >
-              <i className="far fa-external-link" />
-            </span>
-          </Ripples>
-        )}
-        {isModerator || isSubmitter ? (
+          </PermissionNotificationWrapper>
+        ),
+      },
+      {
+        active: true,
+        button: (
+          <ShareAction
+            addRipples={true}
+            title={"Share this paper"}
+            subtitle={formattedPaperTitle}
+            url={this.props.shareUrl}
+            customButton={
+              <div className={css(styles.actionIcon)} data-tip={"Share Paper"}>
+                {icons.shareAlt}
+              </div>
+            }
+          />
+        ),
+      },
+      {
+        active: true,
+        button: (
+          <span data-tip={"Support Paper"}>
+            <PaperPromotionButton
+              paper={paper}
+              customStyle={styles.actionIcon}
+            />
+          </span>
+        ),
+      },
+      {
+        active: !isSubmitter,
+        button: (
+          <span data-tip={"Flag Paper"}>
+            <FlagButton
+              paperId={paper.id}
+              flagged={flagged}
+              setFlag={setFlag}
+              style={styles.actionIcon}
+            />
+          </span>
+        ),
+      },
+      {
+        active: isModerator || isSubmitter,
+        button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
             data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
@@ -333,196 +370,61 @@ class PaperPageCard extends React.Component {
               restore={paper.is_removed}
               icon={paper.is_removed ? icons.plus : icons.minus}
               onAction={paper.is_removed ? this.restorePaper : this.removePaper}
+              containerStyle={styles.moderatorContainer}
               iconStyle={styles.moderatorIcon}
             />
           </span>
-        ) : (
-          <span data-tip={"Flag Paper"}>
-            <FlagButton
-              paperId={paper.id}
-              flagged={flagged}
-              setFlag={setFlag}
-              style={styles.actionIcon}
-            />
-          </span>
-        )}
+        ),
+      },
+      {
+        active: isModerator && !isNullOrUndefined(uploadedById),
+        button: (
+          <>
+            <ReactTooltip />
+            <span
+              className={css(styles.actionIcon, styles.moderatorAction)}
+              data-tip={
+                isUploaderSuspended
+                  ? "Reinstate User"
+                  : "Remove Page & Ban User"
+              }
+            >
+              <ActionButton
+                isModerator={isModerator}
+                paperId={paper.id}
+                uploadedById={uploadedById}
+                isUploaderSuspended={isUploaderSuspended}
+                containerStyle={styles.moderatorContainer}
+                iconStyle={styles.moderatorIcon}
+                actionType="user"
+              />
+            </span>
+          </>
+        ),
+      },
+    ].filter((action) => action.active);
 
-        {isModerator && (
-          <span
-            className={css(styles.actionIcon, styles.moderatorAction)}
-            data-tip={"Remove Page & Ban User"}
-          >
-            <ActionButton
-              isModerator={isModerator}
-              paperId={paper.id}
-              iconStyle={styles.moderatorIcon}
-            />
-          </span>
-        )}
+    return (
+      <div className={css(styles.actions) + " action-bars"}>
+        {actionButtons.map((action, i) => {
+          if (actionButtons.length - 1 === i) {
+            return action.button;
+          }
+
+          return (
+            <span className={css(styles.actionButtonMargin)}>
+              {action.button}
+            </span>
+          );
+        })}
       </div>
     );
   };
 
-  renderPreview = () => {
-    let { hovered, loading, fetching, previews } = this.state;
-    // let height =
-    //   this.metaContainerRef.current &&
-    //   this.metaContainerRef.current.clientHeight;
+  formatAuthors = () => {
+    const { paper } = this.props;
 
-    // let width;
-    // if (height < 137.545) {
-    //   height = 137.545;
-    // }
-    // if (this.metaContainerRef.current) {
-    //   width = (8.5 * height) / 11; // keeps paper ar
-    // }
-
-    // if (window.innerWidth < 769) {
-    //   height = 130;
-    //   width = 101;
-    // }
-    // if (!fetching && !loading) {
-    //   // width !== this.state.width && this.setState({ width });
-    // }
-
-    const height = 154;
-    const width = 119;
-
-    if (fetching) {
-      return (
-        <div
-          className={css(styles.previewContainer)}
-          onMouseEnter={this.setHover}
-          onMouseLeave={this.unsetHover}
-          style={{
-            minHeight: height,
-            maxHeight: height,
-            height,
-            width,
-            minWidth: width,
-            maxWidth: width,
-          }}
-        >
-          <ReactPlaceholder
-            ready={false}
-            showLoadingAnimation
-            customPlaceholder={<PreviewPlaceholder color="#efefef" />}
-          >
-            <div />
-          </ReactPlaceholder>
-        </div>
-      );
-    }
-    if (!fetching && previews.length > 0) {
-      return (
-        <div
-          className={css(styles.previewContainer)}
-          onClick={this.toggleLightbox}
-          style={{
-            minHeight: height,
-            maxHeight: height,
-            height,
-            width,
-            minWidth: width,
-            maxWidth: width,
-          }}
-        >
-          <Carousel
-            afterSlide={(slideIndex) =>
-              this.setState({ slideIndex: slideIndex + 1 })
-            }
-            renderBottomCenterControls={(arg) => {
-              let { currentSlide, slideCount, previousSlide, nextSlide } = arg;
-              return (
-                <div
-                  className={css(
-                    carousel.bottomControl,
-                    hovered && carousel.show
-                  )}
-                >
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      previousSlide(e);
-                    }}
-                    className={css(
-                      carousel.button,
-                      carousel.left,
-                      hovered && carousel.show
-                    )}
-                  >
-                    <i className="far fa-angle-left" />
-                  </span>
-                  <span className={css(styles.slideCount)}>{`${currentSlide +
-                    1} / ${slideCount}`}</span>
-                  <span
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      nextSlide(e);
-                    }}
-                    className={css(
-                      carousel.button,
-                      carousel.right,
-                      hovered && carousel.show
-                    )}
-                  >
-                    <i className="far fa-angle-right" />
-                  </span>
-                </div>
-              );
-            }}
-            renderCenterLeftControls={null}
-            renderCenterRightControls={null}
-            wrapAround={true}
-            enableKeyboardControls={true}
-          >
-            {previews.map((preview, i) => {
-              if (i === 0) {
-                return (
-                  <img
-                    src={preview.file}
-                    className={css(styles.image)}
-                    key={`preview-${preview.id}-${i}`}
-                    property="image"
-                    style={{
-                      minHeight: height,
-                      maxHeight: height,
-                      height,
-                      width,
-                      minWidth: width,
-                      maxWidth: width,
-                    }}
-                    alt={`Paper PDF Page:${i + 1}`}
-                  />
-                );
-              }
-              return (
-                <img
-                  src={preview.file}
-                  className={css(styles.image)}
-                  key={`preview-${preview.id}-${i}`}
-                  style={{
-                    minHeight: height,
-                    maxHeight: height,
-                    height,
-                    width,
-                    minWidth: width,
-                    maxWidth: width,
-                  }}
-                  alt={`Paper PDF Page:${i + 1}`}
-                />
-              );
-            })}
-          </Carousel>
-        </div>
-      );
-    }
-  };
-
-  getAuthors = () => {
-    let { paper } = this.props;
-
-    let authors = {};
+    const authors = {};
 
     if (paper.authors && paper.authors.length > 0) {
       paper.authors.map((author) => {
@@ -543,6 +445,17 @@ class PaperPageCard extends React.Component {
             if (!Array.isArray(rawAuthors)) {
               rawAuthors = [rawAuthors];
             }
+          } else if (
+            typeof rawAuthors === "object" &&
+            !Array.isArray(rawAuthors)
+          ) {
+            authors[rawAuthors["main_author"]] = true;
+
+            rawAuthors["other_authors"].map((author) => {
+              authors[author] = true;
+            });
+
+            return authors;
           }
           rawAuthors.forEach((author) => {
             if (author.first_name && !author.last_name) {
@@ -563,13 +476,10 @@ class PaperPageCard extends React.Component {
   };
 
   renderAuthors = () => {
-    let { paper } = this.props;
-
-    let authorsObj = this.getAuthors();
-    let authorKeys = Object.keys(authorsObj);
-    let length = authorKeys.length;
-    let index = 0;
-    let authors = [];
+    const authorsObj = this.formatAuthors();
+    const authorKeys = Object.keys(authorsObj);
+    const length = authorKeys.length;
+    const authors = [];
 
     if (length >= 15) {
       let author = authorKeys[0];
@@ -589,28 +499,27 @@ class PaperPageCard extends React.Component {
         authors.push(
           <Link
             href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/contributions`}
+            as={`/user/${author.id}/overview`}
+            key={`authorName-${author.id}`}
           >
             <a
-              href={`/user/${author.id}/contributions`}
+              href={`/user/${author.id}/overview`}
               className={css(styles.atag)}
             >
               <span className={css(styles.authorName)} property="name">
-                {`${authorName}${index < length - 1 ? "," : ""}`}
+                {`${authorName}${i < length - 1 ? "," : ""}`}
               </span>
               <meta property="author" content={author} />
             </a>
           </Link>
         );
-        index++;
       } else {
         authors.push(
-          <span className={css(styles.rawAuthor)}>
-            {`${authorName}${index < length - 1 ? "," : ""}`}
+          <span className={css(styles.rawAuthor)} key={`rawAuthor-${i}`}>
+            {`${authorName}${i < length - 1 ? "," : ""}`}
             <meta property="author" content={authorName} />
           </span>
         );
-        index++;
       }
     }
 
@@ -618,18 +527,15 @@ class PaperPageCard extends React.Component {
   };
 
   renderPublishDate = () => {
-    let { paper } = this.props;
+    const { paper } = this.props;
     if (paper.paper_publish_date) {
-      return (
-        <div className={css(styles.info)}>
-          {formatPublishedDate(moment(paper.paper_publish_date), true)}
-        </div>
-      );
+      return formatPublishedDate(moment(paper.paper_publish_date), true);
     }
   };
 
   renderHubs = () => {
-    let { paper } = this.props;
+    const { paper } = this.props;
+
     if (paper.hubs && paper.hubs.length > 0) {
       return (
         <div className={css(styles.hubTags)}>
@@ -641,7 +547,9 @@ class PaperPageCard extends React.Component {
                   <HubTag
                     tag={hub}
                     gray={false}
-                    overrideStyle={this.state.showAllHubs && styles.tagStyle}
+                    overrideStyle={
+                      this.state.showAllHubs ? styles.tagStyle : styles.hubTag
+                    }
                     last={last}
                   />
                   <meta property="about" content={hub.name} />
@@ -678,39 +586,6 @@ class PaperPageCard extends React.Component {
     );
   };
 
-  renderTopRow = () => {
-    let { score, upvote, downvote } = this.props;
-    return (
-      <Fragment>
-        <div className={css(styles.topRow)}>
-          <div className={css(styles.mobileContainer)}>
-            <div className={css(styles.mobileVoting)}>
-              <VoteWidget
-                score={score}
-                onUpvote={upvote}
-                onDownvote={downvote}
-                selected={this.props.selectedVoteType}
-                isPaper={true}
-                horizontalView={true}
-                type={"Paper"}
-                promoted={this.props.paper && this.props.paper.promoted}
-                paper={
-                  this.props.paper && this.props.paper.promoted
-                    ? this.props.paper
-                    : null
-                }
-                showPromotion={true}
-              />
-            </div>
-          </div>
-        </div>
-        <div className={css(styles.hubTags, styles.mobile)}>
-          {this.renderHubs()}
-        </div>
-      </Fragment>
-    );
-  };
-
   render() {
     const {
       paper,
@@ -718,292 +593,174 @@ class PaperPageCard extends React.Component {
       upvote,
       downvote,
       selectedVoteType,
-      scrollView,
       doneFetchingPaper,
+      discussionCount,
     } = this.props;
-
-    let { fetching, previews, figureUrls } = this.state;
-    if (!doneFetchingPaper) {
-      return (
-        <div className={css(styles.container)} ref={this.containerRef}>
-          <ReactPlaceholder
-            ready={false}
-            showLoadingAnimation
-            customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
-          >
-            <div />
-          </ReactPlaceholder>
-        </div>
-      );
-    }
+    const { fetching, previews, previewAvailable, title } = this.state;
+    const { boost_amount, paper_title } = paper;
+    const promotedScore = score + boost_amount;
+    const formattedPaperTitle =
+      !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
 
     return (
-      <Fragment>
+      <ReactPlaceholder
+        ready={doneFetchingPaper}
+        showLoadingAnimation
+        customPlaceholder={<PaperPagePlaceholder color="#efefef" />}
+      >
         <div
-          className={css(
-            styles.container,
-            this.state.dropdown && styles.overflow
-          )}
-          ref={this.containerRef}
-          onMouseEnter={this.setHover}
-          onMouseLeave={this.unsetHover}
-          vocab="https://schema.org/"
-          typeof="ScholarlyArticle"
+          className={css(styles.mainContainer)}
+          data-test={isDevEnv() ? `paper-${paper.id}` : undefined}
         >
-          <ReactTooltip />
-          <meta property="description" content={paper.abstract} />
-          <meta property="commentCount" content={paper.discussion_count} />
-          <div className={css(styles.voting)}>
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={this.props.selectedVoteType}
-              isPaper={true}
-              type={"Paper"}
-              paperPage={true}
-              promoted={this.props.paper && this.props.paper.promoted}
-              paper={
-                this.props.paper && this.props.paper.promoted !== false
-                  ? this.props.paper
-                  : null
-              }
-              showPromotion={true}
-            />
-          </div>
-          <div className={css(styles.votingMobile)}>
-            <VoteWidget
-              score={score}
-              onUpvote={upvote}
-              onDownvote={downvote}
-              selected={selectedVoteType}
-              isPaper={true}
-              horizontalView={true}
-              type={"Paper"}
-              paperPage={true}
-              promoted={this.props.paper && this.props.paper.promoted}
-              paper={
-                this.props.paper && this.props.paper.promoted
-                  ? this.props.paper
-                  : null
-              }
-              showPromotion={true}
-            />
-          </div>
-          {figureUrls.length > 0 && (
-            <FsLightbox
-              toggler={this.state.toggleLightbox}
-              type="image"
-              sources={[...figureUrls]}
-              slide={this.state.slideIndex}
-            />
-          )}
-          <div
-            className={css(
-              styles.column,
-              !fetching && previews.length === 0 && styles.emptyPreview
-            )}
-            ref={this.metaContainerRef}
-          >
-            <div className={css(styles.row)}>
+          <div className={css(styles.main)}>
+            <AuthorSupportModal />
+
+            <div
+              className={css(
+                styles.container,
+                this.state.dropdown && styles.overflow
+              )}
+              ref={this.containerRef}
+              onMouseEnter={this.setHover}
+              onMouseLeave={this.unsetHover}
+              vocab="https://schema.org/"
+              typeof="ScholarlyArticle"
+            >
+              <ReactTooltip />
+              <meta property="description" content={paper.abstract} />
+              <meta property="commentCount" content={paper.discussion_count} />
+              <div className={css(styles.voting)}>
+                <VoteWidget
+                  score={promotedScore}
+                  onUpvote={upvote}
+                  onDownvote={downvote}
+                  selected={selectedVoteType}
+                  isPaper
+                  type={"Paper"}
+                />
+                <PaperPromotionIcon paper={paper} isPaper />
+              </div>
               <div
                 className={css(
-                  styles.cardContainer,
+                  styles.column,
                   !fetching && previews.length === 0 && styles.emptyPreview
                 )}
+                ref={this.metaContainerRef}
               >
-                <div className={css(styles.metaContainer)}>
-                  <div className={css(styles.titleHeader)}>
-                    <h1 className={css(styles.title)} property={"headline"}>
-                      {paper && paper.title}
-                    </h1>
-                    {paper.paper_title && paper.paper_title !== paper.title ? (
-                      <h2 className={css(styles.subtitle)} property={"name"}>
-                        {`From Paper: ${paper.paper_title}`}
-                      </h2>
-                    ) : null}
-                  </div>
-                  <div className={css(styles.column)}>
-                    {paper && paper.doi && (
-                      <div className={css(styles.labelContainer)}>
-                        <span className={css(styles.label)}>DOI:</span>
-                        <a
-                          property="sameAs"
-                          href={this.formatDoiUrl(paper.doi)}
-                          target="_blank"
-                          className={css(styles.link, styles.labelText)}
-                          rel="noreferrer noopener"
-                        >
-                          {paper.doi}
-                        </a>
-                      </div>
+                <div className={css(styles.reverseRow)}>
+                  <div
+                    className={css(
+                      styles.cardContainer,
+                      !fetching && previews.length === 0 && styles.emptyPreview
                     )}
-                    {paper &&
-                    ((paper.authors && paper.authors.length) ||
-                      (paper.raw_authors && paper.raw_authors.length)) ? (
-                      <div
-                        className={css(
-                          styles.labelContainer,
-                          styles.authorLabelContainer,
-                          !paper.paper_publish_date && styles.marginTop
-                        )}
-                      >
-                        <span className={css(styles.label, styles.authorLabel)}>
-                          {`Author${
-                            (paper.authors && paper.authors.length > 1) ||
-                            (paper.raw_authors && paper.raw_authors.length > 1)
-                              ? "s"
-                              : ""
-                          }:`}
-                        </span>
-                        <div
-                          className={css(
-                            styles.labelText,
-                            styles.authorsContainer
-                          )}
-                        >
-                          {this.renderAuthors()}
-                        </div>
-                      </div>
-                    ) : null}
-                    {paper && paper.paper_publish_date ? (
-                      <div className={css(styles.labelContainer)}>
-                        <span className={css(styles.label)}>Published:</span>
-                        <div
-                          className={css(styles.labelText)}
-                          property="datePublished"
-                          datetime={paper.paper_publish_date}
-                        >
-                          {this.renderPublishDate()}
-                        </div>
-                      </div>
-                    ) : null}
-                    {this.renderUploadedBy()}
-                    <div
-                      className={css(styles.uploadedByContainer, styles.mobile)}
-                    >
-                      <div className={css(styles.mobile)}>
-                        <PermissionNotificationWrapper
-                          modalMessage="promote paper"
-                          onClick={() =>
-                            this.props.openPaperTransactionModal(true)
-                          }
-                          loginRequired={true}
-                          hideRipples={false}
-                        >
-                          <div
-                            className={css(styles.promotionButton)}
-                            onMouseEnter={() => this.toggleBoostHover(true)}
-                            onMouseLeave={() => this.toggleBoostHover(false)}
+                  >
+                    <div className={css(styles.metaContainer)}>
+                      <div className={css(styles.titleHeader)}>
+                        <div className={css(styles.row)}>
+                          <h1
+                            className={css(styles.title)}
+                            property={"headline"}
                           >
-                            <span className={css(styles.boostIcon)}>
-                              <BoltSvg
-                                color={
-                                  this.state.boostHover
-                                    ? "rgb(255, 255, 255)"
-                                    : colors.BLUE()
-                                }
-                                opacity={1}
-                              />
-                            </span>
-                            Support
-                          </div>
-                        </PermissionNotificationWrapper>
+                            {title.parsed}
+                          </h1>
+                        </div>
+                      </div>
+                      <div className={css(styles.column)}>
+                        {this.renderMetadata()}
                       </div>
                     </div>
                   </div>
-                  <div className={css(styles.mobile)}>
-                    {process.browser && this.renderPreview()}
+                  <div className={css(styles.rightColumn, styles.mobile)}>
+                    <div className={css(styles.votingMobile)}>
+                      <VoteWidget
+                        score={promotedScore}
+                        onUpvote={upvote}
+                        onDownvote={downvote}
+                        selected={selectedVoteType}
+                        horizontalView
+                        isPaper
+                        type={"Paper"}
+                      />
+                      <PaperPromotionIcon paper={paper} isPaper />
+                    </div>
                   </div>
-                  <div className={css(styles.mobile, styles.preregMobile)}>
-                    {paper &&
-                      paper.paper_type === "PRE_REGISTRATION" &&
-                      this.renderPreregistrationTag()}
-                    {this.renderHubs()}
-                  </div>
-                </div>
-              </div>
-              <div className={css(styles.rightColumn, styles.mobile)}>
-                <div className={css(styles.actionMobileContainer)}>
-                  {this.renderActions()}
                 </div>
               </div>
             </div>
           </div>
-          <div className={css(styles.absolutePreview)}>
-            {process.browser && this.renderPreview()}
-          </div>
+
+          {
+            <div className={css(styles.previewBox)}>
+              <PaperPreview
+                paper={paper}
+                previewStyles={styles.previewBox}
+                columnOverrideStyles={styles.columnOverrideStyles}
+                onLoad={(success) =>
+                  this.setState({ previewAvailable: success })
+                }
+              />
+            </div>
+          }
         </div>
         <div className={css(styles.bottomContainer)}>
-          <div className={css(styles.bottomRow)}>
-            <div className={css(styles.actionsContainer)}>
-              {this.renderActions()}
+          <div className={css(styles.bottomRow)}>{this.renderActions()}</div>
+          <div className={css(styles.downloadPDFContainer)}>
+            <div className={css(styles.downloadPDFWrapper)}>
+              {(paper.file || paper.pdf_url) && (
+                <DownloadPDFButton
+                  file={paper.file || paper.pdf_url}
+                  style={styles.hideOnSmall}
+                />
+              )}
             </div>
-            <PermissionNotificationWrapper
-              modalMessage="promote paper"
-              onClick={() =>
-                this.props.paper.paper_type === "PRE_REGISTRATION"
-                  ? this.props.openAuthorSupportModal(true, {
-                      paper: this.props.paper,
-                    })
-                  : this.props.openPaperTransactionModal(true)
-              }
-              loginRequired={true}
-              hideRipples={false}
-            >
-              <div
-                className={css(styles.promotionButton)}
-                onMouseEnter={() => this.toggleBoostHover(true)}
-                onMouseLeave={() => this.toggleBoostHover(false)}
-              >
-                <span className={css(styles.boostIcon)}>
-                  <BoltSvg
-                    color={
-                      this.state.boostHover
-                        ? "rgb(255, 255, 255)"
-                        : colors.BLUE()
-                    }
-                    opacity={1}
-                  />
-                </span>
-                {this.props.paper &&
-                this.props.paper.paper_type === "PRE_REGISTRATION"
-                  ? "Support Project"
-                  : "Support"}
-              </div>
-            </PermissionNotificationWrapper>
-            {/* <Button
-              label="Support Author"
-              onClick={() =>
-                this.props.openAuthorSupportModal(true, {
-                  paper: this.props.paper,
-                })
-              }
-            /> */}
-          </div>
-          <div className={css(styles.bottomRow, styles.hubsRow)}>
-            {this.renderHubs()}
           </div>
         </div>
-      </Fragment>
+      </ReactPlaceholder>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    display: "flex",
+    width: "100%",
+  },
+  main: {
+    display: "flex",
+    flexDirection: "column",
+    marginRight: 16,
+    width: "100%",
+  },
+  previewStyles: {},
   container: {
     width: "100%",
     display: "flex",
-    paddingTop: 50,
     position: "relative",
     overflow: "visible",
-    "@media only screen and (max-width: 767px)": {
-      paddingTop: 20,
-      paddingBottom: 0,
-    },
+    boxSizing: "border-box",
   },
   overflow: {
     overflow: "visible",
+  },
+  previewBox: {
+    marginLeft: "auto",
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: "140px",
+    minHeight: "140px",
+
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  hideOnSmall: {
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+  },
+  columnOverrideStyles: {
+    width: "100%",
+    height: "100%",
   },
   previewContainer: {
     border: "1.5px solid rgba(36, 31, 58, 0.1)",
@@ -1031,6 +788,18 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     width: "100%",
+    ":hover .action-bars": {
+      opacity: 1,
+    },
+  },
+  half: {
+    alignItems: "flex-start",
+    width: "50%",
+    paddingRight: 10,
+    "@media only screen and (max-width: 768px)": {
+      width: "100%",
+      paddingRight: 0,
+    },
   },
   cardContainer: {
     display: "flex",
@@ -1048,7 +817,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (min-width: 768px)": {},
   },
   topRow: {
     display: "flex",
@@ -1063,19 +831,21 @@ const styles = StyleSheet.create({
     justifyContent: "flex-end",
     width: "100%",
     flexWrap: "wrap",
-    "@media only screen and (max-width: 768px)": {
-      marginTop: 15,
-    },
+  },
+  hubTag: {
+    fontSize: 16,
   },
   title: {
-    fontSize: 30,
+    fontSize: 28,
     position: "relative",
     wordBreak: "break-word",
     fontWeight: "unset",
     padding: 0,
     margin: 0,
+    display: "block",
+    borderSpacing: "initial",
     "@media only screen and (max-width: 760px)": {
-      fontSize: 28,
+      fontSize: 24,
     },
     "@media only screen and (max-width: 415px)": {
       fontSize: 22,
@@ -1085,7 +855,8 @@ const styles = StyleSheet.create({
     },
   },
   titleHeader: {
-    marginBottom: 15,
+    marginTop: 5,
+    marginBottom: 23,
   },
   subtitle: {
     color: "#241F3A",
@@ -1157,8 +928,19 @@ const styles = StyleSheet.create({
     color: "#241F3A",
     display: "flex",
     width: "100%",
+    marginTop: 5,
     marginBottom: 5,
     alignItems: "center",
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
+    },
+  },
+  metadata: {
+    fontSize: 16,
+    color: colors.BLACK(0.7),
+    margin: 0,
+    padding: 0,
+    fontWeight: "unset",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -1188,15 +970,15 @@ const styles = StyleSheet.create({
   },
   authorsContainer: {
     width: "100%",
-    marginLeft: 59,
   },
   voting: {
-    position: "absolute",
-    width: 70,
-    left: -70,
-    top: 37,
     display: "block",
-    "@media only screen and (max-width: 768px)": {
+    width: 65,
+    fontSize: 16,
+    position: "absolute",
+    top: 0,
+    left: -70,
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
@@ -1204,10 +986,8 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       display: "none",
     },
-    display: "unset",
-    position: "absolute",
-    top: 20,
-    left: 5,
+    display: "flex",
+    alignItems: "center",
   },
   buttonRow: {
     width: "100%",
@@ -1242,13 +1022,10 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    "@media only screen and (max-width: 768px)": {
-      paddingBottom: 15,
-    },
+    opacity: 1,
+    transition: "all ease-in-out 0.2s",
   },
-  actionsContainer: {
-    marginRight: 30,
-  },
+  actionsContainer: {},
   actionIcon: {
     padding: 5,
     borderRadius: "50%",
@@ -1266,11 +1043,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     cursor: "pointer",
     border: "1px solid rgba(36, 31, 58, 0.1)",
-    marginRight: 10,
     ":hover": {
       color: "rgba(36, 31, 58, 0.8)",
       backgroundColor: "#EDEDF0",
       borderColor: "#d8d8de",
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
     },
   },
   moderatorAction: {
@@ -1282,12 +1067,41 @@ const styles = StyleSheet.create({
       color: colors.RED(),
     },
   },
+  actionButtonMargin: {
+    marginRight: 10,
+  },
+  moderatorContainer: {
+    padding: 5,
+    borderRadius: "50%",
+    width: 22,
+    minWidth: 22,
+    maxWidth: 22,
+    height: 22,
+    minHeight: 22,
+    maxHeight: 22,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 15,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 13,
+      width: 15,
+      minWidth: 15,
+      maxWidth: 15,
+      height: 15,
+      minHeight: 15,
+      maxHeight: 15,
+    },
+  },
   moderatorIcon: {
     color: colors.RED(0.6),
     fontSize: 18,
     cursor: "pointer",
     ":hover": {
       color: colors.RED(1),
+    },
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 14,
     },
   },
   downloadActionIcon: {
@@ -1310,8 +1124,32 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
+    flexWrap: "wrap",
+
+    /**
+     * Set the width of the Label ("Paper Title:", "Published:") to align text, but only do so
+     * to the first element on each row. This selector is equivalent to row > "first child". */
+    ":nth-child(1n) > *:nth-child(1) > div": {
+      minWidth: 80,
+    },
+
+    "@media only screen and (max-width: 1023px)": {
+      flexDirection: "column",
+    },
+  },
+  lastRow: {},
+  reverseRow: {
+    display: "flex",
+    alignItems: "flex-start",
+    width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
+    },
+  },
+  marginRight: {
+    marginRight: 40,
+    "@media only screen and (max-width: 1023px)": {
+      marginRight: 0,
     },
   },
   rightColumn: {
@@ -1352,17 +1190,23 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end",
-    margin: "15px 0px 20px 0",
-    marginTop: 0,
+    marginTop: 15,
   },
   bottomRow: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 20,
     "@media only screen and (max-width: 767px)": {
-      display: "none",
+      // display: "none",
     },
+  },
+  downloadPDFContainer: {
+    display: "flex",
+    alignSelf: "flex-end",
+    width: "140px",
+    height: "32px",
+    justifyContent: "center",
+    alignItems: "center", // Center vertically
   },
   hubsRow: {},
   flexendRow: {
@@ -1376,6 +1220,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       marginLeft: 0,
+      justifyContent: "space-between",
+      alignItems: "flex-start",
+      flexDirection: "row",
+      paddingBottom: 10,
     },
   },
   summary: {
@@ -1453,20 +1301,21 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     display: "flex",
     alignItems: "center",
-    background: "#FFF",
     border: `1px solid ${colors.BLUE()}`,
-    color: colors.BLUE(),
+    backgroundColor: colors.BLUE(),
+    color: "#FFF",
     cursor: "pointer",
+    marginLeft: 20,
     ":hover": {
-      backgroundColor: colors.BLUE(),
-      color: "#FFF",
+      backgroundColor: "#3E43E8",
     },
     "@media only screen and (max-width: 768px)": {
       fontSize: 12,
     },
   },
   boostIcon: {
-    marginRight: 8,
+    color: "#FFF",
+    paddingTop: 2,
   },
   link: {
     cursor: "pointer",
@@ -1582,7 +1431,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(PaperPageCard);
+export default connect(null, mapDispatchToProps)(PaperPageCard);

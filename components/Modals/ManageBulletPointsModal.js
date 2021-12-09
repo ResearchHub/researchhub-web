@@ -1,11 +1,9 @@
 // NPM Modules
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
-import { useDrag, useDrop, DndProvider } from "react-dnd";
-import Backend from "react-dnd-html5-backend";
 import update from "immutability-helper";
 import Ripples from "react-ripples";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
@@ -21,7 +19,7 @@ import Button from "../Form/Button";
 import DraggableCard from "~/components/Paper/DraggableCard";
 import Loader from "~/components/Loader/Loader";
 
-class ManageBulletPointsModal extends React.Component {
+class ManageBulletPointsModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -161,7 +159,10 @@ class ManageBulletPointsModal extends React.Component {
 
   updateCards = ({ dragIndex, hoverIndex, dragCard }) => {
     let cards = update(this.state.cards, {
-      $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]],
+      $splice: [
+        [dragIndex, 1],
+        [hoverIndex, 0, dragCard],
+      ],
     });
     this.setState({
       cards,
@@ -323,7 +324,7 @@ const overlayStyles = {
 const mobileOverlayStyles = {
   overlay: {
     position: "fixed",
-    top: 80,
+    top: 65,
     left: 0,
     right: 0,
     bottom: 0,

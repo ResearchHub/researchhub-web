@@ -1,12 +1,12 @@
-import React from "react";
+import { createRef, Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors, { formColors } from "../../config/themes/colors";
 
-class FormInput extends React.Component {
+class FormInput extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.formInputRef = React.createRef();
+    this.formInputRef = createRef();
   }
 
   focusOnClick = (e) => {
@@ -35,23 +35,34 @@ class FormInput extends React.Component {
       placeholder,
       type,
       required,
-      size,
+      autoComplete,
       containerStyle,
-      labelStyle,
-      inputStyle,
-      search,
+      disabled,
       error,
+      getRef,
       icon,
-      messageStyle,
       iconStyles,
+      id,
       inlineNodeRight,
       inlineNodeStyles,
-      disabled,
+      inputStyle,
+      label,
+      labelStyle,
       message,
-      autoComplete,
+      messageStyle,
+      onBlur,
+      onBlurCapture,
+      onClick,
+      onFocus,
+      placeholder,
+      required,
+      search,
+      size,
       subtitle,
       onSearch,
       onClick,
+      type,
+      onKeyDown,
     } = this.props;
 
     return (
@@ -66,8 +77,8 @@ class FormInput extends React.Component {
           <div
             className={css(
               styles.inputLabel,
-              labelStyle && labelStyle,
               styles.text,
+              labelStyle && labelStyle,
               !label && styles.hide
             )}
           >
@@ -88,12 +99,8 @@ class FormInput extends React.Component {
           </div>
         )}
         <input
-          id={id && id}
-          type={type ? type : "text"}
-          value={this.props.value}
-          required={required ? required : false}
-          placeholder={placeholder ? placeholder : ""}
-          ref={getRef ? getRef : this.formInputRef}
+          autoCapitalize="off"
+          autoComplete={autoComplete}
           className={css(
             styles.input,
             inputStyle && inputStyle,
@@ -102,10 +109,18 @@ class FormInput extends React.Component {
             icon && styles.search,
             onClick && styles.inputClick
           )}
+          id={id && id}
+          onBlur={onBlur && onBlur}
+          onBlurCapture={onBlurCapture && onBlurCapture}
           onChange={this.handleChange}
           onClick={this.focusOnClick}
-          autoComplete={autoComplete}
-          onSearch={onSearch && onSearch}
+          onFocus={onFocus && onFocus}
+          placeholder={placeholder ? placeholder : ""}
+          ref={getRef ? getRef : this.formInputRef}
+          required={required ? required : false}
+          type={type ? type : "text"}
+          value={this.props.value}
+          onKeyDown={onKeyDown}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
         {message && (
@@ -142,16 +157,16 @@ class FormInput extends React.Component {
 const styles = StyleSheet.create({
   inputContainer: {
     minHeight: 75,
-    width: 525,
     display: "flex",
     flexDirection: "column",
     alignItems: "space-between",
     marginTop: 20,
     marginBottom: 20,
     position: "relative",
+    width: "100%",
   },
   inputLabel: {
-    fontWeight: "500",
+    fontWeight: 500,
     marginBottom: 10,
     color: "#232038",
     display: "flex",
@@ -218,12 +233,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: 15,
-    paddingRight: 7,
+    paddingRight: 16,
     cursor: "pointer",
   },
   error: {
     margin: 0,
     padding: 0,
+    marginTop: 4,
+    marginBottom: 4,
     color: colors.RED(1),
     fontSize: 12,
   },

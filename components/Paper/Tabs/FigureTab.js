@@ -1,13 +1,11 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 import { withAlert } from "react-alert";
-import { isMobile } from "react-device-detect";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -24,7 +22,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
-class FigureTab extends React.Component {
+class FigureTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -236,7 +234,7 @@ class FigureTab extends React.Component {
       return (
         <EmptyState
           text={"No Figures Found"}
-          icon={<i className="fad fa-image"></i>}
+          icon={icons.image}
           subtext={"No figures have been found in this paper's PDF"}
         />
       );
@@ -301,7 +299,7 @@ class FigureTab extends React.Component {
                 }
               >
                 <span className={css(styles.dropdownItemIcon)}>
-                  <i className="fal fa-minus-circle" />
+                  {icons.minusCircle}
                 </span>
                 Remove Figure
               </Ripples>

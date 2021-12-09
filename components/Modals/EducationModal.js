@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -6,7 +6,6 @@ import { connect } from "react-redux";
 import BaseModal from "./BaseModal";
 import FormSelect from "~/components/Form/FormSelect";
 import Toggle from "react-toggle";
-import "~/components/TextEditor/stylesheets/ReactToggle.css";
 import Button from "~/components/Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 import MajorsInput from "../SearchSuggestion/MajorsInput";
@@ -16,9 +15,8 @@ import { ModalActions } from "~/redux/modals";
 
 // Config
 import { degrees } from "~/config/utils/options";
-import * as Options from "../../config/utils/options";
+import { range as rangeOpts } from "../../config/utils/options";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 
 const EducationModal = (props) => {
   // set initial props;
@@ -32,8 +30,6 @@ const EducationModal = (props) => {
   useEffect(() => {
     mapPropsToState();
   }, [props.education]);
-
-  useEffect(() => {}, [degree]);
 
   function mapPropsToState() {
     const { education } = props;
@@ -129,9 +125,6 @@ const EducationModal = (props) => {
 
   function closeModal() {
     props.openEducationModal(false);
-    if (document.body.style) {
-      document.body.style.overflow = "auto";
-    }
   }
 
   return (
@@ -177,7 +170,7 @@ const EducationModal = (props) => {
             required={false}
             value={year}
             id={"year"}
-            options={Options.range(1980, 2040)}
+            options={rangeOpts(1980, 2040)}
             maxMenuHeight={120}
             onChange={handleYearSelect}
           />
@@ -284,7 +277,4 @@ const mapDispatchToProps = {
   openEducationModal: ModalActions.openEducationModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EducationModal);
+export default connect(mapStateToProps, mapDispatchToProps)(EducationModal);

@@ -1,24 +1,24 @@
 import * as actions from "./actions";
 import * as shims from "./shims";
 import API from "~/config/api";
-import * as utils from "../utils";
-import { ModalActions } from "~/redux/modals";
+import { handleCatch } from "../utils";
+import { logFetchError } from "~/config/utils/misc";
 
 export function postUpvote(paperId, threadId, commentId, replyId) {
   const isUpvote = true;
 
   return async (dispatch) => {
     const response = await fetch(
-      API.UPVOTE(paperId, threadId, commentId, replyId),
+      API.UPVOTE("paper", paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setPostVoteFailure(isUpvote);
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -27,7 +27,7 @@ export function postUpvote(paperId, threadId, commentId, replyId) {
       const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(isUpvote, vote);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);
@@ -39,16 +39,16 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
 
   return async (dispatch) => {
     const response = await fetch(
-      API.DOWNVOTE(paperId, threadId, commentId, replyId),
+      API.DOWNVOTE("paper", paperId, threadId, commentId, replyId),
       API.POST_CONFIG()
-    ).catch(utils.handleCatch);
+    ).catch(handleCatch);
 
     let action = actions.setPostVoteFailure(isUpvote);
 
     if (response.status === 429) {
       let err = { response: {} };
       err.response.status = 429;
-      utils.handleCatch(err, dispatch);
+      handleCatch(err, dispatch);
       return dispatch(action);
     }
 
@@ -57,7 +57,7 @@ export function postDownvote(paperId, threadId, commentId, replyId) {
       const vote = shims.vote(body);
       action = actions.setPostVoteSuccess(isUpvote, vote);
     } else {
-      utils.logFetchError(response);
+      logFetchError(response);
     }
 
     return dispatch(action);

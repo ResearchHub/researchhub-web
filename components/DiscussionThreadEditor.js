@@ -6,7 +6,7 @@ import TextEditor from "~/components/TextEditor";
 
 import DiscussionActions from "~/redux/discussion";
 
-import { doesNotExist } from "../config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 const DiscussionThreadEditor = (props) => {
   const { readOnly, setReadOnly, commentStyles, onCancel } = props;

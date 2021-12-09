@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Progress from "react-progressbar";
@@ -11,14 +11,13 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 
 // Redux
 import { ModalActions } from "~/redux/modals";
-import { HubActions } from "~/redux/hub";
 import { MessageActions } from "~/redux/message";
 
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class LockedHubPage extends React.Component {
+class LockedHubPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -464,7 +463,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LockedHubPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LockedHubPage);

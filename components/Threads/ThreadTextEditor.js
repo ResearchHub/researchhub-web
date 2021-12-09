@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet } from "aphrodite";
 
 // Component
@@ -7,9 +7,9 @@ import TextEditor from "../../components/TextEditor";
 
 // Config
 import colors from "~/config/themes/colors";
-import { convertToEditorValue } from "~/config/utils";
+import { convertToEditorValue } from "~/config/utils/editor";
 
-class ThreadTextEditor extends React.Component {
+class ThreadTextEditor extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -74,6 +74,7 @@ class ThreadTextEditor extends React.Component {
   };
 
   render() {
+    let { mediaOnly, placeholder } = this.props;
     if (!this.props.body) {
       return (
         <PermissionNotificationWrapper
@@ -92,6 +93,8 @@ class ThreadTextEditor extends React.Component {
             smallToolBar={true}
             onCancel={this.onCancel}
             onChange={this.onChange}
+            mediaOnly={mediaOnly}
+            placeholder={placeholder || "What are your thoughts?"}
             loading={this.state.loading}
             editing={this.props.editing}
             focusEditor={this.props.focusEditor}
@@ -110,6 +113,7 @@ class ThreadTextEditor extends React.Component {
           onChange={this.onChange}
           smallToolBar={true}
           commentEditor={true}
+          mediaOnly={mediaOnly}
           loading={this.state.loading}
           commentStyles={[
             styles.comment,
@@ -120,6 +124,7 @@ class ThreadTextEditor extends React.Component {
             styles.textContainer,
             this.props.editing && styles.editTextContainer,
           ]}
+          placeholder={placeholder || "What are your thoughts?"}
           passedValue={this.state.editorState}
           editing={this.props.editing}
           focusEditor={this.props.focusEditor}

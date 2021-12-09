@@ -1,16 +1,14 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 import BulletPlaceholder from "../Placeholders/BulletPlaceholder";
 import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import SectionBounty from "./SectionBounty";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -20,10 +18,11 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import SectionBounty from "./Tabs/SectionBounty";
 
 const BULLET_COUNT = 5;
 
-class BulletsContainer extends React.Component {
+class BulletsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -618,7 +617,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(BulletsContainer);

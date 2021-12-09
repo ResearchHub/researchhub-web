@@ -1,4 +1,3 @@
-import React from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
@@ -6,7 +5,6 @@ import { useAlert } from "react-alert";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { AuthorActions } from "~/redux/author";
 import { AuthActions } from "~/redux/auth";
 
 // Config
@@ -14,7 +12,7 @@ import colors from "~/config/themes/colors";
 import icons from "../../config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();
@@ -30,6 +28,7 @@ const ModeratorDeleteButton = (props) => {
     authorId,
     onAction,
     metaData,
+    documentType,
   } = props;
 
   const containerClass = [
@@ -85,6 +84,9 @@ const ModeratorDeleteButton = (props) => {
           onClick: () => {
             return deletePost();
           },
+          containerStyle: {
+            zIndex: 11 /* 10 is InlineCommentThreadDisplayBar */,
+          },
         });
       case "user":
         return handleUserDelete();
@@ -99,13 +101,20 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPage = () => {
     showLoader();
-    let { paperId } = props.metaData;
-    fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
+    const { paperId, threadId, commentId, replyId, postId } = props.metaData;
+    return fetch(API.CENSOR_PAPER({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Paper Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            commentID: commentId,
+            paperID: paperId,
+            postID: postId,
+            replyID: replyId,
+            threadID: threadId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -121,13 +130,19 @@ const ModeratorDeleteButton = (props) => {
    */
   const deletePaperPDF = () => {
     showLoader();
-    let { paperId } = props.metaData;
-    fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
+    const { paperId, threadId, commentId, replyId } = props.metaData;
+    return fetch(API.CENSOR_PAPER_PDF({ paperId }), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Paper PDF Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            commentID: commentId,
+            paperID: paperId,
+            replyID: replyId,
+            threadID: threadId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -144,12 +159,21 @@ const ModeratorDeleteButton = (props) => {
   const deletePost = () => {
     showLoader();
     let query = buildQuery();
-    fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
+    const { paperId, threadId, commentId, replyId, documentId } =
+      props.metaData;
+    return fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
         showSucessMessage("Post Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            commentID: commentId,
+            paperID: paperId,
+            documentID: documentId,
+            replyID: replyId,
+            threadID: threadId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -179,26 +203,41 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const removeUser = () => {
-    const { authorId, setIsSuspended } = metaData;
-    const { auth, updateUser } = props;
-
-    fetch(
+    const { auth, updateUser, metaData } = props;
+    const {
+      authorId,
+      paperId,
+      postId,
+      threadId,
+      commentId,
+      replyId,
+      setIsSuspended,
+    } = metaData;
+    return fetch(
       API.USER({ route: "censor" }),
       API.POST_CONFIG({ authorId: authorId })
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setIsSuspended(true);
+        setIsSuspended && setIsSuspended(true);
         if (auth.user.author_profile.id === authorId) {
-          updateUser({
-            ...auth.user,
-            is_suspended: true,
-            probable_spammer: true,
-          });
+          updateUser &&
+            updateUser({
+              ...auth.user,
+              is_suspended: true,
+              probable_spammer: true,
+            });
         }
         showSucessMessage("User Successfully Removed.");
-        props.onRemove && props.onRemove();
+        props.onRemove &&
+          props.onRemove({
+            commentID: commentId,
+            paperID: paperId,
+            postID: postId,
+            replyID: replyId,
+            threadID: threadId,
+          });
       })
       .catch((err) => {
         let message = "Something went wrong";
@@ -212,15 +251,14 @@ const ModeratorDeleteButton = (props) => {
   const reinstateUser = () => {
     const { authorId, setIsSuspended } = metaData;
     const { auth, updateUser } = props;
-
-    fetch(
+    return fetch(
       API.USER({ route: "reinstate" }),
       API.POST_CONFIG({ author_id: authorId })
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setIsSuspended(false);
+        setIsSuspended && setIsSuspended(false);
         if (auth.user.author_profile.id === authorId) {
           updateUser({ ...res });
         }
@@ -236,9 +274,13 @@ const ModeratorDeleteButton = (props) => {
   };
 
   const buildQuery = () => {
-    let { paperId, threadId, commentId, replyId } = props.metaData;
+    let { paperId, threadId, commentId, replyId, documentId } = props.metaData;
     let query = {};
+    query.documentType = documentType;
 
+    if (!doesNotExist(documentId)) {
+      query.documentId = documentId;
+    }
     if (!doesNotExist(paperId)) {
       query.paperId = paperId;
     }

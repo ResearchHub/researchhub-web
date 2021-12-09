@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 
@@ -10,7 +10,7 @@ import Loader from "../Loader/Loader";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class UniversityInput extends React.Component {
+class UniversityInput extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -97,8 +97,9 @@ class UniversityInput extends React.Component {
           >
             <div className={css(styles.uniName)}>{name}</div>
             <div className={css(styles.uniMeta)}>
-              {`${city && city + ", "}${state && state + ", "}${country &&
-                country}`}
+              {`${city && city + ", "}${state && state + ", "}${
+                country && country
+              }`}
             </div>
           </div>
         );
@@ -134,7 +135,6 @@ class UniversityInput extends React.Component {
       required,
       index,
       onClick,
-      onSearch,
     } = this.props;
     let { searching, universities, showDropDown } = this.state;
     return (

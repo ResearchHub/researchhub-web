@@ -1,24 +1,23 @@
-import React from "react";
+import { createRef } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import TagsInput from "react-tagsinput";
 
-const AuthorInput = ({
-  tags,
-  required,
-  label,
-  error,
-  inputValue,
-  containerStyle,
-  inputStyle,
-  labelStyle,
-  onChange,
-  onChangeInput,
-  placeholder,
-  renderEmail,
-  onKeyPress,
-}) => {
-  const inputRef = React.createRef();
+const AuthorInput = (props) => {
+  const {
+    tags,
+    required,
+    label,
+    error,
+    inputValue,
+    labelStyle,
+    onChange,
+    onChangeInput,
+    placeholder,
+    renderEmail,
+    onKeyPress,
+  } = props;
+  const inputRef = createRef();
 
   function renderTag(props) {
     let { tag, key, disabled, onRemove, classNameRemove, ...other } = props;
@@ -67,7 +66,7 @@ const AuthorInput = ({
         value={tags && tags}
         onChange={onChange}
         onChangeInput={(value) => onChangeInput(value)}
-        inputValue={inputValue}
+        inputValue={inputValue || ""}
         className={error ? css(styles.error) : "react-tagsinput"}
         onClick={focusInput}
         ref={inputRef}
@@ -113,7 +112,7 @@ const styles = StyleSheet.create({
     color: colors.BLUE(1),
   },
   error: {
-    backgroundColor: "rgb(251, 251, 253)",
+    backgroundColor: colors.ICY_GREY,
     border: "1px solid rgb(232, 232, 242)",
     overflow: "hidden",
     paddingLeft: 15,

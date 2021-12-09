@@ -1,17 +1,18 @@
-import React from "react";
-import { ClipLoader, DotLoader, BarLoader, BeatLoader } from "react-spinners";
+import { ClipLoader, DotLoader, BeatLoader } from "react-spinners";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 
-const Loader = ({
-  loading,
-  color,
-  size,
-  sizeUnit,
-  loaderStyle,
-  containerStyle,
-  type,
-}) => {
+const Loader = (props) => {
+  const {
+    loading,
+    color,
+    size,
+    sizeUnit,
+    loaderStyle,
+    style,
+    containerStyle,
+    type,
+  } = props;
   const spinner = (type) => {
     switch (type) {
       case "dot":
@@ -22,6 +23,7 @@ const Loader = ({
             size={size ? size : 60}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
       case "clip":
@@ -32,6 +34,7 @@ const Loader = ({
             size={size ? size : 35}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
       case "beat":
@@ -42,6 +45,7 @@ const Loader = ({
             size={size ? size : 20}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
 
@@ -53,6 +57,7 @@ const Loader = ({
             size={size ? size : 35}
             color={color ? color : colors.BLUE(1)}
             loading={loading}
+            style={style}
           />
         );
     }

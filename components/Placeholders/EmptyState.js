@@ -1,16 +1,11 @@
 import { StyleSheet, css } from "aphrodite";
+import icons from "~/config/themes/icons";
 
 const EmptyState = (props) => {
   let { text, subtext, icon } = props;
   return (
     <div className={css(styles.emptyContainer)}>
-      {icon ? (
-        icon
-      ) : (
-        <div className={css(styles.icon)}>
-          <i className="fad fa-file-alt" />
-        </div>
-      )}
+      {icon ? icon : <div className={css(styles.icon)}>{icons.file}</div>}
       <div>{text && text}</div>
       <div className={css(styles.subtext)}>{subtext && subtext}</div>
     </div>

@@ -1,13 +1,15 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
+
 import colors from "../../config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Component
 import Loader from "../Loader/Loader";
 
 const DEFAULT_TRANSITION_TIME = 0.4;
 
-class AuthorCardList extends React.Component {
+class AuthorCardList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,14 +38,8 @@ class AuthorCardList extends React.Component {
 
   renderAuthorCard = (authors) => {
     return authors.map((author, i) => {
-      let {
-        first_name,
-        last_name,
-        email,
-        profile_image,
-        onRemove,
-        id,
-      } = author;
+      let { first_name, last_name, email, profile_image, onRemove, id } =
+        author;
       return (
         <div
           className={css(
@@ -100,7 +96,8 @@ class AuthorCardList extends React.Component {
           styles.authorsList,
           show && styles.reveal,
           show &&
-            (authorsList.length < 2 && authorsList.length !== 0) &&
+            authorsList.length < 2 &&
+            authorsList.length !== 0 &&
             styles.minHeight,
           show && authorsList.length >= 2 && styles.maxHeight,
           loading && styles.loading
@@ -120,15 +117,14 @@ class AuthorCardList extends React.Component {
           onClick={this.props.addAuthor && this.props.addAuthor}
         >
           <div className={css(styles.addButtonWrapper)}>
-            <i
-              className="fal fa-plus"
-              style={{ color: colors.BLUE(1), height: 12, width: 12 }}
-            />
+            <span style={{ color: colors.BLUE(1), height: 12, width: 12 }}>
+              {icons.plus}
+            </span>
           </div>
           <div className={css(styles.nameContactWrapper, styles.marginLeft)}>
-            <div className={css(styles.name)}>Add New User</div>
+            <div className={css(styles.name)}>Add Author</div>
             <div className={css(styles.contact)}>
-              Click to add new user on ResearchHub
+              Click to add an author to ResearchHub
             </div>
           </div>
         </div>

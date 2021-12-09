@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -11,15 +11,15 @@ import ThreadTextEditor from "./ThreadTextEditor";
 // Config
 import colors from "~/config/themes/colors";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
-import DiscussionActions from "../../redux/discussion";
-import { createUsername } from "../../config/utils";
+import DiscussionActions from "~/redux/discussion";
+import { createUsername } from "~/config/utils/user";
 import { MessageActions } from "~/redux/message";
 import { divide } from "numeral";
 
-class ReplyEntry extends React.Component {
+class ReplyEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -76,7 +76,13 @@ class ReplyEntry extends React.Component {
   }
 
   formatMetaData = () => {
-    let { data, comment, reply } = this.props;
+    let { data, comment, reply, post, hypothesis, documentType } = this.props;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
     return {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
@@ -86,6 +92,7 @@ class ReplyEntry extends React.Component {
       userFlag: reply.userFlag,
       contentType: "reply",
       objectId: reply.id,
+      documentId: documentId,
     };
   };
 
@@ -115,15 +122,37 @@ class ReplyEntry extends React.Component {
   };
 
   upvote = async () => {
-    const { data, comment, reply, postUpvote, postUpvotePending } = this.props;
+    const {
+      data,
+      comment,
+      reply,
+      postUpvote,
+      postUpvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     const discussionThreadId = data.id;
     const paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
     const commentId = comment.id;
     const replyId = reply.id;
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId, commentId, replyId);
+    await postUpvote(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      replyId
+    );
 
     this.updateWidgetUI();
   };
@@ -135,15 +164,31 @@ class ReplyEntry extends React.Component {
       reply,
       postDownvote,
       postDownvotePending,
+      post,
+      hypothesis,
+      documentType,
     } = this.props;
     const discussionThreadId = data.id;
     const paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
     const commentId = comment.id;
     const replyId = reply.id;
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId, commentId, replyId);
+    await postDownvote(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      replyId
+    );
 
     this.updateWidgetUI();
   };
@@ -198,13 +243,30 @@ class ReplyEntry extends React.Component {
       showMessage,
       discussionCount,
       setCount,
+      documentType,
+      post,
+      hypothesis,
     } = this.props;
     let paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
     let discussionThreadId = data.id;
     let commentId = comment.id;
 
     postReplyPending();
-    await postReply(paperId, discussionThreadId, commentId, text, plain_text);
+    await postReply(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      commentId,
+      text,
+      plain_text
+    );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       callback && callback();
       this.props.onReplySubmitCallback();
@@ -222,15 +284,26 @@ class ReplyEntry extends React.Component {
       updateReplyPending,
       showMessage,
       setMessage,
+      post,
+      hypothesis,
+      documentType,
     } = this.props;
     let paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
     let discussionThreadId = data.id;
     let commentId = comment.id;
     let replyId = reply.id;
 
     updateReplyPending();
     await updateReply(
+      documentType,
       paperId,
+      documentId,
       discussionThreadId,
       commentId,
       replyId,
@@ -314,7 +387,8 @@ class ReplyEntry extends React.Component {
   };
 
   render() {
-    const { hostname, mobileView, reply, paper } = this.props;
+    const { hostname, mobileView, reply, paper, mediaOnly, documentType } =
+      this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -362,6 +436,7 @@ class ReplyEntry extends React.Component {
                   username={username}
                   date={date}
                   paper={paper}
+                  documentType={documentType}
                   smaller={true}
                   onHideClick={!mobileView && this.toggleCollapsed}
                   hideState={this.state.collapsed}
@@ -384,6 +459,7 @@ class ReplyEntry extends React.Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsReply}
                     textStyles={styles.commentEditor}
+                    mediaOnly={mediaOnly}
                   />
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
@@ -399,6 +475,7 @@ class ReplyEntry extends React.Component {
                     initialValue={this.formatQuoteBlock()}
                     hasHeader={true}
                     hideCount={true}
+                    mediaOnly={mediaOnly}
                   />
                 </div>
               </Fragment>
@@ -450,9 +527,10 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     marginBottom: 5,
     overflow: "visible",
-    cursor: "pointer",
     display: "table",
-    height: "100%",
+    tableLayout: "fixed",
+    height: "1%",
+    borderSpacing: 0,
     "@media only screen and (max-width: 415px)": {
       justifyContent: "space-between",
     },
@@ -483,9 +561,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     display: "table-cell",
     height: "100%",
-    "@media only screen and (max-width: 415px)": {
-      width: "calc(100% - 35px)",
-    },
   },
   highlight: {
     // display: 'flex',
@@ -577,7 +652,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ReplyEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(ReplyEntry);

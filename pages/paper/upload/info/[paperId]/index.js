@@ -1,17 +1,12 @@
-import { useRouter } from "next/router";
+import Head from "~/components/Head";
+import PaperUploadV2Container from "~/components/Paper/Upload/PaperUploadV2Container";
 import { Fragment } from "react";
 
-// Component
-import Head from "~/components/Head";
-import PaperUploadInfo from "~/components/Paper/PaperUploadInfo";
-
 const Index = () => {
-  const router = useRouter();
-  const { paperId } = router.query;
   return (
     <Fragment>
       <Head title="Upload Paper" description="Upload paper to ResearchHub" />
-      <PaperUploadInfo paperId={paperId} />
+      <PaperUploadV2Container />
     </Fragment>
   );
 };

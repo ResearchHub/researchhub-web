@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -19,7 +19,7 @@ import { Helpers } from "@quantfive/js-web-config";
 // Redux
 import { MessageActions } from "~/redux/message";
 
-class OptOut extends React.Component {
+class OptOut extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -115,7 +115,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(OptOut));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(OptOut));

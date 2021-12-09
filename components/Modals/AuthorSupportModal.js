@@ -1,14 +1,12 @@
-import React, { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { useAlert } from "react-alert";
-import Link from "next/link";
 
 // Component
 import BaseModal from "./BaseModal";
 import Button from "~/components/Form/Button";
 import OptionCard from "~/components/Payment/OptionCard";
-import { ScorePill } from "~/components/VoteWidget";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 
 // Redux
@@ -30,8 +28,6 @@ const AuthorSupportModal = (props) => {
   const [paymentOptions, setPaymentOptions] = useState(formatOptions() || []);
   const [amount, setAmount] = useState(0);
   const [error, setError] = useState(false);
-
-  useEffect(() => {}, [props.modals]);
 
   function formatOptions() {
     return [
@@ -89,9 +85,6 @@ const AuthorSupportModal = (props) => {
   }
 
   function closeModal() {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     props.openAuthorSupportModal(false);
     setPage(2); //1
     setActivePayment(null);
@@ -317,11 +310,11 @@ const AuthorSupportModal = (props) => {
             </div>
             {/* <Link
                 href={"/user/[authorId]/[tabName]"}
-                as={`/user/${props.author.id}/contributions`}
+                as={`/user/${props.author.id}/posts`}
               >
                 <a
                   href={"/user/[authorId]/[tabName]"}
-                  as={`/user/${props.author.id}/contributions`}
+                  as={`/user/${props.author.id}/posts`}
                   className={css(styles.transactionHashLink, styles.marginLeft)}
                 >
                   Click to go back to{" "}
@@ -365,9 +358,7 @@ const AuthorSupportModal = (props) => {
         ) : (
           <div className={css(styles.mainHeader)}>
             Transaction Successful
-            <span className={css(styles.icon)}>
-              <i className="fal fa-check-circle" />
-            </span>
+            <span className={css(styles.icon)}>{icons.checkCircle}</span>
           </div>
         )
       }
@@ -658,7 +649,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthorSupportModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorSupportModal);

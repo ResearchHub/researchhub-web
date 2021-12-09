@@ -1,30 +1,31 @@
 import { useEffect, useState, Fragment } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-import { useDispatch, useStore } from "react-redux";
+import { connect, useDispatch, useStore } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
 import { ModalActions } from "../redux/modals";
 import { AuthActions } from "../redux/auth";
 
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import icons, { voteWidgetIcons, BoltSvg } from "~/config/themes/icons";
+import { voteWidgetIcons } from "~/config/themes/icons";
 import {
   UPVOTE,
   DOWNVOTE,
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "../config/constants";
-import { getCurrentUserReputation, formatScore } from "../config/utils";
+import { getCurrentUserReputation } from "~/config/utils/reputation";
+import { formatScore } from "~/config/utils/form";
 
-import "./stylesheets/voteTooltip.css";
+// components
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import DiscussionActions from "../redux/discussion";
+
 const VoteWidget = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
-
-  useEffect(() => {}, [props.promoted]);
 
   const {
     onUpvote,
@@ -39,12 +40,18 @@ const VoteWidget = (props) => {
     promoted,
     paper,
     showPromotion,
+    postUpvotePending,
+    postUpvote,
+    paperId,
+    threadId,
+    commentId,
+    replyId,
+    postDownvote,
+    postDownvotePending,
   } = props;
 
-  const score = getScore(props);
   const userReputation = getCurrentUserReputation(store.getState());
   const { permission } = store.getState();
-
   const [upvoteDisabled] = useState(
     permission.success &&
       userReputation < permission.data.UpvotePaper.minimumReputation
@@ -82,9 +89,26 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      onUpvote(e);
+      if (onUpvote) {
+        onUpvote(e);
+      } else {
+        onAfterUpvote();
+        setUpvoteSelected(true);
+        setDownvoteSelected(false);
+      }
     }
   }
+
+  const onAfterDownvote = async () => {
+    postDownvotePending();
+
+    await postDownvote(paperId, threadId, commentId, replyId);
+  };
+
+  const onAfterUpvote = async () => {
+    postUpvotePending();
+    await postUpvote(paperId, threadId, commentId, replyId);
+  };
 
   function onDownvoteClick(e) {
     if (downvoteDisabled) {
@@ -97,14 +121,17 @@ const VoteWidget = (props) => {
         dispatch(AuthActions.checkUserFirstTime(firstTime));
         dispatch(AuthActions.getUser());
       }
-      onDownvote(e);
+      if (onDownvote) {
+        onDownvote(e);
+      } else {
+        onAfterDownvote();
+        setUpvoteSelected(false);
+        setDownvoteSelected(true);
+      }
     }
   }
 
-  const openPromotionInfoModal = (e) => {
-    e && e.stopPropagation();
-    dispatch(ModalActions.openPromotionInfoModal(true, paper));
-  };
+  const displayableScore = getScore(props);
 
   return (
     <Fragment>
@@ -134,11 +161,12 @@ const VoteWidget = (props) => {
           effect="solid"
         />
         <ScorePill
-          score={promoted !== false && type === "Paper" ? promoted : score}
+          score={displayableScore}
           promoted={promoted}
           paper={paper}
           showPromotion={showPromotion}
           type={type}
+          horizontalView={horizontalView && horizontalView}
         />
         <PermissionNotificationWrapper
           loginRequired={true}
@@ -158,44 +186,28 @@ const VoteWidget = (props) => {
 
 VoteWidget.propTypes = {
   fontSize: PropTypes.string,
-  onUpvote: PropTypes.func,
+  horizontalView: PropTypes.bool,
   onDownvote: PropTypes.func,
+  onUpvote: PropTypes.func,
   score: PropTypes.number,
   width: PropTypes.string,
 };
 
 const ScorePill = (props) => {
-  const dispatch = useDispatch();
-  const { score, paper, small, promoted, showPromotion } = props;
+  const { score, small } = props;
 
-  const openPromotionInfoModal = (e) => {
-    e && e.stopPropagation();
-    let reduxProps = { ...paper };
-    if (showPromotion) {
-      reduxProps.showPromotion = true;
-    }
-    dispatch(ModalActions.openPromotionInfoModal(true, reduxProps));
-  };
+  const isScoreNumeric = !isNaN(score);
 
   return (
-    <div
-      className={css(
-        styles.pillContainer,
-        promoted !== false && styles.promotedPillContainer
-      )}
-      // data-tip={"This paper has been promoted."}
-      onClick={(e) =>
-        props.promoted !== false &&
-        props.type === "Paper" &&
-        openPromotionInfoModal(e)
-      }
-    >
-      <div className={css(small && styles.small)}>{formatScore(score)}</div>
-      {/* {props.promoted !== false && props.type === "Paper" && (
-        <span className={css(styles.promotionIcon)}>
-          <BoltSvg color={colors.GREEN()} opacity={1} />
-        </span>
-      )} */}
+    <div className={css(styles.pillContainer)}>
+      <div
+        className={css(
+          small && styles.small,
+          !isScoreNumeric && styles.hideScore
+        )}
+      >
+        {formatScore(score)}
+      </div>
     </div>
   );
 };
@@ -221,9 +233,9 @@ const VoteButton = (props) => {
   }
 
   return (
-    <a className={css(...style)} onClick={onClick}>
+    <div className={css(...style)} onClick={onClick}>
       {props.children}
-    </a>
+    </div>
   );
 };
 
@@ -276,12 +288,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     minWidth: 30,
-    ":hover": {
-      background: "rgba(30, 207, 49, 0.2)",
-    },
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+  },
+  hideScore: {
+    visibility: "hidden",
+  },
+  horizontalViewPill: {
+    minWidth: 50,
   },
   promotedPillContainer: {
     cursor: "help",
@@ -366,4 +381,11 @@ const styles = StyleSheet.create({
 });
 
 export { ScorePill };
-export default VoteWidget;
+const mapDispatchToProps = {
+  postUpvotePending: DiscussionActions.postUpvotePending,
+  postUpvote: DiscussionActions.postUpvote,
+  postDownvotePending: DiscussionActions.postDownvotePending,
+  postDownvote: DiscussionActions.postDownvote,
+};
+
+export default connect(null, mapDispatchToProps)(VoteWidget);

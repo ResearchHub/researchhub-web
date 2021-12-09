@@ -1,15 +1,13 @@
-import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
+import { RectShape } from "react-placeholder/lib/placeholders";
 
-import {
-  TextBlock,
-  MediaBlock,
-  TextRow,
-  RectShape,
-  RoundShape,
-} from "react-placeholder/lib/placeholders";
-
-const PreviewPlaceholder = ({ color, hideAnimation }) => {
+const PreviewPlaceholder = ({
+  color,
+  hideAnimation,
+  previewStyles,
+  width = 80,
+  height = 90,
+}) => {
   var animate = " show-loading-animation";
   if (hideAnimation) {
     animate = " ";
@@ -17,49 +15,10 @@ const PreviewPlaceholder = ({ color, hideAnimation }) => {
 
   return (
     <div className={css(styles.placeholderContainer) + animate}>
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
+      <RectShape
+        style={{ width: width, height: height }}
+        className={css(previewStyles)}
         color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
-      />
-      <TextBlock
-        className={css(styles.textRow)}
-        rows={1}
-        color={color}
-        style={{ width: "100%" }}
-      />
-      <TextRow
-        className={css(styles.textRow)}
-        color={color}
-        style={{ width: "70%" }}
       />
     </div>
   );
@@ -69,7 +28,6 @@ const styles = StyleSheet.create({
   placeholderContainer: {
     borderRadius: 3,
     border: "1px solid rgb(237, 237, 237)",
-    padding: "23px 15px",
     background: "#fff",
     height: "100%",
     width: "100%",
@@ -78,6 +36,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     boxSizing: "border-box",
+    marginLeft: "auto",
   },
   textRow: {
     marginTop: 5,

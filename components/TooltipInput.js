@@ -1,9 +1,11 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
-export class TooltipInput extends React.Component {
+export class TooltipInput extends Component {
   detectEnter = (e) => {
     let keycode = e.keyCode ? e.keyCode : e.which;
     if (keycode == "13") {
@@ -45,10 +47,12 @@ export class TooltipInput extends React.Component {
             autoFocus={true}
           />
           <div className={css(styles.submitTooltipButton)} onClick={save}>
-            <i className="fas fa-arrow-right"></i>
+            {icons.arrowRight}
           </div>
         </div>
-        <i className={css(styles.close) + " fal fa-times"} onClick={close}></i>
+        <span className={css(styles.close)} onClick={close}>
+          {icons.times}
+        </span>
       </div>
     );
   }

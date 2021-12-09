@@ -1,11 +1,11 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 
 import ComponentWrapper from "~/components/ComponentWrapper";
 import colors from "~/config/themes/colors";
 
-class TOS extends React.Component {
+class TOS extends Component {
   render() {
     return (
       <div className={css(styles.page)}>
@@ -430,8 +430,8 @@ class TOS extends React.Component {
           <ul>
             <li>
               You may not enter into any agreement with a third party on behalf
-              of ResearchHub, or any subreddits that you moderate, without our
-              written approval;
+              of ResearchHub, or any hubs that you moderate, without our written
+              approval;
             </li>
           </ul>
           <ul>
@@ -443,8 +443,8 @@ class TOS extends React.Component {
           <ul>
             <li>
               If you have access to non-public information as a result of
-              moderating a subreddit, you will use such information only in
-              connection with your performance as a moderator; and
+              moderating a hub, you will use such information only in connection
+              with your performance as a moderator; and
             </li>
           </ul>
 

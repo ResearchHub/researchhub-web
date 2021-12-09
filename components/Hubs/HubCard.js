@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
@@ -6,9 +6,9 @@ import * as Sentry from "@sentry/browser";
 import { withAlert } from "react-alert";
 
 // Component
+import HubCardAsRow from "~/components/Hubs/HubCardAsRow";
 
 // Redux
-import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { HubActions } from "~/redux/hub";
@@ -16,13 +16,16 @@ import { HubActions } from "~/redux/hub";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { capitalize } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
+import { isDevEnv } from "~/config/utils/env";
 
-class HubCard extends React.Component {
+class HubCard extends Component {
   constructor(props) {
     super(props);
-    this.linkRef = React.createRef();
+    this.linkRef = createRef();
     this.state = {
       transition: false,
       removed: false,
@@ -81,9 +84,8 @@ class HubCard extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
+            const hubName = capitalize(hub.name);
             this.updateSubscription(false);
-            setMessage("Unsubscribed!");
-            showMessage({ show: true });
             this.setState((state, props) => {
               return {
                 transition: false,
@@ -104,8 +106,9 @@ class HubCard extends React.Component {
           .then(Helpers.checkStatus)
           .then(Helpers.parseJSON)
           .then((res) => {
+            const hubName = capitalize(hub.name);
             this.updateSubscription(true);
-            setMessage("Subscribed!");
+            setMessage(`Joined ${hubName}!`);
             showMessage({ show: true });
             this.setState((state, props) => {
               return {
@@ -184,10 +187,10 @@ class HubCard extends React.Component {
       buttonStyle = this.state.subscribeHover
         ? styles.unsubscribeButton
         : styles.subscribed;
-      buttonLabel = this.state.subscribeHover ? "Unsubscribe" : "Subscribed";
+      buttonLabel = this.state.subscribeHover ? "Leave" : "Joined";
     } else {
       buttonStyle = styles.subscribeButton;
-      buttonLabel = "Subscribe";
+      buttonLabel = "Join";
     }
     return (
       <button
@@ -215,7 +218,7 @@ class HubCard extends React.Component {
               this.openEditHubModal();
             }}
           >
-            <span className={css(styles.editIcon)}>{icons.editHub}</span>
+            <span>{icons.editHub}</span>
           </button>
         );
       }
@@ -233,7 +236,7 @@ class HubCard extends React.Component {
               this.removeHubConfirmation();
             }}
           >
-            <span className={css(styles.deleteIcon)}>{icons.trash}</span>
+            <span>{icons.trash}</span>
           </button>
         );
       }
@@ -244,15 +247,86 @@ class HubCard extends React.Component {
     this.props.openEditHubModal(true, this.props.hub);
   };
 
-  render() {
+  renderStats = () => {
     const { hub } = this.props;
+    return (
+      <div
+        className={css(styles.hubStats)}
+        data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
+      >
+        <div>
+          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          {hub.paper_count} Paper
+          {hub.paper_count != 1 ? "s" : ""}
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          {hub.discussion_count} Comment
+          {hub.discussion_count != 1 ? "s" : ""}
+        </div>
+        <div>
+          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          {this.state.subCount} Subscriber
+          {this.state.subCount != 1 ? "s" : ""}
+        </div>
+      </div>
+    );
+  };
+
+  renderStatsForRow = () => {
+    const { hub, renderAsRow } = this.props;
+    return (
+      <div
+        className={css(styles.hubStats, renderAsRow && styles.hubStatsForRow)}
+        data-test={isDevEnv() ? `hub-stats-${hub.id}` : undefined}
+      >
+        <div className={css(styles.statForRow)}>
+          <span className={css(styles.statIcon)}>{icons.paper}</span>
+          {hub.paper_count}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Paper
+            {hub.paper_count != 1 ? "s" : ""}
+          </span>
+        </div>
+        <div className={css(styles.statForRow)}>
+          <span className={css(styles.statIcon)}>{icons.chat}</span>
+          {hub.discussion_count}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Comment
+            {hub.discussion_count != 1 ? "s" : ""}
+          </span>
+        </div>
+        <div className={css(styles.statForRow)}>
+          <span className={css(styles.statIcon)}>{icons.subscribers}</span>
+          {this.state.subCount}
+          <span className={css(styles.rowStatTitle)}>
+            {` `}Subscriber
+            {this.state.subCount != 1 ? "s" : ""}
+          </span>
+        </div>
+      </div>
+    );
+  };
+
+  render() {
+    const { hub, renderAsRow, styleVariation } = this.props;
     const { removed } = this.state;
+
+    if (renderAsRow) {
+      return (
+        <HubCardAsRow hub={hub} styleVariation={styleVariation}>
+          {this.renderStatsForRow()}
+        </HubCardAsRow>
+      );
+    }
+
     return (
       <div
         className={css(styles.slugLink, removed && styles.removed)}
         onClick={() => {
           this.linkRef.current.click();
         }}
+        data-hub-id={`${hub.id}`}
       >
         <div className={css(styles.hubCard)}>
           <img
@@ -263,35 +337,30 @@ class HubCard extends React.Component {
                 ? hub.hub_image
                 : "/static/background/twitter-banner.jpg"
             }
-            alt="Hub Background Image"
+            alt={`${hub.name} Hub`}
           ></img>
           {this.renderEdit()}
           {this.renderDelete()}
           <div key={hub.id} className={css(styles.hubInfo)}>
             <div className={css(styles.hubTitle)}>
-              <div className={css(styles.hubName)}>{hub.name}</div>
+              <div
+                className={css(styles.hubName)}
+                data-test={isDevEnv() ? `hub-name` : undefined}
+              >
+                {hub.name}
+              </div>
               {this.renderSubscribe()}
             </div>
-            <div className={css(styles.hubDescription)}>{hub.description}</div>
-            <div className={css(styles.hubStats)}>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.paper}</span>
-                {hub.paper_count} Paper
-                {hub.paper_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>{icons.chat}</span>
-                {hub.discussion_count} Comment
-                {hub.discussion_count != 1 ? "s" : ""}
-              </div>
-              <div>
-                <span className={css(styles.statIcon)}>
-                  {icons.subscribers}
-                </span>
-                {this.state.subCount} Subscriber
-                {this.state.subCount != 1 ? "s" : ""}
-              </div>
+            <div
+              className={css(styles.hubDescription)}
+              data-test={isDevEnv() ? `hub-description` : undefined}
+            >
+              {hub.description}
             </div>
+            {this.renderStats()}
+          </div>
+          <div className={css(styles.hubTitleMobile)}>
+            <div className={css(styles.hubNameMobile)}>{hub.name}</div>
           </div>
           <Link
             href="/hubs/[slug]"
@@ -311,53 +380,92 @@ const styles = StyleSheet.create({
     zIndex: 1,
     cursor: "pointer",
     textDecoration: "none",
-    width: "364px",
-    height: "264px",
-    marginTop: 25,
-    marginBottom: 25,
-    marginLeft: 21,
-    marginRight: 21,
+    width: "360px",
     transition: "transform 0.1s",
     ":hover": {
       transition: "transform 0.1s",
       transform: "scale(1.05)",
     },
-    "@media only screen and (max-width: 415px)": {
-      zoom: 0.9,
-    },
-    "@media only screen and (max-width: 376px)": {
-      zoom: 0.8,
-    },
-    "@media only screen and (max-width: 321px)": {
-      zoom: 0.7,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "42.5vmin",
+      height: "42.5vmin",
+      maxWidth: "200px",
+      maxHeight: "200px",
     },
   },
   hubCard: {
+    position: "relative",
     fontSize: "16px",
     color: "#241F3A",
     borderRadius: "8px",
     boxShadow: "0 4px 15px rgba(93, 83, 254, 0.18)",
-    marginBottom: 50,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "42.5vmin",
+      height: "42.5vmin",
+      maxWidth: "200px",
+      maxHeight: "200px",
+    },
   },
   removed: {
     display: "none",
   },
   roundedImage: {
     borderRadius: "8px 8px 0 0",
-    width: "364px",
+    width: "100%",
     height: "128px",
     objectFit: "cover",
     pointerEvents: "none",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "42.5vmin",
+      height: "42.5vmin",
+      maxWidth: "200px",
+      maxHeight: "200px",
+      borderRadius: "8px",
+    },
   },
   hubInfo: {
     boxSizing: "border-box",
     padding: "0 15px",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
+  },
+  hubTitleMobile: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "block",
+      position: "relative",
+      bottom: 104,
+      height: "100px",
+      borderRadius: "0 0 8px 8px",
+      background:
+        "linear-gradient(to bottom, rgba(0, 0, 0, 0) 20%, rgba(0, 0, 0, 0.5))",
+    },
+  },
+  hubNameMobile: {
+    position: "absolute",
+    color: "#fff",
+    textTransform: "capitalize",
+    fontWeight: 500,
+    wordBreak: "break-word",
+    fontSize: "16px",
+    bottom: "7.5px",
+    left: "10px",
+    width: "180px",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      bottom: "1.5vmin",
+      left: "2vmin",
+      width: "38vmin",
+    },
   },
   hubTitle: {
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
     padding: "10px 0 0 0",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
   },
   hubName: {
     fontSize: 18,
@@ -440,9 +548,6 @@ const styles = StyleSheet.create({
       opacity: 1,
     },
   },
-  editIcon: {
-    marginLeft: 1,
-  },
   deleteButton: {
     height: 30,
     width: 30,
@@ -492,6 +597,25 @@ const styles = StyleSheet.create({
     padding: "0 0 15px 0",
     color: "#C1C1CF",
     fontSize: "12px",
+  },
+  hubStatsForRow: {
+    justifyContent: "flex-start",
+    padding: 0,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "flex-start",
+    },
+  },
+  statForRow: {
+    marginRight: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginRight: 10,
+      justifyContent: "flex-start",
+    },
+  },
+  rowStatTitle: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   statIcon: {
     marginRight: "5px",

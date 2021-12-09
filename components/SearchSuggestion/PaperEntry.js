@@ -1,10 +1,10 @@
-import React, { Fragment } from "react";
+import { Fragment } from "react";
 import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
-import moment from "moment";
-import { formatPaperSlug } from "~/config/utils";
+import * as moment from "dayjs";
+import { buildSlug } from "~/config/utils/document";
 
 const PaperEntry = ({
   data,
@@ -95,7 +95,7 @@ const PaperEntry = ({
     return (
       <Link
         href={"/paper/[paperId]/[paperName]"}
-        as={`/paper/${paperId}/${formatPaperSlug(title)}`}
+        as={`/paper/${paperId}/${buildSlug(title)}`}
       >
         <div
           className={css(
@@ -115,7 +115,7 @@ const PaperEntry = ({
           </div>
           <div className={css(styles.date, styles.text)}>
             {date &&
-              `Published: ${date && moment(date).format("DD MMMM, YYYY")}`}
+              `Published: ${date && moment(date).format("DD D MMMM, YYYY")}`}
           </div>
         </div>
       </Link>

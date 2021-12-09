@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 
 import { css, StyleSheet } from "aphrodite";
 import Router from "next/router";
@@ -15,12 +15,13 @@ import DiscussionActions from "~/redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 
-import { UPVOTE, DOWNVOTE } from "../config/constants";
+import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { voteWidgetIcons } from "~/config/themes/icons";
 import colors, { discussionPageColors } from "~/config/themes/colors";
-import { createUsername, getCurrentUser, getNestedValue } from "~/config/utils";
+import { createUsername, getCurrentUser } from "~/config/utils/user";
+import { getNestedValue } from "~/config/utils/misc";
 
-class DiscussionComment extends React.Component {
+class DiscussionComment extends Component {
   state = {
     id: this.props.data.id,
     date: this.props.data.created_date,
@@ -238,7 +239,7 @@ class CommentClass extends DiscussionComment {
     this.state.loaded = false;
     this.state.windowPostion = null;
     this.state.highlight = false;
-    this.ref = React.createRef();
+    this.ref = createRef();
   }
 
   componentDidMount() {
@@ -436,15 +437,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export const Comment = connect(
-  mapStateToProps,
-  null
-)(CommentClass);
+export const Comment = connect(mapStateToProps, null)(CommentClass);
 
-export const Reply = connect(
-  mapStateToProps,
-  null
-)(ReplyClass);
+export const Reply = connect(mapStateToProps, null)(ReplyClass);
 
 const styles = StyleSheet.create({
   commentContainer: {},

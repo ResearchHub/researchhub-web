@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, Fragment } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { css, StyleSheet } from "aphrodite";
 import { useRouter } from "next/router";
@@ -10,10 +10,11 @@ import DiscussionActions from "~/redux/discussion";
 
 import colors, { discussionPageColors } from "~/config/themes/colors";
 import {
-  currentUserHasMinimumReputation,
-  doesNotExist,
   getMinimumReputation,
-} from "~/config/utils";
+  currentUserHasMinimumReputation,
+} from "~/config/utils/reputation";
+import { doesNotExist } from "~/config/utils/nullchecks";
+
 import { ModalActions } from "../redux/modals";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 
@@ -126,13 +127,8 @@ export const CommentEditor = (props) => {
 };
 
 export const ReplyEditor = (props) => {
-  const {
-    commentId,
-    onSubmit,
-    onCancel,
-    commentStyles,
-    containerStyles,
-  } = props;
+  const { commentId, onSubmit, onCancel, commentStyles, containerStyles } =
+    props;
   const [reply, setReply] = useState(false);
   const [transition, setTransition] = useState(false);
   const containerRef = useRef(null);
@@ -211,14 +207,8 @@ async function postComment(props, text, plain_text) {
 }
 
 async function postReply(props, text, plain_text) {
-  const {
-    dispatch,
-    store,
-    paperId,
-    discussionThreadId,
-    commentId,
-    onSubmit,
-  } = props;
+  const { dispatch, store, paperId, discussionThreadId, commentId, onSubmit } =
+    props;
 
   dispatch(DiscussionActions.postReplyPending());
   await dispatch(

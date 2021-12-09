@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withAlert } from "react-alert";
@@ -16,9 +16,10 @@ import { AuthActions } from "~/redux/auth";
 // Config
 import { setSectionBounty } from "../../config/fetch";
 import colors from "../../config/themes/colors";
-import { getBountyAmount, sanitizeNumber } from "~/config/utils";
+import { getBountyAmount } from "~/config/utils/misc";
+import { sanitizeNumber } from "~/config/utils/form";
 
-class ContentSupportModal extends React.Component {
+class ContentSupportModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -46,9 +47,6 @@ class ContentSupportModal extends React.Component {
   closeModal = () => {
     this.props.openSectionBountyModal(false, {});
     this.setState({ ...this.initialState });
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   configureInitialAmount = () => {
@@ -69,7 +67,7 @@ class ContentSupportModal extends React.Component {
   showSuccessMessage = () => {
     const { setMessage, showMessage } = this.props;
     showMessage({ show: false });
-    setMessage("Bounty succesfully set!");
+    setMessage("Bounty successfully set!");
     showMessage({ show: true });
   };
 
@@ -111,11 +109,8 @@ class ContentSupportModal extends React.Component {
   postBounty = () => {
     const { showMessage, modals } = this.props;
     const { amount } = this.state;
-    const {
-      type,
-      paper,
-      updatePaperState,
-    } = modals.openSectionBountyModal.props;
+    const { type, paper, updatePaperState } =
+      modals.openSectionBountyModal.props;
     showMessage({ show: true, load: true });
 
     const params = {

@@ -1,0 +1,62 @@
+.public-DraftStyleDefault-block {
+  margin-bottom: 16px;
+}
+
+.RichEditor-h1 {
+  display: inline-block;
+  font-family: Roboto;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 2;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+  width: 100%;
+}
+
+.RichEditor-h2 {
+  display: inline-block;
+  font-family: Roboto;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 2;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+  width: 100%;
+}
+
+.RichEditor-p {
+  box-sizing: border-box;
+  color: #241f3a;
+  display: inline;
+  font-family: CharterBT;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 2;
+  margin: 0;
+  padding: 0;
+  white-space: normal;
+}
+
+.RichEditor-ordered-list-item {
+  list-style-type: lower-alpha;
+}
+
+.RichEditor-unordered-list-item {
+  list-style-type: circle;
+}
+
+@media only screen and (max-width: 967px) {
+  .RichEditor-p {
+    font-size: 14px;
+  }
+}
+
+.RichEditor-italic {
+  display: inline;
+  font-style: italic;
+}
+
+.ck.ck-user__img.ck-user__avatar {
+}

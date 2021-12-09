@@ -1,52 +1,55 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-
-// Component
-import Button from "~/components/Form/Button";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
-import { PaperActions } from "~/redux/paper";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
-import { getSummaryText } from "~/config/utils";
+import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 
-const PaperBanner = ({
-  paper,
-  fetchBullets,
-  loadingPaper,
-  openPaperFeatureModal,
-  bullets,
-}) => {
+const PaperBanner = (props) => {
+  // TODO: calvinhlee - refactor this component.
+  const { paper, fetchBullets, loadingPaper, post, postType, lastFetchTime } =
+    props;
   const [type, setType] = useState(null);
   const [showBanner, setShowBanner] = useState(false);
 
   useEffect(() => {
     configureBanner();
-  }, [paper, bullets.bullets.length, loadingPaper]);
+  }, [paper, loadingPaper, post, lastFetchTime]);
 
+  const documentType = Boolean(paper) ? "paper" : postType;
   const configureBanner = () => {
-    if (!paper) {
-      return;
-    } else {
-      if (!paper.is_removed && (!fetchBullets || loadingPaper)) {
+    if (documentType === "post" || documentType === "hypothesis") {
+      if (!post || Object.keys(post).length === 0) {
+        setShowBanner(false);
+        return;
+      } else if (!post.is_removed) {
+        setShowBanner(false);
         return;
       }
+    } else {
+      if (!paper) {
+        setShowBanner(false);
+        return;
+      } else {
+        if (!Boolean(paper?.is_removed) && (!fetchBullets || loadingPaper)) {
+          setShowBanner(false);
+          return;
+        }
+      }
     }
-    const isRemoved = paper.is_removed;
-    const isRemovedByUser = paper.is_removed_by_user;
+    const isRemoved =
+      documentType === "post" || "hypothesis"
+        ? Boolean(post?.is_removed)
+        : Boolean(paper?.is_removed);
 
     if (isRemoved) {
       setType("removed");
-      setShowBanner(true);
-      return;
-    }
-
-    if (isRemovedByUser) {
-      setType("removedBbyUser");
       setShowBanner(true);
       return;
     }
@@ -64,31 +67,21 @@ const PaperBanner = ({
           <div className={css(styles.removedMessage)}>
             <h3 className={css(styles.header)}>
               {renderIcon(true)}
-              Paper Removed
+              {upCaseFirstLetter(documentType)} Removed
             </h3>
-            This paper has been removed for having poor quality content and not
-            adhering to guidelines.
+            {`This ${documentType} has been removed by the submitter or for having
+            poor quality content and not adhering to guidelines. `}
             <br />
-            Please visit our{" "}
+            {"Please visit our "}
             <a
               style={{ color: "#4E53FF" }}
               href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
               target="_blank"
               rel="noreferrer noopener"
             >
-              Paper Submission Guidelines
-            </a>{" "}
-            to review our standard.
-          </div>
-        );
-      case "removedByUser":
-        return (
-          <div className={css(styles.removedMessage)}>
-            <h3 className={css(styles.header)}>
-              {renderIcon(true)}
-              Paper Removed
-            </h3>
-            This paper has been removed from ResearchHub by the submitter.
+              {`${documentType} Submission Guidelines`}
+            </a>
+            {" to review our standard."}
           </div>
         );
       default:
@@ -102,12 +95,14 @@ const PaperBanner = ({
     switch (type) {
       case "removed":
         icon = (
-          <i
-            className={
-              css(styles.removeIcon, mobile && styles.mobileRemoveIcon) +
-              " fas fa-exclamation-circle"
-            }
-          />
+          <span
+            className={css(
+              styles.removeIcon,
+              mobile && styles.mobileRemoveIcon
+            )}
+          >
+            {icons.exclamationCircle}
+          </span>
         );
         break;
       default:
@@ -133,8 +128,10 @@ const PaperBanner = ({
         !showBanner && styles.hideBanner
       )}
     >
-      {type === "removed" && renderIcon()}
-      <div className={css(styles.message)}>{renderMessage()}</div>
+      <div className={css(styles.bannerInner)}>
+        {type === "removed" && renderIcon()}
+        <div className={css(styles.message)}>{renderMessage()}</div>
+      </div>
     </div>
   );
 };
@@ -154,7 +151,13 @@ const styles = StyleSheet.create({
       padding: 15,
     },
   },
-
+  bannerInner: {
+    display: "flex",
+    "@media only screen and (min-width: 768px)": {
+      width: "80%",
+      margin: "0 auto",
+    },
+  },
   desktop: {
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -306,7 +309,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperBanner);

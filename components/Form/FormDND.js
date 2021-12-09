@@ -1,5 +1,5 @@
 // NPM
-import React, { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -12,6 +12,7 @@ import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -21,14 +22,13 @@ import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperMetaData from "../SearchSuggestion/PaperMetaData";
 import Dropzone from "react-dropzone";
-import PaperEntry from "../SearchSuggestion/PaperEntry";
 
-class FormDND extends React.Component {
+class FormDND extends Component {
   constructor(props) {
     super(props);
     this.state = {
       // Toggle b/w DnD & Url
-      urlView: true,
+      urlView: Boolean(this.props?.urlView ?? true),
       // Drag N Drop
       fileDragging: false,
       fileLoading: false,
@@ -47,7 +47,7 @@ class FormDND extends React.Component {
       searchResults: [],
       isDuplicate: false,
     };
-    this.inputRef = React.createRef();
+    this.inputRef = createRef();
   }
 
   componentDidMount() {
@@ -162,6 +162,12 @@ class FormDND extends React.Component {
             "We can't find the paper from your link. Upload the PDF or use another link."
           );
           messageActions.showMessage({ show: true, error: true });
+          this.setState({
+            fetching: false,
+            urlIsValid: false,
+            inputDisabled: false,
+          });
+          return;
         }
         if (err.response.status === 429) {
           this.props.modalActions.openRecaptchaPrompt(true);
@@ -195,7 +201,11 @@ class FormDND extends React.Component {
   searchTitle = (value) => {
     this.setState({ searching: true });
     fetch(
-      API.SEARCH_MATCHING_PAPERS({ search: value, external_search: false }),
+      API.SEARCH({
+        search: value,
+        external_search: false,
+        config: { route: "match" },
+      }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
@@ -398,11 +408,9 @@ class FormDND extends React.Component {
                     )}
                   >
                     <div className={css(styles.icon)}>
-                      {this.state.urlIsValid ? (
-                        <i className="fal fa-check-circle" />
-                      ) : (
-                        <i className="fal fa-times-circle" />
-                      )}
+                      {this.state.urlIsValid
+                        ? icons.checkCircle
+                        : icons.timesCircle}
                     </div>
                   </span>
                 )
@@ -474,14 +482,19 @@ class FormDND extends React.Component {
   };
 
   render() {
+    const { showUrlOption } = this.props;
+    const localShowUrlOption = Boolean(showUrlOption ?? true);
+    const renderAlternateOption = localShowUrlOption ? (
+      <Ripples
+        className={css(styles.urlButton, this.calculateButtonStyle())}
+        onClick={this.toggleFormatState}
+      >
+        {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
+      </Ripples>
+    ) : null;
     return (
       <div className={css(styles.componentContainer)}>
-        <Ripples
-          className={css(styles.urlButton, this.calculateButtonStyle())}
-          onClick={this.toggleFormatState}
-        >
-          {this.state.urlView ? "Upload a PDF" : "Paste a Link"}
-        </Ripples>
+        {renderAlternateOption}
         {this.renderContent()}
         {this.renderSearchResult()}
       </div>
@@ -641,7 +654,4 @@ const mapDispatchToProps = (dispatch) => ({
   messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FormDND);
+export default connect(mapStateToProps, mapDispatchToProps)(FormDND);

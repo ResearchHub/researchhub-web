@@ -1,10 +1,8 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import Dropzone from "react-dropzone";
 import DragNDrop from "@quantfive/react-image-upload-grid";
-import "./Stylesheets/Dnd.css";
 
 // Component
 import BaseModal from "./BaseModal";
@@ -16,9 +14,10 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-class DndModal extends React.Component {
+class DndModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -64,9 +63,6 @@ class DndModal extends React.Component {
 
   closeModal = () => {
     this.props.openDndModal(false, {});
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     this.setState({
       ...this.initialState,
     });
@@ -154,11 +150,7 @@ class DndModal extends React.Component {
           imageContainerClassName={this.calculateStyle()}
           fileAccept={fileAccept}
           addImageText={
-            this.state.files.length < 1 ? (
-              this.renderDropContent()
-            ) : (
-              <i className="fal fa-plus" />
-            )
+            this.state.files.length < 1 ? this.renderDropContent() : icons.plus
           }
         />
         {files.length > 0 && (
@@ -222,37 +214,6 @@ const styles = StyleSheet.create({
       maxWidth: "unset",
       boxSizing: "border-box",
     },
-  },
-  dropzoneContainer: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    boxSizing: "border-box",
-    height: "100%",
-    minHeight: 200,
-    width: "90%",
-    backgroundColor: "#F7F7FB",
-    cursor: "pointer",
-    borderRadius: 3,
-    border: `1px dashed ${colors.BLUE()}`,
-    outline: "none",
-    ":hover": {
-      borderStyle: "solid",
-    },
-    ":hover #browse": {
-      textDecoration: "underline",
-    },
-  },
-  dropzone: {
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    boxSizing: "border-box",
-    padding: "20px 0px",
-    transition: "all ease-out 0.1s",
   },
   fullCanvas: {
     height: "100%",
@@ -338,7 +299,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DndModal);
+export default connect(mapStateToProps, mapDispatchToProps)(DndModal);

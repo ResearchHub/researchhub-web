@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 // Component
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -12,7 +11,6 @@ import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import EducationModal from "./EducationModal";
 import EducationSummaryCard from "~/components/Form/EducationSummaryCard";
-import "~/components/TextEditor/stylesheets/ReactToggle.css";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -25,7 +23,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class UserInfoModal extends React.Component {
+class UserInfoModal extends Component {
   constructor(props) {
     super(props);
 
@@ -73,7 +71,6 @@ class UserInfoModal extends React.Component {
 
   closeModal = () => {
     this.props.openUserInfoModal(false);
-    document.body.style.overflow = "scroll";
   };
 
   saveAndCloseModal = () => {
@@ -718,7 +715,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserInfoModal);
+export default connect(mapStateToProps, mapDispatchToProps)(UserInfoModal);

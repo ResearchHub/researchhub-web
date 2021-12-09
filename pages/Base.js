@@ -1,77 +1,108 @@
-import React from "react";
+import { Component, createContext, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 
 // NPM Modules
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { transitions, positions, Provider as AlertProvider } from "react-alert";
+import Router from "next/router";
 
 // Components
-import Message from "~/components/Loader/Message";
-import Navbar from "~/components/Navbar";
-import PermissionNotification from "../components/PermissionNotification";
-import AlertTemplate from "~/components/Modals/AlertTemplate";
-
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
 import { UniversityActions } from "../redux/universities";
 import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
-import { BannerActions } from "~/redux/banner";
 import PermissionActions from "../redux/permission";
-import Footer from "./footer";
+import { isDevEnv } from "~/config/utils/env";
 
-class Base extends React.Component {
-  componentDidMount = async () => {
-    const {
-      fetchPermissions,
-      getUser,
-      getUniversities,
-      getUserBannerPreference,
-      getWithdrawals,
-      getTopHubs,
-      getNotifications,
-      determineBanner,
-      auth,
-    } = this.props;
+const DynamicPermissionNotification = dynamic(() =>
+  import("../components/PermissionNotification")
+);
+const DynamicMessage = dynamic(() => import("~/components/Loader/Message"));
+const DynamicAlertTemplate = dynamic(() =>
+  import("~/components/Modals/AlertTemplate")
+);
+const DynamicFooter = dynamic(() => import("./footer"));
+const DynamicNavbar = dynamic(() => import("~/components/Navbar"));
 
+export const NavbarContext = createContext();
+
+function Base({
+  fetchPermissions,
+  getUser,
+  getUniversities,
+  getWithdrawals,
+  getTopHubs,
+  getNotifications,
+  auth,
+  Component,
+  pageProps,
+}) {
+  const [numNavInteractions, setNumNavInteractions] = useState(0);
+
+  useEffect(async () => {
     getUniversities();
     await getUser();
     getTopHubs(auth);
     if (auth.isLoggedIn) {
       getWithdrawals();
       getNotifications();
-      // getUserBannerPreference(); currently removed banner
-      // determineBanner();
     }
     fetchPermissions();
+  }, []);
+
+  /*
+    This component is used in situations where we fetch data through
+    getInitialProps. In these cases, we cannot intercept the data and replace
+    it with a fixture. In order to bypass this restriction we basically
+    trigger a reload of the current page programatically which then runs the
+    fetch on the client side and allow to intercept.
+  */
+  const SPEC__reloadClientSideData = () => {
+    const _reloadPage = () =>
+      Router.push({ pathname: Router.pathname, query: Router.query });
+    return (
+      <span
+        onClick={_reloadPage}
+        className={css(styles.hide)}
+        data-test="reload-client-side-data"
+      ></span>
+    );
   };
 
-  render() {
-    const { Component, pageProps } = this.props;
-    const options = {
-      position: positions.MIDDLE,
-      transition: transitions.SCALE,
-    };
+  const options = {
+    position: positions.MIDDLE,
+    transition: transitions.SCALE,
+  };
 
-    return (
-      <AlertProvider template={AlertTemplate} {...options}>
+  return (
+    <AlertProvider template={DynamicAlertTemplate} {...options}>
+      <NavbarContext.Provider
+        value={{ numNavInteractions, setNumNavInteractions }}
+      >
+        {isDevEnv() && SPEC__reloadClientSideData()}
         <div className={css(styles.pageWrapper)}>
-          <PermissionNotification />
-          <Navbar />
+          <DynamicPermissionNotification />
+          <DynamicNavbar />
           <Component {...pageProps} />
-          <Message />
+          <DynamicMessage />
         </div>
-        <Footer />
-      </AlertProvider>
-    );
-  }
+        <DynamicFooter />
+      </NavbarContext.Provider>
+    </AlertProvider>
+  );
 }
 
 const styles = StyleSheet.create({
   pageWrapper: {
     width: "100%",
     minHeight: "100vh",
-    background: "#FAFAFA",
+    // background: "#FAFAFA",
+    background: "#FCFCFC",
+  },
+  hide: {
+    display: "none",
   },
 });
 
@@ -82,18 +113,11 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   getUser: AuthActions.getUser,
-  getCategories: HubActions.getCategories,
   getTopHubs: HubActions.getTopHubs,
   getUniversities: UniversityActions.getUniversities,
-  getUserBannerPreference: AuthActions.getUserBannerPreference,
   fetchPermissions: PermissionActions.fetchPermissions,
-  fetchPermissionsPending: PermissionActions.fetchPermissionsPending,
   getWithdrawals: TransactionActions.getWithdrawals,
   getNotifications: NotificationActions.getNotifications,
-  determineBanner: BannerActions.determineBanner,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Base);
+export default connect(mapStateToProps, mapDispatchToProps)(Base);

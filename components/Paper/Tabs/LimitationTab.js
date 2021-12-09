@@ -1,16 +1,14 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 import BulletPlaceholder from "~/components/Placeholders/BulletPlaceholder";
 import FormTextArea from "~/components/Form/FormTextArea";
 import Button from "~/components/Form/Button";
 import SummaryBulletPoint from "~/components/Paper/SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // redux
 import { LimitationsActions } from "~/redux/limitations";
@@ -20,11 +18,10 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import EmptySummarySection from "./Summary/EmptySummary";
 
 const LIMITATIONS_COUNT = 5;
 
-class LimitationTab extends React.Component {
+class LimitationTab extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -243,7 +240,7 @@ class LimitationTab extends React.Component {
           onClick={() => openManageBulletPointsModal(true, "limitations")}
         >
           <span className={css(dropdownStyles.dropdownItemIcon)}>
-            <i className="fal fa-tasks-alt" />
+            {icons.manage}
           </span>
           Manage
         </Ripples>
@@ -593,7 +590,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LimitationTab);
+export default connect(mapStateToProps, mapDispatchToProps)(LimitationTab);

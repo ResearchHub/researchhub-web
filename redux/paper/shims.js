@@ -1,5 +1,4 @@
 import { transformDate, transformUser, transformVote } from "../utils";
-import moment from "moment";
 
 export const paper = (paper) => {
   return {
@@ -29,20 +28,23 @@ export const paper = (paper) => {
   };
 };
 
+// NOTE: calvinhlee - why was this even necessary?
 export const paperPost = ({
+  abstract,
   authors,
+  citation_type,
   doi,
   file,
   hubs,
-  publishDate,
-  title,
-  url,
-  type,
-  tagline,
-  abstract,
+  hypothesis_id,
   paper_title,
-  raw_authors,
   paper_type,
+  publishDate,
+  raw_authors,
+  tagline,
+  title,
+  type,
+  url,
 }) => {
   let formData = new FormData();
   authors &&
@@ -58,12 +60,13 @@ export const paperPost = ({
       });
     }
   }
-
+  // NOTE - calvinhlee: formatting data like below results in unexpected update behavior.
   hubs &&
     hubs.forEach((hub) => {
       return formData.append("hubs", hub);
     });
   doi && formData.append("doi", doi);
+  // no boolean check for title because empty string is falsey in js.
   title && formData.append("title", title);
   file && formData.append("file", file);
   publishDate && formData.append("paper_publish_date", publishDate);
@@ -73,6 +76,8 @@ export const paperPost = ({
   abstract && formData.append("abstract", abstract);
   paper_title && formData.append("paper_title", paper_title);
   paper_type && formData.append("paper_type", paper_type);
+  hypothesis_id && formData.append("hypothesis_id", hypothesis_id);
+  citation_type && formData.append("citation_type", citation_type);
   return formData;
 };
 

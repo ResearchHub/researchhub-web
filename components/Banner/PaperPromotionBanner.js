@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
@@ -11,7 +12,7 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 
-class PaperPromotionBanner extends React.Component {
+class PaperPromotionBanner extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,9 +59,7 @@ class PaperPromotionBanner extends React.Component {
     // send first event
     fetch(API.GOOGLE_ANALYTICS({ manual: true }), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {})
-      .catch((err) => {});
+      .then(Helpers.parseJSON);
   };
 
   render() {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
+import { Component } from "react";
 
 // Components
 import ComponentWrapper from "~/components/ComponentWrapper";
@@ -15,12 +16,13 @@ import { PaperActions } from "~/redux/paper";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import { convertToEditorValue } from "~/config/utils";
+import { convertToEditorValue } from "~/config/utils/editor";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class PaperEditHistory extends React.Component {
+class PaperEditHistory extends Component {
   static async getInitialProps({ store, isServer, query }) {
     await store.dispatch(PaperActions.getEditHistory(query.paperId));
     await store.dispatch(PaperActions.getPaper(query.paperId));
@@ -99,7 +101,7 @@ class PaperEditHistory extends React.Component {
       .then((res) => {
         updatePaperState("summary", summary);
         showMessage({ show: false });
-        setMessage("Summary succesfully updated!");
+        setMessage("Summary successfully updated!");
         showMessage({ show: true });
         callback();
       })
@@ -172,7 +174,7 @@ class PaperEditHistory extends React.Component {
             as={`/paper/${router.query.paperId}/${router.query.paperName}#summary`}
           >
             <div className={css(styles.back)}>
-              <i className={css(styles.arrow) + " fal fa-long-arrow-left"}></i>
+              <span className={css(styles.arrow)}>{icons.longArrowLeft}</span>
               Summary
             </div>
           </Link>

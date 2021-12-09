@@ -1,12 +1,10 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Carousel from "nuka-carousel";
 import FsLightbox from "fslightbox-react";
 import Link from "next/link";
-import "./CitationCard.css";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Components
 import HubTag from "~/components/Hubs/HubTag";
@@ -14,9 +12,10 @@ import PreviewPlaceholder from "../Placeholders/PreviewPlaceholder";
 
 // Redux
 import { MessageActions } from "~/redux/message";
-import { formatPaperSlug } from "~/config/utils";
+import { buildSlug } from "~/config/utils/document";
+import icons from "~/config/themes/icons";
 
-class CitationCard extends React.Component {
+class CitationCard extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,7 +53,7 @@ class CitationCard extends React.Component {
     let { citation } = this.props;
     let paperId = citation.id;
     let title = citation.paper_title ? citation.paper_title : citation.title;
-    return `/paper/${paperId}/${formatPaperSlug(title)}`;
+    return `/paper/${paperId}/${buildSlug(title)}`;
   };
 
   renderPreview = () => {
@@ -101,7 +100,7 @@ class CitationCard extends React.Component {
                       hovered && carousel.show
                     )}
                   >
-                    <i className="far fa-angle-left" />
+                    {icons.angleLeft}
                   </span>
                   {`${currentSlide + 1} / ${slideCount}`}
                   <span
@@ -112,7 +111,7 @@ class CitationCard extends React.Component {
                       hovered && carousel.show
                     )}
                   >
-                    <i className="far fa-angle-right" />
+                    {icons.angleRight}
                   </span>
                 </div>
               );
@@ -193,7 +192,7 @@ class CitationCard extends React.Component {
             )}
             {this.renderPreview()}
 
-            <div className={css(styles.title)} id={"clamp"}>
+            <div className={css(styles.title) + " clamp1"}>
               {citation.title && citation.title}
             </div>
           </a>
@@ -347,7 +346,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(CitationCard);
+export default connect(null, mapDispatchToProps)(CitationCard);

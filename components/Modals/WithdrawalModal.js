@@ -1,7 +1,6 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
-import ReactTooltip from "react-tooltip";
 
 import Link from "next/link";
 
@@ -23,14 +22,9 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
-import CheckBox from "../Form/CheckBox";
-import {
-  sanitizeNumber,
-  formatBalance,
-  isAddress,
-  toCheckSumAddress,
-} from "~/config/utils";
+import { useMetaMask } from "../connectEthereum";
+import { sanitizeNumber, formatBalance } from "~/config/utils/form";
+import { isAddress, toCheckSumAddress } from "~/config/utils/crypto";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -41,7 +35,7 @@ const CURRENT_CHAIN_ID =
     ? RINKEBY_CHAIN_ID
     : MAINNET_CHAIN_ID;
 
-class WithdrawalModal extends React.Component {
+class WithdrawalModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -82,7 +76,7 @@ class WithdrawalModal extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (this.props.auth.isLoggedIn) {
-      if (!this.state.buttonEnabled && this.props.agreedToTerms) {
+      if (!this.state.buttonEnabled && this.state.userBalance) {
         this.setState({
           buttonEnabled: true,
         });
@@ -117,13 +111,12 @@ class WithdrawalModal extends React.Component {
   };
 
   checkNetwork = () => {
-    let that = this;
     if (!this.state.connectedMetaMask) {
       ethereum
         .send("eth_requestAccounts")
         .then((accounts) => {
-          let account = accounts && accounts.result ? accounts.result[0] : [];
-          that.setState({
+          const account = accounts && accounts.result ? accounts.result[0] : [];
+          this.setState({
             connectedMetaMask: true,
             ethAccount: account,
           });
@@ -184,12 +177,7 @@ class WithdrawalModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     openWithdrawalModal(false);
-  };
-
-  enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
   };
 
   openTransactionConfirmation = (url) => {
@@ -266,13 +254,8 @@ class WithdrawalModal extends React.Component {
     e.preventDefault();
 
     const { showMessage, setMessage } = this.props;
-    const {
-      buttonEnabled,
-      amount,
-      transactionFee,
-      userBalance,
-      ethAccount,
-    } = this.state;
+    const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
+      this.state;
 
     if (!buttonEnabled) {
       showMessage({ show: false });
@@ -281,9 +264,9 @@ class WithdrawalModal extends React.Component {
       return;
     }
 
-    if (amount < 100) {
+    if (amount < 5000) {
       showMessage({ show: false });
-      setMessage("Withdrawal amount must be at least 100 RSC");
+      setMessage("Withdrawal amount must be at least 5000 RSC");
       showMessage({ show: true, error: true });
       return;
     }
@@ -341,12 +324,7 @@ class WithdrawalModal extends React.Component {
   };
 
   renderToggleContainer = (className) => {
-    return (
-      <div className={className}>
-        {this.renderMetaMaskButton()}
-        {this.renderWalletLinkButton()}
-      </div>
-    );
+    return <div className={className}>{this.renderMetaMaskButton()}</div>;
   };
 
   renderMetaMaskButton = () => {
@@ -377,7 +355,6 @@ class WithdrawalModal extends React.Component {
     const { connected, provider, account } = await useMetaMask();
     if (connected) {
       this.setUpEthListeners();
-      console.log("Connected to MetaMask");
       this.setState({
         connectedMetaMask: connected,
         connectedWalletLink: false,
@@ -445,7 +422,6 @@ class WithdrawalModal extends React.Component {
     const { connected, provider, account, walletLink } = await useWalletLink();
     if (connected) {
       this.props.setWalletLink(walletLink);
-      console.log("Connected to WalletLink");
       this.setState({
         walletLink,
         connectedMetaMask: false,
@@ -583,15 +559,15 @@ class WithdrawalModal extends React.Component {
           containerStyles={styles.amountInputStyles}
           inputContainerStyles={styles.fullWidth}
           inputStyles={[styles.fullWidth]}
-          placeholder={"Enter the withdrawal amount (min. 100 RSC)"}
+          placeholder={"Enter the withdrawal amount (min. 5000 RSC)"}
           required={true}
-          minValue={100}
+          // minValue={5000}
           value={amount}
           onChange={this.handleAmountInput}
         />
         <div className={css(styles.row)}>
           <div className={css(styles.left)}>
-            <div className={css(styles.mainHeader)}>Network Fee</div>
+            <div className={css(styles.mainHeader)}>Transaction Fee</div>
             <a
               href={"https://ethereum.org/en/developers/docs/gas/"}
               target="_blank"
@@ -725,7 +701,11 @@ class WithdrawalModal extends React.Component {
     return (
       <div className={css(styles.tabBar)}>
         <div
-          className={css(styles.tab, !depositScreen && styles.tabActive)}
+          className={css(
+            styles.tab,
+            !depositScreen && styles.tabActive,
+            styles.oneTab
+          )}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: false }))
           }
@@ -738,7 +718,7 @@ class WithdrawalModal extends React.Component {
             this.transitionScreen(() => this.setState({ depositScreen: true }))
           }
         >
-          Deposit to RH
+          Deposit to RH Withdraw RSC
         </div>
       </div>
     );
@@ -759,6 +739,13 @@ class WithdrawalModal extends React.Component {
           {connectedMetaMask && networkVersion !== CURRENT_CHAIN_ID
             ? this.renderSwitchNetworkMsg()
             : this.renderTransactionScreen()}
+          <img
+            src={"/static/icons/close.png"}
+            className={css(styles.closeButton)}
+            onClick={this.closeModal}
+            draggable={false}
+            alt="Close Button"
+          />
         </div>
       </Fragment>
     );
@@ -781,7 +768,7 @@ class WithdrawalModal extends React.Component {
 
 const styles = StyleSheet.create({
   root: {
-    maxHeight: "100vh",
+    maxHeight: "90vh",
     overflowY: "scroll",
   },
   content: {
@@ -820,6 +807,13 @@ const styles = StyleSheet.create({
     color: colors.BLUE(),
     border: "none",
     backgroundColor: "#FFF",
+  },
+  oneTab: {
+    width: "100%",
+    fontSize: 22,
+    paddingTop: 30,
+    color: colors.BLACK(),
+    height: 30,
   },
   main: {
     paddingLeft: 30,
@@ -1196,7 +1190,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   auth: state.auth,
   modals: state.modals,
-  agreedToTerms: state.auth.user.agreed_to_terms,
+  // agreedToTerms: state.auth.user.agreed_to_terms,
 });
 
 const mapDispatchToProps = {
@@ -1209,7 +1203,4 @@ const mapDispatchToProps = {
   setWalletLink: AuthActions.setWalletLink,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WithdrawalModal);
+export default connect(mapStateToProps, mapDispatchToProps)(WithdrawalModal);

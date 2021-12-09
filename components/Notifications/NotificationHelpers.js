@@ -2,9 +2,12 @@ import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import PropTypes from "prop-types";
 
+import { ClampedText } from "~/components/Typography";
+
 // Config
 import colors from "~/config/themes/colors";
-import { timeAgoStamp, truncateText } from "~/config/utils";
+import { truncateText } from "~/config/utils/string";
+import { timeAgoStamp } from "~/config/utils/dates";
 
 const HyperLink = (props) => {
   const { text, link, dataTip, onClick, style } = props;
@@ -23,13 +26,13 @@ const HyperLink = (props) => {
 };
 
 const TimeStamp = (props) => {
-  const { date } = props;
+  const { date, removeIcon } = props;
 
   return (
-    <span className={css(styles.timestamp)}>
-      <span className={css(styles.timestampDivider)}>•</span>
+    <ClampedText lines={1} textStyles={styles.timestamp}>
+      {!removeIcon && <span className={css(styles.timestampDivider)}>•</span>}
       {timeAgoStamp(date)}
-    </span>
+    </ClampedText>
   );
 };
 
@@ -137,7 +140,7 @@ HyperLink.propTypes = {
 };
 
 TimeStamp.propTypes = {
-  date: PropTypes.object,
+  date: PropTypes.string,
 };
 
 ModeratorDecisionTag.propTypes = {

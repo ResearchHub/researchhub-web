@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -11,23 +11,18 @@ import FormSelect from "../Form/FormSelect";
 // Redux
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { HubActions } from "~/redux/hub";
 
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "../../config/themes/colors";
 
-class AddHubModal extends React.Component {
+class AddHubModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
       hubDescription: "",
       hubName: "",
-      categories:
-        this.props.categories && this.props.categories.results
-          ? this.props.categories.results
-          : [],
       error: {
         upload: false,
         category: true,
@@ -138,16 +133,13 @@ class AddHubModal extends React.Component {
 
   closeModal = () => {
     this.props.openAddHubModal(false);
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   render() {
-    const { modals, openAddHubModal } = this.props;
-    const categories = this.props.categories.map((elem) => {
-      return { value: elem.id, label: elem.category_name };
-    });
+    const { categories, modals, openAddHubModal } = this.props;
+    const categoryOptions = categories
+      .filter((elem) => elem.category_name !== "Trending")
+      .map((elem) => ({ value: elem.id, label: elem.category_name }));
     return (
       <BaseModal
         isOpen={modals.openAddHubModal}
@@ -195,7 +187,7 @@ class AddHubModal extends React.Component {
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
-            options={categories}
+            options={categoryOptions}
             onChange={this.handleCategoryChange}
             error={this.state.error.category && this.state.error.changed}
           />
@@ -268,7 +260,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
-  categories: state.hubs.categories,
 });
 
 const mapDispatchToProps = {
@@ -278,7 +269,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddHubModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddHubModal);

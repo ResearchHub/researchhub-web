@@ -1,52 +1,66 @@
-import { connect } from "react-redux";
-import { StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-
-import HubPage from "../components/Hubs/HubPage";
-
-import API from "~/config/api";
+import { AUTH_TOKEN } from "~/config/constants";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
+import { filterOptions } from "~/config/utils/options";
 import { getInitialScope } from "~/config/utils/dates";
-import { Helpers } from "@quantfive/js-web-config";
-const isServer = () => typeof window === "undefined";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import HubPage from "~/components/Hubs/HubPage";
+import nookies from "nookies";
 
 const Index = (props) => {
+  // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
 
-const getHubPapers = (page) => {
-  return fetch(
-    API.GET_HUB_PAPERS({
-      hubId: 0,
-      ordering: "hot",
-      timePeriod: getInitialScope(),
-      page,
-    }),
-    API.GET_CONFIG()
-  )
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res;
-    });
-};
+const isServer = () => typeof window === "undefined";
 
 Index.getInitialProps = async (ctx) => {
-  if (!isServer()) {
-    return { page: 1 };
-  }
-  let { query } = ctx;
-  let defaultProps = {
+  // TODO: calvinhlee - refactor this
+  const { query, query: urlQuery } = ctx;
+  const { type, page, filter } = query;
+  const filterObj = filterOptions.filter((el) => el.value === filter)[0];
+  const cookies = nookies.get(ctx);
+  const authToken = cookies[AUTH_TOKEN];
+  const defaultProps = {
     initialFeed: null,
     leaderboardFeed: null,
     initialHubList: null,
+    feed: 0,
+    loggedIn: authToken !== undefined,
   };
-  let page = query.page ? query.page : 1;
+
+  if (!isServer()) {
+    return {
+      ...defaultProps,
+      home: true,
+      page: 1,
+      feed: 0,
+      filter: filterObj,
+      query,
+    };
+  }
+
   try {
-    let initialFeed = await getHubPapers(page);
-    let props = { initialFeed, query, page: page + 1 };
-    return props;
-  } catch (e) {
-    console.log(e);
+    const urlDocType = type || "all";
+    const initialFeed = await fetchUnifiedDocFeed(
+      {
+        hubId: null,
+        ordering: "hot",
+        page: 1,
+        subfilters: filterObj,
+        subscribedHubs: false,
+        timePeriod: getInitialScope(),
+        type: urlDocType,
+      },
+      authToken,
+      !isNullOrUndefined(authToken) /* withVotes */
+    );
+    return {
+      ...defaultProps,
+      initialFeed,
+      feed: 0,
+    };
+  } catch (error) {
     return defaultProps;
   }
 };

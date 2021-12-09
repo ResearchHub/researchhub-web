@@ -3,13 +3,7 @@ import { useState, useEffect } from "react";
 // NPM Components
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Plain from "slate-plain-serializer";
-import { isAndroid, isMobile } from "react-device-detect";
-var isAndroidJS = false;
-if (process.browser) {
-  const ua = navigator.userAgent.toLowerCase();
-  isAndroidJS = ua && ua.indexOf("android") > -1;
-}
+
 // Components
 import QuillTextEditor from "./QuillTextEditor";
 
@@ -18,9 +12,9 @@ import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
 // Config
-import { convertToEditorToHTML } from "~/config/utils";
+import { convertToEditorToHTML } from "~/config/utils/editor";
 
-const TextEditor = (props) => {
+function TextEditor(props) {
   const {
     canCancel,
     canSubmit,
@@ -45,16 +39,19 @@ const TextEditor = (props) => {
     smallToolBar,
     loading,
     commentEditorStyles,
-    removeStickyToolbar,
     editing,
     focusEditor,
     hasHeader,
     summary,
+    mediaOnly,
+    setMessage,
+    showMessage,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
-  const [uid, setUid] = useState(createUid());
+
+  const uid = createUid();
 
   useEffect(() => {
     setValue(initialValue);
@@ -84,8 +81,8 @@ const TextEditor = (props) => {
       openLoginModal(true, "Please Sign in with Google to continue.");
     } else {
       if (isQuillEmpty(content)) {
-        props.setMessage("Content cannot be empty.");
-        return props.showMessage({ error: true, show: true, clickoff: true });
+        setMessage("Content cannot be empty.");
+        return showMessage({ error: true, show: true, clickoff: true });
       }
 
       onSubmit && onSubmit(content, plain_text, callback);
@@ -100,12 +97,7 @@ const TextEditor = (props) => {
   }
 
   function createUid() {
-    return (
-      "_" +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
+    return "_" + Math.random().toString(36).substr(2, 9);
   }
 
   return (
@@ -116,6 +108,7 @@ const TextEditor = (props) => {
       setRef={setInternalRef}
       ref={setEditorRef}
       readOnly={readOnly || false}
+      mediaOnly={mediaOnly}
       onChange={handleChange}
       canCancel={canCancel}
       canSubmit={canSubmit}
@@ -140,7 +133,7 @@ const TextEditor = (props) => {
       summary={summary && summary}
     />
   );
-};
+}
 
 TextEditor.propTypes = {
   canEdit: PropTypes.bool,
@@ -170,7 +163,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TextEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(TextEditor);

@@ -1,47 +1,30 @@
-import { Fragment, useState } from "react";
-import { useDispatch, useStore } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import Router from "next/router";
+import { useState } from "react";
 import Link from "next/link";
 import Ripples from "react-ripples";
+import Router from "next/router";
+import { StyleSheet, css } from "aphrodite";
 
-// Component
-import AuthorAvatar from "../AuthorAvatar";
-import Button from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
-import { ModeratorBounty, ContributorBounty } from "./BountyNotifications";
-import {
-  ExternalLink,
-  HyperLink,
-  TimeStamp,
-  ModeratorDecisionTag,
-  PlainText,
-  Bold,
-} from "./NotificationHelpers";
-
-// Redux
+import { connect, useDispatch, useStore } from "react-redux";
+import { doesNotExist, isNullOrUndefined } from "~/config/utils/nullchecks";
+import { HyperLink, TimeStamp } from "./NotificationHelpers";
 import { NotificationActions } from "~/redux/notification";
-import { AuthorActions } from "~/redux/author";
 
 // Config
 import colors from "../../config/themes/colors";
-import {
-  doesNotExist,
-  getNestedValue,
-  timeAgoStamp,
-  formatPaperSlug,
-} from "~/config/utils";
-import { reviewBounty } from "~/config/fetch";
+import { buildSlug } from "~/config/utils/document";
+import { timeAgoStamp } from "~/config/utils/dates";
+import AuthorAvatar from "../AuthorAvatar";
 
 const NotificationEntry = (props) => {
-  const { notification, data, updateNotification } = props;
+  const { notification, data } = props;
   const [isRead, toggleRead] = useState(data.read);
-  const [pendingApproval, setPendingApproval] = useState(false);
-  const [pendingDenial, setPendingDenial] = useState(false);
 
   const dispatch = useDispatch();
-  const store = useStore();
+
+  if (isNullOrUndefined(notification)) {
+    // if no notification object is passed, dont render anything
+    return null;
+  }
 
   const markAsRead = async (data) => {
     if (isRead) {
@@ -69,80 +52,71 @@ const NotificationEntry = (props) => {
 
   const handleNavigation = (e) => {
     e && e.stopPropagation();
-    const { content_type, paper_id, thread_id, slug } = notification;
-    const type = content_type;
-    const paperId = paper_id;
-    const title = slug
+    const {
+      content_type,
+      document_id,
+      slug,
+      support_type,
+      parent_content_type,
+      paper_official_title,
+      document_type,
+      paper_title,
+    } = notification;
+
+    const formattedSlug = !isNullOrUndefined(slug)
       ? slug
-      : formatPaperSlug(
-          notification.paper_official_title
-            ? notification.paper_official_title
-            : notification.paper_title
-        );
+      : buildSlug(paper_official_title ?? paper_title);
+    const isComment = ["thread", "comment", "reply"].includes(support_type);
+    // TODO: calvinhlee check with leo with parent_content_type
+    const documentType = isComment ? parent_content_type : document_type;
+    const hrefPattern = `/[document_type]/[document_id]/[formatted_slug]`;
+    const route =
+      `/${documentType}/${document_id}/${formattedSlug}` +
+      (isComment
+        ? "#comments"
+        : [
+            "thread",
+            "comment",
+            "reply",
+            "vote_thread",
+            "vote_reply",
+            "vote_comment",
+          ].includes(content_type)
+        ? "#comments"
+        : ["bullet_point", "vote_bullet"].includes(content_type)
+        ? "#takeaways"
+        : ["summary", "vote_summary"].includes(content_type)
+        ? "#summary"
+        : "");
 
-    let href, route;
-    if (
-      type === "paper" ||
-      type === "support_content" ||
-      type === "bounty_moderator" ||
-      type === "bounty_contributor"
-    ) {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}`;
-    } else if (
-      type === "thread" ||
-      type === "comment" ||
-      type === "reply" ||
-      type === "vote_thread" ||
-      type === "vote_reply" ||
-      type === "vote_comment"
-    ) {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#comments`;
-    } else if (type === "bullet_point" || type === "vote_bullet") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#takeaways`;
-    } else if (type === "summary" || type === "vote_summary") {
-      href = "/paper/[paperId]/[paperName]";
-      route = `/paper/${paperId}/${title}#summary`;
-    }
-
-    if (href && route) {
-      Router.push(href, route).then(() => {
-        markAsRead(props.data);
-        props.closeMenu(); // added as a fallback
-      });
-    }
+    Router.push(hrefPattern, route).then(() => {
+      markAsRead(props.data);
+      props.closeMenu(); // added as a fallback
+    });
   };
 
   const renderMessage = () => {
-    const notification = props.notification;
+    const { notification } = props;
     const {
-      created_date,
-      created_by,
+      action_tip,
       content_type,
-      paper_title,
-      paper_official_title,
+      created_by,
+      created_date,
+      document_id: documentId,
+      document_title,
+      document_type,
       slug,
+      thread_id: threadId,
     } = notification;
-    const timestamp = timeAgoStamp(created_date);
-    const username = formatUsername(
-      getNestedValue(created_by, ["author_profile"])
-    );
-    const authorId = getNestedValue(created_by, ["author_profile", "id"]);
-    const title = slug
-      ? slug
-      : formatPaperSlug(
-          paper_official_title ? paper_official_title : paper_title
-        );
-    const paperTip = notification.paper_title
-      ? notification.paper_title
-      : notification.paper_official_title;
-    const paperId = notification.paper_id;
-    const threadTip = notification.thread_title
-      ? notification.thread_title
-      : notification.thread_plain_text;
-    const threadId = notification.thread_id;
+    const {
+      first_name: creatorFName,
+      last_name: creatorLName,
+      author_profile: creatorProfile,
+    } = created_by;
+
+    const authorId = creatorProfile?.id ?? null;
+    const formattedSlug = slug ?? buildSlug(document_title);
+    const creatorName = creatorFName ?? "" + creatorLName ?? "";
 
     const onClick = (e) => {
       e.stopPropagation();
@@ -152,98 +126,55 @@ const NotificationEntry = (props) => {
 
     const authorLink = {
       href: "/user/[authorId]/[tabName]",
-      as: `/user/${authorId}/contributions`,
+      as: `/user/${authorId}/overview`,
     };
 
     const paperLink = {
-      href: "/paper/[paperId]/[paperName]",
-      as: `/paper/${paperId}/${slug}`,
+      href: "/[documentType]/[paperId]/[paperName]",
+      as: `/${document_type}/${documentId}/${formattedSlug}`,
     };
 
     const discussionPageLink = {
-      href: "/paper/[paperId]/[paperName]/[discussionThreadId]",
-      as: `/paper/${paperId}/${title}/${threadId}`,
+      href: "/[documentType]/[paperId]/[paperName]/[discussionThreadId]",
+      as: `/${document_type}/${documentId}/${formattedSlug}/${threadId ?? ""}`,
     };
 
     const sectionLink = (section) => {
       let as = paperLink.as + "#" + section;
-      // switch(section) {
-      //   case "takeaway":
-      //     as = paperLink.as + "#takeaways";
-      //     break;
-      //   case "summary":
-      //     as = paperLink.as + "#summary";
-      //     break;
-      //   case "discussion":
-      //     as = paperLink.as + "#comments"
-      //     break;
-      // }
-
       return { ...paperLink, as };
     };
 
-    const user = (
+    const timeStamp = <TimeStamp date={created_date} />;
+    const notifCreator = (
       <HyperLink
         link={authorLink}
         onClick={onClick}
         style={styles.username}
-        text={username}
+        text={creatorName}
       />
     );
 
     switch (content_type) {
-      case "bullet_point":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" added a key takeaway to "}
-            <HyperLink
-              link={sectionLink("takeaways")}
-              onClick={onClick}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
-              style={styles.paper}
-            />
-            <TimeStamp date={created_date} />
-          </div>
-        );
-      case "summary":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" edited a summary for "}
-            <HyperLink
-              link={sectionLink("summary")}
-              onClick={onClick}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
-              style={styles.paper}
-            />
-            <TimeStamp date={created_date} />
-          </div>
-        );
       case "paper":
-        var paperTitle = notification.paper_title
-          ? notification.paper_title
-          : notification.paper_official_title;
+      case "post":
         return (
           <div className={css(styles.message)}>
-            {user}
-            {" uploaded a new paper "}
+            {notifCreator}
+            {` uploaded a new paper ${content_type}`}
             <HyperLink
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTitle}
-              text={paperTitle && truncateText(paperTitle)}
+              dataTip={document_title}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "thread":
         return (
           <div className={css(styles.message)}>
-            {user}
+            {notifCreator}
             {" created a "}
             <HyperLink
               link={discussionPageLink}
@@ -256,464 +187,102 @@ const NotificationEntry = (props) => {
               link={paperLink}
               onClick={onClick}
               style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
+              dataTip={document_title}
+              text={truncateText(document_title)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "comment":
-        var commentTip = notification.tip;
         return (
           <div className={css(styles.message)}>
-            {user}
+            {notifCreator}
             {" left a "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.link}
-              dataTip={commentTip}
               text={"comment"}
             />
             {"in your thread: "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.paper}
-              dataTip={threadTip}
-              text={threadTip && truncateText(threadTip)}
+              text={truncateText(action_tip)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
       case "reply":
-        var replyTip = notification.tip;
         return (
           <div className={css(styles.message)}>
-            {user}
+            {notifCreator}
             {" left a "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.link}
-              dataTip={replyTip}
               text={"reply"}
             />
             {"to your comment in "}
             <HyperLink
+              dataTip={action_tip}
               link={sectionLink("comments")}
               onClick={onClick}
               style={styles.paper}
-              dataTip={threadTip}
-              text={threadTip && truncateText(threadTip)}
+              text={truncateText(action_tip)}
             />
-            <TimeStamp date={created_date} />
+            {timeStamp}
           </div>
         );
-      case "vote_paper":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on "}
-            <HyperLink
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
-            />
-            <TimeStamp date={created_date} />
-          </div>
-        );
-      case "vote_thread":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on a "}
-            <HyperLink
-              link={discussionPageLink}
-              onClick={onClick}
-              style={styles.link}
-              text={"thread"}
-            />
-            {"in "}
-            <HyperLink
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
-            />
-            <TimeStamp date={created_date} />
-          </div>
-        );
-      case "vote_comment":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on a "}
-            <HyperLink
-              link={discussionPageLink}
-              onClick={onClick}
-              style={styles.link}
-              text={"comment"}
-            />
-            {"in "}
-            <HyperLink
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
-            />
-            <TimeStamp date={created_date} />
-          </div>
-        );
-      case "vote_reply":
-        return (
-          <div className={css(styles.message)}>
-            {user}
-            {" voted on a "}
-            <HyperLink
-              link={discussionPageLink}
-              onClick={onClick}
-              style={styles.link}
-              text={"reply"}
-            />
-            {"in "}
-            <HyperLink
-              link={paperLink}
-              onClick={onClick}
-              style={styles.paper}
-              dataTip={paperTip}
-              text={paperTip && truncateText(paperTip)}
-            />
-            <TimeStamp date={created_date} />
-          </div>
-        );
-      // case "stripe":
-      //   return handleStripeNotification();
-      case "vote_bullet":
-        return renderBulletVoteNotification();
-      case "vote_summary":
-        return renderSummaryVoteNotification();
-      case "support_content":
+      case "purchase": // synanomous to "support"
         return renderContentSupportNotification();
-      case "bounty_moderator":
-        return (
-          <div className={css(styles.message)}>
-            <ModeratorBounty {...props} markAsRead={markAsRead} />
-          </div>
-        );
-      case "bounty_contributor":
-        return (
-          <div className={css(styles.message)}>
-            <ContributorBounty {...props} markAsRead={markAsRead} />
-          </div>
-        );
       default:
         return;
     }
   };
 
-  const handleStripeNotification = () => {
-    const {
-      created_date,
-      created_by,
-      status,
-      url,
-      message,
-    } = props.notification;
-
-    if (status && status === "pending") {
-      return null;
-    }
-
-    const timestamp = timeAgoStamp(created_date);
-    const authorProfile = created_by.author_profile;
-
-    _updateAuthorWallet(authorProfile.wallet, store.getState().author);
-
-    function _updateAuthorWallet(wallet, author) {
-      let { stripe_verified, stripe_acc } = author.wallet;
-      if (!stripe_verified && wallet.stripe_verified) {
-        return dispatch(
-          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
-        );
-      } else if (stripe_acc !== wallet.stripe_acc) {
-        return dispatch(
-          AuthorActions.updateAuthorByKey({ key: "wallet", value: wallet })
-        );
-      }
-    }
-
-    function _formatText(status, message) {
-      switch (status) {
-        case "inactive":
-          let field = message;
-
-          return (
-            <Fragment>
-              Almost done! Please verify your {` ${field} `} from your{" "}
-              <span className={css(styles.link)}>
-                <b>Stripe Dashboard.</b>
-              </span>
-            </Fragment>
-          );
-        case "active":
-          return (
-            <Fragment>
-              Congrats! Your Stripe account has been verified.
-            </Fragment>
-          );
-      }
-    }
-
-    return (
-      <div
-        className={css(styles.message)}
-        onClick={(e) => {
-          e.stopPropagation();
-          markAsRead(props.data);
-          isRead && props.closeMenu();
-        }}
-      >
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href={url}
-          className={css(styles.atag)}
-        >
-          {_formatText(status, message)}
-          <span className={css(styles.timestamp)}>
-            <span className={css(styles.timestampDivider)}>•</span>
-            {timestamp}
-          </span>
-        </a>
-        <img
-          className={css(styles.stripeLogo)}
-          src={"/static/icons/stripe.png"}
-          alt="Stripe Logo"
-        />
-      </div>
-    );
-  };
-
-  const renderBulletVoteNotification = () => {
-    const {
-      created_by,
-      created_date,
-      plain_text,
-      paper_id,
-      slug,
-    } = props.notification;
-
-    const author = created_by.author_profile;
-
-    return (
-      <div className={css(styles.message)}>
-        <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${author.id}/contributions`}
-        >
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.username)}
-          >
-            {`${author.first_name} ${author.last_name}`}
-          </a>
-        </Link>{" "}
-        voted on your{" "}
-        <Link
-          href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/${slug}#description`}
-        >
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.link)}
-          >
-            key takeaway,{" "}
-          </a>
-        </Link>
-        <span className={css(styles.italics)}>{truncateText(plain_text)}</span>
-        <span className={css(styles.timestamp)}>
-          <span className={css(styles.timestampDivider)}>•</span>
-          {timeAgoStamp(created_date)}
-        </span>
-      </div>
-    );
-  };
-
-  const renderSummaryVoteNotification = () => {
-    const {
-      content_type,
-      created_by,
-      created_date,
-      plain_text,
-      paper_id,
-      paper_official_title,
-      slug,
-    } = props.notification;
-
-    const author = created_by.author_profile;
-
-    return (
-      <div className={css(styles.message)}>
-        <Link
-          href={"/user/[authorId]/[tabName]"}
-          as={`/user/${author.id}/contributions`}
-        >
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.username)}
-          >
-            {`${author.first_name} ${author.last_name}`}
-          </a>
-        </Link>{" "}
-        voted on your{" "}
-        <Link
-          href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/${slug}#description`}
-        >
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.link)}
-          >
-            summary,{" "}
-          </a>
-        </Link>
-        <span className={css(styles.italics)}>{truncateText(plain_text)}</span>{" "}
-        in{" "}
-        <Link
-          href={"/paper/[paperId]/[paperName]"}
-          as={`/paper/${paper_id}/${slug}`}
-        >
-          <a
-            onClick={(e) => {
-              e.stopPropagation();
-              markAsRead(data);
-              props.closeMenu();
-            }}
-            className={css(styles.paper)}
-            data-tip={paper_official_title}
-          >
-            {paper_official_title && truncateText(paper_official_title)}
-          </a>
-        </Link>
-        <span className={css(styles.timestamp)}>
-          <span className={css(styles.timestampDivider)}>•</span>
-          {timeAgoStamp(created_date)}
-        </span>
-      </div>
-    );
-  };
-
   const renderContentSupportNotification = () => {
     const {
-      type,
+      contribution_amount,
       created_by,
       created_date,
-      paper_id,
-      amount,
+      document_id: documentId,
+      document_type: documentType,
       slug,
     } = props.notification;
-    const author = created_by.author_profile;
-    const getContentType = () => {
-      if (type === "bulletpoint") {
-        return "key takeaway";
-      }
-      if (type === "thread") {
-        return "comment";
-      }
-      return type;
-    };
 
-    const formatLink = (props) => {
+    const {
+      first_name: creatorFName,
+      last_name: creatorLName,
+      author_profile: creatorProfile,
+    } = created_by;
+
+    const formattedSlug = slug ?? buildSlug(documentType);
+    const creatorName = creatorFName ?? "" + creatorLName ?? "";
+
+    const formatLink = () => {
       const link = {
-        href: "/paper/[paperId]/[paperName]",
-        as: `/paper/${paper_id}/${slug}`,
+        href: "/[documentType]/[paperId]/[paperName]",
+        as: `/${documentType}/${documentId}/${formattedSlug}`,
       };
 
-      switch (type) {
-        case "summary":
-          link.as = link.as + "#summary";
-          break;
-        case "bulletpoint":
-          link.as = link.as + "#takeaways";
-          break;
+      switch (documentType) {
         case "thread":
-          link.href = link.href + "/[discussionThreadId]";
-          link.as = link.as + `/${props.data.extra.source.id}`;
-          break;
         case "comment":
-          link.as = link.as + "#comments";
-          break;
         case "reply":
-          link.as = link.as + "#comments";
+          link.as += "#comments";
           break;
         default:
           break;
       }
+
       return link;
     };
-
-    if (type === "paper") {
-      return (
-        <div className={css(styles.message)}>
-          <Link
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/contributions`}
-          >
-            <a
-              onClick={(e) => {
-                e.stopPropagation();
-                markAsRead(data);
-                props.closeMenu();
-              }}
-              className={css(styles.username)}
-            >
-              {`${author.first_name} ${author.last_name}`}
-            </a>
-          </Link>
-          {` contributed ${Number(amount)} RSC to support your `}
-          <Link
-            href={"/paper/[paperId]/[paperName]"}
-            as={`/paper/${paper_id}/${slug}`}
-          >
-            <a
-              onClick={(e) => {
-                e.stopPropagation();
-                markAsRead(data);
-                props.closeMenu();
-              }}
-              className={css(styles.link)}
-            >
-              paper.
-            </a>
-          </Link>
-          <span className={css(styles.timestamp)}>
-            <span className={css(styles.timestampDivider)}>•</span>
-            {timeAgoStamp(created_date)}
-          </span>
-        </div>
-      );
-    }
 
     return (
       <div className={css(styles.message)}>
@@ -724,7 +293,7 @@ const NotificationEntry = (props) => {
           alt="Party Popper Icon"
         />
         {" Your "}
-        <Link {...formatLink(props)}>
+        <Link {...formatLink()}>
           <a
             onClick={(e) => {
               e.stopPropagation();
@@ -733,15 +302,17 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.link)}
           >
-            {getContentType()}
+            {documentType}
           </a>
         </Link>
         {"has been awarded "}
-        <span className={css(styles.rsc)}>{`${Number(amount)} RSC`}</span>
+        <span className={css(styles.rsc)}>{`${Number(
+          contribution_amount
+        )} RSC`}</span>
         {" by "}
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${author.id}/contributions`}
+          as={`/user/${creatorProfile?.id ?? ""}/overview`}
         >
           <a
             onClick={(e) => {
@@ -751,7 +322,7 @@ const NotificationEntry = (props) => {
             }}
             className={css(styles.username)}
           >
-            {`${author.first_name} ${author.last_name}. `}
+            {creatorName + ". "}
           </a>
         </Link>
         <span className={css(styles.timestamp)}>
@@ -762,83 +333,7 @@ const NotificationEntry = (props) => {
     );
   };
 
-  const renderActions = () => {
-    const { content_type, bounty_approved } = props.notification;
-
-    if (content_type === "bounty_moderator") {
-      if (doesNotExist(bounty_approved)) {
-        return (
-          <div className={css(styles.row)}>
-            <Button
-              label={
-                pendingDenial ? (
-                  <Loader loading={true} size={15} color={"#FFF"} />
-                ) : (
-                  "Deny"
-                )
-              }
-              customButtonStyle={styles.buttonDeny}
-              rippleClass={styles.button}
-              customLabelStyle={styles.buttonLabel}
-              disabled={pendingApproval || pendingDenial}
-              onClick={() => handleBounty(false)}
-            />
-            <Button
-              label={
-                pendingApproval ? (
-                  <Loader loading={true} size={15} color={"#FFF"} />
-                ) : (
-                  "Approve"
-                )
-              }
-              customButtonStyle={styles.button}
-              rippleClass={styles.buttonApprove}
-              customLabelStyle={styles.buttonLabel}
-              disabled={pendingApproval || pendingDenial}
-              onClick={() => handleBounty(true)}
-            />
-          </div>
-        );
-      }
-    }
-  };
-
-  const handleBounty = (approved) => {
-    if (pendingApproval || pendingDenial) return;
-
-    if (approved) {
-      setPendingApproval(true);
-    } else {
-      setPendingDenial(true);
-    }
-
-    const { type, bounty_id, paper_id } = props.notification;
-
-    const PAYLOAD = {
-      bounty_content_type: type,
-      bounty_object_id: bounty_id,
-      notification_id: props.data.id,
-      approved,
-    };
-
-    reviewBounty({ paperId: paper_id, PAYLOAD })
-      .then((res) => {
-        // update
-        const updatedNotification = { ...props.data };
-        updatedNotification.extra.bounty_approval = approved;
-        updateNotification(updatedNotification);
-
-        if (approved) {
-          setPendingApproval(false);
-        } else {
-          setPendingDenial(false);
-        }
-      })
-      .catch((err) => {
-        setPendingApproval(false);
-        setPendingDenial(false);
-      });
-  };
+  const message = renderMessage();
 
   return (
     <Ripples
@@ -848,14 +343,10 @@ const NotificationEntry = (props) => {
       <div className={css(styles.authorAvatar)}>
         <AuthorAvatar
           size={35}
-          author={notification && notification.created_by.author_profile}
+          author={notification?.created_by?.author_profile ?? ""}
         />
       </div>
-      <div className={css(styles.body)}>
-        {notification &&
-          renderMessage(notification.context_type && notification.context_type)}
-        {renderActions()}
-      </div>
+      <div className={css(styles.body)}>{message}</div>
     </Ripples>
   );
 };
@@ -1009,7 +500,4 @@ const mapDispatchToProps = {
   updateNotification: NotificationActions.updateNotification,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(NotificationEntry);
+export default connect(null, mapDispatchToProps)(NotificationEntry);

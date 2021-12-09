@@ -1,4 +1,5 @@
-import React, {
+import {
+  forwardRef,
   useState,
   useEffect,
   useImperativeHandle,
@@ -7,11 +8,12 @@ import React, {
 import { StyleSheet, css } from "aphrodite";
 import DragNDrop from "./DragNDrop";
 import Loader from "../Loader/Loader";
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import api from "../../config/api";
 import helpers from "@quantfive/js-web-config/helpers";
 
-const VerificationForm = React.forwardRef((props, ref) => {
+const VerificationForm = forwardRef((props, ref) => {
   const { showMessage } = props;
   const [files, setFiles] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -112,10 +114,12 @@ const VerificationForm = React.forwardRef((props, ref) => {
           {files.map((file, index) => {
             return (
               <div className={css(styles.preview)} key={`file_${index}`}>
-                <i
+                <span
                   onClick={() => removeFile(index)}
-                  class={css(styles.times) + " fas fa-times"}
-                ></i>
+                  class={css(styles.times)}
+                >
+                  {icons.times}
+                </span>
                 {
                   <img
                     className={css(styles.previewImg)}
@@ -136,9 +140,7 @@ const VerificationForm = React.forwardRef((props, ref) => {
         addImageClassName={files.length > 0 ? "DndHero single" : "DndDefault"}
         imageContainerClassName={calculateStyle()}
         accept={"image/*"}
-        addImageText={
-          files.length < 1 ? renderDropContent() : <i className="fal fa-plus" />
-        }
+        addImageText={files.length < 1 ? renderDropContent() : icons.plus}
       />
     </div>
   );

@@ -1,40 +1,12 @@
-import React, { Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import miniToken from "~/components/Modals/Artifacts/mini-me-token";
-import contractAbi from "~/components/Modals/Artifacts/contract-abi";
-import { contractABI } from "./contractAbi";
-import { ethers } from "ethers";
-import * as Sentry from "@sentry/browser";
 import ReactTooltip from "react-tooltip";
 
 // Component
-// import BaseModal from "./BaseModal";
-// import Loader from "~/components/Loader/Loader";
-// import Button from "~/components/Form/Button";
 import FormInput from "~/components/Form/FormInput";
-import { AmountInput, RecipientInput } from "../Form/RSCForm";
-
-// Redux
-import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
-import { AuthActions } from "~/redux/auth";
-import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
-import { sendAmpEvent } from "~/config/fetch";
-import {
-  sanitizeNumber,
-  formatBalance,
-  onKeyDownNumInput,
-  onPasteNumInput,
-  isAddress,
-  toCheckSumAddress,
-} from "~/config/utils";
 
 const ETHAddressInput = (props) => {
   const {
@@ -118,7 +90,7 @@ const ETHAddressInput = (props) => {
       </div>
       {!props.value && (
         <span className={css(styles.placeholderIcon)}>
-          {icon ? icon : <i class="far fa-wallet" />}
+          {icon ? icon : icons.wallet}
         </span>
       )}
       <FormInput

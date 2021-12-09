@@ -1,4 +1,4 @@
-import { endsWithSlash } from "../../../../config/utils";
+import { endsWithSlash } from "../../../../config/utils/routing";
 
 describe("Routing Utils", function() {
   context("endsWithSlash", function() {

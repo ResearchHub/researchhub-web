@@ -1,19 +1,15 @@
 import { useState, useRef, Fragment, useEffect } from "react";
 
 // NPM Modules
-import { connect, useStore, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { withRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
-import { pdfjs } from "react-pdf";
 import { useAlert } from "react-alert";
 import Ripples from "react-ripples";
-
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 // Component
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import ComponentWrapper from "~/components/ComponentWrapper";
 import FormDND from "../../Form/FormDND";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import Button from "../../Form/Button";
@@ -27,19 +23,13 @@ import { AuthActions } from "~/redux/auth";
 import colors from "../../../config/themes/colors";
 import icons from "~/config/themes/icons";
 import { defaultStyles } from "~/config/themes/styles";
-import { openExternalLink } from "~/config/utils";
-
-// Stylesheets
-import "./stylesheets/ReactPdf.css";
+import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 
 function PaperTab(props) {
   const { paper, paperId, paperPdfRef, isModerator, updatePaperState } = props;
   const alert = useAlert();
-  const store = useStore();
   const dispatch = useDispatch();
 
-  const [loadSuccess, setLoadSuccess] = useState(false);
-  const [numPages, setNumPages] = useState(0);
   const [file, setFile] = useState(
     (paper && (paper.file || paper.pdf_url)) || null
   ); // the path to file pdf
@@ -48,13 +38,7 @@ function PaperTab(props) {
   const [showConfirmation, toggleConfirmation] = useState(null); // paper from dragNdDrop
   const [loading, toggleLoading] = useState(false);
   const [paperFile, setPaperFile] = useState({});
-  const [paperMetaData, setPaperMetadata] = useState({});
   const containerRef = useRef();
-
-  function onLoadSuccess({ numPages }) {
-    setNumPages(numPages);
-    setLoadSuccess(true);
-  }
 
   useEffect(() => {
     setFile(paper.file || paper.pdf_url);
@@ -69,7 +53,6 @@ function PaperTab(props) {
     let paperFile = acceptedFiles[0];
     dispatch(PaperActions.uploadPaperToState(paperFile, paperMetaData));
     setPaperFile(paperFile);
-    setPaperMetadata(paperMetaData);
   }
 
   function resetState() {
@@ -134,7 +117,6 @@ function PaperTab(props) {
     dispatch(PaperActions.clearPostedPaper());
     dispatch(PaperActions.removePaperFromState());
     setPaperFile({});
-    setPaperMetadata({});
   };
 
   function checkUserFirstTime() {
@@ -153,9 +135,11 @@ function PaperTab(props) {
       );
     }
     if (file) {
+      const httpsUrl = convertHttpToHttps(file);
+
       return (
         <div className={css(styles.pdfFrame)}>
-          <iframe src={file} height={800} width={"100%"} loading="lazy" />
+          <iframe src={httpsUrl} height={800} width={"100%"} loading="lazy" />
         </div>
       );
     } else {
@@ -164,6 +148,8 @@ function PaperTab(props) {
           <Fragment>
             <div className={css(styles.dndContainer)}>
               <FormDND
+                urlView={false}
+                showUrlOption={false}
                 handleDrop={handleFileDrop}
                 onSearch={checkSearchResults}
               />
@@ -248,7 +234,7 @@ function PaperTab(props) {
           return (
             <Fragment>
               <span className={css(styles.downloadIcon)}>
-                <i className="far fa-arrow-to-bottom" />
+                {icons.arrowToBottom}
               </span>
               Download
             </Fragment>
@@ -264,31 +250,29 @@ function PaperTab(props) {
   }
 
   return (
-    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-      <div className={css(styles.container)} ref={containerRef}>
-        <div className={css(styles.headerContainer)} ref={paperPdfRef}>
-          <div className={css(styles.titleContainer)}>
-            <h3 className={css(styles.title)}>Paper PDF</h3>
-            {file && renderDownloadPdf()}
-          </div>
-          {file && isModerator && (
-            <div className={css(styles.moderatorContainer)}>
-              <ModeratorDeleteButton
-                label={`Remove PDF`}
-                labelStyle={styles.moderatorLabel}
-                containerStyle={styles.moderatorButton}
-                actionType={"pdf"}
-                metaData={{ paperId: props.paperId }}
-                onRemove={onPdfRemove}
-                icon={" "}
-                iconStyle={styles.iconStyle}
-              />
-            </div>
-          )}
+    <div className={css(styles.container)} ref={containerRef}>
+      <div className={css(styles.headerContainer)} ref={paperPdfRef}>
+        <div className={css(styles.titleContainer)}>
+          <h3 className={css(styles.title)}>Paper PDF</h3>
+          {file && renderDownloadPdf()}
         </div>
-        {handleRenderState()}
+        {file && isModerator && (
+          <div className={css(styles.moderatorContainer)}>
+            <ModeratorDeleteButton
+              label={`Remove PDF`}
+              labelStyle={styles.moderatorLabel}
+              containerStyle={styles.moderatorButton}
+              actionType={"pdf"}
+              metaData={{ paperId: props.paperId }}
+              onRemove={onPdfRemove}
+              icon={" "}
+              iconStyle={styles.iconStyle}
+            />
+          </div>
+        )}
       </div>
-    </ComponentWrapper>
+      {handleRenderState()}
+    </div>
   );
 }
 
@@ -310,7 +294,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     boxSizing: "border-box",
-    padding: 50,
+    padding: 25,
     backgroundColor: "#FFF",
     marginTop: 30,
     border: "1.5px solid #F0F0F0",

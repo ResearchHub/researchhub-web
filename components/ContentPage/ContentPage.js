@@ -1,7 +1,7 @@
 import { StyleSheet, css } from "aphrodite";
-import "react-placeholder/lib/reactPlaceholder.css";
+import { Component } from "react";
 
-class ContentPage extends React.Component {
+class ContentPage extends Component {
   render() {
     return (
       <div className={css(styles.content, styles.column)}>
@@ -9,10 +9,10 @@ class ContentPage extends React.Component {
           <div className={css(styles.banner)}>{this.props.banner}</div>
         )}
         <div className={css(styles.row, styles.body)}>
-          <div className={css(styles.sidebar, styles.column)}>
-            {this.props.sidebar}
+          <div className={css(styles.column, styles.sidebar)}>
+            <div className={css(styles.sticky)}>{this.props.sidebar}</div>
           </div>
-          <div className={css(styles.mainFeed, styles.column)}>
+          <div className={css(styles.column, styles.mainFeed)}>
             {this.props.mainFeed}
           </div>
         </div>
@@ -39,21 +39,32 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: "#FCFCFC",
-    width: "100%",
-    alignItems: "flex-start",
+    width: "100vw",
+    height: "100%",
+    display: "table",
+    position: "relative",
+    boxSizing: "border-box",
   },
   sidebar: {
-    width: "18%",
-    minHeight: "100vh",
-    minWidth: 220,
+    display: "table-cell",
     position: "relative",
-    position: "sticky",
-    top: 80,
-    borderRight: "1px solid #ededed",
-    backgroundColor: "#FFF",
+    paddingTop: 15,
+    paddingLeft: 20,
+    width: 255,
+    minWidth: 230,
+    maxWidth: 255,
+    minHeight: "inherit",
+    paddingBottom: 30,
+    "@media only screen and (min-width: 1920px)": {
+      minWidth: 280,
+    },
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
+  },
+  sticky: {
+    position: "sticky",
+    top: 110,
   },
   banner: {
     width: "100%",
@@ -62,8 +73,9 @@ const styles = StyleSheet.create({
    * MAIN FEED STYLES
    */
   mainFeed: {
+    display: "table-cell",
+    maxWidth: 1200,
     height: "100%",
-    width: "82%",
     backgroundColor: "#FCFCFC",
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 768px)": {

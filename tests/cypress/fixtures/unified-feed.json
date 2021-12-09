@@ -1,0 +1,481 @@
+{
+  "count": 1751,
+  "next": "https://backend.researchhub.com/api/researchhub_unified_documents/get_unified_documents/?end_date__lte=1629047539&ordering=top_rated&page=2&start_date__gte=1546232400&subscribed_hubs=true&type=all",
+  "previous": null,
+  "results": [{
+    "documents": {
+      "id": 842660,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 2,
+        "name": "neuroscience",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/neuroscience.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=3hY2TIj1zmTS4FQlsZkI%2BcPFuFs%3D&Expires=1629652340",
+        "slug": "neuroscience",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 215,
+        "name": "psychiatry",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/mental-illness.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=%2BL8nUV8xs6mePD8Ec%2FCmOu0vSsI%3D&Expires=1629652340",
+        "slug": "mental-illness",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 22,
+          "first_name": "Patrick",
+          "last_name": "Joyce",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2019/11/19/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=M5Sx4mOu7uEQjioQe2a7yfT7JVc%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2020-11-04T20:52:13.570688Z",
+      "score": 304,
+      "hot_score": 382382,
+      "title": "A randomized clinical trial shows that Psilocybin is an effective treatment for major depressive disorder",
+      "paper_title": "Agg older than me and my friends",
+      "abstract": "Importance  Major depressive disorder (MDD) is a substantial public health burden, but current treatments have limited effectiveness and adherence. Recent evidence suggests that 1 or 2 administrations of psilocybin with psychological support produces antidepressant effects in patients with cancer and in those with treatment-resistant depression.Objective  To investigate the effect of psilocybin therapy in patients with MDD.Design, Setting, and Participants  This randomized, waiting list–controlled clinical trial was conducted at the Center for Psychedelic and Consciousness Research at Johns Hopkins Bayview Medical Center in Baltimore, Maryland. Adults aged 21 to 75 years with an MDD diagnosis, not currently using antidepressant medications, and without histories of psychotic disorder, serious suicide attempt, or hospitalization were eligible to participate. Enrollment occurred between August 2017 and April 2019, and the 4-week primary outcome assessments were completed in July 2019. A total of 27 participants were randomized to an immediate treatment condition group (n = 15) or delayed treatment condition group (waiting list control condition; n = 12). Data analysis was conducted from July 1, 2019, to July 31, 2020, and included participants who completed the intervention (evaluable population).Interventions  Two psilocybin sessions (session 1: 20 mg/70 kg; session 2: 30 mg/70 kg) were given (administered in opaque gelatin capsules with approximately 100 mL of water) in the context of supportive psychotherapy (approximately 11 hours). Participants were randomized to begin treatment immediately or after an 8-week delay.Main Outcomes and Measures  The primary outcome, depression severity was assessed with the GRID-Hamilton Depression Rating Scale (GRID-HAMD) scores at baseline (score of ≥17 required for enrollment) and weeks 5 and 8 after enrollment for the delayed treatment group, which corresponded to weeks 1 and 4 after the intervention for the immediate treatment group. Secondary outcomes included the Quick Inventory of Depressive Symptomatology-Self Rated (QIDS-SR).Results  Of the randomized participants, 24 of 27 (89%) completed the intervention and the week 1 and week 4 postsession assessments. This population had a mean (SD) age of 39.8 (12.2) years, was composed of 16 women (67%), and had a mean (SD) baseline GRID-HAMD score of 22.8 (3.9). The mean (SD) GRID-HAMD scores at weeks 1 and 4 (8.0 [7.1] and 8.5 [5.7]) in the immediate treatment group were statistically significantly lower than the scores at the comparable time points of weeks 5 and 8 (23.8 [5.4] and 23.5 [6.0]) in the delayed treatment group. The effect sizes were large at week 5 (Cohen d = 2.2; 95% CI, 1.4-3.0; P < .001) and week 8 (Cohen d = 2.6; 95% CI, 1.7-3.6; P < .001). The QIDS-SR documented a rapid decrease in mean (SD) depression score from baseline to day 1 after session 1 (16.7 [3.5] vs 6.3 [4.4]; Cohen d = 3.0; 95% CI, 1.9-4.0; P < .001), which remained statistically significantly reduced through the week 4 follow-up (6.0 [5.7]; Cohen d = 3.1; 95% CI, 1.9-4.2; P < .001). In the overall sample, 16 participants (67%) at week 1 and 17 (71%) at week 4 had a clinically significant response to the intervention (≥50% reduction in GRID-HAMD score), and 14 participants (58%) at week 1 and 13 participants (54%) at week 4 were in remission (≤7 GRID-HAMD score).Conclusions and Relevance  Findings suggest that psilocybin with therapy is efficacious in treating MDD, thus extending the results of previous studies of this intervention in patients with cancer and depression and of a nonrandomized study in patients with treatment-resistant depression.Trial Registration  ClinicalTrials.gov Identifier: NCT031815290In this study 27 participants were randomized, of whom 24 (89%) completed the intervention as well as the post-session assessments at weeks 1 and 4; 13 were randomized to the immediate treatment group and 11 to the delayed treatment group",
+      "slug": "effects-of-psilocybin-assisted-therapy-on-major-depressive-disorder-a-randomized-clinical-trial-complementary-and-alternative-medicine-jama-psychiatry-jama-network"
+    },
+    "document_type": "PAPER",
+    "score": 304,
+    "hot_score": 382382
+  }, {
+    "documents": {
+      "id": 1266004,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 15,
+        "name": "psychology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/psychology.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=2EKnTI%2BLTICkyr9G2%2Fc%2BW3eyd38%3D&Expires=1629652340",
+        "slug": "psychology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 2,
+        "name": "neuroscience",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/neuroscience.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=3hY2TIj1zmTS4FQlsZkI%2BcPFuFs%3D&Expires=1629652340",
+        "slug": "neuroscience",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 23,
+        "name": "covid-19",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/covid-19-coronavirus.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=NFZdXfA1x0FlJXfLsanWoPB%2BMR0%3D&Expires=1629652340",
+        "slug": "covid-19-coronavirus",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 196,
+        "name": "clinical trials",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/clinical-trials.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=iUEDRjNxSh3nZtb6nJodRUcM400%3D&Expires=1629652340",
+        "slug": "clinical-trials",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 215,
+        "name": "psychiatry",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/mental-illness.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=%2BL8nUV8xs6mePD8Ec%2FCmOu0vSsI%3D&Expires=1629652340",
+        "slug": "mental-illness",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 425610,
+          "first_name": "Anton",
+          "last_name": "Lebed",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2020/10/04/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=XMeQd4ThxpKqTEEVp4YBnz8YotE%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-07-25T20:15:17.179225Z",
+      "score": 303,
+      "hot_score": 476371,
+      "title": "Cognitive deficits in people who have recovered from COVID-19",
+      "paper_title": "Cognitive deficits in people who have recovered from COVID-19",
+      "abstract": "Background  There is growing concern about possible cognitive consequences of COVID-19, with reports of ‘Long COVID' symptoms persisting into the chronic phase and case studies revealing neurological problems in severely affected patients. However, there is little information regarding the nature and broader prevalence of cognitive problems post-infection or across the full spread of disease severity.   Methods   We sought to confirm whether there was an association between cross-sectional cognitive performance data from 81,337 participants who between January and December 2020 undertook a clinically validated web-optimized assessment as part of the Great British Intelligence Test, and questionnaire items capturing self-report of suspected and confirmed COVID-19 infection and respiratory symptoms.   Findings   People who had recovered from COVID-19, including those no longer reporting symptoms, exhibited significant cognitive deficits versus controls when controlling for age, gender, education level, income, racial-ethnic group, pre-existing medical disorders, tiredness, depression and anxiety. The deficits were of substantial effect size for people who had been hospitalised ( N  = 192), but also for non-hospitalised cases who had biological confirmation of COVID-19 infection ( N  = 326). Analysing markers of premorbid intelligence did not support these differences being present prior to infection. Finer grained analysis of performance across sub-tests supported the hypothesis that COVID-19 has a multi-domain impact on human cognition.   Interpretation   These results accord with reports of ‘Long Covid' cognitive symptoms that persist into the early-chronic phase. They should act as a clarion call for further research with longitudinal and neuroimaging cohorts to plot recovery trajectories and identify the biological basis of cognitive deficits in SARS-COV-2 survivors.   Funding   AH is supported by the UK Dementia Research Institute Care Research and Technology Centre and Biomedical Research Centre at Imperial College London. WT is supported by the EPSRC Centre for Doctoral Training in Neurotechnology. SRC is funded by a Wellcome Trust Clinical Fellowship 110,049/Z/15/Z. JMB is supported by Medical Research Council (MR/N013700/1). MAM, SCRW and PJH are, in part, supported by the National Institute for Health Research (NIHR) Biomedical Research Centre at South London and Maudsley NHS Foundation Trust and King's College London",
+      "slug": "cognitive-deficits-in-people-who-have-recovered-from-covid-19"
+    },
+    "document_type": "PAPER",
+    "score": 303,
+    "hot_score": 476371
+  }, {
+    "documents": {
+      "id": 1265923,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 23,
+        "name": "covid-19",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/covid-19-coronavirus.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=NFZdXfA1x0FlJXfLsanWoPB%2BMR0%3D&Expires=1629652340",
+        "slug": "covid-19-coronavirus",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 517721,
+          "first_name": "Vitaly",
+          "last_name": "Zv.",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2021/02/18/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=F6exx70wpXtB%2Bcd33hFFNTHfxLI%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-07-11T20:58:23.176943Z",
+      "score": 177,
+      "hot_score": 451462,
+      "title": "The Origins of SARS-CoV-2: A Critical Review",
+      "paper_title": "The Origins of SARS-CoV-2: A Critical Review",
+      "abstract": "The Origins of SARS-CoV-2: A Critical Review Holmes et al. Since the first reports of a novel SARS-like coronavirus in December 2019 in Wuhan, China, there has been intense interest in understanding how SARS-CoV-2 emerged in the human population. Recent debate has coalesced around two competing ideas: a “laboratory escape” scenario and zoonotic emergence. Here, we critically review the current scientific evidence that may help clarify the origin of SARS-CoV-2.",
+      "slug": "the-origins-of-sars-cov-2-a-critical-review"
+    },
+    "document_type": "PAPER",
+    "score": 177,
+    "hot_score": 451462
+  }, {
+    "documents": {
+      "id": 1265998,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 3,
+        "name": "biology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/biology-2.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xlAks4Y90%2BXoAE2rsJOTtvJ2AGY%3D&Expires=1629652340",
+        "slug": "biology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 23,
+        "name": "covid-19",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/covid-19-coronavirus.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=NFZdXfA1x0FlJXfLsanWoPB%2BMR0%3D&Expires=1629652340",
+        "slug": "covid-19-coronavirus",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 517721,
+          "first_name": "Vitaly",
+          "last_name": "Zv.",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2021/02/18/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=F6exx70wpXtB%2Bcd33hFFNTHfxLI%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-07-24T19:23:03.916486Z",
+      "score": 176,
+      "hot_score": 449723,
+      "title": "In vitro efficacy of artemisinin-based treatments against SARS-CoV-2",
+      "paper_title": "In vitro efficacy of artemisinin-based treatments against SARS-CoV-2",
+      "abstract": "Effective and affordable treatments for patients suffering from coronavirus disease 2019 (COVID-19), caused by severe acute respiratory syndrome coronavirus 2 (SARS-CoV-2), are needed. We report in vitro efficacy of Artemisia annua extracts as well as artemisinin, artesunate, and artemether against SARS-CoV-2. The latter two are approved active pharmaceutical ingredients of anti-malarial drugs. Concentration–response antiviral treatment assays, based on immunostaining of SARS-CoV-2 spike glycoprotein, revealed that treatment with all studied extracts and compounds inhibited SARS-CoV-2 infection of VeroE6 cells, human hepatoma Huh7.5 cells and human lung cancer A549-hACE2 cells, without obvious influence of the cell type on antiviral efficacy. In treatment assays, artesunate proved most potent (range of 50% effective concentrations (EC50) in different cell types: 7–12 µg/mL), followed by artemether (53–98 µg/mL), A. annua extracts (83–260 µg/mL) and artemisinin (151 to at least 208 µg/mL). The selectivity indices (SI), calculated based on treatment and cell viability assays, were mostly below 10 (range 2 to 54), suggesting a small therapeutic window. Time-of-addition experiments in A549-hACE2 cells revealed that artesunate targeted SARS-CoV-2 at the post-entry level. Peak plasma concentrations of artesunate exceeding EC50 values can be achieved. Clinical studies are required to further evaluate the utility of these compounds as COVID-19 treatment.",
+      "slug": "in-vitro-efficacy-of-artemisinin-based-treatments-against-sars-cov-2"
+    },
+    "document_type": "PAPER",
+    "score": 176,
+    "hot_score": 449723
+  }, {
+    "documents": {
+      "id": 1266082,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 3,
+        "name": "biology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/biology-2.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xlAks4Y90%2BXoAE2rsJOTtvJ2AGY%3D&Expires=1629652340",
+        "slug": "biology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 15,
+        "name": "psychology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/psychology.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=2EKnTI%2BLTICkyr9G2%2Fc%2BW3eyd38%3D&Expires=1629652340",
+        "slug": "psychology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 212,
+        "name": "longevity",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/longevity.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=3QhwWWOLpX%2FaFEIdfdXtw7oBGzI%3D&Expires=1629652340",
+        "slug": "longevity",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 425610,
+          "first_name": "Anton",
+          "last_name": "Lebed",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2020/10/04/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=XMeQd4ThxpKqTEEVp4YBnz8YotE%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-08-11T12:29:33.652924Z",
+      "score": 160,
+      "hot_score": 473515,
+      "title": "Microbiota from young mice counteracts selective age-associated behavioral deficits",
+      "paper_title": "Microbiota from young mice counteracts selective age-associated behavioral deficits",
+      "abstract": "The gut microbiota is increasingly recognized as an important regulator of host immunity and brain health. The aging process yields dramatic alterations in the microbiota, which is linked to poorer health and frailty in elderly populations. However, there is limited evidence for a mechanistic role of the gut microbiota in brain health and neuroimmunity during aging processes. Therefore, we conducted fecal microbiota transplantation from either young (3–4 months) or old (19–20 months) donor mice into aged recipient mice (19–20 months). Transplant of a microbiota from young donors reversed aging-associated differences in peripheral and brain immunity, as well as the hippocampal metabolome and transcriptome of aging recipient mice. Finally, the young donor-derived microbiota attenuated selective age-associated impairments in cognitive behavior when transplanted into an aged host. Our results reveal that the microbiome may be a suitable therapeutic target to promote healthy aging.",
+      "slug": "microbiota-from-young-mice-counteracts-selective-age-associated-behavioral-deficits"
+    },
+    "document_type": "PAPER",
+    "score": 160,
+    "hot_score": 473515
+  }, {
+    "documents": {
+      "id": 944368,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 15,
+        "name": "psychology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/psychology.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=2EKnTI%2BLTICkyr9G2%2Fc%2BW3eyd38%3D&Expires=1629652340",
+        "slug": "psychology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 196,
+        "name": "clinical trials",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/clinical-trials.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=iUEDRjNxSh3nZtb6nJodRUcM400%3D&Expires=1629652340",
+        "slug": "clinical-trials",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 902,
+          "first_name": "Arye",
+          "last_name": "Lipman",
+          "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GiYhOZJIucWuwiVUTvh_dF0gFrvbYaUnQ-1qVus4Q"
+        }
+      },
+      "uploaded_date": "2021-04-15T15:22:01.300375Z",
+      "score": 157,
+      "hot_score": 415823,
+      "title": "Comparing psilocybin with escitalopram (Lexapro) for depression",
+      "paper_title": "Trial of Psilocybin versus Escitalopram for Depression",
+      "abstract": "BACKGROUND Psilocybin may have antidepressant properties, but direct comparisons between psilocybin and established treatments for depression are lacking.    METHODS In a phase 2, double-blind, randomized, controlled trial involving patients with long-standing, moderate-to-severe major depressive disorder, we compared psilocybin with escitalopram, a selective serotonin-reuptake inhibitor, over a 6-week period. Patients were assigned in a 1:1 ratio to receive two separate doses of 25 mg of psilocybin 3 weeks apart plus 6 weeks of daily placebo (psilocybin group) or two separate doses of 1 mg of psilocybin 3 weeks apart plus 6 weeks of daily oral escitalopram (escitalopram group); all the patients received psychological support. The primary outcome was the change from baseline in the score on the 16-item Quick Inventory of Depressive Symptomatology–Self-Report (QIDS-SR-16; scores range from 0 to 27, with higher scores indicating greater depression) at week 6. There were 16 secondary outcomes, including QIDS-SR-16 response (defined as a reduction in score of >50%) and QIDS-SR-16 remission (defined as a score of ≤5) at week 6.    RESULTS A total of 59 patients were enrolled; 30 were assigned to the psilocybin group and 29 to the escitalopram group. The mean scores on the QIDS-SR-16 at baseline were 14.5 in the psilocybin group and 16.4 in the escitalopram group. The mean (±SE) changes in the scores from baseline to week 6 were −8.0±1.0 points in the psilocybin group and −6.0±1.0 in the escitalopram group, for a between-group difference of 2.0 points (95% confidence interval [CI], −5.0 to 0.9) (P=0.17). A QIDS-SR-16 response occurred in 70% of the patients in the psilocybin group and in 48% of those in the escitalopram group, for a between-group difference of 22 percentage points (95% CI, −3 to 48); QIDS-SR-16 remission occurred in 57% and 28%, respectively, for a between-group difference of 28 percentage points (95% CI, 2 to 54). Other secondary outcomes generally favored psilocybin over escitalopram, but the analyses were not corrected for multiple comparisons. The incidence of adverse events was similar in the trial groups.   CONCLUSIONS On the basis of the change in depression scores on the QIDS-SR-16 at week 6, this trial did not show a significant difference in antidepressant effects between psilocybin and escitalopram in a selected group of patients. Secondary outcomes generally favored psilocybin over escitalopram, but the analyses of these outcomes lacked correction for multiple comparisons. Larger and longer trials are required to compare psilocybin with established antidepressants. ",
+      "slug": "trial-of-psilocybin-versus-escitalopram-for-depression"
+    },
+    "document_type": "PAPER",
+    "score": 157,
+    "hot_score": 415823
+  }, {
+    "documents": {
+      "id": 946042,
+      "hubs": [{
+        "id": 198,
+        "name": "epidemiology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/epidemiology.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=TuYjY6AlMM%2BupheChkxUPsEtVaQ%3D&Expires=1629652340",
+        "slug": "epidemiology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 23,
+        "name": "covid-19",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/covid-19-coronavirus.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=NFZdXfA1x0FlJXfLsanWoPB%2BMR0%3D&Expires=1629652340",
+        "slug": "covid-19-coronavirus",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 179,
+          "first_name": "Philip",
+          "last_name": "Shaw",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2020/03/29/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=2OIsyOM%2FbwLmqmH8k80Im98NxSs%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-04-19T16:41:23.284592Z",
+      "score": 156,
+      "hot_score": 409687,
+      "title": "Blood clot risk from COVID-19 vaccine ten times lower than actual COVID-19 infection",
+      "paper_title": "COVID-19 and cerebral venous thrombosis: a retrospective cohort study of 513,284 confirmed COVID-19 cases",
+      "abstract": "Using  an  electronic  health  records  network  we  estimated  the  absolute  incidence  of  cerebral  venous thrombosis  (CVT)  in  the  two  weeks  following  COVID-19  diagnosis (N=513,284), or  influenza (N=172,742), or  receipt  of  the  BNT162b2  or  mRNA-1273  COVID-19  vaccines (N=489,871). The incidence of portal vein thrombosis (PVT) was also assessed in these groups, as well asthe baseline CVT incidence over a two-week period. The incidence of CVT after COVID-19 diagnosis was 39.0 per million people (95% CI, 25.2–60.2). This was higher than the CVT incidence after influenza (0.0 per million people, 95% CI 0.0–22.2, adjusted RR=6.73, P=.003) or after receiving BNT162b2 or mRNA-1273 vaccine (4.1 per million people, 95% CI 1.1–14.9, adjusted RR=6.36, P<.001). The relative risks were similar if a broader definition of CVT was used. For PVT, the incidence was 436.4 per million people  (382.9-497.4)  after  COVID-19,  98.4  (61.4-157.6)  after influenza, and 44.9  (29.7-68.0)  after BNT162b2 or mRNA-1273. The incidence of CVT following COVID-19 was higher than the incidence observed across the entire health records network (0.41 per million people over any 2-week period). Laboratory test results, availablein a subsetof the COVID-19 patients, provide preliminary evidence suggestive of raised D-dimer,  lowered  fibrinogen,  and  an  increased  rate  of  thrombocytopenia  in  the CVT and PVT groups. Mortality was 20% and 18.8% respectively. These data show that the incidence of CVT is significantly increased after COVID-19,andgreater than that observed with BNT162b2 and mRNA-1273 COVID-19 vaccines. The risk of CVT following COVID-19 is also higher than the latest estimate from the European Medicines Agency for the incidence associated with ChAdOx1 nCoV-19 vaccine (5.0 per million people, 95% CI 4.3–5.8). Although requiring replication and corroboration, the present data highlight the risk of serious thrombotic events in COVID-19, and can help contextualize the risks and benefits of vaccination in this regard.",
+      "slug": "covid-19-and-cerebral-venous-thrombosis-a-retrospective-cohort-study-of-513284-confirmed-covid-19-cases"
+    },
+    "document_type": "PAPER",
+    "score": 156,
+    "hot_score": 409687
+  }, {
+    "documents": {
+      "id": 1265938,
+      "hubs": [{
+        "id": 244,
+        "name": "cell biology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/cell-biology.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=bzFiq6WV%2BSW9HqZWlOJWctS1xLA%3D&Expires=1629652340",
+        "slug": "cell-biology-1",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 191,
+        "name": "biochemistry",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/biochemistry.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=R5YabzE6GQiVdwDvp69rqJyWZgA%3D&Expires=1629652340",
+        "slug": "biochemistry",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 236,
+        "name": "internal medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/internal-medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=jBTMdoJPMByLqk1mZwonVe4dEpk%3D&Expires=1629652340",
+        "slug": "internal-medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 217,
+        "name": "biotechnology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/biotechnology.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=JwilIqoSgF3gQn4bvhYjymb0zwY%3D&Expires=1629652340",
+        "slug": "biotechnology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 196,
+        "name": "clinical trials",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/clinical-trials.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=iUEDRjNxSh3nZtb6nJodRUcM400%3D&Expires=1629652340",
+        "slug": "clinical-trials",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 179,
+          "first_name": "Philip",
+          "last_name": "Shaw",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2020/03/29/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=2OIsyOM%2FbwLmqmH8k80Im98NxSs%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-07-15T08:51:03.186738Z",
+      "score": 156,
+      "hot_score": 454408,
+      "title": "New era of clinical gene therapies has commenced: First clinical trial involving in vivo CRISPR human gene editing",
+      "paper_title": "CRISPR-Cas9 In Vivo Gene Editing for Transthyretin Amyloidosis",
+      "abstract": "BACKGROUND Transthyretin amyloidosis, also called ATTR amyloidosis, is a life-threatening disease characterized by progressive accumulation of misfolded transthyretin (TTR) protein in tissues, predominantly the nerves and heart. NTLA-2001 is an in vivo gene-editing therapeutic agent that is designed to treat ATTR amyloidosis by reducing the concentration of TTR in serum. It is based on the clustered regularly interspaced short palindromic repeats and associated Cas9 endonuclease (CRISPR-Cas9) system and comprises a lipid nanoparticle encapsulating messenger RNA for Cas9 protein and a single guide RNA targeting TTR. METHODS After conducting preclinical in vitro and in vivo studies, we evaluated the safety and pharmacodynamic effects of single escalating doses of NTLA-2001 in six patients with hereditary ATTR amyloidosis with polyneuropathy, three in each of the two initial dose groups (0.1 mg per kilogram and 0.3 mg per kilogram), within an ongoing phase 1 clinical study. RESULTS Preclinical studies showed durable knockout of TTR after a single dose. Serial assessments of safety during the first 28 days after infusion in patients revealed few adverse events, and those that did occur were mild in grade. Dose-dependent pharmacodynamic effects were observed. At day 28, the mean reduction from baseline in serum TTR protein concentration was 52% (range, 47 to 56) in the group that received a dose of 0.1 mg per kilogram and was 87% (range, 80 to 96) in the group that received a dose of 0.3 mg per kilogram. CONCLUSIONS In a small group of patients with hereditary ATTR amyloidosis with polyneuropathy, administration of NTLA-2001 was associated with only mild adverse events and led to decreases in serum TTR protein concentrations through targeted knockout of TTR. (Funded by Intellia Therapeutics and Regeneron Pharmaceuticals; ClinicalTrials.gov number, NCT04601051. opens in new tab.)",
+      "slug": "crispr-cas9-in-vivo-gene-editing-for-transthyretin-amyloidosis"
+    },
+    "document_type": "PAPER",
+    "score": 156,
+    "hot_score": 454408
+  }, {
+    "documents": {
+      "id": 907981,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 205,
+        "name": "pharmacology",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/pharmacology-and-toxicology-3.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=q4vLvQNOy9dp%2F1vSGTlfDR5kzQ0%3D&Expires=1629652340",
+        "slug": "pharmacology-and-toxicology",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 23,
+        "name": "covid-19",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/covid-19-coronavirus.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=NFZdXfA1x0FlJXfLsanWoPB%2BMR0%3D&Expires=1629652340",
+        "slug": "covid-19-coronavirus",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 22,
+          "first_name": "Patrick",
+          "last_name": "Joyce",
+          "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2019/11/19/blob?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=M5Sx4mOu7uEQjioQe2a7yfT7JVc%3D&Expires=1629652340"
+        }
+      },
+      "uploaded_date": "2021-03-11T16:18:40.131464Z",
+      "score": 150,
+      "hot_score": 409243,
+      "title": "Results from the RECOVERY trial - exploring convalescent plasma to treat COVID-19",
+      "paper_title": "Convalescent plasma in patients admitted to hospital with COVID-19 (RECOVERY): a randomised, controlled, open-label, platform trial",
+      "abstract": "Background: Treatment of COVID-19 patients with plasma containing anti-SARS-CoV-2 antibodies may have a beneficial effect on clinical outcomes. We aimed to evaluate the safety and efficacy of convalescent plasma in patients admitted to hospital with COVID-19. Methods: In this randomised, controlled, open-label, platform trial (Randomised Evaluation of COVID-19 Therapy [RECOVERY]) several possible treatments are being compared with usual care in patients hospitalised with COVID-19 in the UK. Eligible and consenting patients were randomly allocated to receive either usual care plus high titre convalescent plasma or usual care alone. The primary outcome was 28-day mortality. Findings: Between 28 May 2020 and 15 January 2021, 5795 patients were randomly allocated to receive convalescent plasma and 5763 to usual care alone. There was no significant difference in 28-day mortality between the two groups: 1398 (24%) of 5795 patients allocated convalescent plasma and 1408 (24%) of 5763 patients allocated usual care died within 28 days (rate ratio [RR] 1.00; 95% confidence interval [CI] 0.93 to 1.07; p=0.93). The 28-day mortality rate ratio was similar in all prespecified subgroups of patients, including in those patients without detectable SARS-CoV-2 antibodies at randomisation. Allocation to convalescent plasma had no significant effect on the proportion of patients discharged from hospital within 28 days (66% vs. 67%; rate ratio 0.98; 95% CI 0.94-1.03, p=0.50). Among those not on invasive mechanical ventilation at baseline, there was no significant difference in the proportion meeting the composite endpoint of progression to invasive mechanical ventilation or death (28% vs. 29%; rate ratio 0.99; 95% CI 0.93-1.05, p=0.79). Interpretation: Among patients hospitalised with COVID-19, high-titre convalescent plasma did not improve survival or other prespecified clinical outcomes.",
+      "slug": "convalescent-plasma-in-patients-admitted-to-hospital-with-covid-19-recovery-a-randomised-controlled-open-label-platform-trial"
+    },
+    "document_type": "PAPER",
+    "score": 150,
+    "hot_score": 409243
+  }, {
+    "documents": {
+      "id": 838478,
+      "hubs": [{
+        "id": 220,
+        "name": "medicine",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/medicine.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=j7G3uJNjAdKdc7mq%2BH%2BuDk6q2VY%3D&Expires=1629652340",
+        "slug": "medicine",
+        "is_locked": false,
+        "is_removed": false
+      }, {
+        "id": 23,
+        "name": "covid-19",
+        "hub_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/hub_images/2020/10/07/covid-19-coronavirus.jpg?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=NFZdXfA1x0FlJXfLsanWoPB%2BMR0%3D&Expires=1629652340",
+        "slug": "covid-19-coronavirus",
+        "is_locked": false,
+        "is_removed": false
+      }],
+      "uploaded_by": {
+        "author_profile": {
+          "id": 432613,
+          "first_name": "Kranti",
+          "last_name": "Rumalla",
+          "profile_image": "https://lh5.googleusercontent.com/-JVdZ3WtUYD4/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuck6hQxzeNUE46Ct5ZPa0ea0n1bSIA/s96-c/photo.jpg"
+        }
+      },
+      "uploaded_date": "2020-11-02T04:36:45.532228Z",
+      "score": 140,
+      "hot_score": 379145,
+      "title": "Declining prevalence of antibody positivity to SARS-CoV-2: a community study of 365,000 adults",
+      "paper_title": "94736959",
+      "abstract": "Background  The prevalence and persistence of antibodies following a peak SARS-CoV-2 infection provides insights into its spread in the community, the likelihood of reinfection and potential for some level of population immunity.  Methods  Prevalence of antibody positivity in England, UK (REACT2) with three cross-sectional surveys between late June and September 2020. 365104 adults used a self-administered lateral flow immunoassay (LFIA) test for IgG. A laboratory comparison of LFIA results to neutralization activity in panel of sera was performed.  Results  There were 17,576 positive tests over the three rounds. Antibody prevalence, adjusted for test characteristics and weighted to the adult population of England, declined from 6.0% [5.8, 6.1], to 4.8% [4.7, 5.0] and 4.4% [4.3, 4.5], a fall of 26.5% [-29.0, −23.8] over the three months of the study. There was a decline between rounds 1 and 3 in all age groups, with the highest prevalence of a positive result and smallest overall decline in positivity in the youngest age group (18-24 years: −14.9% [-21.6, −8.1]), and lowest prevalence and largest decline in the oldest group (75+ years: −39.0% [-50.8, −27.2]); there was no change in antibody positivity between rounds 1 and 3 in healthcare workers (+3.45% [-5.7, +12.7]). The decline from rounds 1 to 3 was largest in those who did not report a history of COVID-19, (−64.0% [-75.6, −52.3]), compared to −22.3% ([-27.0, −17.7]) in those with SARS-CoV-2 infection confirmed on PCR.  Discussion  These findings provide evidence of variable waning in antibody positivity over time such that, at the start of the second wave of infection in England, only 4.4% of adults had detectable IgG antibodies using an LFIA. Antibody positivity was greater in those who reported a positive PCR and lower in older people and those with asymptomatic infection. These data suggest the possibility of decreasing population immunity and increasing risk of reinfection as detectable antibodies decline in the population.",
+      "slug": "94736959"
+    },
+    "document_type": "PAPER",
+    "score": 140,
+    "hot_score": 379145
+  }]
+}

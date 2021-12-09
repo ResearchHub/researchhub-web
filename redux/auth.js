@@ -9,10 +9,9 @@
 import API from "../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { AUTH_TOKEN } from "../config/constants";
-import { useDispatch } from "react-redux";
 import { ModalActions } from "./modals";
 import { HubActions } from "./hub";
-import * as utils from "./utils";
+import Cookies from "js-cookie";
 import * as Sentry from "@sentry/browser";
 
 export const AuthConstants = {
@@ -42,6 +41,9 @@ export const AuthConstants = {
 function saveToLocalStorage(key, value) {
   var storage = window.localStorage;
   storage.setItem(key, value);
+  if (value) {
+    Cookies.set(key, value);
+  }
   return;
 }
 
@@ -65,6 +67,10 @@ let getUserHelper = (dispatch, dispatchFetching) => {
     .then((json) => {
       if (json.results[0]) {
         dispatch(HubActions.updateSubscribedHubs(json.results[0].subscribed)); // updates the subscribedHubs on Hub Redux State
+      }
+
+      if (window.localStorage[AUTH_TOKEN]) {
+        saveToLocalStorage(AUTH_TOKEN, window.localStorage[AUTH_TOKEN]);
       }
 
       if (json.results.length > 0) {
@@ -319,6 +325,7 @@ export const AuthActions = {
           }
           window.localStorage.removeItem(AUTH_TOKEN);
           window.location.replace("/");
+          Cookies.remove(AUTH_TOKEN);
         });
     };
   },

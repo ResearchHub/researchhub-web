@@ -1,28 +1,25 @@
 // NPM Modules
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripple from "react-ripples";
-
-// Next
-import Router from "next/router";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
 import { PaperActions } from "../../redux/paper";
 import { MessageActions } from "../../redux/message";
 
-// Component
-import BaseModal from "../Modals/BaseModal";
-import PaperEntryCard from "../Hubs/PaperEntryCard";
+// Dynamic modules
+import dynamic from "next/dynamic";
+const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
-// Config
-import colors from "~/config/themes/colors";
+// Component
+import PaperEntryCard from "../Hubs/PaperEntryCard";
 
 const TRANSITION_TIME = 300;
 
-class UploadPaperModal extends React.Component {
+class UploadPaperModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -78,20 +75,7 @@ class UploadPaperModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     modalActions.openUploadPaperModal(false);
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
-
-  enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
   };
 
   renderSearchResults = () => {
@@ -454,7 +438,4 @@ const mapDispatchToProps = (dispatch) => ({
   messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UploadPaperModal);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadPaperModal);

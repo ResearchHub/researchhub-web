@@ -78,7 +78,14 @@ const UserStateBanner = (props) => {
     if (user.probable_spammer) {
       return (
         <Fragment>
-          <span>We've seen low quality content posted from your account.</span>
+          <span style={{ maxWidth: 600 }}>
+            We’ve noticed suspicious activity from your account. If you believe
+            this to be a mistake, please contact us at{" "}
+            <a style={{ color: "#fff" }} href="mailto:hello@researchhub.com">
+              hello@researchhub.com
+            </a>{" "}
+            so we can investigate.
+          </span>
         </Fragment>
       );
     }
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
   suspended: {
     backgroundColor: colors.RED(),
     position: "sticky",
-    top: 80,
+    top: 65,
     zIndex: 3,
   },
   contentContainer: {
@@ -211,7 +218,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserStateBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(UserStateBanner);

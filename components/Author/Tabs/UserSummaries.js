@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder";
 import Link from "next/link";
@@ -9,15 +9,11 @@ import Loader from "~/components/Loader/Loader";
 import Ripples from "react-ripples";
 import TextEditor from "~/components/TextEditor";
 import SummaryContributor from "../../Paper/SummaryContributor";
-
-import { AuthorActions } from "~/redux/author";
+import EmptyState from "./EmptyState";
 
 // Config
 import colors from "~/config/themes/colors";
-import API from "~/config/api";
 import icons from "~/config/themes/icons";
-import { Helpers } from "@quantfive/js-web-config";
-import { thread } from "../../../redux/discussion/shims";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperSlug]";
 
@@ -75,7 +71,7 @@ const UserSummaries = ({
     );
   };
 
-  let allSummaries = summaries.map((summary, index) => {
+  const allSummaries = summaries.map((summary, index) => {
     let path = `/paper/${summary.paper}/${summary.paper_slug}#summary`;
     return (
       <div
@@ -108,14 +104,10 @@ const UserSummaries = ({
           {renderLoadMoreButton()}
         </React.Fragment>
       ) : (
-        <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>
-            <i className="fad fa-file-alt" />
-          </div>
-          <h2 className={css(styles.noContent)}>
-            User has not created any summaries
-          </h2>
-        </div>
+        <EmptyState
+          message={"User has not created any summaries"}
+          icon={icons.file}
+        />
       )}
     </ReactPlaceholder>
   );
