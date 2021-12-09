@@ -703,8 +703,8 @@ class WithdrawalModal extends Component {
         <div
           className={css(
             styles.tab,
-            !depositScreen && styles.tabActive,
-            styles.oneTab
+            !depositScreen && styles.tabActive
+            // styles.oneTab
           )}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: false }))
@@ -718,7 +718,7 @@ class WithdrawalModal extends Component {
             this.transitionScreen(() => this.setState({ depositScreen: true }))
           }
         >
-          Deposit to RH Withdraw RSC
+          Deposit
         </div>
       </div>
     );
