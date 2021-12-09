@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Progress from "react-progressbar";
@@ -21,9 +21,9 @@ import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
 
-class PaperProgress extends React.Component {
+class PaperProgress extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -168,12 +168,11 @@ class PaperProgress extends React.Component {
 
     fetch(API.GOOGLE_ANALYTICS({}), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {});
+      .then(Helpers.parseJSON);
 
-    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload))
-      .then(Helpers.checkStatus)
-      .then((res) => {});
+    fetch(API.AMP_ANALYTICS, API.POST_CONFIG(ampPayload)).then(
+      Helpers.checkStatus
+    );
   };
 
   calculateProgress = (sections) => {
@@ -286,12 +285,7 @@ class PaperProgress extends React.Component {
     }
 
     let props = {
-      tab:
-        label &&
-        label
-          .toLowerCase()
-          .split(" ")
-          .join("-"),
+      tab: label && label.toLowerCase().split(" ").join("-"),
     };
 
     if (label === "Limitations") {
@@ -371,11 +365,9 @@ class PaperProgress extends React.Component {
               )}
               id="icon"
             >
-              {section.active && !loading ? (
-                icons.checkCircle
-              ) : (
-                <i className="fal fa-plus-circle"></i>
-              )}
+              {section.active && !loading
+                ? icons.checkCircle
+                : icons.plusCircle}
             </div>
             {section.label}
             {!!section.count && ":"}
@@ -650,7 +642,4 @@ const mapDispatchToProps = {
   updatePaperState: PaperActions.updatePaperState,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperProgress);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperProgress);

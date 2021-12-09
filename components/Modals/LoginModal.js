@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { GoogleLogin } from "react-google-login";
@@ -17,7 +17,7 @@ import { GOOGLE_CLIENT_ID } from "../../config/constants";
 
 import colors from "~/config/themes/colors";
 
-class LoginModal extends React.Component {
+class LoginModal extends Component {
   constructor(props) {
     super(props);
     let initialState = {};
@@ -44,7 +44,6 @@ class LoginModal extends React.Component {
     await googleLogin(response).then((_) => {
       getUser().then((_) => {
         this.closeModal();
-        document.body.style.overflow = "scroll";
       });
     });
 
@@ -210,7 +209,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LoginModal);
+export default connect(mapStateToProps, mapDispatchToProps)(LoginModal);

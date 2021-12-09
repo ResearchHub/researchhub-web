@@ -1,19 +1,12 @@
-import React, { Fragment } from "react";
-import { useRouter } from "next/router";
-
-// Component
 import Head from "~/components/Head";
-import PaperUploadInfo from "~/components/Paper/PaperUploadInfo";
+import PaperUploadV2Container from "~/components/Paper/Upload/PaperUploadV2Container";
+import { Fragment } from "react";
 
-const Index = () => {
-  const router = useRouter();
-  const { uploadPaperTitle, type } = router.query;
+export default function Index() {
   return (
     <Fragment>
-      <Head title={`Upload Paper`} description="Upload paper to ResearchHub" />
-      <PaperUploadInfo paperTitle={uploadPaperTitle} type={type} />
+      <Head title="Upload Paper" description="Upload paper to ResearchHub" />
+      <PaperUploadV2Container />
     </Fragment>
   );
-};
-
-export default Index;
+}

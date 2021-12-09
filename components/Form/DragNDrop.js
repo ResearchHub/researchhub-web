@@ -1,9 +1,9 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import { Component, Fragment } from "react";
 import Dropzone from "react-dropzone";
 import { StyleSheet, css } from "aphrodite";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -13,7 +13,7 @@ import FormInput from "./FormInput";
 import Loader from "../Loader/Loader";
 import PaperEntry from "../SearchSuggestion/PaperEntry";
 
-class DragNDrop extends React.Component {
+class DragNDrop extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -181,14 +181,8 @@ class DragNDrop extends React.Component {
   };
 
   render() {
-    let {
-      loading,
-      uploadedPaper,
-      uploadFinish,
-      pasteUrl,
-      accept,
-      noPasteUrl,
-    } = this.props;
+    let { loading, uploadedPaper, uploadFinish, pasteUrl, accept, noPasteUrl } =
+      this.props;
     const toAccept = accept ? accept : "application/pdf";
     return (
       <div
@@ -276,11 +270,9 @@ class DragNDrop extends React.Component {
                       !this.state.validUrl && styles.errorIcon
                     )}
                   >
-                    {this.state.validUrl ? (
-                      <i className="fal fa-check-circle" />
-                    ) : (
-                      <i className="fal fa-times-circle" />
-                    )}
+                    {this.state.validUrl
+                      ? icons.checkCircle
+                      : icons.timesCircle}
                   </span>
                 )
               ) : null

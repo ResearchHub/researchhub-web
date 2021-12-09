@@ -1,11 +1,11 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 
 // NPM Modules
-import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
+import icons from "~/config/themes/icons";
 
-class Footer extends React.Component {
+class Footer extends Component {
   tabData = [
     { label: "Hubs", route: "/hubs", icon: "hub" },
     { label: "About", route: "/about", icon: "info-circle" },
@@ -58,7 +58,8 @@ class Footer extends React.Component {
 
   render() {
     let tabs = this.renderTabs();
-    return (
+    return typeof window !== "undefined" &&
+      window.location.pathname.split("/")[2] !== "notebook" ? (
       <footer className={css(styles.footer)}>
         <div className={css(styles.imgTab)}>
           <img
@@ -75,11 +76,21 @@ class Footer extends React.Component {
             <a
               target="_blank"
               className={css(styles.link)}
-              href="https://join.slack.com/t/researchhub-community/shared_invite/zt-iqred46f-f0j0M6_ZxtliD~UszPyWEQ"
+              href="https://medium.com/researchhub"
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <i className={css(styles.logo) + " fab fa-slack"}></i>
+                <span className={css(styles.logo)}>{icons.medium}</span>
+              </div>
+            </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://join.slack.com/t/researchhub-community/shared_invite/zt-oytw02om-w1cQc2Kcjs7vg3tZHqt9Ww"
+              rel="noreferrer noopener"
+            >
+              <div className={css(styles.social)}>
+                <span className={css(styles.logo)}>{icons.slack}</span>
               </div>
             </a>
             <a
@@ -89,7 +100,7 @@ class Footer extends React.Component {
               rel="noreferrer noopener"
             >
               <div className={css(styles.social)}>
-                <i className={css(styles.logo) + " fab fa-twitter"}></i>
+                <span className={css(styles.logo)}>{icons.twitter}</span>
               </div>
             </a>
             <a
@@ -98,23 +109,34 @@ class Footer extends React.Component {
               href="https://www.reddit.com/r/ResearchHub/"
             >
               <div className={css(styles.social)}>
-                <i className={css(styles.logo) + " fab fa-reddit"}></i>
+                <span className={css(styles.logo)}>{icons.reddit}</span>
+              </div>
+            </a>
+            <a
+              target="_blank"
+              className={css(styles.link)}
+              href="https://github.com/ResearchHub"
+            >
+              <div className={css(styles.social)}>
+                <span className={css(styles.logo)}>{icons.github}</span>
               </div>
             </a>
           </div>
-          <Link href={"/about/tos"} as={"/about/tos"}>
-            <a className={css(styles.link)}>
-              <div className={css(styles.tab)}>Terms of Service</div>
-            </a>
-          </Link>
-          <Link href={"/about/privacy"} as={"/about/privacy"}>
-            <a className={css(styles.link)}>
-              <div className={css(styles.tab)}>Privacy Policy</div>
-            </a>
-          </Link>
+          <div className={css(styles.legalFooter)}>
+            <Link href={"/about/tos"} as={"/about/tos"}>
+              <a className={css(styles.link)}>
+                <div className={css(styles.tab)}>Terms of Service</div>
+              </a>
+            </Link>
+            <Link href={"/about/privacy"} as={"/about/privacy"}>
+              <a className={css(styles.link)}>
+                <div className={css(styles.tab)}>Privacy Policy</div>
+              </a>
+            </Link>
+          </div>
         </div>
       </footer>
-    );
+    ) : null;
   }
 }
 
@@ -137,6 +159,7 @@ const styles = StyleSheet.create({
   },
   imgTab: {
     display: "flex",
+    flex: 1,
 
     "@media only screen and (max-width: 767px)": {
       width: "100%",
@@ -169,11 +192,18 @@ const styles = StyleSheet.create({
   socials: {
     marginRight: 24,
     display: "flex",
+
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 16,
+    },
+  },
+  legalFooter: {
+    display: "flex",
   },
   logo: {
     color: "#282936",
     fontSize: "1.1em",
-    marginTop: 3,
+    // marginTop: 3,
   },
   ccby: {
     color: "#fff",
@@ -204,6 +234,7 @@ const styles = StyleSheet.create({
   tabContainer: {
     display: "flex",
     alignItems: "center",
+    flexWrap: "wrap",
     marginTop: 10,
   },
   researchHubLogo: {

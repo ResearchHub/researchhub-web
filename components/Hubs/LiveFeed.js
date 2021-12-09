@@ -1,8 +1,7 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
-import InfiniteScroll from "react-infinite-scroller";
 
 // Component
 import LiveFeedNotification from "./LiveFeedNotification";
@@ -11,9 +10,11 @@ import FormSelect from "~/components/Form/FormSelect";
 import Head from "~/components/Head";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Redux
 import { NotificationActions } from "~/redux/notification";
@@ -21,7 +22,7 @@ import { NotificationActions } from "~/redux/notification";
 const DEFAULT_PING_REFRESH = 10000; // 1 minute
 const DEFAULT_LOADING = 400; //
 
-class LiveFeed extends React.Component {
+class LiveFeed extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -36,7 +37,6 @@ class LiveFeed extends React.Component {
       liveModeResults: [],
       fetchingPage: false,
     };
-    // this.liveButton = React.createRef();
   }
 
   componentDidMount() {
@@ -61,8 +61,6 @@ class LiveFeed extends React.Component {
       });
     }
   };
-
-  componentDidUpdate(prevProps) {}
 
   componentWillUnmount() {
     clearInterval(this.state.intervalPing);
@@ -232,6 +230,14 @@ class LiveFeed extends React.Component {
         );
       } else {
         return currentHubNotifications.map((notification, i) => {
+          // TODO: safeguarding
+          // if (
+          //   isNullOrUndefined(
+          //     notification?.item?.unified_document?.document_type
+          //   )
+          // ) {
+          //   return null;
+          // }
           return (
             <LiveFeedNotification
               notification={notification}
@@ -307,12 +313,9 @@ class LiveFeed extends React.Component {
                     ref={(ref) => (this.liveButton = ref)}
                     id={"syntheticClick"}
                   ></div>
-                  <i
-                    className={
-                      css(styles.toggleIcon) +
-                      ` ${this.state.liveMode ? "fas fa-stop" : "fas fa-play"}`
-                    }
-                  />
+                  <span className={css(styles.toggleIcon)}>
+                    {this.state.liveMode ? icons.stop : icons.play}
+                  </span>
                   Live Update
                 </Ripples>
                 <div className={css(styles.filterContainer)}>
@@ -381,9 +384,6 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     width: "100%",
-    // position: "-webkit-sticky",
-    // position: "sticky",
-    // top: 80,
     zIndex: 3,
   },
   text: {
@@ -612,7 +612,4 @@ const mapDispatchToProps = {
   getLivefeed: NotificationActions.getLivefeed,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LiveFeed);
+export default connect(mapStateToProps, mapDispatchToProps)(LiveFeed);

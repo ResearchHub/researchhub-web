@@ -1,23 +1,25 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
 import Ripples from "react-ripples";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import TransactionCard from "../../ResearchCoin/TransactionCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import EmptyState from "./EmptyState";
 
 // Redux
 import { TransactionActions } from "~/redux/transaction";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class UserTransaction extends React.Component {
+class UserTransaction extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -45,8 +47,8 @@ class UserTransaction extends React.Component {
 
   renderLoadMoreButton = () => {
     if (this.props.transactions && this.props.transactions.withdrawals) {
-      let { loading } = this.state;
-      let { next } = this.props.transactions;
+      const { loading } = this.state;
+      const { next } = this.props.transactions;
       if (next) {
         return (
           <div className={css(styles.buttonContainer)}>
@@ -72,7 +74,8 @@ class UserTransaction extends React.Component {
   };
 
   render() {
-    let { transactions } = this.props;
+    const { transactions, maxCardsToRender, auth } = this.props;
+
     return (
       <ReactPlaceholder
         ready={transactions && !this.props.fetching}
@@ -90,16 +93,12 @@ class UserTransaction extends React.Component {
             );
           })
         ) : (
-          <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-receipt" />
-            </div>
-            <h2 className={css(styles.noContent)}>
-              User has not created any transactions
-            </h2>
-          </div>
+          <EmptyState
+            message={"User has not created any transactions"}
+            icon={icons.receipt}
+          />
         )}
-        {this.renderLoadMoreButton()}
+        {!maxCardsToRender && this.renderLoadMoreButton()}
       </ReactPlaceholder>
     );
   }
@@ -189,7 +188,4 @@ const mapDispatchToProps = {
   updateState: TransactionActions.updateState,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserTransaction);
+export default connect(mapStateToProps, mapDispatchToProps)(UserTransaction);

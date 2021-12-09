@@ -11,7 +11,6 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 import CustomHead from "~/components/Head";
 import GoogleLoginButton from "../../../components/GoogleLoginButton";
 import HowItWorks from "../../../components/Referral/HowItWorks";
-import AuthorAvatar from "../../../components/AuthorAvatar";
 import Router from "next/router";
 
 const Index = ({ code, user }) => {
@@ -141,7 +140,6 @@ const styles = StyleSheet.create({
   },
   signinContainer: {
     borderRadius: 16,
-    // border: '1px solid #ddd',
     padding: 16,
     width: 550,
   },

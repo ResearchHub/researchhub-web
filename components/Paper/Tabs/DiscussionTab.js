@@ -7,15 +7,19 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import ComponentWrapper from "../../ComponentWrapper";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
-import AddDiscussionModal from "~/components/Modals/AddDiscussionModal";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddDiscussionModal = dynamic(() =>
+  import("~/components/Modals/AddDiscussionModal")
+);
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -27,8 +31,9 @@ import { PaperActions } from "~/redux/paper";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
-import { doesNotExist, endsWithSlash } from "~/config/utils";
+import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -39,12 +44,21 @@ const DiscussionTab = (props) => {
 
   let {
     hostname,
+    documentType,
     paper,
+    paperState,
     calculatedCount,
     setCount,
     discussionRef,
     getThreads,
+    getPostThreads,
+    getHypothesisThreads,
     paperId,
+    isCollapsible,
+    post,
+    postId,
+    hypothesis,
+    hypothesisId,
   } = props;
 
   // TODO: move to config
@@ -70,6 +84,7 @@ const DiscussionTab = (props) => {
   );
   const [transition, setTransition] = useState(false);
   const [addView, toggleAddView] = useState(false);
+  const [expandComments, setExpandComments] = useState(false);
   const [showEditor, setShowEditor] = useState(true);
   const [editorDormant, setEditorDormant] = useState(false);
   const [discussion, setDiscussion] = useState(initialDiscussionState);
@@ -92,7 +107,7 @@ const DiscussionTab = (props) => {
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
-  }, [filter, showTwitterComments]);
+  }, [filter, showTwitterComments, paperId, postId, hypothesisId]);
 
   function handleWindowResize() {
     if (window.innerWidth < 436) {
@@ -111,53 +126,53 @@ const DiscussionTab = (props) => {
       threads = [];
     }
 
-    if (fetching) {
-      return (
-        <div className={css(styles.placeholderContainer)}>
-          <div className={css(styles.placeholder)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            >
-              <div></div>
-            </ReactPlaceholder>
-          </div>
-        </div>
-      );
-    } else {
-      if (threads.length > 0) {
-        return threads.map((t, i) => {
-          return (
-            <DiscussionEntry
-              key={`thread-${t.data.id}`}
-              data={t.data}
-              hostname={hostname}
-              hoverEvents={true}
-              path={t.path}
-              newCard={transition && i === 0} //conditions when a new card is made
-              mobileView={mobileView}
-              discussionCount={calculatedCount}
-              setCount={setCount}
-              paper={props.paperState}
-            />
-          );
-        });
-      } else {
-        if (showTwitterComments) {
-          return (
-            <span className={css(styles.box, styles.emptyStateBox)}>
-              <span className={css(styles.icon, styles.twitterIcon)}>
-                <i className="fab fa-twitter" />
-              </span>
-              <h2 className={css(styles.noSummaryTitle)}>
-                There are no tweets {mobileView && "\n"}for this paper yet.
-              </h2>
-            </span>
-          );
-        }
-      }
+    if (!expandComments && isCollapsible) {
+      threads = threads.slice(0, 2);
     }
+
+    return (
+      <div className={css(styles.placeholderContainer)}>
+        <div className={css(styles.placeholder)}>
+          <ReactPlaceholder
+            ready={!fetching}
+            showLoadingAnimation
+            customPlaceholder={<PaperPlaceholder color="#efefef" />}
+          >
+            {threads.length > 0
+              ? threads.map((t, i) => {
+                  return (
+                    <DiscussionEntry
+                      key={`thread-${t.data.id}`}
+                      data={t.data}
+                      hostname={hostname}
+                      hoverEvents={true}
+                      path={t.path}
+                      newCard={transition && i === 0} //conditions when a new card is made
+                      mobileView={mobileView}
+                      discussionCount={calculatedCount}
+                      setCount={setCount}
+                      documentType={documentType}
+                      paper={paperState}
+                      post={post}
+                      hypothesis={hypothesis}
+                    />
+                  );
+                })
+              : showTwitterComments && (
+                  <span className={css(styles.box, styles.emptyStateBox)}>
+                    <span className={css(styles.icon, styles.twitterIcon)}>
+                      {icons.twitter}
+                    </span>
+                    <h2 className={css(styles.noSummaryTitle)}>
+                      There are no tweets {mobileView && "\n"}for this paper
+                      yet.
+                    </h2>
+                  </span>
+                )}
+          </ReactPlaceholder>
+        </div>
+      </div>
+    );
   }
 
   const handleFilterChange = (id, filter) => {
@@ -171,23 +186,42 @@ const DiscussionTab = (props) => {
     setEditorDormant(true);
     setShowEditor(false);
     setFocus(false);
-    document.body.style.overflow = "scroll";
     props.openAddDiscussionModal(false);
   };
 
   const save = (text, plain_text) => {
-    let { paperId } = router.query;
+    // Note: calvinhlee - this is not scaleable at all we need to change this
+    let param;
+    let documentId;
+    if (documentType === "paper") {
+      documentId = router.query.paperId;
+      param = {
+        text: text,
+        paper: paperId,
+        plain_text: plain_text,
+      };
+    } else if (documentType === "post") {
+      documentId = router.query.documentId;
+      param = {
+        text: text,
+        post: documentId,
+        plain_text: plain_text,
+      };
+    } else if (documentType === "hypothesis") {
+      documentId = router.query.documentId;
+      param = {
+        text: text,
+        hypothesis: documentId,
+        plain_text: plain_text,
+      };
+    }
     props.showMessage({ load: true, show: true });
-
-    let param = {
-      text: text,
-      paper: paperId,
-      plain_text: plain_text,
-    };
-
     let config = API.POST_CONFIG(param);
 
-    return fetch(API.DISCUSSION({ paperId, twitter: null }), config)
+    return fetch(
+      API.DISCUSSION({ documentId, documentType, twitter: null }),
+      config
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
@@ -211,7 +245,7 @@ const DiscussionTab = (props) => {
           insert_id: `thread_${resp.id}`,
           event_properties: {
             interaction: "Post Thread",
-            paper: paperId,
+            paper: documentId,
             is_removed: resp.is_removed,
           },
         };
@@ -246,6 +280,19 @@ const DiscussionTab = (props) => {
     return count;
   };
 
+  const calculateHiddenCount = () => {
+    let hiddenCount = 0;
+    for (const thread of formattedThreads.slice(2)) {
+      hiddenCount +=
+        1 +
+        thread.data.comments.length +
+        thread.data.comments
+          .map((comment) => comment.replies.length)
+          .reduce((a, b) => a + b, 0);
+    }
+    return hiddenCount;
+  };
+
   const handleInput = (id, value) => {
     let newDiscussion = { ...discussion };
     newDiscussion[id] = value;
@@ -255,6 +302,7 @@ const DiscussionTab = (props) => {
   const handleDiscussionTextEditor = (editorState) => {
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
+
     setDiscussion(newDiscussion);
   };
 
@@ -266,19 +314,49 @@ const DiscussionTab = (props) => {
       setFetching(true);
     }
     setLoading(true);
-    const currentPaper = props.paper;
-    const res = await getThreads({
-      paperId: paperId,
-      paper: currentPaper,
-      filter,
-      loadMore,
-      twitter: showTwitterComments,
-    });
-    const threads = res.payload.threads;
-    setFetching(false);
-    setLoading(false);
-    setThreads(threads);
-    setFormattedThreads(formatThreads(threads, basePath));
+    if (postId) {
+      const currentPost = post;
+      const res = await getPostThreads({
+        documentId: postId,
+        post: currentPost,
+        filter,
+        loadMore,
+        twitter: showTwitterComments,
+      });
+      const threads = res.payload.threads;
+      setFetching(false);
+      setLoading(false);
+      setThreads(threads);
+      setFormattedThreads(formatThreads(threads, basePath));
+    } else if (hypothesisId) {
+      const currentHypothesis = hypothesis;
+      const res = await getHypothesisThreads({
+        documentId: hypothesisId,
+        hypothesis: currentHypothesis,
+        filter,
+        loadMore,
+        twitter: showTwitterComments,
+      });
+      const threads = res.payload.threads;
+      setFetching(false);
+      setLoading(false);
+      setThreads(threads);
+      setFormattedThreads(formatThreads(threads, basePath));
+    } else if (paperId) {
+      const currentPaper = props.paper;
+      const res = await getThreads({
+        paperId: paperId,
+        paper: currentPaper,
+        filter,
+        loadMore,
+        twitter: showTwitterComments,
+      });
+      const threads = res.payload.threads;
+      setFetching(false);
+      setLoading(false);
+      setThreads(threads);
+      setFormattedThreads(formatThreads(threads, basePath));
+    }
   };
 
   const renderAddDiscussion = () => {
@@ -295,11 +373,9 @@ const DiscussionTab = (props) => {
       >
         {threads.length < 1 && (
           <Fragment>
-            <span className={css(styles.icon)}>
-              <i className="fad fa-comments" />
-            </span>
+            <span className={css(styles.icon)}>{icons.comments}</span>
             <h2 className={css(styles.noSummaryTitle)}>
-              Add a comment to this paper
+              Ask a question for the author or community
             </h2>
             <p className={css(styles.text)}>
               Contribute a thought or post a question for this paper.
@@ -340,8 +416,10 @@ const DiscussionTab = (props) => {
             <TextEditor
               canEdit={true}
               readOnly={false}
-              onChange={handleDiscussionTextEditor}
-              placeholder={"Leave a question or a comment"}
+              // onChange={handleDiscussionTextEditor}
+              placeholder={
+                "Leave a question or a comment for the Author of the paper or the community"
+              }
               initialValue={discussion.question}
               commentEditor={true}
               smallToolBar={true}
@@ -357,7 +435,7 @@ const DiscussionTab = (props) => {
   };
 
   return (
-    <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
+    <Fragment>
       <AddDiscussionModal
         handleDiscussionTextEditor={handleDiscussionTextEditor}
         discussion={discussion}
@@ -374,7 +452,7 @@ const DiscussionTab = (props) => {
         >
           <div className={css(styles.header)}>
             <h3 className={css(styles.discussionTitle)}>
-              Discussion
+              Comments
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -389,28 +467,30 @@ const DiscussionTab = (props) => {
                   props.calculatedCount
                 )}
               </span>
-              <div className={css(styles.tabRow)}>
-                <div
-                  className={css(
-                    styles.tab,
-                    !showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(false)}
-                >
-                  Comments
-                </div>
-                <div
-                  className={css(
-                    styles.tab,
-                    showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(true)}
-                >
-                  Tweets
-                </div>
-              </div>
+              {!showEditor && !showTwitterComments && renderAddDiscussion()}
             </h3>
-            {!showEditor && !showTwitterComments && renderAddDiscussion()}
+            <div className={css(styles.filterContainer)}>
+              <div className={css(styles.filterSelect)}>
+                <FormSelect
+                  id={"thread-filter"}
+                  options={filterOptions}
+                  defaultValue={filterOptions[2]}
+                  placeholder={"Sort Threads"}
+                  onChange={handleFilterChange}
+                  containerStyle={styles.overrideFormSelect}
+                  inputStyle={{
+                    minHeight: "unset",
+                    padding: 0,
+                    backgroundColor: "#FFF",
+                    fontSize: 14,
+                    width: 150,
+                    "@media only screen and (max-width: 415px)": {
+                      fontSize: 12,
+                    },
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
@@ -418,43 +498,60 @@ const DiscussionTab = (props) => {
                 !showTwitterComments &&
                 renderDiscussionTextEditor()}
             </div>
-            <div className={css(styles.rowContainer)}>
-              <div className={css(styles.filterContainer)}>
-                <div className={css(styles.filterSelect)}>
-                  <FormSelect
-                    id={"thread-filter"}
-                    options={filterOptions}
-                    defaultValue={filterOptions[2]}
-                    placeholder={"Sort Threads"}
-                    onChange={handleFilterChange}
-                    containerStyle={styles.overrideFormSelect}
-                    inputStyle={{
-                      minHeight: "unset",
-                      padding: 0,
-                      backgroundColor: "#FFF",
-                      fontSize: 14,
-                      width: 150,
-                      "@media only screen and (max-width: 415px)": {
-                        fontSize: 12,
-                      },
-                    }}
-                  />
-                </div>
-              </div>
-            </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
-          {props.paper.nextDiscussion && !fetching && (
-            <div className={css(styles.buttonContainer)}>
-              {loading ? (
-                <Loader loading={true} size={10} type="beat" />
-              ) : (
-                <Ripples
-                  className={css(styles.loadMoreButton)}
-                  onClick={() => fetchDiscussionThreads(true)}
+          {formattedThreads.length > 2 && isCollapsible ? (
+            expandComments ? (
+              <div>
+                {props.paper.nextDiscussion && !fetching && (
+                  <div className={css(styles.buttonContainer)}>
+                    {loading ? (
+                      <Loader loading={true} size={10} type="beat" />
+                    ) : (
+                      <Ripples
+                        className={css(styles.loadMoreButton)}
+                        onClick={() => fetchDiscussionThreads(true)}
+                      >
+                        Load More
+                      </Ripples>
+                    )}
+                  </div>
+                )}
+                <div className={css(styles.expandDiv)}>
+                  <button
+                    className={css(styles.expandButton)}
+                    onClick={() => setExpandComments(false)}
+                  >
+                    See Fewer Comments
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className={css(styles.expandDiv)}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(true)}
                 >
-                  Load More
-                </Ripples>
+                  View {calculateHiddenCount()} More Comment
+                  {calculateHiddenCount() === 1 ? "" : "s"}
+                </button>
+              </div>
+            )
+          ) : (
+            <div>
+              {props.paper.nextDiscussion && !fetching && (
+                <div className={css(styles.buttonContainer)}>
+                  {loading ? (
+                    <Loader loading={true} size={10} type="beat" />
+                  ) : (
+                    <Ripples
+                      className={css(styles.loadMoreButton)}
+                      onClick={() => fetchDiscussionThreads(true)}
+                    >
+                      Load More
+                    </Ripples>
+                  )}
+                </div>
               )}
             </div>
           )}
@@ -463,7 +560,7 @@ const DiscussionTab = (props) => {
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Discussions
+              Comments
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -473,10 +570,10 @@ const DiscussionTab = (props) => {
                     type="beat"
                   />
                 ) : (
-                  props.calculatedCount
+                  ""
                 )}
               </span>
-              <div className={css(styles.tabRow)}>
+              {/* <div className={css(styles.tabRow)}>
                 <div
                   className={css(
                     styles.tab,
@@ -495,7 +592,7 @@ const DiscussionTab = (props) => {
                 >
                   Tweets
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
           {showEditor
@@ -504,7 +601,7 @@ const DiscussionTab = (props) => {
           {renderThreads(formattedThreads, hostname)}
         </div>
       )}
-    </ComponentWrapper>
+    </Fragment>
   );
 };
 
@@ -557,7 +654,6 @@ var styles = StyleSheet.create({
     backgroundColor: "#FFF",
 
     "@media only screen and (max-width: 415px)": {
-      width: "100%",
       fontSize: 16,
       marginBottom: 0,
     },
@@ -633,7 +729,7 @@ var styles = StyleSheet.create({
   },
   addDiscussionButton: {
     border: "1px solid",
-    padding: "8px 32px",
+    marginLeft: 10,
     color: "#fff",
     background: colors.PURPLE(1),
     fontSize: 16,
@@ -644,24 +740,34 @@ var styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-    },
   },
   plainButton: {
     marginTop: 0,
     border: "none",
     height: "unset",
     color: "rgba(26, 31, 58, 0.6)",
-    padding: "3px 0px 3px 5px",
+    background: "unset",
     fontSize: 14,
     ":hover": {
       backgroundColor: "#FFF",
       color: colors.PURPLE(),
       textDecoration: "underline",
     },
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 5,
+  },
+  expandDiv: {
+    textAlign: "center",
+  },
+  expandButton: {
+    marginTop: 10,
+    cursor: "pointer",
+    border: "none",
+    color: colors.BLUE(1),
+    background: "unset",
+    fontSize: 14,
+    ":hover": {
+      backgroundColor: "#FFF",
+      color: colors.PURPLE(),
+      textDecoration: "underline",
     },
   },
   pencilIcon: {
@@ -747,7 +853,7 @@ var styles = StyleSheet.create({
   },
   discussionThreadContainer: {
     backgroundColor: "#fff",
-    padding: 50,
+    padding: 30,
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
@@ -757,7 +863,7 @@ var styles = StyleSheet.create({
     },
   },
   addDiscussionContainer: {
-    transition: "all ease-in-out 0.3s",
+    // transition: "all ease-in-out 0.3s",
     opacity: 1,
     width: "100%",
     "@media only screen and (max-width: 415px)": {
@@ -766,7 +872,7 @@ var styles = StyleSheet.create({
   },
   emptyState: {
     backgroundColor: "#fff",
-    padding: 50,
+    padding: 30,
     border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
@@ -804,13 +910,10 @@ var styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginBottom: 20,
+    marginBottom: 15,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-    },
-    "@media only screen and (max-width: 415px)": {
-      marginBottom: 10,
     },
   },
   discussionTitle: {
@@ -827,6 +930,7 @@ var styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 500,
     marginLeft: 15,
+    marginTop: 3,
   },
   rowContainer: {
     width: "100%",
@@ -840,10 +944,14 @@ var styles = StyleSheet.create({
     marginBottom: 0,
     backgroundColor: "#FFF",
     width: "unset",
+    minHeight: 0,
   },
   filterContainer: {
     display: "flex",
     alignItems: "center",
+    "@media only screen and (max-width: 767px)": {
+      marginBottom: 15,
+    },
   },
   filterSelect: {
     width: 150,
@@ -878,6 +986,7 @@ var styles = StyleSheet.create({
     alignItems: "center",
     color: colors.BLUE(),
     cursor: "pointer",
+    marginBottom: 10,
     ":hover": {
       color: "#FFF",
       backgroundColor: colors.BLUE(),
@@ -916,8 +1025,8 @@ var styles = StyleSheet.create({
     backgroundColor: colors.BLUE(0.11),
     color: colors.BLUE(),
   },
-  placholder: {
-    width: "100%",
+  placeholderContainer: {
+    marginTop: 15,
   },
 });
 
@@ -975,9 +1084,8 @@ const mapDispatchToProps = {
   checkUserFirstTime: AuthActions.checkUserFirstTime,
   getUser: AuthActions.getUser,
   getThreads: PaperActions.getThreads,
+  getPostThreads: PaperActions.getPostThreads,
+  getHypothesisThreads: PaperActions.getHypothesisThreads,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionTab);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionTab);

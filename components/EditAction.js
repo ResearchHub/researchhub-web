@@ -28,7 +28,7 @@ const EditAction = (props) => {
       return (
         <ActionButton
           action={() => toggleEditMode(true)}
-          icon={"fas fa-pencil"}
+          icon={"pencil"}
           addRipples={true}
         />
       );
@@ -36,7 +36,7 @@ const EditAction = (props) => {
       return (
         <ActionButton
           action={() => toggleEditMode(true)}
-          icon={"fal fa-times"}
+          icon={"times"}
           addRipples={true}
         />
       );

@@ -1,11 +1,12 @@
 import { Fragment, useState, useEffect, useRef } from "react";
-import { useStore, useDispatch } from "react-redux";
+import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
 import { useAlert } from "react-alert";
 import Link from "next/link";
-import moment from "moment";
+import * as moment from "dayjs";
+import { useRouter } from "next/router";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
@@ -18,18 +19,22 @@ import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
-// Styles
-import "~/components/Paper/CitationCard.css";
-
 // Config
 import icons from "~/config/themes/icons";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
-import { timeAgo, createUserSummary } from "~/config/utils";
+import { createUserSummary } from "~/config/utils/user";
+import { timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { paperSummaryPost } from "../redux/paper/shims";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const ContentSupportModal = dynamic(() =>
+  import("./Modals/ContentSupportModal")
+);
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
+const POST_HREF = "/post/[documentId]/[title]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
   const {
@@ -48,19 +53,31 @@ const DiscussionPostMetadata = (props) => {
     smaller,
     hideHeadline,
     containerStyle,
+    noTimeStamp,
+    isModerator,
+    isLoggedIn,
+    currentAuthorId,
+    postId,
   } = props;
 
   const alert = useAlert();
-  const store = useStore();
+  // const store = useStore();
   const dispatch = useDispatch();
+  const router = useRouter();
+
   const [showDropDown, setDropDown] = useState(false);
   const [isFlagged, setFlagged] = useState(
     metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
   );
   const dropdown = useRef();
   const ellipsis = useRef();
-  let isModerator = store.getState().auth.user.moderator;
-  let isLoggedIn = store.getState().auth.isLoggedIn;
+  let isUserOwnInlineComment = false;
+
+  if (isLoggedIn) {
+    isUserOwnInlineComment = metaData
+      ? currentAuthorId === metaData.authorId
+      : true;
+  }
 
   useEffect(() => {
     document.addEventListener("mousedown", handleOutsideClick);
@@ -87,7 +104,10 @@ const DiscussionPostMetadata = (props) => {
   const promptFlagConfirmation = () => {
     if (!isLoggedIn) {
       dispatch(
-        ModalActions.openLoginModal(true, "Please sign in Google to continue.")
+        ModalActions.openLoginModal(
+          true,
+          "Please sign in with Google to continue."
+        )
       );
     } else {
       return alert.show({
@@ -105,11 +125,14 @@ const DiscussionPostMetadata = (props) => {
 
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId } = metaData;
+    let { paperId, threadId, commentId, replyId, postId } = metaData;
     let config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
-    fetch(API.FLAG_POST({ paperId, threadId, commentId, replyId }), config)
+    return fetch(
+      API.FLAG_POST({ paperId, threadId, commentId, replyId, postId }),
+      config
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -120,7 +143,7 @@ const DiscussionPostMetadata = (props) => {
         setFlagged(!isFlagged);
       })
       .catch((err) => {
-        if (err.response.status === 429) {
+        if (err.response && err.response.status === 429) {
           dispatch(MessageActions.showMessage({ show: false }));
           return dispatch(ModalActions.openRecaptchaPrompt(true));
         }
@@ -140,7 +163,7 @@ const DiscussionPostMetadata = (props) => {
           <span
             className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
           >
-            <i className="fad fa-share-square" />
+            {icons.shareSquare}
           </span>
           <span className={css(styles.text, styles.expandText)}>Share</span>
         </div>
@@ -171,7 +194,7 @@ const DiscussionPostMetadata = (props) => {
             </div>
             {showDropDown && (
               <div className={css(styles.dropdown)} ref={dropdown}>
-                {threadPath && <ExpandButton {...props} />}
+                {threadPath ? <ExpandButton {...props} /> : null}
                 {threadPath && renderShareButton()}
                 <FlagButton
                   {...props}
@@ -184,9 +207,11 @@ const DiscussionPostMetadata = (props) => {
                   iconStyle={styles.expandIcon}
                   label={"Remove"}
                   actionType={"post"}
+                  documentType={props.documentType}
                   metaData={metaData}
                   onRemove={onRemove}
                   isModerator={isModerator}
+                  forceRender={isUserOwnInlineComment}
                 />
                 <ModeratorDeleteButton
                   containerStyle={styles.dropdownItem}
@@ -228,10 +253,10 @@ const DiscussionPostMetadata = (props) => {
 
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
+      <ContentSupportModal />
       <AuthorAvatar
         author={authorProfile}
         name={username}
-        disableLink={false}
         size={smaller ? 25 : 30}
         twitterUrl={twitterUrl}
       />
@@ -243,7 +268,7 @@ const DiscussionPostMetadata = (props) => {
             metaData={metaData}
             fetching={fetching}
           />
-          <Timestamp {...props} />
+          {noTimeStamp ? null : <Timestamp {...props} />}
           {renderDropdown()}
         </div>
         {renderHeadline()}
@@ -276,11 +301,8 @@ const User = (props) => {
   }
 
   return (
-    <Link
-      href={"/user/[authorId]/[tabName]"}
-      as={`/user/${authorId}/contributions`}
-    >
-      <a href={`/user/${authorId}/contributions`} className={css(styles.atag)}>
+    <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorId}/overview`}>
+      <a href={`/user/${authorId}/overview`} className={css(styles.atag)}>
         <div
           className={css(
             styles.userContainer,
@@ -330,9 +352,7 @@ const Timestamp = (props) => {
             •
           </span>
           {timestamp} from Twitter
-          <div className={css(styles.twitterIcon)}>
-            <i className="fab fa-twitter" />
-          </div>
+          <div className={css(styles.twitterIcon)}>{icons.twitter}</div>
         </a>
       </div>
     );
@@ -362,7 +382,7 @@ function formatTimestamp(props) {
   let { date } = props;
   date = new Date(date);
   if (props.fullDate) {
-    return moment(date).format("MMM Do YYYY");
+    return moment(date).format("MMM D, YYYY");
   }
   return timeAgo.format(date);
 }
@@ -379,11 +399,7 @@ const HideButton = (props) => {
           className={css(styles.icon, hideState && styles.active)}
           id={"hideIcon"}
         >
-          {hideState ? (
-            <i className="fad fa-eye-slash" />
-          ) : (
-            <i className="fad fa-eye" />
-          )}
+          {hideState ? icons.eyeSlash : icons.eye}
         </span>
         <span className={css(styles.text)} id={"hideText"}>
           {hideState ? "Show" : "Hide"}
@@ -394,13 +410,16 @@ const HideButton = (props) => {
 };
 
 const ExpandButton = (props) => {
-  let { threadPath } = props;
+  let { threadPath, metaData } = props;
 
   return (
     <Ripples className={css(styles.dropdownItem)}>
-      <ClientLinkWrapper dynamicHref={DYNAMIC_HREF} path={threadPath}>
+      <ClientLinkWrapper
+        dynamicHref={metaData.postId ? POST_HREF : DYNAMIC_HREF}
+        path={threadPath}
+      >
         <span className={css(styles.icon, styles.expandIcon)} id={"expandIcon"}>
-          <i className="fal fa-expand-arrows" />
+          {icons.expandArrows}
         </span>
         <span className={css(styles.text, styles.expandText)} id={"expandText"}>
           Expand
@@ -433,6 +452,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-start",
+    width: "100%",
   },
   firstRow: {
     display: "flex",
@@ -474,6 +494,7 @@ const styles = StyleSheet.create({
   },
   smallerTimestamp: {
     fontSize: 12,
+    marginRight: 8,
   },
   twitterTag: {
     color: "unset",
@@ -492,12 +513,7 @@ const styles = StyleSheet.create({
       fontSize: 12,
     },
   },
-  smallerName: {
-    // fontSize: 13,
-    // "@media only screen and (max-width: 415px)": {
-    //   fontSize: 12,
-    // },
-  },
+  smallerName: {},
   authorName: {
     fontWeight: 500,
   },
@@ -616,10 +632,7 @@ const styles = StyleSheet.create({
     color: colors.RED(),
   },
   dropdownContainer: {
-    display: "flex",
-    alignItems: "center",
-    position: "absolute",
-    right: 0,
+    marginLeft: "auto",
   },
   dropdownIcon: {
     fontSize: 20,
@@ -662,4 +675,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DiscussionPostMetadata;
+// TODO: Change this to useSelector
+const mapStateToProps = ({ auth }) => ({
+  isLoggedIn: auth.isLoggedIn,
+  isModerator: auth.user.moderator,
+  currentAuthorId:
+    auth.user && auth.user.author_profile ? auth.user.author_profile.id : null,
+});
+
+export default connect(mapStateToProps)(DiscussionPostMetadata);

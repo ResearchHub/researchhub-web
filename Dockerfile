@@ -1,4 +1,4 @@
-FROM node:13.7.0-alpine
+FROM node:14.15.5-alpine
 
 # install dependencies
 RUN apk add --no-cache --virtual .build-deps \
@@ -14,6 +14,8 @@ WORKDIR /usr/src/app
 COPY package.json /usr/src/app
 COPY yarn.lock /usr/src/app
 COPY .sentryclirc /usr/src/app
+COPY .npmrc /usr/src/app
+COPY tsconfig.json /usr/src/app
 
 # install yarn and yarn install
 RUN yarn install --production --no-progress

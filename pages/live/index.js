@@ -1,7 +1,6 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import LiveFeed from "~/components/Hubs/LiveFeed";
@@ -21,10 +20,10 @@ const filterOptions = [
     value: "newest",
     label: "Newest",
   },
-  {
-    value: "most_discussed",
-    label: "Most Discussed",
-  },
+  // {
+  //   value: "most_discussed",
+  //   label: "Most Discussed",
+  // },
 ];
 
 const scopeOptions = [
@@ -49,7 +48,7 @@ const scopeOptions = [
 const defaultFilter = filterOptions[0];
 const defaultScope = scopeOptions[0];
 
-class LiveFeedPage extends React.Component {
+class LiveFeedPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -119,7 +118,7 @@ var styles = StyleSheet.create({
     width: "22%",
     position: "-webkit-sticky",
     position: "sticky",
-    top: 80,
+    top: 65,
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -144,7 +143,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LiveFeedPage);
+export default connect(mapStateToProps, mapDispatchToProps)(LiveFeedPage);

@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
@@ -13,9 +13,9 @@ import FormInput from "../Form/FormInput";
 import Button from "../Form/Button";
 import UniversityInput from "../SearchSuggestion/UniversityInput";
 
-import * as shims from "../../config/shims";
+import { authorPost } from "~/config/shims";
 
-class AddAuthorModal extends React.Component {
+class AddAuthorModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -64,7 +64,6 @@ class AddAuthorModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     modalActions.openAddAuthorModal(false);
   };
 
@@ -86,25 +85,9 @@ class AddAuthorModal extends React.Component {
    */
   addNewUser = (e) => {
     e.preventDefault();
-    const params = shims.authorPost(this.state);
+    const params = authorPost(this.state);
     this.props.addNewUser(params);
     this.closeModal();
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "hidden";
-    }
-  };
-
-  enableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   render() {
@@ -127,7 +110,6 @@ class AddAuthorModal extends React.Component {
         className={css(styles.modal)}
         shouldCloseOnOverlayClick={true}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
           <img
@@ -196,24 +178,16 @@ class AddAuthorModal extends React.Component {
               labelStyle={styles.labelStyle}
             />
 
-            <div className={css(styles.socialMediaContainer)}>
+            {/* <div className={css(styles.socialMediaContainer)}>
               <div
                 className={css(styles.inputLabel)}
                 onClick={this.toggleShowLinks}
               >
                 Social Media Links
                 <div className={css(styles.dropdownIcon)}>
-                  {showLinks ? (
-                    <i
-                      className="fal fa-angle-down"
-                      style={{ fontSize: "25px" }}
-                    />
-                  ) : (
-                    <i
-                      className="fal fa-angle-up"
-                      style={{ fontSize: "25px" }}
-                    />
-                  )}
+                  <span style={{ fontSize: "25px" }}>
+                    {showLinks ? icons.angleDown : icons.angleUp}
+                  </span>
                 </div>
               </div>
               <span
@@ -252,11 +226,11 @@ class AddAuthorModal extends React.Component {
                   inputStyle={styles.inputStyle}
                   containerStyle={styles.inputStyle}
                   iconStyles={styles.icon}
-                  icon={<i className="fab fa-twitter" />}
+                  icon={icons.twitter}
                   labelStyle={styles.labelStyle}
                 />
               </span>
-            </div>
+            </div> */}
             <div className={css(styles.buttonWrapper)}>
               <Button
                 label={"Add user"}
@@ -287,7 +261,7 @@ const overlayStyles = {
 const mobileOverlayStyles = {
   overlay: {
     position: "fixed",
-    top: 80,
+    top: 65,
     left: 0,
     right: 0,
     bottom: 0,
@@ -574,7 +548,4 @@ const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddAuthorModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddAuthorModal);

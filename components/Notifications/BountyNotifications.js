@@ -1,10 +1,5 @@
 import { Fragment, useState } from "react";
-import { useDispatch, useStore } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import Router from "next/router";
-import Link from "next/link";
-import Ripples from "react-ripples";
+import { StyleSheet } from "aphrodite";
 
 // Component
 import {
@@ -19,7 +14,8 @@ import {
 // Config
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { doesNotExist, truncateText } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
+import { truncateText } from "~/config/utils/string";
 
 const ModeratorBounty = (props) => {
   const { data, notification, markAsRead, closeMenu } = props;
@@ -38,7 +34,7 @@ const ModeratorBounty = (props) => {
   const author = created_by.author_profile;
   const authorLink = {
     href: "/user/[authorId]/[tabName]",
-    as: `/user/${author.id}/contributions`,
+    as: `/user/${author.id}/overview`,
   };
   const paperLink = {
     href: "/paper/[paperId]/[paperName]",

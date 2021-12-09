@@ -1,17 +1,18 @@
-import React, { Fragment, useState } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PromotionCard from "./Promotions/PromotionCard";
 import Loader from "~/components/Loader/Loader";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import EmptyState from "./EmptyState";
 
 import { AuthorActions } from "~/redux/author";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
@@ -20,51 +21,48 @@ const UserPromotions = (props) => {
   const [loading, setLoading] = useState(false);
 
   const renderPromotions = () => {
-    let { author, fetching } = props;
-    if (fetching) {
-      return (
-        <Fragment>
-          <div className={css(styles.card)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            />
-          </div>
-          <div className={css(styles.card)}>
-            <ReactPlaceholder
-              ready={false}
-              showLoadingAnimation
-              customPlaceholder={<PaperPlaceholder color="#efefef" />}
-            />
-          </div>
-        </Fragment>
-      );
-    }
+    const { author, fetching, maxCardsToRender } = props;
 
-    let promotions =
+    const promotions =
       author.promotions && author.promotions.results
         ? author.promotions.results
         : [];
 
-    if (promotions.length === 0) {
-      return (
-        <div className={css(styles.box)}>
-          <div className={css(styles.icon)}>
-            <i class="fas fa-bolt"></i>
-          </div>
-          <h2 className={css(styles.noContent)}>
-            User has not supported any content
-          </h2>
-        </div>
-      );
-    }
-    return promotions.map((promotion, i) => {
-      const { source } = promotion;
+    const promotionCards = [];
+    for (let i = 0; i < promotions.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const p = promotions[i];
+      const { source } = p;
       if (source) {
-        return <PromotionCard paper={source} promotion={promotion} index={i} />;
+        promotionCards.push(
+          <PromotionCard
+            source={source}
+            promotion={p}
+            index={i}
+            key={`promotion-${i}`}
+            isLast={promotions.length - 1 === i}
+          />
+        );
       }
-    });
+    }
+
+    return (
+      <ReactPlaceholder
+        ready={!fetching}
+        showLoadingAnimation
+        customPlaceholder={<PaperPlaceholder color="#efefef" />}
+      >
+        {promotionCards.length > 0 ? (
+          promotionCards.map((p) => p)
+        ) : (
+          <EmptyState
+            message={"User has not supported any content"}
+            icon={icons.bolt}
+          />
+        )}
+      </ReactPlaceholder>
+    );
   };
 
   const loadMore = () => {
@@ -74,7 +72,7 @@ const UserPromotions = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        let obj = { ...res };
+        const obj = { ...res };
         obj.results = [...results, ...res.results];
         props.dispatch(
           AuthorActions.updateAuthorByKey({
@@ -88,9 +86,11 @@ const UserPromotions = (props) => {
   };
 
   const renderLoadMoreButton = () => {
-    if (props.fetching) return;
-    if (props.author && props.author.promotions) {
-      let { next } = props.author.promotions;
+    const { fetching, author } = props;
+
+    if (fetching) return;
+    if (author && author.promotions) {
+      const { next } = author.promotions;
       if (next !== null) {
         return (
           <div className={css(styles.buttonContainer)}>
@@ -118,7 +118,7 @@ const UserPromotions = (props) => {
   return (
     <div className={css(styles.feed)}>
       {renderPromotions()}
-      {renderLoadMoreButton()}
+      {!props.maxCardsToRender && renderLoadMoreButton()}
     </div>
   );
 };
@@ -195,7 +195,4 @@ const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(UserPromotions);
+export default connect(mapStateToProps, null)(UserPromotions);

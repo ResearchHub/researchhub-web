@@ -20,9 +20,14 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 *.patch
+.vscode/
 
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
 
+# lint
+.eslintcache
+.eslintcache/*
+.vercel

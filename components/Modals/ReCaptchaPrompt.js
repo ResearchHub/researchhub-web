@@ -1,4 +1,4 @@
-import React from "react";
+import { createRef, Component } from "react";
 import { connect } from "react-redux";
 import ReCAPTCHA from "react-google-recaptcha";
 import { StyleSheet, css } from "aphrodite";
@@ -16,14 +16,14 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
 import { RECAPTCHA_CLIENT_KEY } from "~/config/constants";
 
-class ReCaptchaPrompt extends React.Component {
+class ReCaptchaPrompt extends Component {
   constructor(props) {
     super(props);
     this.state = {
       show: false,
     };
 
-    this.recaptchaRef = React.createRef();
+    this.recaptchaRef = createRef();
   }
 
   componentDidMount() {
@@ -57,7 +57,6 @@ class ReCaptchaPrompt extends React.Component {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        document.body.style.overflow = "scroll";
         this.props.openRecaptchaPrompt(false);
       });
   };
@@ -161,7 +160,4 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ReCaptchaPrompt);
+export default connect(mapStateToProps, mapDispatchToProps)(ReCaptchaPrompt);

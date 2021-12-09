@@ -11,11 +11,7 @@ import Button from "~/components/Form/Button";
 import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 
-import {
-  ORCID_CLIENT_ID,
-  ORCID_REDIRECT_URI,
-  orcidMethods,
-} from "~/config/constants";
+import { ORCID_CLIENT_ID, orcidMethods } from "~/config/constants";
 import { useRouter } from "next/router";
 
 const OrcidConnectButton = (props) => {
@@ -144,7 +140,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OrcidConnectButton);
+export default connect(mapStateToProps, mapDispatchToProps)(OrcidConnectButton);

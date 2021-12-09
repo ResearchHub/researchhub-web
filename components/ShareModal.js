@@ -1,12 +1,13 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState, useRef } from "react";
-import Modal from "react-modal";
 import PropTypes from "prop-types";
 
 import FormInput from "~/components/Form/FormInput";
-import BaseModal from "../components/Modals/BaseModal";
 import colors from "~/config/themes/colors";
-import { RHLogo } from "~/config/themes/icons";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 const ShareModal = (props) => {
   const { close, isOpen, title, subtitle, url } = props;
@@ -28,7 +29,9 @@ const ShareModal = (props) => {
         inlineNodeRight={<CopyLink onClick={copyToClipboard} />}
         value={url}
         message={copySuccessMessage}
-        containerStyle={styles.inputStyle}
+        search={false}
+        inputStyle={styles.inputStyle}
+        containerStyle={styles.containerStyle}
       />
     </BaseModal>
   );
@@ -142,18 +145,22 @@ const styles = StyleSheet.create({
     height: 30,
     userSelect: "none",
   },
-  inputStyle: {
+  containerStyle: {
     marginTop: 30,
-    paddingRight: 80,
+    // paddingRight: 80,
     width: 400,
-    "@media only screen and (max-width: 665px)": {
-      width: 360,
+    "@media only screen and (max-width: 767px)": {
+      width: "90%",
+      paddingRight: 0,
     },
-    "@media only screen and (max-width: 415px)": {
-      width: 338,
-    },
-    "@media only screen and (max-width: 321px)": {
-      width: 270,
+  },
+  inputStyle: {
+    paddingRight: 90,
+    overflow: "hidden",
+    textOverflow: "ellipsis",
+    boxSizing: "border-box",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
     },
   },
 });

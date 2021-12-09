@@ -13,8 +13,8 @@ import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import API from "../config/api";
 import { useEffect } from "react";
+import { isDevEnv } from "~/config/utils/env";
 
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
@@ -23,16 +23,20 @@ const GoogleLoginButton = (props) => {
   useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
-    if (!auth.isLoggedIn && auth.authChecked) {
-      google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: handleYolo,
-      });
-      google.accounts.id.prompt((notification) => {
-        console.log(notification);
-        if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        }
-      });
+    try {
+      if (!auth.isLoggedIn && auth.authChecked) {
+        google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleYolo,
+        });
+        google.accounts.id.prompt((notification) => {
+          console.log(notification);
+          if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+          }
+        });
+      }
+    } catch (e) {
+      console.log(e);
     }
   }
 
@@ -46,8 +50,11 @@ const GoogleLoginButton = (props) => {
         getUser().then((userAction) => {
           props.loginCallback && props.loginCallback(); // closes banner if user signs in from banner
           props.showSignupBanner && props.removeBanner();
-          if (!userAction.user.has_seen_orcid_connect_modal) {
-            let payload = {
+          if (
+            userAction.user &&
+            !userAction.user.has_seen_orcid_connect_modal
+          ) {
+            const payload = {
               event_type: "user_signup",
               time: +new Date(),
               user_id: userAction.user.id,
@@ -57,11 +64,16 @@ const GoogleLoginButton = (props) => {
               },
             };
             sendAmpEvent(payload);
-            // push user to onboarding - will eventually see the orcid modal
-            router.push(
-              "/user/[authorId]/onboard?internal=true",
-              `/user/${userAction.user.author_profile.id}/onboard`
-            );
+            // push user to onboarding if we are not on the notebook - will eventually see the orcid modal
+            if (
+              !router.route.includes("/notebook") &&
+              !router.route.includes("org/join")
+            ) {
+              router.push(
+                "/user/[authorId]/onboard?internal=true",
+                `/user/${userAction.user.author_profile.id}/onboard`
+              );
+            }
           }
         });
       }
@@ -69,7 +81,7 @@ const GoogleLoginButton = (props) => {
   }
 
   const responseGoogle = async (response) => {
-    let { googleLogin, getUser } = props;
+    const { googleLogin, getUser } = props;
     response["access_token"] = response["accessToken"];
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
@@ -104,8 +116,18 @@ const GoogleLoginButton = (props) => {
   function showLoginFailureMessage(response) {
     Sentry.captureEvent(response);
     console.error(response);
-    props.setMessage("Login failed");
-    props.showMessage({ show: true, error: true });
+    handleError(response);
+  }
+
+  function handleError(response) {
+    switch (response.error) {
+      case "popup_closed_by_user": // incognito or if user exits flow voluntarily
+      case "idpiframe_initialization_failed": // incognito
+        return null;
+      default:
+        props.setMessage("Login failed");
+        return props.showMessage({ show: true, error: true });
+    }
   }
 
   return (
@@ -126,7 +148,10 @@ const GoogleLoginButton = (props) => {
           );
         } else {
           return (
-            <div className={css(styles.glogin)}>
+            <div
+              className={css(styles.glogin)}
+              data-test={isDevEnv() ? `google-login-btn` : undefined}
+            >
               <Button
                 disabled={renderProps.disabled || disabled}
                 onClick={renderProps.onClick}
@@ -186,7 +211,4 @@ const mapDispatchToProps = {
   removeBanner: BannerActions.removeBanner,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GoogleLoginButton);
+export default connect(mapStateToProps, mapDispatchToProps)(GoogleLoginButton);

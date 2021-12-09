@@ -1,10 +1,20 @@
 import { StyleSheet, css } from "aphrodite";
 import { useState } from "react";
 import Link from "next/link";
-import colors from "../config/themes/colors";
+
+import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
+import { useHasMounted } from "~/config/utils/hooks";
 
 const AuthorAvatar = (props) => {
   const [error, setError] = useState(false);
+  const hasMounted = useHasMounted();
+
+  // fixes an error with `style` Prop not matching on Server/Client
+  if (!hasMounted) {
+    return null;
+  }
+
   const {
     author,
     size = 30,
@@ -12,6 +22,8 @@ const AuthorAvatar = (props) => {
     showModeratorBadge,
     twitterUrl,
     trueSize,
+    border,
+    dropShadow,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -29,6 +41,7 @@ const AuthorAvatar = (props) => {
     if (deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
+
     return (
       <>
         {author && author.profile_image && !error ? (
@@ -43,7 +56,9 @@ const AuthorAvatar = (props) => {
               maxHeight: finalSize,
               objectFit: "cover",
               borderRadius: "50%",
-              border: "3px solid #F1F1F1",
+              border,
+              // border: border ? border : "3px solid #F1F1F1",
+              boxShadow: dropShadow && "0px 2px 4px rgba(185, 185, 185, 0.25)",
             }}
             onError={(e) => {
               setError(true);
@@ -52,15 +67,17 @@ const AuthorAvatar = (props) => {
             loading="lazy"
           />
         ) : (
-          <i
-            className={css(styles.userIcon) + " fas fa-user-circle"}
+          <span
+            className={css(styles.userIcon)}
             style={{
               width: finalSize,
               height: finalSize,
               fontSize: finalSize + 1,
-              border: "3px solid transparent",
+              // border: "3px solid transparent",
             }}
-          />
+          >
+            {icons.user}
+          </span>
         )}
         {showModeratorBadge && (
           <img
@@ -94,10 +111,10 @@ const AuthorAvatar = (props) => {
       ) : (
         <Link
           href={"/user/[authorId]/[tabName]"}
-          as={`/user/${authorId}/contributions`}
+          as={`/user/${authorId}/overview`}
         >
           <a
-            href={`/user/${authorId}/contributions`}
+            href={`/user/${authorId}/overview`}
             className={css(styles.atag)}
             rel="noreferrer noopener"
           >
@@ -137,7 +154,7 @@ const styles = StyleSheet.create({
   userIcon: {
     color: "#aaa",
     position: "relative",
-    top: 2,
+    // top: 2,
     left: 0.25,
   },
 });

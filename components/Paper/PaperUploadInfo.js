@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import { createRef, Component, Fragment } from "react";
 import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
-import { Value } from "slate";
 import { withAlert } from "react-alert";
 
 // Component
@@ -15,10 +14,12 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import Message from "../Loader/Message";
 import FormDND from "../Form/FormDND";
-import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
-// Modal
-import AddAuthorModal from "../Modals/AddAuthorModal";
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddAuthorModal = dynamic(() =>
+  import("~/components/Modals/AddAuthorModal")
+);
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -30,14 +31,11 @@ import { MessageActions } from "~/redux/message";
 import colors from "../../config/themes/colors";
 import API from "../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import * as Options from "../../config/utils/options";
-import discussionScaffold from "./discussionScaffold.json";
+import * as Options from "~/config/utils/options";
 import FormTextArea from "../Form/FormTextArea";
-import { formatPaperSlug } from "~/config/utils";
+import { buildSlug } from "~/config/utils/document";
 
-const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
-
-class PaperUploadInfo extends React.Component {
+class PaperUploadInfo extends Component {
   constructor(props) {
     super(props);
     let initialState = {
@@ -66,25 +64,25 @@ class PaperUploadInfo extends React.Component {
         author: false,
         tagline: false,
       },
-      showAuthorList: false,
-      activeStep: 1,
-      searchAuthor: "",
-      suggestedAuthors: [], // TODO: Rename this to inididcate authors from search result
-      selectedAuthors: [],
-      loading: false,
-      uploadingPaper: false,
-      suggestedHubs: [],
-      editMode: false,
-      edited: false,
-      suggestedPapers: false,
-      urlView: true,
-      showTitle: false,
+      showAuthorList: false, // v2 -> shouldShowAuthorList
+      activeStep: 1, // v2 remove
+      searchAuthor: "", // v2 -> authorSearchText
+      suggestedAuthors: [], // v2 -> made local to component
+      selectedAuthors: [], // v2 -> made local to component
+      loading: false, // v2 -> isFetchingAuthors
+      uploadingPaper: false, // v2 remove
+      suggestedHubs: [], // v2 -> made local to component
+      editMode: false, // v2 remove
+      edited: false, // v2 -> isFormEdited
+      suggestedPapers: false, // v2 remove
+      urlView: true, // v2 -> isURLView
+      showTitle: false, // v2 -> shouldShowTitleField
     };
 
     this.state = {
       ...initialState,
     };
-    this.titleRef = React.createRef();
+    this.titleRef = createRef();
   }
 
   componentDidMount() {
@@ -245,6 +243,7 @@ class PaperUploadInfo extends React.Component {
           };
 
           if (published_date.length > 1) {
+            // Below is an anti-pattern
             form.published.month = Options.months
               .filter((month) => month.value === published_date[1])
               .pop();
@@ -432,6 +431,7 @@ class PaperUploadInfo extends React.Component {
     });
   };
 
+  // v2 -> remove
   uploadUrl = (urlData) => {
     let { paperActions } = this.props;
     let error = { ...this.state.error };
@@ -479,7 +479,6 @@ class PaperUploadInfo extends React.Component {
         searchAuthor: value,
       });
     }
-
     this.setState({
       searchAuthor: value,
       loading: true,
@@ -733,6 +732,7 @@ class PaperUploadInfo extends React.Component {
                   placeholder="Enter DOI of paper"
                   id={"doi"}
                   value={form.doi}
+                  required={true}
                   containerStyle={styles.doiInput}
                   labelStyle={styles.labelStyle}
                   onChange={this.handleInputChange}
@@ -764,6 +764,7 @@ class PaperUploadInfo extends React.Component {
                 placeholder="Enter DOI of paper"
                 id={"doi"}
                 value={form.doi}
+                required={true}
                 containerStyle={styles.doiInput}
                 labelStyle={styles.labelStyle}
                 onChange={this.handleInputChange}
@@ -784,7 +785,6 @@ class PaperUploadInfo extends React.Component {
             </span>
           )}
         </div>
-        <div className={css(styles.section)}></div>
       </span>
     );
   };
@@ -879,9 +879,11 @@ class PaperUploadInfo extends React.Component {
       if (body.published && body.published.year) {
         body.publishDate = this.formatPublishDate(body.published);
       }
+      // V2 -> removed. Initiallized as empty
       body.url = ""; // TODO: Add this optional field
     }
 
+    // V2 -> removed. It's already being parsed into state
     if (!body.title) {
       body.title = body.paper_title;
     }
@@ -942,7 +944,7 @@ class PaperUploadInfo extends React.Component {
       : this.props.paper.postedPaper.id;
     let paperName = paper.slug
       ? paper.slug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+      : buildSlug(paper.paper_title ? paper.paper_title : paper.title);
     this.props.paperActions.clearPostedPaper();
     this.props.paperActions.removePaperFromState();
     Router.push(
@@ -959,7 +961,7 @@ class PaperUploadInfo extends React.Component {
       let paperId = paper.id;
       let paperName = paper.slug
         ? paper.slug
-        : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
+        : buildSlug(paper.paper_title ? paper.paper_title : paper.title);
       Router.push(
         "/paper/[paperId]/[paperName]",
         `/paper/${paperId}/${paperName}`

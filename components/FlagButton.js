@@ -1,18 +1,16 @@
-import React, { useState } from "react";
-import Ripples from "react-ripples";
 import { StyleSheet, css } from "aphrodite";
 import { useStore, useDispatch } from "react-redux";
 import { useAlert } from "react-alert";
 
 // Components
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
-import ActionButton from "~/components/ActionButton";
 
 // Redux
 import { MessageActions } from "~/redux/message";
 import { FlagActions } from "~/redux/flags";
 
 // Utility
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
@@ -71,13 +69,10 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
       permissionKey="UpdatePaper"
       loginRequired={true}
       styling={[styles.borderRadius, flagged && styles.flagged]}
+      hideRipples={true}
     >
       <div className={css(style && style)}>
-        {flagged ? (
-          <i className={"fas fa-flag"} />
-        ) : (
-          <i className={"far fa-flag"} />
-        )}
+        {flagged ? icons.flag : icons.flagOutline}
       </div>
     </PermissionNotificationWrapper>
   );
@@ -86,33 +81,6 @@ const FlagButton = ({ paperId, reason, flagged, setFlag, style }) => {
 const styles = StyleSheet.create({
   borderRadius: {
     borderRadius: "50%",
-  },
-  actionButton: {
-    width: 46,
-    height: 46,
-    borderRadius: "100%",
-    background: colors.LIGHT_GREY(1),
-    color: colors.GREY(1),
-    cursor: "pointer",
-    alignItems: "center",
-    justifyContent: "center",
-    fontSize: 18,
-    marginLeft: 5,
-    marginRight: 5,
-    display: "flex",
-    flexShrink: 0,
-    "@media only screen and (max-width: 760px)": {
-      width: 35,
-      height: 35,
-    },
-    "@media only screen and (max-width: 415px)": {
-      height: 33,
-      width: 33,
-    },
-    "@media only screen and (max-width: 321px)": {
-      height: 31,
-      width: 31,
-    },
   },
   flagged: {
     color: "#000",

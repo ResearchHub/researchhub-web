@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
 import Confetti from "react-confetti";
@@ -39,8 +39,7 @@ const FirstVoteModal = (props) => {
           balance: res.user.balance,
         };
         updateUser(param);
-      })
-      .catch((err) => {});
+      });
   };
 
   useEffect(() => {
@@ -76,13 +75,6 @@ const FirstVoteModal = (props) => {
     setRecycle(true);
     toggleReveal(false);
     toggleButton(false);
-    enableParentScroll();
-  }
-
-  function enableParentScroll() {
-    if (document.body.style) {
-      document.body.style.overflow = "auto";
-    }
   }
 
   function openLinkInTab(e) {

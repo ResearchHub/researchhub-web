@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import { Component } from "react";
 import PropTypes from "prop-types";
 
 class Collapsible extends Component {
@@ -294,10 +294,10 @@ Collapsible.defaultProps = {
   contentInnerClassName: "",
   className: "",
   triggerSibling: null,
-  onOpen: () => {},
-  onClose: () => {},
-  onOpening: () => {},
-  onClosing: () => {},
+  onOpen: null,
+  onClose: null,
+  onOpening: null,
+  onClosing: null,
   tabIndex: null,
   contentContainerTagName: "div",
 };

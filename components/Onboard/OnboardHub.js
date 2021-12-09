@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from "react";
+import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import "~/components/Paper/CitationCard.css";
 
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const OnboardHub = (props) => {
-  const { id, name, hub_image } = props.hub;
-
-  const [subscribed, setSubscribed] = useState(false);
+  const { userHubIds, hub } = props;
+  const { id, name, hub_image } = hub;
+  const [subscribed, setSubscribed] = useState(userHubIds[id] && true);
 
   const handleClick = (e) => {
     let state = !subscribed;
@@ -34,7 +33,6 @@ const OnboardHub = (props) => {
         <div className={css(styles.title) + " clamp1"}>{name}</div>
         {renderButton()}
       </div>
-      {/* <div className={css(styles.image)}></div> */}
       <img
         loading={"lazy"}
         draggable={"false"}
@@ -85,6 +83,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: 25,
     width: 25,
+    minWidth: 25,
     borderRadius: "50%",
     background: "rgba(36, 31, 58, 0.03)",
     color: "rgba(36, 31, 58, 0.5)",

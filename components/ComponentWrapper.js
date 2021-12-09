@@ -1,8 +1,5 @@
-import Link from "next/link";
 import { StyleSheet, css } from "aphrodite";
-
-// Components
-import Navbar from "./Navbar";
+import PropTypes from "prop-types";
 
 const ComponentWrapper = (props) => {
   return (
@@ -47,5 +44,9 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+ComponentWrapper.propTypes = {
+  overrideStyle: PropTypes.object,
+};
 
 export default ComponentWrapper;

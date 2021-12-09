@@ -1,28 +1,47 @@
-import { useEffect, useState, useRef, Fragment } from "react";
+import {
+  useEffect,
+  useState,
+  Fragment,
+  useMemo,
+  useRef,
+  useCallback,
+} from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 
 import { connect, useDispatch, useStore } from "react-redux";
-import Joyride from "react-joyride";
 import Error from "next/error";
-import "./styles/anchor.css";
-import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 import * as Sentry from "@sentry/browser";
+import { Waypoint } from "react-waypoint";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
+import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
 import Head from "~/components/Head";
+import InlineCommentThreadsDisplayBarWithMediaSize from "~/components/InlineCommentDisplay/InlineCommentThreadsDisplayBar";
+import PaperDraftContainer from "~/components/PaperDraft/PaperDraftContainer";
+import PaperPageCard from "~/components/PaperPageCard";
+import PaperSections from "~/components/Paper/SideColumn/PaperSections";
+import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperTab from "~/components/Paper/Tabs/PaperTab";
 import PaperTabBar from "~/components/PaperTabBar";
+import PaperBanner from "~/components/Paper/PaperBanner.js";
 import SummaryTab from "~/components/Paper/Tabs/SummaryTab";
-import KeyTakeawaysTab from "~/components/Paper/Tabs/KeyTakeawaysTab";
-import PaperPageCard from "~/components/PaperPageCard";
-import PaperProgress from "~/components/Paper/PaperProgress";
-import PaperTransactionModal from "~/components/Modals/PaperTransactionModal";
-import PaperFeatureModal from "~/components/Modals/PaperFeatureModal";
-import PaperBanner from "~/components/Paper/PaperBanner";
+import TableOfContent from "~/components/PaperDraft/TableOfContent";
+import killswitch from "~/config/killswitch/killswitch";
+import { isEmpty } from "~/config/utils/nullchecks";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperFeatureModal = dynamic(() =>
+  import("~/components/Modals/PaperFeatureModal")
+);
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
+const PaperTransactionModal = dynamic(() =>
+  import("~/components/Modals/PaperTransactionModal")
+);
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -32,221 +51,175 @@ import VoteActions from "~/redux/vote";
 import { LimitationsActions } from "~/redux/limitations";
 import { BulletActions } from "~/redux/bullets";
 
+// Undux
+import InlineCommentUnduxStore from "~/components/PaperDraftInlineComment/undux/InlineCommentUnduxStore";
+import PaperDraftUnduxStore from "~/components/PaperDraft/undux/PaperDraftUnduxStore";
+
 // Config
-import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import {
-  absoluteUrl,
-  getNestedValue,
-  getVoteType,
-  formatPaperSlug,
-} from "~/config/utils";
-import { checkSummaryVote } from "~/config/fetch";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
+import { absoluteUrl } from "~/config/utils/routing";
+import { buildSlug } from "~/config/utils/document";
+import { getVoteType } from "~/config/utils/reputation";
+import { checkSummaryVote, checkUserVotesOnPapers } from "~/config/fetch";
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { getAuthorName, getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-} from "~/config/utils/";
+} from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 
-const isServer = () => typeof window === "undefined";
+const steps = [
+  {
+    target: ".first-step",
+    title: "Edit Paper Info",
+    content:
+      "Add or edit the paper information. This includes authors, publication date, hubs, and more!",
+    disableBeacon: true,
+  },
+  {
+    target: ".second-step",
+    title: "Add Paper Summary",
+    content: "Add a summary to help others understand what the paper is about.",
+    disableBeacon: true,
+  },
+];
 
-const Paper = (props) => {
-  const router = useRouter();
-  if (props.error) {
-    return <Error statusCode={404} />;
-  }
-
-  if (props.redirectPath && typeof window !== "undefined") {
-    // updates the [paperName] without refetching data
-    router.replace("/paper/[paperId]/[paperName]", props.redirectPath, {
-      shallow: true,
+const fetchPaper = (url, config) => {
+  return fetch(url, config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((resp) => {
+      return resp;
+    })
+    .catch((error) => {
+      console.log(error);
+      Sentry.captureException({ error, url, config });
     });
-  }
+};
 
+const Paper = ({
+  initialPaperData,
+  auth,
+  redirectPath,
+  error,
+  isFetchComplete = false,
+}) => {
+  const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
 
-  const [paper, setPaper] = useState(
-    (props.paper && shims.paper(props.paper)) || {}
-  );
-  const [summary, setSummary] = useState(
-    (props.paper && props.paper.summary) || {}
-  );
-  const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
+  if (error) {
+    Sentry.captureException({ error, initialPaperData, query: router.query });
+    return <Error statusCode={error.code} />;
+  }
 
-  const [showAllSections, toggleShowAllSections] = useState(false);
-  const [loadingPaper, setLoadingPaper] = useState(!props.fetchedPaper);
+  // ENUM: NOT_FETCHED, FETCHING, COMPLETED
+  const [fetchFreshDataStatus, setFetchFreshDataStatus] =
+    useState("NOT_FETCHED");
+  const [paper, setPaper] = useState({});
+
+  const [summary, setSummary] = useState((paper && paper.summary) || {});
+  const [score, setScore] = useState(undefined);
   const [loadingSummary, setLoadingSummary] = useState(true);
-  const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
-  const [sticky, setSticky] = useState(false);
-  const [scrollView, setScrollView] = useState(false);
-  const [selectedVoteType, setSelectedVoteType] = useState(
-    getVoteType(props.paper && props.paper.userVote)
-  );
-  const [figureCount, setFigureCount] = useState();
-  const [discussionCount, setCount] = useState(
-    calculateCommentCount(props.paper)
-  );
-  const [steps, setSteps] = useState([
-    {
-      target: ".first-step",
-      title: "Edit Paper Info",
-      content:
-        "Add or edit the paper information. This includes authors, publication date, hubs, and more!",
-      disableBeacon: true,
-    },
-    {
-      target: ".second-step",
-      title: "Add Paper Summary",
-      content:
-        "Add a summary to help others understand what the paper is about.",
-      disableBeacon: true,
-    },
-  ]);
-  const [tabs, setTabs] = useState(getActiveTabs());
-  const [fetchBullets, setFetchBullets] = useState(false);
+
+  const [flagged, setFlag] = useState(paper && paper.user_flag);
+  const [selectedVoteType, setSelectedVoteType] = useState(undefined);
+  const [discussionCount, setCount] = useState(null);
+
+  const [paperDraftExists, setPaperDraftExists] = useState(false);
+  const [paperDraftSections, setPaperDraftSections] = useState([]); // table of content for paperDraft
+  const [activeSection, setActiveSection] = useState(0); // paper draft sections
+  const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const [userVoteChecked, setUserVoteChecked] = useState(false);
-
-  const { hostname } = props;
-  const { paperId, tabName } = router.query;
-
-  const paperCardRef = useRef(null);
-  const paperTabsRef = useRef(null);
-  const keyTakeawayRef = useRef(null);
-  const descriptionRef = useRef(null);
-  const discussionRef = useRef(null);
-  const citationRef = useRef(null);
-  const paperPdfRef = useRef(null);
 
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === props.auth.user.id;
+    paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
 
-  let summaryVoteChecked = false;
+  const structuredDataForSEO = useMemo(
+    () => buildStructuredDataForSEO(),
+    [paper]
+  );
 
-  const fetchPaper = ({ paperId }) => {
-    setLoadingPaper(true);
-    return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        setLoadingPaper(false);
-        let currPaper = shims.paper(resp);
-        setScore(getNestedValue(currPaper, ["score"], 0));
-        setFlag(currPaper.user_flag);
-        setSelectedVoteType(getVoteType(currPaper.userVote));
-        setCount(calculateCommentCount(currPaper));
-        setPaper(currPaper);
-        setSummary(currPaper.summary || {});
-        checkUserVote(currPaper);
-        return currPaper;
-      })
-      .catch((error) => {
-        console.log(error);
-        Sentry.captureException(error);
-      });
-  };
+  // Typically, this if statement would be created with a useEffect clause
+  // but since useEffect does not work with SSG, we need a standard if statement.
+  const noSetPaperData = !isEmpty(initialPaperData) && isEmpty(paper);
+  if (noSetPaperData) {
+    setPaper(shims.paper(initialPaperData));
+    setScore(getNestedValue(initialPaperData, ["score"], 0));
 
-  useEffect(() => {
-    setTabs(getActiveTabs());
-
-    const summaryId = summary.id;
-    if (summaryId && !summaryVoteChecked) {
-      checkSummaryVote({ summaryId: summaryId }).then((res) => {
-        const summaryUserVote = res[summaryId];
-        summaryVoteChecked = true;
-
-        let summary = {
-          ...paper.summary,
-          user_vote: summaryUserVote,
-        };
-
-        if (summaryUserVote) {
-          summary.score = summaryUserVote.score || 0;
-          summary.promoted = summaryUserVote.promoted;
-        }
-        setSummary(summary);
-        setLoadingSummary(false);
-      });
-    }
-    setLoadingSummary(false);
-  }, [summary.id, props.auth.isLoggedIn]);
-
-  function checkUserVote(paperState = paper) {
-    if (props.auth.isLoggedIn && props.auth.user) {
-      const params = { paperIds: [paperId] };
-      return fetch(API.CHECK_USER_VOTE(params), API.GET_CONFIG())
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          const paperUserVote = res[paperId];
-
-          if (paperUserVote) {
-            const { bullet_low_quality, summary_low_quality } = paperUserVote;
-            const updatedPaper = {
-              ...paperState,
-              bullet_low_quality,
-              summary_low_quality,
-            };
-            updatedPaper.userVote = paperUserVote;
-            setPaper(updatedPaper);
-            setSelectedVoteType(updatedPaper.userVote.vote_type);
-          }
-          return setUserVoteChecked(true);
-        });
+    if (discussionCount === null) {
+      setCount(calculateCommentCount(initialPaperData));
     }
   }
 
   useEffect(() => {
-    setPaper((props.paper && shims.paper(props.paper)) || {});
-  }, [props.paper]);
-
-  useEffect(() => {
-    if (!props.fetchedPaper) {
-      fetchPaper({ paperId });
-    } else {
-      checkUserVote();
+    if (fetchFreshDataStatus === "NOT_FETCHED" && !isEmpty(paper)) {
+      fetchFreshData(paper);
     }
-    if (document.getElementById("structuredData")) {
-      let script = document.getElementById("structuredData");
-      script.textContext = formatStructuredData();
-    } else {
-      let script = document.createElement("script");
-      script.setAttribute("type", "application/ld+json");
-      script.setAttribute("id", "structuredData");
-      script.textContext = formatStructuredData();
-      document.head.appendChild(script);
-    }
-  }, [paperId]);
+  }, [fetchFreshDataStatus, paper]);
 
-  useEffect(() => {
-    if (Object.keys(paper).length !== 0) {
-      checkUserVote();
-    }
-  }, [props.auth.isLoggedIn]);
+  if (killswitch("paperSummary")) {
+    let summaryVoteChecked = false;
+    useEffect(() => {
+      const summaryId = summary.id;
+      if (summaryId && !summaryVoteChecked) {
+        checkSummaryVote({ summaryId: summaryId }).then((res) => {
+          const summaryUserVote = res[summaryId];
+          summaryVoteChecked = true;
 
-  useEffect(() => {
-    window.addEventListener("scroll", scrollListener);
+          let summary = {
+            ...paper.summary,
+            user_vote: summaryUserVote,
+          };
 
-    return () => window.removeEventListener("scroll", scrollListener);
-  }, [scrollListener]);
+          if (summaryUserVote) {
+            summary.score = summaryUserVote.score || 0;
+            summary.promoted = summaryUserVote.promoted;
+          }
+          setSummary(summary);
+          setLoadingSummary(false);
+        });
+      }
+      setLoadingSummary(false);
+    }, [summary.id, auth.isLoggedIn]);
+  }
 
-  useEffect(() => {
-    setCount(calculateCommentCount(paper));
-  }, [paper.discussionSource]);
+  function fetchFreshData(paper) {
+    setFetchFreshDataStatus("FETCHING");
+    fetchPaper(API.PAPER({ paperId: paper.id }), API.GET_CONFIG()).then(
+      (freshPaperData) => {
+        setFetchFreshDataStatus("COMPLETED");
+        setScore(getNestedValue(freshPaperData, ["score"], 0));
+        setFlag(freshPaperData.user_flag);
+
+        const updatedPaper = shims.paper({
+          ...freshPaperData,
+        });
+
+        if (!isEmpty(freshPaperData.user_vote)) {
+          setSelectedVoteType(userVoteToConstant(freshPaperData.user_vote));
+        }
+
+        setPaper(shims.paper(freshPaperData));
+        setUserVoteChecked(true);
+      }
+    );
+  }
 
   async function upvote() {
     dispatch(VoteActions.postUpvotePending());
-    await dispatch(VoteActions.postUpvote(paperId));
+    await dispatch(VoteActions.postUpvote(paper.id));
     updateWidgetUI();
   }
 
   async function downvote() {
     dispatch(VoteActions.postDownvotePending());
-    await dispatch(VoteActions.postDownvote(paperId));
+    await dispatch(VoteActions.postDownvote(paper.id));
     updateWidgetUI();
   }
 
@@ -259,6 +232,7 @@ const Paper = (props) => {
       const voteType = vote.voteType;
       if (voteType === UPVOTE) {
         setScore(selectedVoteType === DOWNVOTE ? score + 2 : score + 1);
+
         if (paper.promoted !== false) {
           setPaper({
             ...paper,
@@ -286,62 +260,12 @@ const Paper = (props) => {
   }
 
   const restorePaper = () => {
-    let currPaper = { ...paper };
-    currPaper.is_removed = false;
-    setPaper(currPaper);
+    setPaper({ ...paper, is_removed: false });
   };
 
   const removePaper = () => {
-    let currPaper = { ...paper };
-    currPaper.is_removed = true;
-    setPaper(currPaper);
+    setPaper({ ...paper, is_removed: true });
   };
-
-  function onJoyrideComplete(joyrideState) {
-    let { auth, updateUser, setUploadingPaper } = props;
-    if (
-      joyrideState.status === "finished" &&
-      joyrideState.lifecycle === "complete"
-    ) {
-      fetch(
-        API.USER({ userId: auth.user.id }),
-        API.PATCH_CONFIG({ upload_tutorial_complete: true })
-      )
-        .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then(() => {
-          updateUser({ upload_tutorial_complete: true });
-          setUploadingPaper(false);
-        });
-    }
-  }
-
-  function scrollListener() {
-    if (!scrollView && window.scrollY >= 5) {
-      setScrollView(true);
-      setSticky(true);
-    } else if (scrollView && window.scrollY < 30) {
-      setScrollView(false);
-      setSticky(false);
-    }
-  }
-
-  function getActiveTabs() {
-    let tabs = [
-      { href: "main", label: "main" },
-      { href: "takeaways", label: "key takeaways" },
-    ];
-
-    if (paper.summary || paper.abstract || showAllSections) {
-      tabs.push({ href: "summary", label: "description" });
-    }
-    tabs.push({ href: "comments", label: "discussions" });
-    if (paper.file || paper.url || showAllSections) {
-      tabs.push({ href: "paper", label: "Paper PDF" });
-    }
-
-    return tabs;
-  }
 
   function calculateCommentCount(paper) {
     let discussionCount = 0;
@@ -352,28 +276,36 @@ const Paper = (props) => {
   }
 
   function formatDescription() {
-    if (paper) {
-      if (paper.summary) {
-        if (paper.summary.summary) {
-          if (paper.summary.summary_plain_text) {
-            return paper.summary.summary_plain_text;
-          }
-          if (isQuillDelta(paper.summary.summary)) {
-            return convertDeltaToText(paper.summary.summary);
-          }
-          return convertToEditorValue(paper.summary.summary).document.text;
-        }
-      } else if (paper.abstract) {
-        return paper.abstract;
-      } else if (paper.tagline) {
-        return paper.tagline;
-      } else {
-        return "";
+    const { abstract, tagline } = paper;
+
+    if (!paper) return "";
+
+    if (paper.summary) {
+      const { summary, summary_plain_text } = paper.summary;
+
+      if (summary_plain_text) {
+        return summary_plain_text;
+      }
+
+      if (summary) {
+        return isQuillDelta(summary)
+          ? convertDeltaToText(summary)
+          : convertToEditorValue(summary).document.text;
       }
     }
+
+    if (abstract) {
+      return abstract;
+    }
+
+    if (tagline) {
+      return tagline;
+    }
+
+    return "";
   }
 
-  function formatStructuredData() {
+  function buildStructuredDataForSEO() {
     let data = {
       "@context": "https://schema.org/",
       name: paper.title,
@@ -425,8 +357,41 @@ const Paper = (props) => {
     setPaper(newState);
   }
 
+  function getAllAuthors() {
+    const { authors, raw_authors } = paper;
+    const seen = {};
+
+    const allAuthors = [];
+
+    if (authors && authors.length) {
+      authors.forEach((author) => {
+        seen[getAuthorName(author)] = true;
+        allAuthors.push(author);
+      });
+    }
+
+    if (raw_authors && raw_authors.length) {
+      raw_authors.forEach((author) => {
+        if (!seen[getAuthorName(author)]) {
+          seen[getAuthorName(author)] = true;
+          allAuthors.push(author);
+        }
+      });
+    }
+
+    return allAuthors;
+  }
+
+  function onSectionEnter(index) {
+    activeTab !== index && setActiveTab(index);
+  }
+  const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
+  const shouldShowInlineComments =
+    inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
+
   return (
-    <div className={css(styles.container)}>
+    <div>
+      <PaperBanner paper={paper} loadingPaper={!isFetchComplete} />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -436,233 +401,351 @@ const Paper = (props) => {
         updatePaperState={updatePaperState}
         updateSummary={setSummary}
       />
-      <Fragment>
-        <Head
-          title={paper.title}
-          description={formatDescription()}
-          socialImageUrl={socialImageUrl}
-          noindex={paper.is_removed || paper.is_removed_by_user}
-          canonical={`https://www.researchhub.com/paper/${paper.id}/${paper.slug}`}
-        />
-        <div className={css(styles.paperPageContainer)}>
-          <ComponentWrapper overrideStyle={styles.componentWrapper}>
-            <div style={{ marginTop: 16 }}>
-              <PaperBanner
-                paper={paper}
-                fetchBullets={fetchBullets}
-                loadingPaper={loadingPaper}
-              />
-            </div>
-            <PaperPageCard
-              paper={paper}
-              paperId={paperId}
-              score={score}
-              upvote={upvote}
-              downvote={downvote}
-              selectedVoteType={selectedVoteType}
-              shareUrl={process.browser && window.location.href}
-              isModerator={isModerator}
-              isSubmitter={isSubmitter}
-              flagged={flagged}
-              restorePaper={restorePaper}
-              removePaper={removePaper}
-              doneFetchingPaper={!loadingPaper}
-              setFlag={setFlag}
-              sticky={sticky}
-              scrollView={scrollView}
-              setSticky={setSticky}
-            />
-          </ComponentWrapper>
-        </div>
-        <div className={css(styles.stickyComponent)} ref={paperTabsRef}>
-          <PaperTabBar
-            baseUrl={paperId}
-            selectedTab={tabName}
-            paperCardRef={paperCardRef}
-            keyTakeawayRef={keyTakeawayRef}
-            descriptionRef={descriptionRef}
-            discussionRef={discussionRef}
-            paperPdfRef={paperPdfRef}
-            citationRef={citationRef}
-            paperTabsRef={paperTabsRef}
-            sticky={sticky}
-            setSticky={setSticky}
-            scrollView={scrollView}
-            tabName={tabName}
-            paper={paper}
-            activeTabs={tabs}
-            showAllSections={showAllSections}
-            updatePaperState={updatePaperState}
-          />
-        </div>
-        <div className={css(styles.contentContainer)}>
-          <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-            <div className={css(styles.paperProgress)}>
-              <PaperProgress
-                setFigureCount={setFigureCount}
-                figureCount={figureCount}
-                commentCount={discussionCount}
-                setCount={setCount}
-                paper={paper}
-                fetchBullets={fetchBullets}
-                loadingPaper={loadingPaper}
-                // comments threads
-                threads={paper.discussion && paper.discussion.threads}
-                // setDiscussionThreads={setDiscussionThreads}
-                // toggle sections
-                showAllSections={showAllSections}
-                toggleShowAllSections={toggleShowAllSections}
-              />
-            </div>
-          </ComponentWrapper>
-          <KeyTakeawaysTab
-            keyTakeawayRef={keyTakeawayRef}
-            afterFetchBullets={() => setFetchBullets(true)}
-            updatePaperState={updatePaperState}
-            paper={paper}
-            userVoteChecked={userVoteChecked}
-            fetchBullets={fetchBullets}
-            loadingPaper={loadingPaper}
-          />
-          <SummaryTab
-            paperId={paperId}
-            paper={paper}
-            summary={summary}
-            descriptionRef={descriptionRef}
-            updatePaperState={updatePaperState}
-            updateSummary={setSummary}
-            loadingSummary={loadingSummary}
-            userVoteChecked={userVoteChecked}
-          />
-          <a name="comments" id="comments">
-            <div id="comments-tab" className={css(styles.space)}>
-              <DiscussionTab
-                hostname={hostname}
-                paperId={paperId}
-                paperState={paper}
-                calculatedCount={discussionCount}
-                setCount={setCount}
-                discussionRef={discussionRef}
-              />
-            </div>
-          </a>
-          <a name="paper">
-            <div id="paper-tab" className={css(styles.paperTabContainer)}>
-              <PaperTab
-                paperId={paperId}
-                paper={paper}
-                paperPdfRef={paperPdfRef}
-                isModerator={isModerator}
-              />
-            </div>
-          </a>
-        </div>
-        <Joyride
-          steps={steps}
-          continuous={true}
-          locale={{ last: "Done" }}
-          styles={{
-            options: {
-              primaryColor: colors.BLUE(1),
-            },
+      <PaperPDFModal paperId={paper.id} paper={paper} />
+      <Head
+        title={paper.title}
+        description={formatDescription()}
+        socialImageUrl={socialImageUrl}
+        noindex={paper.is_removed || paper.is_removed_by_user}
+        canonical={`${process.env.HOST}/paper/${paper.id}/${paper.slug}`}
+      >
+        <script
+          type="application/ld+json"
+          id="structuredData"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredDataForSEO),
           }}
-          callback={onJoyrideComplete}
-          run={
-            props.auth.uploadingPaper &&
-            props.auth.isLoggedIn &&
-            !props.auth.user.upload_tutorial_complete
-          }
-        />
-      </Fragment>
+        ></script>
+      </Head>
+      <div className={css(styles.root)}>
+        <Waypoint
+          onEnter={() => onSectionEnter(0)}
+          topOffset={40}
+          bottomOffset={"95%"}
+        >
+          <a name="main" />
+        </Waypoint>
+        <div className={css(styles.container)}>
+          <div className={css(styles.main)}>
+            <div className={css(styles.paperPageContainer, styles.top)}>
+              <PaperPageCard
+                paper={paper}
+                paperId={paper.id}
+                score={score}
+                upvote={upvote}
+                downvote={downvote}
+                selectedVoteType={selectedVoteType}
+                discussionCount={discussionCount}
+                shareUrl={process.browser && window.location.href}
+                isModerator={isModerator}
+                isSubmitter={isSubmitter}
+                flagged={flagged}
+                restorePaper={restorePaper}
+                removePaper={removePaper}
+                doneFetchingPaper={isFetchComplete}
+                setFlag={setFlag}
+              />
+            </div>
+            <div className={css(styles.paperMetaContainerMobile)}>
+              <AuthorStatsDropdown
+                authors={getAllAuthors()}
+                paper={paper}
+                hubs={paper.hubs}
+                paperId={paper.id}
+                isPaper
+              />
+            </div>
+            <div className={css(styles.stickyComponent)}>
+              <PaperTabBar
+                paperId={paper.id}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                paperDraftSections={paperDraftSections}
+                paperDraftExists={paperDraftExists}
+              />
+            </div>
+            <div
+              className={css(styles.paperPageContainer, styles.noMarginLeft)}
+            >
+              <Waypoint
+                onEnter={() => onSectionEnter(1)}
+                topOffset={40}
+                bottomOffset={"95%"}
+              >
+                <div>
+                  <a name="abstract" />
+                  <SummaryTab
+                    paperId={paper.id}
+                    paper={paper}
+                    summary={summary}
+                    updatePaperState={updatePaperState}
+                    updateSummary={setSummary}
+                    loadingSummary={loadingSummary}
+                    userVoteChecked={userVoteChecked}
+                  />
+                </div>
+              </Waypoint>
+            </div>
+            {isFetchComplete /* Performance Optimization */ && (
+              <Waypoint
+                onEnter={() => onSectionEnter(2)}
+                topOffset={40}
+                bottomOffset={"95%"}
+              >
+                <div className={css(styles.space)}>
+                  <a name="comments" />
+                  {
+                    <DiscussionTab
+                      hostname={process.env.HOST}
+                      documentType={"paper"}
+                      paperId={paper.id}
+                      paperState={paper}
+                      calculatedCount={discussionCount}
+                      setCount={setCount}
+                      isCollapsible={false}
+                    />
+                  }
+                </div>
+              </Waypoint>
+            )}
+            <div
+              className={css(
+                styles.paperPageContainer,
+                styles.bottom,
+                styles.noMarginLeft,
+                !paperDraftExists && styles.hide
+              )}
+            >
+              {isFetchComplete /* Performance Optimization */ && (
+                <Waypoint
+                  onEnter={() => onSectionEnter(3)}
+                  topOffset={40}
+                  bottomOffset={"95%"}
+                >
+                  <div>
+                    <a name="paper" />
+                    <TableOfContent
+                      paperDraftExists={paperDraftExists}
+                      paperDraftSections={paperDraftSections}
+                    />
+                    <PaperDraftContainer
+                      isViewerAllowedToEdit={isModerator}
+                      paperDraftExists={paperDraftExists}
+                      paperDraftSections={paperDraftSections}
+                      paperId={paper.id}
+                      setActiveSection={setActiveSection}
+                      setPaperDraftExists={setPaperDraftExists}
+                      setPaperDraftSections={setPaperDraftSections}
+                    />
+                  </div>
+                </Waypoint>
+              )}
+            </div>
+            {isFetchComplete /* Performance Optimization */ && (
+              <Waypoint
+                onEnter={() => onSectionEnter(4)}
+                topOffset={40}
+                bottomOffset={"95%"}
+              >
+                <div>
+                  <a name="paper pdf" />
+                  <div className={css(styles.paperTabContainer)}>
+                    <PaperTab
+                      paperId={paper.id}
+                      paper={paper}
+                      isModerator={isModerator}
+                    />
+                  </div>
+                </div>
+              </Waypoint>
+            )}
+          </div>
+
+          <div className={css(styles.sidebar)}>
+            {shouldShowInlineComments ? (
+              <InlineCommentThreadsDisplayBarWithMediaSize isShown />
+            ) : (
+              <Fragment>
+                <PaperSideColumn
+                  authors={getAllAuthors()}
+                  paper={paper}
+                  hubs={paper.hubs}
+                  paperId={paper.id}
+                />
+                <PaperSections
+                  activeTab={activeTab} // for paper page tabs
+                  setActiveTab={setActiveTab}
+                  activeSection={activeSection} // for paper draft sections
+                  setActiveSection={setActiveSection}
+                  paperDraftSections={paperDraftSections}
+                  paperDraftExists={paperDraftExists}
+                />
+              </Fragment>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
 
-const fetchPaper = ({ paperId }) => {
-  return fetch(API.PAPER({ paperId }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((resp) => {
-      return resp;
-    })
-    .catch((error) => {
-      console.log(error);
-      Sentry.captureException(error);
-    });
+const PaperIndexWithUndux = (props) => {
+  return (
+    <PaperDraftUnduxStore.Container>
+      <InlineCommentUnduxStore.Container>
+        <Paper {...props} />
+      </InlineCommentUnduxStore.Container>
+    </PaperDraftUnduxStore.Container>
+  );
 };
 
-Paper.getInitialProps = async (ctx) => {
-  const { req, store, query, res } = ctx;
-  const { host } = absoluteUrl(req);
-  const hostname = host;
+export async function getStaticPaths(ctx) {
+  return {
+    paths: [],
+    fallback: true,
+  };
+}
 
-  if (!isServer()) {
-    return {
-      hostname,
-    };
-  }
-
-  // Fetch data from external API
-  let props = {};
+export async function getStaticProps(ctx) {
   let paper;
-  let paperSlug;
+  const { paperId } = ctx.params;
 
   try {
-    paper = await fetchPaper({ paperId: query.paperId });
+    paper = await fetchPaper(API.PAPER({ paperId }), API.GET_CONFIG());
   } catch (err) {
-    console.log(err);
-    Sentry.captureException(err);
-    // if paper doesnot exist
-    if (res) {
-      res.statusCode = 404;
-    }
-    return { error: true };
-  }
-
-  paperSlug = paper.slug;
-  let fetchedPaper = true;
-
-  if (paperSlug !== query.paperName) {
-    // redirect paper if paperName does not match slug
-    let paperName = paperSlug
-      ? paperSlug
-      : formatPaperSlug(paper.paper_title ? paper.paper_title : paper.title);
-
-    if (paperName === query.paperName) {
-      // catch multiple redirect when slug does not exist
-      props = { hostname, paper, fetchedPaper };
-      return props;
-    }
-    let redirectPath = `/paper/${paper.id}/${paperName}`;
-
-    res.writeHead(301, { Location: redirectPath });
-    res.end();
-    props = {
-      hostname,
-      paper,
-      redirectPath,
-      paperName,
-      paperSlug,
-      paperName: query.paperName,
+    console.log("err", err);
+    return {
+      props: {
+        error: {
+          code: 500,
+        },
+      },
+      revalidate: 5,
     };
-    return props;
   }
-  props = { hostname, paper, fetchedPaper };
-  return props;
-};
+
+  if (!paper) {
+    return {
+      props: {
+        error: {
+          code: 404,
+        },
+      },
+      revalidate: 1,
+    };
+  } else {
+    const slugFromQuery = ctx.params.paperName;
+
+    // DANGER ZONE: Be careful when updating this. Could result
+    // in an infinite loop that could bring server down.
+    if (paper.slug && paper.slug !== slugFromQuery) {
+      return {
+        redirect: {
+          destination: `/paper/${paperId}/${paper.slug}`,
+          permanent: true,
+        },
+      };
+    }
+
+    const props = {
+      initialPaperData: paper,
+      isFetchComplete: true,
+    };
+
+    return {
+      props,
+      // Static page will be regenerated after specified seconds.
+      revalidate: 60,
+    };
+  }
+}
 
 const styles = StyleSheet.create({
   componentWrapperStyles: {
+    width: "100%",
+    paddingLeft: 0,
+    paddingRight: 0,
     "@media only screen and (max-width: 415px)": {
       width: "100%",
       paddingLeft: 0,
       paddingRight: 0,
     },
   },
+  root: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+  container: {
+    marginLeft: "auto",
+    marginRight: "auto",
+    boxSizing: "border-box",
+    borderCollapse: "separate",
+    borderSpacing: "30px 40px",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+      borderSpacing: "0",
+      display: "flex",
+      flexDirection: "column",
+    },
+    "@media only screen and (min-width: 768px)": {
+      display: "flex",
+      marginTop: 16,
+      width: "90%",
+    },
+    "@media only screen and (min-width: 1024px)": {
+      width: "100%",
+      display: "table",
+    },
+    "@media only screen and (min-width: 1200px)": {
+      width: "90%",
+    },
+  },
+  desktop: {
+    display: "none",
+    "@media only screen and (min-width: 1024px)": {
+      display: "block",
+    },
+  },
+  sidebar: {
+    display: "table-cell",
+    boxSizing: "border-box",
+    verticalAlign: "top",
+    position: "relative",
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
+    "@media only screen and (min-width: 768px)": {
+      width: "20%",
+      marginLeft: 16,
+    },
+    "@media only screen and (min-width: 1024px)": {
+      minWidth: 250,
+      maxWidth: 280,
+      width: 280,
+      marginLeft: 0,
+    },
+  },
+  main: {
+    display: "table-cell",
+    boxSizing: "border-box",
+    position: "relative",
+    "@media only screen and (max-width: 767px)": {
+      width: "100%",
+    },
+    "@media only screen and (min-width: 768px)": {
+      width: "80%",
+      maxWidth: 600,
+    },
+    "@media only screen and (min-width: 1024px)": {
+      width: "unset",
+      maxWidth: 700,
+    },
+  },
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
-    backgroundColor: "#FAFAFA",
     minHeight: "100vh",
     position: "relative",
     "@media only screen and (max-width: 415px)": {
@@ -674,7 +757,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     position: "relative",
     wordBreak: "break-word",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       fontSize: 28,
     },
     "@media only screen and (max-width: 415px)": {
@@ -687,7 +770,7 @@ const styles = StyleSheet.create({
   infoSection: {
     display: "flex",
     marginTop: 10,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
@@ -702,7 +785,7 @@ const styles = StyleSheet.create({
   authors: {
     display: "flex",
     marginRight: 41,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       marginRight: 21,
     },
   },
@@ -712,7 +795,7 @@ const styles = StyleSheet.create({
   tags: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
@@ -726,7 +809,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: "#4e4c5f",
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       marginTop: 20,
       marginBottom: 20,
     },
@@ -736,13 +819,13 @@ const styles = StyleSheet.create({
     width: 70,
     left: -80,
     top: 18,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "none",
     },
   },
   mobileVoting: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
     },
   },
@@ -753,7 +836,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-start",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       justifyContent: "flex-start",
       alignItems: "flex-start",
@@ -763,7 +846,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   mobileRow: {
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       justifyContent: "space-between",
       alignContent: "center",
@@ -772,7 +855,7 @@ const styles = StyleSheet.create({
   },
   mobileInfoSection: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       marginTop: 17,
       marginBottom: 20,
@@ -781,7 +864,7 @@ const styles = StyleSheet.create({
   },
   mobileDoi: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       opacity: 0.5,
       fontSize: 14,
@@ -789,7 +872,7 @@ const styles = StyleSheet.create({
   },
   mobileTags: {
     display: "none",
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       display: "flex",
       alignItems: "center",
       marginTop: 20,
@@ -809,7 +892,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
     display: "flex",
     flexShrink: 0,
-    "@media only screen and (max-width: 760px)": {
+    "@media only screen and (max-width: 767px)": {
       width: 35,
       height: 35,
     },
@@ -828,13 +911,25 @@ const styles = StyleSheet.create({
   space: {
     marginTop: 30,
   },
+  paperMetaContainerMobile: {
+    display: "none",
+    "@media only screen and (max-width: 767px)": {
+      display: "flex",
+    },
+  },
   stickyComponent: {
-    top: 0,
-    position: "sticky",
-    backgroundColor: "#FFF",
-    zIndex: 4,
-    "@media only screen and (max-width: 760px)": {
-      top: 80,
+    display: "none",
+    height: 0,
+    "@media only screen and (max-width: 767px)": {
+      // top: 65,
+      top: -2,
+      position: "sticky",
+      backgroundColor: "#FFF",
+      zIndex: 3,
+      display: "flex",
+      height: "unset",
+      width: "100%",
+      boxSizing: "border-box",
     },
   },
   scrollPadding: {
@@ -911,8 +1006,39 @@ const styles = StyleSheet.create({
     },
   },
   paperPageContainer: {
-    overflowX: "hidden",
-    backgroundColor: "#FFF",
+    display: "flex",
+    flexDirection: "column",
+    border: "1.5px solid #F0F0F0",
+    backgroundColor: "#fff",
+    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
+    padding: "20px 30px 30px 90px",
+    boxSizing: "border-box",
+    borderRadius: 4,
+    "@media only screen and (max-width: 767px)": {
+      borderRadius: "0px",
+      borderTop: "none",
+      padding: 20,
+      width: "100%",
+    },
+  },
+  noMarginLeft: {
+    padding: 30,
+    marginTop: 30,
+  },
+  top: {
+    // paddingBottom: 0,
+    minHeight: 208,
+    "@media only screen and (max-width: 767px)": {
+      borderBottom: "none",
+    },
+  },
+  bottom: {
+    // borderTop: "none",
+    paddingTop: 0,
+  },
+  componentWrapper: {
+    width: 1200,
+    boxSizing: "border-box",
   },
   abstractText: {
     lineHeight: 1.6,
@@ -928,6 +1054,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   vote: state.vote,
   auth: state.auth,
+  user: state.auth.user,
 });
 
 const mapDispatchToProps = {
@@ -943,4 +1070,4 @@ const mapDispatchToProps = {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Paper);
+)(PaperIndexWithUndux);

@@ -1,7 +1,7 @@
 import { API } from "@quantfive/js-web-config";
 
 import { AUTH_TOKEN } from "../config/constants";
-import { doesNotExist } from "~/config/utils";
+import { isNullOrUndefined, doesNotExist } from "~/config/utils/nullchecks";
 
 const apiRoot = {
   production: "backend.researchhub.com",
@@ -24,8 +24,9 @@ const prepFilters = (filters) => {
  * Function to prep the URL for querystring / url
  * @param { String } url -- the URL we want to manipulate
  * @param { Object } params -- params for querystring
+ * @param { String } arrayParamSeparator -- seperator for array values
  */
-const prepURL = (url, params) => {
+const prepURL = (url, params, arrayParamSeparator = ",") => {
   let { querystring, rest, filters } = params;
 
   let qs = "";
@@ -47,8 +48,15 @@ const prepURL = (url, params) => {
 
     let currentKey = querystringKeys[i];
     let value = querystring[currentKey];
+
     if (value !== null && value !== undefined) {
-      qs += `${currentKey}=${value}&`;
+      // When & is used as a separator, key=val is repeated as many
+      // times as array elems per W3C spec.
+      if (Array.isArray(value) && arrayParamSeparator === "&") {
+        qs += value.map((v) => `${currentKey}=${v}`).join("&") + "&";
+      } else {
+        qs += `${currentKey}=${value}&`;
+      }
     }
   }
 
@@ -61,7 +69,75 @@ const prepURL = (url, params) => {
 
 const routes = (BASE_URL) => {
   return {
-    USER: ({ userId, authorId, route, referralCode, invitedBy, page }) => {
+    BASE_URL,
+    CITATIONS: ({ citationID, citationType, hypothesisID }, requestType) => {
+      if (requestType === "get") {
+        return !isNullOrUndefined(citationID)
+          ? BASE_URL + `citation/${citationID}`
+          : BASE_URL +
+              (isNullOrUndefined(citationType)
+                ? `hypothesis/${hypothesisID}/get_citations/`
+                : `hypothesis/${hypothesisID}/get_citations/?citation_type=${citationType}`);
+      } else if (requestType === "post") {
+        return BASE_URL + `citation/`;
+      }
+    },
+    CITATIONS_VOTE: ({ citationID, voteType }) => {
+      return BASE_URL + `citation/${citationID}/${voteType}/`;
+    },
+    ORGANIZATION: ({ userId, orgId, orgSlug }) => {
+      let url = `${BASE_URL}organization/`;
+      let restId = null;
+      if (userId) {
+        restId = userId;
+      } else {
+        restId = orgId;
+      }
+
+      const params = {
+        querystring: {
+          slug: orgSlug,
+        },
+        rest: {
+          id: restId,
+          route: userId ? "get_user_organizations" : null,
+        },
+      };
+
+      url = prepURL(url, params);
+      return url;
+    },
+    ORGANIZATION_USERS: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/get_organization_users`;
+    },
+    REMOVE_USER_FROM_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/remove_user/`;
+    },
+    REMOVE_INVITED_USER_FROM_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/remove_invited_user/`;
+    },
+    INVITE_TO_ORG: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/invite_user/`;
+    },
+    ACCEPT_ORG_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/organization/${token}/accept_invite/`;
+    },
+    ORG_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}organization/${token}/get_organization_by_key/`;
+    },
+    UPDATE_ORG_USER_PERMISSIONS: ({ orgId }) => {
+      return `${BASE_URL}organization/${orgId}/update_user_permission/`;
+    },
+
+    USER: ({
+      userId,
+      authorId,
+      route,
+      referralCode,
+      invitedBy,
+      page,
+      hubIds,
+    }) => {
       let url = BASE_URL + "user/";
 
       let params = {
@@ -69,6 +145,7 @@ const routes = (BASE_URL) => {
           referral_code: referralCode,
           invited_by: invitedBy,
           author_profile: authorId,
+          hub_ids: hubIds ? hubIds.join(",") : "",
           page,
         },
         rest: {
@@ -104,40 +181,117 @@ const routes = (BASE_URL) => {
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
+    RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
+      let url = BASE_URL + "researchhub_posts/";
+      let params = {
+        querystring: {
+          created_by,
+          post_id,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
+    },
+    HYPOTHESIS: ({ created_by, hypothesis_id, upsert }) => {
+      let url = `${BASE_URL}hypothesis/${
+        !isNullOrUndefined(hypothesis_id) ? hypothesis_id + "/" : ""
+      }${upsert ? "upsert/" : ""}`;
+      let params = {
+        querystring: {
+          created_by,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
+    },
+    HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
+      return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
+    },
+    CKEDITOR_TOKEN: () => {
+      return `${BASE_URL}ckeditor/token/`;
+    },
+    NOTE: ({ noteId, orgId, orgSlug }) => {
+      let url;
+      if (!isNullOrUndefined(orgId)) {
+        url = `${BASE_URL}organization/${orgId}/get_organization_notes/`;
+      } else if (!isNullOrUndefined(noteId)) {
+        url = `${BASE_URL}note/${noteId}/`;
+      } else {
+        url = `${BASE_URL}note/`;
+      }
+
+      if (!isNullOrUndefined(orgSlug)) {
+        url = `${BASE_URL}organization/${orgSlug}/get_organization_notes/`;
+      }
+
+      return url;
+    },
+    NOTE_PRIVATE: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/make_private/`;
+    },
+    NOTE_DELETE: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/delete/`;
+    },
+    NOTE_CONTENT: () => {
+      return `${BASE_URL}note_content/`;
+    },
+    NOTE_TEMPLATE: ({ orgSlug }) => {
+      if (!isNullOrUndefined(orgSlug)) {
+        return `${BASE_URL}organization/${orgSlug}/get_organization_templates/`;
+      } else {
+        return `${BASE_URL}note_template/`;
+      }
+    },
+    NOTE_PERMISSIONS: ({ noteId, method = "GET" }) => {
+      if (method === "GET") {
+        return `${BASE_URL}note/${noteId}/get_note_permissions/`;
+      } else if (method === "PATCH") {
+        return `${BASE_URL}note/${noteId}/update_permissions/`;
+      } else if (method === "DELETE") {
+        return `${BASE_URL}note/${noteId}/remove_permission/`;
+      }
+    },
+    NOTE_INVITE_USER: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/invite_user/`;
+    },
+    NOTE_ACCEPT_INVITE: ({ token }) => {
+      return `${BASE_URL}invite/note/${token}/accept_invite/`;
+    },
+    NOTE_REMOVE_INVITED_USER: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/remove_invited_user/`;
+    },
+    NOTE_INVITED_USERS: ({ noteId }) => {
+      return `${BASE_URL}note/${noteId}/get_invited_users/`;
+    },
+    NOTE_INVITE_DETAILS: ({ token }) => {
+      return `${BASE_URL}note/${token}/get_note_by_key/`;
+    },
     SIGNOUT: BASE_URL + "auth/logout/",
-    SEARCH: ({ search, config, page, size, external_search = true }) => {
+    SEARCH: ({
+      filters,
+      config,
+      page,
+      size,
+      // Facets specified will have their values returned
+      // alongside counts in the search response.
+      facets = [],
+      external_source = true,
+    }) => {
       let url = BASE_URL + "search/";
       let params = {
         querystring: {
-          search,
+          ...filters,
           page,
           size,
-          external_search,
+          external_source,
+          facet: facets,
         },
         rest: {
           route: config.route,
         },
       };
-      url = prepURL(url, params);
 
-      return url;
-    },
-    SEARCH_MATCHING_PAPERS: ({
-      search,
-      page,
-      size,
-      external_search = true,
-    }) => {
-      let url = BASE_URL + "search/match/";
-      let params = {
-        querystring: {
-          search,
-          page,
-          size,
-          external_search,
-        },
-      };
-      url = prepURL(url, params);
+      url = prepURL(url, params, "&");
 
       return url;
     },
@@ -146,9 +300,9 @@ const routes = (BASE_URL) => {
       search,
       page,
       filters,
-      highlights,
       route,
       progress,
+      hidePublic,
     }) => {
       let url = BASE_URL + `paper/`;
 
@@ -166,13 +320,9 @@ const routes = (BASE_URL) => {
 
       url = prepURL(url, params);
 
-      if (highlights) {
-        for (let i = 0; i < highlights.length; i++) {
-          url += `highlight=${highlights[i]}&`;
-        }
+      if (!hidePublic) {
+        url += "make_public=true&";
       }
-
-      url += "make_public=true&";
 
       if (progress) {
         url += "created_location=progress";
@@ -183,9 +333,33 @@ const routes = (BASE_URL) => {
 
     AUTHOR: ({ authorId }) => {
       let url = BASE_URL + `author/${authorId}`;
+
+      let params = {
+        filters,
+        querystring: {
+          search,
+          page,
+        },
+        rest: {
+          route: route,
+          id: authorId,
+        },
+      };
+
+      url = prepURL(url, params);
+
       return url;
     },
 
+    AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
+    AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
+      BASE_URL + `author_claim_token_validation/`,
+    MODERATORS_AUTHOR_CLAIM: ({ case_status }) =>
+      !isNullOrUndefined(case_status)
+        ? BASE_URL + `moderators/author_claim_case/?case_status=${case_status}`
+        : BASE_URL + `moderators/author_claim_case/`,
+    MODERATORS_AUTHOR_CLAIM_CASE_COUNT: () =>
+      BASE_URL + "moderators/author_claim_case/counts/",
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
@@ -203,14 +377,33 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    USER_POST: ({ authorId }) => {
+      let url = BASE_URL + `author/${authorId}/get_user_posts/`;
+      return url;
+    },
+
     POST_PAPER: () => {
       let url = BASE_URL + `paper/`;
 
       return url;
     },
 
-    PAPER_CHAIN: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    PAPER_CHAIN: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
+      let url = buildPaperChainUrl(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url;
     },
@@ -219,15 +412,27 @@ const routes = (BASE_URL) => {
       return BASE_URL + "permissions/";
     },
 
-    DISCUSSION: ({ paperId, filter, page, progress, twitter, isRemoved }) => {
-      let url = BASE_URL + `paper/${paperId}/discussion/`;
+    DISCUSSION: ({
+      filter,
+      isRemoved,
+      page,
+      documentId,
+      documentType,
+      progress,
+      source,
+      targetId,
+      twitter,
+    }) => {
+      let url = `${BASE_URL}${documentType}/${documentId}/discussion/${
+        targetId != null ? targetId + "/" : ""
+      }`;
       let params = {
         querystring: {
           created_location: progress ? "progress" : null,
           page,
           ordering: filter,
-          source: twitter ? "twitter" : "researchhub",
-          is_removed: isRemoved ? "False" : null,
+          source: source != null ? source : twitter ? "twitter" : "researchhub",
+          is_removed: Boolean(isRemoved) ? "True" : "False",
         },
       };
       url = prepURL(url, params);
@@ -269,8 +474,11 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD: (paperId, threadId) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/`;
+    THREAD: (documentType, paperId, documentId, threadId) => {
+      let url =
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
+        `/discussion/${threadId}/`;
 
       return url;
     },
@@ -292,8 +500,12 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    THREAD_COMMENT: (paperId, threadId, page) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/`;
+
+    THREAD_COMMENT: (documentType, paperId, documentId, threadId, page) => {
+      let url =
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
+        `/discussion/${threadId}/comment/`;
 
       if (typeof page === "number") {
         url += `?page=${page}`;
@@ -302,8 +514,18 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    THREAD_COMMENT_REPLY: (paperId, threadId, commentId, page) => {
-      let url = `${BASE_URL}paper/${paperId}/discussion/${threadId}/comment/${commentId}/reply/`;
+    THREAD_COMMENT_REPLY: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      page
+    ) => {
+      let url =
+        `${BASE_URL}${documentType}/` +
+        (paperId != null ? `${paperId}` : `${documentId}`) +
+        `/discussion/${threadId}/comment/${commentId}/reply/`;
 
       if (typeof page === "number") {
         url += `?page=${page}`;
@@ -351,7 +573,7 @@ const routes = (BASE_URL) => {
       }
 
       if (search) {
-        url += `search=${search}&`;
+        url += `name__fuzzy=${search}&`;
       }
 
       if (!doesNotExist(pageLimit)) {
@@ -360,7 +582,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    SORTED_HUB: ({ filter }) => {
+    SORTED_HUB: (params = {}) => {
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
 
@@ -369,7 +591,15 @@ const routes = (BASE_URL) => {
     GET_HUB_CATEGORIES: () => {
       return BASE_URL + `hub_category/`;
     },
-    GET_HUB_PAPERS: ({ hubId, timePeriod, ordering, page = 1, slug }) => {
+    GET_HUB_PAPERS: ({
+      hubId,
+      timePeriod,
+      ordering,
+      page = 1,
+      slug,
+      subscribedHubs,
+      externalSource,
+    }) => {
       let url = BASE_URL + `paper/get_hub_papers/`;
       let params = {
         querystring: {
@@ -379,11 +609,50 @@ const routes = (BASE_URL) => {
           end_date__lte: timePeriod.end,
           ordering,
           hub_id: hubId,
+          subscribed_hubs: subscribedHubs,
+          external_source: externalSource,
         },
       };
       url = prepURL(url, params);
 
       return url;
+    },
+    GET_UNIFIED_DOCS: ({
+      externalSource,
+      hubId,
+      ordering,
+      page = 1,
+      slug,
+      subscribedHubs,
+      timePeriod,
+      type, // docType
+    }) => {
+      const url =
+        BASE_URL + "researchhub_unified_documents/get_unified_documents/";
+      const params = {
+        querystring: {
+          end_date__lte: timePeriod.end,
+          external_source: externalSource,
+          hub_id: hubId,
+          ordering,
+          page,
+          slug,
+          start_date__gte: timePeriod.start,
+          subscribed_hubs: subscribedHubs,
+          type,
+        },
+      };
+      return prepURL(url, params);
+    },
+    UNIFIED_DOC: ({ id }) => {
+      const url = BASE_URL + "researchhub_unified_documents/";
+      const params = {
+        querystring: {},
+        rest: {
+          id: id,
+        },
+      };
+      return prepURL(url, params);
     },
     HUB_SUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/subscribe/`,
     HUB_UNSUBSCRIBE: ({ hubId }) => BASE_URL + `hub/${hubId}/unsubscribe/`,
@@ -393,19 +662,54 @@ const routes = (BASE_URL) => {
     },
 
     USER_VOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+      let url = buildPaperChainUrl(paperId, null, threadId, commentId, replyId);
 
       return url + "user_vote/";
     },
-
-    UPVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    RH_POST_UPVOTE: (postId) => {
+      // New post types, such as Question
+      return `${BASE_URL}researchhub_posts/${postId}/upvote/`;
+    },
+    RH_POST_DOWNVOTE: (postId) => {
+      // New post types, such as Question
+      return `${BASE_URL}researchhub_posts/${postId}/downvote/`;
+    },
+    UPVOTE: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
+      let url = buildPaperChainUrl(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "upvote/";
     },
 
-    DOWNVOTE: (paperId, threadId, commentId, replyId) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    DOWNVOTE: (
+      documentType,
+      paperId,
+      documentId,
+      threadId,
+      commentId,
+      replyId
+    ) => {
+      let url = buildPaperChainUrl(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "downvote/";
     },
@@ -427,6 +731,19 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    NEW_FEATURE: ({ route, feature }) => {
+      let url = BASE_URL + "new_feature_release/";
+      let params = {
+        querystring: {
+          feature,
+        },
+        rest: {
+          route: route,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
+    },
     EMAIL_PREFERENCE: ({ update_or_create, emailRecipientId }) => {
       let url = BASE_URL + "email_recipient/";
 
@@ -442,17 +759,12 @@ const routes = (BASE_URL) => {
     CHECKURL: BASE_URL + "paper/check_url/",
     GET_LIVE_FEED: ({ hubId, page = 1, filter }) => {
       let url = BASE_URL + `hub/`;
-
-      if (hubId !== undefined && hubId !== null) {
+      if (!isNullOrUndefined(hubId)) {
         url += `${hubId}/latest_actions/?page=${page}`;
       }
-
-      if (filter !== undefined || filter !== null) {
-        if (typeof filter === "string") {
-          url += `&ordering=${filter}`;
-        }
+      if (!isNullOrUndefined(filter) && typeof filter === "string") {
+        url += `&ordering=${filter}`;
       }
-
       return url;
     },
     GET_CSL_ITEM: BASE_URL + "paper/get_csl_item/",
@@ -483,7 +795,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    WITHDRAWAL_FEE: BASE_URL + "withdrawal/transaction_fee",
+    WITHDRAWAL_FEE: BASE_URL + "withdrawal/transaction_fee/",
     TRANSFER: BASE_URL + "transfer/",
     USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
     USER_ORCID_CONNECT_MODAL: BASE_URL + "user/has_seen_orcid_connect_modal/",
@@ -496,8 +808,14 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    FLAG_POST: ({ paperId, threadId, commentId, replyId }) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    FLAG_POST: ({ paperId, threadId, commentId, replyId, postId }) => {
+      let url = buildPaperChainUrl(
+        paperId,
+        postId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "flag/";
     },
@@ -507,8 +825,22 @@ const routes = (BASE_URL) => {
     CENSOR_PAPER_PDF: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/censor_pdf/`;
     },
-    CENSOR_POST: ({ paperId, threadId, commentId, replyId }) => {
-      let url = buildPaperChainUrl(paperId, threadId, commentId, replyId);
+    CENSOR_POST: ({
+      documentType,
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      documentId,
+    }) => {
+      let url = buildPaperChainUrl(
+        documentType,
+        paperId,
+        documentId,
+        threadId,
+        commentId,
+        replyId
+      );
 
       return url + "censor/";
     },
@@ -574,6 +906,21 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    FIGURES: ({ paperId, route }) => {
+      let url = BASE_URL + `figure/`;
+
+      let params = {
+        querystring: {},
+        rest: {
+          route: route,
+          id: paperId,
+        },
+      };
+
+      url = prepURL(url, params);
+
+      return url;
+    },
     GET_PAPER_FIGURES: ({ paperId }) => {
       return BASE_URL + `figure/${paperId}/get_all_figures/`;
     },
@@ -592,12 +939,11 @@ const routes = (BASE_URL) => {
     DELETE_FIGURE: ({ figureId }) => {
       return BASE_URL + `figure/${figureId}/delete_figure`;
     },
-    MAKE_PAPER_PUBLIC: ({ paperId }) => {
-      return BASE_URL + `paper/${paperId}/?make_public=true/`;
-    },
     PAPER_FILES: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/additional_file/`;
     },
+    GATEKEEPER_CURRENT_USER: ({ type }) =>
+      BASE_URL + `gatekeeper/check_current_user/?type=${type}`,
     GOOGLE_ANALYTICS: ({ ignorePaper, ignoreUser, manual }) => {
       let url = BASE_URL + "events/forward_event/";
       if (ignorePaper) {
@@ -615,11 +961,20 @@ const routes = (BASE_URL) => {
       return url;
     },
     AMP_ANALYTICS: BASE_URL + "events/amplitude/forward_event/",
-    PROMOTION_STATS: ({ paperId, interaction }) => {
+    PROMOTION_STATS: ({ paperId, interaction, route }) => {
       let url = BASE_URL + "events/paper/";
 
       if (!doesNotExist(paperId)) {
         url += `?paper=${paperId}&ordering=-created_date&paper_is_boosted=True&interaction=${interaction}`;
+      } else {
+        let params = {
+          querystring: {},
+          rest: {
+            route: route,
+          },
+        };
+
+        return (url = prepURL(url, params));
       }
 
       return url;
@@ -652,11 +1007,47 @@ const routes = (BASE_URL) => {
       }
       return url + query;
     },
+
+    CHECK_USER_VOTE_DOCUMENTS: ({
+      hypothesisIds = [],
+      paperIds = [],
+      postIds = [],
+    }) => {
+      // NOTE: calvinhlee - this is a terrible way to handle vote. There has to be a better way
+      const url = BASE_URL + "researchhub_unified_documents/check_user_vote/";
+      let query = null;
+      if (paperIds.length > 0) {
+        query = `?paper_ids=`;
+        query += paperIds.join(",");
+      }
+      if (postIds.length > 0) {
+        Boolean(query) ? (query += `&post_ids=`) : (query = `?post_ids=`);
+        query += postIds.join(",");
+      }
+      if (hypothesisIds.length > 0) {
+        Boolean(query)
+          ? (query += `&hypothesis_ids=`)
+          : (query = `?hypothesis_ids=`);
+        query += hypothesisIds.join(",");
+      }
+      return url + query;
+    },
+
     SUPPORT: BASE_URL + "support/",
   };
 
-  function buildPaperChainUrl(paperId, threadId, commentId, replyId) {
-    let url = `${BASE_URL}paper/${paperId}/`;
+  function buildPaperChainUrl(
+    documentType,
+    paperId,
+    documentId,
+    threadId,
+    commentId,
+    replyId
+  ) {
+    let url =
+      `${BASE_URL}${documentType}/` +
+      (paperId != null ? `${paperId}` : `${documentId}`) +
+      `/`;
 
     if (!doesNotExist(threadId)) {
       url += `discussion/${threadId}/`;
@@ -672,8 +1063,10 @@ const routes = (BASE_URL) => {
   }
 };
 
-export default API({
+const api = API({
   authTokenName: AUTH_TOKEN,
   apiRoot,
   routes,
 });
+
+export default api;

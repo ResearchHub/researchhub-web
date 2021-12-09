@@ -1,24 +1,22 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import { connect } from "react-redux";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 
 // Config
 import colors from "../../config/themes/colors";
-import icons from "~/config/themes/icons";
 
 // Redux
 import { HubActions } from "~/redux/hub";
 
 const DEFAULT_TRANSITION_TIME = 400;
 
-class HubsList extends React.Component {
+class HubsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,7 +29,7 @@ class HubsList extends React.Component {
   }
 
   componentDidMount() {
-    let { auth } = this.props;
+    const { auth } = this.props;
     if (this.props.hubs.length) {
       this.setState({ hubs: [...this.props.hubs] });
     }
@@ -81,7 +79,7 @@ class HubsList extends React.Component {
   updateTopHubs = (state) => {
     let hubState = this.props.hubState;
     if (this.props.auth.isLoggedIn) {
-      let subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
+      let subscribed = hubState.subscribedHubs || [];
       let subscribedHubs = {};
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
@@ -110,42 +108,40 @@ class HubsList extends React.Component {
   };
 
   renderHubEntry = () => {
-    let selectedHubs = this.state.hubs;
-    let subscribed = this.props.hubState.subscribedHubs
-      ? this.props.hubState.subscribedHubs
-      : [];
-    let subscribedHubs = {};
-    subscribed.forEach((hub) => {
-      subscribedHubs[hub.id] = true;
-    });
+    const selectedHubs = this.state.hubs.slice(0, 5);
+
     return selectedHubs.map((hub, i) => {
-      let { name, id, user_is_subscribed } = hub;
+      const { name, id, hub_image } = hub;
       return (
         <Ripples
           className={css(
             styles.hubEntry,
             this.isCurrentHub(this.props.current, id) && styles.current
           )}
+          onClick={this.props.onHubSelect}
           key={`${id}-${i}`}
         >
           <Link
             href={{
               pathname: "/hubs/[slug]",
               query: {
-                name: `${hub.name}`,
-
+                // name: `${hub.name}`,
                 slug: `${encodeURIComponent(hub.slug)}`,
               },
             }}
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
           >
             <a className={css(styles.hubLink)}>
-              {name}
-              {subscribedHubs[hub.id] && (
-                <span className={css(styles.subscribedIcon)}>
-                  {icons.starFilled}
-                </span>
-              )}
+              <img
+                className={css(styles.hubImage)}
+                src={
+                  hub_image
+                    ? hub_image
+                    : "/static/background/hub-placeholder.svg"
+                }
+                alt={hub.name}
+              />
+              <span className={"clamp1"}>{name}</span>
             </a>
           </Link>
         </Ripples>
@@ -154,32 +150,24 @@ class HubsList extends React.Component {
   };
 
   render() {
-    let { overrideStyle } = this.props;
+    const { overrideStyle } = this.props;
 
     return (
       <div className={css(styles.container, overrideStyle && overrideStyle)}>
         <div className={css(styles.hubsListContainer)}>
-          <div className={css(styles.listLabel)} id={"hubListTitle"}>
-            Trending Hubs
-          </div>
+          <h5 className={css(styles.listLabel)}>Trending Hubs</h5>
           <div
             className={css(styles.hubsList, this.state.reveal && styles.reveal)}
           >
-            {this.state.hubs.length > 0 ? (
-              this.renderHubEntry()
-            ) : (
-              <Fragment>
-                <ReactPlaceholder
-                  showLoadingAnimation
-                  ready={false}
-                  customPlaceholder={
-                    <HubEntryPlaceholder color="#efefef" rows={9} />
-                  }
-                >
-                  <div />
-                </ReactPlaceholder>
-              </Fragment>
-            )}
+            <ReactPlaceholder
+              showLoadingAnimation
+              ready={this.state.hubs && this.state.hubs.length > 0}
+              customPlaceholder={
+                <HubEntryPlaceholder color="#efefef" rows={5} />
+              }
+            >
+              {this.renderHubEntry()}
+            </ReactPlaceholder>
             <Link href={"/hubs"} as={"/hubs"}>
               <a className={css(styles.link)}>View all hubs</a>
             </Link>
@@ -192,13 +180,17 @@ class HubsList extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    width: "100%",
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
-    paddingTop: 30,
-    paddingBottom: 30,
+    padding: "15px 0",
+    backgroundColor: "#FFF",
+    border: "1px solid #ededed",
+    borderRadius: 4,
+    boxSizing: "border-box",
+    width: "100%",
+    marginTop: 20,
   },
   hubsListContainer: {
     height: "100%",
@@ -210,24 +202,18 @@ const styles = StyleSheet.create({
     textAlign: "left",
     cursor: "default",
   },
-  text: {
-    fontFamily: "Roboto",
-  },
   listLabel: {
     textTransform: "uppercase",
     fontWeight: 500,
-    fontSize: 13,
+    fontSize: 12,
     letterSpacing: 1.2,
-    marginBottom: 15,
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
     width: "100%",
-    paddingLeft: 35,
     boxSizing: "border-box",
-    "@media only screen and (max-width: 1303px)": {
-      paddingLeft: 25,
-    },
+    margin: "0 0 10px 0",
+    padding: "0 0 0 20px",
   },
   topIcon: {
     color: colors.RED(),
@@ -241,16 +227,39 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     display: "flex",
     alignItems: "center",
-    boxSizing: "content-box",
+    boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
     borderRadius: 3,
-    border: "1px solid #fff",
-    marginBottom: 8,
+    borderBottom: "1px solid #F0F0F0",
+    borderLeft: "3px solid #FFF",
     ":hover": {
-      borderColor: "rgb(237, 237, 237)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
     },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+  },
+  hubImage: {
+    height: 35,
+    width: 35,
+    minWidth: 35,
+    maxWidth: 35,
+    borderRadius: 4,
+    objectFit: "cover",
+    marginRight: 10,
+    background: "#EAEAEA",
+    border: "1px solid #ededed",
   },
   hubLink: {
     textDecoration: "none",
@@ -258,17 +267,14 @@ const styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     alignItems: "center",
-    padding: "8px",
-    // paddingLeft: 0,
-    // marginLeft: -8
+    fontWeight: 500,
+    padding: "10px 20px",
   },
   current: {
-    borderColor: "rgb(237, 237, 237)",
-    backgroundColor: "#FAFAFA",
-    ":hover": {
-      borderColor: "rgb(227, 227, 227)",
-      backgroundColor: "#EAEAEA",
-    },
+    color: colors.NEW_BLUE(),
+    background:
+      "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+    borderLeft: `3px solid ${colors.NEW_BLUE()}`,
   },
   hubsList: {
     opacity: 0,
@@ -278,14 +284,9 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 30px",
-    "@media only screen and (max-width: 1303px)": {
-      padding: "0px 20px",
-    },
   },
   reveal: {
     opacity: 1,
-    transition: "all ease-in-out 0.2s",
   },
   space: {
     height: 10,
@@ -301,8 +302,8 @@ const styles = StyleSheet.create({
     fontWeight: 300,
     textTransform: "capitalize",
     fontSize: 16,
-    padding: "3px 5px",
-    paddingLeft: 8,
+    marginTop: 15,
+    paddingLeft: 20,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
@@ -322,7 +323,4 @@ const mapDispatchToProps = {
   updateTopHubs: HubActions.updateTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HubsList);
+export default connect(mapStateToProps, mapDispatchToProps)(HubsList);

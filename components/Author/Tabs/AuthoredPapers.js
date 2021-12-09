@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import ReactPlaceholder from "react-placeholder";
@@ -8,11 +9,12 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import PaperPlaceholder from "../../Placeholders/PaperPlaceholder";
 
 // Config
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import Loader from "../../Loader/Loader";
 import { AuthorActions } from "../../../redux/author";
 
-class AuthoredPapersTab extends React.Component {
+class AuthoredPapersTab extends Component {
   constructor(props) {
     super(props);
 
@@ -89,38 +91,43 @@ class AuthoredPapersTab extends React.Component {
 
   render() {
     let { papers } = this.state;
-    let authoredPapers = papers.map((paper, index) => {
-      return (
+    const { maxCardsToRender } = this.props;
+
+    const authoredPapers = [];
+    for (let i = 0; i < papers.length; i++) {
+      if (i === maxCardsToRender) break;
+
+      const paper = papers[i];
+      authoredPapers.push(
         <div className={css(styles.paperContainer)}>
           <PaperEntryCard
             paper={paper}
-            index={index}
+            index={i}
             style={[
               styles.paperEntryCard,
-              index === papers.length - 1 && styles.noBorder,
+              i === papers.length - 1 && styles.noBorder,
             ]}
             voteCallback={this.voteCallback}
             mobileView={this.props.mobileView}
           />
         </div>
       );
-    });
+    }
+
     return (
       <ReactPlaceholder
-        ready={this.props.author.authorDoneFetching}
+        ready={!!(this.props.author.authorDoneFetching && !this.props.fetching)} // needs to be boolean, not undefined
         showLoadingAnimation
         customPlaceholder={<PaperPlaceholder color="#efefef" />}
       >
         {authoredPapers.length > 0 ? (
           <div className={css(styles.container)}>
             {authoredPapers}
-            {this.renderLoadMoreButton()}
+            {!maxCardsToRender && this.renderLoadMoreButton()}
           </div>
         ) : (
           <div className={css(styles.box)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-file-alt" />
-            </div>
+            <div className={css(styles.icon)}>{icons.file}</div>
             <h2 className={css(styles.noContent)}>
               User has not authored any papers
             </h2>
@@ -215,7 +222,4 @@ const mapDispatchToProps = {
   getAuthoredPapers: AuthorActions.getAuthoredPapers,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthoredPapersTab);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthoredPapersTab);

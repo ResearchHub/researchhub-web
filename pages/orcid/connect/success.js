@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
@@ -8,7 +9,7 @@ import { ModalActions } from "~/redux/modals";
 import colors from "~/config/themes/colors";
 import { modalStyles } from "~/config/themes/styles";
 
-class OrcidConnectSuccessPage extends React.Component {
+class OrcidConnectSuccessPage extends Component {
   constructor(props) {
     super(props);
   }
@@ -33,7 +34,7 @@ class OrcidConnectSuccessPage extends React.Component {
             <div className={css(styles.icons)}>
               <img
                 className={css(styles.rhIcon)}
-                src={"/static/ResearchHubLogo.png"}
+                src={"/static/ResearchHubLogo.webp"}
               />
               <img
                 className={css(styles.orcidIcon)}
@@ -158,8 +159,5 @@ const mapDispatchToProps = {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrcidConnectSuccessPage)
+  connect(mapStateToProps, mapDispatchToProps)(OrcidConnectSuccessPage)
 );

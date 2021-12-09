@@ -1,27 +1,34 @@
 import App from "next/app";
-import Router from "next/router";
-import React from "react";
+import Router, { useRouter } from "next/router";
 import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
 import "isomorphic-unfetch";
-import "../components/Paper/progressbar.css";
-import "react-tagsinput/react-tagsinput.css";
-import "../components/SearchSuggestion/authorinput.css";
-import { KeyUtils } from "slate";
 import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
-import { isMobile } from "react-device-detect";
-
-// FontAwesome SSR
-// import { config } from "@fortawesome/fontawesome-svg-core";
-// import "@fortawesome/fontawesome-svg-core/styles.css";
-// config.autoAddCss = false;
+import { useEffect, useState } from "react";
 
 // Components
 import Base from "./Base";
+
+// Stylesheets
 import "./stylesheets/App.css";
+import "../components/Paper/progressbar.css";
+import "react-tagsinput/react-tagsinput.css";
+import "../components/SearchSuggestion/authorinput.css";
+import "../components/CKEditor/CKEditor.css";
+
+import "../components/Modals/Stylesheets/Dnd.css";
+import "react-quill/dist/quill.snow.css";
+import "../components/TextEditor/stylesheets/QuillTextEditor.css";
+import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
+import "~/components/Paper/Tabs/stylesheets/paper.css";
+import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
+import "~/pages/user/stylesheets/toggle.css";
+import "react-placeholder/lib/reactPlaceholder.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import "katex/dist/katex.min.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -29,16 +36,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
 
-if (process.env.NODE_ENV === "production") {
-  Sentry.init({
-    dsn: "https://423f7b6ddcea48b9b50f7ba4baa0e750@sentry.io/1817918",
-    release: process.env.SENTRY_RELEASE,
-    environment:
-      process.env.REACT_APP_ENV === "staging" ? "staging" : "production",
-  });
-}
-
-const apm = initApm({
+initApm({
   // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
   serviceName:
     process.env.REACT_APP_ENV === "staging"
@@ -60,74 +58,56 @@ const apm = initApm({
   serviceVersion: process.env.SENTRY_RELEASE,
 });
 
-class MyApp extends App {
-  constructor(props) {
-    super(props);
+const MyApp = ({ Component, pageProps, store }) => {
+  const router = useRouter();
 
-    this.previousPath = props.router.asPath.split("?")[0];
+  const [prevPath, setPrevPath] = useState(router.asPath);
 
+  // Scroll to top on page change
+  useEffect(() => {
+    if (prevPath !== router.pathname) {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: "auto",
+      });
+    }
+
+    setPrevPath(router.pathname);
+  }, [router.asPath]);
+
+  useEffect(() => {
+    connectSift();
     ReactGA.initialize("UA-106669204-1", {
       testMode: process.env.NODE_ENV !== "production",
     });
-    ReactGA.pageview(props.router.asPath);
-    Router.events.on("routeChangeStart", () => {
-      props.store.dispatch(MessageActions.setMessage(""));
-      props.store.dispatch(
-        MessageActions.showMessage({ show: true, load: true })
-      );
+
+    ReactGA.pageview(router.asPath);
+    router.events.on("routeChangeStart", (url) => {
+      store.dispatch(MessageActions.setMessage(""));
+      store.dispatch(MessageActions.showMessage({ show: true, load: true }));
     });
 
-    Router.events.on("routeChangeComplete", (url) => {
-      if (this.previousPath !== url.split("?")[0]) {
-        window.scroll({
-          top: 0,
-          left: 0,
-          behavior: "auto",
-        });
-      }
-      this.connectSift();
-      this.previousPath = props.router.asPath.split("?")[0];
-      ReactGA.pageview(props.router.asPath);
-      props.store.dispatch(MessageActions.showMessage({ show: false }));
+    router.events.on("routeChangeComplete", (url) => {
+      connectSift();
+      ReactGA.pageview(router.asPath);
+      store.dispatch(MessageActions.showMessage({ show: false }));
     });
 
     Router.events.on("routeChangeError", () => {
-      props.store.dispatch(MessageActions.showMessage({ show: false }));
+      store.dispatch(MessageActions.showMessage({ show: false }));
     });
-  }
 
-  componentDidMount() {
-    this.connectSift();
-    if (!isMobile) {
-      let scriptElem = document.createElement("script");
-      scriptElem.src = "https://app.appzi.io/bootstrap/bundle.js?token=ECg1v";
-      document.getElementsByTagName("head")[0].appendChild(scriptElem);
-    }
-  }
+    return () => {
+      window.removeEventListener("load", loadSift);
+    };
+  }, []);
 
-  componentWillUnmount() {
-    window.removeEventListener("load", this.loadSift);
-  }
-
-  componentDidUpdate(prevProps) {
-    let prevAuth = this.getAuthProps(prevProps);
-    let currAuth = this.getAuthProps(this.props);
-    if (!prevAuth.isLoggedIn && currAuth.isLoggedIn) {
-      this.connectSift();
-    } else if (prevAuth.isLoggedIn && !currAuth.isLoggedIn) {
-      this.disconnectSift();
-    }
-  }
-
-  getAuthProps = (props) => {
-    return props.store.getState().auth;
-  };
-
-  connectSift = () => {
-    let auth = this.getAuthProps(this.props);
+  const connectSift = () => {
+    let auth = getAuthProps();
     if (auth.isLoggedIn) {
       let _user_id = auth.user.id || "";
-      let _session_id = this.uniqueId();
+      let _session_id = uniqueId();
       let _sift = (window._sift = window._sift || []);
       _sift.push(["_setAccount", SIFT_BEACON_KEY]);
       _sift.push(["_setUserId", _user_id]);
@@ -135,23 +115,27 @@ class MyApp extends App {
       _sift.push(["_trackPageview"]);
 
       if (window.attachEvent) {
-        window.attachEvent("onload", this.loadSift);
+        window.attachEvent("onload", loadSift);
       } else {
-        window.addEventListener("load", this.loadSift, false);
+        window.addEventListener("load", loadSift, false);
       }
 
-      this.loadSift();
+      loadSift();
     } else {
-      this.disconnectSift();
+      disconnectSift();
     }
   };
 
-  disconnectSift = () => {
+  const getAuthProps = () => {
+    return store.getState().auth;
+  };
+
+  const disconnectSift = () => {
     let sift = document.getElementById("sift");
     sift && sift.parentNode.removeChild(sift);
   };
 
-  loadSift = () => {
+  const loadSift = () => {
     if (!document.getElementById("sift")) {
       // only attach script if it isn't there
       let script = document.createElement("script");
@@ -161,31 +145,43 @@ class MyApp extends App {
     }
   };
 
-  uniqueId = () => {
-    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
-      var r = (Math.random() * 16) | 0,
-        v = c == "x" ? r : (r & 0x3) | 0x8;
-      return v.toString(16);
-    });
+  const uniqueId = () => {
+    return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+      /[xy]/g,
+      function (c) {
+        var r = (Math.random() * 16) | 0,
+          v = c == "x" ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+      }
+    );
   };
 
-  render() {
-    const { store } = this.props;
-    let keyInt = 0;
+  return (
+    <Provider store={store}>
+      <Base pageProps={pageProps} Component={Component} />
+    </Provider>
+  );
+};
 
-    const keygen = () => {
-      let keyString = `${Date.now().toString()}_${keyInt++}`;
-      return keyString;
-    };
+// FIXME: This approach is only needed while there are pages containg
+// getStaticProps or getServerSideProps and also others containing getInitialProps. Once all calls
+// to getInitialProps removed, this can be removed safely.
+MyApp.getInitialProps = async (appContext) => {
+  const staticOrServerSidePropsPaths = [
+    "/paper/[paperId]/[paperName]",
+    "/hubs",
+    "/user/[authorId]/[tabName]",
+    "/[orgSlug]/notebook/[noteId]",
+    "/[orgSlug]/notebook",
+  ];
 
-    KeyUtils.setGenerator(keygen);
-
-    return (
-      <Provider store={store}>
-        <Base {...this.props} />
-      </Provider>
-    );
+  if (
+    process.browser ||
+    !staticOrServerSidePropsPaths.includes(appContext.router.route)
+  ) {
+    const appProps = await App.getInitialProps(appContext);
+    return { ...appProps };
   }
-}
+};
 
 export default withRedux(configureStore)(MyApp);

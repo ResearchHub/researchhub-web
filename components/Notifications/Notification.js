@@ -1,7 +1,7 @@
-import { StyleSheet, css } from "aphrodite";
+import { Component } from "react";
 import { connect } from "react-redux";
+import { StyleSheet, css } from "aphrodite";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 // Component
 import withWebSocket from "~/components/withWebSocket";
@@ -12,11 +12,12 @@ import NotificationPlaceholder from "~/components/Placeholders/NotificationPlace
 import { NotificationActions } from "~/redux/notification";
 
 // Config
-import colors from "../../config/themes/colors";
-import icons from "../../config/themes/icons";
-import { doesNotExist } from "~/config/utils";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
-class Notification extends React.Component {
+class Notification extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -24,6 +25,7 @@ class Notification extends React.Component {
       newNotif: false,
       count: null,
       fetching: true,
+      notifications: [],
     };
     this.notifIcon;
     this.notifMenu;
@@ -37,6 +39,7 @@ class Notification extends React.Component {
       this.setState({
         count: this.countReadNotifications(results),
         fetching: false,
+        notifications: results,
       });
     });
   };
@@ -47,8 +50,10 @@ class Notification extends React.Component {
       const response = JSON.parse(wsResponse);
       const notification = response.data;
       addNotification(notification);
+      let newNotifications = [notification, ...notifications];
       this.setState({
-        count: this.countReadNotifications([notification, ...notifications]),
+        count: this.countReadNotifications(),
+        notifications: newNotifications,
       });
     }
     if (this.props.notifications.length > prevProps.notifications.length) {
@@ -98,100 +103,41 @@ class Notification extends React.Component {
     });
   };
 
-  formatAction = (notification) => {
+  formatNotification = (notification) => {
+    const { action_user, action, created_date, unified_document } =
+      notification;
+    const { content_type = null, item: actonItem } = action ?? {};
+    const { amount, plain_text } = actonItem ?? {};
+    const formattedDocumentType = getUnifiedDocType(
+      unified_document?.document_type
+    );
+    const documentContent =
+      formattedDocumentType === "paper"
+        ? unified_document?.documents
+        : (unified_document?.documents ?? [])[0] ?? {};
+
     const {
-      extra,
-      action_user,
+      title = null,
+      paper_title = null,
+      slug,
+      id: documentID,
+    } = documentContent;
+
+    return {
+      action_tip: plain_text ?? "",
+      content_type,
+      contribution_amount: amount ?? 0,
+      created_by: action_user,
       created_date,
-      paper,
-      paper_slug,
-      action,
-    } = notification;
-    if (extra) {
-      const {
-        status,
-        bullet_point,
-        summary,
-        content_type,
-        bounty_object_id,
-        bounty_content_type,
-        bounty_approval,
-      } = extra;
-
-      if (status) {
-        // Stripe branch not yet integrated
-        return null;
-        // action = {
-        //   content_type: "stripe",
-        //   created_by: notification.recipient,
-        //   created_date: notification.created_date,
-        //   ...extra,
-        // };
-      } else if (bullet_point) {
-        return {
-          content_type: "vote_bullet",
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: bullet_point.plain_text,
-          paper_id: bullet_point.paper,
-          slug: paper_slug,
-        };
-      } else if (summary) {
-        return {
-          content_type: "vote_summary",
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: summary.summary_plain_text,
-          paper_id: summary.paper,
-          paper_official_title: summary.paper_title,
-          slug: paper_slug,
-        };
-      } else if (content_type && content_type.model) {
-        return {
-          type: content_type.model,
-          content_type: "support_content",
-          created_by: action_user,
-          created_date: created_date,
-          paper_id: paper,
-          amount: extra.amount,
-          slug: paper_slug,
-        };
-      } else if (bounty_object_id) {
-        return {
-          content_type: "bounty_moderator",
-          type: bounty_content_type, // summary or takeaway,
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: extra.tip,
-          paper_id: paper,
-          paper_official_title: action[0].paper_official_title,
-          slug: paper_slug,
-          bounty_amount: extra.bounty_amount,
-          bounty_id: extra.bounty_object_id,
-          bounty_approved: extra.bounty_approval,
-        };
-      } else if (!doesNotExist(bounty_approval)) {
-        return {
-          content_type: "bounty_contributor",
-          type: bounty_content_type, // summary or takeaway,
-          created_by: action_user,
-          created_date: created_date,
-          plain_text: action[0].tip,
-          paper_id: paper,
-          paper_official_title: action[0].paper_official_title,
-          slug: paper_slug,
-          bounty_amount: extra.bounty_amount,
-          bounty_approval: bounty_approval,
-        };
-      }
-    }
-
-    return notification.action[0];
+      document_id: documentID,
+      document_title: paper_title ?? title ?? "Title: N/A",
+      document_type: formattedDocumentType,
+      slug,
+    };
   };
 
   renderMenu = () => {
     let { isOpen } = this.state;
-    // if (isOpen) {
     return (
       <div
         className={css(styles.notificationMenu, isOpen && styles.open)}
@@ -207,30 +153,27 @@ class Notification extends React.Component {
             showLoadingAnimation
             customPlaceholder={<NotificationPlaceholder color="#efefef" />}
           >
-            {this.renderNotifications()}
-            {/* {this.props.notifications && this.props.notifications.length ? (
+            {this.state.notifications && this.state.notifications.length ? (
               this.renderNotifications()
             ) : (
               <div className={css(styles.emptyState)}>No Notifications</div>
-            )} */}
+            )}
           </ReactPlaceholder>
         </div>
       </div>
     );
-    // }
   };
 
   renderNotifications = () => {
-    return this.props.notifications.map((notification, index) => {
-      const action = this.formatAction(notification);
-
-      if (action) {
+    return this.state.notifications.map((notification, index) => {
+      const formattedNotifData = this.formatNotification(notification);
+      if (!isNullOrUndefined(formattedNotifData)) {
         return (
           <NotificationEntry
-            data={notification}
-            notification={action}
-            key={`notif-${notification.id}`}
             closeMenu={this.toggleMenu}
+            data={notification}
+            key={`notif-${index}`}
+            notification={formattedNotifData}
           />
         );
       }
@@ -268,6 +211,9 @@ const styles = StyleSheet.create({
     position: "relative",
     ":hover": {
       color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 900px)": {
+      fontSize: 16,
     },
   },
   notifCount: {

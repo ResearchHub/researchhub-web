@@ -1,6 +1,5 @@
 // NPM
-import "react-quill/dist/quill.snow.css";
-import "./stylesheets/QuillTextEditor.css";
+import { createRef, Fragment, Component } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 
@@ -16,7 +15,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class Editor extends React.Component {
+class Editor extends Component {
   constructor(props) {
     super(props);
 
@@ -32,7 +31,7 @@ class Editor extends React.Component {
       ReactQuill: null,
       Quill: null,
     };
-    this.reactQuillRef = React.createRef();
+    this.reactQuillRef = createRef();
     this.quillRef = null;
   }
 
@@ -42,7 +41,7 @@ class Editor extends React.Component {
       this.setState(
         {
           ReactQuill: val.default,
-          Quill: val.Quill,
+          Quill: val.default.Quill,
         },
         () => {
           this.attachQuillRefs();
@@ -51,7 +50,9 @@ class Editor extends React.Component {
             this.props.focusEditor &&
             this.quillRef &&
             this.focusEditor();
-          this.props.onChange && this.props.onChange(); // calculates the thread height
+          // This line leads to an infinite loop
+          // leaving here temporarily for debugging purposes
+          // this.props.onChange && this.props.onChange(); // calculates the thread height
         }
       );
     });
@@ -114,7 +115,7 @@ class Editor extends React.Component {
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
-    input.onchange = async function() {
+    input.onchange = async function () {
       this.showLoader(true);
       const file = input.files[0];
       const fileString = await this.toBase64(file);
@@ -293,35 +294,44 @@ class Editor extends React.Component {
         className="toolbar ql-toolbar ql-snow"
         style={{ display: this.props.readOnly ? "none" : "" }}
       >
-        <span className="ql-formats">
-          <select className="ql-header">
-            <option value="2">Heading 1</option>
-            <option value="3">Heading 2</option>
-            <option defaultValue />
-          </select>
-          <button className="ql-bold" />
-          <button className="ql-italic" />
-          <button className="ql-underline" />
-        </span>
-        <span className="ql-formats">
-          <button className="ql-blockquote"></button>
-          <button className="ql-code-block"></button>
-          <button className="ql-strike"></button>
-          <select class="ql-background"></select>
-        </span>
-        <span className="ql-formats">
-          <button className="ql-list" value="ordered" />
-          <button className="ql-list" value="bullet" />
-          <button className="ql-indent" value="-1" />
-          <button className="ql-indent" value="+1" />
-        </span>
+        {this.props.mediaOnly ? (
+          <span className="ql-formats">
+            <button className="ql-link"></button>
+            <button className="ql-image" />
+            <button className="ql-video"></button>
+          </span>
+        ) : (
+          <Fragment>
+            <span className="ql-formats">
+              <select className="ql-header">
+                <option value="2">Heading 1</option>
+                <option value="3">Heading 2</option>
+                <option defaultValue />
+              </select>
+              <button className="ql-bold" />
+              <button className="ql-italic" />
+              <button className="ql-underline" />
+            </span>
+            <span className="ql-formats">
+              <button className="ql-blockquote"></button>
+              <button className="ql-code-block"></button>
+              <button className="ql-strike"></button>
+              <select className="ql-background"></select>
+            </span>
+            <span className="ql-formats">
+              <button className="ql-list" value="ordered" />
+              <button className="ql-list" value="bullet" />
+              <button className="ql-indent" value="-1" />
+              <button className="ql-indent" value="+1" />
+            </span>
 
-        <span className="ql-formats">
-          <button className="ql-link"></button>
-          <button className="ql-image" />
-          <button className="ql-video"></button>
-          <button class="ql-clean"></button>
-        </span>
+            <span className="ql-formats">
+              <button className="ql-link"></button>
+              <button className="ql-image" />
+              <button className="ql-video"></button>
+            </span>
+          </Fragment>
+        )}
       </div>
     );
   };
@@ -336,13 +346,19 @@ class Editor extends React.Component {
         )}
       >
         <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
-        <div className={css(toolbarStyles.buttonRow)}>
+        <div
+          className={css(
+            toolbarStyles.buttonRow,
+            props.smallToolBar && toolbarStyles.smallButtonRow
+          )}
+        >
           {!props.hideButton && !props.hideCancelButton && (
             <FormButton
               isWhite={true}
               onClick={this.onCancel}
-              label={props.smallToolBar ? "Hide" : "Cancel"}
+              label={"Cancel"}
               size={props.smallToolBar && "med"}
+              rippleClass={styles.ripples}
               customButtonStyle={
                 props.smallToolBar
                   ? toolbarStyles.smallButton
@@ -382,6 +398,11 @@ class Editor extends React.Component {
 
   render() {
     const { ReactQuill } = this.state;
+    const modules = Editor.modules(
+      this.props.uid,
+      this.imageHandler,
+      this.linkHandler
+    );
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
@@ -405,11 +426,7 @@ class Editor extends React.Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(
-                  this.props.uid,
-                  this.imageHandler,
-                  this.linkHandler
-                )}
+                modules={modules}
                 formats={Editor.formats}
                 className={css(
                   styles.editSection,
@@ -435,11 +452,7 @@ class Editor extends React.Component {
                 defaultValue={
                   this.props.editing ? this.state.editValue : this.state.value
                 }
-                modules={Editor.modules(
-                  this.props.uid,
-                  this.imageHandler,
-                  this.linkHandler
-                )}
+                modules={modules}
                 formats={Editor.formats}
                 className={css(
                   styles.comment,
@@ -718,6 +731,9 @@ const toolbarStyles = StyleSheet.create({
       marginTop: 16,
     },
   },
+  smallButtonRow: {
+    justifyContent: "space-between",
+  },
   cancelButton: {
     height: 37,
     width: 126,
@@ -750,16 +766,16 @@ const toolbarStyles = StyleSheet.create({
   },
   smallButton: {
     height: 37,
-    width: 126,
-    minWidth: 126,
     fontSize: 15,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    // marginRight: 20,
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+  },
+  ripples: {
+    flex: 1,
   },
   divider: {
     width: 10,
@@ -772,7 +788,4 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Editor);
+export default connect(null, mapDispatchToProps)(Editor);

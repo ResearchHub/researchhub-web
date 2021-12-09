@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
@@ -20,29 +20,30 @@ import FormInput from "~/components/Form/FormInput";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { AuthActions } from "~/redux/auth";
-import { PaperActions } from "~/redux/paper";
 
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { useMetaMask, useWalletLink } from "../connectEthereum";
+// import { useMetaMask } from "../connectEthereum";
 import { RINKEBY_CHAIN_ID } from "../../config/constants";
 import { sendAmpEvent } from "~/config/fetch";
 import {
   sanitizeNumber,
-  formatBalance,
   onKeyDownNumInput,
   onPasteNumInput,
-} from "~/config/utils";
+  formatBalance,
+} from "~/config/utils/form";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Constants
+import { ContentTypes, ChainStatus } from "./constants/SupportContent";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
 
-class PaperTransactionModal extends React.Component {
+class PaperTransactionModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -229,13 +230,12 @@ class PaperTransactionModal extends React.Component {
           userBalance: res.user.balance,
           withdrawals: [...res.results],
         });
-      })
-      .catch((err) => {});
+      });
   };
 
   handleInput = (e) => {
     let value = parseInt(sanitizeNumber(e.target.value), 10);
-    value = value ? (value > 0 ? value : 0) : null;
+    value = value || 0;
     this.setState({
       value,
       error: this.handleError(value),
@@ -267,7 +267,7 @@ class PaperTransactionModal extends React.Component {
         error: true,
       });
     }
-    if (value == 0) {
+    if (value === 0) {
       this.props.setMessage("Must spend at least 1 RSC");
       return this.props.showMessage({
         show: true,
@@ -275,28 +275,46 @@ class PaperTransactionModal extends React.Component {
         error: true,
       });
     }
-    return this.props.alert.show({
-      text: `Use ${value} RSC to support this paper?`,
-      buttonText: "Yes",
-      onClick: () => {
-        this.sendTransaction();
-      },
-    });
+
+    /** Add this back if we want confirmation message (3.18.21) */
+    // return this.props.alert.show({
+    //   text: `Use ${value} RSC to support this paper?`,
+    //   buttonText: "Yes",
+    //   onClick: () => {
+    //     this.sendTransaction();
+    //   },
+    // });
+
+    this.sendTransaction();
   };
 
   sendTransaction = () => {
-    let { showMessage, setMessage, updatePaperState, paper, user } = this.props;
+    const {
+      showMessage,
+      setMessage,
+      updatePaperState,
+      updatePostState,
+      paper,
+      post,
+      user,
+    } = this.props;
     showMessage({ show: true, load: true });
 
-    let paperId = paper.id;
-    let userId = user.id;
+    const isPaper = !isNullOrUndefined(paper);
+    const documentId = isPaper ? paper.id : post.id;
+    const contentType = isPaper
+      ? ContentTypes.PAPER
+      : ContentTypes.RESEARCHHUB_POST;
+    const { id: userId } = user;
 
-    let payload = {
+    const payload = {
       amount: Number(this.state.value),
-      object_id: paperId,
-      content_type: "paper",
+      object_id: documentId,
+      content_type: contentType,
       user: userId,
-      purchase_method: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
+      purchase_method: this.state.offChain
+        ? ChainStatus.OFF_CHAIN
+        : ChainStatus.ON_CHAIN,
       purchase_type: "BOOST",
     };
 
@@ -305,11 +323,11 @@ class PaperTransactionModal extends React.Component {
       .then(Helpers.parseJSON)
       .then((res) => {
         if (!this.state.offChain) {
-          let item = { ...res };
+          const item = { ...res };
           this.signTransaction(item);
         } else {
           // Send AMP Event
-          let payload = {
+          const payload = {
             event_type: "create_purchase",
             time: +new Date(),
             insert_id: `purchase_${res.id}`,
@@ -317,9 +335,11 @@ class PaperTransactionModal extends React.Component {
               ? this.props.auth.user.id && this.props.auth.user.id
               : null,
             event_properties: {
-              interaction: this.state.offChain ? "OFF_CHAIN" : "ON_CHAIN",
-              object_id: paperId,
-              content_type: "paper",
+              interaction: this.state.offChain
+                ? ChainStatus.OFF_CHAIN
+                : ChainStatus.ON_CHAIN,
+              object_id: documentId,
+              content_type: contentType,
               amount: Number(this.state.value),
             },
           };
@@ -333,10 +353,19 @@ class PaperTransactionModal extends React.Component {
               transactionHash: res.trasaction_hash,
               finish: true,
             });
-            let promoted = res.source.promoted && res.source.promoted;
-            let updatedPaper = { ...paper };
-            updatedPaper.promoted = promoted;
-            updatePaperState && updatePaperState(updatedPaper);
+            if (isPaper) {
+              const promoted = !isNullOrUndefined(res.source.promoted)
+                ? res.source.promoted
+                : null;
+              const updatedPaper = { ...paper, promoted };
+              updatePaperState(updatedPaper);
+            } else {
+              const promoted = !isNullOrUndefined(res.source.promoted)
+                ? res.source.promoted
+                : null;
+              const updatedPost = { ...post, promoted };
+              updatePostState(updatedPost);
+            }
             this.updateBalance();
           });
         }
@@ -508,7 +537,7 @@ class PaperTransactionModal extends React.Component {
   };
 
   renderSwitchNetworkMsg = () => {
-    let { transition } = this.state;
+    const { transition } = this.state;
     return (
       <div className={css(styles.networkContainer)}>
         {transition ? (
@@ -522,11 +551,6 @@ class PaperTransactionModal extends React.Component {
               Simply open MetaMask and switch over {"\n"}to the
               <b>{" Rinkeby Test Network"}</b>
             </div>
-            {/* <img
-              src={"/static/background/metamask.png"}
-              className={css(styles.image)}
-              draggable={false}
-            /> */}
           </Fragment>
         )}
       </div>
@@ -595,64 +619,6 @@ class PaperTransactionModal extends React.Component {
     });
   }
 
-  renderWalletLinkButton = () => {
-    return (
-      <div
-        className={css(
-          styles.toggle,
-          this.state.walletLinkVisible && styles.activeToggle
-        )}
-        onClick={async () => {
-          if (!this.state.connectedWalletLink) {
-            this.transitionScreen(() => {
-              this.setState({
-                nextScreen: true,
-                walletLinkVisible: true,
-                connectedMetaMask: false,
-                metaMaskVisible: false,
-                offChain: false,
-              });
-            });
-            await this.connectWalletLink();
-          }
-        }}
-      >
-        WalletLink
-      </div>
-    );
-  };
-
-  connectWalletLink = async () => {
-    if (this.state.connectedWalletLink) {
-      this.disconnectWalletLink();
-      return;
-    }
-
-    const { connected, account, walletLink, provider } = await useWalletLink();
-    if (connected) {
-      console.log("Connected to WalletLink");
-      const valid = this.isAddress(account);
-      this.setState(
-        {
-          walletLink,
-          connectedMetaMask: false,
-          connectedWalletLink: connected,
-          ethAccount: account,
-          ethAccountIsValid: valid,
-        },
-        () => {
-          valid && this.updateContractBalance(provider);
-        }
-      );
-    } else {
-      console.log("Failed to connect WalletLink");
-      this.setState({
-        connectedMetaMask: false,
-        connectedWalletLink: false,
-      });
-    }
-  };
-
   updateContractBalance = async (provider) => {
     const contract = await this.createContract(provider);
     this.checkBalance(contract);
@@ -706,9 +672,9 @@ class PaperTransactionModal extends React.Component {
     );
   };
 
-  renderContent = () => {
-    let { user } = this.props;
-    let {
+  renderContent = (isPaper) => {
+    const { user } = this.props;
+    const {
       nextScreen,
       offChain,
       transition,
@@ -727,9 +693,7 @@ class PaperTransactionModal extends React.Component {
             <div className={css(styles.column)}>
               <div className={css(styles.mainHeader)}>
                 Transaction Successful
-                <span className={css(styles.icon)}>
-                  <i className="fal fa-check-circle" />
-                </span>
+                <span className={css(styles.icon)}>{icons.checkCircle}</span>
               </div>
               {!offChain && (
                 <div className={css(styles.confirmation)}>
@@ -748,13 +712,14 @@ class PaperTransactionModal extends React.Component {
                 </div>
               )}
               <div onClick={this.closeModal}>
-                You can view the papers you support on your
+                You can view the {isPaper ? "papers" : "posts"} you support on
+                your
                 <Link
-                  href={"/user/[authorId]/[tabName]"}
+                  href={`/user/${user.author_profile.id}/boosts`}
                   as={`/user/${user.author_profile.id}/boosts`}
                 >
                   <a
-                    href={"/user/[authorId]/[tabName]"}
+                    href={`/user/${user.author_profile.id}/boosts`}
                     as={`/user/${user.author_profile.id}/boosts`}
                     className={css(
                       styles.transactionHashLink,
@@ -779,12 +744,7 @@ class PaperTransactionModal extends React.Component {
     } else if (nextScreen && offChain) {
       return (
         <div className={css(styles.content, transition && styles.transition)}>
-          <div className={css(styles.description)}>
-            {
-              "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-            }
-          </div>
-          {this.renderToggleContainer(css(styles.toggleContainer))}
+          {/* {this.renderToggleContainer(css(styles.toggleContainer))} */}
           <div className={css(styles.row, styles.numbers, styles.borderBottom)}>
             <div className={css(styles.column, styles.left)}>
               <div className={css(styles.title)}>Total Balance</div>
@@ -806,12 +766,9 @@ class PaperTransactionModal extends React.Component {
           </div>
           <div className={css(styles.row, styles.numbers)}>
             <div className={css(styles.column, styles.left)}>
-              <div className={css(styles.title)}>Amount</div>
+              <div className={css(styles.title)}>{"Amount"}</div>
               <div className={css(styles.subtitle)}>
-                {this.parseValue()} RSC = {this.parseValue()} Day
-                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""} of
-                Support + {this.parseValue()} Upvote
-                {this.parseValue() === 0 || this.parseValue() > 1 ? "s" : ""}
+                {"Select the amount of RSC"}
               </div>
             </div>
             <div className={css(styles.column, styles.right)}>
@@ -839,14 +796,9 @@ class PaperTransactionModal extends React.Component {
             this.renderSwitchNetworkMsg()
           ) : (
             <Fragment>
-              <div className={css(styles.description)}>
-                {
-                  "Use RSC to give this paper better visibility. Every RSC spent will increase the paper's score and its likelihood to trend."
-                }
-              </div>
-              {this.renderToggleContainer(
+              {/* {this.renderToggleContainer(
                 css(styles.toggleContainer, styles.toggleContainerOnChain)
-              )}
+              )} */}
               {connectedMetaMask && (
                 <div className={css(styles.connectStatus)}>
                   <div
@@ -855,11 +807,11 @@ class PaperTransactionModal extends React.Component {
                       connectedMetaMask && styles.connected
                     )}
                   />
-                  Connected wallet: MetaMask
+                  {"Connected wallet: MetaMask"}
                 </div>
               )}
               <div className={css(styles.inputLabel)}>
-                Wallet Address
+                {"Wallet Address"}
                 <span
                   className={css(styles.infoIcon)}
                   data-tip={"The address of your ETH Account (ex. 0x0000...)"}
@@ -886,11 +838,9 @@ class PaperTransactionModal extends React.Component {
                           !ethAccountIsValid && styles.errorIcon
                         )}
                       >
-                        {ethAccountIsValid ? (
-                          <i className="fal fa-check-circle" />
-                        ) : (
-                          <i className="fal fa-times-circle" />
-                        )}
+                        {ethAccountIsValid
+                          ? icons.checkCircle
+                          : icons.timesCircle}
                       </span>
                     )
                   ) : null
@@ -899,9 +849,9 @@ class PaperTransactionModal extends React.Component {
 
               <div className={css(styles.row, styles.numbers, styles.border)}>
                 <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Total Balance</div>
+                  <div className={css(styles.title)}>{"Total Balance"}</div>
                   <div className={css(styles.subtitle)}>
-                    Your current wallet balance in RSC
+                    {"Your current wallet balance in RSC"}
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -918,9 +868,9 @@ class PaperTransactionModal extends React.Component {
               </div>
               <div className={css(styles.row, styles.numbers)}>
                 <div className={css(styles.column, styles.left)}>
-                  <div className={css(styles.title)}>Amount</div>
+                  <div className={css(styles.title)}>{"Amount"}</div>
                   <div className={css(styles.subtitle)}>
-                    {this.state.value} RSC = {this.state.value} Day of Support
+                    {"Select the amount of RSC"}
                   </div>
                 </div>
                 <div className={css(styles.column, styles.right)}>
@@ -947,15 +897,16 @@ class PaperTransactionModal extends React.Component {
   };
 
   render() {
-    let { modals } = this.props;
+    const { modals, paper } = this.props;
+    const isPaper = !isNullOrUndefined(paper);
 
     return (
       <BaseModal
         isOpen={modals.openPaperTransactionModal}
         closeModal={this.closeModal}
-        title={"Support Paper"} // this needs to
+        title={`Support ${isPaper ? "Paper" : "Post"}`}
       >
-        {this.renderContent()}
+        {this.renderContent(isPaper)}
       </BaseModal>
     );
   }
@@ -967,8 +918,8 @@ const styles = StyleSheet.create({
     opacity: 1,
     transition: "all ease-in-out 0.2s",
     position: "relative",
+    paddingTop: 40,
     "@media only screen and (max-width: 557px)": {
-      padding: 25,
       width: "100%",
       boxSizing: "border-box",
     },

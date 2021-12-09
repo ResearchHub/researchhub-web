@@ -1,14 +1,17 @@
 // NPM Modules
-import React, { Fragment, Children } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
+import { CloseIcon } from "~/config/themes/icons";
+
+import "./Stylesheets/Modal.module.css";
 
 // Redux
 import { ModalActions } from "../../redux/modals";
 
-class BaseModal extends React.Component {
+class BaseModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -71,26 +74,9 @@ class BaseModal extends React.Component {
         this.setState({
           ...this.initialState,
         });
-        this.enableParentScroll();
         this.props.closeModal && this.props.closeModal();
       }, 200);
     });
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "hidden";
-    }
-  };
-
-  enableParentScroll = () => {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
   };
 
   getMobileState = () => {
@@ -108,7 +94,7 @@ class BaseModal extends React.Component {
         top: this.props.offset
           ? this.props.offset
           : this.state.mobileView
-          ? 80
+          ? 66
           : 0,
         left: 0,
         right: 0,
@@ -125,7 +111,8 @@ class BaseModal extends React.Component {
   };
 
   render() {
-    let { enableScroll } = this.props;
+    let { isOpen } = this.props;
+
     return (
       <Modal
         isOpen={this.props.isOpen}
@@ -142,7 +129,6 @@ class BaseModal extends React.Component {
             : true
         }
         style={this.getOverlayStyle()}
-        onAfterOpen={this.disableParentScroll}
         ariaHideApp={false}
       >
         <div
@@ -163,16 +149,9 @@ class BaseModal extends React.Component {
           )}
           {!this.props.removeDefault && (
             <Fragment>
-              <img
-                src={"/static/icons/close.png"}
-                className={css(
-                  styles.closeButton,
-                  this.props.backgroundImage && styles.zIndex
-                )}
-                onClick={this.closeModal}
-                draggable={false}
-                alt="Close Button"
-              />
+              <div className={css(styles.closeButtonWrapper)}>
+                <CloseIcon onClick={this.closeModal} />
+              </div>
               <div
                 className={css(
                   styles.titleContainer,
@@ -276,13 +255,12 @@ const styles = StyleSheet.create({
   reveal: {
     opacity: 1,
   },
-  closeButton: {
-    height: 12,
-    width: 12,
+  closeButtonWrapper: {
     position: "absolute",
-    top: 20,
-    right: 20,
     cursor: "pointer",
+    top: 8,
+    right: 8,
+    zIndex: 2,
   },
   titleContainer: {
     display: "flex",
@@ -346,7 +324,4 @@ const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BaseModal);
+export default connect(mapStateToProps, mapDispatchToProps)(BaseModal);

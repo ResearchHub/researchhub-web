@@ -1,7 +1,7 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 
-class Health extends React.Component {
+class Health extends Component {
   render() {
     return (
       <div className={css(styles.page)}>

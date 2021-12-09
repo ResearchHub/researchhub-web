@@ -1,10 +1,11 @@
 import { css, StyleSheet } from "aphrodite";
+import icons from "~/config/themes/icons";
 
 const University = (props) => {
   const { university } = props || {};
   return (
     <div className={css(styles.extraInfo)}>
-      <i className={css(styles.icon) + " fas fa-graduation-cap"}></i>
+      <span className={css(styles.icon)}>{icons.graduationCap}</span>
       {buildText(university.name, university.city, university.country)}
     </div>
   );

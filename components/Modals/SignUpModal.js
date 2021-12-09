@@ -1,4 +1,3 @@
-import { Fragment, useState, useEffect } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useDispatch, useStore } from "react-redux";
 
@@ -20,11 +19,6 @@ const SignUpModal = (props) => {
 
   function closeModal() {
     dispatch(ModalActions.openSignUpModal(false));
-    enableParentScroll();
-  }
-
-  function enableParentScroll() {
-    document.body.style.overflow = "scroll";
   }
 
   function renderDivider() {

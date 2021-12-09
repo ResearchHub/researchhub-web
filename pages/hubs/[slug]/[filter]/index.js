@@ -1,46 +1,54 @@
-import React from "react";
-import Router from "next/router";
-import { connect } from "react-redux";
-
-// Components
+import { AUTH_TOKEN } from "~/config/constants";
+import { fetchUnifiedDocFeed } from "~/config/fetch";
+import { filterOptions } from "~/config/utils/options";
+import { getInitialScope } from "~/config/utils/dates";
+import { Helpers } from "@quantfive/js-web-config";
+import { slugToFilterQuery } from "~/config/utils/routing";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { toTitleCase } from "~/config/utils/string";
+import API from "~/config/api";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
+import nookies from "nookies";
+import Router from "next/router";
+import { Component } from "react";
 
-// Redux
-import { AuthActions } from "~/redux/auth";
-
-// Config
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
-import { toTitleCase } from "~/config/utils";
-import { getInitialScope } from "~/config/utils/dates";
-import { slugToFilterQuery } from "~/config/utils/routing";
-import { filterOptions } from "~/config/utils/options";
-
-class Index extends React.Component {
+class Index extends Component {
+  // NOTE: calvinhlee - no longer called
   static async getInitialProps(ctx) {
-    let { query } = ctx;
+    let { query, query: urlQuery } = ctx;
 
     let page = query.page ? query.page : 1;
     let filter = query.filter && slugToFilterQuery(query.filter);
+    const cookies = nookies.get(ctx);
+    const authToken = cookies[AUTH_TOKEN];
 
     try {
       const { slug, name } = ctx.query;
       const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
         .then((res) => res.json())
         .then((body) => body.results[0]);
+      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+
+      const PARAMS = {
+        ordering: filter,
+        timePeriod: getInitialScope(),
+        page: page || 1,
+        hubId: currentHub.id,
+        type: urlDocType,
+      };
+
+      if (filter === "pulled-papers") {
+        PARAMS.ordering = "hot";
+        PARAMS.externalSource = "True";
+      }
 
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
-        fetch(
-          API.GET_HUB_PAPERS({
-            // Initial Feed
-            hubId: currentHub.id,
-            ordering: filter,
-            timePeriod: getInitialScope(),
-            page,
-          }),
-          API.GET_CONFIG()
-        ).then((res) => res.json()),
+        fetchUnifiedDocFeed(
+          PARAMS,
+          authToken,
+          !isNullOrUndefined(authToken) /* withVotes */
+        ),
         fetch(
           API.LEADERBOARD({ limit: 10, page: 1, hubId: currentHub.id }), // Leaderboard
           API.GET_CONFIG()
@@ -49,6 +57,21 @@ class Index extends React.Component {
       ]);
 
       let filterObj = filterOptions.filter((el) => el.value === filter)[0];
+
+      if (filter === "pulled-papers") {
+        filterObj = {
+          value: "pulled-papers",
+          href: "pulled-papers",
+          label: "Pulled Papers",
+          disableScope: true,
+        };
+      } else if (filter === "removed") {
+        filterObj = {
+          value: "removed",
+          label: "Removed",
+          href: "removed",
+        };
+      }
 
       return {
         slug,

@@ -1,76 +1,62 @@
-import React from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Link from "next/link";
+import { Waypoint } from "react-waypoint";
 
 // Component
-import Button from "../../components/Form/Button";
-import AddHubModal from "../../components/Modals/AddHubModal";
-import EditHubModal from "../../components/Modals/EditHubModal";
-import Message from "../../components/Loader/Message";
-import PermissionNotificationWrapper from "../../components/PermissionNotificationWrapper";
+import Button from "~/components/Form/Button";
+import Message from "~/components/Loader/Message";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import Head from "~/components/Head";
 import CategoryList from "~/components/Hubs/CategoryList";
-import HubCard from "../../components/Hubs/HubCard";
+import CategoryListMobile from "~/components/Hubs/CategoryListMobile";
+import HubCard from "~/components/Hubs/HubCard";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const AddHubModal = dynamic(() => import("~/components/Modals/AddHubModal"));
+const EditHubModal = dynamic(() => import("~/components/Modals/EditHubModal"));
 
 // Config
-import colors from "../../config/themes/colors";
 import icons from "~/config/themes/icons";
+import { breakpoints } from "~/config/themes/screen";
+import { getHubs, getCategories } from "~/components/Hubs/api/fetchHubs";
 
 // Redux
-import { HubActions } from "~/redux/hub";
-import { ModalActions } from "../../redux/modals";
-import { MessageActions } from "../../redux/message";
+import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
       width: null,
-      categories: [],
-      hubsByCategory: {},
-      finishedLoading: false,
+      categories: props.categories,
+      hubsByCategory: props.hubsByCategory,
+      finishedLoading: true,
+      activeCategory: 0,
+      clickedTab: false,
+      scrollDirection: "down",
     };
     this.state = {
       ...this.initialState,
     };
+    this.scrollPos = 0;
   }
 
-  componentDidMount = async () => {
-    const { getCategories, getHubs, showMessage, hubs } = this.props;
-    showMessage({ show: true, load: true });
-    if (!hubs.fetchedHubs) {
-      getCategories().then((payload) => {
-        this.setState({ categories: payload.payload.categories });
-      });
-      getHubs().then((action) => {
-        this.setState({ hubsByCategory: action.payload.hubsByCategory });
-      });
-    } else {
-      this.setState({
-        categories: JSON.parse(JSON.stringify(hubs.categories)),
-        hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-        finishedLoading: true,
-      });
-      showMessage({ show: false });
-    }
+  setClickedTab = (clickedTab) => {
+    this.setState({ clickedTab });
   };
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.hubs.hubsByCategory !== this.props.hubs.hubsByCategory) {
-      const { showMessage, hubs } = this.props;
-      showMessage({ show: true, load: true });
-      this.setState(
-        {
-          hubsByCategory: JSON.parse(JSON.stringify(hubs.hubsByCategory)),
-          finishedLoading: true,
-        },
-        () => {
-          showMessage({ show: false });
-        }
-      );
+  setActiveCategory = (activeCategory, onLeave) => {
+    const { categories } = this.state;
+
+    if (this.state.activeCategory === 0 && onLeave) {
+      return;
     }
-  }
+
+    this.setState({ activeCategory });
+  };
 
   openAddHubModal = () => {
     this.props.openAddHubModal(true);
@@ -108,30 +94,43 @@ class Index extends React.Component {
   };
 
   renderCategories = () => {
-    const { categories } = this.state;
+    const { categories, scrollDirection } = this.state;
+
     return categories.map((category, i) => {
       let categoryID = category.id;
       let categoryName = category.category_name;
       let slug = categoryName.toLowerCase().replace(/\s/g, "-");
 
       return (
-        <React.Fragment key={categoryID}>
-          <div name={`${slug}`} className={css(styles.categoryLabel)}>
-            {categoryName === "Trending" ? (
-              <span>
-                {categoryName}
-                <span className={css(styles.trendingIcon)}>{icons.fire}</span>
-              </span>
-            ) : (
-              categoryName
-            )}
+        <Waypoint
+          onEnter={() => this.setActiveCategory(i)}
+          topOffset={40}
+          bottomOffset={"95%"}
+          key={categoryID}
+        >
+          <div key={categoryID}>
+            <div
+              id={`${i}-category`}
+              name={`${slug}`}
+              className={css(styles.categoryLabel) + " category"}
+              key={categoryID}
+            >
+              {categoryName === "Trending" ? (
+                <span>
+                  {categoryName}
+                  <span className={css(styles.trendingIcon)}>{icons.fire}</span>
+                </span>
+              ) : (
+                categoryName
+              )}
+            </div>
+            <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
+              {categoryName === "Trending"
+                ? this.renderTrendingHubs()
+                : this.renderHubs(categoryID)}
+            </div>
           </div>
-          <div key={`${categoryName}_${i}`} className={css(styles.grid)}>
-            {categoryName === "Trending"
-              ? this.renderTrendingHubs()
-              : this.renderHubs(categoryID)}
-          </div>
-        </React.Fragment>
+        </Waypoint>
       );
     });
   };
@@ -143,7 +142,7 @@ class Index extends React.Component {
     if (!hubsByCategory[key]) {
       return null;
     } else {
-      hubsByCategory[key].sort(function(a, b) {
+      hubsByCategory[key].sort(function (a, b) {
         return a.name.localeCompare(b.name);
       });
       let subscribed = user.subscribed ? user.subscribed : [];
@@ -151,6 +150,7 @@ class Index extends React.Component {
       subscribed.forEach((hub) => {
         subscribedHubs[hub.id] = true;
       });
+
       return hubsByCategory[key].map((hub) => {
         return <HubCard key={hub.id} hub={hub} />;
       });
@@ -181,34 +181,46 @@ class Index extends React.Component {
   };
 
   render() {
-    const { finishedLoading, categories } = this.state;
+    const { finishedLoading, categories, activeCategory, clickedTab } =
+      this.state;
 
     return (
       <div className={css(styles.row, styles.body)}>
         <div className={css(styles.sidebar)}>
-          <CategoryList categories={categories} />
+          <CategoryList
+            categories={categories}
+            activeCategory={activeCategory}
+            setActiveCategory={this.setActiveCategory}
+          />
         </div>
-        <div className={css(styles.content)}>
-          <AddHubModal addHub={this.addNewHubToState} />
+        <div>
+          <AddHubModal addHub={this.addNewHubToState} categories={categories} />
           <EditHubModal editHub={this.editHub} />
           <Message />
           <Head
             title={"Hubs on Researchhub"}
             description={"View all of the communities on Researchhub"}
           />
-          <div className={css(styles.container)}>
-            <div className={css(styles.titleContainer)}>
-              <span className={css(styles.title)}>Hubs</span>
-              {this.renderAddHubButton()}
-            </div>
-            <div
-              className={css(
-                styles.hubsContainer,
-                finishedLoading && styles.reveal
-              )}
-            >
-              {this.renderCategories()}
-            </div>
+          <div className={css(styles.titleContainer)}>
+            <span className={css(styles.title)}>Hubs</span>
+            {this.renderAddHubButton()}
+          </div>
+          <div className={css(styles.stickyComponent)}>
+            <CategoryListMobile
+              activeCategory={activeCategory}
+              categories={categories}
+              clickedTab={clickedTab}
+              setActiveCategory={this.setActiveCategory}
+              setClickedTab={this.setClickedTab}
+            />
+          </div>
+          <div
+            className={css(
+              styles.hubsContainer,
+              finishedLoading && styles.reveal
+            )}
+          >
+            {this.renderCategories()}
           </div>
         </div>
       </div>
@@ -217,24 +229,36 @@ class Index extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: "0px 0px",
+    },
+  },
   body: {
     backgroundColor: "#FCFCFC",
     alignItems: "flex-start",
-  },
-  container: {
-    width: "90%",
-    margin: "auto",
+    justifyContent: "center",
   },
   titleContainer: {
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    paddingTop: 40,
-    paddingBottom: 40,
+    paddingTop: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      marginLeft: "3vmin",
+      marginRight: "3vmin",
+    },
   },
   hubsContainer: {
     opacity: 0,
     transition: "all ease-in-out 0.3s",
+    marginBottom: 30,
+    [`@media only screen and (min-width: ${breakpoints.xxlarge.int + 1}px)`]: {
+      width: "80vw",
+      maxWidth: `${breakpoints.large.str}`,
+    },
   },
   reveal: {
     opacity: 1,
@@ -248,50 +272,95 @@ const styles = StyleSheet.create({
     userSelect: "none",
   },
   sidebar: {
-    minWidth: 220,
+    width: 265,
+    minWidth: 255,
+    maxWidth: 265,
     width: "18%",
     position: "sticky",
-    top: 79,
-    background: "#fff",
+    top: -15,
     minHeight: "100vh",
-    "@media only screen and (max-width: 767px)": {
+    marginRight: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
       display: "none",
     },
   },
-  content: {
-    borderLeft: "1px solid #ededed",
-    "@media only screen and (min-width: 900px)": {
-      width: "82%",
+  stickyComponent: {
+    display: "none",
+    height: 0,
+    marginTop: 30,
+    marginBottom: 30,
+
+    "::before": {
+      content: `""`,
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      left: -10,
+      bottom: 0,
+      pointerEvents: "none",
+      backgroundImage:
+        "linear-gradient(to left, rgba(255,255,255,0), white 85%)",
+      width: "10%",
+    },
+
+    "::after": {
+      content: `""`,
+      position: "absolute",
+      zIndex: 1,
+      top: 0,
+      right: -10,
+      bottom: 0,
+      pointerEvents: "none",
+      backgroundImage:
+        "linear-gradient(to right, rgba(255,255,255,0), white 85%)",
+      width: "10%",
+    },
+
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
+      top: -2,
+      position: "sticky",
+      backgroundColor: "#FFF",
+      zIndex: 3,
+      display: "flex",
+      height: "unset",
+      width: "95vw",
+      boxSizing: "border-box",
+      marginTop: 20,
+      marginBottom: 0,
     },
   },
-  row: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
   categoryLabel: {
+    cursor: "default",
+    userSelect: "none",
     borderBottom: "1px solid #ededed",
     fontSize: 22,
     fontWeight: 500,
     color: "#241F3A",
+    paddingTop: 20,
     paddingBottom: 10,
-    marginBottom: 15,
-    cursor: "default",
-    userSelect: "none",
-    paddingTop: 90,
-    marginTop: -90,
+    marginTop: 30,
+    marginBottom: 30,
+    [`@media only screen and (max-width: ${breakpoints.xxlarge.str})`]: {
+      paddingTop: 65,
+      marginTop: -30,
+      marginBottom: 20,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      marginLeft: "3vmin",
+      marginRight: "3vmin",
+    },
   },
   grid: {
-    display: "flex",
-    flexWrap: "wrap",
-    flexDirection: "row",
-    justifyContent: "left",
-    paddingLeft: 10,
-    paddingRight: 10,
-    marginBottom: 40,
-    "@media only screen and (max-width: 767px)": {
-      justifyContent: "center",
+    justifyContent: "center",
+    display: "grid",
+    gridTemplateColumns: "repeat(auto-fill, 360px)",
+    gridGap: "30px",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 200px)",
+      gridGap: "20px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      gridTemplateColumns: "repeat(auto-fill, 42.5vmin)",
     },
   },
   trendingIcon: {
@@ -307,14 +376,21 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-  getCategories: HubActions.getCategories,
-  getHubs: HubActions.getHubs,
   openAddHubModal: ModalActions.openAddHubModal,
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export async function getStaticProps() {
+  const categories = await getCategories();
+  const { hubsByCategory } = await getHubs();
+
+  return {
+    props: {
+      categories,
+      hubsByCategory,
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

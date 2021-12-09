@@ -1,6 +1,6 @@
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import "react-placeholder/lib/reactPlaceholder.css";
 import Link from "next/link";
 
 // Components
@@ -9,7 +9,9 @@ import GoogleLoginButton from "~/components/GoogleLoginButton";
 // Redux
 import { AuthActions } from "~/redux/auth";
 
-class ResearchHubBanner extends React.Component {
+import icons from "~/config/themes/icons";
+
+class ResearchHubBanner extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -48,7 +50,7 @@ class ResearchHubBanner extends React.Component {
           className={css(styles.closeButton)}
           onClick={this.updateUserBannerPreference}
         >
-          <i className="fal fa-times" />
+          {icons.times}
         </span>
         <img
           src={"/static/background/background-home.webp"}
@@ -312,7 +314,7 @@ var styles = StyleSheet.create({
     backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
-    top: 80,
+    top: 65,
     "@media only screen and (max-width: 767px)": {
       position: "relative",
       top: 0,
@@ -393,7 +395,4 @@ const mapDispatchToProps = {
   setUserBannerPreference: AuthActions.setUserBannerPreference,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ResearchHubBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(ResearchHubBanner);

@@ -1,8 +1,7 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
 import { connect } from "react-redux";
-import { Helpers } from "@quantfive/js-web-config";
 
 import BaseModal from "./BaseModal";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
@@ -10,10 +9,9 @@ import OrcidConnectButton from "~/components/OrcidConnectButton";
 import { ModalActions } from "../../redux/modals";
 import { MessageActions } from "~/redux/message";
 
-import API from "~/config/api";
 import colors from "~/config/themes/colors";
 
-class OrcidConnectModal extends React.Component {
+class OrcidConnectModal extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -34,7 +32,6 @@ class OrcidConnectModal extends React.Component {
 
   loginCallback = () => {
     this.closeModal();
-    document.body.style.overflow = "scroll";
   };
 
   render() {
@@ -180,8 +177,5 @@ const mapDispatchToProps = {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrcidConnectModal)
+  connect(mapStateToProps, mapDispatchToProps)(OrcidConnectModal)
 );

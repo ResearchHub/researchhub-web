@@ -1,50 +1,44 @@
-import React, { Fragment, useState } from "react";
+import { createRef, Component, Fragment, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
-import { useTransition, useSpring, animated } from "react-spring";
+import { useTransition, animated } from "react-spring";
 
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
+import ScrollMenu from "react-horizontal-scrolling-menu";
+import { NavigationArrow } from "~/components/TabBar";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 
 const points = [
   {
     key: 0,
     title: "Accessible to everyone",
-    text:
-      "The scientific record is too important to be hidden behind paywalls and in ivory towers. \n ResearchHub is accessible to everybody, everywhere, with no content residing behind paywalls \n and no costs to participate. Summaries are written in plain English to improve accessibility.",
+    text: "The scientific record is too important to be hidden behind paywalls and in ivory towers. \n ResearchHub is accessible to everybody, everywhere, with no content residing behind paywalls \n and no costs to participate. Summaries are written in plain English to improve accessibility.",
     icon: (
-      <i
-        className="fad fa-globe-americas"
-        draggable={false}
-        style={{ color: "#4b5bf6" }}
-      />
+      <span draggable={false} style={{ color: "#4b5bf6" }}>
+        {icons.globe}
+      </span>
     ),
   },
   {
     key: 1,
     title: "Collaborative",
-    text:
-      "Academic research is too siloed today. ResearchHub encourages academics and \n non- academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
+    text: "Academic research is too siloed today. ResearchHub encourages academics and \n non-academics alike to interact in a public and collaborative manner. An incentive for such behavior is provided in the form of ResearchCoin.",
     icon: (
-      <i
-        className="fad fa-star-half"
-        draggable={false}
-        style={{ color: colors.YELLOW(1) }}
-      />
+      <span draggable={false} style={{ color: colors.YELLOW(1) }}>
+        {icons.starHalf}
+      </span>
     ),
   },
   {
     key: 2,
     title: "Prioritized",
-    text:
-      "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
+    text: "There are over two million academic papers published each year, and the number continues to grow. By crowd-sourcing curation and prioritization of articles, ResearchHub enables the scientific community to provide visiblity to research it deems impactful.",
     icon: (
-      <i
-        className="fad fa-sort-amount-up-alt"
-        draggable={false}
-        style={{ color: colors.GREEN(1) }}
-      />
+      <span draggable={false} style={{ color: colors.GREEN(1) }}>
+        {icons.sortAmountUpAlt}
+      </span>
     ),
   },
   // {
@@ -157,24 +151,48 @@ const ReactTransitionComponent = ({ children, state, trail }) => {
   ));
 };
 
-class Index extends React.Component {
+class Index extends Component {
   constructor(props) {
     super(props);
     this.state = {
       reveal: false,
       revealText: false,
     };
+
+    this.pointsListRef = createRef();
+    this.points = points.map((point, index) => {
+      const { icon, title, text } = point;
+
+      return (
+        <div className={css(styles.itemCard)} key={`item-${index}`}>
+          <div className={css(styles.itemIcon)}>
+            {typeof icon === "string" ? (
+              <img
+                draggable={false}
+                src={icon && icon}
+                alt={`Info Card ${index + 1}`}
+              />
+            ) : (
+              icon
+            )}
+          </div>
+          <div className={css(styles.itemTitle)}>{title && title}</div>
+          <div className={css(styles.itemText)}>{text && text}</div>
+        </div>
+      );
+    });
   }
 
   componentDidMount() {
     if (document.body.style) {
       document.body.style.scrollSnapType = "y mandatory";
     }
+
     setTimeout(() => {
       this.setState({ reveal: true }, () => {
         setTimeout(() => {
           this.setState({ revealText: true });
-        }, 200);
+        }, 100);
       });
     }, 200);
   }
@@ -272,7 +290,7 @@ class Index extends React.Component {
   };
 
   renderItems = (point, index) => {
-    let { title, text, icon } = point;
+    const { title, text, icon } = point;
     return (
       <div className={css(styles.itemCard)} key={`item-${index}`}>
         <div className={css(styles.itemIcon)}>
@@ -323,10 +341,39 @@ class Index extends React.Component {
               src={"/static/about/valueOverlay.png"}
               className={css(styles.bannerOverlay)}
             />
-            <div className={css(styles.row, styles.pointCardList)}>
-              <div className={css(styles.frontSpace)} />
-              <PointCards points={points} />
-              <div className={css(styles.endSpace)} />
+
+            <div className={css(styles.pointCardList)}>
+              <ScrollMenu
+                data={this.points}
+                arrowLeft={
+                  <NavigationArrow
+                    icon={icons.chevronLeft}
+                    direction={"left"}
+                    customStyles={styles.navArrow}
+                  />
+                }
+                arrowRight={
+                  <NavigationArrow
+                    icon={icons.chevronRight}
+                    direction={"right"}
+                    customStyles={styles.navArrow}
+                  />
+                }
+                menuStyle={{ justifyContent: "center", width: "100%" }}
+                wrapperStyle={{
+                  boxShadow:
+                    "inset 40px 0px 25px -25px rgba(255, 255, 255, 0.18), inset -25px 0px 40px -25px rgba(255, 255, 255, 0.18)",
+                }}
+                itemStyle={{
+                  border: "none",
+                  highlight: "none",
+                  outline: "none",
+                }}
+                hideSingleArrow={true}
+                wheel={false}
+                selected={"item-1"}
+                scrollToSelected={true}
+              />
             </div>
           </div>
         </div>
@@ -406,7 +453,7 @@ class Index extends React.Component {
                 open={true}
                 trigger="- Is content created on ResearchHub open?"
               >
-                <p className={css(styles.subtext, styles.wideText)}>
+                <div className={css(styles.subtext, styles.wideText)}>
                   <p>
                     Yes. The scientific record is too important to be hidden
                     behind paywalls. Science should be open, not only for
@@ -444,7 +491,7 @@ class Index extends React.Component {
                     ResearchGate or Reddit, which do not apply an open license
                     to all user-contributed content.
                   </p>
-                </p>
+                </div>
               </Collapsible>
               <Collapsible
                 className={css(styles.collapsibleSection)}
@@ -458,7 +505,7 @@ class Index extends React.Component {
                 open={false}
                 trigger="- What papers can I legally upload to ResearchHub?"
               >
-                <p className={css(styles.subtext, styles.wideText)}>
+                <div className={css(styles.subtext, styles.wideText)}>
                   <p>
                     Users can create a ResearchHub page for any paper, allowing
                     for summary and discussion. However, due to copyright, only
@@ -503,7 +550,7 @@ class Index extends React.Component {
                     journals and use platforms like ResearchHub that remove
                     legal barriers from science.
                   </p>
-                </p>
+                </div>
               </Collapsible>
               <Collapsible
                 className={css(styles.collapsibleSection)}
@@ -592,6 +639,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     maxWidth: "100vw",
     overflow: "hidden",
+    background: "#FFF",
   },
   banner: {
     height: 320,
@@ -624,6 +672,23 @@ const styles = StyleSheet.create({
     minHeight: "100%",
     width: "100%",
     minWidth: "100%",
+  },
+  navArrow: {
+    maxHeight: 50,
+    minHeight: 50,
+    height: 50,
+    maxWidth: 50,
+    minWidth: 50,
+    width: 50,
+    zIndex: 3,
+    "@media only screen and (max-width: 800px)": {
+      maxHeight: 40,
+      minHeight: 40,
+      height: 40,
+      maxWidth: 40,
+      minWidth: 40,
+      width: 40,
+    },
   },
   column: {
     display: "flex",
@@ -899,17 +964,17 @@ const styles = StyleSheet.create({
     },
   },
   pointCardList: {
-    justifyContent: "space-between",
-    overflowX: "scroll",
-    scrollSnapType: "x mandatory",
-    paddingBottom: 20,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
     width: "80%",
-    padding: 16,
-    "::-webkit-scrollbar": {
-      display: "none",
-    },
+    marginTop: 20,
+    zIndex: 2,
     "@media only screen and (max-width: 800px)": {
-      width: 600,
+      width: "90%",
+    },
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
     },
   },
   fullWidth: {
@@ -920,27 +985,27 @@ const styles = StyleSheet.create({
     },
   },
   itemCard: {
-    margin: "20px 20px 0 20px",
+    margin: 20,
     padding: "25px 35px 25px 35px",
     display: "flex",
     textAlign: "center",
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "center",
-    borderRadius: 40,
+    borderRadius: 8,
     width: 295,
     height: 300,
     minWidth: 295,
     maxWidth: 295,
     backgroundColor: "#FFF",
-    scrollSnapAlign: "center",
-    boxShadow: "0px 10px 15px 0px rgba(0,0,0,0.1)",
+    boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
     "@media only screen and (max-width: 415px)": {
       padding: "20px 25px 20px 25px",
-      width: 230,
-      minWidth: 230,
-      maxWidth: 230,
+      width: 200,
+      minWidth: 200,
+      maxWidth: 200,
+      height: 350,
     },
   },
   itemIcon: {

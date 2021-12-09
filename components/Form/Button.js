@@ -1,4 +1,3 @@
-import React from "react";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
 import Ripples from "react-ripples";
@@ -6,22 +5,23 @@ import Ripples from "react-ripples";
 // Config
 import colors from "../../config/themes/colors";
 
-const Button = ({
-  type,
-  label,
-  isWhite,
-  size, // size is a enum; type string: ['small', 'med', 'big']
-  disabled,
-  isLink,
-  customButtonStyle,
-  customLabelStyle,
-  onClick,
-  onSubmit,
-  icon,
-  customIconStyle,
-  hideRipples,
-  rippleClass,
-}) => {
+function Button(props) {
+  const {
+    type,
+    label,
+    isWhite,
+    size, // size is a enum; type string: ['xsmall', 'small', 'med', 'big']
+    disabled,
+    isLink,
+    customButtonStyle,
+    customLabelStyle,
+    onClick,
+    onSubmit,
+    icon,
+    customIconStyle,
+    hideRipples,
+    rippleClass,
+  } = props;
   if (isLink) {
     let { href, linkAs, query } = isLink;
     return (
@@ -102,7 +102,7 @@ const Button = ({
     }
     return button;
   }
-};
+}
 
 const styles = StyleSheet.create({
   button: {
@@ -121,11 +121,11 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
-    "@media only screen and (max-width: 415px)": {
+    "@media only screen and (max-width: 767px)": {
       width: "unset",
       height: "unset",
-      minHeight: 30,
-      minWidth: 100,
+      minHeight: 45,
+      minWidth: 126,
     },
   },
   ripples: {},
@@ -156,6 +156,12 @@ const styles = StyleSheet.create({
   },
   isWhiteLabel: {
     color: "inherit",
+  },
+  xsmall: {
+    height: 30,
+    width: "auto",
+    paddingLeft: 10,
+    paddingRight: 10,
   },
   small: {
     width: 126,

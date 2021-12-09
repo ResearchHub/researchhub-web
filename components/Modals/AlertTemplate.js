@@ -1,18 +1,10 @@
-import React from "react";
 import Modal from "react-modal";
 import { StyleSheet, css } from "aphrodite";
 import { modalStyles } from "~/config/themes/styles";
 import Ripples from "react-ripples";
 
 const AlertTemplate = ({ style, options, message, close }) => {
-  if (document.body.style) {
-    document.body.style.overflow = "hidden";
-  }
-
   function closeAlert() {
-    if (document.body.style) {
-      document.body.style.overflow = "scroll";
-    }
     close();
   }
 
@@ -53,9 +45,6 @@ const AlertTemplate = ({ style, options, message, close }) => {
           <Ripples
             className={css(styles.button)}
             onClick={() => {
-              if (document.body.style) {
-                document.body.style.overflow = "scroll";
-              }
               message.onClick && message.onClick();
               close();
             }}
@@ -75,12 +64,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     minWidth: 257,
+    maxWidth: 400,
     border: "1px solid #F3F3F8",
     backgroundColor: "#FFF",
     boxSizing: "border-box",
   },
   text: {
-    width: "100%",
+    width: "90%",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",

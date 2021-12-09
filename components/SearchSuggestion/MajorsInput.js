@@ -1,4 +1,4 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 
@@ -9,9 +9,9 @@ import Loader from "../Loader/Loader";
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { capitalize } from "~/config/utils";
+import { capitalize } from "~/config/utils/string";
 
-class MajorsInput extends React.Component {
+class MajorsInput extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -136,17 +136,8 @@ class MajorsInput extends React.Component {
   };
 
   render() {
-    let {
-      containerStyle,
-      inputStyle,
-      labelStyle,
-      label,
-      required,
-      index,
-      onClick,
-      onSearch,
-      value,
-    } = this.props;
+    let { containerStyle, labelStyle, label, required, index, onClick, value } =
+      this.props;
     let { searching, majors, showDropDown } = this.state;
     return (
       <div className={css(styles.container, containerStyle && containerStyle)}>

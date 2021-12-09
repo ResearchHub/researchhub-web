@@ -1,7 +1,6 @@
-import React from "react";
-import { StyleSheet, css } from "aphrodite";
+import { Component } from "react";
 
-class ReplyContainer extends React.Component {
+class ReplyContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {};

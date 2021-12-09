@@ -1,9 +1,8 @@
-import React, { Fragment } from "react";
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
-import "react-placeholder/lib/reactPlaceholder.css";
 
 import ComponentWrapper from "~/components/ComponentWrapper";
 import BulletPlaceholder from "../../Placeholders/BulletPlaceholder";
@@ -25,7 +24,7 @@ import icons from "~/config/themes/icons";
 
 const BULLET_COUNT = 5;
 
-class BulletsContainer extends React.Component {
+class BulletsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -192,12 +191,8 @@ class BulletsContainer extends React.Component {
   };
 
   renderBulletPoints = () => {
-    const {
-      paper,
-      userVoteChecked,
-      updatePaperState,
-      fetchBullets,
-    } = this.props;
+    const { paper, userVoteChecked, updatePaperState, fetchBullets } =
+      this.props;
     const { loading, bullets, showForm } = this.state;
 
     const emptyBullets =
@@ -704,7 +699,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(BulletsContainer);

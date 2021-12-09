@@ -1,13 +1,9 @@
 import { useState } from "react";
 import { StyleSheet, css } from "aphrodite";
+
+// Dynamic modules
 import dynamic from "next/dynamic";
-
-// Components
-import BaseModal from "~/components/Modals/BaseModal";
-
-// Config
-import ResearchHubIcon from "../static/ResearchHubIcon";
-
+const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 const AvatarEdit = dynamic(() => import("react-avatar-edit"), { ssr: false });
 
 const AvatarUpload = (props) => {
@@ -31,11 +27,7 @@ const AvatarUpload = (props) => {
   };
 
   return (
-    <BaseModal
-      title={"Upload Profile Picture"}
-      isOpen={isOpen}
-      closeModal={closeModal}
-    >
+    <BaseModal title={"Upload Picture"} isOpen={isOpen} closeModal={closeModal}>
       <div className={css(styles.modalContainer)}>
         <AvatarEdit
           height={200}

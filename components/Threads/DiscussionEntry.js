@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 
@@ -8,22 +8,22 @@ import ThreadActionBar from "./ThreadActionBar";
 import DiscussionPostMetadata from "../DiscussionPostMetadata";
 import CommentEntry from "./CommentEntry";
 import ThreadTextEditor from "./ThreadTextEditor";
+import InlineCommentContextTitle from "../InlineCommentDisplay/InlineCommentContextTitle";
 
 // Config
 import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import { checkVoteTypeChanged, getNestedValue } from "~/config/utils";
+import { checkVoteTypeChanged } from "~/config/utils/reputation";
+import { getNestedValue } from "~/config/utils/misc";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
-import { createUsername } from "../../config/utils";
+import { createUsername } from "~/config/utils/user";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
-
-class DiscussionEntry extends React.Component {
+class DiscussionEntry extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -133,13 +133,13 @@ class DiscussionEntry extends React.Component {
         fetching: true,
       },
       () => {
-        let { data } = this.props;
+        let { data, documentType } = this.props;
         let discussionThreadId = data.id;
         let paperId = data.paper;
         let page = this.state.page;
 
         fetch(
-          API.THREAD_COMMENT(paperId, discussionThreadId, page),
+          API.THREAD_COMMENT(documentType, paperId, discussionThreadId, page),
           API.GET_CONFIG()
         )
           .then(Helpers.checkStatus)
@@ -168,17 +168,34 @@ class DiscussionEntry extends React.Component {
       postCommentPending,
       discussionCount,
       setCount,
+      documentType,
+      post,
+      hypothesis,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
+
     postCommentPending();
-    await postComment(paperId, discussionThreadId, text, plain_text);
+    await postComment(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      text,
+      plain_text
+    );
     if (this.props.discussion.donePosting && this.props.discussion.success) {
       let newComment = { ...this.props.discussion.postedComment };
       newComment.highlight = true;
       let comments = [...this.state.comments, newComment];
       data.comments = comments;
-      setCount(discussionCount + 1);
+      setCount && setCount(discussionCount + 1);
       this.setState(
         {
           comments,
@@ -200,9 +217,18 @@ class DiscussionEntry extends React.Component {
       updateThreadPending,
       showMessage,
       setMessage,
+      post,
+      hypothesis,
+      documentType,
     } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
 
     let body = {
       text,
@@ -210,7 +236,13 @@ class DiscussionEntry extends React.Component {
       paper: paperId,
     };
     updateThreadPending();
-    await updateThread(paperId, discussionThreadId, body);
+    await updateThread(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      body
+    );
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
       setMessage("Post successfully updated!");
       showMessage({ show: true });
@@ -238,12 +270,31 @@ class DiscussionEntry extends React.Component {
     this.setState({ editing: !this.state.editing });
   };
 
-  removePostUI = () => {
+  onRemove = ({ paperID, threadID, commentID, replyID, postID }) => {
     this.setState({ removed: true });
+    this.props.onRemoveSuccess &&
+      this.props.onRemoveSuccess({
+        postID,
+        commentID,
+        paperID,
+        replyID,
+        threadID,
+      });
   };
 
   renderComments = () => {
-    let { data, hostname, path, discussionCount, setCount, paper } = this.props;
+    let {
+      data,
+      hostname,
+      path,
+      discussionCount,
+      setCount,
+      paper,
+      mediaOnly,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let comments = this.state.comments;
 
     if (comments.length > 0) {
@@ -260,6 +311,10 @@ class DiscussionEntry extends React.Component {
             mobileView={this.props.mobileView}
             discussionCount={discussionCount}
             setCount={setCount}
+            mediaOnly={mediaOnly}
+            post={post}
+            hypothesis={hypothesis}
+            documentType={documentType}
           />
         );
       });
@@ -269,8 +324,8 @@ class DiscussionEntry extends React.Component {
   renderViewMore = () => {
     if (this.state.comments.length < this.props.data.commentCount) {
       let fetching = this.state.fetching;
-      let totalCount = this.props.data.commentCount;
-      let currentCount = this.state.comments.length;
+      let totalCount = this.props.data?.commentCount ?? 0;
+      let currentCount = this.state.comments?.length ?? 0;
       let fetchCount =
         totalCount - currentCount >= 10 ? 10 : totalCount - currentCount;
       return (
@@ -291,25 +346,51 @@ class DiscussionEntry extends React.Component {
   };
 
   upvote = async () => {
-    let { data, postUpvote, postUpvotePending } = this.props;
+    let {
+      data,
+      postUpvote,
+      postUpvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
 
     postUpvotePending();
 
-    await postUpvote(paperId, discussionThreadId);
+    await postUpvote(documentType, paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI(this.props.voteResult);
   };
 
   downvote = async () => {
-    let { data, postDownvote, postDownvotePending } = this.props;
+    let {
+      data,
+      postDownvote,
+      postDownvotePending,
+      post,
+      hypothesis,
+      documentType,
+    } = this.props;
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
 
     postDownvotePending();
 
-    await postDownvote(paperId, discussionThreadId);
+    await postDownvote(documentType, paperId, documentId, discussionThreadId);
 
     this.updateWidgetUI();
   };
@@ -356,62 +437,97 @@ class DiscussionEntry extends React.Component {
   };
 
   render() {
-    const { data, paper, hostname, path, mobileView } = this.props;
-    let commentCount =
+    const {
+      data,
+      data: { context_title: contextTitle, id: commentThreadID },
+      documentType,
+      hostname,
+      hypothesis,
+      mediaOnly,
+      mobileView,
+      noRespond,
+      noVote,
+      noVoteLine,
+      paper,
+      path,
+      post,
+      shouldShowContextTitle = true,
+      store: inlineCommentStore,
+    } = this.props;
+    const commentCount =
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
         : data.comment_count;
-    let date = data.created_date;
-    let title = data.title;
-    let body = data.source === "twitter" ? data.plain_text : data.text;
-    let username = createUsername(data);
-    let metaData = {
+    const date = data.created_date;
+    const title = data.title;
+    const body = data.source === "twitter" ? data.plain_text : data.text;
+    const username = createUsername(data);
+    let documentId;
+    if (documentType === "post") {
+      documentId = post.id;
+    } else if (documentType === "hypothesis") {
+      documentId = hypothesis.id;
+    }
+    const metaData = {
       authorId: data.created_by.author_profile.id,
       threadId: data.id,
       paperId: data.paper,
+      documentId: documentId,
       userFlag: data.user_flag,
       contentType: "thread",
       objectId: data.id,
     };
+    const isInlineComment = ["block_key"] in data;
 
     return (
       <div
         className={css(
-          styles.row,
           styles.discussionCard,
+          this.props.withBorder && styles.withBorder,
+          this.props.withPadding && styles.withPadding,
           this.state.highlight && styles.highlight
         )}
       >
-        <div className={css(styles.column, styles.left)}>
-          <div className={css(styles.voteContainer)}>
-            <VoteWidget
-              score={this.state.score}
-              styles={styles.voteWidget}
-              onUpvote={this.upvote}
-              onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
-              type={"Discussion"}
-              fontSize={"16px"}
-              width={"44px"}
-              promoted={false}
-            />
-            <div
-              className={css(
-                styles.threadline,
-                this.state.revealComment && styles.activeThreadline,
-                this.state.hovered && styles.hoverThreadline
-              )}
-              onClick={this.toggleCommentView}
-            />
+        {noVote ? null : (
+          <div className={css(styles.column, styles.left)}>
+            <div className={css(styles.voteContainer)}>
+              <VoteWidget
+                score={this.state.score}
+                styles={styles.voteWidget}
+                onUpvote={this.upvote}
+                onDownvote={this.downvote}
+                selected={this.state.selectedVoteType}
+                type={"Discussion"}
+                fontSize={"16px"}
+                width={"44px"}
+                promoted={false}
+              />
+              <div
+                className={css(
+                  styles.threadLineContainer,
+                  noVoteLine && styles.hidden
+                )}
+                onClick={this.toggleCommentView}
+              >
+                <div
+                  className={css(
+                    styles.threadline,
+                    this.state.revealComment && styles.activeThreadline,
+                    this.state.hovered && styles.hoverThreadline
+                  )}
+                />
+              </div>
+            </div>
           </div>
-        </div>
+        )}
         <div
-          className={css(styles.column, styles.metaData)}
+          className={css(styles.column)}
           ref={(element) => (this.divRef = element)}
         >
           <div
             className={css(
               styles.highlight,
+              styles.metaData,
               this.state.highlight && styles.active
             )}
           >
@@ -431,17 +547,36 @@ class DiscussionEntry extends React.Component {
                     data={data}
                     date={date}
                     paper={paper}
+                    post={post}
+                    documentType={documentType}
                     threadPath={path}
                     hostname={hostname}
                     dropDownEnabled={true}
                     // Moderator
                     metaData={metaData}
-                    onRemove={this.removePostUI}
+                    onRemove={this.onRemove}
                     // Twitter
                     twitter={data.source === "twitter"}
                     twitterUrl={data.url}
                   />
                 </div>
+                {shouldShowContextTitle && contextTitle ? (
+                  <InlineCommentContextTitle
+                    commentThreadID={commentThreadID}
+                    entityKey={null}
+                    onScrollSuccess={() => {
+                      inlineCommentStore.set("displayableInlineComments")([
+                        {
+                          blockKey: "Blockkey-placeholder",
+                          commentThreadID,
+                          entityKey: "EntityKey-placeholder",
+                          highlightedText: contextTitle,
+                        },
+                      ]);
+                    }}
+                    title={contextTitle}
+                  />
+                ) : null}
                 <div
                   className={css(
                     styles.content,
@@ -456,6 +591,7 @@ class DiscussionEntry extends React.Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
+                    mediaOnly={isInlineComment}
                   />
                 </div>
               </Fragment>
@@ -466,21 +602,24 @@ class DiscussionEntry extends React.Component {
                 </div>
               </div>
             )}
-            <div className={css(styles.row, styles.bottom)}>
-              <ThreadActionBar
-                editing={this.state.editing}
-                toggleEdit={this.state.canEdit && this.toggleEdit}
-                title={title}
-                count={commentCount}
-                showChildrenState={this.state.revealComment}
-                onSubmit={this.submitComment}
-                onClick={this.toggleCommentView}
-                onCountHover={this.toggleHover}
-                small={mobileView}
-                isRemoved={this.state.removed}
-                hideReply={data.source === "twitter"}
-              />
-            </div>
+            {noRespond ? null : (
+              <div className={css(styles.row, styles.bottom)}>
+                <ThreadActionBar
+                  editing={this.state.editing}
+                  toggleEdit={this.state.canEdit && this.toggleEdit}
+                  title={title}
+                  count={commentCount}
+                  showChildrenState={this.state.revealComment}
+                  onSubmit={this.submitComment}
+                  onClick={this.toggleCommentView}
+                  onCountHover={this.toggleHover}
+                  mediaOnly={mediaOnly}
+                  small={noVoteLine}
+                  isRemoved={this.state.removed}
+                  hideReply={data.source === "twitter"}
+                />
+              </div>
+            )}
           </div>
           <div className={css(styles.commentContainer)} id={"comments"}>
             {this.state.revealComment && (
@@ -497,6 +636,11 @@ class DiscussionEntry extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  root: {
+    width: "100%",
+    maxWidth: "100%",
+    boxSizing: "100%",
+  },
   row: {
     display: "flex",
     flexDirection: "row",
@@ -508,16 +652,25 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    height: "calc(100%)",
+    width: "100%",
+    maxWidth: "100%",
   },
   threadline: {
-    height: "calc(100% - 80px)",
+    height: "100%",
     width: 2,
+    paddingTop: 0,
+    paddingBottom: 0,
     backgroundColor: "#EEEFF1",
-    cursor: "pointer",
     ":hover": {
       backgroundColor: colors.BLUE(1),
     },
+  },
+  threadLineContainer: {
+    padding: 8,
+    paddingTop: 0,
+    paddingBottom: 0,
+    height: "calc(100% - 80px)",
+    cursor: "pointer",
   },
   hoverThreadline: {
     backgroundColor: colors.BLUE(),
@@ -561,7 +714,9 @@ const styles = StyleSheet.create({
     cursor: "default",
     justifyContent: "space-between",
     display: "table",
+    tableLayout: "fixed",
     height: "100%",
+    borderSpacing: 0,
   },
   topbar: {
     width: "100%",
@@ -599,18 +754,12 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "table-cell",
     height: "100%",
-    "@media only screen and (max-width: 415px)": {
-      width: "calc(100% - 35px)",
-    },
   },
   highlight: {
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,
@@ -620,7 +769,7 @@ const styles = StyleSheet.create({
       paddingRight: 0,
     },
   },
-  removed: {
+  hidden: {
     display: "none",
   },
   bottom: {
@@ -681,6 +830,10 @@ const styles = StyleSheet.create({
     color: "rgb(35, 32, 56)",
     fontStyle: "italic",
   },
+  withPadding: {
+    padding: 16,
+    height: "unset",
+  },
 });
 
 const mapStateToProps = (state) => ({
@@ -703,7 +856,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DiscussionEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(DiscussionEntry);

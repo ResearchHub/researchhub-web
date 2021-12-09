@@ -2,36 +2,35 @@ import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
 
 import colors from "~/config/themes/colors";
-import ReactPlaceholder from "react-placeholder/lib";
 import AuthorAvatar from "../AuthorAvatar";
 import Link from "next/link";
+import numeral from "numeral";
 
 const LeaderboardUser = (props) => {
-  const {
-    name,
-    authorProfile,
-    reputation,
-    authorId,
-    userClass,
-    repClass,
-  } = props;
+  const { name, authorProfile, reputation, authorId, userClass, repClass } =
+    props;
+
   return (
     <div className={css(styles.container)}>
       <Link
         href={"/user/[authorId]/[tabName]"}
-        as={`/user/${authorId}/contributions`}
+        as={`/user/${authorId}/overview`}
       >
         <a className={css(styles.link)}>
           <div className={css(styles.nameRow, userClass)}>
             <AuthorAvatar
               author={authorProfile}
               name={name}
-              disableLink={false}
+              disableLink={true}
               size={35}
             />
-            <div className={css(styles.name)}>{name}</div>
+            <div className={css(styles.name) + " clamp1"}>{name}</div>
             {props.extraInfo}
-            <div className={css(styles.rep, repClass)}>{reputation}</div>
+            {reputation ? (
+              <div className={css(styles.rep, repClass)}>
+                {numeral(reputation).format("0,0")}
+              </div>
+            ) : null}
           </div>
         </a>
       </Link>
@@ -46,12 +45,17 @@ LeaderboardUser.propTypes = {
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    width: "100%",
+  },
   nameRow: {
     display: "flex",
     alignItems: "center",
+    fontSize: 16,
+    width: "100%",
   },
   link: {
+    width: "100%",
     color: colors.BLACK(1),
     textDecoration: "none",
   },
@@ -61,7 +65,6 @@ const styles = StyleSheet.create({
   },
   rep: {
     marginLeft: "auto",
-    color: colors.PURPLE(1),
     fontWeight: 500,
   },
 });

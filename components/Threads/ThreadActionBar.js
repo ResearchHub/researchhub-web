@@ -1,14 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 
 import ThreadTextEditor from "./ThreadTextEditor";
 
+import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { doesNotExist } from "~/config/utils";
+import { doesNotExist } from "~/config/utils/nullchecks";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
-class ThreadActionBar extends React.Component {
+class ThreadActionBar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -35,20 +36,19 @@ class ThreadActionBar extends React.Component {
           editing={this.state.showReplyBox}
           initialValue={this.props.initialValue}
           hasHeader={this.props.hasHeader}
+          mediaOnly={this.props.mediaOnly}
         />
       </div>
     );
   };
 
   renderCommentCount = () => {
-    const {
-      count,
-      comment,
-      onClick,
-      small,
-      showChildrenState,
-      onCountHover,
-    } = this.props;
+    const { count, comment, onClick, small, showChildrenState, onCountHover } =
+      this.props;
+
+    if (count === 0) {
+      return null;
+    }
 
     let classNames = [styles.commentCountContainer];
 
@@ -58,10 +58,6 @@ class ThreadActionBar extends React.Component {
 
     if (showChildrenState) {
       classNames.push(styles.active);
-    }
-
-    if (count === 0) {
-      classNames.push(styles.inactive);
     }
 
     return (
@@ -75,7 +71,7 @@ class ThreadActionBar extends React.Component {
           className={css(styles.iconChat, showChildrenState && styles.active)}
           id={"chatIcon"}
         >
-          <i className="fad fa-comments" />
+          {icons.comments}
         </span>
         <span
           className={css(
@@ -94,7 +90,7 @@ class ThreadActionBar extends React.Component {
   renderEditButton = () => {
     const { toggleEdit, editing, small } = this.props;
 
-    let classNames = [styles.commentCountContainer];
+    let classNames = [styles.editContainer];
 
     if (small) {
       classNames.push(styles.smallReply);
@@ -112,9 +108,9 @@ class ThreadActionBar extends React.Component {
             styles.iconEdit,
             editing && styles.active
           )}
-          id={"chatIcon"}
+          id={"editIcon"}
         >
-          <i className="fad fa-pencil"></i>
+          {icons.pencil}
         </span>
         <span
           className={css(
@@ -133,17 +129,16 @@ class ThreadActionBar extends React.Component {
   formatCommentCount = (count, isComment) => {
     const suffix = isComment
       ? count === 0 || count > 1
-        ? "Replie"
+        ? "Replies"
         : "Reply"
-      : "Comment";
-    const s = "s";
+      : "Comments";
 
     if (count < 1 || doesNotExist(count)) {
-      return `${suffix}${s} (${count})`;
+      return `${suffix} (${count})`;
     } else if (count < 2) {
       return `${suffix} (${count})`;
     }
-    return `${suffix}${s} (${count})`;
+    return `${suffix} (${count})`;
   };
 
   toggleReplyBox = () => {
@@ -153,8 +148,7 @@ class ThreadActionBar extends React.Component {
   };
 
   render() {
-    const { hostname, threadPath, title, small, isRemoved } = this.props;
-    const shareUrl = hostname + threadPath;
+    const { small, isRemoved } = this.props;
 
     if (isRemoved) {
       return (
@@ -165,40 +159,45 @@ class ThreadActionBar extends React.Component {
         </Fragment>
       );
     }
+    const commentCount = this.renderCommentCount();
+    const editButton = this.renderEditButton();
     return (
-      <Fragment>
-        <div className={css(styles.column)}>
-          <div className={css(styles.row)}>
-            {!this.props.hideReply && (
-              <div
+      <div
+        className={css(styles.column)}
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <div className={css(styles.row)}>
+          {!this.props.hideReply && (
+            <div
+              className={css(
+                styles.text,
+                styles.replyContainer,
+                small && styles.smallReply,
+                this.state.showReplyBox && styles.active
+              )}
+              onClick={this.toggleReplyBox}
+            >
+              <span
                 className={css(
-                  styles.text,
-                  styles.replyContainer,
-                  small && styles.smallReply,
+                  styles.replyIcon,
                   this.state.showReplyBox && styles.active
                 )}
-                onClick={this.toggleReplyBox}
+                id={"replyIcon"}
               >
-                <span
-                  className={css(
-                    styles.replyIcon,
-                    this.state.showReplyBox && styles.active
-                  )}
-                  id={"replyIcon"}
-                >
-                  <i className="fad fa-comment-alt-edit" />
-                </span>
-                Respond
-              </div>
-            )}
-            {!this.props.hideCount && this.renderCommentCount()}
-            {this.props.toggleEdit && this.renderEditButton()}
-          </div>
-          {!this.props.hideReply && (
-            <div className={css(styles.container)}>{this.renderReplyBox()}</div>
+                {icons.commentAltEdit}
+              </span>
+              Respond
+            </div>
           )}
+          {!this.props.hideCount && commentCount}
+          {this.props.toggleEdit && editButton}
         </div>
-      </Fragment>
+        {!this.props.hideReply && (
+          <div className={css(styles.container)}>{this.renderReplyBox()}</div>
+        )}
+      </div>
     );
   }
 }
@@ -239,13 +238,24 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     cursor: "pointer",
     ":hover #text": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
     ":hover #chatIcon": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
     "@media only screen and (max-width: 415px)": {
       marginRight: 10,
+    },
+  },
+  editContainer: {
+    cursor: "pointer",
+    padding: 4,
+    borderRadius: 3,
+    ":hover #text": {
+      color: colors.BLUE(),
+    },
+    ":hover #editIcon": {
+      color: colors.BLUE(),
     },
   },
   link: {
@@ -256,10 +266,10 @@ const styles = StyleSheet.create({
     padding: 4,
     borderRadius: 3,
     ":hover #text": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
     ":hover #shareIcon": {
-      color: colors.BLUE(1),
+      color: colors.BLUE(),
     },
   },
   smallReply: {
@@ -307,7 +317,6 @@ const styles = StyleSheet.create({
   revealTextEditor: {
     height: "unset",
     opacity: 1,
-    border: "solid 1px #AAAAAA",
     borderRadius: 3,
     backgroundColor: "#FAFAFA",
     cursor: "default",

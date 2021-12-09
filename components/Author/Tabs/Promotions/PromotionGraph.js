@@ -1,20 +1,27 @@
-import React from "react";
+import { Component } from "react";
 import Chart from "react-google-charts";
 
 import Loader from "../../../Loader/Loader";
 
-import { formatDate } from "~/config/utils";
+import { formatDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
 
-class PromotionGraph extends React.Component {
+class PromotionGraph extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      views: [["x", "Views"], [0, 0]],
-      clicks: [["x", "Clicks"], [0, 0]],
+      views: [
+        ["x", "Views"],
+        [0, 0],
+      ],
+      clicks: [
+        ["x", "Clicks"],
+        [0, 0],
+      ],
       options: {},
       loading: true,
+      refreshed: false,
     };
   }
 
@@ -24,7 +31,7 @@ class PromotionGraph extends React.Component {
   }
 
   formatData = (value, interactions = []) => {
-    var data = [];
+    const data = [];
     data.push(["x", `${value[0].toUpperCase()}${value.slice(1)}`]);
 
     interactions.forEach((interaction) => {
@@ -148,7 +155,7 @@ class PromotionGraph extends React.Component {
       options = { ...options, ...customOptions };
     }
 
-    this.setState({ [value]: data, options, loading: value !== "views" });
+    this.setState({ [value]: data, options, loading: false });
   };
 
   formatOptions = () => {

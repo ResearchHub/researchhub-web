@@ -1,51 +1,60 @@
-import React, { useState, useEffect, Fragment } from "react";
-import Link from "next/link";
-import Router from "next/router";
 import { connect, useStore } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
-import Carousel from "nuka-carousel";
-import Ripples from "react-ripples";
-import FsLightbox from "fslightbox-react";
-import "react-placeholder/lib/reactPlaceholder.css";
-import "~/components/Paper/CitationCard.css";
-
-// Components
-import VoteWidget from "../VoteWidget";
-import HubTag from "./HubTag";
-import HubDropDown from "./HubDropDown";
-
-// Utility
 import {
   UPVOTE,
   DOWNVOTE,
   UPVOTE_ENUM,
   DOWNVOTE_ENUM,
 } from "~/config/constants";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { formatPublishedDate, formatPaperSlug } from "~/config/utils";
-import { transformDate } from "~/redux/utils";
-import { PaperActions } from "~/redux/paper";
-import API from "~/config/api";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { getUsersFromPaper, getJournalFromURL } from "~/config/utils/parsers";
+import { formatUploadedDate } from "~/config/utils/dates";
+import { buildSlug } from "~/config/utils/document";
 import { Helpers } from "@quantfive/js-web-config";
-import AuthorAvatar from "../AuthorAvatar";
+import { ModalActions } from "~/redux/modals";
+import { PaperActions } from "~/redux/paper";
+import { transformDate } from "~/redux/utils";
+import API from "~/config/api";
+import colors, { genericCardColors } from "~/config/themes/colors";
+import HubDropDown from "./HubDropDown";
+import HubTag from "./HubTag";
+import Link from "next/link";
+import icons, { PaperDiscussionIcon } from "~/config/themes/icons";
+import PaperUserAvatars from "../Paper/PaperUserAvatars";
+import { useState, useEffect, useMemo, Fragment } from "react";
+import ReactTooltip from "react-tooltip";
+import Ripples from "react-ripples";
+import Router from "next/router";
+import VoteWidget from "../VoteWidget";
+import LazyLoad from "react-lazyload";
+import { isDevEnv } from "~/config/utils/env";
+import { parseMath } from "~/config/utils/latex";
+import { stripHTML } from "~/config/utils/string";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const PaperPDFModal = dynamic(() =>
+  import("~/components/Modals/PaperPDFModal")
+);
 
 const PaperEntryCard = (props) => {
-  let {
+  const {
     paper,
     index,
     hubName,
     discussionCount,
-    mobileView,
     style,
     searchResult,
     voteCallback,
     postUpvote,
     postDownvote,
-    reduxPaper,
     promotionSummary,
     onClick,
+    styleVariation,
   } = props;
+
+  const store = useStore();
+
   let {
     id,
     authors,
@@ -57,6 +66,7 @@ const PaperEntryCard = (props) => {
     abstract,
     user_vote,
     score,
+    boost_amount,
     summary,
     paper_title,
     first_figure,
@@ -67,11 +77,33 @@ const PaperEntryCard = (props) => {
     raw_authors,
     slug,
     paper_type,
+    url,
+    uploaded_date,
   } = paper || null;
+
   let vote_type = 0;
   let selected = setVoteSelected(paper.user_vote);
-  const [lightbox, toggleLightbox] = useState(false);
-  const [slideIndex, setSlideIndex] = useState(1);
+  boost_amount = boost_amount || 0;
+
+  abstract = useMemo(() => {
+    abstract = stripHTML(abstract);
+    abstract = parseMath(abstract);
+    return abstract;
+  }, [abstract]);
+
+  title = useMemo(() => {
+    title = stripHTML(title);
+    title = parseMath(title);
+    return title;
+  }, [title]);
+
+  /**
+   * Whether or not THIS PaperPDFModal is open.
+   * There may be many PaperPDFModal components on the page, but
+   * modals.openPaperPDFModal is only a single boolean. So all cards
+   * must only render their PaperPDFModal component if requested */
+  const [isPreviewing, setIsPreviewing] = useState(false);
+
   const [isOpen, setIsOpen] = useState(false); // Hub dropdown
   const [previews] = useState(
     configurePreview([
@@ -83,9 +115,8 @@ const PaperEntryCard = (props) => {
     previews.map((preview, index) => preview && preview.file)
   );
   const [paperSlug, setPaperSlug] = useState(
-    slug ? slug : formatPaperSlug(paper_title ? paper_title : title)
+    slug ? slug : buildSlug(paper_title ? paper_title : title)
   );
-  const store = useStore();
 
   if (discussion_count == undefined) {
     discussion_count = discussionCount;
@@ -93,7 +124,7 @@ const PaperEntryCard = (props) => {
 
   useEffect(() => {
     selected = setVoteSelected(props.paper.user_vote);
-  }, [props.paper]);
+  }, [props.paper, props.vote]);
 
   function setVoteSelected(userVote) {
     if (userVote) {
@@ -108,62 +139,43 @@ const PaperEntryCard = (props) => {
 
   function configurePreview(arr, setFigures) {
     return arr.filter((el) => {
-      return el !== null;
+      return !isNullOrUndefined(el);
     });
   }
 
-  function convertDate() {
-    return formatPublishedDate(transformDate(paper.paper_publish_date));
-  }
+  function renderContributers() {
+    const users = getUsersFromPaper(paper, (user) => user.profile_image);
 
-  function navigateToSubmitter(e) {
-    e && e.stopPropagation();
-    let { author_profile } = uploaded_by;
-    let authorId = author_profile && author_profile.id;
-    Router.push(
-      "/user/[authorId]/[tabName]",
-      `/user/${authorId}/contributions`
-    );
-    onClick && onClick();
-  }
-
-  function renderPromoter() {
-    return <span className={css(styles.promotion)}>Promoted</span>;
-  }
-
-  function renderUploadedBy() {
-    if (uploaded_by) {
-      let {
-        first_name,
-        last_name,
-        profile_image,
-        id,
-        user,
-      } = uploaded_by.author_profile;
+    if (users && users.length) {
       return (
-        <div className={css(styles.uploadedBy)} onClick={navigateToSubmitter}>
-          <span className={css(styles.submittedSection)}>
-            <AuthorAvatar
-              author={uploaded_by.author_profile}
-              name={first_name + " " + last_name}
-              size={25}
-            />
-            <span
-              className={css(styles.capitalize, styles.authorName)}
-            >{`${first_name} ${last_name}`}</span>
-          </span>
+        <div className={css(styles.journalTagContainer)}>
+          <LazyLoad offset={100} once>
+            <PaperUserAvatars users={users} />
+          </LazyLoad>
         </div>
       );
-    } else if (external_source) {
+    }
+  }
+
+  function renderJournalName(mobile) {
+    if (external_source || url) {
+      const source = external_source ? external_source : getJournalFromURL(url);
+
       return (
-        <div className={css(styles.uploadedBy)}>
-          Retrieved from{" "}
-          <span className={css(styles.capitalize)}>{external_source}</span>
+        <div className={css(styles.metadataContainer, styles.authorContainer)}>
+          <div
+            className={
+              css(
+                styles.metadataClamp,
+                styles.metadata,
+                styles.removeMargin,
+                styles.capitalize
+              ) + " clamp1"
+            }
+          >
+            Journal: {source}
+          </div>
         </div>
-      );
-    } else {
-      return (
-        <div className={css(styles.uploadedBy)}>Submitted by ResearchHub</div>
       );
     }
   }
@@ -175,31 +187,25 @@ const PaperEntryCard = (props) => {
   async function onUpvote(e) {
     e.stopPropagation();
     let curPaper = { ...paper };
-    await postUpvote(curPaper.id);
-    let userVote = store.getState().paper.userVote;
-    if (
-      userVote.doneFetching &&
-      userVote.success &&
-      userVote.vote.voteType === "upvote"
-    ) {
-      if (curPaper.user_vote) {
-        curPaper.score += 2;
-        if (curPaper.promoted) {
-          curPaper.promoted += 2;
-        }
-      } else {
-        curPaper.score += 1;
-        if (curPaper.promoted) {
-          curPaper.promoted += 1;
-        }
+    if (curPaper.user_vote) {
+      curPaper.score += 2;
+      if (curPaper.promoted) {
+        curPaper.promoted += 2;
       }
-      curPaper.user_vote = {
-        vote_type: UPVOTE_ENUM,
-      };
-      selected = UPVOTE;
-
-      voteCallback && voteCallback(index, curPaper);
+    } else {
+      curPaper.score += 1;
+      if (curPaper.promoted) {
+        curPaper.promoted += 1;
+      }
     }
+    curPaper.user_vote = {
+      vote_type: UPVOTE_ENUM,
+    };
+    selected = UPVOTE;
+
+    voteCallback && voteCallback(index, curPaper);
+
+    postUpvote(curPaper.id);
   }
 
   /**
@@ -209,31 +215,25 @@ const PaperEntryCard = (props) => {
   async function onDownvote(e) {
     e.stopPropagation();
     let curPaper = { ...paper };
-    await postDownvote(curPaper.id);
-    let userVote = store.getState().paper.userVote;
-    if (
-      userVote.doneFetching &&
-      userVote.success &&
-      userVote.vote.voteType === "downvote"
-    ) {
-      if (curPaper.user_vote) {
-        curPaper.score -= 2;
-        if (curPaper.promoted !== false) {
-          curPaper.promoted -= 2;
-        }
-      } else {
-        curPaper.score -= 1;
-        if (curPaper.promoted !== false) {
-          curPaper.promoted -= 1;
-        }
+    if (curPaper.user_vote) {
+      curPaper.score -= 2;
+      if (curPaper.promoted !== false) {
+        curPaper.promoted -= 2;
       }
-      curPaper.user_vote = {
-        vote_type: DOWNVOTE_ENUM,
-      };
-      selected = DOWNVOTE;
-
-      voteCallback(index, curPaper);
+    } else {
+      curPaper.score -= 1;
+      if (curPaper.promoted !== false) {
+        curPaper.promoted -= 1;
+      }
     }
+    curPaper.user_vote = {
+      vote_type: DOWNVOTE_ENUM,
+    };
+    selected = DOWNVOTE;
+
+    voteCallback && voteCallback(index, curPaper);
+
+    postDownvote(curPaper.id);
   }
 
   function postEvent() {
@@ -249,9 +249,7 @@ const PaperEntryCard = (props) => {
 
       fetch(API.PROMOTION_STATS({}), API.POST_CONFIG(payload))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {})
-        .catch((err) => {});
+        .then(Helpers.parseJSON);
     }
   }
 
@@ -260,18 +258,23 @@ const PaperEntryCard = (props) => {
       window.open(`/paper/${id}/${paperSlug}`, "_blank");
     } else {
       postEvent();
-      Router.push("/paper/[paperId]/[paperName]", `/paper/${id}/${paperSlug}`);
+      Router.push({
+        pathname: "/paper/[paperId]/[paperName]",
+        query: { paperId: id, paperName: paperSlug },
+      });
     }
     onClick && onClick();
   }
 
   function formatDiscussionCount() {
-    return `${discussion_count} ${
-      discussion_count === 1 ? "Comment" : "Comments"
-    }`;
+    return `${discussion_count}`;
   }
 
   const renderDiscussionCount = () => {
+    if (!discussion_count) {
+      return null;
+    }
+
     return (
       <Link
         href={"/paper/[paperId]/[paperName]"}
@@ -284,38 +287,43 @@ const PaperEntryCard = (props) => {
           }}
         >
           <div className={css(styles.discussion)}>
-            <span className={css(styles.icon)} id={"discIcon"}>
-              {icons.chat}
-            </span>
-            <span className={css(styles.dicussionCount)} id={"discCount"}>
+            <div className={css(styles.discussionIcon)} id={"discIcon"}>
+              {PaperDiscussionIcon({})}
+            </div>
+            <div className={css(styles.discussionCount)} id={"discCount"}>
               {formatDiscussionCount()}
-            </span>
+            </div>
           </div>
         </a>
       </Link>
     );
   };
 
+  const openPaperPDFModal = (e) => {
+    e && e.preventDefault();
+    e && e.stopPropagation();
+    setIsPreviewing(true);
+    props.openPaperPDFModal(true);
+  };
+
   const renderContent = () => {
     if (bullet_points && bullet_points.length > 0) {
       return (
         <div className={css(styles.summary)}>
-          <ul className={css(styles.bulletpoints) + " clamp1"}>
-            {bullet_points.map((bullet, i) => {
-              if (i < 2) {
-                return (
-                  <li
-                    key={`bullet-${bullet.paper}-${i}`}
-                    className={css(styles.bullet)}
-                  >
-                    <div style={{ overflow: "hidden" }} className={"clamp1"}>
-                      {bullet.plain_text}
-                    </div>
-                  </li>
-                );
-              }
-            })}
-          </ul>
+          {bullet_points.map((bullet, i) => {
+            if (i < 2) {
+              return (
+                <div
+                  key={`bullet-${bullet.paper}-${i}`}
+                  className={css(styles.bullet)}
+                >
+                  <span style={{ overflow: "hidden" }} className={"clamp1"}>
+                    {bullet.plain_text}
+                  </span>
+                </div>
+              );
+            }
+          })}
         </div>
       );
     } else if (abstract) {
@@ -325,7 +333,6 @@ const PaperEntryCard = (props) => {
         </div>
       );
     } else if (summary) {
-      // console.log("summary", summary);
     }
   };
 
@@ -338,66 +345,54 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <div
-            className={css(styles.preview)}
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              toggleLightbox(!lightbox);
-            }}
-          >
-            <Carousel
-              afterSlide={(slideIndex) => setSlideIndex(slideIndex + 1)}
-              renderBottomCenterControls={null}
-              renderCenterLeftControls={null}
-              renderCenterRightControls={null}
-              wrapAround={true}
-              enableKeyboardControls={true}
-            >
-              {previews.map((preview, i) => {
-                if (preview && i == 0) {
-                  return (
-                    <img
-                      src={preview.file}
-                      className={css(carousel.image)}
-                      key={`preview_${preview.file}`}
-                      alt={`Paper Preview Page ${i + 1}`}
-                      loading="lazy"
-                    />
-                  );
-                }
-              })}
-            </Carousel>
-          </div>
+          <LazyLoad offset={100} once>
+            {isPreviewing && (
+              <PaperPDFModal
+                paper={paper}
+                onClose={() => setIsPreviewing(false)}
+              />
+            )}
+            <div className={css(styles.preview)}>
+              <img
+                src={previews[0].file}
+                className={css(carousel.image)}
+                key={`preview_${previews[0].file}`}
+                alt={`Paper Preview Page 1`}
+                onClick={openPaperPDFModal}
+              />
+            </div>
+          </LazyLoad>
         </div>
       );
     } else {
       return (
         <div className={css(styles.column, styles.previewColumn)}>
-          <div className={css(styles.preview, styles.previewEmpty)} />
+          <LazyLoad offset={100} once>
+            <div className={css(styles.preview, styles.previewEmpty)} />
+          </LazyLoad>
         </div>
       );
     }
   };
 
   const renderHubTags = () => {
-    if (hubs && hubs.length > 0) {
+    if (Boolean(hubs) && Boolean(hubs.length)) {
+      const firstTagSet = hubs
+        .slice(0, 3)
+        .map((tag, index) => (
+          <HubTag
+            key={`hub_${index}`}
+            tag={tag}
+            hubName={hubName}
+            last={index === hubs.length - 1}
+            labelStyle={
+              hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+            }
+          />
+        ));
       return (
         <div className={css(styles.tags)}>
-          {hubs.map(
-            (tag, index) =>
-              tag &&
-              index < 3 && (
-                <HubTag
-                  key={`hub_${index}`}
-                  tag={tag}
-                  hubName={hubName}
-                  last={index === hubs.length - 1}
-                  gray={false}
-                  labelStyle={styles.hubLabel}
-                />
-              )
-          )}
+          {firstTagSet}
           {hubs.length > 3 && (
             <HubDropDown
               hubs={hubs}
@@ -510,28 +505,21 @@ const PaperEntryCard = (props) => {
   };
 
   const renderMetadata = (mobile = false) => {
-    if (
-      paper_publish_date ||
-      (raw_authors && raw_authors.length) ||
-      uploaded_by
-    ) {
+    if (uploaded_date || (raw_authors && raw_authors.length) || uploaded_by) {
       return (
         <div className={css(styles.metadataRow)}>
-          {renderPaperTitle()}
+          {renderUploadedDate(mobile)}
           {renderRawAuthors(mobile)}
-          {renderPublishDate(mobile)}
+          {renderJournalName(mobile)}
         </div>
       );
     }
   };
 
-  const renderPublishDate = (mobile) => {
-    if (paper_publish_date) {
+  const renderUploadedDate = (mobile) => {
+    if (uploaded_date) {
       function _convertDate() {
-        return formatPublishedDate(
-          transformDate(paper.paper_publish_date),
-          mobile
-        );
+        return formatUploadedDate(transformDate(paper.uploaded_date), mobile);
       }
 
       if (!mobile) {
@@ -561,26 +549,24 @@ const PaperEntryCard = (props) => {
     return (
       <Fragment>
         {!promotionSummary && (
-          <div className={css(styles.column)}>
-            <span
-              className={css(styles.voting)}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <VoteWidget
-                score={score}
-                onUpvote={onUpvote}
-                onDownvote={onDownvote}
-                selected={selected}
-                searchResult={searchResult}
-                isPaper={true}
-                styles={styles.voteWidget}
-                type={"Paper"}
-                paper={promoted ? paper : null}
-                promoted={promoted}
-                horizontalView={mobile}
-              />
-            </span>
-          </div>
+          <span
+            className={css(styles.voting)}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <VoteWidget
+              score={score + boost_amount}
+              onUpvote={onUpvote}
+              onDownvote={onDownvote}
+              selected={selected}
+              searchResult={searchResult}
+              isPaper={true}
+              styles={styles.voteWidget}
+              type={"Paper"}
+              paper={promoted ? paper : null}
+              promoted={promoted}
+              horizontalView={mobile}
+            />
+          </span>
         )}
       </Fragment>
     );
@@ -598,7 +584,7 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <div className={css(styles.title)}>{title && title}</div>
+          <span className={css(styles.title)}>{title}</span>
         </a>
       </Link>
     );
@@ -608,23 +594,21 @@ const PaperEntryCard = (props) => {
     <Ripples
       className={css(
         styles.papercard,
+        styleVariation && styles[styleVariation],
         style && style,
         isOpen && styles.overflow
       )}
       key={`${id}-${index}-${title}`}
       onClick={navigateToPage}
+      data-test={isDevEnv() ? `document-${id}` : undefined}
     >
-      {figures.length > 0 && (
-        <div onClick={(e) => e.stopPropagation()}>
-          <FsLightbox
-            toggler={lightbox}
-            type="image"
-            sources={[...figures]}
-            slide={slideIndex}
-          />
+      <ReactTooltip />
+      <div className={css(styles.leftSection, styles.desktop)}>
+        {renderVoteWidget()}
+        <div className={css(styles.discussionCountContainer)}>
+          {renderDiscussionCount()}
         </div>
-      )}
-      {desktopOnly(renderVoteWidget())}
+      </div>
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div
@@ -636,20 +620,20 @@ const PaperEntryCard = (props) => {
           >
             <div className={css(styles.topRow)}>
               {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderPreregistrationTag())}
+              {mobileOnly(renderDiscussionCount())}
               {desktopOnly(renderMainTitle())}
             </div>
             {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
-            {mobileOnly(renderUploadedBy())}
+            {mobileOnly(renderContributers())}
           </div>
           {desktopOnly(renderPreview())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
-            {desktopOnly(renderUploadedBy())}
+            {desktopOnly(renderContributers())}
           </div>
           {desktopOnly(
             <div className={css(styles.row)}>
@@ -669,19 +653,25 @@ const PaperEntryCard = (props) => {
 const styles = StyleSheet.create({
   papercard: {
     display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-start",
     padding: 15,
     boxSizing: "border-box",
     backgroundColor: "#FFF",
     cursor: "pointer",
     border: "1px solid #EDEDED",
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 12,
+    marginBottom: 12,
     borderRadius: 3,
-    overflow: "hidden",
     ":hover": {
       backgroundColor: "#FAFAFA",
+    },
+  },
+  noBorderVariation: {
+    border: 0,
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    marginBottom: 0,
+    marginTop: 0,
+    ":last-child": {
+      borderBottom: 0,
     },
   },
   overflow: {
@@ -695,19 +685,19 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
+    minHeight: 102,
   },
   paperTitle: {
-    color: "rgb(145, 143, 155)",
+    fontSize: 13,
+    color: colors.BLACK(0.5),
     marginTop: 5,
-    fontSize: 14,
-    fontWeight: 400,
-    color: "#918F9B",
   },
   title: {
     width: "100%",
-    fontSize: 19,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
+    borderSpacing: "initial",
     "@media only screen and (max-width: 767px)": {
       fontSize: 16,
       paddingBottom: 10,
@@ -774,47 +764,44 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     width: "100%",
-    paddingBottom: 5,
+    paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
-      justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
   metadataRow: {
     display: "flex",
     alignItems: "flex-start",
-    flexDirection: "column",
     width: "100%",
-    paddingTop: 3,
-    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
-      paddingTop: 0,
-      paddingBottom: 5,
+      flexDirection: "column",
     },
   },
   metadataContainer: {
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
+    marginBottom: 5,
   },
   publishContainer: {
     marginRight: 10,
   },
-  authorContainer: {
-    marginBottom: 5,
-  },
+  authorContainer: {},
   clampMetadata: {
     maxWidth: 180,
     color: "#C1C1CF",
     fontSize: 14,
+    marginRight: 10,
   },
   summary: {
+    width: "100%",
     minWidth: "100%",
     maxWidth: "100%",
-    color: colors.BLACK(),
+    color: colors.BLACK(0.8),
     fontSize: 14,
-    padding: "3px 0 3px",
     lineHeight: 1.3,
+    marginTop: 5,
+    borderSpacing: "initial",
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
@@ -825,15 +812,13 @@ const styles = StyleSheet.create({
       width: "unset",
     },
   },
-  voteWidget: {
-    marginRight: 15,
-  },
+  voteWidget: {},
   bottomBar: {
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    marginTop: 8,
+    marginTop: "auto",
   },
   link: {
     textDecoration: "none",
@@ -854,9 +839,12 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
+  discussionIcon: {
+    color: "#ededed",
+  },
   metadata: {
-    fontSize: 14,
-    color: "#918f9b",
+    fontSize: 13,
+    color: colors.BLACK(0.5),
     marginLeft: 7,
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -865,20 +853,33 @@ const styles = StyleSheet.create({
   removeMargin: {
     marginLeft: 0,
   },
+  capitalize: {
+    // textTransform: "capitalize"
+  },
   authors: {
     marginLeft: 0,
     maxWidth: "100%",
   },
+  leftSection: {
+    width: 60,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  discussionCountContainer: {
+    marginTop: 8,
+    marginRight: 17,
+  },
   discussion: {
     cursor: "pointer",
-    minWidth: 100,
+    position: "relative",
     fontSize: 14,
-    ":hover #discIcon": {
-      color: colors.BLUE(1),
-    },
-    ":hover #discCount": {
-      color: colors.BLUE(1),
-    },
+    background: colors.LIGHTER_GREY_BACKGROUND,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 8,
+    borderRadius: 13,
     "@media only screen and (max-width: 967px)": {
       minWidth: "unset",
     },
@@ -886,9 +887,10 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
-  dicussionCount: {
-    color: "#918f9b",
-    marginLeft: 7,
+  discussionCount: {
+    color: "rgb(71 82 93 / 80%)",
+    fontWeight: "bold",
+    marginLeft: 6,
   },
   tags: {
     display: "flex",
@@ -903,7 +905,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       margin: 0,
       padding: 0,
-      width: "max-content",
+      width: "fit-content",
     },
   },
   row: {
@@ -935,8 +937,13 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     justifyContent: "space-between",
+    marginBottom: 10,
   },
-  metaDataPreview: {},
+  metaDataPreview: {
+    "@media only screen and (min-width: 768px)": {
+      marginRight: 8,
+    },
+  },
   hide: {
     display: "none",
   },
@@ -948,14 +955,20 @@ const styles = StyleSheet.create({
   bullet: {
     margin: 0,
     padding: 0,
+    // fontSize: 14.5,
     fontSize: 14,
-    display: "list-item",
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
     },
   },
   hubLabel: {
-    fontSize: 9,
+    "@media only screen and (max-width: 415px)": {
+      maxWidth: 60,
+      flexWrap: "unset",
+    },
+  },
+  smallerHubLabel: {
+    maxWidth: 150,
     "@media only screen and (max-width: 415px)": {
       maxWidth: 60,
       flexWrap: "unset",
@@ -972,18 +985,20 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     alignItems: "center",
-    fontSize: 14,
-    color: "rgba(145, 143, 155, 1)",
-    letterSpacing: 0.2,
-    fontWeight: 400,
     cursor: "pointer",
     whiteSpace: "pre-wrap",
+    fontSize: 14,
+    color: colors.BLACK(0.8),
     ":hover": {
-      color: colors.BLUE(),
+      opacity: 0.8,
     },
     "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-      marginTop: 8,
+      marginTop: 10,
+    },
+  },
+  journalTagContainer: {
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 10,
     },
   },
   uploadedByAvatar: {
@@ -992,6 +1007,11 @@ const styles = StyleSheet.create({
   capitalize: {
     marginRight: 8,
     textTransform: "capitalize",
+  },
+  externalSource: {
+    fontSize: 14,
+    color: colors.BLACK(0.8),
+    fontWeight: 500,
   },
   authorName: {
     marginLeft: 4,
@@ -1117,9 +1137,7 @@ const mapDispatchToProps = {
   postUpvote: PaperActions.postUpvote,
   postDownvote: PaperActions.postDownvote,
   updatePaperState: PaperActions.updatePaperState,
+  openPaperPDFModal: ModalActions.openPaperPDFModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperEntryCard);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperEntryCard);

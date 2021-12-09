@@ -1,3 +1,4 @@
+import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import { withRouter } from "next/router";
@@ -6,7 +7,7 @@ import Modal from "react-modal";
 import colors from "~/config/themes/colors";
 import { modalStyles } from "~/config/themes/styles";
 
-class OrcidLoginSuccessPage extends React.Component {
+class OrcidLoginSuccessPage extends Component {
   constructor(props) {
     super(props);
   }
@@ -26,7 +27,7 @@ class OrcidLoginSuccessPage extends React.Component {
             <div className={css(styles.icons)}>
               <img
                 className={css(styles.rhIcon)}
-                src={"/static/ResearchHubLogo.png"}
+                src={"/static/ResearchHubLogo.webp"}
               />
               <img
                 className={css(styles.orcidIcon)}

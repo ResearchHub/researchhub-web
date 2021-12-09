@@ -1,10 +1,13 @@
-import React from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
-import miniToken from "~/components/Modals/Artifacts/mini-me-token";
-import contractAbi from "~/components/Modals/Artifacts/contract-abi";
 import { contractABI } from "./contractAbi";
 import { ethers } from "ethers";
-import * as Sentry from "@sentry/browser";
+
+// Dynamic modules
+import dynamic from "next/dynamic";
+const contractAbi = dynamic(() =>
+  import("~/components/Modals/Artifacts/contract-abi")
+);
 
 // Component
 import Button from "~/components/Form/Button";
@@ -18,7 +21,7 @@ import { Helpers } from "@quantfive/js-web-config";
 // Constants
 const RinkebyRSCContractAddress = "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be";
 
-class DepositScreen extends React.Component {
+class DepositScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -99,20 +102,13 @@ class DepositScreen extends React.Component {
 
       fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON)
-        .then((res) => {
-          console.log("res", res);
-        });
+        .then(Helpers.parseJSON);
     }
   };
 
   render() {
-    const {
-      ethAccount,
-      buttonEnabled,
-      connectMetaMask,
-      ethAddressOnChange,
-    } = this.props;
+    const { ethAccount, buttonEnabled, connectMetaMask, ethAddressOnChange } =
+      this.props;
 
     return (
       <form className={css(styles.form)} onSubmit={this.signTransaction}>

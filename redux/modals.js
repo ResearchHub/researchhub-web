@@ -7,6 +7,7 @@ import API from "~/config/api";
 
 export const ModalConstants = {
   UPLOAD_PAPER_MODAL_TOGGLE: "@@modal/UPLOAD_PAPER_MODAL_TOGGLE",
+  NEW_POST_MODAL_TOGGLE: "@@modal/NEW_POST_MODAL_TOGGLE",
   ADD_AUTHOR_MODAL_TOGGLE: "@@modal/ADD_AUTHOR_MODAL_TOGGLE",
   LOGIN_MODAL_TOGGLE: "@@modal/LOGIN_MODAL_TOGGLE",
   PERMISSION_NOTIFICATION_MODAL_TOGGLE:
@@ -30,6 +31,7 @@ export const ModalConstants = {
   AUTHOR_SUPPORT_MODAL_TOGGLE: "@@modal/AUTHOR_SUPPORT_MODAL_TOGGLE",
   CONTENT_SUPPORT_MODAL_TOGGLE: "@@modal/CONTENT_SUPPORT_MODAL_TOGGLE",
   SECTION_BOUNTY_MODAL_TOGGLE: "@@modal/SECTION_BOUNTY_MODAL_TOGGLE",
+  PAPER_PDF_MODAL_TOGGLE: "@@modal/PAPER_PDF_MODAL_TOGGLE",
 };
 
 export const ModalActions = {
@@ -46,6 +48,16 @@ export const ModalActions = {
           uploadPaperModal: {
             suggestedPapers,
           },
+        },
+      });
+    };
+  },
+  openNewPostModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.NEW_POST_MODAL_TOGGLE,
+        payload: {
+          openNewPostModal: openModal,
         },
       });
     };
@@ -314,6 +326,16 @@ export const ModalActions = {
       });
     };
   },
+  openPaperPDFModal: (openModal) => {
+    return (dispatch) => {
+      return dispatch({
+        type: ModalConstants.PAPER_PDF_MODAL_TOGGLE,
+        payload: {
+          openPaperPDFModal: openModal,
+        },
+      });
+    };
+  },
 };
 
 /**********************************
@@ -322,6 +344,7 @@ export const ModalActions = {
 
 const defaultModalState = {
   openUploadPaperModal: false,
+  openNewPostModal: false,
   openAddAuthorModal: false,
   openLoginModal: false,
   openPermissionNotificationModal: false,
@@ -370,11 +393,13 @@ const defaultModalState = {
     isOpen: false,
     props: {},
   },
+  openPaperPDFModal: false,
 };
 
 const ModalReducer = (state = defaultModalState, action) => {
   switch (action.type) {
     case ModalConstants.UPLOAD_PAPER_MODAL_TOGGLE:
+    case ModalConstants.NEW_POST_MODAL_TOGGLE:
     case ModalConstants.ADD_AUTHOR_MODAL_TOGGLE:
     case ModalConstants.LOGIN_MODAL_TOGGLE:
     case ModalConstants.PERMISSION_NOTIFICATION_MODAL_TOGGLE:
@@ -397,6 +422,7 @@ const ModalReducer = (state = defaultModalState, action) => {
     case ModalConstants.AUTHOR_SUPPORT_MODAL_TOGGLE:
     case ModalConstants.CONTENT_SUPPORT_MODAL_TOGGLE:
     case ModalConstants.SECTION_BOUNTY_MODAL_TOGGLE:
+    case ModalConstants.PAPER_PDF_MODAL_TOGGLE:
       return {
         ...state,
         ...action.payload,

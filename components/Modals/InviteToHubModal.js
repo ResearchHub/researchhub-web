@@ -1,5 +1,5 @@
 // NPM Modules
-import React from "react";
+import { createRef, Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Modal from "react-modal";
@@ -19,7 +19,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 
-class InviteToHubModal extends React.Component {
+class InviteToHubModal extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
@@ -31,7 +31,7 @@ class InviteToHubModal extends React.Component {
     this.state = {
       ...this.initialState,
     };
-    this.formInputRef = React.createRef();
+    this.formInputRef = createRef();
   }
 
   componentDidMount() {
@@ -63,7 +63,6 @@ class InviteToHubModal extends React.Component {
     this.setState({
       ...this.initialState,
     });
-    this.enableParentScroll();
     openInviteToHubModal(false);
   };
 
@@ -84,18 +83,6 @@ class InviteToHubModal extends React.Component {
       return;
     }
     this.setState({ email: value });
-  };
-
-  /**
-   * prevents scrolling of parent component when modal is open
-   * & renables scrolling of parent component when modal is closed
-   */
-  disableParentScroll = () => {
-    document.body.style.overflow = "hidden";
-  };
-
-  enableParentScroll = () => {
-    document.body.style.overflow = "scroll";
   };
 
   sendInvites = () => {
@@ -153,7 +140,6 @@ class InviteToHubModal extends React.Component {
         shouldCloseOnOverlayClick={true}
         onRequestClose={this.closeModal}
         style={mobileView ? mobileOverlayStyles : overlayStyles}
-        onAfterOpen={this.disableParentScroll}
       >
         <div className={css(styles.modalContent)}>
           <img
@@ -232,7 +218,7 @@ const overlayStyles = {
 const mobileOverlayStyles = {
   overlay: {
     position: "fixed",
-    top: 80,
+    top: 65,
     left: 0,
     right: 0,
     bottom: 0,
@@ -425,7 +411,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InviteToHubModal);
+export default connect(mapStateToProps, mapDispatchToProps)(InviteToHubModal);

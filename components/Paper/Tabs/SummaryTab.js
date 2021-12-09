@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Component, Fragment } from "react";
 import Router from "next/link";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -8,15 +8,15 @@ import Link from "next/link";
 import ReactPlaceholder from "react-placeholder/lib";
 
 // Components
-import ComponentWrapper from "~/components/ComponentWrapper";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
-import ManageBulletPointsModal from "~/components/Modals/ManageBulletPointsModal";
 import FormTextArea from "~/components/Form/FormTextArea";
 import SummaryContributor from "../SummaryContributor";
 import ModeratorQA from "~/components/Moderator/ModeratorQA";
 import SectionBounty from "./SectionBounty";
-import BulletPlaceholder from "../../Placeholders/BulletPlaceholder";
+import AbstractPlaceholder from "../../Placeholders/AbstractPlaceholder";
+import { parseMath } from "~/config/utils/latex";
+import { stripHTML } from "~/config/utils/string";
 
 // Redux
 import { PaperActions } from "~/redux/paper";
@@ -24,16 +24,24 @@ import { MessageActions } from "~/redux/message";
 import { AuthActions } from "~/redux/auth";
 import { ModalActions } from "~/redux/modals";
 
+// Dynamic modules
+import dynamic from "next/dynamic";
+const ManageBulletPointsModal = dynamic(() =>
+  import("~/components/Modals/ManageBulletPointsModal")
+);
+
 // Config
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { isQuillDelta, doesNotExist } from "~/config/utils/";
-import { sendAmpEvent, checkSummaryVote } from "~/config/fetch";
+import { isQuillDelta } from "~/config/utils/editor";
+import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
+import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
+import { isDevEnv } from "~/config/utils/env";
 
-class SummaryTab extends React.Component {
+class SummaryTab extends Component {
   constructor(props) {
     super(props);
 
@@ -46,9 +54,10 @@ class SummaryTab extends React.Component {
       firstLoad: true,
       summaryExists: false,
       editing: false,
+      finishedLoading: false,
       // abstract
-      abstract: "",
-      showAbstract: false,
+      abstract: props?.paper?.abstract ?? "",
+      showAbstract: true,
       editAbstract: false,
       checked: false,
     };
@@ -179,8 +188,17 @@ class SummaryTab extends React.Component {
     const { editAbstract, abstract } = this.state;
 
     this.setState({
+      editAbstract: !editAbstract, // don't keep changes when user cancels
+    });
+  };
+
+  cancelEditAbstract = () => {
+    const { paper } = this.props;
+    const { editAbstract } = this.state;
+
+    this.setState({
       editAbstract: !editAbstract,
-      abstract: editAbstract ? "" : abstract, // don't keep changes when user cancels
+      abstract: paper.abstract,
     });
   };
 
@@ -189,14 +207,13 @@ class SummaryTab extends React.Component {
   };
 
   submitAbstract = () => {
-    const { paper, setMessage, showMessage } = this.props;
+    const { paper, setMessage, showMessage, updatePaperState } = this.props;
     showMessage({ show: true, load: true });
-    let body = {
-      abstract: this.state.abstract,
-    };
+
+    const abstract = this.state.abstract; // remove linebreak
 
     this.props
-      .patchPaper(paper.id, body)
+      .patchPaper(paper.id, { abstract })
       .then((res) => {
         if (res.payload && res.payload.errorBody) {
           if (
@@ -206,10 +223,16 @@ class SummaryTab extends React.Component {
             return showMessage({ show: false });
           }
         }
+        const updatedPaper = {
+          ...this.props.paper,
+          abstract,
+        };
+        updatePaperState && updatePaperState(updatedPaper);
         showMessage({ show: false });
         setMessage("Abstract successfully edited.");
         showMessage({ show: true });
-        this.setState({ editAbstract: false });
+
+        this.setState({ editAbstract: false, abstract });
       })
       .catch((err) => {
         if (err.response.status === 429) {
@@ -241,7 +264,7 @@ class SummaryTab extends React.Component {
             editorState: summary.summary,
             finishedLoading: true,
             abstract: paper.abstract,
-            showAbstract: false,
+            // showAbstract: false,
             summaryExists: true,
           });
         } else {
@@ -251,7 +274,7 @@ class SummaryTab extends React.Component {
             editorState: editorState ? editorState : "",
             finishedLoading: true,
             abstract: paper.abstract,
-            showAbstract: false,
+            // showAbstract: false,
             summaryExists: true,
           });
         }
@@ -364,10 +387,7 @@ class SummaryTab extends React.Component {
         loginRequired={true}
       >
         <div className={css(styles.action, styles.editAction)}>
-          <div className={css(styles.pencilIcon)}>
-            <i className="fas fa-pencil"></i>
-          </div>
-          {"Edit Abstract"}
+          <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
         </div>
       </PermissionNotificationWrapper>
     );
@@ -388,8 +408,9 @@ class SummaryTab extends React.Component {
 
   renderAbstract = () => {
     const { paper } = this.props;
-    const { abstract, showAbstract, editAbstract, readOnly } = this.state;
+    const { showAbstract, editAbstract, readOnly, abstract } = this.state;
     const externalSource = paper.retrieved_from_external_source;
+
     if (showAbstract) {
       if (editAbstract) {
         return (
@@ -398,11 +419,12 @@ class SummaryTab extends React.Component {
               value={abstract}
               onChange={this.handleAbstract}
               containerStyle={styles.formContainerStyle}
+              inputStyle={styles.formInputStyle}
             />
             <div className={css(styles.buttonRow)}>
               <Ripples
                 className={css(styles.cancelButton)}
-                onClick={this.editAbstract}
+                onClick={this.cancelEditAbstract}
               >
                 Cancel
               </Ripples>
@@ -416,17 +438,20 @@ class SummaryTab extends React.Component {
           </div>
         );
       }
-      if (paper.abstract || abstract) {
+
+      if (abstract || paper.abstract) {
+        let parsedAbstract = abstract;
+        parsedAbstract = stripHTML(parsedAbstract);
+        parsedAbstract = parseMath(parsedAbstract);
+
         return (
           <Fragment>
             {readOnly && !editAbstract && (
               <div
-                className={css(
-                  styles.abstractContainer,
-                  !externalSource && styles.whiteSpace
-                )}
+                className={css(styles.abstractContainer)}
+                data-test={isDevEnv() ? `abstract` : undefined}
               >
-                {abstract}
+                {parsedAbstract}
               </div>
             )}
           </Fragment>
@@ -434,10 +459,8 @@ class SummaryTab extends React.Component {
       } else {
         return (
           <div className={css(styles.centerColumn)}>
-            <div className={css(styles.box) + " second-step"}>
-              <div className={css(styles.icon)}>
-                <i className="fad fa-file-alt" />
-              </div>
+            <div className={css(styles.box, styles.emptyStateSummary)}>
+              <div className={css(styles.icon)}>{icons.file}</div>
               <h2 className={css(styles.noSummaryTitle)}>
                 Add an abstract to this paper
               </h2>
@@ -456,6 +479,8 @@ class SummaryTab extends React.Component {
           </div>
         );
       }
+    } else {
+      return <div />;
     }
   };
 
@@ -504,9 +529,7 @@ class SummaryTab extends React.Component {
           hideRipples={true}
         >
           <div className={css(styles.box, styles.emptyStateSummary)}>
-            <div className={css(styles.icon)}>
-              <i className="fad fa-file-alt" />
-            </div>
+            <div className={css(styles.icon)}>{icons.file}</div>
             <h2 className={css(styles.noSummaryTitle)}>
               Add a summary to this paper
             </h2>
@@ -612,15 +635,7 @@ class SummaryTab extends React.Component {
   };
 
   containerStyle = () => {
-    const { summary } = this.props;
-    const { summaryExists } = this.state;
-
     const classNames = [styles.container];
-
-    if (doesNotExist(summary.summary) || !summaryExists) {
-      classNames.push(styles.noSummaryContainer);
-    }
-
     return classNames;
   };
 
@@ -638,17 +653,20 @@ class SummaryTab extends React.Component {
 
   renderContent = () => {
     const { showAbstract, finishedLoading } = this.state;
+    const { paper } = this.props;
 
     return (
-      <div style={{ width: "100%" }}>
-        <ReactPlaceholder
-          ready={finishedLoading}
-          showLoadingAnimation
-          customPlaceholder={<BulletPlaceholder color="#efefef" />}
-        >
-          {showAbstract ? this.renderAbstract() : this.renderSummary()}
-        </ReactPlaceholder>
-      </div>
+      <ReactPlaceholder
+        ready={paper && "id" in paper}
+        showLoadingAnimation
+        customPlaceholder={
+          <div style={{ paddingTop: 30, width: "100%" }}>
+            <AbstractPlaceholder color="#efefef" />
+          </div>
+        }
+      >
+        {this.renderAbstract()}
+      </ReactPlaceholder>
     );
   };
 
@@ -657,35 +675,44 @@ class SummaryTab extends React.Component {
     const { showAbstract } = this.state;
 
     return (
-      <ComponentWrapper overrideStyle={styles.componentWrapperStyles}>
-        <a name="summary">
-          <div
-            className={css(this.containerStyle())}
-            ref={this.props.descriptionRef}
-            id="summary-tab"
-          >
-            <div className={css(this.sectionHeaderStyle())}>
-              <h3 className={css(styles.sectionTitle)}>
-                <span className={css(styles.titleRow)}>
-                  Description
-                  {!showAbstract && (
-                    <SectionBounty
-                      paper={paper}
-                      section={"summary"}
-                      loading={!userVoteChecked}
-                      updatePaperState={updatePaperState}
-                    />
-                  )}
-                </span>
-                {this.renderTabs()}
-              </h3>
-              {this.renderActions()}
-            </div>
-            {this.renderContent()}
+      <div
+        className={css(this.containerStyle())}
+        ref={this.props.descriptionRef}
+      >
+        {!isEmpty(paper) && (
+          <div className={css(this.sectionHeaderStyle())}>
+            <h3 className={css(styles.sectionTitle)}>
+              <span className={css(styles.titleRow)}>
+                Abstract
+                {paper.abstract && (
+                  <PermissionNotificationWrapper
+                    modalMessage="propose abstract edit"
+                    onClick={this.editAbstract}
+                    loginRequired={true}
+                    hideRipples={true}
+                  >
+                    <div className={css(styles.action, styles.editAction)}>
+                      <div className={css(styles.pencilIcon)}>
+                        {icons.pencil}
+                      </div>
+                    </div>
+                  </PermissionNotificationWrapper>
+                )}
+                {!showAbstract && (
+                  <SectionBounty
+                    paper={paper}
+                    section={"summary"}
+                    loading={!userVoteChecked}
+                    updatePaperState={updatePaperState}
+                  />
+                )}
+              </span>
+            </h3>
           </div>
-        </a>
+        )}
+        {this.renderContent()}
         <ManageBulletPointsModal paperId={this.props.paper.id} />
-      </ComponentWrapper>
+      </div>
     );
   }
 }
@@ -703,16 +730,11 @@ var styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     alignItems: "flex-end",
-    marginTop: 30,
-    backgroundColor: "#fff",
-    padding: 50,
     position: "relative",
-    border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
-    boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
-    "@media only screen and (max-width: 967px)": {
-      padding: 25,
+    "@media only screen and (max-width: 767px)": {
+      marginTop: 20,
     },
   },
   hidden: {
@@ -729,7 +751,19 @@ var styles = StyleSheet.create({
     lineHeight: 2,
     display: "flex",
     justifyContent: "flex-start",
-    paddingTop: 7,
+    color: colors.BLACK(),
+    fontWeight: 400,
+    fontSize: 16,
+    width: "100%",
+    boxSizing: "border-box",
+    fontFamily: "CharterBT",
+    wordBreak: "break-word",
+    display: "block",
+    borderSpacing: "initial",
+    "@media only screen and (max-width: 967px)": {
+      fontSize: 14,
+      width: "100%",
+    },
   },
   abstractText: {
     lineHeight: 1.6,
@@ -754,26 +788,37 @@ var styles = StyleSheet.create({
   },
   formContainerStyle: {
     paddingBottom: 0,
-    marginBottom: 0,
+    margin: 0,
+    boxSizing: "border-box",
+  },
+  formInputStyle: {
+    minHeight: "unset",
+    fontFamily: "CharterBT",
+    whiteSpace: "normal",
+    lineHeight: 2,
+    padding: 20,
+    boxSizing: "border-box",
+    width: "100%",
   },
   sectionHeader: {
     display: "flex",
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 20,
-    "@media only screen and (max-width: 967px)": {
+    paddingBottom: 10,
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
-      paddingBottom: 20,
+      paddingBottom: 0,
     },
   },
   sectionTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
     margin: 0,
+    fontFamily: "Roboto",
     "@media only screen and (max-width: 967px)": {
       justifyContent: "space-between",
       width: "100%",
@@ -788,6 +833,7 @@ var styles = StyleSheet.create({
   },
   titleRow: {
     display: "flex",
+    alignItems: "center",
   },
   noSummaryContainer: {
     alignItems: "center",
@@ -864,8 +910,8 @@ var styles = StyleSheet.create({
     margin: "0 0 20px",
     textAlign: "center",
     "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
-      width: 300,
+      // fontSize: 12,
+      // width: 300,
     },
   },
   summaryActions: {
@@ -897,9 +943,8 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   action: {
-    color: "#241F3A",
+    color: "rgba(36, 31, 58, 0.4)",
     fontSize: 14,
-    opacity: 0.6,
     display: "flex",
     cursor: "pointer",
     transition: "all ease-out 0.1s",
@@ -941,7 +986,7 @@ var styles = StyleSheet.create({
     },
   },
   pencilIcon: {
-    marginRight: 5,
+    marginLeft: 8,
   },
   draftContainer: {
     width: "100%",
@@ -1153,11 +1198,7 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
   getEditHistory: PaperActions.getEditHistory,
   patchPaper: PaperActions.patchPaper,
-  // updateRedux: PaperActions.updatePaperState,
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SummaryTab);
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryTab);

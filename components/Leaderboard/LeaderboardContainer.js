@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import PropTypes from "prop-types";
-
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 import ReactPlaceholder from "react-placeholder/lib";
 import LeaderboardPlaceholder from "../Placeholders/LeaderboardPlaceholder";
 import LeaderboardUser from "./LeaderboardUser";
 import Link from "next/link";
+import Ripples from "react-ripples";
+
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import colors from "~/config/themes/colors";
+import { isDevEnv } from "~/config/utils/env";
 
 const LeaderboardContainer = (props) => {
   const [users, setUsers] = useState(
@@ -26,7 +29,12 @@ const LeaderboardContainer = (props) => {
   const fetchLeaderboard = () => {
     setFetchingUsers(true);
     return fetch(
-      API.LEADERBOARD({ limit: 10, page: 1, hubId: props.hubId }),
+      API.LEADERBOARD({
+        limit: 10,
+        page: 1,
+        hubId: props.hubId,
+        timeframe: "past_week",
+      }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
@@ -45,27 +53,32 @@ const LeaderboardContainer = (props) => {
         name =
           user.author_profile.first_name + " " + user.author_profile.last_name;
       }
+      let reputation = user.hub_rep ? user.hub_rep : user.reputation;
 
       return (
-        <div className={css(styles.user)} key={`user_${index}_${user.id}`}>
+        <Ripples className={css(styles.user)} key={`user_${index}_${user.id}`}>
           <LeaderboardUser
             user={user}
             name={name}
             authorProfile={user.author_profile}
-            reputation={user.reputation}
+            // reputation={reputation}
             authorId={authorId}
           />
-        </div>
+        </Ripples>
       );
     });
   };
 
   return (
-    <div className={css(styles.container)}>
-      <h3 className={css(styles.reputable)}>Most Reputable Users</h3>
+    <div
+      className={css(styles.container)}
+      data-test={isDevEnv() ? `leaderboard` : undefined}
+    >
+      <h3 className={css(styles.title)}>Trending Users</h3>
       <ReactPlaceholder
+        ready={false}
         ready={!fetchingUsers}
-        customPlaceholder={<LeaderboardPlaceholder color="#efefef" />}
+        customPlaceholder={<LeaderboardPlaceholder color="#efefef" rows={5} />}
       >
         <div className={css(styles.leaderboardUsers)}>
           {renderLeaderboardUsers(users)}
@@ -92,22 +105,23 @@ const styles = StyleSheet.create({
     top: 100,
     borderRadius: 4,
     width: "100%",
+    border: "1px solid #ededed",
+    padding: "15px 0",
+    boxSizing: "border-box",
+    marginTop: 20,
   },
-  reputable: {
+  title: {
     textTransform: "uppercase",
     fontWeight: 500,
-    fontSize: 13,
+    fontSize: 12,
     letterSpacing: 1.2,
-    marginBottom: 23,
     textAlign: "left",
     color: "#a7a6b0",
     transition: "all ease-out 0.1s",
-    width: "90%",
-    paddingLeft: 35,
+    width: "100%",
     boxSizing: "border-box",
-    "@media only screen and (max-width: 1303px)": {
-      paddingLeft: 25,
-    },
+    margin: "0 0 10px 0",
+    padding: "0 0 0 20px",
   },
   leaderboardUsers: {
     boxSizing: "border-box",
@@ -115,16 +129,22 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    padding: "0px 30px",
-    paddingLeft: 35,
-    "@media only screen and (max-width: 1303px)": {
-      padding: "0px 20px",
-    },
+    width: "100%",
   },
   user: {
-    marginBottom: 16,
+    display: "flex",
     width: "100%",
     boxSizing: "border-box",
+    padding: "7px 20px",
+    borderLeft: "3px solid #FFF",
+    transition: "all ease-out 0.1s",
+    ":hover": {
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+      backgroundColor: "#FAFAFA",
+    },
+  },
+  linkContainer: {
+    marginTop: 15,
   },
   link: {
     textDecoration: "none",
@@ -133,14 +153,11 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     padding: "3px 5px",
+    paddingLeft: 25,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",
     },
-  },
-  linkContainer: {
-    textAlign: "center",
-    paddingBottom: 30,
   },
 });
 

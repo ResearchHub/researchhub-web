@@ -5,7 +5,6 @@ import { Fragment, useState, useEffect } from "react";
 import { useDispatch, useStore } from "react-redux";
 
 import DiscussionActions from "~/redux/discussion";
-import { ModalActions } from "~/redux/modals";
 
 import DiscussionCard from "./DiscussionCard";
 import DiscussionPostMetadata from "./DiscussionPostMetadata";
@@ -14,28 +13,25 @@ import { ClientLinkWrapper } from "./LinkWrapper";
 import VoteWidget from "./VoteWidget";
 
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
-import colors from "~/config/themes/colors";
+import colors, { genericCardColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { getNestedValue } from "~/config/utils";
+import { getNestedValue } from "~/config/utils/misc";
 import {
   convertToEditorValue,
   convertDeltaToText,
   isQuillDelta,
-} from "~/config/utils/serializers";
-import { createUsername } from "../config/utils";
+} from "~/config/utils/editor";
 
-const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
+import { createUsername } from "~/config/utils/user";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
   const store = useStore();
   const router = useRouter();
-  let { paperId } = router.query;
-  if (props.paperId) {
-    paperId = props.paperId;
-  }
-
-  const { hostname, hoverEvents, path, mobileView } = props;
+  const { hostname, hoverEvents, paperId, path, postId, mobileView } = props;
+  const DYNAMIC_HREF = paperId
+    ? "/paper/[paperId]/[paperName]"
+    : "/post/[documentId]/[title]";
 
   const data = getNestedValue(props, ["data"]);
 
@@ -97,8 +93,6 @@ const DiscussionThreadCard = (props) => {
     }
   }
 
-  const goToDiscussion = () => {};
-
   if (mobileView) {
     return (
       <div
@@ -126,7 +120,7 @@ const DiscussionThreadCard = (props) => {
                   type={"discussion"}
                 />
                 <span className={css(styles.mobileReadButton)}>
-                  <ReadButton threadPath={path} />
+                  <ReadButton {...props} threadPath={path} />
                 </span>
               </div>
               <DiscussionPostMetadata
@@ -194,7 +188,7 @@ const DiscussionThreadCard = (props) => {
                 }}
               />
               <div className={css(styles.readbutton)}>
-                <ReadButton threadPath={path} />
+                <ReadButton {...props} threadPath={path} />
               </div>
             </Fragment>
           }
@@ -235,19 +229,27 @@ const Title = (props) => {
 const Body = (props) => {
   let { overrideStyle } = props;
   let text;
-  if (typeof text === "string") {
-    text = props.text;
-  } else if (isQuillDelta(props.text)) {
-    text = convertDeltaToText(props.text);
-  } else {
-    text = convertToEditorValue(props.text).document.text;
+  try {
+    if (typeof text === "string") {
+      text = props.text;
+    } else if (isQuillDelta(props.text)) {
+      text = convertDeltaToText(props.text);
+    } else {
+      text = convertToEditorValue(props.text)?.document?.text;
+    }
+  } catch (e) {
+    console.log(e);
+    return null;
   }
 
   return <div className={css(styles.body, overrideStyle)}>{text}</div>;
 };
 
 const ReadButton = (props) => {
-  const { threadPath } = props;
+  const { paperId, postId, threadPath } = props;
+  const DYNAMIC_HREF = paperId
+    ? "/paper/[paperId]/[paperName]"
+    : "/post/[documentId]/[title]";
   return (
     <ClientLinkWrapper
       dynamicHref={DYNAMIC_HREF}
@@ -284,10 +286,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   discussionContainer: {
+    width: "100%",
     textDecoration: "none",
     cursor: "default",
     transition: "all ease-in-out 0.2s",
-
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    ":last-child": {
+      borderBottom: 0,
+    },
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
@@ -343,7 +349,9 @@ const styles = StyleSheet.create({
   body: {
     fontSize: 14,
     marginBottom: 18,
+    lineHeight: "1.3",
     whiteSpace: "pre-wrap",
+    wordBreak: "break-word",
     color: "rgb(78, 76, 95)",
     "@media only screen and (max-width: 436px)": {
       fontSize: 14,
@@ -378,6 +386,10 @@ const styles = StyleSheet.create({
   },
   readbutton: {
     marginRight: 15,
+
+    "@media only screen and (max-width: 767px)": {
+      display: "none",
+    },
   },
   mobileReadButton: {
     // marginRight: 20,

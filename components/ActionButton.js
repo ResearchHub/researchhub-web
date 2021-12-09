@@ -14,6 +14,7 @@ const ActionButton = (props) => {
     icon,
     iconNode,
     action,
+    actionType,
     addRipples,
     active,
     isModerator,
@@ -22,15 +23,13 @@ const ActionButton = (props) => {
     containerStyle,
     iconStyle,
     restore,
+    uploadedById,
+    isUploaderSuspended,
   } = props;
 
   function renderIcon() {
     if (icon) {
-      return (
-        <span className={css(styles.icon)}>
-          <i className={icon} />
-        </span>
-      );
+      return <span className={css(styles.icon)}>{icons[icon]}</span>;
     } else if (iconNode) {
       return iconNode;
     }
@@ -46,8 +45,12 @@ const ActionButton = (props) => {
         icon={icon ? icon : icons.ban}
         containerStyle={containerStyle && containerStyle}
         iconStyle={iconStyle ? iconStyle : styles.deleteIcon}
-        actionType={restore ? "restore" : "page"}
-        metaData={{ paperId }}
+        actionType={actionType ? actionType : restore ? "restore" : "page"}
+        metaData={{
+          paperId,
+          authorId: uploadedById,
+          isSuspended: isUploaderSuspended,
+        }}
         forceRender={true}
         onAction={onAction}
         onRemove={paperPageDeleteCallback}
@@ -97,10 +100,6 @@ const styles = StyleSheet.create({
     ":hover": {
       background: colors.GREY(1),
       color: colors.BLACK(),
-    },
-    "@media only screen and (max-width: 760px)": {
-      width: 35,
-      height: 35,
     },
     "@media only screen and (max-width: 415px)": {
       height: 33,
