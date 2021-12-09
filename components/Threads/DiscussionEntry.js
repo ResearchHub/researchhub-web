@@ -454,6 +454,7 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
+
     const commentCount =
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
