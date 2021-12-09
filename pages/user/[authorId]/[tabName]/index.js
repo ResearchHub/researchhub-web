@@ -29,7 +29,8 @@ import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
+// import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
+import UserOverviewTab from "~/components/Author/Tabs/UserOverviewV2";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -150,6 +151,7 @@ function AuthorPage(props) {
   const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
+  const [authorActivity, setAuthorActivity] = useState([]);
   // KT Constants
   const [authorUserStatus, setAuthorUserStatus] = useState(
     AUTHOR_USER_STATUS.NONE
@@ -176,7 +178,7 @@ function AuthorPage(props) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
-
+  console.log("authorActivity", authorActivity);
   useEffect(() => {
     const selectedTab = get(router, "query.tabName");
 
@@ -274,6 +276,23 @@ function AuthorPage(props) {
       });
   }
 
+  const fetchAuthorActivity = () => {
+    console.log("router.query.authorId", router.query.authorId);
+    return fetch(
+      API.AUTHOR_ACTIVITY({ authorId: router.query.authorId }),
+      API.GET_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then(async (res) => {
+        console.log("res", res);
+        setAuthorActivity(res.results);
+      })
+      .catch((e) => {
+        // TODO: log in sentry
+      });
+  };
+
   function fetchUserTransactions() {
     if (!auth.isLoggedIn) return;
     return dispatch(
@@ -298,12 +317,13 @@ function AuthorPage(props) {
   useEffect(() => {
     if (fetchedUser) {
       Promise.all([
-        fetchAuthoredPapers(),
-        fetchAuthorSuspended(),
-        fetchUserContributions(),
-        fetchUserDiscussions(),
+        fetchAuthorActivity(),
+        // fetchAuthoredPapers(),
+        // fetchAuthorSuspended(),
+        // fetchUserContributions(),
+        // fetchUserDiscussions(),
         // fetchUserPromotions(),
-        fetchUserTransactions(),
+        // fetchUserTransactions(),
       ]).finally((_) => {
         setFetching(false);
       });
@@ -466,12 +486,14 @@ function AuthorPage(props) {
     }
   };
 
+  console.log("user", user);
+  console.log("author", author);
   const tabContents =
     tabName === "overview" ? (
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
-        <UserOverviewTab fetching={fetching} />
+        <UserOverviewTab activity={authorActivity} author={author} />
       </div>
     ) : (
       // render all tab content on the dom, but only show if selected
@@ -484,7 +506,7 @@ function AuthorPage(props) {
               tabName === "overview" ? styles.reveal : styles.hidden
             )}
           >
-            <UserOverviewTab fetching={fetching} />
+            {/*<UserOverviewTab fetching={fetching} />*/}
           </div>
           <div
             className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
