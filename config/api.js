@@ -7,7 +7,6 @@ const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
   dev: "localhost:8000",
-  // dev: "staging-backend.researchhub.com",
 };
 
 const prepFilters = (filters) => {
