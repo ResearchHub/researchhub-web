@@ -1,5 +1,5 @@
-type FEReturnType = "hypothesis" | "posts" | "paper" | null;
-type BEReturnType = "discussion" | "hypothesis" | "paper" | null;
+type FEReturnType = "hypothesis" | "post" | "paper" | "all";
+type BEReturnType = "hypothesis" | "paper" | "posts" | null;
 
 // this function is used to resolve BE model name discrepencies with FE naming conventions
 // the return type is intentionally kept strict.
@@ -11,13 +11,13 @@ export function getUnifiedDocType(
     case "discussion":
     case "post":
     case "posts":
-      return "posts";
+      return "post";
     case "hypothesis":
       return "hypothesis";
     case "paper":
       return "paper";
     default:
-      return null;
+      return "all";
   }
 }
 
@@ -29,7 +29,7 @@ export function getBEUnifiedDocType(
   switch (lowerCasedInput) {
     case "post":
     case "posts":
-      return "discussion";
+      return "posts";
     case "hypothesis":
       return "hypothesis";
     case "paper":
