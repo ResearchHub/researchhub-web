@@ -1,4 +1,4 @@
-type FEReturnType = "hypothesis" | "post" | "paper" | null;
+type FEReturnType = "hypothesis" | "posts" | "paper" | null;
 type BEReturnType = "discussion" | "hypothesis" | "paper" | null;
 
 // this function is used to resolve BE model name discrepencies with FE naming conventions
@@ -11,7 +11,7 @@ export function getUnifiedDocType(
     case "discussion":
     case "post":
     case "posts":
-      return "post";
+      return "posts";
     case "hypothesis":
       return "hypothesis";
     case "paper":
