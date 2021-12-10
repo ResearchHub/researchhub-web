@@ -48,7 +48,10 @@ class ReplyEntry extends Component {
       {
         score,
         selectedVoteType,
-        highlight: this.props.reply.highlight && true,
+        highlight:
+          (this.props.reply.highlight && true) ||
+          this.props?.currentAuthor?.id ===
+            this.props.reply.created_by.author_profile.id,
         removed: this.props.reply.is_removed,
         canEdit:
           this.props.auth &&
@@ -562,7 +565,7 @@ const styles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
-    padding: "0px 10px 10px 8px",
+    padding: "1px 10px 10px 14px",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
