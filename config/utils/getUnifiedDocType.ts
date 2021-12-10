@@ -1,5 +1,5 @@
 type FEReturnType = "hypothesis" | "post" | "paper" | "all";
-type BEReturnType = "hypothesis" | "paper" | "posts" | null;
+type BEReturnType = "hypothesis" | "paper" | "posts" | 'all';
 
 // this function is used to resolve BE model name discrepencies with FE naming conventions
 // the return type is intentionally kept strict.
@@ -35,6 +35,6 @@ export function getBEUnifiedDocType(
     case "paper":
       return "paper";
     default:
-      return null;
+      return 'all';
   }
 }
