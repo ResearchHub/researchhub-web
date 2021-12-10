@@ -729,7 +729,6 @@ var styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-end",
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
