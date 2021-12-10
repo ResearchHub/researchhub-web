@@ -47,6 +47,7 @@ class DiscussionEntry extends Component {
 
   componentDidMount = async () => {
     const { data, newCard } = this.props;
+
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
@@ -55,7 +56,10 @@ class DiscussionEntry extends Component {
         score: data.score,
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
-        highlight: newCard,
+        highlight:
+          newCard ||
+          this.props?.currentAuthor?.id ===
+            this.props.data.created_by.author_profile.id,
         removed: this.props.data.is_removed,
         canEdit:
           data.source !== "twitter"
@@ -294,6 +298,7 @@ class DiscussionEntry extends Component {
       post,
       hypothesis,
       documentType,
+      currentAuthor,
     } = this.props;
     let comments = this.state.comments;
 
@@ -302,6 +307,7 @@ class DiscussionEntry extends Component {
         return (
           <CommentEntry
             data={data}
+            currentAuthor={currentAuthor}
             hostname={hostname}
             path={path}
             key={`comment_${comment.id}`}
@@ -761,6 +767,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
+    marginBottom: 8,
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,

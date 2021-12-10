@@ -151,7 +151,10 @@ function AuthorPage(props) {
   const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
+  // Activity
   const [authorActivity, setAuthorActivity] = useState([]);
+  const [nextResultsUrl, setNextResultsUrl] = useState(null);
+  const [isLoadingActivity, setIsLoadingActivity] = useState(true);
   // KT Constants
   const [authorUserStatus, setAuthorUserStatus] = useState(
     AUTHOR_USER_STATUS.NONE
@@ -178,7 +181,7 @@ function AuthorPage(props) {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   });
-  console.log("authorActivity", authorActivity);
+
   useEffect(() => {
     const selectedTab = get(router, "query.tabName");
 
@@ -277,15 +280,14 @@ function AuthorPage(props) {
   }
 
   const fetchAuthorActivity = () => {
-    console.log("router.query.authorId", router.query.authorId);
     return fetch(
       API.AUTHOR_ACTIVITY({ authorId: router.query.authorId }),
       API.GET_CONFIG()
     )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
-      .then(async (res) => {
-        console.log("res", res);
+      .then((res) => {
+        setNextResultsUrl(res.next);
         setAuthorActivity(res.results);
       })
       .catch((e) => {
@@ -310,23 +312,45 @@ function AuthorPage(props) {
     return response;
   }
 
+  const loadNextResults = () => {
+    setIsLoadingActivity(true);
+
+    fetch(nextResultsUrl, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        console.log("res", res);
+        console.log("res", res.results);
+        setAuthorActivity([...authorActivity, ...res.results]);
+        setNextResultsUrl(res.next);
+
+        // TODO: We probably need to do this
+        // fetchAndSetUserVotes(res.results);
+      })
+      .finally(() => {
+        setIsLoadingActivity(false);
+      });
+  };
+
   useEffect(() => {
     refetchAuthor();
   }, [router.query.authorId]);
 
+  // TODO: Clean + move fetch function to use effect
   useEffect(() => {
     if (fetchedUser) {
-      Promise.all([
-        fetchAuthorActivity(),
-        // fetchAuthoredPapers(),
-        // fetchAuthorSuspended(),
-        // fetchUserContributions(),
-        // fetchUserDiscussions(),
-        // fetchUserPromotions(),
-        // fetchUserTransactions(),
-      ]).finally((_) => {
-        setFetching(false);
-      });
+      // Promise.all([
+      //   fetchAuthorActivity(),
+      //   // fetchAuthoredPapers(),
+      //   // fetchAuthorSuspended(),
+      //   // fetchUserContributions(),
+      //   // fetchUserDiscussions(),
+      //   // fetchUserPromotions(),
+      //   // fetchUserTransactions(),
+      // ]).finally((_) => {
+      //   setFetching(false);
+      // });
+      fetchAuthorActivity().finally(() => setIsLoadingActivity(false));
     }
   }, [fetchedUser]);
 
@@ -486,14 +510,18 @@ function AuthorPage(props) {
     }
   };
 
-  console.log("user", user);
-  console.log("author", author);
   const tabContents =
     tabName === "overview" ? (
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
-        <UserOverviewTab activity={authorActivity} author={author} />
+        <UserOverviewTab
+          activity={authorActivity}
+          author={author}
+          loadNext={loadNextResults}
+          isLoading={isLoadingActivity}
+          hasMoreResults={Boolean(nextResultsUrl)}
+        />
       </div>
     ) : (
       // render all tab content on the dom, but only show if selected

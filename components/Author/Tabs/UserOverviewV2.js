@@ -5,6 +5,10 @@ import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import Link from "next/link";
+import colors, { genericCardColors } from "~/config/themes/colors";
+import dayjs from "dayjs";
+import LoadMoreButton from "~/components/LoadMoreButton";
 
 const formatTimestamp = (date_str) => {
   if (!date_str) {
@@ -37,48 +41,192 @@ const formatTimestamp = (date_str) => {
   } else {
     r = parseInt(delta / 86400, 10).toString() + " days ago";
   }
-  return "about " + r;
+  return r;
 };
 
-const UserOverview = ({ activity, author }) => {
+const getDocFromActivityItem = (activityItem) => {
+  return Array.isArray(activityItem.unified_document.documents)
+    ? activityItem.unified_document.documents[0]
+    : activityItem.unified_document.documents;
+};
+
+const buildActivitySummary = (activityItem, author) => {
+  const type =
+    activityItem.unified_document.document_type === "PAPER"
+      ? "paper"
+      : activityItem.unified_document.document_type === "DISCUSSION"
+      ? "post"
+      : "";
+
+  const doc = Array.isArray(activityItem.unified_document.documents)
+    ? activityItem.unified_document.documents[0]
+    : activityItem.unified_document.documents;
+
+  let action;
+  switch (activityItem.contribution_type) {
+    case "GROUPED_THREADS":
+      action = "commented on";
+      break;
+    case "SUBMITTER":
+      action = "added";
+      break;
+  }
+
+  let timestamp;
+  if (activityItem.contribution_type === "COMMENTER") {
+    timestamp = getNewestCommentTimestamp(activityItem);
+  } else {
+    timestamp = activityItem.created_date;
+  }
+
+  return (
+    <div className={css(styles.activitySummary)}>
+      <AuthorAvatar author={author} size={40} disableLink={true} />
+      <div className={css(styles.activityText)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/overview`}
+        >
+          <a className={css(styles.link)}>
+            {`${author?.first_name} ${author?.last_name}`}
+          </a>
+        </Link>
+        <span className={css(styles.activityTextItem, styles.activityItemText)}>
+          {action}
+        </span>
+        <Link
+          href={"/paper/[paperId]/[paperName]"}
+          as={`/paper/${doc.id}/${doc.slug}`}
+        >
+          <a
+            className={css(styles.link, styles.title, styles.activityItemText)}
+          >
+            {doc.title}
+          </a>
+        </Link>
+        <div className={css(styles.timestampDivider)}>•</div>
+        <span className={css(styles.activityTimestamp)}>
+          {formatTimestamp(timestamp)}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+const groupDiscussionsByDocument = (activity) => {
+  const groupedActivity = [];
+
+  for (let i = 0; i < activity.length; i++) {
+    const item = activity[i];
+    const doc = getDocFromActivityItem(item);
+
+    const alreadyInList = groupedActivity.find((a) => {
+      const _doc = getDocFromActivityItem(a);
+      return _doc.id === doc.id && a.contribution_type === "GROUPED_THREADS";
+    });
+
+    if (alreadyInList) {
+      continue;
+    }
+
+    const currentGrouping = {
+      contribution_type: "GROUPED_THREADS",
+      threads: [],
+      unified_document: item.unified_document,
+    };
+
+    if (item.source.discussion_type === "Thread") {
+      for (let j = 0; j < activity.length; j++) {
+        const otherItem = activity[j];
+        const otherDoc = getDocFromActivityItem(otherItem);
+
+        if (
+          otherItem.source.discussion_type === "Thread" &&
+          doc.id === otherDoc.id
+        ) {
+          currentGrouping.threads.push(otherItem.source);
+        }
+      }
+
+      currentGrouping.threads = currentGrouping.threads.sort((a, b) => {
+        return dayjs(b.created_date).diff(dayjs(a.created_date));
+      });
+
+      groupedActivity.push(currentGrouping);
+    } else {
+      groupedActivity.push(item);
+    }
+  }
+
+  return groupedActivity;
+};
+
+const getNewestCommentTimestamp = (activityItem) => {
+  let newest;
+
+  // activityItem.threads.forEach((thread) => {
+  //   if (!newest || dayjs(thread.created_date) > dayjs(newest)) {
+  //     newest = thread.created_date;
+  //   }
+
+  activityItem.source.comments.forEach((comment) => {
+    if (!newest || dayjs(comment.created_date) > dayjs(newest)) {
+      newest = comment.created_date;
+    }
+
+    comment.replies.forEach((reply) => {
+      if (dayjs(reply.created_date) > dayjs(newest)) {
+        newest = reply.created_date;
+      }
+    });
+  });
+  // })
+  return newest;
+};
+
+const UserOverview = ({
+  activity,
+  author,
+  loadNext,
+  isLoading,
+  hasMoreResults,
+}) => {
+  // const groupedActivity = groupDiscussionsByDocument(activity);
+
   return (
     <ComponentWrapper>
       {activity.map((item) => {
-        if (item.source.discussion_type === "Thread") {
-          const title = Array.isArray(item.unified_document.documents)
-            ? item.unified_document.documents[0].title
-            : item.unified_document.documents.title;
+        const type =
+          item.unified_document.document_type === "PAPER"
+            ? "paper"
+            : item.unified_document.document_type === "DISCUSSION"
+            ? "post"
+            : "";
 
+        const doc = Array.isArray(item.unified_document.documents)
+          ? item.unified_document.documents[0]
+          : item.unified_document.documents;
+
+        const key = `activity-${item.contribution_type}-${item.id}`;
+        const summaryHTML = buildActivitySummary(item, author);
+
+        if (item.contribution_type === "COMMENTER") {
           return (
-            <div>
-              <div className={css(styles.activitySummary)}>
-                <AuthorAvatar
-                  author={author}
-                  size={33}
-                  textSizeRatio={2.5}
-                  disableLink={true}
-                />
-                <div className={css(styles.activityText)}>
-                  <span>{`${author?.first_name} ${author?.last_name}`}</span>
-                  <span> commented on </span>
-                  <span>{title}</span>
-                  <span> in </span>
-                  <span>{item.unified_document.hubs[0].name}</span>
-                  <span>{formatTimestamp(item.created_date)}</span>
-                </div>
-              </div>
+            <div className={css(styles.activityItem)} key={key}>
+              {summaryHTML}
               <div className={css(styles.discussionEntryCard)}>
                 <DiscussionEntry
-                  key={`thread-${item.id}`}
+                  key={`thread-${doc.id}-${item.id}`}
                   data={item.source}
                   hostname={process.env.HOST}
+                  currentAuthor={author}
                   // hoverEvents={true}
                   // path={t.path}
                   // newCard={transition && i === 0} //conditions when a new card is made
                   // mobileView={false}
                   // discussionCount={calculatedCount}
                   // setCount={setCount}
-                  documentType={"paper"}
+                  documentType={type}
                   paper={item.source.paper}
                   hypothesis={item.source.hypothesis}
                   post={item.source.post}
@@ -87,29 +235,9 @@ const UserOverview = ({ activity, author }) => {
             </div>
           );
         } else if (item.contribution_type === "SUBMITTER") {
-          const doc = Array.isArray(item.unified_document.documents)
-            ? item.unified_document.documents[0]
-            : item.unified_document.documents;
-          const title = Array.isArray(item.unified_document.documents)
-            ? item.unified_document.documents[0].title
-            : item.unified_document.documents.title;
-          const type =
-            item.unified_document.document_type === "PAPER"
-              ? "paper"
-              : item.unified_document.document_type === "DISCUSSION"
-              ? "post"
-              : "";
           return (
-            <div>
-              <div>
-                <span>{`${author?.first_name} ${author?.last_name}`}</span>
-                <span> added </span>
-                <span>{type}</span>
-                <span>{title}</span>
-                <span> in </span>
-                <span>{item.unified_document.hubs[0].name}</span>
-                <span>{formatTimestamp(item.created_date)}</span>
-              </div>
+            <div className={css(styles.activityItem)} key={key}>
+              {summaryHTML}
               {type === "paper" ? (
                 <PaperEntryCard paper={doc} index={doc.id} key={doc.id} />
               ) : type === "post" ? (
@@ -124,6 +252,9 @@ const UserOverview = ({ activity, author }) => {
           );
         }
       })}
+      {hasMoreResults && (
+        <LoadMoreButton onClick={loadNext} isLoading={isLoading} />
+      )}
     </ComponentWrapper>
   );
 };
@@ -140,10 +271,51 @@ var styles = StyleSheet.create({
   },
   activitySummary: {
     display: "flex",
+    marginLeft: -52,
+    color: colors.BLACK(0.8),
+  },
+  title: {
+    textOverflow: "ellipsis",
+    flexBasis: 600,
+    overflow: "hidden",
+  },
+  activityItem: {
+    marginBottom: 20,
+    whiteSpace: "nowrap",
+  },
+  activityItemText: {
+    marginLeft: 5,
   },
   activityText: {
     display: "flex",
     alignItems: "center",
+    marginLeft: 15,
+  },
+  activityTimestamp: {
+    whiteSpace: "nowrap",
+    color: colors.BLACK(0.8),
+    fontSize: 14,
+  },
+  timestampDivider: {
+    fontSize: 18,
+    padding: "0px 10px",
+    color: colors.GREY(),
+  },
+  link: {
+    textDecoration: "unset",
+    cursor: "pointer",
+    color: "unset",
+    fontWeight: 500,
+    color: colors.BLACK(0.8),
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
+  threadDivider: {
+    marginTop: 10,
+    marginBottom: 10,
+    marginLeft: 20,
+    borderBottom: `2px solid ${genericCardColors.BORDER}`,
   },
 });
 
