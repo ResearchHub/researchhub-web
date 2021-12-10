@@ -1,8 +1,8 @@
 import { emailPreference } from "./shims";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { Helpers } from "@quantfive/js-web-config";
+import { captureException } from "@sentry/browser";
 import API from "~/config/api";
-import { isNullOrUndefined } from "./utils/nullchecks";
 
 export const fetchNotePermissions = ({ noteId }) => {
   return fetch(API.NOTE_PERMISSIONS({ noteId }), API.GET_CONFIG());
@@ -358,7 +358,10 @@ export const fetchUnifiedDocFeed = async (
     API.GET_CONFIG(authToken)
   )
     .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON);
+    .then(Helpers.parseJSON)
+    .catch((error) => {
+      captureException(error);
+    });
   if (!withVotes) {
     return docPayload;
   } else {
