@@ -2,7 +2,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
@@ -37,7 +37,7 @@ class Index extends Component {
     }
 
     try {
-      const urlDocType = getUnifiedDocType(type) || "all";
+      const urlDocType = getBEUnifiedDocType(type);
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
