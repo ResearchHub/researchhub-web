@@ -21,7 +21,7 @@ export function getDocumentCard({
     (uniDoc: any, arrIndex: number): UnifiedCard => {
       const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
       const targetDoc =
-        formattedDocType !== "posts" ? uniDoc.documents : uniDoc.documents[0];
+        formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
       const docID = targetDoc.id;
       const shouldBlurMobile =
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
@@ -29,7 +29,7 @@ export function getDocumentCard({
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
 
       switch (formattedDocType) {
-        case "posts":
+        case "post":
           return (
             <UserPostCard
               {...targetDoc}

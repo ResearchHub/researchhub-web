@@ -27,6 +27,7 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -61,7 +62,7 @@ function UnifiedDocFeedContainer({
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
-    docTypeFilter: docTypeFilter,
+    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
     hubID,
     isLoggedIn,
     page,
