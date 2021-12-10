@@ -117,6 +117,9 @@ const AuthorAvatar = (props) => {
             href={`/user/${authorId}/overview`}
             className={css(styles.atag)}
             rel="noreferrer noopener"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           >
             {renderAvatar()}
           </a>
