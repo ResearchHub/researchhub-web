@@ -30,7 +30,7 @@ import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 // import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
-import UserOverviewTab from "~/components/Author/Tabs/UserOverviewV2";
+import AuthorContributionFeed from "~/components/Author/AuthorContributionFeed";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -78,6 +78,11 @@ const getTabs = (author, transactions) =>
       name: "Overview",
     },
     {
+      href: "submissions",
+      label: "submissions",
+      name: "Submissions",
+    },
+    {
       href: "discussions",
       label: "comments",
       name: "Comments",
@@ -86,16 +91,6 @@ const getTabs = (author, transactions) =>
       href: "authored-papers",
       label: "authored papers",
       name: "Authored Papers",
-    },
-    {
-      href: "contributions",
-      label: "paper submissions",
-      name: "Paper Submissions",
-    },
-    {
-      href: "posts",
-      label: "posts",
-      name: "Posts",
     },
     {
       href: "transactions",
@@ -462,72 +457,96 @@ function AuthorPage(props) {
     }
   };
 
-  const tabContents =
-    tabName === "overview" ? (
-      <div
-        className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
-      >
-        <UserOverviewTab author={author} />
-      </div>
-    ) : (
-      // render all tab content on the dom, but only show if selected
-      <ComponentWrapper>
-        <div className={css(styles.tabMeta)}>
-          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+  let tabContents;
+  switch (tabName) {
+    case "overview":
+      tabContents = (
+        <AuthorContributionFeed author={author} contributionType="overview" />
+      );
+      break;
+    case "discussions":
+      tabContents = (
+        <AuthorContributionFeed author={author} contributionType="comment" />
+      );
+      break;
+    case "submissions":
+      tabContents = (
+        <AuthorContributionFeed
+          author={author}
+          contributionType="hypothesis,paper,discussion"
+        />
+      );
+      break;
+  }
 
-          <div
-            className={css(
-              tabName === "overview" ? styles.reveal : styles.hidden
-            )}
-          >
-            {/*<UserOverviewTab fetching={fetching} />*/}
-          </div>
-          <div
-            className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
-          >
-            <UserPostsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "contributions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserContributionsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "authored-papers" ? styles.reveal : styles.hidden
-            )}
-          >
-            <AuthoredPapersTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "discussions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "transactions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserTransactionsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "boosts" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserPromotionsTab
-              fetching={fetchingPromotions}
-              activeTab={tabName === "boosts"}
-            />
-          </div>
-        </div>
-      </ComponentWrapper>
-    );
+  //   const tabContents =
+  //     switch(sdd) {
+  //
+  //     }
+  //     tabName === "overview" ? (
+  //       <div
+  //         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
+  //       >
+  //       </div>
+  //     ) : (
+  //       // render all tab content on the dom, but only show if selected
+  //       <ComponentWrapper>
+  //         <div className={css(styles.tabMeta)}>
+  //           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
+  //
+  //           <div
+  //             className={css(
+  //               tabName === "overview" ? styles.reveal : styles.hidden
+  //             )}
+  //           >
+  //             {/*<UserOverviewTab fetching={fetching} />*/}
+  //           </div>
+  //           <div
+  //             className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
+  //           >
+  //             <UserPostsTab fetching={fetching} />
+  //           </div>
+  //           <div
+  //             className={css(
+  //               tabName === "contributions" ? styles.reveal : styles.hidden
+  //             )}
+  //           >
+  //             <UserContributionsTab fetching={fetching} />
+  //           </div>
+  //           <div
+  //             className={css(
+  //               tabName === "authored-papers" ? styles.reveal : styles.hidden
+  //             )}
+  //           >
+  //             <AuthoredPapersTab fetching={fetching} />
+  //           </div>
+  //           <div
+  //             className={css(
+  //               tabName === "discussions" ? styles.reveal : styles.hidden
+  //             )}
+  //           >
+  //             <UserDiscussionsTab hostname={hostname} fetching={fetching} />
+  //           </div>
+  //           <div
+  //             className={css(
+  //               tabName === "transactions" ? styles.reveal : styles.hidden
+  //             )}
+  //           >
+  //             <UserTransactionsTab fetching={fetching} />
+  //           </div>
+  //           <div
+  //             className={css(
+  //               tabName === "boosts" ? styles.reveal : styles.hidden
+  //             )}
+  //           >
+  //             <UserPromotionsTab
+  //               fetching={fetchingPromotions}
+  //               activeTab={tabName === "boosts"}
+  //             />
+  //           </div>
+  //         </div>
+  //       </ComponentWrapper>
+  //     );
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
@@ -1056,7 +1075,9 @@ function AuthorPage(props) {
         fetching={fetching}
         showTabBar={fetchedUser}
       />
-      <div className={css(styles.contentContainer)}>{tabContents}</div>
+      <div className={css(styles.contentContainer)}>
+        <ComponentWrapper>{tabContents}</ComponentWrapper>
+      </div>
       <ShareModal
         close={() => setOpenShareModal(false)}
         isOpen={openShareModal}

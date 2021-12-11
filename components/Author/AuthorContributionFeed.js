@@ -3,7 +3,6 @@ import CommentEntry from "~/components/Threads/CommentEntry";
 import { StyleSheet, css } from "aphrodite";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import UserPostCard from "~/components/Author/Tabs/UserPostCard";
-import ComponentWrapper from "~/components/ComponentWrapper";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
@@ -13,6 +12,7 @@ import { useRouter } from "next/router";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { useEffect, useState } from "react";
+import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/HypothesisCard";
 
 const formatTimestamp = (date_str) => {
   if (!date_str) {
@@ -134,7 +134,7 @@ const getNewestCommentTimestamp = (activityItem) => {
   return newest;
 };
 
-const UserOverview = ({ author }) => {
+const AuthorContributionFeed = ({ author, contributionType = "overview" }) => {
   const router = useRouter();
   const [activity, setActivity] = useState([]);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
@@ -143,7 +143,10 @@ const UserOverview = ({ author }) => {
   useEffect(() => {
     const _fetchAuthorActivity = () => {
       return fetch(
-        API.AUTHOR_ACTIVITY({ authorId: router.query.authorId }),
+        API.AUTHOR_ACTIVITY({
+          authorId: router.query.authorId,
+          type: contributionType,
+        }),
         API.GET_CONFIG()
       )
         .then(Helpers.checkStatus)
@@ -160,16 +163,18 @@ const UserOverview = ({ author }) => {
     _fetchAuthorActivity().finally(() => {
       setIsLoading(false);
     });
-  }, []);
+  }, [contributionType]);
 
   return (
-    <ComponentWrapper>
+    <div>
       {activity.map((item) => {
         const type =
           item.unified_document.document_type === "PAPER"
             ? "paper"
             : item.unified_document.document_type === "DISCUSSION"
             ? "post"
+            : item.unified_document.document_type === "HYPOTHESIS"
+            ? "hypothesis"
             : "";
 
         const doc = Array.isArray(item.unified_document.documents)
@@ -204,6 +209,7 @@ const UserOverview = ({ author }) => {
             </div>
           );
         } else if (item.contribution_type === "SUBMITTER") {
+          console.log(type);
           return (
             <div className={css(styles.activityItem)} key={key}>
               {summaryHTML}
@@ -216,6 +222,8 @@ const UserOverview = ({ author }) => {
                   key={doc.id}
                   user_vote={doc?.user_vote}
                 />
+              ) : type === "hypothesis" ? (
+                <HypothesisCard {...doc} formattedDocType={type} key={doc.id} />
               ) : null}
             </div>
           );
@@ -224,7 +232,7 @@ const UserOverview = ({ author }) => {
       {nextResultsUrl && (
         <LoadMoreButton onClick={loadNext} isLoading={isLoading} />
       )}
-    </ComponentWrapper>
+    </div>
   );
 };
 
@@ -283,4 +291,4 @@ var styles = StyleSheet.create({
   },
 });
 
-export default UserOverview;
+export default AuthorContributionFeed;
