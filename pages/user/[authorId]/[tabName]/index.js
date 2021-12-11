@@ -26,7 +26,7 @@ import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import TabBar from "~/components/TabBar";
+import AuthorTabBar from "~/components/AuthorTabBar";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 // import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
@@ -80,42 +80,31 @@ const getTabs = (author, transactions) =>
       href: "overview",
       label: "overview",
       name: "Overview",
-      showCount: false,
     },
     {
       href: "discussions",
       label: "comments",
       name: "Comments",
-      showCount: true,
-      count: () => author.userDiscussions.count,
     },
     {
       href: "authored-papers",
       label: "authored papers",
       name: "Authored Papers",
-      showCount: true,
-      count: () => author.authoredPapers.count,
     },
     {
       href: "contributions",
       label: "paper submissions",
       name: "Paper Submissions",
-      showCount: true,
-      count: () => author.userContributions.count,
     },
     {
       href: "posts",
       label: "posts",
       name: "Posts",
-      showCount: true,
-      count: () => author.num_posts,
     },
     {
       href: "transactions",
       label: "transactions",
       name: "Transactions",
-      showCount: true,
-      count: () => transactions.count,
     },
     // {
     //   href: "boosts",
@@ -155,10 +144,7 @@ function AuthorPage(props) {
   const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
-  // Activity
-  const [authorActivity, setAuthorActivity] = useState([]);
-  const [nextResultsUrl, setNextResultsUrl] = useState(null);
-  const [isLoadingActivity, setIsLoadingActivity] = useState(true);
+
   // KT Constants
   const [authorUserStatus, setAuthorUserStatus] = useState(
     AUTHOR_USER_STATUS.NONE
@@ -283,22 +269,6 @@ function AuthorPage(props) {
       });
   }
 
-  const fetchAuthorActivity = () => {
-    return fetch(
-      API.AUTHOR_ACTIVITY({ authorId: router.query.authorId }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setNextResultsUrl(res.next);
-        setAuthorActivity(res.results);
-      })
-      .catch((e) => {
-        // TODO: log in sentry
-      });
-  };
-
   function fetchUserTransactions() {
     if (!auth.isLoggedIn) return;
     return dispatch(
@@ -307,12 +277,12 @@ function AuthorPage(props) {
   }
 
   async function refetchAuthor() {
-    setFetchedUser(false); // needed for tabbar
+    setFetchedUser(false); // needed for AuthorTabBar
     setFetching(true);
     const response = await dispatch(
       AuthorActions.getAuthor({ authorId: router.query.authorId })
     );
-    setFetchedUser(true); // needed for tabbar
+    setFetchedUser(true); // needed for AuthorTabBar
     return response;
   }
 
@@ -339,24 +309,6 @@ function AuthorPage(props) {
   useEffect(() => {
     refetchAuthor();
   }, [router.query.authorId]);
-
-  // TODO: Clean + move fetch function to use effect
-  useEffect(() => {
-    if (fetchedUser) {
-      // Promise.all([
-      //   fetchAuthorActivity(),
-      //   // fetchAuthoredPapers(),
-      //   // fetchAuthorSuspended(),
-      //   // fetchUserContributions(),
-      //   // fetchUserDiscussions(),
-      //   // fetchUserPromotions(),
-      //   // fetchUserTransactions(),
-      // ]).finally((_) => {
-      //   setFetching(false);
-      // });
-      fetchAuthorActivity().finally(() => setIsLoadingActivity(false));
-    }
-  }, [fetchedUser]);
 
   useEffect(() => {
     setAllowEdit(
@@ -519,13 +471,7 @@ function AuthorPage(props) {
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
-        <UserOverviewTab
-          activity={authorActivity}
-          author={author}
-          loadNext={loadNextResults}
-          isLoading={isLoadingActivity}
-          hasMoreResults={Boolean(nextResultsUrl)}
-        />
+        <UserOverviewTab author={author} />
       </div>
     ) : (
       // render all tab content on the dom, but only show if selected
@@ -1141,7 +1087,7 @@ function AuthorPage(props) {
           </div>
         </div>
       </ComponentWrapper>
-      <TabBar
+      <AuthorTabBar
         tabs={tabs}
         selectedTab={tabName}
         dynamic_href={"/user/[authorId]/[tabName]"}
