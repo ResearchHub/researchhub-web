@@ -107,7 +107,7 @@ function formatTabs(tab, props) {
 
 const Tab = (props) => {
   const { tab, selected, dynamicHref, fetching, authorId } = props;
-  const { href, label, showCount, count } = tab;
+  const { href, label } = tab;
   let classNames = [styles.tab];
   let isSelected = false;
 
@@ -127,53 +127,10 @@ const Tab = (props) => {
       <div
         className={css(classNames) + ` menu-item ${isSelected ? "active" : ""}`}
       >
-        <div className={css(styles.link)}>
-          {label}{" "}
-          {showCount && (
-            <Count
-              isSelected={isSelected}
-              amount={!fetching && count()}
-              fetching={fetching}
-            />
-          )}
-        </div>
+        <div className={css(styles.link)}>{label} </div>
       </div>
     </Link>
   );
-};
-
-const Count = (props) => {
-  const { amount, isSelected, fetching } = props;
-  // if (amount < 1) {
-  //   return <span id="discussion_count"></span>;
-  // }
-
-  return (
-    <UIStyling isSelected={isSelected}>
-      <span
-        id="discussion_count"
-        className={css(styles.count, fetching & styles.loaderContainer)}
-      >
-        {fetching ? (
-          <Loader
-            size={4}
-            loading={true}
-            containerStyle={styles.loaderStyle}
-            color={paperTabColors.FONT}
-          />
-        ) : amount > 0 ? (
-          amount
-        ) : (
-          0
-        )}
-      </span>
-    </UIStyling>
-  );
-};
-
-const UIStyling = (props) => {
-  const { isSelected, label } = props;
-  return <span className={css(styles.ui)}>{props.children}</span>;
 };
 
 const styles = StyleSheet.create({
@@ -214,18 +171,6 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       marginRight: 28,
     },
-  },
-  count: {
-    padding: "3px 8px",
-    borderRadius: 3,
-    fontSize: 14,
-  },
-  ui: {
-    border: "1px solid rgba(36, 31, 58, 0.1)",
-    background: "rgba(36, 31, 58, 0.03)",
-    color: "#241F3A",
-    borderRadius: 3,
-    marginLeft: 5,
   },
   selectedUi: {
     borderColor: colors.PURPLE(1),

@@ -9,6 +9,10 @@ import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import dayjs from "dayjs";
 import LoadMoreButton from "~/components/LoadMoreButton";
+import { useRouter } from "next/router";
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import { useEffect, useState } from "react";
 
 const formatTimestamp = (date_str) => {
   if (!date_str) {
@@ -64,7 +68,7 @@ const buildActivitySummary = (activityItem, author) => {
 
   let action;
   switch (activityItem.contribution_type) {
-    case "GROUPED_THREADS":
+    case "COMMENTER":
       action = "commented on";
       break;
     case "SUBMITTER":
@@ -113,61 +117,8 @@ const buildActivitySummary = (activityItem, author) => {
   );
 };
 
-const groupDiscussionsByDocument = (activity) => {
-  const groupedActivity = [];
-
-  for (let i = 0; i < activity.length; i++) {
-    const item = activity[i];
-    const doc = getDocFromActivityItem(item);
-
-    const alreadyInList = groupedActivity.find((a) => {
-      const _doc = getDocFromActivityItem(a);
-      return _doc.id === doc.id && a.contribution_type === "GROUPED_THREADS";
-    });
-
-    if (alreadyInList) {
-      continue;
-    }
-
-    const currentGrouping = {
-      contribution_type: "GROUPED_THREADS",
-      threads: [],
-      unified_document: item.unified_document,
-    };
-
-    if (item.source.discussion_type === "Thread") {
-      for (let j = 0; j < activity.length; j++) {
-        const otherItem = activity[j];
-        const otherDoc = getDocFromActivityItem(otherItem);
-
-        if (
-          otherItem.source.discussion_type === "Thread" &&
-          doc.id === otherDoc.id
-        ) {
-          currentGrouping.threads.push(otherItem.source);
-        }
-      }
-
-      currentGrouping.threads = currentGrouping.threads.sort((a, b) => {
-        return dayjs(b.created_date).diff(dayjs(a.created_date));
-      });
-
-      groupedActivity.push(currentGrouping);
-    } else {
-      groupedActivity.push(item);
-    }
-  }
-
-  return groupedActivity;
-};
-
 const getNewestCommentTimestamp = (activityItem) => {
   let newest;
-
-  // activityItem.threads.forEach((thread) => {
-  //   if (!newest || dayjs(thread.created_date) > dayjs(newest)) {
-  //     newest = thread.created_date;
-  //   }
 
   activityItem.source.comments.forEach((comment) => {
     if (!newest || dayjs(comment.created_date) > dayjs(newest)) {
@@ -180,18 +131,36 @@ const getNewestCommentTimestamp = (activityItem) => {
       }
     });
   });
-  // })
   return newest;
 };
 
-const UserOverview = ({
-  activity,
-  author,
-  loadNext,
-  isLoading,
-  hasMoreResults,
-}) => {
-  // const groupedActivity = groupDiscussionsByDocument(activity);
+const UserOverview = ({ author }) => {
+  const router = useRouter();
+  const [activity, setActivity] = useState([]);
+  const [nextResultsUrl, setNextResultsUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const _fetchAuthorActivity = () => {
+      return fetch(
+        API.AUTHOR_ACTIVITY({ authorId: router.query.authorId }),
+        API.GET_CONFIG()
+      )
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          setNextResultsUrl(res.next);
+          setActivity(res.results);
+        })
+        .catch((e) => {
+          // TODO: log in sentry
+        });
+    };
+
+    _fetchAuthorActivity().finally(() => {
+      setIsLoading(false);
+    });
+  }, []);
 
   return (
     <ComponentWrapper>
@@ -252,7 +221,7 @@ const UserOverview = ({
           );
         }
       })}
-      {hasMoreResults && (
+      {nextResultsUrl && (
         <LoadMoreButton onClick={loadNext} isLoading={isLoading} />
       )}
     </ComponentWrapper>
@@ -260,6 +229,7 @@ const UserOverview = ({
 };
 
 var styles = StyleSheet.create({
+  // TODO: Move into own component
   discussionEntryCard: {
     padding: 15,
     boxSizing: "border-box",
@@ -310,12 +280,6 @@ var styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
-  },
-  threadDivider: {
-    marginTop: 10,
-    marginBottom: 10,
-    marginLeft: 20,
-    borderBottom: `2px solid ${genericCardColors.BORDER}`,
   },
 });
 
