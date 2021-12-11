@@ -350,8 +350,8 @@ const routes = (BASE_URL) => {
       return url;
     },
 
-    AUTHOR_ACTIVITY: ({ authorId }) => {
-      return `${BASE_URL}author/${authorId}/activity/`;
+    AUTHOR_ACTIVITY: ({ authorId, type = "overview" }) => {
+      return `${BASE_URL}author/${authorId}/contributions/?type=${type}`;
     },
 
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
