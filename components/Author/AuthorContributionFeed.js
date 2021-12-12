@@ -175,6 +175,24 @@ const AuthorContributionFeed = ({
     }
   }, [isVisible, isInitialLoadComplete]);
 
+  const loadNextResults = () => {
+    setIsLoading(true);
+
+    fetch(nextResultsUrl, API.GET_CONFIG())
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        setActivity([...activity, ...res.results]);
+        setNextResultsUrl(res.next);
+
+        // TODO: We probably need to do this
+        // fetchAndSetUserVotes(res.results);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  };
+
   return (
     <ReactPlaceholder
       ready={isInitialLoadComplete}
@@ -248,7 +266,7 @@ const AuthorContributionFeed = ({
           }
         })}
         {nextResultsUrl && (
-          <LoadMoreButton onClick={loadNext} isLoading={isLoading} />
+          <LoadMoreButton onClick={loadNextResults} isLoading={isLoading} />
         )}
       </div>
     </ReactPlaceholder>
