@@ -13,6 +13,8 @@ import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { useEffect, useState } from "react";
 import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/HypothesisCard";
+import ActivityItemPlaceholder from "~/components/Placeholders/ActivityItemPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
 
 const formatTimestamp = (date_str) => {
   if (!date_str) {
@@ -146,8 +148,6 @@ const AuthorContributionFeed = ({
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
 
   useEffect(() => {
-    console.log("isVisible", isVisible);
-    console.log("isInitialLoadComplete", isInitialLoadComplete);
     const _fetchAuthorActivity = () => {
       return fetch(
         API.AUTHOR_ACTIVITY({
@@ -176,73 +176,82 @@ const AuthorContributionFeed = ({
   }, [isVisible, isInitialLoadComplete]);
 
   return (
-    <div>
-      {activity.map((item) => {
-        const type =
-          item.unified_document.document_type === "PAPER"
-            ? "paper"
-            : item.unified_document.document_type === "DISCUSSION"
-            ? "post"
-            : item.unified_document.document_type === "HYPOTHESIS"
-            ? "hypothesis"
-            : "";
+    <ReactPlaceholder
+      ready={isInitialLoadComplete}
+      showLoadingAnimation
+      customPlaceholder={<ActivityItemPlaceholder color="#d3d3d3" rows={4} />}
+    >
+      <div>
+        {activity.map((item) => {
+          const type =
+            item.unified_document.document_type === "PAPER"
+              ? "paper"
+              : item.unified_document.document_type === "DISCUSSION"
+              ? "post"
+              : item.unified_document.document_type === "HYPOTHESIS"
+              ? "hypothesis"
+              : "";
 
-        const doc = Array.isArray(item.unified_document.documents)
-          ? item.unified_document.documents[0]
-          : item.unified_document.documents;
+          const doc = Array.isArray(item.unified_document.documents)
+            ? item.unified_document.documents[0]
+            : item.unified_document.documents;
 
-        const key = `activity-${item.contribution_type}-${item.id}`;
-        const summaryHTML = buildActivitySummary(item, author);
+          const key = `activity-${item.contribution_type}-${item.id}`;
+          const summaryHTML = buildActivitySummary(item, author);
 
-        if (item.contribution_type === "COMMENTER") {
-          return (
-            <div className={css(styles.activityItem)} key={key}>
-              {summaryHTML}
-              <div className={css(styles.discussionEntryCard)}>
-                <DiscussionEntry
-                  key={`thread-${doc.id}-${item.id}`}
-                  data={item.source}
-                  hostname={process.env.HOST}
-                  currentAuthor={author}
-                  // hoverEvents={true}
-                  // path={t.path}
-                  // newCard={transition && i === 0} //conditions when a new card is made
-                  // mobileView={false}
-                  // discussionCount={calculatedCount}
-                  // setCount={setCount}
-                  documentType={type}
-                  paper={item.source.paper}
-                  hypothesis={item.source.hypothesis}
-                  post={item.source.post}
-                />
+          if (item.contribution_type === "COMMENTER") {
+            return (
+              <div className={css(styles.activityItem)} key={key}>
+                {summaryHTML}
+                <div className={css(styles.discussionEntryCard)}>
+                  <DiscussionEntry
+                    key={`thread-${doc.id}-${item.id}`}
+                    data={item.source}
+                    hostname={process.env.HOST}
+                    currentAuthor={author}
+                    // hoverEvents={true}
+                    // path={t.path}
+                    // newCard={transition && i === 0} //conditions when a new card is made
+                    // mobileView={false}
+                    // discussionCount={calculatedCount}
+                    // setCount={setCount}
+                    documentType={type}
+                    paper={item.source.paper}
+                    hypothesis={item.source.hypothesis}
+                    post={item.source.post}
+                  />
+                </div>
               </div>
-            </div>
-          );
-        } else if (item.contribution_type === "SUBMITTER") {
-          console.log(type);
-          return (
-            <div className={css(styles.activityItem)} key={key}>
-              {summaryHTML}
-              {type === "paper" ? (
-                <PaperEntryCard paper={doc} index={doc.id} key={doc.id} />
-              ) : type === "post" ? (
-                <UserPostCard
-                  {...doc}
-                  formattedDocType={type}
-                  key={doc.id}
-                  user_vote={doc?.user_vote}
-                />
-              ) : type === "hypothesis" ? (
-                <HypothesisCard {...doc} formattedDocType={type} key={doc.id} />
-              ) : null}
-            </div>
-          );
-        }
-      })}
-      {nextResultsUrl && (
-        <LoadMoreButton onClick={loadNext} isLoading={isLoading} />
-      )}
-    </div>
+            );
+          } else if (item.contribution_type === "SUBMITTER") {
+            return (
+              <div className={css(styles.activityItem)} key={key}>
+                {summaryHTML}
+                {type === "paper" ? (
+                  <PaperEntryCard paper={doc} index={doc.id} key={doc.id} />
+                ) : type === "post" ? (
+                  <UserPostCard
+                    {...doc}
+                    formattedDocType={type}
+                    key={doc.id}
+                    user_vote={doc?.user_vote}
+                  />
+                ) : type === "hypothesis" ? (
+                  <HypothesisCard
+                    {...doc}
+                    formattedDocType={type}
+                    key={doc.id}
+                  />
+                ) : null}
+              </div>
+            );
+          }
+        })}
+        {nextResultsUrl && (
+          <LoadMoreButton onClick={loadNext} isLoading={isLoading} />
+        )}
+      </div>
+    </ReactPlaceholder>
   );
 };
 
