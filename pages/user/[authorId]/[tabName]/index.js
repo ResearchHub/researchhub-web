@@ -461,27 +461,64 @@ function AuthorPage(props) {
     }
   };
 
-  let tabContents;
-  switch (tabName) {
-    case "overview":
-      tabContents = (
-        <AuthorContributionFeed author={author} contributionType="overview" />
-      );
-      break;
-    case "discussions":
-      tabContents = (
-        <AuthorContributionFeed author={author} contributionType="comment" />
-      );
-      break;
-    case "submissions":
-      tabContents = (
+  const visibilityClassName =
+    tabName === "overview" ? styles.reveal : styles.hidden;
+  let tabContents = (
+    <ComponentWrapper>
+      <div
+        className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
+      >
         <AuthorContributionFeed
+          isVisible={tabName === "overview"}
+          author={author}
+          contributionType="overview"
+        />
+      </div>
+      <div
+        className={css(
+          tabName === "discussions" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorContributionFeed
+          isVisible={tabName === "discussions"}
+          author={author}
+          contributionType="comment"
+        />
+      </div>
+      <div
+        className={css(
+          tabName === "submissions" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorContributionFeed
+          isVisible={tabName === "submissions"}
           author={author}
           contributionType="hypothesis,paper,discussion"
         />
-      );
-      break;
-  }
+      </div>
+    </ComponentWrapper>
+  );
+  //
+  //   switch (tabName) {
+  //     case "overview":
+  //       tabContents = (
+  //         <AuthorContributionFeed author={author} contributionType="overview" />
+  //       );
+  //       break;
+  //     case "discussions":
+  //       tabContents = (
+  //         <AuthorContributionFeed author={author} contributionType="comment" />
+  //       );
+  //       break;
+  //     case "submissions":
+  //       tabContents = (
+  //         <AuthorContributionFeed
+  //           author={author}
+  //           contributionType="hypothesis,paper,discussion"
+  //         />
+  //       );
+  //       break;
+  //   }
 
   //   const tabContents =
   //     switch(sdd) {
@@ -1116,9 +1153,7 @@ function AuthorPage(props) {
         fetching={fetching}
         showTabBar={fetchedUser}
       />
-      <div className={css(styles.contentContainer)}>
-        <ComponentWrapper>{tabContents}</ComponentWrapper>
-      </div>
+      <div className={css(styles.contentContainer)}>{tabContents}</div>
       <ShareModal
         close={() => setOpenShareModal(false)}
         isOpen={openShareModal}
