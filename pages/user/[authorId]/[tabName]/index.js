@@ -281,26 +281,6 @@ function AuthorPage(props) {
     return response;
   }
 
-  const loadNextResults = () => {
-    setIsLoadingActivity(true);
-
-    fetch(nextResultsUrl, API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        console.log("res", res);
-        console.log("res", res.results);
-        setAuthorActivity([...authorActivity, ...res.results]);
-        setNextResultsUrl(res.next);
-
-        // TODO: We probably need to do this
-        // fetchAndSetUserVotes(res.results);
-      })
-      .finally(() => {
-        setIsLoadingActivity(false);
-      });
-  };
-
   useEffect(() => {
     refetchAuthor();
   }, [router.query.authorId]);
