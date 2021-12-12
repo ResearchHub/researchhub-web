@@ -134,13 +134,20 @@ const getNewestCommentTimestamp = (activityItem) => {
   return newest;
 };
 
-const AuthorContributionFeed = ({ author, contributionType = "overview" }) => {
+const AuthorContributionFeed = ({
+  author,
+  isVisible = false,
+  contributionType = "overview",
+}) => {
   const router = useRouter();
   const [activity, setActivity] = useState([]);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
 
   useEffect(() => {
+    console.log("isVisible", isVisible);
+    console.log("isInitialLoadComplete", isInitialLoadComplete);
     const _fetchAuthorActivity = () => {
       return fetch(
         API.AUTHOR_ACTIVITY({
@@ -160,10 +167,13 @@ const AuthorContributionFeed = ({ author, contributionType = "overview" }) => {
         });
     };
 
-    _fetchAuthorActivity().finally(() => {
-      setIsLoading(false);
-    });
-  }, [contributionType]);
+    if (isVisible && !isInitialLoadComplete) {
+      _fetchAuthorActivity().finally(() => {
+        setIsLoading(false);
+        setIsInitialLoadComplete(true);
+      });
+    }
+  }, [isVisible, isInitialLoadComplete]);
 
   return (
     <div>
