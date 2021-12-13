@@ -34,7 +34,7 @@ import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 // import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
-import AuthorContributionFeed from "~/components/Author/AuthorContributionFeed";
+import AuthorFeed from "~/components/Author/Feed/AuthorFeed";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -82,25 +82,25 @@ const getTabs = (author, transactions) =>
       name: "Overview",
     },
     {
-      href: "submissions",
-      label: "submissions",
-      name: "Submissions",
-    },
-    {
       href: "discussions",
       label: "comments",
       name: "Comments",
+    },
+    {
+      href: "submissions",
+      label: "submissions",
+      name: "Submissions",
     },
     {
       href: "authored-papers",
       label: "authored papers",
       name: "Authored Papers",
     },
-    {
-      href: "transactions",
-      label: "transactions",
-      name: "Transactions",
-    },
+    // {
+    //   href: "transactions",
+    //   label: "transactions",
+    //   name: "Transactions",
+    // },
     // {
     //   href: "boosts",
     //   label: "supported content",
@@ -441,25 +441,25 @@ function AuthorPage(props) {
     }
   };
 
-  const visibilityClassName =
-    tabName === "overview" ? styles.reveal : styles.hidden;
+  console.log('tabName === "overview"', tabName === "overview");
   let tabContents = (
     <ComponentWrapper>
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
-        <AuthorContributionFeed
+        <AuthorFeed
           isVisible={tabName === "overview"}
           author={author}
           contributionType="overview"
         />
       </div>
+      {/*
       <div
         className={css(
           tabName === "discussions" ? styles.reveal : styles.hidden
         )}
       >
-        <AuthorContributionFeed
+        <AuthorFeed
           isVisible={tabName === "discussions"}
           author={author}
           contributionType="comment"
@@ -470,29 +470,30 @@ function AuthorPage(props) {
           tabName === "submissions" ? styles.reveal : styles.hidden
         )}
       >
-        <AuthorContributionFeed
+        <AuthorFeed
           isVisible={tabName === "submissions"}
           author={author}
           contributionType="hypothesis,paper,discussion"
         />
       </div>
+      */}
     </ComponentWrapper>
   );
   //
   //   switch (tabName) {
   //     case "overview":
   //       tabContents = (
-  //         <AuthorContributionFeed author={author} contributionType="overview" />
+  //         <AuthorFeed author={author} contributionType="overview" />
   //       );
   //       break;
   //     case "discussions":
   //       tabContents = (
-  //         <AuthorContributionFeed author={author} contributionType="comment" />
+  //         <AuthorFeed author={author} contributionType="comment" />
   //       );
   //       break;
   //     case "submissions":
   //       tabContents = (
-  //         <AuthorContributionFeed
+  //         <AuthorFeed
   //           author={author}
   //           contributionType="hypothesis,paper,discussion"
   //         />
