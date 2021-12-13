@@ -8,48 +8,16 @@ import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import dayjs from "dayjs";
 import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/HypothesisCard";
+import { timeAgo } from "~/config/utils/dates";
+import { getUrlToUniDoc } from "~/config/utils/routing";
 
 const AuthorFeedItem = ({
   author,
   item,
   itemType, // UNIFIED_DOCUMENT | CONTRIBUTION
 }) => {
-  const formatTimestamp = (date_str) => {
-    if (!date_str) {
-      return;
-    }
-    date_str = date_str.trim();
-    date_str = date_str.replace(/\.\d\d\d+/, ""); // remove the milliseconds
-    date_str = date_str.replace(/-/, "/").replace(/-/, "/"); //substitute - with /
-    date_str = date_str.replace(/T/, " ").replace(/Z/, " UTC"); //remove T and substitute Z with UTC
-    date_str = date_str.replace(/([\+\-]\d\d)\:?(\d\d)/, " $1$2"); // +08:00 -> +0800
-    const parsed_date = new Date(date_str);
-    const relative_to = new Date();
-    const delta = Math.max(
-      2,
-      parseInt((relative_to.getTime() - parsed_date) / 1000)
-    );
-    let r = "";
-    if (delta < 60) {
-      r = delta + " seconds ago";
-    } else if (delta < 120) {
-      r = "a minute ago";
-    } else if (delta < 45 * 60) {
-      r = parseInt(delta / 60, 10).toString() + " minutes ago";
-    } else if (delta < 2 * 60 * 60) {
-      r = "an hour ago";
-    } else if (delta < 24 * 60 * 60) {
-      r = "" + parseInt(delta / 3600, 10).toString() + " hours ago";
-    } else if (delta < 48 * 60 * 60) {
-      r = "a day ago";
-    } else {
-      r = parseInt(delta / 86400, 10).toString() + " days ago";
-    }
-    return r;
-  };
-
   const getNewestCommentTimestamp = (discussionItem) => {
-    let newest;
+    let newest = discussionItem.created_date;
     discussionItem.source.comments.forEach((comment) => {
       if (!newest || dayjs(comment.created_date) > dayjs(newest)) {
         newest = comment.created_date;
@@ -63,6 +31,11 @@ const AuthorFeedItem = ({
     });
 
     return newest;
+  };
+
+  const formatTimestamp = (timestamp) => {
+    const date = new Date(timestamp);
+    return timeAgo.format(date);
   };
 
   const getDocFromUniDoc = ({ uniDoc }) => {
@@ -147,7 +120,8 @@ const AuthorFeedItem = ({
         );
         break;
       default:
-        throw new Error("Unrecognized card type");
+      // TODO: Log error in sentry
+      // throw new Error("Unrecognized card type");
     }
 
     return html;
@@ -156,6 +130,7 @@ const AuthorFeedItem = ({
   const buildActivitySummary = ({ item, itemType, author }) => {
     const uniDoc = item.unified_document;
     const doc = getDocFromUniDoc({ uniDoc });
+    const url = getUrlToUniDoc(uniDoc);
 
     let action;
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
@@ -164,7 +139,7 @@ const AuthorFeedItem = ({
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUBMITTER"
     ) {
-      action = "added";
+      action = "submitted";
     }
 
     let timestamp;
@@ -191,10 +166,7 @@ const AuthorFeedItem = ({
           >
             {action}
           </span>
-          <Link
-            href={"/paper/[paperId]/[paperName]"}
-            as={`/paper/${doc.id}/${doc.slug}`}
-          >
+          <Link href={url}>
             <a
               className={css(
                 styles.link,

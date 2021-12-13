@@ -732,11 +732,12 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   highlight: {
-    width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "1px 10px 10px 14px",
-    marginBottom: 8,
+    marginTop: 8,
+    marginLeft: 8,
+    width: "calc(100% - 8px)",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },

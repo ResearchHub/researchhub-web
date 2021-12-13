@@ -3,7 +3,7 @@ import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import colors from "~/config/themes/colors";
 import PaperPlaceholder from "./PaperPlaceholder";
 
-const FeedItemPlaceholder = ({ color = "#d3d3d3", rows = 1 }) => {
+const FeedItemPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
   return Array.from({ length: rows }).map((k, i) => (
     <div
       className={css(styles.container)}
