@@ -561,11 +561,12 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   highlight: {
-    // display: 'flex',
-    width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "1px 10px 10px 14px",
+    marginTop: 8,
+    marginLeft: 8,
+    width: "calc(100% - 8px)",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },

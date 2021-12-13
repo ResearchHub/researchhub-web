@@ -441,7 +441,6 @@ function AuthorPage(props) {
     }
   };
 
-  console.log('tabName === "overview"', tabName === "overview");
   let tabContents = (
     <ComponentWrapper>
       <div
@@ -453,7 +452,6 @@ function AuthorPage(props) {
           contributionType="overview"
         />
       </div>
-      {/*
       <div
         className={css(
           tabName === "discussions" ? styles.reveal : styles.hidden
@@ -476,30 +474,8 @@ function AuthorPage(props) {
           contributionType="hypothesis,paper,discussion"
         />
       </div>
-      */}
     </ComponentWrapper>
   );
-  //
-  //   switch (tabName) {
-  //     case "overview":
-  //       tabContents = (
-  //         <AuthorFeed author={author} contributionType="overview" />
-  //       );
-  //       break;
-  //     case "discussions":
-  //       tabContents = (
-  //         <AuthorFeed author={author} contributionType="comment" />
-  //       );
-  //       break;
-  //     case "submissions":
-  //       tabContents = (
-  //         <AuthorFeed
-  //           author={author}
-  //           contributionType="hypothesis,paper,discussion"
-  //         />
-  //       );
-  //       break;
-  //   }
 
   //   const tabContents =
   //     switch(sdd) {

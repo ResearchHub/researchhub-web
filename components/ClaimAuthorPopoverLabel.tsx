@@ -26,6 +26,10 @@ export default function ClaimAuthorPopoverLabel({
     setIsPopoverOpen(false);
   }, [setIsPopoverOpen]);
 
+  if (!author.id) {
+    return null;
+  }
+
   return (
     <Fragment>
       <AuthorClaimModal

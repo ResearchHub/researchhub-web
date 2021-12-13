@@ -491,8 +491,7 @@ class DiscussionEntry extends Component {
         className={css(
           styles.discussionCard,
           this.props.withBorder && styles.withBorder,
-          this.props.withPadding && styles.withPadding,
-          this.state.highlight && styles.highlight
+          this.props.withPadding && styles.withPadding
         )}
       >
         {noVote ? null : (
@@ -533,8 +532,8 @@ class DiscussionEntry extends Component {
         >
           <div
             className={css(
-              styles.highlight,
               styles.metaData,
+              styles.highlight,
               this.state.highlight && styles.active
             )}
           >
@@ -764,11 +763,11 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   highlight: {
-    width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
-    marginBottom: 8,
+    marginLeft: 8,
+    width: "calc(100% - 8px)",
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,
