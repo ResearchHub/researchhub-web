@@ -3,13 +3,13 @@ import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import colors from "~/config/themes/colors";
 import PaperPlaceholder from "./PaperPlaceholder";
 
-const ActivityItemPlaceholder = ({ color = "#d3d3d3", rows = 1 }) => {
+const FeedItemPlaceholder = ({ color = "#d3d3d3", rows = 1 }) => {
   return Array.from({ length: rows }).map((k, i) => (
-    <div className={css(styles.container)}>
-      <div
-        key={`activity-summary-placholder-${i}`}
-        className={css(styles.summaryContainer)}
-      >
+    <div
+      className={css(styles.container)}
+      key={`activity-summary-placholder-${i}`}
+    >
+      <div className={css(styles.summaryContainer)}>
         <RoundShape className={css(styles.round)} color={color} />
         <RectShape
           className={css(styles.textRow)}
@@ -43,4 +43,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ActivityItemPlaceholder;
+export default FeedItemPlaceholder;
