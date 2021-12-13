@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import FeedItemPlaceholder from "~/components/Placeholders/FeedItemPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorFeedItem from "./AuthorFeedItem";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 const AuthorFeed = ({
   author,
@@ -67,7 +68,7 @@ const AuthorFeed = ({
 
   return (
     <ReactPlaceholder
-      ready={isInitialLoadComplete}
+      ready={isInitialLoadComplete && !isEmpty(author.id)}
       showLoadingAnimation
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
