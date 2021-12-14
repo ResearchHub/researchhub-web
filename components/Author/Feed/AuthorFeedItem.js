@@ -202,12 +202,12 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
         timeText = `${formatTimestamp(timestamp)} (uploaded)`;
       }
     } else {
-      timestamp = formatTimestamp(item.created_date);
+      timestamp = item.created_date;
+      timeText = formatTimestamp(timestamp);
     }
 
     return (
       <div className={css(styles.activitySummary)}>
-        <AuthorAvatar author={author} size={40} disableLink={true} />
         <div className={css(styles.activityText)}>
           <Link
             href={"/user/[authorId]/[tabName]"}
@@ -250,8 +250,13 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
 
   return (
     <div className={css(styles.container)}>
-      {activitySummaryHTML}
-      {cardHTML}
+      <div className={css(styles.avatarWrapper)}>
+        <AuthorAvatar author={author} size={35} disableLink={true} />
+      </div>
+      <div class={css(styles.contentWrapper)}>
+        {activitySummaryHTML}
+        {cardHTML}
+      </div>
     </div>
   );
 };
@@ -259,6 +264,16 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
 var styles = StyleSheet.create({
   container: {
     marginBottom: 30,
+    display: "flex",
+    alignItems: "flex-start",
+    width: "100%",
+  },
+  avatarWrapper: {
+    marginTop: -5,
+  },
+  contentWrapper: {
+    width: "calc(100% - 50px)",
+    marginLeft: 15,
   },
   coinImage: {
     verticalAlign: -4,
@@ -277,7 +292,6 @@ var styles = StyleSheet.create({
   },
   activitySummary: {
     display: "flex",
-    marginLeft: -52,
     color: colors.BLACK(0.8),
   },
   title: {
@@ -295,6 +309,9 @@ var styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     marginLeft: 15,
+    ":first-child": {
+      marginLeft: 0,
+    },
   },
   activityTimestamp: {
     whiteSpace: "nowrap",
