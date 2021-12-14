@@ -44,21 +44,31 @@ const AuthorFeedItem = ({
       : item.unified_document.documents;
   };
 
+  const getDocType = ({ uniDoc }) => {
+    return uniDoc.document_type === "PAPER"
+      ? "paper"
+      : uniDoc.document_type === "DISCUSSION"
+      ? "post"
+      : uniDoc.document_type === "HYPOTHESIS"
+      ? "hypothesis"
+      : "";
+  };
+
   const getCardType = ({ item, itemType }) => {
     let cardType;
+    const uniDoc = item.unified_document;
+
     if (itemType === "CONTRIBUTION") {
       if (item.contribution_type === "COMMENTER") {
         cardType = "comment";
       } else if (item.contribution_type === "SUBMITTER") {
-        const uniDoc = item.unified_document;
-        cardType =
-          uniDoc.document_type === "PAPER"
-            ? "paper"
-            : uniDoc.document_type === "DISCUSSION"
-            ? "post"
-            : uniDoc.document_type === "HYPOTHESIS"
-            ? "hypothesis"
-            : "";
+        cardType = getDocType({ uniDoc });
+      } else if (item.contribution_type === "SUPPORTER") {
+        if (item.source?.content_type?.app_label === "discussion") {
+          cardType = "comment";
+        } else {
+          cardType = getDocType({ uniDoc });
+        }
       }
     } else if (itemType === "UNIFIED_DOCUMENT") {
       // TODO: Implement
@@ -97,11 +107,16 @@ const AuthorFeedItem = ({
         );
         break;
       case "comment":
+        const data =
+          item.contribution_type === "SUPPORTER"
+            ? item.source.source
+            : item.source;
+        console.log("data", data);
         html = (
           <div className={css(styles.discussionEntryCard)}>
             <DiscussionEntry
               key={`thread-${doc.id}-${item.id}`}
-              data={item.source}
+              data={data}
               hostname={process.env.HOST}
               currentAuthor={author}
               // TODO Figure out which are needed
@@ -112,9 +127,9 @@ const AuthorFeedItem = ({
               // discussionCount={calculatedCount}
               // setCount={setCount}
               documentType={cardType}
-              paper={item.source.paper}
-              hypothesis={item.source.hypothesis}
-              post={item.source.post}
+              paper={data.paper}
+              hypothesis={data.hypothesis}
+              post={data.post}
             />
           </div>
         );
@@ -132,14 +147,30 @@ const AuthorFeedItem = ({
     const doc = getDocFromUniDoc({ uniDoc });
     const url = getUrlToUniDoc(uniDoc);
 
-    let action;
+    let actionText = "";
+    let endText = "";
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
-      action = "commented on";
+      actionText = "commented on";
     } else if (
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUBMITTER"
     ) {
-      action = "submitted";
+      actionText = "submitted";
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "SUPPORTER"
+    ) {
+      actionText = <span>{`supported content on `}</span>;
+      endText = (
+        <span>
+          <span>{`with ${item.source.amount} RSC`}</span>
+          <img
+            src="/static/icons/coin-filled.png"
+            className={css(styles.coinImage)}
+            alt="researchhub-coin-icon"
+          />
+        </span>
+      );
     }
 
     let timestamp;
@@ -164,7 +195,7 @@ const AuthorFeedItem = ({
           <span
             className={css(styles.activityTextItem, styles.activityItemText)}
           >
-            {action}
+            {actionText}
           </span>
           <Link href={url}>
             <a
@@ -177,6 +208,11 @@ const AuthorFeedItem = ({
               {doc.title}
             </a>
           </Link>
+          <span
+            className={css(styles.activityTextItem, styles.activityItemText)}
+          >
+            {endText}
+          </span>
           <div className={css(styles.timestampDivider)}>•</div>
           <span className={css(styles.activityTimestamp)}>
             {formatTimestamp(timestamp)}
@@ -200,6 +236,11 @@ const AuthorFeedItem = ({
 var styles = StyleSheet.create({
   container: {
     marginBottom: 30,
+  },
+  coinImage: {
+    verticalAlign: -4,
+    width: 20,
+    marginLeft: 5,
   },
   // TODO: Clean hard coded hex values
   discussionEntryCard: {
