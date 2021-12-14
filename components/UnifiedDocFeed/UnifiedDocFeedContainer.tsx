@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     overflow: "auto",
     "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
+      flexDirection: "column-reverse",
     },
   },
   mainFilters: {
