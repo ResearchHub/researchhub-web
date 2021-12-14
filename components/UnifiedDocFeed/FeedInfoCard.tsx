@@ -21,16 +21,17 @@ export default function FeedInfoCard({
   isHomePage,
   mainHeaderText,
 }: Props): ReactElement<"div"> | null {
-  if (isHomePage) {
-    return null;
+  if (isHomePage || isEmpty(hub)) {
+    return <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>;
   }
+
   const {
     description,
     editors = [],
     hub_image: hubImage,
     subscriber_count: subCount,
   } = hub;
-  console.warn("hub: ", hub);
+
   return (
     <div className={css(styles.feedInfoCard)}>
       <Image
