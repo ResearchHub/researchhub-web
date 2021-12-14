@@ -87,7 +87,6 @@ const styles = StyleSheet.create({
     border: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
     display: "flex",
-    marginBottom: 32,
     padding: 16,
   },
   bodyContainer: {
