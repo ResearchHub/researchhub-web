@@ -7,6 +7,8 @@ import FeedItemPlaceholder from "~/components/Placeholders/FeedItemPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorFeedItem from "./AuthorFeedItem";
 import { isEmpty } from "~/config/utils/nullchecks";
+import EmptyState from "~/components/Author/Tabs/EmptyState";
+import icons from "~/config/themes/icons";
 
 const AuthorActivityFeed = ({
   author,
@@ -90,25 +92,32 @@ const AuthorActivityFeed = ({
       showLoadingAnimation
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
-      <div>
-        {feedResults.map((item) => {
-          const itemType =
-            contributionType === "authored-papers"
-              ? "AUTHORED_PAPER"
-              : "CONTRIBUTION";
-          return (
-            <AuthorFeedItem
-              key={item.id}
-              author={author}
-              item={item}
-              itemType={itemType}
-            />
-          );
-        })}
-        {nextResultsUrl && (
-          <LoadMoreButton onClick={loadNextResults} isLoading={isLoading} />
-        )}
-      </div>
+      {feedResults.length === 0 ? (
+        <EmptyState
+          message={"No activity found."}
+          icon={<div>{icons.bat}</div>}
+        />
+      ) : (
+        <div>
+          {feedResults.map((item) => {
+            const itemType =
+              contributionType === "authored-papers"
+                ? "AUTHORED_PAPER"
+                : "CONTRIBUTION";
+            return (
+              <AuthorFeedItem
+                key={item.id}
+                author={author}
+                item={item}
+                itemType={itemType}
+              />
+            );
+          })}
+          {nextResultsUrl && (
+            <LoadMoreButton onClick={loadNextResults} isLoading={isLoading} />
+          )}
+        </div>
+      )}
     </ReactPlaceholder>
   );
 };
