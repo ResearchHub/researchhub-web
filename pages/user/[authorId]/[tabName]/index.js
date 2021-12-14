@@ -34,7 +34,7 @@ import UserPostsTab from "~/components/Author/Tabs/UserPosts";
 import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 // import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
-import AuthorFeed from "~/components/Author/Feed/AuthorFeed";
+import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -446,7 +446,7 @@ function AuthorPage(props) {
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
-        <AuthorFeed
+        <AuthorActivityFeed
           isVisible={tabName === "overview"}
           author={author}
           contributionType="overview"
@@ -457,7 +457,7 @@ function AuthorPage(props) {
           tabName === "discussions" ? styles.reveal : styles.hidden
         )}
       >
-        <AuthorFeed
+        <AuthorActivityFeed
           isVisible={tabName === "discussions"}
           author={author}
           contributionType="comment"
@@ -468,10 +468,21 @@ function AuthorPage(props) {
           tabName === "submissions" ? styles.reveal : styles.hidden
         )}
       >
-        <AuthorFeed
+        <AuthorActivityFeed
           isVisible={tabName === "submissions"}
           author={author}
           contributionType="hypothesis,paper,discussion"
+        />
+      </div>
+      <div
+        className={css(
+          tabName === "authored-papers" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "authored-papers"}
+          author={author}
+          contributionType="authored-papers"
         />
       </div>
     </ComponentWrapper>

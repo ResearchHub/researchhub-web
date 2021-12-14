@@ -11,11 +11,32 @@ import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/Hypothesi
 import { timeAgo } from "~/config/utils/dates";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 
-const AuthorFeedItem = ({
-  author,
-  item,
-  itemType, // UNIFIED_DOCUMENT | CONTRIBUTION
-}) => {
+const AuthorFeedItem = ({ author, item, itemType }) => {
+  const getDocFromItem = (item, itemType) => {
+    let doc;
+    if (itemType === "AUTHORED_PAPER") {
+      doc = item;
+    } else if (itemType === "CONTRIBUTION") {
+      const uniDoc = item.unified_document;
+
+      doc = Array.isArray(uniDoc.documents)
+        ? uniDoc.documents[0]
+        : uniDoc.documents;
+    } else {
+      throw new Error("Unrecognized item type");
+    }
+
+    return doc;
+  };
+
+  const getUrlFromItem = (item, itemType) => {
+    if (itemType === "AUTHORED_PAPER") {
+      return `/paper/${item.id}/${item.slug}`;
+    } else {
+      return getUrlToUniDoc(item.unified_document);
+    }
+  };
+
   const getNewestCommentTimestamp = (discussionItem) => {
     let newest = discussionItem.created_date;
     discussionItem.source.comments.forEach((comment) => {
@@ -38,12 +59,6 @@ const AuthorFeedItem = ({
     return timeAgo.format(date);
   };
 
-  const getDocFromUniDoc = ({ uniDoc }) => {
-    return Array.isArray(item.unified_document.documents)
-      ? item.unified_document.documents[0]
-      : item.unified_document.documents;
-  };
-
   const getDocType = ({ uniDoc }) => {
     return uniDoc.document_type === "PAPER"
       ? "paper"
@@ -56,9 +71,10 @@ const AuthorFeedItem = ({
 
   const getCardType = ({ item, itemType }) => {
     let cardType;
-    const uniDoc = item.unified_document;
-
-    if (itemType === "CONTRIBUTION") {
+    if (itemType === "AUTHORED_PAPER") {
+      return "paper";
+    } else if (itemType === "CONTRIBUTION") {
+      const uniDoc = item.unified_document;
       if (item.contribution_type === "COMMENTER") {
         cardType = "comment";
       } else if (item.contribution_type === "SUBMITTER") {
@@ -70,8 +86,6 @@ const AuthorFeedItem = ({
           cardType = getDocType({ uniDoc });
         }
       }
-    } else if (itemType === "UNIFIED_DOCUMENT") {
-      // TODO: Implement
     } else {
       throw new Error(`Unrecognized itemType ${itemType}`);
     }
@@ -80,10 +94,9 @@ const AuthorFeedItem = ({
   };
 
   const getCardHTML = ({ item, itemType }) => {
-    const uniDoc = item.unified_document;
-    const doc = getDocFromUniDoc({ uniDoc });
+    const doc = getDocFromItem(item, itemType);
     const cardType = getCardType({ item, itemType });
-    const key = `${cardType}-${item?.id}-${uniDoc?.id}`;
+    const key = `${itemType}-${cardType}-${doc.id}`;
 
     let html;
     switch (cardType) {
@@ -111,7 +124,6 @@ const AuthorFeedItem = ({
           item.contribution_type === "SUPPORTER"
             ? item.source.source
             : item.source;
-        console.log("data", data);
         html = (
           <div className={css(styles.discussionEntryCard)}>
             <DiscussionEntry
@@ -143,9 +155,10 @@ const AuthorFeedItem = ({
   };
 
   const buildActivitySummary = ({ item, itemType, author }) => {
-    const uniDoc = item.unified_document;
-    const doc = getDocFromUniDoc({ uniDoc });
-    const url = getUrlToUniDoc(uniDoc);
+    const uniDoc =
+      itemType === "UNIFIED_DOCUMENT" ? item : item.unified_document;
+    const doc = getDocFromItem(item, itemType);
+    const url = getUrlFromItem(item, itemType);
 
     let actionText = "";
     let endText = "";
@@ -171,13 +184,25 @@ const AuthorFeedItem = ({
           />
         </span>
       );
+    } else if (itemType === "AUTHORED_PAPER") {
+      actionText = "authored";
     }
 
     let timestamp;
+    let timeText = "";
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
       timestamp = getNewestCommentTimestamp(item);
+      timeText = formatTimestamp(timestamp);
+    } else if (itemType === "AUTHORED_PAPER") {
+      if (item.paper_publish_date) {
+        timestamp = item.paper_publish_date;
+        timeText = `${formatTimestamp(timestamp)} (published)`;
+      } else {
+        timestamp = item.uploaded_date;
+        timeText = `${formatTimestamp(timestamp)} (uploaded)`;
+      }
     } else {
-      timestamp = item.created_date;
+      timestamp = formatTimestamp(item.created_date);
     }
 
     return (
@@ -214,9 +239,7 @@ const AuthorFeedItem = ({
             {endText}
           </span>
           <div className={css(styles.timestampDivider)}>•</div>
-          <span className={css(styles.activityTimestamp)}>
-            {formatTimestamp(timestamp)}
-          </span>
+          <span className={css(styles.activityTimestamp)}>{timeText}</span>
         </div>
       </div>
     );
