@@ -60,10 +60,7 @@ class CommentEntry extends Component {
         // revealReply,
         selectedVoteType,
         score,
-        highlight:
-          (this.props.comment.highlight && true) ||
-          this.props?.currentAuthor?.id ===
-            this.props.comment.created_by.author_profile.id,
+        highlight: this.props.comment.highlight && true,
         canEdit:
           this.props.comment.source === "twitter"
             ? false
@@ -492,7 +489,6 @@ class CommentEntry extends Component {
       return (
         <ReplyEntry
           data={data}
-          currentAuthor={this.props.currentAuthor}
           hostname={hostname}
           path={path}
           key={`disc${reply.id}`}
@@ -732,12 +728,10 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   highlight: {
+    width: "100%",
     boxSizing: "border-box",
     borderRadius: 5,
-    padding: "1px 10px 10px 14px",
-    marginTop: 8,
-    marginLeft: 8,
-    width: "calc(100% - 8px)",
+    padding: "0px 10px 10px 8px",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
@@ -751,7 +745,6 @@ const styles = StyleSheet.create({
     },
   },
   active: {
-    // border: `2px solid ${colors.BLUE()}`,
     backgroundColor: colors.LIGHT_YELLOW(),
     ":hover": {
       backgroundColor: colors.LIGHT_YELLOW(),
