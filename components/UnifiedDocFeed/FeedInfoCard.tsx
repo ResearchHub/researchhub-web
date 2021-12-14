@@ -32,7 +32,7 @@ export default function FeedInfoCard({
         layout="fixed"
         objectFit="cover"
         src={hubImage ?? "/static/background/hub-placeholder.svg"}
-        width={64}
+        width={68}
       />
       <div className={css(styles.bodyContainer)}>
         <div className={css(styles.titleContainer)}>
