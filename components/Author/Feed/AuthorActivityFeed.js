@@ -8,11 +8,10 @@ import ReactPlaceholder from "react-placeholder/lib";
 import AuthorFeedItem from "./AuthorFeedItem";
 import { isEmpty } from "~/config/utils/nullchecks";
 
-const AuthorFeed = ({
+const AuthorActivityFeed = ({
   author,
   isVisible = false,
   contributionType = "overview",
-  context = null,
 }) => {
   const router = useRouter();
   const [feedResults, setFeedResults] = useState([]);
@@ -32,13 +31,21 @@ const AuthorFeed = ({
 
   useEffect(() => {
     const _fetchAuthorActivity = () => {
-      return fetch(
-        API.AUTHOR_ACTIVITY({
+      let url;
+
+      if (contributionType === "authored-papers") {
+        url = API.AUTHORED_PAPER({
+          authorId: router.query.authorId,
+          page: 1,
+        });
+      } else {
+        url = API.AUTHOR_ACTIVITY({
           authorId: router.query.authorId,
           type: contributionType,
-        }),
-        API.GET_CONFIG()
-      )
+        });
+      }
+
+      return fetch(url, API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
@@ -86,7 +93,9 @@ const AuthorFeed = ({
       <div>
         {feedResults.map((item) => {
           const itemType =
-            context === "authored-papers" ? "UNIFIED_DOCUMENT" : "CONTRIBUTION";
+            contributionType === "authored-papers"
+              ? "AUTHORED_PAPER"
+              : "CONTRIBUTION";
           return (
             <AuthorFeedItem
               key={item.id}
@@ -104,4 +113,4 @@ const AuthorFeed = ({
   );
 };
 
-export default AuthorFeed;
+export default AuthorActivityFeed;
