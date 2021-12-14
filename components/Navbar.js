@@ -34,7 +34,6 @@ import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 
 // Dynamic modules
