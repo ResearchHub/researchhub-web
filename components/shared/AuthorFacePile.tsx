@@ -8,28 +8,37 @@ type Props = {
   authorProfiles: Object[];
   imgSize: number | string;
   loadOffset?: number;
+  withAuthorName?: Boolean;
 };
 
 export default function AuthorFacePile({
   authorProfiles = [],
   imgSize,
   loadOffset,
+  withAuthorName,
 }: Props): ReactElement<"div"> {
   const imgs = useMemo(
     () =>
       authorProfiles.map(
-        (author: Object, index: number): ReactElement<typeof AuthorAvatar> => {
+        (author: any, index: number): ReactElement<typeof AuthorAvatar> => {
           return (
-            <AuthorAvatar
-              author={author}
-              border={`2px solid ${colors.LIGHT_GREY(1)}`}
-              key={index}
-              onClick={(event: SyntheticEvent) => {
-                event.stopPropagation();
-                event.preventDefault();
-              }}
-              size={imgSize}
-            />
+            <div>
+              <AuthorAvatar
+                author={author}
+                border={`2px solid ${colors.LIGHT_GREY(1)}`}
+                key={index}
+                onClick={(event: SyntheticEvent) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                }}
+                size={imgSize}
+              />
+              {withAuthorName ? (
+                <span style={{ fontSize: imgSize }}>
+                  {author.first_name ?? "" + author.last_name ?? ""}
+                </span>
+              ) : null}
+            </div>
           );
         }
       ),
