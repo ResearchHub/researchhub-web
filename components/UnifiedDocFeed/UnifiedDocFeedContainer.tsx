@@ -209,7 +209,8 @@ function UnifiedDocFeedContainer({
         isHomePage={isHomePage}
         mainHeaderText={formattedMainHeader}
       />
-      <div className={css(styles.filterContainer)}>
+      <div className={css(styles.buttonGroup)}>
+        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
             onSubFilterSelect={(_type: string, filterBy: any): void =>
@@ -221,9 +222,6 @@ function UnifiedDocFeedContainer({
             subFilters={subFilters}
           />
         </div>
-      </div>
-      <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
       </div>
       {!hasSubscribed ? (
         <div>
@@ -308,6 +306,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
     overflow: "auto",
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: "column",
+    },
   },
   mainFilters: {
     alignItems: "center",
@@ -323,17 +324,9 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     marginLeft: "auto",
-
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       marginTop: 16,
-    },
-  },
-  filterContainer: {
-    display: "flex",
-    alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
     },
   },
   loadMoreButton: {
