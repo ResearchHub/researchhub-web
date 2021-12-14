@@ -6,6 +6,7 @@ import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar, faUser } from "@fortawesome/free-solid-svg-icons";
+import AuthorFacePile from "../shared/AuthorFacePile";
 
 type Props = {
   hub: any;
@@ -23,7 +24,12 @@ export default function FeedInfoCard({
   if (isHomePage) {
     return null;
   }
-  const { description, hub_image: hubImage, subscriber_count: subCount } = hub;
+  const {
+    description,
+    editors = [],
+    hub_image: hubImage,
+    subscriber_count: subCount,
+  } = hub;
   console.warn("hub: ", hub);
   return (
     <div className={css(styles.feedInfoCard)}>
@@ -56,7 +62,15 @@ export default function FeedInfoCard({
           </div>
           <div>
             <span style={{ fontWeight: 500 }}>{"Editors "}</span>
-            <span>{subCount}</span>
+            {!isEmpty(editors) ? (
+              <AuthorFacePile
+                authorProfiles={editors}
+                imgSize={16}
+                withAuthorName
+              />
+            ) : (
+              <span style={{ color: colors.TEXT_GREY(1) }}>{"N/A"}</span>
+            )}
           </div>
         </div>
         <div className={css(styles.detailRow)}>
