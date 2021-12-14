@@ -46,8 +46,8 @@ export default function FeedInfoCard({
             <FontAwesomeIcon icon={faUser} style={{ width: "16px" }} />
           </div>
           <div>
-            <span>{"Users "}</span>
-            <span>{subCount}</span>
+            <span style={{ fontWeight: 500 }}>{"Users "}</span>
+            <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
           </div>
         </div>
         <div className={css(styles.detailRow)}>
@@ -55,7 +55,7 @@ export default function FeedInfoCard({
             <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
           </div>
           <div>
-            <span>{"Editors "}</span>
+            <span style={{ fontWeight: 500 }}>{"Editors "}</span>
             <span>{subCount}</span>
           </div>
         </div>
@@ -69,9 +69,10 @@ export default function FeedInfoCard({
 
 const styles = StyleSheet.create({
   feedInfoCard: {
-    display: "flex",
     backgroundColor: "#fff",
     border: `1px solid ${genericCardColors.BORDER}`,
+    borderRadius: 4,
+    display: "flex",
     marginBottom: 32,
     padding: 16,
   },
@@ -83,8 +84,8 @@ const styles = StyleSheet.create({
   },
   detailRow: {
     display: "flex",
-    margin: "8px 0",
     fontSize: 16,
+    margin: "8px 0",
   },
   detailRowLabel: {
     color: colors.LIGHT_GREY_TEXT,
@@ -100,21 +101,21 @@ const styles = StyleSheet.create({
   },
   title: {
     color: "#241F3A",
-    fontWeight: 400,
     fontSize: 30,
-    padding: 0,
+    fontWeight: 400,
     margin: 0,
+    padding: 0,
     textOverflow: "ellipsis",
     [`@media only screen and max-width: ${breakpoints.large.str}`]: {
       fontSize: 30,
     },
     [`@media only screen and max-width: ${breakpoints.small.str}`]: {
+      display: "flex",
       fontSize: 25,
-      textAlign: "center",
       justifyContent: "center",
+      textAlign: "center",
       whiteSpace: "pre-wrap",
       wordBreak: "normal",
-      display: "flex",
     },
     [`@media only screen and max-width: ${breakpoints.xxsmall.str}`]: {
       fontSize: 25,
