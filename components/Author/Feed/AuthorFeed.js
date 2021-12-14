@@ -18,7 +18,17 @@ const AuthorFeed = ({
   const [feedResults, setFeedResults] = useState([]);
   const [nextResultsUrl, setNextResultsUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false);
+  const [needsInitialFetch, setNeedsInitialFetch] = useState(false);
+  const [currentAuthorId, setCurrentAuthorId] = useState(null);
+
+  // Reset state when author changes
+  useEffect(() => {
+    if (isVisible && router.query.authorId !== currentAuthorId) {
+      setCurrentAuthorId(router.query.authorId);
+      setIsLoading(true);
+      setNeedsInitialFetch(true);
+    }
+  }, [router.query.authorId, isVisible]);
 
   useEffect(() => {
     const _fetchAuthorActivity = () => {
@@ -40,13 +50,14 @@ const AuthorFeed = ({
         });
     };
 
-    if (isVisible && !isInitialLoadComplete) {
+    if (needsInitialFetch) {
+      setCurrentAuthorId(router.query.authorId);
       _fetchAuthorActivity().finally(() => {
+        setNeedsInitialFetch(false);
         setIsLoading(false);
-        setIsInitialLoadComplete(true);
       });
     }
-  }, [isVisible, isInitialLoadComplete]);
+  }, [needsInitialFetch]);
 
   const loadNextResults = () => {
     setIsLoading(true);
@@ -68,7 +79,7 @@ const AuthorFeed = ({
 
   return (
     <ReactPlaceholder
-      ready={isInitialLoadComplete && !isEmpty(author.id)}
+      ready={!needsInitialFetch}
       showLoadingAnimation
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
