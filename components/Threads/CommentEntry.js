@@ -541,7 +541,7 @@ class CommentEntry extends Component {
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
-
+    console.warn("Comment Props: ", this.props);
     return (
       <div
         className={css(styles.row, styles.commentCard)}
@@ -600,6 +600,7 @@ class CommentEntry extends Component {
                     "created_by",
                     "author_profile",
                   ])}
+                  isCreatedByEditor={data?.is_created_by_editor}
                   data={comment}
                   username={username}
                   date={date}

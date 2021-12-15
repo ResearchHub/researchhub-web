@@ -17,7 +17,6 @@ import { getNestedValue } from "~/config/utils/misc";
 import DiscussionActions from "~/redux/discussion";
 import { createUsername } from "~/config/utils/user";
 import { MessageActions } from "~/redux/message";
-import { divide } from "numeral";
 
 class ReplyEntry extends Component {
   constructor(props) {
@@ -249,10 +248,6 @@ class ReplyEntry extends Component {
       comment,
       postReply,
       postReplyPending,
-      setMessage,
-      showMessage,
-      discussionCount,
-      setCount,
       documentType,
       post,
       hypothesis,
@@ -411,7 +406,7 @@ class ReplyEntry extends Component {
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
-
+    console.warn("reply Props: ", this.props);
     return (
       <div
         className={css(styles.row, styles.replyCard)}
@@ -468,6 +463,7 @@ class ReplyEntry extends Component {
                     "created_by",
                     "author_profile",
                   ])}
+                  isCreatedByEditor={data?.is_created_by_editor}
                   username={username}
                   date={date}
                   paper={paper}

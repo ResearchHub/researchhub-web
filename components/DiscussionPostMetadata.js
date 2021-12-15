@@ -1,16 +1,18 @@
-import { Fragment, useState, useEffect, useRef } from "react";
 import { connect, useDispatch } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { Fragment, useState, useEffect, useRef } from "react";
+import { useAlert } from "react-alert";
+import { useRouter } from "next/router";
+import * as moment from "dayjs";
+import Link from "next/link";
 import PropTypes from "prop-types";
 import Ripples from "react-ripples";
-import { useAlert } from "react-alert";
-import Link from "next/link";
-import * as moment from "dayjs";
-import { useRouter } from "next/router";
 
 // Components
-import AuthorAvatar from "~/components/AuthorAvatar";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import AuthorAvatar from "~/components/AuthorAvatar";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import ShareAction from "~/components/ShareAction";
 import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
@@ -20,12 +22,12 @@ import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 
 // Config
-import icons from "~/config/themes/icons";
-import colors, { voteWidgetColors } from "~/config/themes/colors";
 import { createUserSummary } from "~/config/utils/user";
+import { Helpers } from "@quantfive/js-web-config";
 import { timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
+import colors, { voteWidgetColors } from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -38,26 +40,27 @@ const POST_HREF = "/post/[documentId]/[title]/[discussionThreadId]";
 
 const DiscussionPostMetadata = (props) => {
   const {
-    data,
-    metaData,
-    username,
     authorProfile,
-    fetching,
-    threadPath,
+    containerStyle,
+    currentAuthorId,
+    data,
     dropDownEnabled,
+    fetching,
+    hideHeadline,
+    isCreatedByEditor,
+    isLoggedIn,
+    isModerator,
+    metaData,
+    noTimeStamp,
+    onHideClick,
+    onRemove,
+    postId,
+    smaller,
+    threadPath,
     toggleEdit,
     twitter,
     twitterUrl,
-    onRemove,
-    onHideClick,
-    smaller,
-    hideHeadline,
-    containerStyle,
-    noTimeStamp,
-    isModerator,
-    isLoggedIn,
-    currentAuthorId,
-    postId,
+    username,
   } = props;
 
   const alert = useAlert();
@@ -263,6 +266,16 @@ const DiscussionPostMetadata = (props) => {
       <div className={css(styles.column)}>
         <div className={css(styles.firstRow)}>
           <User {...props} />
+          {isCreatedByEditor && (
+            <FontAwesomeIcon
+              icon={faStar}
+              style={{
+                width: "16px",
+                color: colors.LIGHT_GREY_TEXT,
+                marginLeft: 8,
+              }}
+            />
+          )}
           <WidgetContentSupport
             data={data}
             metaData={metaData}
@@ -672,6 +685,9 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(),
     },
+  },
+  editorTag: {
+    color: colors.TEXT_GREY,
   },
 });
 
