@@ -14,6 +14,7 @@ import AuthorCardList from "../SearchSuggestion/AuthorCardList";
 import AuthorInput from "../SearchSuggestion/AuthorInput.js";
 import Message from "../Loader/Message";
 import FormDND from "../Form/FormDND";
+import { captureError } from "~/config/utils/error";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -923,6 +924,12 @@ class PaperUploadInfo extends Component {
         messageActions.showMessage({ show: false });
         return;
       }
+
+      captureError({
+        msg: "Failed to upload paper",
+        data: { resp },
+      });
+
       messageActions.setMessage(
         resp.payload.errorBody
           ? resp.payload.errorBody.error
