@@ -36,6 +36,7 @@ import {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
+import { captureError } from "~/config/utils/error";
 
 type ComponentProps = {
   authRedux: any;
@@ -255,6 +256,10 @@ function PaperuploadV2Create({
             );
             messageActions.showMessage({ show: true, error: true });
             setTimeout(() => messageActions.showMessage({ show: false }), 2000);
+            captureError({
+              msg: "Failed to upload paper",
+              data: { respPayload },
+            });
           }
         },
         onSuccess: ({ paperID, paperName }): void => {
