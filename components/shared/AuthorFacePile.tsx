@@ -22,23 +22,17 @@ export default function AuthorFacePile({
       authorProfiles.map(
         (author: any, index: number): ReactElement<typeof AuthorAvatar> => {
           return (
-            <div>
-              <AuthorAvatar
-                author={author}
-                border={`2px solid ${colors.LIGHT_GREY(1)}`}
-                key={index}
-                onClick={(event: SyntheticEvent) => {
-                  event.stopPropagation();
-                  event.preventDefault();
-                }}
-                size={imgSize}
-              />
-              {withAuthorName ? (
-                <span style={{ fontSize: imgSize }}>
-                  {author.first_name ?? "" + author.last_name ?? ""}
-                </span>
-              ) : null}
-            </div>
+            <AuthorAvatar
+              author={author}
+              border={`2px solid ${colors.LIGHT_GREY(1)}`}
+              key={index}
+              onClick={(event: SyntheticEvent) => {
+                event.stopPropagation();
+                event.preventDefault();
+              }}
+              size={imgSize}
+              withAuthorName={withAuthorName}
+            />
           );
         }
       ),
@@ -55,4 +49,7 @@ export default function AuthorFacePile({
 
 const styles = StyleSheet.create({
   facePile: {},
+  avatarWrap: {
+    display: "flex",
+  },
 });
