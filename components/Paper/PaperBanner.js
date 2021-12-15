@@ -11,6 +11,7 @@ const PaperBanner = (props) => {
   const { document, documentType } = props;
   const doneFetching = !isEmpty(document);
   const currDocumentState = Boolean(document?.is_removed) ? "removed" : null;
+  const isRemoved = currDocumentState === "removed";
   const shouldShowBanner =
     doneFetching && !isNullOrUndefined(currDocumentState);
 
@@ -20,7 +21,13 @@ const PaperBanner = (props) => {
         return (
           <div className={css(styles.removedMessage)}>
             <h3 className={css(styles.header)}>
-              {renderIcon(true)}
+              <div className={css(styles.icon)}>
+                <span
+                  className={css(styles.removeIcon, styles.mobileRemoveIcon)}
+                >
+                  {icons.exclamationCircle}
+                </span>
+              </div>
               {upCaseFirstLetter(documentType)} Removed
             </h3>
             {`This ${documentType} has been removed by the submitter or for having
@@ -43,39 +50,22 @@ const PaperBanner = (props) => {
     }
   };
 
-  const renderIcon = (mobile) => {
-    let icon;
-
-    switch (currDocumentState) {
-      case "removed":
-        icon = (
-          <span
-            className={css(
-              styles.removeIcon,
-              mobile && styles.mobileRemoveIcon
-            )}
-          >
-            {icons.exclamationCircle}
-          </span>
-        );
-        break;
-      default:
-        break;
-    }
-
-    return <div className={css(styles.icon)}>{icon}</div>;
-  };
-
   return (
     <div
       className={css(
         styles.banner,
-        currDocumentState === "removed" ? styles.removed : styles.incomplete,
+        isRemoved ? styles.removed : styles.incomplete,
         !shouldShowBanner && styles.hideBanner
       )}
     >
       <div className={css(styles.bannerInner)}>
-        {currDocumentState === "removed" && renderIcon()}
+        {isRemoved && (
+          <div className={css(styles.icon)}>
+            <span className={css(styles.removeIcon)}>
+              {icons.exclamationCircle}
+            </span>
+          </div>
+        )}
         <div className={css(styles.message)}>{renderMessage()}</div>
       </div>
     </div>

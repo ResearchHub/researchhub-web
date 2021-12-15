@@ -144,6 +144,7 @@ class DiscussionComment extends Component {
   formatDiscussionPostMeta = () => {
     const { username, date } = this.state;
     const { data, commentStyles, replyCardStyle } = this.props;
+    console.warn("this.props: ", this.props);
     const authorProfile = data.created_by.author_profile;
 
     return {
