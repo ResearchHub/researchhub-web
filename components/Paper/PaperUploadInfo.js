@@ -925,11 +925,6 @@ class PaperUploadInfo extends Component {
         return;
       }
 
-      captureError({
-        msg: "Failed to upload paper",
-        data: { resp },
-      });
-
       messageActions.setMessage(
         resp.payload.errorBody
           ? resp.payload.errorBody.error
@@ -937,6 +932,11 @@ class PaperUploadInfo extends Component {
       );
       messageActions.showMessage({ show: true, error: true });
       setTimeout(() => messageActions.showMessage({ show: false }), 2000);
+
+      captureError({
+        msg: "Failed to upload paper",
+        data: { resp },
+      });
     }
   };
 
