@@ -256,10 +256,6 @@ function PaperuploadV2Create({
             );
             messageActions.showMessage({ show: true, error: true });
             setTimeout(() => messageActions.showMessage({ show: false }), 2000);
-            captureError({
-              msg: "Failed to upload paper",
-              data: { respPayload },
-            });
           }
         },
         onSuccess: ({ paperID, paperName }): void => {
