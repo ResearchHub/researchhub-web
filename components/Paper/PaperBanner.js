@@ -10,58 +10,27 @@ import { MessageActions } from "~/redux/message";
 import icons from "~/config/themes/icons";
 import colors, { bannerColor } from "~/config/themes/colors";
 import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const PaperBanner = (props) => {
   // TODO: calvinhlee - refactor this component.
   const { paper, fetchBullets, loadingPaper, post, postType, lastFetchTime } =
     props;
-  const [type, setType] = useState(null);
-  const [showBanner, setShowBanner] = useState(false);
-
-  useEffect(() => {
-    configureBanner();
-  }, [paper, loadingPaper, post, lastFetchTime]);
-
   const documentType = Boolean(paper) ? "paper" : postType;
-  const configureBanner = () => {
-    if (documentType === "post" || documentType === "hypothesis") {
-      if (!post || Object.keys(post).length === 0) {
-        setShowBanner(false);
-        return;
-      } else if (!post.is_removed) {
-        setShowBanner(false);
-        return;
-      }
-    } else {
-      if (!paper) {
-        setShowBanner(false);
-        return;
-      } else {
-        if (!Boolean(paper?.is_removed) && (!fetchBullets || loadingPaper)) {
-          setShowBanner(false);
-          return;
-        }
-      }
-    }
-    const isRemoved =
-      documentType === "post" || "hypothesis"
-        ? Boolean(post?.is_removed)
-        : Boolean(paper?.is_removed);
-
-    if (isRemoved) {
-      setType("removed");
-      setShowBanner(true);
-      return;
-    }
-
-    setShowBanner(false);
-  };
-
+  const isDocPaper = documentType === "paper";
+  const doneFetching = isDocPaper ? !isEmpty(paper) : !isEmpty(post);
+  const currDocumentState = (
+    isDocPaper ? Boolean(paper?.is_removed) : Boolean(post?.is_removed)
+  )
+    ? "removed"
+    : null;
+  const shouldShowBanner =
+    doneFetching && !isNullOrUndefined(currDocumentState);
   /**
    * RENDERING
    */
   const renderMessage = () => {
-    switch (type) {
+    switch (currDocumentState) {
       case "removed":
         return (
           <div className={css(styles.removedMessage)}>
@@ -92,7 +61,7 @@ const PaperBanner = (props) => {
   const renderIcon = (mobile) => {
     let icon;
 
-    switch (type) {
+    switch (currDocumentState) {
       case "removed":
         icon = (
           <span
@@ -112,24 +81,16 @@ const PaperBanner = (props) => {
     return <div className={css(styles.icon)}>{icon}</div>;
   };
 
-  const conditionalContainer = ({ mobile = false, condition, component }) => {
-    return condition ? (
-      <div className={css(styles.desktop, mobile && styles.mobile)}>
-        {component}
-      </div>
-    ) : null;
-  };
-
   return (
     <div
       className={css(
         styles.banner,
-        type === "removed" ? styles.removed : styles.incomplete,
-        !showBanner && styles.hideBanner
+        currDocumentState === "removed" ? styles.removed : styles.incomplete,
+        !shouldShowBanner && styles.hideBanner
       )}
     >
       <div className={css(styles.bannerInner)}>
-        {type === "removed" && renderIcon()}
+        {currDocumentState === "removed" && renderIcon()}
         <div className={css(styles.message)}>{renderMessage()}</div>
       </div>
     </div>
