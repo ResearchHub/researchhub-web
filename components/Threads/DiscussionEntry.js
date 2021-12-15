@@ -454,6 +454,7 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
+    console.warn("discussino Entry: ", this.props);
     const commentCount =
       this.state.comments.length > data.comment_count
         ? this.state.comments.length
@@ -543,15 +544,16 @@ class DiscussionEntry extends Component {
                         null
                       )
                     }
-                    username={username}
+                    isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
                     date={date}
+                    documentType={documentType}
+                    dropDownEnabled={true}
+                    hostname={hostname}
                     paper={paper}
                     post={post}
-                    documentType={documentType}
                     threadPath={path}
-                    hostname={hostname}
-                    dropDownEnabled={true}
+                    username={username}
                     // Moderator
                     metaData={metaData}
                     onRemove={this.onRemove}
