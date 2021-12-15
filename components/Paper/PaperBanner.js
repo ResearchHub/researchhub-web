@@ -13,22 +13,12 @@ import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 
 const PaperBanner = (props) => {
-  // TODO: calvinhlee - refactor this component.
-  const { paper, fetchBullets, loadingPaper, post, postType, lastFetchTime } =
-    props;
-  const documentType = Boolean(paper) ? "paper" : postType;
-  const isDocPaper = documentType === "paper";
-  const doneFetching = isDocPaper ? !isEmpty(paper) : !isEmpty(post);
-  const currDocumentState = (
-    isDocPaper ? Boolean(paper?.is_removed) : Boolean(post?.is_removed)
-  )
-    ? "removed"
-    : null;
+  const { document, documentType } = props;
+  const doneFetching = !isEmpty(document);
+  const currDocumentState = Boolean(document?.is_removed) ? "removed" : null;
   const shouldShowBanner =
     doneFetching && !isNullOrUndefined(currDocumentState);
-  /**
-   * RENDERING
-   */
+
   const renderMessage = () => {
     switch (currDocumentState) {
       case "removed":

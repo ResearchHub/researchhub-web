@@ -385,7 +385,11 @@ const Paper = ({
 
   return (
     <div>
-      <PaperBanner paper={paper} loadingPaper={!isFetchComplete} />
+      <PaperBanner
+        document={paper}
+        documentType="paper"
+        loadingPaper={!isFetchComplete}
+      />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}

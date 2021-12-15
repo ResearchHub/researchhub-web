@@ -202,7 +202,7 @@ const Post = (props) => {
           canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
         />
         <div className={css(styles.root)}>
-          <PaperBanner post={post} postType="post" />
+          <PaperBanner document={post} documentType="post" />
           <PaperTransactionModal
             post={post}
             updatePostState={updatePostState}
