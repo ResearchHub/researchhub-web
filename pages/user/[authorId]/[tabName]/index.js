@@ -1,3 +1,4 @@
+import { buildSlug } from "~/config/utils/document";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
@@ -984,11 +985,12 @@ function AuthorPage(props) {
   );
   const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub) => {
     const { name } = hub;
+    const sluggedName = buildSlug(hub.name ?? "");
     return (
-      <Link href={"/hubs/[slug]"} as={`/hubs/${name}`}>
+      <Link href={"/hubs/[slug]"} as={`/hubs/${sluggedName}`}>
         <a
           className={css(styles.hubLinkTag)}
-          href={`/hubs/${name}`}
+          href={`/hubs/${sluggedName}`}
           target="_blank"
         >
           {name}
