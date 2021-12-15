@@ -144,6 +144,7 @@ class DiscussionComment extends Component {
   formatDiscussionPostMeta = () => {
     const { username, date } = this.state;
     const { data, commentStyles, replyCardStyle } = this.props;
+    console.warn("this.props: ", this.props);
     const authorProfile = data.created_by.author_profile;
 
     return {
@@ -437,15 +438,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export const Comment = connect(
-  mapStateToProps,
-  null
-)(CommentClass);
+export const Comment = connect(mapStateToProps, null)(CommentClass);
 
-export const Reply = connect(
-  mapStateToProps,
-  null
-)(ReplyClass);
+export const Reply = connect(mapStateToProps, null)(ReplyClass);
 
 const styles = StyleSheet.create({
   commentContainer: {},
