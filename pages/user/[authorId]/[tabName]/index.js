@@ -789,6 +789,7 @@ function AuthorPage(props) {
       )}
     </div>
   );
+
   const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub) => {
     const { name } = hub;
     const sluggedName = buildSlug(hub.name ?? "");
@@ -804,6 +805,7 @@ function AuthorPage(props) {
       </Link>
     );
   });
+
   return (
     <div
       className={css(styles.root)}
