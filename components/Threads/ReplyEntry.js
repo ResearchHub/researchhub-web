@@ -389,7 +389,6 @@ class ReplyEntry extends Component {
     let body = this.formatBody();
     let username = createUsername(reply);
     let metaIds = this.formatMetaData();
-    console.warn("reply Props: ", this.props);
     return (
       <div
         className={css(styles.row, styles.replyCard)}
@@ -428,7 +427,7 @@ class ReplyEntry extends Component {
                     "created_by",
                     "author_profile",
                   ])}
-                  isCreatedByEditor={data?.is_created_by_editor}
+                  isCreatedByEditor={reply?.is_created_by_editor}
                   username={username}
                   date={date}
                   paper={paper}

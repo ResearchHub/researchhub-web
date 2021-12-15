@@ -525,7 +525,6 @@ class CommentEntry extends Component {
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
-    console.warn("Comment Props: ", this.props);
     return (
       <div
         className={css(styles.row, styles.commentCard)}
