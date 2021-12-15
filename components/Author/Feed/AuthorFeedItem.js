@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/HypothesisCard";
 import { timeAgo } from "~/config/utils/dates";
 import { getUrlToUniDoc } from "~/config/utils/routing";
+import { breakpoints } from "~/config/themes/screen";
 
 const AuthorFeedItem = ({ author, item, itemType }) => {
   const getDocFromItem = (item, itemType) => {
@@ -208,6 +209,9 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
 
     return (
       <div className={css(styles.activitySummary)}>
+        <div className={css(styles.avatarWrapperSmall)}>
+          <AuthorAvatar author={author} size={35} disableLink={true} />
+        </div>
         <div className={css(styles.activityText)}>
           <Link
             href={"/user/[authorId]/[tabName]"}
@@ -270,6 +274,15 @@ var styles = StyleSheet.create({
   },
   avatarWrapper: {
     marginTop: -5,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  avatarWrapperSmall: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
   },
   contentWrapper: {
     width: "calc(100% - 50px)",
@@ -277,7 +290,7 @@ var styles = StyleSheet.create({
   },
   coinImage: {
     verticalAlign: -4,
-    width: 20,
+    width: 18,
     marginLeft: 5,
   },
   // TODO: Clean hard coded hex values
@@ -292,36 +305,55 @@ var styles = StyleSheet.create({
   },
   activitySummary: {
     display: "flex",
+    alignItems: "flex-start",
     color: colors.BLACK(0.8),
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   margin: "0px 6px 6px 0",
+    // },
   },
   title: {
     textOverflow: "ellipsis",
-    flexBasis: 600,
-    overflow: "hidden",
+    // flexBasis: 600,
+    display: "inline",
   },
   activityItem: {},
   activityItemText: {
     // marginBottom: 20,
-    whiteSpace: "nowrap",
+    // whiteSpace: "nowrap",
     marginLeft: 5,
-  },
-  activityText: {
-    display: "flex",
-    alignItems: "center",
-    marginLeft: 15,
     ":first-child": {
       marginLeft: 0,
     },
   },
+  activityText: {
+    // display: "flex",
+    alignItems: "center",
+    lineHeight: "22px",
+    marginLeft: 15,
+    ":first-child": {
+      marginLeft: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+      lineHeight: "20px",
+    },
+  },
   activityTimestamp: {
-    whiteSpace: "nowrap",
+    // whiteSpace: "nowrap",
     color: colors.BLACK(0.8),
     fontSize: 14,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
   },
   timestampDivider: {
     fontSize: 18,
+    display: "inline",
     padding: "0px 10px",
     color: colors.GREY(),
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
   },
   link: {
     textDecoration: "unset",
