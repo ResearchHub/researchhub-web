@@ -81,7 +81,7 @@ class CommentEntry extends Component {
   componentDidUpdate(prevProps) {
     this.handleVoteTypeUpdate(prevProps);
     if (prevProps.auth !== this.props.auth) {
-      let { data, comment } = this.props;
+      let { comment } = this.props;
       this.setState({
         canEdit:
           this.props.comment.source === "twitter"
@@ -164,7 +164,7 @@ class CommentEntry extends Component {
               fetching: false,
             });
           })
-          .catch((err) => {
+          .catch((_err) => {
             let { setMessage, showMessage } = this.props;
             setMessage("Hm something went wrong");
             showMessage({ show: true, error: true, clickoff: true });
