@@ -860,6 +860,21 @@ function AuthorPage(props) {
               ) : null}
               {userActionButtons}
             </div>
+            <div>
+              <div>{"Editor of: "}</div>
+              <div>
+                {(author?.is_hub_editor_of ?? []).map((hub) => hub.name)}
+              </div>
+            </div>
+            {authorDescription}
+            {!doesAuthorHaveUser ? (
+              <ClaimAuthorPopoverLabel
+                auth={auth}
+                author={author}
+                user={user}
+              />
+            ) : null}
+            {userActionButtons}
           </div>
         </ReactPlaceholder>
       </ComponentWrapper>
