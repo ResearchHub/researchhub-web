@@ -309,6 +309,7 @@ export const PaperActions = {
         msg: "Paper Upload",
         data: {
           response,
+          body: shims.paperPost(body),
         },
       });
 
