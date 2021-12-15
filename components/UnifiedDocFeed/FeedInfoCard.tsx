@@ -1,12 +1,12 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { faStar, faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, ReactNode } from "react";
+import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar, faUser } from "@fortawesome/free-solid-svg-icons";
-import AuthorFacePile from "../shared/AuthorFacePile";
 
 type Props = {
   hub: any;

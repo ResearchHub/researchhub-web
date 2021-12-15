@@ -1,25 +1,28 @@
-import { useRouter } from "next/router";
-import { StyleSheet, css } from "aphrodite";
-import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
-import ReactTooltip from "react-tooltip";
+import { Fragment, useEffect, useState, useRef, useMemo } from "react";
+import { StyleSheet, css } from "aphrodite";
+import { useRouter } from "next/router";
 import get from "lodash/get";
 import { breakpoints } from "~/config/themes/screen";
+import ReactTooltip from "react-tooltip";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
 import { AuthorActions } from "~/redux/author";
-import { TransactionActions } from "~/redux/transaction";
-import { ModalActions } from "../../../../redux/modals";
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "../../../../redux/modals";
+import { TransactionActions } from "~/redux/transaction";
 
 // Components
+import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import AvatarUpload from "~/components/AvatarUpload";
 import Button from "~/components/Form/Button";
 import ClaimAuthorPopoverLabel from "../../../../components/ClaimAuthorPopoverLabel";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
+import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
@@ -28,6 +31,7 @@ import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
+
 // Dynamic modules
 import dynamic from "next/dynamic";
 const ShareModal = dynamic(() => import("~/components/ShareModal"));
@@ -49,6 +53,7 @@ import {
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { breakpoints } from "~/config/themes/screen";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -783,7 +788,20 @@ function AuthorPage(props) {
       )}
     </div>
   );
-
+  const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub) => {
+    const { name } = hub;
+    return (
+      <Link href={"/hubs/[slug]"} as={`/hubs/${name}`}>
+        <a
+          className={css(styles.hubLinkTag)}
+          href={`/hubs/${name}`}
+          target="_blank"
+        >
+          {name}
+        </a>
+      </Link>
+    );
+  });
   return (
     <div
       className={css(styles.root)}
@@ -860,10 +878,19 @@ function AuthorPage(props) {
               ) : null}
               {userActionButtons}
             </div>
-            <div>
-              <div>{"Editor of: "}</div>
-              <div>
-                {(author?.is_hub_editor_of ?? []).map((hub) => hub.name)}
+            <div className={css(styles.reputationContainer)}>
+              <div className={css(styles.editorLabelWrap)}>
+                <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+                <span
+                  style={{
+                    color: colors.BLACK(1),
+                    fontWeight: 500,
+                    marginLeft: 8,
+                  }}
+                >
+                  {"Editor of: "}
+                </span>
+                {authorIsEditorOf}
               </div>
             </div>
             {authorDescription}
@@ -964,7 +991,7 @@ const styles = StyleSheet.create({
   profileContainer: {
     display: "flex",
     padding: "30px 0",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: "32px 0px",
       flexDirection: "column",
       alignItems: "center",
@@ -980,7 +1007,7 @@ const styles = StyleSheet.create({
   profileInfo: {
     width: "100%",
     marginLeft: 30,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       margin: 0,
     },
   },
@@ -988,7 +1015,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     display: "flex",
 
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: "unset",
       marginTop: 16,
     },
@@ -1014,11 +1041,27 @@ const styles = StyleSheet.create({
       color: "#FFF",
       background: colors.RED(1),
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       height: 40,
       margin: "10px 0",
     },
+  },
+  editorLabelWrap: {
+    color: colors.LIGHT_GREY_TEXT,
+    display: "flex",
+    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingRight: 0,
+      justifyContent: "center",
+      textAlign: "center",
+      marginBottom: 15,
+    },
+  },
+  hubLinkTag: {
+    color: colors.TEXT_DARKER_GREY,
+    textDecoration: "underline",
+    marginLeft: 8,
   },
   moderatorIcon: {
     color: "inherit",
@@ -1035,13 +1078,13 @@ const styles = StyleSheet.create({
   },
   connectOrcid: {
     marginTop: 16,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
   mobileConnectOrcid: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       background: "#FFF",
     },
@@ -1054,7 +1097,7 @@ const styles = StyleSheet.create({
   },
   mobileSocialLinks: {
     display: "none",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       width: "max-content",
     },
@@ -1065,7 +1108,7 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     padding: 0,
     margin: 0,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingRight: 0,
       justifyContent: "center",
       textAlign: "center",
@@ -1103,7 +1146,7 @@ const styles = StyleSheet.create({
   educationSummaryContainer: {
     display: "flex",
     marginBottom: 10,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       // justifyContent: "flex-start",
       justifyContent: "center",
@@ -1143,7 +1186,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-end",
     marginLeft: "auto",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: 0,
       width: "70%",
       alignItems: "center",
@@ -1188,7 +1231,7 @@ const styles = StyleSheet.create({
     display: "flex",
     position: "relative",
     width: "fit-content",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "unset",
       paddingRight: 0,
     },
@@ -1203,7 +1246,7 @@ const styles = StyleSheet.create({
     ":hover": {
       opacity: 1,
     },
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       right: -20,
     },
   },
@@ -1271,7 +1314,7 @@ const styles = StyleSheet.create({
     border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     padding: "24px 20px 24px 20px",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 20,
     },
   },
@@ -1382,7 +1425,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     position: "relative",
     borderRadius: "50%",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "min-content",
       width: "70%",
       display: "flex",
@@ -1409,7 +1452,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     marginBottom: 15,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
     },
     "@media only screen and (max-width: 440px)": {
@@ -1423,7 +1466,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     color: "#241F3A",
     marginRight: 15,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
     },
     "@media only screen and (max-width: 440px)": {
@@ -1441,7 +1484,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     color: "#241F3A",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
     },
     "@media only screen and (max-width: 415px)": {
@@ -1513,14 +1556,14 @@ const styles = StyleSheet.create({
   userActions: {
     display: "flex",
     justifyContent: "flex-start",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       width: "100%",
     },
   },
   editProfileButton: {
     marginRight: 16,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       width: "100%",
       margin: 0,
@@ -1533,7 +1576,7 @@ const styles = StyleSheet.create({
   editButtonCustom: {
     height: 35,
     width: 175,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: 40,
       width: "100%",
       minWidth: "100%",
@@ -1543,7 +1586,7 @@ const styles = StyleSheet.create({
     background: colors.NEW_BLUE(1),
   },
   rippleClass: {
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
     },
   },
