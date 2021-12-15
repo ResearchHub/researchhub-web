@@ -50,6 +50,7 @@ import { updateExistingPaper } from "./api/updateExistingPaper";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
+import { captureError } from "~/config/utils/error";
 const AddAuthorModal = dynamic(() => import("../../Modals/AddAuthorModal"));
 
 type ComponentProps = {
@@ -194,6 +195,11 @@ function PaperUploadV2Update({
               () => messageActions.showMessage({ show: false, error: false }),
               2000
             );
+
+            captureError({
+              msg: "Failed to upload paper",
+              data: { respPayload },
+            });
           }
         },
         onSuccess: ({ paperID, paperName }): void => {
