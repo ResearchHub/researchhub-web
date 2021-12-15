@@ -313,8 +313,8 @@ function AuthorPage(props) {
   useEffect(() => {
     setAllowEdit(
       !isNullOrUndefined(authorUserID) &&
-      !isNullOrUndefined(user) &&
-      authorUserID === user.id
+        !isNullOrUndefined(user) &&
+        authorUserID === user.id
     );
     setDescription(author.description);
     setEduSummary(createUserSummary(author));
@@ -1037,6 +1037,12 @@ function AuthorPage(props) {
             <div className={css(styles.reputationContainer)}>
               {authorReputation}
               {authorRscBalance}
+            </div>
+            <div>
+              <div>{"Editor of: "}</div>
+              <div>
+                {(author?.is_hub_editor_of ?? []).map((hub) => hub.name)}
+              </div>
             </div>
             {authorDescription}
             {!doesAuthorHaveUser ? (
