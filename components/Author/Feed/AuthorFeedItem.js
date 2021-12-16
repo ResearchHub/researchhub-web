@@ -11,12 +11,9 @@ import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/Hypothesi
 import { timeAgo } from "~/config/utils/dates";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { breakpoints } from "~/config/themes/screen";
-import DiscussionThreadCard from "~/components/DiscussionThreadCard";
 import { truncateText } from "~/config/utils/string";
 
-
 const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
-
   const getDocFromItem = (item, itemType) => {
     let doc;
     if (itemType === "AUTHORED_PAPER") {
@@ -74,7 +71,6 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
       : "";
   };
 
-
   const getCardType = ({ item, itemType }) => {
     let cardType;
     if (itemType === "AUTHORED_PAPER") {
@@ -103,6 +99,7 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
     const doc = getDocFromItem(item, itemType);
     const cardType = getCardType({ item, itemType });
     const key = `${itemType}-${cardType}-${doc.id}`;
+    const url = getUrlFromItem(item, itemType);
 
     let html;
     switch (cardType) {
@@ -131,48 +128,28 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
             ? item.source.source
             : item.source;
 
-        // In smaller screens we do not want to render the entire
-        // comment thread.
-        if (isSmallScreen) {
-          html = (
-              <DiscussionThreadCard
-                data={data}
-                hostname={process.env.HOST}
-                // path={path}
-                paperId={data.paper}
-                postId={data.post}
-                mobileView={true}
-                key={`discThread-${data.id}`}
-              />
-          )
-        }
-        else {
-            html = (
-              <div className={css(styles.discussionEntryCard)}>
-                <DiscussionEntry
-                  key={`thread-${doc.id}-${item.id}`}
-                  data={data}
-                  hostname={process.env.HOST}
-                  currentAuthor={author}
-                  // TODO Figure out which are needed
-                  // hoverEvents={true}
-                  // path={t.path}
-                  // newCard={transition && i === 0} //conditions when a new card is made
-                  mobileView={false}
-                  // discussionCount={calculatedCount}
-                  // setCount={setCount}
-                  documentType={cardType}
-                  paper={data.paper}
-                  hypothesis={data.hypothesis}
-                  post={data.post}
-                />
-              </div>              
-            )
-        }
+        html = (
+          <div className={css(styles.discussionEntryCard)}>
+            <DiscussionEntry
+              key={`thread-${doc.id}-${item.id}`}
+              data={data}
+              noVote={isSmallScreen}
+              hostname={process.env.HOST}
+              currentAuthor={author}
+              path={url}
+              mobileView={false}
+              // discussionCount={calculatedCount}
+              // setCount={setCount}
+              documentType={cardType}
+              paper={data.paper}
+              hypothesis={data.hypothesis}
+              post={data.post}
+            />
+          </div>
+        );
         break;
       default:
       // TODO: Log error in sentry
-      // throw new Error("Unrecognized card type");
     }
 
     return html;
@@ -192,15 +169,16 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUPPORTER"
     ) {
-      actionText =
+      actionText = (
         <span>
           {`rewarded ${cardType} ${item.source.amount} RSC `}
           <img
             src="/static/icons/coin-filled.png"
             className={css(styles.coinImage)}
             alt="researchhub-coin-icon"
-          />          
-        </span>;
+          />
+        </span>
+      );
     } else if (itemType === "AUTHORED_PAPER") {
       actionText = "authored paper";
     }
@@ -215,19 +193,16 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
             {`${author?.first_name} ${author?.last_name} `}
           </a>
         </Link>
-        <span>
-          {actionText}
-        </span>        
+        <span>{actionText}</span>
       </div>
-    )
-  }
+    );
+  };
 
   const buildActivitySummary = ({ item, itemType, author }) => {
     const uniDoc =
       itemType === "UNIFIED_DOCUMENT" ? item : item.unified_document;
     const doc = getDocFromItem(item, itemType);
     const url = getUrlFromItem(item, itemType);
-
 
     let timestamp;
     let timeText = "";
@@ -252,17 +227,12 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
       <div className={css(styles.activitySummary)}>
         <div className={css(styles.avatarWrapperSmall)}>
           <AuthorAvatar author={author} size={35} disableLink={true} />
-        </div>      
+        </div>
         <div>
           {actionLineHTML}
           <div>
             <Link href={url}>
-              <a
-                className={css(
-                  styles.link,
-                  styles.title,
-                )}
-              >
+              <a className={css(styles.link, styles.title)}>
                 {truncateText(doc.title, 50)}
               </a>
             </Link>
@@ -316,7 +286,7 @@ var styles = StyleSheet.create({
     marginLeft: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: 0,
-    },    
+    },
   },
   coinImage: {
     verticalAlign: -2,
@@ -331,6 +301,12 @@ var styles = StyleSheet.create({
     marginBottom: 12,
     borderRadius: 3,
     background: "#FFFFFF",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: "10px 4px 0px 2px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      padding: "8px 8px 0px 4px",
+    },
   },
   activitySummary: {
     lineHeight: "22px",
@@ -339,7 +315,7 @@ var styles = StyleSheet.create({
     color: colors.BLACK(0.8),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
-    },    
+    },
   },
   title: {
     textOverflow: "ellipsis",

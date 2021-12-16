@@ -169,7 +169,7 @@ function AuthorPage(props) {
       t.isSelected = t.href === router.query.tabName ? true : false;
       return t;
     });
-  }
+  };
 
   const handleTabClick = (tab) => {
     const updatedQuery = {
@@ -177,10 +177,14 @@ function AuthorPage(props) {
       tabName: tab.href,
     };
 
-    router.push({
-      pathname: "/user/[authorId]/[tabName]",
-      query: updatedQuery,
-    }, undefined, { shallow: true });
+    router.push(
+      {
+        pathname: "/user/[authorId]/[tabName]",
+        query: updatedQuery,
+      },
+      undefined,
+      { shallow: true }
+    );
   };
 
   async function fetchAuthoredPapers() {
@@ -452,7 +456,7 @@ function AuthorPage(props) {
   };
 
   let tabContents = (
-    <ComponentWrapper>
+    <ComponentWrapper overrideStyle={styles.componentWrapperOverride}>
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
@@ -497,11 +501,11 @@ function AuthorPage(props) {
       </div>
       <div
         className={css(
-        tabName === "transactions" ? styles.reveal : styles.hidden
+          tabName === "transactions" ? styles.reveal : styles.hidden
         )}
       >
         <UserTransactionsTab fetching={fetching} />
-      </div>      
+      </div>
     </ComponentWrapper>
   );
 
@@ -1167,7 +1171,7 @@ const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "flex-start",
     borderBottom: 0,
-  },  
+  },
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
@@ -1184,7 +1188,12 @@ const styles = StyleSheet.create({
       justifyContent: "center",
     },
   },
-
+  componentWrapperOverride: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+  },
   profileInfo: {
     width: "100%",
     marginLeft: 30,

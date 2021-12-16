@@ -75,10 +75,11 @@ class DiscussionEntry extends Component {
 
   shouldHighlight = () => {
     const { newCard, currentAuthor, data } = this.props;
-    const isCurrentAuthor = (currentAuthor?.id === data.created_by.author_profile.id);
+    const isCurrentAuthor =
+      currentAuthor?.id === data.created_by.author_profile.id;
     const comments = data.comments || [];
     if (newCard || (isCurrentAuthor && comments.length > 0)) {
-      return true;  
+      return true;
     }
     return false;
   };
@@ -305,6 +306,7 @@ class DiscussionEntry extends Component {
       hypothesis,
       documentType,
       currentAuthor,
+      noVote,
     } = this.props;
     let comments = this.state.comments;
 
@@ -313,6 +315,7 @@ class DiscussionEntry extends Component {
         return (
           <CommentEntry
             data={data}
+            noVote={noVote}
             hostname={hostname}
             currentAuthor={currentAuthor}
             path={path}
@@ -496,8 +499,7 @@ class DiscussionEntry extends Component {
         className={css(
           styles.discussionCard,
           this.props.withBorder && styles.withBorder,
-          this.props.withPadding && styles.withPadding,
-          this.state.highlight && styles.highlight
+          this.props.withPadding && styles.withPadding
         )}
       >
         {noVote ? null : (

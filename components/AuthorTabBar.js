@@ -1,3 +1,4 @@
+// TODO: Delete
 import { useRef, useState, useEffect } from "react";
 // import dynamic from 'next/dynamic'
 import Link from "next/link";
@@ -64,7 +65,7 @@ const TabBar = (props) => {
             // arrowRight={
             //   <NavigationArrow icon={icons.chevronRight} direction={"right"} />
             // }
-             // menuStyle={styles.tabContainer}
+            // menuStyle={styles.tabContainer}
             // itemStyle={{ border: "none", highlight: "none", outline: "none" }}
             // hideSingleArrow={true}
             onSelect={onSelect}

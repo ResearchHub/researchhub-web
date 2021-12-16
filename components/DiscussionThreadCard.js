@@ -45,8 +45,8 @@ const DiscussionThreadCard = (props) => {
 
   if (data) {
     threadId = data.id;
-    commentCount = data.comment_count;
-    date = data.created_date;
+    commentCount = data.commentCount;
+    date = data.createdDate;
     title = data.title;
     body = data.text;
     username = createUsername(data);
@@ -98,7 +98,6 @@ const DiscussionThreadCard = (props) => {
       <div
         className={css(
           styles.discussionContainer,
-          styles.discussionContainerMobile,
           props.newCard && styles.newCard
         )}
         onClick={goToDiscussion}
@@ -124,6 +123,16 @@ const DiscussionThreadCard = (props) => {
                   <ReadButton {...props} threadPath={path} />
                 </span>
               </div>
+              <DiscussionPostMetadata
+                authorProfile={data && data.createdBy.authorProfile}
+                username={username}
+                date={date}
+                data={data}
+                metaData={{
+                  contentType: "thread",
+                  objectId: data.id,
+                }}
+              />
             </div>
           }
           info={
@@ -167,6 +176,16 @@ const DiscussionThreadCard = (props) => {
                 onDownvote={downvote}
                 type={"discussion"}
                 promoted={false}
+              />
+              <DiscussionPostMetadata
+                authorProfile={data && data.createdBy.authorProfile}
+                username={username}
+                date={date}
+                data={data}
+                metaData={{
+                  contentType: "thread",
+                  objectId: data.id,
+                }}
               />
               <div className={css(styles.readbutton)}>
                 <ReadButton {...props} threadPath={path} />
@@ -267,18 +286,17 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   discussionContainer: {
-    padding: 15,
-    boxSizing: "border-box",
-    backgroundColor: "#FFF",
-    border: "1px solid #EDEDED",
-    borderRadius: 3,
-    cursor: "pointer",
-    marginTop: 12,
-    marginBottom: 12,
     width: "100%",
-  },
-  discussionContainerMobile: {
-    padding: 0,
+    textDecoration: "none",
+    cursor: "default",
+    transition: "all ease-in-out 0.2s",
+    borderBottom: `1px solid ${genericCardColors.BORDER}`,
+    ":last-child": {
+      borderBottom: 0,
+    },
+    ":hover": {
+      backgroundColor: "#FAFAFA",
+    },
   },
   readContainer: {
     border: "solid 1px",
@@ -322,6 +340,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 22,
+    paddingBottom: 10,
     color: "#232038",
     "@media only screen and (max-width: 436px)": {
       fontSize: 18,
@@ -363,6 +382,7 @@ const styles = StyleSheet.create({
   },
   mobileVoteWidget: {
     paddingLeft: 20,
+    marginBottom: 15,
   },
   readbutton: {
     marginRight: 15,

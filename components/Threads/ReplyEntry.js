@@ -68,12 +68,13 @@ class ReplyEntry extends Component {
 
   shouldHighlight = () => {
     const { newCard, currentAuthor, reply } = this.props;
-    const isCurrentAuthor = (currentAuthor?.id === reply.created_by.author_profile.id);
+    const isCurrentAuthor =
+      currentAuthor?.id === reply.created_by.author_profile.id;
     if (newCard || isCurrentAuthor) {
-      return true;  
+      return true;
     }
     return false;
-  };    
+  };
 
   componentDidUpdate(prevProps) {
     if (prevProps.auth !== this.props.auth) {
@@ -396,8 +397,15 @@ class ReplyEntry extends Component {
   };
 
   render() {
-    const { hostname, mobileView, reply, paper, mediaOnly, documentType } =
-      this.props;
+    const {
+      hostname,
+      noVote,
+      mobileView,
+      reply,
+      paper,
+      mediaOnly,
+      documentType,
+    } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -409,21 +417,39 @@ class ReplyEntry extends Component {
         className={css(styles.row, styles.replyCard)}
         ref={(element) => (this.replyRef = element)}
       >
-        <div className={css(styles.column, styles.left)}>
-          <div className={css(styles.voteContainer)}>
-            <VoteWidget
-              styles={styles.voteWidget}
-              score={this.state.score}
-              onUpvote={this.upvote}
-              onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
-              fontSize={"12px"}
-              width={"40px"}
-              type={"Reply"}
-              promoted={false}
-            />
+        <div
+          className={css(
+            styles.column,
+            styles.left,
+            noVote && styles.columnNoVote
+          )}
+        >
+          <div
+            className={css(
+              styles.voteContainer,
+              this.state.highlight && styles.voteContainerHighlight
+            )}
+          >
+            {noVote ? null : (
+              <VoteWidget
+                styles={styles.voteWidget}
+                score={this.state.score}
+                onUpvote={this.upvote}
+                onDownvote={this.downvote}
+                selected={this.state.selectedVoteType}
+                fontSize={"12px"}
+                width={"40px"}
+                type={"Reply"}
+                promoted={false}
+              />
+            )}
             {this.handleStateRendering() && (
-              <div className={css(styles.threadline)}></div>
+              <div
+                className={css(
+                  styles.threadline,
+                  noVote && styles.threadlineNoVote
+                )}
+              ></div>
             )}
           </div>
         </div>
@@ -518,6 +544,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
   },
+  columnNoVote: {
+    width: 18,
+  },
+  threadlineNoVote: {
+    height: "100%",
+  },
   left: {
     alignItems: "center",
     width: 40,
@@ -570,6 +602,9 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     display: "table-cell",
     height: "100%",
+  },
+  voteContainerHighlight: {
+    marginTop: 5,
   },
   highlight: {
     boxSizing: "border-box",
