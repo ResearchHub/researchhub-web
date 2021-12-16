@@ -13,7 +13,6 @@ import dayjs from "dayjs";
 import debounce from "lodash/debounce";
 import { breakpoints } from "~/config/themes/screen";
 
-
 const AuthorActivityFeed = ({
   author,
   isVisible = false,
@@ -29,7 +28,7 @@ const AuthorActivityFeed = ({
 
   useEffect(() => {
     setIsSmallScreen(window.innerWidth <= breakpoints.small.int);
-  }, [])
+  }, []);
 
   // Reset state when author changes
   useEffect(() => {
@@ -61,12 +60,7 @@ const AuthorActivityFeed = ({
         .then(Helpers.parseJSON)
         .then((res) => {
           setNextResultsUrl(res.next);
-          if (isSmallScreen) {
-            setFeedResults(flattenActivity(res.results));
-          }
-          else {
-            setFeedResults(res.results);
-          }
+          setFeedResults(res.results);
         })
         .catch((e) => {
           // TODO: log in sentry
@@ -82,66 +76,6 @@ const AuthorActivityFeed = ({
     }
   }, [needsInitialFetch]);
 
-  // Normally, threads with comments, replies are returned however,
-  // sometimes (mainly in small screens) we do not want to render the
-  // threads since they are difficult to view in mobile.
-  const flattenActivity = (feedResults) => {
-    let newActivity = [];
-    for (let i = 0; i < feedResults.length; i++) {
-      if (feedResults[i].contribution_type === "COMMENTER") {
-        const authorDiscussions = extractAuthorDiscussionsFromThread(feedResults[i])
-        newActivity = newActivity.concat(authorDiscussions);
-      }
-      else {
-        newActivity.push(feedResults[i]);
-      }
-    }
-
-    return newActivity.sort((a,b) => {
-      console.log('a.created_date', a.created_date);
-      console.log('b.created_date', b.created_date);
-      return (dayjs(a.created_date) > dayjs(b.created_date));
-    });
-  }
-
-  const extractAuthorDiscussionsFromThread = (feedResult) => {
-    const discussions = [];
-    const thread = feedResult.source;
-
-    if (thread.created_by.author_profile.id === currentAuthorId) {
-      discussions.push({
-        source: thread,
-        unified_document: feedResult.unified_document,
-        contribution_type: "COMMENTER",
-        created_date: thread.created_date,
-      });
-    }
-
-    thread.comments.forEach((comment) => {
-      if (comment.created_by.author_profile.id === currentAuthorId) {
-        discussions.push({
-          source: comment,
-          unified_document: feedResult.unified_document,
-          contribution_type: "COMMENTER",
-          created_date: comment.created_date,
-        });
-      }
-
-      comment.replies.forEach((reply) => {
-        if (reply.created_by.author_profile.id === currentAuthorId) {
-          discussions.push({
-            source: reply,
-            unified_document: feedResult.unified_document,
-            contribution_type: "COMMENTER",
-            created_date: reply.created_date,
-          });
-        }        
-      })
-    });
-
-    return discussions;
-  };
-
   const loadNextResults = () => {
     setIsLoading(true);
 
@@ -150,13 +84,7 @@ const AuthorActivityFeed = ({
       .then(Helpers.parseJSON)
       .then((res) => {
         setNextResultsUrl(res.next);
-        if (isSmallScreen) {
-          setFeedResults(flattenActivity(res.results));
-          setFeedResults([...feedResults, ...flattenActivity(res.results)]);
-        }
-        else {
-          setFeedResults([...feedResults, ...res.results]);
-        }
+        setFeedResults([...feedResults, ...res.results]);
         // TODO: We probably need to do this
         // fetchAndSetUserVotes(res.results);
       })
