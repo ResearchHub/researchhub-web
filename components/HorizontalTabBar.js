@@ -65,6 +65,7 @@ const HorizontalTabBar = ({
           menuStyle={styles.tabContainer}
           alignCenter={alignCenter}
           dragging={dragging}
+          scrollToSelected={true}
         />
       )}
     </div>

@@ -80,13 +80,14 @@ class CommentEntry extends Component {
 
   shouldHighlight = () => {
     const { newCard, currentAuthor, comment } = this.props;
-    const isCurrentAuthor = (currentAuthor?.id === comment.created_by.author_profile.id);
+    const isCurrentAuthor =
+      currentAuthor?.id === comment.created_by.author_profile.id;
 
     if (newCard || isCurrentAuthor) {
-      return true;  
+      return true;
     }
     return false;
-  };  
+  };
 
   componentDidUpdate(prevProps) {
     this.handleVoteTypeUpdate(prevProps);
@@ -491,6 +492,7 @@ class CommentEntry extends Component {
       hypothesis,
       documentType,
       currentAuthor,
+      noVote,
     } = this.props;
     let replies =
       this.state.replies.length < 1
@@ -499,6 +501,7 @@ class CommentEntry extends Component {
     return replies.map((reply, i) => {
       return (
         <ReplyEntry
+          noVote={noVote}
           data={data}
           currentAuthor={currentAuthor}
           hostname={hostname}
@@ -527,6 +530,7 @@ class CommentEntry extends Component {
       paper,
       mediaOnly,
       documentType,
+      noVote,
     } = this.props;
     let threadId = comment.id;
     let commentCount =
@@ -542,25 +546,34 @@ class CommentEntry extends Component {
         className={css(styles.row, styles.commentCard)}
         ref={(element) => (this.commentRef = element)}
       >
-        <div className={css(styles.column, styles.left)}>
+        <div
+          className={css(
+            styles.column,
+            styles.left,
+            noVote && styles.columnNoVote
+          )}
+        >
           <div className={css(styles.voteContainer)}>
-            <VoteWidget
-              styles={styles.voteWidget}
-              score={this.state.score}
-              onUpvote={this.upvote}
-              onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
-              fontSize={"12px"}
-              width={"40px"}
-              type={"Comment"}
-              promoted={false}
-            />
+            {noVote ? null : (
+              <VoteWidget
+                styles={styles.voteWidget}
+                score={this.state.score}
+                onUpvote={this.upvote}
+                onDownvote={this.downvote}
+                selected={this.state.selectedVoteType}
+                fontSize={"12px"}
+                width={"40px"}
+                type={"Comment"}
+                promoted={false}
+              />
+            )}
             {!this.state.collapsed && (
               <div
                 className={css(
                   styles.threadline,
                   this.state.revealReply && styles.activeThreadline,
-                  this.state.hovered && styles.hoverThreadline
+                  this.state.hovered && styles.hoverThreadline,
+                  noVote && styles.threadlineNoVote
                 )}
                 onClick={this.toggleReplyView}
               />
@@ -682,6 +695,9 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
     alignItems: "flex-start",
     height: "100%",
+  },
+  columnNoVote: {
+    width: 18,
   },
   left: {
     alignItems: "center",
@@ -813,6 +829,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  threadlineNoVote: {
+    height: "100%",
   },
   threadline: {
     height: "calc(100% - 58px)",
