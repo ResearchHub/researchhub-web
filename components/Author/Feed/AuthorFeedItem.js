@@ -11,8 +11,12 @@ import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/Hypothesi
 import { timeAgo } from "~/config/utils/dates";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { breakpoints } from "~/config/themes/screen";
+import DiscussionThreadCard from "~/components/DiscussionThreadCard";
+import { truncateText } from "~/config/utils/string";
 
-const AuthorFeedItem = ({ author, item, itemType }) => {
+
+const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
+
   const getDocFromItem = (item, itemType) => {
     let doc;
     if (itemType === "AUTHORED_PAPER") {
@@ -40,12 +44,12 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
 
   const getNewestCommentTimestamp = (discussionItem) => {
     let newest = discussionItem.created_date;
-    discussionItem.source.comments.forEach((comment) => {
+    (discussionItem.source.comments || []).forEach((comment) => {
       if (!newest || dayjs(comment.created_date) > dayjs(newest)) {
         newest = comment.created_date;
       }
 
-      comment.replies.forEach((reply) => {
+      (comment.replies || []).forEach((reply) => {
         if (dayjs(reply.created_date) > dayjs(newest)) {
           newest = reply.created_date;
         }
@@ -69,6 +73,7 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
       ? "hypothesis"
       : "";
   };
+
 
   const getCardType = ({ item, itemType }) => {
     let cardType;
@@ -125,27 +130,45 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
           item.contribution_type === "SUPPORTER"
             ? item.source.source
             : item.source;
-        html = (
-          <div className={css(styles.discussionEntryCard)}>
-            <DiscussionEntry
-              key={`thread-${doc.id}-${item.id}`}
-              data={data}
-              hostname={process.env.HOST}
-              currentAuthor={author}
-              // TODO Figure out which are needed
-              // hoverEvents={true}
-              // path={t.path}
-              // newCard={transition && i === 0} //conditions when a new card is made
-              // mobileView={false}
-              // discussionCount={calculatedCount}
-              // setCount={setCount}
-              documentType={cardType}
-              paper={data.paper}
-              hypothesis={data.hypothesis}
-              post={data.post}
-            />
-          </div>
-        );
+
+        // In smaller screens we do not want to render the entire
+        // comment thread.
+        if (isSmallScreen) {
+          html = (
+              <DiscussionThreadCard
+                data={data}
+                hostname={process.env.HOST}
+                // path={path}
+                paperId={data.paper}
+                postId={data.post}
+                mobileView={true}
+                key={`discThread-${data.id}`}
+              />
+          )
+        }
+        else {
+            html = (
+              <div className={css(styles.discussionEntryCard)}>
+                <DiscussionEntry
+                  key={`thread-${doc.id}-${item.id}`}
+                  data={data}
+                  hostname={process.env.HOST}
+                  currentAuthor={author}
+                  // TODO Figure out which are needed
+                  // hoverEvents={true}
+                  // path={t.path}
+                  // newCard={transition && i === 0} //conditions when a new card is made
+                  mobileView={false}
+                  // discussionCount={calculatedCount}
+                  // setCount={setCount}
+                  documentType={cardType}
+                  paper={data.paper}
+                  hypothesis={data.hypothesis}
+                  post={data.post}
+                />
+              </div>              
+            )
+        }
         break;
       default:
       // TODO: Log error in sentry
@@ -155,39 +178,56 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
     return html;
   };
 
+  const buildActionLineHTML = ({ item, itemType, author }) => {
+    const cardType = getCardType({ item, itemType });
+    let actionText = null;
+    if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
+      actionText = `commented`;
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "SUBMITTER"
+    ) {
+      actionText = `submitted ${cardType}`;
+    } else if (
+      itemType === "CONTRIBUTION" &&
+      item.contribution_type === "SUPPORTER"
+    ) {
+      actionText =
+        <span>
+          {`rewarded ${cardType} ${item.source.amount} RSC `}
+          <img
+            src="/static/icons/coin-filled.png"
+            className={css(styles.coinImage)}
+            alt="researchhub-coin-icon"
+          />          
+        </span>;
+    } else if (itemType === "AUTHORED_PAPER") {
+      actionText = "authored paper";
+    }
+
+    return (
+      <div className={css(styles.action)}>
+        <Link
+          href={"/user/[authorId]/[tabName]"}
+          as={`/user/${author.id}/overview`}
+        >
+          <a className={css(styles.link)}>
+            {`${author?.first_name} ${author?.last_name} `}
+          </a>
+        </Link>
+        <span>
+          {actionText}
+        </span>        
+      </div>
+    )
+  }
+
   const buildActivitySummary = ({ item, itemType, author }) => {
     const uniDoc =
       itemType === "UNIFIED_DOCUMENT" ? item : item.unified_document;
     const doc = getDocFromItem(item, itemType);
     const url = getUrlFromItem(item, itemType);
 
-    let actionText = "";
-    let endText = "";
-    if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
-      actionText = "commented on";
-    } else if (
-      itemType === "CONTRIBUTION" &&
-      item.contribution_type === "SUBMITTER"
-    ) {
-      actionText = "submitted";
-    } else if (
-      itemType === "CONTRIBUTION" &&
-      item.contribution_type === "SUPPORTER"
-    ) {
-      actionText = <span>{`supported content on `}</span>;
-      endText = (
-        <span>
-          <span>{`with ${item.source.amount} RSC`}</span>
-          <img
-            src="/static/icons/coin-filled.png"
-            className={css(styles.coinImage)}
-            alt="researchhub-coin-icon"
-          />
-        </span>
-      );
-    } else if (itemType === "AUTHORED_PAPER") {
-      actionText = "authored";
-    }
 
     let timestamp;
     let timeText = "";
@@ -207,43 +247,29 @@ const AuthorFeedItem = ({ author, item, itemType }) => {
       timeText = formatTimestamp(timestamp);
     }
 
+    const actionLineHTML = buildActionLineHTML({ item, itemType, author });
     return (
       <div className={css(styles.activitySummary)}>
         <div className={css(styles.avatarWrapperSmall)}>
           <AuthorAvatar author={author} size={35} disableLink={true} />
-        </div>
-        <div className={css(styles.activityText)}>
-          <Link
-            href={"/user/[authorId]/[tabName]"}
-            as={`/user/${author.id}/overview`}
-          >
-            <a className={css(styles.link, styles.activityItemText)}>
-              {`${author?.first_name} ${author?.last_name}`}
-            </a>
-          </Link>
-          <span
-            className={css(styles.activityTextItem, styles.activityItemText)}
-          >
-            {actionText}
-          </span>
-          <Link href={url}>
-            <a
-              className={css(
-                styles.link,
-                styles.title,
-                styles.activityItemText
-              )}
-            >
-              {doc.title}
-            </a>
-          </Link>
-          <span
-            className={css(styles.activityTextItem, styles.activityItemText)}
-          >
-            {endText}
-          </span>
-          <div className={css(styles.timestampDivider)}>•</div>
-          <span className={css(styles.activityTimestamp)}>{timeText}</span>
+        </div>      
+        <div>
+          {actionLineHTML}
+          <div>
+            <Link href={url}>
+              <a
+                className={css(
+                  styles.link,
+                  styles.title,
+                )}
+              >
+                {truncateText(doc.title, 50)}
+              </a>
+            </Link>
+          </div>
+          <div>
+            <span className={css(styles.activityTimestamp)}>{timeText}</span>
+          </div>
         </div>
       </div>
     );
@@ -282,16 +308,19 @@ var styles = StyleSheet.create({
     display: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
+      marginRight: 15,
     },
   },
   contentWrapper: {
-    width: "calc(100% - 50px)",
+    width: "100%",
     marginLeft: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: 0,
+    },    
   },
   coinImage: {
-    verticalAlign: -4,
-    width: 18,
-    marginLeft: 5,
+    verticalAlign: -2,
+    width: 15,
   },
   // TODO: Clean hard coded hex values
   discussionEntryCard: {
@@ -304,44 +333,23 @@ var styles = StyleSheet.create({
     background: "#FFFFFF",
   },
   activitySummary: {
-    display: "flex",
+    lineHeight: "22px",
+    fontSize: 14,
     alignItems: "flex-start",
     color: colors.BLACK(0.8),
-    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-    //   margin: "0px 6px 6px 0",
-    // },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "flex",
+    },    
   },
   title: {
     textOverflow: "ellipsis",
-    // flexBasis: 600,
     display: "inline",
-  },
-  activityItem: {},
-  activityItemText: {
-    // marginBottom: 20,
-    // whiteSpace: "nowrap",
-    marginLeft: 5,
-    ":first-child": {
-      marginLeft: 0,
-    },
-  },
-  activityText: {
-    // display: "flex",
-    alignItems: "center",
-    lineHeight: "22px",
-    marginLeft: 15,
-    ":first-child": {
-      marginLeft: 0,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 14,
-      lineHeight: "20px",
-    },
   },
   activityTimestamp: {
     // whiteSpace: "nowrap",
-    color: colors.BLACK(0.8),
-    fontSize: 14,
+    display: "block",
+    color: colors.BLACK(0.5),
+    fontSize: 12,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
     },

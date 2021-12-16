@@ -26,7 +26,7 @@ export default function ClaimAuthorPopoverLabel({
     setIsPopoverOpen(false);
   }, [setIsPopoverOpen]);
 
-  if (!author.id) {
+  if (!author?.id) {
     return null;
   }
 

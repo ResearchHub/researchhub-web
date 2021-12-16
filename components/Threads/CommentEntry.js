@@ -60,7 +60,7 @@ class CommentEntry extends Component {
         // revealReply,
         selectedVoteType,
         score,
-        highlight: this.props.comment.highlight && true,
+        highlight: this.shouldHighlight(),
         canEdit:
           this.props.comment.source === "twitter"
             ? false
@@ -77,6 +77,16 @@ class CommentEntry extends Component {
       }
     );
   }
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, comment } = this.props;
+    const isCurrentAuthor = (currentAuthor?.id === comment.created_by.author_profile.id);
+
+    if (newCard || isCurrentAuthor) {
+      return true;  
+    }
+    return false;
+  };  
 
   componentDidUpdate(prevProps) {
     this.handleVoteTypeUpdate(prevProps);
@@ -480,6 +490,7 @@ class CommentEntry extends Component {
       post,
       hypothesis,
       documentType,
+      currentAuthor,
     } = this.props;
     let replies =
       this.state.replies.length < 1
@@ -489,6 +500,7 @@ class CommentEntry extends Component {
       return (
         <ReplyEntry
           data={data}
+          currentAuthor={currentAuthor}
           hostname={hostname}
           path={path}
           key={`disc${reply.id}`}
@@ -732,9 +744,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,
@@ -745,10 +754,7 @@ const styles = StyleSheet.create({
     },
   },
   active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
-    },
+    backgroundColor: colors.LIGHT_BLUE(0.2),
   },
   bottom: {
     width: "100%",
