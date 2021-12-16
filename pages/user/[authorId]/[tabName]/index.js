@@ -4,6 +4,7 @@ import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { connect, useStore, useDispatch } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import get from "lodash/get";
+import { breakpoints } from "~/config/themes/screen";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -23,7 +24,6 @@ import Head from "~/components/Head";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import AuthorTabBar from "~/components/AuthorTabBar";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
 import UserPostsTab from "~/components/Author/Tabs/UserPosts";
@@ -31,6 +31,7 @@ import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 // import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
+import HorizontalTabBar from "~/components/HorizontalTabBar";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -69,42 +70,6 @@ const SECTIONS = {
   twitter: "twitter",
   picture: "picture",
 };
-
-const getTabs = (author, transactions) =>
-  filterNull([
-    {
-      href: "overview",
-      label: "overview",
-      name: "Overview",
-    },
-    {
-      href: "discussions",
-      label: "comments",
-      name: "Comments",
-    },
-    {
-      href: "submissions",
-      label: "submissions",
-      name: "Submissions",
-    },
-    {
-      href: "authored-papers",
-      label: "authored papers",
-      name: "Authored Papers",
-    },
-    // {
-    //   href: "transactions",
-    //   label: "transactions",
-    //   name: "Transactions",
-    // },
-    // {
-    //   href: "boosts",
-    //   label: "supported content",
-    //   name: "Supported Content",
-    //   showCount: true,
-    //   count: () => author.promotions && author.promotions.count,
-    // },
-  ]);
 
 function AuthorPage(props) {
   const { auth, author, hostname, user, transactions, fetchedAuthor } = props;
@@ -170,6 +135,53 @@ function AuthorPage(props) {
       setTabName(selectedTab);
     }
   }, [router]);
+
+  const getTabs = () => {
+    const tabs = [
+      {
+        href: "overview",
+        label: "overview",
+        name: "Overview",
+      },
+      {
+        href: "discussions",
+        label: "comments",
+        name: "Comments",
+      },
+      {
+        href: "submissions",
+        label: "submissions",
+        name: "Submissions",
+      },
+      {
+        href: "authored-papers",
+        label: "authored papers",
+        name: "Authored Papers",
+      },
+      {
+        href: "transactions",
+        label: "transactions",
+        name: "Transactions",
+      },
+    ];
+
+    return tabs.map((t) => {
+      t.isSelected = t.href === router.query.tabName ? true : false;
+      return t;
+    });
+  }
+
+  const handleTabClick = (tab) => {
+    const updatedQuery = {
+      ...router.query,
+      tabName: tab.href,
+    };
+
+    router.push({
+      pathname: "/user/[authorId]/[tabName]",
+      query: updatedQuery,
+    }, undefined, { shallow: true });
+  };
 
   async function fetchAuthoredPapers() {
     await dispatch(
@@ -274,11 +286,13 @@ function AuthorPage(props) {
       AuthorActions.getAuthor({ authorId: router.query.authorId })
     );
     setFetchedUser(true); // needed for AuthorTabBar
+    setFetching(false);
     return response;
   }
 
   useEffect(() => {
     refetchAuthor();
+    fetchUserTransactions();
   }, [router.query.authorId]);
 
   useEffect(() => {
@@ -427,7 +441,7 @@ function AuthorPage(props) {
       });
   };
 
-  const tabs = getTabs(author, transactions);
+  const tabs = getTabs();
 
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
@@ -481,6 +495,13 @@ function AuthorPage(props) {
           contributionType="authored-papers"
         />
       </div>
+      <div
+        className={css(
+        tabName === "transactions" ? styles.reveal : styles.hidden
+        )}
+      >
+        <UserTransactionsTab fetching={fetching} />
+      </div>      
     </ComponentWrapper>
   );
 
@@ -1070,16 +1091,19 @@ function AuthorPage(props) {
           </div>
         </div>
       </ComponentWrapper>
-      <AuthorTabBar
-        tabs={tabs}
-        selectedTab={tabName}
-        dynamic_href={"/user/[authorId]/[tabName]"}
-        author={author}
-        authorId={router.query.authorId}
-        user={user}
-        fetching={fetching}
-        showTabBar={fetchedUser}
-      />
+      <div className={css(styles.tabMenuContainer)}>
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <HorizontalTabBar
+            id="tabBarForSearch"
+            tabs={tabs}
+            onClick={handleTabClick}
+            containerStyle={styles.tabContainer}
+            dragging={true}
+            alignCenter={false}
+            showArrowsOnWidth={breakpoints.xsmall.int}
+          />
+        </ComponentWrapper>
+      </div>
       <div className={css(styles.contentContainer)}>{tabContents}</div>
       <ShareModal
         close={() => setOpenShareModal(false)}
@@ -1135,6 +1159,15 @@ const styles = StyleSheet.create({
   root: {
     background: "#FFF",
   },
+  tabMenuContainer: {
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+  },
+  tabContainer: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "flex-start",
+    borderBottom: 0,
+  },  
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",

@@ -55,7 +55,7 @@ class DiscussionEntry extends Component {
         score: data.score,
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
-        highlight: newCard,
+        highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
         canEdit:
           data.source !== "twitter"
@@ -71,6 +71,16 @@ class DiscussionEntry extends Component {
           }, 10000);
       }
     );
+  };
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, data } = this.props;
+    const isCurrentAuthor = (currentAuthor?.id === data.created_by.author_profile.id);
+    const comments = data.comments || [];
+    if (newCard || (isCurrentAuthor && comments.length > 0)) {
+      return true;  
+    }
+    return false;
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -294,6 +304,7 @@ class DiscussionEntry extends Component {
       post,
       hypothesis,
       documentType,
+      currentAuthor,
     } = this.props;
     let comments = this.state.comments;
 
@@ -303,6 +314,7 @@ class DiscussionEntry extends Component {
           <CommentEntry
             data={data}
             hostname={hostname}
+            currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
             comment={comment}
@@ -802,10 +814,7 @@ const styles = StyleSheet.create({
     },
   },
   active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
-    },
+    backgroundColor: colors.LIGHT_BLUE(0.2),
   },
   viewMoreContainer: {
     width: "100%",

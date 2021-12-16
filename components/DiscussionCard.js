@@ -40,8 +40,6 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#FFFFF",
     padding: "15px 5px 15px 5px",
-    borderRadius: 10,
-    border: "1px solid #FFFFFF",
     "@media only screen and (max-width: 415px)": {
       paddingLeft: 10,
       paddingRight: 10,
@@ -52,9 +50,7 @@ const styles = StyleSheet.create({
       width: "calc(100% - 40px)",
       padding: 16,
       backgroundColor: "#FFF",
-      marginBottom: 10,
       ":hover": {
-        // border: "solid 1px #D2D2E6",
       },
     },
   },
@@ -62,9 +58,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: "calc(100% - 40px)",
       padding: 16,
-      border: "solid 1px #F7F7FB",
-      backgroundColor: "#FFF",
-      marginBottom: 10,
       ":hover": {
         border: "solid 1px #D2D2E6",
       },
