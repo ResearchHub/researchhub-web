@@ -48,10 +48,7 @@ class ReplyEntry extends Component {
       {
         score,
         selectedVoteType,
-        highlight:
-          (this.props.reply.highlight && true) ||
-          this.props?.currentAuthor?.id ===
-            this.props.reply.created_by.author_profile.id,
+        highlight: this.shouldHighlight(),
         removed: this.props.reply.is_removed,
         canEdit:
           this.props.auth &&
@@ -67,6 +64,15 @@ class ReplyEntry extends Component {
       }
     );
   }
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, reply } = this.props;
+    const isCurrentAuthor = (currentAuthor?.id === reply.created_by.author_profile.id);
+    if (newCard || isCurrentAuthor) {
+      return true;  
+    }
+    return false;
+  };    
 
   componentDidUpdate(prevProps) {
     if (prevProps.auth !== this.props.auth) {
@@ -567,9 +573,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginLeft: 8,
     width: "calc(100% - 8px)",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,
@@ -580,10 +583,7 @@ const styles = StyleSheet.create({
     },
   },
   active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
-    },
+    backgroundColor: colors.LIGHT_BLUE(0.2),
   },
   bottom: {
     width: "100%",

@@ -57,19 +57,20 @@ const TabBar = (props) => {
           <ScrollMenu
             ref={menuRef}
             data={menu}
-            arrowLeft={
-              <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
-            }
-            arrowRight={
-              <NavigationArrow icon={icons.chevronRight} direction={"right"} />
-            }
-            menuStyle={styles.tabContainer}
-            itemStyle={{ border: "none", highlight: "none", outline: "none" }}
-            hideSingleArrow={true}
+            // alignCenter={true}
+            // arrowLeft={
+            //   <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
+            // }
+            // arrowRight={
+            //   <NavigationArrow icon={icons.chevronRight} direction={"right"} />
+            // }
+             // menuStyle={styles.tabContainer}
+            // itemStyle={{ border: "none", highlight: "none", outline: "none" }}
+            // hideSingleArrow={true}
             onSelect={onSelect}
             wheel={false}
             selected={selected}
-            scrollToSelected={true}
+            // scrollToSelected={false}
           />
         </ReactPlaceholder>
       </ComponentWrapper>
@@ -136,21 +137,21 @@ const Tab = (props) => {
 const styles = StyleSheet.create({
   componentWrapper: {
     display: "flex",
-    justifyContent: "center",
+    // justifyContent: "center",
     boxShadow:
       "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
   },
   container: {
     display: "flex",
     width: "100%",
-    justifyContent: "center",
+    // justifyContent: "center",
     overflow: "hidden",
     borderBottom: "1px solid #F0F0F0",
     background: "#FFF",
   },
   tabContainer: {
     display: "flex",
-    width: "105%",
+    width: "100%",
     justifyContent: "flex-start",
   },
   placeholder: {

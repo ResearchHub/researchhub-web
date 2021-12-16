@@ -9,6 +9,10 @@ import AuthorFeedItem from "./AuthorFeedItem";
 import { isEmpty } from "~/config/utils/nullchecks";
 import EmptyState from "~/components/Author/Tabs/EmptyState";
 import icons from "~/config/themes/icons";
+import dayjs from "dayjs";
+import debounce from "lodash/debounce";
+import { breakpoints } from "~/config/themes/screen";
+
 
 const AuthorActivityFeed = ({
   author,
@@ -21,11 +25,16 @@ const AuthorActivityFeed = ({
   const [isLoading, setIsLoading] = useState(true);
   const [needsInitialFetch, setNeedsInitialFetch] = useState(false);
   const [currentAuthorId, setCurrentAuthorId] = useState(null);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    setIsSmallScreen(window.innerWidth <= breakpoints.small.int);
+  }, [])
 
   // Reset state when author changes
   useEffect(() => {
     if (isVisible && router.query.authorId !== currentAuthorId) {
-      setCurrentAuthorId(router.query.authorId);
+      setCurrentAuthorId(parseInt(router.query.authorId));
       setIsLoading(true);
       setNeedsInitialFetch(true);
     }
@@ -52,7 +61,12 @@ const AuthorActivityFeed = ({
         .then(Helpers.parseJSON)
         .then((res) => {
           setNextResultsUrl(res.next);
-          setFeedResults(res.results);
+          if (isSmallScreen) {
+            setFeedResults(flattenActivity(res.results));
+          }
+          else {
+            setFeedResults(res.results);
+          }
         })
         .catch((e) => {
           // TODO: log in sentry
@@ -60,13 +74,73 @@ const AuthorActivityFeed = ({
     };
 
     if (needsInitialFetch) {
-      setCurrentAuthorId(router.query.authorId);
+      setCurrentAuthorId(parseInt(router.query.authorId));
       _fetchAuthorActivity().finally(() => {
         setNeedsInitialFetch(false);
         setIsLoading(false);
       });
     }
   }, [needsInitialFetch]);
+
+  // Normally, threads with comments, replies are returned however,
+  // sometimes (mainly in small screens) we do not want to render the
+  // threads since they are difficult to view in mobile.
+  const flattenActivity = (feedResults) => {
+    let newActivity = [];
+    for (let i = 0; i < feedResults.length; i++) {
+      if (feedResults[i].contribution_type === "COMMENTER") {
+        const authorDiscussions = extractAuthorDiscussionsFromThread(feedResults[i])
+        newActivity = newActivity.concat(authorDiscussions);
+      }
+      else {
+        newActivity.push(feedResults[i]);
+      }
+    }
+
+    return newActivity.sort((a,b) => {
+      console.log('a.created_date', a.created_date);
+      console.log('b.created_date', b.created_date);
+      return (dayjs(a.created_date) > dayjs(b.created_date));
+    });
+  }
+
+  const extractAuthorDiscussionsFromThread = (feedResult) => {
+    const discussions = [];
+    const thread = feedResult.source;
+
+    if (thread.created_by.author_profile.id === currentAuthorId) {
+      discussions.push({
+        source: thread,
+        unified_document: feedResult.unified_document,
+        contribution_type: "COMMENTER",
+        created_date: thread.created_date,
+      });
+    }
+
+    thread.comments.forEach((comment) => {
+      if (comment.created_by.author_profile.id === currentAuthorId) {
+        discussions.push({
+          source: comment,
+          unified_document: feedResult.unified_document,
+          contribution_type: "COMMENTER",
+          created_date: comment.created_date,
+        });
+      }
+
+      comment.replies.forEach((reply) => {
+        if (reply.created_by.author_profile.id === currentAuthorId) {
+          discussions.push({
+            source: reply,
+            unified_document: feedResult.unified_document,
+            contribution_type: "COMMENTER",
+            created_date: reply.created_date,
+          });
+        }        
+      })
+    });
+
+    return discussions;
+  };
 
   const loadNextResults = () => {
     setIsLoading(true);
@@ -75,9 +149,14 @@ const AuthorActivityFeed = ({
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
-        setFeedResults([...feedResults, ...res.results]);
         setNextResultsUrl(res.next);
-
+        if (isSmallScreen) {
+          setFeedResults(flattenActivity(res.results));
+          setFeedResults([...feedResults, ...flattenActivity(res.results)]);
+        }
+        else {
+          setFeedResults([...feedResults, ...res.results]);
+        }
         // TODO: We probably need to do this
         // fetchAndSetUserVotes(res.results);
       })
@@ -92,7 +171,7 @@ const AuthorActivityFeed = ({
       showLoadingAnimation
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
-      {feedResults.length === 0 ? (
+      {feedResults.length === 0 && !isLoading ? (
         <EmptyState
           message={"No activity found."}
           icon={<div>{icons.bat}</div>}
@@ -110,6 +189,7 @@ const AuthorActivityFeed = ({
                 author={author}
                 item={item}
                 itemType={itemType}
+                isSmallScreen={isSmallScreen}
               />
             );
           })}
