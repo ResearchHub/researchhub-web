@@ -16,6 +16,7 @@ import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { breakpoints } from "~/config/themes/screen";
 import { captureError } from "~/config/utils/error";
 import { connect } from "react-redux";
@@ -92,6 +93,7 @@ const ELNEditor = ({
   const jupyterViewerRef = useRef();
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
+  const [arr, setArr] = useState([]);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -143,14 +145,15 @@ const ELNEditor = ({
       <div
         onClick={async () => {
           const params = {
-            file_name: "RunningCode.ipynb",
+            filename: "Untitled.ipynb",
           };
 
           const response = await fetch(
-            API.JUPYTER({ noteId: 264 }),
+            API.GET_JUPYTER({ uid: "oTamDOhgYAdx9pvppHOchehP2WMo86nO" }),
             API.POST_CONFIG(params)
           );
           const parsed = await Helpers.parseJSON(response);
+          console.log(parsed);
           jupyterViewerRef.current.updateJupyterContent(parsed.data.content);
         }}
       >
@@ -258,10 +261,14 @@ const ELNEditor = ({
                   },
                 },
                 products: {
-                  productRenderer: (id, domElement) => {
-                    //const product = products.find((product) => product.id === id);
+                  productRenderer: (uid, domElement) => {
                     ReactDOM.render(
-                      <CustomJupyterViewer ref={jupyterViewerRef} />,
+                      <CustomJupyterViewer
+                        ref={jupyterViewerRef}
+                        uid={uid}
+                        wsAuth={true}
+                        wsUrl={WS_ROUTES.JUPYTER(uid)}
+                      />,
                       domElement
                     );
                   },

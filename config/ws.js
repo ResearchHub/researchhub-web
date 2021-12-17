@@ -1,6 +1,7 @@
 export const BASE_URL = setBaseUrl();
 
 export const ROUTES = {
+  JUPYTER: (jupyter_uid) => `${BASE_URL}jupyter/${jupyter_uid}/`,
   NOTE: (orgSlug) => `${BASE_URL}${orgSlug}/notebook/`,
   NOTIFICATIONS: (userId) => `${BASE_URL}notifications/${userId}/`,
 };
