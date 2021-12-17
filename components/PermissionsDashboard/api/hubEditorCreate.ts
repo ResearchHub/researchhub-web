@@ -16,7 +16,7 @@ export function hubEditorCreate({
   selectedHubID,
 }: HubEditorCreateArgs): void {
   fetch(
-    API.HUB_EDITOR,
+    API.HUB_NEW_EDITOR,
     API.POST_CONFIG({
       editor_email: editorEmail,
       selected_hub_id: selectedHubID,

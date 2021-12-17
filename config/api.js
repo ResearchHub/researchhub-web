@@ -207,7 +207,6 @@ const routes = (BASE_URL) => {
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
       return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
     },
-    HUB_EDITOR: BASE_URL + "hub_editor_create",
     CKEDITOR_TOKEN: () => {
       return `${BASE_URL}ckeditor/token/`;
     },
@@ -583,6 +582,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",
     SORTED_HUB: (params = {}) => {
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
