@@ -105,7 +105,7 @@ const TransactionCard = (props) => {
 const styles = StyleSheet.create({
   transactionCard: {
     width: "100%",
-    padding: "24px 15px",
+    padding: 15,
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
@@ -115,6 +115,8 @@ const styles = StyleSheet.create({
     borderBottom: "1px solid #EDEDED",
     marginBottom: 10,
     borderRadius: 3,
+    background: "white",
+    border: "1px solid #EDEDED",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
