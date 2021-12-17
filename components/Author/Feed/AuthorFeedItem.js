@@ -300,20 +300,16 @@ var styles = StyleSheet.create({
     verticalAlign: -2,
     width: 15,
   },
-  // TODO: Clean hard coded hex values
   discussionEntryCard: {
     padding: 15,
     boxSizing: "border-box",
-    border: "1px solid #EDEDED",
+    border: `1px solid ${genericCardColors.BORDER}`,
     marginTop: 12,
     marginBottom: 12,
     borderRadius: 3,
-    background: "#FFFFFF",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "10px 4px 0px 2px",
-    },
+    background: "white",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      padding: "8px 8px 0px 4px",
+      padding: "8px 8px 4px 8px",
     },
   },
   activitySummary: {
@@ -330,7 +326,6 @@ var styles = StyleSheet.create({
     display: "inline",
   },
   activityTimestamp: {
-    // whiteSpace: "nowrap",
     display: "block",
     color: colors.BLACK(0.5),
     fontSize: 12,

@@ -553,7 +553,12 @@ class CommentEntry extends Component {
             noVote && styles.columnNoVote
           )}
         >
-          <div className={css(styles.voteContainer)}>
+          <div
+            className={css(
+              styles.voteContainer,
+              this.state.highlight && styles.voteContainerHighlight
+            )}
+          >
             {noVote ? null : (
               <VoteWidget
                 styles={styles.voteWidget}
@@ -754,6 +759,9 @@ const styles = StyleSheet.create({
     height: "100%",
     boxSizing: "border-box",
     width: "100%",
+  },
+  voteContainerHighlight: {
+    marginTop: 5,
   },
   highlight: {
     width: "100%",
