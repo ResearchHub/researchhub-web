@@ -7,10 +7,7 @@ import FeedItemPlaceholder from "~/components/Placeholders/FeedItemPlaceholder";
 import ReactPlaceholder from "react-placeholder/lib";
 import AuthorFeedItem from "./AuthorFeedItem";
 import { isEmpty } from "~/config/utils/nullchecks";
-import EmptyState from "~/components/Author/Tabs/EmptyState";
-import icons from "~/config/themes/icons";
-import dayjs from "dayjs";
-import debounce from "lodash/debounce";
+import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
 
 const AuthorActivityFeed = ({
@@ -109,10 +106,7 @@ const AuthorActivityFeed = ({
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
       {feedResults.length === 0 && !isLoading ? (
-        <EmptyState
-          message={"No activity found."}
-          icon={<div>{icons.bat}</div>}
-        />
+        <SearchEmpty title={"No activity found for this user"} />
       ) : (
         <div>
           {feedResults.map((item, index) => {
