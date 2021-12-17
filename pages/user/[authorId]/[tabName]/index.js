@@ -45,11 +45,10 @@ const UserInfoModal = dynamic(() =>
 // Config
 import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import { absoluteUrl } from "~/config/utils/routing";
 import { createUserSummary } from "~/config/utils/user";
-import killswitch from "~/config/killswitch/killswitch";
 import {
   filterNull,
+  isEmpty,
   isNullOrUndefined,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
@@ -1059,21 +1058,23 @@ function AuthorPage(props) {
               {authorReputation}
               {authorRscBalance}
             </div>
-            <div className={css(styles.reputationContainer)}>
-              <div className={css(styles.editorLabelWrap)}>
-                <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
-                <span
-                  style={{
-                    color: colors.BLACK(1),
-                    fontWeight: 500,
-                    marginLeft: 8,
-                  }}
-                >
-                  {"Editor of: "}
-                </span>
-                {authorIsEditorOf}
+            {!isEmpty(authorIsEditorOf) && (
+              <div className={css(styles.reputationContainer)}>
+                <div className={css(styles.editorLabelWrap)}>
+                  <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+                  <span
+                    style={{
+                      color: colors.BLACK(1),
+                      fontWeight: 500,
+                      marginLeft: 8,
+                    }}
+                  >
+                    {"Editor of: "}
+                  </span>
+                  {authorIsEditorOf}
+                </div>
               </div>
-            </div>
+            )}
             {authorDescription}
             {!doesAuthorHaveUser ? (
               <ClaimAuthorPopoverLabel

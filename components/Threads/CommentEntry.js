@@ -81,7 +81,7 @@ class CommentEntry extends Component {
   componentDidUpdate(prevProps) {
     this.handleVoteTypeUpdate(prevProps);
     if (prevProps.auth !== this.props.auth) {
-      let { data, comment } = this.props;
+      let { comment } = this.props;
       this.setState({
         canEdit:
           this.props.comment.source === "twitter"
@@ -164,7 +164,7 @@ class CommentEntry extends Component {
               fetching: false,
             });
           })
-          .catch((err) => {
+          .catch((_err) => {
             let { setMessage, showMessage } = this.props;
             setMessage("Hm something went wrong");
             showMessage({ show: true, error: true, clickoff: true });
@@ -525,7 +525,6 @@ class CommentEntry extends Component {
     let body = comment.source === "twitter" ? comment.plain_text : comment.text;
     let username = createUsername(comment);
     let metaIds = this.formatMetaData();
-
     return (
       <div
         className={css(styles.row, styles.commentCard)}
@@ -570,6 +569,7 @@ class CommentEntry extends Component {
                     "created_by",
                     "author_profile",
                   ])}
+                  isCreatedByEditor={data?.is_created_by_editor}
                   data={comment}
                   username={username}
                   date={date}
@@ -645,13 +645,12 @@ class CommentEntry extends Component {
               </Fragment>
             )}
           </div>
-          {!this.state.collapsed &&
-            (this.state.revealReply && (
-              <Fragment>
-                {this.renderReplies()}
-                {this.renderViewMore()}
-              </Fragment>
-            ))}
+          {!this.state.collapsed && this.state.revealReply && (
+            <Fragment>
+              {this.renderReplies()}
+              {this.renderViewMore()}
+            </Fragment>
+          )}
         </div>
       </div>
     );
@@ -845,7 +844,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommentEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentEntry);

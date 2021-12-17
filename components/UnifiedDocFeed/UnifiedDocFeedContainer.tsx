@@ -29,6 +29,7 @@ import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import FeedInfoCard from "./FeedInfoCard";
+import { breakpoints } from "~/config/themes/screen";
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -231,14 +232,6 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      {!hasSubscribed ? (
-        <div>
-          <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            {/* @ts-ignore */}
-            <CreateFeedBanner loggedIn={loggedIn} />
-          </div>
-        </div>
-      ) : null}
       {isLoading ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -295,14 +288,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    "@media only screen and (min-width: 1200px)": {
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
       paddingLeft: 28,
       paddingRight: 28,
     },
-    "@media only screen and (max-width: 990px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
     },
   },
@@ -314,7 +307,7 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
     overflow: "auto",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },
   },
@@ -332,7 +325,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     marginLeft: "auto",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       marginTop: 16,
     },
@@ -372,7 +365,7 @@ const styles = StyleSheet.create({
   bannerContainer: {
     marginBottom: 16,
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       padding: 0,
       width: "100%",
     },
