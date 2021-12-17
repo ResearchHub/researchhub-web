@@ -51,7 +51,6 @@ const AuthorFeedItem = ({
             {...doc}
             formattedDocType="post"
             key={key}
-            // TODO: Probably need to do this?
             user_vote={doc?.user_vote}
           />
         );
@@ -85,8 +84,6 @@ const AuthorFeedItem = ({
               currentAuthor={author}
               path={url}
               mobileView={false}
-              // discussionCount={calculatedCount}
-              // setCount={setCount}
               documentType={docType}
               paper={doc.id}
               hypothesis={doc}
