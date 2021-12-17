@@ -1,3 +1,5 @@
+import { captureError } from "~/config/utils/error";
+
 import { buildSlug } from "../../../../config/utils/document";
 import { FormState } from "../types/UploadComponentTypes";
 import { ID } from "../../../../config/types/root_types";
@@ -39,6 +41,10 @@ export async function uploadNewPaper({
       : buildSlug(paper_title ? paper_title : title);
     onSuccess({ paperID, paperName });
   } else {
+    captureError({
+      msg: "Failed to upload paper",
+      data: { response },
+    });
     onError(resPayload);
   }
 }

@@ -2,7 +2,7 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { toTitleCase } from "~/config/utils/string";
@@ -17,8 +17,8 @@ const isServer = () => typeof window === "undefined";
 
 class Index extends Component {
   static async getInitialProps(ctx) {
-    const { query, query: urlQuery } = ctx;
-    const { res, slug, name } = query;
+    const { query } = ctx;
+    const { res, slug, name, type } = query;
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
 
@@ -36,16 +36,8 @@ class Index extends Component {
       throw 404;
     }
 
-    if (!isServer()) {
-      return {
-        slug,
-        name,
-        initialProps: {},
-        currentHub,
-      };
-    }
     try {
-      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+      const urlDocType = getBEUnifiedDocType(type);
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(

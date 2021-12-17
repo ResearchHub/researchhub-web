@@ -1,8 +1,8 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
@@ -16,32 +16,25 @@ const isServer = () => typeof window === "undefined";
 
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
-  const { query, query: urlQuery } = ctx;
-  const { type, page, filter } = query;
+  const { query } = ctx;
+  const { type, filter } = ctx?.query ?? {};
   const filterObj = filterOptions.filter((el) => el.value === filter)[0];
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
   const defaultProps = {
-    initialFeed: null,
-    leaderboardFeed: null,
-    initialHubList: null,
     feed: 0,
+    filter: filterObj,
+    home: true,
+    initialFeed: null,
+    initialHubList: null,
+    leaderboardFeed: null,
     loggedIn: authToken !== undefined,
+    page: 1,
+    query,
   };
 
-  if (!isServer()) {
-    return {
-      ...defaultProps,
-      home: true,
-      page: 1,
-      feed: 0,
-      filter: filterObj,
-      query,
-    };
-  }
-
   try {
-    const urlDocType = type || "all";
+    const urlDocType = getBEUnifiedDocType(type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
         hubId: null,
@@ -58,7 +51,6 @@ Index.getInitialProps = async (ctx) => {
     return {
       ...defaultProps,
       initialFeed,
-      feed: 0,
     };
   } catch (error) {
     return defaultProps;

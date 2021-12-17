@@ -7,7 +7,7 @@ echo Step 1/3: Logging into ECR;
     echo "Using $AWS_VER"
 
     if [[ $AWS_VER =~ $AWS_REGEX ]]; then
-        aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin 794128250202.dkr.ecr.us-west-2.amazonaws.com
+        aws ecr get-login-password --region us-west-2 --profile researchhub | docker login --username AWS --password-stdin 794128250202.dkr.ecr.us-west-2.amazonaws.com
     else
         $(aws ecr get-login --no-include-email --region us-west-2 --profile researchhub);
     fi
