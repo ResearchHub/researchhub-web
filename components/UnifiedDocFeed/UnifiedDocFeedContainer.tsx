@@ -28,6 +28,7 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import FeedInfoCard from "./FeedInfoCard";
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -202,13 +203,13 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
-        {isHomePage ? null : (
-          <div className={css(styles.subscribeContainer)}>
-            {hub && subscribeButton}
-          </div>
-        )}
+      <FeedInfoCard
+        hub={hub}
+        hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+        isHomePage={isHomePage}
+        mainHeaderText={formattedMainHeader}
+      />
+      <div className={css(styles.filterContainer)}>
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
             onSubFilterSelect={(_type: string, filterBy: any): void =>
@@ -328,45 +329,11 @@ const styles = StyleSheet.create({
       marginTop: 16,
     },
   },
-  titleContainer: {
+  filterContainer: {
     display: "flex",
     alignItems: "center",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
-    },
-  },
-  title: {
-    color: "#241F3A",
-    // width: "100%",
-    fontWeight: 400,
-    fontSize: 30,
-    padding: 0,
-    margin: 0,
-    textOverflow: "ellipsis",
-
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 25,
-      textAlign: "center",
-      justifyContent: "center",
-      whiteSpace: "pre-wrap",
-      wordBreak: "normal",
-      display: "flex",
-    },
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 25,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
-    },
-  },
-  subscribeContainer: {
-    marginLeft: 16,
-    minWidth: 100,
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
     },
   },
   loadMoreButton: {

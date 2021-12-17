@@ -32,4 +32,8 @@ export const breakpoints = {
     int: 470,
     str: "470px",
   },
+  xxxsmall: {
+    int: 370,
+    str: "370px",
+  },
 };
