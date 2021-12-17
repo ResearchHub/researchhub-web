@@ -32,8 +32,11 @@ const AuthorActivityFeed = ({
 
   // Reset state when author changes
   useEffect(() => {
-    if (isVisible && router.query.authorId !== currentAuthorId) {
-      setCurrentAuthorId(parseInt(router.query.authorId));
+    if (
+      isVisible &&
+      String(router.query.authorId) !== String(currentAuthorId)
+    ) {
+      setCurrentAuthorId(router.query.authorId);
       setIsLoading(true);
       setNeedsInitialFetch(true);
     }
@@ -61,6 +64,8 @@ const AuthorActivityFeed = ({
         .then((res) => {
           setNextResultsUrl(res.next);
           setFeedResults(res.results);
+          setNeedsInitialFetch(false);
+          setIsLoading(false);
         })
         .catch((e) => {
           setFeedResults([]);
@@ -69,11 +74,8 @@ const AuthorActivityFeed = ({
     };
 
     if (needsInitialFetch) {
-      setCurrentAuthorId(parseInt(router.query.authorId));
-      _fetchAuthorActivity().finally(() => {
-        setNeedsInitialFetch(false);
-        setIsLoading(false);
-      });
+      setCurrentAuthorId(router.query.authorId);
+      _fetchAuthorActivity();
     }
   }, [needsInitialFetch]);
 
@@ -84,16 +86,12 @@ const AuthorActivityFeed = ({
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
+        setIsLoading(false);
         setNextResultsUrl(res.next);
         setFeedResults([...feedResults, ...res.results]);
-        // TODO: We probably need to do this
-        // fetchAndSetUserVotes(res.results);
       })
       .catch(() => {
         setFeedResults([]);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
   };
 
@@ -115,6 +113,7 @@ const AuthorActivityFeed = ({
               contributionType === "authored-papers"
                 ? "AUTHORED_PAPER"
                 : "CONTRIBUTION";
+
             return (
               <AuthorFeedItem
                 key={item.id}

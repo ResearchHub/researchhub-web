@@ -261,7 +261,7 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
       <div className={css(styles.avatarWrapper)}>
         <AuthorAvatar author={author} size={35} disableLink={true} />
       </div>
-      <div class={css(styles.contentWrapper)}>
+      <div className={css(styles.contentWrapper)}>
         {activitySummaryHTML}
         {cardHTML}
       </div>

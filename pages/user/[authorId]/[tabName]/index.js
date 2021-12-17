@@ -16,7 +16,6 @@ import { TransactionActions } from "~/redux/transaction";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import AvatarUpload from "~/components/AvatarUpload";
 import Button from "~/components/Form/Button";
 import ClaimAuthorPopoverLabel from "../../../../components/ClaimAuthorPopoverLabel";
@@ -28,12 +27,7 @@ import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
 import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
-import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
-// import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
-import UserPostsTab from "~/components/Author/Tabs/UserPosts";
-import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-// import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 
@@ -191,14 +185,6 @@ function AuthorPage(props) {
     );
   };
 
-  async function fetchAuthoredPapers() {
-    await dispatch(
-      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
-    );
-    let papers = store.getState().author.authoredPapers.papers;
-    return checkUserVotes(papers, "authored");
-  }
-
   function fetchAuthorSuspended() {
     return fetch(
       API.USER({ authorId: router.query.authorId }),
@@ -220,68 +206,7 @@ function AuthorPage(props) {
       });
   }
 
-  async function fetchUserContributions() {
-    await dispatch(
-      AuthorActions.getUserContributions({
-        authorId: router.query.authorId,
-      })
-    );
-    return checkUserVotes(
-      store.getState().author.userContributions.contributions,
-      "contributions"
-    );
-  }
-
-  function fetchUserDiscussions() {
-    return dispatch(
-      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
-    );
-  }
-
-  function fetchUserPromotions() {
-    const { auth, author } = props;
-
-    // Reset promotions since depending on the user, they
-    // may not be refetched and as a result, a cached promotions list
-    // will stick to another user.
-    if (authorUserID !== user.id) {
-      dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "promotions",
-          value: {},
-          prevState: store.getState().author,
-        })
-      );
-      return;
-    }
-
-    setFetchingPromotions(true);
-    return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (res) => {
-        await dispatch(
-          AuthorActions.updateAuthorByKey({
-            key: "promotions",
-            value: res,
-            prevState: store.getState().author,
-          })
-        );
-        setFetchingPromotions(false);
-      })
-      .catch((e) => {
-        console.warn("Failed to fetch promotions", e);
-      })
-      .finally((e) => {
-        setFetchingPromotions(false);
-      });
-  }
-
   function fetchUserTransactions() {
-    if (!auth.isLoggedIn) return;
     return dispatch(
       TransactionActions.getWithdrawals(1, store.getState().transactions)
     );
@@ -299,8 +224,9 @@ function AuthorPage(props) {
   }
 
   useEffect(() => {
-    refetchAuthor();
-    fetchUserTransactions();
+    refetchAuthor().then(() => {
+      fetchUserTransactions();
+    });
   }, [router.query.authorId]);
 
   useEffect(() => {
@@ -323,15 +249,6 @@ function AuthorPage(props) {
   }, [author, user]);
 
   useEffect(() => {
-    if (prevProps && !auth.isLoggedIn) {
-      checkUserVotes(); // clears the state
-    } else if (!prevProps && auth.isLoggedIn) {
-      let papers = store.getState().author.authoredPapers.papers;
-      checkUserVotes(papers, "authored");
-      let contributions =
-        store.getState().author.userContributions.contributions;
-      checkUserVotes(contributions, "contributions");
-    }
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
@@ -358,95 +275,6 @@ function AuthorPage(props) {
     if (section === SECTIONS.picture) {
       setHoverProfilePicture(false);
     }
-  };
-
-  const checkUserVotes = (papers = [], type) => {
-    if (!store.getState().auth.isLoggedIn && papers.length) {
-      let authoredPapers = { ...store.getState().author.authoredPapers };
-
-      authoredPapers.papers = authoredPapers.papers.map((paper) => {
-        paper.user_vote = null;
-        return paper;
-      });
-
-      dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "authoredPapers",
-          value: authoredPapers,
-        })
-      );
-
-      let contributions = { ...store.getState().author.userContributions };
-
-      contributions.contributions = contributions.contributions.map((paper) => {
-        paper.user_vote = null;
-        return paper;
-      });
-
-      return dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "contributions",
-          value: contributions,
-        })
-      );
-    }
-
-    let paperIds = papers.map((paper) => {
-      return paper.id;
-    });
-
-    if (paperIds.length === 0) return;
-
-    fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let updates = { ...res };
-        let updatedPapers = papers.map((paper) => {
-          if (updates[paper.id]) {
-            paper.user_vote = updates[paper.id];
-          }
-          return paper;
-        });
-
-        if (type === "authored") {
-          let newAuthored = { ...store.getState().author.authoredPapers };
-          let oldState = { ...store.getState().author.authoredPapers };
-          oldState.papers = [];
-          newAuthored.papers = updatedPapers;
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "authoredPapers",
-              value: oldState,
-            })
-          );
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "authoredPapers",
-              value: newAuthored,
-            })
-          );
-        } else if (type === "contributions") {
-          let newContributions = {
-            ...store.getState().author.userContributions,
-          };
-          let oldState = { ...store.getState().author.userContributions };
-          oldState.contributions = [];
-          newContributions.contributions = updatedPapers;
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "userContributions",
-              value: oldState,
-            })
-          );
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "userContributions",
-              value: newContributions,
-            })
-          );
-        }
-      });
   };
 
   const tabs = getTabs();
@@ -512,75 +340,6 @@ function AuthorPage(props) {
       </div>
     </ComponentWrapper>
   );
-
-  //   const tabContents =
-  //     switch(sdd) {
-  //
-  //     }
-  //     tabName === "overview" ? (
-  //       <div
-  //         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
-  //       >
-  //       </div>
-  //     ) : (
-  //       // render all tab content on the dom, but only show if selected
-  //       <ComponentWrapper>
-  //         <div className={css(styles.tabMeta)}>
-  //           <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-  //
-  //           <div
-  //             className={css(
-  //               tabName === "overview" ? styles.reveal : styles.hidden
-  //             )}
-  //           >
-  //             {/*<UserOverviewTab fetching={fetching} />*/}
-  //           </div>
-  //           <div
-  //             className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
-  //           >
-  //             <UserPostsTab fetching={fetching} />
-  //           </div>
-  //           <div
-  //             className={css(
-  //               tabName === "contributions" ? styles.reveal : styles.hidden
-  //             )}
-  //           >
-  //             <UserContributionsTab fetching={fetching} />
-  //           </div>
-  //           <div
-  //             className={css(
-  //               tabName === "authored-papers" ? styles.reveal : styles.hidden
-  //             )}
-  //           >
-  //             <AuthoredPapersTab fetching={fetching} />
-  //           </div>
-  //           <div
-  //             className={css(
-  //               tabName === "discussions" ? styles.reveal : styles.hidden
-  //             )}
-  //           >
-  //             <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-  //           </div>
-  //           <div
-  //             className={css(
-  //               tabName === "transactions" ? styles.reveal : styles.hidden
-  //             )}
-  //           >
-  //             <UserTransactionsTab fetching={fetching} />
-  //           </div>
-  //           <div
-  //             className={css(
-  //               tabName === "boosts" ? styles.reveal : styles.hidden
-  //             )}
-  //           >
-  //             <UserPromotionsTab
-  //               fetching={fetchingPromotions}
-  //               activeTab={tabName === "boosts"}
-  //             />
-  //           </div>
-  //         </div>
-  //       </ComponentWrapper>
-  //     );
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
