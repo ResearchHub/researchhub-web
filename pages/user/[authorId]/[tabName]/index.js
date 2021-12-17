@@ -870,6 +870,23 @@ function AuthorPage(props) {
                 {authorReputation}
                 {authorRscBalance}
               </div>
+              {!isEmpty(authorIsEditorOf) && (
+                <div className={css(styles.reputationContainer)}>
+                  <div className={css(styles.editorLabelWrap)}>
+                    <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+                    <span
+                      style={{
+                        color: colors.BLACK(1),
+                        fontWeight: 500,
+                        marginLeft: 8,
+                      }}
+                    >
+                      {"Editor of: "}
+                    </span>
+                    {authorIsEditorOf}
+                  </div>
+                </div>
+              )}
               {authorDescription}
               {!doesAuthorHaveUser ? (
                 <ClaimAuthorPopoverLabel
@@ -880,32 +897,6 @@ function AuthorPage(props) {
               ) : null}
               {userActionButtons}
             </div>
-            {!isEmpty(authorIsEditorOf) && (
-              <div className={css(styles.reputationContainer)}>
-                <div className={css(styles.editorLabelWrap)}>
-                  <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
-                  <span
-                    style={{
-                      color: colors.BLACK(1),
-                      fontWeight: 500,
-                      marginLeft: 8,
-                    }}
-                  >
-                    {"Editor of: "}
-                  </span>
-                  {authorIsEditorOf}
-                </div>
-              </div>
-            )}
-            {authorDescription}
-            {!doesAuthorHaveUser ? (
-              <ClaimAuthorPopoverLabel
-                auth={auth}
-                author={author}
-                user={user}
-              />
-            ) : null}
-            {userActionButtons}
           </div>
         </ReactPlaceholder>
       </ComponentWrapper>

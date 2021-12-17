@@ -28,7 +28,7 @@ export const getNewestCommentTimestamp = (discussionItem) => {
 };
 
 export const formatTimestamp = (timestamp) => {
-  const date = new Date(timestamp);
+  const date = new Date(timestamp ?? 0);
   return timeAgo.format(date);
 };
 
