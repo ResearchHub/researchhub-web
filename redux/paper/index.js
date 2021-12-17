@@ -7,6 +7,7 @@ import * as Sentry from "@sentry/browser";
 import { sendAmpEvent } from "~/config/fetch";
 import { handleCatch } from "../utils";
 import { logFetchError } from "~/config/utils/misc";
+import { captureError } from "~/config/utils/error";
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
@@ -303,6 +304,14 @@ export const PaperActions = {
         API.POST_PAPER(),
         API.POST_FILE_CONFIG(shims.paperPost(body))
       ).catch(handleCatch);
+
+      captureError({
+        msg: "Paper Upload",
+        data: {
+          response,
+          body: shims.paperPost(body),
+        },
+      });
 
       let errorBody = null;
       if (response.status === 400 || response.status === 500) {

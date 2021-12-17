@@ -36,6 +36,7 @@ import {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
+import { captureError } from "~/config/utils/error";
 
 type ComponentProps = {
   authRedux: any;
@@ -169,7 +170,6 @@ function PaperuploadV2Create({
         }
       : defaultFormState
   );
-  console.warn("selectedCitationType: ", formState.citation_type);
 
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
