@@ -113,12 +113,12 @@ const styles = StyleSheet.create({
   subscribeContainer: {
     marginLeft: 16,
     minWidth: 100,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
   title: {
-    color: "#241F3A",
+    color: colors.TEXT_DARKER_GREY,
     fontSize: 30,
     fontWeight: 400,
     margin: 0,
