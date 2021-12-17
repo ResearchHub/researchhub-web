@@ -2,6 +2,7 @@ import { connect, useStore } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import HubEditorCreateForm from "./Hub/HubEditorCreateForm";
 
 function PermissionsDashboard(): ReactElement<"div"> | null {
   const [_lastFetchTime, _setLastFetchTime] = useState<number>(Date.now());
@@ -9,9 +10,12 @@ function PermissionsDashboard(): ReactElement<"div"> | null {
   const shouldRenderUI = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
     auth: reduxStore?.getState()?.auth ?? null,
+    shouldRedirect: true,
   });
   return shouldRenderUI ? (
-    <div className={css(styles.permissionsDashboard)} />
+    <div className={css(styles.permissionsDashboard)}>
+      <HubEditorCreateForm />
+    </div>
   ) : null;
 }
 

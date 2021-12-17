@@ -2,6 +2,8 @@ const colors = {
   BLACK: (opacity = 1) => `rgba(36, 31, 58, ${opacity})`,
   BLUE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   DARK_YELLOW: (opacity = 1) => `rgba(235, 175, 61, ${opacity})`,
+  EDITOR_TAG_BACKGROUND: "rgba(232, 181, 4, 0.1)",
+  EDITOR_TAG_TEXT: "#E8B504",
   GREEN: (opacity = 1) => `rgba(100, 196, 143, ${opacity})`,
   GREEN: (opacity = 1) => `rgba(30, 207, 49, ${opacity})`,
   GREY: (opacity = 1) => `rgba(193, 193, 207, ${opacity})`,
@@ -12,9 +14,9 @@ const colors = {
   LIGHT_GREY_BACKGROUND: "#EDEDED",
   LIGHT_GREY_BORDER: "rgba(39, 39, 39, 0.07)",
   LIGHT_GREY_TEXT: "rgba(36, 31, 58, 0.39)",
-  LIGHTER_GREY_BACKGROUND: "#F6F6F8",
   LIGHT_GREY: (opacity = 1) => `rgba(242, 242, 246, ${opacity})`,
   LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`,
+  LIGHTER_GREY_BACKGROUND: "#F6F6F8",
   NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`,
   NEW_BLUE: (opacity = 1) => `rgba(57, 113, 255, ${opacity})`,
   ORANGE: (opacity = 1) => `rgba(255, 109, 0, ${opacity})`,
@@ -23,9 +25,9 @@ const colors = {
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
   TEXT_DARKER_GREY: "#241F3A",
   TEXT_GREY: (opacity = 1) => `rgba(128, 126, 134, ${opacity})`,
-  YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
   TOOLTIP_BACKGROUND_BLACK: "#E69A8DFF",
   TOOLTIP_TEXT_COLOR_WHITE: "5F4B8BFF",
+  YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
 };
 
 export const genericCardColors = {

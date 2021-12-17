@@ -12,8 +12,6 @@ const Index = (props) => {
   return <HubPage home={true} {...props} />;
 };
 
-const isServer = () => typeof window === "undefined";
-
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
   const { query, query: urlQuery } = ctx;
@@ -22,23 +20,15 @@ Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
   const defaultProps = {
+    feed: 0,
+    filter: filterObj,
     initialFeed: null,
-    leaderboardFeed: null,
     initialHubList: null,
-    feed: 1,
+    leaderboardFeed: null,
     loggedIn: authToken !== undefined,
+    page: 1,
+    query,
   };
-
-  if (!isServer()) {
-    return {
-      ...defaultProps,
-      home: true,
-      page: 1,
-      feed: 1,
-      filter: filterObj,
-      query,
-    };
-  }
 
   try {
     const urlDocType = getBEUnifiedDocType(urlQuery.type);
