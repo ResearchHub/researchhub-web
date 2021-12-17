@@ -1,8 +1,8 @@
 import { css, StyleSheet } from "aphrodite";
+import { ReactElement, SyntheticEvent, useMemo } from "react";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "../../config/themes/colors";
 import LazyLoad from "react-lazyload";
-import { ReactElement, SyntheticEvent, useMemo } from "react";
 
 type Props = {
   authorProfiles: Object[];

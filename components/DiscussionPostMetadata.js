@@ -10,12 +10,11 @@ import Ripples from "react-ripples";
 
 // Components
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import ShareAction from "~/components/ShareAction";
 import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
+import UserRoleTag from "~/components/shared/UserRoleTag";
 
 //Redux
 import { MessageActions } from "~/redux/message";
@@ -267,13 +266,13 @@ const DiscussionPostMetadata = (props) => {
         <div className={css(styles.firstRow)}>
           <User {...props} />
           {isCreatedByEditor && (
-            <FontAwesomeIcon
-              icon={faStar}
-              style={{
-                width: "16px",
-                color: colors.LIGHT_GREY_TEXT,
-                marginLeft: 8,
-              }}
+            <UserRoleTag
+              backgroundColor={colors.EDITOR_TAG_BACKGROUND}
+              color={colors.EDITOR_TAG_TEXT}
+              fontSize="12px"
+              label="Editor"
+              padding="2px 10px"
+              margin="0 0 0 8px"
             />
           )}
           <WidgetContentSupport
