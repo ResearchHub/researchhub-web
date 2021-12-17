@@ -159,13 +159,8 @@ const ModeratorDeleteButton = (props) => {
   const deletePost = () => {
     showLoader();
     let query = buildQuery();
-    const {
-      paperId,
-      threadId,
-      commentId,
-      replyId,
-      documentId,
-    } = props.metaData;
+    const { paperId, threadId, commentId, replyId, documentId } =
+      props.metaData;
     return fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)

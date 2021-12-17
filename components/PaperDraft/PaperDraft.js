@@ -329,7 +329,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperDraft);
+export default connect(mapStateToProps, mapDispatchToProps)(PaperDraft);

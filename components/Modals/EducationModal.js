@@ -31,8 +31,6 @@ const EducationModal = (props) => {
     mapPropsToState();
   }, [props.education]);
 
-  useEffect(() => {}, [degree]);
-
   function mapPropsToState() {
     const { education } = props;
     if (education) {
@@ -279,7 +277,4 @@ const mapDispatchToProps = {
   openEducationModal: ModalActions.openEducationModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EducationModal);
+export default connect(mapStateToProps, mapDispatchToProps)(EducationModal);

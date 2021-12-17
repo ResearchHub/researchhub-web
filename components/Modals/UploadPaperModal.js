@@ -438,7 +438,4 @@ const mapDispatchToProps = (dispatch) => ({
   messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UploadPaperModal);
+export default connect(mapStateToProps, mapDispatchToProps)(UploadPaperModal);

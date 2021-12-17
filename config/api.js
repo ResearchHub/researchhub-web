@@ -7,7 +7,6 @@ const apiRoot = {
   production: "backend.researchhub.com",
   staging: "staging-backend.researchhub.com",
   dev: "localhost:8000",
-  // dev: "staging-backend.researchhub.com",
 };
 
 const prepFilters = (filters) => {
@@ -796,7 +795,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     WITHDRAWAL_FEE: BASE_URL + "withdrawal/transaction_fee/",
-    TRANSFER: BASE_URL + "transfer/",
+    TRANSFER: BASE_URL + "deposit/start_deposit_rsc/",
     USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
     USER_ORCID_CONNECT_MODAL: BASE_URL + "user/has_seen_orcid_connect_modal/",
     FLAG_PAPER: ({ paperId }) => {

@@ -395,7 +395,4 @@ const mapDispatchToProps = {
   setUserBannerPreference: AuthActions.setUserBannerPreference,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ResearchHubBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(ResearchHubBanner);

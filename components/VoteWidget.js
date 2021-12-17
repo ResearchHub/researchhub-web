@@ -388,7 +388,4 @@ const mapDispatchToProps = {
   postDownvote: DiscussionActions.postDownvote,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(VoteWidget);
+export default connect(null, mapDispatchToProps)(VoteWidget);

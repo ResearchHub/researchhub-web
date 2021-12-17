@@ -328,7 +328,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(EditHubModal);
+export default connect(mapStateToProps, mapDispatchToProps)(EditHubModal);

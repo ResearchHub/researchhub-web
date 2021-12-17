@@ -8,15 +8,8 @@ import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
 
 const HubTag = (props) => {
-  const {
-    tag,
-    overrideStyle,
-    hubName,
-    gray,
-    labelStyle,
-    last,
-    noHubName,
-  } = props;
+  const { tag, overrideStyle, hubName, gray, labelStyle, last, noHubName } =
+    props;
   const { id, name, hub_image, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
   const [hubImage, setHubImage] = useState(

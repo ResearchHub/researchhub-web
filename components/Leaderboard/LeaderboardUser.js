@@ -7,14 +7,8 @@ import Link from "next/link";
 import numeral from "numeral";
 
 const LeaderboardUser = (props) => {
-  const {
-    name,
-    authorProfile,
-    reputation,
-    authorId,
-    userClass,
-    repClass,
-  } = props;
+  const { name, authorProfile, reputation, authorId, userClass, repClass } =
+    props;
 
   return (
     <div className={css(styles.container)}>

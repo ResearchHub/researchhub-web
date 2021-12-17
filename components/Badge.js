@@ -21,7 +21,11 @@ const Badge = ({
     >
       <div className={css(styles.badgeLabel)}>{label}</div>
       <div className={css(styles.badgeRemove)} onClick={onRemove}>
-        <CloseIcon width={8} height={8} overrideStyle={styles.closeIconOverride} />
+        <CloseIcon
+          width={8}
+          height={8}
+          overrideStyle={styles.closeIconOverride}
+        />
       </div>
     </div>
   );
@@ -67,8 +71,8 @@ const styles = StyleSheet.create({
     borderRadius: "2px",
   },
   closeIconOverride: {
-    padding: 6
-  }
+    padding: 6,
+  },
 });
 
 Badge.propTypes = {

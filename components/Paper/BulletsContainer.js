@@ -9,7 +9,6 @@ import FormTextArea from "../Form/FormTextArea";
 import Button from "../Form/Button";
 import SummaryBulletPoint from "./SummaryBulletPoint";
 import Loader from "~/components/Loader/Loader";
-import SectionBounty from "./SectionBounty";
 
 // redux
 import { BulletActions } from "~/redux/bullets";
@@ -19,6 +18,7 @@ import { MessageActions } from "~/redux/message";
 // Config
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import SectionBounty from "./Tabs/SectionBounty";
 
 const BULLET_COUNT = 5;
 
@@ -617,7 +617,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(BulletsContainer);

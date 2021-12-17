@@ -36,10 +36,10 @@ const PaperJournalTag = (props) => {
   function imgExists(url, callback) {
     setLoading(true);
     var img = new Image();
-    img.onload = function() {
+    img.onload = function () {
       callback(true);
     };
-    img.onerror = function() {
+    img.onerror = function () {
       callback(false);
     };
     img.src = url;

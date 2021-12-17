@@ -115,7 +115,4 @@ const mapDispatchToProps = {
   openSectionBountyModal: ModalActions.openSectionBountyModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ModeratorQA);
+export default connect(mapStateToProps, mapDispatchToProps)(ModeratorQA);

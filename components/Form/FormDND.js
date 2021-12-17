@@ -654,7 +654,4 @@ const mapDispatchToProps = (dispatch) => ({
   messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FormDND);
+export default connect(mapStateToProps, mapDispatchToProps)(FormDND);

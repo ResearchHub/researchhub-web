@@ -33,11 +33,10 @@ import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
-import { removeLineBreaksInStr } from "~/config/utils/string";
+import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
-import { stripHTML } from "~/config/utils/string";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -59,8 +58,8 @@ class PaperPageCard extends Component {
       boostHover: false,
       title: {
         parsed: this.parseTitle(props?.paper?.title),
-        raw: props?.paper?.title
-      }
+        raw: props?.paper?.title,
+      },
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
@@ -1432,7 +1431,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(PaperPageCard);
+export default connect(null, mapDispatchToProps)(PaperPageCard);

@@ -115,7 +115,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(withRouter(OptOut));
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(OptOut));

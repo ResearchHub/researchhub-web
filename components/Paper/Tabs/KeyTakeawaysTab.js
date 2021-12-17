@@ -191,12 +191,8 @@ class BulletsContainer extends Component {
   };
 
   renderBulletPoints = () => {
-    const {
-      paper,
-      userVoteChecked,
-      updatePaperState,
-      fetchBullets,
-    } = this.props;
+    const { paper, userVoteChecked, updatePaperState, fetchBullets } =
+      this.props;
     const { loading, bullets, showForm } = this.state;
 
     const emptyBullets =
@@ -703,7 +699,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BulletsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(BulletsContainer);

@@ -101,7 +101,7 @@ class UserDiscussionsTab extends Component {
       } else if (discussion.post) {
         path = `/post/${discussion.post.id}/${discussion.post.slug}`;
       } else {
-        continue
+        continue;
       }
       discussions.push(
         <DiscussionThreadCard
@@ -220,7 +220,4 @@ const mapDispatchToProps = {
   updateAuthorByKey: AuthorActions.updateAuthorByKey,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserDiscussionsTab);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDiscussionsTab);

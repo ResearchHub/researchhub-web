@@ -142,8 +142,5 @@ const mapDispatchToProps = {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(PaperEditHistory)
+  connect(mapStateToProps, mapDispatchToProps)(PaperEditHistory)
 );

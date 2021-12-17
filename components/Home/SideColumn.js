@@ -262,7 +262,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SideColumn);
+export default connect(mapStateToProps, mapDispatchToProps)(SideColumn);

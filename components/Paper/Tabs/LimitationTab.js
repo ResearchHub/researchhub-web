@@ -590,7 +590,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(LimitationTab);
+export default connect(mapStateToProps, mapDispatchToProps)(LimitationTab);

@@ -2,7 +2,7 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { sendAmpEvent } from "~/config/fetch";
-import { emptyFncWithMsg } from "~config/utils/nullchecks";
+import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 
 export function saveCommentToBackend({
   auth,

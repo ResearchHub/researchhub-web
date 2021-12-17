@@ -127,13 +127,8 @@ export const CommentEditor = (props) => {
 };
 
 export const ReplyEditor = (props) => {
-  const {
-    commentId,
-    onSubmit,
-    onCancel,
-    commentStyles,
-    containerStyles,
-  } = props;
+  const { commentId, onSubmit, onCancel, commentStyles, containerStyles } =
+    props;
   const [reply, setReply] = useState(false);
   const [transition, setTransition] = useState(false);
   const containerRef = useRef(null);
@@ -212,14 +207,8 @@ async function postComment(props, text, plain_text) {
 }
 
 async function postReply(props, text, plain_text) {
-  const {
-    dispatch,
-    store,
-    paperId,
-    discussionThreadId,
-    commentId,
-    onSubmit,
-  } = props;
+  const { dispatch, store, paperId, discussionThreadId, commentId, onSubmit } =
+    props;
 
   dispatch(DiscussionActions.postReplyPending());
   await dispatch(

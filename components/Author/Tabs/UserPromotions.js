@@ -195,7 +195,4 @@ const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(UserPromotions);
+export default connect(mapStateToProps, null)(UserPromotions);

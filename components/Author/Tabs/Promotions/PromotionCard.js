@@ -458,7 +458,4 @@ const mapStateToProps = (state) => ({
   author: state.author,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(PromotionCard);
+export default connect(mapStateToProps, null)(PromotionCard);

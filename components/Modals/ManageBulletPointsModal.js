@@ -159,7 +159,10 @@ class ManageBulletPointsModal extends Component {
 
   updateCards = ({ dragIndex, hoverIndex, dragCard }) => {
     let cards = update(this.state.cards, {
-      $splice: [[dragIndex, 1], [hoverIndex, 0, dragCard]],
+      $splice: [
+        [dragIndex, 1],
+        [hoverIndex, 0, dragCard],
+      ],
     });
     this.setState({
       cards,

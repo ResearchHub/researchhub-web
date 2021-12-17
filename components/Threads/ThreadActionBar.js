@@ -43,14 +43,8 @@ class ThreadActionBar extends Component {
   };
 
   renderCommentCount = () => {
-    const {
-      count,
-      comment,
-      onClick,
-      small,
-      showChildrenState,
-      onCountHover,
-    } = this.props;
+    const { count, comment, onClick, small, showChildrenState, onCountHover } =
+      this.props;
 
     if (count === 0) {
       return null;

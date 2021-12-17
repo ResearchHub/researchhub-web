@@ -128,7 +128,9 @@ export const parseMath = (str) => {
   for (let i = 0; i < data.length; i++) {
     const fragment = data[i];
     if (fragment.type === "math" && fragment.display) {
-      finalFragments.push(<InlineMath renderError={(error) => ""}>{fragment.data}</InlineMath>);
+      finalFragments.push(
+        <InlineMath renderError={(error) => ""}>{fragment.data}</InlineMath>
+      );
     }
     // Text type
     else {

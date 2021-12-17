@@ -222,7 +222,4 @@ const mapDispatchToProps = {
   getAuthoredPapers: AuthorActions.getAuthoredPapers,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthoredPapersTab);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthoredPapersTab);

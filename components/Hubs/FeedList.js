@@ -38,7 +38,7 @@ class FeedList extends Component {
         ),
         href: "/my-hubs",
         as: "/my-hubs",
-      }
+      },
     ];
   }
 
@@ -301,7 +301,4 @@ const mapDispatchToProps = {
   updateTopHubs: HubActions.updateTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FeedList);
+export default connect(mapStateToProps, mapDispatchToProps)(FeedList);

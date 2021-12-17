@@ -29,11 +29,12 @@ class FormInput extends Component {
 
   render() {
     const {
+      getRef,
+      type,
       autoComplete,
       containerStyle,
       disabled,
       error,
-      getRef,
       icon,
       iconStyles,
       id,
@@ -53,7 +54,7 @@ class FormInput extends Component {
       search,
       size,
       subtitle,
-      type,
+      onSearch,
       onKeyDown,
     } = this.props;
 

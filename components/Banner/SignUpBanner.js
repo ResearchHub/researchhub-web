@@ -228,7 +228,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUpBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpBanner);
