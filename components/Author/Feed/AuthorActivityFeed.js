@@ -95,6 +95,13 @@ const AuthorActivityFeed = ({
       });
   };
 
+  const paperVoteCallback = (index, paper) => {
+    // Legacy callback mechanism
+    if (feedResults[index]?.unified_document?.documents) {
+      feedResults[index].unified_document.documents = paper;
+    }
+  };
+
   return (
     <ReactPlaceholder
       ready={!needsInitialFetch}
@@ -108,7 +115,7 @@ const AuthorActivityFeed = ({
         />
       ) : (
         <div>
-          {feedResults.map((item) => {
+          {feedResults.map((item, index) => {
             const itemType =
               contributionType === "authored-papers"
                 ? "AUTHORED_PAPER"
@@ -118,7 +125,9 @@ const AuthorActivityFeed = ({
               <AuthorFeedItem
                 key={item.id}
                 author={author}
+                itemIndex={index}
                 item={item}
+                paperVoteCallback={paperVoteCallback}
                 itemType={itemType}
                 isSmallScreen={isSmallScreen}
               />
