@@ -170,7 +170,6 @@ function PaperuploadV2Create({
         }
       : defaultFormState
   );
-
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
