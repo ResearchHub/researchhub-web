@@ -1,6 +1,9 @@
-import reducer, { createStore, applyMiddleware } from "redux";
+// eslint-disable-next-line
+import { createStore, applyMiddleware } from "redux";
 import { createLogger } from "redux-logger";
 import thunkMiddleware from "redux-thunk";
+// eslint-disable-next-line
+import reducer from "./index";
 
 export function configureStore(initialState = {}) {
   const middleware = [thunkMiddleware];
