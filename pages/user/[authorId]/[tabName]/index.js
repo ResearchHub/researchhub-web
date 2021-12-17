@@ -1,10 +1,10 @@
+import { breakpoints } from "~/config/themes/screen";
 import { buildSlug } from "~/config/utils/document";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import get from "lodash/get";
-import { breakpoints } from "~/config/themes/screen";
 import ReactTooltip from "react-tooltip";
 
 // Redux
@@ -53,7 +53,6 @@ import {
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { breakpoints } from "~/config/themes/screen";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
