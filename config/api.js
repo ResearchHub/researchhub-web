@@ -206,6 +206,7 @@ const routes = (BASE_URL) => {
     HYPOTHESIS_VOTE: ({ hypothesisID, voteType }) => {
       return BASE_URL + `hypothesis/${hypothesisID}/${voteType}/`;
     },
+    HUB_EDITOR: BASE_URL + "hub_editor_create",
     CKEDITOR_TOKEN: () => {
       return `${BASE_URL}ckeditor/token/`;
     },
