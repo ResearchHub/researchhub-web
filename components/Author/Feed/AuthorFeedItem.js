@@ -13,7 +13,14 @@ import { getUrlToUniDoc } from "~/config/utils/routing";
 import { breakpoints } from "~/config/themes/screen";
 import { truncateText } from "~/config/utils/string";
 
-const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
+const AuthorFeedItem = ({
+  author,
+  item,
+  itemType,
+  itemIndex,
+  paperVoteCallback,
+  isSmallScreen = false,
+}) => {
   const getDocFromItem = (item, itemType) => {
     let doc;
     if (itemType === "AUTHORED_PAPER") {
@@ -104,7 +111,15 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
     let html;
     switch (cardType) {
       case "paper":
-        html = <PaperEntryCard paper={doc} index={doc.id} key={key} />;
+        html = (
+          <PaperEntryCard
+            paper={doc}
+            index={doc.id}
+            key={key}
+            voteCallback={paperVoteCallback}
+            index={itemIndex}
+          />
+        );
         break;
       case "post":
         html = (
