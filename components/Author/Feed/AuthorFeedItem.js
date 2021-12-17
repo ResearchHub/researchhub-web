@@ -127,6 +127,14 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
           item.contribution_type === "SUPPORTER"
             ? item.source.source
             : item.source;
+        const uniDoc = item.unified_document;
+        const docType = getDocType({ uniDoc });
+
+        // If paper we need to shim things around
+        // so that component works properly
+        if (data?.paper?.id) {
+          data.paper = data?.paper?.id;
+        }
 
         html = (
           <div className={css(styles.discussionEntryCard)}>
@@ -140,10 +148,10 @@ const AuthorFeedItem = ({ author, item, itemType, isSmallScreen = false }) => {
               mobileView={false}
               // discussionCount={calculatedCount}
               // setCount={setCount}
-              documentType={cardType}
-              paper={data.paper}
-              hypothesis={data.hypothesis}
-              post={data.post}
+              documentType={docType}
+              paper={doc.id}
+              hypothesis={doc}
+              post={doc}
             />
           </div>
         );

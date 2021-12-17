@@ -608,6 +608,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginLeft: 8,
     width: "calc(100% - 8px)",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,
