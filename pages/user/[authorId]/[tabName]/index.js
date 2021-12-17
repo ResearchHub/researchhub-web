@@ -26,7 +26,8 @@ import OrcidConnectButton from "~/components/OrcidConnectButton";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
-
+import ReactPlaceholder from "react-placeholder/lib";
+import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
 // Dynamic modules
 import dynamic from "next/dynamic";
 const ShareModal = dynamic(() => import("~/components/ShareModal"));
@@ -796,63 +797,71 @@ function AuthorPage(props) {
       <ReactTooltip />
       <ComponentWrapper>
         <UserInfoModal />
-        <div
-          className={css(
-            styles.profileContainer,
-            isCurrentUserModerator && styles.profileContainerPadding
-          )}
+        <ReactPlaceholder
+          ready={fetchedUser}
+          showLoadingAnimation
+          customPlaceholder={<AuthorDetailsPlaceholder />}
         >
           <div
             className={css(
-              styles.avatarContainer,
-              author.profile_image && styles.border
+              styles.profileContainer,
+              isCurrentUserModerator && styles.profileContainerPadding
             )}
           >
             <div
-              className={css(styles.avatarContainer)}
-              onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
-              onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
-              onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
-              draggable={false}
-            >
-              <AuthorAvatar author={author} disableLink={true} size={120} />
-              <meta
-                property="image"
-                content={
-                  author.profile_image ? author.profile_image : "author avatar"
-                }
-              />
-              {allowEdit && hoverProfilePicture && (
-                <div className={css(styles.profilePictureHover)}>Update</div>
+              className={css(
+                styles.avatarContainer,
+                author.profile_image && styles.border
               )}
-            </div>
-          </div>
-          <div className={css(styles.profileInfo)}>
-            <div className={css(styles.nameLine)}>
-              <h1
-                className={css(styles.authorName, styles.editButtonContainer)}
-                property="name"
+            >
+              <div
+                className={css(styles.avatarContainer)}
+                onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
+                onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
+                onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+                draggable={false}
               >
-                {name}
-              </h1>
-              {userLinks}
+                <AuthorAvatar author={author} disableLink={true} size={120} />
+                <meta
+                  property="image"
+                  content={
+                    author.profile_image
+                      ? author.profile_image
+                      : "author avatar"
+                  }
+                />
+                {allowEdit && hoverProfilePicture && (
+                  <div className={css(styles.profilePictureHover)}>Update</div>
+                )}
+              </div>
             </div>
-            {authorEducationSummary}
-            <div className={css(styles.reputationContainer)}>
-              {authorReputation}
-              {authorRscBalance}
+            <div className={css(styles.profileInfo)}>
+              <div className={css(styles.nameLine)}>
+                <h1
+                  className={css(styles.authorName, styles.editButtonContainer)}
+                  property="name"
+                >
+                  {name}
+                </h1>
+                {userLinks}
+              </div>
+              {authorEducationSummary}
+              <div className={css(styles.reputationContainer)}>
+                {authorReputation}
+                {authorRscBalance}
+              </div>
+              {authorDescription}
+              {!doesAuthorHaveUser ? (
+                <ClaimAuthorPopoverLabel
+                  auth={auth}
+                  author={author}
+                  user={user}
+                />
+              ) : null}
+              {userActionButtons}
             </div>
-            {authorDescription}
-            {!doesAuthorHaveUser ? (
-              <ClaimAuthorPopoverLabel
-                auth={auth}
-                author={author}
-                user={user}
-              />
-            ) : null}
-            {userActionButtons}
           </div>
-        </div>
+        </ReactPlaceholder>
       </ComponentWrapper>
       <div className={css(styles.tabMenuContainer)}>
         <ComponentWrapper overrideStyle={styles.componentWrapper}>

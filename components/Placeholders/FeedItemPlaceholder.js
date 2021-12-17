@@ -7,7 +7,7 @@ import { breakpoints } from "~/config/themes/screen";
 const FeedItemPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
   return Array.from({ length: rows }).map((k, i) => (
     <div
-      className={css(styles.container)}
+      className={css(styles.container) + " show-loading-animation"}
       key={`activity-summary-placholder-${i}`}
     >
       <div className={css(styles.avatarWrapper)}>
@@ -52,7 +52,10 @@ const styles = StyleSheet.create({
   },
   contentWrapper: {
     width: "calc(100% - 50px)",
-    marginLeft: 15,
+    marginLeft: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      width: "calc(100% - 20px)",
+    },
   },
 
   summaryContainer: {
@@ -67,7 +70,7 @@ const styles = StyleSheet.create({
   },
   textRow: {
     marginTop: 5,
-    marginLeft: 10,
+    marginLeft: 0,
     ":first-child": {
       marginLeft: 0,
     },
