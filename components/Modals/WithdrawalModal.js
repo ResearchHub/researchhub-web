@@ -523,6 +523,8 @@ class WithdrawalModal extends Component {
             ethAddressOnChange={this.handleNetworkAddressInput}
             onSuccess={this.setTransactionHash}
             connectMetaMask={this.connectMetaMask}
+            setMessage={this.props.setMessage}
+            showMessage={this.props.showMessage}
             {...this.state}
           />
         </div>
@@ -758,6 +760,7 @@ class WithdrawalModal extends Component {
         isOpen={modals.openWithdrawalModal}
         closeModal={this.closeModal}
         removeDefault={true}
+        modalStyle={styles.modal}
         modalContentStyle={styles.root}
       >
         {this.renderContent()}
@@ -767,6 +770,10 @@ class WithdrawalModal extends Component {
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    transform: "translateX(-50%)",
+    top: "10%",
+  },
   root: {
     maxHeight: "90vh",
     overflowY: "scroll",

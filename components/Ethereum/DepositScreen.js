@@ -18,6 +18,7 @@ import Loader from "../Loader/Loader";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { INFURA_ENDPOINT } from "~/config/constants";
+import { captureError } from "~/config/utils/error";
 
 // Constants
 const RSCContractAddress =
@@ -32,8 +33,14 @@ const HOTWALLET =
     ? "0xc49b1eC975b687259750D9da7BfCC82eEaA2eF19"
     : "0x76835CA5Ebc7935CedBB1e0AA3d322e704b1b7B1";
 export function DepositScreen(props) {
-  const { ethAccount, buttonEnabled, connectMetaMask, ethAddressOnChange } =
-    props;
+  const {
+    ethAccount,
+    buttonEnabled,
+    connectMetaMask,
+    ethAddressOnChange,
+    setMessage,
+    showMessage,
+  } = props;
 
   const [amount, setAmount] = useState(0);
   const [balance, setBalance] = useState(0);
@@ -74,12 +81,18 @@ export function DepositScreen(props) {
 
   const signTransaction = async (e) => {
     e && e.preventDefault();
+
+    if (!props.provider) {
+      setMessage("Please refresh the page and try again!");
+      showMessage({ show: true, error: true });
+      return;
+    }
+
     const address = RSCContractAddress;
 
     const convertedAmount = ethers.utils.parseEther(amount);
     const signer = props.provider.getSigner(0);
     const contract = new ethers.Contract(address, contractABI, signer);
-
     const tx = await contract.transfer(HOTWALLET, convertedAmount);
 
     if (tx) {
@@ -87,13 +100,25 @@ export function DepositScreen(props) {
         ...tx,
         amount,
         transaction_hash: tx.hash,
-        to_address: tx.to,
+        from_address: tx.from,
       };
-      props.onSuccess(tx.hash);
 
       return fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON);
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          props.onSuccess && props.onSuccess(tx.hash);
+        })
+        .catch((error) => {
+          captureError({
+            error,
+            msg: "Deposit backend error",
+            data: {
+              ...PAYLOAD,
+            },
+          });
+          props.onSuccess && props.onSuccess(tx.hash);
+        });
     }
   };
 
