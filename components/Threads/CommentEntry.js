@@ -760,6 +760,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderRadius: 5,
     padding: "0px 10px 10px 8px",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 5,
       paddingRight: 5,

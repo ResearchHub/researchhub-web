@@ -63,6 +63,7 @@ const AuthorActivityFeed = ({
           setFeedResults(res.results);
         })
         .catch((e) => {
+          setFeedResults([]);
           // TODO: log in sentry
         });
     };
@@ -87,6 +88,9 @@ const AuthorActivityFeed = ({
         setFeedResults([...feedResults, ...res.results]);
         // TODO: We probably need to do this
         // fetchAndSetUserVotes(res.results);
+      })
+      .catch(() => {
+        setFeedResults([]);
       })
       .finally(() => {
         setIsLoading(false);
