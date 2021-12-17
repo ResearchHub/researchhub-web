@@ -91,7 +91,7 @@ export function DepositScreen(props) {
       };
       props.onSuccess(tx.hash);
 
-      fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
+      return fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON);
     }
