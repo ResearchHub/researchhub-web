@@ -1,7 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
-import {
-  RectShape,
-} from "react-placeholder/lib/placeholders";
+import { RectShape } from "react-placeholder/lib/placeholders";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 

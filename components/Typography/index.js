@@ -26,10 +26,6 @@ export const SideColumnTitle = ({
   );
 };
 
-export const HeaderOne = () => {};
-
-export const HeaderTwo = () => {};
-
 export const ClampedText = (props) => {
   const { lines = 1, textStyles } = props;
 

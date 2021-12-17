@@ -39,8 +39,7 @@ const FirstVoteModal = (props) => {
           balance: res.user.balance,
         };
         updateUser(param);
-      })
-      .catch((err) => {});
+      });
   };
 
   useEffect(() => {

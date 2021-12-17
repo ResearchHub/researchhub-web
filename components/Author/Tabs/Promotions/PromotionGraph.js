@@ -11,8 +11,14 @@ class PromotionGraph extends Component {
     super(props);
 
     this.state = {
-      views: [["x", "Views"], [0, 0]],
-      clicks: [["x", "Clicks"], [0, 0]],
+      views: [
+        ["x", "Views"],
+        [0, 0],
+      ],
+      clicks: [
+        ["x", "Clicks"],
+        [0, 0],
+      ],
       options: {},
       loading: true,
       refreshed: false,

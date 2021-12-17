@@ -35,10 +35,8 @@ const SearchResultsForPeople = ({ apiResponse, context }) => {
   const [numOfHits, setNumOfHits] = useState(null);
   const [results, setResults] = useState([]);
 
-  const [
-    selectedSortOrderDropdownValue,
-    setSelectedSortOrderDropdownValue,
-  ] = useState({});
+  const [selectedSortOrderDropdownValue, setSelectedSortOrderDropdownValue] =
+    useState({});
 
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0

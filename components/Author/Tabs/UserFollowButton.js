@@ -133,10 +133,7 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserFollowButton);
+export default connect(mapStateToProps, mapDispatchToProps)(UserFollowButton);
 
 // {!allowEdit && (
 //   <div className={css(styles.editProfileButton)}>

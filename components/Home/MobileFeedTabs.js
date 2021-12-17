@@ -17,18 +17,18 @@ const MobileFeedTabs = (props) => {
   return (
     <div className={css(styles.tabs)}>
       <div
-        className={css(
-          styles.tab,
-          styles.tabLeft,
-          activeLeft && styles.active
-        )}
+        className={css(styles.tab, styles.tabLeft, activeLeft && styles.active)}
         onClick={() => onClick(true)}
       >
         <span className={css(styles.icon)}>{icons.squares}</span>
         All
       </div>
       <div
-        className={css(styles.tab, styles.tabRight, activeRight && styles.active)}
+        className={css(
+          styles.tab,
+          styles.tabRight,
+          activeRight && styles.active
+        )}
         onClick={() => onClick(false)}
       >
         <img

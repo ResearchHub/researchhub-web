@@ -159,8 +159,5 @@ const mapDispatchToProps = {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrcidConnectSuccessPage)
+  connect(mapStateToProps, mapDispatchToProps)(OrcidConnectSuccessPage)
 );

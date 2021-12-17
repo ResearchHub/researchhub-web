@@ -29,8 +29,6 @@ const AuthorSupportModal = (props) => {
   const [amount, setAmount] = useState(0);
   const [error, setError] = useState(false);
 
-  useEffect(() => {}, [props.modals]);
-
   function formatOptions() {
     return [
       {
@@ -651,7 +649,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
   showMessage: MessageActions.showMessage,
 };
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AuthorSupportModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AuthorSupportModal);

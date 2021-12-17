@@ -4,7 +4,6 @@ import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
 import "isomorphic-unfetch";
-import * as Sentry from "@sentry/browser";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";

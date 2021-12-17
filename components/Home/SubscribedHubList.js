@@ -351,7 +351,4 @@ const mapDispatchToProps = {
   getSubscribedHubs: HubActions.getSubscribedHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SubscribedHubList);
+export default connect(mapStateToProps, mapDispatchToProps)(SubscribedHubList);

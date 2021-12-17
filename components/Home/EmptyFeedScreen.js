@@ -114,7 +114,4 @@ EmptyFeedScreen.defaultProps = {
   subTitle: "Click ‘New Post’ button to create a post",
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(EmptyFeedScreen);
+export default connect(mapStateToProps, null)(EmptyFeedScreen);

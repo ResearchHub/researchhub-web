@@ -27,11 +27,7 @@ const AvatarUpload = (props) => {
   };
 
   return (
-    <BaseModal
-      title={"Upload Picture"}
-      isOpen={isOpen}
-      closeModal={closeModal}
-    >
+    <BaseModal title={"Upload Picture"} isOpen={isOpen} closeModal={closeModal}>
       <div className={css(styles.modalContainer)}>
         <AvatarEdit
           height={200}

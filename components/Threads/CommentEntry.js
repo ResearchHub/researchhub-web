@@ -645,13 +645,12 @@ class CommentEntry extends Component {
               </Fragment>
             )}
           </div>
-          {!this.state.collapsed &&
-            (this.state.revealReply && (
-              <Fragment>
-                {this.renderReplies()}
-                {this.renderViewMore()}
-              </Fragment>
-            ))}
+          {!this.state.collapsed && this.state.revealReply && (
+            <Fragment>
+              {this.renderReplies()}
+              {this.renderViewMore()}
+            </Fragment>
+          )}
         </div>
       </div>
     );
@@ -845,7 +844,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CommentEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(CommentEntry);

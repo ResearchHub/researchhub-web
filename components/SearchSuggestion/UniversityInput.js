@@ -97,8 +97,9 @@ class UniversityInput extends Component {
           >
             <div className={css(styles.uniName)}>{name}</div>
             <div className={css(styles.uniMeta)}>
-              {`${city && city + ", "}${state && state + ", "}${country &&
-                country}`}
+              {`${city && city + ", "}${state && state + ", "}${
+                country && country
+              }`}
             </div>
           </div>
         );

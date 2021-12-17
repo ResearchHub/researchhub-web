@@ -715,7 +715,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserInfoModal);
+export default connect(mapStateToProps, mapDispatchToProps)(UserInfoModal);

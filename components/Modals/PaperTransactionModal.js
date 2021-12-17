@@ -230,8 +230,7 @@ class PaperTransactionModal extends Component {
           userBalance: res.user.balance,
           withdrawals: [...res.results],
         });
-      })
-      .catch((err) => {});
+      });
   };
 
   handleInput = (e) => {

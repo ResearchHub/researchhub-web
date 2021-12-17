@@ -387,14 +387,8 @@ class ReplyEntry extends Component {
   };
 
   render() {
-    const {
-      hostname,
-      mobileView,
-      reply,
-      paper,
-      mediaOnly,
-      documentType,
-    } = this.props;
+    const { hostname, mobileView, reply, paper, mediaOnly, documentType } =
+      this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -658,7 +652,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ReplyEntry);
+export default connect(mapStateToProps, mapDispatchToProps)(ReplyEntry);

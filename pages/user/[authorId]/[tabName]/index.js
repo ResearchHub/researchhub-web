@@ -313,8 +313,8 @@ function AuthorPage(props) {
   useEffect(() => {
     setAllowEdit(
       !isNullOrUndefined(authorUserID) &&
-      !isNullOrUndefined(user) &&
-      authorUserID === user.id
+        !isNullOrUndefined(user) &&
+        authorUserID === user.id
     );
     setDescription(author.description);
     setEduSummary(createUserSummary(author));

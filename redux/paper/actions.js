@@ -1,7 +1,7 @@
 import * as types from "./types";
 
 export function setPostPaperPending(request = "POST") {
-  let type = function(request) {
+  let type = function (request) {
     switch (request) {
       case "PATCH":
         return types.PATCH_PAPER_PENDING;
@@ -20,7 +20,7 @@ export function setPostPaperPending(request = "POST") {
   };
 }
 export function setPostPaperFailure(request = "POST", errorBody) {
-  let type = function(request) {
+  let type = function (request) {
     switch (request) {
       case "PATCH":
         return types.PATCH_PAPER_FAILURE;
@@ -39,7 +39,7 @@ export function setPostPaperFailure(request = "POST", errorBody) {
   };
 }
 export function setPostPaperSuccess(postedPaper, request = "POST") {
-  let type = function(request) {
+  let type = function (request) {
     switch (request) {
       case "PATCH":
         return types.PATCH_PAPER_SUCCESS;

@@ -34,6 +34,9 @@ const ETHAddressInput = (props) => {
         <div className={css(styles.connectStatus)}>
           <div className={css(styles.dot, styles.connected)} />
           <span className={css(styles.green)}>Valid Address</span>
+          {/* <span className={css(styles.walletIcon)}>
+            <i class="far fa-wallet" />
+          </span> */}
         </div>
       );
     }

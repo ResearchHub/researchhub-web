@@ -291,7 +291,4 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(CreateFeedBanner);
+export default connect(mapStateToProps, null)(CreateFeedBanner);

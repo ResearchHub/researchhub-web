@@ -38,14 +38,8 @@ class AuthorCardList extends Component {
 
   renderAuthorCard = (authors) => {
     return authors.map((author, i) => {
-      let {
-        first_name,
-        last_name,
-        email,
-        profile_image,
-        onRemove,
-        id,
-      } = author;
+      let { first_name, last_name, email, profile_image, onRemove, id } =
+        author;
       return (
         <div
           className={css(
@@ -102,7 +96,8 @@ class AuthorCardList extends Component {
           styles.authorsList,
           show && styles.reveal,
           show &&
-            (authorsList.length < 2 && authorsList.length !== 0) &&
+            authorsList.length < 2 &&
+            authorsList.length !== 0 &&
             styles.minHeight,
           show && authorsList.length >= 2 && styles.maxHeight,
           loading && styles.loading

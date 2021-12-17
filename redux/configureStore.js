@@ -1,6 +1,8 @@
+// eslint-disable-next-line
 import { createStore, applyMiddleware } from "redux";
 import { createLogger } from "redux-logger";
 import thunkMiddleware from "redux-thunk";
+// eslint-disable-next-line
 import reducer from "./index";
 
 export function configureStore(initialState = {}) {
@@ -10,7 +12,7 @@ export function configureStore(initialState = {}) {
     const logger = createLogger({
       colors: false,
     });
-    // middleware.push(logger); // Logger must be the last item in middleware
+    middleware.push(logger); // Logger must be the last item in middleware
   }
 
   let store = createStore(

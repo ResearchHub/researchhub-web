@@ -500,7 +500,4 @@ const mapDispatchToProps = {
   updateNotification: NotificationActions.updateNotification,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(NotificationEntry);
+export default connect(null, mapDispatchToProps)(NotificationEntry);

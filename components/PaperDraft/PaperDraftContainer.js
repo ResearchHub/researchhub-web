@@ -10,9 +10,9 @@ import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
+  INLINE_COMMENT_MAP,
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
-import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
@@ -125,8 +125,6 @@ export default function PaperDraftContainer({
           editorState,
           setEditorState,
         });
-      } else {
-        return () => {};
       }
     },
     [editorState, isDraftInEditMode, setEditorState]

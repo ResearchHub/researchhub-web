@@ -1,4 +1,4 @@
-import { Component } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { contractABI } from "./contractAbi";
 import { ethers } from "ethers";
@@ -17,153 +17,155 @@ import Loader from "../Loader/Loader";
 
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { INFURA_ENDPOINT } from "~/config/constants";
+import { captureError } from "~/config/utils/error";
 
 // Constants
-const RinkebyRSCContractAddress = "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be";
+const RSCContractAddress =
+  process.env.REACT_APP_ENV === "staging" ||
+  process.env.NODE_ENV !== "production"
+    ? "0x2275736dfEf93a811Bb32156724C1FCF6FFd41be"
+    : "0xd101dcc414f310268c37eeb4cd376ccfa507f571";
 
-class DepositScreen extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      amount: 0,
-      balance: 0, // user wallet balance
-      fetchingBalance: false,
-      RSCContractAddress: RinkebyRSCContractAddress,
+const HOTWALLET =
+  process.env.REACT_APP_ENV === "staging" ||
+  process.env.NODE_ENV !== "production"
+    ? "0xc49b1eC975b687259750D9da7BfCC82eEaA2eF19"
+    : "0x76835CA5Ebc7935CedBB1e0AA3d322e704b1b7B1";
+export function DepositScreen(props) {
+  const {
+    ethAccount,
+    buttonEnabled,
+    connectMetaMask,
+    ethAddressOnChange,
+    setMessage,
+    showMessage,
+  } = props;
+
+  const [amount, setAmount] = useState(0);
+  const [balance, setBalance] = useState(0);
+  const [fetchingBalance, setFetchingBalance] = useState(false);
+  const [RSCContract, setRSCContract] = useState(null);
+
+  useEffect(() => {
+    const createContract = () => {
+      const address = RSCContractAddress;
+      const provider = new ethers.providers.JsonRpcProvider(INFURA_ENDPOINT);
+      const contract = new ethers.Contract(address, contractABI, provider);
+      setRSCContract(contract);
     };
+    createContract();
+  }, []);
 
-    // Contract Constants
-    this.RSCContract;
-  }
+  useEffect(() => {
+    checkRSCBalance();
+  }, [RSCContract, ethAccount]);
 
-  componentDidUpdate(prevProps) {
-    if (this.props.depositScreen) {
-      if (this.props.ethAccount && this.props.ethAccountIsValid) {
-        this.RSCContract ? this.checkRSCBalance() : this.createContract();
-      }
+  const onChange = (e) => {
+    setAmount(e.target.value);
+  };
+
+  const onClick = () => {
+    checkRSCBalance();
+  };
+
+  const checkRSCBalance = async () => {
+    setFetchingBalance(true);
+    if (RSCContract) {
+      const bigNumberBalance = await RSCContract.balanceOf(props.ethAccount);
+      const balance = ethers.utils.formatUnits(bigNumberBalance, 18);
+      setBalance(balance);
     }
-  }
-
-  onChange = (e) => {
-    this.setState({ amount: e.target.value });
+    setFetchingBalance(false);
   };
 
-  onClick = () => {
-    if (!this.RSCContract) {
-      this.createContract();
-    }
-  };
-
-  createContract = async () => {
-    const address = RinkebyRSCContractAddress;
-    this.RSCContract = new ethers.Contract(
-      address,
-      contractABI,
-      this.props.provider
-        ? this.props.provider
-        : ethers.getDefaultProvider("rinkeby")
-    );
-    this.checkRSCBalance();
-  };
-
-  checkRSCBalance = (contract = this.RSCContract) => {
-    if (!this.state.balance && !this.state.fetchingBalance) {
-      this.setState({ fetchingBalance: true }, async () => {
-        const bigNumberBalance = await contract.balanceOf(
-          this.props.ethAccount
-        );
-        const balance = ethers.utils.formatUnits(bigNumberBalance, 18);
-        this.setState({ balance, fetchingBalance: false });
-      });
-    }
-  };
-
-  signTransaction = async (e) => {
+  const signTransaction = async (e) => {
     e && e.preventDefault();
-    const { amount } = this.state;
-    const address = RinkebyRSCContractAddress;
+
+    if (!props.provider) {
+      setMessage("Please refresh the page and try again!");
+      showMessage({ show: true, error: true });
+      return;
+    }
+
+    const address = RSCContractAddress;
 
     const convertedAmount = ethers.utils.parseEther(amount);
-    const signer = this.props.provider.getSigner(0);
+    const signer = props.provider.getSigner(0);
     const contract = new ethers.Contract(address, contractABI, signer);
-
-    const tx = await contract.transfer(
-      "0x5F7329eC7D5e41D3f93aa821f0F56C24897d7Fd7", // recipient address (TODO: should be RH Wallet)
-      convertedAmount
-    );
+    const tx = await contract.transfer(HOTWALLET, convertedAmount);
 
     if (tx) {
       const PAYLOAD = {
         ...tx,
         amount,
         transaction_hash: tx.hash,
-        to_address: tx.to,
+        from_address: tx.from,
       };
-      this.props.onSuccess(tx.hash);
 
-      fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
+      return fetch(API.TRANSFER, API.POST_CONFIG(PAYLOAD))
         .then(Helpers.checkStatus)
-        .then(Helpers.parseJSON);
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          props.onSuccess && props.onSuccess(tx.hash);
+        })
+        .catch((error) => {
+          captureError({
+            error,
+            msg: "Deposit backend error",
+            data: {
+              ...PAYLOAD,
+            },
+          });
+          props.onSuccess && props.onSuccess(tx.hash);
+        });
     }
   };
 
-  render() {
-    const {
-      ethAccount,
-      buttonEnabled,
-      connectMetaMask,
-      ethAddressOnChange,
-    } = this.props;
-
-    return (
-      <form className={css(styles.form)} onSubmit={this.signTransaction}>
-        <ETHAddressInput
-          label="From"
-          tooltip="The address of your ETH Account (ex. 0x0000...)"
-          value={ethAccount}
-          onChange={ethAddressOnChange}
-          containerStyles={styles.ethAddressStyles}
-          placeholder={"         Connect MetaMask Wallet"}
-          icon={
-            <img
-              src={"/static/icons/metamask.svg"}
-              className={css(styles.metaMaskIcon)}
-            />
-          }
-          onClick={connectMetaMask}
-          {...this.props}
-        />
-        <AmountInput
-          minValue={0}
-          maxValue={this.state.balance}
-          balance={
-            this.state.fetchingBalance ? (
-              <Loader loading={true} size={10} />
-            ) : (
-              this.state.balance
-            )
-          }
-          value={this.state.amount}
-          onChange={this.onChange}
-          containerStyles={styles.amountInputStyles}
-          inputContainerStyles={styles.fullWidth}
-          inputStyles={[styles.fullWidth]}
-          rightAlignBalance={true}
-          required={true}
-        />
-        <div className={css(styles.buttonContainer)}>
-          <Button
-            disabled={!buttonEnabled || !ethAccount}
-            label={"Confirm"}
-            type="submit"
-            customButtonStyle={styles.button}
-            rippleClass={styles.button}
+  return (
+    <form className={css(styles.form)} onSubmit={signTransaction}>
+      <ETHAddressInput
+        label="From"
+        tooltip="The address of your ETH Account (ex. 0x0000...)"
+        value={ethAccount}
+        onChange={ethAddressOnChange}
+        containerStyles={styles.ethAddressStyles}
+        placeholder={"         Connect MetaMask Wallet"}
+        icon={
+          <img
+            src={"/static/icons/metamask.svg"}
+            className={css(styles.metaMaskIcon)}
           />
-        </div>
-      </form>
-    );
-  }
+        }
+        onClick={connectMetaMask}
+        {...props}
+      />
+      <AmountInput
+        minValue={0}
+        maxValue={balance}
+        balance={
+          fetchingBalance ? <Loader loading={true} size={10} /> : balance
+        }
+        value={amount}
+        onChange={onChange}
+        containerStyles={styles.amountInputStyles}
+        inputContainerStyles={styles.fullWidth}
+        inputStyles={[styles.fullWidth]}
+        rightAlignBalance={true}
+        required={true}
+      />
+      <div className={css(styles.buttonContainer)}>
+        <Button
+          disabled={!buttonEnabled || !ethAccount}
+          label={!RSCContract ? <Loader loading={true} size={10} /> : "Confirm"}
+          type="submit"
+          customButtonStyle={styles.button}
+          rippleClass={styles.button}
+        />
+      </div>
+    </form>
+  );
 }
-
 const styles = StyleSheet.create({
   form: {
     width: "100%",

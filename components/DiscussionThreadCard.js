@@ -93,8 +93,6 @@ const DiscussionThreadCard = (props) => {
     }
   }
 
-  const goToDiscussion = () => {};
-
   if (mobileView) {
     return (
       <div

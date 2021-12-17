@@ -209,7 +209,4 @@ const mapDispatchToProps = {
   openAddDiscussionModal: ModalActions.openAddDiscussionModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddDiscussionModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddDiscussionModal);

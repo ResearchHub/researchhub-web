@@ -411,7 +411,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(InviteToHubModal);
+export default connect(mapStateToProps, mapDispatchToProps)(InviteToHubModal);

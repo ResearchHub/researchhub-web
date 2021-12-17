@@ -1410,7 +1410,4 @@ const mapDispatchToProps = {
   getHubs: HubActions.getHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

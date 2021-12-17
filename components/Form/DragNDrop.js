@@ -181,14 +181,8 @@ class DragNDrop extends Component {
   };
 
   render() {
-    let {
-      loading,
-      uploadedPaper,
-      uploadFinish,
-      pasteUrl,
-      accept,
-      noPasteUrl,
-    } = this.props;
+    let { loading, uploadedPaper, uploadFinish, pasteUrl, accept, noPasteUrl } =
+      this.props;
     const toAccept = accept ? accept : "application/pdf";
     return (
       <div

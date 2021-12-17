@@ -17,7 +17,7 @@ import { AuthActions } from "~/redux/auth";
 import { setSectionBounty } from "../../config/fetch";
 import colors from "../../config/themes/colors";
 import { getBountyAmount } from "~/config/utils/misc";
-import { sanitizeNumber } from "~/config/utils/misc/form";
+import { sanitizeNumber } from "~/config/utils/form";
 
 class ContentSupportModal extends Component {
   constructor(props) {
@@ -109,11 +109,8 @@ class ContentSupportModal extends Component {
   postBounty = () => {
     const { showMessage, modals } = this.props;
     const { amount } = this.state;
-    const {
-      type,
-      paper,
-      updatePaperState,
-    } = modals.openSectionBountyModal.props;
+    const { type, paper, updatePaperState } =
+      modals.openSectionBountyModal.props;
     showMessage({ show: true, load: true });
 
     const params = {

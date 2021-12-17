@@ -175,7 +175,4 @@ const mapDispatchToProps = {
   openLoginModal: ModalActions.openLoginModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ContentSupport);
+export default connect(mapStateToProps, mapDispatchToProps)(ContentSupport);

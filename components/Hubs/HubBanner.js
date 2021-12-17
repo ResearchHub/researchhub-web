@@ -49,7 +49,4 @@ const mapStateToProps = (state) => ({
   hubs: state.hubs,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(HubBanner);
+export default connect(mapStateToProps, null)(HubBanner);

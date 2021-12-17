@@ -437,15 +437,9 @@ const mapStateToProps = (state) => {
   };
 };
 
-export const Comment = connect(
-  mapStateToProps,
-  null
-)(CommentClass);
+export const Comment = connect(mapStateToProps, null)(CommentClass);
 
-export const Reply = connect(
-  mapStateToProps,
-  null
-)(ReplyClass);
+export const Reply = connect(mapStateToProps, null)(ReplyClass);
 
 const styles = StyleSheet.create({
   commentContainer: {},

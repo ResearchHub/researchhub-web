@@ -168,7 +168,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SummaryEditCard);
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryEditCard);

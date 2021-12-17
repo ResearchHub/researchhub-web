@@ -59,7 +59,4 @@ const mapDispatchToProps = {
   openPaperTransactionModal: ModalActions.openPaperTransactionModal,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(PaperPromotionButton);
+export default connect(null, mapDispatchToProps)(PaperPromotionButton);

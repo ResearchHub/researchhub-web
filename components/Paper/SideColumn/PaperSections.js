@@ -20,8 +20,6 @@ const PaperSections = (props) => {
 
   const [hidePaperSections, toggleHidePaperSections] = useState(false);
 
-  useEffect(() => {}, [activeTab]);
-
   const handleClick = (i) => {
     setActiveTab(i);
     setTimeout(() => {

@@ -12,14 +12,8 @@ import { subscribeToHub, unsubscribeFromHub } from "~/config/fetch";
 import { capitalize } from "~/config/utils/string";
 
 const SubscribeButton = (props) => {
-  const {
-    transition,
-    subscribe,
-    onSubscribe,
-    onUnsubscribe,
-    hub,
-    onClick,
-  } = props;
+  const { transition, subscribe, onSubscribe, onUnsubscribe, hub, onClick } =
+    props;
   const [hover, setHover] = useState(false);
 
   useEffect(() => {
@@ -155,7 +149,4 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SubscribeButton);
+export default connect(mapStateToProps, mapDispatchToProps)(SubscribeButton);
