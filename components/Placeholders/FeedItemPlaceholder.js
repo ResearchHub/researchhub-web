@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import { RectShape, RoundShape } from "react-placeholder/lib/placeholders";
 import colors from "~/config/themes/colors";
 import PaperPlaceholder from "./PaperPlaceholder";
+import { breakpoints } from "~/config/themes/screen";
 
 const FeedItemPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
   return Array.from({ length: rows }).map((k, i) => (
@@ -14,6 +15,9 @@ const FeedItemPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
       </div>
       <div className={css(styles.contentWrapper)}>
         <div className={css(styles.summaryContainer)}>
+          <div className={css(styles.avatarWrapperSmall)}>
+            <RoundShape className={css(styles.round)} color={color} />
+          </div>
           <RectShape
             className={css(styles.textRow)}
             color={color}
@@ -35,6 +39,16 @@ const styles = StyleSheet.create({
   },
   avatarWrapper: {
     marginTop: -5,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  avatarWrapperSmall: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+      marginRight: 15,
+    },
   },
   contentWrapper: {
     width: "calc(100% - 50px)",
@@ -44,7 +58,7 @@ const styles = StyleSheet.create({
   summaryContainer: {
     borderRadius: 3,
     display: "flex",
-    width: "50%",
+    width: "65%",
   },
   round: {
     height: 35,
@@ -56,6 +70,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     ":first-child": {
       marginLeft: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 10,
     },
   },
 });

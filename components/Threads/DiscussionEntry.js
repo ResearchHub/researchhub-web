@@ -776,7 +776,7 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: "0px 10px 10px 15px",
     "@media only screen and (max-width: 767px)": {
-      paddingLeft: 5,
+      paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
     },
