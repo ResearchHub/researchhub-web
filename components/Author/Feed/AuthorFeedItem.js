@@ -6,12 +6,17 @@ import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import dayjs from "dayjs";
 import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/HypothesisCard";
-import { timeAgo } from "~/config/utils/dates";
-import { getUrlToUniDoc } from "~/config/utils/routing";
 import { breakpoints } from "~/config/themes/screen";
 import { truncateText } from "~/config/utils/string";
+import {
+  getNewestCommentTimestamp,
+  formatTimestamp,
+  getDocType,
+  getDocFromItem,
+  getUrlFromItem,
+  getCardType,
+} from "./utils/AuthorFeedUtils";
 
 const AuthorFeedItem = ({
   author,
@@ -21,87 +26,6 @@ const AuthorFeedItem = ({
   paperVoteCallback,
   isSmallScreen = false,
 }) => {
-  const getDocFromItem = (item, itemType) => {
-    let doc;
-    if (itemType === "AUTHORED_PAPER") {
-      doc = item;
-    } else if (itemType === "CONTRIBUTION") {
-      const uniDoc = item.unified_document;
-
-      doc = Array.isArray(uniDoc.documents)
-        ? uniDoc.documents[0]
-        : uniDoc.documents;
-    } else {
-      throw new Error("Unrecognized item type");
-    }
-
-    return doc;
-  };
-
-  const getUrlFromItem = (item, itemType) => {
-    if (itemType === "AUTHORED_PAPER") {
-      return `/paper/${item.id}/${item.slug}`;
-    } else {
-      return getUrlToUniDoc(item.unified_document);
-    }
-  };
-
-  const getNewestCommentTimestamp = (discussionItem) => {
-    let newest = discussionItem.created_date;
-    (discussionItem.source.comments || []).forEach((comment) => {
-      if (!newest || dayjs(comment.created_date) > dayjs(newest)) {
-        newest = comment.created_date;
-      }
-
-      (comment.replies || []).forEach((reply) => {
-        if (dayjs(reply.created_date) > dayjs(newest)) {
-          newest = reply.created_date;
-        }
-      });
-    });
-
-    return newest;
-  };
-
-  const formatTimestamp = (timestamp) => {
-    const date = new Date(timestamp);
-    return timeAgo.format(date);
-  };
-
-  const getDocType = ({ uniDoc }) => {
-    return uniDoc.document_type === "PAPER"
-      ? "paper"
-      : uniDoc.document_type === "DISCUSSION"
-      ? "post"
-      : uniDoc.document_type === "HYPOTHESIS"
-      ? "hypothesis"
-      : "";
-  };
-
-  const getCardType = ({ item, itemType }) => {
-    let cardType;
-    if (itemType === "AUTHORED_PAPER") {
-      return "paper";
-    } else if (itemType === "CONTRIBUTION") {
-      const uniDoc = item.unified_document;
-      if (item.contribution_type === "COMMENTER") {
-        cardType = "comment";
-      } else if (item.contribution_type === "SUBMITTER") {
-        cardType = getDocType({ uniDoc });
-      } else if (item.contribution_type === "SUPPORTER") {
-        if (item.source?.content_type?.app_label === "discussion") {
-          cardType = "comment";
-        } else {
-          cardType = getDocType({ uniDoc });
-        }
-      }
-    } else {
-      throw new Error(`Unrecognized itemType ${itemType}`);
-    }
-
-    return cardType;
-  };
-
   const getCardHTML = ({ item, itemType }) => {
     const doc = getDocFromItem(item, itemType);
     const cardType = getCardType({ item, itemType });

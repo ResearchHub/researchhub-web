@@ -9,6 +9,8 @@ import AuthorFeedItem from "./AuthorFeedItem";
 import { isEmpty } from "~/config/utils/nullchecks";
 import SearchEmpty from "~/components/Search/SearchEmpty";
 import { breakpoints } from "~/config/themes/screen";
+import dayjs from "dayjs";
+import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
 
 const AuthorActivityFeed = ({
   author,
@@ -60,7 +62,7 @@ const AuthorActivityFeed = ({
         .then(Helpers.parseJSON)
         .then((res) => {
           setNextResultsUrl(res.next);
-          setFeedResults(res.results);
+          setFeedResults(sortResults(res.results));
           setNeedsInitialFetch(false);
           setIsLoading(false);
         })
@@ -85,11 +87,28 @@ const AuthorActivityFeed = ({
       .then((res) => {
         setIsLoading(false);
         setNextResultsUrl(res.next);
-        setFeedResults([...feedResults, ...res.results]);
+        setFeedResults([...feedResults, ...sortResults(res.results)]);
       })
       .catch(() => {
         setFeedResults([]);
       });
+  };
+
+  const sortResults = (results) => {
+    results.map((item) => {
+      if (item?.contribution_type === "COMMENTER") {
+        const newestTimestamp = getNewestCommentTimestamp(item);
+        item.created_date = newestTimestamp;
+      }
+    });
+
+    return results.sort((a, b) => {
+      if (dayjs(a.created_date) < dayjs(b.created_date)) {
+        return 1;
+      } else {
+        return -1;
+      }
+    });
   };
 
   const paperVoteCallback = (index, paper) => {
