@@ -10,6 +10,7 @@ function PermissionsDashboard(): ReactElement<"div"> | null {
   const shouldRenderUI = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
     auth: reduxStore?.getState()?.auth ?? null,
+    shouldRedirect: true,
   });
   return shouldRenderUI ? (
     <div className={css(styles.permissionsDashboard)}>
