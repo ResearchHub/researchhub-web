@@ -31,7 +31,7 @@ export default function FeedInfoCard({
     hub_image: hubImage,
     subscriber_count: subCount,
   } = hub;
-  const editor_profiles = editor_permission_groups.map(
+  const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
   return (
@@ -59,25 +59,27 @@ export default function FeedInfoCard({
             <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
           </div>
         </div>
-        <div className={css(styles.detailRow)}>
-          <div className={css(styles.detailRowLabel)}>
-            <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+        {!isEmpty(editorProfiles) && (
+          <div className={css(styles.detailRow)}>
+            <div className={css(styles.detailRowLabel)}>
+              <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+            </div>
+            <div className={css(styles.editorsWrap)}>
+              <span style={{ fontWeight: 500, marginRight: 8 }}>{`Editor${
+                editorProfiles.length > 1 ? "s" : ""
+              } `}</span>
+              {!isEmpty(editorProfiles) ? (
+                <AuthorFacePile
+                  authorProfiles={editorProfiles}
+                  imgSize={16}
+                  withAuthorName
+                />
+              ) : (
+                <span style={{ color: colors.TEXT_GREY(1) }}>{"N/A"}</span>
+              )}
+            </div>
           </div>
-          <div className={css(styles.editorsWrap)}>
-            <span style={{ fontWeight: 500, marginRight: 8 }}>{`Editor${
-              editor_profiles.length > 1 ? "s" : ""
-            } `}</span>
-            {!isEmpty(editor_profiles) ? (
-              <AuthorFacePile
-                authorProfiles={editor_profiles}
-                imgSize={16}
-                withAuthorName
-              />
-            ) : (
-              <span style={{ color: colors.TEXT_GREY(1) }}>{"N/A"}</span>
-            )}
-          </div>
-        </div>
+        )}
         <div className={css(styles.detailRow)}>
           <div>{isEmpty(description) ? null : description}</div>
         </div>
