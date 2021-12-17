@@ -39,6 +39,9 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
       onSuccess: (): void => {
         setFormState(DEFAULT_FORM_STATE);
         setIsSubmitting(false);
+        alert(
+          `User with email ${editorEmail} is now an editor of ${selectedHub.name}`
+        );
       },
       onError: (error: Error): void => {
         emptyFncWithMsg(error);
@@ -84,6 +87,7 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
           placeholder="example@university.edu"
           required
           type="email"
+          value={editorEmail}
         />
         <div
           style={{ display: "flex", width: "100%", justifyContent: "center" }}
