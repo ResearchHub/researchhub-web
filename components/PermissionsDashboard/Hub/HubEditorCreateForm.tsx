@@ -34,15 +34,18 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
-    console.warn("selectedHub: ", selectedHub);
-    console.warn("editorEmail: ", editorEmail);
     hubEditorCreate({
       editorEmail: nullthrows(editorEmail, "Editor email cannot be empty"),
       onSuccess: (): void => {
         setFormState(DEFAULT_FORM_STATE);
         setIsSubmitting(false);
       },
-      onError: emptyFncWithMsg,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setFormState(DEFAULT_FORM_STATE);
+        setIsSubmitting(false);
+        alert(`Oops, something went wrong: ${error.message}`);
+      },
       selectedHubID: nullthrows(
         selectedHub?.id ?? null,
         "Hub needs to be selected"
