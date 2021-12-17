@@ -1,4 +1,4 @@
-import { ReactElement, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
 import FormInput from "~/components/Form/FormInput";
@@ -27,9 +27,11 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const { selectedHub, editorEmail } = formState;
-  const handleSubmit = (): void => {
+  const handleSubmit = (event: SyntheticEvent): void => {
+    event.preventDefault();
     setIsSubmitting(true);
-    console.warn("");
+    console.warn("selectedHub: ", selectedHub);
+    console.warn("editorEmail: ", editorEmail);
   };
 
   return (
