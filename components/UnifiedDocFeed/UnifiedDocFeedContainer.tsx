@@ -203,6 +203,14 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
+      {!hasSubscribed ? (
+        <div>
+          <div className={css(styles.bannerContainer)} id="create-feed-banner">
+            {/* @ts-ignore */}
+            <CreateFeedBanner loggedIn={loggedIn} />
+          </div>
+        </div>
+      ) : null}
       <FeedInfoCard
         hub={hub}
         hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
