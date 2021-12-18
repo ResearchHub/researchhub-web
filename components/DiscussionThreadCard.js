@@ -23,6 +23,7 @@ import {
 } from "~/config/utils/editor";
 
 import { createUsername } from "~/config/utils/user";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
@@ -100,7 +101,6 @@ const DiscussionThreadCard = (props) => {
           styles.discussionContainer,
           props.newCard && styles.newCard
         )}
-        onClick={goToDiscussion}
       >
         <DiscussionCard
           mobileView={true}
@@ -162,7 +162,6 @@ const DiscussionThreadCard = (props) => {
           styles.discussionContainer,
           props.newCard && styles.newCard
         )}
-        onClick={goToDiscussion}
       >
         <DiscussionCard
           top={
