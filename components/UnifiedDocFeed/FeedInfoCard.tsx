@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     margin: "8px 0",
+    alignItems: "center",
   },
   detailRowLabel: {
     color: colors.LIGHT_GREY_TEXT,
