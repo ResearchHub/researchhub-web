@@ -100,7 +100,6 @@ const DiscussionThreadCard = (props) => {
           styles.discussionContainer,
           props.newCard && styles.newCard
         )}
-        onClick={goToDiscussion}
       >
         <DiscussionCard
           mobileView={true}
@@ -162,7 +161,6 @@ const DiscussionThreadCard = (props) => {
           styles.discussionContainer,
           props.newCard && styles.newCard
         )}
-        onClick={goToDiscussion}
       >
         <DiscussionCard
           top={
