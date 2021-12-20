@@ -34,7 +34,7 @@ export default function FeedInfoCard({
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
-  const editorProfiless = [...editorProfiles, ...editorProfiles];
+
   return (
     <div className={css(styles.feedInfoCard)}>
       <Image
@@ -76,7 +76,7 @@ export default function FeedInfoCard({
               } `}</span>
               {!isEmpty(editorProfiles) ? (
                 <AuthorFacePile
-                  authorProfiles={editorProfiless}
+                  authorProfiles={editorProfiles}
                   imgSize={22}
                   horizontal
                   withAuthorName
@@ -89,7 +89,7 @@ export default function FeedInfoCard({
           </div>
         )}
         <div className={css(styles.detailRow)}>
-          <div>{isEmpty(description) ? null : description}</div>
+          {isEmpty(description) ? null : description}
         </div>
       </div>
     </div>
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 16,
-    margin: "8px 0 0",
+    margin: "8px 0",
     overflowX: "scroll",
   },
   detailRowLabel: {
