@@ -72,6 +72,7 @@ export default function FeedInfoCard({
                 <AuthorFacePile
                   authorProfiles={editorProfiles}
                   imgSize={16}
+                  horizontal
                   withAuthorName
                 />
               ) : (
