@@ -51,13 +51,21 @@ export default function AuthorFacePile({
     [authorProfiles]
   );
   return (
-    <div className={css(Boolean(horizontal) && styles.horizontal)}>{tags}</div>
+    <div
+      className={css(
+        styles.authorFacePile,
+        Boolean(horizontal) && styles.horizontal
+      )}
+    >
+      {tags}
+    </div>
   );
 }
 
 const styles = StyleSheet.create({
   authorFacePile: {
-    marginRight: 8,
+    overflowY: "auto",
+    width: "100%",
   },
   horizontal: {
     display: "flex",
