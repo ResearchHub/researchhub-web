@@ -75,9 +75,10 @@ export default function FeedInfoCard({
               {!isEmpty(editorProfiles) ? (
                 <AuthorFacePile
                   authorProfiles={editorProfiles}
-                  imgSize={16}
+                  imgSize={22}
                   horizontal
                   withAuthorName
+                  labelSpacing={6}
                 />
               ) : (
                 <span style={{ color: colors.TEXT_GREY(1) }}>{"N/A"}</span>
@@ -115,6 +116,7 @@ const styles = StyleSheet.create({
   },
   detailRowLabel: {
     color: colors.LIGHT_GREY_TEXT,
+    height: 20,
     marginRight: 8,
     width: 20,
   },
@@ -151,5 +153,5 @@ const styles = StyleSheet.create({
     },
   },
   titleContainer: { display: "flex", width: "100%" },
-  editorsWrap: { display: "flex" },
+  editorsWrap: { display: "flex", alignItems: "center" },
 });
