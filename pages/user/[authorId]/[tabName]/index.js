@@ -1061,9 +1061,9 @@ function AuthorPage(props) {
               <div className={css(styles.reputationContainer)}>
                 <div className={css(styles.editorLabelWrap)}>
                   <Image
-                    height={16}
-                    src="/static/background/editor-star.svg"
-                    width={16}
+                    height={20}
+                    src="/static/icons/editor-star.png"
+                    width={20}
                   />
                   <span
                     style={{

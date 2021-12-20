@@ -63,9 +63,9 @@ export default function FeedInfoCard({
           <div className={css(styles.detailRow)}>
             <div className={css(styles.detailRowLabel)}>
               <Image
-                height={16}
-                src="/static/background/editor-star.svg"
-                width={16}
+                height={20}
+                src="/static/icons/editor-star.png"
+                width={20}
               />
             </div>
             <div className={css(styles.editorsWrap)}>
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   detailRow: {
+    alignItems: "center",
     display: "flex",
     fontSize: 16,
     margin: "8px 0",
