@@ -155,6 +155,6 @@ const styles = StyleSheet.create({
       fontSize: 20,
     },
   },
-  titleContainer: { display: "flex", width: "100%" },
+  titleContainer: { display: "flex", width: "100%", marginBottom: 8 },
   editorsWrap: { display: "flex", alignItems: "center" },
 });
