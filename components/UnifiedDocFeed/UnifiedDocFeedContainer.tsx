@@ -28,8 +28,12 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import FeedInfoCard from "./FeedInfoCard";
 import { breakpoints } from "~/config/themes/screen";
+import dynamic from "next/dynamic";
+
+const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
+  ssr: false,
+});
 
 function UnifiedDocFeedContainer({
   auth, // redux

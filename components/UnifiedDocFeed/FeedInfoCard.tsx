@@ -3,10 +3,14 @@ import { css, StyleSheet } from "aphrodite";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode } from "react";
+import { ReactElement, ReactNode, useState } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
+import {
+  getCurrMediaWidth,
+  useEffectOnScreenResize,
+} from "~/config/utils/useEffectOnScreenResize";
 
 type Props = {
   hub: any;
@@ -15,12 +19,26 @@ type Props = {
   mainHeaderText: string;
 };
 
+const EDITOR_HORIZONTAL_VIEW_SIZE = breakpoints.xxsmall.int;
+
 export default function FeedInfoCard({
   hub,
   hubSubscribeButton,
   isHomePage,
   mainHeaderText,
 }: Props): ReactElement<"div"> | null {
+  if (!window) {
+    return null;
+  }
+  const [editorsHorizontalView, setEditorsHorizontalView] = useState<boolean>(
+    getCurrMediaWidth() > EDITOR_HORIZONTAL_VIEW_SIZE
+  );
+
+  useEffectOnScreenResize({
+    onResize: (newMediaWidth): void =>
+      setEditorsHorizontalView(newMediaWidth > EDITOR_HORIZONTAL_VIEW_SIZE),
+  });
+  console.warn("editorsHorizontalView: ", editorsHorizontalView);
   if (isHomePage || isEmpty(hub)) {
     return <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>;
   }
@@ -34,7 +52,7 @@ export default function FeedInfoCard({
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
-
+  const editorProfiless = [...editorProfiles, ...editorProfiles];
   return (
     <div className={css(styles.feedInfoCard)}>
       <Image
@@ -53,9 +71,14 @@ export default function FeedInfoCard({
         </div>
         <div className={css(styles.detailRow)}>
           <div className={css(styles.detailRowLabel)}>
-            <FontAwesomeIcon icon={faUser} style={{ width: "16px" }} />
-          </div>
-          <div>
+            <FontAwesomeIcon
+              color={colors.LIGHT_GREY_TEXT}
+              icon={faUser}
+              style={{
+                marginRight: 14,
+                width: "16px",
+              }}
+            />
             <span style={{ fontWeight: 500, marginRight: 8 }}>{"Users "}</span>
             <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
           </div>
@@ -69,23 +92,21 @@ export default function FeedInfoCard({
                 width={20}
                 layout="fixed"
               />
+              <span
+                style={{
+                  fontWeight: 500,
+                  margin: "0 12px",
+                }}
+              >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
-            <div className={css(styles.editorsWrap)}>
-              <span style={{ fontWeight: 500, marginRight: 12 }}>{`Editor${
-                editorProfiles.length > 1 ? "s" : ""
-              } `}</span>
-              {!isEmpty(editorProfiles) ? (
-                <AuthorFacePile
-                  authorProfiles={editorProfiles}
-                  imgSize={22}
-                  horizontal
-                  withAuthorName
-                  labelSpacing={6}
-                />
-              ) : (
-                <span style={{ color: colors.TEXT_GREY(1) }}>{"N/A"}</span>
-              )}
-            </div>
+            <AuthorFacePile
+              authorProfiles={editorProfiless}
+              horizontal={editorsHorizontalView}
+              imgSize={22}
+              labelSpacing={6}
+              loadOffset={1}
+              withAuthorName
+            />
           </div>
         )}
         <div className={css(styles.detailRow)}>
@@ -118,17 +139,13 @@ const styles = StyleSheet.create({
     overflowX: "scroll",
   },
   detailRowLabel: {
-    color: colors.LIGHT_GREY_TEXT,
-    height: 20,
+    alignItems: "center",
+    display: "flex",
     marginRight: 8,
-    width: 20,
   },
   subscribeContainer: {
     marginLeft: 16,
     minWidth: 100,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
   },
   title: {
     color: colors.TEXT_DARKER_GREY,
@@ -156,5 +173,4 @@ const styles = StyleSheet.create({
     },
   },
   titleContainer: { display: "flex", width: "100%", marginBottom: 8 },
-  editorsWrap: { display: "flex", alignItems: "center" },
 });
