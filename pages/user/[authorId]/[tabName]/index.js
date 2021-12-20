@@ -14,8 +14,6 @@ import { ModalActions } from "../../../../redux/modals";
 import { TransactionActions } from "~/redux/transaction";
 
 // Components
-import { faStar, faUser } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import AvatarUpload from "~/components/AvatarUpload";
@@ -23,6 +21,7 @@ import Button from "~/components/Form/Button";
 import ClaimAuthorPopoverLabel from "../../../../components/ClaimAuthorPopoverLabel";
 import ComponentWrapper from "~/components/ComponentWrapper";
 import Head from "~/components/Head";
+import Image from "next/image";
 import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
@@ -1061,7 +1060,11 @@ function AuthorPage(props) {
             {!isEmpty(authorIsEditorOf) && (
               <div className={css(styles.reputationContainer)}>
                 <div className={css(styles.editorLabelWrap)}>
-                  <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+                  <Image
+                    height={16}
+                    src="/static/background/editor-star.svg"
+                    width={16}
+                  />
                   <span
                     style={{
                       color: colors.BLACK(1),
