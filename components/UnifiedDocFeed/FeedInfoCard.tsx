@@ -69,7 +69,7 @@ export default function FeedInfoCard({
               />
             </div>
             <div className={css(styles.editorsWrap)}>
-              <span style={{ fontWeight: 500, marginRight: 8 }}>{`Editor${
+              <span style={{ fontWeight: 500, marginRight: 12 }}>{`Editor${
                 editorProfiles.length > 1 ? "s" : ""
               } `}</span>
               {!isEmpty(editorProfiles) ? (
