@@ -25,6 +25,7 @@ const AuthorAvatar = (props) => {
     trueSize,
     twitterUrl,
     withAuthorName,
+    spacing,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -127,7 +128,7 @@ const AuthorAvatar = (props) => {
           >
             {avatarComponent}
             {Boolean(withAuthorName) ? (
-              <span style={{ marginLeft: 8 }}>{fullName}</span>
+              <span style={{ marginLeft: spacing ?? 8 }}>{fullName}</span>
             ) : null}
           </a>
         </Link>

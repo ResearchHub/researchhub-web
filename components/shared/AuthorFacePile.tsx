@@ -8,6 +8,7 @@ type Props = {
   authorProfiles: Object[];
   horizontal?: boolean;
   imgSize: number | string;
+  labelSpacing?: number;
   loadOffset?: number;
   withAuthorName?: boolean;
 };
@@ -16,6 +17,7 @@ export default function AuthorFacePile({
   authorProfiles = [],
   horizontal,
   imgSize,
+  labelSpacing,
   loadOffset,
   withAuthorName,
 }: Props): ReactElement<"div"> {
@@ -39,6 +41,7 @@ export default function AuthorFacePile({
                 }}
                 margin
                 size={imgSize}
+                spacing={labelSpacing}
                 withAuthorName={withAuthorName}
               />
             </LazyLoad>
