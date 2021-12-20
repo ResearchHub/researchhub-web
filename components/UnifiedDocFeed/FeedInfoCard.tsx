@@ -1,6 +1,6 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { faStar, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, ReactNode } from "react";
@@ -62,7 +62,11 @@ export default function FeedInfoCard({
         {!isEmpty(editorProfiles) && (
           <div className={css(styles.detailRow)}>
             <div className={css(styles.detailRowLabel)}>
-              <FontAwesomeIcon icon={faStar} style={{ width: "16px" }} />
+              <Image
+                height={16}
+                src="/static/background/editor-star.svg"
+                width={16}
+              />
             </div>
             <div className={css(styles.editorsWrap)}>
               <span style={{ fontWeight: 500, marginRight: 8 }}>{`Editor${
