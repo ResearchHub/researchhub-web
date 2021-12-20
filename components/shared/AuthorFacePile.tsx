@@ -6,50 +6,57 @@ import LazyLoad from "react-lazyload";
 
 type Props = {
   authorProfiles: Object[];
+  horizontal?: boolean;
   imgSize: number | string;
   loadOffset?: number;
-  withAuthorName?: Boolean;
+  withAuthorName?: boolean;
 };
 
 export default function AuthorFacePile({
   authorProfiles = [],
+  horizontal,
   imgSize,
   loadOffset,
   withAuthorName,
 }: Props): ReactElement<"div"> {
-  const imgs = useMemo(
+  const tags = useMemo(
     () =>
       authorProfiles.map(
-        (author: any, index: number): ReactElement<typeof AuthorAvatar> => {
+        (author: any, index: number): ReactElement<typeof LazyLoad> => {
           return (
-            <AuthorAvatar
-              author={author}
-              border={`2px solid ${colors.LIGHT_GREY(1)}`}
-              key={index}
-              onClick={(event: SyntheticEvent) => {
-                event.stopPropagation();
-                event.preventDefault();
-              }}
-              size={imgSize}
-              withAuthorName={withAuthorName}
-            />
+            <LazyLoad
+              offset={loadOffset ?? 100}
+              once
+              style={{ marginRight: 12 }}
+            >
+              <AuthorAvatar
+                author={author}
+                border={`2px solid ${colors.LIGHT_GREY(1)}`}
+                key={index}
+                onClick={(event: SyntheticEvent) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                }}
+                margin
+                size={imgSize}
+                withAuthorName={withAuthorName}
+              />
+            </LazyLoad>
           );
         }
       ),
     [authorProfiles]
   );
   return (
-    <div className={css(styles.facePile)}>
-      <LazyLoad offset={loadOffset ?? 100} once>
-        {imgs}
-      </LazyLoad>
-    </div>
+    <div className={css(Boolean(horizontal) && styles.horizontal)}>{tags}</div>
   );
 }
 
 const styles = StyleSheet.create({
-  facePile: {},
-  avatarWrap: {
+  authorFacePile: {
+    marginRight: 8,
+  },
+  horizontal: {
     display: "flex",
   },
 });
