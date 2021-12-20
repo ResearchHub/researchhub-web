@@ -34,6 +34,7 @@ export default function FeedInfoCard({
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
+  const editorProfiless = [...editorProfiles, ...editorProfiles];
   return (
     <div className={css(styles.feedInfoCard)}>
       <Image
@@ -55,7 +56,7 @@ export default function FeedInfoCard({
             <FontAwesomeIcon icon={faUser} style={{ width: "16px" }} />
           </div>
           <div>
-            <span style={{ fontWeight: 500 }}>{"Users "}</span>
+            <span style={{ fontWeight: 500, marginRight: 8 }}>{"Users "}</span>
             <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
           </div>
         </div>
@@ -66,6 +67,7 @@ export default function FeedInfoCard({
                 height={20}
                 src="/static/icons/editor-star.png"
                 width={20}
+                layout="fixed"
               />
             </div>
             <div className={css(styles.editorsWrap)}>
@@ -74,7 +76,7 @@ export default function FeedInfoCard({
               } `}</span>
               {!isEmpty(editorProfiles) ? (
                 <AuthorFacePile
-                  authorProfiles={editorProfiles}
+                  authorProfiles={editorProfiless}
                   imgSize={22}
                   horizontal
                   withAuthorName
@@ -112,7 +114,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 16,
-    margin: "8px 0",
+    margin: "8px 0 0",
+    overflowX: "scroll",
   },
   detailRowLabel: {
     color: colors.LIGHT_GREY_TEXT,
