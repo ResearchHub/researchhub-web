@@ -84,7 +84,13 @@ export default function FeedInfoCard({
           </div>
         </div>
         {!isEmpty(editorProfiles) && (
-          <div className={css(styles.detailRow)}>
+          <div
+            className={css(styles.detailRow)}
+            style={{
+              flexDirection: !editorsHorizontalView ? "column" : "row",
+              alignItems: !editorsHorizontalView ? "start" : "center",
+            }}
+          >
             <div className={css(styles.detailRowLabel)}>
               <Image
                 height={20}
@@ -99,14 +105,20 @@ export default function FeedInfoCard({
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
-            <AuthorFacePile
-              authorProfiles={editorProfiless}
-              horizontal={editorsHorizontalView}
-              imgSize={22}
-              labelSpacing={6}
-              loadOffset={1}
-              withAuthorName
-            />
+            <div
+              style={{
+                margin: !editorsHorizontalView ? "16px 0 0 32px" : 0,
+              }}
+            >
+              <AuthorFacePile
+                authorProfiles={editorProfiless}
+                horizontal={editorsHorizontalView}
+                imgSize={22}
+                labelSpacing={6}
+                loadOffset={1}
+                withAuthorName
+              />
+            </div>
           </div>
         )}
         <div className={css(styles.detailRow)}>
@@ -137,6 +149,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     margin: "8px 0",
     overflowX: "scroll",
+    justifyContent: "flex-start",
   },
   detailRowLabel: {
     alignItems: "center",
