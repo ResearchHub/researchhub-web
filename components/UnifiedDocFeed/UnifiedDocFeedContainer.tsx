@@ -27,10 +27,7 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
-import {
-  getBEUnifiedDocType,
-  getFetchParamsWithoutCallbacks,
-} from "~/config/utils/getUnifiedDocType";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import dynamic from "next/dynamic";
 
@@ -70,14 +67,14 @@ function UnifiedDocFeedContainer({
     paginationInfo;
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
-  const fetchParamsWithoutCallbacks = getFetchParamsWithoutCallbacks({
+  const fetchParamsWithoutCallbacks = {
     docTypeFilter: getBEUnifiedDocType(docTypeFilter),
     hubID,
     isLoggedIn,
     page,
     subFilters,
     subscribedHubs: isOnMyHubsTab,
-  });
+  };
 
   useEffectUpdateStatesOnServerChanges({
     setUnifiedDocuments,

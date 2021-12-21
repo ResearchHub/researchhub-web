@@ -21,13 +21,16 @@ Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
   const defaultProps = {
-    feed: 0,
+    feed: 1,
     filter: filterObj,
+    initialFeed: null,
+    hubId: null,
+    initialHubList: null,
+    leaderboardFeed: null,
     loggedIn: authToken !== undefined,
+    subfilters: filterObj,
     page: 1,
     query,
-    subscribedHubs: true, // indicator for fetching user's hubs
-    timePeriod: getInitialScope(),
   };
 
   if (!isServer()) {
@@ -38,10 +41,12 @@ Index.getInitialProps = async (ctx) => {
     const urlDocType = getBEUnifiedDocType(urlQuery.type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
-        hubId: null,
+        ...defaultProps,
         ordering: "hot",
         page: 1,
         subfilters: filterObj,
+        subscribedHubs: true,
+        timePeriod: getInitialScope(),
         type: urlDocType,
       },
       authToken,
@@ -50,7 +55,6 @@ Index.getInitialProps = async (ctx) => {
     return {
       ...defaultProps,
       initialFeed,
-      feed: 1,
     };
   } catch (error) {
     return defaultProps;
