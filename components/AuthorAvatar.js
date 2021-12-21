@@ -128,7 +128,9 @@ const AuthorAvatar = (props) => {
           >
             {avatarComponent}
             {Boolean(withAuthorName) ? (
-              <span style={{ marginLeft: spacing ?? 8 }}>{fullName}</span>
+              <span style={{ marginLeft: spacing ?? 8, whiteSpace: "nowrap" }}>
+                {fullName}
+              </span>
             ) : null}
           </a>
         </Link>

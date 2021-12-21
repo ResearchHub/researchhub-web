@@ -3,14 +3,10 @@ import { css, StyleSheet } from "aphrodite";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
-import { ReactElement, ReactNode, useState } from "react";
+import { ReactElement, ReactNode } from "react";
 import AuthorFacePile from "../shared/AuthorFacePile";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import Image from "next/image";
-import {
-  getCurrMediaWidth,
-  useEffectOnScreenResize,
-} from "~/config/utils/useEffectOnScreenResize";
 
 type Props = {
   hub: any;
@@ -18,8 +14,6 @@ type Props = {
   isHomePage: Boolean;
   mainHeaderText: string;
 };
-
-const EDITOR_HORIZONTAL_VIEW_SIZE = breakpoints.xxsmall.int;
 
 export default function FeedInfoCard({
   hub,
@@ -44,7 +38,6 @@ export default function FeedInfoCard({
   const editorProfiles = editor_permission_groups.map(
     (editor_group: any): any => editor_group?.user?.author_profile
   );
-  const editorProfiless = [...editorProfiles, ...editorProfiles];
 
   return (
     <div className={css(styles.feedInfoCard)}>
@@ -94,11 +87,10 @@ export default function FeedInfoCard({
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
             <AuthorFacePile
-              authorProfiles={editorProfiless}
+              authorProfiles={[...editorProfiles, ...editorProfiles]}
               horizontal
               imgSize={22}
               labelSpacing={6}
-              loadOffset={1}
               withAuthorName
             />
           </div>
