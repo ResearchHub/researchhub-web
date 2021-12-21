@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
+import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
@@ -190,6 +191,11 @@ const Post = (props) => {
 
   const slug =
     post && post.title && post.title.toLowerCase().replace(/\s/g, "-");
+  const currUserID = props.user?.id ?? null;
+  const isEditorOfHubs = isUserEditorOfHubs({
+    currUserID,
+    hubs: post?.hubs ?? [],
+  });
 
   if (post) {
     return (
@@ -202,7 +208,7 @@ const Post = (props) => {
           canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
         />
         <div className={css(styles.root)}>
-          <PaperBanner post={post} postType="post" />
+          <PaperBanner document={post} documentType="post" />
           <PaperTransactionModal
             post={post}
             updatePostState={updatePostState}
@@ -211,12 +217,13 @@ const Post = (props) => {
             <div className={css(styles.main)}>
               <div className={css(styles.paperPageContainer, styles.top)}>
                 <PostPageCard
-                  post={post}
-                  shareUrl={process.browser && window.location.href}
+                  isEditorOfHubs={isEditorOfHubs}
                   isModerator={isModerator}
                   isSubmitter={isSubmitter}
+                  post={post}
                   removePost={removePost}
                   restorePost={restorePost}
+                  shareUrl={process.browser && window.location.href}
                 />
               </div>
               <div className={css(styles.paperMetaContainerMobile)}>

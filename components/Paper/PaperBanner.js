@@ -1,72 +1,33 @@
-import { useState, useEffect } from "react";
 import { connect } from "react-redux";
-import { StyleSheet, css } from "aphrodite";
-
-// Redux
-import { ModalActions } from "../../redux/modals";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
-
-// Config
-import icons from "~/config/themes/icons";
-import colors, { bannerColor } from "~/config/themes/colors";
+import { ModalActions } from "../../redux/modals";
+import { StyleSheet, css } from "aphrodite";
 import { upCaseFirstLetter } from "~/config/utils/upCaseFirstLetter";
+import colors, { bannerColor } from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 const PaperBanner = (props) => {
-  // TODO: calvinhlee - refactor this component.
-  const { paper, fetchBullets, loadingPaper, post, postType, lastFetchTime } =
-    props;
-  const [type, setType] = useState(null);
-  const [showBanner, setShowBanner] = useState(false);
+  const { document, documentType } = props;
+  const doneFetching = !isEmpty(document);
+  const currDocumentState = Boolean(document?.is_removed) ? "removed" : null;
+  const isRemoved = currDocumentState === "removed";
+  const shouldShowBanner =
+    doneFetching && !isNullOrUndefined(currDocumentState);
 
-  useEffect(() => {
-    configureBanner();
-  }, [paper, loadingPaper, post, lastFetchTime]);
-
-  const documentType = Boolean(paper) ? "paper" : postType;
-  const configureBanner = () => {
-    if (documentType === "post" || documentType === "hypothesis") {
-      if (!post || Object.keys(post).length === 0) {
-        setShowBanner(false);
-        return;
-      } else if (!post.is_removed) {
-        setShowBanner(false);
-        return;
-      }
-    } else {
-      if (!paper) {
-        setShowBanner(false);
-        return;
-      } else {
-        if (!Boolean(paper?.is_removed) && (!fetchBullets || loadingPaper)) {
-          setShowBanner(false);
-          return;
-        }
-      }
-    }
-    const isRemoved =
-      documentType === "post" || "hypothesis"
-        ? Boolean(post?.is_removed)
-        : Boolean(paper?.is_removed);
-
-    if (isRemoved) {
-      setType("removed");
-      setShowBanner(true);
-      return;
-    }
-
-    setShowBanner(false);
-  };
-
-  /**
-   * RENDERING
-   */
   const renderMessage = () => {
-    switch (type) {
+    switch (currDocumentState) {
       case "removed":
         return (
           <div className={css(styles.removedMessage)}>
             <h3 className={css(styles.header)}>
-              {renderIcon(true)}
+              <div className={css(styles.icon)}>
+                <span
+                  className={css(styles.removeIcon, styles.mobileRemoveIcon)}
+                >
+                  {icons.exclamationCircle}
+                </span>
+              </div>
               {upCaseFirstLetter(documentType)} Removed
             </h3>
             {`This ${documentType} has been removed by the submitter or for having
@@ -89,47 +50,22 @@ const PaperBanner = (props) => {
     }
   };
 
-  const renderIcon = (mobile) => {
-    let icon;
-
-    switch (type) {
-      case "removed":
-        icon = (
-          <span
-            className={css(
-              styles.removeIcon,
-              mobile && styles.mobileRemoveIcon
-            )}
-          >
-            {icons.exclamationCircle}
-          </span>
-        );
-        break;
-      default:
-        break;
-    }
-
-    return <div className={css(styles.icon)}>{icon}</div>;
-  };
-
-  const conditionalContainer = ({ mobile = false, condition, component }) => {
-    return condition ? (
-      <div className={css(styles.desktop, mobile && styles.mobile)}>
-        {component}
-      </div>
-    ) : null;
-  };
-
   return (
     <div
       className={css(
         styles.banner,
-        type === "removed" ? styles.removed : styles.incomplete,
-        !showBanner && styles.hideBanner
+        isRemoved ? styles.removed : styles.incomplete,
+        !shouldShowBanner && styles.hideBanner
       )}
     >
       <div className={css(styles.bannerInner)}>
-        {type === "removed" && renderIcon()}
+        {isRemoved && (
+          <div className={css(styles.icon)}>
+            <span className={css(styles.removeIcon)}>
+              {icons.exclamationCircle}
+            </span>
+          </div>
+        )}
         <div className={css(styles.message)}>{renderMessage()}</div>
       </div>
     </div>

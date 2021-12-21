@@ -129,7 +129,7 @@ class PaperPageCard extends Component {
       restorePaper,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = false;
     }
 
@@ -145,15 +145,17 @@ class PaperPageCard extends Component {
 
   removePaper = () => {
     let {
-      setMessage,
-      showMessage,
+      isEditorOfHubs,
       isModerator,
       isSubmitter,
       paperId,
       removePaper,
+      setMessage,
+      showMessage,
     } = this.props;
+
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = true;
     }
 
@@ -292,7 +294,14 @@ class PaperPageCard extends Component {
   };
 
   renderActions = () => {
-    const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const {
+      flagged,
+      isEditorOfHubs,
+      isModerator,
+      isSubmitter,
+      paper,
+      setFlag,
+    } = this.props;
     const { paper_title, title, uploaded_by } = paper || {};
     const uploadedById = uploaded_by && paper.uploaded_by.id;
     const isUploaderSuspended =
@@ -358,7 +367,7 @@ class PaperPageCard extends Component {
         ),
       },
       {
-        active: isModerator || isSubmitter,
+        active: isModerator || isSubmitter || isEditorOfHubs,
         button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}

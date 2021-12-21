@@ -1,18 +1,11 @@
-import {
-  useEffect,
-  useState,
-  Fragment,
-  useMemo,
-  useRef,
-  useCallback,
-} from "react";
-import { StyleSheet, css } from "aphrodite";
-import { useRouter } from "next/router";
-
 import { connect, useDispatch, useStore } from "react-redux";
-import Error from "next/error";
-import * as Sentry from "@sentry/browser";
+import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
+import { StyleSheet, css } from "aphrodite";
+import { useEffect, useState, Fragment, useMemo } from "react";
+import { useRouter } from "next/router";
 import { Waypoint } from "react-waypoint";
+import * as Sentry from "@sentry/browser";
+import Error from "next/error";
 
 // Components
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
@@ -135,10 +128,11 @@ const Paper = ({
   const [activeSection, setActiveSection] = useState(0); // paper draft sections
   const [activeTab, setActiveTab] = useState(0); // sections for paper page
   const [userVoteChecked, setUserVoteChecked] = useState(false);
-
+  const { hubs = [], uploaded_by } = paper;
   const isModerator = store.getState().auth.user.moderator;
-  const isSubmitter =
-    paper.uploaded_by && paper.uploaded_by.id === auth.user.id;
+  const currUserID = auth?.user?.id ?? null;
+  const isSubmitter = uploaded_by && uploaded_by?.id === currUserID;
+  const isEditorOfHubs = isUserEditorOfHubs({ currUserID, hubs });
 
   const structuredDataForSEO = useMemo(
     () => buildStructuredDataForSEO(),
@@ -391,7 +385,11 @@ const Paper = ({
 
   return (
     <div>
-      <PaperBanner paper={paper} loadingPaper={!isFetchComplete} />
+      <PaperBanner
+        document={paper}
+        documentType="paper"
+        loadingPaper={!isFetchComplete}
+      />
       <PaperTransactionModal
         paper={paper}
         updatePaperState={updatePaperState}
@@ -429,21 +427,22 @@ const Paper = ({
           <div className={css(styles.main)}>
             <div className={css(styles.paperPageContainer, styles.top)}>
               <PaperPageCard
-                paper={paper}
-                paperId={paper.id}
-                score={score}
-                upvote={upvote}
-                downvote={downvote}
-                selectedVoteType={selectedVoteType}
                 discussionCount={discussionCount}
-                shareUrl={process.browser && window.location.href}
+                doneFetchingPaper={isFetchComplete}
+                downvote={downvote}
+                flagged={flagged}
+                isEditorOfHubs={isEditorOfHubs}
                 isModerator={isModerator}
                 isSubmitter={isSubmitter}
-                flagged={flagged}
-                restorePaper={restorePaper}
+                paper={paper}
+                paperId={paper.id}
                 removePaper={removePaper}
-                doneFetchingPaper={isFetchComplete}
+                restorePaper={restorePaper}
+                score={score}
+                selectedVoteType={selectedVoteType}
                 setFlag={setFlag}
+                shareUrl={process.browser && window.location.href}
+                upvote={upvote}
               />
             </div>
             <div className={css(styles.paperMetaContainerMobile)}>
@@ -1056,6 +1055,11 @@ const mapStateToProps = (state) => ({
   auth: state.auth,
   user: state.auth.user,
 });
+
+// const mapStateToProps = ({ auth }) => ({
+//   currUserID: auth?.user?.id ?? null,
+//   currUserProfID: auth?.user?.author_profile?.id ?? null,
+// });
 
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,

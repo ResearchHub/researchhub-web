@@ -98,15 +98,16 @@ class PostPageCard extends Component {
 
   restoreThisPost = () => {
     let {
-      setMessage,
-      showMessage,
+      isEditorOfHubs,
       isModerator,
       isSubmitter,
       post,
       restorePost,
+      setMessage,
+      showMessage,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = false;
     }
 
@@ -125,15 +126,16 @@ class PostPageCard extends Component {
 
   removeThisPost = () => {
     let {
-      setMessage,
-      showMessage,
+      isEditorOfHubs,
       isModerator,
       isSubmitter,
       post,
       removePost,
+      setMessage,
+      showMessage,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = true;
     }
 
@@ -305,11 +307,21 @@ class PostPageCard extends Component {
   };
 
   renderActions = () => {
-    const { post, isModerator, flagged, setFlag, isSubmitter, user } =
-      this.props;
+    const {
+      post,
+      isEditorOfHubs,
+      isModerator,
+      flagged,
+      setFlag,
+      isSubmitter,
+      user,
+      hubs,
+    } = this.props;
+
     const uploadedById = post && post.created_by && post.created_by.id;
     const isUploaderSuspended =
       post && post.created_by && post.created_by.is_suspended;
+
     const actionButtons = [
       {
         active: post.created_by && user.id === post.created_by.id,
@@ -367,7 +379,7 @@ class PostPageCard extends Component {
       //  ),
       //},
       {
-        active: isModerator || isSubmitter,
+        active: isModerator || isSubmitter || isEditorOfHubs,
         button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}

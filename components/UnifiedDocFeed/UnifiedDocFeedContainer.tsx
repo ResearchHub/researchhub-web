@@ -28,6 +28,12 @@ import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { breakpoints } from "~/config/themes/screen";
+import dynamic from "next/dynamic";
+
+const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
+  ssr: false,
+});
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -202,13 +208,22 @@ function UnifiedDocFeedContainer({
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
-        {isHomePage ? null : (
-          <div className={css(styles.subscribeContainer)}>
-            {hub && subscribeButton}
+      {!hasSubscribed ? (
+        <div>
+          <div className={css(styles.bannerContainer)} id="create-feed-banner">
+            {/* @ts-ignore */}
+            <CreateFeedBanner loggedIn={loggedIn} />
           </div>
-        )}
+        </div>
+      ) : null}
+      <FeedInfoCard
+        hub={hub}
+        hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+        isHomePage={isHomePage}
+        mainHeaderText={formattedMainHeader}
+      />
+      <div className={css(styles.buttonGroup)}>
+        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
         <div className={css(styles.subFilters)}>
           <UnifiedDocFeedSubFilters
             onSubFilterSelect={(_type: string, filterBy: any): void =>
@@ -221,17 +236,6 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
-      </div>
-      {!hasSubscribed ? (
-        <div>
-          <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            {/* @ts-ignore */}
-            <CreateFeedBanner loggedIn={loggedIn} />
-          </div>
-        </div>
-      ) : null}
       {isLoading ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -288,14 +292,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    "@media only screen and (min-width: 1200px)": {
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
       paddingLeft: 28,
       paddingRight: 28,
     },
-    "@media only screen and (max-width: 990px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
     },
   },
@@ -307,6 +311,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
     overflow: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column-reverse",
+    },
   },
   mainFilters: {
     alignItems: "center",
@@ -322,51 +329,9 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     marginLeft: "auto",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       marginTop: 16,
-    },
-  },
-  titleContainer: {
-    display: "flex",
-    alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-    },
-  },
-  title: {
-    color: "#241F3A",
-    // width: "100%",
-    fontWeight: 400,
-    fontSize: 30,
-    padding: 0,
-    margin: 0,
-    textOverflow: "ellipsis",
-
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 25,
-      textAlign: "center",
-      justifyContent: "center",
-      whiteSpace: "pre-wrap",
-      wordBreak: "normal",
-      display: "flex",
-    },
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 25,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
-    },
-  },
-  subscribeContainer: {
-    marginLeft: 16,
-    minWidth: 100,
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
     },
   },
   loadMoreButton: {
@@ -404,7 +369,7 @@ const styles = StyleSheet.create({
   bannerContainer: {
     marginBottom: 16,
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       padding: 0,
       width: "100%",
     },
