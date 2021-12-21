@@ -143,13 +143,7 @@ export default function CitationTableRowItem({
             <ItemColumn
               maxWidth={tableMaxWidths.CITED_BY}
               className={[styles.itemCenterAlign]}
-              value={
-                <AuthorFacePile
-                  authorProfiles={citedBy}
-                  imgSize={24}
-                  loadOffset={360}
-                />
-              }
+              value={<AuthorFacePile authorProfiles={citedBy} imgSize={24} />}
               width={tableWidths.CITED_BY}
             />
             <ItemColumn
