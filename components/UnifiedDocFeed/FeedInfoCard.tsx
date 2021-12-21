@@ -30,15 +30,7 @@ export default function FeedInfoCard({
   if (!window) {
     return null;
   }
-  const [editorsHorizontalView, setEditorsHorizontalView] = useState<boolean>(
-    getCurrMediaWidth() > EDITOR_HORIZONTAL_VIEW_SIZE
-  );
 
-  useEffectOnScreenResize({
-    onResize: (newMediaWidth): void =>
-      setEditorsHorizontalView(newMediaWidth > EDITOR_HORIZONTAL_VIEW_SIZE),
-  });
-  console.warn("editorsHorizontalView: ", editorsHorizontalView);
   if (isHomePage || isEmpty(hub)) {
     return <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>;
   }
@@ -53,6 +45,7 @@ export default function FeedInfoCard({
     (editor_group: any): any => editor_group?.user?.author_profile
   );
   const editorProfiless = [...editorProfiles, ...editorProfiles];
+
   return (
     <div className={css(styles.feedInfoCard)}>
       <Image
@@ -61,6 +54,7 @@ export default function FeedInfoCard({
         objectFit="cover"
         src={hubImage ?? "/static/background/hub-placeholder.svg"}
         width={68}
+        hidden={false}
       />
       <div className={css(styles.bodyContainer)}>
         <div className={css(styles.titleContainer)}>
@@ -84,13 +78,7 @@ export default function FeedInfoCard({
           </div>
         </div>
         {!isEmpty(editorProfiles) && (
-          <div
-            className={css(styles.detailRow)}
-            style={{
-              flexDirection: !editorsHorizontalView ? "column" : "row",
-              alignItems: !editorsHorizontalView ? "start" : "center",
-            }}
-          >
+          <div className={css(styles.detailRow)}>
             <div className={css(styles.detailRowLabel)}>
               <Image
                 height={20}
@@ -105,14 +93,10 @@ export default function FeedInfoCard({
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
-            <div
-              style={{
-                margin: !editorsHorizontalView ? "16px 0 0 32px" : 0,
-              }}
-            >
+            <div style={{ overflowX: "auto", width: "100%" }}>
               <AuthorFacePile
                 authorProfiles={editorProfiless}
-                horizontal={editorsHorizontalView}
+                horizontal
                 imgSize={22}
                 labelSpacing={6}
                 loadOffset={1}
@@ -147,9 +131,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     fontSize: 16,
-    margin: "8px 0",
-    overflowX: "scroll",
     justifyContent: "flex-start",
+    margin: "8px 0",
   },
   detailRowLabel: {
     alignItems: "center",
