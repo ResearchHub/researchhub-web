@@ -110,8 +110,8 @@ export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
 };
 
 export default function fetchUnifiedDocs({
-  type,
-  hubId,
+  docTypeFilter,
+  hubID,
   isLoggedIn,
   onError,
   onSuccess,
@@ -135,12 +135,12 @@ export default function fetchUnifiedDocs({
   */
 
   const PARAMS = {
-    hubId,
+    hubId: hubID,
     ordering: filterBy.value,
     page,
     subscribedHubs,
     timePeriod: calculateTimeScope(scope),
-    type,
+    type: docTypeFilter,
   };
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
