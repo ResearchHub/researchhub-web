@@ -1,13 +1,12 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
+import { fetchHubFromSlug } from "~/pages/hubs/api/fetchHubFromSlugs";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
-import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
-import API from "~/config/api";
 import Error from "next/error";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
@@ -135,7 +134,7 @@ class Index extends Component {
   }
 
   fetchHubInfo = async (name) => {
-    const currentHub = await fetchHub(name);
+    const currentHub = await fetchHubFromSlug({ slug: name });
     if (currentHub) {
       this.setState({
         currentHub,
@@ -189,15 +188,6 @@ class Index extends Component {
       </div>
     );
   }
-}
-
-function fetchHub(slug) {
-  return fetch(API.HUB({ slug }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res.results[0]; // TODO: Shim and catch errors
-    });
 }
 
 export default Index;
