@@ -5,7 +5,6 @@ import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import get from "lodash/get";
 import ReactTooltip from "react-tooltip";
-import { breakpoints } from "~/config/themes/screen";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
