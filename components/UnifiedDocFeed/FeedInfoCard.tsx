@@ -93,16 +93,14 @@ export default function FeedInfoCard({
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
-            <div style={{ overflowX: "auto", width: "100%" }}>
-              <AuthorFacePile
-                authorProfiles={editorProfiless}
-                horizontal
-                imgSize={22}
-                labelSpacing={6}
-                loadOffset={1}
-                withAuthorName
-              />
-            </div>
+            <AuthorFacePile
+              authorProfiles={editorProfiless}
+              horizontal
+              imgSize={22}
+              labelSpacing={6}
+              loadOffset={1}
+              withAuthorName
+            />
           </div>
         )}
         <div className={css(styles.detailRow)}>
@@ -120,6 +118,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     display: "flex",
     padding: 16,
+    overflowX: "auto",
   },
   bodyContainer: {
     display: "flex",
