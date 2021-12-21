@@ -8,7 +8,6 @@ type Props = {
   horizontal?: boolean;
   imgSize: number | string;
   labelSpacing?: number;
-  loadOffset?: number;
   withAuthorName?: boolean;
 };
 
@@ -17,7 +16,6 @@ export default function AuthorFacePile({
   horizontal,
   imgSize,
   labelSpacing,
-  loadOffset,
   withAuthorName,
 }: Props): ReactElement<"div"> {
   const tags = useMemo(
