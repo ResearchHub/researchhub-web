@@ -581,6 +581,7 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",
     SORTED_HUB: (params = {}) => {
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;

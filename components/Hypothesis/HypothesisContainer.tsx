@@ -54,9 +54,8 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
-        paper={undefined}
-        post={hypothesis}
-        postType="hypothesis"
+        document={hypothesis}
+        documentType="hypothesis"
         fetchBullets={false}
         loadingPaper={false}
         lastFetchTime={lastFetchTime}

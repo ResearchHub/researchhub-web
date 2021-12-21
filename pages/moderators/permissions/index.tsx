@@ -1,7 +1,7 @@
-import { useStore } from "react-redux";
 import { ReactElement } from "react";
-import PermissionsDashboard from "~/components/PermissionsDashboard/PermissionsDashboard";
 import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
+import { useStore } from "react-redux";
+import PermissionsDashboard from "~/components/PermissionsDashboard/PermissionsDashboard";
 
 export default function PermissionsDashboardIndex(): ReactElement<
   typeof PermissionsDashboard
