@@ -23,6 +23,7 @@ import {
 } from "~/config/utils/editor";
 
 import { createUsername } from "~/config/utils/user";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
 
 const DiscussionThreadCard = (props) => {
   const dispatch = useDispatch();
