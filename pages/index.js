@@ -32,6 +32,10 @@ Index.getInitialProps = async (ctx) => {
     query,
   };
 
+  if (!isServer()) {
+    return defaultProps;
+  }
+
   try {
     const urlDocType = getBEUnifiedDocType(type);
     const initialFeed = await fetchUnifiedDocFeed(
