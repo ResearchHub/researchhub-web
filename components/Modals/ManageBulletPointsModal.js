@@ -378,7 +378,6 @@ const styles = StyleSheet.create({
   bulletPoints: {
     width: "100%",
     marginBottom: 16,
-    // overflow: "auto",
   },
   title: {
     display: "flex",

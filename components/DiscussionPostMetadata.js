@@ -393,6 +393,9 @@ const Timestamp = (props) => {
 function formatTimestamp(props) {
   let { date } = props;
   date = new Date(date);
+  if (isNaN(date)) {
+    return null;
+  }
   if (props.fullDate) {
     return moment(date).format("MMM D, YYYY");
   }
