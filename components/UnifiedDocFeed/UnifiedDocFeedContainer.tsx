@@ -310,7 +310,6 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
-    overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },
