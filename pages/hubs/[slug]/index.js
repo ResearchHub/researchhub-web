@@ -1,10 +1,11 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
-import { getInitialScope } from "~/config/utils/dates";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { getInitialScope } from "~/config/utils/dates";
 import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
 import API from "~/config/api";
 import Error from "next/error";
@@ -13,7 +14,11 @@ import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
 
-const isServer = () => typeof window === "undefined";
+const DEFAULT_PROP = {
+  initialFeed: null,
+  leaderboardFeed: null,
+  initialHubList: null,
+};
 
 class Index extends Component {
   static async getInitialProps(ctx) {
@@ -22,11 +27,14 @@ class Index extends Component {
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
 
-    let defaultProps = {
-      initialFeed: null,
-      leaderboardFeed: null,
-      initialHubList: null,
-    };
+    if (!isServer()) {
+      return {
+        slug,
+        name,
+        initialProps: {},
+        currentHub,
+      };
+    }
 
     const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
       .then((res) => res.json())
@@ -81,7 +89,7 @@ class Index extends Component {
         slug: null,
         name: null,
         currentHub,
-        initialProps: { ...defaultProps },
+        initialProps: { ...DEFAULT_PROP },
         error: true,
       };
     }

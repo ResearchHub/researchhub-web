@@ -3,6 +3,7 @@ import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
+import { isServer } from "~/config/server/isServer";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
@@ -11,8 +12,6 @@ const Index = (props) => {
   // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
-
-const isServer = () => typeof window === "undefined";
 
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
