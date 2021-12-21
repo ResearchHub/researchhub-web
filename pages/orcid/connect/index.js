@@ -127,12 +127,12 @@ class OrcidConnectPage extends Component {
               />
             </div>
             <div className={css(styles.headerContainer)}>
-              <React.Fragment>
+              <>
                 <h1 className={css(styles.header)}>Connecting</h1>
                 <p className={css(styles.description)}>
                   {(this.state.error && this.state.error) || "Loading..."}
                 </p>
-              </React.Fragment>
+              </>
             </div>
           </div>
         </div>
