@@ -815,84 +815,92 @@ function AuthorPage(props) {
       <ReactTooltip />
       <ComponentWrapper>
         <UserInfoModal />
-        <div
-          className={css(
-            styles.profileContainer,
-            isCurrentUserModerator && styles.profileContainerPadding
-          )}
+        <ReactPlaceholder
+          ready={fetchedUser}
+          showLoadingAnimation
+          customPlaceholder={<AuthorDetailsPlaceholder />}
         >
           <div
             className={css(
-              styles.avatarContainer,
-              author.profile_image && styles.border
+              styles.profileContainer,
+              isCurrentUserModerator && styles.profileContainerPadding
             )}
           >
             <div
-              className={css(styles.avatarContainer)}
-              onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
-              onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
-              onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
-              draggable={false}
-            >
-              <AuthorAvatar author={author} disableLink={true} size={120} />
-              <meta
-                property="image"
-                content={
-                  author.profile_image ? author.profile_image : "author avatar"
-                }
-              />
-              {allowEdit && hoverProfilePicture && (
-                <div className={css(styles.profilePictureHover)}>Update</div>
+              className={css(
+                styles.avatarContainer,
+                author.profile_image && styles.border
               )}
-            </div>
-          </div>
-          <div className={css(styles.profileInfo)}>
-            <div className={css(styles.nameLine)}>
-              <h1
-                className={css(styles.authorName, styles.editButtonContainer)}
-                property="name"
+            >
+              <div
+                className={css(styles.avatarContainer)}
+                onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
+                onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
+                onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+                draggable={false}
               >
-                {name}
-              </h1>
-              {userLinks}
-            </div>
-            {authorEducationSummary}
-            <div className={css(styles.reputationContainer)}>
-              {authorReputation}
-              {authorRscBalance}
-            </div>
-            {!isEmpty(authorIsEditorOf) && (
-              <div className={css(styles.reputationContainer)}>
-                <div className={css(styles.editorLabelWrap)}>
-                  <Image
-                    height={20}
-                    src="/static/icons/editor-star.png"
-                    width={20}
-                  />
-                  <span
-                    style={{
-                      color: colors.BLACK(1),
-                      fontWeight: 500,
-                      marginLeft: 8,
-                    }}
-                  >
-                    {"Editor of: "}
-                  </span>
-                  {authorIsEditorOf}
-                </div>
+                <AuthorAvatar author={author} disableLink={true} size={120} />
+                <meta
+                  property="image"
+                  content={
+                    author.profile_image
+                      ? author.profile_image
+                      : "author avatar"
+                  }
+                />
+                {allowEdit && hoverProfilePicture && (
+                  <div className={css(styles.profilePictureHover)}>Update</div>
+                )}
               </div>
-            )}
-            {authorDescription}
-            {!doesAuthorHaveUser ? (
-              <ClaimAuthorPopoverLabel
-                auth={auth}
-                author={author}
-                user={user}
-              />
-            ) : null}
-            {userActionButtons}
+            </div>
+            <div className={css(styles.profileInfo)}>
+              <div className={css(styles.nameLine)}>
+                <h1
+                  className={css(styles.authorName, styles.editButtonContainer)}
+                  property="name"
+                >
+                  {name}
+                </h1>
+                {userLinks}
+              </div>
+              {authorEducationSummary}
+              <div className={css(styles.reputationContainer)}>
+                {authorReputation}
+                {authorRscBalance}
+              </div>
+              {!isEmpty(authorIsEditorOf) && (
+                <div className={css(styles.reputationContainer)}>
+                  <div className={css(styles.editorLabelWrap)}>
+                    <Image
+                      height={20}
+                      src="/static/icons/editor-star.png"
+                      width={20}
+                    />
+                    <span
+                      style={{
+                        color: colors.BLACK(1),
+                        fontWeight: 500,
+                        marginLeft: 8,
+                      }}
+                    >
+                      {"Editor of: "}
+                    </span>
+                    {authorIsEditorOf}
+                  </div>
+                </div>
+              )}
+              {authorDescription}
+              {!doesAuthorHaveUser ? (
+                <ClaimAuthorPopoverLabel
+                  auth={auth}
+                  author={author}
+                  user={user}
+                />
+              ) : null}
+              {userActionButtons}
+            </div>
           </div>
-        </div>
+        </ReactPlaceholder>
       </ComponentWrapper>
       <div className={css(styles.tabMenuContainer)}>
         <ComponentWrapper overrideStyle={styles.componentWrapper}>
