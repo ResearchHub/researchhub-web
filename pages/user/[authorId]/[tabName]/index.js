@@ -41,7 +41,7 @@ const UserInfoModal = dynamic(() =>
 // Config
 import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import { createUserSummary } from "~/config/utils/user";
+import { createUserSummary, createEduSummary } from "~/config/utils/user";
 import {
   filterNull,
   isEmpty,
@@ -74,19 +74,20 @@ function AuthorPage(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
+
   const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
+
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
+
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
-  const [eduSummary, setEduSummary] = useState(
-    author && createUserSummary(author)
-  );
+
   const [description, setDescription] = useState(fetchedAuthor.description);
   const [name, setName] = useState(
     fetchedAuthor.first_name + " " + fetchedAuthor.last_name
@@ -236,7 +237,6 @@ function AuthorPage(props) {
         authorUserID === user.id
     );
     setDescription(author.description);
-    setEduSummary(createUserSummary(author));
 
     if (author.first_name) {
       setName(`${author.first_name} ${author.last_name}`);
@@ -648,38 +648,12 @@ function AuthorPage(props) {
     }
   });
 
-  const userLinks = (
-    <div className={css(styles.socialLinks)}>
-      {socialMediaLinkButtons}
-      {orcidLinkButton}
-      <span
-        className={css(styles.socialMedia, styles.shareLink)}
-        onClick={() => setOpenShareModal(true)}
-        data-tip={"Share Profile"}
-      >
-        {icons.link}
-      </span>
-    </div>
-  );
-
-  const userActionButtons = (
-    <div className={css(styles.userActions)}>
+  const editProfileBtn = (
+    <div>
       {filterNull([
         allowEdit ? (
           <div className={css(styles.editProfileButton)} key="editButton">
-            <Button
-              label={() => (
-                <Fragment>
-                  <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.editHub}
-                  </span>
-                  Edit Profile
-                </Fragment>
-              )}
-              onClick={onOpenUserInfoModal}
-              customButtonStyle={styles.editButtonCustom}
-              rippleClass={styles.rippleClass}
-            />
+            <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
           </div>
         ) : null,
       ])}
@@ -745,19 +719,31 @@ function AuthorPage(props) {
     </div>
   );
 
+  const userLinks = (
+    <div className={css(styles.socialLinks)}>
+      {socialMediaLinkButtons}
+      {orcidLinkButton}
+      <span
+        className={css(styles.socialMedia, styles.shareLink)}
+        onClick={() => setOpenShareModal(true)}
+        data-tip={"Share Profile"}
+      >
+        {icons.link}
+      </span>
+    </div>
+  );
+
   const authorEducationSummary = useMemo(
     () =>
-      eduSummary ? (
+      author?.education?.length ? (
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
-          {(author.headline || author.education) && (
-            <div className={css(styles.educationSummary) + " clamp2"}>
-              <span className={css(styles.icon)}>{icons.graduationCap}</span>
-              {eduSummary}
-            </div>
-          )}
+          <div className={css(styles.educationSummary) + " clamp2"}>
+            <span className={css(styles.icon)}>{icons.graduationCap}</span>
+            {createEduSummary(author)}
+          </div>
         </div>
       ) : null,
-    [eduSummary]
+    [author]
   );
 
   const authorDescription = (
@@ -816,89 +802,94 @@ function AuthorPage(props) {
       <ComponentWrapper>
         <UserInfoModal />
         <ReactPlaceholder
-          ready={fetchedUser}
+          ready={true /*fetchedUser*/}
           showLoadingAnimation
           customPlaceholder={<AuthorDetailsPlaceholder />}
         >
-          <div
-            className={css(
-              styles.profileContainer,
-              isCurrentUserModerator && styles.profileContainerPadding
-            )}
-          >
-            <div
-              className={css(
-                styles.avatarContainer,
-                author.profile_image && styles.border
-              )}
-            >
+          <div className={css(styles.profileHeader)}>
+            <div className={css(styles.profileContainer)}>
               <div
-                className={css(styles.avatarContainer)}
-                onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
-                onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
-                onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
-                draggable={false}
-              >
-                <AuthorAvatar author={author} disableLink={true} size={120} />
-                <meta
-                  property="image"
-                  content={
-                    author.profile_image
-                      ? author.profile_image
-                      : "author avatar"
-                  }
-                />
-                {allowEdit && hoverProfilePicture && (
-                  <div className={css(styles.profilePictureHover)}>Update</div>
+                className={css(
+                  styles.avatarContainer,
+                  author.profile_image && styles.border
                 )}
-              </div>
-            </div>
-            <div className={css(styles.profileInfo)}>
-              <div className={css(styles.nameLine)}>
-                <h1
-                  className={css(styles.authorName, styles.editButtonContainer)}
-                  property="name"
+              >
+                <div
+                  className={css(styles.avatarContainer)}
+                  onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
+                  onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
+                  onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+                  draggable={false}
                 >
-                  {name}
-                </h1>
-                {userLinks}
+                  <AuthorAvatar author={author} disableLink={true} size={120} />
+                  <meta
+                    property="image"
+                    content={
+                      author.profile_image
+                        ? author.profile_image
+                        : "author avatar"
+                    }
+                  />
+                  {allowEdit && hoverProfilePicture && (
+                    <div className={css(styles.profilePictureHover)}>
+                      Update
+                    </div>
+                  )}
+                </div>
               </div>
-              {authorEducationSummary}
-              <div className={css(styles.reputationContainer)}>
-                {authorReputation}
-                {authorRscBalance}
-              </div>
-              {!isEmpty(authorIsEditorOf) && (
-                <div className={css(styles.reputationContainer)}>
-                  <div className={css(styles.editorLabelWrap)}>
-                    <Image
-                      height={20}
-                      src="/static/icons/editor-star.png"
-                      width={20}
-                    />
-                    <span
-                      style={{
-                        color: colors.BLACK(1),
-                        fontWeight: 500,
-                        marginLeft: 8,
-                      }}
-                    >
-                      {"Editor of: "}
-                    </span>
-                    {authorIsEditorOf}
+              <div className={css(styles.profileInfo)}>
+                <div className={css(styles.nameLine)}>
+                  <h1
+                    className={css(
+                      styles.authorName,
+                      styles.editButtonContainer
+                    )}
+                    property="name"
+                  >
+                    {name}
+                    {editProfileBtn}
+                  </h1>
+                  <div className={css(styles.headline)}>
+                    {author?.headline?.title}
+                  </div>
+                  <div className={css(styles.reputationContainer)}>
+                    {authorEducationSummary}
+                    {authorReputation}
+                    {authorRscBalance}
                   </div>
                 </div>
-              )}
-              {authorDescription}
-              {!doesAuthorHaveUser ? (
-                <ClaimAuthorPopoverLabel
-                  auth={auth}
-                  author={author}
-                  user={user}
-                />
-              ) : null}
-              {userActionButtons}
+                {!isEmpty(authorIsEditorOf) && (
+                  <div className={css(styles.reputationContainer)}>
+                    <div className={css(styles.editorLabelWrap)}>
+                      <Image
+                        height={20}
+                        src="/static/icons/editor-star.png"
+                        width={20}
+                      />
+                      <span
+                        style={{
+                          color: colors.BLACK(1),
+                          fontWeight: 500,
+                          marginLeft: 8,
+                        }}
+                      >
+                        {"Editor of: "}
+                      </span>
+                      {authorIsEditorOf}
+                    </div>
+                  </div>
+                )}
+                {authorDescription}
+                {!doesAuthorHaveUser ? (
+                  <ClaimAuthorPopoverLabel
+                    auth={auth}
+                    author={author}
+                    user={user}
+                  />
+                ) : null}
+              </div>
             </div>
+            <div>{userLinks}</div>
           </div>
         </ReactPlaceholder>
       </ComponentWrapper>
@@ -972,6 +963,9 @@ const styles = StyleSheet.create({
   },
   tabMenuContainer: {
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 30,
+    },
   },
   tabContainer: {
     display: "flex",
@@ -985,11 +979,17 @@ const styles = StyleSheet.create({
     background: "#FAFAFA",
     minHeight: "55vh",
   },
+  profileHeader: {
+    padding: "30px 0",
+    display: "flex",
+    justifyContent: "space-between",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
   profileContainer: {
     display: "flex",
-    padding: "30px 0",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "32px 0px",
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
@@ -1008,13 +1008,16 @@ const styles = StyleSheet.create({
       margin: 0,
     },
   },
+  headline: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
   modActions: {
     marginLeft: "auto",
     display: "flex",
 
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: "unset",
-      marginTop: 16,
     },
   },
   moderatorButton: {
@@ -1091,12 +1094,8 @@ const styles = StyleSheet.create({
     position: "relative",
     justifyContent: "flex-end",
     width: "max-content",
-  },
-  mobileSocialLinks: {
-    display: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
-      width: "max-content",
+      marginTop: 10,
     },
   },
   authorName: {
@@ -1105,11 +1104,12 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     padding: 0,
     margin: 0,
+    marginBottom: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 24,
       paddingRight: 0,
       justifyContent: "center",
       textAlign: "center",
-      marginBottom: 15,
     },
   },
   plusButton: {
@@ -1123,14 +1123,16 @@ const styles = StyleSheet.create({
   },
   nameLine: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "start",
     justifyContent: "space-between",
+    flexDirection: "column",
     width: "100%",
-    marginBottom: 10,
     "@media only screen and (max-width: 768px)": {
       flexDirection: "column",
       justifyContent: "flex-start",
       marginTop: 15,
+      marginBottom: 0,
+      alignItems: "start",
     },
   },
   orcidAvailable: {
@@ -1142,34 +1144,36 @@ const styles = StyleSheet.create({
   },
   educationSummaryContainer: {
     display: "flex",
-    marginBottom: 10,
+    marginRight: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%",
-      // justifyContent: "flex-start",
-      justifyContent: "center",
-      alignItems: "center",
-      marginBottom: 15,
+      display: "block",
+      marginBottom: 10,
     },
   },
   educationSummary: {
-    color: "#241F3A",
-    opacity: 0.7,
-    fontSize: 15,
+    color: colors.BLACK(0.9),
+    fontSize: 14,
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "initial",
+    },
     "@media only screen and (max-width: 415px)": {
       marginTop: 10,
       fontSize: 14,
     },
   },
   description: {
-    marginBottom: 15,
+    marginTop: 25,
     justifyContent: "center",
     flexDirection: "column",
     width: "100%",
     color: "#241F3A",
     lineHeight: 1.5,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      textAlign: "left",
+    },
     "@media only screen and (max-width: 440px)": {
       justifyContent: "flex-start",
       fontSize: 14,
@@ -1424,10 +1428,10 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "min-content",
-      width: "70%",
+      width: "100%",
       display: "flex",
       flexDirection: "column",
-      alignItems: "center",
+      alignItems: "start",
     },
   },
   border: {},
@@ -1448,9 +1452,9 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     width: "100%",
-    marginBottom: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
+      display: "block",
     },
     "@media only screen and (max-width: 440px)": {
       flexDirection: "column",
@@ -1460,37 +1464,34 @@ const styles = StyleSheet.create({
   reputation: {
     display: "flex",
     alignItems: "center",
-    fontWeight: 500,
     color: "#241F3A",
     marginRight: 15,
+    fontSize: 14,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "center",
-    },
-    "@media only screen and (max-width: 440px)": {
-      marginBottom: 15,
+      justifyContent: "initial",
+      marginBottom: 10,
     },
   },
   reputationTitle: {
     marginRight: 10,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
+    fontWeight: 400,
+    color: colors.BLACK(0.9),
+    fontSize: 14,
+    "@media only screen and (max-width: 415px)": {},
   },
   rscBalance: {
     display: "flex",
     alignItems: "center",
-    fontWeight: 500,
-    color: "#241F3A",
+    fontWeight: 400,
+    color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "center",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      justifyContent: "initial",
+      fontSize: 14,
     },
   },
   amount: {
-    color: "rgba(36, 31, 58, 0.7)",
     fontWeight: 400,
+    color: colors.BLACK(0.9),
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -1550,21 +1551,13 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
   },
-  userActions: {
-    display: "flex",
-    justifyContent: "flex-start",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexDirection: "column",
-      width: "100%",
-    },
-  },
   editProfileButton: {
-    marginRight: 16,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
-      width: "100%",
-      margin: 0,
-    },
+    color: colors.BLUE(1),
+    fontSize: 24,
+    marginLeft: 12,
+    cursor: "pointer",
+    display: "inline",
+    verticalAlign: "1px",
   },
   siftButton: {
     background: colors.NAVY(1),
@@ -1588,6 +1581,9 @@ const styles = StyleSheet.create({
     },
   },
   mobileEditButtonCustom: {},
+  editProfileWrapper: {
+    marginTop: 15,
+  },
 });
 
 const mapStateToProps = (state) => ({

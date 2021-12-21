@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
-    padding: "30px 0px",
+    padding: "38px 0px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
       alignItems: "center",
