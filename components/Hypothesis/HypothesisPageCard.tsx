@@ -39,6 +39,7 @@ import {
   restoreHypothesis,
 } from "./api/postHypothesisStatus";
 import ColumnHubs from "../Paper/SideColumn/ColumnHubs";
+import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -61,10 +62,15 @@ const getActionButtons = ({
     id: hypoID,
     is_removed: isHypoRemoved,
     unified_document: hypoUniDocID,
+    hubs,
   } = hypothesis ?? {};
-  const { moderator: isModerator } = currentUser ?? {};
+  const { moderator: isModerator, id: currUserID } = currentUser ?? {};
   const isCurrUserSubmitter =
     !isNullOrUndefined(createdBy) && currentUser.id === createdBy.id;
+  const isEditorOfHubs = isUserEditorOfHubs({
+    currUserID,
+    hubs: hubs ?? [],
+  });
   const actionConfigs = [
     {
       active: isCurrUserSubmitter,
@@ -84,7 +90,7 @@ const getActionButtons = ({
       ),
     },
     {
-      active: isModerator || isCurrUserSubmitter,
+      active: isModerator || isCurrUserSubmitter || isEditorOfHubs,
       button: (
         <span
           className={css(styles.actionIcon, styles.moderatorAction)}

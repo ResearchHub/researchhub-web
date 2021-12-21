@@ -129,7 +129,7 @@ class PaperPageCard extends Component {
       restorePaper,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = false;
     }
 
