@@ -48,7 +48,7 @@ class ReplyEntry extends Component {
       {
         score,
         selectedVoteType,
-        highlight: this.props.reply.highlight && true,
+        highlight: this.shouldHighlight(),
         removed: this.props.reply.is_removed,
         canEdit:
           this.props.auth &&
@@ -64,6 +64,16 @@ class ReplyEntry extends Component {
       }
     );
   }
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, reply } = this.props;
+    const isCurrentAuthor =
+      currentAuthor?.id === reply.created_by.author_profile.id;
+    if (newCard || isCurrentAuthor) {
+      return true;
+    }
+    return false;
+  };
 
   componentDidUpdate(prevProps) {
     if (prevProps.auth !== this.props.auth) {
@@ -382,8 +392,15 @@ class ReplyEntry extends Component {
   };
 
   render() {
-    const { hostname, mobileView, reply, paper, mediaOnly, documentType } =
-      this.props;
+    const {
+      hostname,
+      noVote,
+      mobileView,
+      reply,
+      paper,
+      mediaOnly,
+      documentType,
+    } = this.props;
     let dataCount = 0; // set to 0 for now; replies can't be replied to
     let date = reply.created_date;
     let body = this.formatBody();
@@ -394,29 +411,47 @@ class ReplyEntry extends Component {
         className={css(styles.row, styles.replyCard)}
         ref={(element) => (this.replyRef = element)}
       >
-        <div className={css(styles.column, styles.left)}>
-          <div className={css(styles.voteContainer)}>
-            <VoteWidget
-              styles={styles.voteWidget}
-              score={this.state.score}
-              onUpvote={this.upvote}
-              onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
-              fontSize={"12px"}
-              width={"40px"}
-              type={"Reply"}
-              promoted={false}
-            />
+        <div
+          className={css(
+            styles.column,
+            styles.left,
+            noVote && styles.columnNoVote
+          )}
+        >
+          <div
+            className={css(
+              styles.voteContainer,
+              this.state.highlight && styles.voteContainerHighlight
+            )}
+          >
+            {noVote ? null : (
+              <VoteWidget
+                styles={styles.voteWidget}
+                score={this.state.score}
+                onUpvote={this.upvote}
+                onDownvote={this.downvote}
+                selected={this.state.selectedVoteType}
+                fontSize={"12px"}
+                width={"40px"}
+                type={"Reply"}
+                promoted={false}
+              />
+            )}
             {this.handleStateRendering() && (
-              <div className={css(styles.threadline)}></div>
+              <div
+                className={css(
+                  styles.threadline,
+                  noVote && styles.threadlineNoVote
+                )}
+              ></div>
             )}
           </div>
         </div>
         <div className={css(styles.column, styles.metaData)}>
           <div
             className={css(
-              styles.highlight,
-              this.state.highlight && styles.active,
+              styles.mainContent,
+              this.state.highlight && styles.highlight,
               this.state.removed && styles.noPadding
             )}
           >
@@ -504,6 +539,12 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
   },
+  columnNoVote: {
+    width: 18,
+  },
+  threadlineNoVote: {
+    height: "100%",
+  },
   left: {
     alignItems: "center",
     width: 40,
@@ -532,12 +573,8 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "8px 0px",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 12,
-    },
   },
   content: {
     width: "100%",
@@ -557,28 +594,24 @@ const styles = StyleSheet.create({
     display: "table-cell",
     height: "100%",
   },
-  highlight: {
-    // display: 'flex',
+  voteContainerHighlight: {
+    marginTop: 5,
+  },
+  mainContent: {
     width: "100%",
+    padding: "2px 10px 8px 8px",
     boxSizing: "border-box",
+    marginLeft: 2,
+  },
+  highlight: {
+    padding: "8px 10px 10px 15px",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     borderRadius: 5,
-    padding: "0px 10px 10px 8px",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
+    marginBottom: 5,
     "@media only screen and (max-width: 767px)": {
-      paddingLeft: 5,
+      paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
-    },
-    "@media only screen and (max-width: 415px)": {
-      paddingRight: 0,
-    },
-  },
-  active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
     },
   },
   bottom: {

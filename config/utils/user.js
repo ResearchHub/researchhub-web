@@ -27,6 +27,20 @@ export function createUserSummary(author = {}) {
   return userSummary;
 }
 
+export function createEduSummary(author = {}) {
+  const { education } = author;
+  let summary = "";
+
+  if (education?.length > 0) {
+    let school = education.filter((school) => school.is_public);
+    if (school?.length > 0) {
+      summary += school[0].summary;
+    }
+  }
+
+  return summary;
+}
+
 export function createUsername({ created_by, createdBy }) {
   if (created_by) {
     const { first_name, last_name } = created_by.author_profile;

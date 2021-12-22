@@ -84,3 +84,24 @@ export function slugToFilterQuery(slug) {
       return slug;
   }
 }
+
+export function getUrlToUniDoc(uniDoc) {
+  const doc = Array.isArray(uniDoc.documents)
+    ? uniDoc.documents[0]
+    : uniDoc.documents;
+
+  let url = "";
+  switch (uniDoc.document_type) {
+    case "PAPER":
+      url = `/paper/${doc.id}/${doc.slug}`;
+      break;
+    case "HYPOTHESIS":
+      url = `/hypothesis/${doc.id}/${doc.slug}`;
+      break;
+    case "DISCUSSION":
+      url = `/post/${doc.id}/${doc.slug}`;
+      break;
+  }
+
+  return url;
+}

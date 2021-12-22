@@ -8,6 +8,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
+  // hmr: false,
   typescript: {
     ignoreBuildErrors: true,
   },
