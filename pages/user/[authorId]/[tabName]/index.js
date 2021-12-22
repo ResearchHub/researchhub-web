@@ -135,7 +135,7 @@ function AuthorPage(props) {
     }
   }, [router]);
 
-  const getTabs = () => {
+  const getTabs = (allowEdit = false) => {
     const tabs = [
       {
         href: "overview",
@@ -157,12 +157,15 @@ function AuthorPage(props) {
         label: "authored papers",
         name: "Authored Papers",
       },
-      {
+    ];
+
+    if (allowEdit) {
+      tabs.push({
         href: "transactions",
         label: "transactions",
         name: "Transactions",
-      },
-    ];
+      });
+    }
 
     return tabs.map((t) => {
       t.isSelected = t.href === router.query.tabName ? true : false;
@@ -277,8 +280,6 @@ function AuthorPage(props) {
     }
   };
 
-  const tabs = getTabs();
-
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
@@ -286,6 +287,8 @@ function AuthorPage(props) {
       }
     }
   };
+
+  const tabs = getTabs(allowEdit);
 
   let tabContents = (
     <ComponentWrapper overrideStyle={styles.componentWrapperOverride}>
@@ -331,13 +334,15 @@ function AuthorPage(props) {
           contributionType="authored-papers"
         />
       </div>
-      <div
-        className={css(
-          tabName === "transactions" ? styles.reveal : styles.hidden
-        )}
-      >
-        <UserTransactionsTab fetching={fetching} />
-      </div>
+      {allowEdit && (
+        <div
+          className={css(
+            tabName === "transactions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserTransactionsTab fetching={fetching} />
+        </div>
+      )}
     </ComponentWrapper>
   );
 
@@ -372,7 +377,7 @@ function AuthorPage(props) {
 
   const saveSocial = async (section) => {
     const changes = {};
-    const change = socialLinks[section];
+    let change = socialLinks[section];
     const http = "http://";
     const https = "https://";
     if (!change) {
@@ -802,7 +807,7 @@ function AuthorPage(props) {
       <ComponentWrapper>
         <UserInfoModal />
         <ReactPlaceholder
-          ready={true /*fetchedUser*/}
+          ready={fetchedUser}
           showLoadingAnimation
           customPlaceholder={<AuthorDetailsPlaceholder />}
         >
@@ -911,7 +916,7 @@ function AuthorPage(props) {
         close={() => setOpenShareModal(false)}
         isOpen={openShareModal}
         title={"Share Author Profile"}
-        url={`${hostname}${router.asPath}`}
+        url={`${process.env.HOST}${router.asPath}`}
       />
       <AvatarUpload
         isOpen={avatarUploadIsOpen}
@@ -1147,7 +1152,7 @@ const styles = StyleSheet.create({
     marginRight: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
-      marginBottom: 10,
+      marginBottom: 5,
     },
   },
   educationSummary: {
@@ -1452,6 +1457,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     width: "100%",
+    lineHeight: "26px",
+    flexWrap: "wrap",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
       display: "block",
@@ -1469,7 +1476,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "initial",
-      marginBottom: 10,
+      marginBottom: 5,
     },
   },
   reputationTitle: {
@@ -1491,6 +1498,7 @@ const styles = StyleSheet.create({
   },
   amount: {
     fontWeight: 400,
+    fontSize: 14,
     color: colors.BLACK(0.9),
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -1499,7 +1507,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 20,
     marginRight: 5,
-    display: "flex",
+    display: "block",
     alignItems: "center",
     // color: "#241F3A",
     color: "#000",

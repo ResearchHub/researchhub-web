@@ -97,6 +97,7 @@ const AuthorActivityFeed = ({
   const sortResults = (results) => {
     results.map((item) => {
       if (item?.contribution_type === "COMMENTER") {
+        console.log("item.created_date", item.created_date);
         const newestTimestamp = getNewestCommentTimestamp(item);
         item.created_date = newestTimestamp;
       }
