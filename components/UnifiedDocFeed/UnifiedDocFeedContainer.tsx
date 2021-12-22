@@ -218,10 +218,9 @@ function UnifiedDocFeedContainer({
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
-  /* we need time check here to ensure that payload formatting does not lead to 
-  UI rendering timing issues sinces document objects & formmatting can be heavy
-  */
 
+  /* we need time check here to ensure that payload formatting does not lead to 
+  UI rendering timing issues since document objects & formmatting can be heavy */
   const areCardsReadyToBeRendered =
     unifiedDocuments.length === 0
       ? true
