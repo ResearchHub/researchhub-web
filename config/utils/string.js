@@ -28,5 +28,5 @@ export const isString = (str) => {
 };
 
 export const stripHTML = (str) => {
-  return (str || "").replace(/<[^>]*>?/gm, "");
+  return (str || "").replace(/(<([^>]+)>)/gi, "");
 };
