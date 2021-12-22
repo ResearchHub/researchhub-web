@@ -60,7 +60,7 @@ class CommentEntry extends Component {
         // revealReply,
         selectedVoteType,
         score,
-        highlight: this.props.comment.highlight && true,
+        highlight: this.shouldHighlight(),
         canEdit:
           this.props.comment.source === "twitter"
             ? false
@@ -77,6 +77,17 @@ class CommentEntry extends Component {
       }
     );
   }
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, comment } = this.props;
+    const isCurrentAuthor =
+      currentAuthor?.id === comment.created_by.author_profile.id;
+
+    if (newCard || isCurrentAuthor) {
+      return true;
+    }
+    return false;
+  };
 
   componentDidUpdate(prevProps) {
     this.handleVoteTypeUpdate(prevProps);
@@ -480,6 +491,8 @@ class CommentEntry extends Component {
       post,
       hypothesis,
       documentType,
+      currentAuthor,
+      noVote,
     } = this.props;
     let replies =
       this.state.replies.length < 1
@@ -488,7 +501,9 @@ class CommentEntry extends Component {
     return replies.map((reply, i) => {
       return (
         <ReplyEntry
+          noVote={noVote}
           data={data}
+          currentAuthor={currentAuthor}
           hostname={hostname}
           path={path}
           key={`disc${reply.id}`}
@@ -515,6 +530,7 @@ class CommentEntry extends Component {
       paper,
       mediaOnly,
       documentType,
+      noVote,
     } = this.props;
     let threadId = comment.id;
     let commentCount =
@@ -530,25 +546,39 @@ class CommentEntry extends Component {
         className={css(styles.row, styles.commentCard)}
         ref={(element) => (this.commentRef = element)}
       >
-        <div className={css(styles.column, styles.left)}>
-          <div className={css(styles.voteContainer)}>
-            <VoteWidget
-              styles={styles.voteWidget}
-              score={this.state.score}
-              onUpvote={this.upvote}
-              onDownvote={this.downvote}
-              selected={this.state.selectedVoteType}
-              fontSize={"12px"}
-              width={"40px"}
-              type={"Comment"}
-              promoted={false}
-            />
+        <div
+          className={css(
+            styles.column,
+            styles.left,
+            noVote && styles.columnNoVote
+          )}
+        >
+          <div
+            className={css(
+              styles.voteContainer,
+              this.state.highlight && styles.voteContainerHighlight
+            )}
+          >
+            {noVote ? null : (
+              <VoteWidget
+                styles={styles.voteWidget}
+                score={this.state.score}
+                onUpvote={this.upvote}
+                onDownvote={this.downvote}
+                selected={this.state.selectedVoteType}
+                fontSize={"12px"}
+                width={"40px"}
+                type={"Comment"}
+                promoted={false}
+              />
+            )}
             {!this.state.collapsed && (
               <div
                 className={css(
                   styles.threadline,
                   this.state.revealReply && styles.activeThreadline,
-                  this.state.hovered && styles.hoverThreadline
+                  this.state.hovered && styles.hoverThreadline,
+                  noVote && styles.threadlineNoVote
                 )}
                 onClick={this.toggleReplyView}
               />
@@ -558,8 +588,8 @@ class CommentEntry extends Component {
         <div className={css(styles.column, styles.metaData)}>
           <div
             className={css(
-              styles.highlight,
-              this.state.highlight && styles.active
+              styles.mainContent,
+              this.state.highlight && styles.highlight
             )}
           >
             {!this.state.removed && (
@@ -671,6 +701,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
   },
+  columnNoVote: {
+    width: 18,
+  },
   left: {
     alignItems: "center",
     width: 44,
@@ -703,12 +736,8 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "8px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 13,
-    },
   },
   content: {
     width: "100%",
@@ -727,27 +756,24 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
   },
-  highlight: {
+  voteContainerHighlight: {
+    marginTop: 5,
+  },
+  mainContent: {
     width: "100%",
+    padding: "2px 10px 8px 8px",
     boxSizing: "border-box",
+    marginLeft: 2,
+  },
+  highlight: {
+    padding: "8px 10px 10px 15px",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     borderRadius: 5,
-    padding: "0px 10px 10px 8px",
-    ":hover": {
-      backgroundColor: "#FAFAFA",
-    },
+    marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      paddingLeft: 5,
+      paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
-    },
-    "@media only screen and (max-width: 415px)": {
-      paddingRight: 0,
-    },
-  },
-  active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
     },
   },
   bottom: {
@@ -807,6 +833,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 12,
     },
+  },
+  threadlineNoVote: {
+    height: "100%",
   },
   threadline: {
     height: "calc(100% - 58px)",

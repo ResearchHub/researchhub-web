@@ -55,7 +55,7 @@ class DiscussionEntry extends Component {
         score: data.score,
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
-        highlight: newCard,
+        highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
         canEdit:
           data.source !== "twitter"
@@ -71,6 +71,18 @@ class DiscussionEntry extends Component {
           }, 10000);
       }
     );
+  };
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, data } = this.props;
+    const isCurrentAuthor =
+      currentAuthor?.id === data.created_by.author_profile.id;
+    const comments = data.comments || [];
+
+    if (newCard || (isCurrentAuthor && comments.length > 0)) {
+      return true;
+    }
+    return false;
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -294,6 +306,8 @@ class DiscussionEntry extends Component {
       post,
       hypothesis,
       documentType,
+      currentAuthor,
+      noVote,
     } = this.props;
     let comments = this.state.comments;
 
@@ -302,7 +316,9 @@ class DiscussionEntry extends Component {
         return (
           <CommentEntry
             data={data}
+            noVote={noVote}
             hostname={hostname}
+            currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
             comment={comment}
@@ -484,8 +500,7 @@ class DiscussionEntry extends Component {
         className={css(
           styles.discussionCard,
           this.props.withBorder && styles.withBorder,
-          this.props.withPadding && styles.withPadding,
-          this.state.highlight && styles.highlight
+          this.props.withPadding && styles.withPadding
         )}
       >
         {noVote ? null : (
@@ -526,9 +541,9 @@ class DiscussionEntry extends Component {
         >
           <div
             className={css(
-              styles.highlight,
+              styles.mainContent,
               styles.metaData,
-              this.state.highlight && styles.active
+              this.state.highlight && styles.highlight
             )}
           >
             {!this.state.removed ? (
@@ -721,12 +736,8 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "10px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 12,
-    },
   },
   content: {
     width: "100%",
@@ -751,23 +762,25 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "100%",
-    paddingTop: 2,
     boxSizing: "border-box",
     display: "table-cell",
     height: "100%",
   },
-  highlight: {
+  mainContent: {
     width: "100%",
+    padding: "10px 10px 8px 8px",
     boxSizing: "border-box",
+    marginLeft: 2,
+  },
+  highlight: {
+    padding: "10px 10px 10px 15px",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     borderRadius: 5,
-    padding: "0px 10px 10px 15px",
+    marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      paddingLeft: 5,
+      paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
-    },
-    "@media only screen and (max-width: 415px)": {
-      paddingRight: 0,
     },
   },
   hidden: {
@@ -800,12 +813,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
-    },
-  },
-  active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
     },
   },
   viewMoreContainer: {

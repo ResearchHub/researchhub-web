@@ -15,7 +15,6 @@ import { TransactionActions } from "~/redux/transaction";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import AuthoredPapersTab from "~/components/Author/Tabs/AuthoredPapers";
 import AvatarUpload from "~/components/AvatarUpload";
 import Button from "~/components/Form/Button";
 import ClaimAuthorPopoverLabel from "../../../../components/ClaimAuthorPopoverLabel";
@@ -26,14 +25,11 @@ import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import TabBar from "~/components/TabBar";
-import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
-import UserDiscussionsTab from "~/components/Author/Tabs/UserDiscussions";
-import UserOverviewTab from "~/components/Author/Tabs/UserOverview";
-import UserPostsTab from "~/components/Author/Tabs/UserPosts";
-import UserPromotionsTab from "~/components/Author/Tabs/UserPromotions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
-
+import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
+import HorizontalTabBar from "~/components/HorizontalTabBar";
+import ReactPlaceholder from "react-placeholder/lib";
+import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
 // Dynamic modules
 import dynamic from "next/dynamic";
 const ShareModal = dynamic(() => import("~/components/ShareModal"));
@@ -44,7 +40,7 @@ const UserInfoModal = dynamic(() =>
 // Config
 import icons from "~/config/themes/icons";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import { createUserSummary } from "~/config/utils/user";
+import { createUserSummary, createEduSummary } from "~/config/utils/user";
 import {
   filterNull,
   isEmpty,
@@ -72,76 +68,25 @@ const SECTIONS = {
   picture: "picture",
 };
 
-const getTabs = (author, transactions) =>
-  filterNull([
-    {
-      href: "overview",
-      label: "overview",
-      name: "Overview",
-      showCount: false,
-    },
-    {
-      href: "discussions",
-      label: "comments",
-      name: "Comments",
-      showCount: true,
-      count: () => author.userDiscussions.count,
-    },
-    {
-      href: "authored-papers",
-      label: "authored papers",
-      name: "Authored Papers",
-      showCount: true,
-      count: () => author.authoredPapers.count,
-    },
-    {
-      href: "contributions",
-      label: "paper submissions",
-      name: "Paper Submissions",
-      showCount: true,
-      count: () => author.userContributions.count,
-    },
-    {
-      href: "posts",
-      label: "posts",
-      name: "Posts",
-      showCount: true,
-      count: () => author.num_posts,
-    },
-    {
-      href: "transactions",
-      label: "transactions",
-      name: "Transactions",
-      showCount: true,
-      count: () => transactions.count,
-    },
-    // {
-    //   href: "boosts",
-    //   label: "supported content",
-    //   name: "Supported Content",
-    //   showCount: true,
-    //   count: () => author.promotions && author.promotions.count,
-    // },
-  ]);
-
 function AuthorPage(props) {
   const { auth, author, hostname, user, transactions, fetchedAuthor } = props;
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
+
   const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
+
   // User External Links
   const [openShareModal, setOpenShareModal] = useState(false);
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
+
   // User Profile Update
   const [avatarUploadIsOpen, setAvatarUploadIsOpen] = useState(false);
   const [hoverProfilePicture, setHoverProfilePicture] = useState(false);
-  const [eduSummary, setEduSummary] = useState(
-    author && createUserSummary(author)
-  );
+
   const [description, setDescription] = useState(fetchedAuthor.description);
   const [name, setName] = useState(
     fetchedAuthor.first_name + " " + fetchedAuthor.last_name
@@ -153,6 +98,7 @@ function AuthorPage(props) {
   const [fetching, setFetching] = useState(false);
   const [fetchingPromotions, setFetchingPromotions] = useState(false);
   const [fetchedUser, setFetchedUser] = useState(false);
+
   // KT Constants
   const [authorUserStatus, setAuthorUserStatus] = useState(
     AUTHOR_USER_STATUS.NONE
@@ -188,13 +134,59 @@ function AuthorPage(props) {
     }
   }, [router]);
 
-  async function fetchAuthoredPapers() {
-    await dispatch(
-      AuthorActions.getAuthoredPapers({ authorId: router.query.authorId })
+  const getTabs = (allowEdit = false) => {
+    const tabs = [
+      {
+        href: "overview",
+        label: "overview",
+        name: "Overview",
+      },
+      {
+        href: "discussions",
+        label: "comments",
+        name: "Comments",
+      },
+      {
+        href: "submissions",
+        label: "submissions",
+        name: "Submissions",
+      },
+      {
+        href: "authored-papers",
+        label: "authored papers",
+        name: "Authored Papers",
+      },
+    ];
+
+    if (allowEdit) {
+      tabs.push({
+        href: "transactions",
+        label: "transactions",
+        name: "Transactions",
+      });
+    }
+
+    return tabs.map((t) => {
+      t.isSelected = t.href === router.query.tabName ? true : false;
+      return t;
+    });
+  };
+
+  const handleTabClick = (tab) => {
+    const updatedQuery = {
+      ...router.query,
+      tabName: tab.href,
+    };
+
+    router.push(
+      {
+        pathname: "/user/[authorId]/[tabName]",
+        query: updatedQuery,
+      },
+      undefined,
+      { shallow: true }
     );
-    let papers = store.getState().author.authoredPapers.papers;
-    return checkUserVotes(papers, "authored");
-  }
+  };
 
   function fetchAuthorSuspended() {
     return fetch(
@@ -217,101 +209,28 @@ function AuthorPage(props) {
       });
   }
 
-  async function fetchUserContributions() {
-    await dispatch(
-      AuthorActions.getUserContributions({
-        authorId: router.query.authorId,
-      })
-    );
-    return checkUserVotes(
-      store.getState().author.userContributions.contributions,
-      "contributions"
-    );
-  }
-
-  function fetchUserDiscussions() {
-    return dispatch(
-      AuthorActions.getUserDiscussions({ authorId: router.query.authorId })
-    );
-  }
-
-  function fetchUserPromotions() {
-    const { auth, author } = props;
-
-    // Reset promotions since depending on the user, they
-    // may not be refetched and as a result, a cached promotions list
-    // will stick to another user.
-    if (authorUserID !== user.id) {
-      dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "promotions",
-          value: {},
-          prevState: store.getState().author,
-        })
-      );
-      return;
-    }
-
-    setFetchingPromotions(true);
-    return fetch(
-      API.AGGREGATE_USER_PROMOTIONS({ userId: authorUserID }),
-      API.GET_CONFIG()
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then(async (res) => {
-        await dispatch(
-          AuthorActions.updateAuthorByKey({
-            key: "promotions",
-            value: res,
-            prevState: store.getState().author,
-          })
-        );
-        setFetchingPromotions(false);
-      })
-      .catch((e) => {
-        console.warn("Failed to fetch promotions", e);
-      })
-      .finally((e) => {
-        setFetchingPromotions(false);
-      });
-  }
-
   function fetchUserTransactions() {
-    if (!auth.isLoggedIn) return;
     return dispatch(
       TransactionActions.getWithdrawals(1, store.getState().transactions)
     );
   }
 
   async function refetchAuthor() {
-    setFetchedUser(false); // needed for tabbar
+    setFetchedUser(false); // needed for AuthorTabBar
     setFetching(true);
     const response = await dispatch(
       AuthorActions.getAuthor({ authorId: router.query.authorId })
     );
-    setFetchedUser(true); // needed for tabbar
+    setFetchedUser(true); // needed for AuthorTabBar
+    setFetching(false);
     return response;
   }
 
   useEffect(() => {
-    refetchAuthor();
+    refetchAuthor().then(() => {
+      fetchUserTransactions();
+    });
   }, [router.query.authorId]);
-
-  useEffect(() => {
-    if (fetchedUser) {
-      Promise.all([
-        fetchAuthoredPapers(),
-        fetchAuthorSuspended(),
-        fetchUserContributions(),
-        fetchUserDiscussions(),
-        // fetchUserPromotions(),
-        fetchUserTransactions(),
-      ]).finally((_) => {
-        setFetching(false);
-      });
-    }
-  }, [fetchedUser]);
 
   useEffect(() => {
     setAllowEdit(
@@ -320,7 +239,6 @@ function AuthorPage(props) {
         authorUserID === user.id
     );
     setDescription(author.description);
-    setEduSummary(createUserSummary(author));
 
     if (author.first_name) {
       setName(`${author.first_name} ${author.last_name}`);
@@ -333,15 +251,6 @@ function AuthorPage(props) {
   }, [author, user]);
 
   useEffect(() => {
-    if (prevProps && !auth.isLoggedIn) {
-      checkUserVotes(); // clears the state
-    } else if (!prevProps && auth.isLoggedIn) {
-      let papers = store.getState().author.authoredPapers.papers;
-      checkUserVotes(papers, "authored");
-      let contributions =
-        store.getState().author.userContributions.contributions;
-      checkUserVotes(contributions, "contributions");
-    }
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
@@ -370,97 +279,6 @@ function AuthorPage(props) {
     }
   };
 
-  const checkUserVotes = (papers = [], type) => {
-    if (!store.getState().auth.isLoggedIn && papers.length) {
-      let authoredPapers = { ...store.getState().author.authoredPapers };
-
-      authoredPapers.papers = authoredPapers.papers.map((paper) => {
-        paper.user_vote = null;
-        return paper;
-      });
-
-      dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "authoredPapers",
-          value: authoredPapers,
-        })
-      );
-
-      let contributions = { ...store.getState().author.userContributions };
-
-      contributions.contributions = contributions.contributions.map((paper) => {
-        paper.user_vote = null;
-        return paper;
-      });
-
-      return dispatch(
-        AuthorActions.updateAuthorByKey({
-          key: "contributions",
-          value: contributions,
-        })
-      );
-    }
-
-    let paperIds = papers.map((paper) => {
-      return paper.id;
-    });
-
-    if (paperIds.length === 0) return;
-
-    fetch(API.CHECK_USER_VOTE({ paperIds }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        let updates = { ...res };
-        let updatedPapers = papers.map((paper) => {
-          if (updates[paper.id]) {
-            paper.user_vote = updates[paper.id];
-          }
-          return paper;
-        });
-
-        if (type === "authored") {
-          let newAuthored = { ...store.getState().author.authoredPapers };
-          let oldState = { ...store.getState().author.authoredPapers };
-          oldState.papers = [];
-          newAuthored.papers = updatedPapers;
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "authoredPapers",
-              value: oldState,
-            })
-          );
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "authoredPapers",
-              value: newAuthored,
-            })
-          );
-        } else if (type === "contributions") {
-          let newContributions = {
-            ...store.getState().author.userContributions,
-          };
-          let oldState = { ...store.getState().author.userContributions };
-          oldState.contributions = [];
-          newContributions.contributions = updatedPapers;
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "userContributions",
-              value: oldState,
-            })
-          );
-          dispatch(
-            AuthorActions.updateAuthorByKey({
-              key: "userContributions",
-              value: newContributions,
-            })
-          );
-        }
-      });
-  };
-
-  const tabs = getTabs(author, transactions);
-
   const renderTabTitle = () => {
     for (let i = 0; i < tabs.length; i++) {
       if (tabs[i].href === tabName) {
@@ -469,72 +287,63 @@ function AuthorPage(props) {
     }
   };
 
-  const tabContents =
-    tabName === "overview" ? (
+  const tabs = getTabs(allowEdit);
+
+  let tabContents = (
+    <ComponentWrapper overrideStyle={styles.componentWrapperOverride}>
       <div
         className={css(tabName === "overview" ? styles.reveal : styles.hidden)}
       >
-        <UserOverviewTab fetching={fetching} />
+        <AuthorActivityFeed
+          isVisible={tabName === "overview"}
+          author={author}
+          contributionType="overview"
+        />
       </div>
-    ) : (
-      // render all tab content on the dom, but only show if selected
-      <ComponentWrapper>
-        <div className={css(styles.tabMeta)}>
-          <h2 className={css(styles.title)}>{renderTabTitle()}</h2>
-
-          <div
-            className={css(
-              tabName === "overview" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserOverviewTab fetching={fetching} />
-          </div>
-          <div
-            className={css(tabName === "posts" ? styles.reveal : styles.hidden)}
-          >
-            <UserPostsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "contributions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserContributionsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "authored-papers" ? styles.reveal : styles.hidden
-            )}
-          >
-            <AuthoredPapersTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "discussions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserDiscussionsTab hostname={hostname} fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "transactions" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserTransactionsTab fetching={fetching} />
-          </div>
-          <div
-            className={css(
-              tabName === "boosts" ? styles.reveal : styles.hidden
-            )}
-          >
-            <UserPromotionsTab
-              fetching={fetchingPromotions}
-              activeTab={tabName === "boosts"}
-            />
-          </div>
+      <div
+        className={css(
+          tabName === "discussions" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "discussions"}
+          author={author}
+          contributionType="comment"
+        />
+      </div>
+      <div
+        className={css(
+          tabName === "submissions" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "submissions"}
+          author={author}
+          contributionType="hypothesis,paper,discussion"
+        />
+      </div>
+      <div
+        className={css(
+          tabName === "authored-papers" ? styles.reveal : styles.hidden
+        )}
+      >
+        <AuthorActivityFeed
+          isVisible={tabName === "authored-papers"}
+          author={author}
+          contributionType="authored-papers"
+        />
+      </div>
+      {allowEdit && (
+        <div
+          className={css(
+            tabName === "transactions" ? styles.reveal : styles.hidden
+          )}
+        >
+          <UserTransactionsTab fetching={fetching} />
         </div>
-      </ComponentWrapper>
-    );
+      )}
+    </ComponentWrapper>
+  );
 
   const renderSaveButton = (section, { picture }) => {
     let action = null;
@@ -567,7 +376,7 @@ function AuthorPage(props) {
 
   const saveSocial = async (section) => {
     const changes = {};
-    const change = socialLinks[section];
+    let change = socialLinks[section];
     const http = "http://";
     const https = "https://";
     if (!change) {
@@ -843,6 +652,77 @@ function AuthorPage(props) {
     }
   });
 
+  const modButtons = (
+    <div className={css(styles.modActions)}>
+      {filterNull([
+        isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
+          <div className={css(styles.adminButton)} key="banOrReinstate">
+            <ModeratorDeleteButton
+              actionType="user"
+              containerStyle={styles.moderatorButton}
+              icon={
+                !fetchedUser
+                  ? " "
+                  : isAuthorUserSuspended
+                  ? icons.userPlus
+                  : icons.userSlash
+              }
+              iconStyle={styles.moderatorIcon}
+              key="user"
+              labelStyle={styles.moderatorLabel}
+              label={
+                !fetchedUser ? (
+                  <Loader loading={true} color={"#FFF"} size={15} />
+                ) : isAuthorUserSuspended ? (
+                  "Reinstate User"
+                ) : (
+                  "Ban User"
+                )
+              }
+              metaData={{
+                authorId: router.query.authorId,
+                isSuspended: isAuthorUserSuspended,
+                setIsSuspended: () =>
+                  setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+              }}
+            />
+          </div>
+        ) : null,
+        /* current user should not be able to ban / reinstate themselves */
+        isCurrentUserModerator ? (
+          <div
+            className={css(styles.adminButton, styles.siftButton)}
+            key="SiftButton"
+          >
+            <Button
+              customButtonStyle={styles.editButtonCustom}
+              label={() => (
+                <Fragment>
+                  <span style={{ marginRight: 10, userSelect: "none" }}>
+                    {icons.user}
+                  </span>
+                  Sift Profile
+                </Fragment>
+              )}
+              onClick={() => window.open(props.author.sift_link, "_blank")}
+              rippleClass={styles.rippleClass}
+            />
+          </div>
+        ) : null,
+      ])}
+    </div>
+  );
+
+  const editProfileBtn = (
+    <div>
+      {allowEdit ? (
+        <div className={css(styles.editProfileButton)} key="editButton">
+          <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
+        </div>
+      ) : null}
+    </div>
+  );
+
   const userLinks = (
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
@@ -857,103 +737,17 @@ function AuthorPage(props) {
     </div>
   );
 
-  const userActionButtons = (
-    /* <UserFollowButton authorId={router.query.authorId} authorname={`${author.first_name} ${author.last_name}`} /> */
-    <div className={css(styles.userActions)}>
-      {filterNull([
-        allowEdit ? (
-          <div className={css(styles.editProfileButton)} key="editButton">
-            <Button
-              label={() => (
-                <Fragment>
-                  <span style={{ marginRight: 10, userSelect: "none" }}>
-                    {icons.editHub}
-                  </span>
-                  Edit Profile
-                </Fragment>
-              )}
-              onClick={onOpenUserInfoModal}
-              customButtonStyle={styles.editButtonCustom}
-              rippleClass={styles.rippleClass}
-            />
-          </div>
-        ) : null,
-      ])}
-
-      <div className={css(styles.modActions)}>
-        {filterNull([
-          isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
-            <div className={css(styles.editProfileButton)} key="banOrReinstate">
-              <ModeratorDeleteButton
-                actionType="user"
-                containerStyle={styles.moderatorButton}
-                icon={
-                  !fetchedUser
-                    ? " "
-                    : isAuthorUserSuspended
-                    ? icons.userPlus
-                    : icons.userSlash
-                }
-                iconStyle={styles.moderatorIcon}
-                key="user"
-                labelStyle={styles.moderatorLabel}
-                label={
-                  !fetchedUser ? (
-                    <Loader loading={true} color={"#FFF"} size={15} />
-                  ) : isAuthorUserSuspended ? (
-                    "Reinstate User"
-                  ) : (
-                    "Ban User"
-                  )
-                }
-                metaData={{
-                  authorId: router.query.authorId,
-                  isSuspended: isAuthorUserSuspended,
-                  setIsSuspended: () =>
-                    setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
-                }}
-              />
-            </div>
-          ) : null,
-          /* current user should not be able to ban / reinstate themselves */
-          isCurrentUserModerator ? (
-            <div
-              className={css(styles.editProfileButton, styles.siftButton)}
-              key="SiftButton"
-            >
-              <Button
-                customButtonStyle={styles.editButtonCustom}
-                label={() => (
-                  <Fragment>
-                    <span style={{ marginRight: 10, userSelect: "none" }}>
-                      {icons.user}
-                    </span>
-                    Sift Profile
-                  </Fragment>
-                )}
-                onClick={() => window.open(props.author.sift_link, "_blank")}
-                rippleClass={styles.rippleClass}
-              />
-            </div>
-          ) : null,
-        ])}
-      </div>
-    </div>
-  );
-
   const authorEducationSummary = useMemo(
     () =>
-      eduSummary ? (
+      author?.education?.length ? (
         <div className={css(styles.educationSummaryContainer) + " clamp2"}>
-          {(author.headline || author.education) && (
-            <div className={css(styles.educationSummary) + " clamp2"}>
-              <span className={css(styles.icon)}>{icons.graduationCap}</span>
-              {eduSummary}
-            </div>
-          )}
+          <div className={css(styles.educationSummary) + " clamp2"}>
+            <span className={css(styles.icon)}>{icons.graduationCap}</span>
+            {createEduSummary(author)}
+          </div>
         </div>
       ) : null,
-    [eduSummary]
+    [author]
   );
 
   const authorDescription = (
@@ -982,7 +776,7 @@ function AuthorPage(props) {
     </div>
   );
 
-  const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub) => {
+  const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub, i) => {
     const { name } = hub;
     const sluggedName = buildSlug(hub.name ?? "");
     return (
@@ -992,6 +786,7 @@ function AuthorPage(props) {
           href={`/hubs/${sluggedName}`}
           target="_blank"
         >
+          {i > 0 && ", "}
           {name}
         </a>
       </Link>
@@ -1011,101 +806,123 @@ function AuthorPage(props) {
       <ReactTooltip />
       <ComponentWrapper>
         <UserInfoModal />
-        <div
-          className={css(
-            styles.profileContainer,
-            isCurrentUserModerator && styles.profileContainerPadding
-          )}
+        <ReactPlaceholder
+          ready={fetchedUser}
+          showLoadingAnimation
+          customPlaceholder={<AuthorDetailsPlaceholder />}
         >
-          <div
-            className={css(
-              styles.avatarContainer,
-              author.profile_image && styles.border
-            )}
-          >
-            <div
-              className={css(styles.avatarContainer)}
-              onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
-              onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
-              onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
-              draggable={false}
-            >
-              <AuthorAvatar author={author} disableLink={true} size={120} />
-              <meta
-                property="image"
-                content={
-                  author.profile_image ? author.profile_image : "author avatar"
-                }
-              />
-              {allowEdit && hoverProfilePicture && (
-                <div className={css(styles.profilePictureHover)}>Update</div>
-              )}
-            </div>
-          </div>
-          <div className={css(styles.profileInfo)}>
-            <div className={css(styles.nameLine)}>
-              <h1
-                className={css(styles.authorName, styles.editButtonContainer)}
-                property="name"
+          <div className={css(styles.profileHeader)}>
+            <div className={css(styles.profileContainer)}>
+              <div
+                className={css(
+                  styles.avatarContainer,
+                  author.profile_image && styles.border
+                )}
               >
-                {name}
-              </h1>
-              {userLinks}
-            </div>
-            {authorEducationSummary}
-            <div className={css(styles.reputationContainer)}>
-              {authorReputation}
-              {authorRscBalance}
-            </div>
-            {!isEmpty(authorIsEditorOf) && (
-              <div className={css(styles.reputationContainer)}>
-                <div className={css(styles.editorLabelWrap)}>
-                  <Image
-                    height={20}
-                    src="/static/icons/editor-star.png"
-                    width={20}
+                <div
+                  className={css(styles.avatarContainer)}
+                  onClick={allowEdit ? onOpenUserInfoModal : silentEmptyFnc}
+                  onMouseEnter={() => onMouseEnter(SECTIONS.picture)}
+                  onMouseLeave={() => onMouseLeave(SECTIONS.picture)}
+                  draggable={false}
+                >
+                  <AuthorAvatar author={author} disableLink={true} size={120} />
+                  <meta
+                    property="image"
+                    content={
+                      author.profile_image
+                        ? author.profile_image
+                        : "author avatar"
+                    }
                   />
-                  <span
-                    style={{
-                      color: colors.BLACK(1),
-                      fontWeight: 500,
-                      marginLeft: 8,
-                    }}
-                  >
-                    {"Editor of: "}
-                  </span>
-                  {authorIsEditorOf}
+                  {allowEdit && hoverProfilePicture && (
+                    <div className={css(styles.profilePictureHover)}>
+                      Update
+                    </div>
+                  )}
                 </div>
               </div>
-            )}
-            {authorDescription}
-            {!doesAuthorHaveUser ? (
-              <ClaimAuthorPopoverLabel
-                auth={auth}
-                author={author}
-                user={user}
-              />
-            ) : null}
-            {userActionButtons}
+              <div className={css(styles.profileInfo)}>
+                <div className={css(styles.nameLine)}>
+                  <h1
+                    className={css(
+                      styles.authorName,
+                      styles.editButtonContainer
+                    )}
+                    property="name"
+                  >
+                    {name}
+                    {editProfileBtn}
+                  </h1>
+                  <div className={css(styles.headline)}>
+                    {author?.headline?.title}
+                  </div>
+                  <div className={css(styles.reputationContainer)}>
+                    {!isEmpty(authorIsEditorOf) && (
+                      <div className={css(styles.reputationContainer)}>
+                        <div className={css(styles.editorLabelWrap)}>
+                          <img
+                            height={20}
+                            src="/static/icons/editor-star.png"
+                            width={20}
+                            className={css(styles.editorImg)}
+                          />
+                          <span
+                            style={{
+                              color: colors.BLACK(0.9),
+                              fontWeight: 400,
+                              marginLeft: 8,
+                              marginRight: 10,
+                              fontSize: 14,
+                            }}
+                          >
+                            {"Editor of:"}
+                          </span>
+                          {authorIsEditorOf}
+                        </div>
+                      </div>
+                    )}
+                    {authorEducationSummary}
+                    {authorReputation}
+                    {authorRscBalance}
+                  </div>
+                </div>
+                {authorDescription}
+                {!doesAuthorHaveUser ? (
+                  <ClaimAuthorPopoverLabel
+                    auth={auth}
+                    author={author}
+                    user={user}
+                  />
+                ) : null}
+              </div>
+            </div>
+            <div>
+              {userLinks}
+              {modButtons}
+            </div>
           </div>
-        </div>
+        </ReactPlaceholder>
       </ComponentWrapper>
-      <TabBar
-        tabs={tabs}
-        selectedTab={tabName}
-        dynamic_href={"/user/[authorId]/[tabName]"}
-        author={author}
-        authorId={router.query.authorId}
-        user={user}
-        fetching={fetching}
-        showTabBar={fetchedUser}
-      />
+      <div className={css(styles.tabMenuContainer)}>
+        <ComponentWrapper overrideStyle={styles.componentWrapper}>
+          <HorizontalTabBar
+            id="tabBarForSearch"
+            tabs={tabs}
+            onClick={handleTabClick}
+            containerStyle={styles.tabContainer}
+            dragging={true}
+            alignCenter={false}
+            showArrowsOnWidth={breakpoints.xsmall.int}
+          />
+        </ComponentWrapper>
+      </div>
       <div className={css(styles.contentContainer)}>{tabContents}</div>
       <ShareModal
         close={() => setOpenShareModal(false)}
         isOpen={openShareModal}
         title={"Share Author Profile"}
-        url={`${hostname}${router.asPath}`}
+        url={`${process.env.HOST}${router.asPath}`}
       />
       <AvatarUpload
         isOpen={avatarUploadIsOpen}
@@ -1155,23 +972,46 @@ const styles = StyleSheet.create({
   root: {
     background: "#FFF",
   },
+  tabMenuContainer: {
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 30,
+    },
+  },
+  tabContainer: {
+    display: "flex",
+    width: "100%",
+    justifyContent: "flex-start",
+    borderBottom: 0,
+  },
   contentContainer: {
     padding: "30px 0px",
     margin: "auto",
     background: "#FAFAFA",
     minHeight: "55vh",
   },
+  profileHeader: {
+    padding: "30px 0",
+    display: "flex",
+    justifyContent: "space-between",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
   profileContainer: {
     display: "flex",
-    padding: "30px 0",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: "32px 0px",
       flexDirection: "column",
       alignItems: "center",
       justifyContent: "center",
     },
   },
-
+  componentWrapperOverride: {
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      paddingLeft: 10,
+      paddingRight: 10,
+    },
+  },
   profileInfo: {
     width: "100%",
     marginLeft: 30,
@@ -1179,16 +1019,22 @@ const styles = StyleSheet.create({
       margin: 0,
     },
   },
+  headline: {
+    fontSize: 16,
+    marginBottom: 10,
+  },
   modActions: {
-    marginLeft: "auto",
     display: "flex",
+    flexDirection: "column",
+    alignItems: "end",
 
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: "unset",
-      marginTop: 16,
+      flexDirection: "row",
     },
   },
   moderatorButton: {
+    marginTop: 20,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -1211,25 +1057,23 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
-      height: 40,
-      margin: "10px 0",
     },
   },
-  editorLabelWrap: {
-    color: colors.LIGHT_GREY_TEXT,
-    display: "flex",
-    width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      paddingRight: 0,
-      justifyContent: "center",
-      textAlign: "center",
-      marginBottom: 15,
-    },
+  editorImg: {
+    verticalAlign: "-3px",
   },
   hubLinkTag: {
-    color: colors.TEXT_DARKER_GREY,
+    textDecoration: "unset",
+    cursor: "pointer",
+    color: "unset",
     textDecoration: "underline",
-    marginLeft: 8,
+    fontWeight: 500,
+    fontSize: 14,
+    textTransform: "capitalize",
+    color: colors.BLACK(0.8),
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
   moderatorIcon: {
     color: "inherit",
@@ -1262,12 +1106,8 @@ const styles = StyleSheet.create({
     position: "relative",
     justifyContent: "flex-end",
     width: "max-content",
-  },
-  mobileSocialLinks: {
-    display: "none",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
-      width: "max-content",
+      marginTop: 10,
     },
   },
   authorName: {
@@ -1276,11 +1116,12 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     padding: 0,
     margin: 0,
+    marginBottom: 5,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 24,
       paddingRight: 0,
       justifyContent: "center",
       textAlign: "center",
-      marginBottom: 15,
     },
   },
   plusButton: {
@@ -1294,14 +1135,16 @@ const styles = StyleSheet.create({
   },
   nameLine: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "start",
     justifyContent: "space-between",
+    flexDirection: "column",
     width: "100%",
-    marginBottom: 10,
     "@media only screen and (max-width: 768px)": {
       flexDirection: "column",
       justifyContent: "flex-start",
       marginTop: 15,
+      marginBottom: 0,
+      alignItems: "start",
     },
   },
   orcidAvailable: {
@@ -1313,34 +1156,36 @@ const styles = StyleSheet.create({
   },
   educationSummaryContainer: {
     display: "flex",
-    marginBottom: 10,
+    marginRight: 15,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "100%",
-      // justifyContent: "flex-start",
-      justifyContent: "center",
-      alignItems: "center",
-      marginBottom: 15,
+      display: "block",
+      marginBottom: 5,
     },
   },
   educationSummary: {
-    color: "#241F3A",
-    opacity: 0.7,
-    fontSize: 15,
+    color: colors.BLACK(0.9),
+    fontSize: 14,
     display: "flex",
     justifyContent: "center",
     alignItems: "flex-start",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      justifyContent: "initial",
+    },
     "@media only screen and (max-width: 415px)": {
       marginTop: 10,
       fontSize: 14,
     },
   },
   description: {
-    marginBottom: 15,
+    marginTop: 25,
     justifyContent: "center",
     flexDirection: "column",
     width: "100%",
     color: "#241F3A",
     lineHeight: 1.5,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      textAlign: "left",
+    },
     "@media only screen and (max-width: 440px)": {
       justifyContent: "flex-start",
       fontSize: 14,
@@ -1595,10 +1440,10 @@ const styles = StyleSheet.create({
     borderRadius: "50%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       height: "min-content",
-      width: "70%",
+      width: "100%",
       display: "flex",
       flexDirection: "column",
-      alignItems: "center",
+      alignItems: "start",
     },
   },
   border: {},
@@ -1616,12 +1461,15 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   reputationContainer: {
-    display: "flex",
+    display: "block",
     alignItems: "center",
     width: "100%",
-    marginBottom: 15,
+    lineHeight: "26px",
+    flexWrap: "wrap",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
+      display: "block",
+      // lineHeight: "16px",
     },
     "@media only screen and (max-width: 440px)": {
       flexDirection: "column",
@@ -1631,37 +1479,35 @@ const styles = StyleSheet.create({
   reputation: {
     display: "flex",
     alignItems: "center",
-    fontWeight: 500,
     color: "#241F3A",
     marginRight: 15,
+    fontSize: 14,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "center",
-    },
-    "@media only screen and (max-width: 440px)": {
-      marginBottom: 15,
+      justifyContent: "initial",
+      // marginBottom: 5,
     },
   },
   reputationTitle: {
     marginRight: 10,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
+    fontWeight: 400,
+    color: colors.BLACK(0.9),
+    fontSize: 14,
+    "@media only screen and (max-width: 415px)": {},
   },
   rscBalance: {
     display: "flex",
     alignItems: "center",
-    fontWeight: 500,
-    color: "#241F3A",
+    fontWeight: 400,
+    color: colors.BLACK(0.9),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "center",
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 13,
+      justifyContent: "initial",
+      fontSize: 14,
     },
   },
   amount: {
-    color: "rgba(36, 31, 58, 0.7)",
     fontWeight: 400,
+    fontSize: 14,
+    color: colors.BLACK(0.9),
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -1669,7 +1515,7 @@ const styles = StyleSheet.create({
   icon: {
     width: 20,
     marginRight: 5,
-    display: "flex",
+    display: "block",
     alignItems: "center",
     // color: "#241F3A",
     color: "#000",
@@ -1677,9 +1523,11 @@ const styles = StyleSheet.create({
   rhIcon: {
     width: 13,
     paddingLeft: 1.5,
+    verticalAlign: "-3px",
   },
   rscIcon: {
     width: 18,
+    verticalAlign: "-3px",
   },
   orcidButton: {
     width: 180,
@@ -1721,33 +1569,35 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
   },
-  userActions: {
-    display: "flex",
-    justifyContent: "flex-start",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      flexDirection: "column",
-      width: "100%",
-    },
-  },
   editProfileButton: {
-    marginRight: 16,
+    color: colors.BLUE(1),
+    fontSize: 24,
+    marginLeft: 12,
+    cursor: "pointer",
+    display: "inline",
+    verticalAlign: "1px",
+  },
+  adminButton: {
+    display: "block",
+    marginTop: 10,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
-      width: "100%",
-      margin: 0,
+      marginTop: 0,
+      marginRight: 10,
     },
   },
   siftButton: {
-    background: colors.NAVY(1),
     borderRadius: 4,
   },
   editButtonCustom: {
     height: 35,
     width: 175,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      height: 40,
-      width: "100%",
-      minWidth: "100%",
+      height: 35,
+      minHeight: 35,
+    },
+    [`@media only screen and (max-width: 415px)`]: {
+      height: 35,
+      minHeight: 35,
     },
   },
   siftCustom: {
@@ -1759,6 +1609,9 @@ const styles = StyleSheet.create({
     },
   },
   mobileEditButtonCustom: {},
+  editProfileWrapper: {
+    marginTop: 15,
+  },
 });
 
 const mapStateToProps = (state) => ({
