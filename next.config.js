@@ -66,6 +66,11 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
         destination: "/",
         permanent: true,
       },
+      {
+        source: "/user/:authorId",
+        destination: "/user/:authorId/overview",
+        permanent: true,
+      },
     ];
   },
 });
