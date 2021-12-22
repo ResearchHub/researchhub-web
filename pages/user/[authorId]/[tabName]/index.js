@@ -653,74 +653,74 @@ function AuthorPage(props) {
     }
   });
 
-  const editProfileBtn = (
-    <div>
+  const modButtons = (
+    <div className={css(styles.modActions)}>
       {filterNull([
-        allowEdit ? (
-          <div className={css(styles.editProfileButton)} key="editButton">
-            <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
+        isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
+          <div className={css(styles.adminButton)} key="banOrReinstate">
+            <ModeratorDeleteButton
+              actionType="user"
+              containerStyle={styles.moderatorButton}
+              icon={
+                !fetchedUser
+                  ? " "
+                  : isAuthorUserSuspended
+                  ? icons.userPlus
+                  : icons.userSlash
+              }
+              iconStyle={styles.moderatorIcon}
+              key="user"
+              labelStyle={styles.moderatorLabel}
+              label={
+                !fetchedUser ? (
+                  <Loader loading={true} color={"#FFF"} size={15} />
+                ) : isAuthorUserSuspended ? (
+                  "Reinstate User"
+                ) : (
+                  "Ban User"
+                )
+              }
+              metaData={{
+                authorId: router.query.authorId,
+                isSuspended: isAuthorUserSuspended,
+                setIsSuspended: () =>
+                  setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
+              }}
+            />
+          </div>
+        ) : null,
+        /* current user should not be able to ban / reinstate themselves */
+        isCurrentUserModerator ? (
+          <div
+            className={css(styles.adminButton, styles.siftButton)}
+            key="SiftButton"
+          >
+            <Button
+              customButtonStyle={styles.editButtonCustom}
+              label={() => (
+                <Fragment>
+                  <span style={{ marginRight: 10, userSelect: "none" }}>
+                    {icons.user}
+                  </span>
+                  Sift Profile
+                </Fragment>
+              )}
+              onClick={() => window.open(props.author.sift_link, "_blank")}
+              rippleClass={styles.rippleClass}
+            />
           </div>
         ) : null,
       ])}
+    </div>
+  );
 
-      <div className={css(styles.modActions)}>
-        {filterNull([
-          isCurrentUserModerator && doesAuthorHaveUserAndNotMe ? (
-            <div className={css(styles.editProfileButton)} key="banOrReinstate">
-              <ModeratorDeleteButton
-                actionType="user"
-                containerStyle={styles.moderatorButton}
-                icon={
-                  !fetchedUser
-                    ? " "
-                    : isAuthorUserSuspended
-                    ? icons.userPlus
-                    : icons.userSlash
-                }
-                iconStyle={styles.moderatorIcon}
-                key="user"
-                labelStyle={styles.moderatorLabel}
-                label={
-                  !fetchedUser ? (
-                    <Loader loading={true} color={"#FFF"} size={15} />
-                  ) : isAuthorUserSuspended ? (
-                    "Reinstate User"
-                  ) : (
-                    "Ban User"
-                  )
-                }
-                metaData={{
-                  authorId: router.query.authorId,
-                  isSuspended: isAuthorUserSuspended,
-                  setIsSuspended: () =>
-                    setAuthorUserStatus(AUTHOR_USER_STATUS.SUSPENDED),
-                }}
-              />
-            </div>
-          ) : null,
-          /* current user should not be able to ban / reinstate themselves */
-          isCurrentUserModerator ? (
-            <div
-              className={css(styles.editProfileButton, styles.siftButton)}
-              key="SiftButton"
-            >
-              <Button
-                customButtonStyle={styles.editButtonCustom}
-                label={() => (
-                  <Fragment>
-                    <span style={{ marginRight: 10, userSelect: "none" }}>
-                      {icons.user}
-                    </span>
-                    Sift Profile
-                  </Fragment>
-                )}
-                onClick={() => window.open(props.author.sift_link, "_blank")}
-                rippleClass={styles.rippleClass}
-              />
-            </div>
-          ) : null,
-        ])}
-      </div>
+  const editProfileBtn = (
+    <div>
+      {allowEdit ? (
+        <div className={css(styles.editProfileButton)} key="editButton">
+          <span onClick={onOpenUserInfoModal}>{icons.editHub}</span>
+        </div>
+      ) : null}
     </div>
   );
 
@@ -807,7 +807,7 @@ function AuthorPage(props) {
       <ComponentWrapper>
         <UserInfoModal />
         <ReactPlaceholder
-          ready={true /*fetchedUser*/}
+          ready={fetchedUser}
           showLoadingAnimation
           customPlaceholder={<AuthorDetailsPlaceholder />}
         >
@@ -897,7 +897,10 @@ function AuthorPage(props) {
                 ) : null}
               </div>
             </div>
-            <div>{userLinks}</div>
+            <div>
+              {userLinks}
+              {modButtons}
+            </div>
           </div>
         </ReactPlaceholder>
       </ComponentWrapper>
@@ -1021,14 +1024,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   modActions: {
-    marginLeft: "auto",
     display: "flex",
+    flexDirection: "column",
+    alignItems: "end",
 
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: "unset",
+      flexDirection: "row",
     },
   },
   moderatorButton: {
+    marginTop: 20,
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -1051,20 +1057,7 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
-      height: 40,
-      margin: "10px 0",
     },
-  },
-  editorLabelWrap: {
-    // color: colors.LIGHT_GREY_TEXT,
-    // display: "flex",
-    // width: "100%",
-    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-    //   paddingRight: 0,
-    //   justifyContent: "center",
-    //   textAlign: "center",
-    //   marginBottom: 15,
-    // },
   },
   editorImg: {
     verticalAlign: "-3px",
@@ -1583,17 +1576,27 @@ const styles = StyleSheet.create({
     display: "inline",
     verticalAlign: "1px",
   },
+  adminButton: {
+    display: "block",
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 0,
+      marginRight: 10,
+    },
+  },
   siftButton: {
-    background: colors.NAVY(1),
     borderRadius: 4,
   },
   editButtonCustom: {
     height: 35,
     width: 175,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      height: 40,
-      width: "100%",
-      minWidth: "100%",
+      height: 35,
+      minHeight: 35,
+    },
+    [`@media only screen and (max-width: 415px)`]: {
+      height: 35,
+      minHeight: 35,
     },
   },
   siftCustom: {
