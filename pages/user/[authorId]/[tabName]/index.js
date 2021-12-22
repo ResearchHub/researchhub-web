@@ -25,7 +25,6 @@ import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import UserContributionsTab from "~/components/Author/Tabs/UserContributions";
 import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";

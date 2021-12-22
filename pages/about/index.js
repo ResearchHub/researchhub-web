@@ -5,7 +5,7 @@ import { useTransition, animated } from "react-spring";
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
 import ScrollMenu from "react-horizontal-scrolling-menu";
-import { NavigationArrow } from "~/components/AuthorTabBar";
+import { NavigationArrow } from "~/components/HorizontalTabBar";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
