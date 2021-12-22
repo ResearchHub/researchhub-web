@@ -250,7 +250,7 @@ var styles = StyleSheet.create({
   },
   activitySummary: {
     lineHeight: "22px",
-    fontSize: 14,
+    fontSize: 16,
     alignItems: "flex-start",
     color: colors.BLACK(0.8),
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
