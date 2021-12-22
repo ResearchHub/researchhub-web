@@ -183,6 +183,14 @@ function UnifiedDocFeedContainer({
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
               setDocTypeFilter(filterValue);
+              setPaginationInfo({
+                hasMore: false,
+                isLoading: true,
+                isLoadingMore: false,
+                isServerLoaded: false,
+                localPage: 1,
+                page: 1,
+              });
               router.push(
                 {
                   pathname: routerPathName,
