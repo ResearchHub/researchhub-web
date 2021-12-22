@@ -6,6 +6,7 @@ import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
+import API from "~/config/api";
 import Error from "next/error";
 import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlugs";
 import Head from "~/components/Head";
@@ -25,6 +26,7 @@ class Index extends Component {
     const { res, slug, name, type } = query;
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
+    const currentHub = fetchHubFromSlug({ slug });
 
     if (!isServer()) {
       return {
@@ -34,10 +36,6 @@ class Index extends Component {
         currentHub,
       };
     }
-
-    const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
-      .then((res) => res.json())
-      .then((body) => body.results[0]);
 
     if (!currentHub) {
       if (res) {
@@ -54,7 +52,7 @@ class Index extends Component {
         fetchUnifiedDocFeed(
           {
             // Initial Feed
-            hubId: currentHub.id,
+            hubId: currentHub?.id,
             ordering: "hot",
             timePeriod: getInitialScope(),
             type: urlDocType,

@@ -62,6 +62,9 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     serverLoadedData?.results || []
   );
+  const [cardFormattedTime, setCardFormattedTime] = useState<number>(
+    Date.now()
+  );
 
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
     paginationInfo;
@@ -166,7 +169,7 @@ function UnifiedDocFeedContainer({
       formatMainHeader({
         feed,
         filterBy: subFilters.filterBy ?? null,
-        hubName,
+        hubName: hubName ?? "",
         isHomePage,
       }),
     [hubName, feed, subFilters, isHomePage]
@@ -191,6 +194,7 @@ function UnifiedDocFeedContainer({
                 localPage: 1,
                 page: 1,
               });
+              setCardFormattedTime(Date.now());
               router.push(
                 {
                   pathname: routerPathName,
@@ -206,15 +210,24 @@ function UnifiedDocFeedContainer({
   );
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
-  const cards = getDocumentCard({
+  const [cards, cardFormattedTimeCheck] = getDocumentCard({
+    cardFormattedTime,
     hasSubscribed,
     isLoggedIn,
     isOnMyHubsTab,
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
+  /* we need time check here to ensure that payload formatting does not lead to 
+  UI rendering timing issues sinces document objects & formmatting can be heavy
+  */
 
-  return (
+  const areCardsReadyToBeRendered =
+    unifiedDocuments.length === 0
+      ? true
+      : !isLoading && cardFormattedTimeCheck === cardFormattedTime;
+
+      return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       {!hasSubscribed ? (
         <div>
@@ -244,7 +257,7 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      {isLoading ? (
+      {!areCardsReadyToBeRendered ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
