@@ -588,8 +588,8 @@ class CommentEntry extends Component {
         <div className={css(styles.column, styles.metaData)}>
           <div
             className={css(
-              styles.highlight,
-              this.state.highlight && styles.active
+              styles.mainContent,
+              this.state.highlight && styles.highlight
             )}
           >
             {!this.state.removed && (
@@ -736,12 +736,8 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "8px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 13,
-    },
   },
   content: {
     width: "100%",
@@ -763,23 +759,22 @@ const styles = StyleSheet.create({
   voteContainerHighlight: {
     marginTop: 5,
   },
-  highlight: {
+  mainContent: {
     width: "100%",
+    padding: "2px 10px 8px 8px",
     boxSizing: "border-box",
-    borderRadius: 5,
-    padding: "0px 10px 10px 8px",
+    marginLeft: 2,
+  },
+  highlight: {
+    padding: "8px 10px 10px 15px",
     backgroundColor: colors.LIGHT_BLUE(0.2),
+    borderRadius: 5,
+    marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      paddingLeft: 5,
+      paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
     },
-    "@media only screen and (max-width: 415px)": {
-      paddingRight: 0,
-    },
-  },
-  active: {
-    backgroundColor: colors.LIGHT_BLUE(0.2),
   },
   bottom: {
     width: "100%",

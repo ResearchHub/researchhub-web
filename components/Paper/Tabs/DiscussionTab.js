@@ -861,6 +861,9 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
+    "@media only screen and (max-width: 415px)": {
+      padding: "25px 15px",
+    },
   },
   addDiscussionContainer: {
     // transition: "all ease-in-out 0.3s",

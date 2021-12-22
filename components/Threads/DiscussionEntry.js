@@ -78,6 +78,7 @@ class DiscussionEntry extends Component {
     const isCurrentAuthor =
       currentAuthor?.id === data.created_by.author_profile.id;
     const comments = data.comments || [];
+
     if (newCard || (isCurrentAuthor && comments.length > 0)) {
       return true;
     }
@@ -540,9 +541,9 @@ class DiscussionEntry extends Component {
         >
           <div
             className={css(
-              styles.highlight,
+              styles.mainContent,
               styles.metaData,
-              this.state.highlight && styles.active
+              this.state.highlight && styles.highlight
             )}
           >
             {!this.state.removed ? (
@@ -735,12 +736,8 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "10px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 12,
-    },
   },
   content: {
     width: "100%",
@@ -765,23 +762,25 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "100%",
-    paddingTop: 2,
     boxSizing: "border-box",
     display: "table-cell",
     height: "100%",
   },
-  highlight: {
+  mainContent: {
     width: "100%",
+    padding: "10px 10px 8px 8px",
     boxSizing: "border-box",
+    marginLeft: 2,
+  },
+  highlight: {
+    padding: "10px 10px 10px 15px",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     borderRadius: 5,
-    padding: "0px 10px 10px 15px",
+    marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
       paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
-    },
-    "@media only screen and (max-width: 415px)": {
-      paddingRight: 0,
     },
   },
   hidden: {
@@ -815,9 +814,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       width: 35,
     },
-  },
-  active: {
-    backgroundColor: colors.LIGHT_BLUE(0.2),
   },
   viewMoreContainer: {
     width: "100%",

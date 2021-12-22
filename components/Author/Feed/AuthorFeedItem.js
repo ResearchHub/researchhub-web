@@ -24,7 +24,6 @@ const AuthorFeedItem = ({
   itemType,
   itemIndex,
   paperVoteCallback,
-  isSmallScreen = false,
 }) => {
   const getCardHTML = ({ item, itemType }) => {
     const doc = getDocFromItem(item, itemType);
@@ -79,7 +78,6 @@ const AuthorFeedItem = ({
             <DiscussionEntry
               key={`thread-${doc.id}-${item.id}`}
               data={data}
-              noVote={isSmallScreen}
               hostname={process.env.HOST}
               currentAuthor={author}
               path={url}
