@@ -23,11 +23,6 @@ const AuthorActivityFeed = ({
   const [isLoading, setIsLoading] = useState(true);
   const [needsInitialFetch, setNeedsInitialFetch] = useState(false);
   const [currentAuthorId, setCurrentAuthorId] = useState(null);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  useEffect(() => {
-    setIsSmallScreen(window.innerWidth <= breakpoints.small.int);
-  }, []);
 
   // Reset state when author changes
   useEffect(() => {
@@ -97,7 +92,6 @@ const AuthorActivityFeed = ({
   const sortResults = (results) => {
     results.map((item) => {
       if (item?.contribution_type === "COMMENTER") {
-        console.log("item.created_date", item.created_date);
         const newestTimestamp = getNewestCommentTimestamp(item);
         item.created_date = newestTimestamp;
       }
@@ -143,7 +137,6 @@ const AuthorActivityFeed = ({
                 item={item}
                 paperVoteCallback={paperVoteCallback}
                 itemType={itemType}
-                isSmallScreen={isSmallScreen}
               />
             );
           })}
