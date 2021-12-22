@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { fetchHubFromSlug } from "~/pages/hubs/api/fetchHubFromSlugs.ts";
+import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlugs.ts";
 import LeaderboardPage from "../../LeaderboardPage";
 
 class Index extends Component {

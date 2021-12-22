@@ -1,6 +1,5 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
-import { fetchHubFromSlug } from "~/pages/hubs/api/fetchHubFromSlugs";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
@@ -8,6 +7,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
 import Error from "next/error";
+import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlugs";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
