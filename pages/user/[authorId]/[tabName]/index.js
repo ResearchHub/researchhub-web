@@ -777,7 +777,7 @@ function AuthorPage(props) {
     </div>
   );
 
-  const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub) => {
+  const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub, i) => {
     const { name } = hub;
     const sluggedName = buildSlug(hub.name ?? "");
     return (
@@ -787,6 +787,7 @@ function AuthorPage(props) {
           href={`/hubs/${sluggedName}`}
           target="_blank"
         >
+          {i > 0 && ", "}
           {name}
         </a>
       </Link>
@@ -1069,6 +1070,7 @@ const styles = StyleSheet.create({
     textDecoration: "underline",
     fontWeight: 500,
     fontSize: 14,
+    textTransform: "capitalize",
     color: colors.BLACK(0.8),
     ":hover": {
       color: colors.BLUE(),
