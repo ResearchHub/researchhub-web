@@ -13,7 +13,7 @@ const AuthorDetailsPlaceholder = ({ color = "#EFEFEF", rows = 1 }) => {
         <RectShape
           className={css(styles.textRow)}
           color={color}
-          style={{ width: "25%", height: "14px" }}
+          style={{ width: "25%", height: "20px" }}
         />
         <RectShape className={css(styles.textRow)} color={color} />
         <RectShape className={css(styles.textRow)} color={color} />
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     padding: "38px 0px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
-      alignItems: "center",
       padding: "40px 0px",
     },
   },
@@ -38,7 +37,6 @@ const styles = StyleSheet.create({
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column",
-      alignItems: "center",
       display: "flex",
     },
   },
@@ -53,12 +51,13 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 10,
       width: "55%",
+      marginLeft: 0,
     },
   },
   round: {
-    height: 120,
-    width: 120,
-    minWidth: 120,
+    height: 115,
+    width: 115,
+    minWidth: 115,
   },
   avatarWrapper: {},
 });

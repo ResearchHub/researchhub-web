@@ -807,7 +807,7 @@ function AuthorPage(props) {
       <ComponentWrapper>
         <UserInfoModal />
         <ReactPlaceholder
-          ready={fetchedUser}
+          ready={true /*fetchedUser*/}
           showLoadingAnimation
           customPlaceholder={<AuthorDetailsPlaceholder />}
         >
@@ -858,32 +858,35 @@ function AuthorPage(props) {
                     {author?.headline?.title}
                   </div>
                   <div className={css(styles.reputationContainer)}>
+                    {!isEmpty(authorIsEditorOf) && (
+                      <div className={css(styles.reputationContainer)}>
+                        <div className={css(styles.editorLabelWrap)}>
+                          <img
+                            height={20}
+                            src="/static/icons/editor-star.png"
+                            width={20}
+                            className={css(styles.editorImg)}
+                          />
+                          <span
+                            style={{
+                              color: colors.BLACK(0.9),
+                              fontWeight: 400,
+                              marginLeft: 8,
+                              marginRight: 10,
+                              fontSize: 14,
+                            }}
+                          >
+                            {"Editor of:"}
+                          </span>
+                          {authorIsEditorOf}
+                        </div>
+                      </div>
+                    )}
                     {authorEducationSummary}
                     {authorReputation}
                     {authorRscBalance}
                   </div>
                 </div>
-                {!isEmpty(authorIsEditorOf) && (
-                  <div className={css(styles.reputationContainer)}>
-                    <div className={css(styles.editorLabelWrap)}>
-                      <Image
-                        height={20}
-                        src="/static/icons/editor-star.png"
-                        width={20}
-                      />
-                      <span
-                        style={{
-                          color: colors.BLACK(1),
-                          fontWeight: 500,
-                          marginLeft: 8,
-                        }}
-                      >
-                        {"Editor of: "}
-                      </span>
-                      {authorIsEditorOf}
-                    </div>
-                  </div>
-                )}
                 {authorDescription}
                 {!doesAuthorHaveUser ? (
                   <ClaimAuthorPopoverLabel
@@ -1053,20 +1056,30 @@ const styles = StyleSheet.create({
     },
   },
   editorLabelWrap: {
-    color: colors.LIGHT_GREY_TEXT,
-    display: "flex",
-    width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      paddingRight: 0,
-      justifyContent: "center",
-      textAlign: "center",
-      marginBottom: 15,
-    },
+    // color: colors.LIGHT_GREY_TEXT,
+    // display: "flex",
+    // width: "100%",
+    // [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    //   paddingRight: 0,
+    //   justifyContent: "center",
+    //   textAlign: "center",
+    //   marginBottom: 15,
+    // },
+  },
+  editorImg: {
+    verticalAlign: "-3px",
   },
   hubLinkTag: {
-    color: colors.TEXT_DARKER_GREY,
+    textDecoration: "unset",
+    cursor: "pointer",
+    color: "unset",
     textDecoration: "underline",
-    marginLeft: 8,
+    fontWeight: 500,
+    fontSize: 14,
+    color: colors.BLACK(0.8),
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
   moderatorIcon: {
     color: "inherit",
@@ -1454,7 +1467,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   reputationContainer: {
-    display: "flex",
+    display: "block",
     alignItems: "center",
     width: "100%",
     lineHeight: "26px",
@@ -1462,6 +1475,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "center",
       display: "block",
+      // lineHeight: "16px",
     },
     "@media only screen and (max-width: 440px)": {
       flexDirection: "column",
@@ -1476,7 +1490,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       justifyContent: "initial",
-      marginBottom: 5,
+      // marginBottom: 5,
     },
   },
   reputationTitle: {
@@ -1515,9 +1529,11 @@ const styles = StyleSheet.create({
   rhIcon: {
     width: 13,
     paddingLeft: 1.5,
+    verticalAlign: "-3px",
   },
   rscIcon: {
     width: 18,
+    verticalAlign: "-3px",
   },
   orcidButton: {
     width: 180,
