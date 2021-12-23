@@ -35,6 +35,8 @@ import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
+import { breakpoints } from "~/config/themes/screen";
+
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
@@ -920,11 +922,15 @@ var styles = StyleSheet.create({
     },
   },
   discussionTitle: {
+    fontSize: 26,
+    margin: 0,
+    fontWeight: 400,
     display: "flex",
     alignItems: "center",
-    fontSize: 22,
-    fontWeight: 500,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 22,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 20,
     },
   },

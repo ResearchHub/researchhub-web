@@ -40,6 +40,7 @@ import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { sendAmpEvent } from "~/config/fetch";
 import { SUMMARY_PLACEHOLDER } from "~/config/constants";
 import { isDevEnv } from "~/config/utils/env";
+import { breakpoints } from "~/config/themes/screen";
 
 class SummaryTab extends Component {
   constructor(props) {
@@ -732,9 +733,6 @@ var styles = StyleSheet.create({
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 20,
-    },
   },
   hidden: {
     display: "none",
@@ -746,8 +744,8 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   abstractContainer: {
-    fontSize: 15,
-    lineHeight: 2,
+    fontSize: 16,
+    lineHeight: "25px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
     "@media only screen and (max-width: 967px)": {
@@ -801,20 +799,32 @@ var styles = StyleSheet.create({
     },
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 500,
+    margin: 0,
+    fontSize: 26,
+    marginBottom: 10,
+    fontWeight: 400,
     color: colors.BLACK(),
     display: "flex",
-    margin: 0,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 967px)": {
-      justifyContent: "space-between",
-      width: "100%",
-      marginBottom: 20,
+    // "@media only screen and (max-width: 967px)": {
+    //   justifyContent: "space-between",
+    //   width: "100%",
+    //   marginBottom: 20,
+    // },
+
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 22,
     },
-    "@media only screen and (max-width: 500px)": {
-      flexDirection: "column",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 20,
     },
+
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 22,
+    },
+    // "@media only screen and (max-width: 500px)": {
+    //   flexDirection: "column",
+    // },
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
