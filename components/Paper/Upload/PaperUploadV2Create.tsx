@@ -8,7 +8,7 @@ import {
   FormErrorState,
   FormState,
 } from "./types/UploadComponentTypes";
-import { css } from "aphrodite";
+import { StyleSheet, css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { getIsFormValid } from "./util/getIsFormValid";
@@ -318,6 +318,7 @@ function PaperuploadV2Create({
       <div
         className={css(
           formGenericStyles.pageContent,
+          styles.noScroll,
           isPaperForHypothesis && formGenericStyles.noBorder
         )}
       >
@@ -457,6 +458,12 @@ function PaperuploadV2Create({
     </form>
   );
 }
+
+const styles = StyleSheet.create({
+  noScroll: {
+    overflow: "visible",
+  },
+});
 
 const mapStateToProps = (state: any) => ({
   authRedux: state.auth,
