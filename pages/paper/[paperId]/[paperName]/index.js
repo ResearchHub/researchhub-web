@@ -1,7 +1,7 @@
 import { connect, useDispatch, useStore } from "react-redux";
 import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { StyleSheet, css } from "aphrodite";
-import { useEffect, useState, Fragment, useMemo } from "react";
+import { useEffect, useState, Fragment, useMemo, useRef } from "react";
 import { useRouter } from "next/router";
 import { Waypoint } from "react-waypoint";
 import * as Sentry from "@sentry/browser";
@@ -133,6 +133,7 @@ const Paper = ({
   const currUserID = auth?.user?.id ?? null;
   const isSubmitter = uploaded_by && uploaded_by?.id === currUserID;
   const isEditorOfHubs = isUserEditorOfHubs({ currUserID, hubs });
+  const commentsRef = useRef(null);
 
   const structuredDataForSEO = useMemo(
     () => buildStructuredDataForSEO(),
@@ -156,6 +157,20 @@ const Paper = ({
       fetchFreshData(paper);
     }
   }, [fetchFreshDataStatus, paper]);
+
+  useEffect(() => {
+    if (!process.browser) return;
+
+    const idx = window.location.hash.indexOf("#comments");
+    if (idx > -1 && commentsRef.current) {
+      const elem = commentsRef.current;
+      const pos = elem.getBoundingClientRect().top + window.scrollY;
+      window.scroll({
+        top: pos,
+        behavior: "smooth",
+      });
+    }
+  }, [commentsRef.current]);
 
   if (killswitch("paperSummary")) {
     let summaryVoteChecked = false;
@@ -492,7 +507,7 @@ const Paper = ({
                 bottomOffset={"95%"}
               >
                 <div className={css(styles.space)}>
-                  <a name="comments" />
+                  <a name="comments" ref={commentsRef} />
                   {
                     <DiscussionTab
                       hostname={process.env.HOST}
