@@ -25,10 +25,6 @@ class EditHubModal extends Component {
       hubDescription: "",
       hubName: "",
       error: false,
-      categories:
-        this.props.categories && this.props.categories.results
-          ? this.props.categories.results
-          : [],
     };
     this.state = {
       ...this.initialState,
@@ -169,10 +165,10 @@ class EditHubModal extends Component {
   };
 
   render() {
-    const { modals } = this.props;
-    const categories = this.props.categories.map((elem) => {
-      return { value: elem.id, label: elem.category_name };
-    });
+    const { categories, modals } = this.props;
+    const categoryOptions = categories
+      .filter((elem) => elem.category_name !== "Trending")
+      .map((elem) => ({ value: elem.id, label: elem.category_name }));
     const hub = modals.editHubModal.hub;
     let image;
     let name;
@@ -228,7 +224,7 @@ class EditHubModal extends Component {
             labelStyle={styles.labelStyle}
             isMulti={false}
             id={"hubCategory"}
-            options={categories}
+            options={categoryOptions}
             onChange={this.handleInputChange}
             error={this.state.error && this.state.error}
           />
@@ -318,7 +314,6 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => ({
   modals: state.modals,
-  categories: state.hubs.categories,
 });
 
 const mapDispatchToProps = {
