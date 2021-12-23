@@ -330,6 +330,9 @@ class Editor extends Component {
               <button className="ql-image" />
               <button className="ql-video"></button>
             </span>
+            <span class="ql-formats">
+              <button class="ql-clean"></button>
+            </span>
           </Fragment>
         )}
       </div>
