@@ -195,7 +195,7 @@ class Index extends Component {
         </div>
         <div>
           <AddHubModal addHub={this.addNewHubToState} categories={categories} />
-          <EditHubModal editHub={this.editHub} />
+          <EditHubModal editHub={this.editHub} categories={categories} />
           <Message />
           <Head
             title={"Hubs on Researchhub"}
