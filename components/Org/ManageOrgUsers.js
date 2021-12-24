@@ -18,7 +18,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { getOrgUserCount } from "./utils/orgHelper";
 import Loader from "~/components/Loader/Loader";
 import DropdownButton from "~/components/Form/DropdownButton";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
   const dropdownOpts = [
@@ -71,7 +71,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       } catch (error) {
         setMessage("Failed to fetch data");
         showMessage({ show: true, error: true });
-        captureError({
+        captureEvent({
           error,
           msg: "Failed to fetch org users",
           data: { org },
@@ -116,7 +116,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
     } catch (error) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to invite user",
         data: { org, userToBeInvitedEmail },
@@ -174,7 +174,7 @@ const ManageOrgUsers = ({ currentUser, org, setMessage, showMessage }) => {
       } catch (error) {
         setMessage("Failed to update permission");
         showMessage({ show: true, error: true });
-        captureError({
+        captureEvent({
           error,
           msg: "Failed to update user permission",
           data: { org },

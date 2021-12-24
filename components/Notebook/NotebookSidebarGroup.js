@@ -5,7 +5,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "./config/notebookConstants";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import { css, StyleSheet } from "aphrodite";
@@ -39,7 +39,7 @@ const NotebookSidebarGroup = ({
     } catch (error) {
       setMessage("You do not have permission to create note");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to create note",
         data: { groupKey, orgSlug: currentOrg.slug },
