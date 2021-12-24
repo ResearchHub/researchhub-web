@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "30px 40px",
-    width: 1100,
+    width: 1280,
     justifyContent: "center",
     "@media only screen and (max-width: 767px)": {
       borderSpacing: "0",
@@ -754,7 +754,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (min-width: 1024px)": {
       width: "unset",
-      maxWidth: 700,
+      maxWidth: 860,
       marginRight: 30,
     },
   },
