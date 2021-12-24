@@ -7,7 +7,7 @@ import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import OrgCoverImgModal from "~/components/Org/OrgCoverImgModal";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import { Helpers } from "@quantfive/js-web-config";
 
 const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
@@ -42,7 +42,7 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
       } else {
         setMessage("Failed to update org");
         showMessage({ show: true, error: true });
-        captureError({
+        captureEvent({
           msg: "Could not update organization",
           data: { org, orgName },
         });
@@ -50,7 +50,7 @@ const ManageOrgDetails = ({ org, setMessage, showMessage, onOrgChange }) => {
     } catch (error) {
       setMessage("Failed to update org");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to update organization",
         data: { org, orgName },

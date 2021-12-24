@@ -36,7 +36,7 @@ import {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 type ComponentProps = {
   authRedux: any;

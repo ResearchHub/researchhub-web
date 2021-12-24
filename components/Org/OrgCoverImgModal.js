@@ -1,6 +1,6 @@
 import { useState } from "react";
 import AvatarUpload from "~/components/AvatarUpload";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import Button from "~/components/Form/Button";
@@ -47,7 +47,7 @@ const OrgCoverImgModal = ({
     } catch (error) {
       setMessage("Failed to set image");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to set org image",
         data: { picture, orgId },

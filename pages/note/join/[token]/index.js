@@ -10,7 +10,7 @@ import colors from "~/config/themes/colors";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();
@@ -26,7 +26,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
         setInvite(invite);
         setIsLoading(false);
       } catch (error) {
-        captureError({
+        captureEvent({
           error,
           msg: "Failed to fetch invite",
           data: {
@@ -60,7 +60,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
         `/${invite.note.organization.slug}/notebook/${invite.note.id}`
       );
     } catch (error) {
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to accept invite",
         data: {

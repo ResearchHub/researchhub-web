@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 
-export const captureError = ({ error, msg = null, tags = {}, data = {} }) => {
+export const captureEvent = ({ error, msg = null, tags = {}, data = {} }) => {
   if (error) {
     Sentry.withScope((scope) => {
       scope.setTags(tags);
@@ -10,7 +10,6 @@ export const captureError = ({ error, msg = null, tags = {}, data = {} }) => {
 
       // Overriding error message but maintaining the original
       if (msg) {
-        // scope.setExtra("exceptionMessage", error.message);
         error.message = `${msg} (Exception: ${error.message})`;
       }
 

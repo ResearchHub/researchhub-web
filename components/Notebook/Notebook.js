@@ -5,7 +5,7 @@ import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import withWebSocket from "~/components/withWebSocket";
 import { Helpers } from "@quantfive/js-web-config";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import {
@@ -83,7 +83,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
         setOrganizations(userOrgs);
         orgsFetched.current = true;
       } catch (error) {
-        captureError({
+        captureEvent({
           error,
           msg: "Failed to fetch user orgs",
           data: { noteId, orgSlug, userNoteAccess, userId: user.id },
@@ -161,14 +161,14 @@ const Notebook = ({ auth, user, wsResponse }) => {
         setTitles(updatedTitles);
       } else {
         setError({ statusCode: response.status });
-        captureError({
+        captureEvent({
           error,
           msg: "Failed to fetch notes",
           data: { orgSlug, userId: user.id },
         });
       }
     } catch (error) {
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to fetch notes",
         data: { orgSlug, userId: user.id },
@@ -191,14 +191,14 @@ const Notebook = ({ auth, user, wsResponse }) => {
           perms = await Helpers.parseJSON(response);
           setCurrentNotePerms({ forNote: noteId, list: perms });
         } else {
-          captureError({
+          captureEvent({
             msg: "Could not fetch note permissions",
             data: { noteId, userId: user?.id },
           });
           setError({ statusCode: response.status });
         }
       } catch (error) {
-        captureError({
+        captureEvent({
           error,
           msg: "Failed to fetch note permissions",
           data: { noteId, userId: user?.id },
@@ -220,7 +220,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
           note = await Helpers.parseJSON(response);
           setCurrentNote(note);
         } else {
-          captureError({
+          captureEvent({
             statusCode: response.status,
             msg: "could not fetch note",
             data: { noteId, orgSlug, userId: user?.id },
@@ -229,7 +229,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
         }
       } catch (error) {
         console.log(error);
-        captureError({
+        captureEvent({
           statusCode: 500,
           msg: "Failed to fetch note",
           data: { noteId, orgSlug, userId: user?.id },
@@ -319,7 +319,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
         setCurrentOrganization(org);
       }
     } catch (error) {
-      captureError({
+      captureEvent({
         msg: "failed to fetch org",
         data: { noteId, orgSlug, orgId, userId: user.id },
       });
