@@ -50,7 +50,7 @@ import { updateExistingPaper } from "./api/updateExistingPaper";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 const AddAuthorModal = dynamic(() => import("../../Modals/AddAuthorModal"));
 
 type ComponentProps = {

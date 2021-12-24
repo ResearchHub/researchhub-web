@@ -13,7 +13,7 @@ import { CKEditor, CKEditorContext } from "@ckeditor/ckeditor5-react";
 import { MessageActions } from "~/redux/message";
 import { PERMS } from "~/components/Notebook/config/notebookConstants";
 import { breakpoints } from "~/config/themes/screen";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { getUserNoteAccess } from "~/components/Notebook/utils/notePermissions";
@@ -60,7 +60,7 @@ const saveData = async ({ editor, noteId, onSaveSuccess, onSaveFail }) => {
 
     return onSaveFail && onSaveFail(contentResponse || noteResponse);
   } catch (error) {
-    captureError({
+    captureEvent({
       error,
       msg: "Failed to save content",
       data: { noteId },
@@ -103,7 +103,7 @@ const ELNEditor = ({
       setMessage("You do not have permission to edit this document");
       showMessage({ show: true, error: true });
     } else {
-      captureError({
+      captureEvent({
         msg: "Could not save content",
         data: { currentNote },
       });

@@ -5,7 +5,7 @@ import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "./config/notebookConstants";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import {
@@ -52,7 +52,7 @@ const NoteOptionsMenuButton = ({
         } catch (error) {
           setMessage("Failed to make private");
           showMessage({ show: true, error: true });
-          captureError({
+          captureEvent({
             error,
             msg: "Failed to make private",
             data: { noteId, currentOrg },
@@ -79,7 +79,7 @@ const NoteOptionsMenuButton = ({
         } catch (error) {
           setMessage("Failed to update permission");
           showMessage({ show: true, error: true });
-          captureError({
+          captureEvent({
             error,
             msg: "Failed to update permission",
             data: { noteId, currentOrg },
@@ -176,7 +176,7 @@ const NoteOptionsMenuButton = ({
             } catch (error) {
               setMessage("Failed to delete note");
               showMessage({ show: true, error: true });
-              captureError({
+              captureEvent({
                 error,
                 msg: "Failed to delete note",
                 data: { noteId, currentOrg },

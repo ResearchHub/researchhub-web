@@ -1,4 +1,4 @@
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 import { buildSlug } from "../../../../config/utils/document";
 import { FormState } from "../types/UploadComponentTypes";
@@ -41,9 +41,9 @@ export async function uploadNewPaper({
       : buildSlug(paper_title ? paper_title : title);
     onSuccess({ paperID, paperName });
   } else {
-    captureError({
+    captureEvent({
       msg: "Failed to upload paper",
-      data: { response },
+      data: { response, uploadedPaper, payloadTitle, payloadPaperTitle },
     });
     onError(resPayload);
   }
