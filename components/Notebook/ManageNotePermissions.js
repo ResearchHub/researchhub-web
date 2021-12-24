@@ -17,7 +17,7 @@ import Loader from "~/components/Loader/Loader";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import colors, { iconColors, genericCardColors } from "~/config/themes/colors";
 import DropdownButton from "~/components/Form/DropdownButton";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import {
   getUserNoteAccess,
   isNoteSharedWithUser,
@@ -145,7 +145,7 @@ const ManageNotePermissions = ({
     } catch (error) {
       setMessage("Failed to invite user");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to invite user",
         data: { noteId, currentOrg, userId: currentUser?.id },
@@ -166,7 +166,7 @@ const ManageNotePermissions = ({
       const invitedList = await fetchInvitedNoteUsers({ noteId });
       return Promise.resolve(invitedList);
     } catch (error) {
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to fetch invited list",
         data: { noteId, currentOrg, userId: currentUser?.id },
@@ -198,7 +198,7 @@ const ManageNotePermissions = ({
     } catch (error) {
       setMessage("Failed to change permission");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to change permission",
         data: { noteId, currentOrg, userIdToRemove: user.id },
@@ -217,7 +217,7 @@ const ManageNotePermissions = ({
     } catch (error) {
       setMessage("Failed to change permission");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to change permission",
         data: { noteId, currentOrg, orgToRemove: org },
@@ -245,7 +245,7 @@ const ManageNotePermissions = ({
     } catch (error) {
       setMessage("Failed to update permission");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to update permission",
         data: {
@@ -494,6 +494,8 @@ const ManageNotePermissions = ({
 const styles = StyleSheet.create({
   container: {
     width: 450,
+    maxHeight: "60vh",
+    overflowY: "scroll",
   },
   loaderWrapper: {
     width: 100,
@@ -527,7 +529,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     width: "60%",
-    overflowX: "scroll",
+    overflowX: "hidden",
   },
   permDropdown: {
     marginRight: 30,

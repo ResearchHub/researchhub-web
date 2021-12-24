@@ -11,7 +11,7 @@ import OrgAvatar from "~/components/Org/OrgAvatar";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
 import HeadComponent from "~/components/Head";
-import { captureException } from "~/config/utils/error";
+import { captureException } from "~/config/utils/events";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();

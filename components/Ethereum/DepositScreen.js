@@ -18,7 +18,7 @@ import Loader from "../Loader/Loader";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { INFURA_ENDPOINT } from "~/config/constants";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 // Constants
 const RSCContractAddress =
@@ -110,7 +110,7 @@ export function DepositScreen(props) {
           props.onSuccess && props.onSuccess(tx.hash);
         })
         .catch((error) => {
-          captureError({
+          captureEvent({
             error,
             msg: "Deposit backend error",
             data: {
