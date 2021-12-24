@@ -745,7 +745,7 @@ var styles = StyleSheet.create({
   },
   abstractContainer: {
     fontSize: 16,
-    lineHeight: "25px",
+    lineHeight: "24px",
     whiteSpace: "pre-line",
     wordBreak: "break-word",
     "@media only screen and (max-width: 967px)": {
