@@ -690,6 +690,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     width: "100%",
+    marginTop: 30,
   },
   container: {
     marginLeft: "auto",
@@ -697,8 +698,9 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "30px 40px",
+    width: 1100,
+    justifyContent: "center",
     "@media only screen and (max-width: 767px)": {
-      width: "100%",
       borderSpacing: "0",
       display: "flex",
       flexDirection: "column",
@@ -706,15 +708,12 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 768px)": {
       display: "flex",
       marginTop: 16,
-      width: "90%",
     },
     "@media only screen and (min-width: 1024px)": {
-      width: "100%",
-      display: "table",
+      display: "flex",
+      margin: "0 auto",
     },
-    "@media only screen and (min-width: 1200px)": {
-      width: "90%",
-    },
+    "@media only screen and (min-width: 1200px)": {},
   },
   desktop: {
     display: "none",
@@ -745,6 +744,7 @@ const styles = StyleSheet.create({
     display: "table-cell",
     boxSizing: "border-box",
     position: "relative",
+    maxWidth: "initial",
     "@media only screen and (max-width: 767px)": {
       width: "100%",
     },
@@ -755,6 +755,7 @@ const styles = StyleSheet.create({
     "@media only screen and (min-width: 1024px)": {
       width: "unset",
       maxWidth: 700,
+      marginRight: 30,
     },
   },
   contentContainer: {
