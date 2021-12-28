@@ -99,12 +99,12 @@ class OrcidLoginPage extends Component {
               />
             </div>
             <div className={css(styles.headerContainer)}>
-              <React.Fragment>
+              <>
                 <h1 className={css(styles.header)}>We're almost done!</h1>
                 <p className={css(styles.description)}>
                   Confirm your email address to complete Sign in with Orcid.
                 </p>
-              </React.Fragment>
+              </>
             </div>
             <form onSubmit={this.submitEmail}>
               <FormInput

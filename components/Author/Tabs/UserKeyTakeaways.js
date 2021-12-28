@@ -73,10 +73,10 @@ const UserKeyTakeaways = ({ items, fetchItems, fetched, itemsNext }) => {
       customPlaceholder={<PaperPlaceholder color="#efefef" />}
     >
       {keytakeaways.length > 0 ? (
-        <React.Fragment>
+        <>
           <div className={css(styles.container)}>{keytakeaways}</div>
           {renderLoadMoreButton()}
-        </React.Fragment>
+        </>
       ) : (
         <EmptyState
           message={"User has not created any summaries"}

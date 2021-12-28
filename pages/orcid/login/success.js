@@ -35,9 +35,7 @@ class OrcidLoginSuccessPage extends Component {
               />
             </div>
             <div className={css(styles.headerContainer)}>
-              <React.Fragment>
-                <h1 className={css(styles.header)}>Successfully logged in.</h1>
-              </React.Fragment>
+              <h1 className={css(styles.header)}>Successfully logged in.</h1>
             </div>
           </div>
         </div>
