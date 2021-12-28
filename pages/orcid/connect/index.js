@@ -2,8 +2,7 @@ import { Component } from "react";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Router, { withRouter } from "next/router";
-import jwt from "jsonwebtoken";
-import jwksClient from "jwks-rsa";
+import jwt_decode from "jwt-decode";
 import Modal from "react-modal";
 
 import { ORCID_CLIENT_ID, ORCID_JWKS_URI } from "../../../config/constants";
@@ -12,11 +11,6 @@ import { modalStyles } from "~/config/themes/styles";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 
 import { AuthActions, AuthConstants } from "../../../redux/auth";
-
-const client = jwksClient({
-  strictSsl: false, // Default true
-  jwksUri: ORCID_JWKS_URI,
-});
 
 class OrcidConnectPage extends Component {
   constructor(props) {
@@ -36,6 +30,7 @@ class OrcidConnectPage extends Component {
   parseJwtFromUrl() {
     const { asPath } = this.props.router;
     this.path = asPath;
+
     if (this.path) {
       const jwtIdToken = this.parseJwtIdToken();
       if (jwtIdToken && jwtIdToken !== "") {
@@ -62,7 +57,9 @@ class OrcidConnectPage extends Component {
               query: { success: "true" },
             });
           } else {
-            this.setState({ error: "ORCID connect failed" });
+            this.setState({
+              error: "ORCID connect failed, please refresh and try again.",
+            });
           }
         })
         .catch(console.error);
@@ -74,26 +71,8 @@ class OrcidConnectPage extends Component {
   }
 
   async parseJwtIfValid(token) {
-    await jwt.verify(
-      token,
-      getKey,
-      {
-        alg: ["RS256"],
-        iss: ["https://orcid.org"],
-        aud: ORCID_CLIENT_ID,
-        gracePeriod: 15 * 60, //15 mins skew allowed
-      },
-      (err, decoded) => {
-        if (!err) this.setState({ orcid: decoded["sub"] });
-      }
-    );
-
-    function getKey(header, callback) {
-      client.getSigningKey(header.kid, (err, key) => {
-        const pubKey = key.getPublicKey();
-        callback(null, pubKey);
-      });
-    }
+    const payload = jwt_decode(token);
+    this.setState({ orcid: payload["sub"] });
   }
 
   parseAccessToken() {
