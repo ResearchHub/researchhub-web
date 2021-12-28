@@ -99,10 +99,10 @@ const UserSummaries = ({
       customPlaceholder={<PaperPlaceholder color="#efefef" />}
     >
       {allSummaries.length > 0 ? (
-        <React.Fragment>
+        <>
           <div className={css(styles.container)}>{allSummaries}</div>
           {renderLoadMoreButton()}
-        </React.Fragment>
+        </>
       ) : (
         <EmptyState
           message={"User has not created any summaries"}

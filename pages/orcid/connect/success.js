@@ -42,12 +42,12 @@ class OrcidConnectSuccessPage extends Component {
               />
             </div>
             <div className={css(styles.headerContainer)}>
-              <React.Fragment>
+              <>
                 <h1 className={css(styles.header)}>Success!</h1>
                 <p className={css(styles.description)}>
                   Your author profile is now verified.
                 </p>
-              </React.Fragment>
+              </>
             </div>
           </div>
         </div>
