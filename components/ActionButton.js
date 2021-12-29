@@ -25,6 +25,7 @@ const ActionButton = (props) => {
     restore,
     uploadedById,
     isUploaderSuspended,
+    onAfterAction,
   } = props;
 
   function renderIcon() {
@@ -34,10 +35,6 @@ const ActionButton = (props) => {
       return iconNode;
     }
   }
-
-  const paperPageDeleteCallback = () => {
-    Router.back();
-  };
 
   if (isModerator) {
     return (
@@ -53,7 +50,7 @@ const ActionButton = (props) => {
         }}
         forceRender={true}
         onAction={onAction}
-        onRemove={paperPageDeleteCallback}
+        onAfterAction={onAfterAction}
       />
     );
   }
