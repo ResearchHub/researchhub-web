@@ -302,6 +302,8 @@ class PaperPageCard extends Component {
       paper,
       setFlag,
     } = this.props;
+
+    console.log(paper.uploaded_by);
     const { paper_title, title, uploaded_by } = paper || {};
     const uploadedById = uploaded_by && paper.uploaded_by.id;
     const isUploaderSuspended =
@@ -404,6 +406,7 @@ class PaperPageCard extends Component {
                 uploadedById={uploadedById}
                 isUploaderSuspended={isUploaderSuspended}
                 containerStyle={styles.moderatorContainer}
+                onAfterAction={this.removePaper}
                 iconStyle={styles.moderatorIcon}
                 actionType="user"
               />
