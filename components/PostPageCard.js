@@ -318,7 +318,8 @@ class PostPageCard extends Component {
       hubs,
     } = this.props;
 
-    const uploadedById = post && post.created_by && post.created_by.id;
+    const uploadedById =
+      post && post.created_by && post.created_by.author_profile.id;
     const isUploaderSuspended =
       post && post.created_by && post.created_by.is_suspended;
 
