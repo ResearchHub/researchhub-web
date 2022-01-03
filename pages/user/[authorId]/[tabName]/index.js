@@ -32,7 +32,6 @@ import ReactPlaceholder from "react-placeholder/lib";
 import AuthorDetailsPlaceholder from "~/components/Placeholders/AuthorDetailsPlaceholder";
 // Dynamic modules
 import dynamic from "next/dynamic";
-const ShareModal = dynamic(() => import("~/components/ShareModal"));
 const UserInfoModal = dynamic(() =>
   import("~/components/Modals/UserInfoModal")
 );
@@ -78,7 +77,6 @@ function AuthorPage(props) {
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
 
   // User External Links
-  const [openShareModal, setOpenShareModal] = useState(false);
   const [editFacebook, setEditFacebook] = useState(false);
   const [editLinkedin, setEditLinkedin] = useState(false);
   const [editTwitter, setEditTwitter] = useState(false);
@@ -727,13 +725,6 @@ function AuthorPage(props) {
     <div className={css(styles.socialLinks)}>
       {socialMediaLinkButtons}
       {orcidLinkButton}
-      <span
-        className={css(styles.socialMedia, styles.shareLink)}
-        onClick={() => setOpenShareModal(true)}
-        data-tip={"Share Profile"}
-      >
-        {icons.link}
-      </span>
     </div>
   );
 
@@ -914,12 +905,6 @@ function AuthorPage(props) {
         </ComponentWrapper>
       </div>
       <div className={css(styles.contentContainer)}>{tabContents}</div>
-      <ShareModal
-        close={() => setOpenShareModal(false)}
-        isOpen={openShareModal}
-        title={"Share Author Profile"}
-        url={`${process.env.HOST}${router.asPath}`}
-      />
       <AvatarUpload
         isOpen={avatarUploadIsOpen}
         closeModal={onCloseAvatarModal}
