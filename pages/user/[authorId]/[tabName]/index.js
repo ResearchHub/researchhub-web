@@ -777,15 +777,11 @@ function AuthorPage(props) {
   );
 
   const authorIsEditorOf = (author?.is_hub_editor_of ?? []).map((hub, i) => {
-    const { name } = hub;
-    const sluggedName = buildSlug(hub.name ?? "");
+    const { name, slug } = hub;
+    const sluggedName = buildSlug(hub.slug ?? "");
     return (
-      <Link href={"/hubs/[slug]"} as={`/hubs/${sluggedName}`}>
-        <a
-          className={css(styles.hubLinkTag)}
-          href={`/hubs/${sluggedName}`}
-          target="_blank"
-        >
+      <Link href={"/hubs/[slug]"} as={`/hubs/${slug}`}>
+        <a className={css(styles.hubLinkTag)}>
           {i > 0 && ", "}
           {name}
         </a>
