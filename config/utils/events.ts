@@ -1,6 +1,18 @@
 import * as Sentry from "@sentry/nextjs";
 
-export const captureEvent = ({ error, msg = null, tags = {}, data = {} }) => {
+type Args = {
+  data?: any;
+  error?: any;
+  msg?: string | null;
+  tags?: any;
+};
+
+export const captureEvent = ({
+  data = {},
+  error,
+  msg = null,
+  tags = {},
+}: Args) => {
   if (error) {
     Sentry.withScope((scope) => {
       scope.setTags(tags);
