@@ -498,6 +498,9 @@ class CommentEntry extends Component {
       this.state.replies.length < 1
         ? this.props.comment.replies
         : this.state.replies;
+    replies = replies.sort(
+      (a, b) => new Date(a.created_date) - new Date(b.created_date)
+    );
     return replies.map((reply, i) => {
       return (
         <ReplyEntry
