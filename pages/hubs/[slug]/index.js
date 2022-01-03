@@ -33,7 +33,11 @@ class Index extends Component {
       .then((body) => body.results[0]);
 
     if (!currentHub) {
-      throw 404;
+      if (res) {
+        res.statusCode = 404;
+      }
+
+      return { error: true };
     }
 
     try {
@@ -104,7 +108,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.initialProps.initialFeed) {
+    if (!this.props.initialProps?.initialFeed) {
       this.fetchHubInfo(this.state.slug);
     }
   }
