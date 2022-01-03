@@ -8,17 +8,11 @@ import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
 import API from "~/config/api";
 import Error from "next/error";
-import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlugs";
+import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlug";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
-
-const DEFAULT_PROP = {
-  initialFeed: null,
-  leaderboardFeed: null,
-  initialHubList: null,
-};
 
 class Index extends Component {
   static async getInitialProps(ctx) {
@@ -86,7 +80,11 @@ class Index extends Component {
         slug: null,
         name: null,
         currentHub,
-        initialProps: { ...DEFAULT_PROP },
+        initialProps: {
+          initialFeed: null,
+          leaderboardFeed: null,
+          initialHubList: null,
+        },
         error: true,
       };
     }
