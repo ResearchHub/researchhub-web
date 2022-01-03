@@ -11,7 +11,7 @@ export type UnifiedCard = ReactElement<
 > | null;
 
 export function getDocumentCard({
-  cardFormattedTime,
+  docSetFetchedTime,
   hasSubscribed,
   isLoggedIn,
   isOnMyHubsTab,
@@ -87,7 +87,7 @@ export function getDocumentCard({
         }
       }
     ),
-    cardFormattedTime,
+    docSetFetchedTime,
   ];
 }
 

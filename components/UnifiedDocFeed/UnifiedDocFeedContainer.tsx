@@ -62,7 +62,7 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     serverLoadedData?.results || []
   );
-  const [cardFormattedTime, setCardFormattedTime] = useState<number>(
+  const [docSetFetchedTime, setDocSetFetchedTime] = useState<number>(
     Date.now()
   );
 
@@ -194,7 +194,7 @@ function UnifiedDocFeedContainer({
                 localPage: 1,
                 page: 1,
               });
-              setCardFormattedTime(Date.now());
+              setDocSetFetchedTime(Date.now());
               router.push(
                 {
                   pathname: routerPathName,
@@ -210,8 +210,8 @@ function UnifiedDocFeedContainer({
   );
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
-  const [cards, cardFormattedTimeCheck] = getDocumentCard({
-    cardFormattedTime,
+  const [cards, docSetFetchedTimeCheck] = getDocumentCard({
+    docSetFetchedTime,
     hasSubscribed,
     isLoggedIn,
     isOnMyHubsTab,
@@ -224,9 +224,9 @@ function UnifiedDocFeedContainer({
   const areCardsReadyToBeRendered =
     unifiedDocuments.length === 0
       ? true
-      : !isLoading && cardFormattedTimeCheck === cardFormattedTime;
+      : !isLoading && docSetFetchedTimeCheck === docSetFetchedTime;
 
-      return (
+  return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       {!hasSubscribed ? (
         <div>
