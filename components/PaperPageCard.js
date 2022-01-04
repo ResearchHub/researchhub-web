@@ -609,7 +609,6 @@ class PaperPageCard extends Component {
     } = this.props;
     const { fetching, previews, previewAvailable, title } = this.state;
     const { paper_title } = paper;
-    const promotedScore = score;
     const formattedPaperTitle =
       !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
 
@@ -642,7 +641,7 @@ class PaperPageCard extends Component {
               <meta property="commentCount" content={paper.discussion_count} />
               <div className={css(styles.voting)}>
                 <VoteWidget
-                  score={promotedScore}
+                  score={score}
                   onUpvote={upvote}
                   onDownvote={downvote}
                   selected={selectedVoteType}
@@ -684,7 +683,7 @@ class PaperPageCard extends Component {
                   <div className={css(styles.rightColumn, styles.mobile)}>
                     <div className={css(styles.votingMobile)}>
                       <VoteWidget
-                        score={promotedScore}
+                        score={score}
                         onUpvote={upvote}
                         onDownvote={downvote}
                         selected={selectedVoteType}
