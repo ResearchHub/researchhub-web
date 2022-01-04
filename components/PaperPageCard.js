@@ -608,8 +608,8 @@ class PaperPageCard extends Component {
       discussionCount,
     } = this.props;
     const { fetching, previews, previewAvailable, title } = this.state;
-    const { boost_amount, paper_title } = paper;
-    const promotedScore = score + boost_amount;
+    const { paper_title } = paper;
+    const promotedScore = score;
     const formattedPaperTitle =
       !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
 
