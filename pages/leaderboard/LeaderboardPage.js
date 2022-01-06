@@ -707,7 +707,7 @@ class Index extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   sidebarEntry: {
     fontSize: 16,
     fontWeight: 300,

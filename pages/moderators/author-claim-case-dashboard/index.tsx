@@ -1,7 +1,10 @@
-import { connect, useStore } from "react-redux";
 import { ReactElement } from "react";
-import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
 import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
+import { useStore } from "react-redux";
+import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/AuthorClaimCaseDashboard";
+import ContentPage from "~/components/ContentPage/ContentPage";
+import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
+import SideColumn from "~/components/Home/SideColumn";
 
 export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard
@@ -11,5 +14,17 @@ export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   if (!shouldRenderUI) {
     return null;
   }
-  return <AuthorClaimCaseDashboard />;
+
+  return (
+    <ContentPage
+      mainFeed={<AuthorClaimCaseDashboard />}
+      sidebar={
+        <SideColumn
+          listItems={<ModeratorDashboardSidebar />}
+          title={"Admin"}
+          ready={true}
+        />
+      }
+    />
+  );
 }

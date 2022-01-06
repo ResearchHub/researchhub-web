@@ -1,29 +1,28 @@
 import { ReactElement } from "react";
 import { useEffectCheckCredentials } from "~/components/Moderator/useEffectCheckCredentials";
 import { useStore } from "react-redux";
-import PermissionsDashboard from "~/components/PermissionsDashboard/PermissionsDashboard";
+import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
-import SideColumn from "~/components/Home/SideColumn";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
+import SideColumn from "~/components/Home/SideColumn";
 
-export default function PermissionsDashboardIndex(): ReactElement<
-  typeof PermissionsDashboard
+export default function EditorsDashboardIndex(): ReactElement<
+  typeof EditorsDashboard
 > | null {
   const reduxStore = useStore();
   const shouldRenderUI = useEffectCheckCredentials(reduxStore);
-
   if (!shouldRenderUI) {
     return null;
   }
 
   return (
     <ContentPage
-      mainFeed={<PermissionsDashboard />}
+      mainFeed={<EditorsDashboard />}
       sidebar={
         <SideColumn
           listItems={<ModeratorDashboardSidebar />}
-          ready={true}
           title={"Admin"}
+          ready={true}
         />
       }
     />
