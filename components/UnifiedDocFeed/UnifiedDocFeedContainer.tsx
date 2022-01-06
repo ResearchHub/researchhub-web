@@ -152,7 +152,7 @@ function UnifiedDocFeedContainer({
       },
       page: 1 /* when force updating, start from page 1 */,
     },
-    shouldEscape: isServerLoaded,
+    shouldEscape: false,
     updateOn: [docTypeFilter, hubID, isLoggedIn, subFilters],
   });
 
