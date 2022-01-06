@@ -213,6 +213,10 @@ const degrees = [
     label: "Bachelor of Technology - BTech",
   },
   {
+    value: "BVSc",
+    label: "Bachelor of Veterinary Science",
+  },
+  {
     value: "MArch",
     label: "Master of Architecture",
   },
@@ -295,6 +299,10 @@ const degrees = [
   {
     value: "PhD",
     label: "Doctor of Philosophy",
+  },
+  {
+    value: "DVM",
+    label: "Doctor of Veterinary Medicine",
   },
 ];
 
