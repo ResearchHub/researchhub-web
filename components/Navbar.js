@@ -80,22 +80,19 @@ const Navbar = (props) => {
   const isUserModerator = !isNullOrUndefined(user)
     ? Boolean(user.moderator)
     : false;
-  let dropdown;
-  let avatar;
+  const dropdownRef = useRef();
+  const avatarRef = useRef();
 
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
    */
   const handleOutsideClick = (e) => {
-    if (dropdown && !dropdown.contains(e.target)) {
+    if (
+      !dropdownRef.current?.contains(e.target) &&
+      !avatarRef.current?.contains(e.target)
+    ) {
       setOpenMenu(false);
-    }
-
-    if (avatar && avatar.contains(e.target)) {
-      // TODO: Is this doing what is intended? `avatar` is not a valid ref
-      // because AuthorAvatar is a function, not a class
-      e.stopPropagation();
     }
   };
 
@@ -498,7 +495,7 @@ const Navbar = (props) => {
               <div className={css(styles.userDropdown)}>
                 <div
                   className={css(styles.avatarContainer)}
-                  ref={(ref) => (avatar = ref)}
+                  ref={avatarRef}
                   onClick={toggleMenu}
                 >
                   <AuthorAvatar
@@ -543,7 +540,7 @@ const Navbar = (props) => {
                 {openMenu && (
                   <div
                     className={css(styles.dropdown)}
-                    ref={(ref) => (dropdown = ref)}
+                    ref={dropdownRef}
                     onClick={toggleMenu}
                   >
                     <Link
