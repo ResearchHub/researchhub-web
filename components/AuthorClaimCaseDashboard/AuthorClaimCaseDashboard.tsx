@@ -3,6 +3,7 @@ import { ReactElement, useState } from "react";
 import AuthorClaimCaseContainer from "./AuthorClaimCaseContainer";
 import AuthorClaimDashboardNavbar from "./AuthorClaimDashboardNavbar";
 import Head from "../Head";
+import { formColors } from "~/config/themes/colors";
 
 export const INNER_EL_WIDTH = 1276;
 
@@ -28,7 +29,6 @@ export default function AuthorClaimCaseDashboard(): ReactElement<"div"> {
 const styles = StyleSheet.create({
   authorClaimCaseDashboard: {
     alignItems: "center",
-    backgroundColor: "#FBFBFD",
     display: "flex",
     flexDirection: "column",
     height: "100vh",
