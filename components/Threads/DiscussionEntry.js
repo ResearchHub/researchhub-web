@@ -74,15 +74,24 @@ class DiscussionEntry extends Component {
   };
 
   shouldHighlight = () => {
-    const { newCard, currentAuthor, data } = this.props;
+    const { newCard, currentAuthor, data, context } = this.props;
     const isCurrentAuthor =
       currentAuthor?.id === data.created_by.author_profile.id;
     const comments = data.comments || [];
 
-    if (newCard || (isCurrentAuthor && comments.length > 0)) {
+    if (newCard) {
       return true;
+    } else if (isCurrentAuthor && context === "DOCUMENT") {
+      return true;
+    } else if (
+      isCurrentAuthor &&
+      context === "AUTHOR_PROFILE" &&
+      comments.length > 0
+    ) {
+      return true;
+    } else {
+      return false;
     }
-    return false;
   };
 
   componentDidUpdate = async (prevProps, prevState) => {

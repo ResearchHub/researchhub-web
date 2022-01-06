@@ -86,6 +86,7 @@ const AuthorFeedItem = ({
               paper={doc.id}
               hypothesis={doc}
               post={doc}
+              context="AUTHOR_PROFILE"
             />
           </div>
         );
