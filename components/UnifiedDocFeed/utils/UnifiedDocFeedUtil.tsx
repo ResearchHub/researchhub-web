@@ -83,8 +83,6 @@ export const useEffectForceUpdate = ({
   updateOn: any[];
 }): void => {
   useEffect((): void => {
-    if (!shouldEscape) {
-      fetchUnifiedDocs(fetchParams);
-    }
+    fetchUnifiedDocs(fetchParams);
   }, [...updateOn]);
 };
