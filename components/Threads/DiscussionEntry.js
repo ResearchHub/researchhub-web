@@ -471,9 +471,10 @@ class DiscussionEntry extends Component {
       store: inlineCommentStore,
     } = this.props;
     const commentCount =
-      this.state.comments.length > data.comment_count
-        ? this.state.comments.length
-        : data.comment_count;
+      data.comment_count +
+      data.comments
+        .map((comment) => comment.reply_count)
+        .reduce((a, b) => a + b, 0);
     const date = data.created_date;
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
@@ -524,13 +525,7 @@ class DiscussionEntry extends Component {
                 )}
                 onClick={this.toggleCommentView}
               >
-                <div
-                  className={css(
-                    styles.threadline,
-                    this.state.revealComment && styles.activeThreadline,
-                    this.state.hovered && styles.hoverThreadline
-                  )}
-                />
+                <div className={css(styles.threadline)} />
               </div>
             </div>
           </div>
