@@ -579,8 +579,6 @@ class CommentEntry extends Component {
               <div
                 className={css(
                   styles.threadline,
-                  this.state.revealReply && styles.activeThreadline,
-                  this.state.hovered && styles.hoverThreadline,
                   noVote && styles.threadlineNoVote
                 )}
                 onClick={this.toggleReplyView}
