@@ -23,9 +23,9 @@ export default function ModeratorDashboardSidebar({}: Props) {
   });
 
   console.warn("currentPath: ", currentPath);
-  const items = filterNull([
+  const SIDE_BAR_ITEMS = filterNull([
     {
-      icon: icons.userEdit,
+      icon: icons.bookOpen,
       id: "author-claim-case-dashboard",
       name: "Author Claim",
       pathname: "/moderators/author-claim-case-dashboard",
@@ -38,28 +38,33 @@ export default function ModeratorDashboardSidebar({}: Props) {
     },
     userAllowedOnPermissionsDash
       ? {
-          icon: icons.bookOpen,
+          icon: icons.userEdit,
           id: "permissions",
           name: "Update Editors",
           pathname: "/moderators/permissions",
         }
       : null,
-  ]).map(({ name, id, type, icon, pathname }, index) => (
-    <Ripples
-      className={css(
-        styles.sidebarEntry,
-        type === id && styles.current
-        // index === SIDE_BAR_ITEMS.length - 1 && styles.last
-      )}
-      key={`listItem-${id}`}
-    >
-      <Link href={{ pathname }} as={pathname}>
-        <a className={css(styles.sidebarLink)}>
-          <span className={css(styles.icon)}>{icon}</span>
-          {name}
-        </a>
-      </Link>
-    </Ripples>
-  ));
-  return <Fragment>{items}</Fragment>;
+  ]);
+
+  const listItems = SIDE_BAR_ITEMS.map(
+    ({ name, id, type, icon, pathname }, index) => (
+      <Ripples
+        className={css(
+          styles.sidebarEntry,
+          currentPath.includes(pathname) && styles.current,
+          index === SIDE_BAR_ITEMS.length - 1 && styles.last
+        )}
+        key={`listItem-${id}`}
+      >
+        <Link href={{ pathname }} as={pathname}>
+          <a className={css(styles.sidebarLink)}>
+            <span className={css(styles.icon)}>{icon}</span>
+            {name}
+          </a>
+        </Link>
+      </Ripples>
+    )
+  );
+
+  return <Fragment>{listItems}</Fragment>;
 }
