@@ -90,6 +90,7 @@ export default function AuthorClaimCaseContainer({
 
 const styles = StyleSheet.create({
   authorClaimCaseContainer: {
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     height: "100%",

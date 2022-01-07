@@ -3,7 +3,6 @@ import { ReactElement, useState } from "react";
 import AuthorClaimCaseContainer from "./AuthorClaimCaseContainer";
 import AuthorClaimDashboardNavbar from "./AuthorClaimDashboardNavbar";
 import Head from "../Head";
-import { formColors } from "~/config/themes/colors";
 
 export default function AuthorClaimCaseDashboard(): ReactElement<"div"> {
   const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
