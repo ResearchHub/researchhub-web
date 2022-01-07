@@ -185,23 +185,25 @@ function UnifiedDocFeedContainer({
             key={filterKey}
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
-              setDocTypeFilter(filterValue);
-              setPaginationInfo({
-                hasMore: false,
-                isLoading: true,
-                isLoadingMore: false,
-                isServerLoaded: false,
-                localPage: 1,
-                page: 1,
-              });
-              setDocSetFetchedTime(Date.now());
-              router.push(
-                {
-                  pathname: routerPathName,
-                  query: { ...router.query, type: filterValue },
-                },
-                routerPathName + `?type=${filterValue}`
-              );
+              if (docTypeFilter !== filterValue) {
+                setDocTypeFilter(filterValue);
+                setPaginationInfo({
+                  hasMore: false,
+                  isLoading: true,
+                  isLoadingMore: false,
+                  isServerLoaded: false,
+                  localPage: 1,
+                  page: 1,
+                });
+                setDocSetFetchedTime(Date.now());
+                router.push(
+                  {
+                    pathname: routerPathName,
+                    query: { ...router.query, type: filterValue },
+                  },
+                  routerPathName + `?type=${filterValue}`
+                );
+              }
             }}
           />
         </div>
@@ -222,9 +224,8 @@ function UnifiedDocFeedContainer({
   /* we need time check here to ensure that payload formatting does not lead to 
   UI rendering timing issues since document objects & formmatting can be heavy */
   const areCardsReadyToBeRendered =
-    unifiedDocuments.length === 0
-      ? true
-      : !isLoading && docSetFetchedTimeCheck === docSetFetchedTime;
+    unifiedDocuments.length === 0 ||
+    (!isLoading && docSetFetchedTimeCheck === docSetFetchedTime);
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
