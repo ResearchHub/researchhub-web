@@ -154,7 +154,9 @@ const DiscussionTab = (props) => {
                       documentType={documentType}
                       paper={paperState}
                       post={post}
+                      currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
+                      context="DOCUMENT"
                     />
                   );
                 })
