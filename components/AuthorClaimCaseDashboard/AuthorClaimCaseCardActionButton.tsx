@@ -57,6 +57,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 8,
     width: 144,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "68px",
+    },
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "50%",
     },

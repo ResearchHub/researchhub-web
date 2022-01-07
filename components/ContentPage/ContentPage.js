@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: "#FCFCFC",
-    width: "100vw",
+    width: "100%",
     height: "100%",
     display: "table",
     position: "relative",
