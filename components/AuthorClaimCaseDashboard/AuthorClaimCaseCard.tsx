@@ -15,13 +15,11 @@ import icons from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
-  cardWidth: number | string;
   setLastFetchTime: Function;
 };
 
 export default function AuthorClaimCaseCard({
   authorClaimCase,
-  cardWidth,
   setLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
@@ -63,7 +61,6 @@ export default function AuthorClaimCaseCard({
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
-      style={{ width: cardWidth }}
     >
       <AuthorClaimCaseModal
         caseID={caseID}
@@ -129,9 +126,8 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     marginBottom: 16,
     minHeight: 72,
-    maxWidth: "90%",
+    maxWidth: "1200px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "90%",
       maxWidth: "unset",
     },
   },
