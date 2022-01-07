@@ -129,19 +129,31 @@ const NotificationEntry = (props) => {
       as: `/user/${authorId}/overview`,
     };
 
-    const paperLink = {
-      href: "/[documentType]/[paperId]/[paperName]",
-      as: `/${document_type}/${documentId}/${formattedSlug}`,
-    };
-
-    const discussionPageLink = {
-      href: "/[documentType]/[paperId]/[paperName]/[discussionThreadId]",
-      as: `/${document_type}/${documentId}/${formattedSlug}/${threadId ?? ""}`,
-    };
+    let documentLink;
+    let discussionLink;
+    if (document_type === "paper") {
+      documentLink = {
+        href: "/paper/[paperId]/[paperName]",
+        as: `/${document_type}/${documentId}/${formattedSlug}`,
+      };
+      discussionLink = {
+        href: "/paper/[paperId]/[paperName]",
+        as: `/${document_type}/${documentId}/${formattedSlug}`,
+      };
+    } else {
+      documentLink = {
+        href: "/[document_type]/[documentId]/[title]",
+        as: `/${document_type}/${documentId}/${formattedSlug}`,
+      };
+      discussionLink = {
+        href: "/[document_type]/[documentId]/[title]",
+        as: `/${document_type}/${documentId}/${formattedSlug}`,
+      };
+    }
 
     const sectionLink = (section) => {
-      let as = paperLink.as + "#" + section;
-      return { ...paperLink, as };
+      let as = documentLink.as + "#" + section;
+      return { ...documentLink, as };
     };
 
     const timeStamp = <TimeStamp date={created_date} />;
@@ -162,7 +174,7 @@ const NotificationEntry = (props) => {
             {notifCreator}
             {` uploaded a new paper ${content_type}`}
             <HyperLink
-              link={paperLink}
+              link={documentLink}
               onClick={onClick}
               style={styles.paper}
               dataTip={document_title}
@@ -177,14 +189,15 @@ const NotificationEntry = (props) => {
             {notifCreator}
             {" created a "}
             <HyperLink
-              link={discussionPageLink}
+              link={discussionLink}
               onClick={onClick}
+              link={sectionLink("comments")}
               style={styles.link}
               text={"thread"}
             />
             {"in "}
             <HyperLink
-              link={paperLink}
+              link={documentLink}
               onClick={onClick}
               style={styles.paper}
               dataTip={document_title}
@@ -267,8 +280,8 @@ const NotificationEntry = (props) => {
 
     const formatLink = () => {
       const link = {
-        href: "/[documentType]/[paperId]/[paperName]",
-        as: `/${documentType}/${documentId}/${formattedSlug}`,
+        // href: "/[documentType]/[paperId]/[paperName]",
+        href: `/${documentType}/${documentId}/${formattedSlug}`,
       };
 
       switch (documentType) {
