@@ -503,7 +503,7 @@ const Navbar = (props) => {
                       author={user.author_profile}
                       size={33}
                       textSizeRatio={2.5}
-                      disableLink={true}
+                      disableLink
                       showModeratorBadge={user && user.moderator}
                     />
                     <span className={css(styles.caret)}>
@@ -920,7 +920,6 @@ const styles = StyleSheet.create({
   reputation: {
     cursor: "pointer",
     marginLeft: 11,
-    // minWidth: 56,
   },
   dropdown: {
     position: "absolute",
