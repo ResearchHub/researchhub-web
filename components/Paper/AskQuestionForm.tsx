@@ -178,9 +178,7 @@ function AskQuestionForm({ documentType, user }: AskQuestionFormProps) {
           placeholder={"The earth revolves around the sun"}
           error={
             shouldDisplayError && formErrors.title
-              ? isPost
-                ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
-                : ``
+              ? `Title must be between ${MIN_TITLE_LENGTH} and ${MAX_TITLE_LENGTH} characters`
               : null
           }
           errorStyle={styles.errorText}
