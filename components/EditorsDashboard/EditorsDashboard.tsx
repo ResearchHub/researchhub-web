@@ -1,11 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
-import { formColors } from "~/config/themes/colors";
 
 export default function EditorsDashboard(): ReactElement<"div"> {
   return (
     <div className={css(styles.editorsDashboard)}>
-      {"THIS IS EDITORS DASHBOARD"}
+      {"Editor Dashboard - Killswitched on Prod, won't be visible"}
     </div>
   );
 }
