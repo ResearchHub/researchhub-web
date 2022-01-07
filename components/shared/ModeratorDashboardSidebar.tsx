@@ -8,6 +8,7 @@ import Ripples from "react-ripples";
 import { styles } from "~/pages/leaderboard/LeaderboardPage";
 import { useRouter } from "next/router";
 import { css } from "aphrodite";
+import killswitch from "~/config/killswitch/killswitch";
 
 type Props = {};
 
@@ -21,8 +22,8 @@ export default function ModeratorDashboardSidebar({}: Props) {
     auth: reduxStore?.getState()?.auth ?? null,
     shouldRedirect: false,
   });
+  const ksCanUseEditorDash = killswitch("editorDash");
 
-  console.warn("currentPath: ", currentPath);
   const SIDE_BAR_ITEMS = filterNull([
     {
       icon: icons.bookOpen,
@@ -30,12 +31,14 @@ export default function ModeratorDashboardSidebar({}: Props) {
       name: "Author Claim",
       pathname: "/moderators/author-claim-case-dashboard",
     },
-    {
-      icon: icons.subscribers,
-      id: "editors",
-      name: "Editors",
-      pathname: "/moderators/editors",
-    },
+    ksCanUseEditorDash
+      ? {
+          icon: icons.subscribers,
+          id: "editors",
+          name: "Editors",
+          pathname: "/moderators/editors",
+        }
+      : null,
     userAllowedOnPermissionsDash
       ? {
           icon: icons.userEdit,
