@@ -59,7 +59,7 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
   return (
     <Fragment>
       <div>
-        <h1>{"Add a new Hub Editor"}</h1>
+        <h1>{"Add a New Hub Editor"}</h1>
       </div>
       <form encType="multipart/form-data" onSubmit={handleSubmit}>
         <FormSelect
