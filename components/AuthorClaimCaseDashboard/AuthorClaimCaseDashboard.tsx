@@ -11,10 +11,7 @@ export default function AuthorClaimCaseDashboard(): ReactElement<"div"> {
   const [lastFetchTime, setLastFetchTime] = useState<number>(Date.now());
   return (
     <div className={css(styles.authorClaimCaseDashboard)}>
-      <AuthorClaimDashboardNavbar
-        innerElWidth={INNER_EL_WIDTH}
-        lastFetchTime={lastFetchTime}
-      />
+      <AuthorClaimDashboardNavbar lastFetchTime={lastFetchTime} />
       <Head />
       <div className={css(styles.caseContinaerWrap)}>
         <AuthorClaimCaseContainer
@@ -33,6 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100vh",
     overflow: "auto",
+    paddingLeft: 32,
     width: "100%",
   },
   caseContinaerWrap: {

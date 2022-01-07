@@ -15,7 +15,6 @@ type ButtonConfig = {
 };
 type NavButton = ReactElement<typeof AuthorClaimDashboardNavbarButton>;
 type Props = {
-  innerElWidth: number;
   lastFetchTime: number;
 };
 
@@ -35,7 +34,6 @@ const useEffectFetchCounts = (
 };
 
 export default function AuthorClaimDashboardNavbar({
-  innerElWidth,
   lastFetchTime,
 }: Props): ReactElement<"div"> {
   const router = useRouter();
@@ -73,10 +71,7 @@ export default function AuthorClaimDashboardNavbar({
 
   return (
     <div className={css(styles.authorClaimDashboardNavbar)}>
-      <div
-        className={css(styles.innerElementWrap)}
-        style={{ width: innerElWidth }}
-      >
+      <div className={css(styles.innerElementWrap)}>
         <div className={css(styles.header)}>
           <span className={css(styles.headerText)}>
             {"Author Claim Requests"}
@@ -94,7 +89,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     display: "flex",
     minHeight: 120,
-    justifyContent: "center",
     width: "100%",
   },
   header: {
