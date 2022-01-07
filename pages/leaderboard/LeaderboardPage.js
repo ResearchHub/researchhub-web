@@ -525,7 +525,6 @@ class Index extends Component {
               type: item.type,
             });
           }}
-          key={`${id}-${i}`}
         >
           <Link
             href={{
