@@ -92,7 +92,6 @@ export default function AuthorClaimCaseContainer({
 
 const styles = StyleSheet.create({
   authorClaimCaseContainer: {
-    alignItems: "center",
     display: "flex",
     flexDirection: "column",
     height: "100%",

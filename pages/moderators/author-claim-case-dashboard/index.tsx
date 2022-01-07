@@ -5,6 +5,8 @@ import AuthorClaimCaseDashboard from "~/components/AuthorClaimCaseDashboard/Auth
 import ContentPage from "~/components/ContentPage/ContentPage";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";
 import SideColumn from "~/components/Home/SideColumn";
+import { mainFeedStyles } from "~/pages/leaderboard/LeaderboardPage";
+import { css } from "aphrodite";
 
 export default function AuthorClaimCaseDashboardIndex(): ReactElement<
   typeof AuthorClaimCaseDashboard
@@ -17,7 +19,11 @@ export default function AuthorClaimCaseDashboardIndex(): ReactElement<
 
   return (
     <ContentPage
-      mainFeed={<AuthorClaimCaseDashboard />}
+      mainFeed={
+        <div className={css(mainFeedStyles.row)}>
+          <AuthorClaimCaseDashboard />
+        </div>
+      }
       sidebar={
         <SideColumn
           listItems={<ModeratorDashboardSidebar />}

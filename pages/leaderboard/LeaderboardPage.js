@@ -820,7 +820,7 @@ export const styles = StyleSheet.create({
   },
 });
 
-const mainFeedStyles = StyleSheet.create({
+export const mainFeedStyles = StyleSheet.create({
   column: {
     display: "flex",
     flexDirection: "column",
