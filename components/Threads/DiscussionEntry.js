@@ -481,9 +481,9 @@ class DiscussionEntry extends Component {
     } = this.props;
     const commentCount =
       data.comment_count +
-      data.comments
-        .map((comment) => comment.reply_count)
-        .reduce((a, b) => a + b, 0);
+        data.comments
+          ?.map((comment) => comment.reply_count)
+          .reduce((a, b) => a + b, 0) || 0;
     const date = data.created_date;
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
