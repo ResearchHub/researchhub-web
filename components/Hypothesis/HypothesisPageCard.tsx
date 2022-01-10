@@ -357,6 +357,12 @@ function HypothesisPageCard({
           <VoteWidget {...voteWidgetProps} horizontalView />
           <div className={css(styles.discussionCountWrapper)}>
             <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
+            <a
+              href="#comments"
+              className={css(styles.discussionText)}
+            >
+              <span>Join the Discussion</span>
+            </a>            
           </div>                 
         </div>
       </div>
