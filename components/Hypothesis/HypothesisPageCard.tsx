@@ -40,6 +40,8 @@ import {
 } from "./api/postHypothesisStatus";
 import ColumnHubs from "../Paper/SideColumn/ColumnHubs";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
+import DiscussionCount from "~/components/DiscussionCount";
+
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -346,10 +348,22 @@ function HypothesisPageCard({
     <div className={css(styles.hypothesisCard)}>
       <div className={css(styles.voting)}>
         <VoteWidget {...voteWidgetProps} />
+        <div className={css(styles.discussionCountWrapper)}>
+          <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
+        </div>        
       </div>
       <div className={css(styles.mobile)}>
         <div className={css(styles.votingMobile)}>
           <VoteWidget {...voteWidgetProps} horizontalView />
+          <div className={css(styles.discussionCountWrapper)}>
+            <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
+            <a
+              href="#comments"
+              className={css(styles.discussionText)}
+            >
+              <span>Join the Discussion</span>
+            </a>            
+          </div>                 
         </div>
       </div>
       <div className={css(styles.column)}>
@@ -378,6 +392,21 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {})(HypothesisPageCard);
 
 const styles = StyleSheet.create({
+  discussionCountWrapper: {
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 1,
+      display: "flex",
+    }
+  },
+  discussionText: {
+    whiteSpace: "nowrap",
+    marginLeft: 12,
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginTop: 4,
+    textDecoration: "none",
+  },  
   hypothesisCard: {
     display: "flex",
     flexDirection: "row",

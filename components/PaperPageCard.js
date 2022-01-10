@@ -7,6 +7,7 @@ import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
+import { breakpoints } from "~/config/themes/screen";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -37,6 +38,7 @@ import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
+import DiscussionCount from "~/components/DiscussionCount";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -649,6 +651,14 @@ class PaperPageCard extends Component {
                   type={"Paper"}
                 />
                 <PaperPromotionIcon paper={paper} isPaper />
+                <div className={css(styles.discussionCountWrapper)}>
+                  <DiscussionCount
+                    docType="paper"
+                    slug={paper.slug}
+                    id={paper.id}
+                    count={paper.discussion_count}
+                  />
+                </div>
               </div>
               <div
                 className={css(
@@ -691,6 +701,20 @@ class PaperPageCard extends Component {
                         isPaper
                         type={"Paper"}
                       />
+                      <div className={css(styles.discussionCountWrapper)}>
+                        <DiscussionCount
+                          docType="paper"
+                          slug={paper.slug}
+                          id={paper.id}
+                          count={paper.discussion_count}
+                        />
+                        <a
+                          href="#comments"
+                          className={css(styles.discussionText)}
+                        >
+                          <span>Join the Discussion</span>
+                        </a>
+                      </div>
                       <PaperPromotionIcon paper={paper} isPaper />
                     </div>
                   </div>
@@ -731,6 +755,21 @@ class PaperPageCard extends Component {
 }
 
 const styles = StyleSheet.create({
+  discussionCountWrapper: {
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 1,
+      display: "flex",
+    },
+  },
+  discussionText: {
+    whiteSpace: "nowrap",
+    marginLeft: 12,
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginTop: 4,
+    textDecoration: "none",
+  },
   mainContainer: {
     display: "flex",
     width: "100%",
