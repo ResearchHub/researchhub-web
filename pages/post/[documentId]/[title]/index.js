@@ -235,7 +235,7 @@ const Post = (props) => {
                 />
               </div>
               <div className={css(styles.space)}>
-                <a name="comments" />
+                <a name="comments" id="comments" />
                 <DiscussionTab
                   hostname={props.hostname}
                   documentType={"post"}

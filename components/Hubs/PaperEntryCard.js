@@ -30,6 +30,7 @@ import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
 import { stripHTML } from "~/config/utils/string";
+import DiscussionCount from "~/components/DiscussionCount";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -265,39 +266,6 @@ const PaperEntryCard = (props) => {
     }
     onClick && onClick();
   }
-
-  function formatDiscussionCount() {
-    return `${discussion_count}`;
-  }
-
-  const renderDiscussionCount = () => {
-    if (!discussion_count) {
-      return null;
-    }
-
-    return (
-      <Link
-        href={"/paper/[paperId]/[paperName]"}
-        as={`/paper/${id}/${paperSlug}#comments`}
-      >
-        <a
-          className={css(styles.link)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className={css(styles.discussion)}>
-            <div className={css(styles.discussionIcon)} id={"discIcon"}>
-              {PaperDiscussionIcon({})}
-            </div>
-            <div className={css(styles.discussionCount)} id={"discCount"}>
-              {formatDiscussionCount()}
-            </div>
-          </div>
-        </a>
-      </Link>
-    );
-  };
 
   const openPaperPDFModal = (e) => {
     e && e.preventDefault();
@@ -606,7 +574,12 @@ const PaperEntryCard = (props) => {
       <div className={css(styles.leftSection, styles.desktop)}>
         {renderVoteWidget()}
         <div className={css(styles.discussionCountContainer)}>
-          {renderDiscussionCount()}
+          <DiscussionCount
+            docType="paper"
+            slug={slug}
+            id={id}
+            count={discussion_count}
+          />
         </div>
       </div>
       <div className={css(styles.container)}>
@@ -620,7 +593,14 @@ const PaperEntryCard = (props) => {
           >
             <div className={css(styles.topRow)}>
               {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderDiscussionCount())}
+              {mobileOnly(
+                <DiscussionCount
+                  docType="paper"
+                  slug={slug}
+                  id={id}
+                  count={discussion_count}
+                />
+              )}
               {desktopOnly(renderMainTitle())}
             </div>
             {mobileOnly(renderMainTitle())}
@@ -869,28 +849,6 @@ const styles = StyleSheet.create({
   discussionCountContainer: {
     marginTop: 8,
     marginRight: 17,
-  },
-  discussion: {
-    cursor: "pointer",
-    position: "relative",
-    fontSize: 14,
-    background: colors.LIGHTER_GREY_BACKGROUND,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
-    borderRadius: 13,
-    "@media only screen and (max-width: 967px)": {
-      minWidth: "unset",
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-    },
-  },
-  discussionCount: {
-    color: "rgb(71 82 93 / 80%)",
-    fontWeight: "bold",
-    marginLeft: 6,
   },
   tags: {
     display: "flex",
