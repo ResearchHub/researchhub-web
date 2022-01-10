@@ -525,7 +525,6 @@ class Index extends Component {
               type: item.type,
             });
           }}
-          key={`${id}-${i}`}
         >
           <Link
             href={{
@@ -707,7 +706,7 @@ class Index extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   sidebarEntry: {
     fontSize: 16,
     fontWeight: 300,
@@ -821,7 +820,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mainFeedStyles = StyleSheet.create({
+export const mainFeedStyles = StyleSheet.create({
   column: {
     display: "flex",
     flexDirection: "column",
@@ -1032,7 +1031,6 @@ const mainFeedStyles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     boxSizing: "border-box",
-    backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
     top: 65,
@@ -1181,7 +1179,6 @@ const mainFeedStyles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
-    backgroundColor: "#FCFCFC",
     paddingLeft: 50,
     paddingRight: 50,
     paddingBottom: 30,

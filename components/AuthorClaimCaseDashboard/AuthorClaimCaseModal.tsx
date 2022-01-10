@@ -1,19 +1,25 @@
-import { Fragment, ReactElement, SyntheticEvent, useContext, useState } from "react";
-import { css, StyleSheet } from "aphrodite";
-import Modal from "react-modal";
-
 import {
   AUTHOR_CLAIM_ACTION_LABEL,
   AUTHOR_CLAIM_STATUS,
 } from "./constants/AuthorClaimStatus";
-import Button from "../Form/Button";
+import { breakpoints } from "../../config/themes/screen";
+import { css, StyleSheet } from "aphrodite";
+import {
+  Fragment,
+  ReactElement,
+  SyntheticEvent,
+  useContext,
+  useState,
+} from "react";
+import { NavbarContext } from "~/pages/Base";
 import { updateCaseStatus } from "./api/AuthorClaimCaseUpdateCase";
 import { ValueOf } from "../../config/types/root_types";
-import { breakpoints } from "../../config/themes/screen";
-
-// Dynamic modules
+import Button from "../Form/Button";
+import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import { NavbarContext } from "~/pages/Base";
+import Loader from "../Loader/Loader";
+import Modal from "react-modal";
+
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
 
 export type AuthorClaimCaseProps = {
@@ -34,7 +40,8 @@ export default function AuthorClaimModal({
   setOpenModalType,
 }: AuthorClaimCaseProps): ReactElement<typeof Modal> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const { setNumNavInteractions, numNavInteractions } = useContext(NavbarContext);
+  const { setNumNavInteractions, numNavInteractions } =
+    useContext(NavbarContext);
 
   const createAcceptReject = (actionType) => {
     return (event: SyntheticEvent) => {
@@ -43,7 +50,7 @@ export default function AuthorClaimModal({
       updateCaseStatus({
         payload: { caseID, updateStatus: actionType },
         onSuccess: () => {
-          setNumNavInteractions(numNavInteractions + 1)
+          setNumNavInteractions(numNavInteractions + 1);
           setIsSubmitting(false);
           setLastFetchTime(Date.now());
           closeModal(event);
@@ -91,7 +98,13 @@ export default function AuthorClaimModal({
             </div>
             <div className={css(acceptRejectStyles.buttonContainer)}>
               <Button
-                label={`${verb} User`}
+                label={
+                  isSubmitting ? (
+                    <Loader loading={true} size={16} color={colors.GREY(1)} />
+                  ) : (
+                    `${verb} User`
+                  )
+                }
                 disabled={isSubmitting}
                 customButtonStyle={acceptRejectStyles.buttonCustomStyle}
                 rippleClass={acceptRejectStyles.rippleClass}
@@ -139,15 +152,12 @@ const acceptRejectStyles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     height: "110px",
-    background: "#FAFAFA",
-    border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     borderRadius: "4px",
     marginTop: 52,
-
     "@media only screen and (max-width: 1024px)": {
       width: "525px",
-    }
+    },
   },
   requestorContainer: {
     display: "flex",

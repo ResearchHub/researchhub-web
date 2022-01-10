@@ -5,7 +5,6 @@ import {
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
 import { css, StyleSheet } from "aphrodite";
 import { getCases } from "./api/AuthorClaimCaseGetCases";
-import { INNER_EL_WIDTH } from "./AuthorClaimCaseDashboard";
 import { useRouter, NextRouter } from "next/router";
 import AuthorClaimCaseCard from "./AuthorClaimCaseCard";
 import { useEffect, ReactElement, useState, Fragment } from "react";
@@ -65,7 +64,6 @@ export default function AuthorClaimCaseContainer({
       return (
         <AuthorClaimCaseCard
           authorClaimCase={claimCase}
-          cardWidth={INNER_EL_WIDTH}
           key={`author-claim-case-card-${caseID}`}
           setLastFetchTime={setLastFetchTime}
         />
@@ -92,7 +90,7 @@ export default function AuthorClaimCaseContainer({
 
 const styles = StyleSheet.create({
   authorClaimCaseContainer: {
-    alignItems: "center",
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     height: "100%",
