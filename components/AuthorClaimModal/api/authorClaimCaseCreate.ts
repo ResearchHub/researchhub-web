@@ -59,6 +59,13 @@ export function createAuthorClaimCase({
       onSuccess();
     })
     .catch((err) => {
-      onError(err);
+      const message = err.message ?? "Something went wrong!";
+      if (message.includes("duplicate")) {
+        onError("You already made a request to claim this author.");
+      } else if (message.includes("already claimed")) {
+        onError("This author was already claimed by someone else.");
+      } else {
+        onError(message);
+      }
     });
 }
