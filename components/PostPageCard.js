@@ -762,6 +762,12 @@ class PostPageCard extends Component {
                         id={post.id}
                         count={post.discussion_count}
                       />
+                      <a
+                        href="#comments"
+                        className={css(styles.discussionText)}
+                      >
+                        <span>Join the Discussion</span>
+                      </a>
                     </div>
                     <PaperPromotionIcon post={post} />
                   </div>
