@@ -106,16 +106,8 @@ function AuthorClaimPromptEmail({
       setIsSubmitting(true);
       createAuthorClaimCase({
         eduEmail: mutableFormFields.eduEmail,
-        onError: (err): void => {
-          let errMessage = "Something went wrong!";
-          const errorKeys = Object.keys(err.message);
-          for (let i = 0; i < errorKeys.length; i++) {
-            let curKey = errorKeys[i];
-            for (let j = 0; j < err.message[curKey].length; j++) {
-              errMessage = err.message[curKey][j];
-            }
-          }
-          setMessage(errMessage);
+        onError: (errMsg: string): void => {
+          setMessage(errMsg);
           showMessage({ show: true, error: true });
           setIsSubmitting(false);
         },
