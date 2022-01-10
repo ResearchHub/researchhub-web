@@ -27,6 +27,8 @@ import removeMd from "remove-markdown";
 import Router from "next/router";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
+import DiscussionCount from "~/components/DiscussionCount";
+import { breakpoints } from "~/config/themes/screen";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -713,6 +715,14 @@ class PostPageCard extends Component {
             <meta property="commentCount" content={post.discussion_count} />
             <div className={css(styles.voting)}>
               {voteWidget(false)}
+              <div className={css(styles.discussionCountWrapper)}>
+                <DiscussionCount
+                  docType="post"
+                  slug={post.slug}
+                  id={post.id}
+                  count={post.discussion_count}
+                />
+              </div>
               <PaperPromotionIcon post={post} />
             </div>
             <div
@@ -745,6 +755,14 @@ class PostPageCard extends Component {
                 <div className={css(styles.rightColumn, styles.mobile)}>
                   <div className={css(styles.votingMobile)}>
                     {voteWidget(true)}
+                    <div className={css(styles.discussionCountWrapper)}>
+                      <DiscussionCount
+                        docType="post"
+                        slug={post.slug}
+                        id={post.id}
+                        count={post.discussion_count}
+                      />
+                    </div>
                     <PaperPromotionIcon post={post} />
                   </div>
                 </div>
@@ -782,6 +800,21 @@ class PostPageCard extends Component {
 }
 
 const styles = StyleSheet.create({
+  discussionCountWrapper: {
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 1,
+      display: "flex",
+    },
+  },
+  discussionText: {
+    whiteSpace: "nowrap",
+    marginLeft: 12,
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginTop: 4,
+    textDecoration: "none",
+  },
   mainContainer: {
     display: "flex",
     width: "100%",
