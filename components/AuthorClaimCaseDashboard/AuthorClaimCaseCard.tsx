@@ -15,13 +15,11 @@ import icons from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
-  cardWidth: number | string;
   setLastFetchTime: Function;
 };
 
 export default function AuthorClaimCaseCard({
   authorClaimCase,
-  cardWidth,
   setLastFetchTime,
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
@@ -63,7 +61,6 @@ export default function AuthorClaimCaseCard({
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
-      style={{ width: cardWidth }}
     >
       <AuthorClaimCaseModal
         caseID={caseID}
@@ -129,9 +126,8 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     marginBottom: 16,
     minHeight: 72,
-    maxWidth: "90%",
+    maxWidth: "1200px",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "90%",
       maxWidth: "unset",
     },
   },
@@ -145,7 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: "0px 16px",
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       padding: 16,
     },
   },
@@ -159,7 +155,7 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
       height: "unset",
       paddingRight: 0,
@@ -174,15 +170,15 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    width: "15%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    width: "20%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       width: "unset",
       height: "unset",
       paddingRight: 0,
     },
   },
   actions: {
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginTop: 16,
     },
   },
@@ -190,9 +186,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       justifyContent: "unset",
       flexDirection: "column",
+      padding: "0 0 16px 0",
     },
   },
   chevronWrap: {
@@ -229,7 +226,7 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flex: 1,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       flexDirection: "column",
       marginTop: 16,
     },

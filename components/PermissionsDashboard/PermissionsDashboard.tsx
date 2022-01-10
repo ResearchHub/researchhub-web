@@ -3,6 +3,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import HubEditorCreateForm from "./Hub/HubEditorCreateForm";
+import { formColors } from "~/config/themes/colors";
 
 function PermissionsDashboard(): ReactElement<"div"> | null {
   const [_lastFetchTime, _setLastFetchTime] = useState<number>(Date.now());
@@ -28,7 +29,6 @@ export default connect(mapStateToProps)(PermissionsDashboard);
 const styles = StyleSheet.create({
   permissionsDashboard: {
     alignItems: "center",
-    backgroundColor: "#FBFBFD",
     display: "flex",
     flexDirection: "column",
     height: "100vh",

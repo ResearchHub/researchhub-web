@@ -59,7 +59,7 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
   return (
     <Fragment>
       <div>
-        <h1>{"Create Hub Editor"}</h1>
+        <h1>{"Add a New Hub Editor"}</h1>
       </div>
       <form encType="multipart/form-data" onSubmit={handleSubmit}>
         <FormSelect
@@ -97,7 +97,7 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
               isSubmitting ? (
                 <Loader size={8} loading color="#fff" />
               ) : (
-                "Verify Email"
+                "Submit"
               )
             }
             type="submit"

@@ -3,13 +3,15 @@ import { Fragment, ReactElement } from "react";
 import { isNullOrUndefined } from "../config/utils/nullchecks";
 
 type Props = {
-  align: "start" | "center" | "end";
-  containerStyle: object;
+  align?: "start" | "center" | "end";
+  className?: string;
+  containerStyle?: object;
   isOpen: boolean;
-  padding: number;
+  onClickOutside?: ((e: MouseEvent) => void) | undefined;
+  padding?: number;
   popoverContent: ReactElement;
   positions: Array<"left" | "right" | "top" | "bottom">;
-  setIsPopoverOpen: (flag: boolean) => void;
+  setIsPopoverOpen?: (flag: boolean) => void;
   targetContent: ReactElement;
   withArrow: boolean;
 };
@@ -24,7 +26,7 @@ export default function ResearchHubPopover({
   withArrow,
   className,
   onClickOutside,
-  containerStyle
+  containerStyle,
 }: Props): ReactElement<typeof Fragment | typeof Popover> {
   if (isNullOrUndefined(typeof window)) {
     return <Fragment />;
@@ -33,7 +35,7 @@ export default function ResearchHubPopover({
     <Popover
       align={align}
       containerStyle={containerStyle}
-      content={({ position, childRect, popoverRect }) => (
+      content={({ position, childRect, popoverRect }) =>
         withArrow ? (
           <ArrowContainer
             arrowClassName="popover-arrow"
@@ -46,8 +48,10 @@ export default function ResearchHubPopover({
           >
             {popoverContent}
           </ArrowContainer>
-        ) : popoverContent
-      )}
+        ) : (
+          popoverContent
+        )
+      }
       isOpen={isOpen}
       containerClassName={className}
       onClickOutside={onClickOutside}
