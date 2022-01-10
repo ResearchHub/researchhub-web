@@ -97,7 +97,7 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
               isSubmitting ? (
                 <Loader size={8} loading color="#fff" />
               ) : (
-                "Verify Email"
+                "Submit"
               )
             }
             type="submit"
