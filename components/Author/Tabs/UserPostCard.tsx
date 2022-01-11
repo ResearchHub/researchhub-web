@@ -19,6 +19,7 @@ import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 
 export type UserPostCardProps = {
@@ -127,6 +128,9 @@ function UserPostCard(props: UserPostCardProps) {
         }}
       >
         <span className={css(styles.title)}>
+          <div className={css(styles.badgeWrapper)}>
+            <DocumentBadge label="Post" onClick={()=>null} docType="post" />
+          </div>      
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -601,4 +605,8 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginRight: 17,
   },
+  badgeWrapper: {
+    display: "inline-block",
+    verticalAlign: "-3px",    
+  }
 });

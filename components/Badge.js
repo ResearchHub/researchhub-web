@@ -1,6 +1,5 @@
 import { StyleSheet, css } from "aphrodite";
 import PropTypes from "prop-types";
-
 import { CloseIcon } from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
@@ -20,13 +19,15 @@ const Badge = ({
       data-test={isDevEnv() ? `badge-${id}` : undefined}
     >
       <div className={css(styles.badgeLabel)}>{label}</div>
-      <div className={css(styles.badgeRemove)} onClick={onRemove}>
-        <CloseIcon
-          width={8}
-          height={8}
-          overrideStyle={styles.closeIconOverride}
-        />
-      </div>
+      {onRemove && (
+        <div className={css(styles.badgeRemove)} onClick={onRemove}>
+          <CloseIcon
+            width={8}
+            height={8}
+            overrideStyle={styles.closeIconOverride}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -38,7 +39,7 @@ const styles = StyleSheet.create({
     minWidth: "0",
     boxSizing: "border-box",
     backgroundColor: colors.LIGHT_BLUE(),
-    borderRadius: "2px",
+    borderRadius: "4px",
     color: colors.BLUE(),
     cursor: "pointer",
     padding: "5px 8px",
@@ -60,7 +61,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: 500,
     letterSpacing: 1,
-    textTransform: "uppercase",
   },
   badgeRemove: {
     display: "flex",

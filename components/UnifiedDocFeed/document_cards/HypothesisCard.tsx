@@ -26,6 +26,7 @@ import Ripples from "react-ripples";
 import Router from "next/router";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 
 export type HypothesisCardProps = {
@@ -132,6 +133,9 @@ function HypothesisCard({
         }}
       >
         <span className={css(styles.title)}>
+          <div className={css(styles.badgeWrapper)}>
+            <DocumentBadge label="Hypothesis" onClick={()=>null} docType="hypothesis" />
+          </div>            
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -640,4 +644,8 @@ const styles = StyleSheet.create({
       width: "fit-content",
     },
   },
+  badgeWrapper: {
+    verticalAlign: "-3px",
+    display: "inline-block",
+  },    
 });
