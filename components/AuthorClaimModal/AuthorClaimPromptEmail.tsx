@@ -108,7 +108,7 @@ function AuthorClaimPromptEmail({
         eduEmail: mutableFormFields.eduEmail,
         onError: (errMsg: string): void => {
           setMessage(errMsg);
-          showMessage({ show: true, error: true });
+          showMessage({ show: true, error: true, timeout: 4000 });
           setIsSubmitting(false);
         },
         onSuccess: (): void => {
