@@ -128,10 +128,6 @@ const DiscussionThreadCard = (props) => {
                 date={date}
                 isCreatedByEditor={data?.is_created_by_editor}
                 username={username}
-                authorProfile={data && data.createdBy.authorProfile}
-                username={username}
-                date={date}
-                data={data}
                 metaData={{
                   contentType: "thread",
                   objectId: data.id,
@@ -180,12 +176,6 @@ const DiscussionThreadCard = (props) => {
                 type={"discussion"}
                 promoted={false}
               />
-              <DiscussionPostMetadata
-                authorProfile={data?.createdBy?.authorProfile}
-                data={data}
-                date={date}
-                isCreatedByEditor={data?.is_created_by_editor}
-                username={username}
               <DiscussionPostMetadata
                 authorProfile={data && data.createdBy.authorProfile}
                 username={username}
