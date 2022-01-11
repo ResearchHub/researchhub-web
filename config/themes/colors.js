@@ -69,6 +69,21 @@ export const bannerColor = {
   GREY: "#F2F2F6",
 };
 
+export const badgeColors = {
+  PAPER: {
+    BACKGROUND: "#FF9416",
+    COLOR: "#FFFFFF",
+  },
+  POST: {
+    BACKGROUND: "#48C055",
+    COLOR: "#FFFFFF",
+  },
+  HYPOTHESIS: {
+    BACKGROUND: "#E8B604",
+    COLOR: "#FFFFFF",
+  },
+};
+
 export const iconColors = {
   BACKGROUND: colors.LIGHT_GREY(),
 };

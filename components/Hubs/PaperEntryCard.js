@@ -31,6 +31,7 @@ import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
 import { stripHTML } from "~/config/utils/string";
 import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -442,23 +443,6 @@ const PaperEntryCard = (props) => {
     }
   };
 
-  const renderPaperTitle = () => {
-    if (paper_title && title !== paper_title) {
-      return (
-        <div className={css(styles.metadataContainer, styles.authorContainer)}>
-          <div
-            className={
-              css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
-              " clamp1"
-            }
-          >
-            From Paper: {paper_title}
-          </div>
-        </div>
-      );
-    }
-  };
-
   const mobileOnly = (children, options = {}) => {
     const { fullWidth } = options;
     return (
@@ -552,7 +536,16 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <span className={css(styles.title)}>{title}</span>
+          <span className={css(styles.title)}>
+            <div className={css(styles.badgeWrapper)}>
+              <DocumentBadge
+                label="Paper"
+                onClick={() => null}
+                docType="paper"
+              />
+            </div>
+            {title}
+          </span>
         </a>
       </Link>
     );
@@ -1028,6 +1021,11 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     width: "100%",
+  },
+  badge: {},
+  badgeWrapper: {
+    verticalAlign: "-3px",
+    display: "inline-block",
   },
 });
 
