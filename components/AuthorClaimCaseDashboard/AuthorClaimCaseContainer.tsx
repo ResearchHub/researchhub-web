@@ -57,7 +57,7 @@ export default function AuthorClaimCaseContainer({
     setClaimCases,
     setIsPageLoading,
   });
-
+  
   const caseCards = claimCases.map(
     (claimCase: AuthorClaimCase): ReactElement<typeof AuthorClaimCaseCard> => {
       const caseID = claimCase.caseData.id || Date.now();
