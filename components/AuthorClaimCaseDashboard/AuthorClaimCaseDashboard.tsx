@@ -24,8 +24,6 @@ const styles = StyleSheet.create({
   authorClaimCaseDashboard: {
     display: "flex",
     flexDirection: "column",
-    height: "100vh",
-    overflow: "auto",
     padding: "0 32px",
     width: "100%",
   },
