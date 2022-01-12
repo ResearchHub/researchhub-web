@@ -41,14 +41,17 @@ export default function FeedInfoCard({
 
   return (
     <div className={css(styles.feedInfoCard)}>
-      <Image
-        height={64}
-        layout="fixed"
-        objectFit="cover"
-        src={hubImage ?? "/static/background/hub-placeholder.svg"}
-        width={68}
-        hidden={false}
-      />
+      <div>
+        <Image
+          className={css(styles.hubImage)}
+          height={68}
+          hidden={false}
+          layout="fixed"
+          objectFit="cover"
+          src={hubImage ?? "/static/background/hub-placeholder.svg"}
+          width={68}
+        />
+      </div>
       <div className={css(styles.bodyContainer)}>
         <div className={css(styles.titleContainer)}>
           <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>
@@ -66,7 +69,7 @@ export default function FeedInfoCard({
                 width: "16px",
               }}
             />
-            <span style={{ fontWeight: 500, marginRight: 8 }}>{"Users "}</span>
+            <span style={{ fontWeight: 500, marginRight: 8 }}>{"Members"}</span>
             <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
           </div>
         </div>
@@ -86,13 +89,15 @@ export default function FeedInfoCard({
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
-            <AuthorFacePile
-              authorProfiles={editorProfiles}
-              horizontal
-              imgSize={22}
-              labelSpacing={6}
-              withAuthorName
-            />
+            <div className={css(styles.editorContainer)}>
+              <AuthorFacePile
+                authorProfiles={editorProfiles}
+                horizontal
+                imgSize={22}
+                labelSpacing={6}
+                withAuthorName
+              />
+            </div>
           </div>
         )}
         <div className={css(styles.detailRow)}>
@@ -112,6 +117,9 @@ const styles = StyleSheet.create({
     padding: 16,
     overflowX: "auto",
   },
+  hubImage: {
+    borderRadius: 4,
+  },
   bodyContainer: {
     display: "flex",
     flexDirection: "column",
@@ -129,6 +137,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     marginRight: 8,
+  },
+  editorContainer: {
+    display: "flex",
+    flexWrap: "wrap",
   },
   subscribeContainer: {
     marginLeft: 16,
