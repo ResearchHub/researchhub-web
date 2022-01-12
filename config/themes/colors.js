@@ -10,11 +10,13 @@ const colors = {
   ICY_BLUE: "#E9EFFF",
   ICY_GREY: "rgb(251, 251, 253)",
   LIGHT_BLUE: (opacity = 1) => `rgba(237, 238, 254, ${opacity})`,
+  LIGHTER_BLUE: (opacity = 1) => `rgb(235,241,255, ${opacity})`,
   LIGHT_GREEN: (opacity = 1) => `rgba(236, 249, 235, ${opacity})`,
   LIGHT_GREY_BACKGROUND: "#EDEDED",
   LIGHT_GREY_BORDER: "rgba(39, 39, 39, 0.07)",
   LIGHT_GREY_TEXT: "rgba(36, 31, 58, 0.39)",
   LIGHT_GREY: (opacity = 1) => `rgba(235, 235, 235, ${opacity})`,
+  LIGHTER_GREY: (opacity = 1) => `rgba(243, 243, 243, ${opacity})`,
   LIGHT_YELLOW: (opacity = 1) => `rgba(253, 249, 237, ${opacity})`,
   LIGHTER_GREY_BACKGROUND: "#F6F6F8",
   NAVY: (opacity = 1) => `rgba(31, 40, 125, ${opacity})`,
@@ -81,6 +83,15 @@ export const badgeColors = {
   HYPOTHESIS: {
     BACKGROUND: "white",
     COLOR: colors.BLACK(0.5),
+  },
+};
+
+export const horizontalNavColors = {
+  pillStyle: {
+    selectedColor: colors.NEW_BLUE(),
+    selectedBackgroundColor: colors.LIGHTER_BLUE(),
+    unselectedColor: colors.BLACK(0.6),
+    unselectedHoverColor: colors.LIGHTER_GREY(),
   },
 };
 

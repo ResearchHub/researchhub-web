@@ -24,25 +24,21 @@ export default function UnifiedDocFeedSubFilters({
   subFilters: { filterBy, scope },
 }: Props) {
 
-  const opts = filterOptions.map(f => ({
-    title: f.label, value: f.value
-  }))
-
   const [isOpen, setIsOpen] = useState(false);
-
 
   return (
     <Fragment>
       <DropdownButton
-        opts={opts}
+        opts={filterOptions}
         label={filterBy.label}
         isOpen={isOpen}
         onClick={() => setIsOpen(true)}
         dropdownClassName="filter"
         positions={["bottom", "right" ]}
         customButtonClassName={styles.dropdownButtonOverride}
-        onSelect={(newPerm) => {
-          return null
+        onSelect={(selectedFilter) => {
+          console.log('selectedFilter', selectedFilter);
+          onSubFilterSelect(selectedFilter);
         }}
         onClose={() => setIsOpen(false)}
       />

@@ -8,12 +8,13 @@ import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors from "~/config/themes/colors";
 
-const UnifiedDocFeedMenu = ({ selectedDocFilter }) => {
+const UnifiedDocFeedMenu = ({
+  subFilters,
+  onDocTypeFilterSelect,
+  onSubFilterSelect,
+  onScopeSelect,
+}) => {
   const router = useRouter();
-  const [subFilters, setSubFilters] = useState({
-    filterBy: filterOptions[0],
-    scope: scopeOptions[0],
-  });
   const [isOpen, setIsOpen] = useState(false);
 
   const getTabs = () => {
@@ -27,7 +28,7 @@ const UnifiedDocFeedMenu = ({ selectedDocFilter }) => {
         label: "Papers",
       },
       {
-        value: "post",
+        value: "posts",
         label: "Posts",
       },
       {
@@ -52,7 +53,7 @@ const UnifiedDocFeedMenu = ({ selectedDocFilter }) => {
         <HorizontalTabBar
           id="hpTabBar"
           tabs={tabs}
-          onClick={handleTabClick}
+          onClick={onDocTypeFilterSelect}
           containerStyle={styles.horizontalMenuOverride}
           dragging={true}
           alignCenter={false}
@@ -76,12 +77,8 @@ const UnifiedDocFeedMenu = ({ selectedDocFilter }) => {
       <div className={css(styles.seperator)}></div>
       <div className={css(styles.subFilters)}>
         <UnifiedDocFeedSubFilters
-          onSubFilterSelect={(_type, filterBy) =>
-            setSubFilters({ filterBy, scope: subFilters.scope })
-          }
-          onScopeSelect={(_type, scope) =>
-            setSubFilters({ filterBy: subFilters.filterBy, scope })
-          }
+          onSubFilterSelect={onSubFilterSelect}
+          onScopeSelect={onScopeSelect}
           subFilters={subFilters}
         />
       </div>
