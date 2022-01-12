@@ -26,7 +26,6 @@ import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
-import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
@@ -58,6 +57,7 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
+
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
     getPaginationInfoFromServerLoaded(serverLoadedData)
   );
@@ -249,7 +249,32 @@ function UnifiedDocFeedContainer({
         mainHeaderText={formattedMainHeader}
       />
       <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}><UnifiedDocFeedMenu /></div>
+        <div className={css(styles.mainFilters)}>
+          <UnifiedDocFeedMenu
+            subFilters={subFilters}
+            onDocTypeFilterSelect={(selected) => {
+              setDocTypeFilter(selected.value);
+              const query = { ...router.query, type: selected.value };
+
+              if (!query.type) {
+                delete query.type;
+              }
+
+              router.push(
+                {
+                  pathname: routerPathName,
+                  query,
+                },
+              );
+            }}            
+            onSubFilterSelect={(filterBy) =>
+              setSubFilters({ filterBy, scope: subFilters.scope })
+            }
+            onScopeSelect={(scope) =>
+              setSubFilters({ filterBy: subFilters.filterBy, scope })
+            }            
+          />
+        </div>
       </div>
       {!areCardsReadyToBeRendered ? (
         <div className={css(styles.initPlaceholder)}>
