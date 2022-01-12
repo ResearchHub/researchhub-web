@@ -512,7 +512,7 @@ const Paper = ({
                 bottomOffset={"95%"}
               >
                 <div className={css(styles.space)}>
-                  <a name="comments" ref={commentsRef} />
+                  <a name="comments" id="comments" ref={commentsRef} />
                   {
                     <DiscussionTab
                       hostname={process.env.HOST}

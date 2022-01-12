@@ -59,6 +59,13 @@ export function createAuthorClaimCase({
       onSuccess();
     })
     .catch((err) => {
-      onError(err);
+      const message = err.message ?? "Something went wrong!";
+      if (message.includes("duplicate")) {
+        onError("You already made a request to claim this author. If you believe this is a mistake, reach out via our community Slack.");
+      } else if (message.includes("already claimed")) {
+        onError("This author was already claimed by someone else. Your request is being reviewed.");
+      } else {
+        onError(message);
+      }
     });
 }

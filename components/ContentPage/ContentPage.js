@@ -38,8 +38,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   body: {
-    backgroundColor: "#FCFCFC",
-    width: "100vw",
+    width: "100%",
     height: "100%",
     display: "table",
     position: "relative",
@@ -76,7 +75,6 @@ const styles = StyleSheet.create({
     display: "table-cell",
     maxWidth: 1200,
     height: "100%",
-    backgroundColor: "#FCFCFC",
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 768px)": {
       width: "100%",

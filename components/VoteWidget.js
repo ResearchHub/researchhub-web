@@ -287,7 +287,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: 30,
+    minWidth: 48,
+    height: 25,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
@@ -334,11 +335,8 @@ const styles = StyleSheet.create({
   selected: {
     color: colors.GREEN(),
   },
-  marginLeft: {
-    marginLeft: 8,
-  },
   marginRight: {
-    marginRight: 8,
+    marginRight: 10,
   },
   promotionContainer: {
     display: "flex",
