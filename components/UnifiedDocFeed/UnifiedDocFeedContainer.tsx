@@ -12,7 +12,7 @@ import {
   getPaginationInfoFromServerLoaded,
   useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useMemo, useRef, useState } from "react";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
@@ -65,6 +65,7 @@ function UnifiedDocFeedContainer({
   const [docSetFetchedTime, setDocSetFetchedTime] = useState<number>(
     Date.now()
   );
+  const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(false);
 
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
     paginationInfo;
@@ -123,6 +124,8 @@ function UnifiedDocFeedContainer({
     shouldPrefetch,
   });
 
+  const firstLoad = useRef();
+
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
     fetchParams: {
@@ -143,6 +146,7 @@ function UnifiedDocFeedContainer({
         page: updatedPage,
         documents,
       }): void => {
+        setUnifiedDocsLoading(false);
         setUnifiedDocuments(documents);
         setPaginationInfo({
           hasMore: nextPageHasMore,
@@ -155,12 +159,13 @@ function UnifiedDocFeedContainer({
       },
       page: 1 /* when force updating, start from page 1 */,
     },
-    shouldEscape: false,
+    firstLoad,
+    setUnifiedDocsLoading,
     updateOn: [docTypeFilter, hubID, isLoggedIn, subFilters],
   });
 
   const hasSubscribed = useMemo(
-    (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
+    (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
 
@@ -223,9 +228,8 @@ function UnifiedDocFeedContainer({
 
   /* we need time check here to ensure that payload formatting does not lead to 
   UI rendering timing issues since document objects & formmatting can be heavy */
-  const areCardsReadyToBeRendered =
-    unifiedDocuments.length === 0 ||
-    (!isLoading && docSetFetchedTimeCheck === docSetFetchedTime);
+  console.log(unifiedDocsLoading);
+  const areCardsReadyToBeRendered = !unifiedDocsLoading;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
