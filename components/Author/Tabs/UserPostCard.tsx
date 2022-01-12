@@ -127,10 +127,7 @@ function UserPostCard(props: UserPostCardProps) {
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>
-          <div className={css(styles.badgeWrapper)}>
-            <DocumentBadge label="Post" onClick={()=>null} docType="post" />
-          </div>      
+        <span className={css(styles.title)}>   
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -330,6 +327,9 @@ function UserPostCard(props: UserPostCardProps) {
                 <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
               </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge label="Post" onClick={()=>null} docType="post" />
+              </div>                 
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
@@ -469,7 +469,8 @@ const styles = StyleSheet.create({
   },
   topRow: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "start",
+    justifyContent: "space-between",
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {

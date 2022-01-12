@@ -1,41 +1,61 @@
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import { badgeColors } from "~/config/themes/colors";
+import icons, { PostIcon } from "~/config/themes/icons";
 
 const DocumentBadge = ({ docType, label, onClick }) => {
   return (
-    <Badge
-      label={label}
-      onClick={onClick}
-      badgeClassName={styles[`${docType}Badge`]}
-    />
+    <Badge onClick={onClick} badgeClassName={styles[`${docType}Badge`]}>
+      {docType === "paper" ? (
+        <span className={css(styles.icon)}>{icons.file}</span>
+      ) : docType === "post" ? (
+        <span className={css(styles.icon)}>
+          <PostIcon />
+        </span>
+      ) : docType === "hypothesis" ? (
+        <span className={css(styles.icon)}>{icons.file}</span>
+      ) : null}
+      <span>{label}</span>
+    </Badge>
   );
 };
 
 const styles = StyleSheet.create({
+  icon: {
+    marginRight: 6,
+    color: "gray",
+    fontSize: 16,
+  },
   paperBadge: {
-    padding: "1px 8px",
+    display: "flex",
+    padding: "3px 8px",
     textTransform: "capitalize",
     backgroundColor: badgeColors.PAPER.BACKGROUND,
     color: badgeColors.PAPER.COLOR,
     marginBottom: 0,
-    display: "inline-block",
+    fontSize: 14,
+    fontWeight: 500,
+    // border: "1px solid",
   },
   postBadge: {
-    padding: "1px 8px",
+    display: "flex",
+    padding: "3px 8px",
     textTransform: "capitalize",
     backgroundColor: badgeColors.POST.BACKGROUND,
     color: badgeColors.POST.COLOR,
     marginBottom: 0,
-    display: "inline-block",
+    fontSize: 14,
+    fontWeight: 500,
   },
   hypothesisBadge: {
-    padding: "1px 8px",
+    display: "flex",
+    padding: "3px 8px",
     textTransform: "capitalize",
     backgroundColor: badgeColors.HYPOTHESIS.BACKGROUND,
     color: badgeColors.HYPOTHESIS.COLOR,
     marginBottom: 0,
-    display: "inline-block",
+    fontSize: 14,
+    fontWeight: 500,
   },
 });
 

@@ -8,6 +8,7 @@ import { isDevEnv } from "~/config/utils/env";
 const Badge = ({
   label,
   id,
+  children,
   onClick = null,
   onRemove = null,
   badgeClassName = null,
@@ -18,7 +19,10 @@ const Badge = ({
       onClick={onClick}
       data-test={isDevEnv() ? `badge-${id}` : undefined}
     >
-      <div className={css(styles.badgeLabel)}>{label}</div>
+      {children}
+      {!children && label && (
+        <div className={css(styles.badgeLabel)}>{label}</div>
+      )}
       {onRemove && (
         <div className={css(styles.badgeRemove)} onClick={onRemove}>
           <CloseIcon

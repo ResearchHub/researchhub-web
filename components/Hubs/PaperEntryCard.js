@@ -536,16 +536,7 @@ const PaperEntryCard = (props) => {
             e.stopPropagation();
           }}
         >
-          <span className={css(styles.title)}>
-            <div className={css(styles.badgeWrapper)}>
-              <DocumentBadge
-                label="Paper"
-                onClick={() => null}
-                docType="paper"
-              />
-            </div>
-            {title}
-          </span>
+          <span className={css(styles.title)}>{title}</span>
         </a>
       </Link>
     );
@@ -595,6 +586,13 @@ const PaperEntryCard = (props) => {
                 />
               )}
               {desktopOnly(renderMainTitle())}
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge
+                  label="Paper"
+                  onClick={() => null}
+                  docType="paper"
+                />
+              </div>
             </div>
             {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
@@ -736,6 +734,7 @@ const styles = StyleSheet.create({
   topRow: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {

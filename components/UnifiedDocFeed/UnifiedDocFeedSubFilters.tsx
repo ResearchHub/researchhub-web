@@ -2,6 +2,10 @@ import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
 import FormSelect from "../Form/FormSelect";
 import { filterOptions, scopeOptions } from "../../config/utils/options";
+import colors from "~/config/themes/colors";
+import DropdownButton from "~/components/Form/DropdownButton";
+import { useState } from "react";
+
 
 type Props = {
   onScopeSelect: (type: string, scopeOption: any) => void;
@@ -12,51 +16,68 @@ type Props = {
   };
 };
 
+
+
 export default function UnifiedDocFeedSubFilters({
   onScopeSelect,
   onSubFilterSelect,
   subFilters: { filterBy, scope },
 }: Props) {
+
+  const opts = filterOptions.map(f => ({
+    title: f.label, value: f.value
+  }))
+
+  const [isOpen, setIsOpen] = useState(false);
+
+
   return (
     <Fragment>
-      <FormSelect
-        id={"filterBy"}
-        options={filterOptions}
-        value={filterBy}
-        containerStyle={styles.dropDownLeft}
-        inputStyle={{
-          fontWeight: 500,
-          minHeight: "unset",
-          backgroundColor: "#FFF",
-          display: "flex",
-          justifyContent: "space-between",
+      <DropdownButton
+        opts={opts}
+        label={filterBy.label}
+        isOpen={isOpen}
+        onClick={() => setIsOpen(true)}
+        dropdownClassName="filter"
+        positions={["bottom", "right" ]}
+        customButtonClassName={styles.dropdownButtonOverride}
+        onSelect={(newPerm) => {
+          return null
         }}
-        onChange={onSubFilterSelect}
-        isSearchable={false}
+        onClose={() => setIsOpen(false)}
       />
-      <FormSelect
-        id={"scope"}
-        options={scopeOptions}
-        value={scope}
-        containerStyle={[
-          styles.dropDown,
-          filterBy.disableScope && styles.disableScope,
-        ]}
-        inputStyle={{
-          fontWeight: 500,
-          minHeight: "unset",
-          backgroundColor: "#FFF",
-          display: "flex",
-          justifyContent: "space-between",
-        }}
-        onChange={onScopeSelect}
-        isSearchable={false}
-      />
+      {!filterBy.disableScope &&
+        <FormSelect
+          id={"scope"}
+          options={scopeOptions}
+          value={scope}
+          containerStyle={[
+            styles.dropDown
+          ]}
+          inputStyle={{
+            fontWeight: 500,
+            minHeight: "unset",
+            backgroundColor: "#FFF",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+          onChange={onScopeSelect}
+          isSearchable={false}
+        />
+      }
     </Fragment>
   );
 }
 
 const styles = StyleSheet.create({
+  dropdownButtonOverride: {
+    backgroundColor: colors.GREY(0.2),
+    borderRadius: 40,
+    fontWeight: 500,
+    ":hover": {
+      borderRadius: 40,
+    }
+  },
   disableScope: {
     pointerEvents: "none",
     cursor: "not-allowed",

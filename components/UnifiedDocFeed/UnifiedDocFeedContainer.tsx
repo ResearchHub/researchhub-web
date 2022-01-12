@@ -27,6 +27,7 @@ import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
+import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import dynamic from "next/dynamic";
@@ -248,18 +249,7 @@ function UnifiedDocFeedContainer({
         mainHeaderText={formattedMainHeader}
       />
       <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
-        <div className={css(styles.subFilters)}>
-          <UnifiedDocFeedSubFilters
-            onSubFilterSelect={(_type: string, filterBy: any): void =>
-              setSubFilters({ filterBy, scope: subFilters.scope })
-            }
-            onScopeSelect={(_type: string, scope: any): void =>
-              setSubFilters({ filterBy: subFilters.filterBy, scope })
-            }
-            subFilters={subFilters}
-          />
-        </div>
+        <div className={css(styles.mainFilters)}><UnifiedDocFeedMenu /></div>
       </div>
       {!areCardsReadyToBeRendered ? (
         <div className={css(styles.initPlaceholder)}>
