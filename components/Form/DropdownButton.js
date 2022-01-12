@@ -38,7 +38,7 @@ const DropdownButton = ({
             >
               <div className={css(styles.infoContainer)}>
                 <div className={css(styles.optTitle, o.titleStyle)}>
-                  {o.title}
+                  {o.title || o.label}
                 </div>
                 <div className={css(styles.optDesc)}>{o.description}</div>
               </div>

@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   title: {
     color: colors.TEXT_DARKER_GREY,
     fontSize: 30,
-    fontWeight: 400,
+    fontWeight: 500,
     margin: 0,
     padding: 0,
     textOverflow: "ellipsis",

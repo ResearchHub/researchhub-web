@@ -74,6 +74,7 @@ import {
   faUserSlash,
   faQuoteRight,
   faVideoPlus,
+  faFileEdit,
   faRss,
   faLongArrowAltDown,
   faLongArrowAltUp,
@@ -311,6 +312,7 @@ const icons = {
   eyeSlash: <FontAwesomeIcon icon={faEyeSlash} />,
   facebook: <FontAwesomeIcon icon={faFacebookF} />,
   file: <FontAwesomeIcon icon={faFileAlt} />,
+  fileEdit: <FontAwesomeIcon icon={faFileEdit} />,
   fileImport: <FontAwesomeIcon icon={faFileImport} />,
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
@@ -656,6 +658,40 @@ export const CloseIcon = ({
         </g>{" "}
         <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
         <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g> <g> </g>{" "}
+      </svg>
+    </span>
+  );
+};
+
+export const PostIcon = ({
+  onClick,
+  width = 14,
+  height = 14,
+  withAnimation = true,
+  overrideStyle = null,
+  color = "#B0AFB8",
+}) => {
+  return (
+    <span
+      onClick={onClick}
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M11.1099 1.34014C12.0689 1.2802 13.0146 1.61319 13.7272 2.26585C14.3798 2.97845 14.7128 3.92414 14.6596 4.8898V11.11C14.7195 12.0757 14.3798 13.0214 13.7338 13.734C13.0212 14.3866 12.0689 14.7196 11.1099 14.6597H4.88959C3.92391 14.7196 2.97822 14.3866 2.26561 13.734C1.61295 13.0214 1.27996 12.0757 1.3399 11.11V4.8898C1.27996 3.92414 1.61295 2.97845 2.26561 2.26585C2.97822 1.61319 3.92391 1.2802 4.88959 1.34014H11.1099ZM7.32038 11.2299L11.8024 6.73456C12.2087 6.32166 12.2087 5.65568 11.8024 5.24943L10.9367 4.38366C10.5238 3.97076 9.85777 3.97076 9.44486 4.38366L8.99865 4.83653C8.93205 4.90313 8.93205 5.01634 8.99865 5.08294C8.99865 5.08294 10.0576 6.13518 10.0775 6.16182C10.1508 6.24174 10.1974 6.3483 10.1974 6.46817C10.1974 6.70792 10.0043 6.90772 9.75787 6.90772C9.64466 6.90772 9.5381 6.8611 9.46484 6.78784L8.35265 5.68232C8.29937 5.62904 8.20613 5.62904 8.15285 5.68232L4.97612 8.85903C4.75634 9.07881 4.6298 9.37184 4.62315 9.68484L4.58319 11.2632C4.58319 11.3498 4.60983 11.4297 4.66976 11.4896C4.7297 11.5496 4.80962 11.5829 4.8962 11.5829H6.46126C6.78093 11.5829 7.08728 11.4563 7.32038 11.2299Z"
+          fill={color}
+        />
       </svg>
     </span>
   );

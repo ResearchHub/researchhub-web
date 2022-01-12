@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import { useState, useEffect } from "react";
 
-import colors from "~/config/themes/colors";
+import colors, { iconColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
 
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     boxSizing: "border-box",
-    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    // borderBottom: `1px solid ${colors.BLACK(0.1)}`,
   },
   tabContainer: {
     display: "flex",
@@ -98,17 +98,20 @@ const styles = StyleSheet.create({
   },
   tab: {
     color: colors.BLACK(0.5),
-    padding: "1rem",
+    padding: "6px 10px",
+    marginRight: 5,
     textTransform: "capitalize",
     fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",
     ":active": {
-      color: colors.PURPLE(),
+      // color: colors.PURPLE(),
       cursor: "pointer",
     },
     ":hover": {
-      color: colors.PURPLE(),
+      // color: colors.PURPLE(),
+      borderRadius: 40,
+      background: iconColors.BACKGROUND,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
@@ -116,9 +119,11 @@ const styles = StyleSheet.create({
     },
   },
   selectedTab: {
-    color: colors.PURPLE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.PURPLE(),
+    color: colors.BLACK(),
+    borderRadius: "40px",
+    backgroundColor: colors.GREY(0.2),
+    // borderBottom: "solid 3px",
+    // borderColor: colors.PURPLE(),
   },
 });
 
