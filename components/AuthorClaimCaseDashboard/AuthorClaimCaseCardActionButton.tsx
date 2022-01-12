@@ -6,6 +6,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ValueOf } from "../../config/types/root_types";
 import { ReactElement, SyntheticEvent } from "react";
 import colors from "../../config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   actionType: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
@@ -56,8 +57,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginLeft: 8,
     width: 144,
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "68px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "50%",
     },
   },

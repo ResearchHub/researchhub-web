@@ -600,7 +600,7 @@ class CommentEntry extends Component {
                     "created_by",
                     "author_profile",
                   ])}
-                  isCreatedByEditor={data?.is_created_by_editor}
+                  isCreatedByEditor={comment?.is_created_by_editor}
                   data={comment}
                   username={username}
                   date={date}

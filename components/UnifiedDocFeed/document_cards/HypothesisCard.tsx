@@ -25,6 +25,8 @@ import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVot
 import Ripples from "react-ripples";
 import Router from "next/router";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
+import DiscussionCount from "~/components/DiscussionCount";
+
 
 export type HypothesisCardProps = {
   aggregate_citation_consensus: any;
@@ -271,29 +273,6 @@ function HypothesisCard({
   );
 
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
-  const discussionCountComponent =
-    discussionCount === 0 ? null : (
-      <Link
-        href={"/[documentType]/[documentId]/[title]"}
-        as={`/${formattedDocType}/${id}/${slug}`}
-      >
-        <a
-          className={css(styles.link)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className={css(styles.discussion)}>
-            <div className={css(styles.discussionIcon)} id={"discIcon"}>
-              {PaperDiscussionIcon({ color: undefined })}
-            </div>
-            <div className={css(styles.discussionCount)} id={"discCount"}>
-              {discussionCount}
-            </div>
-          </div>
-        </a>
-      </Link>
-    );
 
   const navigateToPage = (e) => {
     if (e.metaKey || e.ctrlKey) {
@@ -324,7 +303,7 @@ function HypothesisCard({
         <div className={css(styles.leftSection)}>
           {desktopVoteWidget}
           <div className={css(styles.discussionCountContainer)}>
-            {discussionCountComponent}
+            <DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} />
           </div>
         </div>
       </DesktopOnly>
@@ -333,7 +312,7 @@ function HypothesisCard({
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
               {mobileVoteWidget}
-              <MobileOnly> {discussionCountComponent}</MobileOnly>
+              <MobileOnly><DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} /></MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
@@ -412,31 +391,6 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#FAFAFA",
     },
-  },
-  discussion: {
-    cursor: "pointer",
-    position: "relative",
-    fontSize: 14,
-    background: colors.LIGHTER_GREY_BACKGROUND,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
-    borderRadius: 13,
-    "@media only screen and (max-width: 967px)": {
-      minWidth: "unset",
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-    },
-  },
-  discussionCount: {
-    color: "rgb(71 82 93 / 80%)",
-    fontWeight: "bold",
-    marginLeft: 6,
-  },
-  discussionIcon: {
-    color: "#ededed",
   },
   discussionCountContainer: {
     marginTop: 8,
@@ -532,7 +486,6 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingBottom: 8,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "space-between",
       paddingBottom: 10,
     },
   },

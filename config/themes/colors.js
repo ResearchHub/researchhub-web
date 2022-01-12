@@ -56,6 +56,8 @@ export const voteWidgetColors = {
 
 export const discussionPageColors = {
   DIVIDER: `rgba(235, 235, 235, 1)`,
+  ICON: "#E7EEFF",
+  ICON_HOVER: "rgb(205 219 253)",
 };
 
 export const modalColors = {

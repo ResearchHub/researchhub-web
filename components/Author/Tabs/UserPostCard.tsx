@@ -18,6 +18,8 @@ import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import DiscussionCount from "~/components/DiscussionCount";
+
 
 export type UserPostCardProps = {
   boost_amount: number;
@@ -282,30 +284,6 @@ function UserPostCard(props: UserPostCardProps) {
   );
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
 
-  const discussionCountComponent =
-    discussion_count === 0 ? null : (
-      <Link
-        href={"/post/[documentId]/[title]"}
-        as={`/post/${id}/${slug}#comments`}
-      >
-        <a
-          className={css(styles.link)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className={css(styles.discussion)}>
-            <div className={css(styles.discussionIcon)} id={"discIcon"}>
-              {PaperDiscussionIcon({ color: undefined })}
-            </div>
-            <div className={css(styles.discussionCount)} id={"discCount"}>
-              {discussion_count}
-            </div>
-          </div>
-        </a>
-      </Link>
-    );
-
   const navigateToPage = (e) => {
     if (e.metaKey || e.ctrlKey) {
       window.open(`/${formattedDocType}/${id}/${slug}`, "_blank");
@@ -335,7 +313,7 @@ function UserPostCard(props: UserPostCardProps) {
         <div className={css(styles.leftSection)}>
           {desktopVoteWidget}
           <div className={css(styles.discussionCountContainer)}>
-            {discussionCountComponent}
+            <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
           </div>
         </div>
       </DesktopOnly>
@@ -344,7 +322,9 @@ function UserPostCard(props: UserPostCardProps) {
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
               {mobileVoteWidget}
-              <MobileOnly>{discussionCountComponent}</MobileOnly>
+              <MobileOnly>
+                <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+              </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
@@ -620,30 +600,5 @@ const styles = StyleSheet.create({
   discussionCountContainer: {
     marginTop: 8,
     marginRight: 17,
-  },
-  discussion: {
-    cursor: "pointer",
-    position: "relative",
-    fontSize: 14,
-    background: colors.LIGHTER_GREY_BACKGROUND,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
-    borderRadius: 13,
-    "@media only screen and (max-width: 967px)": {
-      minWidth: "unset",
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-    },
-  },
-  discussionIcon: {
-    color: "#ededed",
-  },
-  discussionCount: {
-    color: "rgb(71 82 93 / 80%)",
-    fontWeight: "bold",
-    marginLeft: 6,
   },
 });
