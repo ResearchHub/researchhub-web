@@ -132,10 +132,7 @@ function HypothesisCard({
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>
-          <div className={css(styles.badgeWrapper)}>
-            <DocumentBadge label="Hypothesis" onClick={()=>null} docType="hypothesis" />
-          </div>            
+        <span className={css(styles.title)}>           
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -318,6 +315,12 @@ function HypothesisCard({
               {mobileVoteWidget}
               <MobileOnly><DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} /></MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge
+                  label="Hypothesis"
+                  docType="hypothesis"
+                />
+              </div>              
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
@@ -489,6 +492,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 8,
+    justifyContent: "space-between",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingBottom: 10,
     },
@@ -647,5 +651,6 @@ const styles = StyleSheet.create({
   badgeWrapper: {
     verticalAlign: "-3px",
     display: "inline-block",
+    marginRight: -8,
   },    
 });

@@ -40,6 +40,7 @@ export function getDocumentCard({
                 formattedDocType={formattedDocType}
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 style={[
+                  styles.card,
                   styles.customUserPostCard,
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
@@ -53,6 +54,7 @@ export function getDocumentCard({
                 formattedDocType={formattedDocType}
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 style={[
+                  styles.card,
                   styles.customUserPostCard,
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
@@ -66,6 +68,7 @@ export function getDocumentCard({
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 paper={uniDoc.documents}
                 style={[
+                  styles.card,
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
@@ -92,6 +95,11 @@ export function getDocumentCard({
 }
 
 const styles = StyleSheet.create({
+  card: {
+    ":first-child": {
+      marginTop: 0
+    }
+  },
   customUserPostCard: {
     marginBottom: 12,
     marginTop: 12,

@@ -587,11 +587,7 @@ const PaperEntryCard = (props) => {
               )}
               {desktopOnly(renderMainTitle())}
               <div className={css(styles.badgeWrapper)}>
-                <DocumentBadge
-                  label="Paper"
-                  onClick={() => null}
-                  docType="paper"
-                />
+                <DocumentBadge label="Paper" docType="paper" />
               </div>
             </div>
             {mobileOnly(renderMainTitle())}
@@ -1025,6 +1021,7 @@ const styles = StyleSheet.create({
   badgeWrapper: {
     verticalAlign: "-3px",
     display: "inline-block",
+    marginRight: -8,
   },
 });
 

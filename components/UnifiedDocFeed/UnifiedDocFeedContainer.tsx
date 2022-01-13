@@ -200,10 +200,8 @@ function UnifiedDocFeedContainer({
     <div className={css(styles.unifiedDocFeedContainer)}>
       {!hasSubscribed ? (
         <div>
-          <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            {/* @ts-ignore */}
-            <CreateFeedBanner loggedIn={loggedIn} />
-          </div>
+          {/* @ts-ignore */}
+          <CreateFeedBanner loggedIn={loggedIn} />
         </div>
       ) : null}
       <FeedInfoCard
@@ -231,12 +229,16 @@ function UnifiedDocFeedContainer({
                 },
               );
             }}            
-            onSubFilterSelect={(filterBy) =>
+            onSubFilterSelect={(filterBy) => {
+              console.log('filterBy', filterBy);
+              console.log('subFilters.scope');
               setSubFilters({ filterBy, scope: subFilters.scope })
-            }
-            onScopeSelect={(scope) =>
+            }}
+            onScopeSelect={(scope) =>{
+              console.log('filterBy', subFilters.filterBy);
+              console.log('scope', scope);
               setSubFilters({ filterBy: subFilters.filterBy, scope })
-            }            
+            }}            
           />
         </div>
       </div>
@@ -368,14 +370,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-  },
-  bannerContainer: {
-    marginBottom: 16,
-    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
-      padding: 0,
-      width: "100%",
-    },
   },
   feedPosts: {
     position: "relative",

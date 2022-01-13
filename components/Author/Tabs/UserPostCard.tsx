@@ -328,7 +328,7 @@ function UserPostCard(props: UserPostCardProps) {
               </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
               <div className={css(styles.badgeWrapper)}>
-                <DocumentBadge label="Post" onClick={()=>null} docType="post" />
+                <DocumentBadge label="Post" docType="post" />
               </div>                 
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
@@ -609,5 +609,6 @@ const styles = StyleSheet.create({
   badgeWrapper: {
     display: "inline-block",
     verticalAlign: "-3px",    
+    marginRight: -8,
   }
 });
