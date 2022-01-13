@@ -30,6 +30,7 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import dynamic from "next/dynamic";
+import { isServer } from "~/config/server/isServer";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -124,7 +125,7 @@ function UnifiedDocFeedContainer({
     shouldPrefetch,
   });
 
-  const firstLoad = useRef();
+  const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
 
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
