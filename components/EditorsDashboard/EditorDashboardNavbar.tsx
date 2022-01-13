@@ -55,7 +55,7 @@ export default function EditorDashboardNavbar({
 
   return (
     <div className={css(styles.editorDashboardNavbar)}>
-      <div className={css(styles.header)}>{"Editors"}</div>
+      <div className={css(styles.header)}>{"Editor Dashboard"}</div>
       <div className={css(styles.navButtons)}>
         <FormSelect
           containerStyle={styles.hubDropdown}
@@ -85,10 +85,9 @@ export default function EditorDashboardNavbar({
 
 const styles = StyleSheet.create({
   editorDashboardNavbar: {
-    alignItems: "center",
     backgroundColor: "#FFF",
+    flexDirection: "column",
     display: "flex",
-    justifyContent: "space-between",
     width: "100%",
   },
   dropdown: {
