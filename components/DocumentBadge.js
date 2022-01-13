@@ -1,21 +1,43 @@
 import Badge from "~/components/Badge";
 import { StyleSheet, css } from "aphrodite";
 import { badgeColors } from "~/config/themes/colors";
-import icons, { PostIcon, PaperIcon } from "~/config/themes/icons";
+import icons, {
+  PostIcon,
+  PaperIcon,
+  HypothesisIcon,
+} from "~/config/themes/icons";
+import { useRouter } from "next/router";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 const DocumentBadge = ({ docType, label, onClick }) => {
+  const router = useRouter();
+
+  const _onClick = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    onClick
+      ? onClick()
+      : router.push({
+          pathname: router.pathname,
+          query: { ...router.query, type: getBEUnifiedDocType(docType) },
+        });
+  };
+
   return (
-    <Badge onClick={onClick} badgeClassName={styles.badge}>
+    <Badge onClick={_onClick} badgeClassName={styles.badge}>
       {docType === "paper" ? (
         <span className={css(styles.icon)}>
-          <PaperIcon />
+          <PaperIcon withAnimation={false} />
         </span>
       ) : docType === "post" ? (
         <span className={css(styles.icon)}>
-          <PostIcon />
+          <PostIcon withAnimation={false} />
         </span>
       ) : docType === "hypothesis" ? (
-        <span className={css(styles.icon)}>{icons.file}</span>
+        <span className={css(styles.icon)}>
+          <HypothesisIcon withAnimation={false} />
+        </span>
       ) : null}
       <span>{label}</span>
     </Badge>
