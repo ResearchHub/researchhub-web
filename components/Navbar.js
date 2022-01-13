@@ -493,21 +493,23 @@ const Navbar = (props) => {
               renderLoginButtons(isLoggedIn)
             ) : (
               <div className={css(styles.userDropdown)}>
-                <div
-                  className={css(styles.avatarContainer)}
-                  ref={avatarRef}
-                  onClick={toggleMenu}
-                >
-                  <AuthorAvatar
-                    author={user.author_profile}
-                    size={33}
-                    textSizeRatio={2.5}
-                    disableLink={true}
-                    showModeratorBadge={user && user.moderator}
-                  />
-                  <span className={css(styles.caret)}>
-                    {voteWidgetIcons.downvote}
-                  </span>
+                <div className={css(styles.navbarButtonContainer)}>
+                  <div
+                    className={css(styles.avatarContainer)}
+                    ref={avatarRef}
+                    onClick={toggleMenu}
+                  >
+                    <AuthorAvatar
+                      author={user.author_profile}
+                      size={33}
+                      textSizeRatio={2.5}
+                      disableLink
+                      showModeratorBadge={user && user.moderator}
+                    />
+                    <span className={css(styles.caret)}>
+                      {voteWidgetIcons.downvote}
+                    </span>
+                  </div>
                   <div className={css(styles.reputation)}>
                     <Reputation showBalance={true} />
                   </div>
@@ -916,8 +918,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reputation: {
+    cursor: "pointer",
     marginLeft: 11,
-    // minWidth: 56,
   },
   dropdown: {
     position: "absolute",
@@ -989,15 +991,17 @@ const styles = StyleSheet.create({
       background: "#eee",
     },
   },
+  navbarButtonContainer: {
+    alignItems: "center",
+    display: "flex",
+  },
   avatarContainer: {
+    alignItems: "center",
     cursor: "pointer",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
   },
   notification: {
     marginLeft: 15,
-    marginnRight: 15,
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },
