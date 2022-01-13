@@ -509,7 +509,6 @@ class HubPage extends Component {
       auth,
       home,
       hub,
-      hubName,
       hubState,
       initialFeed,
       initialHubList,
