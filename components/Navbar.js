@@ -28,14 +28,14 @@ import icons, { RHLogo, voteWidgetIcons } from "~/config/themes/icons";
 
 // Config
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import colors, { pillNavColors } from "~/config/themes/colors";
+import colors from "~/config/themes/colors";
 import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
-import DropdownButton from "~/components/Form/DropdownButton";
+import HubSelector from "~/components/HubSelector";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -443,27 +443,6 @@ const Navbar = (props) => {
     shouldRedirect: false /* should redirect */,
   });
 
-  const hubOpts = props.hubState.topHubs.map((h) => ({
-    html: (
-      <Link href={`/hubs/${h.slug}`}>
-        <a className={css(styles.hubLink)}>
-          <img
-            className={css(styles.hubImage)}
-            src={
-              h.hub_image
-                ? h.hub_image
-                : "/static/background/hub-placeholder.svg"
-            }
-            alt={h.name}
-          />
-          <span className={"clamp1"}>{h.name}</span>
-        </a>
-      </Link>
-    ),
-    value: h,
-  }));
-  const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
-
   return (
     <Fragment>
       <Menu
@@ -507,20 +486,7 @@ const Navbar = (props) => {
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
         <div className={css(styles.hubPopoverWrapper)}>
-          <DropdownButton
-            opts={hubOpts}
-            label={`Hub`}
-            isOpen={isHubSelectOpen}
-            onClick={() => setIsHubSelectOpen(true)}
-            dropdownClassName="hubSelect"
-            overridePopoverStyle={styles.hubPopover}
-            positions={["bottom", "right"]}
-            customButtonClassName={styles.hubSelectorButton}
-            onSelect={(newPerm) => {
-              return null;
-            }}
-            onClose={() => setIsHubSelectOpen(false)}
-          />
+          <HubSelector />
         </div>
         <Search
           overrideStyle={styles.navbarSearchOverride}
@@ -726,37 +692,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
     },
-  },
-  hubPopover: {
-    width: "100vw",
-    boxSizing: "border-box",
-    height: "90vh",
-  },
-  hubSelectorButton: {
-    background: pillNavColors.primary.filledBackgroundColor,
-    color: pillNavColors.primary.filledTextColor,
-    borderRadius: 40,
-    marginLeft: 8,
-  },
-  hubImage: {
-    height: 35,
-    width: 35,
-    minWidth: 35,
-    maxWidth: 35,
-    borderRadius: 4,
-    objectFit: "cover",
-    marginRight: 10,
-    background: "#EAEAEA",
-    border: "1px solid #ededed",
-  },
-  hubLink: {
-    textDecoration: "none",
-    color: "#111",
-    width: "100%",
-    display: "flex",
-    alignItems: "center",
-    fontWeight: 500,
-    padding: "10px 20px",
   },
   navbarContainer: {
     width: "100%",

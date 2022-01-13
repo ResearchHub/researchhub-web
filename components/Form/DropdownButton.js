@@ -17,9 +17,12 @@ const DropdownButton = ({
   positions = ["bottom", "top"],
   isOpen = false,
   overridePopoverStyle = null,
+  overrideOptionsStyle = null,
   overrideTargetStyle = null,
   overrideTitleStyle = null,
   closeAfterSelect = true,
+  htmlBefore = null, // HTML to be injected before the list
+  htmlAfter = null, // HTML to be injected after the list
 }) => {
   return (
     <ResearchHubPopover
@@ -27,38 +30,42 @@ const DropdownButton = ({
       isOpen={isOpen}
       popoverContent={
         <div className={css(styles.popoverBodyContent, overridePopoverStyle)}>
-          {opts.map((o, i) => (
-            <div
-              className={css(styles.optContainer)}
-              onClick={() => {
-                onSelect(o.value);
-                if (closeAfterSelect) {
-                  onClose();
-                }
-              }}
-              key={`opt-${i}`}
-            >
-              <div className={css(styles.infoContainer)}>
-                {o.html ? (
-                  o.html
-                ) : (
-                  <Fragment>
-                    <div
-                      className={css(
-                        styles.optTitle,
-                        overrideTitleStyle,
-                        o.titleStyle
-                      )}
-                    >
-                      {o.title || o.label}
-                    </div>
-                    <div className={css(styles.optDesc)}>{o.description}</div>
-                  </Fragment>
-                )}
+          <div className={css(styles.htmlBefore)}>{htmlBefore}</div>
+          <div className={css(styles.options, overrideOptionsStyle)}>
+            {opts.map((o, i) => (
+              <div
+                className={css(styles.optContainer)}
+                onClick={() => {
+                  onSelect(o.value);
+                  if (closeAfterSelect) {
+                    onClose();
+                  }
+                }}
+                key={`opt-${i}`}
+              >
+                <div className={css(styles.infoContainer)}>
+                  {o.html ? (
+                    o.html
+                  ) : (
+                    <Fragment>
+                      <div
+                        className={css(
+                          styles.optTitle,
+                          overrideTitleStyle,
+                          o.titleStyle
+                        )}
+                      >
+                        {o.title || o.label}
+                      </div>
+                      <div className={css(styles.optDesc)}>{o.description}</div>
+                    </Fragment>
+                  )}
+                </div>
+                <div className={css(styles.selectionContainer)}></div>
               </div>
-              <div className={css(styles.selectionContainer)}></div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className={css(styles.htmlAfter)}>{htmlAfter}</div>
         </div>
       }
       positions={positions}
@@ -129,6 +136,7 @@ const styles = StyleSheet.create({
     padding: 4,
     fontSize: 11,
   },
+  htmlAfter: {},
 });
 
 export default DropdownButton;
