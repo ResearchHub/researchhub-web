@@ -161,7 +161,7 @@ function UnifiedDocFeedContainer({
     },
     firstLoad,
     setUnifiedDocsLoading,
-    updateOn: [docTypeFilter, hubID, isLoggedIn, subFilters],
+    updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
   const hasSubscribed = useMemo(
@@ -274,7 +274,7 @@ function UnifiedDocFeedContainer({
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {!isLoggedIn && isOnMyHubsTab ? null : (
+      {!isLoggedIn && isOnMyHubsTab || unifiedDocsLoading ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader

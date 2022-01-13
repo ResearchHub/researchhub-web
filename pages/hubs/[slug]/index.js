@@ -26,6 +26,7 @@ class Index extends Component {
       return {
         slug,
         name,
+        loggedIn: authToken !== undefined,
         initialProps: {},
         currentHub,
       };
