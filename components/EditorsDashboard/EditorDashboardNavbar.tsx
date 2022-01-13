@@ -58,7 +58,7 @@ export default function EditorDashboardNavbar({
       <div className={css(styles.header)}>{"Editors"}</div>
       <div className={css(styles.navButtons)}>
         <FormSelect
-          containerStyle={styles.dropdown}
+          containerStyle={styles.hubDropdown}
           inputStyle={INPUT_STYLE}
           id="hubs"
           label=""
@@ -90,10 +90,26 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    maxWidth: 1200,
   },
   dropdown: {
     width: 140,
+    minHeight: "unset",
+    fontSize: 14,
+    marginRight: 10,
+    "@media only screen and (max-width: 1343px)": {
+      height: "unset",
+    },
+    "@media only screen and (max-width: 1149px)": {
+      width: 150,
+      fontSize: 13,
+    },
+    "@media only screen and (max-width: 779px)": {
+      width: "100%",
+      marginTop: 8,
+    },
+  },
+  hubDropdown: {
+    width: 200,
     minHeight: "unset",
     fontSize: 14,
     marginRight: 10,

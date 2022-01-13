@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     height: "100vh",
     paddingLeft: 32,
     width: "100%",
+    maxWidth: 1400,
   },
   editorContainerWrap: {
     boxSizing: "border-box",
