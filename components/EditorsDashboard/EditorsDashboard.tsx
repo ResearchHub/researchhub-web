@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import Head from "~/components/Head";
+import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
   EditorDashFilters,
   filterOptions,
@@ -22,10 +23,12 @@ export default function EditorsDashboard(): ReactElement<"div"> {
       />
       <Head />
       <div className={css(styles.editorContainerWrap)}>
-        {/* <AuthorClaimCaseContainer
-          lastFetchTime={lastFetchTime}
-          setLastFetchTime={setLastFetchTime}
-        /> */}
+        <EditorDashboardUserCard
+          authorProfile={{ first_name: "calvin", last_name: "lee", id: 1 }}
+          commentCount={0}
+          supportCount={0}
+          submissionCount={0}
+        />
       </div>
     </div>
   );
