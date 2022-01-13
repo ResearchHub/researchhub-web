@@ -41,31 +41,33 @@ export default function FeedInfoCard({
 
   return (
     <div className={css(styles.feedInfoCard)}>
-      <div>
-        <Image
-          className={css(styles.hubImage)}
-          height={68}
-          hidden={false}
-          layout="fixed"
-          objectFit="cover"
-          src={hubImage ?? "/static/background/hub-placeholder.svg"}
-          width={68}
-        />
-      </div>
-      <div className={css(styles.bodyContainer)}>
+      <div className={css(styles.detailRow)}>
+        <div>
+          <Image
+            className={css(styles.hubImage)}
+            height={68}
+            hidden={false}
+            layout="fixed"
+            objectFit="cover"
+            src={hubImage ?? "/static/background/hub-placeholder.svg"}
+            width={68}
+          />
+        </div>
         <div className={css(styles.titleContainer)}>
           <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>
           <div className={css(styles.subscribeContainer)}>
             {nullthrows(hubSubscribeButton)}
           </div>
         </div>
+      </div>
+      <div className={css(styles.bodyContainer)}>
         <div className={css(styles.detailRow)}>
           <div className={css(styles.detailRowLabel)}>
             <FontAwesomeIcon
               color={colors.LIGHT_GREY_TEXT}
               icon={faUser}
               style={{
-                marginRight: 14,
+                marginRight: 8,
                 width: "16px",
               }}
             />
@@ -85,19 +87,17 @@ export default function FeedInfoCard({
               <span
                 style={{
                   fontWeight: 500,
-                  margin: "0 12px",
+                  margin: "0 8px",
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
-            <div className={css(styles.editorContainer)}>
-              <AuthorFacePile
-                authorProfiles={editorProfiles}
-                horizontal
-                imgSize={22}
-                labelSpacing={6}
-                withAuthorName
-              />
-            </div>
+            <AuthorFacePile
+              authorProfiles={editorProfiles}
+              horizontal
+              imgSize={22}
+              labelSpacing={6}
+              withAuthorName
+            />
           </div>
         )}
         <div className={css(styles.detailRow)}>
@@ -114,8 +114,8 @@ const styles = StyleSheet.create({
     border: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
     display: "flex",
+    flexDirection: "column",
     padding: 16,
-    overflowX: "auto",
   },
   hubImage: {
     borderRadius: 4,
@@ -123,7 +123,6 @@ const styles = StyleSheet.create({
   bodyContainer: {
     display: "flex",
     flexDirection: "column",
-    marginLeft: 16,
     width: "100%",
   },
   detailRow: {
@@ -131,19 +130,15 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     justifyContent: "flex-start",
-    margin: "8px 0",
+    margin: "8px",
   },
   detailRowLabel: {
     alignItems: "center",
     display: "flex",
     marginRight: 8,
   },
-  editorContainer: {
-    display: "flex",
-    flexWrap: "wrap",
-  },
   subscribeContainer: {
-    marginLeft: 16,
+    marginLeft: 20,
     minWidth: 100,
   },
   title: {
@@ -171,5 +166,9 @@ const styles = StyleSheet.create({
       fontSize: 20,
     },
   },
-  titleContainer: { display: "flex", width: "100%", marginBottom: 8 },
+  titleContainer: {
+    display: "flex",
+    width: "100%",
+    marginLeft: 20,
+  },
 });
