@@ -85,10 +85,10 @@ export const useEffectForceUpdate = ({
   firstLoad: any,
 }): void => {
   useEffect((): void => {
-    if (firstLoad && firstLoad.current) {
+    if (firstLoad?.current) {
       setUnifiedDocsLoading && setUnifiedDocsLoading(true);
       fetchUnifiedDocs(fetchParams);
-    } else {
+    } else if (firstLoad) {
       firstLoad.current = true;
     }
   }, [...updateOn]);

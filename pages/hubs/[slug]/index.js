@@ -20,7 +20,7 @@ class Index extends Component {
     const { res, slug, name, type } = query;
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
-    const currentHub = fetchHubFromSlug({ slug });
+    const currentHub = await fetchHubFromSlug({ slug });
 
     if (!isServer()) {
       return {
@@ -180,7 +180,6 @@ class Index extends Component {
             }
           />
         )}
-        {/* {this.renderHub()} */}
         <HubPage hub={currentHub} slug={slug} {...this.props.initialProps} />
       </div>
     );

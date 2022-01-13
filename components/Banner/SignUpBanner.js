@@ -83,7 +83,7 @@ class SignUpBanner extends Component {
       } else {
         getUser().then((userAction) => {
           this.closeBanner(); // close the banner and set preference
-          if (!userAction.user.has_seen_orcid_connect_modal) {
+          if (!userAction?.user?.has_seen_orcid_connect_modal) {
             this.props.openOrcidConnectModal(true);
           }
         });
