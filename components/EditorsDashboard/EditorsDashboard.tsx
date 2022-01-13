@@ -1,21 +1,46 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement } from "react";
+import { ReactElement, useState } from "react";
+import Head from "~/components/Head";
+import EditorDashboardNavbar, {
+  EditorDashFilters,
+  filterOptions,
+} from "./EditorDashboardNavbar";
 
 export default function EditorsDashboard(): ReactElement<"div"> {
+  const [filters, setFilters] = useState<EditorDashFilters>({
+    selectedHub: null,
+    timeframe: filterOptions[0],
+  });
+
   return (
     <div className={css(styles.editorsDashboard)}>
-      {"Editor Dashboard - Killswitched on Prod, won't be visible"}
+      <EditorDashboardNavbar
+        currentFilters={filters}
+        onFilterChange={(updatedFilters: EditorDashFilters): void =>
+          setFilters({ ...updatedFilters })
+        }
+      />
+      <Head />
+      <div className={css(styles.editorContainerWrap)}>
+        {/* <AuthorClaimCaseContainer
+          lastFetchTime={lastFetchTime}
+          setLastFetchTime={setLastFetchTime}
+        /> */}
+      </div>
     </div>
   );
 }
 
 const styles = StyleSheet.create({
   editorsDashboard: {
-    alignItems: "center",
     display: "flex",
     flexDirection: "column",
     height: "100vh",
-    overflow: "auto",
+    paddingLeft: 32,
     width: "100%",
+  },
+  editorContainerWrap: {
+    boxSizing: "border-box",
+    marginTop: 16,
   },
 });
