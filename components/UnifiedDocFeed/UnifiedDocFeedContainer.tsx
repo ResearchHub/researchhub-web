@@ -182,42 +182,6 @@ function UnifiedDocFeedContainer({
     [hubName, feed, subFilters, isHomePage]
   );
 
-  const docTypeFilterButtons = Object.keys(UnifiedDocFilters).map(
-    (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
-      const filterValue = UnifiedDocFilters[filterKey];
-      return (
-        <div className={css(styles.feedButtonContainer)}>
-          <UnifiedDocFeedFilterButton
-            isActive={docTypeFilter === filterValue}
-            key={filterKey}
-            label={UnifiedDocFilterLabels[filterKey]}
-            onClick={(): void => {
-              if (docTypeFilter !== filterValue) {
-                setDocTypeFilter(filterValue);
-                setPaginationInfo({
-                  hasMore: false,
-                  isLoading: true,
-                  isLoadingMore: false,
-                  isServerLoaded: false,
-                  localPage: 1,
-                  page: 1,
-                });
-                setDocSetFetchedTime(Date.now());
-                router.push(
-                  {
-                    pathname: routerPathName,
-                    query: { ...router.query, type: filterValue },
-                  },
-                  routerPathName + `?type=${filterValue}`
-                );
-              }
-            }}
-          />
-        </div>
-      );
-    }
-  );
-
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const [cards, docSetFetchedTimeCheck] = getDocumentCard({
     docSetFetchedTime,

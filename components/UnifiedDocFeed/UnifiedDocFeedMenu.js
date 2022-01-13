@@ -6,7 +6,7 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
-import colors from "~/config/themes/colors";
+import colors, { pillNavColors } from "~/config/themes/colors";
 
 const UnifiedDocFeedMenu = ({
   subFilters,
@@ -59,7 +59,7 @@ const UnifiedDocFeedMenu = ({
           alignCenter={false}
         />
       </div>
-      <div className={css(styles.dropdownButtonWrapper)}>
+      <div className={css(styles.dropdownButtonMobile)}>
         <DropdownButton
           opts={tabs}
           label={selectedTab.label}
@@ -74,7 +74,6 @@ const UnifiedDocFeedMenu = ({
           onClose={() => setIsOpen(false)}
         />
       </div>
-      <div className={css(styles.seperator)}></div>
       <div className={css(styles.subFilters)}>
         <UnifiedDocFeedSubFilters
           onSubFilterSelect={onSubFilterSelect}
@@ -96,14 +95,15 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.1),
   },
   horizontalMenuOverride: {
-    width: 296,
+    width: 307,
   },
   horizontalTabWrapper: {
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
-  dropdownButtonWrapper: {
+  dropdownButtonMobile: {
+    marginRight: 8,
     [`@media only screen and (min-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
@@ -112,9 +112,10 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   dropdownButtonOverride: {
-    backgroundColor: colors.GREY(0.2),
+    backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    color: pillNavColors.primary.filledTextColor,
     borderRadius: 40,
-    fontWeight: 500,
+    fontWeight: 400,
     ":hover": {
       borderRadius: 40,
     },

@@ -72,26 +72,21 @@ export const bannerColor = {
 };
 
 export const badgeColors = {
-  PAPER: {
-    BACKGROUND: "white",
-    COLOR: colors.BLACK(0.5),
-  },
-  POST: {
-    BACKGROUND: "white",
-    COLOR: colors.BLACK(0.5),
-  },
-  HYPOTHESIS: {
-    BACKGROUND: "white",
-    COLOR: colors.BLACK(0.5),
-  },
+  HOVER: colors.LIGHTER_BLUE(),
+  COLOR: colors.BLACK(0.5),
+  HOVER_COLOR: colors.BLUE(),
 };
 
-export const horizontalNavColors = {
-  pillStyle: {
-    selectedColor: colors.NEW_BLUE(),
-    selectedBackgroundColor: colors.LIGHTER_BLUE(),
-    unselectedColor: colors.BLACK(0.6),
-    unselectedHoverColor: colors.LIGHTER_GREY(),
+export const pillNavColors = {
+  primary: {
+    filledTextColor: colors.NEW_BLUE(),
+    filledBackgroundColor: colors.LIGHTER_BLUE(),
+    unfilledTextColor: colors.BLACK(0.6),
+    unfilledHoverBackgroundColor: colors.LIGHTER_GREY(),
+  },
+  secondary: {
+    filledTextColor: colors.BLACK(0.9),
+    filledBackgroundColor: colors.LIGHTER_GREY(),
   },
 };
 
