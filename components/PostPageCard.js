@@ -775,7 +775,7 @@ class PostPageCard extends Component {
               </div>
             </div>
           </div>
-          <div className="ck-content">
+          <div className={css(styles.postBody) + " ck-content"}>
             {this.state.showPostEditor ? (
               this.renderPostEditor()
             ) : (
@@ -838,6 +838,9 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "visible",
     boxSizing: "border-box",
+  },
+  postBody: {
+    wordBreak: "break-word",
   },
   divider: {
     width: 44,
