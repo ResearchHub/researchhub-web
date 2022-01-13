@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
+import { Fragment } from "react";
 
 const DropdownButton = ({
   opts,
@@ -17,6 +18,7 @@ const DropdownButton = ({
   isOpen = false,
   overridePopoverStyle = null,
   overrideTargetStyle = null,
+  overrideTitleStyle = null,
   closeAfterSelect = true,
 }) => {
   return (
@@ -37,10 +39,22 @@ const DropdownButton = ({
               key={`opt-${i}`}
             >
               <div className={css(styles.infoContainer)}>
-                <div className={css(styles.optTitle, o.titleStyle)}>
-                  {o.title || o.label}
-                </div>
-                <div className={css(styles.optDesc)}>{o.description}</div>
+                {o.html ? (
+                  o.html
+                ) : (
+                  <Fragment>
+                    <div
+                      className={css(
+                        styles.optTitle,
+                        overrideTitleStyle,
+                        o.titleStyle
+                      )}
+                    >
+                      {o.title || o.label}
+                    </div>
+                    <div className={css(styles.optDesc)}>{o.description}</div>
+                  </Fragment>
+                )}
               </div>
               <div className={css(styles.selectionContainer)}></div>
             </div>
@@ -76,6 +90,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     userSelect: "none",
     width: 270,
+    overflowY: "scroll",
   },
   dropdownContainer: {
     cursor: "pointer",

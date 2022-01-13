@@ -434,15 +434,26 @@ export const textEditorIcons = {
   video: <FontAwesomeIcon icon={faVideoPlus} />,
 };
 
-export const RHLogo = ({ iconStyle, white }) => {
-  return (
-    <img
-      src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
-      className={css(styles.logo, iconStyle && iconStyle)}
-      draggable={false}
-      alt="RH Logo"
-    />
-  );
+export const RHLogo = ({ iconStyle, white, withText = true }) => {
+  if (withText) {
+    return (
+      <img
+        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
+        className={css(styles.logo, iconStyle && iconStyle)}
+        draggable={false}
+        alt="RH Logo"
+      />
+    );
+  } else {
+    return (
+      <img
+        src={"/static/ResearchHubIcon.png"}
+        className={css(styles.logoNoText, iconStyle && iconStyle)}
+        draggable={false}
+        alt="RH Logo"
+      />
+    );
+  }
 };
 
 export const BoltSvg = ({ height, width, color, opacity }) => {
@@ -663,10 +674,10 @@ export const CloseIcon = ({
   );
 };
 
-export const PostIcon = ({
+export const PaperIcon = ({
   onClick,
-  width = 14,
-  height = 14,
+  width = 16,
+  height = 16,
   withAnimation = true,
   overrideStyle = null,
   color = "#B0AFB8",
@@ -680,8 +691,42 @@ export const PostIcon = ({
       )}
     >
       <svg
-        width="16"
-        height="16"
+        width={width}
+        height={height}
+        viewBox="0 0 12 14"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3.95019 9.92658H7.54095C7.81158 9.92658 8.036 9.69991 8.036 9.42658C8.036 9.15324 7.81158 8.93324 7.54095 8.93324H3.95019C3.67956 8.93324 3.45514 9.15324 3.45514 9.42658C3.45514 9.69991 3.67956 9.92658 3.95019 9.92658ZM6.18121 5.59991H3.95019C3.67956 5.59991 3.45514 5.82658 3.45514 6.09991C3.45514 6.37324 3.67956 6.59324 3.95019 6.59324H6.18121C6.45184 6.59324 6.67626 6.37324 6.67626 6.09991C6.67626 5.82658 6.45184 5.59991 6.18121 5.59991ZM10.8917 5.01699C11.0469 5.0152 11.2158 5.01325 11.3693 5.01325C11.5343 5.01325 11.6663 5.14659 11.6663 5.31325V10.6733C11.6663 12.3266 10.3396 13.6666 8.70265 13.6666H3.44852C1.73235 13.6666 0.333008 12.2599 0.333008 10.5266V3.33992C0.333008 1.68659 1.66634 0.333252 3.30991 0.333252H6.83466C7.00628 0.333252 7.13829 0.473252 7.13829 0.639919V2.78659C7.13829 4.00659 8.13499 5.00659 9.34291 5.01325C9.62505 5.01325 9.87379 5.01536 10.0915 5.01721C10.2608 5.01864 10.4114 5.01992 10.5442 5.01992C10.6382 5.01992 10.76 5.01851 10.8917 5.01699ZM11.0737 4.04392C10.5311 4.04592 9.89149 4.04392 9.43143 4.03925C8.7014 4.03925 8.10007 3.43192 8.10007 2.69458V0.937249C8.10007 0.649916 8.44529 0.507249 8.64265 0.714582C9.00021 1.09009 9.49171 1.60639 9.98083 2.1202C10.4678 2.6317 10.9523 3.14074 11.3001 3.50592C11.4928 3.70792 11.3516 4.04325 11.0737 4.04392Z"
+          fill="#B3B4BF"
+        />
+      </svg>
+    </span>
+  );
+};
+
+export const PostIcon = ({
+  onClick,
+  width = 18,
+  height = 18,
+  withAnimation = true,
+  overrideStyle = null,
+  color = "#B0AFB8",
+}) => {
+  return (
+    <span
+      onClick={onClick}
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+    >
+      <svg
+        width={width}
+        height={height}
         viewBox="0 0 16 16"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -759,6 +804,10 @@ const styles = StyleSheet.create({
     display: "inline-block",
   },
   logo: {
+    transform: "scale(1)",
+    height: 33,
+  },
+  logoNoText: {
     transform: "scale(1)",
     height: 33,
   },

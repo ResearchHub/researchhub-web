@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import { useState, useEffect } from "react";
 
-import colors, { horizontalNavColors } from "~/config/themes/colors";
+import colors, { pillNavColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
 
@@ -96,19 +96,20 @@ const styles = StyleSheet.create({
     justifyContent: "flex-start",
   },
   tab: {
-    color: horizontalNavColors.pillStyle.unselectedColor,
+    color: pillNavColors.primary.unfilledTextColor,
     padding: "6px 10px",
-    marginRight: 5,
+    marginRight: 8,
     textTransform: "capitalize",
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: 400,
     cursor: "pointer",
     ":active": {
       cursor: "pointer",
     },
     ":hover": {
       borderRadius: 40,
-      background: horizontalNavColors.pillStyle.unselectedHoverColor,
+      background: pillNavColors.primary.unfilledHoverBackgroundColor,
+      color: pillNavColors.primary.unfilledHoverTextColor,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       padding: 16,
@@ -116,9 +117,12 @@ const styles = StyleSheet.create({
     },
   },
   selectedTab: {
-    color: horizontalNavColors.pillStyle.selectedColor,
+    color: pillNavColors.primary.filledTextColor,
     borderRadius: "40px",
-    backgroundColor: horizontalNavColors.pillStyle.selectedBackgroundColor,
+    backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    ":hover": {
+      backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    },
   },
 });
 
