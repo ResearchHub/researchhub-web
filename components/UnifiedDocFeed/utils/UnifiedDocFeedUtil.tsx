@@ -75,16 +75,21 @@ export const useEffectPrefetchNext = ({
 
 export const useEffectForceUpdate = ({
   fetchParams,
-  shouldEscape,
   updateOn,
+  setUnifiedDocsLoading,
+  firstLoad,
 }: {
   fetchParams: UniDocFetchParams;
-  shouldEscape: Boolean;
   updateOn: any[];
+  setUnifiedDocsLoading: any,
+  firstLoad: any,
 }): void => {
   useEffect((): void => {
-    if (!shouldEscape) {
+    if (firstLoad && firstLoad.current) {
+      setUnifiedDocsLoading && setUnifiedDocsLoading(true);
       fetchUnifiedDocs(fetchParams);
+    } else {
+      firstLoad.current = true;
     }
   }, [...updateOn]);
 };

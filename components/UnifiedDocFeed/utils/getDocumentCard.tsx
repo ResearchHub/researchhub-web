@@ -11,78 +11,84 @@ export type UnifiedCard = ReactElement<
 > | null;
 
 export function getDocumentCard({
+  docSetFetchedTime,
   hasSubscribed,
   isLoggedIn,
   isOnMyHubsTab,
   setUnifiedDocuments,
   unifiedDocumentData,
-}): UnifiedCard[] {
-  return filterNull(unifiedDocumentData).map(
-    (uniDoc: any, arrIndex: number): UnifiedCard => {
-      const formattedDocType = getUnifiedDocType(uniDoc?.document_type ?? null);
-      const targetDoc =
-        formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
-      const docID = targetDoc.id;
-      const shouldBlurMobile =
-        arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
-      const shouldBlurDesktop =
-        arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
+}): [UnifiedCard[], number] {
+  return [
+    filterNull(unifiedDocumentData).map(
+      (uniDoc: any, arrIndex: number): UnifiedCard => {
+        const formattedDocType = getUnifiedDocType(
+          uniDoc?.document_type ?? null
+        );
+        const targetDoc =
+          formattedDocType !== "post" ? uniDoc.documents : uniDoc.documents[0];
+        const docID = targetDoc.id;
+        const shouldBlurMobile =
+          arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
+        const shouldBlurDesktop =
+          arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
 
-      switch (formattedDocType) {
-        case "post":
-          return (
-            <UserPostCard
-              {...targetDoc}
-              formattedDocType={formattedDocType}
-              key={`${formattedDocType}-${docID}-${arrIndex}`}
-              style={[
-                styles.customUserPostCard,
-                shouldBlurMobile && styles.mobileBlurCard,
-                shouldBlurDesktop && styles.desktopBlurCard,
-              ]}
-            />
-          );
-        case "hypothesis":
-          return (
-            <HypothesisCard
-              {...targetDoc}
-              formattedDocType={formattedDocType}
-              key={`${formattedDocType}-${docID}-${arrIndex}`}
-              style={[
-                styles.customUserPostCard,
-                shouldBlurMobile && styles.mobileBlurCard,
-                shouldBlurDesktop && styles.desktopBlurCard,
-              ]}
-            />
-          );
-        case "paper":
-          return (
-            <PaperEntryCard
-              index={arrIndex}
-              key={`${formattedDocType}-${docID}-${arrIndex}`}
-              paper={uniDoc.documents}
-              style={[
-                shouldBlurMobile && styles.mobileBlurCard,
-                shouldBlurDesktop && styles.desktopBlurCard,
-              ]}
-              vote={uniDoc.user_vote}
-              voteCallback={(arrIndex: number, currPaper: any): void => {
-                const [currUniDoc, newUniDocs] = [
-                  { ...uniDoc },
-                  [...unifiedDocumentData],
-                ];
-                currUniDoc.documents.user_vote = currPaper.user_vote;
-                currUniDoc.documents.score = currPaper.score;
-                newUniDocs[arrIndex] = currUniDoc;
-                setUnifiedDocuments(newUniDocs);
-              }}
-            />
-          );
-        default:
-          return null;
+        switch (formattedDocType) {
+          case "post":
+            return (
+              <UserPostCard
+                {...targetDoc}
+                formattedDocType={formattedDocType}
+                key={`${formattedDocType}-${docID}-${arrIndex}`}
+                style={[
+                  styles.customUserPostCard,
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
+              />
+            );
+          case "hypothesis":
+            return (
+              <HypothesisCard
+                {...targetDoc}
+                formattedDocType={formattedDocType}
+                key={`${formattedDocType}-${docID}-${arrIndex}`}
+                style={[
+                  styles.customUserPostCard,
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
+              />
+            );
+          case "paper":
+            return (
+              <PaperEntryCard
+                index={arrIndex}
+                key={`${formattedDocType}-${docID}-${arrIndex}`}
+                paper={uniDoc.documents}
+                style={[
+                  shouldBlurMobile && styles.mobileBlurCard,
+                  shouldBlurDesktop && styles.desktopBlurCard,
+                ]}
+                vote={uniDoc.user_vote}
+                voteCallback={(arrIndex: number, currPaper: any): void => {
+                  const [currUniDoc, newUniDocs] = [
+                    { ...uniDoc },
+                    [...unifiedDocumentData],
+                  ];
+                  currUniDoc.documents.user_vote = currPaper.user_vote;
+                  currUniDoc.documents.score = currPaper.score;
+                  newUniDocs[arrIndex] = currUniDoc;
+                  setUnifiedDocuments(newUniDocs);
+                }}
+              />
+            );
+          default:
+            return null;
+        }
       }
-    }
-  );
+    ),
+    docSetFetchedTime,
+  ];
 }
 
 const styles = StyleSheet.create({

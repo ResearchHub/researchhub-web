@@ -1,19 +1,18 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
-import { getInitialScope } from "~/config/utils/dates";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { Helpers } from "@quantfive/js-web-config";
+import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
 import API from "~/config/api";
 import Error from "next/error";
+import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlug";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
-
-const isServer = () => typeof window === "undefined";
 
 class Index extends Component {
   static async getInitialProps(ctx) {
@@ -21,16 +20,17 @@ class Index extends Component {
     const { res, slug, name, type } = query;
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
+    const currentHub = fetchHubFromSlug({ slug });
 
-    let defaultProps = {
-      initialFeed: null,
-      leaderboardFeed: null,
-      initialHubList: null,
-    };
-
-    const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
-      .then((res) => res.json())
-      .then((body) => body.results[0]);
+    if (!isServer()) {
+      return {
+        slug,
+        name,
+        loggedIn: authToken !== undefined,
+        initialProps: {},
+        currentHub,
+      };
+    }
 
     if (!currentHub) {
       if (res) {
@@ -47,7 +47,7 @@ class Index extends Component {
         fetchUnifiedDocFeed(
           {
             // Initial Feed
-            hubId: currentHub.id,
+            hubId: currentHub?.id,
             ordering: "hot",
             timePeriod: getInitialScope(),
             type: urlDocType,
@@ -81,7 +81,11 @@ class Index extends Component {
         slug: null,
         name: null,
         currentHub,
-        initialProps: { ...defaultProps },
+        initialProps: {
+          initialFeed: null,
+          leaderboardFeed: null,
+          initialHubList: null,
+        },
         error: true,
       };
     }
@@ -127,7 +131,7 @@ class Index extends Component {
   }
 
   fetchHubInfo = async (name) => {
-    const currentHub = await fetchHub(name);
+    const currentHub = await fetchHubFromSlug({ slug: name });
     if (currentHub) {
       this.setState({
         currentHub,
@@ -181,15 +185,6 @@ class Index extends Component {
       </div>
     );
   }
-}
-
-function fetchHub(slug) {
-  return fetch(API.HUB({ slug }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res.results[0]; // TODO: Shim and catch errors
-    });
 }
 
 export default Index;

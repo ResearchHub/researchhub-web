@@ -22,6 +22,7 @@ Index.getInitialProps = async (ctx) => {
     initialFeed: null,
     leaderboardFeed: null,
     initialHubList: null,
+    loggedIn: authToken !== undefined,
     feed: 0,
   };
 
