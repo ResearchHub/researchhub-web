@@ -1,8 +1,6 @@
-import Router from "next/router";
-import killswitch from "~/config/killswitch/killswitch";
+import { isServer } from "~/config/server/isServer";
 import { redirect } from "~/config/utils/routing";
-
-const isServer = () => typeof window === "undefined";
+import Router from "next/router";
 
 function AuthorPageRedirect(props) {
   // TODO: Does this need to be a dynamic route or hard refresh?

@@ -12,7 +12,7 @@ import {
   getPaginationInfoFromServerLoaded,
   useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useMemo, useRef, useState } from "react";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
@@ -30,6 +30,7 @@ import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import dynamic from "next/dynamic";
+import { isServer } from "~/config/server/isServer";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -62,6 +63,10 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     serverLoadedData?.results || []
   );
+  const [docSetFetchedTime, setDocSetFetchedTime] = useState<number>(
+    Date.now()
+  );
+  const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(false);
 
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
     paginationInfo;
@@ -120,6 +125,8 @@ function UnifiedDocFeedContainer({
     shouldPrefetch,
   });
 
+  const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
+
   /* Force update when hubs or docType changes. start from page 1 */
   useEffectForceUpdate({
     fetchParams: {
@@ -140,6 +147,7 @@ function UnifiedDocFeedContainer({
         page: updatedPage,
         documents,
       }): void => {
+        setUnifiedDocsLoading(false);
         setUnifiedDocuments(documents);
         setPaginationInfo({
           hasMore: nextPageHasMore,
@@ -152,12 +160,13 @@ function UnifiedDocFeedContainer({
       },
       page: 1 /* when force updating, start from page 1 */,
     },
-    shouldEscape: false,
-    updateOn: [docTypeFilter, hubID, isLoggedIn, subFilters],
+    firstLoad,
+    setUnifiedDocsLoading,
+    updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
   const hasSubscribed = useMemo(
-    (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
+    (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
   );
 
@@ -166,7 +175,7 @@ function UnifiedDocFeedContainer({
       formatMainHeader({
         feed,
         filterBy: subFilters.filterBy ?? null,
-        hubName,
+        hubName: hubName ?? "",
         isHomePage,
       }),
     [hubName, feed, subFilters, isHomePage]
@@ -182,14 +191,25 @@ function UnifiedDocFeedContainer({
             key={filterKey}
             label={UnifiedDocFilterLabels[filterKey]}
             onClick={(): void => {
-              setDocTypeFilter(filterValue);
-              router.push(
-                {
-                  pathname: routerPathName,
-                  query: { ...router.query, type: filterValue },
-                },
-                routerPathName + `?type=${filterValue}`
-              );
+              if (docTypeFilter !== filterValue) {
+                setDocTypeFilter(filterValue);
+                setPaginationInfo({
+                  hasMore: false,
+                  isLoading: true,
+                  isLoadingMore: false,
+                  isServerLoaded: false,
+                  localPage: 1,
+                  page: 1,
+                });
+                setDocSetFetchedTime(Date.now());
+                router.push(
+                  {
+                    pathname: routerPathName,
+                    query: { ...router.query, type: filterValue },
+                  },
+                  routerPathName + `?type=${filterValue}`
+                );
+              }
             }}
           />
         </div>
@@ -198,13 +218,18 @@ function UnifiedDocFeedContainer({
   );
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
-  const cards = getDocumentCard({
+  const [cards, docSetFetchedTimeCheck] = getDocumentCard({
+    docSetFetchedTime,
     hasSubscribed,
     isLoggedIn,
     isOnMyHubsTab,
     setUnifiedDocuments,
     unifiedDocumentData: renderableUniDoc,
   });
+
+  /* we need time check here to ensure that payload formatting does not lead to 
+  UI rendering timing issues since document objects & formmatting can be heavy */
+  const areCardsReadyToBeRendered = !unifiedDocsLoading;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
@@ -236,7 +261,7 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      {isLoading ? (
+      {!areCardsReadyToBeRendered ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -249,7 +274,7 @@ function UnifiedDocFeedContainer({
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {!isLoggedIn && isOnMyHubsTab ? null : (
+      {!isLoggedIn && isOnMyHubsTab || unifiedDocsLoading ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -310,6 +335,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
+    overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },

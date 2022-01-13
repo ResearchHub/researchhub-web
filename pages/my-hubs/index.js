@@ -4,6 +4,7 @@ import { filterOptions } from "~/config/utils/options";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isServer } from "~/config/server/isServer";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 
@@ -20,25 +21,31 @@ Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
   const defaultProps = {
-    feed: 0,
+    feed: 1,
     filter: filterObj,
     initialFeed: null,
+    hubId: null,
     initialHubList: null,
     leaderboardFeed: null,
     loggedIn: authToken !== undefined,
+    subfilters: filterObj,
     page: 1,
     query,
   };
+
+  if (!isServer()) {
+    return defaultProps;
+  }
 
   try {
     const urlDocType = getBEUnifiedDocType(urlQuery.type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
-        hubId: null,
+        ...defaultProps,
         ordering: "hot",
         page: 1,
         subfilters: filterObj,
-        subscribedHubs: false,
+        subscribedHubs: true,
         timePeriod: getInitialScope(),
         type: urlDocType,
       },
@@ -48,7 +55,6 @@ Index.getInitialProps = async (ctx) => {
     return {
       ...defaultProps,
       initialFeed,
-      feed: 1,
     };
   } catch (error) {
     return defaultProps;
