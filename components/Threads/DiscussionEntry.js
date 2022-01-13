@@ -479,12 +479,11 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
-    const replyCount = data.comments
-      ? data.comments
-          .map((comment) => comment.reply_count)
-          .reduce((a, b) => a + b, 0)
-      : 0;
-    const commentCount = data.comment_count + replyCount;
+    const commentCount =
+      data.comment_count +
+        data.comments
+          ?.map((comment) => comment.reply_count)
+          .reduce((a, b) => a + b, 0) || 0;
     const date = data.created_date;
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;

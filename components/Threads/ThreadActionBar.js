@@ -169,8 +169,8 @@ class ThreadActionBar extends Component {
               Respond
             </div>
           )}
-          {!this.props.hideCount && commentCount}
           {this.props.toggleEdit && editButton}
+          {!this.props.hideCount && commentCount}
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     },
   },
   commentCountContainer: {
-    marginRight: 20,
+    marginLeft: 20,
     padding: 4,
     borderRadius: 3,
     cursor: "pointer",
