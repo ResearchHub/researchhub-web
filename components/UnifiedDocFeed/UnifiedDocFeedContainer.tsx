@@ -229,7 +229,6 @@ function UnifiedDocFeedContainer({
 
   /* we need time check here to ensure that payload formatting does not lead to 
   UI rendering timing issues since document objects & formmatting can be heavy */
-  console.log(unifiedDocsLoading);
   const areCardsReadyToBeRendered = !unifiedDocsLoading;
 
   return (
