@@ -87,7 +87,7 @@ export default function FeedInfoCard({
               <span
                 style={{
                   fontWeight: 500,
-                  margin: "0 8px",
+                  margin: "0px 8px 0px 5px",
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
