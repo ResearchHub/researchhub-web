@@ -4,6 +4,7 @@ import { emptyFncWithMsg } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
+import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import {
   PaginationInfo,
   getFilterFromRouter,
@@ -26,7 +27,7 @@ import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
-import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
+import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { breakpoints } from "~/config/themes/screen";
 import dynamic from "next/dynamic";
@@ -57,7 +58,6 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
-
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
     getPaginationInfoFromServerLoaded(serverLoadedData)
   );
@@ -182,6 +182,42 @@ function UnifiedDocFeedContainer({
     [hubName, feed, subFilters, isHomePage]
   );
 
+  const docTypeFilterButtons = Object.keys(UnifiedDocFilters).map(
+    (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
+      const filterValue = UnifiedDocFilters[filterKey];
+      return (
+        <div className={css(styles.feedButtonContainer)}>
+          <UnifiedDocFeedFilterButton
+            isActive={docTypeFilter === filterValue}
+            key={filterKey}
+            label={UnifiedDocFilterLabels[filterKey]}
+            onClick={(): void => {
+              if (docTypeFilter !== filterValue) {
+                setDocTypeFilter(filterValue);
+                setPaginationInfo({
+                  hasMore: false,
+                  isLoading: true,
+                  isLoadingMore: false,
+                  isServerLoaded: false,
+                  localPage: 1,
+                  page: 1,
+                });
+                setDocSetFetchedTime(Date.now());
+                router.push(
+                  {
+                    pathname: routerPathName,
+                    query: { ...router.query, type: filterValue },
+                  },
+                  routerPathName + `?type=${filterValue}`
+                );
+              }
+            }}
+          />
+        </div>
+      );
+    }
+  );
+
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const [cards, docSetFetchedTimeCheck] = getDocumentCard({
     docSetFetchedTime,
@@ -215,19 +251,32 @@ function UnifiedDocFeedContainer({
           <UnifiedDocFeedMenu
             subFilters={subFilters}
             onDocTypeFilterSelect={(selected) => {
-              setDocTypeFilter(selected.value);
-              const query = { ...router.query, type: selected.value };
 
-              if (!query.type) {
-                delete query.type;
+
+              if (docTypeFilter !== selected.value) {
+                setDocTypeFilter(selected.value);
+                setPaginationInfo({
+                  hasMore: false,
+                  isLoading: true,
+                  isLoadingMore: false,
+                  isServerLoaded: false,
+                  localPage: 1,
+                  page: 1,
+                });
+                setDocSetFetchedTime(Date.now());
+
+                const query = { ...router.query, type: selected.value };
+                if (!query.type) {
+                  delete query.type;
+                }
+
+                router.push(
+                  {
+                    pathname: routerPathName,
+                    query,
+                  },
+                );
               }
-
-              router.push(
-                {
-                  pathname: routerPathName,
-                  query,
-                },
-              );
             }}            
             onSubFilterSelect={(filterBy) => {
               console.log('filterBy', filterBy);
@@ -316,6 +365,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
+    overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },
@@ -370,6 +420,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
+  },
+  bannerContainer: {
+    marginBottom: 16,
+    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
+      padding: 0,
+      width: "100%",
+    },
   },
   feedPosts: {
     position: "relative",
