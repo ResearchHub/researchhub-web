@@ -1,6 +1,7 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import Head from "~/components/Head";
+import { breakpoints } from "~/config/themes/screen";
 import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
   EditorDashFilters,
@@ -36,12 +37,17 @@ export default function EditorsDashboard(): ReactElement<"div"> {
 
 const styles = StyleSheet.create({
   editorsDashboard: {
+    boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
     height: "100vh",
-    paddingLeft: 32,
-    width: "100%",
     maxWidth: 1400,
+    padding: "0 32px",
+    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      maxWidth: "unset",
+      paddingTop: 32,
+    },
   },
   editorContainerWrap: {
     boxSizing: "border-box",

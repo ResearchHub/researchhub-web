@@ -63,11 +63,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     marginBottom: 16,
-    maxWidth: "1200px",
+    maxWidth: 1200,
     minHeight: 72,
     padding: "0px 16px",
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      maxWidth: "unset",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      maxWidth: "unset"
     },
   },
   contributionSection: {
