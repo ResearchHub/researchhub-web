@@ -8,6 +8,7 @@ import EditorDashboardNavbar, {
   filterOptions,
 } from "./EditorDashboardNavbar";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { fetchEditors } from "./api/fetchEditors";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -20,12 +21,15 @@ const useEffectFetchEditors = ({
   onError,
   onSuccess,
 }: UseEffectFetchEditorsArgs): void => {
-  useEffect((): void => {}, [
-    filters.selectedHub,
-    filters.timeframe,
-    onError,
-    onSuccess,
-  ]);
+  const { selectedHub, timeframe } = filters;
+  useEffect((): void => {
+    fetchEditors({
+      hubID: selectedHub?.id ?? null,
+      onError,
+      onSuccess,
+      timeframe: timeframe?.value ?? null,
+    });
+  }, [selectedHub, timeframe, onError, onSuccess]);
 };
 
 export default function EditorsDashboard(): ReactElement<"div"> {
@@ -44,14 +48,26 @@ export default function EditorsDashboard(): ReactElement<"div"> {
   const editorCards = useMemo(
     (): ReactElement<typeof EditorDashboardUserCard>[] =>
       editors.map(
-        (): ReactElement<typeof EditorDashboardUserCard> => (
-          <EditorDashboardUserCard
-            authorProfile={{ first_name: "calvin", last_name: "lee", id: 1 }}
-            commentCount={0}
-            supportCount={0}
-            submissionCount={0}
-          />
-        )
+        (
+          editor: any,
+          index: number
+        ): ReactElement<typeof EditorDashboardUserCard> => {
+          const {
+            author_profile,
+            comment_count = 0,
+            submission_count = 0,
+            support_count = 0,
+          } = editor ?? {};
+          return (
+            <EditorDashboardUserCard
+              authorProfile={editor?.author_profile}
+              commentCount={comment_count}
+              key={`editor-dash-user-card-${index}`}
+              submissionCount={submission_count}
+              supportCount={support_count}
+            />
+          );
+        }
       ),
     [editors, filters.selectedHub, filters.timeframe]
   );

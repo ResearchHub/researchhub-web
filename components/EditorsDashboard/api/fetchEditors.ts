@@ -6,22 +6,14 @@ type Args = {
   hubID: ID;
   onError: Function;
   onSuccess: Function;
-  page: number;
-  timeframe: "all_time" | "today" | "past_week" | "past_month" | "past_year";
+  timeframe: "today" | "past_week" | "past_month" | "past_year" | null;
 };
 
-export function fetchEditors({
-  hubID,
-  onError,
-  onSuccess,
-  page = 1,
-  timeframe = "all_time",
-}: Args) {
+export function fetchEditors({ hubID, onError, onSuccess, timeframe }: Args) {
   fetch(
     API.LEADERBOARD({
       hubId: hubID,
       limit: 20,
-      page,
       timeframe,
       type: "user",
     }),
