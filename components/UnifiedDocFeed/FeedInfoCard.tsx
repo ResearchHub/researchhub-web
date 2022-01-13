@@ -140,35 +140,28 @@ const styles = StyleSheet.create({
   subscribeContainer: {
     marginLeft: 20,
     minWidth: 100,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      minWidth: 70,
+    }
   },
   title: {
-    color: colors.TEXT_DARKER_GREY,
     fontSize: 30,
     fontWeight: 400,
-    margin: 0,
-    padding: 0,
     textOverflow: "ellipsis",
-    [`@media only screen and max-width: ${breakpoints.large.str}`]: {
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       fontSize: 30,
     },
-    [`@media only screen and max-width: ${breakpoints.small.str}`]: {
-      display: "flex",
-      fontSize: 25,
-      justifyContent: "center",
-      textAlign: "center",
-      whiteSpace: "pre-wrap",
-      wordBreak: "normal",
-    },
-    [`@media only screen and max-width: ${breakpoints.xxsmall.str}`]: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 25,
     },
-    [`@media only screen and max-width: ${breakpoints.xxxsmall.str}`]: {
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
       fontSize: 20,
     },
   },
   titleContainer: {
+    alignItems: "center",
     display: "flex",
-    width: "100%",
     marginLeft: 20,
+    width: "100%",
   },
 });
