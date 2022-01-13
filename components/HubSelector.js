@@ -62,6 +62,7 @@ const HubSelector = ({ hubState }) => {
       overridePopoverStyle={styles.hubPopover}
       positions={["bottom", "right"]}
       customButtonClassName={styles.hubSelectorButton}
+      overrideOptionsStyle={styles.hubPopoverOptions}
       onSelect={() => {
         return null;
       }}
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
     // Reason: We want to display both within the viewport's height
     height: "calc(100% - 118px)",
     overflowY: "scroll",
+    paddingTop: 10,
   },
   primaryButton: {
     color: colors.NEW_BLUE(),
