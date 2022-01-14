@@ -3,27 +3,25 @@ import { ID } from "~/config/types/root_types";
 import API from "~/config/api";
 
 type Args = {
-  hubID: ID;
+  hub_id: ID;
   onError: Function;
   onSuccess: Function;
-  page: number;
-  timeframe: "all_time" | "today" | "past_week" | "past_month" | "past_year";
+  order_by: "asc" | "desc";
+  timeframe_str: string | null;
 };
 
 export function fetchEditors({
-  hubID,
+  hub_id,
   onError,
   onSuccess,
-  page = 1,
-  timeframe = "all_time",
+  order_by,
+  timeframe_str,
 }: Args) {
   fetch(
-    API.LEADERBOARD({
-      hubId: hubID,
-      limit: 20,
-      page,
-      timeframe,
-      type: "user",
+    API.RESEARCHHUB_EDITORS_BY_CONTRIBUTION({
+      hub_id,
+      order_by,
+      timeframe_str,
     }),
     API.GET_CONFIG()
   )
