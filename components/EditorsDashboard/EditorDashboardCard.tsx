@@ -102,6 +102,8 @@ const styles = StyleSheet.create({
   },
   added: {
     marginLeft: 16,
+    fontSize: 16,
+    fontWeight: 500,
   },
   countLabel: {
     // marginRight: 16,
