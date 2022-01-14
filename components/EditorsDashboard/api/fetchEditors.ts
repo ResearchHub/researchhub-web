@@ -6,14 +6,14 @@ type Args = {
   hubID: ID;
   onError: Function;
   onSuccess: Function;
-  timeframe: "today" | "past_week" | "past_month" | "past_year" | null;
+  timeframe_str: string | null;
 };
 
-export function fetchEditors({ hubID, onError, onSuccess, timeframe }: Args) {
+export function fetchEditors({ hubID, onError, onSuccess, timeframe_str }: Args) {
   fetch(
     API.RESEARCHHUB_EDITORS_BY_CONTRIBUTION({
-      hubID,
-      timeframe,
+      hub_id: hubID,
+      timeframe_str,
     }),
     API.GET_CONFIG()
   )
