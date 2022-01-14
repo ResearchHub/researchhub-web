@@ -492,9 +492,7 @@ function AuthorPage(props) {
     setAvatarUploadIsOpen(false);
   };
 
-  const authorOrcidId = !isNullOrUndefined(props.user.author_profile)
-    ? props.user.author_profile.orcid_id
-    : null;
+  const authorOrcidId = !isNullOrUndefined(author) ? author.orcid_id : null;
 
   const orcidLinkButton = !isNullOrUndefined(authorOrcidId) ? (
     <a
