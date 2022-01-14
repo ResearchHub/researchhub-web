@@ -27,7 +27,7 @@ const useEffectFetchEditors = ({
       hubID: selectedHub?.id ?? null,
       onError,
       onSuccess,
-      timeframe: timeframe?.value ?? null,
+      timeframe_str: timeframe?.value ?? null,
     });
   }, [selectedHub, timeframe, onError, onSuccess]);
 };
