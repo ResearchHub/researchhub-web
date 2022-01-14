@@ -60,7 +60,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
           } = editor ?? {};
           return (
             <EditorDashboardUserCard
-              authorProfile={editor?.author_profile}
+              authorProfile={author_profile ?? {}}
               commentCount={comment_count}
               key={`editor-dash-user-card-${index}`}
               submissionCount={submission_count}

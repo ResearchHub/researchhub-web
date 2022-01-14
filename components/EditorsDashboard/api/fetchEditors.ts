@@ -11,11 +11,9 @@ type Args = {
 
 export function fetchEditors({ hubID, onError, onSuccess, timeframe }: Args) {
   fetch(
-    API.LEADERBOARD({
-      hubId: hubID,
-      limit: 20,
+    API.RESEARCHHUB_EDITORS_BY_CONTRIBUTION({
+      hubID,
       timeframe,
-      type: "user",
     }),
     API.GET_CONFIG()
   )
