@@ -48,12 +48,12 @@ export default function EditorDashboardUserCard({
           <div className={css(styles.contributionSection)}>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
               <span className={css(styles.countResponse)}>
-                {timeAgo.format(new Date(lastSubmissionDate))}
+                {lastSubmissionDate ? timeAgo.format(new Date(lastSubmissionDate)) : 'never'}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
               <span className={css(styles.countResponse)}>
-                {timeAgo.format(new Date(lastCommentDate))}
+                {lastSubmissionDate ? timeAgo.format(new Date(lastCommentDate)) : 'never'}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>

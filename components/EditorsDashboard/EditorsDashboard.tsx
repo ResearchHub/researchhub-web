@@ -150,6 +150,7 @@ const styles = StyleSheet.create({
   },
   editorCardContainer: {
     marginTop: 35,
+    paddingBottom: 32,
   },
   placeholder: {
     marginTop: -35,
