@@ -41,32 +41,37 @@ export default function FeedInfoCard({
 
   return (
     <div className={css(styles.feedInfoCard)}>
-      <Image
-        height={64}
-        layout="fixed"
-        objectFit="cover"
-        src={hubImage ?? "/static/background/hub-placeholder.svg"}
-        width={68}
-        hidden={false}
-      />
-      <div className={css(styles.bodyContainer)}>
+      <div className={css(styles.detailRow)}>
+        <div>
+          <Image
+            className={css(styles.hubImage)}
+            height={68}
+            hidden={false}
+            layout="fixed"
+            objectFit="cover"
+            src={hubImage ?? "/static/background/hub-placeholder.svg"}
+            width={68}
+          />
+        </div>
         <div className={css(styles.titleContainer)}>
           <h1 className={css(styles.title) + " clamp2"}>{mainHeaderText}</h1>
           <div className={css(styles.subscribeContainer)}>
             {nullthrows(hubSubscribeButton)}
           </div>
         </div>
+      </div>
+      <div className={css(styles.bodyContainer)}>
         <div className={css(styles.detailRow)}>
           <div className={css(styles.detailRowLabel)}>
             <FontAwesomeIcon
               color={colors.LIGHT_GREY_TEXT}
               icon={faUser}
               style={{
-                marginRight: 14,
+                marginRight: 8,
                 width: "16px",
               }}
             />
-            <span style={{ fontWeight: 500, marginRight: 8 }}>{"Users "}</span>
+            <span style={{ fontWeight: 500, marginRight: 8 }}>{"Members"}</span>
             <span style={{ color: colors.TEXT_GREY(1) }}>{subCount}</span>
           </div>
         </div>
@@ -82,7 +87,7 @@ export default function FeedInfoCard({
               <span
                 style={{
                   fontWeight: 500,
-                  margin: "0 12px",
+                  margin: "0px 8px 0px 5px",
                 }}
               >{`Editor${editorProfiles.length > 1 ? "s" : ""} `}</span>
             </div>
@@ -109,13 +114,15 @@ const styles = StyleSheet.create({
     border: `1px solid ${genericCardColors.BORDER}`,
     borderRadius: 4,
     display: "flex",
+    flexDirection: "column",
     padding: 16,
-    overflowX: "auto",
+  },
+  hubImage: {
+    borderRadius: 4,
   },
   bodyContainer: {
     display: "flex",
     flexDirection: "column",
-    marginLeft: 16,
     width: "100%",
   },
   detailRow: {
@@ -123,7 +130,7 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 16,
     justifyContent: "flex-start",
-    margin: "8px 0",
+    margin: "8px",
   },
   detailRowLabel: {
     alignItems: "center",
@@ -131,28 +138,30 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   subscribeContainer: {
-    marginLeft: 16,
+    marginLeft: 20,
     minWidth: 100,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      minWidth: 70,
+    }
   },
   title: {
-    color: colors.TEXT_DARKER_GREY,
     fontSize: 30,
     fontWeight: 500,
-    margin: 0,
-    padding: 0,
     textOverflow: "ellipsis",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: 30,
+    },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "flex",
       fontSize: 24,
-      whiteSpace: "pre-wrap",
-      wordBreak: "normal",
     },
-    [`@media only screen and max-width: ${breakpoints.xxsmall.str}`]: {
-      fontSize: 25,
-    },
-    [`@media only screen and max-width: ${breakpoints.xxxsmall.str}`]: {
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
       fontSize: 20,
     },
   },
-  titleContainer: { display: "flex", width: "100%", marginBottom: 8 },
+  titleContainer: {
+    alignItems: "center",
+    display: "flex",
+    marginLeft: 20,
+    width: "100%",
+  },
 });
