@@ -93,6 +93,7 @@ const UnifiedDocFeedMenu = ({
 const styles = StyleSheet.create({
   feedMenu: {
     display: "flex",
+    alignItems: "center",
   },
   seperator: {
     border: "1px solid",
