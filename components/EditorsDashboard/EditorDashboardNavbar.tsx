@@ -5,11 +5,13 @@ import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSug
 import { useRouter } from "next/router";
 import FormSelect from "../Form/FormSelect";
 import icons from "~/config/themes/icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faLongArrowAltDown, faLongArrowAltUp } from "@fortawesome/pro-solid-svg-icons";
 
 export type EditorDashFilters = {
   selectedHub: any;
   timeframe: any;
-  orderBy: "asc" | "desc";
+  orderBy: any;
 };
 
 type Props = { currentFilters: EditorDashFilters; onFilterChange: Function };
@@ -43,6 +45,26 @@ export const filterOptions = [
   {
     value: "past_year",
     label: "Past Year",
+    disableScope: true,
+  },
+];
+
+const ascStyle = {
+  display: "flex",
+  justifyContent: "space-between",
+};
+
+const marginStyle = {
+  marginLeft: 8,
+};
+export const upDownOptions = [
+  {
+    value: "desc",
+    label: <div style={ascStyle}>Descending <span style={marginStyle}>{<FontAwesomeIcon icon={faLongArrowAltDown} />} </span></div>,
+  },
+  {
+    value: "asc",
+    label: <div style={ascStyle}>Ascending <span style={marginStyle}>{<FontAwesomeIcon icon={faLongArrowAltUp} />}</span></div>,
     disableScope: true,
   },
 ];
@@ -84,7 +106,17 @@ export default function EditorDashboardNavbar({
           options={filterOptions}
           value={currentFilters?.timeframe ?? null}
         />
-        <div
+
+        <FormSelect
+          containerStyle={styles.dropdown}
+          inputStyle={INPUT_STYLE}
+          onChange={(_id: ID, orderBy: any): void =>
+            onFilterChange({ ...currentFilters, orderBy })
+          }
+          options={upDownOptions}
+          value={currentFilters?.orderBy ?? null}
+        />
+        {/* <div
           className={css(styles.orderByIcon)}
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
@@ -96,7 +128,7 @@ export default function EditorDashboardNavbar({
           role="bottom"
         >
           {isCurrentlyDesc ? icons.chevronDown : icons.chevronUp}
-        </div>
+        </div> */}
       </div>
     </div>
   );
@@ -110,7 +142,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   dropdown: {
-    width: 140,
+    width: 170,
     minHeight: "unset",
     fontSize: 14,
     marginRight: 10,
