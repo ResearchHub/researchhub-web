@@ -146,13 +146,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 30,
-    fontWeight: 400,
+    fontWeight: 500,
     textOverflow: "ellipsis",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       fontSize: 30,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 25,
+      fontSize: 24,
     },
     [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
       fontSize: 20,

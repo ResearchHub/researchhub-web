@@ -19,6 +19,7 @@ import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 
 export type UserPostCardProps = {
@@ -42,6 +43,7 @@ export type UserPostCardProps = {
   unified_document: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
   user: any;
+  onBadgeClick: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -93,6 +95,7 @@ function UserPostCard(props: UserPostCardProps) {
     user,
     user_vote: userVote,
     styleVariation,
+    onBadgeClick,
     /*
       In some contexts we want to wrap the title/renderable_text 
       with html. e.g. rendering search highlights.
@@ -126,7 +129,7 @@ function UserPostCard(props: UserPostCardProps) {
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>
+        <span className={css(styles.title)}>   
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -321,11 +324,18 @@ function UserPostCard(props: UserPostCardProps) {
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
+              
               <MobileOnly>
-                <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+                <div className={css(styles.topRowLeft)}>
+                  {mobileVoteWidget}
+                  <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+                </div>
               </MobileOnly>
+              
               <DesktopOnly> {mainTitle} </DesktopOnly>
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge label="Post" docType="post" onClick={onBadgeClick} />
+              </div>                 
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
@@ -465,12 +475,16 @@ const styles = StyleSheet.create({
   },
   topRow: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "start",
+    justifyContent: "space-between",
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
       paddingBottom: 10,
     },
+  },
+  topRowLeft: {
+    display: "flex"
   },
   bottomBar: {
     display: "flex",
@@ -601,4 +615,9 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginRight: 17,
   },
+  badgeWrapper: {
+    display: "inline-block",
+    verticalAlign: "-3px",    
+    marginRight: -8,
+  }
 });

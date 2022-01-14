@@ -31,6 +31,7 @@ import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
 import { stripHTML } from "~/config/utils/string";
 import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -52,6 +53,7 @@ const PaperEntryCard = (props) => {
     promotionSummary,
     onClick,
     styleVariation,
+    onBadgeClick,
   } = props;
 
   const store = useStore();
@@ -304,42 +306,45 @@ const PaperEntryCard = (props) => {
     }
   };
 
-  const renderPreview = () => {
+  const renderRightColumn = () => {
     if (previews.length > 0) {
       return (
         <div
-          className={css(styles.column, styles.previewColumn)}
+          className={css(styles.column, styles.rightColumn)}
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
-          <LazyLoad offset={100} once>
-            {isPreviewing && (
-              <PaperPDFModal
-                paper={paper}
-                onClose={() => setIsPreviewing(false)}
-              />
-            )}
-            <div className={css(styles.preview)}>
-              <img
-                src={previews[0].file}
-                className={css(carousel.image)}
-                key={`preview_${previews[0].file}`}
-                alt={`Paper Preview Page 1`}
-                onClick={openPaperPDFModal}
-              />
-            </div>
-          </LazyLoad>
+          <div className={css(styles.badgeWrapper)}>
+            <DocumentBadge
+              label="Paper"
+              docType="paper"
+              onClick={onBadgeClick}
+            />
+          </div>
+          <div className={css(styles.previewContainer)}>
+            <LazyLoad offset={100} once>
+              {isPreviewing && (
+                <PaperPDFModal
+                  paper={paper}
+                  onClose={() => setIsPreviewing(false)}
+                />
+              )}
+              <div className={css(styles.preview)}>
+                <img
+                  src={previews[0].file}
+                  className={css(carousel.image)}
+                  key={`preview_${previews[0].file}`}
+                  alt={`Paper Preview Page 1`}
+                  onClick={openPaperPDFModal}
+                />
+              </div>
+            </LazyLoad>
+          </div>
         </div>
       );
     } else {
-      return (
-        <div className={css(styles.column, styles.previewColumn)}>
-          <LazyLoad offset={100} once>
-            <div className={css(styles.preview, styles.previewEmpty)} />
-          </LazyLoad>
-        </div>
-      );
+      return null;
     }
   };
 
@@ -437,23 +442,6 @@ const PaperEntryCard = (props) => {
             alt="Preregistration Icon"
           />
           Preregistration
-        </div>
-      );
-    }
-  };
-
-  const renderPaperTitle = () => {
-    if (paper_title && title !== paper_title) {
-      return (
-        <div className={css(styles.metadataContainer, styles.authorContainer)}>
-          <div
-            className={
-              css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
-              " clamp1"
-            }
-          >
-            From Paper: {paper_title}
-          </div>
         </div>
       );
     }
@@ -592,16 +580,27 @@ const PaperEntryCard = (props) => {
             )}
           >
             <div className={css(styles.topRow)}>
-              {mobileOnly(renderVoteWidget(true))}
               {mobileOnly(
-                <DiscussionCount
-                  docType="paper"
-                  slug={slug}
-                  id={id}
-                  count={discussion_count}
-                />
+                <div className={css(styles.topRowLeft)}>
+                  {renderVoteWidget(true)}
+                  <DiscussionCount
+                    docType="paper"
+                    slug={slug}
+                    id={id}
+                    count={discussion_count}
+                  />
+                </div>
               )}
               {desktopOnly(renderMainTitle())}
+              {previews.length === 0 && (
+                <div className={css(styles.badgeWrapper)}>
+                  <DocumentBadge
+                    label="Paper"
+                    docType="paper"
+                    onClick={onBadgeClick}
+                  />
+                </div>
+              )}
             </div>
             {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
@@ -609,7 +608,7 @@ const PaperEntryCard = (props) => {
             {renderContent()}
             {mobileOnly(renderContributers())}
           </div>
-          {desktopOnly(renderPreview())}
+          {desktopOnly(renderRightColumn())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
@@ -683,13 +682,10 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
-  previewColumn: {
+  previewContainer: {
     paddingBottom: 10,
-    "@media only screen and (max-width: 767px)": {
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-    },
+    paddingLeft: 20,
+    marginTop: 10,
   },
   preview: {
     height: 90,
@@ -726,6 +722,9 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
   },
+  rightColumn: {
+    alignItems: "flex-end",
+  },
   rowContainer: {
     display: "flex",
     alignItems: "flex-start",
@@ -743,11 +742,15 @@ const styles = StyleSheet.create({
   topRow: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
       paddingBottom: 10,
     },
+  },
+  topRowLeft: {
+    display: "flex",
   },
   metadataRow: {
     display: "flex",
@@ -1028,6 +1031,12 @@ const styles = StyleSheet.create({
   },
   fullWidth: {
     width: "100%",
+  },
+  badge: {},
+  badgeWrapper: {
+    verticalAlign: "-3px",
+    display: "inline-block",
+    marginRight: -8,
   },
 });
 

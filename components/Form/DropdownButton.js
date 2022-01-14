@@ -2,6 +2,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors, { iconColors } from "~/config/themes/colors";
 import { DownIcon } from "~/config/themes/icons";
 import ResearchHubPopover from "~/components/ResearchHubPopover";
+import { Fragment } from "react";
 
 const DropdownButton = ({
   opts,
@@ -12,12 +13,16 @@ const DropdownButton = ({
   onClickOutside,
   dropdownClassName,
   customButtonClassName,
-  selected = null,
+  selected,
   positions = ["bottom", "top"],
   isOpen = false,
   overridePopoverStyle = null,
+  overrideOptionsStyle = null,
   overrideTargetStyle = null,
+  overrideTitleStyle = null,
   closeAfterSelect = true,
+  htmlBefore = null, // HTML to be injected before the list
+  htmlAfter = null, // HTML to be injected after the list
 }) => {
   return (
     <ResearchHubPopover
@@ -25,26 +30,47 @@ const DropdownButton = ({
       isOpen={isOpen}
       popoverContent={
         <div className={css(styles.popoverBodyContent, overridePopoverStyle)}>
-          {opts.map((o, i) => (
-            <div
-              className={css(styles.optContainer)}
-              onClick={() => {
-                onSelect(o.value);
-                if (closeAfterSelect) {
-                  onClose();
-                }
-              }}
-              key={`opt-${i}`}
-            >
-              <div className={css(styles.infoContainer)}>
-                <div className={css(styles.optTitle, o.titleStyle)}>
-                  {o.title}
+          <div className={css(styles.htmlBefore)}>{htmlBefore}</div>
+          <div className={css(styles.options, overrideOptionsStyle)}>
+            {opts.map((option, i) => (
+              <div
+                className={css(
+                  styles.optContainer,
+                  option.value === selected && styles.selectedOpt
+                )}
+                onClick={() => {
+                  onSelect(option.value);
+                  if (closeAfterSelect) {
+                    onClose();
+                  }
+                }}
+                key={`opt-${i}`}
+              >
+                <div className={css(styles.infoContainer)}>
+                  {option.html ? (
+                    option.html
+                  ) : (
+                    <Fragment>
+                      <div
+                        className={css(
+                          styles.optTitle,
+                          overrideTitleStyle,
+                          option.titleStyle
+                        )}
+                      >
+                        {option.title || option.label}
+                      </div>
+                      <div className={css(styles.optDesc)}>
+                        {option.description}
+                      </div>
+                    </Fragment>
+                  )}
                 </div>
-                <div className={css(styles.optDesc)}>{o.description}</div>
+                <div className={css(styles.selectionContainer)}></div>
               </div>
-              <div className={css(styles.selectionContainer)}></div>
-            </div>
-          ))}
+            ))}
+          </div>
+          <div className={css(styles.htmlAfter)}>{htmlAfter}</div>
         </div>
       }
       positions={positions}
@@ -76,6 +102,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     userSelect: "none",
     width: 270,
+    overflowY: "scroll",
   },
   dropdownContainer: {
     cursor: "pointer",
@@ -92,6 +119,9 @@ const styles = StyleSheet.create({
   optTitle: {
     fontWeight: 500,
   },
+  selectedOpt: {
+    background: colors.LIGHTER_GREY(),
+  },
   optDesc: {
     fontSize: 14,
   },
@@ -100,7 +130,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   targetBtn: {
-    padding: "7px 10px",
+    padding: "8px 16px",
     userSelect: "none",
     textTransform: "capitalize",
     color: colors.BLACK(0.8),
@@ -114,6 +144,7 @@ const styles = StyleSheet.create({
     padding: 4,
     fontSize: 11,
   },
+  htmlAfter: {},
 });
 
 export default DropdownButton;

@@ -4,6 +4,7 @@ import { emptyFncWithMsg } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
+import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 import {
   PaginationInfo,
   getFilterFromRouter,
@@ -165,6 +166,33 @@ function UnifiedDocFeedContainer({
     updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
+  const onDocTypeFilterSelect = (selected) => {
+    if (docTypeFilter !== selected) {
+      setDocTypeFilter(selected);
+      setPaginationInfo({
+        hasMore: false,
+        isLoading: true,
+        isLoadingMore: false,
+        isServerLoaded: false,
+        localPage: 1,
+        page: 1,
+      });
+      setDocSetFetchedTime(Date.now());
+
+      const query = { ...router.query, type: selected };
+      if (!query.type) {
+        delete query.type;
+      }
+
+      router.push(
+        {
+          pathname: routerPathName,
+          query,
+        },
+      );
+    }
+  }
+
   const hasSubscribed = useMemo(
     (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
@@ -181,42 +209,6 @@ function UnifiedDocFeedContainer({
     [hubName, feed, subFilters, isHomePage]
   );
 
-  const docTypeFilterButtons = Object.keys(UnifiedDocFilters).map(
-    (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
-      const filterValue = UnifiedDocFilters[filterKey];
-      return (
-        <div className={css(styles.feedButtonContainer)}>
-          <UnifiedDocFeedFilterButton
-            isActive={docTypeFilter === filterValue}
-            key={filterKey}
-            label={UnifiedDocFilterLabels[filterKey]}
-            onClick={(): void => {
-              if (docTypeFilter !== filterValue) {
-                setDocTypeFilter(filterValue);
-                setPaginationInfo({
-                  hasMore: false,
-                  isLoading: true,
-                  isLoadingMore: false,
-                  isServerLoaded: false,
-                  localPage: 1,
-                  page: 1,
-                });
-                setDocSetFetchedTime(Date.now());
-                router.push(
-                  {
-                    pathname: routerPathName,
-                    query: { ...router.query, type: filterValue },
-                  },
-                  routerPathName + `?type=${filterValue}`
-                );
-              }
-            }}
-          />
-        </div>
-      );
-    }
-  );
-
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const [cards, docSetFetchedTimeCheck] = getDocumentCard({
     docSetFetchedTime,
@@ -224,6 +216,7 @@ function UnifiedDocFeedContainer({
     isLoggedIn,
     isOnMyHubsTab,
     setUnifiedDocuments,
+    onBadgeClick: onDocTypeFilterSelect,
     unifiedDocumentData: renderableUniDoc,
   });
 
@@ -235,10 +228,8 @@ function UnifiedDocFeedContainer({
     <div className={css(styles.unifiedDocFeedContainer)}>
       {!hasSubscribed ? (
         <div>
-          <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            {/* @ts-ignore */}
-            <CreateFeedBanner loggedIn={loggedIn} />
-          </div>
+          {/* @ts-ignore */}
+          <CreateFeedBanner loggedIn={loggedIn} />
         </div>
       ) : null}
       <FeedInfoCard
@@ -248,16 +239,16 @@ function UnifiedDocFeedContainer({
         mainHeaderText={formattedMainHeader}
       />
       <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
-        <div className={css(styles.subFilters)}>
-          <UnifiedDocFeedSubFilters
-            onSubFilterSelect={(_type: string, filterBy: any): void =>
-              setSubFilters({ filterBy, scope: subFilters.scope })
-            }
-            onScopeSelect={(_type: string, scope: any): void =>
-              setSubFilters({ filterBy: subFilters.filterBy, scope })
-            }
+        <div className={css(styles.mainFilters)}>
+          <UnifiedDocFeedMenu
             subFilters={subFilters}
+            onDocTypeFilterSelect={onDocTypeFilterSelect}            
+            onSubFilterSelect={(filterBy) => {
+              setSubFilters({ filterBy, scope: subFilters.scope })
+            }}
+            onScopeSelect={(scope) =>{
+              setSubFilters({ filterBy: subFilters.filterBy, scope })
+            }}            
           />
         </div>
       </div>
@@ -335,6 +326,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginTop: 16,
     marginBottom: 16,
+    overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
     },

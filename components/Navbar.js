@@ -35,6 +35,7 @@ import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGet
 import { NavbarContext } from "~/pages/Base";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import HubSelector from "~/components/HubSelector";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -452,7 +453,7 @@ const Navbar = (props) => {
         onStateChange={menuChange}
       >
         <Link href={"/"} as={`/`}>
-          <a className={css(styles.logoContainer, styles.mobileLogoContainer)}>
+          <a className={css(styles.logoContainer, styles.logoContainerForMenu)}>
             <RHLogo iconStyle={styles.logo} white={true} />
           </a>
         </Link>
@@ -478,10 +479,13 @@ const Navbar = (props) => {
         {/* <SectionBountyModal /> */}
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
-            <RHLogo iconStyle={styles.logo} />
+            <RHLogo iconStyle={styles.logo} withText={true} />
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
+        <div className={css(styles.hubPopoverWrapper)}>
+          <HubSelector />
+        </div>
         <Search
           overrideStyle={styles.navbarSearchOverride}
           navbarRef={navbarRef}
@@ -681,6 +685,12 @@ const burgerMenuStyle = {
 };
 
 const styles = StyleSheet.create({
+  hubPopoverWrapper: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
   navbarContainer: {
     width: "100%",
     padding: "20px 20px",
@@ -908,7 +918,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
   },
-  mobileLogoContainer: {
+  logoContainerForMenu: {
     position: "absolute",
     top: 6,
     left: 6,
@@ -1040,6 +1050,7 @@ const mapStateToProps = (state) => ({
   authChecked: state.auth.authChecked,
   walletLink: state.auth.walletLink,
   auth: state.auth,
+  hubState: state.hubs,
 });
 
 const mapDispatchToProps = {

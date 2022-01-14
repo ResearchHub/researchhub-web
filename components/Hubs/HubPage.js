@@ -538,11 +538,6 @@ class HubPage extends Component {
 
     return (
       <Fragment>
-        <MobileFeedTabs
-          activeLeft={feed === 0}
-          activeRight={feed === 1}
-          onFeedSelect={this.onFeedSelect}
-        />
         <div className={css(styles.content, styles.column)}>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
