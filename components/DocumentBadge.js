@@ -8,6 +8,7 @@ import icons, {
 } from "~/config/themes/icons";
 import { useRouter } from "next/router";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { breakpoints } from "~/config/themes/screen";
 
 const DocumentBadge = ({ docType, label, onClick }) => {
   const router = useRouter();
@@ -69,6 +70,9 @@ const styles = StyleSheet.create({
       background: badgeColors.HOVER,
       color: badgeColors.HOVER_COLOR,
       boxShadow: "unset",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginBottom: 0,
     },
   },
 });

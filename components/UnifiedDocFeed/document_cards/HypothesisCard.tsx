@@ -314,8 +314,13 @@ function HypothesisCard({
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
-              <MobileOnly><DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} /></MobileOnly>
+              
+              <MobileOnly>
+                <div className={css(styles.topRowLeft)}>
+                  {mobileVoteWidget}
+                  <DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} />
+                </div>
+              </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
               <div className={css(styles.badgeWrapper)}>
                 <DocumentBadge
@@ -500,6 +505,9 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
+  topRowLeft: {
+    display: "flex"
+  },  
   consensusContainer: {
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
