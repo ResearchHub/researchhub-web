@@ -30,11 +30,15 @@ export default function UnifiedDocFeedSubFilters({
         opts={filterOptions}
         label={filterBy.label}
         isOpen={isFilterSelectOpen}
+        selected={filterBy.value}
         onClick={() => setIsFilterSelectOpen(true)}
         dropdownClassName="filterSelect"
         overrideTitleStyle={styles.customTitleStyle}
         positions={["bottom", "right" ]}
         customButtonClassName={styles.dropdownButtonOverride}
+        onClickOutside={() => {
+          setIsFilterSelectOpen(false);
+        }}
         onSelect={(selectedFilter) => {
           const obj = filterOptions.find((f) => selectedFilter === f.value)
           onSubFilterSelect(obj);
@@ -45,9 +49,13 @@ export default function UnifiedDocFeedSubFilters({
         <DropdownButton
           opts={scopeOptions}
           label={scope.label}
+          selected={scope.value}
           isOpen={isScopeSelectOpen}
           onClick={() => setIsScopeSelectOpen(true)}
           dropdownClassName="scopeSelect"
+          onClickOutside={() => {
+            setIsScopeSelectOpen(false);
+          }}          
           overrideTitleStyle={styles.customTitleStyle}
           positions={["bottom", "right" ]}
           customButtonClassName={styles.dropdownButtonOverride}
