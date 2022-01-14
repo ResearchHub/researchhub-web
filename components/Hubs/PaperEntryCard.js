@@ -305,42 +305,41 @@ const PaperEntryCard = (props) => {
     }
   };
 
-  const renderPreview = () => {
+  const renderRightColumn = () => {
     if (previews.length > 0) {
       return (
         <div
-          className={css(styles.column, styles.previewColumn)}
+          className={css(styles.column, styles.rightColumn)}
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
-          <LazyLoad offset={100} once>
-            {isPreviewing && (
-              <PaperPDFModal
-                paper={paper}
-                onClose={() => setIsPreviewing(false)}
-              />
-            )}
-            <div className={css(styles.preview)}>
-              <img
-                src={previews[0].file}
-                className={css(carousel.image)}
-                key={`preview_${previews[0].file}`}
-                alt={`Paper Preview Page 1`}
-                onClick={openPaperPDFModal}
-              />
-            </div>
-          </LazyLoad>
+          <div className={css(styles.badgeWrapper)}>
+            <DocumentBadge label="Paper" docType="paper" />
+          </div>
+          <div className={css(styles.previewContainer)}>
+            <LazyLoad offset={100} once>
+              {isPreviewing && (
+                <PaperPDFModal
+                  paper={paper}
+                  onClose={() => setIsPreviewing(false)}
+                />
+              )}
+              <div className={css(styles.preview)}>
+                <img
+                  src={previews[0].file}
+                  className={css(carousel.image)}
+                  key={`preview_${previews[0].file}`}
+                  alt={`Paper Preview Page 1`}
+                  onClick={openPaperPDFModal}
+                />
+              </div>
+            </LazyLoad>
+          </div>
         </div>
       );
     } else {
-      return (
-        <div className={css(styles.column, styles.previewColumn)}>
-          <LazyLoad offset={100} once>
-            <div className={css(styles.preview, styles.previewEmpty)} />
-          </LazyLoad>
-        </div>
-      );
+      return null;
     }
   };
 
@@ -586,9 +585,11 @@ const PaperEntryCard = (props) => {
                 />
               )}
               {desktopOnly(renderMainTitle())}
-              <div className={css(styles.badgeWrapper)}>
-                <DocumentBadge label="Paper" docType="paper" />
-              </div>
+              {previews.length === 0 && (
+                <div className={css(styles.badgeWrapper)}>
+                  <DocumentBadge label="Paper" docType="paper" />
+                </div>
+              )}
             </div>
             {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
@@ -596,7 +597,7 @@ const PaperEntryCard = (props) => {
             {renderContent()}
             {mobileOnly(renderContributers())}
           </div>
-          {desktopOnly(renderPreview())}
+          {desktopOnly(renderRightColumn())}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
@@ -670,13 +671,10 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
-  previewColumn: {
+  previewContainer: {
     paddingBottom: 10,
-    "@media only screen and (max-width: 767px)": {
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-    },
+    paddingLeft: 20,
+    marginTop: 10,
   },
   preview: {
     height: 90,
@@ -712,6 +710,9 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     height: "100%",
     position: "relative",
+  },
+  rightColumn: {
+    alignItems: "flex-end",
   },
   rowContainer: {
     display: "flex",
