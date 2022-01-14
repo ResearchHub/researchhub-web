@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     color: pillNavColors.secondary.filledTextColor,
     borderRadius: 40,
-    fontWeight: 400,
+    fontWeight: 500,
     marginRight: 8,
     ":hover": {
       borderRadius: 40,
