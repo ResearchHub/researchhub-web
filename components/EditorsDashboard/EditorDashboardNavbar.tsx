@@ -29,6 +29,10 @@ const INPUT_STYLE = {
 
 export const filterOptions = [
   {
+    value: "past_month",
+    label: "Past Month",
+  },
+  {
     value: null,
     label: "All Time",
     disableScope: true,
@@ -40,10 +44,6 @@ export const filterOptions = [
   {
     value: "past_week",
     label: "Past Week",
-  },
-  {
-    value: "past_month",
-    label: "Past Month",
   },
   {
     value: "past_year",
