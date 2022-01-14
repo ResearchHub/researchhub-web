@@ -154,9 +154,15 @@ export default function EditorDashboardNavbar({
 const styles = StyleSheet.create({
   editorDashboardNavbar: {
     backgroundColor: "#FFF",
-    flexDirection: "column",
+    // flexDirection: "column",
+    justifyContent: 'space-between',
     display: "flex",
     width: "100%",
+    marginBottom: 32,
+
+    "@media only screen and (max-width: 767px)": {
+      flexDirection: 'column',
+    }
   },
   dropdown: {
     width: 170,
