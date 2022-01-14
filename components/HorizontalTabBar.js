@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
   tabTypePillSelected: {
     color: pillNavColors.primary.filledTextColor,
     borderRadius: "40px",
+    fontWeight: 500,
     backgroundColor: pillNavColors.primary.filledBackgroundColor,
     ":hover": {
       backgroundColor: pillNavColors.primary.filledBackgroundColor,
