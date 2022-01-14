@@ -62,6 +62,7 @@ const styles = StyleSheet.create({
   authorFacePile: {
     display: "flex",
     flexDirection: "column",
+    flexWrap: "wrap",
     justifyContent: "center",
   },
   horizontal: {

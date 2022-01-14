@@ -134,7 +134,7 @@ function PaperUploadV2Update({
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
-  const [suggestedHubs, setSuggestedHubs] = useState<any>(null);
+  const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const currUserAuthorID = !isNullOrUndefined(authRedux.user.author_profile)
     ? authRedux.user.author_profile.id
     : null;
