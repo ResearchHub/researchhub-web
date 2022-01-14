@@ -9,40 +9,52 @@ import EditorDashboardNavbar, {
 } from "./EditorDashboardNavbar";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchEditors } from "./api/fetchEditors";
+import Loader from "../Loader/Loader";
+import colors from "~/config/themes/colors";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
   onError: Function;
   onSuccess: Function;
+  setIsLoading: (flag: boolean) => void;
 };
 
 const useEffectFetchEditors = ({
   filters,
   onError,
   onSuccess,
+  setIsLoading,
 }: UseEffectFetchEditorsArgs): void => {
-  const { selectedHub, timeframe } = filters;
+  const { orderBy, selectedHub, timeframe } = filters;
   useEffect((): void => {
+    setIsLoading(true);
     fetchEditors({
-      hubID: selectedHub?.id ?? null,
+      hub_id: selectedHub?.id ?? null,
       onError,
       onSuccess,
+      order_by: orderBy,
       timeframe_str: timeframe?.value ?? null,
     });
-  }, [selectedHub, timeframe, onError, onSuccess]);
+  }, [orderBy, selectedHub, timeframe]);
 };
 
 export default function EditorsDashboard(): ReactElement<"div"> {
   const [filters, setFilters] = useState<EditorDashFilters>({
     selectedHub: null,
     timeframe: filterOptions[0],
+    orderBy: "desc",
   });
   const [editors, setEditors] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffectFetchEditors({
     filters,
     onError: emptyFncWithMsg,
-    onSuccess: setEditors,
+    onSuccess: (editorResults: any[]): void => {
+      setEditors(editorResults);
+      setIsLoading(false);
+    },
+    setIsLoading,
   });
 
   const editorCards = useMemo(
@@ -69,7 +81,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
           );
         }
       ),
-    [editors, filters.selectedHub, filters.timeframe]
+    [editors, filters]
   );
 
   return (
@@ -81,7 +93,13 @@ export default function EditorsDashboard(): ReactElement<"div"> {
         }
       />
       <Head />
-      <div className={css(styles.editorContainerWrap)}>{editorCards}</div>
+      <div className={css(styles.editorContainerWrap)}>
+        {isLoading ? (
+          <Loader loading={true} size={16} color={colors.BLUE()} />
+        ) : (
+          editorCards
+        )}
+      </div>
     </div>
   );
 }
