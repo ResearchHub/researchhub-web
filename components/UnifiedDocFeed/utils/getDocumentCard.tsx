@@ -17,6 +17,7 @@ export function getDocumentCard({
   isOnMyHubsTab,
   setUnifiedDocuments,
   unifiedDocumentData,
+  onBadgeClick,
 }): [UnifiedCard[], number] {
   return [
     filterNull(unifiedDocumentData).map(
@@ -45,6 +46,7 @@ export function getDocumentCard({
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
+                onBadgeClick={onBadgeClick}
               />
             );
           case "hypothesis":
@@ -59,6 +61,7 @@ export function getDocumentCard({
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
+                onBadgeClick={onBadgeClick}
               />
             );
           case "paper":
@@ -67,6 +70,7 @@ export function getDocumentCard({
                 index={arrIndex}
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 paper={uniDoc.documents}
+                onBadgeClick={onBadgeClick}
                 style={[
                   styles.card,
                   shouldBlurMobile && styles.mobileBlurCard,

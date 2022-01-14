@@ -53,6 +53,7 @@ const PaperEntryCard = (props) => {
     promotionSummary,
     onClick,
     styleVariation,
+    onBadgeClick,
   } = props;
 
   const store = useStore();
@@ -315,7 +316,11 @@ const PaperEntryCard = (props) => {
           }}
         >
           <div className={css(styles.badgeWrapper)}>
-            <DocumentBadge label="Paper" docType="paper" />
+            <DocumentBadge
+              label="Paper"
+              docType="paper"
+              onClick={onBadgeClick}
+            />
           </div>
           <div className={css(styles.previewContainer)}>
             <LazyLoad offset={100} once>
@@ -587,7 +592,11 @@ const PaperEntryCard = (props) => {
               {desktopOnly(renderMainTitle())}
               {previews.length === 0 && (
                 <div className={css(styles.badgeWrapper)}>
-                  <DocumentBadge label="Paper" docType="paper" />
+                  <DocumentBadge
+                    label="Paper"
+                    docType="paper"
+                    onClick={onBadgeClick}
+                  />
                 </div>
               )}
             </div>

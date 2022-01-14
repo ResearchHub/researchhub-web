@@ -166,6 +166,33 @@ function UnifiedDocFeedContainer({
     updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
+  const onDocTypeFilterSelect = (selected) => {
+    if (docTypeFilter !== selected) {
+      setDocTypeFilter(selected);
+      setPaginationInfo({
+        hasMore: false,
+        isLoading: true,
+        isLoadingMore: false,
+        isServerLoaded: false,
+        localPage: 1,
+        page: 1,
+      });
+      setDocSetFetchedTime(Date.now());
+
+      const query = { ...router.query, type: selected };
+      if (!query.type) {
+        delete query.type;
+      }
+
+      router.push(
+        {
+          pathname: routerPathName,
+          query,
+        },
+      );
+    }
+  }
+
   const hasSubscribed = useMemo(
     (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
@@ -182,42 +209,6 @@ function UnifiedDocFeedContainer({
     [hubName, feed, subFilters, isHomePage]
   );
 
-  const docTypeFilterButtons = Object.keys(UnifiedDocFilters).map(
-    (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
-      const filterValue = UnifiedDocFilters[filterKey];
-      return (
-        <div className={css(styles.feedButtonContainer)}>
-          <UnifiedDocFeedFilterButton
-            isActive={docTypeFilter === filterValue}
-            key={filterKey}
-            label={UnifiedDocFilterLabels[filterKey]}
-            onClick={(): void => {
-              if (docTypeFilter !== filterValue) {
-                setDocTypeFilter(filterValue);
-                setPaginationInfo({
-                  hasMore: false,
-                  isLoading: true,
-                  isLoadingMore: false,
-                  isServerLoaded: false,
-                  localPage: 1,
-                  page: 1,
-                });
-                setDocSetFetchedTime(Date.now());
-                router.push(
-                  {
-                    pathname: routerPathName,
-                    query: { ...router.query, type: filterValue },
-                  },
-                  routerPathName + `?type=${filterValue}`
-                );
-              }
-            }}
-          />
-        </div>
-      );
-    }
-  );
-
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const [cards, docSetFetchedTimeCheck] = getDocumentCard({
     docSetFetchedTime,
@@ -225,6 +216,7 @@ function UnifiedDocFeedContainer({
     isLoggedIn,
     isOnMyHubsTab,
     setUnifiedDocuments,
+    onBadgeClick: onDocTypeFilterSelect,
     unifiedDocumentData: renderableUniDoc,
   });
 
@@ -250,40 +242,11 @@ function UnifiedDocFeedContainer({
         <div className={css(styles.mainFilters)}>
           <UnifiedDocFeedMenu
             subFilters={subFilters}
-            onDocTypeFilterSelect={(selected) => {
-              if (docTypeFilter !== selected) {
-                setDocTypeFilter(selected);
-                setPaginationInfo({
-                  hasMore: false,
-                  isLoading: true,
-                  isLoadingMore: false,
-                  isServerLoaded: false,
-                  localPage: 1,
-                  page: 1,
-                });
-                setDocSetFetchedTime(Date.now());
-
-                const query = { ...router.query, type: selected };
-                if (!query.type) {
-                  delete query.type;
-                }
-
-                router.push(
-                  {
-                    pathname: routerPathName,
-                    query,
-                  },
-                );
-              }
-            }}            
+            onDocTypeFilterSelect={onDocTypeFilterSelect}            
             onSubFilterSelect={(filterBy) => {
-              console.log('filterBy', filterBy);
-              console.log('subFilters.scope');
               setSubFilters({ filterBy, scope: subFilters.scope })
             }}
             onScopeSelect={(scope) =>{
-              console.log('filterBy', subFilters.filterBy);
-              console.log('scope', scope);
               setSubFilters({ filterBy: subFilters.filterBy, scope })
             }}            
           />
