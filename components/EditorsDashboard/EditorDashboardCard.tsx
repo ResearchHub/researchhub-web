@@ -41,7 +41,7 @@ export default function EditorDashboardUserCard({
             </div>
             <div className={css(styles.added)}>
               <span className={css(styles.countResponse)}>
-                {timeAgo.format(new Date(editorAddedDate))}
+                added {timeAgo.format(new Date(editorAddedDate))}
               </span>
             </div>
           </div>
