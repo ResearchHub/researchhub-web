@@ -17,34 +17,37 @@ const DocumentBadge = ({ docType, label, onClick }) => {
     event.preventDefault();
     event.stopPropagation();
 
-    onClick
-      ? onClick(getBEUnifiedDocType(docType))
-      : ["/hubs/[slug]", "/"].includes(router.pathname)
-      ? router.push({
+    if (onClick) {
+      return onClick(getBEUnifiedDocType(docType));
+    } else {
+      const isCurrentRouteAFeed = ["/hubs/[slug]", "/"].includes(
+        router.pathname
+      );
+      if (isCurrentRouteAFeed) {
+        router.push({
           pathname: router.pathname,
           query: { ...router.query, type: getBEUnifiedDocType(docType) },
-        })
-      : router.push({
+        });
+      } else {
+        router.push({
           pathname: "/",
           query: { type: getBEUnifiedDocType(docType) },
         });
+      }
+    }
   };
 
   return (
     <Badge onClick={_onClick} badgeClassName={styles.badge}>
-      {docType === "paper" ? (
-        <span className={css(styles.icon)}>
+      <span className={css(styles.icon)}>
+        {docType === "paper" ? (
           <PaperIcon withAnimation={false} />
-        </span>
-      ) : docType === "post" ? (
-        <span className={css(styles.icon)}>
+        ) : docType === "post" ? (
           <PostIcon withAnimation={false} />
-        </span>
-      ) : docType === "hypothesis" ? (
-        <span className={css(styles.icon)}>
+        ) : docType === "hypothesis" ? (
           <HypothesisIcon withAnimation={false} />
-        </span>
-      ) : null}
+        ) : null}
+      </span>
       <span>{label}</span>
     </Badge>
   );
