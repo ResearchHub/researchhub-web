@@ -13,7 +13,7 @@ const DropdownButton = ({
   onClickOutside,
   dropdownClassName,
   customButtonClassName,
-  selected = null,
+  selected,
   positions = ["bottom", "top"],
   isOpen = false,
   overridePopoverStyle = null,

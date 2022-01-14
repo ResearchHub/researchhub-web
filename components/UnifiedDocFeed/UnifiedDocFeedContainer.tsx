@@ -251,8 +251,8 @@ function UnifiedDocFeedContainer({
           <UnifiedDocFeedMenu
             subFilters={subFilters}
             onDocTypeFilterSelect={(selected) => {
-              if (docTypeFilter !== selected.value) {
-                setDocTypeFilter(selected.value);
+              if (docTypeFilter !== selected) {
+                setDocTypeFilter(selected);
                 setPaginationInfo({
                   hasMore: false,
                   isLoading: true,
@@ -263,7 +263,7 @@ function UnifiedDocFeedContainer({
                 });
                 setDocSetFetchedTime(Date.now());
 
-                const query = { ...router.query, type: selected.value };
+                const query = { ...router.query, type: selected };
                 if (!query.type) {
                   delete query.type;
                 }

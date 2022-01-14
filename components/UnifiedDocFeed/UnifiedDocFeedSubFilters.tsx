@@ -72,6 +72,7 @@ export default function UnifiedDocFeedSubFilters({
 
 const styles = StyleSheet.create({
   dropdownButtonOverride: {
+    whiteSpace: "nowrap",
     backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     color: pillNavColors.secondary.filledTextColor,
     borderRadius: 40,

@@ -45,8 +45,7 @@ const UnifiedDocFeedMenu = ({
 
   const tabs = getTabs();
   const selectedTab = tabs.find((t) => t.isSelected);
-  const handleTabClick = () => null;
-
+  console.log("selectedTab.value", selectedTab.value);
   return (
     <div className={css(styles.feedMenu)}>
       <div className={css(styles.horizontalTabWrapper)}>
@@ -54,7 +53,7 @@ const UnifiedDocFeedMenu = ({
           type="PILL_NAV"
           id="hpTabBar"
           tabs={tabs}
-          onClick={onDocTypeFilterSelect}
+          onClick={(selected) => onDocTypeFilterSelect(selected.value)}
           containerStyle={styles.horizontalMenuOverride}
           dragging={true}
           alignCenter={false}
@@ -65,12 +64,17 @@ const UnifiedDocFeedMenu = ({
           opts={tabs}
           label={selectedTab.label}
           isOpen={isOpen}
+          selected={selectedTab.value}
+          overrideTitleStyle={styles.overrideTitleStyle}
           onClick={() => setIsOpen(true)}
-          dropdownClassName="filter"
+          dropdownClassName="filterSelect"
           positions={["bottom", "right"]}
+          onClickOutside={() => {
+            setIsOpen(false);
+          }}
           customButtonClassName={styles.dropdownButtonOverride}
-          onSelect={(newPerm) => {
-            return null;
+          onSelect={(selectedTab) => {
+            onDocTypeFilterSelect(selectedTab);
           }}
           onClose={() => setIsOpen(false)}
         />
@@ -112,12 +116,18 @@ const styles = StyleSheet.create({
   subFilters: {
     display: "flex",
   },
+  overrideTitleStyle: {
+    fontWeight: 400,
+  },
   dropdownButtonOverride: {
+    whiteSpace: "nowrap",
     backgroundColor: pillNavColors.primary.filledBackgroundColor,
     color: pillNavColors.primary.filledTextColor,
     borderRadius: 40,
     fontWeight: 400,
     ":hover": {
+      backgroundColor: pillNavColors.primary.filledBackgroundColor,
+      color: pillNavColors.primary.filledTextColor,
       borderRadius: 40,
     },
   },
