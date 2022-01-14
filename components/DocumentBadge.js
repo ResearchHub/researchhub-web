@@ -17,10 +17,15 @@ const DocumentBadge = ({ docType, label, onClick }) => {
     event.stopPropagation();
 
     onClick
-      ? onClick()
-      : router.push({
+      ? onClick(getBEUnifiedDocType(docType))
+      : ["/hubs/[slug]", "/"].includes(router.pathname)
+      ? router.push({
           pathname: router.pathname,
           query: { ...router.query, type: getBEUnifiedDocType(docType) },
+        })
+      : router.push({
+          pathname: "/",
+          query: { type: getBEUnifiedDocType(docType) },
         });
   };
 

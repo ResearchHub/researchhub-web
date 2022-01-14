@@ -43,6 +43,7 @@ export type UserPostCardProps = {
   unified_document: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
   user: any;
+  onBadgeClick: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -94,6 +95,7 @@ function UserPostCard(props: UserPostCardProps) {
     user,
     user_vote: userVote,
     styleVariation,
+    onBadgeClick,
     /*
       In some contexts we want to wrap the title/renderable_text 
       with html. e.g. rendering search highlights.
@@ -328,7 +330,7 @@ function UserPostCard(props: UserPostCardProps) {
               </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
               <div className={css(styles.badgeWrapper)}>
-                <DocumentBadge label="Post" docType="post" />
+                <DocumentBadge label="Post" docType="post" onClick={onBadgeClick} />
               </div>                 
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>

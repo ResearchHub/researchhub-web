@@ -51,6 +51,7 @@ export type HypothesisCardProps = {
   unified_document: any;
   user_vote: any;
   user: any;
+  onBadgeClick: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -102,6 +103,7 @@ function HypothesisCard({
   titleAsHtml,
   user_vote: userVote,
   user: currentUser,
+  onBadgeClick,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
@@ -319,6 +321,7 @@ function HypothesisCard({
                 <DocumentBadge
                   label="Hypothesis"
                   docType="hypothesis"
+                  onClick={onBadgeClick}
                 />
               </div>              
             </div>

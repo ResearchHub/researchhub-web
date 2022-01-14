@@ -45,7 +45,7 @@ const UnifiedDocFeedMenu = ({
 
   const tabs = getTabs();
   const selectedTab = tabs.find((t) => t.isSelected);
-  console.log("selectedTab.value", selectedTab.value);
+
   return (
     <div className={css(styles.feedMenu)}>
       <div className={css(styles.horizontalTabWrapper)}>
