@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { emptyFncWithMsg } from "../../config/utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
 import { getDocumentCard } from "./utils/getDocumentCard";
@@ -232,23 +232,26 @@ function UnifiedDocFeedContainer({
           <CreateFeedBanner loggedIn={loggedIn} />
         </div>
       ) : null}
-      <FeedInfoCard
-        hub={hub}
-        hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
-        isHomePage={isHomePage}
-        mainHeaderText={formattedMainHeader}
-      />
+      {isHomePage || isEmpty(hub)
+        ? <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+        : <FeedInfoCard
+            hub={hub}
+            hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+            isHomePage={isHomePage}
+            mainHeaderText={formattedMainHeader}
+          />
+      }
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
           <UnifiedDocFeedMenu
             subFilters={subFilters}
-            onDocTypeFilterSelect={onDocTypeFilterSelect}            
+            onDocTypeFilterSelect={onDocTypeFilterSelect}
             onSubFilterSelect={(filterBy) => {
-              setSubFilters({ filterBy, scope: subFilters.scope })
+              setSubFilters({ filterBy, scope: subFilters.scope });
             }}
-            onScopeSelect={(scope) =>{
-              setSubFilters({ filterBy: subFilters.filterBy, scope })
-            }}            
+            onScopeSelect={(scope) => {
+              setSubFilters({ filterBy: subFilters.filterBy, scope });
+            }}
           />
         </div>
       </div>
@@ -402,5 +405,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     marginRight: 24,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 500,
+    textOverflow: "ellipsis",
+    marginBottom: 0,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: 30,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 24,
+      marginTop: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
+      fontSize: 20,
+    },
   },
 });
