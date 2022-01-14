@@ -815,6 +815,7 @@ export const UpIcon = ({
 const styles = StyleSheet.create({
   iconWrapper: {
     padding: 8,
+    marginLeft: 8,
     display: "inline-flex",
   },
   discussionWrapper: {

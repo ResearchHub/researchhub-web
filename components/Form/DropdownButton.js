@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   targetBtn: {
-    padding: "7px 10px",
+    padding: "8px 16px",
     userSelect: "none",
     textTransform: "capitalize",
     color: colors.BLACK(0.8),
