@@ -6,7 +6,10 @@ import { useRouter } from "next/router";
 import FormSelect from "../Form/FormSelect";
 import icons from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLongArrowAltDown, faLongArrowAltUp } from "@fortawesome/pro-solid-svg-icons";
+import {
+  faLongArrowAltDown,
+  faLongArrowAltUp,
+} from "@fortawesome/pro-solid-svg-icons";
 
 export type EditorDashFilters = {
   selectedHub: any;
@@ -60,11 +63,25 @@ const marginStyle = {
 export const upDownOptions = [
   {
     value: "desc",
-    label: <div style={ascStyle}>Descending <span style={marginStyle}>{<FontAwesomeIcon icon={faLongArrowAltDown} />} </span></div>,
+    label: (
+      <div style={ascStyle}>
+        Descending{" "}
+        <span style={marginStyle}>
+          {<FontAwesomeIcon icon={faLongArrowAltDown} />}{" "}
+        </span>
+      </div>
+    ),
   },
   {
     value: "asc",
-    label: <div style={ascStyle}>Ascending <span style={marginStyle}>{<FontAwesomeIcon icon={faLongArrowAltUp} />}</span></div>,
+    label: (
+      <div style={ascStyle}>
+        Ascending{" "}
+        <span style={marginStyle}>
+          {<FontAwesomeIcon icon={faLongArrowAltUp} />}
+        </span>
+      </div>
+    ),
     disableScope: true,
   },
 ];
