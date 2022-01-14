@@ -180,6 +180,15 @@ const routes = (BASE_URL) => {
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
+    RESEARCHHUB_EDITORS_BY_CONTRIBUTION: ({
+      hub_id,
+      order_by,
+      timeframe_str,
+    }) => {
+      return prepURL(BASE_URL + "moderators/get_editors_by_contributions/", {
+        querystring: { hub_id, order_by, timeframe_str },
+      });
+    },
     RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
       let url = BASE_URL + "researchhub_posts/";
       let params = {
