@@ -32,14 +32,14 @@ const DropdownButton = ({
         <div className={css(styles.popoverBodyContent, overridePopoverStyle)}>
           <div className={css(styles.htmlBefore)}>{htmlBefore}</div>
           <div className={css(styles.options, overrideOptionsStyle)}>
-            {opts.map((o, i) => (
+            {opts.map((option, i) => (
               <div
                 className={css(
                   styles.optContainer,
-                  o.value === selected && styles.selectedOpt
+                  option.value === selected && styles.selectedOpt
                 )}
                 onClick={() => {
-                  onSelect(o.value);
+                  onSelect(option.value);
                   if (closeAfterSelect) {
                     onClose();
                   }
@@ -47,20 +47,22 @@ const DropdownButton = ({
                 key={`opt-${i}`}
               >
                 <div className={css(styles.infoContainer)}>
-                  {o.html ? (
-                    o.html
+                  {option.html ? (
+                    option.html
                   ) : (
                     <Fragment>
                       <div
                         className={css(
                           styles.optTitle,
                           overrideTitleStyle,
-                          o.titleStyle
+                          option.titleStyle
                         )}
                       >
-                        {o.title || o.label}
+                        {option.title || option.label}
                       </div>
-                      <div className={css(styles.optDesc)}>{o.description}</div>
+                      <div className={css(styles.optDesc)}>
+                        {option.description}
+                      </div>
                     </Fragment>
                   )}
                 </div>
