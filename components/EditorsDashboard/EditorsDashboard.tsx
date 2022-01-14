@@ -9,6 +9,7 @@ import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
   EditorDashFilters,
   filterOptions,
+  upDownOptions,
 } from "./EditorDashboardNavbar";
 import Loader from "../Loader/Loader";
 
@@ -32,7 +33,7 @@ const useEffectFetchEditors = ({
       hub_id: selectedHub?.id ?? null,
       onError,
       onSuccess,
-      order_by: orderBy,
+      order_by: orderBy?.value,
       timeframe_str: timeframe?.value ?? null,
     });
   }, [orderBy, selectedHub, timeframe]);
@@ -42,7 +43,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
   const [filters, setFilters] = useState<EditorDashFilters>({
     selectedHub: null,
     timeframe: filterOptions[0],
-    orderBy: "desc",
+    orderBy: upDownOptions[0],
   });
   const [editors, setEditors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -109,7 +110,8 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    height: "100vh",
+    height: "100%",
+    minHeight: "100vh",
     maxWidth: 1400,
     padding: "0 32px",
     width: "100%",

@@ -75,6 +75,8 @@ import {
   faQuoteRight,
   faVideoPlus,
   faRss,
+  faLongArrowAltDown,
+  faLongArrowAltUp,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -143,6 +145,8 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faLongArrowAltUp,
+  faLongArrowAltDown,
   faPenSquare,
   faDotCircle,
   faPlusReg,
