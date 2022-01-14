@@ -26,6 +26,7 @@ import Ripples from "react-ripples";
 import Router from "next/router";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
 import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 
 export type HypothesisCardProps = {
@@ -50,6 +51,7 @@ export type HypothesisCardProps = {
   unified_document: any;
   user_vote: any;
   user: any;
+  onBadgeClick: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -101,6 +103,7 @@ function HypothesisCard({
   titleAsHtml,
   user_vote: userVote,
   user: currentUser,
+  onBadgeClick,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
@@ -131,7 +134,7 @@ function HypothesisCard({
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>
+        <span className={css(styles.title)}>           
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -311,9 +314,21 @@ function HypothesisCard({
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
-              <MobileOnly><DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} /></MobileOnly>
+              
+              <MobileOnly>
+                <div className={css(styles.topRowLeft)}>
+                  {mobileVoteWidget}
+                  <DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} />
+                </div>
+              </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge
+                  label="Hypothesis"
+                  docType="hypothesis"
+                  onClick={onBadgeClick}
+                />
+              </div>              
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
@@ -485,10 +500,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 8,
+    justifyContent: "space-between",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       paddingBottom: 10,
     },
   },
+  topRowLeft: {
+    display: "flex"
+  },  
   consensusContainer: {
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
@@ -640,4 +659,9 @@ const styles = StyleSheet.create({
       width: "fit-content",
     },
   },
+  badgeWrapper: {
+    verticalAlign: "-3px",
+    display: "inline-block",
+    marginRight: -8,
+  },    
 });

@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     ":hover": {
       color: colors.BLUE(1),
-      backgroundColor: "#edeefe",
+      backgroundColor: colors.LIGHTER_BLUE(),
     },
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     boxSizing: "border-box",
     ":hover": {
-      backgroundColor: "#EDEDF0",
+      backgroundColor: colors.LIGHTER_BLUE(),
       borderColor: "#d8d8de",
     },
   },

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ScrollMenu from "react-horizontal-scrolling-menu";
 import { useState, useEffect } from "react";
 
-import colors from "~/config/themes/colors";
+import colors, { pillNavColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
 
@@ -15,6 +15,7 @@ const HorizontalTabBar = ({
   dragging = false,
   containerStyle = null,
   showArrowsOnWidth = null,
+  type = "FLAT_NAV",
 }) => {
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
@@ -31,13 +32,16 @@ const HorizontalTabBar = ({
   }, []);
 
   const renderTab = (tab, index) => {
-    const { isSelected, label, type } = tab;
+    const { isSelected, label } = tab;
 
     return (
       <div
         key={label}
-        id={`tabType--${type}`}
-        className={css(styles.tab, isSelected && styles.selectedTab)}
+        className={css(
+          type === "PILL_NAV" ? styles.tabTypePill : styles.tabTypeFlat,
+          isSelected && type === "PILL_NAV" && styles.tabTypePillSelected,
+          isSelected && type === "FLAT_NAV" && styles.tabTypeFlatSelected
+        )}
         onClick={() => onClick(tab, index)}
       >
         {label}
@@ -48,7 +52,16 @@ const HorizontalTabBar = ({
   const tabsHtml = tabs.map(renderTab);
 
   return (
-    <div className={css(styles.container, containerStyle)} id={id}>
+    <div
+      className={css(
+        styles.container,
+        containerStyle,
+        type === "PILL_NAV"
+          ? styles.containerTypePill
+          : styles.containerTypeFlat
+      )}
+      id={id}
+    >
       {pageWidth > 0 && (
         <ScrollMenu
           arrowLeft={
@@ -89,23 +102,26 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     boxSizing: "border-box",
+  },
+  containerTypeFlat: {
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
   },
+  containerTypePill: {},
   tabContainer: {
     display: "flex",
     width: "100%",
     justifyContent: "flex-start",
   },
-  tab: {
+  tabTypeFlat: {
     color: colors.BLACK(0.5),
     padding: "1rem",
+    marginRight: 8,
     textTransform: "capitalize",
     fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",
     ":active": {
       color: colors.PURPLE(),
-      cursor: "pointer",
     },
     ":hover": {
       color: colors.PURPLE(),
@@ -115,7 +131,37 @@ const styles = StyleSheet.create({
       fontSize: 16,
     },
   },
-  selectedTab: {
+  tabTypePill: {
+    color: pillNavColors.primary.unfilledTextColor,
+    padding: "6px 10px",
+    marginRight: 8,
+    textTransform: "capitalize",
+    fontSize: 16,
+    fontWeight: 400,
+    cursor: "pointer",
+    ":active": {
+      cursor: "pointer",
+    },
+    ":hover": {
+      borderRadius: 40,
+      background: pillNavColors.primary.unfilledHoverBackgroundColor,
+      color: pillNavColors.primary.unfilledHoverTextColor,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 16,
+      fontSize: 16,
+    },
+  },
+  tabTypePillSelected: {
+    color: pillNavColors.primary.filledTextColor,
+    borderRadius: "40px",
+    fontWeight: 500,
+    backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    ":hover": {
+      backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    },
+  },
+  tabTypeFlatSelected: {
     color: colors.PURPLE(),
     borderBottom: "solid 3px",
     borderColor: colors.PURPLE(),
@@ -161,6 +207,7 @@ HorizontalTabBar.propTypes = {
   dragging: PropTypes.bool,
   containerStyle: PropTypes.object,
   showArrowsOnWidth: PropTypes.number,
+  type: PropTypes.oneOf(["PILL_NAV", "FLAT_NAV"]),
 };
 
 export default HorizontalTabBar;

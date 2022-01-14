@@ -17,27 +17,5 @@ export function formatMainHeader({
     return "My Hubs";
   }
 
-  let prefix = "";
-  switch (filterBy.value) {
-    case "removed":
-      prefix = "Removed";
-      break;
-    case "hot":
-      prefix = "Trending";
-      break;
-    case "top_rated":
-      prefix = "Top";
-      break;
-    case "newest":
-      prefix = "Newest";
-      break;
-    case "most_discussed":
-      prefix = "Most Discussed";
-      break;
-    case "pulled-papers":
-      prefix = "Pulled";
-      break;
-  }
-
-  return isHomePage ? `${prefix} on ResearchHub` : `${capitalize(hubName)}`;
+  return isHomePage ? `Explore Scientific Knowledge` : `${capitalize(hubName)}`;
 }

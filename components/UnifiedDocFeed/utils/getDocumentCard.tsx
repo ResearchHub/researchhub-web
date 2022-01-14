@@ -17,6 +17,7 @@ export function getDocumentCard({
   isOnMyHubsTab,
   setUnifiedDocuments,
   unifiedDocumentData,
+  onBadgeClick,
 }): [UnifiedCard[], number] {
   return [
     filterNull(unifiedDocumentData).map(
@@ -40,10 +41,12 @@ export function getDocumentCard({
                 formattedDocType={formattedDocType}
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 style={[
+                  styles.card,
                   styles.customUserPostCard,
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
+                onBadgeClick={onBadgeClick}
               />
             );
           case "hypothesis":
@@ -53,10 +56,12 @@ export function getDocumentCard({
                 formattedDocType={formattedDocType}
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 style={[
+                  styles.card,
                   styles.customUserPostCard,
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
+                onBadgeClick={onBadgeClick}
               />
             );
           case "paper":
@@ -65,7 +70,9 @@ export function getDocumentCard({
                 index={arrIndex}
                 key={`${formattedDocType}-${docID}-${arrIndex}`}
                 paper={uniDoc.documents}
+                onBadgeClick={onBadgeClick}
                 style={[
+                  styles.card,
                   shouldBlurMobile && styles.mobileBlurCard,
                   shouldBlurDesktop && styles.desktopBlurCard,
                 ]}
@@ -92,6 +99,11 @@ export function getDocumentCard({
 }
 
 const styles = StyleSheet.create({
+  card: {
+    ":first-child": {
+      marginTop: 0
+    }
+  },
   customUserPostCard: {
     marginBottom: 12,
     marginTop: 12,
