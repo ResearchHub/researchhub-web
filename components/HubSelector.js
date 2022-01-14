@@ -1,6 +1,6 @@
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import Link from "next/link";
@@ -9,52 +9,82 @@ import icons, { RHLogo } from "~/config/themes/icons";
 const HubSelector = ({ hubState }) => {
   const [isHubSelectOpen, setIsHubSelectOpen] = useState(false);
 
-  const htmlAfter = (
-    <div className={css(styles.htmlAfter)}>
-      <div className={css(styles.links)}>
-        <Link href={`/`}>
-          <a className={css(styles.primaryButton)}>
-            <span className={css(styles.squaresIcon)}>{icons.squares}</span>
-            All
+  const renderDropdownOpt = (hub) => {
+    return {
+      html: (
+        <Link href={`/hubs/${hub.slug}`}>
+          <a className={css(styles.hubLink)}>
+            <img
+              className={css(styles.hubImage)}
+              src={
+                hub.hub_image
+                  ? hub.hub_image
+                  : "/static/background/hub-placeholder.svg"
+              }
+              alt={hub.name}
+            />
+            <div className={css(styles.hubDetails)}>
+              <div className={css(styles.hubName)}>{hub.name}</div>
+              <div className={css(styles.hubDescription)}>
+                {hub.description}
+              </div>
+            </div>
           </a>
         </Link>
+      ),
+      value: hub,
+    };
+  };
+
+  const hubOpts = useMemo(() => {
+    const myHubsHeaderOpt = {
+      html: (
         <Link href={`/my-hubs`}>
           <a className={css(styles.primaryButton)}>
             <RHLogo withText={false} iconStyle={styles.rhIcon} />
             My Hubs
           </a>
         </Link>
-      </div>
-    </div>
-  );
+      ),
+      value: "my-hubs",
+    };
 
-  const hubOpts = hubState.topHubs.map((h) => ({
-    html: (
-      <Link href={`/hubs/${h.slug}`}>
-        <a className={css(styles.hubLink)}>
-          <img
-            className={css(styles.hubImage)}
-            src={
-              h.hub_image
-                ? h.hub_image
-                : "/static/background/hub-placeholder.svg"
-            }
-            alt={h.name}
-          />
-          <div className={css(styles.hubDetails)}>
-            <div className={css(styles.hubName)}>{h.name}</div>
-            <div className={css(styles.hubDescription)}>{h.description}</div>
-          </div>
-        </a>
-      </Link>
-    ),
-    value: h,
-  }));
+    const allHubsHeaderOpt = {
+      html: (
+        <Link href={`/hubs`}>
+          <a className={css(styles.primaryButton)}>
+            <span className={css(styles.squaresIcon)}>{icons.squares}</span>
+            All Hubs
+          </a>
+        </Link>
+      ),
+      value: "all-hubs",
+    };
+
+    const withHeaders =
+      (hubState.subscribedHubs || []).length > 0 ? true : false;
+
+    const myHubsOpts = withHeaders
+      ? [
+          myHubsHeaderOpt,
+          ...(hubState.subscribedHubs || []).map((h) => renderDropdownOpt(h)),
+        ]
+      : (hubState.subscribedHubs || []).map((h) => renderDropdownOpt(h));
+
+    const allHubsOpts = withHeaders
+      ? [
+          allHubsHeaderOpt,
+          ...(hubState.topHubs || []).map((h) => renderDropdownOpt(h)),
+        ]
+      : (hubState.topHubs || []).map((h) => renderDropdownOpt(h));
+
+    const hubOpts = [...myHubsOpts, ...allHubsOpts];
+    return hubOpts;
+  }, [hubState.subscribedHubs, hubState.topHubs]);
 
   return (
     <DropdownButton
       opts={hubOpts}
-      htmlAfter={htmlAfter}
       label={`Hub`}
       isOpen={isHubSelectOpen}
       onClick={() => setIsHubSelectOpen(true)}
@@ -64,7 +94,7 @@ const HubSelector = ({ hubState }) => {
       customButtonClassName={styles.hubSelectorButton}
       overrideOptionsStyle={styles.hubPopoverOptions}
       onSelect={() => {
-        return null;
+        setIsHubSelectOpen(false);
       }}
       onClose={() => setIsHubSelectOpen(false)}
     />
@@ -81,39 +111,26 @@ const styles = StyleSheet.create({
     verticalAlign: "-4px",
     marginRight: "10px",
   },
-  htmlAfter: {
-    display: "block",
-    padding: "10px 14px",
-    boxSizing: "border-box",
-    position: "fixed",
-    bottom: 0,
-    width: "100vw",
-    zIndex: 2,
-    background: "white",
-  },
   hubPopoverOptions: {
-    // height = options list container - fixed position htmlAfter container
-    // Reason: We want to display both within the viewport's height
-    height: "calc(100% - 118px)",
-    overflowY: "scroll",
-    paddingTop: 10,
+    paddingTop: 5,
   },
   primaryButton: {
     color: colors.NEW_BLUE(),
-    border: `1px solid ${colors.GREY()}`,
+    fontWeight: 500,
     width: "100%",
-    padding: "9px 10px",
-    fontWeight: 400,
+    padding: "9px 10px 9px 2px",
     fontSize: 16,
     display: "block",
-    textAlign: "center",
+    textAlign: "left",
     textDecoration: "none",
     marginTop: 10,
     boxSizing: "border-box",
+    borderBottom: `1px solid ${colors.NEW_BLUE()}`,
   },
   hubDetails: {},
   hubName: {
     textTransform: "capitalize",
+    fontWeight: 400,
   },
   hubDescription: {
     fontWeight: 400,
@@ -145,12 +162,12 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     objectFit: "cover",
     marginRight: 10,
-    background: "#EAEAEA",
+    background: colors.LIGHT_GREY(),
     border: "1px solid #ededed",
   },
   hubLink: {
     textDecoration: "none",
-    color: "#111",
+    color: colors.BLACK(),
     width: "100%",
     display: "flex",
     alignItems: "start",
