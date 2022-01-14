@@ -24,8 +24,6 @@ const DropdownButton = ({
   htmlBefore = null, // HTML to be injected before the list
   htmlAfter = null, // HTML to be injected after the list
 }) => {
-  console.log("selected", selected);
-
   return (
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}

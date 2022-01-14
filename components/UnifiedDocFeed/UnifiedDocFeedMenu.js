@@ -51,6 +51,7 @@ const UnifiedDocFeedMenu = ({
     <div className={css(styles.feedMenu)}>
       <div className={css(styles.horizontalTabWrapper)}>
         <HorizontalTabBar
+          type="PILL_NAV"
           id="hpTabBar"
           tabs={tabs}
           onClick={onDocTypeFilterSelect}

@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     display: "flex",
-    padding: "6px 12px 3px 12px",
+    padding: "6px 12px 3px 6px",
     textTransform: "capitalize",
     backgroundColor: "unset",
     color: badgeColors.COLOR,
