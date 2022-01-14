@@ -13,9 +13,10 @@ function PermissionsDashboard(): ReactElement<"div"> | null {
     auth: reduxStore?.getState()?.auth ?? null,
     shouldRedirect: true,
   });
+  const [formType, setFormType] = useState<"add" | "delete">("add");
   return shouldRenderUI ? (
     <div className={css(styles.permissionsDashboard)}>
-      <HubEditorCreateForm />
+      {formType === "add" ? <HubEditorCreateForm /> : <HubEditorDeleteForm />}
     </div>
   ) : null;
 }
