@@ -302,6 +302,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         key={`${dropdownKey}-${opt.value}`}
         label={opt.label}
         onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+        onRemove={() => handleRemoveSelected({ opt, dropdownKey })}
       />
     );
   };

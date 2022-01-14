@@ -83,8 +83,6 @@ class FormSelect extends Component {
       isSearchable,
       isClearable,
       indicatorSeparator,
-      indicatorsContainer,
-      dropdownContainer,
       singleValue,
       defaultValue,
       maxMenuHeight,
@@ -144,12 +142,6 @@ class FormSelect extends Component {
       indicatorSeparator: (styles) => ({
         ...styles,
         ...formatStyle(indicatorSeparator),
-      }),
-      indicatorsContainer: (styles) => ({
-        ...formatStyle(indicatorsContainer),
-      }),
-      dropdownIndicator: (styles) => ({
-        ...formatStyle(dropdownContainer),
       }),
       singleValue: (styles) => ({
         ...styles,
