@@ -251,8 +251,6 @@ function UnifiedDocFeedContainer({
           <UnifiedDocFeedMenu
             subFilters={subFilters}
             onDocTypeFilterSelect={(selected) => {
-
-
               if (docTypeFilter !== selected.value) {
                 setDocTypeFilter(selected.value);
                 setPaginationInfo({

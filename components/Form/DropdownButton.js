@@ -24,6 +24,8 @@ const DropdownButton = ({
   htmlBefore = null, // HTML to be injected before the list
   htmlAfter = null, // HTML to be injected after the list
 }) => {
+  console.log("selected", selected);
+
   return (
     <ResearchHubPopover
       containerStyle={{ "z-index": 100 }}
@@ -34,7 +36,10 @@ const DropdownButton = ({
           <div className={css(styles.options, overrideOptionsStyle)}>
             {opts.map((o, i) => (
               <div
-                className={css(styles.optContainer)}
+                className={css(
+                  styles.optContainer,
+                  o.value === selected && styles.selectedOpt
+                )}
                 onClick={() => {
                   onSelect(o.value);
                   if (closeAfterSelect) {
@@ -113,6 +118,9 @@ const styles = StyleSheet.create({
   },
   optTitle: {
     fontWeight: 500,
+  },
+  selectedOpt: {
+    background: colors.LIGHTER_GREY(),
   },
   optDesc: {
     fontSize: 14,
