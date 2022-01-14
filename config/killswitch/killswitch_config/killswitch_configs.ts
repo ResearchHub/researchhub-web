@@ -17,7 +17,7 @@ const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   editorDash: {
     development: true,
     staging: true,
-    production: false,
+    production: true,
   },
 } as const;
 
