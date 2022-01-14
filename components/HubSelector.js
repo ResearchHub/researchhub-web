@@ -25,9 +25,6 @@ const HubSelector = ({ hubState }) => {
             />
             <div className={css(styles.hubDetails)}>
               <div className={css(styles.hubName)}>{hub.name}</div>
-              <div className={css(styles.hubDescription)}>
-                {hub.description}
-              </div>
             </div>
           </a>
         </Link>
@@ -148,6 +145,7 @@ const styles = StyleSheet.create({
     color: pillNavColors.primary.filledTextColor,
     borderRadius: 40,
     marginLeft: 8,
+    fontWeight: 500,
     ":hover": {
       background: pillNavColors.primary.filledBackgroundColor,
       color: pillNavColors.primary.filledTextColor,
@@ -170,7 +168,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     width: "100%",
     display: "flex",
-    alignItems: "start",
+    alignItems: "center",
     fontWeight: 500,
   },
 });

@@ -453,9 +453,7 @@ const Navbar = (props) => {
         onStateChange={menuChange}
       >
         <Link href={"/"} as={`/`}>
-          <a
-            className={css(styles.logoContainer, styles.logoContainerForMobile)}
-          >
+          <a className={css(styles.logoContainer, styles.logoContainerForMenu)}>
             <RHLogo iconStyle={styles.logo} white={true} />
           </a>
         </Link>
@@ -919,9 +917,6 @@ const styles = StyleSheet.create({
     paddingBottom: 2.7,
     cursor: "pointer",
     userSelect: "none",
-  },
-  logoContainerForMobile: {
-    width: 40,
   },
   logoContainerForMenu: {
     position: "absolute",
