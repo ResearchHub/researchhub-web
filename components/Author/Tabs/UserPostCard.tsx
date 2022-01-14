@@ -324,10 +324,14 @@ function UserPostCard(props: UserPostCardProps) {
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
+              
               <MobileOnly>
-                <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+                <div className={css(styles.topRowLeft)}>
+                  {mobileVoteWidget}
+                  <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+                </div>
               </MobileOnly>
+              
               <DesktopOnly> {mainTitle} </DesktopOnly>
               <div className={css(styles.badgeWrapper)}>
                 <DocumentBadge label="Post" docType="post" onClick={onBadgeClick} />
@@ -478,6 +482,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       paddingBottom: 10,
     },
+  },
+  topRowLeft: {
+    display: "flex"
   },
   bottomBar: {
     display: "flex",

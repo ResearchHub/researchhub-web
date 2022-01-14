@@ -33,7 +33,7 @@ const UnifiedDocFeedMenu = ({
       },
       {
         value: "hypothesis",
-        label: "hypotheses",
+        label: "Hypotheses",
       },
     ];
 

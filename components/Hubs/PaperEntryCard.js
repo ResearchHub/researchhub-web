@@ -580,14 +580,16 @@ const PaperEntryCard = (props) => {
             )}
           >
             <div className={css(styles.topRow)}>
-              {mobileOnly(renderVoteWidget(true))}
               {mobileOnly(
-                <DiscussionCount
-                  docType="paper"
-                  slug={slug}
-                  id={id}
-                  count={discussion_count}
-                />
+                <div className={css(styles.topRowLeft)}>
+                  {renderVoteWidget(true)}
+                  <DiscussionCount
+                    docType="paper"
+                    slug={slug}
+                    id={id}
+                    count={discussion_count}
+                  />
+                </div>
               )}
               {desktopOnly(renderMainTitle())}
               {previews.length === 0 && (
@@ -746,6 +748,9 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       paddingBottom: 10,
     },
+  },
+  topRowLeft: {
+    display: "flex",
   },
   metadataRow: {
     display: "flex",
