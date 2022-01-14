@@ -1,13 +1,15 @@
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import FormSelect from "../Form/FormSelect";
+import icons from "~/config/themes/icons";
 
 export type EditorDashFilters = {
   selectedHub: any;
   timeframe: any;
+  orderBy: "asc" | "desc";
 };
 
 type Props = { currentFilters: EditorDashFilters; onFilterChange: Function };
@@ -51,7 +53,11 @@ export default function EditorDashboardNavbar({
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
+
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
+  const { orderBy: currentOrderBy } = currentFilters;
+  const isCurrentlyDesc = currentOrderBy === "desc";
 
   return (
     <div className={css(styles.editorDashboardNavbar)}>
@@ -78,6 +84,19 @@ export default function EditorDashboardNavbar({
           options={filterOptions}
           value={currentFilters?.timeframe ?? null}
         />
+        <div
+          className={css(styles.orderByIcon)}
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            onFilterChange({
+              ...currentFilters,
+              orderBy: isCurrentlyDesc ? "asc" : "desc",
+            });
+          }}
+          role="bottom"
+        >
+          {isCurrentlyDesc ? icons.chevronDown : icons.chevronUp}
+        </div>
       </div>
     </div>
   );
@@ -137,7 +156,8 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "flex-start",
   },
+  orderByIcon: {
+    fontSize: 16,
+    cursor: "pointer",
+  },
 });
-function useEffectFetchCounts(lastFetchTime: Props, setCounts: any) {
-  throw new Error("Function not implemented.");
-}

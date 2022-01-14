@@ -3,16 +3,24 @@ import { ID } from "~/config/types/root_types";
 import API from "~/config/api";
 
 type Args = {
-  hubID: ID;
+  hub_id: ID;
   onError: Function;
   onSuccess: Function;
+  order_by: "asc" | "desc";
   timeframe_str: string | null;
 };
 
-export function fetchEditors({ hubID, onError, onSuccess, timeframe_str }: Args) {
+export function fetchEditors({
+  hub_id,
+  onError,
+  onSuccess,
+  order_by,
+  timeframe_str,
+}: Args) {
   fetch(
     API.RESEARCHHUB_EDITORS_BY_CONTRIBUTION({
-      hub_id: hubID,
+      hub_id,
+      order_by,
       timeframe_str,
     }),
     API.GET_CONFIG()
