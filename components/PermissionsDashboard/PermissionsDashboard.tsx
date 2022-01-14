@@ -3,19 +3,26 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import HubEditorCreateForm from "./Hub/HubEditorCreateForm";
-import { formColors } from "~/config/themes/colors";
+import HubEditorDeleteForm from "./Hub/HubEditorDeleteForm";
+import PermissionsDashboardNavbar, {
+  FormTypes,
+} from "./PermissionsDashboardNavbar";
 
 function PermissionsDashboard(): ReactElement<"div"> | null {
-  const [_lastFetchTime, _setLastFetchTime] = useState<number>(Date.now());
   const reduxStore = useStore();
   const shouldRenderUI = gateKeepCurrentUser({
     application: "PERMISSIONS_DASH",
     auth: reduxStore?.getState()?.auth ?? null,
     shouldRedirect: true,
   });
-  const [formType, setFormType] = useState<"add" | "delete">("add");
+  const [formType, setFormType] = useState<FormTypes>("add");
+
   return shouldRenderUI ? (
     <div className={css(styles.permissionsDashboard)}>
+      <PermissionsDashboardNavbar
+        currentFormType={formType}
+        setFormType={setFormType}
+      />
       {formType === "add" ? <HubEditorCreateForm /> : <HubEditorDeleteForm />}
     </div>
   ) : null;
@@ -29,6 +36,7 @@ export default connect(mapStateToProps)(PermissionsDashboard);
 
 const styles = StyleSheet.create({
   permissionsDashboard: {
+    paddingLeft: 36,
     alignItems: "center",
     display: "flex",
     flexDirection: "column",

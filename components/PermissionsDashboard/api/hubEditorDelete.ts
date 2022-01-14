@@ -16,7 +16,7 @@ export function hubEditorDelete({
   selectedHubID,
 }: HubEditorDeleteArgs): void {
   fetch(
-    API.HUB_NEW_EDITOR,
+    API.HUB_DELETE_EDITOR,
     API.POST_CONFIG({
       editor_email: editorEmail,
       selected_hub_id: selectedHubID,
