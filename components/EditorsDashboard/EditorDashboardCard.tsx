@@ -5,6 +5,7 @@ import Link from "next/link";
 import numeral from "numeral";
 import { ID } from "~/config/types/root_types";
 import { breakpoints } from "~/config/themes/screen";
+import { timeAgo } from "~/config/utils/dates";
 
 type Props = {
   authorProfile: any;
@@ -12,6 +13,10 @@ type Props = {
   submissionCount: number;
   supportCount: number;
   userID?: ID;
+  index: number;
+  lastCommentDate: string;
+  lastSubmissionDate: string;
+  editorAddedDate: string;
 };
 
 export default function EditorDashboardUserCard({
@@ -19,31 +24,47 @@ export default function EditorDashboardUserCard({
   commentCount,
   submissionCount,
   supportCount,
+  lastCommentDate,
+  lastSubmissionDate,
+  editorAddedDate,
+  index
 }: Props) {
   const { id: authorID, first_name, last_name } = authorProfile;
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorID}/overview`}>
       <a className={css(styles.link)}>
-        <div className={css(styles.container)}>
+        <div className={css(styles.container, index === 0 && styles.borderTop)}>
           <div className={css(styles.nameSection)}>
             <AuthorAvatar author={authorProfile} disableLink={true} size={35} />
             <div className={css(styles.name) + " clamp1"}>
               {`${first_name ?? ""} ${last_name ?? ""}`}
             </div>
+            <div className={css(styles.added)}>
+              <span className={css(styles.countResponse)}>
+                {timeAgo.format(new Date(editorAddedDate))}
+              </span>
+            </div>
           </div>
           <div className={css(styles.contributionSection)}>
-            <div className={css(styles.countLabel)}>
-              {"Submissions: "}
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.countResponse)}>
+                {timeAgo.format(new Date(lastSubmissionDate))}
+              </span>
+            </div>
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.countResponse)}>
+                {timeAgo.format(new Date(lastCommentDate))}
+              </span>
+            </div>
+            <div className={css(styles.countLabel, styles.submissionLabel)}>
               <span className={css(styles.countResponse)}>
                 {submissionCount}
               </span>
             </div>
-            <div className={css(styles.countLabel)}>
-              {"Supports: "}
+            <div className={css(styles.countLabel, styles.supportLabel)}>
               <span className={css(styles.countResponse)}>{supportCount}</span>
             </div>
             <div className={css(styles.countLabel)}>
-              {"Comments: "}
               <span className={css(styles.countResponse)}>{commentCount}</span>
             </div>
           </div>
@@ -58,17 +79,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#FFF",
     border: `1px solid ${colors.GREY(0.5)}`,
-    borderRadius: 4,
     cursor: "pointer",
     display: "flex",
+    borderTop: 0,
     justifyContent: "space-between",
-    marginBottom: 16,
-    maxWidth: 1200,
     minHeight: 72,
     padding: "0px 16px",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       maxWidth: "unset"
     },
+  },
+  borderTop: {
+    borderTop: `1px solid ${colors.GREY(0.5)}`,
   },
   contributionSection: {
     alignItems: "center",
@@ -78,10 +100,22 @@ const styles = StyleSheet.create({
     height: 40,
     width: "100%",
   },
+  added: {
+    marginLeft: 16,
+  },
   countLabel: {
-    marginRight: 16,
+    // marginRight: 16,
     fontSize: 16,
     fontWeight: 500,
+    paddingRight: 50,
+    width: 100,
+    textAlign: 'center',
+  },
+  supportLabel: {
+    // paddingRight: 120,
+  },
+  submissionLabel: {
+    // paddingRight: 125,
   },
   countResponse: { color: colors.TEXT_GREY(1) },
   nameSection: {

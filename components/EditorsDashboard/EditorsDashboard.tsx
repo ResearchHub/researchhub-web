@@ -12,6 +12,8 @@ import EditorDashboardNavbar, {
   upDownOptions,
 } from "./EditorDashboardNavbar";
 import Loader from "../Loader/Loader";
+import ReactPlaceholder from "react-placeholder";
+import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -70,7 +72,11 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             comment_count = 0,
             submission_count = 0,
             support_count = 0,
+            latest_comment_date = null,
+            latest_submission_date = null,
           } = editor ?? {};
+
+          const added_as_editor_date = author_profile.added_as_editor_date;
           return (
             <EditorDashboardUserCard
               authorProfile={author_profile ?? {}}
@@ -78,6 +84,10 @@ export default function EditorsDashboard(): ReactElement<"div"> {
               key={`editor-dash-user-card-${index}`}
               submissionCount={submission_count}
               supportCount={support_count}
+              index={index}
+              lastCommentDate={latest_comment_date}
+              lastSubmissionDate={latest_submission_date}
+              editorAddedDate={added_as_editor_date}
             />
           );
         }
@@ -94,12 +104,30 @@ export default function EditorsDashboard(): ReactElement<"div"> {
         }
       />
       <Head />
+      <div className={css(styles.nav)}>
+        <div className={css(styles.navItem)}>User</div>
+        <div className={css(styles.navContainer)}>
+          <div className={css(styles.navItem, styles.rep, styles.last)}>Last Submission</div>
+          <div className={css(styles.navItem, styles.rep, styles.last)}>Last Comment</div>
+          <div className={css(styles.navItem, styles.rep, styles.submissions)}>Submissions</div>
+          <div className={css(styles.navItem, styles.rep)}>Supports</div>
+          <div className={css(styles.navItem, styles.rep)}>Comments</div>
+        </div>
+      </div>
       <div className={css(styles.editorContainerWrap)}>
-        {isLoading ? (
-          <Loader loading={true} size={16} color={colors.BLUE()} />
-        ) : (
-          editorCards
-        )}
+        <div className={css(styles.placeholder)}>
+          <ReactPlaceholder
+            ready={!isLoading}
+            showLoadingAnimation
+            customPlaceholder={
+              <LeaderboardFeedPlaceholder color="#efefef" rows={5} />
+            }
+          >
+            <div className={css(styles.editorCardContainer)}>
+              {editorCards}
+            </div>
+          </ReactPlaceholder>
+        </div>
       </div>
     </div>
   );
@@ -112,13 +140,51 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     minHeight: "100vh",
-    maxWidth: 1400,
+    // maxWidth: 1400,
     padding: "0 32px",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       maxWidth: "unset",
       paddingTop: 32,
     },
+  },
+  editorCardContainer: {
+    marginTop: 35,
+  },
+  placeholder: {
+    marginTop: -35,
+  },
+  nav: {
+    display: "flex",
+    width: "100%",
+    // marginBottom: 16,
+    marginLeft: 60,
+  },
+  navContainer: {
+    display: 'flex',
+    marginLeft: 'auto',
+    paddingRight: 50,
+  },
+  navItem: {
+    color: "#241F3A",
+    opacity: 0.5,
+  },
+  last: {
+    "@media only screen and (min-width: 1024px)": {
+      paddingRight: 40,
+      width: 120,
+    },
+  },
+  rep: {
+    "@media only screen and (min-width: 1024px)": {
+      paddingRight: 50,
+      width: 100,
+    },
+  },
+  submissions: {
+    "@media only screen and (min-width: 1024px)": {
+      paddingRight: 70,
+    }
   },
   editorContainerWrap: {
     boxSizing: "border-box",

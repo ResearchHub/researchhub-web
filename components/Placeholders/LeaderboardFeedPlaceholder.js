@@ -38,7 +38,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     cursor: "pointer",
     border: "1px solid #EDEDED",
-    borderRadius: 3,
     overflow: "hidden",
     width: "100%",
     ":hover": {
