@@ -266,7 +266,7 @@ class HubCard extends Component {
         </div>
         <div>
           <span className={css(styles.statIcon)}>{icons.subscribers}</span>
-          {this.state.subCount} Subscriber
+          {this.state.subCount} Member
           {this.state.subCount != 1 ? "s" : ""}
         </div>
       </div>
