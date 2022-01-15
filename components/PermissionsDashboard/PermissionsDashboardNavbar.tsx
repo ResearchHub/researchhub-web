@@ -49,11 +49,11 @@ export default function PermissionsDashboardNavbar({
 
 const styles = StyleSheet.create({
   permissionsDashboardNavbar: {
-    alignItems: "flex-end",
+    alignItems: "center",
     backgroundColor: "#FFF",
     display: "flex",
-    minHeight: 120,
     width: "100%",
+    maxWidth: 800,
   },
   permissionsDashboardNavbarButton: {
     alignItems: "center",
@@ -63,10 +63,8 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 18,
     height: 44,
-    justifyContent: "flex-start",
     padding: "4px 0",
     marginRight: 24,
-    width: 80,
   },
   isButtonActive: {
     borderBottom: `2px solid ${colors.BLUE(1)}`,

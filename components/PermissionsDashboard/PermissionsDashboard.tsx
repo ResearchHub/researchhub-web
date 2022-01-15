@@ -36,9 +36,9 @@ export default connect(mapStateToProps)(PermissionsDashboard);
 
 const styles = StyleSheet.create({
   permissionsDashboard: {
-    paddingLeft: 36,
-    alignItems: "center",
     display: "flex",
+    paddingLeft: 32,
+    alignItems: "center",
     flexDirection: "column",
     height: "100vh",
     overflow: "auto",

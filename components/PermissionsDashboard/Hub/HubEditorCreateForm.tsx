@@ -1,3 +1,4 @@
+import { css, StyleSheet } from "aphrodite";
 import {
   customStyles,
   formGenericStyles,
@@ -23,7 +24,7 @@ const DEFAULT_FORM_STATE: FormState = {
   editorEmail: null,
 };
 
-export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
+export default function HubEditorCreateForm(): ReactElement<"div"> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
@@ -57,7 +58,7 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
   };
 
   return (
-    <Fragment>
+    <div className={css(styles.formWrap)}>
       <div>
         <h1>{"Add a New Hub Editor"}</h1>
       </div>
@@ -87,18 +88,14 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
           placeholder="example@university.edu"
           required
           type="email"
-          value={editorEmail}
+          value={editorEmail ?? ""}
         />
         <div
           style={{ display: "flex", width: "100%", justifyContent: "center" }}
         >
           <Button
             label={
-              isSubmitting ? (
-                <Loader size={8} loading color="#fff" />
-              ) : (
-                "Submit"
-              )
+              isSubmitting ? <Loader size={8} loading color="#fff" /> : "Submit"
             }
             type="submit"
             customButtonStyle={verifStyles.buttonCustomStyle}
@@ -107,6 +104,10 @@ export default function HubEditorCreateForm(): ReactElement<typeof Fragment> {
           />
         </div>
       </form>
-    </Fragment>
+    </div>
   );
 }
+
+const styles = StyleSheet.create({
+  formWrap: { maxWidth: 800, width: "100%" },
+});

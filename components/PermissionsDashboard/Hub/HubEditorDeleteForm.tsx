@@ -1,11 +1,12 @@
+import { css, StyleSheet } from "aphrodite";
 import {
   customStyles,
   formGenericStyles,
 } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
-import { hubEditorCreate } from "../api/hubEditorCreate";
+import { hubEditorDelete } from "../api/hubEditorDelete";
 import { ID } from "~/config/types/root_types";
-import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
@@ -23,7 +24,7 @@ const DEFAULT_FORM_STATE: FormState = {
   editorEmail: null,
 };
 
-export default function HubEditorDeleteForm(): ReactElement<typeof Fragment> {
+export default function HubEditorDeleteForm(): ReactElement<"div"> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
@@ -34,7 +35,7 @@ export default function HubEditorDeleteForm(): ReactElement<typeof Fragment> {
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
-    hubEditorCreate({
+    hubEditorDelete({
       editorEmail: nullthrows(editorEmail, "Editor email cannot be empty"),
       onSuccess: (): void => {
         setFormState(DEFAULT_FORM_STATE);
@@ -57,7 +58,7 @@ export default function HubEditorDeleteForm(): ReactElement<typeof Fragment> {
   };
 
   return (
-    <Fragment>
+    <div className={css(styles.formWrap)}>
       <div>
         <h1>{"Remove Hub Editor"}</h1>
       </div>
@@ -87,7 +88,7 @@ export default function HubEditorDeleteForm(): ReactElement<typeof Fragment> {
           placeholder="example@university.edu"
           required
           type="email"
-          value={editorEmail}
+          value={editorEmail ?? ""}
         />
         <div
           style={{ display: "flex", width: "100%", justifyContent: "center" }}
@@ -103,6 +104,10 @@ export default function HubEditorDeleteForm(): ReactElement<typeof Fragment> {
           />
         </div>
       </form>
-    </Fragment>
+    </div>
   );
 }
+
+const styles = StyleSheet.create({
+  formWrap: { maxWidth: 800, width: "100%" },
+});
