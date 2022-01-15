@@ -1,7 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { useRouter } from "next/router";
-import { ValueOf } from "../../config/types/root_types";
-import { ReactElement, useEffect, useMemo, useState } from "react";
+import { ReactElement, useMemo } from "react";
 import colors from "~/config/themes/colors";
 
 export type FormTypes = "add" | "delete";

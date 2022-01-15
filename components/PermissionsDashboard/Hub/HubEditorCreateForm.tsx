@@ -6,7 +6,7 @@ import {
 import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
 import { hubEditorCreate } from "../api/hubEditorCreate";
 import { ID } from "~/config/types/root_types";
-import { Fragment, ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, SyntheticEvent, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
