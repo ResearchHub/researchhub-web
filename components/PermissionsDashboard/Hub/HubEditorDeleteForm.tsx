@@ -60,7 +60,7 @@ export default function HubEditorDeleteForm(): ReactElement<"div"> {
   return (
     <div className={css(styles.formWrap)}>
       <div>
-        <h1>{"Remove Hub Editor"}</h1>
+        <h1>{"Remove a Hub Editor"}</h1>
       </div>
       <form encType="multipart/form-data" onSubmit={handleSubmit}>
         <FormSelect
