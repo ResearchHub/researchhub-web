@@ -140,13 +140,11 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 500,
     textOverflow: "ellipsis",
-    marginBottom: 0,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       fontSize: 30,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 24,
-      marginTop: 0,
     },
     [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
       fontSize: 20,

@@ -180,21 +180,21 @@ function HypothesisCard({
 
   const hubTags = useMemo(() => {
     const firstTagSet = hubs
-      .slice(0, 3)
+      .slice(0, 2)
       .map((tag, index) => (
         <HubTag
           key={`hub_${index}`}
           tag={tag}
           last={index === hubs.length - 1}
           labelStyle={
-            hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+            hubs.length >= 2 ? styles.smallerHubLabel : styles.hubLabel
           }
         />
       ));
     return (
       <div className={css(styles.tags)}>
         {firstTagSet}
-        {hubs.length > 3 && (
+        {hubs.length > 2 && (
           <HubDropDown
             hubs={hubs}
             labelStyle={styles.hubLabel}
@@ -355,7 +355,6 @@ function HypothesisCard({
                 />
               </div>
             </div>
-            {mobileCreatorTag}
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
         </div>
@@ -370,6 +369,7 @@ function HypothesisCard({
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
             {hubTags}
+            {mobileCreatorTag}
           </div>
         </MobileOnly>
       </div>
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginTop: 8,
+      marginTop: 0,
     },
   },
   postContent: {},
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       marginTop: 0,
     },
   },
