@@ -185,21 +185,21 @@ function UserPostCard(props: UserPostCardProps) {
 
   const hubTags = useMemo(() => {
     const firstTagSet = hubs
-      .slice(0, 3)
+      .slice(0, 2)
       .map((tag, index) => (
         <HubTag
           key={`hub_${index}`}
           tag={tag}
           last={index === hubs.length - 1}
           labelStyle={
-            hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+            hubs.length >= 2 ? styles.smallerHubLabel : styles.hubLabel
           }
         />
       ));
     return (
       <div className={css(styles.tags)}>
         {firstTagSet}
-        {hubs.length > 3 && (
+        {hubs.length > 2 && (
           <HubDropDown
             hubs={hubs}
             labelStyle={styles.hubLabel}
@@ -340,7 +340,7 @@ function UserPostCard(props: UserPostCardProps) {
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
             {summary}
-            {mobileCreatorTag}
+            
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
         </div>
@@ -350,14 +350,13 @@ function UserPostCard(props: UserPostCardProps) {
           </div>
           <DesktopOnly>
             <div className={css(styles.row)}>
-              {/* TODO: briansantoso - Hub tags go here */}
               {hubTags}
             </div>
           </DesktopOnly>
         </div>
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* TODO: briansantoso - Hub tags go here */}
+            {mobileCreatorTag}
             {hubTags}
           </div>
         </MobileOnly>
@@ -412,7 +411,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     "@media only screen and (max-width: 767px)": {
-      marginTop: 8,
     },
   },
   postContent: {},
@@ -498,7 +496,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       marginTop: 0,
     },
   },
