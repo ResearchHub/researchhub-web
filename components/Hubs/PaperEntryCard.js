@@ -114,6 +114,7 @@ const PaperEntryCard = (props) => {
       first_figure && first_figure,
     ])
   );
+
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
@@ -351,7 +352,7 @@ const PaperEntryCard = (props) => {
   const renderHubTags = () => {
     if (Boolean(hubs) && Boolean(hubs.length)) {
       const firstTagSet = hubs
-        .slice(0, 3)
+        .slice(0, 2)
         .map((tag, index) => (
           <HubTag
             key={`hub_${index}`}
@@ -359,14 +360,14 @@ const PaperEntryCard = (props) => {
             hubName={hubName}
             last={index === hubs.length - 1}
             labelStyle={
-              hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+              hubs.length >= 2 ? styles.smallerHubLabel : styles.hubLabel
             }
           />
         ));
       return (
         <div className={css(styles.tags)}>
           {firstTagSet}
-          {hubs.length > 3 && (
+          {hubs.length > 2 && (
             <HubDropDown
               hubs={hubs}
               hubName={hubName}
@@ -606,9 +607,8 @@ const PaperEntryCard = (props) => {
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
-            {mobileOnly(renderContributers())}
           </div>
-          {desktopOnly(renderRightColumn())}
+          {renderRightColumn()}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
@@ -622,6 +622,7 @@ const PaperEntryCard = (props) => {
           )}
         </div>
         <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+          {mobileOnly(renderContributers())}
           {renderHubTags()}
         </div>
       </div>
@@ -957,11 +958,7 @@ const styles = StyleSheet.create({
       marginTop: 10,
     },
   },
-  journalTagContainer: {
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 10,
-    },
-  },
+  journalTagContainer: {},
   uploadedByAvatar: {
     marginLeft: 10,
   },
@@ -1025,7 +1022,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       marginTop: 0,
     },
   },

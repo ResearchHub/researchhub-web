@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     "@media only screen and (max-width: 500px)": {
       right: "unset",
-      left: -75,
+      left: -125,
       minWidth: 150,
     },
   },
