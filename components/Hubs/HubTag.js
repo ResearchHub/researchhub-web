@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
+import { breakpoints } from "~/config/themes/screen";
 
 const HubTag = (props) => {
   const { tag, overrideStyle, hubName, gray, labelStyle, last, noHubName } =
@@ -104,6 +105,9 @@ const styles = StyleSheet.create({
     whiteSpace: "nowrap",
     overflow: "hidden",
     marginLeft: 6,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      maxWidth: 125,
+    },
   },
   hubImage: {
     height: 22,
