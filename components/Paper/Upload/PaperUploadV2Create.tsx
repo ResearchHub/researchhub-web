@@ -247,6 +247,14 @@ function PaperuploadV2Create({
           const errorBody = respPayload.errorBody;
           if (!isNullOrUndefined(errorBody) && errorBody.status === 429) {
             messageActions.showMessage({ show: false });
+          } else if (errorBody.status === 413) {
+            messageActions.setMessage(
+              errorBody
+                ? errorBody.error
+                : "The max file size is 55mb. Please upload a smaller file."
+            );
+            messageActions.showMessage({ show: true, error: true });
+            setTimeout(() => messageActions.showMessage({ show: false }), 2000);
           } else {
             messageActions.setMessage(
               errorBody
