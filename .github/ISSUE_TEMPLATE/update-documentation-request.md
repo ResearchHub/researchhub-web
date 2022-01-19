@@ -2,7 +2,7 @@
 name: Update documentation request
 about: A request to update the ResearchHub documentation
 title: ''
-labels: ''
+labels: documentation
 assignees: ''
 
 ---
