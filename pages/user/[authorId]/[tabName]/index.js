@@ -261,7 +261,9 @@ function AuthorPage(props) {
   }, [author, user]);
 
   useEffect(() => {
-    if (author && author.id && !fetching && author.is_claimed === false) {
+    const isUnclaimedAuthor =
+      author && author.id && !fetching && author.is_claimed === false;
+    if (isUnclaimedAuthor) {
       router.push(
         {
           pathname: `/user/${author.id}/authored-papers`,
