@@ -15,6 +15,7 @@ const HorizontalTabBar = ({
   dragging = false,
   containerStyle = null,
   showArrowsOnWidth = null,
+  showArrows = false,
   type = "FLAT_NAV",
 }) => {
   const [pageWidth, setPageWidth] = useState(
@@ -65,12 +66,12 @@ const HorizontalTabBar = ({
       {pageWidth > 0 && (
         <ScrollMenu
           arrowLeft={
-            pageWidth <= showArrowsOnWidth ? (
+            pageWidth <= showArrowsOnWidth && showArrows ? (
               <NavigationArrow icon={icons.chevronLeft} direction={"left"} />
             ) : null
           }
           arrowRight={
-            pageWidth <= showArrowsOnWidth ? (
+            pageWidth <= showArrowsOnWidth && showArrows ? (
               <NavigationArrow icon={icons.chevronRight} direction={"right"} />
             ) : null
           }
