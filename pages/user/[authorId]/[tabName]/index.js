@@ -133,35 +133,46 @@ function AuthorPage(props) {
   }, [router]);
 
   const getTabs = (allowEdit = false) => {
-    const tabs = [
-      {
-        href: "overview",
-        label: "overview",
-        name: "Overview",
-      },
-      {
-        href: "discussions",
-        label: "comments",
-        name: "Comments",
-      },
-      {
-        href: "submissions",
-        label: "submissions",
-        name: "Submissions",
-      },
-      {
-        href: "authored-papers",
-        label: "authored papers",
-        name: "Authored Papers",
-      },
-    ];
+    let tabs = [];
+    if (doesAuthorHaveUser) {
+      tabs = [
+        {
+          href: "overview",
+          label: "overview",
+          name: "Overview",
+        },
+        {
+          href: "discussions",
+          label: "comments",
+          name: "Comments",
+        },
+        {
+          href: "submissions",
+          label: "submissions",
+          name: "Submissions",
+        },
+        {
+          href: "authored-papers",
+          label: "authored papers",
+          name: "Authored Papers",
+        },
+      ];
 
-    if (allowEdit) {
-      tabs.push({
-        href: "transactions",
-        label: "transactions",
-        name: "Transactions",
-      });
+      if (allowEdit) {
+        tabs.push({
+          href: "transactions",
+          label: "transactions",
+          name: "Transactions",
+        });
+      }
+    } else {
+      tabs = [
+        {
+          href: "authored-papers",
+          label: "authored papers",
+          name: "Authored Papers",
+        },
+      ];
     }
 
     return tabs.map((t) => {
@@ -249,6 +260,20 @@ function AuthorPage(props) {
   }, [author, user]);
 
   useEffect(() => {
+    const isUnclaimedAuthor =
+      author && author.id && !fetching && author.is_claimed === false;
+    if (isUnclaimedAuthor) {
+      router.push(
+        {
+          pathname: `/user/${author.id}/authored-papers`,
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [author, fetching]);
+
+  useEffect(() => {
     setPrevProps(auth.isLoggedIn);
   }, [auth.isLoggedIn]);
 
@@ -296,6 +321,7 @@ function AuthorPage(props) {
           isVisible={tabName === "overview"}
           author={author}
           contributionType="overview"
+          isFetchingAuthor={fetching}
         />
       </div>
       <div
@@ -307,6 +333,7 @@ function AuthorPage(props) {
           isVisible={tabName === "discussions"}
           author={author}
           contributionType="comment"
+          isFetchingAuthor={fetching}
         />
       </div>
       <div
@@ -318,6 +345,7 @@ function AuthorPage(props) {
           isVisible={tabName === "submissions"}
           author={author}
           contributionType="hypothesis,paper,discussion"
+          isFetchingAuthor={fetching}
         />
       </div>
       <div
@@ -329,6 +357,7 @@ function AuthorPage(props) {
           isVisible={tabName === "authored-papers"}
           author={author}
           contributionType="authored-papers"
+          isFetchingAuthor={fetching}
         />
       </div>
       {allowEdit && (
@@ -842,37 +871,39 @@ function AuthorPage(props) {
                   <div className={css(styles.headline)}>
                     {author?.headline?.title}
                   </div>
-                  <div className={css(styles.reputationContainer)}>
-                    {!isEmpty(authorIsEditorOf) && (
-                      <div className={css(styles.reputationContainer)}>
-                        <div className={css(styles.editorLabelWrap)}>
-                          <img
-                            height={20}
-                            src="/static/icons/editor-star.png"
-                            width={20}
-                            className={css(styles.editorImg)}
-                          />
-                          <span
-                            style={{
-                              color: colors.BLACK(0.9),
-                              fontWeight: 400,
-                              marginLeft: 8,
-                              marginRight: 10,
-                              fontSize: 14,
-                            }}
-                          >
-                            {"Editor of:"}
-                          </span>
-                          {authorIsEditorOf}
+                  {doesAuthorHaveUser && (
+                    <div className={css(styles.reputationContainer)}>
+                      {!isEmpty(authorIsEditorOf) && (
+                        <div className={css(styles.reputationContainer)}>
+                          <div className={css(styles.editorLabelWrap)}>
+                            <img
+                              height={20}
+                              src="/static/icons/editor-star.png"
+                              width={20}
+                              className={css(styles.editorImg)}
+                            />
+                            <span
+                              style={{
+                                color: colors.BLACK(0.9),
+                                fontWeight: 400,
+                                marginLeft: 8,
+                                marginRight: 10,
+                                fontSize: 14,
+                              }}
+                            >
+                              {"Editor of:"}
+                            </span>
+                            {authorIsEditorOf}
+                          </div>
                         </div>
-                      </div>
-                    )}
-                    {authorEducationSummary}
-                    {authorReputation}
-                    {authorRscBalance}
-                  </div>
+                      )}
+                      {authorEducationSummary}
+                      {authorReputation}
+                      {authorRscBalance}
+                    </div>
+                  )}
                 </div>
-                {authorDescription}
+                {doesAuthorHaveUser && authorDescription}
                 {!doesAuthorHaveUser ? (
                   <ClaimAuthorPopoverLabel
                     auth={auth}
@@ -899,6 +930,7 @@ function AuthorPage(props) {
             dragging={true}
             alignCenter={false}
             showArrowsOnWidth={breakpoints.xsmall.int}
+            showArrows={Boolean(tabs.length > 2)}
           />
         </ComponentWrapper>
       </div>
