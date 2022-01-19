@@ -10,24 +10,24 @@ import { timeAgo } from "~/config/utils/dates";
 type Props = {
   authorProfile: any;
   commentCount: number;
-  submissionCount: number;
-  supportCount: number;
-  userID?: ID;
+  editorAddedDate: string;
   index: number;
   lastCommentDate: string;
   lastSubmissionDate: string;
-  editorAddedDate: string;
+  submissionCount: number;
+  supportCount: number;
+  userID?: ID;
 };
 
 export default function EditorDashboardUserCard({
   authorProfile,
   commentCount,
-  submissionCount,
-  supportCount,
+  editorAddedDate,
+  index,
   lastCommentDate,
   lastSubmissionDate,
-  editorAddedDate,
-  index
+  submissionCount,
+  supportCount,
 }: Props) {
   const { id: authorID, first_name, last_name } = authorProfile;
   return (
@@ -41,19 +41,23 @@ export default function EditorDashboardUserCard({
             </div>
             <div className={css(styles.added)}>
               <span className={css(styles.countResponse)}>
-                added {timeAgo.format(new Date(editorAddedDate))}
+                added {timeAgo.format(new Date(editorAddedDate ?? null))}
               </span>
             </div>
           </div>
           <div className={css(styles.contributionSection)}>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
               <span className={css(styles.countResponse)}>
-                {lastSubmissionDate ? timeAgo.format(new Date(lastSubmissionDate)) : 'never'}
+                {lastSubmissionDate
+                  ? timeAgo.format(new Date(lastSubmissionDate))
+                  : "never"}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
               <span className={css(styles.countResponse)}>
-                {lastSubmissionDate ? timeAgo.format(new Date(lastCommentDate)) : 'never'}
+                {lastSubmissionDate
+                  ? timeAgo.format(new Date(lastCommentDate))
+                  : "never"}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
     minHeight: 72,
     padding: "0px 16px",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      maxWidth: "unset"
+      maxWidth: "unset",
     },
   },
   borderTop: {
@@ -106,19 +110,14 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   countLabel: {
-    // marginRight: 16,
     fontSize: 16,
     fontWeight: 500,
     paddingRight: 50,
     width: 100,
-    textAlign: 'center',
+    textAlign: "center",
   },
-  supportLabel: {
-    // paddingRight: 120,
-  },
-  submissionLabel: {
-    // paddingRight: 125,
-  },
+  supportLabel: {},
+  submissionLabel: {},
   countResponse: { color: colors.TEXT_GREY(1) },
   nameSection: {
     display: "flex",
