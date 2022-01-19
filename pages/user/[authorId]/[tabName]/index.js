@@ -230,7 +230,6 @@ function AuthorPage(props) {
     const response = await dispatch(
       AuthorActions.getAuthor({ authorId: router.query.authorId })
     );
-    console.log("response", response);
     setFetchedUser(true); // needed for AuthorTabBar
     setFetching(false);
     return response;
