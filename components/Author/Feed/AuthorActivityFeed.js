@@ -15,6 +15,7 @@ import { getNewestCommentTimestamp } from "./utils/AuthorFeedUtils";
 const AuthorActivityFeed = ({
   author,
   isVisible = false,
+  isFetchingAuthor = true,
   contributionType = "overview",
 }) => {
   const router = useRouter();
@@ -71,7 +72,7 @@ const AuthorActivityFeed = ({
       setCurrentAuthorId(router.query.authorId);
       _fetchAuthorActivity();
     }
-  }, [needsInitialFetch]);
+  }, [needsInitialFetch, contributionType, router.query.authorId]);
 
   const loadNextResults = () => {
     setIsLoading(true);
@@ -115,7 +116,7 @@ const AuthorActivityFeed = ({
 
   return (
     <ReactPlaceholder
-      ready={!needsInitialFetch}
+      ready={!needsInitialFetch && !isFetchingAuthor}
       showLoadingAnimation
       customPlaceholder={<FeedItemPlaceholder rows={3} />}
     >
