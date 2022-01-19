@@ -3,7 +3,6 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchEditors } from "./api/fetchEditors";
 import { ReactElement, useEffect, useMemo, useState } from "react";
-import colors from "~/config/themes/colors";
 import Head from "~/components/Head";
 import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
@@ -11,7 +10,6 @@ import EditorDashboardNavbar, {
   filterOptions,
   upDownOptions,
 } from "./EditorDashboardNavbar";
-import Loader from "../Loader/Loader";
 import ReactPlaceholder from "react-placeholder";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
 
@@ -107,9 +105,15 @@ export default function EditorsDashboard(): ReactElement<"div"> {
       <div className={css(styles.nav)}>
         <div className={css(styles.navItem)}>User</div>
         <div className={css(styles.navContainer)}>
-          <div className={css(styles.navItem, styles.rep, styles.last)}>Last Submission</div>
-          <div className={css(styles.navItem, styles.rep, styles.last)}>Last Comment</div>
-          <div className={css(styles.navItem, styles.rep, styles.submissions)}>Submissions</div>
+          <div className={css(styles.navItem, styles.rep, styles.last)}>
+            Last Submission
+          </div>
+          <div className={css(styles.navItem, styles.rep, styles.last)}>
+            Last Comment
+          </div>
+          <div className={css(styles.navItem, styles.rep, styles.submissions)}>
+            Submissions
+          </div>
           <div className={css(styles.navItem, styles.rep)}>Supports</div>
           <div className={css(styles.navItem, styles.rep)}>Comments</div>
         </div>
@@ -118,14 +122,11 @@ export default function EditorsDashboard(): ReactElement<"div"> {
         <div className={css(styles.placeholder)}>
           <ReactPlaceholder
             ready={!isLoading}
-            showLoadingAnimation
             customPlaceholder={
               <LeaderboardFeedPlaceholder color="#efefef" rows={5} />
             }
           >
-            <div className={css(styles.editorCardContainer)}>
-              {editorCards}
-            </div>
+            <div className={css(styles.editorCardContainer)}>{editorCards}</div>
           </ReactPlaceholder>
         </div>
       </div>
@@ -140,7 +141,6 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     minHeight: "100vh",
-    // maxWidth: 1400,
     padding: "0 32px",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
@@ -162,8 +162,8 @@ const styles = StyleSheet.create({
     marginLeft: 60,
   },
   navContainer: {
-    display: 'flex',
-    marginLeft: 'auto',
+    display: "flex",
+    marginLeft: "auto",
     paddingRight: 50,
   },
   navItem: {
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   submissions: {
     "@media only screen and (min-width: 1024px)": {
       paddingRight: 70,
-    }
+    },
   },
   editorContainerWrap: {
     boxSizing: "border-box",
