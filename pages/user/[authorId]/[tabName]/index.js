@@ -929,6 +929,7 @@ function AuthorPage(props) {
             dragging={true}
             alignCenter={false}
             showArrowsOnWidth={breakpoints.xsmall.int}
+            showArrows={Boolean(tabs.length > 2)}
           />
         </ComponentWrapper>
       </div>
