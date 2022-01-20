@@ -1,3 +1,22 @@
+
+<p align="center">    
+    <img src="https://avatars.githubusercontent.com/u/58747826?s=200&v=4" height="100">
+    <h1 align="center" style="margin-top:0 !important">The <a aria-label="RH logo" href="https://researchhub.com">ResearchHub</a> Next.js web app</h1>
+</p>
+
+
+<p align="center">
+  <a aria-label="Join the community" href="https://researchhub-community.slack.com">
+    <img alt="" src="https://badgen.net/badge/Join%20the%20community/Slack/yellow?icon=slack">
+  </a>
+</p>
+<p align="center">&nbsp;</p>
+
+
+## Our mission is to accelerate the pace of scientific research 🚀 
+
+We believe that by empowering scientists to independently fund, create, and publish academic content we can revolutionize the speed at which new knowledge is created and transformed into life-changing products. <a href="https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049">We're hiring!</a>
+
 ## Setup
 
 1. `nvm use` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
