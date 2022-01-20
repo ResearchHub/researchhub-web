@@ -1,10 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, SyntheticEvent, useState } from "react";
+import { ReactElement, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Paper/Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import FormSelect from "../Form/FormSelect";
-import icons from "~/config/themes/icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faLongArrowAltDown,
@@ -60,12 +59,13 @@ const ascStyle = {
 const marginStyle = {
   marginLeft: 8,
 };
+
 export const upDownOptions = [
   {
     value: "desc",
     label: (
       <div style={ascStyle}>
-        Descending{" "}
+        {"Descending"}
         <span style={marginStyle}>
           {<FontAwesomeIcon icon={faLongArrowAltDown} />}{" "}
         </span>
@@ -76,7 +76,7 @@ export const upDownOptions = [
     value: "asc",
     label: (
       <div style={ascStyle}>
-        Ascending{" "}
+        {"Ascending"}
         <span style={marginStyle}>
           {<FontAwesomeIcon icon={faLongArrowAltUp} />}
         </span>
@@ -95,8 +95,11 @@ export default function EditorDashboardNavbar({
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
-  const { orderBy: currentOrderBy } = currentFilters;
-  const isCurrentlyDesc = currentOrderBy === "desc";
+  const {
+    orderBy: currentOrderBy,
+    selectedHub: currentSelectedHub,
+    timeframe: currentTimeframe,
+  } = currentFilters;
 
   return (
     <div className={css(styles.editorDashboardNavbar)}>
@@ -112,7 +115,7 @@ export default function EditorDashboardNavbar({
           }
           options={suggestedHubs}
           placeholder="Search Hubs"
-          value={currentFilters?.selectedHub ?? null}
+          value={currentSelectedHub ?? null}
         />
         <FormSelect
           containerStyle={styles.dropdown}
@@ -121,9 +124,8 @@ export default function EditorDashboardNavbar({
             onFilterChange({ ...currentFilters, timeframe })
           }
           options={filterOptions}
-          value={currentFilters?.timeframe ?? null}
+          value={currentTimeframe ?? null}
         />
-
         <FormSelect
           containerStyle={styles.dropdown}
           inputStyle={INPUT_STYLE}
@@ -131,21 +133,8 @@ export default function EditorDashboardNavbar({
             onFilterChange({ ...currentFilters, orderBy })
           }
           options={upDownOptions}
-          value={currentFilters?.orderBy ?? null}
+          value={currentOrderBy ?? null}
         />
-        {/* <div
-          className={css(styles.orderByIcon)}
-          onClick={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            onFilterChange({
-              ...currentFilters,
-              orderBy: isCurrentlyDesc ? "asc" : "desc",
-            });
-          }}
-          role="bottom"
-        >
-          {isCurrentlyDesc ? icons.chevronDown : icons.chevronUp}
-        </div> */}
       </div>
     </div>
   );
@@ -154,15 +143,14 @@ export default function EditorDashboardNavbar({
 const styles = StyleSheet.create({
   editorDashboardNavbar: {
     backgroundColor: "#FFF",
-    // flexDirection: "column",
-    justifyContent: 'space-between',
+    justifyContent: "space-between",
     display: "flex",
     width: "100%",
     marginBottom: 32,
 
     "@media only screen and (max-width: 767px)": {
-      flexDirection: 'column',
-    }
+      flexDirection: "column",
+    },
   },
   dropdown: {
     width: 170,
