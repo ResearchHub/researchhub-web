@@ -25,10 +25,19 @@ We believe that by empowering scientists to independently fund, create, and publ
 
 ## Contributing to the codebase
 
-- Follow this [short guide](https://www.notion.so/researchhub/Philosophy-758dd755003e4f49b55e78468bda35e3?p=91e1c8d75502434f9c0a4eda29f4b421&showMoveTo=true) to ensure our bundle sizes remain optimal
-- Write tests
-- Our pre-commit hooks will run automatically upon commit (i.e. linting)
-- To skip pre-commit hooks, add `--no-verify` flag to force commit (not recommended)
+1. Fork this repo and then clone it to your local device
+2. Create a new branch
+```
+git checkout -b MY_BRANCH_NAME
+```
+3. Submit a pull request against `master` branch of this repository
+
+## Bounties
+- Bounties are regularly listed in the <a href="issues">issues</a> section.
+- Issues with a bounty associated will have the bounty badge
+- Bounties will be paid in the form or Research Coin (RSC)
+- Bounty will need to be explicitly approved by a member of the Research Hub team
+
 
 ## Tests
 
