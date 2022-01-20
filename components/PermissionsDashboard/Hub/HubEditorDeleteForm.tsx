@@ -4,7 +4,7 @@ import {
   formGenericStyles,
 } from "~/components/Paper/Upload/styles/formGenericStyles";
 import { emptyFncWithMsg, nullthrows } from "~/config/utils/nullchecks";
-import { hubEditorCreate } from "../api/hubEditorCreate";
+import { hubEditorDelete } from "../api/hubEditorDelete";
 import { ID } from "~/config/types/root_types";
 import { ReactElement, SyntheticEvent, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
@@ -24,7 +24,7 @@ const DEFAULT_FORM_STATE: FormState = {
   editorEmail: null,
 };
 
-export default function HubEditorCreateForm(): ReactElement<"div"> {
+export default function HubEditorDeleteForm(): ReactElement<"div"> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [formState, setFormState] = useState<FormState>(DEFAULT_FORM_STATE);
@@ -35,13 +35,13 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
   const handleSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     setIsSubmitting(true);
-    hubEditorCreate({
+    hubEditorDelete({
       editorEmail: nullthrows(editorEmail, "Editor email cannot be empty"),
       onSuccess: (): void => {
         setFormState(DEFAULT_FORM_STATE);
         setIsSubmitting(false);
         alert(
-          `User with email ${editorEmail} is now an editor of ${selectedHub.name}`
+          `User with email ${editorEmail} is now removed from ${selectedHub.name}`
         );
       },
       onError: (error: Error): void => {
@@ -60,7 +60,7 @@ export default function HubEditorCreateForm(): ReactElement<"div"> {
   return (
     <div className={css(styles.formWrap)}>
       <div>
-        <h1>{"Add a New Hub Editor"}</h1>
+        <h1>{"Remove a Hub Editor"}</h1>
       </div>
       <form encType="multipart/form-data" onSubmit={handleSubmit}>
         <FormSelect
