@@ -365,7 +365,7 @@ const routes = (BASE_URL) => {
 
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
-      BASE_URL + `author_claim_token_validation/`,
+      BASE_URL + `author_claim_case/author_claim_token_validation/`,
     MODERATORS_AUTHOR_CLAIM: ({ case_status }) =>
       !isNullOrUndefined(case_status)
         ? BASE_URL + `moderators/author_claim_case/?case_status=${case_status}`
