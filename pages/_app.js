@@ -60,6 +60,10 @@ initApm({
 const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
 
+  if (process.browser) {
+    alert("test33");
+  }
+
   const [prevPath, setPrevPath] = useState(router.asPath);
 
   // Scroll to top on page change

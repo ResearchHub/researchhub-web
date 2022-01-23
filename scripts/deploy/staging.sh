@@ -1,6 +1,6 @@
 #!/bin/bash
-if git diff-index --quiet HEAD --; then
-    set -o errexit; # Exit on error
+# if git diff-index --quiet HEAD --; then
+    # set -o errexit; # Exit on error
 echo Step 1/3: Logging into ECR;
     AWS_VER=`aws --version`
     AWS_REGEX="aws-cli\/2.+"
@@ -24,6 +24,6 @@ echo Step 3/3: Creating elastic beanstalk environment;
     git reset;
     mv Dockerfile.staging.off Dockerfile;
     mv Dockerrun.aws.json Dockerrun.aws.json.staging;
-else
-    echo Please commit your changes first.;
-fi
+# else
+#     echo Please commit your changes first.;
+# fi
