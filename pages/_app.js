@@ -61,7 +61,7 @@ const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
 
   if (process.browser) {
-    alert("test33");
+    alert("test44");
   }
 
   const [prevPath, setPrevPath] = useState(router.asPath);
