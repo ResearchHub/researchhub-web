@@ -19,7 +19,7 @@ export function updateCaseStatus({
   onError = emptyFncWithMsg,
 }: ApiArgs): void {
   fetch(
-    API.MODERATORS_AUTHOR_CLAIM({}),
+    API.AUTHOR_CLAIM_MODERATORS({}),
     API.POST_CONFIG({ case_id: caseID, update_status: updateStatus })
   )
     .then(Helpers.checkStatus)
