@@ -364,14 +364,13 @@ const routes = (BASE_URL) => {
     },
 
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
+    AUTHOR_CLAIM_CASE_COUNT: () => BASE_URL + "author_claim_case/count/",
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
       BASE_URL + `author_claim_case/author_claim_token_validation/`,
     AUTHOR_CLAIM_MODERATORS: ({ case_status }) =>
       !isNullOrUndefined(case_status)
-        ? BASE_URL + `author_claim_case/moderators/?case_status=${case_status}`
-        : BASE_URL + `author_claim_case/moderators/`,
-    AUTHOR_CLAIM_MODERATORS_CASE_COUNT: () =>
-      BASE_URL + "author_claim_case/moderators/counts/",
+        ? BASE_URL + `author_claim_case/moderator/?case_status=${case_status}`
+        : BASE_URL + `author_claim_case/moderator/`,
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
