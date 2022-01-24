@@ -16,16 +16,26 @@
 # misc
 .DS_Store
 .env
+.env.local
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 *.patch
 .vscode/
+.sentryclirc
 
-# Elastic Beanstalk Files
+# Elastic Beanstalk / deployment Files 
+Dockerfile
+Dockerrun.aws.json.production
+Dockerrun.aws.json.staging
+Dockerfile.staging.off
+Dockerrun.aws.json
+.elasticbeanstalk
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+.ebextensions
+.ebextensions/*
 
 # lint
 .eslintcache
