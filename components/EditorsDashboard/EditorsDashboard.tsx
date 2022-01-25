@@ -10,33 +10,40 @@ import EditorDashboardNavbar, {
   filterOptions,
   upDownOptions,
 } from "./EditorDashboardNavbar";
-import ReactPlaceholder from "react-placeholder";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
+import LoadMoreButton from "~/components/LoadMoreButton";
+import ReactPlaceholder from "react-placeholder";
+import Loader from "../Loader/Loader";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
+  isLoadingMore: boolean;
   onError: Function;
   onSuccess: Function;
+  page: number;
   setIsLoading: (flag: boolean) => void;
 };
 
 const useEffectFetchEditors = ({
   filters,
+  isLoadingMore,
   onError,
   onSuccess,
+  page,
   setIsLoading,
 }: UseEffectFetchEditorsArgs): void => {
   const { orderBy, selectedHub, timeframe } = filters;
   useEffect((): void => {
-    setIsLoading(true);
+    !isLoadingMore ?? setIsLoading(true);
     fetchEditors({
       hub_id: selectedHub?.id ?? null,
       onError,
       onSuccess,
       order_by: orderBy?.value,
+      page,
       timeframe_str: timeframe?.value ?? null,
     });
-  }, [orderBy, selectedHub, timeframe]);
+  }, [orderBy, page, selectedHub, timeframe]);
 };
 
 export default function EditorsDashboard(): ReactElement<"div"> {
@@ -45,16 +52,35 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     timeframe: filterOptions[0],
     orderBy: upDownOptions[0],
   });
+  const [paginationInfo, setPaginationInfo] = useState<{
+    page: number;
+    hasMore?: boolean;
+    isLoadingMore: boolean;
+  }>({ page: 1, isLoadingMore: false });
   const [editors, setEditors] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const {
+    page: currPage,
+    hasMore: currHasMore,
+    isLoadingMore: isCurrLoadingMore,
+  } = paginationInfo;
 
   useEffectFetchEditors({
     filters,
+    isLoadingMore: isCurrLoadingMore,
     onError: emptyFncWithMsg,
-    onSuccess: (editorResults: any[]): void => {
-      setEditors(editorResults);
+    onSuccess: (editorResults: any): void => {
+      const { page, has_more } = editorResults;
+      setEditors([...editors, ...editorResults.result]);
       setIsLoading(false);
+      setPaginationInfo({
+        hasMore: has_more,
+        isLoadingMore: false,
+        page: parseInt(page),
+      });
     },
+    page: currPage,
     setIsLoading,
   });
 
@@ -72,6 +98,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             support_count = 0,
             latest_comment_date = null,
             latest_submission_date = null,
+            id,
           } = editor ?? {};
 
           const added_as_editor_date = author_profile.added_as_editor_date;
@@ -97,9 +124,14 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     <div className={css(styles.editorsDashboard)}>
       <EditorDashboardNavbar
         currentFilters={filters}
-        onFilterChange={(updatedFilters: EditorDashFilters): void =>
-          setFilters({ ...updatedFilters })
-        }
+        onFilterChange={(updatedFilters: EditorDashFilters): void => {
+          setFilters({ ...updatedFilters });
+          setPaginationInfo({
+            page: 1,
+            hasMore: undefined,
+            isLoadingMore: false,
+          });
+        }}
       />
       <Head />
       <div className={css(styles.nav)}>
@@ -127,6 +159,20 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             }
           >
             <div className={css(styles.editorCardContainer)}>{editorCards}</div>
+            {isCurrLoadingMore ? (
+              <Loader size={24} />
+            ) : currHasMore ? (
+              <LoadMoreButton
+                label="Load More"
+                onClick={(): void =>
+                  setPaginationInfo({
+                    hasMore: undefined,
+                    isLoadingMore: true,
+                    page: currPage + 1,
+                  })
+                }
+              />
+            ) : null}
           </ReactPlaceholder>
         </div>
       </div>
