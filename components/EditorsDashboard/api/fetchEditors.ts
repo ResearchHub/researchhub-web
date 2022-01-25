@@ -7,6 +7,7 @@ type Args = {
   onError: Function;
   onSuccess: Function;
   order_by: "asc" | "desc";
+  page: number;
   timeframe_str: string | null;
 };
 
@@ -15,12 +16,14 @@ export function fetchEditors({
   onError,
   onSuccess,
   order_by,
+  page,
   timeframe_str,
 }: Args) {
   fetch(
     API.RESEARCHHUB_EDITORS_BY_CONTRIBUTION({
       hub_id,
       order_by,
+      page,
       timeframe_str,
     }),
     API.GET_CONFIG()
