@@ -126,6 +126,8 @@ export default function EditorsDashboard(): ReactElement<"div"> {
         currentFilters={filters}
         onFilterChange={(updatedFilters: EditorDashFilters): void => {
           setFilters({ ...updatedFilters });
+          setIsLoading(true);
+          setEditors([]);
           setPaginationInfo({
             page: 1,
             hasMore: undefined,
