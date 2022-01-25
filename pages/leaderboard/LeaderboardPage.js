@@ -293,7 +293,6 @@ class Index extends Component {
   }
 
   componentDidUpdate = (prevProps, prevState) => {
-    this.state;
     if (prevProps.hubs.hubs !== this.props.hubs.hubs) {
       this.setHubs(this.props.hubs.hubs);
     }
