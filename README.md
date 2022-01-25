@@ -17,6 +17,12 @@
 
 We believe that by empowering scientists to independently fund, create, and publish academic content we can revolutionize the speed at which new knowledge is created and transformed into life-changing products. <a href="https://www.notion.so/researchhub/Working-at-ResearchHub-6e0089f0e234407389eb889d342e5049">We're hiring!</a>
 
+## Important Links  👀
+💡 Got an idea or request? [Create a discussion on Github](https://github.com/ResearchHub/researchhub-web-internal/discussions/categories/ideas-and-requests).
+❓ Got a question? [Ask it here](https://github.com/ResearchHub/researchhub-web-internal/discussions/categories/q-a)
+🐛 Found a bug? [Report it here](https://github.com/ResearchHub/researchhub-web-internal/discussions/categories/bugs)
+💰 Earn ResearchCoin (RSC) by completing bounties (https://github.com/ResearchHub/researchhub-web-internal/issues) 
+
 ## Setup
 
 1. `nvm use` (installing [nvm](https://github.com/nvm-sh/nvm#installing-and-updating))
