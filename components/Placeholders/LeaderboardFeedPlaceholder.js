@@ -10,6 +10,7 @@ const LeaderboardFeedPlaceholder = ({ color, rows }) => {
           css(styles.placeholderContainer, i === 0 && styles.first) +
           " show-loading-animation"
         }
+        key={`leaderboard-placeholder-${i}`}
       >
         <RoundShape className={css(styles.round)} color={color} />
         <TextBlock
