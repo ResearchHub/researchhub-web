@@ -4,6 +4,7 @@
     "dev": "HOST=localhost:3000 next dev",
     "build": "next build",
     "start": "next start",
+    "sentry": "node ./scripts/sentry.js",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "analyze": "ANALYZE=true yarn run build",
     "analyze:maps": "source-map-explorer .next/static/**/*.js",
