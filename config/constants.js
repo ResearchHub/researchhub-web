@@ -31,12 +31,10 @@ export const DIGEST_FREQUENCY = {
   Weekly: 10080,
 };
 
-export const GOOGLE_CLIENT_ID =
-  process.env.NODE_ENV === "production"
-    ? "192509748493-3enrmve4vlikpff88lujns7b4d72hgbg.apps.googleusercontent.com"
-    : "708688924921-aqjof10cjpd7n3ie33kltloiughp14vh.apps.googleusercontent.com";
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 
-export const ORCID_CLIENT_ID = "APP-28GINQJPUWS3ZTW1";
+export const ORCID_CLIENT_ID = process.env.ORCID_CLIENT_ID;
+
 export const ORCID_REDIRECT_URI = setOrcidRedirect();
 
 function setOrcidRedirect() {
@@ -55,8 +53,7 @@ export const orcidMethods = {
 };
 
 export const ORCID_JWKS_URI = "https://orcid.org/oauth/jwks";
-export const ORCID_KID =
-  "production-orcid-org-7hdmdswarosg3gjujo8agwtazgkp1ojs";
+export const ORCID_KID = process.env.ORCID_KID;
 
 export const METATAG_DEFAULT_IMAGE_URL =
   "https://www.researchhub.com/static/background/facebook-og.jpg";
@@ -65,7 +62,7 @@ export function nameToUrl(name) {
   return encodeURIComponent(name);
 }
 
-export const WEB3_INFURA_PROJECT_ID = "a7ccde5d021c48e1a0525dfd6e58490f";
+export const WEB3_INFURA_PROJECT_ID = process.env.WEB3_INFURA_PROJECT_ID;
 export const MAINNET_CHAIN_ID = "1";
 export const RINKEBY_CHAIN_ID = "4";
 export const INFURA_ENDPOINT =
@@ -73,10 +70,9 @@ export const INFURA_ENDPOINT =
   process.env.NODE_ENV !== "production"
     ? `https://rinkeby.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`
     : `https://mainnet.infura.io/v3/${WEB3_INFURA_PROJECT_ID}`;
-export const RECAPTCHA_CLIENT_KEY = "6LdxeboZAAAAAEgn_Oa0VnohS724vZhI3_ezLbVD";
+export const RECAPTCHA_CLIENT_KEY = process.env.RECAPTCHA_CLIENT_KEY;
 
-export const SIFT_BEACON_KEY =
-  process.env.NODE_ENV === "production" ? "b27b7ee421" : "891d8fb796";
+export const SIFT_BEACON_KEY = process.env.SIFT_BEACON_KEY;
 
 export const SUMMARY_PLACEHOLDER = `Description: Distill this paper into a short paragraph. What is the main take away and why does it matter?
                       
