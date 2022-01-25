@@ -65,8 +65,8 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
     ELASTIC_APM_URL: process.env.ELASTIC_APM_URL,
     ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID,
     ORCID_KID: process.env.ORCID_KID,
-    WEB3_INFURA_PROJECT_ID: process.env.WEB3_INFURA_PROJECT_ID,
-    SIFT_BEACON_KEY: process.env.SIFT_BEACON_KEY,
+    // WEB3_INFURA_PROJECT_ID: process.env.WEB3_INFURA_PROJECT_ID,
+    // SIFT_BEACON_KEY: process.env.SIFT_BEACON_KEY,
   },
   async redirects() {
     return [
