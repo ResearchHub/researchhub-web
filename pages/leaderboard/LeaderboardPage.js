@@ -92,7 +92,7 @@ class Index extends Component {
       loadingMore: false,
       page: 1,
       next: null,
-      type: "users",
+      type: null,
     };
 
     Router.events.on("routeChangeComplete", (url) => {
