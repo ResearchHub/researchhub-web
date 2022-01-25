@@ -90,9 +90,12 @@ const MyApp = ({ Component, pageProps, store }) => {
 
   useEffect(() => {
     connectSift();
-    ReactGA.initialize(process.env.GA_TRACKING_ID, {
-      testMode: process.env.NODE_ENV !== "production",
-    });
+
+    if (process.env.GA_TRACKING_ID) {
+      ReactGA.initialize(process.env.GA_TRACKING_ID, {
+        testMode: process.env.NODE_ENV !== "production",
+      });
+    }
 
     ReactGA.pageview(router.asPath);
     router.events.on("routeChangeStart", (url) => {
