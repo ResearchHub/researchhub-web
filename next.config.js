@@ -55,8 +55,8 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
     return config;
   },
   env: {
-    SENTRY_RELEASE: process.env.SENTRY_RELEASE,
-    REACT_APP_ENV: process.env.REACT_APP_ENV,
+    // SENTRY_RELEASE: process.env.SENTRY_RELEASE,
+    // REACT_APP_ENV: process.env.REACT_APP_ENV,
     HOST: process.env.HOST,
     RECAPTCHA_CLIENT_KEY: process.env.RECAPTCHA_CLIENT_KEY,
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
