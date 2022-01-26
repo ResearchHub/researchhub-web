@@ -16,7 +16,7 @@ export function getCaseCounts({
   onSuccess,
   onError = emptyFncWithMsg,
 }: ApiArgs): any {
-  return fetch(API.MODERATORS_AUTHOR_CLAIM_CASE_COUNT(), API.GET_CONFIG())
+  return fetch(API.AUTHOR_CLAIM_CASE_COUNT(), API.GET_CONFIG())
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response: any) => {
