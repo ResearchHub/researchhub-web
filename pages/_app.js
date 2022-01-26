@@ -7,6 +7,7 @@ import "isomorphic-unfetch";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";
+import "../components/EditorsDashboard/stylesheets/date.css";
 
 // Components
 import Base from "./Base";

@@ -8,7 +8,8 @@ type Args = {
   onSuccess: Function;
   order_by: "asc" | "desc";
   page: number;
-  timeframe_str: string | null;
+  startDate: string | null;
+  endDate: string | null;
 };
 
 export function fetchEditors({
@@ -17,14 +18,16 @@ export function fetchEditors({
   onSuccess,
   order_by,
   page,
-  timeframe_str,
+  startDate,
+  endDate,
 }: Args) {
   fetch(
     API.RESEARCHHUB_EDITORS_BY_CONTRIBUTION({
       hub_id,
       order_by,
       page,
-      timeframe_str,
+      startDate,
+      endDate,
     }),
     API.GET_CONFIG()
   )
