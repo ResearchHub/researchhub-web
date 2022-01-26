@@ -11,6 +11,8 @@ const ALLOWED_ORIGINS = [
   "researchhub.com",
   "ws.researchhub.com",
   "wss://ws.researchhub.com",
+  "dev.researchhub.com",
+  "dev-backend.researchhub.com"
 ];
 
 const CLOSE_CODES = {

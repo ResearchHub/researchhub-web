@@ -11,6 +11,6 @@ function setBaseUrl() {
   } else if (process.env.NODE_ENV === "production") {
     return "wss://ws.researchhub.com/ws/";
   } else {
-    return "ws://localhost:8000/ws/";
+    return "ws://dev-backend.researchhub.com/ws/";
   }
 }

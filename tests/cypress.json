@@ -1,9 +1,9 @@
 {
   "ignoreTestFiles": "**/FIXME__utils/*.spec.js",
   "video": false,
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "http://dev.researchhub.com",
   "pageLoadTimeout": 30000,
   "env": {
-    "serverBaseUrl": "http://localhost:8000"
+    "serverBaseUrl": "http://dev-backend.researchhub.com"
   }
 }
