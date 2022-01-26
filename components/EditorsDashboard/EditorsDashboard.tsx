@@ -3,17 +3,17 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchEditors } from "./api/fetchEditors";
 import { ReactElement, useEffect, useMemo, useState } from "react";
-import Head from "~/components/Head";
 import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
   EditorDashFilters,
   upDownOptions,
 } from "./EditorDashboardNavbar";
+import Head from "~/components/Head";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
-import LoadMoreButton from "~/components/LoadMoreButton";
-import ReactPlaceholder from "react-placeholder";
 import Loader from "../Loader/Loader";
+import LoadMoreButton from "~/components/LoadMoreButton";
 import moment from 'moment';
+import ReactPlaceholder from "react-placeholder";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -56,7 +56,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     },
     orderBy: upDownOptions[0],
   });
-  const [paginationInfo, setPaginationInfo] = useState<{
+  const [{page, hasMore, isLoadingMore}, setPaginationInfo] = useState<{
     page: number;
     hasMore?: boolean;
     isLoadingMore: boolean;
@@ -64,15 +64,9 @@ export default function EditorsDashboard(): ReactElement<"div"> {
   const [editors, setEditors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const {
-    page: currPage,
-    hasMore: currHasMore,
-    isLoadingMore: isCurrLoadingMore,
-  } = paginationInfo;
-
   useEffectFetchEditors({
     filters,
-    isLoadingMore: isCurrLoadingMore,
+    isLoadingMore,
     onError: emptyFncWithMsg,
     onSuccess: (editorResults: any): void => {
       const { page, has_more } = editorResults;
@@ -84,7 +78,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
         page: parseInt(page),
       });
     },
-    page: currPage,
+    page,
     setIsLoading,
   });
 
@@ -165,16 +159,16 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             }
           >
             <div className={css(styles.editorCardContainer)}>{editorCards}</div>
-            {isCurrLoadingMore ? (
+            {isLoadingMore ? (
               <Loader size={24} />
-            ) : currHasMore ? (
+            ) : hasMore ? (
               <LoadMoreButton
                 label="Load More"
                 onClick={(): void =>
                   setPaginationInfo({
                     hasMore: undefined,
                     isLoadingMore: true,
-                    page: currPage + 1,
+                    page: page + 1,
                   })
                 }
               />
