@@ -7,13 +7,13 @@ import Head from "~/components/Head";
 import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
   EditorDashFilters,
-  filterOptions,
   upDownOptions,
 } from "./EditorDashboardNavbar";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import ReactPlaceholder from "react-placeholder";
 import Loader from "../Loader/Loader";
+import moment from 'moment';
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -41,7 +41,8 @@ const useEffectFetchEditors = ({
       onSuccess,
       order_by: orderBy?.value,
       page,
-      timeframe_str: timeframe?.value ?? null,
+      startDate: timeframe?.startDate?.format(),
+      endDate: timeframe?.endDate?.format(),
     });
   }, [orderBy, page, selectedHub, timeframe]);
 };
@@ -49,7 +50,10 @@ const useEffectFetchEditors = ({
 export default function EditorsDashboard(): ReactElement<"div"> {
   const [filters, setFilters] = useState<EditorDashFilters>({
     selectedHub: null,
-    timeframe: filterOptions[0],
+    timeframe: {
+      startDate: moment().add(-30, "days"),
+      endDate: moment(),
+    },
     orderBy: upDownOptions[0],
   });
   const [paginationInfo, setPaginationInfo] = useState<{
@@ -205,14 +209,12 @@ const styles = StyleSheet.create({
   },
   nav: {
     display: "flex",
-    width: "100%",
     // marginBottom: 16,
     marginLeft: 60,
   },
   navContainer: {
     display: "flex",
     marginLeft: "auto",
-    paddingRight: 50,
   },
   navItem: {
     color: "#241F3A",
