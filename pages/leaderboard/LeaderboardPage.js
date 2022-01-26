@@ -280,6 +280,7 @@ class Index extends Component {
       filterOptions.filter((filter) => {
         return filter.value === scope.split("-").join("_");
       })[0];
+
     this.setState(
       {
         type,
@@ -287,7 +288,11 @@ class Index extends Component {
         filterBy: filterBy ? filterBy : defaultFilterBy,
       },
       () => {
-        this.fetchLeaderboard(type);
+        console.log(type);
+
+        if (type !== "editors") {
+          this.fetchLeaderboard(type);
+        }
       }
     );
   }
@@ -545,12 +550,16 @@ class Index extends Component {
                     },
                   }
                 : {
-                    pathname: "/leaderboard/editors",
+                    pathname: "/leaderboard/[type]",
                   }
             }
-            as={`/leaderboard/${encodeURIComponent(item.type)}/${
-              this.state.by.slug
-            }/${this.convertToSlug(this.state.filterBy.value)}`}
+            as={
+              !isEditorTab
+                ? `/leaderboard/${encodeURIComponent(item.type)}/${
+                    this.state.by.slug
+                  }/${this.convertToSlug(this.state.filterBy.value)}`
+                : `/leaderboard/editors`
+            }
           >
             <a className={css(styles.sidebarLink)}>
               <span className={css(styles.icon)}>{icon}</span>
