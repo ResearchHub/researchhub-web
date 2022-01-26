@@ -183,10 +183,12 @@ const routes = (BASE_URL) => {
     RESEARCHHUB_EDITORS_BY_CONTRIBUTION: ({
       hub_id,
       order_by,
-      timeframe_str,
+      page = 1,
+      startDate,
+      endDate,
     }) => {
       return prepURL(BASE_URL + "moderators/get_editors_by_contributions/", {
-        querystring: { hub_id, order_by, timeframe_str },
+        querystring: { hub_id, order_by, page, startDate, endDate },
       });
     },
     RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
@@ -364,14 +366,13 @@ const routes = (BASE_URL) => {
     },
 
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
+    AUTHOR_CLAIM_CASE_COUNT: () => BASE_URL + "author_claim_case/count/",
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
-      BASE_URL + `author_claim_token_validation/`,
-    MODERATORS_AUTHOR_CLAIM: ({ case_status }) =>
+      BASE_URL + `author_claim_case/author_claim_token_validation/`,
+    AUTHOR_CLAIM_MODERATORS: ({ case_status }) =>
       !isNullOrUndefined(case_status)
-        ? BASE_URL + `moderators/author_claim_case/?case_status=${case_status}`
-        : BASE_URL + `moderators/author_claim_case/`,
-    MODERATORS_AUTHOR_CLAIM_CASE_COUNT: () =>
-      BASE_URL + "moderators/author_claim_case/counts/",
+        ? BASE_URL + `author_claim_case/moderator/?case_status=${case_status}`
+        : BASE_URL + `author_claim_case/moderator/`,
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;

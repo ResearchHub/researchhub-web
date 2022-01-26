@@ -25,6 +25,7 @@ import Head from "~/components/Head";
 import HeadComponent from "../../components/Head";
 import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
+import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 
 const filterOptions = [
   {
@@ -91,7 +92,7 @@ class Index extends Component {
       loadingMore: false,
       page: 1,
       next: null,
-      type: "users",
+      type: null,
     };
 
     Router.events.on("routeChangeComplete", (url) => {
@@ -104,6 +105,12 @@ class Index extends Component {
       { name: "Users", id: "users", type: "users", icon: icons.subscribers },
       { name: "Authors", id: "authors", type: "authors", icon: icons.userEdit },
       { name: "Papers", id: "papers", type: "papers", icon: icons.bookOpen },
+      {
+        name: "Editors",
+        id: "editors",
+        type: "editors",
+        icon: icons.starFilled,
+      },
     ];
   }
 
@@ -273,7 +280,6 @@ class Index extends Component {
       filterOptions.filter((filter) => {
         return filter.value === scope.split("-").join("_");
       })[0];
-
     this.setState(
       {
         type,
@@ -508,6 +514,7 @@ class Index extends Component {
   renderSidebarEntry = () => {
     return this.items.map((item, i) => {
       const { name, icon, id } = item;
+      const isEditorTab = id === "editors";
       return (
         <Ripples
           className={css(
@@ -527,14 +534,20 @@ class Index extends Component {
           }}
         >
           <Link
-            href={{
-              pathname: "/leaderboard/[type]/[hub]/[scope]",
-              query: {
-                type: `${encodeURIComponent(item.type)}`,
-                hub: this.state.by.slug,
-                scope: this.convertToSlug(this.state.filterBy.value),
-              },
-            }}
+            href={
+              !isEditorTab
+                ? {
+                    pathname: "/leaderboard/[type]/[hub]/[scope]",
+                    query: {
+                      type: `${encodeURIComponent(item.type)}`,
+                      hub: this.state.by.slug,
+                      scope: this.convertToSlug(this.state.filterBy.value),
+                    },
+                  }
+                : {
+                    pathname: "/leaderboard/editors",
+                  }
+            }
             as={`/leaderboard/${encodeURIComponent(item.type)}/${
               this.state.by.slug
             }/${this.convertToSlug(this.state.filterBy.value)}`}
@@ -683,13 +696,17 @@ class Index extends Component {
   };
 
   render() {
-    const mainFeed = this.renderMainFeed();
+    const isEditorTab = this.state.type === "editors";
+    const mainFeed = isEditorTab ? <EditorsDashboard /> : this.renderMainFeed();
+
     return (
       <Fragment>
-        <Head
-          title={"Leaderboard on Researchhub"}
-          description={"View the top categories on Researchhub"}
-        />
+        {!isEditorTab ? (
+          <Head
+            title={"Leaderboard on Researchhub"}
+            description={"View the top categories on Researchhub"}
+          />
+        ) : null}
         <ContentPage
           mainFeed={mainFeed}
           sidebar={

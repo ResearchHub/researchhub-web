@@ -3,58 +3,82 @@ import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
 import { fetchEditors } from "./api/fetchEditors";
 import { ReactElement, useEffect, useMemo, useState } from "react";
-import Head from "~/components/Head";
 import EditorDashboardUserCard from "./EditorDashboardCard";
 import EditorDashboardNavbar, {
   EditorDashFilters,
-  filterOptions,
   upDownOptions,
 } from "./EditorDashboardNavbar";
-import ReactPlaceholder from "react-placeholder";
+import Head from "~/components/Head";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
+import Loader from "../Loader/Loader";
+import LoadMoreButton from "~/components/LoadMoreButton";
+import moment from 'moment';
+import ReactPlaceholder from "react-placeholder";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
+  isLoadingMore: boolean;
   onError: Function;
   onSuccess: Function;
+  page: number;
   setIsLoading: (flag: boolean) => void;
 };
 
 const useEffectFetchEditors = ({
   filters,
+  isLoadingMore,
   onError,
   onSuccess,
+  page,
   setIsLoading,
 }: UseEffectFetchEditorsArgs): void => {
   const { orderBy, selectedHub, timeframe } = filters;
   useEffect((): void => {
-    setIsLoading(true);
+    !isLoadingMore ?? setIsLoading(true);
     fetchEditors({
       hub_id: selectedHub?.id ?? null,
       onError,
       onSuccess,
       order_by: orderBy?.value,
-      timeframe_str: timeframe?.value ?? null,
+      page,
+      startDate: timeframe?.startDate?.format(),
+      endDate: timeframe?.endDate?.format(),
     });
-  }, [orderBy, selectedHub, timeframe]);
+  }, [orderBy, page, selectedHub, timeframe]);
 };
 
 export default function EditorsDashboard(): ReactElement<"div"> {
   const [filters, setFilters] = useState<EditorDashFilters>({
     selectedHub: null,
-    timeframe: filterOptions[0],
+    timeframe: {
+      startDate: moment().add(-30, "days"),
+      endDate: moment(),
+    },
     orderBy: upDownOptions[0],
   });
+  const [{page, hasMore, isLoadingMore}, setPaginationInfo] = useState<{
+    page: number;
+    hasMore?: boolean;
+    isLoadingMore: boolean;
+  }>({ page: 1, isLoadingMore: false });
   const [editors, setEditors] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffectFetchEditors({
     filters,
+    isLoadingMore,
     onError: emptyFncWithMsg,
-    onSuccess: (editorResults: any[]): void => {
-      setEditors(editorResults);
+    onSuccess: (editorResults: any): void => {
+      const { page, has_more } = editorResults;
+      setEditors([...editors, ...editorResults.result]);
       setIsLoading(false);
+      setPaginationInfo({
+        hasMore: has_more,
+        isLoadingMore: false,
+        page: parseInt(page),
+      });
     },
+    page,
     setIsLoading,
   });
 
@@ -72,6 +96,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             support_count = 0,
             latest_comment_date = null,
             latest_submission_date = null,
+            id,
           } = editor ?? {};
 
           const added_as_editor_date = author_profile.added_as_editor_date;
@@ -97,9 +122,16 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     <div className={css(styles.editorsDashboard)}>
       <EditorDashboardNavbar
         currentFilters={filters}
-        onFilterChange={(updatedFilters: EditorDashFilters): void =>
-          setFilters({ ...updatedFilters })
-        }
+        onFilterChange={(updatedFilters: EditorDashFilters): void => {
+          setFilters({ ...updatedFilters });
+          setIsLoading(true);
+          setEditors([]);
+          setPaginationInfo({
+            page: 1,
+            hasMore: undefined,
+            isLoadingMore: false,
+          });
+        }}
       />
       <Head />
       <div className={css(styles.nav)}>
@@ -127,6 +159,20 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             }
           >
             <div className={css(styles.editorCardContainer)}>{editorCards}</div>
+            {isLoadingMore ? (
+              <Loader size={24} />
+            ) : hasMore ? (
+              <LoadMoreButton
+                label="Load More"
+                onClick={(): void =>
+                  setPaginationInfo({
+                    hasMore: undefined,
+                    isLoadingMore: true,
+                    page: page + 1,
+                  })
+                }
+              />
+            ) : null}
           </ReactPlaceholder>
         </div>
       </div>
@@ -157,14 +203,12 @@ const styles = StyleSheet.create({
   },
   nav: {
     display: "flex",
-    width: "100%",
     // marginBottom: 16,
     marginLeft: 60,
   },
   navContainer: {
     display: "flex",
     marginLeft: "auto",
-    paddingRight: 50,
   },
   navItem: {
     color: "#241F3A",

@@ -9,6 +9,9 @@ import {
   faLongArrowAltDown,
   faLongArrowAltUp,
 } from "@fortawesome/pro-solid-svg-icons";
+import 'react-dates/initialize';
+import { DateRangePicker } from 'react-dates';
+import "react-dates/lib/css/_datepicker.css";
 
 export type EditorDashFilters = {
   selectedHub: any;
@@ -92,6 +95,7 @@ export default function EditorDashboardNavbar({
 }: Props): ReactElement<"div"> {
   const router = useRouter();
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
+  const [datesOpen, setDatesOpen] = useState<boolean>(false);
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
@@ -117,7 +121,25 @@ export default function EditorDashboardNavbar({
           placeholder="Search Hubs"
           value={currentSelectedHub ?? null}
         />
-        <FormSelect
+        <DateRangePicker
+          startDate={currentTimeframe.startDate} // momentPropTypes.momentObj or null,
+          startDateId="start_id" // PropTypes.string.isRequired,
+          endDate={currentTimeframe.endDate} // momentPropTypes.momentObj or null,
+          endDateId="end_Id" // PropTypes.string.isRequired,
+          onDatesChange={({ startDate, endDate }) => {
+            const filter = {
+              ...currentFilters,
+              timeframe: { startDate, endDate },
+            };
+            onFilterChange(filter);
+          }} // PropTypes.func.isRequired,
+          focusedInput={datesOpen} // PropTypes.oneOf([START_DATE, END_DATE]) or null,
+          isOutsideRange={(day) => {
+            return !day.isSameOrBefore(new Date());
+          }}
+          onFocusChange={(focusedInput) => setDatesOpen(focusedInput)} // PropTypes.func.isRequired,
+        />
+        {/* <FormSelect
           containerStyle={styles.dropdown}
           inputStyle={INPUT_STYLE}
           onChange={(_id: ID, timeframe: any): void =>
@@ -125,7 +147,7 @@ export default function EditorDashboardNavbar({
           }
           options={filterOptions}
           value={currentTimeframe ?? null}
-        />
+        /> */}
         <FormSelect
           containerStyle={styles.dropdown}
           inputStyle={INPUT_STYLE}
@@ -156,7 +178,7 @@ const styles = StyleSheet.create({
     width: 170,
     minHeight: "unset",
     fontSize: 14,
-    marginRight: 10,
+    // marginRight: 16,
     "@media only screen and (max-width: 1343px)": {
       height: "unset",
     },
@@ -173,7 +195,7 @@ const styles = StyleSheet.create({
     width: 200,
     minHeight: "unset",
     fontSize: 14,
-    marginRight: 10,
+    marginRight: 16,
     "@media only screen and (max-width: 1343px)": {
       height: "unset",
     },
