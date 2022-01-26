@@ -35,8 +35,8 @@ Dockerrun.aws.json
 # .elasticbeanstalk/*
 # !.elasticbeanstalk/*.cfg.yml
 # !.elasticbeanstalk/*.global.yml
-.ebextensions
-.ebextensions/*
+# .ebextensions
+# .ebextensions/*
 
 # lint
 .eslintcache
