@@ -1,0 +1,24 @@
+branch-defaults:
+  development:
+    environment: production2
+    group_suffix: null
+  mainnet:
+    environment: staging-web
+  master:
+    environment: production2
+  support-author:
+    environment: staging-web
+global:
+  application_name: researchhub-web
+  branch: null
+  default_ec2_keyname: researchhub-q5
+  default_platform: Docker 18.06.1-ce
+  default_region: us-west-2
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: researchhub
+  repository: null
+  sc: git
+  workspace_type: Application
