@@ -23,7 +23,7 @@ yarn-error.log*
 *.patch
 .vscode/
 .sentryclirc
-sentry.properties
+# sentry.properties
 
 # Elastic Beanstalk / deployment Files 
 Dockerfile
