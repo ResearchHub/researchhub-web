@@ -184,10 +184,11 @@ const routes = (BASE_URL) => {
       hub_id,
       order_by,
       page = 1,
-      timeframe_str,
+      startDate,
+      endDate,
     }) => {
       return prepURL(BASE_URL + "moderators/get_editors_by_contributions/", {
-        querystring: { hub_id, order_by, page, timeframe_str },
+        querystring: { hub_id, order_by, page, startDate, endDate },
       });
     },
     RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
