@@ -74,6 +74,7 @@ const MyApp = ({ Component, pageProps, store }) => {
   console.log("RECAPTCHA_CLIENT_KEY", process.env.RECAPTCHA_CLIENT_KEY);
   console.log("SIFT_BEACON_KEY", process.env.SIFT_BEACON_KEY);
   console.log("REACT_APP_ENV", process.env.REACT_APP_ENV);
+  console.log("NODE_ENV", process.env.NODE_ENV);
   console.log("TEST55");
 
   const [prevPath, setPrevPath] = useState(router.asPath);
