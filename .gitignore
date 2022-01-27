@@ -27,8 +27,8 @@ yarn-error.log*
 
 # Elastic Beanstalk / deployment Files 
 # Dockerfile
-Dockerrun.aws.json.production
-Dockerrun.aws.json.staging
+# Dockerrun.aws.json.production
+# Dockerrun.aws.json.staging
 Dockerfile.staging.off
 # Dockerrun.aws.json
 # .elasticbeanstalk
