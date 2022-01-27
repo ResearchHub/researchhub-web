@@ -64,6 +64,7 @@ const MyApp = ({ Component, pageProps, store }) => {
 
   console.log("----------TEST----------");
   console.log("SENTRY_DSN", process.env.SENTRY_DSN);
+  console.log("SENTRY_RELEASE", process.env.SENTRY_RELEASE);
   console.log("GA_TRACKING_ID", process.env.GA_TRACKING_ID);
   console.log("ELASTIC_APM_URL", process.env.ELASTIC_APM_URL);
   console.log("GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID);
