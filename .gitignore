@@ -9,6 +9,7 @@ Dockerrun.aws.json.production
 Dockerrun.aws.json.staging
 Dockerfile.staging.off
 Dockerrun.aws.json
+.env.development
 
 # testing
 /coverage
