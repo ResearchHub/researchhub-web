@@ -171,6 +171,10 @@ const styles = StyleSheet.create({
     marginBottom: 32,
 
     "@media only screen and (max-width: 767px)": {
+      marginBottom: 0,
+    },
+
+    "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
     },
   },
@@ -203,9 +207,11 @@ const styles = StyleSheet.create({
       width: 150,
       fontSize: 13,
     },
-    "@media only screen and (max-width: 779px)": {
+    "@media only screen and (max-width: 1023px)": {
       width: "100%",
       marginTop: 8,
+      marginRight: 0,
+      marginBottom: 8,
     },
   },
   header: {
@@ -214,12 +220,25 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     fontSize: "30px",
     fontWeight: 500,
+
+    "@media only screen and (max-width: 1023px)": {
+      textAlign: 'center',
+      display: 'unset',
+    }
+    
   },
   navButtons: {
     alignItems: "center",
     display: "flex",
     height: 60,
     justifyContent: "flex-start",
+
+    "@media only screen and (max-width: 1023px)": {
+      flexDirection: "column",
+      height: "unset",
+      width: 284,
+      margin: '0 auto',
+    },
   },
   orderByIcon: {
     fontSize: 16,

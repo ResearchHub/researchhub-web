@@ -47,6 +47,9 @@ export default function EditorDashboardUserCard({
           </div>
           <div className={css(styles.contributionSection)}>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
+            <span className={css(styles.mobileLabel)}>
+                Last Submission
+              </span>
               <span className={css(styles.countResponse)}>
                 {lastSubmissionDate
                   ? timeAgo.format(new Date(lastSubmissionDate))
@@ -54,21 +57,33 @@ export default function EditorDashboardUserCard({
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
+            <span className={css(styles.mobileLabel)}>
+                Last Comment
+              </span>
               <span className={css(styles.countResponse)}>
-                {lastSubmissionDate
+                {lastCommentDate
                   ? timeAgo.format(new Date(lastCommentDate))
                   : "never"}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
+              <span className={css(styles.mobileLabel)}>
+                Submissions
+              </span>
               <span className={css(styles.countResponse)}>
                 {submissionCount}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.supportLabel)}>
+            <span className={css(styles.mobileLabel)}>
+                Supports
+              </span>
               <span className={css(styles.countResponse)}>{supportCount}</span>
             </div>
             <div className={css(styles.countLabel)}>
+            <span className={css(styles.mobileLabel)}>
+                Comments
+              </span>
               <span className={css(styles.countResponse)}>{commentCount}</span>
             </div>
           </div>
@@ -91,6 +106,10 @@ const styles = StyleSheet.create({
     padding: "0px 16px",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       maxWidth: "unset",
+      overflow: 'auto',
+      display: 'inline-flex',
+      flexDirection: 'column',
+      padding: 16,
     },
   },
   borderTop: {
@@ -103,6 +122,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 40,
     width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      flexDirection: 'column',
+      height: 'unset',
+      alignItems: 'flex-end',
+      justifyContent: 'unset',
+    },
   },
   added: {
     marginLeft: 16,
@@ -115,6 +140,18 @@ const styles = StyleSheet.create({
     paddingRight: 50,
     width: 100,
     textAlign: "center",
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      paddingRight: 0,
+      textAlign: 'right',
+      width: '100%',
+      marginTop: 8,
+      display: 'flex',
+    },
+  },
+  mobileLabel: {
+    marginRight: 'auto',
+    color: 'rgb(36, 31, 58)',
+    opacity: .5,
   },
   supportLabel: {},
   submissionLabel: {},
