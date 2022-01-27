@@ -90,7 +90,7 @@ function Button(props) {
         </div>
       </button>
     );
-    if (!hideRipples) {
+    if (!hideRipples && !disabled) {
       return (
         <Ripples
           className={css(styles.ripples, rippleClass)}

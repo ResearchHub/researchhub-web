@@ -4,17 +4,17 @@ import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
-export default function SimpleEditor(props) {
-  const {
-    id,
-    containerStyle,
-    onChange,
-    initialData,
-    label,
-    labelStyle,
-    required,
-    placeholder,
-  } = props;
+export default function SimpleEditor({
+  containerStyle,
+  id,
+  initialData,
+  label,
+  labelStyle,
+  onChange,
+  placeholder,
+  readOnly,
+  required,
+}) {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
@@ -39,7 +39,7 @@ export default function SimpleEditor(props) {
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
+      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
     };
     setEditorLoaded(true);
   }, []);
@@ -67,6 +67,9 @@ export default function SimpleEditor(props) {
               onChange(id, editor.getData());
             }}
             onReady={(editor) => {
+              if (readOnly) {
+                editor.isReadOnly = true;
+              }
               editor.editing.view.change((writer) => {
                 writer.setStyle(
                   "min-height",

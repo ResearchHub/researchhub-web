@@ -38,10 +38,8 @@ import {
   removeHypothesis,
   restoreHypothesis,
 } from "./api/postHypothesisStatus";
-import ColumnHubs from "../Paper/SideColumn/ColumnHubs";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import DiscussionCount from "~/components/DiscussionCount";
-
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -141,14 +139,11 @@ const getActionButtons = ({
 };
 
 const getMetaData = ({
-  authors,
   hypothesis,
 }: {
-  authors: any[];
   hypothesis: any;
 }): ReactElement<"div"> => {
   const { created_date } = hypothesis;
-  const { first_name = "", last_name = "" } = authors[0];
   const metadata = [
     {
       label: "Published",
@@ -158,15 +153,6 @@ const getMetaData = ({
           property="datePublished"
         >
           {formatPublishedDate(dayjs(created_date), true)}
-        </span>
-      ),
-      active: created_date,
-    },
-    {
-      label: "Author",
-      value: (
-        <span className={css(styles.metadata) + " clamp2"} property="author">
-          {first_name + " " + last_name}
         </span>
       ),
       active: created_date,
@@ -349,21 +335,28 @@ function HypothesisPageCard({
       <div className={css(styles.voting)}>
         <VoteWidget {...voteWidgetProps} />
         <div className={css(styles.discussionCountWrapper)}>
-          <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
-        </div>        
+          <DiscussionCount
+            docType="hypothesis"
+            slug={hypothesis.slug}
+            id={hypothesis.id}
+            count={hypothesis.discussion_count}
+          />
+        </div>
       </div>
       <div className={css(styles.mobile)}>
         <div className={css(styles.votingMobile)}>
           <VoteWidget {...voteWidgetProps} horizontalView />
           <div className={css(styles.discussionCountWrapper)}>
-            <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
-            <a
-              href="#comments"
-              className={css(styles.discussionText)}
-            >
+            <DiscussionCount
+              docType="hypothesis"
+              slug={hypothesis.slug}
+              id={hypothesis.id}
+              count={hypothesis.discussion_count}
+            />
+            <a href="#comments" className={css(styles.discussionText)}>
               <span>Join the Discussion</span>
-            </a>            
-          </div>                 
+            </a>
+          </div>
         </div>
       </div>
       <div className={css(styles.column)}>
@@ -397,7 +390,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 1,
       display: "flex",
-    }
+    },
   },
   discussionText: {
     whiteSpace: "nowrap",
@@ -406,7 +399,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     textDecoration: "none",
-  },  
+  },
   hypothesisCard: {
     display: "flex",
     flexDirection: "row",
