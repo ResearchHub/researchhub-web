@@ -2,8 +2,9 @@
 
 # dependencies
 /node_modules
-.sentry.properties
+sentry.properties
 .sentryclirc
+Dockerfile
 Dockerrun.aws.json.production
 Dockerrun.aws.json.staging
 Dockerfile.staging.off
