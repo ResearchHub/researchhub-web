@@ -36,7 +36,6 @@ import { MessageActions } from "~/redux/message";
 import { SIFT_BEACON_KEY } from "~/config/constants";
 
 if (process.env.ELASTIC_APM_URL) {
-  console.log("INITIALIZED ELASTIC APM");
   initApm({
     // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
     serviceName:
@@ -61,22 +60,6 @@ if (process.env.ELASTIC_APM_URL) {
 
 const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
-
-  console.log("----------TEST----------");
-  console.log("SENTRY_DSN", process.env.SENTRY_DSN);
-  console.log("SENTRY_RELEASE", process.env.SENTRY_RELEASE);
-  console.log("GA_TRACKING_ID", process.env.GA_TRACKING_ID);
-  console.log("ELASTIC_APM_URL", process.env.ELASTIC_APM_URL);
-  console.log("GOOGLE_CLIENT_ID", process.env.GOOGLE_CLIENT_ID);
-  console.log("ORCID_CLIENT_ID", process.env.ORCID_CLIENT_ID);
-  console.log("ORCID_KID", process.env.ORCID_KID);
-  console.log("WEB3_INFURA_PROJECT_ID", process.env.WEB3_INFURA_PROJECT_ID);
-  console.log("RECAPTCHA_CLIENT_KEY", process.env.RECAPTCHA_CLIENT_KEY);
-  console.log("SIFT_BEACON_KEY", process.env.SIFT_BEACON_KEY);
-  console.log("REACT_APP_ENV", process.env.REACT_APP_ENV);
-  console.log("NODE_ENV", process.env.NODE_ENV);
-  console.log("TEST55");
-
   const [prevPath, setPrevPath] = useState(router.asPath);
 
   // Scroll to top on page change
