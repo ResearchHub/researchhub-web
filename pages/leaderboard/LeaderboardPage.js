@@ -288,8 +288,6 @@ class Index extends Component {
         filterBy: filterBy ? filterBy : defaultFilterBy,
       },
       () => {
-        console.log(type);
-
         if (type !== "editors") {
           this.fetchLeaderboard(type);
         }
@@ -303,7 +301,9 @@ class Index extends Component {
     }
 
     if (prevState.type !== this.state.type) {
-      this.fetchLeaderboard(this.state.type);
+      if (this.state.type !== "editors") {
+        this.fetchLeaderboard(this.state.type);
+      }
     }
 
     if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
