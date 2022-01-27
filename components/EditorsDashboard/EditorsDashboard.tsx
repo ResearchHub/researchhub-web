@@ -192,6 +192,8 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       maxWidth: "unset",
       paddingTop: 32,
+      width: '100vw',
+      overflow: 'auto',
     },
   },
   editorCardContainer: {
@@ -205,6 +207,10 @@ const styles = StyleSheet.create({
     display: "flex",
     // marginBottom: 16,
     marginLeft: 60,
+
+    "@media only screen and (max-width: 1023px)": {
+      display: 'none',
+    },
   },
   navContainer: {
     display: "flex",
