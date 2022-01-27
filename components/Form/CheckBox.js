@@ -4,19 +4,41 @@ import { StyleSheet, css } from "aphrodite";
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-const CheckBox = ({ id, active, label, isSquare, onChange, labelStyle }) => {
+const CheckBox = ({
+  active,
+  id = 0,
+  isSquare,
+  label,
+  labelStyle,
+  onChange,
+  onClickLabel = false,
+}) => {
   return (
-    <div className={css(styles.checkboxContainer)}>
+    <div
+      className={css(styles.checkboxContainer, onClickLabel && styles.pointer)}
+      onClick={
+        onClickLabel
+          ? () => {
+              let state = !active;
+              onChange && onChange(id, state);
+            }
+          : null
+      }
+    >
       <div
         className={css(
           styles.checkBox,
           active && styles.active,
           isSquare && styles.square
         )}
-        onClick={() => {
-          let state = !active;
-          onChange && onChange(id, state);
-        }}
+        onClick={
+          !onClickLabel
+            ? () => {
+                let state = !active;
+                onChange && onChange(id, state);
+              }
+            : null
+        }
       >
         {isSquare ? (
           <span style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}>
@@ -38,12 +60,10 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-start",
-    height: 26,
-    // minWidth: 87,
   },
   checkBox: {
-    height: 24,
-    width: 24,
+    minHeight: 24,
+    minWidth: 24,
     borderRadius: "50%",
     border: "1px solid #e8e8f1",
     cursor: "pointer",
@@ -62,7 +82,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FBFBFD",
   },
   centered: {
-    // transform: "translate(-53%, -44.5%)",
+    transform: "translate(-53%, -44.5%)",
   },
   active: {
     backgroundColor: colors.BLUE(1),
@@ -79,11 +99,13 @@ const styles = StyleSheet.create({
   },
   label: {
     fontFamily: "Roboto",
-    // fontSize: 16,
     fontSize: 15,
     margin: 0,
     padding: 0,
     marginLeft: 8,
+  },
+  pointer: {
+    cursor: "pointer",
   },
 });
 

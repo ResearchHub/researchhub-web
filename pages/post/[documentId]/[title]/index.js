@@ -5,6 +5,7 @@ import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorU
 
 import { connect, useDispatch, useStore } from "react-redux";
 import Error from "next/error";
+import Script from "next/script";
 
 // Components
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
@@ -180,15 +181,6 @@ const Post = (props) => {
     setPost(newState);
   }
 
-  function getAllAuthors() {
-    const { created_by } = post;
-    let allAuthors = [];
-    if (post.created_by) {
-      allAuthors = [created_by.author_profile];
-    }
-    return allAuthors;
-  }
-
   const slug =
     post && post.title && post.title.toLowerCase().replace(/\s/g, "-");
   const currUserID = props.user?.id ?? null;
@@ -228,7 +220,7 @@ const Post = (props) => {
               </div>
               <div className={css(styles.paperMetaContainerMobile)}>
                 <AuthorStatsDropdown
-                  authors={getAllAuthors()}
+                  authors={post.authors || []}
                   paper={post}
                   hubs={post.hubs}
                   paperId={post.id}
@@ -249,7 +241,7 @@ const Post = (props) => {
             </div>
             <div className={css(styles.sidebar)}>
               <PaperSideColumn
-                authors={getAllAuthors()}
+                authors={post.authors || []}
                 paper={post}
                 hubs={post.hubs}
                 paperId={post.id}
@@ -258,6 +250,11 @@ const Post = (props) => {
             </div>
           </div>
         </div>
+        <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
+        <Script
+          src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/mhchem.min.js"
+          strategy="lazyOnload" // this script needs to load after the main katex script
+        />
       </div>
     );
   } else {

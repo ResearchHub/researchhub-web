@@ -58,6 +58,7 @@ class PostPageCard extends Component {
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
+    this.editorRef = createRef();
 
     this.onUpvote = this.createVoteHandler(UPVOTE);
     this.onDownvote = this.createVoteHandler(DOWNVOTE);
@@ -67,6 +68,13 @@ class PostPageCard extends Component {
     if (document.body.style) {
       document.body.style.overflow = "scroll";
     }
+  }
+
+  componentDidMount() {
+    this.editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
+    };
   }
 
   revealPage = (timeout) => {
@@ -213,29 +221,6 @@ class PostPageCard extends Component {
         console.log(error);
         Sentry.captureEvent(error);
       });
-  };
-
-  renderPostEditor = () => {
-    return (
-      <>
-        <DynamicCKEditor
-          id="text"
-          initialData={this.state.postBody}
-          labelStyle={styles.label}
-          onChange={(id, editorData) => this.setState({ postBody: editorData })}
-          containerStyle={styles.editor}
-        />
-        <div className={css(styles.editButtonRow)}>
-          <Button
-            isWhite={true}
-            label={"Cancel"}
-            onClick={this.toggleShowPostEditor}
-            size={"small"}
-          />
-          <Button label={"Save"} onClick={this.sendPost} size={"small"} />
-        </div>
-      </>
-    );
   };
 
   downloadPDF = () => {
@@ -753,13 +738,6 @@ class PostPageCard extends Component {
                   )}
                 >
                   <div className={css(styles.metaContainer)}>
-                    <div className={css(styles.titleHeader)}>
-                      <div className={css(styles.row)}>
-                        <h1 className={css(styles.title)} property={"headline"}>
-                          {post && post.title}
-                        </h1>
-                      </div>
-                    </div>
                     <div className={css(styles.column)}>
                       {this.renderMetadata()}
                     </div>
@@ -789,19 +767,19 @@ class PostPageCard extends Component {
             </div>
           </div>
           <div className={css(styles.postBody) + " ck-content"}>
-            {this.state.showPostEditor ? (
-              this.renderPostEditor()
-            ) : (
-              <>
-                {postBody && ReactHtmlParser(postBody)}
-                <div className={css(styles.bottomContainer)}>
-                  <div className={css(styles.bottomRow)}>
-                    {this.renderActions()}
-                  </div>
-                  <div className={css(styles.downloadPDF)}></div>
-                </div>
-              </>
-            )}
+            <DynamicCKEditor
+              containerStyle={styles.editor}
+              id={"postBody"}
+              initialData={postBody}
+              labelStyle={styles.label}
+              readOnly
+            />
+            <div className={css(styles.bottomContainer)}>
+              <div className={css(styles.bottomRow)}>
+                {this.renderActions()}
+              </div>
+              <div className={css(styles.downloadPDF)}></div>
+            </div>
           </div>
         </div>
 

@@ -1,8 +1,6 @@
 import API from "~/config/api";
 import Loader from "~/components/Loader/Loader";
-import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
-import NoteShareButton from "~/components/Notebook/NoteShareButton";
-import colors from "~/config/themes/colors";
+import NotebookHeader from "~/components/Notebook/NotebookHeader";
 import { AUTH_TOKEN } from "~/config/constants";
 import {
   BUNDLE_VERSION,
@@ -87,6 +85,7 @@ const ELNEditor = ({
   const { orgSlug } = router.query;
   const sidebarElementRef = useRef();
   const [presenceListElement, setPresenceListElement] = useState(null);
+  const [editorInstance, setEditorInstance] = useState(null);
 
   const onRefChange = useCallback((node) => {
     if (node !== null) {
@@ -110,31 +109,30 @@ const ELNEditor = ({
     }
   };
 
+  const getEditorContent = () => {
+    return {
+      full_src: editorInstance.getData(),
+      title:
+        editorInstance.plugins
+          .get("Title")
+          .getTitle()
+          .replace(/&nbsp;/g, " ") || "Untitled",
+    };
+  };
+
   return (
     <div className={css(styles.container)}>
-      <div className={css(styles.noteHeader)}>
-        <div className={css(styles.noteHeaderOpts)}>
-          <div className="presence" ref={onRefChange} />
-          <NoteShareButton
-            noteId={currentNote.id}
-            notePerms={notePerms}
-            org={currentOrganization}
-            refetchNotePerms={refetchNotePerms}
-            userOrgs={userOrgs}
-          />
-          {isOrgMember && (
-            <NoteOptionsMenuButton
-              currentOrg={currentOrganization}
-              customButtonStyles={styles.ellipsisButton}
-              note={currentNote}
-              redirectToNote={redirectToNote}
-              show={true}
-              size={24}
-              title={currentNote.title}
-            />
-          )}
-        </div>
-      </div>
+      <NotebookHeader
+        currentNote={currentNote}
+        currentOrganization={currentOrganization}
+        getEditorContent={getEditorContent}
+        isOrgMember={isOrgMember}
+        notePerms={notePerms}
+        onRefChange={onRefChange}
+        redirectToNote={redirectToNote}
+        refetchNotePerms={refetchNotePerms}
+        userOrgs={userOrgs}
+      />
       {presenceListElement !== null && (
         <CKEditorContext
           config={{
@@ -238,7 +236,7 @@ const ELNEditor = ({
                 if (currentUserAccess === PERMS.NOTE.VIEWER) {
                   editor.isReadOnly = true;
                 }
-
+                setEditorInstance(editor);
                 setELNLoading(false);
               }}
             />
@@ -268,19 +266,6 @@ const styles = StyleSheet.create({
       height: "calc(100vh - 66px)",
     },
   },
-  noteHeader: {
-    display: "flex",
-    userSelect: "none",
-    margin: "auto 30px 0px auto",
-    flexDirection: "column",
-    alignItems: "flex-end",
-    paddingTop: 10,
-  },
-  noteHeaderOpts: {
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
-  },
   loader: {
     position: "absolute",
     top: 0,
@@ -290,23 +275,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-  },
-  ellipsisButton: {
-    alignItems: "center",
-    borderRadius: "50%",
-    bottom: 0,
-    color: colors.BLACK(0.7),
-    cursor: "pointer",
-    display: "flex",
-    height: 30,
-    justifyContent: "center",
-    margin: "auto",
-    right: 7,
-    top: 0,
-    width: 30,
-    ":hover": {
-      backgroundColor: colors.GREY(0.5),
-    },
   },
 });
 

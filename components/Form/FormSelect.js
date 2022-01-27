@@ -188,7 +188,6 @@ class FormSelect extends Component {
           )}
         >
           {label && label}
-          {required && <div className={css(styles.asterick)}>*</div>}
         </div>
         <Select
           components={{ ...configuredComponents }}
@@ -205,6 +204,7 @@ class FormSelect extends Component {
           isClearable={isClearable}
           maxMenuHeight={maxMenuHeight && maxMenuHeight}
         />
+        {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>
     );
   }
@@ -254,9 +254,6 @@ const styles = StyleSheet.create({
       borderColor: "#D2D2E6",
     },
   },
-  asterick: {
-    color: colors.BLUE(1),
-  },
   placeholder: {
     color: "#8e8d9a",
     fontWeight: 400,
@@ -267,6 +264,14 @@ const styles = StyleSheet.create({
   },
   hide: {
     display: "none",
+  },
+  error: {
+    margin: 0,
+    padding: 0,
+    marginTop: 4,
+    marginBottom: 4,
+    color: colors.RED(1),
+    fontSize: 12,
   },
 });
 
