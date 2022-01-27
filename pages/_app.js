@@ -7,7 +7,6 @@ import "isomorphic-unfetch";
 import ReactGA from "react-ga";
 import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";
-import "../components/EditorsDashboard/stylesheets/date.css";
 
 // Components
 import Base from "./Base";
@@ -36,31 +35,31 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { SIFT_BEACON_KEY } from "~/config/constants";
 
-initApm({
-  // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
-  serviceName:
-    process.env.REACT_APP_ENV === "staging"
-      ? "researchhub-staging-web"
-      : process.env.NODE_ENV === "production"
-      ? "researchhub-production-web"
-      : "researchhub-development-web",
-  environment:
-    process.env.REACT_APP_ENV === "staging"
-      ? "staging"
-      : process.env.NODE_ENV === "production"
-      ? "production"
-      : "development",
-  // Set custom APM Server URL (default: http://localhost:8200)
-  serverUrl:
-    "https://d11bb2079f694eb996ddcfe6edb848f7.apm.us-west-2.aws.cloud.es.io:443",
+if (process.env.ELASTIC_APM_URL) {
+  initApm({
+    // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
+    serviceName:
+      process.env.REACT_APP_ENV === "staging"
+        ? "researchhub-staging-web"
+        : process.env.NODE_ENV === "production"
+        ? "researchhub-production-web"
+        : "researchhub-development-web",
+    environment:
+      process.env.REACT_APP_ENV === "staging"
+        ? "staging"
+        : process.env.NODE_ENV === "production"
+        ? "production"
+        : "development",
+    // Set custom APM Server URL (default: http://localhost:8200)
+    serverUrl: process.env.ELASTIC_APM_URL,
 
-  // Set service version (required for sourcemap feature)
-  serviceVersion: process.env.SENTRY_RELEASE,
-});
+    // Set service version (required for sourcemap feature)
+    serviceVersion: process.env.SENTRY_RELEASE,
+  });
+}
 
 const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
-
   const [prevPath, setPrevPath] = useState(router.asPath);
 
   // Scroll to top on page change
@@ -78,9 +77,12 @@ const MyApp = ({ Component, pageProps, store }) => {
 
   useEffect(() => {
     connectSift();
-    ReactGA.initialize("UA-106669204-1", {
-      testMode: process.env.NODE_ENV !== "production",
-    });
+
+    if (process.env.GA_TRACKING_ID) {
+      ReactGA.initialize(process.env.GA_TRACKING_ID, {
+        testMode: process.env.NODE_ENV !== "production",
+      });
+    }
 
     ReactGA.pageview(router.asPath);
     router.events.on("routeChangeStart", (url) => {
