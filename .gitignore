@@ -29,7 +29,7 @@ yarn-error.log*
 # Dockerfile
 # Dockerrun.aws.json.production
 # Dockerrun.aws.json.staging
-Dockerfile.staging.off
+# Dockerfile.staging.off
 # Dockerrun.aws.json
 # .elasticbeanstalk
 # .elasticbeanstalk/*
