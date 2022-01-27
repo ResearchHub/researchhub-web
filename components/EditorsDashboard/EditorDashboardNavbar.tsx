@@ -126,6 +126,7 @@ export default function EditorDashboardNavbar({
           startDateId="start_id" // PropTypes.string.isRequired,
           endDate={currentTimeframe.endDate} // momentPropTypes.momentObj or null,
           endDateId="end_Id" // PropTypes.string.isRequired,
+          orientation={window.outerWidth > 767 ? 'horizontal' : 'vertical'}
           onDatesChange={({ startDate, endDate }) => {
             const filter = {
               ...currentFilters,
@@ -171,11 +172,8 @@ const styles = StyleSheet.create({
     marginBottom: 32,
 
     "@media only screen and (max-width: 767px)": {
-      marginBottom: 0,
-    },
-
-    "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
+      marginBottom: 0,
     },
   },
   dropdown: {
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     fontSize: "30px",
     fontWeight: 500,
 
-    "@media only screen and (max-width: 1023px)": {
+    "@media only screen and (max-width: 767px)": {
       textAlign: 'center',
       display: 'unset',
     }
@@ -233,7 +231,7 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "flex-start",
 
-    "@media only screen and (max-width: 1023px)": {
+    "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       height: "unset",
       width: 284,
