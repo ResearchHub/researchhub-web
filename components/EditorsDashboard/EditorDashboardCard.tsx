@@ -36,13 +36,15 @@ export default function EditorDashboardUserCard({
         <div className={css(styles.container, index === 0 && styles.borderTop)}>
           <div className={css(styles.nameSection)}>
             <AuthorAvatar author={authorProfile} disableLink={true} size={35} />
-            <div className={css(styles.name) + " clamp1"}>
-              {`${first_name ?? ""} ${last_name ?? ""}`}
-            </div>
-            <div className={css(styles.added)}>
-              <span className={css(styles.countResponse)}>
-                added {timeAgo.format(new Date(editorAddedDate ?? null))}
-              </span>
+            <div>
+              <div className={css(styles.name) + " clamp1"}>
+                {`${first_name ?? ""} ${last_name ?? ""}`}
+              </div>
+              <div className={css(styles.added)}>
+                <span className={css(styles.countResponse)}>
+                  added {timeAgo.format(new Date(editorAddedDate ?? null))}
+                </span>
+              </div>
             </div>
           </div>
           <div className={css(styles.contributionSection)}>
@@ -131,8 +133,10 @@ const styles = StyleSheet.create({
   },
   added: {
     marginLeft: 16,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: 500,
+    opacity: .8,
+    marginTop: 4,
   },
   countLabel: {
     fontSize: 16,
