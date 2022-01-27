@@ -21,7 +21,6 @@ import Router from "next/router";
 import DiscussionCount from "~/components/DiscussionCount";
 import DocumentBadge from "~/components/DocumentBadge";
 
-
 export type UserPostCardProps = {
   boost_amount: number;
   created_by: any;
@@ -615,7 +614,7 @@ const styles = StyleSheet.create({
   },
   badgeWrapper: {
     display: "inline-block",
-    verticalAlign: "-3px",    
+    verticalAlign: "-3px",
     marginRight: -8,
   }
 });

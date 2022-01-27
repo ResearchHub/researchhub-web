@@ -152,6 +152,10 @@ const styles = StyleSheet.create({
     marginRight: 'auto',
     color: 'rgb(36, 31, 58)',
     opacity: .5,
+
+    "@media only screen and (min-width: 768px)": {
+      display: 'none',
+    }
   },
   supportLabel: {},
   submissionLabel: {},

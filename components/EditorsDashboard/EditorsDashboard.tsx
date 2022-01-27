@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     // marginBottom: 16,
     marginLeft: 60,
 
-    "@media only screen and (max-width: 1023px)": {
+    "@media only screen and (max-width: 767px)": {
       display: 'none',
     },
   },
