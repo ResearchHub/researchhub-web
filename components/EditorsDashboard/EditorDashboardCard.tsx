@@ -68,7 +68,7 @@ export default function EditorDashboardUserCard({
                   : "never"}
               </span>
             </div>
-            <div className={css(styles.countLabel, styles.submissionLabel)}>
+            <div className={css(styles.countLabel)}>
               <span className={css(styles.mobileLabel)}>
                 Submissions
               </span>
@@ -106,12 +106,13 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     minHeight: 72,
     padding: "0px 16px",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      maxWidth: "unset",
+    [`@media only screen and (max-width: 1023px)`]: {
       overflow: 'auto',
       display: 'inline-flex',
       flexDirection: 'column',
       padding: 16,
+      width: '100%',
+      boxSizing: 'border-box',
     },
   },
   borderTop: {
@@ -124,7 +125,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 40,
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+    [`@media only screen and (max-width: 1023px)`]: {
       flexDirection: 'column',
       height: 'unset',
       alignItems: 'flex-end',
@@ -144,7 +145,12 @@ const styles = StyleSheet.create({
     paddingRight: 50,
     width: 100,
     textAlign: "center",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+    [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
+      width: 50,
+      paddingRight: 50,
+      // fontSize: 14,
+    },
+    [`@media only screen and (max-width: ${breakpoints.desktop.int - 1}px)`]: {
       paddingRight: 0,
       textAlign: 'right',
       width: '100%',
@@ -157,23 +163,42 @@ const styles = StyleSheet.create({
     color: 'rgb(36, 31, 58)',
     opacity: .5,
 
-    "@media only screen and (min-width: 768px)": {
+    [`@media only screen and (min-width: ${breakpoints.desktop.int}px)`]: {
       display: 'none',
     }
   },
   supportLabel: {},
-  submissionLabel: {},
+  submissionLabel: {
+    [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
+      width: 100,
+      paddingright: 0,
+      // fontSize: 14,
+    },
+    [`@media only screen and (max-width: ${breakpoints.desktop.int - 1}px)`]: {
+      width: '100%',
+      paddingRight: 0,
+    },
+  },
   countResponse: { color: colors.TEXT_GREY(1) },
   nameSection: {
     display: "flex",
     alignItems: "center",
     fontSize: 20,
     width: "100%",
+
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      justifyContent: 'center',
+      marginBottom: 4,
+    },
   },
   link: {
     width: "100%",
     color: colors.BLACK(1),
     textDecoration: "none",
+
+    [`@media only screen and (max-width: 1023px)`]: {
+      maxWidth: 500,
+    },
   },
   name: {
     marginLeft: 16,

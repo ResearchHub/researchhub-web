@@ -189,11 +189,10 @@ const styles = StyleSheet.create({
     minHeight: "100vh",
     padding: "0 32px",
     width: "100%",
-    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+    [`@media only screen and (max-width: 767px})`]: {
       maxWidth: "unset",
       paddingTop: 32,
       width: '100vw',
-      overflow: 'auto',
     },
   },
   editorCardContainer: {
@@ -208,7 +207,7 @@ const styles = StyleSheet.create({
     // marginBottom: 16,
     marginLeft: 60,
 
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 1023px)": {
       display: 'none',
     },
   },
@@ -222,12 +221,20 @@ const styles = StyleSheet.create({
   },
   last: {
     "@media only screen and (min-width: 1024px)": {
-      paddingRight: 40,
+      paddingRight: 30,
+      width: 120,
+    },
+    "@media only screen and (min-width: 1200px)": {
+      paddingRight: 35,
       width: 120,
     },
   },
   rep: {
-    "@media only screen and (min-width: 1024px)": {
+    [`@media only screen and (max-width: ${breakpoints.bigDesktop.int - 1}px)`]: {
+      width: 50,
+      paddingRight: 50,
+    },
+    [`@media only screen and (min-width: ${breakpoints.bigDesktop.str})`]: {
       paddingRight: 50,
       width: 100,
     },

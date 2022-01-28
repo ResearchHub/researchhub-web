@@ -8,6 +8,10 @@ export const breakpoints = {
     int: 1550,
     str: "1550px",
   },
+  bigDesktop: {
+    int: 1440,
+    str: "1440px",
+  },
   xlarge: {
     int: 1280,
     str: "1280px",
@@ -15,6 +19,10 @@ export const breakpoints = {
   large: {
     int: 1200,
     str: "1200px",
+  },
+  desktop: {
+    int: 1024,
+    str: "1024px",
   },
   medium: {
     int: 900,
@@ -35,5 +43,9 @@ export const breakpoints = {
   xxxsmall: {
     int: 370,
     str: "370px",
+  },
+  mobile: {
+    int: 767,
+    str: "767px",
   },
 };

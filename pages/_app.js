@@ -12,22 +12,24 @@ import { useEffect, useState } from "react";
 import Base from "./Base";
 
 // Stylesheets
+import "react-tagsinput/react-tagsinput.css";
+import "react-quill/dist/quill.snow.css";
+import "react-placeholder/lib/reactPlaceholder.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import "katex/dist/katex.min.css";
+
 import "./stylesheets/App.css";
 import "../components/Paper/progressbar.css";
-import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
 import "../components/CKEditor/CKEditor.css";
+import "../components/EditorsDashboard/stylesheets/date.css";
 
 import "../components/Modals/Stylesheets/Dnd.css";
-import "react-quill/dist/quill.snow.css";
 import "../components/TextEditor/stylesheets/QuillTextEditor.css";
 import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
-import "react-placeholder/lib/reactPlaceholder.css";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import "katex/dist/katex.min.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
