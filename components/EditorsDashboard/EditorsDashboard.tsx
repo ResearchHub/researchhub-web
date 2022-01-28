@@ -42,8 +42,8 @@ const useEffectFetchEditors = ({
       onSuccess,
       order_by: orderBy?.value,
       page,
-      startDate: timeframe?.startDate?.format(),
-      endDate: timeframe?.endDate?.format(),
+      startDate: timeframe?.startDate?.toISOString(),
+      endDate: timeframe?.endDate?.toISOString(),
     });
   }, [orderBy, page, selectedHub, timeframe]);
 };
@@ -120,8 +120,6 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             id,
           } = editor ?? {};
 
-          console.log(editor);
-
           const added_as_editor_date = author_profile.added_as_editor_date;
           return (
             <EditorDashboardUserCard
@@ -134,8 +132,16 @@ export default function EditorsDashboard(): ReactElement<"div"> {
               lastCommentDate={latest_comment_date}
               lastSubmissionDate={latest_submission_date}
               editorAddedDate={added_as_editor_date}
-              activeHubContributorCount={editorActiveContributors?.current_active_contributors ? editorActiveContributors?.current_active_contributors[id] : null}
-              previousActiveHubContributorCount={editorActiveContributors?.previous_active_contributors ? editorActiveContributors?.previous_active_contributors[id] : null}
+              activeHubContributorCount={
+                editorActiveContributors?.current_active_contributors
+                  ? editorActiveContributors?.current_active_contributors[id]
+                  : null
+              }
+              previousActiveHubContributorCount={
+                editorActiveContributors?.previous_active_contributors
+                  ? editorActiveContributors?.previous_active_contributors[id]
+                  : null
+              }
             />
           );
         }
