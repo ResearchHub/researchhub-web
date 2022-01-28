@@ -96,6 +96,8 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             support_count = 0,
             latest_comment_date = null,
             latest_submission_date = null,
+            active_hub_contributors_count = null,
+            previous_active_hub_contributors_count = null,
             id,
           } = editor ?? {};
 
@@ -111,6 +113,8 @@ export default function EditorsDashboard(): ReactElement<"div"> {
               lastCommentDate={latest_comment_date}
               lastSubmissionDate={latest_submission_date}
               editorAddedDate={added_as_editor_date}
+              activeHubContributorCount={active_hub_contributors_count}
+              previousActiveHubContributorCount={previous_active_hub_contributors_count}
             />
           );
         }
