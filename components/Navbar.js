@@ -200,7 +200,7 @@ const Navbar = (props) => {
       {
         label: "Settings",
         route: {
-          href: "/user/settings",
+          href: "/settings",
         },
         icon: "cog",
       },
@@ -565,7 +565,7 @@ const Navbar = (props) => {
                         Profile
                       </div>
                     </Link>
-                    <Link href={"/user/settings"} as={`/user/settings`}>
+                    <Link href={"/settings"} as={`/settings`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
                           {icons.cog}
