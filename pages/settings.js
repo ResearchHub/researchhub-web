@@ -28,7 +28,7 @@ import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
 import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { capitalize } from "~/config/utils/string";
-import colors from "../../config/themes/colors";
+import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
