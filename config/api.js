@@ -252,6 +252,19 @@ const routes = (BASE_URL) => {
         return `${BASE_URL}note_template/`;
       }
     },
+    GET_ACTIVE_CONTRIBUTORS_FOR_EDITORS: ({ startDate, endDate, userIds }) => {
+      let url = `${BASE_URL}get_hub_active_contributors/`;
+
+      const params = {
+        querystring: {
+          startDate,
+          endDate,
+          userIds,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
+    },
     NOTE_PERMISSIONS: ({ noteId, method = "GET" }) => {
       if (method === "GET") {
         return `${BASE_URL}note/${noteId}/get_note_permissions/`;

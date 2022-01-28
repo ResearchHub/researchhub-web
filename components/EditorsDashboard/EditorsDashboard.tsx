@@ -14,6 +14,7 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import moment from 'moment';
 import ReactPlaceholder from "react-placeholder";
+import { fetchActiveContributorsForEditors } from "~/config/fetch";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -63,6 +64,7 @@ export default function EditorsDashboard(): ReactElement<"div"> {
   }>({ page: 1, isLoadingMore: false });
   const [editors, setEditors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [editorActiveContributors, setEditorActiveContributors] = useState<any[]>([]);
 
   useEffectFetchEditors({
     filters,
@@ -82,6 +84,25 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     setIsLoading,
   });
 
+  useEffect(() => {
+    const fetchEditorContributors = async () => {
+      const userIds = [];
+      for (let i = 0; i < editors.length; i++) {
+        userIds.push(editors[i].id);
+      }
+      const activeContributors = await fetchActiveContributorsForEditors({
+        startDate: filters.timeframe?.startDate?.format(),
+        endDate: filters.timeframe?.endDate?.format(),
+        userIds: userIds.join(',')
+      });
+
+      setEditorActiveContributors(activeContributors);
+    }
+    if (editors.length) {
+      fetchEditorContributors();
+    }
+  }, [editors]);
+
   const editorCards = useMemo(
     (): ReactElement<typeof EditorDashboardUserCard>[] =>
       editors.map(
@@ -96,10 +117,10 @@ export default function EditorsDashboard(): ReactElement<"div"> {
             support_count = 0,
             latest_comment_date = null,
             latest_submission_date = null,
-            active_hub_contributors_count = null,
-            previous_active_hub_contributors_count = null,
             id,
           } = editor ?? {};
+
+          console.log(editor);
 
           const added_as_editor_date = author_profile.added_as_editor_date;
           return (
@@ -113,13 +134,13 @@ export default function EditorsDashboard(): ReactElement<"div"> {
               lastCommentDate={latest_comment_date}
               lastSubmissionDate={latest_submission_date}
               editorAddedDate={added_as_editor_date}
-              activeHubContributorCount={active_hub_contributors_count}
-              previousActiveHubContributorCount={previous_active_hub_contributors_count}
+              activeHubContributorCount={editorActiveContributors?.current_active_contributors ? editorActiveContributors?.current_active_contributors[id] : null}
+              previousActiveHubContributorCount={editorActiveContributors?.previous_active_contributors ? editorActiveContributors?.previous_active_contributors[id] : null}
             />
           );
         }
       ),
-    [editors, filters]
+    [editors, filters, editorActiveContributors]
   );
 
   return (
