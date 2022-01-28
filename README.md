@@ -1,11 +1,9 @@
-
-<p align="center">    
-    <img src="https://avatars.githubusercontent.com/u/58747826?s=200&v=4" height="100">
-    <h1 align="center" style="margin-top:0 !important">The <a aria-label="RH logo" href="https://researchhub.com">ResearchHub</a> Next.js web app</h1>
+<p align="left">    
+    <h1 align="left">The <a aria-label="RH logo" href="https://researchhub.com">ResearchHub</a> Next.js Web App </h1>
 </p>
 
 
-<p align="center">
+<p align="left">
   <a aria-label="Join the community" href="https://researchhub-community.slack.com">
     <img alt="" src="https://badgen.net/badge/Join%20the%20community/Slack/yellow?icon=slack">
   </a>
