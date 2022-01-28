@@ -6,6 +6,7 @@ import numeral from "numeral";
 import { ID } from "~/config/types/root_types";
 import { breakpoints } from "~/config/themes/screen";
 import { timeAgo } from "~/config/utils/dates";
+import icons from "~/config/themes/icons";
 
 type Props = {
   authorProfile: any;
@@ -16,6 +17,8 @@ type Props = {
   lastSubmissionDate: string;
   submissionCount: number;
   supportCount: number;
+  activeHubContributorCount: number;
+  previousActiveHubContributorCount: number;
   userID?: ID;
 };
 
@@ -26,9 +29,48 @@ export default function EditorDashboardUserCard({
   index,
   lastCommentDate,
   lastSubmissionDate,
+  activeHubContributorCount,
+  previousActiveHubContributorCount,
   submissionCount,
   supportCount,
 }: Props) {
+
+  const calcPercentDiff = (current, previous) => {
+    if (current === 0) {
+      if (previous > 0) {
+        return -100;
+      }
+      else if (previous === 0) {
+        return 0;
+      }
+    }
+
+    const val = (current - previous) / Math.max(current, previous);
+    const percent = (val * 100).toFixed(1);
+    return percent;
+  }
+
+  const getHubActiveContributorsHTML = () => {
+    const contributorPctDiff = calcPercentDiff(activeHubContributorCount, previousActiveHubContributorCount);
+
+    return (
+      <span className={css(styles.contributorPercentDiff, contributorPctDiff > 0 ? styles.contributorUpChange : contributorPctDiff < 0 ? styles.contributorDownChange : styles.contributorNoChange)}>
+        <span className={css(styles.arrowIcon)}>
+          {
+            contributorPctDiff > 0
+              ? <span>{icons.caretUp}</span>
+              : contributorPctDiff < 0 
+              ? <span>{icons.caretDown}</span>
+              : null
+          }
+        </span>
+        &nbsp;
+        {Math.abs(contributorPctDiff)}%
+      </span>
+    )
+  }
+
+  const hubActiveContributorsHTML = getHubActiveContributorsHTML();
   const { id: authorID, first_name, last_name } = authorProfile;
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorID}/overview`}>
@@ -45,9 +87,30 @@ export default function EditorDashboardUserCard({
                   added {timeAgo.format(new Date(editorAddedDate ?? null))}
                 </span>
               </div>
+              {activeHubContributorCount !== null &&
+                <div className={css(styles.contributorCountWrapper)}>
+                  <span className={css(styles.contributorCount)}>
+                    Active contributors: {activeHubContributorCount}
+                  </span>              
+                  {hubActiveContributorsHTML}
+                </div>
+              }
             </div>
           </div>
           <div className={css(styles.contributionSection)}>
+            {activeHubContributorCount !== null &&
+              <div className={css(styles.countLabel, styles.contributorCountLabel)}>
+                <span className={css(styles.mobileLabel)}>
+                  Hub Active Contributors
+                </span>
+                <span className={css(styles.countResponse)}>
+                  <span className={css(styles.contributorCount)}>
+                    {activeHubContributorCount}
+                  </span>                          
+                  {hubActiveContributorsHTML}
+                </span>
+              </div>   
+            }       
             <div className={css(styles.countLabel, styles.submissionLabel)}>
             <span className={css(styles.mobileLabel)}>
                 Last Submission
@@ -139,6 +202,30 @@ const styles = StyleSheet.create({
     opacity: .8,
     marginTop: 4,
   },
+  contributorPercentDiff: {
+    marginLeft: 10,
+  },
+  contributorCountWrapper: {
+    marginLeft: 16,
+    fontSize: 14,
+    marginTop: 4,
+    fontWeight: 500,
+    color: colors.TEXT_GREY(0.8),
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      display: "none",
+    }
+  },
+  contributorCount: {
+  },
+  contributorUpChange: {
+    color: `rgb(25 160 40)`,
+  },
+  contributorNoChange: {
+    color: `${colors.ORANGE()}`,    
+  } , 
+  contributorDownChange: {
+    color: `${colors.RED()}`,
+  },
   countLabel: {
     fontSize: 16,
     fontWeight: 500,
@@ -168,6 +255,11 @@ const styles = StyleSheet.create({
     }
   },
   supportLabel: {},
+  contributorCountLabel: {
+    [`@media only screen and (min-width: ${breakpoints.desktop.str})`]: {
+      display: 'none',
+    }    
+  },
   submissionLabel: {
     [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
       width: 100,
