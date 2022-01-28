@@ -114,7 +114,11 @@ class Notification extends Component {
 
     const documentContent = Array.isArray(unified_document?.documents)
       ? unified_document?.documents[0]
-      : unified_document.documents;
+      : unified_document?.documents;
+
+    if (!documentContent) {
+      return null;
+    }
 
     const {
       title = null,
