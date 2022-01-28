@@ -107,7 +107,12 @@ export default function EditorDashboardNavbar({
 
   return (
     <div className={css(styles.editorDashboardNavbar)}>
-      <div className={css(styles.header)}>{"Editor Dashboard"}</div>
+      <div className={css(styles.header)}>
+        {"Editor Dashboard"}
+        {/* <div className={css(styles.apply)}>
+        <a className={css(styles.applyHref)} href="https://researchhub.notion.site/Editor-Program-d0b62f9ba3cb44f3ba97709fe9a9ea03" target="_blank">Apply Here</a>
+      </div> */}
+      </div>
       <div className={css(styles.navButtons)}>
         <FormSelect
           containerStyle={styles.hubDropdown}
@@ -171,7 +176,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 32,
 
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
       marginBottom: 0,
     },
@@ -185,7 +190,8 @@ const styles = StyleSheet.create({
       height: "unset",
     },
     "@media only screen and (max-width: 1149px)": {
-      width: 150,
+      // width: 150,
+      width: '100%',
       fontSize: 13,
     },
     "@media only screen and (max-width: 779px)": {
@@ -222,8 +228,18 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       textAlign: 'center',
       display: 'unset',
+    },
+
+    "@media only screen and (max-width: 1250px)": {
+      flexDirection: 'column',
     }
-    
+  },
+  apply: {
+    marginLeft: 16,
+    fontSize: 18,
+  },
+  applyHref: {
+    color: 'rgb(78, 83, 255)',
   },
   navButtons: {
     alignItems: "center",
@@ -231,7 +247,7 @@ const styles = StyleSheet.create({
     height: 60,
     justifyContent: "flex-start",
 
-    "@media only screen and (max-width: 767px)": {
+    "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",
       height: "unset",
       width: 284,
