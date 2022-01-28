@@ -348,6 +348,15 @@ export const fetchPaperFeed = async (PARAMS, authToken = null) => {
     .then(Helpers.parseJSON);
 };
 
+export const fetchActiveContributorsForEditors = async (params) => {
+  return await fetch(
+    API.GET_ACTIVE_CONTRIBUTORS_FOR_EDITORS(params),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
+
 export const fetchUnifiedDocFeed = async (
   PARAMS,
   authToken = null,
