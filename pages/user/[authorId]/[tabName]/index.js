@@ -50,6 +50,7 @@ import {
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { breakpoints } from "~/config/themes/screen";
+import { captureEvent } from "~/config/utils/events";
 
 const AUTHOR_USER_STATUS = {
   EXISTS: "EXISTS",
@@ -960,7 +961,17 @@ const fetchAuthor = ({ authorId }) => {
 
 export async function getStaticProps(ctx) {
   const { authorId } = ctx.params;
-  const fetchedAuthor = await fetchAuthor({ authorId });
+
+  let fetchedAuthor;
+  try {
+    fetchedAuthor = await fetchAuthor({ authorId });
+  } catch (error) {
+    captureEvent({
+      error,
+      msg: "Failed to fetch author in author profile",
+      data: { authorId, ctx },
+    });
+  }
 
   if (fetchedAuthor.merged_with) {
     return {
