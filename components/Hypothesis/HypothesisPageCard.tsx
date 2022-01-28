@@ -30,7 +30,6 @@ import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import ReactHtmlParser from "react-html-parser";
 import VoteWidget from "~/components/VoteWidget";
 import ActionButton from "../ActionButton";
 import { breakpoints } from "~/config/themes/screen";
@@ -40,6 +39,7 @@ import {
 } from "./api/postHypothesisStatus";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import DiscussionCount from "~/components/DiscussionCount";
+import { useRouter } from "next/router";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -58,6 +58,7 @@ const getActionButtons = ({
   onUpdates: Function;
   setShowHypothesisEditor: (flag: boolean) => void;
 }): ReactNode => {
+  const router = useRouter();
   const {
     id: hypoID,
     is_removed: isHypoRemoved,
@@ -74,7 +75,20 @@ const getActionButtons = ({
   const actionConfigs = [
     {
       active: isCurrUserSubmitter,
-      button: (
+      button: hypothesis.note ? (
+        <div
+          onClick={() => {
+            router.push(
+              "/[orgSlug]/notebook/[noteId]",
+              `/${hypothesis.note.organization.slug}/notebook/${hypothesis.note.id}`
+            );
+          }}
+          className={css(styles.actionIcon)}
+          data-tip={"Edit Hypothesis"}
+        >
+          {icons.pencil}
+        </div>
+      ) : (
         <PermissionNotificationWrapper
           hideRipples
           loginRequired
@@ -274,12 +288,14 @@ function HypothesisPageCard({
     return showHypothesisEditor ? (
       <Fragment>
         <DynamicCKEditor
-          id="text"
+          editing
+          id="editHypothesisBody"
           initialData={displayableMarkdown}
           labelStyle={styles.label}
           onChange={(_id: ID, editorData: any): void =>
             setUpdatedMarkdown(editorData)
           }
+          readOnly={false}
         />
         <div className={css(styles.editButtonRow)}>
           <Button
@@ -311,9 +327,16 @@ function HypothesisPageCard({
       </Fragment>
     ) : (
       <Fragment>
-        {!isNullOrUndefined(displayableMarkdown)
-          ? ReactHtmlParser(displayableMarkdown)
-          : null}
+        {!isNullOrUndefined(displayableMarkdown) ? (
+          <div>
+            <DynamicCKEditor
+              id={"hypothesisBody"}
+              initialData={displayableMarkdown}
+              labelStyle={styles.label}
+              readOnly
+            />
+          </div>
+        ) : null}
         <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>
             <div className={css(styles.actions) + " action-bars"}>
@@ -362,15 +385,17 @@ function HypothesisPageCard({
       <div className={css(styles.column)}>
         <div className={css(styles.cardContainer)}>
           <div className={css(styles.metaContainer)}>
-            <div className={css(styles.titleHeader)}>
-              <div className={css(styles.row)}>
-                <h1 className={css(styles.title)} property={"headline"}>
-                  {title}
-                </h1>
+            {!hypothesis.note && (
+              <div className={css(styles.titleHeader)}>
+                <div className={css(styles.row)}>
+                  <h1 className={css(styles.title)} property={"headline"}>
+                    {title}
+                  </h1>
+                </div>
               </div>
-            </div>
+            )}
             <div className={css(styles.column)}>{formattedMetaData}</div>
-            <div className="ck-content">{hypoContent}</div>
+            <div className={css(styles.hypothesisBody)}>{hypoContent}</div>
           </div>
         </div>
       </div>
@@ -420,6 +445,9 @@ const styles = StyleSheet.create({
       width: "100%",
       flexDirection: "column",
     },
+  },
+  hypothesisBody: {
+    wordBreak: "break-word",
   },
   voting: {
     display: "block",

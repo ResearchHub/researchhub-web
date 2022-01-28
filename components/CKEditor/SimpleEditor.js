@@ -6,6 +6,7 @@ import colors from "../../config/themes/colors";
 
 export default function SimpleEditor({
   containerStyle,
+  editing,
   id,
   initialData,
   label,
@@ -61,29 +62,32 @@ export default function SimpleEditor({
           </div>
         )}
         {editorLoaded && (
-          <CKEditor
-            placeholder={placeholder}
-            onChange={(event, editor) => {
-              onChange(id, editor.getData());
-            }}
-            onReady={(editor) => {
-              if (readOnly) {
-                editor.isReadOnly = true;
-              }
-              editor.editing.view.change((writer) => {
-                writer.setStyle(
-                  "min-height",
-                  "200px",
-                  editor.editing.view.document.getRoot()
-                );
-              });
-              setEditorInstance(editor);
-            }}
-            editor={Editor}
-            config={editorConfiguration}
-            data={initialData}
-            className={css(styles.editor)}
-          />
+          <div className={editing && "editing"}>
+            <CKEditor
+              className={css(styles.editor)}
+              config={editorConfiguration}
+              data={initialData}
+              editor={Editor}
+              id={id}
+              onChange={(event, editor) => {
+                onChange(id, editor.getData());
+              }}
+              onReady={(editor) => {
+                if (readOnly) {
+                  editor.isReadOnly = true;
+                }
+                editor.editing.view.change((writer) => {
+                  writer.setStyle(
+                    "min-height",
+                    "200px",
+                    editor.editing.view.document.getRoot()
+                  );
+                });
+                setEditorInstance(editor);
+              }}
+              placeholder={placeholder}
+            />
+          </div>
         )}
       </div>
     </Fragment>

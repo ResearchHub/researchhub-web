@@ -38,7 +38,41 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
+function getDefaultAuthors(currentNote: any): any {
+  const { authors } = currentNote.post || currentNote.hypothesis || {};
+  return (
+    authors?.map((author) => {
+      return {
+        label: author.first_name + " " + author.last_name,
+        value: author.user,
+      };
+    }) ?? []
+  );
+}
+
+function getDefaultHubs(currentNote: any): any {
+  const { hubs } = currentNote.post || currentNote.hypothesis || {};
+  return (
+    hubs?.map((hub) => {
+      return {
+        label: hub.name,
+        value: hub.id,
+      };
+    }) ?? []
+  );
+}
+
+const getPublishedType = (currentNote: any): string => {
+  if (currentNote.post) {
+    return "DISCUSSION";
+  } else if (currentNote.hypothesis) {
+    return "HYPOTHESIS";
+  }
+  return "UNPUBLISHED";
+};
+
 export type NotePublishModalProps = {
+  currentNote: any;
   currentOrganization: any;
   currentUser: any;
   getEditorContent: any;
@@ -49,6 +83,7 @@ export type NotePublishModalProps = {
 };
 
 function NotePublishModal({
+  currentNote,
   currentOrganization,
   currentUser,
   getEditorContent,
@@ -73,6 +108,7 @@ function NotePublishModal({
   const [orgUsers, setOrgUsers] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState([]);
+  const isPublished = Boolean(currentNote.post || currentNote.hypothesis);
 
   useEffect(() => {
     fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
@@ -129,19 +165,26 @@ function NotePublishModal({
     }
   }, [currentOrganization]);
 
+  useEffect(() => {
+    setFormErrors({
+      authors: !validateFormField("authors", getDefaultAuthors(currentNote)),
+      hubs: !validateFormField("hubs", getDefaultHubs(currentNote)),
+    });
+    setMutableFormFields({
+      authors: getDefaultAuthors(currentNote),
+      hubs: getDefaultHubs(currentNote),
+    });
+    const publishedType = getPublishedType(currentNote);
+    if (publishedType !== "UNPUBLISHED") {
+      setIsPost(publishedType === "DISCUSSION" ? true : false);
+    }
+  }, [currentNote, isOpen]);
+
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setIsOpen(false);
     setShouldDisplayError(false);
     setIsPost(true);
-    setFormErrors({
-      authors: true,
-      hubs: true,
-    });
-    setMutableFormFields({
-      authors: [],
-      hubs: [],
-    });
     setCheckBoxOne(false);
     setCheckBoxTwo(false);
   };
@@ -166,25 +209,61 @@ function NotePublishModal({
 
   const sendPost = (draft: boolean) => {
     const editorContent = getEditorContent();
-    const params = {
-      admins: null,
-      authors: mutableFormFields.authors.map((author) => author.value),
-      created_by: currentUser.id,
-      document_type: isPost ? "DISCUSSION" : "HYPOTHESIS",
-      editors: null,
-      full_src: editorContent.full_src,
-      hubs: mutableFormFields.hubs.map((hub) => hub.id),
-      is_public: !draft,
-      preview_img: null,
-      renderable_text: "",
-      title: editorContent.title,
-      viewers: null,
-    };
+    const publishedType = getPublishedType(currentNote);
 
-    return fetch(
-      isPost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({}),
-      API.POST_CONFIG(params)
-    )
+    let documentType: string;
+    let url: string;
+    let params: any;
+    if (publishedType === "UNPUBLISHED") {
+      documentType = isPost ? "DISCUSSION" : "HYPOTHESIS";
+      url = isPost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({});
+      params = {
+        admins: null,
+        authors: mutableFormFields.authors.map((author) => author.value),
+        created_by: currentUser.id,
+        document_type: documentType,
+        editors: null,
+        full_src: editorContent.full_src,
+        hubs: mutableFormFields.hubs.map((hub) => hub.id),
+        is_public: !draft,
+        note_id: currentNote.id,
+        preview_img: null,
+        renderable_text: "",
+        title: editorContent.title,
+        viewers: null,
+      };
+    } else {
+      if (publishedType === "DISCUSSION") {
+        url = API.RESEARCHHUB_POSTS({});
+        params = {
+          authors: mutableFormFields.authors.map((author) => author.value),
+          document_type: "DISCUSSION",
+          full_src: editorContent.full_src,
+          hubs: mutableFormFields.hubs.map((hub) => hub.id),
+          post_id: currentNote.post.id,
+          preview_img: null,
+          renderable_text: "",
+          title: editorContent.title,
+        };
+      } else {
+        url = API.HYPOTHESIS({
+          hypothesis_id: currentNote.hypothesis.id,
+          upsert: true,
+        });
+        params = {
+          authors: mutableFormFields.authors.map((author) => author.value),
+          document_type: "HYPOTHESIS",
+          full_src: editorContent.full_src,
+          hubs: mutableFormFields.hubs.map((hub) => hub.id),
+          hypothesis_id: currentNote.hypothesis.id,
+          preview_img: null,
+          renderable_text: "",
+          title: editorContent.title,
+        };
+      }
+    }
+
+    return fetch(url, API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
   };
@@ -203,31 +282,36 @@ function NotePublishModal({
       closeModal={closeModal}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
-      title={"Publish to ResearchHub"}
+      title={
+        isPublished ? "Republish to ResearchHub" : "Publish to ResearchHub"
+      }
     >
       <div className={css(styles.rootContainer)}>
         <form>
-          <div className={css(styles.postTypeContainer)}>
-            <div className={css(styles.label)}>Select post type:</div>
-            <CheckBox
-              active={isPost}
-              isSquare={false}
-              label={"Post"}
-              labelStyle={null}
-              onChange={() => setIsPost(true)}
-              onClickLabel
-            />
-            <CheckBox
-              active={!isPost}
-              isSquare={false}
-              label={"Hypothesis"}
-              labelStyle={null}
-              onChange={() => setIsPost(false)}
-              onClickLabel
-            />
-          </div>
+          {!isPublished && (
+            <div className={css(styles.postTypeContainer)}>
+              <div className={css(styles.label)}>Select post type:</div>
+              <CheckBox
+                active={isPost}
+                isSquare={false}
+                label={"Post"}
+                labelStyle={null}
+                onChange={() => setIsPost(true)}
+                onClickLabel
+              />
+              <CheckBox
+                active={!isPost}
+                isSquare={false}
+                label={"Hypothesis"}
+                labelStyle={null}
+                onChange={() => setIsPost(false)}
+                onClickLabel
+              />
+            </div>
+          )}
           <FormSelect
-            containerStyle={[styles.chooseHub]}
+            containerStyle={[styles.chooseHub, isPublished && styles.marginTop]}
+            defaultValue={getDefaultAuthors(currentNote)}
             error={
               shouldDisplayError &&
               formErrors.authors &&
@@ -249,6 +333,7 @@ function NotePublishModal({
           />
           <FormSelect
             containerStyle={[styles.chooseHub]}
+            defaultValue={getDefaultHubs(currentNote)}
             error={
               shouldDisplayError &&
               formErrors.hubs &&
@@ -266,10 +351,6 @@ function NotePublishModal({
             placeholder="Choose hubs to publish in"
             required
           />
-          {/*<div className={css(styles.label)}>Choose cover image</div>
-          <p>
-            Make this post more inviting to readers by including a cover photo
-          </p>*/}
           <Collapsible
             className={css(styles.collapsibleSection)}
             contentInnerClassName={css(styles.collapsibleContent)}
@@ -286,17 +367,21 @@ function NotePublishModal({
           >
             {isPost ? (
               <ul>
-                <li>Ask a scientific question</li>
-                <li>Share a theory or hypothesis</li>
-                <li>Publish a research output</li>
+                <li>Stick to academically appropriate topics</li>
+                <li>
+                  Focus on presenting objective results and remain unbiased in
+                  your commentary
+                </li>
+                <li>
+                  Be respectful of differing opinions, viewpoints, and
+                  experiences
+                </li>
               </ul>
             ) : (
               <ul>
+                <li>Propose an explanation to an observation</li>
                 <li>
-                  Make a hypothesis -- a proposed explanation for an observation
-                </li>
-                <li>
-                  After you create the hypothesis, add relevant papers to
+                  After you publish the hypothesis, add relevant papers that
                   support or reject the hypothesis
                 </li>
               </ul>
@@ -330,7 +415,7 @@ function NotePublishModal({
                 customButtonStyle={styles.buttonStyle}
                 disabled={isSubmitting || !checkBoxOne || !checkBoxTwo}
                 isWhite={false}
-                label={"Publish"}
+                label={isPublished ? "Republish" : "Publish"}
                 onClick={handlePost}
               />
             </div>
@@ -353,67 +438,63 @@ const styles = StyleSheet.create({
   rootContainer: {
     display: "flex",
     justifyContent: "center",
-    marginTop: 40,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       overflowY: "auto",
       padding: "40px 10px",
     },
   },
   chooseHub: {
-    maxWidth: "468px",
-    minHeight: "55px",
-    marginBottom: "21px",
+    marginBottom: 21,
+    maxWidth: 468,
+    minHeight: 55,
+  },
+  marginTop: {
+    marginTop: 40,
   },
   titleInputContainer: {
-    maxWidth: "851px",
-    height: "55px",
-    marginBottom: "35px",
+    height: 55,
+    marginBottom: 35,
+    maxWidth: 851,
   },
   label: {
+    fontSize: 16,
     fontWeight: 500,
-    fontSize: "16px",
-    lineHeight: "21px",
   },
   collapsibleSection: {
     color: "#000000",
-    fontSize: "18px",
+    fontSize: 18,
     fontWeight: 500,
-    lineHeight: "21px",
     margin: "20px 0px",
   },
   collapsibleContent: {
     color: "#241F3A",
-    fontSize: "16px",
+    fontSize: 16,
     fontStyle: "normal",
     fontWeight: "normal",
     lineHeight: "26px",
-    marginLeft: "3px",
+    marginLeft: 3,
     maxWidth: 400,
   },
   chevronDown: {
     marginLeft: "auto",
   },
   trigger: {
-    display: "flex",
     cursor: "pointer",
+    display: "flex",
   },
   buttonsContainer: {
-    width: "auto",
     display: "flex",
     justifyContent: "center",
-    marginTop: "30px",
+    marginTop: 30,
+    width: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      width: "auto",
       justifyContent: "center",
+      width: "auto",
     },
   },
   buttonStyle: {
-    width: "160px",
-    height: "50px",
-    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-      width: "160px",
-      height: "50px",
-    },
+    height: 50,
+    width: 160,
   },
   dropDown: {
     zIndex: 999,
@@ -422,11 +503,12 @@ const styles = StyleSheet.create({
     border: `1px solid ${colors.RED(1)}`,
   },
   errorText: {
-    marginTop: "5px",
+    marginTop: 5,
   },
   postTypeContainer: {
     display: "flex",
     justifyContent: "space-between",
+    marginTop: 40,
   },
   checkboxContainer: {
     margin: "10px 0px",
