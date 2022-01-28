@@ -54,7 +54,16 @@ export default function EditorDashboardUserCard({
     const contributorPctDiff = calcPercentDiff(activeHubContributorCount, previousActiveHubContributorCount);
 
     return (
-      <span className={css(styles.contributorPercentDiff, contributorPctDiff > 0 ? styles.contributorUpChange : contributorPctDiff < 0 ? styles.contributorDownChange : styles.contributorNoChange)}>
+      <span
+        className={css(
+          styles.contributorPercentDiff,
+          contributorPctDiff > 0
+            ? styles.contributorUpChange
+            : contributorPctDiff < 0
+            ? styles.contributorDownChange
+            : styles.contributorNoChange
+        )}
+      >
         <span className={css(styles.arrowIcon)}>
           {
             contributorPctDiff > 0
@@ -90,31 +99,31 @@ export default function EditorDashboardUserCard({
               {activeHubContributorCount !== null &&
                 <div className={css(styles.contributorCountWrapper)}>
                   <span className={css(styles.contributorCount)}>
-                    Active contributors: {activeHubContributorCount}
-                  </span>              
+                    active hub contributors: {activeHubContributorCount}
+                  </span>
                   {hubActiveContributorsHTML}
                 </div>
               }
             </div>
           </div>
           <div className={css(styles.contributionSection)}>
-            {activeHubContributorCount !== null &&
-              <div className={css(styles.countLabel, styles.contributorCountLabel)}>
+            {activeHubContributorCount !== null && (
+              <div
+                className={css(styles.countLabel, styles.contributorCountLabel)}
+              >
                 <span className={css(styles.mobileLabel)}>
                   Hub Active Contributors
                 </span>
                 <span className={css(styles.countResponse)}>
                   <span className={css(styles.contributorCount)}>
                     {activeHubContributorCount}
-                  </span>                          
+                  </span>
                   {hubActiveContributorsHTML}
                 </span>
-              </div>   
-            }       
+              </div>
+            )}
             <div className={css(styles.countLabel, styles.submissionLabel)}>
-            <span className={css(styles.mobileLabel)}>
-                Last Submission
-              </span>
+              <span className={css(styles.mobileLabel)}>Last Submission</span>
               <span className={css(styles.countResponse)}>
                 {lastSubmissionDate
                   ? timeAgo.format(new Date(lastSubmissionDate))
@@ -122,9 +131,7 @@ export default function EditorDashboardUserCard({
               </span>
             </div>
             <div className={css(styles.countLabel, styles.submissionLabel)}>
-            <span className={css(styles.mobileLabel)}>
-                Last Comment
-              </span>
+              <span className={css(styles.mobileLabel)}>Last Comment</span>
               <span className={css(styles.countResponse)}>
                 {lastCommentDate
                   ? timeAgo.format(new Date(lastCommentDate))
@@ -132,23 +139,17 @@ export default function EditorDashboardUserCard({
               </span>
             </div>
             <div className={css(styles.countLabel)}>
-              <span className={css(styles.mobileLabel)}>
-                Submissions
-              </span>
+              <span className={css(styles.mobileLabel)}>Submissions</span>
               <span className={css(styles.countResponse)}>
                 {submissionCount}
               </span>
             </div>
             <div className={css(styles.countLabel, styles.supportLabel)}>
-            <span className={css(styles.mobileLabel)}>
-                Supports
-              </span>
+              <span className={css(styles.mobileLabel)}>Supports</span>
               <span className={css(styles.countResponse)}>{supportCount}</span>
             </div>
             <div className={css(styles.countLabel)}>
-            <span className={css(styles.mobileLabel)}>
-                Comments
-              </span>
+              <span className={css(styles.mobileLabel)}>Comments</span>
               <span className={css(styles.countResponse)}>{commentCount}</span>
             </div>
           </div>
@@ -168,7 +169,7 @@ const styles = StyleSheet.create({
     borderTop: 0,
     justifyContent: "space-between",
     minHeight: 72,
-    padding: "0px 16px",
+    padding: "8px 16px",
     [`@media only screen and (max-width: 1023px)`]: {
       overflow: 'auto',
       display: 'inline-flex',
