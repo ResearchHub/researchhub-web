@@ -2,42 +2,21 @@ import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import Link from "next/link";
 import Modal from "react-modal";
-import { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
+import { MessageActions } from "~/redux/message";
+import { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
-import killswitch from "../../config/killswitch/killswitch";
+import { connect } from "react-redux";
 import { filterNull } from "~/config/utils/nullchecks";
 
-const items = [
-  {
-    header: "Upload a Paper",
-    description:
-      "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
-    imgSrc: "/static/icons/uploadPaper.png",
-    route: "/paper/upload/info",
-  },
-  {
-    header: "Create a Post",
-    description:
-      "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
-    imgSrc: "/static/icons/askQuestion.png",
-    route: "/post/create",
-  },
-  {
-    header: "Create a Hypothesis",
-    description:
-      "Propose an explanation to an observation and back it up by citing relevant academic papers.",
-    imgSrc: "/static/icons/publishProject.png",
-    route: "/hypothesis/create",
-  },
-];
-
 export type NewPostModalProps = {
+  currentUser: any;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
 };
 
-export default function NewPostModal({
+function NewPostModal({
+  currentUser,
   isOpen,
   setIsOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
@@ -52,6 +31,23 @@ export default function NewPostModal({
     e && e.preventDefault();
     closeModal(e);
   };
+
+  const items = [
+    {
+      header: "Upload a Paper",
+      description:
+        "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
+      imgSrc: "/static/icons/uploadPaper.png",
+      route: "/paper/upload/info",
+    },
+    {
+      header: "Publish a Post or Hypothesis",
+      description:
+        "All posts and hypotheses must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
+      imgSrc: "/static/icons/askQuestion.png",
+      route: `/${currentUser.organization_slug}/notebook`,
+    },
+  ];
 
   const optionCards = filterNull(items).map((option, index) => {
     return (
@@ -200,3 +196,13 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+const mapStateToProps = (state) => ({
+  currentUser: state.auth.user,
+});
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewPostModal);

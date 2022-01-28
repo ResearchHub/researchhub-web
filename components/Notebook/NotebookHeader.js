@@ -26,6 +26,7 @@ const NotebookHeader = ({
   return (
     <div className={css(styles.noteHeader)}>
       <NotePublishModal
+        currentNote={currentNote}
         currentOrganization={currentOrganization}
         getEditorContent={getEditorContent}
         isOpen={isPublishModalOpen}
@@ -43,7 +44,9 @@ const NotebookHeader = ({
         <Button
           customButtonStyle={styles.publishButton}
           hideRipples={true}
-          label={"Publish"}
+          label={
+            currentNote.post || currentNote.hypothesis ? "Republish" : "Publish"
+          }
           onClick={() => setIsPublishModalOpen(true)}
         />
         {isOrgMember && (

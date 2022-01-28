@@ -34,8 +34,6 @@ import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import HubSelector from "~/components/HubSelector";
 import api from "~/config/api";
 
@@ -445,12 +443,6 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  const shouldShowELNButton = gateKeepCurrentUser({
-    application: "ELN" /* application */,
-    auth,
-    shouldRedirect: false /* should redirect */,
-  });
-
   return (
     <Fragment>
       <Menu
@@ -533,22 +525,6 @@ const Navbar = (props) => {
                       wsAuth={true}
                     />
                   </div>
-                  {shouldShowELNButton ? (
-                    <div
-                      className={css(styles.notification)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Link href={`/${user.organization_slug}/notebook`}>
-                        <a>
-                          <img
-                            src={"/static/icons/notebook.svg"}
-                            height={24}
-                            width={24}
-                          />
-                        </a>
-                      </Link>
-                    </div>
-                  ) : null}
                 </div>
                 {openMenu && (
                   <div

@@ -181,7 +181,7 @@ class PostPageCard extends Component {
   firstImageFromHtml = (text) => {
     const elements = ReactHtmlParser(text);
     for (const element of elements) {
-      if (element.type === "figure") {
+      if (element?.type === "figure") {
         return element.props.children[0].props.src;
       }
     }
@@ -326,7 +326,20 @@ class PostPageCard extends Component {
     const actionButtons = [
       {
         active: post.created_by && user.id === post.created_by.id,
-        button: (
+        button: post.note ? (
+          <div
+            onClick={() => {
+              Router.push(
+                "/[orgSlug]/notebook/[noteId]",
+                `/${post.note.organization.slug}/notebook/${post.note.id}`
+              );
+            }}
+            className={css(styles.actionIcon)}
+            data-tip={"Edit Post"}
+          >
+            {icons.pencil}
+          </div>
+        ) : (
           <PermissionNotificationWrapper
             modalMessage="edit post"
             onClick={this.toggleShowPostEditor}
@@ -738,6 +751,18 @@ class PostPageCard extends Component {
                   )}
                 >
                   <div className={css(styles.metaContainer)}>
+                    {!post.note && (
+                      <div className={css(styles.titleHeader)}>
+                        <div className={css(styles.row)}>
+                          <h1
+                            className={css(styles.title)}
+                            property={"headline"}
+                          >
+                            {post.title}
+                          </h1>
+                        </div>
+                      </div>
+                    )}
                     <div className={css(styles.column)}>
                       {this.renderMetadata()}
                     </div>
@@ -766,20 +791,53 @@ class PostPageCard extends Component {
               </div>
             </div>
           </div>
-          <div className={css(styles.postBody) + " ck-content"}>
-            <DynamicCKEditor
-              containerStyle={styles.editor}
-              id={"postBody"}
-              initialData={postBody}
-              labelStyle={styles.label}
-              readOnly
-            />
-            <div className={css(styles.bottomContainer)}>
-              <div className={css(styles.bottomRow)}>
-                {this.renderActions()}
-              </div>
-              <div className={css(styles.downloadPDF)}></div>
-            </div>
+          <div className={css(styles.postBody)}>
+            {this.state.showPostEditor ? (
+              <>
+                <DynamicCKEditor
+                  containerStyle={styles.editor}
+                  editing
+                  id="editPostBody"
+                  initialData={postBody}
+                  labelStyle={styles.label}
+                  onChange={(id, editorData) =>
+                    this.setState({ postBody: editorData })
+                  }
+                  readOnly={false}
+                />
+                <div className={css(styles.editButtonRow)}>
+                  <Button
+                    isWhite={true}
+                    label={"Cancel"}
+                    onClick={this.toggleShowPostEditor}
+                    size={"small"}
+                  />
+                  <Button
+                    label={"Save"}
+                    onClick={this.sendPost}
+                    size={"small"}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <DynamicCKEditor
+                    containerStyle={styles.editor}
+                    id={"postBody"}
+                    initialData={postBody}
+                    labelStyle={styles.label}
+                    readOnly
+                  />
+                </div>
+                <div className={css(styles.bottomContainer)}>
+                  <div className={css(styles.bottomRow)}>
+                    {this.renderActions()}
+                  </div>
+                  <div className={css(styles.downloadPDF)}></div>
+                </div>
+              </>
+            )}
           </div>
         </div>
 
