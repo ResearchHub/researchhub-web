@@ -546,15 +546,15 @@ class LiveFeedNotification extends Component {
         metaData.paperId = item.source.id;
       }
     } else {
-      let unifiedDocument = notification.item.unified_document;
+      let unifiedDocument = notification?.item.unified_document;
       let document_type =
         unifiedDocument?.document_type ?? notification?.content_type;
       if (document_type === "DISCUSSION") {
-        metaData.postId = unifiedDocument.documents[0].id;
+        metaData.postId = unifiedDocument?.documents[0]?.id;
       } else if (document_type === "hypothesis") {
-        metaData.hypoId = unifiedDocument.id;
+        metaData.hypoId = unifiedDocument?.id;
       } else {
-        metaData.paperId = unifiedDocument.documents.id;
+        metaData.paperId = unifiedDocument?.documents?.id;
       }
     }
 
