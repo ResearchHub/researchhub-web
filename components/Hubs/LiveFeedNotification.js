@@ -558,7 +558,7 @@ class LiveFeedNotification extends Component {
       }
     }
 
-    metaData.authorId = notification.created_by.author_profile.id;
+    metaData.authorId = notification?.created_by?.author_profile?.id;
 
     return metaData;
   };
