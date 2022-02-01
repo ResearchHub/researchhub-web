@@ -5,6 +5,7 @@ import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import get from "lodash/get";
 import ReactTooltip from "react-tooltip";
+import SafeURL from "safe-url";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -590,9 +591,10 @@ function AuthorPage(props) {
     </div>
   );
 
+  const safeGuardURL = (url) => (!isNullOrUndefined(url) ? SafeURL(url) : null);
   const socialMediaLinkButtons = [
     {
-      link: author.linkedin,
+      link: safeGuardURL(author.linkedin),
       icon: icons.linkedIn,
       nodeRef: linkedinRef,
       dataTip: "Set LinkedIn Profile",
@@ -602,7 +604,7 @@ function AuthorPage(props) {
       isEditing: editLinkedin,
     },
     {
-      link: author.twitter,
+      link: safeGuardURL(author.twitter),
       icon: icons.twitter,
       nodeRef: twitterRef,
       dataTip: "Set Twitter Profile",
@@ -612,7 +614,7 @@ function AuthorPage(props) {
       isEditing: editTwitter,
     },
     {
-      link: author.facebook,
+      link: safeGuardURL(author.facebook),
       icon: icons.facebook,
       nodeRef: facebookRef,
       dataTip: "Set Facebook Profile",
