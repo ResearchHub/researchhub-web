@@ -9,8 +9,10 @@ export default function SimpleEditor({
   editing,
   id,
   initialData,
+  isBalloonEditor,
   label,
   labelStyle,
+  noTitle,
   onChange,
   placeholder,
   readOnly,
@@ -19,9 +21,11 @@ export default function SimpleEditor({
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
-  const { CKEditor, Editor } = editorRef.current || {};
+  const { CKEditor, SimpleEditor, SimpleBalloonEditor } =
+    editorRef.current || {};
 
   const editorConfiguration = {
+    ...(noTitle && { removePlugins: ["Title"] }),
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
@@ -40,7 +44,9 @@ export default function SimpleEditor({
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
+      SimpleEditor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
+      SimpleBalloonEditor: require("@thomasvu/ckeditor5-custom-build")
+        .SimpleBalloonEditor,
     };
     setEditorLoaded(true);
   }, []);
@@ -67,7 +73,7 @@ export default function SimpleEditor({
               className={css(styles.editor)}
               config={editorConfiguration}
               data={initialData}
-              editor={Editor}
+              editor={isBalloonEditor ? SimpleBalloonEditor : SimpleEditor}
               id={id}
               onChange={(event, editor) => {
                 onChange(id, editor.getData());
@@ -75,14 +81,15 @@ export default function SimpleEditor({
               onReady={(editor) => {
                 if (readOnly) {
                   editor.isReadOnly = true;
+                } else {
+                  editor.editing.view.change((writer) => {
+                    writer.setStyle(
+                      "min-height",
+                      "200px",
+                      editor.editing.view.document.getRoot()
+                    );
+                  });
                 }
-                editor.editing.view.change((writer) => {
-                  writer.setStyle(
-                    "min-height",
-                    "200px",
-                    editor.editing.view.document.getRoot()
-                  );
-                });
                 setEditorInstance(editor);
               }}
               placeholder={placeholder}

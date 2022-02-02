@@ -41,11 +41,18 @@ function NewPostModal({
       route: "/paper/upload/info",
     },
     {
-      header: "Publish a Post or Hypothesis",
+      header: "Publish a Post",
       description:
-        "All posts and hypotheses must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
-      imgSrc: "/static/icons/askQuestion.png",
+        "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
+      imgSrc: "/static/icons/publishProject.png",
       route: `/${currentUser.organization_slug}/notebook`,
+    },
+    {
+      header: "Propose a Hypothesis",
+      description:
+        "Propose an explanation to an observation and back it up by citing relevant academic papers.",
+      imgSrc: "/static/icons/askQuestion.png",
+      route: "/hypothesis/create",
     },
   ];
 

@@ -270,10 +270,7 @@ const styles = StyleSheet.create({
     width: "100",
   },
   title: {
-    // margin: "15px 0 10px",
-    // "@media only screen and (max-width: 415px)": {
-    //   margin: "15px 0 5px",
-    // },
+    margin: "15px 0px 2px",
   },
   paperAuthorListContainer: {
     margin: "15px 0 10px",
