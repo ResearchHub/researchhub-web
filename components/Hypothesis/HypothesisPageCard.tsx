@@ -291,7 +291,9 @@ function HypothesisPageCard({
           editing
           id="editHypothesisBody"
           initialData={displayableMarkdown}
+          isBalloonEditor
           labelStyle={styles.label}
+          noTitle
           onChange={(_id: ID, editorData: any): void =>
             setUpdatedMarkdown(editorData)
           }
@@ -332,7 +334,9 @@ function HypothesisPageCard({
             <DynamicCKEditor
               id={"hypothesisBody"}
               initialData={displayableMarkdown}
+              isBalloonEditor
               labelStyle={styles.label}
+              noTitle
               readOnly
             />
           </div>
@@ -394,7 +398,6 @@ function HypothesisPageCard({
                 </div>
               </div>
             )}
-            <div className={css(styles.column)}>{formattedMetaData}</div>
             <div className={css(styles.hypothesisBody)}>{hypoContent}</div>
           </div>
         </div>

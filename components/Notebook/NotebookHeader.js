@@ -1,9 +1,11 @@
 import Button from "~/components/Form/Button";
+import Link from "next/link";
 import NoteOptionsMenuButton from "~/components/Notebook/NoteOptionsMenuButton";
 import NoteShareButton from "~/components/Notebook/NoteShareButton";
 import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import { css, StyleSheet } from "aphrodite";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useState } from "react";
 
 const NotePublishModal = dynamic(() =>
@@ -41,12 +43,15 @@ const NotebookHeader = ({
           refetchNotePerms={refetchNotePerms}
           userOrgs={userOrgs}
         />
+        {!isNullOrUndefined(currentNote.post) && (
+          <Link href={`/post/${currentNote.post.id}/${currentNote.post.slug}`}>
+            <a className={css(styles.publishedLink)}>View post</a>
+          </Link>
+        )}
         <Button
           customButtonStyle={styles.publishButton}
           hideRipples={true}
-          label={
-            currentNote.post || currentNote.hypothesis ? "Republish" : "Publish"
-          }
+          label={currentNote.post ? "Republish" : "Publish"}
           onClick={() => setIsPublishModalOpen(true)}
         />
         {isOrgMember && (
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
     height: 40,
     marginRight: 20,
     padding: 20,
-    width: "100%",
+    width: 100,
   },
   ellipsisButton: {
     alignItems: "center",
@@ -100,6 +105,15 @@ const styles = StyleSheet.create({
     width: 30,
     ":hover": {
       backgroundColor: colors.GREY(0.5),
+    },
+  },
+  publishedLink: {
+    color: "unset",
+    cursor: "pointer",
+    marginRight: 20,
+    textDecoration: "none",
+    ":hover": {
+      color: colors.BLUE(),
     },
   },
 });

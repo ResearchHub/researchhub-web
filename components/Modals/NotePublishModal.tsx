@@ -39,7 +39,7 @@ function validateFormField(fieldID: string, value: any): boolean {
 }
 
 function getDefaultAuthors(currentNote: any): any {
-  const { authors } = currentNote.post || currentNote.hypothesis || {};
+  const { authors } = currentNote.post || {};
   return (
     authors?.map((author) => {
       return {
@@ -51,7 +51,7 @@ function getDefaultAuthors(currentNote: any): any {
 }
 
 function getDefaultHubs(currentNote: any): any {
-  const { hubs } = currentNote.post || currentNote.hypothesis || {};
+  const { hubs } = currentNote.post || {};
   return (
     hubs?.map((hub) => {
       return {
@@ -65,8 +65,6 @@ function getDefaultHubs(currentNote: any): any {
 const getPublishedType = (currentNote: any): string => {
   if (currentNote.post) {
     return "DISCUSSION";
-  } else if (currentNote.hypothesis) {
-    return "HYPOTHESIS";
   }
   return "UNPUBLISHED";
 };
@@ -103,7 +101,6 @@ function NotePublishModal({
   });
   const [checkBoxOne, setCheckBoxOne] = useState(false);
   const [checkBoxTwo, setCheckBoxTwo] = useState(false);
-  const [isPost, setIsPost] = useState<boolean>(true);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [orgUsers, setOrgUsers] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
@@ -145,7 +142,7 @@ function NotePublishModal({
                 user.author_profile.first_name +
                 " " +
                 user.author_profile.last_name,
-              value: user.id,
+              value: user.author_profile.id,
             };
           });
         setOrgUsers(orgUsers);
@@ -174,17 +171,12 @@ function NotePublishModal({
       authors: getDefaultAuthors(currentNote),
       hubs: getDefaultHubs(currentNote),
     });
-    const publishedType = getPublishedType(currentNote);
-    if (publishedType !== "UNPUBLISHED") {
-      setIsPost(publishedType === "DISCUSSION" ? true : false);
-    }
   }, [currentNote, isOpen]);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setIsOpen(false);
     setShouldDisplayError(false);
-    setIsPost(true);
     setCheckBoxOne(false);
     setCheckBoxTwo(false);
   };
@@ -197,73 +189,47 @@ function NotePublishModal({
       setShouldDisplayError(false);
       setIsSubmitting(true);
 
-      sendPost(false)
+      sendPost()
         .then((response) => {
           /* @ts-ignore */
           const { id, slug } = response;
-          router.push(`/${isPost ? "post" : "hypothesis"}/${id}/${slug}`);
+          router.push(`/post/${id}/${slug}`);
         })
         .catch((err) => setIsSubmitting(false));
     }
   };
 
-  const sendPost = (draft: boolean) => {
+  const sendPost = () => {
     const editorContent = getEditorContent();
     const publishedType = getPublishedType(currentNote);
 
-    let documentType: string;
-    let url: string;
-    let params: any;
+    let params;
     if (publishedType === "UNPUBLISHED") {
-      documentType = isPost ? "DISCUSSION" : "HYPOTHESIS";
-      url = isPost ? API.RESEARCHHUB_POSTS({}) : API.HYPOTHESIS({});
       params = {
-        admins: null,
         authors: mutableFormFields.authors.map((author) => author.value),
         created_by: currentUser.id,
-        document_type: documentType,
-        editors: null,
+        document_type: "DISCUSSION",
         full_src: editorContent.full_src,
         hubs: mutableFormFields.hubs.map((hub) => hub.value),
-        is_public: !draft,
         note_id: currentNote.id,
         preview_img: null,
         renderable_text: "",
         title: editorContent.title,
-        viewers: null,
       };
     } else {
-      if (publishedType === "DISCUSSION") {
-        url = API.RESEARCHHUB_POSTS({});
-        params = {
-          authors: mutableFormFields.authors.map((author) => author.value),
-          document_type: "DISCUSSION",
-          full_src: editorContent.full_src,
-          hubs: mutableFormFields.hubs.map((hub) => hub.value),
-          post_id: currentNote.post.id,
-          preview_img: null,
-          renderable_text: "",
-          title: editorContent.title,
-        };
-      } else {
-        url = API.HYPOTHESIS({
-          hypothesis_id: currentNote.hypothesis.id,
-          upsert: true,
-        });
-        params = {
-          authors: mutableFormFields.authors.map((author) => author.value),
-          document_type: "HYPOTHESIS",
-          full_src: editorContent.full_src,
-          hubs: mutableFormFields.hubs.map((hub) => hub.value),
-          hypothesis_id: currentNote.hypothesis.id,
-          preview_img: null,
-          renderable_text: "",
-          title: editorContent.title,
-        };
-      }
+      params = {
+        authors: mutableFormFields.authors.map((author) => author.value),
+        document_type: "DISCUSSION",
+        full_src: editorContent.full_src,
+        hubs: mutableFormFields.hubs.map((hub) => hub.value),
+        post_id: currentNote.post.id,
+        preview_img: null,
+        renderable_text: "",
+        title: editorContent.title,
+      };
     }
 
-    return fetch(url, API.POST_CONFIG(params))
+    return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON);
   };
@@ -288,27 +254,6 @@ function NotePublishModal({
     >
       <div className={css(styles.rootContainer)}>
         <form>
-          {!isPublished && (
-            <div className={css(styles.postTypeContainer)}>
-              <div className={css(styles.label)}>Select post type:</div>
-              <CheckBox
-                active={isPost}
-                isSquare={false}
-                label={"Post"}
-                labelStyle={null}
-                onChange={() => setIsPost(true)}
-                onClickLabel
-              />
-              <CheckBox
-                active={!isPost}
-                isSquare={false}
-                label={"Hypothesis"}
-                labelStyle={null}
-                onChange={() => setIsPost(false)}
-                onClickLabel
-              />
-            </div>
-          )}
           <FormSelect
             containerStyle={[styles.chooseHub, isPublished && styles.marginTop]}
             defaultValue={getDefaultAuthors(currentNote)}
@@ -358,34 +303,23 @@ function NotePublishModal({
             openedClassName={css(styles.collapsibleSection)}
             trigger={
               <div className={css(styles.trigger, styles.label)}>
-                Guidelines for {isPost ? "posts" : "hypotheses"}
+                Guidelines for posts
                 <span className={css(styles.chevronDown)}>
                   {icons.chevronDownLeft}
                 </span>
               </div>
             }
           >
-            {isPost ? (
-              <ul>
-                <li>Stick to academically appropriate topics</li>
-                <li>
-                  Focus on presenting objective results and remain unbiased in
-                  your commentary
-                </li>
-                <li>
-                  Be respectful of differing opinions, viewpoints, and
-                  experiences
-                </li>
-              </ul>
-            ) : (
-              <ul>
-                <li>Propose an explanation to an observation</li>
-                <li>
-                  After you publish the hypothesis, add relevant papers that
-                  support or reject the hypothesis
-                </li>
-              </ul>
-            )}
+            <ul>
+              <li>Stick to academically appropriate topics</li>
+              <li>
+                Focus on presenting objective results and remain unbiased in
+                your commentary
+              </li>
+              <li>
+                Be respectful of differing opinions, viewpoints, and experiences
+              </li>
+            </ul>
           </Collapsible>
           <div className={css(styles.checkboxContainer)}>
             <CheckBox
@@ -504,11 +438,6 @@ const styles = StyleSheet.create({
   },
   errorText: {
     marginTop: 5,
-  },
-  postTypeContainer: {
-    display: "flex",
-    justifyContent: "space-between",
-    marginTop: 40,
   },
   checkboxContainer: {
     margin: "10px 0px",

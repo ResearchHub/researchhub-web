@@ -1,38 +1,31 @@
-import { useEffect, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { useRouter } from "next/router";
-import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
-
-import { connect, useDispatch, useStore } from "react-redux";
-import Error from "next/error";
-import Script from "next/script";
-
-// Components
+import API from "~/config/api";
 import AuthorStatsDropdown from "~/components/Paper/Tabs/AuthorStatsDropdown";
 import DiscussionTab from "~/components/Paper/Tabs/DiscussionTab";
+import Error from "next/error";
 import Head from "~/components/Head";
-import PostPageCard from "~/components/PostPageCard";
-import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
 import PaperBanner from "~/components/Paper/PaperBanner.js";
-
-// Dynamic modules
+import PaperSideColumn from "~/components/Paper/SideColumn/PaperSideColumn";
+import PostPageCard from "~/components/PostPageCard";
+import Script from "next/script";
+import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
+import { AuthActions } from "~/redux/auth";
+import { BulletActions } from "~/redux/bullets";
+import { Helpers } from "@quantfive/js-web-config";
+import { LimitationsActions } from "~/redux/limitations";
+import { MessageActions } from "~/redux/message";
+import { PaperActions } from "~/redux/paper";
+import { StyleSheet, css } from "aphrodite";
+import { absoluteUrl } from "~/config/utils/routing";
+import { connect, useStore } from "react-redux";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isUserEditorOfHubs } from "~/components/UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+
 const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
 );
-
-// Redux
-import { PaperActions } from "~/redux/paper";
-import { MessageActions } from "~/redux/message";
-import { AuthActions } from "~/redux/auth";
-import { LimitationsActions } from "~/redux/limitations";
-import { BulletActions } from "~/redux/bullets";
-
-// Config
-import { absoluteUrl } from "~/config/utils/routing";
-import colors from "~/config/themes/colors";
-import API from "~/config/api";
-import { Helpers } from "@quantfive/js-web-config";
 
 function useEffectFetchPost({ post, setPost, query }) {
   useEffect(() => {
@@ -61,17 +54,12 @@ const Post = (props) => {
     });
   }
 
-  const dispatch = useDispatch();
   const store = useStore();
 
   const [post, setPost] = useState(props.post || {});
   useEffectFetchPost({ post: props.post, setPost, query: props.query });
 
-  // const [score, setScore] = useState(getNestedValue(props.paper, ["score"], 0));
   const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
-  // const [selectedVoteType, setSelectedVoteType] = useState(
-  //   getVoteType(props.paper && props.paper.userVote)
-  // );
 
   const [discussionCount, setCount] = useState(
     calculateCommentCount(props.post)
@@ -84,22 +72,6 @@ const Post = (props) => {
   useEffect(() => {
     setPost(props.post);
   }, [props.post, props.query]);
-
-  //useEffect(() => {
-  //  setCount(calculateCommentCount(post));
-  //}, [post.discussionSource]);
-
-  // async function upvote() {
-  //   dispatch(VoteActions.postUpvotePending());
-  //   await dispatch(VoteActions.postUpvote(paperId));
-  //   updateWidgetUI();
-  // }
-
-  // async function downvote() {
-  //   dispatch(VoteActions.postDownvotePending());
-  //   await dispatch(VoteActions.postDownvote(paperId));
-  //   updateWidgetUI();
-  // }
 
   const restorePost = () => {
     setPost({ ...post, is_removed: false });
@@ -119,56 +91,10 @@ const Post = (props) => {
 
   function formatDescription() {
     const { title } = post;
-
-    if (!post) return "";
-
-    if (post.title) {
-      return post.title;
+    if (title) {
+      return title;
     }
-
     return "";
-  }
-
-  function formatStructuredData() {
-    let data = {
-      "@context": "https://schema.org/",
-      name: paper.title,
-      keywords: paper.title + "researchhub" + "research hub",
-      description: formatDescription(),
-    };
-
-    let image = [];
-
-    if (paper.first_preview) {
-      image.push(paper.first_preview);
-    }
-    if (paper.first_figure) {
-      image.push(paper.first_figure);
-    }
-    if (image.length) {
-      data["image"] = image;
-    }
-    if (paper.authors && paper.authors.length > 0) {
-      let author = paper.authors[0];
-      let authorData = {
-        "@type": "Person",
-        name: `${author.first_name} ${author.last_name}`,
-      };
-
-      data.author = authorData;
-    }
-
-    if (
-      paper.paper_publish_date &&
-      typeof paper.paper_publish_date === "string"
-    ) {
-      let date = paper.paper_publish_date.split("-");
-      date.pop();
-      date = date.join("-");
-      data["datePublished"] = date;
-    }
-
-    return data;
   }
 
   let socialImageUrl = post && post.metatagImage;
@@ -181,6 +107,15 @@ const Post = (props) => {
     setPost(newState);
   }
 
+  function getCreatedByAuthor() {
+    const { created_by } = post;
+    let authors = [];
+    if (post.created_by) {
+      authors = [created_by.author_profile];
+    }
+    return authors;
+  }
+
   const slug =
     post && post.title && post.title.toLowerCase().replace(/\s/g, "-");
   const currUserID = props.user?.id ?? null;
@@ -189,77 +124,74 @@ const Post = (props) => {
     hubs: post?.hubs ?? [],
   });
 
-  if (post) {
-    return (
-      <div>
-        <Head
-          title={post.title}
-          description={formatDescription()}
-          socialImageUrl={socialImageUrl}
-          noindex={post.is_removed || post.is_removed_by_user}
-          canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
-        />
-        <div className={css(styles.root)}>
-          <PaperBanner document={post} documentType="post" />
-          <PaperTransactionModal
-            post={post}
-            updatePostState={updatePostState}
-          />
-          <div className={css(styles.container)}>
-            <div className={css(styles.main)}>
-              <div className={css(styles.paperPageContainer, styles.top)}>
-                <PostPageCard
-                  isEditorOfHubs={isEditorOfHubs}
-                  isModerator={isModerator}
-                  isSubmitter={isSubmitter}
-                  post={post}
-                  removePost={removePost}
-                  restorePost={restorePost}
-                  shareUrl={process.browser && window.location.href}
-                />
-              </div>
-              <div className={css(styles.paperMetaContainerMobile)}>
-                <AuthorStatsDropdown
-                  authors={post.authors || []}
-                  paper={post}
-                  hubs={post.hubs}
-                  paperId={post.id}
-                />
-              </div>
-              <div className={css(styles.space)}>
-                <a name="comments" id="comments" />
-                <DiscussionTab
-                  hostname={props.hostname}
-                  documentType={"post"}
-                  post={post}
-                  postId={post.id}
-                  calculatedCount={discussionCount}
-                  setCount={setCount}
-                  isCollapsible={false}
-                />
-              </div>
+  return !isNullOrUndefined(post) && Object.keys(post).length > 0 ? (
+    <div>
+      <Head
+        title={post.title}
+        description={formatDescription()}
+        socialImageUrl={socialImageUrl}
+        noindex={post.is_removed || post.is_removed_by_user}
+        canonical={`https://www.researchhub.com/post/${post.id}/${slug}`}
+      />
+      <div className={css(styles.root)}>
+        <PaperBanner document={post} documentType="post" />
+        <PaperTransactionModal post={post} updatePostState={updatePostState} />
+        <div className={css(styles.container)}>
+          <div className={css(styles.main)}>
+            <div className={css(styles.paperPageContainer, styles.top)}>
+              <PostPageCard
+                isEditorOfHubs={isEditorOfHubs}
+                isModerator={isModerator}
+                isSubmitter={isSubmitter}
+                post={post}
+                removePost={removePost}
+                restorePost={restorePost}
+                shareUrl={process.browser && window.location.href}
+              />
             </div>
-            <div className={css(styles.sidebar)}>
-              <PaperSideColumn
-                authors={post.authors || []}
+            <div className={css(styles.paperMetaContainerMobile)}>
+              <AuthorStatsDropdown
+                authors={
+                  post.authors.length > 0 ? post.authors : getCreatedByAuthor()
+                }
                 paper={post}
                 hubs={post.hubs}
                 paperId={post.id}
-                isPost={true}
+              />
+            </div>
+            <div className={css(styles.space)}>
+              <a name="comments" id="comments" />
+              <DiscussionTab
+                hostname={props.hostname}
+                documentType={"post"}
+                post={post}
+                postId={post.id}
+                calculatedCount={discussionCount}
+                setCount={setCount}
+                isCollapsible={false}
               />
             </div>
           </div>
+          <div className={css(styles.sidebar)}>
+            <PaperSideColumn
+              authors={
+                post.authors.length > 0 ? post.authors : getCreatedByAuthor()
+              }
+              paper={post}
+              hubs={post.hubs}
+              paperId={post.id}
+              isPost={true}
+            />
+          </div>
         </div>
-        <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
-        <Script
-          src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/mhchem.min.js"
-          strategy="lazyOnload" // this script needs to load after the main katex script
-        />
       </div>
-    );
-  } else {
-    return null;
-  }
+      <Script src="https://cdn.jsdelivr.net/npm/katex@0.11.1/dist/katex.min.js" />
+      <Script
+        src="https://cdn.jsdelivr.net/npm/katex@0.11.0/dist/contrib/mhchem.min.js"
+        strategy="lazyOnload" // this script needs to load after the main katex script
+      />
+    </div>
+  ) : null;
 };
 
 Post.getInitialProps = async (ctx) => {
