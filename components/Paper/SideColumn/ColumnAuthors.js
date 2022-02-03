@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     width: "100",
   },
   title: {
-    margin: "15px 0px 2px",
+    margin: "15px 0px 0px",
   },
   paperAuthorListContainer: {
     margin: "15px 0 10px",

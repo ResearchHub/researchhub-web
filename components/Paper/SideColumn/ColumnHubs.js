@@ -44,7 +44,7 @@ const ColumnHubs = (props) => {
 
 const styles = StyleSheet.create({
   title: {
-    margin: "15px 0px 2px",
+    margin: "15px 0px 0px",
   },
 });
 
