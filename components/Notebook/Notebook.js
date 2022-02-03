@@ -1,7 +1,6 @@
 import Error from "next/error";
 import NotebookSidebar from "~/components/Notebook/NotebookSidebar";
 import dynamic from "next/dynamic";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import withWebSocket from "~/components/withWebSocket";
 import { Helpers } from "@quantfive/js-web-config";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
@@ -46,13 +45,6 @@ const Notebook = ({ auth, user, wsResponse }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(null);
 
   const orgsFetched = useRef();
-
-  /* IMPORTANT */
-  const _shouldShowELN = gateKeepCurrentUser({
-    application: "ELN" /* application */,
-    auth,
-    shouldRedirect: true /* should redirect */,
-  });
 
   useEffect(() => {
     // If user just logged in, refresh the page
