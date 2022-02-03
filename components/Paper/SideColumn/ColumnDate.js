@@ -16,7 +16,7 @@ const ColumnHubs = ({ paper }) => {
 
 const styles = StyleSheet.create({
   title: {
-    margin: "15px 0px 10px",
+    margin: "15px 0px 0px",
   },
   date: {
     alignItems: "center",
@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     lineHeight: 1.3,
-    padding: "0px 15px 0px 20px",
+    padding: "10px 20px 5px",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
