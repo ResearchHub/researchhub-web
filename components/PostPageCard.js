@@ -10,10 +10,10 @@ import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ReactHtmlParser from "react-html-parser";
 import ReactTooltip from "react-tooltip";
-import Router from "next/router";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 import colors from "~/config/themes/colors";
+import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import removeMd from "remove-markdown";
 import { Helpers } from "@quantfive/js-web-config";
@@ -26,11 +26,10 @@ import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
-// Dynamic modules
-import dynamic from "next/dynamic";
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
 );
+
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
@@ -202,12 +201,6 @@ class PostPageCard extends Component {
     this.state.hovered && this.setState({ hovered: false });
   };
 
-  navigateToSubmitter = () => {
-    let { author_profile } = this.props.paper.uploaded_by;
-    let authorId = author_profile && author_profile.id;
-    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/overview`);
-  };
-
   renderActions = () => {
     const { post, isEditorOfHubs, isModerator, isSubmitter, user } = this.props;
 
@@ -224,18 +217,13 @@ class PostPageCard extends Component {
         active:
           (isSubmitter || isAuthor) && !post.note?.unified_document.is_removed,
         button: post.note ? (
-          <div
-            onClick={() => {
-              Router.push(
-                "/[orgSlug]/notebook/[noteId]",
-                `/${post.note.organization.slug}/notebook/${post.note.id}`
-              );
-            }}
-            className={css(styles.actionIcon)}
-            data-tip={"Edit Post"}
+          <Link
+            href={`/${post.note.organization.slug}/notebook/${post.note.id}`}
           >
-            {icons.pencil}
-          </div>
+            <a className={css(styles.actionIcon)} data-tip={"Edit Post"}>
+              {icons.pencil}
+            </a>
+          </Link>
         ) : (
           <PermissionNotificationWrapper
             modalMessage="edit post"
@@ -571,7 +559,6 @@ class PostPageCard extends Component {
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
           <AuthorSupportModal />
-
           <div
             className={css(
               styles.container,
