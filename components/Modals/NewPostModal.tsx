@@ -4,10 +4,13 @@ import Link from "next/link";
 import Modal from "react-modal";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { MessageActions } from "~/redux/message";
-import { ReactElement, useState, SyntheticEvent, Fragment } from "react";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { ReactElement, useState, SyntheticEvent } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { createNewNote } from "~/config/fetch";
 import { filterNull } from "~/config/utils/nullchecks";
+import { useRouter } from "next/router";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -20,6 +23,7 @@ function NewPostModal({
   isOpen,
   setIsOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
+  const router = useRouter();
   let [selected, setSelected] = useState(0);
 
   const closeModal = (e: SyntheticEvent): void => {
@@ -45,7 +49,15 @@ function NewPostModal({
       description:
         "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
       imgSrc: "/static/icons/publishProject.png",
-      route: `/${currentUser.organization_slug}/notebook`,
+      onClick: async () => {
+        /* @ts-ignore */
+        const note = await createNewNote({
+          orgSlug: currentUser.organization_slug,
+          grouping: NOTE_GROUPS.WORKSPACE,
+        });
+        /* @ts-ignore */
+        router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
+      },
     },
     {
       header: "Propose a Hypothesis",
@@ -56,27 +68,10 @@ function NewPostModal({
     },
   ];
 
-  const optionCards = filterNull(items).map((option, index) => {
-    return (
-      <ResearchhubOptionCard
-        description={option.description}
-        header={option.header}
-        imgSrc={option.imgSrc}
-        isActive={index === selected}
-        isCheckboxSquare={false}
-        key={index}
-        onSelect={(e: SyntheticEvent) => {
-          e.preventDefault();
-          setSelected(index);
-        }}
-      />
-    );
-  });
-
   return (
     <BaseModal
       children={
-        <Fragment>
+        <>
           <div className={css(styles.rootContainer)}>
             <img
               alt="Close Button"
@@ -88,22 +83,46 @@ function NewPostModal({
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>{"Select your post type"}</div>
             </div>
-            <div className={css(styles.list)}>{optionCards}</div>
+            <div className={css(styles.list)}>
+              {filterNull(items).map((option, index) => (
+                <ResearchhubOptionCard
+                  description={option.description}
+                  header={option.header}
+                  imgSrc={option.imgSrc}
+                  isActive={index === selected}
+                  isCheckboxSquare={false}
+                  key={index}
+                  onSelect={(e: SyntheticEvent) => {
+                    e.preventDefault();
+                    setSelected(index);
+                  }}
+                />
+              ))}
+            </div>
             <div>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  <Link href={items[selected]?.route ?? ""}>
-                    <div className={css(styles.buttonLabel)}>Continue</div>
-                  </Link>
+                  items[selected].onClick ? (
+                    <div
+                      onClick={items[selected].onClick}
+                      className={css(styles.buttonLabel)}
+                    >
+                      Continue
+                    </div>
+                  ) : (
+                    <Link href={items[selected]?.route ?? ""}>
+                      <div className={css(styles.buttonLabel)}>Continue</div>
+                    </Link>
+                  )
                 }
                 onClick={handleContinue}
                 rippleClass={styles.rippleClass}
               />
             </div>
           </div>
-        </Fragment>
+        </>
       }
       closeModal={closeModal}
       isOpen={isOpen}
