@@ -13,9 +13,9 @@ const PaperSideColumn = (props) => {
 
   return (
     <div className={css(styles.root, customStyle && customStyle)}>
+      {isPost && <ColumnDate paper={paper} hubs={hubs} paperId={paperId} />}
       <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
       <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
-      {isPost && <ColumnDate paper={paper} hubs={hubs} paperId={paperId} />}
       {!isPost && <ColumnJournal paper={paper} paperId={paperId} />}
     </div>
   );
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     boxSizing: "border-box",
-    paddingBottom: 10,
+    paddingBottom: 5,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 50,
     },
