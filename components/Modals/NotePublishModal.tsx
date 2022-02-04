@@ -2,11 +2,9 @@ import API from "~/config/api";
 import BaseModal from "~/components/Modals/BaseModal";
 import Button from "~/components/Form/Button";
 import CheckBox from "~/components/Form/CheckBox";
-import Collapsible from "~/components/Form/Collapsible";
 import FormSelect from "../Form/FormSelect";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
@@ -296,31 +294,17 @@ function NotePublishModal({
             placeholder="Choose hubs to publish in"
             required
           />
-          <Collapsible
-            className={css(styles.collapsibleSection)}
-            contentInnerClassName={css(styles.collapsibleContent)}
-            open={isOpen}
-            openedClassName={css(styles.collapsibleSection)}
-            trigger={
-              <div className={css(styles.trigger, styles.label)}>
-                Guidelines for posts
-                <span className={css(styles.chevronDown)}>
-                  {icons.chevronDownLeft}
-                </span>
-              </div>
-            }
-          >
-            <ul>
-              <li>Stick to academically appropriate topics</li>
-              <li>
-                Focus on presenting objective results and remain unbiased in
-                your commentary
-              </li>
-              <li>
-                Be respectful of differing opinions, viewpoints, and experiences
-              </li>
-            </ul>
-          </Collapsible>
+          <div className={css(styles.label)}>Guidelines for posts</div>
+          <ul className={css(styles.guidelinesContent)}>
+            <li>Stick to academically appropriate topics</li>
+            <li>
+              Focus on presenting objective results and remain unbiased in your
+              commentary
+            </li>
+            <li>
+              Be respectful of differing opinions, viewpoints, and experiences
+            </li>
+          </ul>
           <div className={css(styles.checkboxContainer)}>
             <CheckBox
               active={checkBoxOne}
@@ -362,8 +346,6 @@ function NotePublishModal({
 
 const styles = StyleSheet.create({
   modalStyle: {
-    top: "25%",
-    transform: "translateX(-50%)",
     width: "min(80vw, 525px)",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
@@ -394,27 +376,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
   },
-  collapsibleSection: {
-    color: "#000000",
-    fontSize: 18,
-    fontWeight: 500,
-    margin: "20px 0px",
-  },
-  collapsibleContent: {
+  guidelinesContent: {
     color: "#241F3A",
     fontSize: 16,
     fontStyle: "normal",
     fontWeight: "normal",
     lineHeight: "26px",
-    marginLeft: 3,
+    marginBottom: 20,
     maxWidth: 400,
   },
   chevronDown: {
     marginLeft: "auto",
-  },
-  trigger: {
-    cursor: "pointer",
-    display: "flex",
   },
   buttonsContainer: {
     display: "flex",
