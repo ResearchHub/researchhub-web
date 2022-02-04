@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     lineHeight: 1.3,
-    padding: "10px 20px 5px",
+    padding: "10px 20px",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
