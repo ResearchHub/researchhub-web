@@ -14,7 +14,7 @@ export function restoreHypothesis({
   onSuccess,
 }: PostHypoStatusArgs): void {
   fetch(
-    API.UNIFIED_DOC({ id: hypoUniDocID }),
+    API.RESTORE_DOC({ documentId: hypoUniDocID }),
     API.PATCH_CONFIG({ is_removed: false })
   )
     .then(Helpers.checkStatus)
@@ -29,7 +29,7 @@ export function removeHypothesis({
   onSuccess,
 }: PostHypoStatusArgs): void {
   fetch(
-    API.UNIFIED_DOC({ id: hypoUniDocID }),
+    API.CENSOR_DOC({ documentId: hypoUniDocID }),
     API.PATCH_CONFIG({ is_removed: true })
   )
     .then(Helpers.checkStatus)
