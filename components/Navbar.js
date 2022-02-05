@@ -78,6 +78,7 @@ const Navbar = (props) => {
     auth,
     updateUser,
   } = props;
+  console.log("user", user);
   const isUserModerator = !isNullOrUndefined(user)
     ? Boolean(user.moderator)
     : false;

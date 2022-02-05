@@ -152,6 +152,7 @@ const routes = (BASE_URL) => {
           route: route,
         },
       };
+
       url = prepURL(url, params);
 
       return url;
@@ -853,24 +854,11 @@ const routes = (BASE_URL) => {
     CENSOR_PAPER_PDF: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/censor_pdf/`;
     },
-    CENSOR_POST: ({
-      documentType,
-      paperId,
-      threadId,
-      commentId,
-      replyId,
-      documentId,
-    }) => {
-      let url = buildPaperChainUrl(
-        documentType,
-        paperId,
-        documentId,
-        threadId,
-        commentId,
-        replyId
-      );
-
-      return url + "censor/";
+    CENSOR_DOC: ({ documentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${documentId}/censor/`;
+    },
+    RESTORE_DOC: ({ documentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${documentId}/restore/`;
     },
     CENSOR_HUB: ({ hubId }) => {
       return BASE_URL + `hub/${hubId}/censor/`;
