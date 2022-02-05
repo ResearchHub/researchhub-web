@@ -74,7 +74,7 @@ function AuthorPage(props) {
   const router = useRouter();
   const dispatch = useDispatch();
   const store = useStore();
-
+  console.log("auth", auth);
   const [tabName, setTabName] = useState(get(router, "query.tabName"));
   const [prevProps, setPrevProps] = useState(props.auth.isLoggedIn);
 

@@ -114,7 +114,7 @@ class PostPageCard extends Component {
     }
 
     return fetch(
-      API.UNIFIED_DOC({ id: post.unified_document_id }),
+      API.RESTORE_DOC({ documentId: post.unified_document_id }),
       API.PATCH_CONFIG(params)
     )
       .then(Helpers.checkStatus)
@@ -123,6 +123,12 @@ class PostPageCard extends Component {
         setMessage("Post Successfully Restored.");
         showMessage({ show: true });
         restorePost && restorePost();
+      })
+      .catch((error) => {
+        setMessage("Post could not be restored");
+        showMessage({ show: true, error: true });
+        console.log(error);
+        Sentry.captureEvent(error);
       });
   };
 
@@ -142,7 +148,7 @@ class PostPageCard extends Component {
     }
 
     return fetch(
-      API.UNIFIED_DOC({ id: post.unified_document_id }),
+      API.CENSOR_DOC({ documentId: post.unified_document_id }),
       API.PATCH_CONFIG(params)
     )
       .then(Helpers.checkStatus)
@@ -153,6 +159,8 @@ class PostPageCard extends Component {
         removePost && removePost();
       })
       .catch((error) => {
+        setMessage("Post not removed");
+        showMessage({ show: true, error: true });
         console.log(error);
         Sentry.captureEvent(error);
       });
@@ -182,7 +190,7 @@ class PostPageCard extends Component {
   };
 
   sendPost = () => {
-    const { post } = this.props;
+    const { post, setMessage, showMessage } = this.props;
     const { postBody } = this.state;
 
     const params = {
@@ -196,10 +204,15 @@ class PostPageCard extends Component {
     };
 
     this.toggleShowPostEditor();
-
     return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
+      .then(Helpers.parseJSON)
+      .catch((error) => {
+        setMessage("Could not save changes");
+        showMessage({ show: true, error: true });
+        console.log(error);
+        Sentry.captureEvent(error);
+      });
   };
 
   renderPostEditor = () => {
