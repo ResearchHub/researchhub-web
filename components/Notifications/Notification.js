@@ -111,10 +111,14 @@ class Notification extends Component {
     const formattedDocumentType = getUnifiedDocType(
       unified_document?.document_type
     );
-    const documentContent =
-      formattedDocumentType === "paper"
-        ? unified_document?.documents
-        : (unified_document?.documents ?? [])[0] ?? {};
+
+    const documentContent = Array.isArray(unified_document?.documents)
+      ? unified_document?.documents[0]
+      : unified_document?.documents;
+
+    if (!documentContent) {
+      return null;
+    }
 
     const {
       title = null,

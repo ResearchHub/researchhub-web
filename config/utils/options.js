@@ -34,9 +34,9 @@ const convertNumToMonth = {
   "07": "July",
   "08": "August",
   "09": "September",
-  "10": "October",
-  "11": "November",
-  "12": "December",
+  10: "October",
+  11: "November",
+  12: "December",
 };
 
 const convertMonthToNum = {
@@ -213,6 +213,10 @@ const degrees = [
     label: "Bachelor of Technology - BTech",
   },
   {
+    value: "BVSc",
+    label: "Bachelor of Veterinary Science",
+  },
+  {
     value: "MArch",
     label: "Master of Architecture",
   },
@@ -295,6 +299,10 @@ const degrees = [
   {
     value: "PhD",
     label: "Doctor of Philosophy",
+  },
+  {
+    value: "DVM",
+    label: "Doctor of Veterinary Medicine",
   },
 ];
 

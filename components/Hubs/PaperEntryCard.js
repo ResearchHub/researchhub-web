@@ -30,6 +30,8 @@ import LazyLoad from "react-lazyload";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
 import { stripHTML } from "~/config/utils/string";
+import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -51,6 +53,7 @@ const PaperEntryCard = (props) => {
     promotionSummary,
     onClick,
     styleVariation,
+    onBadgeClick,
   } = props;
 
   const store = useStore();
@@ -111,6 +114,7 @@ const PaperEntryCard = (props) => {
       first_figure && first_figure,
     ])
   );
+
   const [figures, setFigures] = useState(
     previews.map((preview, index) => preview && preview.file)
   );
@@ -266,39 +270,6 @@ const PaperEntryCard = (props) => {
     onClick && onClick();
   }
 
-  function formatDiscussionCount() {
-    return `${discussion_count}`;
-  }
-
-  const renderDiscussionCount = () => {
-    if (!discussion_count) {
-      return null;
-    }
-
-    return (
-      <Link
-        href={"/paper/[paperId]/[paperName]"}
-        as={`/paper/${id}/${paperSlug}#comments`}
-      >
-        <a
-          className={css(styles.link)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className={css(styles.discussion)}>
-            <div className={css(styles.discussionIcon)} id={"discIcon"}>
-              {PaperDiscussionIcon({})}
-            </div>
-            <div className={css(styles.discussionCount)} id={"discCount"}>
-              {formatDiscussionCount()}
-            </div>
-          </div>
-        </a>
-      </Link>
-    );
-  };
-
   const openPaperPDFModal = (e) => {
     e && e.preventDefault();
     e && e.stopPropagation();
@@ -336,49 +307,52 @@ const PaperEntryCard = (props) => {
     }
   };
 
-  const renderPreview = () => {
+  const renderRightColumn = () => {
     if (previews.length > 0) {
       return (
         <div
-          className={css(styles.column, styles.previewColumn)}
+          className={css(styles.column, styles.rightColumn)}
           onClick={(e) => {
             e.stopPropagation();
           }}
         >
-          <LazyLoad offset={100} once>
-            {isPreviewing && (
-              <PaperPDFModal
-                paper={paper}
-                onClose={() => setIsPreviewing(false)}
-              />
-            )}
-            <div className={css(styles.preview)}>
-              <img
-                src={previews[0].file}
-                className={css(carousel.image)}
-                key={`preview_${previews[0].file}`}
-                alt={`Paper Preview Page 1`}
-                onClick={openPaperPDFModal}
-              />
-            </div>
-          </LazyLoad>
+          <div className={css(styles.badgeWrapper)}>
+            <DocumentBadge
+              label="Paper"
+              docType="paper"
+              onClick={onBadgeClick}
+            />
+          </div>
+          <div className={css(styles.previewContainer)}>
+            <LazyLoad offset={100} once>
+              {isPreviewing && (
+                <PaperPDFModal
+                  paper={paper}
+                  onClose={() => setIsPreviewing(false)}
+                />
+              )}
+              <div className={css(styles.preview)}>
+                <img
+                  src={previews[0].file}
+                  className={css(carousel.image)}
+                  key={`preview_${previews[0].file}`}
+                  alt={`Paper Preview Page 1`}
+                  onClick={openPaperPDFModal}
+                />
+              </div>
+            </LazyLoad>
+          </div>
         </div>
       );
     } else {
-      return (
-        <div className={css(styles.column, styles.previewColumn)}>
-          <LazyLoad offset={100} once>
-            <div className={css(styles.preview, styles.previewEmpty)} />
-          </LazyLoad>
-        </div>
-      );
+      return null;
     }
   };
 
   const renderHubTags = () => {
     if (Boolean(hubs) && Boolean(hubs.length)) {
       const firstTagSet = hubs
-        .slice(0, 3)
+        .slice(0, 2)
         .map((tag, index) => (
           <HubTag
             key={`hub_${index}`}
@@ -386,14 +360,14 @@ const PaperEntryCard = (props) => {
             hubName={hubName}
             last={index === hubs.length - 1}
             labelStyle={
-              hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+              hubs.length >= 2 ? styles.smallerHubLabel : styles.hubLabel
             }
           />
         ));
       return (
         <div className={css(styles.tags)}>
           {firstTagSet}
-          {hubs.length > 3 && (
+          {hubs.length > 2 && (
             <HubDropDown
               hubs={hubs}
               hubName={hubName}
@@ -469,23 +443,6 @@ const PaperEntryCard = (props) => {
             alt="Preregistration Icon"
           />
           Preregistration
-        </div>
-      );
-    }
-  };
-
-  const renderPaperTitle = () => {
-    if (paper_title && title !== paper_title) {
-      return (
-        <div className={css(styles.metadataContainer, styles.authorContainer)}>
-          <div
-            className={
-              css(styles.metadataClamp, styles.metadata, styles.removeMargin) +
-              " clamp1"
-            }
-          >
-            From Paper: {paper_title}
-          </div>
         </div>
       );
     }
@@ -606,7 +563,12 @@ const PaperEntryCard = (props) => {
       <div className={css(styles.leftSection, styles.desktop)}>
         {renderVoteWidget()}
         <div className={css(styles.discussionCountContainer)}>
-          {renderDiscussionCount()}
+          <DiscussionCount
+            docType="paper"
+            slug={slug}
+            id={id}
+            count={discussion_count}
+          />
         </div>
       </div>
       <div className={css(styles.container)}>
@@ -619,17 +581,34 @@ const PaperEntryCard = (props) => {
             )}
           >
             <div className={css(styles.topRow)}>
-              {mobileOnly(renderVoteWidget(true))}
-              {mobileOnly(renderDiscussionCount())}
+              {mobileOnly(
+                <div className={css(styles.topRowLeft)}>
+                  {renderVoteWidget(true)}
+                  <DiscussionCount
+                    docType="paper"
+                    slug={slug}
+                    id={id}
+                    count={discussion_count}
+                  />
+                </div>
+              )}
               {desktopOnly(renderMainTitle())}
+              {previews.length === 0 && (
+                <div className={css(styles.badgeWrapper)}>
+                  <DocumentBadge
+                    label="Paper"
+                    docType="paper"
+                    onClick={onBadgeClick}
+                  />
+                </div>
+              )}
             </div>
             {mobileOnly(renderMainTitle())}
             {desktopOnly(renderMetadata())}
             {mobileOnly(renderMetadata())}
             {renderContent()}
-            {mobileOnly(renderContributers())}
           </div>
-          {desktopOnly(renderPreview())}
+          {renderRightColumn()}
         </div>
         <div className={css(styles.bottomBar)}>
           <div className={css(styles.rowContainer)}>
@@ -643,6 +622,7 @@ const PaperEntryCard = (props) => {
           )}
         </div>
         <div className={css(styles.bottomBar, styles.mobileHubTags)}>
+          {mobileOnly(renderContributers())}
           {renderHubTags()}
         </div>
       </div>
@@ -703,13 +683,10 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
-  previewColumn: {
+  previewContainer: {
     paddingBottom: 10,
-    "@media only screen and (max-width: 767px)": {
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-    },
+    paddingLeft: 20,
+    marginTop: 10,
   },
   preview: {
     height: 90,
@@ -746,6 +723,9 @@ const styles = StyleSheet.create({
     height: "100%",
     position: "relative",
   },
+  rightColumn: {
+    alignItems: "flex-end",
+  },
   rowContainer: {
     display: "flex",
     alignItems: "flex-start",
@@ -763,11 +743,15 @@ const styles = StyleSheet.create({
   topRow: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
       paddingBottom: 10,
     },
+  },
+  topRowLeft: {
+    display: "flex",
   },
   metadataRow: {
     display: "flex",
@@ -869,28 +853,6 @@ const styles = StyleSheet.create({
   discussionCountContainer: {
     marginTop: 8,
     marginRight: 17,
-  },
-  discussion: {
-    cursor: "pointer",
-    position: "relative",
-    fontSize: 14,
-    background: colors.LIGHTER_GREY_BACKGROUND,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
-    borderRadius: 13,
-    "@media only screen and (max-width: 967px)": {
-      minWidth: "unset",
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-    },
-  },
-  discussionCount: {
-    color: "rgb(71 82 93 / 80%)",
-    fontWeight: "bold",
-    marginLeft: 6,
   },
   tags: {
     display: "flex",
@@ -996,11 +958,7 @@ const styles = StyleSheet.create({
       marginTop: 10,
     },
   },
-  journalTagContainer: {
-    "@media only screen and (max-width: 767px)": {
-      marginTop: 10,
-    },
-  },
+  journalTagContainer: {},
   uploadedByAvatar: {
     marginLeft: 10,
   },
@@ -1064,12 +1022,18 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       marginTop: 0,
     },
   },
   fullWidth: {
     width: "100%",
+  },
+  badge: {},
+  badgeWrapper: {
+    verticalAlign: "-3px",
+    display: "inline-block",
+    marginRight: -8,
   },
 });
 

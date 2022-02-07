@@ -6,17 +6,11 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import ReactTooltip from "react-tooltip";
 import Ripples from "react-ripples";
+import { breakpoints } from "~/config/themes/screen";
 
 const HubTag = (props) => {
-  const {
-    tag,
-    overrideStyle,
-    hubName,
-    gray,
-    labelStyle,
-    last,
-    noHubName,
-  } = props;
+  const { tag, overrideStyle, hubName, gray, labelStyle, last, noHubName } =
+    props;
   const { id, name, hub_image, link, slug } = tag;
   const nameArr = (name && name.split(" ")) || [];
   const [hubImage, setHubImage] = useState(
@@ -94,7 +88,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     ":hover": {
       color: colors.BLUE(1),
-      backgroundColor: "#edeefe",
+      backgroundColor: colors.LIGHTER_BLUE(),
     },
     "@media only screen and (max-width: 767px)": {
       fontSize: 13,
@@ -111,6 +105,9 @@ const styles = StyleSheet.create({
     whiteSpace: "nowrap",
     overflow: "hidden",
     marginLeft: 6,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      maxWidth: 125,
+    },
   },
   hubImage: {
     height: 22,
@@ -141,7 +138,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     boxSizing: "border-box",
     ":hover": {
-      backgroundColor: "#EDEDF0",
+      backgroundColor: colors.LIGHTER_BLUE(),
       borderColor: "#d8d8de",
     },
   },

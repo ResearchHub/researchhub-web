@@ -10,6 +10,7 @@ const LeaderboardFeedPlaceholder = ({ color, rows }) => {
           css(styles.placeholderContainer, i === 0 && styles.first) +
           " show-loading-animation"
         }
+        key={`leaderboard-placeholder-${i}`}
       >
         <RoundShape className={css(styles.round)} color={color} />
         <TextBlock
@@ -38,7 +39,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     cursor: "pointer",
     border: "1px solid #EDEDED",
-    borderRadius: 3,
     overflow: "hidden",
     width: "100%",
     ":hover": {

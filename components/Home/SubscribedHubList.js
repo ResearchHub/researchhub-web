@@ -154,7 +154,7 @@ class SubscribedHubList extends Component {
         className={css(styles.viewMoreButton, viewMore && styles.spaceBetween)}
       >
         {viewMore && <div onClick={this.nextPage}>View more</div>}
-        <Link href={"/user/settings"} as={"/user/settings"}>
+        <Link href={"/settings"} as={"/settings"}>
           <a className={css(styles.link, styles.cogButton)}>{icons.cog}</a>
         </Link>
       </div>
@@ -351,7 +351,4 @@ const mapDispatchToProps = {
   getSubscribedHubs: HubActions.getSubscribedHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SubscribedHubList);
+export default connect(mapStateToProps, mapDispatchToProps)(SubscribedHubList);

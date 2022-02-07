@@ -1,9 +1,9 @@
 import { Component } from "react";
+import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import Link from "next/link";
-import { connect } from "react-redux";
-import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder/lib";
+import Ripples from "react-ripples";
 
 // Config
 import colors from "../../config/themes/colors";
@@ -71,6 +71,7 @@ class SideColumn extends Component {
       ready,
       customPlaceholder,
       renderListItem,
+      listItems,
     } = this.props;
 
     return (
@@ -92,7 +93,8 @@ class SideColumn extends Component {
                 )
               }
             >
-              {renderListItem ? renderListItem() : this.renderListItem(data)}
+              {listItems ??
+                (renderListItem ? renderListItem() : this.renderListItem(data))}
             </ReactPlaceholder>
           </div>
         </div>
@@ -262,7 +264,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SideColumn);
+export default connect(mapStateToProps, mapDispatchToProps)(SideColumn);

@@ -1,32 +1,31 @@
 import { AUTHOR_CLAIM_STATUS } from "./constants/AuthorClaimStatus";
 import { AuthorClaimCase } from "./api/AuthorClaimCaseGetCases";
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { getCardAllowedActions } from "./util/AuthorClaimCaseUtil";
+import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import { ValueOf } from "~/config/types/root_types";
 import AuthorClaimCaseCardActionButton from "./AuthorClaimCaseCardActionButton";
 import AuthorClaimCaseCardStatusLabel from "./AuthorClaimCaseCardStatusLabel";
 import AuthorClaimCaseCardTargetAuthorSection from "./AuthorClaimCaseCardTargetAuthorSection";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
-import { ReactElement, SyntheticEvent, useMemo, useState } from "react";
 import AuthorClaimCaseModal from "./AuthorClaimCaseModal";
+import colors from "~/config/themes/colors";
+import dayjs from "dayjs";
+import icons from "~/config/themes/icons";
 
 type Props = {
   authorClaimCase: AuthorClaimCase;
-  cardWidth: number | string;
   setLastFetchTime: Function;
 };
 
 export default function AuthorClaimCaseCard({
   authorClaimCase,
-  cardWidth,
   setLastFetchTime,
 }: Props): ReactElement<"div"> {
-  const [isCollapsed, setIsCollapsed] = useState<boolean>(true);
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [openModalType, setOpenModalType] = useState<
-    ValueOf<typeof AUTHOR_CLAIM_STATUS>
-  >("");
+  const [openModalType, setOpenModalType] =
+    useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
   const { caseData, requestor, targetAuthor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
@@ -35,7 +34,7 @@ export default function AuthorClaimCaseCard({
     providedEmail,
     requestorAuthorID,
   } = requestor || {};
-
+  const formattedCreatedDate = dayjs(createdDate).format("YYYY-MM-DD");
   const actionLabels = useMemo(() => {
     return caseStatus === AUTHOR_CLAIM_STATUS.OPEN ? (
       getCardAllowedActions(caseStatus).map(
@@ -62,7 +61,6 @@ export default function AuthorClaimCaseCard({
       className={css(styles.authorClaimCaseCard)}
       onClick={(): void => setIsCollapsed(!isCollapsed)}
       role="none"
-      style={{ width: cardWidth }}
     >
       <AuthorClaimCaseModal
         caseID={caseID}
@@ -100,11 +98,6 @@ export default function AuthorClaimCaseCard({
             <div className={css(styles.cardMainSection, styles.fontGrey)}>
               {providedEmail}
             </div>
-            <div
-              className={css(styles.cardSmallerMainSection, styles.fontGrey)}
-            >
-              {createdDate.split("T")[0]}
-            </div>
           </div>
           <div className={css(styles.cardSmallerMainSection, styles.actions)}>
             {actionLabels}
@@ -113,6 +106,7 @@ export default function AuthorClaimCaseCard({
         {!isCollapsed ? (
           <div className={css(styles.cardSubmain)}>
             <AuthorClaimCaseCardTargetAuthorSection
+              caseCreatedDate={formattedCreatedDate}
               targetAuthor={targetAuthor}
             />
           </div>
@@ -132,10 +126,8 @@ const styles = StyleSheet.create({
     fontFamily: "Roboto",
     marginBottom: 16,
     minHeight: 72,
-    maxWidth: "90%",
-
-    "@media only screen and (max-width: 767px)": {
-      width: "90%",
+    maxWidth: "1200px",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       maxWidth: "unset",
     },
   },
@@ -149,8 +141,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     padding: "0px 16px",
     width: "100%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       padding: 16,
     },
   },
@@ -159,13 +150,12 @@ const styles = StyleSheet.create({
     display: "flex",
     height: 72,
     justifyContent: "flex-start",
+    maxWidth: 500,
     overflow: "hidden",
     paddingRight: 16,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    width: "24%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
       height: "unset",
       paddingRight: 0,
@@ -180,16 +170,15 @@ const styles = StyleSheet.create({
     paddingRight: 16,
     textOverflow: "ellipsis",
     whiteSpace: "nowrap",
-    width: "15%",
-
-    "@media only screen and (max-width: 767px)": {
+    width: "20%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       width: "unset",
       height: "unset",
       paddingRight: 0,
     },
   },
   actions: {
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       marginTop: 16,
     },
   },
@@ -197,10 +186,10 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       justifyContent: "unset",
       flexDirection: "column",
+      padding: "0 0 16px 0",
     },
   },
   chevronWrap: {
@@ -237,7 +226,7 @@ const styles = StyleSheet.create({
   row: {
     display: "flex",
     flex: 1,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       flexDirection: "column",
       marginTop: 16,
     },

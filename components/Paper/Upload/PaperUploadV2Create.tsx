@@ -8,7 +8,7 @@ import {
   FormErrorState,
   FormState,
 } from "./types/UploadComponentTypes";
-import { css } from "aphrodite";
+import { StyleSheet, css } from "aphrodite";
 import { customStyles, formGenericStyles } from "./styles/formGenericStyles";
 import { getHandleInputChange } from "./util/paperUploadV2HandleInputChange";
 import { getIsFormValid } from "./util/getIsFormValid";
@@ -36,6 +36,7 @@ import {
 } from "react";
 import { uploadNewPaper } from "./api/uploadNewPaper";
 import { ValidCitationType } from "~/components/Hypothesis/Citation/modal/AddNewSourceBodySearch";
+import { captureEvent } from "~/config/utils/events";
 
 type ComponentProps = {
   authRedux: any;
@@ -169,8 +170,6 @@ function PaperuploadV2Create({
         }
       : defaultFormState
   );
-  console.warn("selectedCitationType: ", formState.citation_type);
-
   const [formErrors, setFormErrors] = useState<FormErrorState>(
     defaultFormErrorState
   );
@@ -248,6 +247,14 @@ function PaperuploadV2Create({
           const errorBody = respPayload.errorBody;
           if (!isNullOrUndefined(errorBody) && errorBody.status === 429) {
             messageActions.showMessage({ show: false });
+          } else if (errorBody.status === 413) {
+            messageActions.setMessage(
+              errorBody
+                ? errorBody.error
+                : "The max file size is 55mb. Please upload a smaller file."
+            );
+            messageActions.showMessage({ show: true, error: true });
+            setTimeout(() => messageActions.showMessage({ show: false }), 2000);
           } else {
             messageActions.setMessage(
               errorBody
@@ -319,6 +326,7 @@ function PaperuploadV2Create({
       <div
         className={css(
           formGenericStyles.pageContent,
+          styles.noScroll,
           isPaperForHypothesis && formGenericStyles.noBorder
         )}
       >
@@ -458,6 +466,12 @@ function PaperuploadV2Create({
     </form>
   );
 }
+
+const styles = StyleSheet.create({
+  noScroll: {
+    overflow: "visible",
+  },
+});
 
 const mapStateToProps = (state: any) => ({
   authRedux: state.auth,

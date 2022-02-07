@@ -1,7 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
 import { Fragment } from "react";
-import FormSelect from "../Form/FormSelect";
 import { filterOptions, scopeOptions } from "../../config/utils/options";
+import colors, { pillNavColors } from "~/config/themes/colors";
+import DropdownButton from "~/components/Form/DropdownButton";
+import { useState } from "react";
+
 
 type Props = {
   onScopeSelect: (type: string, scopeOption: any) => void;
@@ -17,46 +20,72 @@ export default function UnifiedDocFeedSubFilters({
   onSubFilterSelect,
   subFilters: { filterBy, scope },
 }: Props) {
+
+  const [isFilterSelectOpen, setIsFilterSelectOpen] = useState(false);
+  const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
+
   return (
     <Fragment>
-      <FormSelect
-        id={"filterBy"}
-        options={filterOptions}
-        value={filterBy}
-        containerStyle={styles.dropDownLeft}
-        inputStyle={{
-          fontWeight: 500,
-          minHeight: "unset",
-          backgroundColor: "#FFF",
-          display: "flex",
-          justifyContent: "space-between",
+      <DropdownButton
+        opts={filterOptions}
+        label={filterBy.label}
+        isOpen={isFilterSelectOpen}
+        selected={filterBy.value}
+        onClick={() => setIsFilterSelectOpen(true)}
+        dropdownClassName="filterSelect"
+        overrideTitleStyle={styles.customTitleStyle}
+        positions={["bottom", "right" ]}
+        customButtonClassName={styles.dropdownButtonOverride}
+        onClickOutside={() => {
+          setIsFilterSelectOpen(false);
         }}
-        onChange={onSubFilterSelect}
-        isSearchable={false}
-      />
-      <FormSelect
-        id={"scope"}
-        options={scopeOptions}
-        value={scope}
-        containerStyle={[
-          styles.dropDown,
-          filterBy.disableScope && styles.disableScope,
-        ]}
-        inputStyle={{
-          fontWeight: 500,
-          minHeight: "unset",
-          backgroundColor: "#FFF",
-          display: "flex",
-          justifyContent: "space-between",
+        onSelect={(selectedFilter) => {
+          const obj = filterOptions.find((f) => selectedFilter === f.value)
+          onSubFilterSelect(obj);
         }}
-        onChange={onScopeSelect}
-        isSearchable={false}
+        onClose={() => setIsFilterSelectOpen(false)}
       />
+      {!filterBy.disableScope &&
+        <DropdownButton
+          opts={scopeOptions}
+          label={scope.label}
+          selected={scope.value}
+          isOpen={isScopeSelectOpen}
+          onClick={() => setIsScopeSelectOpen(true)}
+          dropdownClassName="scopeSelect"
+          onClickOutside={() => {
+            setIsScopeSelectOpen(false);
+          }}          
+          overrideTitleStyle={styles.customTitleStyle}
+          positions={["bottom", "right" ]}
+          customButtonClassName={styles.dropdownButtonOverride}
+          onSelect={(selectedScope) => {
+            const obj = scopeOptions.find((s) => selectedScope === s.value)
+            onScopeSelect(obj);
+          }}
+          onClose={() => setIsScopeSelectOpen(false)}
+        />
+      }
     </Fragment>
   );
 }
 
 const styles = StyleSheet.create({
+  dropdownButtonOverride: {
+    whiteSpace: "nowrap",
+    backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    color: pillNavColors.secondary.filledTextColor,
+    borderRadius: 40,
+    fontWeight: 500,
+    marginRight: 8,
+    ":hover": {
+      borderRadius: 40,
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    }
+  },
+  customTitleStyle: {
+    fontWeight: 400,
+  },
   disableScope: {
     pointerEvents: "none",
     cursor: "not-allowed",

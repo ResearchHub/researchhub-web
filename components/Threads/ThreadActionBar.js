@@ -43,14 +43,8 @@ class ThreadActionBar extends Component {
   };
 
   renderCommentCount = () => {
-    const {
-      count,
-      comment,
-      onClick,
-      small,
-      showChildrenState,
-      onCountHover,
-    } = this.props;
+    const { count, comment, onClick, small, showChildrenState, onCountHover } =
+      this.props;
 
     if (count === 0) {
       return null;
@@ -73,21 +67,14 @@ class ThreadActionBar extends Component {
         onMouseEnter={onCountHover}
         onMouseLeave={onCountHover}
       >
-        <span
-          className={css(styles.iconChat, showChildrenState && styles.active)}
-          id={"chatIcon"}
-        >
+        <span className={css(styles.iconChat)} id={"chatIcon"}>
           {icons.comments}
         </span>
         <span
-          className={css(
-            styles.text,
-            small && styles.smallReply,
-            showChildrenState && styles.active
-          )}
+          className={css(styles.text, small && styles.smallReply)}
           id={"text"}
         >
-          {this.formatCommentCount(count, comment)}
+          {`Replies (${count}${showChildrenState ? "" : " hidden"})`}
         </span>
       </div>
     );
@@ -130,21 +117,6 @@ class ThreadActionBar extends Component {
         </span>
       </div>
     );
-  };
-
-  formatCommentCount = (count, isComment) => {
-    const suffix = isComment
-      ? count === 0 || count > 1
-        ? "Replies"
-        : "Reply"
-      : "Comments";
-
-    if (count < 1 || doesNotExist(count)) {
-      return `${suffix} (${count})`;
-    } else if (count < 2) {
-      return `${suffix} (${count})`;
-    }
-    return `${suffix} (${count})`;
   };
 
   toggleReplyBox = () => {
@@ -197,8 +169,8 @@ class ThreadActionBar extends Component {
               Respond
             </div>
           )}
-          {!this.props.hideCount && commentCount}
           {this.props.toggleEdit && editButton}
+          {!this.props.hideCount && commentCount}
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
@@ -239,7 +211,7 @@ const styles = StyleSheet.create({
     },
   },
   commentCountContainer: {
-    marginRight: 20,
+    marginLeft: 20,
     padding: 4,
     borderRadius: 3,
     cursor: "pointer",

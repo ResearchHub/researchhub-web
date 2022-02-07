@@ -40,7 +40,8 @@ type FormError = {
 };
 
 function validateEmail(email: string): boolean {
-  const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const re =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const splitEmail = email.split(".");
   const stringEndsWithEDU = splitEmail[splitEmail.length - 1] === "edu";
   return re.test(String(email).toLowerCase()) && stringEndsWithEDU;
@@ -105,17 +106,9 @@ function AuthorClaimPromptEmail({
       setIsSubmitting(true);
       createAuthorClaimCase({
         eduEmail: mutableFormFields.eduEmail,
-        onError: (err): void => {
-          let errMessage = "Something went wrong!";
-          const errorKeys = Object.keys(err.message);
-          for (let i = 0; i < errorKeys.length; i++) {
-            let curKey = errorKeys[i];
-            for (let j = 0; j < err.message[curKey].length; j++) {
-              errMessage = err.message[curKey][j];
-            }
-          }
-          setMessage(errMessage);
-          showMessage({ show: true, error: true });
+        onError: (errMsg: string): void => {
+          setMessage(errMsg);
+          showMessage({ show: true, error: true, timeout: 4000 });
           setIsSubmitting(false);
         },
         onSuccess: (): void => {
@@ -211,7 +204,7 @@ function AuthorClaimPromptEmail({
   );
 }
 
-const verifStyles = StyleSheet.create({
+export const verifStyles = StyleSheet.create({
   rootContainer: {
     alignItems: "center",
     backgroundColor: "#fff",
@@ -341,7 +334,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(AuthorClaimPromptEmail);
+export default connect(null, mapDispatchToProps)(AuthorClaimPromptEmail);

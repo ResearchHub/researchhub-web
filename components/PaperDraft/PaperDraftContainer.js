@@ -10,9 +10,9 @@ import { getDecorator } from "./util/PaperDraftDecoratorFinders";
 import {
   getBlockStyleFn,
   getHandleKeyCommand,
+  INLINE_COMMENT_MAP,
 } from "./util/PaperDraftTextEditorUtil";
 import { handleBlockStyleToggle } from "../PaperDraftInlineComment/util/PaperDraftInlineCommentUtil";
-import { INLINE_COMMENT_MAP } from "./util/PaperDraftTextEditorUtil";
 import { paperFetchHook } from "./api/PaperDraftPaperFetch";
 import PaperDraft from "./PaperDraft";
 import PaperDraftInlineCommentRelativeWrap from "../PaperDraftInlineComment/PaperDraftInlineCommentRelativeWrap";
@@ -52,24 +52,25 @@ export default function PaperDraftContainer({
       }),
     [seenEntityKeys, setActiveSection, setSeenEntityKeys]
   );
-  useEffect(
-    /* backend fetch */
-    () => {
-      paperDraftStore.set("paperID")(paperId);
-      inlineCommentStore.set("paperID")(paperId);
-      /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
-      paperFetchHook({
-        decorator,
-        paperId,
-        setEditorState,
-        setInitEditorState,
-        setIsFetching,
-        setPaperDraftExists,
-        setPaperDraftSections,
-      });
-    },
-    [paperId] /* intentionally hard enforcing only on paperID. */
-  );
+
+  // useEffect(
+  //   /* backend fetch */
+  //   () => {
+  //     paperDraftStore.set("paperID")(paperId);
+  //     inlineCommentStore.set("paperID")(paperId);
+  //     /* calvinhlee: the way decorator is attached to parsing here for waypoint needs to be taken out */
+  //     paperFetchHook({
+  //       decorator,
+  //       paperId,
+  //       setEditorState,
+  //       setInitEditorState,
+  //       setIsFetching,
+  //       setPaperDraftExists,
+  //       setPaperDraftSections,
+  //     });
+  //   },
+  //   [paperId] /* intentionally hard enforcing only on paperID. */
+  // );
 
   const shouldSavePaperSilently = getShouldSavePaperSilently({
     isDraftInEditMode,
@@ -125,8 +126,6 @@ export default function PaperDraftContainer({
           editorState,
           setEditorState,
         });
-      } else {
-        return () => {};
       }
     },
     [editorState, isDraftInEditMode, setEditorState]

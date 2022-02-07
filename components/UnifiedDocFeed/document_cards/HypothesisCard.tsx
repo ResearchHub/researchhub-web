@@ -25,6 +25,9 @@ import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVot
 import Ripples from "react-ripples";
 import Router from "next/router";
 import CitationConsensusItem from "~/components/Hypothesis/Citation/table/CitationConsensusItem";
+import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
+
 
 export type HypothesisCardProps = {
   aggregate_citation_consensus: any;
@@ -48,6 +51,7 @@ export type HypothesisCardProps = {
   unified_document: any;
   user_vote: any;
   user: any;
+  onBadgeClick: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -99,6 +103,7 @@ function HypothesisCard({
   titleAsHtml,
   user_vote: userVote,
   user: currentUser,
+  onBadgeClick,
 }: HypothesisCardProps) {
   if (created_by == null) {
     return null;
@@ -129,7 +134,7 @@ function HypothesisCard({
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>
+        <span className={css(styles.title)}>           
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -175,21 +180,21 @@ function HypothesisCard({
 
   const hubTags = useMemo(() => {
     const firstTagSet = hubs
-      .slice(0, 3)
+      .slice(0, 2)
       .map((tag, index) => (
         <HubTag
           key={`hub_${index}`}
           tag={tag}
           last={index === hubs.length - 1}
           labelStyle={
-            hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+            hubs.length >= 2 ? styles.smallerHubLabel : styles.hubLabel
           }
         />
       ));
     return (
       <div className={css(styles.tags)}>
         {firstTagSet}
-        {hubs.length > 3 && (
+        {hubs.length > 2 && (
           <HubDropDown
             hubs={hubs}
             labelStyle={styles.hubLabel}
@@ -271,29 +276,6 @@ function HypothesisCard({
   );
 
   const mobileCreatorTag = <MobileOnly> {creatorTag} </MobileOnly>;
-  const discussionCountComponent =
-    discussionCount === 0 ? null : (
-      <Link
-        href={"/[documentType]/[documentId]/[title]"}
-        as={`/${formattedDocType}/${id}/${slug}`}
-      >
-        <a
-          className={css(styles.link)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <div className={css(styles.discussion)}>
-            <div className={css(styles.discussionIcon)} id={"discIcon"}>
-              {PaperDiscussionIcon({ color: undefined })}
-            </div>
-            <div className={css(styles.discussionCount)} id={"discCount"}>
-              {discussionCount}
-            </div>
-          </div>
-        </a>
-      </Link>
-    );
 
   const navigateToPage = (e) => {
     if (e.metaKey || e.ctrlKey) {
@@ -324,7 +306,7 @@ function HypothesisCard({
         <div className={css(styles.leftSection)}>
           {desktopVoteWidget}
           <div className={css(styles.discussionCountContainer)}>
-            {discussionCountComponent}
+            <DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} />
           </div>
         </div>
       </DesktopOnly>
@@ -332,9 +314,21 @@ function HypothesisCard({
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
-              <MobileOnly> {discussionCountComponent}</MobileOnly>
+              
+              <MobileOnly>
+                <div className={css(styles.topRowLeft)}>
+                  {mobileVoteWidget}
+                  <DiscussionCount docType="hypothesis" slug={slug} id={id} count={discussionCount} />
+                </div>
+              </MobileOnly>
               <DesktopOnly> {mainTitle} </DesktopOnly>
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge
+                  label="Hypothesis"
+                  docType="hypothesis"
+                  onClick={onBadgeClick}
+                />
+              </div>              
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
@@ -361,7 +355,6 @@ function HypothesisCard({
                 />
               </div>
             </div>
-            {mobileCreatorTag}
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
         </div>
@@ -376,6 +369,7 @@ function HypothesisCard({
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
             {hubTags}
+            {mobileCreatorTag}
           </div>
         </MobileOnly>
       </div>
@@ -413,31 +407,6 @@ const styles = StyleSheet.create({
       backgroundColor: "#FAFAFA",
     },
   },
-  discussion: {
-    cursor: "pointer",
-    position: "relative",
-    fontSize: 14,
-    background: colors.LIGHTER_GREY_BACKGROUND,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 8,
-    borderRadius: 13,
-    "@media only screen and (max-width: 967px)": {
-      minWidth: "unset",
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 13,
-    },
-  },
-  discussionCount: {
-    color: "rgb(71 82 93 / 80%)",
-    fontWeight: "bold",
-    marginLeft: 6,
-  },
-  discussionIcon: {
-    color: "#ededed",
-  },
   discussionCountContainer: {
     marginTop: 8,
     marginRight: 17,
@@ -465,7 +434,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      marginTop: 8,
+      marginTop: 0,
     },
   },
   postContent: {},
@@ -531,11 +500,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     paddingBottom: 8,
+    justifyContent: "space-between",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      justifyContent: "space-between",
       paddingBottom: 10,
     },
   },
+  topRowLeft: {
+    display: "flex"
+  },  
   consensusContainer: {
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
@@ -559,7 +531,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "flex",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       marginTop: 0,
     },
   },
@@ -687,4 +659,9 @@ const styles = StyleSheet.create({
       width: "fit-content",
     },
   },
+  badgeWrapper: {
+    verticalAlign: "-3px",
+    display: "inline-block",
+    marginRight: -8,
+  },    
 });

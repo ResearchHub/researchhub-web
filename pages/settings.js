@@ -12,7 +12,12 @@ import ComponentWrapper from "~/components/ComponentWrapper";
 
 import { DIGEST_FREQUENCY } from "~/config/constants";
 import { defaultStyles, hubStyles, selectStyles } from "~/config/themes/styles";
-import { updateEmailPreference, fetchEmailPreference } from "~/config/fetch";
+import {
+  updateEmailPreference,
+  fetchEmailPreference,
+  subscribeToHub,
+  unsubscribeFromHub,
+} from "~/config/fetch";
 import {
   buildSubscriptionPatch,
   digestSubscriptionPatch,
@@ -21,10 +26,9 @@ import {
 import { AuthActions } from "~/redux/auth";
 import { MessageActions } from "~/redux/message";
 import { HubActions } from "~/redux/hub";
-import { subscribeToHub, unsubscribeFromHub } from "../../config/fetch";
 import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { capitalize } from "~/config/utils/string";
-import colors from "../../config/themes/colors";
+import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
@@ -82,9 +86,8 @@ class UserSettings extends Component {
     }
     fetchEmailPreference().then((preference) => {
       const frequency = this.getInitialFrequencyOption(preference);
-      const contentSubscriptions = this.getInitialContentSubscriptionOptions(
-        preference
-      );
+      const contentSubscriptions =
+        this.getInitialContentSubscriptionOptions(preference);
       const isOptedOut = this.getInitialIsOptedOut(preference);
       this.setState(
         {
@@ -826,7 +829,4 @@ const mapStateToProps = (state) => ({
   user: state.auth.user,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(withAlert()(UserSettings));
+export default connect(mapStateToProps, null)(withAlert()(UserSettings));

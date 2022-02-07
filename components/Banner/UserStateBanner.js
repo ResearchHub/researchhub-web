@@ -218,7 +218,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserStateBanner);
+export default connect(mapStateToProps, mapDispatchToProps)(UserStateBanner);

@@ -1,6 +1,7 @@
 import { Component, Fragment } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+
 import Link from "next/link";
 
 // Component
@@ -110,13 +111,12 @@ class WithdrawalModal extends Component {
   };
 
   checkNetwork = () => {
-    const that = this;
     if (!this.state.connectedMetaMask) {
       ethereum
         .send("eth_requestAccounts")
         .then((accounts) => {
           const account = accounts && accounts.result ? accounts.result[0] : [];
-          that.setState({
+          this.setState({
             connectedMetaMask: true,
             ethAccount: account,
           });
@@ -254,13 +254,8 @@ class WithdrawalModal extends Component {
     e.preventDefault();
 
     const { showMessage, setMessage } = this.props;
-    const {
-      buttonEnabled,
-      amount,
-      transactionFee,
-      userBalance,
-      ethAccount,
-    } = this.state;
+    const { buttonEnabled, amount, transactionFee, userBalance, ethAccount } =
+      this.state;
 
     if (!buttonEnabled) {
       showMessage({ show: false });
@@ -528,6 +523,8 @@ class WithdrawalModal extends Component {
             ethAddressOnChange={this.handleNetworkAddressInput}
             onSuccess={this.setTransactionHash}
             connectMetaMask={this.connectMetaMask}
+            setMessage={this.props.setMessage}
+            showMessage={this.props.showMessage}
             {...this.state}
           />
         </div>
@@ -708,14 +705,22 @@ class WithdrawalModal extends Component {
         <div
           className={css(
             styles.tab,
-            !depositScreen && styles.tabActive,
-            styles.oneTab
+            !depositScreen && styles.tabActive
+            // styles.oneTab
           )}
           onClick={() =>
             this.transitionScreen(() => this.setState({ depositScreen: false }))
           }
         >
-          Withdraw RSC
+          Withdraw
+        </div>
+        <div
+          className={css(styles.tab, depositScreen && styles.tabActive)}
+          onClick={() =>
+            this.transitionScreen(() => this.setState({ depositScreen: true }))
+          }
+        >
+          Deposit
         </div>
       </div>
     );
@@ -755,6 +760,7 @@ class WithdrawalModal extends Component {
         isOpen={modals.openWithdrawalModal}
         closeModal={this.closeModal}
         removeDefault={true}
+        modalStyle={styles.modal}
         modalContentStyle={styles.root}
       >
         {this.renderContent()}
@@ -764,6 +770,10 @@ class WithdrawalModal extends Component {
 }
 
 const styles = StyleSheet.create({
+  modal: {
+    transform: "translateX(-50%)",
+    top: "10%",
+  },
   root: {
     maxHeight: "90vh",
     overflowY: "scroll",
@@ -790,11 +800,15 @@ const styles = StyleSheet.create({
     height: 64,
     fontSize: 20,
     fontWeight: 500,
+    cursor: "pointer",
     backgroundColor: "rgba(17, 51, 83, 0.02)",
     borderLeft: "1px solid rgb(236, 239, 241)",
     borderRight: "1px solid rgb(236, 239, 241)",
     borderBottom: "1px solid rgb(236, 239, 241)",
     color: "rgba(17, 51, 83, 0.6)",
+    ":hover": {
+      color: colors.BLUE(),
+    },
   },
   tabActive: {
     color: colors.BLUE(),
@@ -1196,7 +1210,4 @@ const mapDispatchToProps = {
   setWalletLink: AuthActions.setWalletLink,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WithdrawalModal);
+export default connect(mapStateToProps, mapDispatchToProps)(WithdrawalModal);

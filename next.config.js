@@ -8,6 +8,7 @@ const { withSentryConfig } = require("@sentry/nextjs");
 
 const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
   webpack5: true,
+  // hmr: false,
   typescript: {
     ignoreBuildErrors: true,
   },
@@ -50,12 +51,25 @@ const moduleExports = withPlugins([[withTM], [withSourceMaps]], {
     SENTRY_RELEASE: process.env.SENTRY_RELEASE,
     REACT_APP_ENV: process.env.REACT_APP_ENV,
     HOST: process.env.HOST,
+    GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+    ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID,
+    ORCID_KID: process.env.ORCID_KID,
+    WEB3_INFURA_PROJECT_ID: process.env.WEB3_INFURA_PROJECT_ID,
+    RECAPTCHA_CLIENT_KEY: process.env.RECAPTCHA_CLIENT_KEY,
+    SIFT_BEACON_KEY: process.env.SIFT_BEACON_KEY,
+    ELASTIC_APM_URL: process.env.ELASTIC_APM_URL,
+    GA_TRACKING_ID: process.env.GA_TRACKING_ID,
   },
   async redirects() {
     return [
       {
         source: "/all",
         destination: "/",
+        permanent: true,
+      },
+      {
+        source: "/user/:authorId",
+        destination: "/user/:authorId/overview",
         permanent: true,
       },
     ];

@@ -548,7 +548,4 @@ const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AddAuthorModal);
+export default connect(mapStateToProps, mapDispatchToProps)(AddAuthorModal);

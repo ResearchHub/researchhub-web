@@ -59,9 +59,7 @@ class PaperPromotionBanner extends Component {
     // send first event
     fetch(API.GOOGLE_ANALYTICS({ manual: true }), API.POST_CONFIG(payload))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {})
-      .catch((err) => {});
+      .then(Helpers.parseJSON);
   };
 
   render() {

@@ -192,7 +192,7 @@ class FormSelect extends Component {
         </div>
         <Select
           components={{ ...configuredComponents }}
-          options={options && options}
+          options={options}
           onChange={(option) => this.handleOnChange(id, option)}
           styles={colorStyles}
           placeholder={placeholder}

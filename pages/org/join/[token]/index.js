@@ -11,7 +11,7 @@ import OrgAvatar from "~/components/Org/OrgAvatar";
 import GoogleLoginButton from "~/components/GoogleLoginButton";
 import { AuthActions } from "~/redux/auth";
 import HeadComponent from "~/components/Head";
-import { captureException } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
   const router = useRouter();
@@ -29,7 +29,7 @@ const Index = ({ auth, showMessage, setMessage, googleLogin, getUser }) => {
         showMessage({ show: true, error: true });
         setIsLoading(false);
         console.error(`Could not fetch org by ${router.query.token}`);
-        captureException({
+        captureEvent({
           error,
           msg: "Failed to fetch org by invite",
           tags: { token: router.query.token },

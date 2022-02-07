@@ -1,8 +1,10 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isServer } from "~/config/server/isServer";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 
@@ -10,8 +12,6 @@ const Index = (props) => {
   // NOTE: calvinhlee - being called
   return <HubPage home={true} {...props} />;
 };
-
-const isServer = () => typeof window === "undefined";
 
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
@@ -21,33 +21,31 @@ Index.getInitialProps = async (ctx) => {
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
   const defaultProps = {
-    initialFeed: null,
-    leaderboardFeed: null,
-    initialHubList: null,
     feed: 1,
+    filter: filterObj,
+    initialFeed: null,
+    hubId: null,
+    initialHubList: null,
+    leaderboardFeed: null,
     loggedIn: authToken !== undefined,
+    subfilters: filterObj,
+    page: 1,
+    query,
   };
 
   if (!isServer()) {
-    return {
-      ...defaultProps,
-      home: true,
-      page: 1,
-      feed: 1,
-      filter: filterObj,
-      query,
-    };
+    return defaultProps;
   }
 
   try {
-    const urlDocType = urlQuery.type || "all";
+    const urlDocType = getBEUnifiedDocType(urlQuery.type);
     const initialFeed = await fetchUnifiedDocFeed(
       {
-        hubId: null,
+        ...defaultProps,
         ordering: "hot",
         page: 1,
         subfilters: filterObj,
-        subscribedHubs: false,
+        subscribedHubs: true,
         timePeriod: getInitialScope(),
         type: urlDocType,
       },
@@ -57,7 +55,6 @@ Index.getInitialProps = async (ctx) => {
     return {
       ...defaultProps,
       initialFeed,
-      feed: 1,
     };
   } catch (error) {
     return defaultProps;

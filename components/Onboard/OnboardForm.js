@@ -661,7 +661,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OnboardForm);
+export default connect(mapStateToProps, mapDispatchToProps)(OnboardForm);

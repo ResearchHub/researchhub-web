@@ -16,9 +16,9 @@ export function removeLineBreaksInStr(str) {
   return str.replace(/\r?\n |\r/g, "");
 }
 
-export function truncateText(str) {
-  if (str && str.length >= 90) {
-    return str.slice(0, 90).trim() + "...";
+export function truncateText(str, limit = 90) {
+  if (str && str.length >= limit) {
+    return str.slice(0, limit).trim() + "...";
   }
   return str;
 }
@@ -28,5 +28,5 @@ export const isString = (str) => {
 };
 
 export const stripHTML = (str) => {
-  return (str || "").replace(/<[^>]*>?/gm, '');
-}
+  return (str || "").replace(/(<([^>]+)>)/gi, "");
+};

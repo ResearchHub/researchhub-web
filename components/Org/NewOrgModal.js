@@ -16,7 +16,7 @@ import { Helpers } from "@quantfive/js-web-config";
 import colors, { formColors } from "~/config/themes/colors";
 import OrgAvatar from "~/components/Org/OrgAvatar";
 import icons from "~/config/themes/icons";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 
 const STEPS = {
   ORG_NAME: 1,
@@ -96,7 +96,7 @@ const NewOrgModal = ({
     } catch (error) {
       setMessage("Failed to create org");
       showMessage({ show: true, error: true });
-      captureError({
+      captureEvent({
         error,
         msg: "Failed to create organization",
         data: { org, orgName, flowStep },

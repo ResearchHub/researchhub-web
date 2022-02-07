@@ -3,6 +3,7 @@ import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
 import { parseCookies, setCookie } from "nookies";
+import { breakpoints } from "~/config/themes/screen";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -133,29 +134,39 @@ const CreateFeedBanner = (props) => {
   }
 
   return (
-    <div
-      className={css(styles.column, remove && styles.remove)}
-      onClick={onBannerClick}
-    >
-      <span className={css(styles.closeButton)} onClick={onClose}>
-        {icons.times}
-      </span>
-      <div className={css(styles.banner)}>
-        <div className={css(styles.contentContainer)}>
-          <h1 className={css(styles.title)}>{renderTitle()}</h1>
-          <div ref={buttonRef}>{renderButton()}</div>
+    <div className={css(styles.bannerContainer)} id="create-feed-banner">
+      <div
+        className={css(styles.column, remove && styles.remove)}
+        onClick={onBannerClick}
+      >
+        <span className={css(styles.closeButton)} onClick={onClose}>
+          {icons.times}
+        </span>
+        <div className={css(styles.banner)}>
+          <div className={css(styles.contentContainer)}>
+            <h1 className={css(styles.title)}>{renderTitle()}</h1>
+            <div ref={buttonRef}>{renderButton()}</div>
+          </div>
+          <img
+            draggable={false}
+            src={"/static/icons/hubs-feed.svg"}
+            className={css(styles.bannerImage)}
+          />
         </div>
-        <img
-          draggable={false}
-          src={"/static/icons/hubs-feed.svg"}
-          className={css(styles.bannerImage)}
-        />
       </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  bannerContainer: {
+    marginBottom: 16,
+    boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
+      padding: 0,
+      width: "100%",
+    },
+  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -291,7 +302,4 @@ const mapDispatchToProps = {
   getUser: AuthActions.getUser,
 };
 
-export default connect(
-  mapStateToProps,
-  null
-)(CreateFeedBanner);
+export default connect(mapStateToProps, null)(CreateFeedBanner);

@@ -91,7 +91,4 @@ const mapStateToProps = (state) => ({
   balance: state.auth.user.balance,
 });
 
-export default connect(
-  mapStateToProps,
-  null
-)(Reputation);
+export default connect(mapStateToProps, null)(Reputation);

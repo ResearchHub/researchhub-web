@@ -34,7 +34,7 @@ class Footer extends Component {
                 index === 2 && styles.lastTab
               )}
               href={
-                "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93"
+                "https://researchhub.notion.site/ResearchHub-Help-7291ea62355a43e29112c91d11c21740"
               }
               target="_blank"
               rel="noreferrer noopener"

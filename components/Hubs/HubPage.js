@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
 import * as moment from "dayjs";
 import Ripples from "react-ripples";
-import * as Sentry from "@sentry/browser";
 import Router from "next/router";
 
 // Component
@@ -26,11 +25,7 @@ import { HubActions } from "~/redux/hub";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import colors from "~/config/themes/colors";
-import {
-  checkUserVotesOnPapers,
-  fetchUnifiedDocFeed,
-  fetchURL,
-} from "~/config/fetch";
+import { checkUserVotesOnPapers, fetchURL } from "~/config/fetch";
 import { getFragmentParameterByName } from "~/config/utils/parsers";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { faLessThanEqual } from "@fortawesome/free-solid-svg-icons";
@@ -97,12 +92,6 @@ class HubPage extends Component {
     const { isLoggedIn, initialFeed, hubState } = this.props;
     if (initialFeed) {
       this.detectPromoted(this.state.papers);
-    } else {
-      this.fetchPapers({ hub: this.props.hub });
-    }
-
-    if (isLoggedIn) {
-      this.checkUserVotes(this.state.papers);
     }
 
     const subscribed = hubState.subscribedHubs ? hubState.subscribedHubs : [];
@@ -131,17 +120,10 @@ class HubPage extends Component {
       prevProps.hub.id !== this.props.hub.id
     ) {
       if (this.props.hub.id) {
-        this.setState(
-          {
-            subscribe: this.props.hub
-              ? subscribedHubs[this.props.hub.id]
-              : null,
-            page: 1,
-          },
-          () => {
-            this.fetchPapers({ hub: this.props.hub });
-          }
-        );
+        this.setState({
+          subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
+          page: 1,
+        });
       }
     }
 
@@ -160,16 +142,6 @@ class HubPage extends Component {
         this.setState({
           subscribe: this.props.hub ? subscribedHubs[this.props.hub.id] : null,
         });
-      }
-    }
-
-    if (
-      prevState.scope !== this.state.scope ||
-      prevState.filterBy !== this.state.filterBy ||
-      prevState.feed !== this.state.feed
-    ) {
-      if (!this.initialFeed) {
-        this.fetchPapers({ hub: this.props.hub });
       }
     }
   };
@@ -226,73 +198,6 @@ class HubPage extends Component {
     // )
     //   .then(Helpers.checkStatus)
     //   .then(Helpers.parseJSON);
-  };
-
-  fetchPapers = ({ hub }) => {
-    const { papersLoading, filterBy, feed } = this.state;
-
-    if (papersLoading || (hub && !hub.id)) {
-      return null;
-    }
-
-    this.setState({
-      papersLoading: true,
-      doneFetching: false,
-    });
-
-    const PARAMS = {
-      timePeriod: this.calculateScope(),
-      ordering: filterBy.value,
-      page: 1,
-    };
-
-    if (feed === 0) {
-      PARAMS.subscribedHubs = true;
-    } else {
-      PARAMS.hubId = hub ? hub.id : 0;
-    }
-
-    if (filterBy.value === "pulled-papers") {
-      PARAMS.externalSource = "True";
-      PARAMS.ordering = "hot";
-    }
-
-    fetchUnifiedDocFeed(PARAMS)
-      .then((res) => {
-        const { count, next, results } = res;
-        const papers = results.data;
-
-        this.detectPromoted(papers);
-        this.setState(
-          {
-            count,
-            next,
-            papers,
-            papersLoading: false,
-            doneFetching: true,
-            noResults: results.no_results,
-            feedType: results.feed_type,
-          },
-          () => {
-            this.checkUserVotes(papers);
-          }
-        );
-      })
-      .catch((err) => {
-        const { response } = err;
-        // If we get a 401 error it means the token is expired.
-        if (response && response.status === 401) {
-          this.setState(
-            {
-              papersLoading: false,
-            },
-            () => {
-              this.fetchPapers({ hub: this.props.hub });
-            }
-          );
-        }
-        Sentry.captureException(err);
-      });
   };
 
   loadMore = () => {
@@ -598,17 +503,17 @@ class HubPage extends Component {
   };
 
   render() {
-    const { feed, isLatestActivityShown } = this.state;
+    const { feed } = this.state;
 
     const {
       auth,
       home,
       hub,
-      hubName,
       hubState,
+      initialFeed,
       initialHubList,
       leaderboardFeed,
-      initialFeed,
+      loggedIn,
     } = this.props;
 
     if (auth.user.moderator && filterOptions.length < 5) {
@@ -631,27 +536,8 @@ class HubPage extends Component {
       );
     }
 
-    const sampleFeed = this.state.feedType !== "subscribed" && feed === 0;
-
-    const hasSubscribed = process.browser
-      ? auth.authChecked
-        ? hubState.subscribedHubs.length > 0
-        : this.props.loggedIn
-      : this.props.loggedIn;
-
-    const loggedIn = process.browser
-      ? auth.authChecked
-        ? auth.isLoggedIn
-        : this.props.loggedIn
-      : this.props.loggedIn;
-
     return (
       <Fragment>
-        <MobileFeedTabs
-          activeLeft={feed === 0}
-          activeRight={feed === 1}
-          onFeedSelect={this.onFeedSelect}
-        />
         <div className={css(styles.content, styles.column)}>
           <div className={css(styles.banner)}>
             {home && <Head title={home && null} />}
@@ -677,12 +563,12 @@ class HubPage extends Component {
             </div>
             <UnifiedDocFeedContainer
               feed={feed}
-              home={this.props.home}
+              home={home}
               hubName={home ? (feed ? "ResearchHub" : "My Hubs") : hub.name}
               hubState={hubState}
               hub={hub}
-              preloadedDocData={initialFeed}
-              loggedIn={this.props.loggedIn}
+              loggedIn={loggedIn}
+              serverLoadedData={initialFeed}
               subscribeButton={
                 <SubscribeButton
                   {...this.props}

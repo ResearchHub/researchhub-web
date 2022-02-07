@@ -55,7 +55,7 @@ class DiscussionEntry extends Component {
         score: data.score,
         selectedVoteType,
         revealComment: comments.length > 0 && comments.length < 6,
-        highlight: newCard,
+        highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
         canEdit:
           data.source !== "twitter"
@@ -71,6 +71,27 @@ class DiscussionEntry extends Component {
           }, 10000);
       }
     );
+  };
+
+  shouldHighlight = () => {
+    const { newCard, currentAuthor, data, context } = this.props;
+    const isCurrentAuthor =
+      currentAuthor?.id === data.created_by.author_profile.id;
+    const comments = data.comments || [];
+
+    if (newCard) {
+      return true;
+    } else if (isCurrentAuthor && context === "DOCUMENT") {
+      return true;
+    } else if (
+      isCurrentAuthor &&
+      context === "AUTHOR_PROFILE" &&
+      comments.length > 0
+    ) {
+      return true;
+    } else {
+      return false;
+    }
   };
 
   componentDidUpdate = async (prevProps, prevState) => {
@@ -294,6 +315,8 @@ class DiscussionEntry extends Component {
       post,
       hypothesis,
       documentType,
+      currentAuthor,
+      noVote,
     } = this.props;
     let comments = this.state.comments;
 
@@ -302,7 +325,9 @@ class DiscussionEntry extends Component {
         return (
           <CommentEntry
             data={data}
+            noVote={noVote}
             hostname={hostname}
+            currentAuthor={currentAuthor}
             path={path}
             key={`comment_${comment.id}`}
             comment={comment}
@@ -455,9 +480,10 @@ class DiscussionEntry extends Component {
       store: inlineCommentStore,
     } = this.props;
     const commentCount =
-      this.state.comments.length > data.comment_count
-        ? this.state.comments.length
-        : data.comment_count;
+      data.comment_count +
+        data.comments
+          ?.map((comment) => comment.reply_count)
+          .reduce((a, b) => a + b, 0) || 0;
     const date = data.created_date;
     const title = data.title;
     const body = data.source === "twitter" ? data.plain_text : data.text;
@@ -484,8 +510,7 @@ class DiscussionEntry extends Component {
         className={css(
           styles.discussionCard,
           this.props.withBorder && styles.withBorder,
-          this.props.withPadding && styles.withPadding,
-          this.state.highlight && styles.highlight
+          this.props.withPadding && styles.withPadding
         )}
       >
         {noVote ? null : (
@@ -509,13 +534,7 @@ class DiscussionEntry extends Component {
                 )}
                 onClick={this.toggleCommentView}
               >
-                <div
-                  className={css(
-                    styles.threadline,
-                    this.state.revealComment && styles.activeThreadline,
-                    this.state.hovered && styles.hoverThreadline
-                  )}
-                />
+                <div className={css(styles.threadline)} />
               </div>
             </div>
           </div>
@@ -526,9 +545,9 @@ class DiscussionEntry extends Component {
         >
           <div
             className={css(
-              styles.highlight,
+              styles.mainContent,
               styles.metaData,
-              this.state.highlight && styles.active
+              this.state.highlight && styles.highlight
             )}
           >
             {!this.state.removed ? (
@@ -543,15 +562,16 @@ class DiscussionEntry extends Component {
                         null
                       )
                     }
-                    username={username}
+                    isCreatedByEditor={data?.is_created_by_editor}
                     data={data}
                     date={date}
+                    documentType={documentType}
+                    dropDownEnabled={true}
+                    hostname={hostname}
                     paper={paper}
                     post={post}
-                    documentType={documentType}
                     threadPath={path}
-                    hostname={hostname}
-                    dropDownEnabled={true}
+                    username={username}
                     // Moderator
                     metaData={metaData}
                     onRemove={this.onRemove}
@@ -720,12 +740,8 @@ const styles = StyleSheet.create({
   },
   topbar: {
     width: "100%",
-    margin: "10px 0px 5px 0",
     justifyContent: "flex-start",
     alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      marginTop: 12,
-    },
   },
   content: {
     width: "100%",
@@ -750,23 +766,25 @@ const styles = StyleSheet.create({
   },
   metaData: {
     width: "100%",
-    paddingTop: 2,
     boxSizing: "border-box",
     display: "table-cell",
     height: "100%",
   },
-  highlight: {
+  mainContent: {
     width: "100%",
+    padding: "10px 10px 8px 8px",
     boxSizing: "border-box",
+    marginLeft: 2,
+  },
+  highlight: {
+    padding: "10px 10px 10px 15px",
+    backgroundColor: colors.LIGHT_BLUE(0.2),
     borderRadius: 5,
-    padding: "0px 10px 10px 15px",
+    marginBottom: 10,
     "@media only screen and (max-width: 767px)": {
-      paddingLeft: 5,
+      paddingLeft: 10,
       paddingRight: 5,
       paddingBottom: 5,
-    },
-    "@media only screen and (max-width: 415px)": {
-      paddingRight: 0,
     },
   },
   hidden: {
@@ -799,12 +817,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     "@media only screen and (max-width: 415px)": {
       width: 35,
-    },
-  },
-  active: {
-    backgroundColor: colors.LIGHT_YELLOW(),
-    ":hover": {
-      backgroundColor: colors.LIGHT_YELLOW(),
     },
   },
   viewMoreContainer: {

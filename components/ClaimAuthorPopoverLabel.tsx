@@ -16,7 +16,7 @@ export default function ClaimAuthorPopoverLabel({
   auth,
   author,
   user,
-}: Props): ReactElement<typeof Fragment> {
+}: Props): ReactElement<typeof Fragment> | null {
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
   const [isClaimModalOpen, setIsClaimModalOpen] = useState<boolean>(false);
   const { first_name: authorFirstName, last_name: authorLastName } = author;
@@ -25,6 +25,10 @@ export default function ClaimAuthorPopoverLabel({
     setIsClaimModalOpen(!isClaimModalOpen);
     setIsPopoverOpen(false);
   }, [setIsPopoverOpen]);
+
+  if (!author?.id) {
+    return null;
+  }
 
   return (
     <Fragment>
@@ -68,8 +72,8 @@ export default function ClaimAuthorPopoverLabel({
               </PermissionNotificationWrapper>
             </div>
           }
-          positions={["top"]}
-          onClickOutside={() => setIsPopoverOpen(false)}
+          positions={["bottom", "top"]}
+          onClickOutside={(_event) => setIsPopoverOpen(false)}
           targetContent={
             <div
               className={css(styles.popoverTarget)}

@@ -440,7 +440,7 @@ class SummaryTab extends Component {
       }
 
       if (abstract || paper.abstract) {
-        let parsedAbstract = abstract; 
+        let parsedAbstract = abstract;
         parsedAbstract = stripHTML(parsedAbstract);
         parsedAbstract = parseMath(parsedAbstract);
 
@@ -679,7 +679,7 @@ class SummaryTab extends Component {
         className={css(this.containerStyle())}
         ref={this.props.descriptionRef}
       >
-        {!isEmpty(paper) &&
+        {!isEmpty(paper) && (
           <div className={css(this.sectionHeaderStyle())}>
             <h3 className={css(styles.sectionTitle)}>
               <span className={css(styles.titleRow)}>
@@ -692,7 +692,9 @@ class SummaryTab extends Component {
                     hideRipples={true}
                   >
                     <div className={css(styles.action, styles.editAction)}>
-                      <div className={css(styles.pencilIcon)}>{icons.pencil}</div>
+                      <div className={css(styles.pencilIcon)}>
+                        {icons.pencil}
+                      </div>
                     </div>
                   </PermissionNotificationWrapper>
                 )}
@@ -707,7 +709,7 @@ class SummaryTab extends Component {
               </span>
             </h3>
           </div>
-        }
+        )}
         {this.renderContent()}
         <ManageBulletPointsModal paperId={this.props.paper.id} />
       </div>
@@ -727,7 +729,6 @@ var styles = StyleSheet.create({
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    alignItems: "flex-end",
     position: "relative",
     boxSizing: "border-box",
     borderRadius: 4,
@@ -745,22 +746,12 @@ var styles = StyleSheet.create({
     width: "100%",
   },
   abstractContainer: {
-    width: "100%",
+    fontSize: 15,
     lineHeight: 2,
-    display: "flex",
-    justifyContent: "flex-start",
-    color: colors.BLACK(),
-    fontWeight: 400,
-    fontSize: 16,
-    width: "100%",
-    boxSizing: "border-box",
-    fontFamily: "CharterBT",
+    whiteSpace: "pre-line",
     wordBreak: "break-word",
-    display: "block",
-    borderSpacing: "initial",
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
-      width: "100%",
     },
   },
   abstractText: {
@@ -790,12 +781,11 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   formInputStyle: {
-    minHeight: "unset",
-    fontFamily: "CharterBT",
-    whiteSpace: "normal",
-    lineHeight: 2,
-    padding: 20,
     boxSizing: "border-box",
+    fontSize: 15,
+    lineHeight: 2,
+    minHeight: "unset",
+    padding: 20,
     width: "100%",
   },
   sectionHeader: {
@@ -1199,7 +1189,4 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SummaryTab);
+export default connect(mapStateToProps, mapDispatchToProps)(SummaryTab);

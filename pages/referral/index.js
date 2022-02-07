@@ -1,11 +1,10 @@
-import { useState, useRef, useEffect } from "react";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { useTransition, animated } from "react-spring";
-
-// Helpers
-import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
+import { isServer } from "~/config/server/isServer";
+import { useState, useRef, useEffect } from "react";
+import { useTransition, animated } from "react-spring";
+import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
 // Components
@@ -19,8 +18,6 @@ import LeaderboardPlaceholder from "../../components/Placeholders/LeaderboardPla
 import Button from "../../components/Form/Button";
 import Loader from "../../components/Loader/Loader";
 import HowItWorks from "../../components/Referral/HowItWorks";
-
-const isServer = () => typeof window === "undefined";
 
 const Index = ({ auth }) => {
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);

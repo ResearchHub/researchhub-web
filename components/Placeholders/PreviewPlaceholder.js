@@ -1,7 +1,13 @@
 import { StyleSheet, css } from "aphrodite";
 import { RectShape } from "react-placeholder/lib/placeholders";
 
-const PreviewPlaceholder = ({ color, hideAnimation, previewStyles, width = 80, height = 90 }) => {
+const PreviewPlaceholder = ({
+  color,
+  hideAnimation,
+  previewStyles,
+  width = 80,
+  height = 90,
+}) => {
   var animate = " show-loading-animation";
   if (hideAnimation) {
     animate = " ";

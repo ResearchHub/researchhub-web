@@ -4,35 +4,64 @@ import withRedux from "next-redux-wrapper";
 import { Provider } from "react-redux";
 import { configureStore } from "~/redux/configureStore";
 import "isomorphic-unfetch";
+import ReactGA from "react-ga";
+import { init as initApm } from "@elastic/apm-rum";
 import { useEffect, useState } from "react";
 
 // Components
 import Base from "./Base";
 
 // Stylesheets
+import "react-tagsinput/react-tagsinput.css";
+import "react-quill/dist/quill.snow.css";
+import "react-placeholder/lib/reactPlaceholder.css";
+import "@fortawesome/fontawesome-svg-core/styles.css";
+import "katex/dist/katex.min.css";
+
 import "./stylesheets/App.css";
 import "../components/Paper/progressbar.css";
-import "react-tagsinput/react-tagsinput.css";
 import "../components/SearchSuggestion/authorinput.css";
 import "../components/CKEditor/CKEditor.css";
+import "../components/EditorsDashboard/stylesheets/date.css";
 
 import "../components/Modals/Stylesheets/Dnd.css";
-import "react-quill/dist/quill.snow.css";
 import "../components/TextEditor/stylesheets/QuillTextEditor.css";
 import "../components/Paper/Tabs/stylesheets/ReactPdf.css";
 import "~/components/Paper/Tabs/stylesheets/paper.css";
 import "~/pages/paper/[paperId]/[paperName]/styles/anchor.css";
 import "~/pages/user/stylesheets/toggle.css";
-import "react-placeholder/lib/reactPlaceholder.css";
-import "@fortawesome/fontawesome-svg-core/styles.css";
-import "katex/dist/katex.min.css";
 
 // Redux
 import { MessageActions } from "~/redux/message";
 
+// Config
+import { SIFT_BEACON_KEY } from "~/config/constants";
+
+if (process.env.ELASTIC_APM_URL) {
+  initApm({
+    // Set required service name (allowed characters: a-z, A-Z, 0-9, -, _, and space)
+    serviceName:
+      process.env.REACT_APP_ENV === "staging"
+        ? "researchhub-staging-web"
+        : process.env.NODE_ENV === "production"
+        ? "researchhub-production-web"
+        : "researchhub-development-web",
+    environment:
+      process.env.REACT_APP_ENV === "staging"
+        ? "staging"
+        : process.env.NODE_ENV === "production"
+        ? "production"
+        : "development",
+    // Set custom APM Server URL (default: http://localhost:8200)
+    serverUrl: process.env.ELASTIC_APM_URL,
+
+    // Set service version (required for sourcemap feature)
+    serviceVersion: process.env.SENTRY_RELEASE,
+  });
+}
+
 const MyApp = ({ Component, pageProps, store }) => {
   const router = useRouter();
-
   const [prevPath, setPrevPath] = useState(router.asPath);
 
   // Scroll to top on page change
@@ -49,6 +78,20 @@ const MyApp = ({ Component, pageProps, store }) => {
   }, [router.asPath]);
 
   useEffect(() => {
+    connectSift();
+
+    if (process.env.GA_TRACKING_ID) {
+      ReactGA.initialize(process.env.GA_TRACKING_ID, {
+        testMode: process.env.NODE_ENV !== "production",
+      });
+    }
+
+    ReactGA.pageview(router.asPath);
+    router.events.on("routeChangeStart", (url) => {
+      store.dispatch(MessageActions.setMessage(""));
+      store.dispatch(MessageActions.showMessage({ show: true, load: true }));
+    });
+
     router.events.on("routeChangeComplete", (url) => {
       store.dispatch(MessageActions.showMessage({ show: false }));
     });

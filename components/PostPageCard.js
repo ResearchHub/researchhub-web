@@ -27,6 +27,8 @@ import removeMd from "remove-markdown";
 import Router from "next/router";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
+import DiscussionCount from "~/components/DiscussionCount";
+import { breakpoints } from "~/config/themes/screen";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -98,20 +100,21 @@ class PostPageCard extends Component {
 
   restoreThisPost = () => {
     let {
-      setMessage,
-      showMessage,
+      isEditorOfHubs,
       isModerator,
       isSubmitter,
       post,
       restorePost,
+      setMessage,
+      showMessage,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = false;
     }
 
     return fetch(
-      API.UNIFIED_DOC({ id: post.unified_document_id }),
+      API.RESTORE_DOC({ documentId: post.unified_document_id }),
       API.PATCH_CONFIG(params)
     )
       .then(Helpers.checkStatus)
@@ -120,25 +123,32 @@ class PostPageCard extends Component {
         setMessage("Post Successfully Restored.");
         showMessage({ show: true });
         restorePost && restorePost();
+      })
+      .catch((error) => {
+        setMessage("Post could not be restored");
+        showMessage({ show: true, error: true });
+        console.log(error);
+        Sentry.captureEvent(error);
       });
   };
 
   removeThisPost = () => {
     let {
-      setMessage,
-      showMessage,
+      isEditorOfHubs,
       isModerator,
       isSubmitter,
       post,
       removePost,
+      setMessage,
+      showMessage,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = true;
     }
 
     return fetch(
-      API.UNIFIED_DOC({ id: post.unified_document_id }),
+      API.CENSOR_DOC({ documentId: post.unified_document_id }),
       API.PATCH_CONFIG(params)
     )
       .then(Helpers.checkStatus)
@@ -149,6 +159,8 @@ class PostPageCard extends Component {
         removePost && removePost();
       })
       .catch((error) => {
+        setMessage("Post not removed");
+        showMessage({ show: true, error: true });
         console.log(error);
         Sentry.captureEvent(error);
       });
@@ -178,7 +190,7 @@ class PostPageCard extends Component {
   };
 
   sendPost = () => {
-    const { post } = this.props;
+    const { post, setMessage, showMessage } = this.props;
     const { postBody } = this.state;
 
     const params = {
@@ -192,10 +204,15 @@ class PostPageCard extends Component {
     };
 
     this.toggleShowPostEditor();
-
     return fetch(API.RESEARCHHUB_POSTS({}), API.POST_CONFIG(params))
       .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON);
+      .then(Helpers.parseJSON)
+      .catch((error) => {
+        setMessage("Could not save changes");
+        showMessage({ show: true, error: true });
+        console.log(error);
+        Sentry.captureEvent(error);
+      });
   };
 
   renderPostEditor = () => {
@@ -305,11 +322,22 @@ class PostPageCard extends Component {
   };
 
   renderActions = () => {
-    const { post, isModerator, flagged, setFlag, isSubmitter, user } =
-      this.props;
-    const uploadedById = post && post.created_by && post.created_by.id;
+    const {
+      post,
+      isEditorOfHubs,
+      isModerator,
+      flagged,
+      setFlag,
+      isSubmitter,
+      user,
+      hubs,
+    } = this.props;
+
+    const uploadedById =
+      post && post.created_by && post.created_by.author_profile.id;
     const isUploaderSuspended =
       post && post.created_by && post.created_by.is_suspended;
+
     const actionButtons = [
       {
         active: post.created_by && user.id === post.created_by.id,
@@ -367,7 +395,7 @@ class PostPageCard extends Component {
       //  ),
       //},
       {
-        active: isModerator || isSubmitter,
+        active: isModerator || isSubmitter || isEditorOfHubs,
         button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
@@ -700,6 +728,14 @@ class PostPageCard extends Component {
             <meta property="commentCount" content={post.discussion_count} />
             <div className={css(styles.voting)}>
               {voteWidget(false)}
+              <div className={css(styles.discussionCountWrapper)}>
+                <DiscussionCount
+                  docType="post"
+                  slug={post.slug}
+                  id={post.id}
+                  count={post.discussion_count}
+                />
+              </div>
               <PaperPromotionIcon post={post} />
             </div>
             <div
@@ -732,13 +768,27 @@ class PostPageCard extends Component {
                 <div className={css(styles.rightColumn, styles.mobile)}>
                   <div className={css(styles.votingMobile)}>
                     {voteWidget(true)}
+                    <div className={css(styles.discussionCountWrapper)}>
+                      <DiscussionCount
+                        docType="post"
+                        slug={post.slug}
+                        id={post.id}
+                        count={post.discussion_count}
+                      />
+                      <a
+                        href="#comments"
+                        className={css(styles.discussionText)}
+                      >
+                        <span>Join the Discussion</span>
+                      </a>
+                    </div>
                     <PaperPromotionIcon post={post} />
                   </div>
                 </div>
               </div>
             </div>
           </div>
-          <div className="ck-content">
+          <div className={css(styles.postBody) + " ck-content"}>
             {this.state.showPostEditor ? (
               this.renderPostEditor()
             ) : (
@@ -769,6 +819,21 @@ class PostPageCard extends Component {
 }
 
 const styles = StyleSheet.create({
+  discussionCountWrapper: {
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 1,
+      display: "flex",
+    },
+  },
+  discussionText: {
+    whiteSpace: "nowrap",
+    marginLeft: 12,
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginTop: 4,
+    textDecoration: "none",
+  },
   mainContainer: {
     display: "flex",
     width: "100%",
@@ -786,6 +851,9 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "visible",
     boxSizing: "border-box",
+  },
+  postBody: {
+    wordBreak: "break-word",
   },
   divider: {
     width: 44,

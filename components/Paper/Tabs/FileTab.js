@@ -310,7 +310,4 @@ const mapDispatchToProps = {
   openDndModal: ModalActions.openDndModal,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FileTab);
+export default connect(mapStateToProps, mapDispatchToProps)(FileTab);

@@ -36,9 +36,7 @@ export function formatUploadedDate(momentDate, removeText) {
 
 export function getInitialScope() {
   return {
-    start: moment()
-      .startOf("day")
-      .unix(),
+    start: moment().startOf("day").unix(),
     end: moment().unix(),
   };
 }
@@ -58,15 +56,9 @@ export function calculateScopeFromSlug(scopeId) {
 
   let now = moment();
   let today = moment().startOf("day");
-  let week = moment()
-    .startOf("day")
-    .subtract(7, "days");
-  let month = moment()
-    .startOf("day")
-    .subtract(30, "days");
-  let year = moment()
-    .startOf("day")
-    .subtract(365, "days");
+  let week = moment().startOf("day").subtract(7, "days");
+  let month = moment().startOf("day").subtract(30, "days");
+  let year = moment().startOf("day").subtract(365, "days");
 
   scope.end = now.unix();
 

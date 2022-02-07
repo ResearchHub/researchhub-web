@@ -160,7 +160,4 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ReCaptchaPrompt);
+export default connect(mapStateToProps, mapDispatchToProps)(ReCaptchaPrompt);

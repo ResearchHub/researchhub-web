@@ -18,18 +18,20 @@ export const getBlockStyleFn = (block) => {
   return customCss != null ? customCss : blockType;
 };
 
-export const getHandleKeyCommand = ({ editorState, setEditorState }) => (
-  command
-) => {
-  const newEditorState = RichUtils.handleKeyCommand(editorState, command);
-  if (newEditorState) {
-    setEditorState(newEditorState);
-    return true;
-  }
-  return false;
-};
+export const getHandleKeyCommand =
+  ({ editorState, setEditorState }) =>
+  (command) => {
+    const newEditorState = RichUtils.handleKeyCommand(editorState, command);
+    if (newEditorState) {
+      setEditorState(newEditorState);
+      return true;
+    }
+    return false;
+  };
 
-export const getHandleOnTab = ({ editorState, setEditorState }) => (event) => {
-  event && event.stopPropagation();
-  setEditorState(RichUtils.onTab(event, editorState, 4));
-};
+export const getHandleOnTab =
+  ({ editorState, setEditorState }) =>
+  (event) => {
+    event && event.stopPropagation();
+    setEditorState(RichUtils.onTab(event, editorState, 4));
+  };

@@ -299,7 +299,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DndModal);
+export default connect(mapStateToProps, mapDispatchToProps)(DndModal);

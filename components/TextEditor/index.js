@@ -45,7 +45,7 @@ function TextEditor(props) {
     summary,
     mediaOnly,
     setMessage,
-    showMessage
+    showMessage,
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
@@ -97,12 +97,7 @@ function TextEditor(props) {
   }
 
   function createUid() {
-    return (
-      "_" +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
+    return "_" + Math.random().toString(36).substr(2, 9);
   }
 
   return (
@@ -138,7 +133,7 @@ function TextEditor(props) {
       summary={summary && summary}
     />
   );
-};
+}
 
 TextEditor.propTypes = {
   canEdit: PropTypes.bool,
@@ -168,7 +163,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(TextEditor);
+export default connect(mapStateToProps, mapDispatchToProps)(TextEditor);

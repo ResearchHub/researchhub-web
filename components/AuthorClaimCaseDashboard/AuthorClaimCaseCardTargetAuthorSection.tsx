@@ -6,10 +6,12 @@ import icons from "../../config/themes/icons";
 import { ReactElement, SyntheticEvent, useMemo } from "react";
 
 type Props = {
+  caseCreatedDate: string;
   targetAuthor: TargetAuthor;
 };
 
 export default function AuthorClaimCaseCardTargetAuthorSection({
+  caseCreatedDate,
   targetAuthor,
   targetAuthor: { description, id, name },
 }: Props): ReactElement<"div"> {
@@ -43,6 +45,10 @@ export default function AuthorClaimCaseCardTargetAuthorSection({
         >
           <span>{name}</span>
         </a>
+      </div>
+      <div className={css(styles.marginBottom)}>
+        <span className={css(styles.fontGrey)}>{"Case Opened - "}</span>
+        <span>{caseCreatedDate}</span>
       </div>
       {authorEducationSummary}
       <div className={css(styles.description, styles.marginBottom)}>

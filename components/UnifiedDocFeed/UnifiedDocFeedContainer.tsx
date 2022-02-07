@@ -1,53 +1,41 @@
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { filterOptions, scopeOptions } from "../../config/utils/options";
-import {
-  emptyFncWithMsg,
-  isNullOrUndefined,
-  nullthrows,
-  silentEmptyFnc,
-} from "../../config/utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
+import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
-import { NextRouter, useRouter } from "next/router";
+import { getDocumentCard } from "./utils/getDocumentCard";
+import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
+import {
+  PaginationInfo,
+  getFilterFromRouter,
+  useEffectForceUpdate,
+  useEffectPrefetchNext,
+  getPaginationInfoFromServerLoaded,
+  useEffectUpdateStatesOnServerChanges,
+} from "./utils/UnifiedDocFeedUtil";
+import { ReactElement, useMemo, useRef, useState } from "react";
 import {
   UnifiedDocFilterLabels,
   UnifiedDocFilters,
 } from "./constants/UnifiedDocFilters";
-import { connect } from "react-redux";
-import { getDocumentCard } from "./utils/getDocumentCard";
-import { ReactElement, useEffect, useMemo, useState, useRef } from "react";
-import colors from "../../config/themes/colors";
+import { useRouter } from "next/router";
+import colors from "~/config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
-import fetchUnifiedDocs from "./api/unifiedDocFetch";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
 import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { breakpoints } from "~/config/themes/screen";
+import dynamic from "next/dynamic";
+import { isServer } from "~/config/server/isServer";
 
-type PaginationInfo = {
-  isLoading: Boolean;
-  isLoadingMore: Boolean;
-  page: number;
-};
-
-const getFilterFromRouter = (router: NextRouter): string => {
-  const docType = router.query.type;
-  return isNullOrUndefined(docType)
-    ? UnifiedDocFilters.ALL
-    : Array.isArray(docType)
-    ? nullthrows(docType[0])
-    : nullthrows(docType);
-};
-
-const usePrevious = (value: any): any => {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-};
+const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
+  ssr: false,
+});
 
 function UnifiedDocFeedContainer({
   auth, // redux
@@ -56,290 +44,218 @@ function UnifiedDocFeedContainer({
   hub, // selected hub
   hubName,
   hubState, // hub data of current user
-  preloadedDocData, // Loaded on the server via getInitialProps on full page load
   isLoggedIn,
   loggedIn,
+  serverLoadedData, // Loaded on the server via getInitialProps on full page load
   subscribeButton,
 }): ReactElement<"div"> {
-  const { next: preloadNext, results: preloadResults } = preloadedDocData || {};
   const router = useRouter();
-  const isOnMyHubsTab = useMemo<Boolean>(
-    (): Boolean => ["/my-hubs"].includes(router.pathname),
-    [router.pathname]
-  );
-
+  const routerPathName = router.pathname;
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
   );
-
-  const [prevPath, setPrevPath] = useState<string>(router.asPath);
-  const afterFirstLoad = useRef(false);
-  const prevHub = usePrevious(hub);
-
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
+  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
+    getPaginationInfoFromServerLoaded(serverLoadedData)
+  );
+  const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
+    serverLoadedData?.results || []
+  );
+  const [docSetFetchedTime, setDocSetFetchedTime] = useState<number>(
+    Date.now()
+  );
+  const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(false);
 
-  const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>({
-    isLoading: isNullOrUndefined(preloadResults),
-    isLoadingMore: false,
-    page: 1,
+  const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
+    paginationInfo;
+  const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
+  const hubID = hub?.id ?? null;
+  const fetchParamsWithoutCallbacks = {
+    docTypeFilter: getBEUnifiedDocType(docTypeFilter),
+    hubID,
+    isLoggedIn,
+    page,
+    subFilters,
+    subscribedHubs: isOnMyHubsTab,
+  };
+
+  useEffectUpdateStatesOnServerChanges({
+    setUnifiedDocuments,
+    setPaginationInfo,
+    routePath: routerPathName,
+    serverLoadedData,
   });
 
-  const { page, isLoading, isLoadingMore } = paginationInfo;
-  const { filterBy } = subFilters;
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
+  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
+  const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
+  useEffectPrefetchNext({
+    fetchParams: {
+      ...fetchParamsWithoutCallbacks,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents: nextDocs,
+      }): void => {
+        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+        setPaginationInfo({
+          hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage,
+          page: updatedPage,
+        });
+      },
+      page: page + 1,
+    },
+    shouldPrefetch,
+  });
 
-  const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
-    preloadResults || []
-  );
-  const [nextResultSet, setNextResultSet] = useState<any>([]);
+  const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
 
-  useEffect((): void => {
-    if (afterFirstLoad.current) {
-      const filterValue = getFilterFromRouter(router);
+  /* Force update when hubs or docType changes. start from page 1 */
+  useEffectForceUpdate({
+    fetchParams: {
+      ...fetchParamsWithoutCallbacks,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: 1,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents,
+      }): void => {
+        setUnifiedDocsLoading(false);
+        setUnifiedDocuments(documents);
+        setPaginationInfo({
+          hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: 1,
+          page: updatedPage,
+        });
+      },
+      page: 1 /* when force updating, start from page 1 */,
+    },
+    firstLoad,
+    setUnifiedDocsLoading,
+    updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
+  });
 
-      resetState();
-      setDocTypeFilter(filterValue);
-
-      fetchUnifiedDocs({
-        ...getFetchParams(),
-        docTypeFilter: filterValue,
+  const onDocTypeFilterSelect = (selected) => {
+    if (docTypeFilter !== selected) {
+      setDocTypeFilter(selected);
+      setPaginationInfo({
+        hasMore: false,
+        isLoading: true,
+        isLoadingMore: false,
+        isServerLoaded: false,
+        localPage: 1,
+        page: 1,
       });
-      prefetchNextPage({
-        nextPage: 2,
-        fetchParams: { docTypeFilter: filterValue },
-      });
-    } else {
-      afterFirstLoad.current = true;
+      setDocSetFetchedTime(Date.now());
+
+      const query = { ...router.query, type: selected };
+      if (!query.type) {
+        delete query.type;
+      }
+
+      router.push(
+        {
+          pathname: routerPathName,
+          query,
+        },
+      );
     }
-  }, [router.query.type]);
+  }
 
   const hasSubscribed = useMemo(
-    (): Boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
+    (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
     [auth.authChecked, hubState.subscribedHubs]
-  );
-  const needsInitialFetch = useMemo(
-    (): Boolean => page === 1 && isLoading,
-    [page, isLoading]
   );
 
   const formattedMainHeader = useMemo(
     (): string =>
       formatMainHeader({
         feed,
-        filterBy,
-        hubName,
+        filterBy: subFilters.filterBy ?? null,
+        hubName: hubName ?? "",
         isHomePage,
       }),
-    [hubName, feed, filterBy, isHomePage]
+    [hubName, feed, subFilters, isHomePage]
   );
 
-  // When the hub changes, we want to automatically fetch new docs
-  useEffect((): void => {
-    const currPath = router.asPath;
-
-    if (prevPath !== currPath) {
-      resetState();
-      fetchUnifiedDocs({ ...getFetchParams() });
-      setPrevPath(router.asPath);
-    }
-  }, [hub]);
-
-  // Switching from "all" => slug hub unmounts the component
-  // to mitigate, we need to figure out if a fetch is needed.
-  useEffect((): void => {
-    if (preloadedDocData) {
-      setPaginationInfo({
-        isLoadingMore: false,
-        isLoading: false,
-        page: 1,
-      });
-    } else {
-      resetState();
-      fetchUnifiedDocs({ ...getFetchParams() });
-    }
-
-    prefetchNextPage({ nextPage: 2 });
-  }, []);
-
-  const prefetchNextPage = ({ nextPage, fetchParams = {} }): void => {
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      ...fetchParams,
-      page: nextPage,
-      onSuccess: ({ documents }) => {
-        setNextResultSet(documents);
-        setPaginationInfo({
-          isLoadingMore: false,
-          page: nextPage,
-        });
-      },
-      onError: () => {
-        setNextResultSet([]);
-      },
-    });
-  };
-
-  const handleLoadMore = (): void => {
-    if (isLoadingMore) {
-      return silentEmptyFnc();
-    }
-
-    // If we have more results loaded, use them
-    if (nextResultSet.length > 0) {
-      setUnifiedDocuments([...unifiedDocuments, ...nextResultSet]);
-      setNextResultSet([]);
-      prefetchNextPage({ nextPage: paginationInfo.page + 1 });
-    }
-  };
-
-  const handleDocTypeChange = (docTypeValue: string): void => {
-    resetState();
-    setDocTypeFilter(docTypeValue);
-
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, type: docTypeValue },
-      },
-      router.pathname + `?type=${docTypeValue}`
-    );
-  };
-
-  const handleFilterSelect = (_type: string, filterBy: any): void => {
-    const updatedSubFilters = { filterBy, scope: subFilters.scope };
-
-    resetState();
-    setSubFilters(updatedSubFilters);
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      subFilters: updatedSubFilters,
-    });
-
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { subFilters: updatedSubFilters },
-    });
-  };
-
-  const handleScopeSelect = (_type: string, scope: any): void => {
-    const updatedSubFilters = { filterBy: subFilters.filterBy, scope };
-
-    resetState();
-    setSubFilters(updatedSubFilters);
-    fetchUnifiedDocs({
-      ...getFetchParams(),
-      subFilters: updatedSubFilters,
-    });
-    prefetchNextPage({
-      nextPage: 2,
-      fetchParams: { subFilters: updatedSubFilters },
-    });
-  };
-
-  const resetState = (): void => {
-    setPaginationInfo({
-      isLoading: true,
-      isLoadingMore: false,
-      page: 1,
-    });
-    setUnifiedDocuments([]);
-    setNextResultSet([]);
-  };
-
-  const getFetchParams = (): any => {
-    const hubID = hub ? hub.id : null;
-
-    const onFetchSuccess = ({ page, documents, prevDocuments }): void => {
-      page > 1
-        ? setUnifiedDocuments([...prevDocuments, ...documents])
-        : setUnifiedDocuments(documents);
-
-      setPaginationInfo({
-        isLoading: false,
-        isLoadingMore: false,
-        page,
-      });
-    };
-
-    const onFetchError = (error: Error): void => {
-      emptyFncWithMsg(error);
-      setPaginationInfo({
-        isLoading: false,
-        isLoadingMore: false,
-        page: paginationInfo.page,
-      });
-    };
-
-    return {
-      hubID,
-      prevDocuments: unifiedDocuments,
-      docTypeFilter,
-      subFilters,
-      isLoggedIn,
-      onSuccess: onFetchSuccess,
-      onError: onFetchError,
-      subscribedHubs: isOnMyHubsTab,
-      page: 1,
-    };
-  };
-
-  const docTypeFilterButtons = useMemo(() => {
-    return Object.keys(UnifiedDocFilters).map(
-      (filterKey: string): ReactElement<typeof UnifiedDocFeedFilterButton> => {
-        const filterValue = UnifiedDocFilters[filterKey];
-        return (
-          <div className={css(styles.feedButtonContainer)}>
-            <UnifiedDocFeedFilterButton
-              isActive={docTypeFilter === filterValue}
-              key={filterKey}
-              label={UnifiedDocFilterLabels[filterKey]}
-              onClick={() => handleDocTypeChange(filterValue)}
-            />
-          </div>
-        );
-      }
-    );
-  }, [docTypeFilter, router]);
-
-  const cards = getDocumentCard({
+  const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
+  const [cards, docSetFetchedTimeCheck] = getDocumentCard({
+    docSetFetchedTime,
     hasSubscribed,
     isLoggedIn,
     isOnMyHubsTab,
     setUnifiedDocuments,
-    unifiedDocumentData: unifiedDocuments,
+    onBadgeClick: onDocTypeFilterSelect,
+    unifiedDocumentData: renderableUniDoc,
   });
+
+  /* we need time check here to ensure that payload formatting does not lead to 
+  UI rendering timing issues since document objects & formmatting can be heavy */
+  const areCardsReadyToBeRendered = !unifiedDocsLoading;
 
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
-      <div className={css(styles.titleContainer)}>
-        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
-        {isHomePage ? null : (
-          <div className={css(styles.subscribeContainer)}>
-            {hub && subscribeButton}
-          </div>
-        )}
-        <div className={css(styles.subFilters)}>
-          <UnifiedDocFeedSubFilters
-            onSubFilterSelect={handleFilterSelect}
-            onScopeSelect={handleScopeSelect}
+      {!hasSubscribed ? (
+        <div>
+          {/* @ts-ignore */}
+          <CreateFeedBanner loggedIn={loggedIn} />
+        </div>
+      ) : null}
+      {isHomePage || isEmpty(hub)
+        ? <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+        : <FeedInfoCard
+            hub={hub}
+            hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+            isHomePage={isHomePage}
+            mainHeaderText={formattedMainHeader}
+          />
+      }
+      <div className={css(styles.buttonGroup)}>
+        <div className={css(styles.mainFilters)}>
+          <UnifiedDocFeedMenu
             subFilters={subFilters}
+            onDocTypeFilterSelect={onDocTypeFilterSelect}
+            onSubFilterSelect={(filterBy) => {
+              setSubFilters({ filterBy, scope: subFilters.scope });
+            }}
+            onScopeSelect={(scope) => {
+              setSubFilters({ filterBy: subFilters.filterBy, scope });
+            }}
           />
         </div>
       </div>
-      <div className={css(styles.buttonGroup)}>
-        <div className={css(styles.mainFilters)}>{docTypeFilterButtons}</div>
-      </div>
-      {!hasSubscribed ? (
-        <div>
-          <div className={css(styles.bannerContainer)} id="create-feed-banner">
-            {/* @ts-ignore */}
-            <CreateFeedBanner loggedIn={loggedIn} />
-          </div>
-        </div>
-      ) : null}
-      {needsInitialFetch ? (
+      {!areCardsReadyToBeRendered ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -352,7 +268,7 @@ function UnifiedDocFeedContainer({
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {!isLoggedIn && isOnMyHubsTab ? null : (
+      {!isLoggedIn && isOnMyHubsTab || unifiedDocsLoading ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
@@ -361,10 +277,15 @@ function UnifiedDocFeedContainer({
               size={25}
               color={colors.BLUE()}
             />
-          ) : nextResultSet.length > 0 ? (
+          ) : canShowLoadMoreButton ? (
             <Ripples
               className={css(styles.loadMoreButton)}
-              onClick={handleLoadMore}
+              onClick={(): void =>
+                setPaginationInfo({
+                  ...paginationInfo,
+                  localPage: localPage + 1,
+                })
+              }
             >
               {"Load More"}
             </Ripples>
@@ -390,14 +311,14 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     height: "100%",
     width: "100%",
-    "@media only screen and (min-width: 1200px)": {
+    [`@media only screen and (min-width: ${breakpoints.large.str})`]: {
       paddingLeft: 28,
       paddingRight: 28,
     },
-    "@media only screen and (max-width: 990px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       width: "100%",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       width: "100%",
     },
   },
@@ -409,6 +330,9 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 16,
     overflow: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column-reverse",
+    },
   },
   mainFilters: {
     alignItems: "center",
@@ -424,51 +348,9 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     marginLeft: "auto",
-
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       width: "100%",
       marginTop: 16,
-    },
-  },
-  titleContainer: {
-    display: "flex",
-    alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-    },
-  },
-  title: {
-    color: "#241F3A",
-    // width: "100%",
-    fontWeight: 400,
-    fontSize: 30,
-    padding: 0,
-    margin: 0,
-    textOverflow: "ellipsis",
-
-    "@media only screen and (max-width: 1149px)": {
-      fontSize: 30,
-    },
-    "@media only screen and (max-width: 767px)": {
-      fontSize: 25,
-      textAlign: "center",
-      justifyContent: "center",
-      whiteSpace: "pre-wrap",
-      wordBreak: "normal",
-      display: "flex",
-    },
-    "@media only screen and (max-width: 416px)": {
-      fontSize: 25,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
-    },
-  },
-  subscribeContainer: {
-    marginLeft: 16,
-    minWidth: 100,
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
     },
   },
   loadMoreButton: {
@@ -506,7 +388,7 @@ const styles = StyleSheet.create({
   bannerContainer: {
     marginBottom: 16,
     boxShadow: "0px 2px 4px rgba(185, 185, 185, 0.25)",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall})`]: {
       padding: 0,
       width: "100%",
     },
@@ -523,5 +405,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     marginRight: 24,
+  },
+  title: {
+    fontSize: 30,
+    fontWeight: 500,
+    textOverflow: "ellipsis",
+    marginBottom: 0,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      fontSize: 30,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 24,
+      marginTop: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
+      fontSize: 20,
+    },
   },
 });

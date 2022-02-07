@@ -214,7 +214,4 @@ const mapDispatchToProps = {
   removeBanner: BannerActions.removeBanner,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(SignUpOverlay);
+export default connect(mapStateToProps, mapDispatchToProps)(SignUpOverlay);

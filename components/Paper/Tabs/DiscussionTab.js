@@ -154,7 +154,9 @@ const DiscussionTab = (props) => {
                       documentType={documentType}
                       paper={paperState}
                       post={post}
+                      currentAuthor={props?.auth?.user?.author_profile}
                       hypothesis={hypothesis}
+                      context="DOCUMENT"
                     />
                   );
                 })
@@ -860,6 +862,9 @@ var styles = StyleSheet.create({
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
+    },
+    "@media only screen and (max-width: 415px)": {
+      padding: "25px 15px",
     },
   },
   addDiscussionContainer: {

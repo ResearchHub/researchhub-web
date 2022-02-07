@@ -19,30 +19,22 @@ import { isString } from "~/config/utils/string";
 
 const timeFilterOpts = [
   {
-    valueForApi: moment()
-      .startOf("day")
-      .format("YYYY-MM-DD"),
+    valueForApi: moment().startOf("day").format("YYYY-MM-DD"),
     value: "today",
     label: "Today",
   },
   {
-    valueForApi: moment()
-      .startOf("week")
-      .format("YYYY-MM-DD"),
+    valueForApi: moment().startOf("week").format("YYYY-MM-DD"),
     value: "this-week",
     label: "This Week",
   },
   {
-    valueForApi: moment()
-      .startOf("month")
-      .format("YYYY-MM-DD"),
+    valueForApi: moment().startOf("month").format("YYYY-MM-DD"),
     value: "this-month",
     label: "This Month",
   },
   {
-    valueForApi: moment()
-      .startOf("year")
-      .format("YYYY-MM-DD"),
+    valueForApi: moment().startOf("year").format("YYYY-MM-DD"),
     value: "this-year",
     label: "This Year",
   },
@@ -310,6 +302,7 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         key={`${dropdownKey}-${opt.value}`}
         label={opt.label}
         onClick={() => handleRemoveSelected({ opt, dropdownKey })}
+        onRemove={() => handleRemoveSelected({ opt, dropdownKey })}
       />
     );
   };

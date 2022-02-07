@@ -6,7 +6,7 @@ import nookies from "nookies";
 import { AUTH_TOKEN } from "~/config/constants";
 import { Helpers } from "@quantfive/js-web-config";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
-import { captureError } from "~/config/utils/error";
+import { captureEvent } from "~/config/utils/events";
 import {
   createNewNote,
   createNoteContent,
@@ -50,7 +50,7 @@ export async function getServerSideProps(ctx) {
     if (response.ok) {
       notes = parsed.results;
     } else {
-      captureError({
+      captureEvent({
         msg: "could not fetch org notes",
         data: { orgSlug },
       });
@@ -64,7 +64,7 @@ export async function getServerSideProps(ctx) {
       };
     }
   } catch (error) {
-    captureError({
+    captureEvent({
       msg: "failed to fetch org notes",
       data: { orgSlug },
     });

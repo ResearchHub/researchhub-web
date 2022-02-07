@@ -62,10 +62,10 @@ class Collapsible extends Component {
     if (prevProps.open !== this.props.open) {
       if (this.props.open === true) {
         this.openCollapsible();
-        this.props.onOpening();
+        this.props.onOpening && this.props.onOpening();
       } else {
         this.closeCollapsible();
-        this.props.onClosing();
+        this.props.onClosing && this.props.onClosing();
       }
     }
   }
@@ -117,10 +117,10 @@ class Collapsible extends Component {
     } else {
       if (this.state.isClosed === true) {
         this.openCollapsible();
-        this.props.onOpening();
+        this.props.onOpening && this.props.onOpening();
       } else {
         this.closeCollapsible();
-        this.props.onClosing();
+        this.props.onClosing && this.props.onClosing();
       }
     }
   }
@@ -150,10 +150,10 @@ class Collapsible extends Component {
         overflow: this.props.overflowWhenOpen,
         inTransition: false,
       });
-      this.props.onOpen();
+      this.props.onOpen && this.props.onOpen();
     } else {
       this.setState({ inTransition: false });
-      this.props.onClose();
+      this.props.onClose && this.props.onClose();
     }
   }
 
@@ -294,10 +294,10 @@ Collapsible.defaultProps = {
   contentInnerClassName: "",
   className: "",
   triggerSibling: null,
-  onOpen: () => {},
-  onClose: () => {},
-  onOpening: () => {},
-  onClosing: () => {},
+  onOpen: null,
+  onClose: null,
+  onOpening: null,
+  onClosing: null,
   tabIndex: null,
   contentContainerTagName: "div",
 };

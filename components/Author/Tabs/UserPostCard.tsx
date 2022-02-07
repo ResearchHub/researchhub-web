@@ -11,18 +11,21 @@ import colors, { genericCardColors } from "~/config/themes/colors";
 import DesktopOnly from "../../DesktopOnly";
 import HubDropDown from "../../Hubs/HubDropDown";
 import HubTag from "../../Hubs/HubTag";
-import icons from "~/config/themes/icons";
+import icons, { PaperDiscussionIcon } from "~/config/themes/icons";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import MobileOnly from "../../MobileOnly";
 import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
+import DiscussionCount from "~/components/DiscussionCount";
+import DocumentBadge from "~/components/DocumentBadge";
 
 export type UserPostCardProps = {
   boost_amount: number;
   created_by: any;
   created_date: any;
+  discussion_count: number;
   formattedDocType: string | null;
   hubs: any[];
   id: number;
@@ -39,6 +42,7 @@ export type UserPostCardProps = {
   unified_document: any;
   user_vote: any; // TODO: briansantoso - define type for user_vote
   user: any;
+  onBadgeClick: any;
 };
 
 const renderMetadata = (created_date, mobile = false) => {
@@ -74,6 +78,7 @@ function UserPostCard(props: UserPostCardProps) {
   const {
     created_by,
     created_date,
+    discussion_count,
     hubs,
     id,
     preview_img: previewImg,
@@ -89,6 +94,7 @@ function UserPostCard(props: UserPostCardProps) {
     user,
     user_vote: userVote,
     styleVariation,
+    onBadgeClick,
     /*
       In some contexts we want to wrap the title/renderable_text 
       with html. e.g. rendering search highlights.
@@ -122,7 +128,7 @@ function UserPostCard(props: UserPostCardProps) {
           e.stopPropagation();
         }}
       >
-        <span className={css(styles.title)}>
+        <span className={css(styles.title)}>   
           {titleAsHtml ? titleAsHtml : title ? title : ""}
         </span>
       </a>
@@ -178,21 +184,21 @@ function UserPostCard(props: UserPostCardProps) {
 
   const hubTags = useMemo(() => {
     const firstTagSet = hubs
-      .slice(0, 3)
+      .slice(0, 2)
       .map((tag, index) => (
         <HubTag
           key={`hub_${index}`}
           tag={tag}
           last={index === hubs.length - 1}
           labelStyle={
-            hubs.length >= 3 ? styles.smallerHubLabel : styles.hubLabel
+            hubs.length >= 2 ? styles.smallerHubLabel : styles.hubLabel
           }
         />
       ));
     return (
       <div className={css(styles.tags)}>
         {firstTagSet}
-        {hubs.length > 3 && (
+        {hubs.length > 2 && (
           <HubDropDown
             hubs={hubs}
             labelStyle={styles.hubLabel}
@@ -305,18 +311,35 @@ function UserPostCard(props: UserPostCardProps) {
       key={`${formattedDocType}-${id}`}
       data-test={isDevEnv() ? `document-${id}` : undefined}
     >
-      {desktopVoteWidget}
+      <DesktopOnly>
+        <div className={css(styles.leftSection)}>
+          {desktopVoteWidget}
+          <div className={css(styles.discussionCountContainer)}>
+            <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+          </div>
+        </div>
+      </DesktopOnly>
       <div className={css(styles.container)}>
         <div className={css(styles.rowContainer)}>
           <div className={css(styles.column, styles.metaData)}>
             <div className={css(styles.topRow)}>
-              {mobileVoteWidget}
+              
+              <MobileOnly>
+                <div className={css(styles.topRowLeft)}>
+                  {mobileVoteWidget}
+                  <DiscussionCount docType="post" slug={slug} id={id} count={discussion_count} />
+                </div>
+              </MobileOnly>
+              
               <DesktopOnly> {mainTitle} </DesktopOnly>
+              <div className={css(styles.badgeWrapper)}>
+                <DocumentBadge label="Post" docType="post" onClick={onBadgeClick} />
+              </div>                 
             </div>
             <MobileOnly> {mainTitle} </MobileOnly>
             {metadata}
             {summary}
-            {mobileCreatorTag}
+            
           </div>
           <DesktopOnly> {previewImgComponent} </DesktopOnly>
         </div>
@@ -326,14 +349,13 @@ function UserPostCard(props: UserPostCardProps) {
           </div>
           <DesktopOnly>
             <div className={css(styles.row)}>
-              {/* TODO: briansantoso - Hub tags go here */}
               {hubTags}
             </div>
           </DesktopOnly>
         </div>
         <MobileOnly>
           <div className={css(styles.bottomBar, styles.mobileHubTags)}>
-            {/* TODO: briansantoso - Hub tags go here */}
+            {mobileCreatorTag}
             {hubTags}
           </div>
         </MobileOnly>
@@ -388,7 +410,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     "@media only screen and (max-width: 767px)": {
-      marginTop: 8,
     },
   },
   postContent: {},
@@ -451,13 +472,16 @@ const styles = StyleSheet.create({
   },
   topRow: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "start",
+    justifyContent: "space-between",
     width: "100%",
     paddingBottom: 8,
     "@media only screen and (max-width: 767px)": {
-      justifyContent: "space-between",
       paddingBottom: 10,
     },
+  },
+  topRowLeft: {
+    display: "flex"
   },
   bottomBar: {
     display: "flex",
@@ -471,7 +495,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 767px)": {
       display: "flex",
       width: "100%",
-      justifyContent: "flex-end",
+      justifyContent: "space-between",
       marginTop: 0,
     },
   },
@@ -578,4 +602,19 @@ const styles = StyleSheet.create({
       width: "fit-content",
     },
   },
+  leftSection: {
+    width: 60,
+    display: "flex",
+    alignItems: "center",
+    flexDirection: "column",
+  },
+  discussionCountContainer: {
+    marginTop: 8,
+    marginRight: 17,
+  },
+  badgeWrapper: {
+    display: "inline-block",
+    verticalAlign: "-3px",
+    marginRight: -8,
+  }
 });

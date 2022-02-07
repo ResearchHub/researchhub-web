@@ -29,6 +29,7 @@ const ModeratorDeleteButton = (props) => {
     onAction,
     metaData,
     documentType,
+    onAfterAction,
   } = props;
 
   const containerClass = [
@@ -159,13 +160,8 @@ const ModeratorDeleteButton = (props) => {
   const deletePost = () => {
     showLoader();
     let query = buildQuery();
-    const {
-      paperId,
-      threadId,
-      commentId,
-      replyId,
-      documentId,
-    } = props.metaData;
+    const { paperId, threadId, commentId, replyId, documentId } =
+      props.metaData;
     return fetch(API.CENSOR_POST(query), API.DELETE_CONFIG())
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
@@ -202,7 +198,12 @@ const ModeratorDeleteButton = (props) => {
       buttonText: isSuspended ? "Reinstate" : "Remove",
       onClick: () => {
         showLoader();
-        return isSuspended ? reinstateUser() : removeUser();
+        if (onAction) {
+          return onAction();
+        } else {
+          isSuspended ? reinstateUser() : removeUser();
+          onAfterAction && onAfterAction();
+        }
       },
     });
   };
@@ -218,6 +219,7 @@ const ModeratorDeleteButton = (props) => {
       replyId,
       setIsSuspended,
     } = metaData;
+
     return fetch(
       API.USER({ route: "censor" }),
       API.POST_CONFIG({ authorId: authorId })

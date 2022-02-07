@@ -17,13 +17,15 @@ const AuthorAvatar = (props) => {
 
   const {
     author,
-    size = 30,
-    disableLink,
-    showModeratorBadge,
-    twitterUrl,
-    trueSize,
     border,
+    disableLink,
     dropShadow,
+    showModeratorBadge,
+    size = 30,
+    trueSize,
+    twitterUrl,
+    withAuthorName,
+    spacing,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -89,6 +91,9 @@ const AuthorAvatar = (props) => {
     );
   }
 
+  const avatarComponent = renderAvatar();
+  const fullName = `${author?.first_name ?? ""} ${author?.last_name ?? ""}`;
+
   if (twitterUrl) {
     return (
       <div className={css(styles.avatar)}>
@@ -98,7 +103,7 @@ const AuthorAvatar = (props) => {
           className={css(styles.atag)}
           rel="noreferrer noopener"
         >
-          {renderAvatar()}
+          {avatarComponent}
         </a>
       </div>
     );
@@ -107,7 +112,7 @@ const AuthorAvatar = (props) => {
   return (
     <div className={css(styles.avatar)}>
       {disableLink || !authorId ? (
-        renderAvatar()
+        avatarComponent
       ) : (
         <Link
           href={"/user/[authorId]/[tabName]"}
@@ -117,8 +122,16 @@ const AuthorAvatar = (props) => {
             href={`/user/${authorId}/overview`}
             className={css(styles.atag)}
             rel="noreferrer noopener"
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
           >
-            {renderAvatar()}
+            {avatarComponent}
+            {Boolean(withAuthorName) ? (
+              <span style={{ marginLeft: spacing ?? 8, whiteSpace: "nowrap" }}>
+                {fullName}
+              </span>
+            ) : null}
           </a>
         </Link>
       )}
@@ -148,7 +161,9 @@ const styles = StyleSheet.create({
     height: 20,
   },
   atag: {
+    alignItems: "center",
     color: "unset",
+    display: "flex",
     textDecoration: "unset",
   },
   userIcon: {

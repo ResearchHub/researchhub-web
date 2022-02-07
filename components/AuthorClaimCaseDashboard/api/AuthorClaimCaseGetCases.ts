@@ -44,7 +44,7 @@ export function getCases({
   onError = emptyFncWithMsg,
 }: ApiArgs): void {
   fetch(
-    API.MODERATORS_AUTHOR_CLAIM({ case_status: caseStatus }),
+    API.AUTHOR_CLAIM_MODERATORS({ case_status: caseStatus }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
@@ -96,7 +96,7 @@ export function getCases({
               name: `${requestorFirstName} ${requestorLastName}`,
               profileImg: requestorProfileImg,
               providedEmail: provided_email,
-              requestorAuthorID: requestorID,
+              requestorAuthorID,
             },
           };
         }

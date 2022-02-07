@@ -182,7 +182,6 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     alignItems: "center",
     padding: "15px 0",
     backgroundColor: "#FFF",
@@ -323,7 +322,4 @@ const mapDispatchToProps = {
   updateTopHubs: HubActions.updateTopHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(HubsList);
+export default connect(mapStateToProps, mapDispatchToProps)(HubsList);

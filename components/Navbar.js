@@ -34,8 +34,8 @@ import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Image from "next/image";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
+import HubSelector from "~/components/HubSelector";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -81,22 +81,19 @@ const Navbar = (props) => {
   const isUserModerator = !isNullOrUndefined(user)
     ? Boolean(user.moderator)
     : false;
-  let dropdown;
-  let avatar;
+  const dropdownRef = useRef();
+  const avatarRef = useRef();
 
   /**
    * When we click anywhere outside of the dropdown, close it
    * @param { Event } e -- javascript event
    */
   const handleOutsideClick = (e) => {
-    if (dropdown && !dropdown.contains(e.target)) {
+    if (
+      !dropdownRef.current?.contains(e.target) &&
+      !avatarRef.current?.contains(e.target)
+    ) {
       setOpenMenu(false);
-    }
-
-    if (avatar && avatar.contains(e.target)) {
-      // TODO: Is this doing what is intended? `avatar` is not a valid ref
-      // because AuthorAvatar is a function, not a class
-      e.stopPropagation();
     }
   };
 
@@ -132,7 +129,7 @@ const Navbar = (props) => {
     {
       label: "Help",
       route: "",
-      link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+      link: "https://researchhub.notion.site/ResearchHub-Help-7291ea62355a43e29112c91d11c21740",
       icon: "help",
       className: "lessImportantTab",
     },
@@ -145,7 +142,7 @@ const Navbar = (props) => {
     },
     isUserModerator
       ? {
-          label: "Mods",
+          label: "Editors",
           route: "/moderators/author-claim-case-dashboard?case_status=OPEN",
           icon: "info-circle",
           extra: () => {
@@ -203,7 +200,7 @@ const Navbar = (props) => {
       {
         label: "Settings",
         route: {
-          href: "/user/settings",
+          href: "/settings",
         },
         icon: "cog",
       },
@@ -457,7 +454,7 @@ const Navbar = (props) => {
         onStateChange={menuChange}
       >
         <Link href={"/"} as={`/`}>
-          <a className={css(styles.logoContainer, styles.mobileLogoContainer)}>
+          <a className={css(styles.logoContainer, styles.logoContainerForMenu)}>
             <RHLogo iconStyle={styles.logo} white={true} />
           </a>
         </Link>
@@ -483,10 +480,13 @@ const Navbar = (props) => {
         {/* <SectionBountyModal /> */}
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
-            <RHLogo iconStyle={styles.logo} />
+            <RHLogo iconStyle={styles.logo} withText={true} />
           </a>
         </Link>
         <div className={css(styles.tabs)}>{renderTabs()}</div>
+        <div className={css(styles.hubPopoverWrapper)}>
+          <HubSelector />
+        </div>
         <Search
           overrideStyle={styles.navbarSearchOverride}
           navbarRef={navbarRef}
@@ -498,21 +498,23 @@ const Navbar = (props) => {
               renderLoginButtons(isLoggedIn)
             ) : (
               <div className={css(styles.userDropdown)}>
-                <div
-                  className={css(styles.avatarContainer)}
-                  ref={(ref) => (avatar = ref)}
-                  onClick={toggleMenu}
-                >
-                  <AuthorAvatar
-                    author={user.author_profile}
-                    size={33}
-                    textSizeRatio={2.5}
-                    disableLink={true}
-                    showModeratorBadge={user && user.moderator}
-                  />
-                  <span className={css(styles.caret)}>
-                    {voteWidgetIcons.downvote}
-                  </span>
+                <div className={css(styles.navbarButtonContainer)}>
+                  <div
+                    className={css(styles.avatarContainer)}
+                    ref={avatarRef}
+                    onClick={toggleMenu}
+                  >
+                    <AuthorAvatar
+                      author={user.author_profile}
+                      size={33}
+                      textSizeRatio={2.5}
+                      disableLink
+                      showModeratorBadge={user && user.moderator}
+                    />
+                    <span className={css(styles.caret)}>
+                      {voteWidgetIcons.downvote}
+                    </span>
+                  </div>
                   <div className={css(styles.reputation)}>
                     <Reputation showBalance={true} />
                   </div>
@@ -545,7 +547,7 @@ const Navbar = (props) => {
                 {openMenu && (
                   <div
                     className={css(styles.dropdown)}
-                    ref={(ref) => (dropdown = ref)}
+                    ref={dropdownRef}
                     onClick={toggleMenu}
                   >
                     <Link
@@ -564,7 +566,7 @@ const Navbar = (props) => {
                         Profile
                       </div>
                     </Link>
-                    <Link href={"/user/settings"} as={`/user/settings`}>
+                    <Link href={"/settings"} as={`/settings`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
                           {icons.cog}
@@ -684,6 +686,12 @@ const burgerMenuStyle = {
 };
 
 const styles = StyleSheet.create({
+  hubPopoverWrapper: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
   navbarContainer: {
     width: "100%",
     padding: "20px 20px",
@@ -911,7 +919,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
   },
-  mobileLogoContainer: {
+  logoContainerForMenu: {
     position: "absolute",
     top: 6,
     left: 6,
@@ -921,8 +929,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   reputation: {
+    cursor: "pointer",
     marginLeft: 11,
-    // minWidth: 56,
   },
   dropdown: {
     position: "absolute",
@@ -994,15 +1002,17 @@ const styles = StyleSheet.create({
       background: "#eee",
     },
   },
+  navbarButtonContainer: {
+    alignItems: "center",
+    display: "flex",
+  },
   avatarContainer: {
+    alignItems: "center",
     cursor: "pointer",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
   },
   notification: {
     marginLeft: 15,
-    marginnRight: 15,
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },
@@ -1041,6 +1051,7 @@ const mapStateToProps = (state) => ({
   authChecked: state.auth.authChecked,
   walletLink: state.auth.walletLink,
   auth: state.auth,
+  hubState: state.hubs,
 });
 
 const mapDispatchToProps = {

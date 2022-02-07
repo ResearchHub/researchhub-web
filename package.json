@@ -1,13 +1,18 @@
 {
   "name": "researchhub",
   "scripts": {
-    "dev": "next dev",
+    "dev": "HOST=localhost:3000 next dev",
     "inspect": "NODE_OPTIONS='--inspect' next dev",
     "build": "next build",
     "start": "next start",
     "cypress:open": "cypress open --project $PWD/tests",
     "test": "cypress run --project $PWD/tests",
-    "build:prod": "docker build -t researchhub-web ."
+    "build:prod": "docker buildx build --platform=linux/amd64 --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
+    "build:staging": "docker buildx build --platform=linux/amd64 --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
+    "sitemap": "node scripts/createSitemap.js",
+    "sitemap-index": "node scripts/createSitemapIndex.js",
+    "lint": "./node_modules/.bin/eslint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^3.0.2",
@@ -45,6 +50,8 @@
     "js-sha3": "^0.8.0",
     "jsonwebtoken": "^8.5.1",
     "jwks-rsa": "^1.6.2",
+    "jwt-decode": "^3.1.2",
+    "katex": "^0.15.1",
     "lodash": "^4.17.21",
     "next": "^11.1.2",
     "next-compose-plugins": "^2.2.0",
@@ -63,6 +70,7 @@
     "react-beautiful-dnd": "^13.0.0",
     "react-collapsible": "^2.8.0",
     "react-confetti": "4.0.1",
+    "react-dates": "^21.8.0",
     "react-dom": "^17.0.2",
     "react-dropzone": "^10.1.9",
     "react-ga": "^2.7.0",
@@ -94,6 +102,7 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.3.0",
     "remove-markdown": "^0.3.0",
+    "safe-url": "^1.0.0",
     "slate": "0.47.8",
     "slate-html-serializer": "^0.8.13",
     "slate-plain-serializer": "^0.7.13",
@@ -133,7 +142,7 @@
     "npm": "==7.19.1"
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix",
-    "*.{js,css,md}": "prettier --write"
+    "*.{js,.tsx}": "eslint --cache --fix",
+    "*.{js,css,md,.tsx}": "prettier --write"
   }
 }

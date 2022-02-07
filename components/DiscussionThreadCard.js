@@ -93,8 +93,6 @@ const DiscussionThreadCard = (props) => {
     }
   }
 
-  const goToDiscussion = () => {};
-
   if (mobileView) {
     return (
       <div
@@ -102,7 +100,6 @@ const DiscussionThreadCard = (props) => {
           styles.discussionContainer,
           props.newCard && styles.newCard
         )}
-        onClick={goToDiscussion}
       >
         <DiscussionCard
           mobileView={true}
@@ -126,10 +123,11 @@ const DiscussionThreadCard = (props) => {
                 </span>
               </div>
               <DiscussionPostMetadata
-                authorProfile={data && data.createdBy.authorProfile}
-                username={username}
-                date={date}
+                authorProfile={data?.createdBy?.authorProfile}
                 data={data}
+                date={date}
+                isCreatedByEditor={data?.is_created_by_editor}
+                username={username}
                 metaData={{
                   contentType: "thread",
                   objectId: data.id,
@@ -164,7 +162,6 @@ const DiscussionThreadCard = (props) => {
           styles.discussionContainer,
           props.newCard && styles.newCard
         )}
-        onClick={goToDiscussion}
       >
         <DiscussionCard
           top={

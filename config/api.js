@@ -153,6 +153,7 @@ const routes = (BASE_URL) => {
           route: route,
         },
       };
+
       url = prepURL(url, params);
 
       return url;
@@ -181,6 +182,17 @@ const routes = (BASE_URL) => {
     GOOGLE_LOGIN: BASE_URL + "auth/google/login/",
     GOOGLE_YOLO: BASE_URL + "auth/google/yolo/",
     ORCID_CONNECT: BASE_URL + "auth/orcid/connect/",
+    RESEARCHHUB_EDITORS_BY_CONTRIBUTION: ({
+      hub_id,
+      order_by,
+      page = 1,
+      startDate,
+      endDate,
+    }) => {
+      return prepURL(BASE_URL + "moderators/get_editors_by_contributions/", {
+        querystring: { hub_id, order_by, page, startDate, endDate },
+      });
+    },
     RESEARCHHUB_POSTS: ({ created_by, post_id }) => {
       let url = BASE_URL + "researchhub_posts/";
       let params = {
@@ -241,6 +253,19 @@ const routes = (BASE_URL) => {
       } else {
         return `${BASE_URL}note_template/`;
       }
+    },
+    GET_ACTIVE_CONTRIBUTORS_FOR_EDITORS: ({ startDate, endDate, userIds }) => {
+      let url = `${BASE_URL}get_hub_active_contributors/`;
+
+      const params = {
+        querystring: {
+          startDate,
+          endDate,
+          userIds,
+        },
+      };
+      url = prepURL(url, params);
+      return url;
     },
     NOTE_PERMISSIONS: ({ noteId, method = "GET" }) => {
       if (method === "GET") {
@@ -351,15 +376,18 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    AUTHOR_ACTIVITY: ({ authorId, type = "overview" }) => {
+      return `${BASE_URL}author/${authorId}/contributions/?type=${type}`;
+    },
+
     AUTHOR_CLAIM_CASE: () => BASE_URL + `author_claim_case/`,
+    AUTHOR_CLAIM_CASE_COUNT: () => BASE_URL + "author_claim_case/count/",
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
-      BASE_URL + `author_claim_token_validation/`,
-    MODERATORS_AUTHOR_CLAIM: ({ case_status }) =>
+      BASE_URL + `author_claim_case/author_claim_token_validation/`,
+    AUTHOR_CLAIM_MODERATORS: ({ case_status }) =>
       !isNullOrUndefined(case_status)
-        ? BASE_URL + `moderators/author_claim_case/?case_status=${case_status}`
-        : BASE_URL + `moderators/author_claim_case/`,
-    MODERATORS_AUTHOR_CLAIM_CASE_COUNT: () =>
-      BASE_URL + "moderators/author_claim_case/counts/",
+        ? BASE_URL + `author_claim_case/moderator/?case_status=${case_status}`
+        : BASE_URL + `author_claim_case/moderator/`,
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
         BASE_URL + `author/${authorId}/get_authored_papers/?page=${page}`;
@@ -582,6 +610,8 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",
+    HUB_DELETE_EDITOR: BASE_URL + "hub/delete_editor/",
     SORTED_HUB: (params = {}) => {
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
@@ -796,7 +826,7 @@ const routes = (BASE_URL) => {
       return url;
     },
     WITHDRAWAL_FEE: BASE_URL + "withdrawal/transaction_fee/",
-    TRANSFER: BASE_URL + "transfer/",
+    TRANSFER: BASE_URL + "deposit/start_deposit_rsc/",
     USER_FIRST_COIN: BASE_URL + "user/has_seen_first_coin_modal/",
     USER_ORCID_CONNECT_MODAL: BASE_URL + "user/has_seen_orcid_connect_modal/",
     FLAG_PAPER: ({ paperId }) => {
@@ -825,24 +855,11 @@ const routes = (BASE_URL) => {
     CENSOR_PAPER_PDF: ({ paperId }) => {
       return BASE_URL + `paper/${paperId}/censor_pdf/`;
     },
-    CENSOR_POST: ({
-      documentType,
-      paperId,
-      threadId,
-      commentId,
-      replyId,
-      documentId,
-    }) => {
-      let url = buildPaperChainUrl(
-        documentType,
-        paperId,
-        documentId,
-        threadId,
-        commentId,
-        replyId
-      );
-
-      return url + "censor/";
+    CENSOR_DOC: ({ documentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${documentId}/censor/`;
+    },
+    RESTORE_DOC: ({ documentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${documentId}/restore/`;
     },
     CENSOR_HUB: ({ hubId }) => {
       return BASE_URL + `hub/${hubId}/censor/`;

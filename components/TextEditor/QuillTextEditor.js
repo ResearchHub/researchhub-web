@@ -51,7 +51,7 @@ class Editor extends Component {
             this.quillRef &&
             this.focusEditor();
           // This line leads to an infinite loop
-          // leaving here temporarily for debugging purposes  
+          // leaving here temporarily for debugging purposes
           // this.props.onChange && this.props.onChange(); // calculates the thread height
         }
       );
@@ -115,7 +115,7 @@ class Editor extends Component {
     input.setAttribute("type", "file");
     input.setAttribute("accept", "image/*");
     input.click();
-    input.onchange = async function() {
+    input.onchange = async function () {
       this.showLoader(true);
       const file = input.files[0];
       const fileString = await this.toBase64(file);
@@ -177,8 +177,6 @@ class Editor extends Component {
   }
 
   onEditorChange = (value, delta, source, editor) => {
-
-
     if (this.props.editing) {
       return this.setState(
         {
@@ -332,6 +330,9 @@ class Editor extends Component {
               <button className="ql-image" />
               <button className="ql-video"></button>
             </span>
+            <span class="ql-formats">
+              <button class="ql-clean"></button>
+            </span>
           </Fragment>
         )}
       </div>
@@ -404,7 +405,7 @@ class Editor extends Component {
       this.props.uid,
       this.imageHandler,
       this.linkHandler
-    )
+    );
     return (
       <div className={css(styles.editor, this.props.containerStyles)}>
         {this.props.commentEditor ? (
@@ -790,7 +791,4 @@ const mapDispatchToProps = {
   openRecaptchaPrompt: ModalActions.openRecaptchaPrompt,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(Editor);
+export default connect(null, mapDispatchToProps)(Editor);

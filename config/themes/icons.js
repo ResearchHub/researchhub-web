@@ -74,7 +74,10 @@ import {
   faUserSlash,
   faQuoteRight,
   faVideoPlus,
+  faFileEdit,
   faRss,
+  faLongArrowAltDown,
+  faLongArrowAltUp,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -86,6 +89,7 @@ import {
   faLongArrowLeft,
   faSearch,
   faPlus,
+  faBat,
   faPlusCircle,
   faTasksAlt,
   faThumbtack as faThumbtackOutline,
@@ -142,6 +146,8 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faLongArrowAltUp,
+  faLongArrowAltDown,
   faPenSquare,
   faDotCircle,
   faPlusReg,
@@ -272,6 +278,7 @@ const icons = {
   arrowToBottom: <FontAwesomeIcon icon={faArrowToBottom} />,
   asterisk: <FontAwesomeIcon icon={faAsterisk} />,
   ban: <FontAwesomeIcon icon={faBan} />,
+  bat: <FontAwesomeIcon icon={faBat} />,
   bell: <FontAwesomeIcon icon={faBell} />,
   bolt: <FontAwesomeIcon icon={faBolt} />,
   book: <FontAwesomeIcon icon={faBook} />,
@@ -304,7 +311,10 @@ const icons = {
   eye: <FontAwesomeIcon icon={faEye} />,
   eyeSlash: <FontAwesomeIcon icon={faEyeSlash} />,
   facebook: <FontAwesomeIcon icon={faFacebookF} />,
+  caretUp: <FontAwesomeIcon icon={faCaretUp} />,
+  caretDown: <FontAwesomeIcon icon={faCaretDown} />,
   file: <FontAwesomeIcon icon={faFileAlt} />,
+  fileEdit: <FontAwesomeIcon icon={faFileEdit} />,
   fileImport: <FontAwesomeIcon icon={faFileImport} />,
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
@@ -320,6 +330,8 @@ const icons = {
   lock: <FontAwesomeIcon icon={faLock} />,
   linkedIn: <FontAwesomeIcon icon={faLinkedinIn} />,
   longArrowLeft: <FontAwesomeIcon icon={faLongArrowLeft} />,
+  longArrowUp: <FontAwesomeIcon icon={faLongArrowAltUp} />,
+  longArrowDown: <FontAwesomeIcon icon={faLongArrowAltDown} />,
   manage: <FontAwesomeIcon icon={faTasksAlt} />,
   medium: <FontAwesomeIcon icon={faMedium} />,
   minus: <FontAwesomeIcon icon={faMinus} />,
@@ -426,15 +438,26 @@ export const textEditorIcons = {
   video: <FontAwesomeIcon icon={faVideoPlus} />,
 };
 
-export const RHLogo = ({ iconStyle, white }) => {
-  return (
-    <img
-      src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
-      className={css(styles.logo, iconStyle && iconStyle)}
-      draggable={false}
-      alt="RH Logo"
-    />
-  );
+export const RHLogo = ({ iconStyle, white, withText = true }) => {
+  if (withText) {
+    return (
+      <img
+        src={white ? "/static/white_logo.png" : "/static/ResearchHubLogo.webp"}
+        className={css(styles.logo, iconStyle && iconStyle)}
+        draggable={false}
+        alt="RH Logo"
+      />
+    );
+  } else {
+    return (
+      <img
+        src={"/static/ResearchHubIcon.png"}
+        className={css(styles.logoNoText, iconStyle && iconStyle)}
+        draggable={false}
+        alt="RH Logo"
+      />
+    );
+  }
 };
 
 export const BoltSvg = ({ height, width, color, opacity }) => {
@@ -457,24 +480,23 @@ export const BoltSvg = ({ height, width, color, opacity }) => {
   );
 };
 
-export const PaperDiscussionIcon = ({ color }) => {
+export const PaperDiscussionIcon = ({
+  color,
+  onClick,
+  withAnimation = false,
+  overrideStyle = null,
+}) => {
   return (
-    <svg
-      width={23}
-      height={20}
-      viewBox="0 0 25 22"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
+    <span
+      onClick={onClick}
+      className={css(
+        styles.discussionWrapper,
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
     >
-      <path
-        d="M12.509 1.65c1.894-.004 3.756.44 5.39 1.285s2.982 2.06 3.903 3.52c.921 1.46 1.382 3.11 1.334 4.78-.048 1.67-.602 3.298-1.605 4.715-.242.447-.36.939-.345 1.434.015.495.163.98.432 1.415a13.22 13.22 0 00-1.872-.165c-.58-.021-1.154.1-1.66.352a11.616 11.616 0 01-4.598 1.329 11.918 11.918 0 01-4.79-.61c-1.522-.527-2.886-1.356-3.984-2.423-1.098-1.068-1.902-2.344-2.348-3.73a8.28 8.28 0 01-.224-4.262A8.842 8.842 0 014.09 5.383c.982-1.152 2.253-2.089 3.713-2.736 1.46-.648 3.07-.99 4.706-.998zm0-1.65a13.875 13.875 0 00-5.572 1.144c-1.732.757-3.24 1.858-4.407 3.216C1.363 5.72.57 7.297.214 8.972a9.742 9.742 0 00.262 5.038c.53 1.639 1.483 3.147 2.785 4.405 1.303 1.259 2.92 2.233 4.723 2.847 1.803.613 3.743.85 5.668.69a13.64 13.64 0 005.42-1.613c.212-.082.444-.116.674-.099.73.026 1.457.107 2.172.242 1.522.264 3.057.638 3.057.638a26.203 26.203 0 01-1.41-2.42c-.387-.814-.662-1.584-.462-1.87 1.181-1.666 1.835-3.58 1.893-5.544.058-1.964-.482-3.905-1.563-5.623-1.082-1.718-2.665-3.15-4.586-4.145A13.783 13.783 0 0012.509 0z"
-        fill={color ? color : "#AFADB7"}
-      />
-      <path
-        d="M8.328 12.282a1.354 1.354 0 100-2.707 1.354 1.354 0 000 2.707zM12.686 12.282a1.354 1.354 0 100-2.707 1.354 1.354 0 000 2.707zM17.573 12.282a1.354 1.354 0 100-2.707 1.354 1.354 0 000 2.707z"
-        fill={color ? color : "#AFADB7"}
-      />
-    </svg>
+      {icons.chat}
+    </span>
   );
 };
 
@@ -656,6 +678,106 @@ export const CloseIcon = ({
   );
 };
 
+export const PaperIcon = ({
+  onClick,
+  width = 16,
+  height = 16,
+  withAnimation = true,
+  overrideStyle = null,
+  color = "#B0AFB8",
+}) => {
+  return (
+    <span
+      onClick={onClick}
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+    >
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 12 14"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M3.95019 9.92658H7.54095C7.81158 9.92658 8.036 9.69991 8.036 9.42658C8.036 9.15324 7.81158 8.93324 7.54095 8.93324H3.95019C3.67956 8.93324 3.45514 9.15324 3.45514 9.42658C3.45514 9.69991 3.67956 9.92658 3.95019 9.92658ZM6.18121 5.59991H3.95019C3.67956 5.59991 3.45514 5.82658 3.45514 6.09991C3.45514 6.37324 3.67956 6.59324 3.95019 6.59324H6.18121C6.45184 6.59324 6.67626 6.37324 6.67626 6.09991C6.67626 5.82658 6.45184 5.59991 6.18121 5.59991ZM10.8917 5.01699C11.0469 5.0152 11.2158 5.01325 11.3693 5.01325C11.5343 5.01325 11.6663 5.14659 11.6663 5.31325V10.6733C11.6663 12.3266 10.3396 13.6666 8.70265 13.6666H3.44852C1.73235 13.6666 0.333008 12.2599 0.333008 10.5266V3.33992C0.333008 1.68659 1.66634 0.333252 3.30991 0.333252H6.83466C7.00628 0.333252 7.13829 0.473252 7.13829 0.639919V2.78659C7.13829 4.00659 8.13499 5.00659 9.34291 5.01325C9.62505 5.01325 9.87379 5.01536 10.0915 5.01721C10.2608 5.01864 10.4114 5.01992 10.5442 5.01992C10.6382 5.01992 10.76 5.01851 10.8917 5.01699ZM11.0737 4.04392C10.5311 4.04592 9.89149 4.04392 9.43143 4.03925C8.7014 4.03925 8.10007 3.43192 8.10007 2.69458V0.937249C8.10007 0.649916 8.44529 0.507249 8.64265 0.714582C9.00021 1.09009 9.49171 1.60639 9.98083 2.1202C10.4678 2.6317 10.9523 3.14074 11.3001 3.50592C11.4928 3.70792 11.3516 4.04325 11.0737 4.04392Z"
+          fill="#B3B4BF"
+        />
+      </svg>
+    </span>
+  );
+};
+
+export const PostIcon = ({
+  onClick,
+  width = 18,
+  height = 18,
+  withAnimation = true,
+  overrideStyle = null,
+  color = "#B0AFB8",
+}) => {
+  return (
+    <span
+      onClick={onClick}
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+    >
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          fill-rule="evenodd"
+          clip-rule="evenodd"
+          d="M11.1099 1.34014C12.0689 1.2802 13.0146 1.61319 13.7272 2.26585C14.3798 2.97845 14.7128 3.92414 14.6596 4.8898V11.11C14.7195 12.0757 14.3798 13.0214 13.7338 13.734C13.0212 14.3866 12.0689 14.7196 11.1099 14.6597H4.88959C3.92391 14.7196 2.97822 14.3866 2.26561 13.734C1.61295 13.0214 1.27996 12.0757 1.3399 11.11V4.8898C1.27996 3.92414 1.61295 2.97845 2.26561 2.26585C2.97822 1.61319 3.92391 1.2802 4.88959 1.34014H11.1099ZM7.32038 11.2299L11.8024 6.73456C12.2087 6.32166 12.2087 5.65568 11.8024 5.24943L10.9367 4.38366C10.5238 3.97076 9.85777 3.97076 9.44486 4.38366L8.99865 4.83653C8.93205 4.90313 8.93205 5.01634 8.99865 5.08294C8.99865 5.08294 10.0576 6.13518 10.0775 6.16182C10.1508 6.24174 10.1974 6.3483 10.1974 6.46817C10.1974 6.70792 10.0043 6.90772 9.75787 6.90772C9.64466 6.90772 9.5381 6.8611 9.46484 6.78784L8.35265 5.68232C8.29937 5.62904 8.20613 5.62904 8.15285 5.68232L4.97612 8.85903C4.75634 9.07881 4.6298 9.37184 4.62315 9.68484L4.58319 11.2632C4.58319 11.3498 4.60983 11.4297 4.66976 11.4896C4.7297 11.5496 4.80962 11.5829 4.8962 11.5829H6.46126C6.78093 11.5829 7.08728 11.4563 7.32038 11.2299Z"
+          fill={color}
+        />
+      </svg>
+    </span>
+  );
+};
+
+export const HypothesisIcon = ({
+  onClick,
+  width = 18,
+  height = 18,
+  withAnimation = true,
+  overrideStyle = null,
+  color = "#B0AFB8",
+}) => {
+  return (
+    <span
+      onClick={onClick}
+      className={css(
+        withAnimation && styles.withAnimation,
+        overrideStyle && overrideStyle
+      )}
+    >
+      <svg
+        width={width}
+        height={height}
+        viewBox="0 0 16 16"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M5.29446 12C5.09646 11.1513 4.20313 10.4573 3.83646 9.99998C3.20859 9.21551 2.81509 8.26963 2.7013 7.27129C2.58752 6.27296 2.75806 5.26279 3.1933 4.35715C3.62853 3.4515 4.31075 2.68723 5.16137 2.15237C6.01198 1.61751 6.99638 1.33382 8.00118 1.33398C9.00598 1.33415 9.99029 1.61815 10.8407 2.15328C11.6912 2.68841 12.3732 3.4529 12.8081 4.35869C13.243 5.26447 13.4133 6.27469 13.2992 7.27299C13.185 8.27129 12.7913 9.21705 12.1631 10.0013C11.7965 10.458 10.9045 11.152 10.7065 12H5.29379H5.29446ZM10.6671 13.3333V14C10.6671 14.3536 10.5267 14.6927 10.2766 14.9428C10.0266 15.1928 9.68742 15.3333 9.33379 15.3333H6.66713C6.31351 15.3333 5.97437 15.1928 5.72432 14.9428C5.47427 14.6927 5.33379 14.3536 5.33379 14V13.3333H10.6671ZM8.66713 6.66998V3.99998L5.66713 8.00332H7.33379V10.67L10.3338 6.66998H8.66713Z"
+          fill={color}
+        />
+      </svg>
+    </span>
+  );
+};
+
 export const DownIcon = ({
   onClick,
   withAnimation = true,
@@ -697,6 +819,11 @@ export const UpIcon = ({
 const styles = StyleSheet.create({
   iconWrapper: {
     padding: 8,
+    marginLeft: 8,
+    display: "inline-flex",
+  },
+  discussionWrapper: {
+    padding: 3,
     display: "inline-flex",
   },
   withAnimation: {
@@ -714,6 +841,10 @@ const styles = StyleSheet.create({
     display: "inline-block",
   },
   logo: {
+    transform: "scale(1)",
+    height: 33,
+  },
+  logoNoText: {
     transform: "scale(1)",
     height: 33,
   },

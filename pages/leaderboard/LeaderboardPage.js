@@ -25,6 +25,7 @@ import Head from "~/components/Head";
 import HeadComponent from "../../components/Head";
 import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
+import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 
 const filterOptions = [
   {
@@ -91,7 +92,7 @@ class Index extends Component {
       loadingMore: false,
       page: 1,
       next: null,
-      type: "users",
+      type: null,
     };
 
     Router.events.on("routeChangeComplete", (url) => {
@@ -104,6 +105,12 @@ class Index extends Component {
       { name: "Users", id: "users", type: "users", icon: icons.subscribers },
       { name: "Authors", id: "authors", type: "authors", icon: icons.userEdit },
       { name: "Papers", id: "papers", type: "papers", icon: icons.bookOpen },
+      {
+        name: "Editors",
+        id: "editors",
+        type: "editors",
+        icon: icons.starFilled,
+      },
     ];
   }
 
@@ -281,7 +288,9 @@ class Index extends Component {
         filterBy: filterBy ? filterBy : defaultFilterBy,
       },
       () => {
-        this.fetchLeaderboard(type);
+        if (type !== "editors") {
+          this.fetchLeaderboard(type);
+        }
       }
     );
   }
@@ -292,7 +301,9 @@ class Index extends Component {
     }
 
     if (prevState.type !== this.state.type) {
-      this.fetchLeaderboard(this.state.type);
+      if (this.state.type !== "editors") {
+        this.fetchLeaderboard(this.state.type);
+      }
     }
 
     if (prevProps.auth.isLoggedIn !== this.props.auth.isLoggedIn) {
@@ -508,6 +519,7 @@ class Index extends Component {
   renderSidebarEntry = () => {
     return this.items.map((item, i) => {
       const { name, icon, id } = item;
+      const isEditorTab = id === "editors";
       return (
         <Ripples
           className={css(
@@ -525,20 +537,29 @@ class Index extends Component {
               type: item.type,
             });
           }}
-          key={`${id}-${i}`}
         >
           <Link
-            href={{
-              pathname: "/leaderboard/[type]/[hub]/[scope]",
-              query: {
-                type: `${encodeURIComponent(item.type)}`,
-                hub: this.state.by.slug,
-                scope: this.convertToSlug(this.state.filterBy.value),
-              },
-            }}
-            as={`/leaderboard/${encodeURIComponent(item.type)}/${
-              this.state.by.slug
-            }/${this.convertToSlug(this.state.filterBy.value)}`}
+            href={
+              !isEditorTab
+                ? {
+                    pathname: "/leaderboard/[type]/[hub]/[scope]",
+                    query: {
+                      type: `${encodeURIComponent(item.type)}`,
+                      hub: this.state.by.slug,
+                      scope: this.convertToSlug(this.state.filterBy.value),
+                    },
+                  }
+                : {
+                    pathname: "/leaderboard/[type]",
+                  }
+            }
+            as={
+              !isEditorTab
+                ? `/leaderboard/${encodeURIComponent(item.type)}/${
+                    this.state.by.slug
+                  }/${this.convertToSlug(this.state.filterBy.value)}`
+                : `/leaderboard/editors`
+            }
           >
             <a className={css(styles.sidebarLink)}>
               <span className={css(styles.icon)}>{icon}</span>
@@ -684,13 +705,17 @@ class Index extends Component {
   };
 
   render() {
-    const mainFeed = this.renderMainFeed();
+    const isEditorTab = this.state.type === "editors";
+    const mainFeed = isEditorTab ? <EditorsDashboard /> : this.renderMainFeed();
+
     return (
       <Fragment>
-        <Head
-          title={"Leaderboard on Researchhub"}
-          description={"View the top categories on Researchhub"}
-        />
+        {!isEditorTab ? (
+          <Head
+            title={"Leaderboard on Researchhub"}
+            description={"View the top categories on Researchhub"}
+          />
+        ) : null}
         <ContentPage
           mainFeed={mainFeed}
           sidebar={
@@ -707,7 +732,7 @@ class Index extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   sidebarEntry: {
     fontSize: 16,
     fontWeight: 300,
@@ -821,7 +846,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mainFeedStyles = StyleSheet.create({
+export const mainFeedStyles = StyleSheet.create({
   column: {
     display: "flex",
     flexDirection: "column",
@@ -1032,7 +1057,6 @@ const mainFeedStyles = StyleSheet.create({
     paddingLeft: 30,
     paddingRight: 30,
     boxSizing: "border-box",
-    backgroundColor: "#FCFCFC",
     alignItems: "center",
     zIndex: 2,
     top: 65,
@@ -1181,7 +1205,6 @@ const mainFeedStyles = StyleSheet.create({
     width: "100%",
     boxSizing: "border-box",
     minHeight: "calc(100vh - 200px)",
-    backgroundColor: "#FCFCFC",
     paddingLeft: 50,
     paddingRight: 50,
     paddingBottom: 30,
@@ -1410,7 +1433,4 @@ const mapDispatchToProps = {
   getHubs: HubActions.getHubs,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Index);
+export default connect(mapStateToProps, mapDispatchToProps)(Index);

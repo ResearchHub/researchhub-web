@@ -7,6 +7,7 @@ import Router from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
+import { breakpoints } from "~/config/themes/screen";
 
 // Components
 import ActionButton from "~/components/ActionButton";
@@ -33,11 +34,11 @@ import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
 import { formatPublishedDate } from "~/config/utils/dates";
-import { removeLineBreaksInStr } from "~/config/utils/string";
+import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
-import { stripHTML } from "~/config/utils/string";
+import DiscussionCount from "~/components/DiscussionCount";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -59,8 +60,8 @@ class PaperPageCard extends Component {
       boostHover: false,
       title: {
         parsed: this.parseTitle(props?.paper?.title),
-        raw: props?.paper?.title
-      }
+        raw: props?.paper?.title,
+      },
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
@@ -130,7 +131,7 @@ class PaperPageCard extends Component {
       restorePaper,
     } = this.props;
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = false;
     }
 
@@ -146,15 +147,17 @@ class PaperPageCard extends Component {
 
   removePaper = () => {
     let {
-      setMessage,
-      showMessage,
+      isEditorOfHubs,
       isModerator,
       isSubmitter,
       paperId,
       removePaper,
+      setMessage,
+      showMessage,
     } = this.props;
+
     let params = {};
-    if (isModerator || isSubmitter) {
+    if (isModerator || isSubmitter || isEditorOfHubs) {
       params.is_removed = true;
     }
 
@@ -293,7 +296,15 @@ class PaperPageCard extends Component {
   };
 
   renderActions = () => {
-    const { paper, isModerator, flagged, setFlag, isSubmitter } = this.props;
+    const {
+      flagged,
+      isEditorOfHubs,
+      isModerator,
+      isSubmitter,
+      paper,
+      setFlag,
+    } = this.props;
+
     const { paper_title, title, uploaded_by } = paper || {};
     const uploadedById = uploaded_by && paper.uploaded_by.id;
     const isUploaderSuspended =
@@ -359,7 +370,7 @@ class PaperPageCard extends Component {
         ),
       },
       {
-        active: isModerator || isSubmitter,
+        active: isModerator || isSubmitter || isEditorOfHubs,
         button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
@@ -396,6 +407,7 @@ class PaperPageCard extends Component {
                 uploadedById={uploadedById}
                 isUploaderSuspended={isUploaderSuspended}
                 containerStyle={styles.moderatorContainer}
+                onAfterAction={this.removePaper}
                 iconStyle={styles.moderatorIcon}
                 actionType="user"
               />
@@ -598,8 +610,7 @@ class PaperPageCard extends Component {
       discussionCount,
     } = this.props;
     const { fetching, previews, previewAvailable, title } = this.state;
-    const { boost_amount, paper_title } = paper;
-    const promotedScore = score + boost_amount;
+    const { paper_title } = paper;
     const formattedPaperTitle =
       !isNullOrUndefined(title) && title.length > 0 ? title : paper_title || "";
 
@@ -632,7 +643,7 @@ class PaperPageCard extends Component {
               <meta property="commentCount" content={paper.discussion_count} />
               <div className={css(styles.voting)}>
                 <VoteWidget
-                  score={promotedScore}
+                  score={score}
                   onUpvote={upvote}
                   onDownvote={downvote}
                   selected={selectedVoteType}
@@ -640,6 +651,14 @@ class PaperPageCard extends Component {
                   type={"Paper"}
                 />
                 <PaperPromotionIcon paper={paper} isPaper />
+                <div className={css(styles.discussionCountWrapper)}>
+                  <DiscussionCount
+                    docType="paper"
+                    slug={paper.slug}
+                    id={paper.id}
+                    count={paper.discussion_count}
+                  />
+                </div>
               </div>
               <div
                 className={css(
@@ -674,7 +693,7 @@ class PaperPageCard extends Component {
                   <div className={css(styles.rightColumn, styles.mobile)}>
                     <div className={css(styles.votingMobile)}>
                       <VoteWidget
-                        score={promotedScore}
+                        score={score}
                         onUpvote={upvote}
                         onDownvote={downvote}
                         selected={selectedVoteType}
@@ -682,6 +701,20 @@ class PaperPageCard extends Component {
                         isPaper
                         type={"Paper"}
                       />
+                      <div className={css(styles.discussionCountWrapper)}>
+                        <DiscussionCount
+                          docType="paper"
+                          slug={paper.slug}
+                          id={paper.id}
+                          count={paper.discussion_count}
+                        />
+                        <a
+                          href="#comments"
+                          className={css(styles.discussionText)}
+                        >
+                          <span>Join the Discussion</span>
+                        </a>
+                      </div>
                       <PaperPromotionIcon paper={paper} isPaper />
                     </div>
                   </div>
@@ -722,6 +755,21 @@ class PaperPageCard extends Component {
 }
 
 const styles = StyleSheet.create({
+  discussionCountWrapper: {
+    marginTop: 10,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginTop: 1,
+      display: "flex",
+    },
+  },
+  discussionText: {
+    whiteSpace: "nowrap",
+    marginLeft: 12,
+    color: colors.BLACK(0.5),
+    fontSize: 14,
+    marginTop: 4,
+    textDecoration: "none",
+  },
   mainContainer: {
     display: "flex",
     width: "100%",
@@ -1432,7 +1480,4 @@ const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(PaperPageCard);
+export default connect(null, mapDispatchToProps)(PaperPageCard);

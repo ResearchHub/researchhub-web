@@ -188,7 +188,4 @@ const mapDispatchToProps = {
   updateState: TransactionActions.updateState,
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserTransaction);
+export default connect(mapStateToProps, mapDispatchToProps)(UserTransaction);

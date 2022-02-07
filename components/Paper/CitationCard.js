@@ -346,7 +346,4 @@ const mapDispatchToProps = {
   setMessage: MessageActions.setMessage,
 };
 
-export default connect(
-  null,
-  mapDispatchToProps
-)(CitationCard);
+export default connect(null, mapDispatchToProps)(CitationCard);

@@ -177,8 +177,5 @@ const mapDispatchToProps = {
 };
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps
-  )(OrcidConnectModal)
+  connect(mapStateToProps, mapDispatchToProps)(OrcidConnectModal)
 );

@@ -1,57 +1,53 @@
 import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getInitialScope } from "~/config/utils/dates";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { Helpers } from "@quantfive/js-web-config";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
 import API from "~/config/api";
 import Error from "next/error";
+import fetchHubFromSlug from "~/pages/hubs/api/fetchHubFromSlug";
 import Head from "~/components/Head";
 import HubPage from "~/components/Hubs/HubPage";
 import nookies from "nookies";
 import Router from "next/router";
 
-const isServer = () => typeof window === "undefined";
-
 class Index extends Component {
   static async getInitialProps(ctx) {
-    const { query, query: urlQuery } = ctx;
-    const { res, slug, name } = query;
+    const { query } = ctx;
+    const { res, slug, name, type } = query;
     const cookies = nookies.get(ctx);
     const authToken = cookies[AUTH_TOKEN];
-
-    let defaultProps = {
-      initialFeed: null,
-      leaderboardFeed: null,
-      initialHubList: null,
-    };
-
-    const currentHub = await fetch(API.HUB({ slug }), API.GET_CONFIG())
-      .then((res) => res.json())
-      .then((body) => body.results[0]);
-
-    if (!currentHub) {
-      throw 404;
-    }
+    const currentHub = await fetchHubFromSlug({ slug });
 
     if (!isServer()) {
       return {
         slug,
         name,
+        loggedIn: authToken !== undefined,
         initialProps: {},
         currentHub,
       };
     }
+
+    if (!currentHub) {
+      if (res) {
+        res.statusCode = 404;
+      }
+
+      return { error: true };
+    }
+
     try {
-      const urlDocType = getUnifiedDocType(urlQuery.type) || "all";
+      const urlDocType = getBEUnifiedDocType(type);
       const fetchFeedWithVotes = !isNullOrUndefined(authToken);
       const [initialFeed, leaderboardFeed, initialHubList] = await Promise.all([
         fetchUnifiedDocFeed(
           {
             // Initial Feed
-            hubId: currentHub.id,
+            hubId: currentHub?.id,
             ordering: "hot",
             timePeriod: getInitialScope(),
             type: urlDocType,
@@ -85,7 +81,11 @@ class Index extends Component {
         slug: null,
         name: null,
         currentHub,
-        initialProps: { ...defaultProps },
+        initialProps: {
+          initialFeed: null,
+          leaderboardFeed: null,
+          initialHubList: null,
+        },
         error: true,
       };
     }
@@ -112,7 +112,7 @@ class Index extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.initialProps.initialFeed) {
+    if (!this.props.initialProps?.initialFeed) {
       this.fetchHubInfo(this.state.slug);
     }
   }
@@ -131,7 +131,7 @@ class Index extends Component {
   }
 
   fetchHubInfo = async (name) => {
-    const currentHub = await fetchHub(name);
+    const currentHub = await fetchHubFromSlug({ slug: name });
     if (currentHub) {
       this.setState({
         currentHub,
@@ -180,20 +180,10 @@ class Index extends Component {
             }
           />
         )}
-        {/* {this.renderHub()} */}
         <HubPage hub={currentHub} slug={slug} {...this.props.initialProps} />
       </div>
     );
   }
-}
-
-function fetchHub(slug) {
-  return fetch(API.HUB({ slug }), API.GET_CONFIG())
-    .then(Helpers.checkStatus)
-    .then(Helpers.parseJSON)
-    .then((res) => {
-      return res.results[0]; // TODO: Shim and catch errors
-    });
 }
 
 export default Index;

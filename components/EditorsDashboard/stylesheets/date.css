@@ -1,0 +1,20 @@
+.DateRangePicker {
+  margin-right: 16px;
+}
+
+@media only screen and (max-width: 1023px) {
+  .DateRangePicker {
+    margin-right: 0px;
+  }
+}
+
+.DateRangePickerInput__withBorder {
+  border-color: rgb(232, 232, 242) !important;
+}
+
+.DateInput_input {
+  box-sizing: border-box;
+  height: 36px;
+
+  border: 0px !important;
+}

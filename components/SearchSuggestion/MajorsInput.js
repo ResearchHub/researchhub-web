@@ -136,15 +136,8 @@ class MajorsInput extends Component {
   };
 
   render() {
-    let {
-      containerStyle,
-      labelStyle,
-      label,
-      required,
-      index,
-      onClick,
-      value,
-    } = this.props;
+    let { containerStyle, labelStyle, label, required, index, onClick, value } =
+      this.props;
     let { searching, majors, showDropDown } = this.state;
     return (
       <div className={css(styles.container, containerStyle && containerStyle)}>
