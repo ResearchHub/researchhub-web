@@ -264,9 +264,9 @@ class WithdrawalModal extends Component {
       return;
     }
 
-    if (amount < 5000) {
+    if (amount < 100) {
       showMessage({ show: false });
-      setMessage("Withdrawal amount must be at least 5000 RSC");
+      setMessage("Withdrawal amount must be at least 100 RSC");
       showMessage({ show: true, error: true });
       return;
     }
