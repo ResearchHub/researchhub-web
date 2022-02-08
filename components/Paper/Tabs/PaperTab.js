@@ -255,7 +255,7 @@ function PaperTab(props) {
       />
     );
   }
-  console.warn("isEditorOfHubs: ", isEditorOfHubs);
+
   return (
     <div className={css(styles.container)} ref={containerRef}>
       <div className={css(styles.headerContainer)} ref={paperPdfRef}>
