@@ -122,20 +122,12 @@ class PaperPageCard extends Component {
   };
 
   restorePaper = () => {
-    let {
-      setMessage,
-      showMessage,
-      isModerator,
-      isSubmitter,
-      paperId,
-      restorePaper,
-    } = this.props;
-    let params = {};
-    if (isModerator || isSubmitter || isEditorOfHubs) {
-      params.is_removed = false;
-    }
+    const { setMessage, showMessage, paperId, restorePaper } = this.props;
 
-    return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
+    return fetch(
+      API.PAPER_CENSOR({ paperId, isRemoved: false }),
+      API.PATCH_CONFIG({ id: paperId })
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -146,22 +138,12 @@ class PaperPageCard extends Component {
   };
 
   removePaper = () => {
-    let {
-      isEditorOfHubs,
-      isModerator,
-      isSubmitter,
-      paperId,
-      removePaper,
-      setMessage,
-      showMessage,
-    } = this.props;
+    const { paperId, removePaper, setMessage, showMessage } = this.props;
 
-    let params = {};
-    if (isModerator || isSubmitter || isEditorOfHubs) {
-      params.is_removed = true;
-    }
-
-    return fetch(API.PAPER({ paperId }), API.PATCH_CONFIG(params))
+    return fetch(
+      API.PAPER_CENSOR({ paperId, isRemoved: true }),
+      API.PATCH_CONFIG({ id: paperId })
+    )
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((res) => {
@@ -294,7 +276,6 @@ class PaperPageCard extends Component {
       );
     }
   };
-
   renderActions = () => {
     const {
       flagged,
@@ -304,6 +285,7 @@ class PaperPageCard extends Component {
       paper,
       setFlag,
     } = this.props;
+
     const { paper_title, title, uploaded_by } = paper || {};
     const uploadedById = uploaded_by && paper.uploaded_by.id;
     const isUploaderSuspended =

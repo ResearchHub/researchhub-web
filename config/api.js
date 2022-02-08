@@ -354,7 +354,9 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-
+    PAPER_CENSOR: ({ paperId, isRemoved }) =>
+      BASE_URL +
+      `paper/${paperId}/${isRemoved ? "censor_paper" : "restore_paper"}/`,
     AUTHOR: ({ authorId }) => {
       let url = BASE_URL + `author/${authorId}`;
 
