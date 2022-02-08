@@ -13,22 +13,22 @@ import icons from "../../config/themes/icons";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { doesNotExist } from "~/config/utils/nullchecks";
+import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 
 const ModeratorDeleteButton = (props) => {
   const alert = useAlert();
   const {
-    isModerator,
     containerStyle,
+    documentType,
+    forceRender,
     icon,
     iconStyle,
-    labelStyle,
+    isEditorOfHubs,
+    isModerator,
     label,
-    forceRender,
-    user,
-    authorId,
-    onAction,
+    labelStyle,
     metaData,
-    documentType,
+    onAction,
     onAfterAction,
   } = props;
 
@@ -320,7 +320,7 @@ const ModeratorDeleteButton = (props) => {
     props.showMessage({ show: true, error: true, clickOff: true });
   };
 
-  if (isModerator || forceRender) {
+  if (isModerator || isEditorOfHubs || forceRender) {
     return (
       <Ripples className={css(containerClass)} onClick={performAction}>
         <span className={css(iconClass) + " modIcon"}>
