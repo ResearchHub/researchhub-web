@@ -134,6 +134,10 @@ class PaperPageCard extends Component {
         setMessage("Paper Successfully Restored.");
         showMessage({ show: true });
         restorePaper();
+      })
+      .catch((_error) => {
+        setMessage("Unable to Restore Paper.");
+        showMessage({ show: true });
       });
   };
 
@@ -150,6 +154,10 @@ class PaperPageCard extends Component {
         setMessage("Paper Successfully Removed.");
         showMessage({ show: true });
         removePaper();
+      })
+      .catch((_error) => {
+        setMessage("Unable to Remove Paper.");
+        showMessage({ show: true });
       });
   };
 
