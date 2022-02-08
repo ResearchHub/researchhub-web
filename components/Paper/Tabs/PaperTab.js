@@ -26,7 +26,14 @@ import { defaultStyles } from "~/config/themes/styles";
 import { openExternalLink, convertHttpToHttps } from "~/config/utils/routing";
 
 function PaperTab(props) {
-  const { paper, paperId, paperPdfRef, isModerator, updatePaperState } = props;
+  const {
+    paper,
+    paperId,
+    paperPdfRef,
+    isModerator,
+    updatePaperState,
+    isEditorOfHubs,
+  } = props;
   const alert = useAlert();
   const dispatch = useDispatch();
 
@@ -248,7 +255,7 @@ function PaperTab(props) {
       />
     );
   }
-
+  console.warn("isEditorOfHubs: ", isEditorOfHubs);
   return (
     <div className={css(styles.container)} ref={containerRef}>
       <div className={css(styles.headerContainer)} ref={paperPdfRef}>
@@ -256,17 +263,18 @@ function PaperTab(props) {
           <h3 className={css(styles.title)}>Paper PDF</h3>
           {file && renderDownloadPdf()}
         </div>
-        {file && isModerator && (
+        {file && (isModerator || isEditorOfHubs) && (
           <div className={css(styles.moderatorContainer)}>
             <ModeratorDeleteButton
-              label={`Remove PDF`}
-              labelStyle={styles.moderatorLabel}
+              actionType="pdf"
               containerStyle={styles.moderatorButton}
-              actionType={"pdf"}
+              icon=" "
+              iconStyle={styles.iconStyle}
+              isEditorOfHubs={isEditorOfHubs}
+              label="Remove PDF"
+              labelStyle={styles.moderatorLabel}
               metaData={{ paperId: props.paperId }}
               onRemove={onPdfRemove}
-              icon={" "}
-              iconStyle={styles.iconStyle}
             />
           </div>
         )}

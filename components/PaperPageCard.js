@@ -304,7 +304,6 @@ class PaperPageCard extends Component {
       paper,
       setFlag,
     } = this.props;
-
     const { paper_title, title, uploaded_by } = paper || {};
     const uploadedById = uploaded_by && paper.uploaded_by.id;
     const isUploaderSuspended =
