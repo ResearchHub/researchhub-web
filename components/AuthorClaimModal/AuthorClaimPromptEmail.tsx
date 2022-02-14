@@ -11,6 +11,7 @@ import { nullthrows } from "../../config/utils/nullchecks";
 import FormSelect from "../Form/FormSelect";
 import { breakpoints } from "../../config/themes/screen";
 import { MessageActions } from "../../redux/message";
+import { useRouter } from "next/router";
 
 export type AuthorClaimPromptEmailProps = {
   authorData: AuthorDatum[];
@@ -64,6 +65,7 @@ function AuthorClaimPromptEmail({
   setMessage,
   showMessage,
 }: AuthorClaimPromptEmailProps) {
+  const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
     eduEmail: true,
   });
@@ -86,6 +88,18 @@ function AuthorClaimPromptEmail({
     setShouldDisplayError(false);
   };
 
+  const buildClaimContext = () => {
+    let context = {};
+    if (router.query.paperId) {
+      context['contextContentType'] = 'paper';
+      context['contextContentId'] = router.query.paperId;
+    } else if (router.query.authorId) {
+      context['contextContentType'] = 'author';
+      context['contextContentId'] = router.query.authorId;
+    }
+    return context;
+  }
+
   const handleValidationAndSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
@@ -96,12 +110,15 @@ function AuthorClaimPromptEmail({
         showMessage({ show: true, error: true });
         return;
       }
+
+      const claimContext = buildClaimContext();
       const name =
         targetAuthor && targetAuthor.label && targetAuthor.label.split(" ");
       const author = {
         first_name: name && name.length > 0 ? name[0] : null,
         last_name: name && name.length > 1 ? name[1] : null,
       };
+
       setShouldDisplayError(false);
       setIsSubmitting(true);
       createAuthorClaimCase({
@@ -121,6 +138,7 @@ function AuthorClaimPromptEmail({
         ),
         userID,
         author,
+        ...claimContext,
       });
     }
   };

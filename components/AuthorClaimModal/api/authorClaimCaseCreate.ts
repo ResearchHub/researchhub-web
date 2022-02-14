@@ -11,6 +11,8 @@ type Args = {
   userID: ID;
   targetAuthorID: ID;
   author?: Object;
+  contextContentType: string;
+  contextContentId: ID;
 };
 
 type Params = {
@@ -21,6 +23,8 @@ type Params = {
   provided_email: string;
   target_author: ID;
   author?: Object;
+  context_content_type: string;
+  context_content_id: ID;  
 };
 
 export function createAuthorClaimCase({
@@ -30,6 +34,8 @@ export function createAuthorClaimCase({
   targetAuthorID,
   userID,
   author,
+  contextContentType,
+  contextContentId,
 }: Args) {
   let params: Params = {
     case_type: "AUTHOR_CLAIM",
@@ -46,6 +52,8 @@ export function createAuthorClaimCase({
       "EduEmail must be present to create AuthorClaimCase"
     ),
     target_author: targetAuthorID,
+    context_content_type: contextContentType, 
+    context_content_id: contextContentId, 
   };
 
   if (author) {
