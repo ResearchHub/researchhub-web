@@ -27,44 +27,44 @@ import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
 import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
 
-const filterOptions = [
-  {
-    value: "today",
-    label: "Today",
-  },
-  {
-    value: "past_week",
-    label: "Past Week",
-  },
-  {
-    value: "past_month",
-    label: "Past Month",
-  },
-  {
-    value: "past_year",
-    label: "Past Year",
-    disableScope: true,
-  },
-  {
-    value: "all_time",
-    label: "All Time",
-    disableScope: true,
-  },
-];
+// const filterOptions = [
+//   {
+//     value: "today",
+//     label: "Today",
+//   },
+//   {
+//     value: "past_week",
+//     label: "Past Week",
+//   },
+//   {
+//     value: "past_month",
+//     label: "Past Month",
+//   },
+//   {
+//     value: "past_year",
+//     label: "Past Year",
+//     disableScope: true,
+//   },
+//   {
+//     value: "all_time",
+//     label: "All Time",
+//     disableScope: true,
+//   },
+// ];
 
-const createdOptions = [
-  {
-    value: "created_date",
-    label: "Paper Submission Date",
-  },
-  {
-    value: "published_date",
-    label: "Paper Published Date",
-  },
-];
+// const createdOptions = [
+//   {
+//     value: "created_date",
+//     label: "Paper Submission Date",
+//   },
+//   {
+//     value: "published_date",
+//     label: "Paper Published Date",
+//   },
+// ];
 
-const createdByOptions = createdOptions[0];
-const defaultFilterBy = filterOptions[4];
+// const createdByOptions = createdOptions[0];
+// const defaultFilterBy = filterOptions[4];
 
 class Index extends Component {
   constructor(props) {
@@ -85,7 +85,7 @@ class Index extends Component {
       items: [],
       hubId: null,
       fetchingLeaderboard: true,
-      byOptions,
+      byOptions, // no use
       by: defaultBy,
       createdByOptions,
       filterBy: defaultFilterBy,
@@ -171,9 +171,9 @@ class Index extends Component {
       });
   };
 
-  convertToSlug = (value) => {
-    return value.split("_").join("-");
-  };
+  // convertToSlug = (value) => {
+  //   return value.split("_").join("-");
+  // };
 
   onFilterSelect = (option, type) => {
     let by = option;
