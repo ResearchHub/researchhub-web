@@ -56,6 +56,7 @@ export default function AuthorClaimCaseCard({
     );
   }, [caseStatus]);
 
+
   return (
     <div
       className={css(styles.authorClaimCaseCard)}
@@ -108,6 +109,7 @@ export default function AuthorClaimCaseCard({
             <AuthorClaimCaseCardTargetAuthorSection
               caseCreatedDate={formattedCreatedDate}
               targetAuthor={targetAuthor}
+              caseData={caseData}
             />
           </div>
         ) : null}

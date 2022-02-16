@@ -24,6 +24,7 @@ export type CaseData = {
   id: ID;
   status: string;
   updatedDate: string;
+  context: any;
 };
 
 export type AuthorClaimCase = {
@@ -60,6 +61,7 @@ export function getCases({
             status,
             target_author,
             updated_date,
+            context,
           } = caseData;
           const {
             description: tAuthorDescription,
@@ -84,6 +86,7 @@ export function getCases({
               id,
               status,
               updatedDate: updated_date,
+              context,
             },
             targetAuthor: {
               description: tAuthorDescription,
