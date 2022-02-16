@@ -400,7 +400,6 @@ function PaperUploadV2Update({
                   labelStyle={formGenericStyles.labelStyle}
                   onChange={handleInputChange}
                   placeholder="Enter DOI of paper"
-                  required={true}
                   value={doi}
                 />
               </span>
@@ -431,7 +430,6 @@ function PaperUploadV2Update({
               labelStyle={formGenericStyles.labelStyle}
               onChange={handleInputChange}
               placeholder="Enter DOI of paper"
-              required={true}
               value={doi}
             />
           </span>

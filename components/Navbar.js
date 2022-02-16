@@ -179,7 +179,7 @@ const Navbar = (props) => {
       {
         label: "Help",
         route: "",
-        link: "https://www.notion.so/ResearchHub-Help-a25e87a91d0449abb71b2b30ba0acf93",
+        link: "https://www.notion.so/researchhub/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0",
         icon: "help",
       },
       {
