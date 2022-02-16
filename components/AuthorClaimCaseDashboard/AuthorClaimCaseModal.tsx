@@ -47,8 +47,14 @@ export default function AuthorClaimModal({
     return (event: SyntheticEvent) => {
       event.stopPropagation(); /* prevents card collapse */
       setIsSubmitting(true);
+      let shouldNotifyUser = true;
+      let updateStatus = actionType;
+      if (actionType == AUTHOR_CLAIM_STATUS.CLOSED) {
+        shouldNotifyUser = false;
+        updateStatus = AUTHOR_CLAIM_STATUS.DENIED;
+      } 
       updateCaseStatus({
-        payload: { caseID, updateStatus: actionType },
+        payload: { caseID, updateStatus, shouldNotifyUser },
         onSuccess: () => {
           setNumNavInteractions(numNavInteractions + 1);
           setIsSubmitting(false);
@@ -82,7 +88,7 @@ export default function AuthorClaimModal({
           <div className={css(acceptRejectStyles.rootContainer)}>
             <div className={css(acceptRejectStyles.titleContainer)}>
               <div className={css(acceptRejectStyles.title)}>
-                {`Are you sure you want to ${verb} the following user?`}
+                {`Are you sure you want to ${verb} claim for the following user?`}
               </div>
             </div>
             <div className={css(acceptRejectStyles.userMediaContianer)}>
