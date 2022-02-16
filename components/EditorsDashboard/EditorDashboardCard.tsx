@@ -1,12 +1,12 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { ID } from "~/config/types/root_types";
+import { timeAgo } from "~/config/utils/dates";
+import { toTitleCase } from "~/config/utils/string";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
-import Link from "next/link";
-import numeral from "numeral";
-import { ID } from "~/config/types/root_types";
-import { breakpoints } from "~/config/themes/screen";
-import { timeAgo } from "~/config/utils/dates";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
 
 type Props = {
   authorProfile: any;
@@ -79,8 +79,15 @@ export default function EditorDashboardUserCard({
   };
 
   const hubActiveContributorsHTML = getHubActiveContributorsHTML();
-  const { id: authorID, first_name, last_name, isHubEditorOf } = authorProfile;
-  console.warn("authorProfile: ", authorProfile);
+  const {
+    id: authorID,
+    first_name,
+    last_name,
+    is_hub_editor_of: isHubEditorOf,
+  } = authorProfile;
+  const hubNames = (isHubEditorOf ?? [])
+    .map((hub: any): string => toTitleCase(hub?.name ?? ""))
+    .join(", ");
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorID}/overview`}>
       <a className={css(styles.link)}>
@@ -90,6 +97,9 @@ export default function EditorDashboardUserCard({
             <div>
               <div className={css(styles.name) + " clamp1"}>
                 {`${first_name ?? ""} ${last_name ?? ""}`}
+              </div>
+              <div className={css(styles.hubName) + " clamp1"}>
+                {`Editor of: ${hubNames}`}
               </div>
               <div className={css(styles.added)}>
                 <span className={css(styles.countResponse)}>
@@ -295,6 +305,13 @@ const styles = StyleSheet.create({
   name: {
     marginLeft: 16,
     fontWeight: 500,
+  },
+  hubName: {
+    marginLeft: 16,
+    fontSize: 14,
+    fontWeight: 500,
+    opacity: 0.8,
+    marginTop: 4,
   },
   rep: {
     marginLeft: "auto",
