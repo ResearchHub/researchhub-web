@@ -34,24 +34,25 @@ export default function EditorDashboardUserCard({
   submissionCount,
   supportCount,
 }: Props) {
-
-  const calcPercentDiff = (current, previous) => {
+  const calcPercentDiff = (current, previous): number => {
     if (current === 0) {
       if (previous > 0) {
         return -100;
-      }
-      else if (previous === 0) {
+      } else if (previous === 0) {
         return 0;
       }
     }
 
     const val = (current - previous) / Math.max(current, previous);
     const percent = (val * 100).toFixed(1);
-    return percent;
-  }
+    return parseFloat(percent);
+  };
 
   const getHubActiveContributorsHTML = () => {
-    const contributorPctDiff = calcPercentDiff(activeHubContributorCount, previousActiveHubContributorCount);
+    const contributorPctDiff = calcPercentDiff(
+      activeHubContributorCount,
+      previousActiveHubContributorCount
+    );
 
     return (
       <span
@@ -64,23 +65,22 @@ export default function EditorDashboardUserCard({
             : styles.contributorNoChange
         )}
       >
-        <span className={css(styles.arrowIcon)}>
-          {
-            contributorPctDiff > 0
-              ? <span>{icons.caretUp}</span>
-              : contributorPctDiff < 0 
-              ? <span>{icons.caretDown}</span>
-              : null
-          }
+        <span>
+          {contributorPctDiff > 0 ? (
+            <span>{icons.caretUp}</span>
+          ) : contributorPctDiff < 0 ? (
+            <span>{icons.caretDown}</span>
+          ) : null}
         </span>
         &nbsp;
         {Math.abs(contributorPctDiff)}%
       </span>
-    )
-  }
+    );
+  };
 
   const hubActiveContributorsHTML = getHubActiveContributorsHTML();
-  const { id: authorID, first_name, last_name } = authorProfile;
+  const { id: authorID, first_name, last_name, isHubEditorOf } = authorProfile;
+  console.warn("authorProfile: ", authorProfile);
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorID}/overview`}>
       <a className={css(styles.link)}>
@@ -96,14 +96,14 @@ export default function EditorDashboardUserCard({
                   added {timeAgo.format(new Date(editorAddedDate ?? null))}
                 </span>
               </div>
-              {activeHubContributorCount !== null &&
+              {activeHubContributorCount !== null && (
                 <div className={css(styles.contributorCountWrapper)}>
                   <span className={css(styles.contributorCount)}>
                     active hub contributors: {activeHubContributorCount}
                   </span>
                   {hubActiveContributorsHTML}
                 </div>
-              }
+              )}
             </div>
           </div>
           <div className={css(styles.contributionSection)}>
@@ -171,12 +171,12 @@ const styles = StyleSheet.create({
     minHeight: 72,
     padding: "8px 16px",
     [`@media only screen and (max-width: 1023px)`]: {
-      overflow: 'auto',
-      display: 'inline-flex',
-      flexDirection: 'column',
+      overflow: "auto",
+      display: "inline-flex",
+      flexDirection: "column",
       padding: 16,
-      width: '100%',
-      boxSizing: 'border-box',
+      width: "100%",
+      boxSizing: "border-box",
     },
   },
   borderTop: {
@@ -190,17 +190,17 @@ const styles = StyleSheet.create({
     height: 40,
     width: "100%",
     [`@media only screen and (max-width: 1023px)`]: {
-      flexDirection: 'column',
-      height: 'unset',
-      alignItems: 'flex-end',
-      justifyContent: 'unset',
+      flexDirection: "column",
+      height: "unset",
+      alignItems: "flex-end",
+      justifyContent: "unset",
     },
   },
   added: {
     marginLeft: 16,
     fontSize: 14,
     fontWeight: 500,
-    opacity: .8,
+    opacity: 0.8,
     marginTop: 4,
   },
   contributorPercentDiff: {
@@ -214,16 +214,15 @@ const styles = StyleSheet.create({
     color: colors.TEXT_GREY(0.8),
     [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       display: "none",
-    }
+    },
   },
-  contributorCount: {
-  },
+  contributorCount: {},
   contributorUpChange: {
     color: `rgb(25 160 40)`,
   },
   contributorNoChange: {
-    color: `${colors.ORANGE()}`,    
-  } , 
+    color: `${colors.ORANGE()}`,
+  },
   contributorDownChange: {
     color: `${colors.RED()}`,
   },
@@ -240,26 +239,26 @@ const styles = StyleSheet.create({
     },
     [`@media only screen and (max-width: ${breakpoints.desktop.int - 1}px)`]: {
       paddingRight: 0,
-      textAlign: 'right',
-      width: '100%',
+      textAlign: "right",
+      width: "100%",
       marginTop: 8,
-      display: 'flex',
+      display: "flex",
     },
   },
   mobileLabel: {
-    marginRight: 'auto',
-    color: 'rgb(36, 31, 58)',
-    opacity: .5,
+    marginRight: "auto",
+    color: "rgb(36, 31, 58)",
+    opacity: 0.5,
 
     [`@media only screen and (min-width: ${breakpoints.desktop.int}px)`]: {
-      display: 'none',
-    }
+      display: "none",
+    },
   },
   supportLabel: {},
   contributorCountLabel: {
     [`@media only screen and (min-width: ${breakpoints.desktop.str})`]: {
-      display: 'none',
-    }    
+      display: "none",
+    },
   },
   submissionLabel: {
     [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
@@ -268,7 +267,7 @@ const styles = StyleSheet.create({
       // fontSize: 14,
     },
     [`@media only screen and (max-width: ${breakpoints.desktop.int - 1}px)`]: {
-      width: '100%',
+      width: "100%",
       paddingRight: 0,
     },
   },
@@ -280,7 +279,7 @@ const styles = StyleSheet.create({
     width: "100%",
 
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      justifyContent: 'center',
+      justifyContent: "center",
       marginBottom: 4,
     },
   },
