@@ -88,18 +88,6 @@ function AuthorClaimPromptEmail({
     setShouldDisplayError(false);
   };
 
-  const buildClaimContext = () => {
-    let context = {};
-    if (router.query.paperId) {
-      context['contextContentType'] = 'paper';
-      context['contextContentId'] = router.query.paperId;
-    } else if (router.query.authorId) {
-      context['contextContentType'] = 'author';
-      context['contextContentId'] = router.query.authorId;
-    }
-    return context;
-  }
-
   const handleValidationAndSubmit = (e: SyntheticEvent): void => {
     e.preventDefault();
     if (Object.values(formErrors).every((el: boolean): boolean => !el)) {
@@ -110,14 +98,6 @@ function AuthorClaimPromptEmail({
         showMessage({ show: true, error: true });
         return;
       }
-
-      const claimContext = buildClaimContext();
-      const name =
-        targetAuthor && targetAuthor.label && targetAuthor.label.split(" ");
-      const author = {
-        first_name: name && name.length > 0 ? name[0] : null,
-        last_name: name && name.length > 1 ? name[1] : null,
-      };
 
       setShouldDisplayError(false);
       setIsSubmitting(true);
@@ -132,13 +112,9 @@ function AuthorClaimPromptEmail({
           setIsSubmitting(false);
           onSuccess();
         },
-        targetAuthorID: nullthrows(
-          nullthrows(targetAuthor).id,
-          "targetAuthorID must be present to make a request"
-        ),
         userID,
-        author,
-        ...claimContext,
+        targetAuthorName: targetAuthor.name,
+        targetPaperId: router.query.paperId,
       });
     }
   };

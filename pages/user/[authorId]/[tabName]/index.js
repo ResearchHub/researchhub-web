@@ -906,13 +906,6 @@ function AuthorPage(props) {
                   )}
                 </div>
                 {doesAuthorHaveUser && authorDescription}
-                {!doesAuthorHaveUser ? (
-                  <ClaimAuthorPopoverLabel
-                    auth={auth}
-                    author={author}
-                    user={user}
-                  />
-                ) : null}
               </div>
             </div>
             <div>

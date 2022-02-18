@@ -11,25 +11,16 @@ export type Requestor = {
   requestorAuthorID: ID;
 };
 
-export type TargetAuthor = {
-  description: string;
-  education: any;
-  headline: any;
-  id: ID;
-  name: string;
-};
-
 export type CaseData = {
   createdDate: string;
   id: ID;
   status: string;
   updatedDate: string;
-  context: any;
+  paper: any;
 };
 
 export type AuthorClaimCase = {
   caseData: CaseData;
-  targetAuthor: TargetAuthor;
   requestor: Requestor;
 };
 
@@ -59,18 +50,10 @@ export function getCases({
             provided_email,
             requestor,
             status,
-            target_author,
             updated_date,
-            context,
+            paper,
+            target_author_name,
           } = caseData;
-          const {
-            description: tAuthorDescription,
-            education: tAuthorEducation,
-            first_name: tAuthorFirstName,
-            headline: tAuthorHeadline,
-            id: tAuthorID,
-            last_name: tAuthorLastName,
-          } = target_author || {};
           const {
             id: requestorID,
             author_profile: {
@@ -86,14 +69,8 @@ export function getCases({
               id,
               status,
               updatedDate: updated_date,
-              context,
-            },
-            targetAuthor: {
-              description: tAuthorDescription,
-              education: tAuthorEducation,
-              headline: tAuthorHeadline,
-              id: tAuthorID,
-              name: `${tAuthorFirstName} ${tAuthorLastName}`,
+              paper,
+              targetAuthorName: target_author_name,
             },
             requestor: {
               name: `${requestorFirstName} ${requestorLastName}`,
