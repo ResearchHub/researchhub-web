@@ -55,6 +55,8 @@ const TransactionCard = (props) => {
               ? transaction.source?.distribution_type
                   .replaceAll("_", " ")
                   .toLocaleLowerCase()
+              : transaction.source?.to_address
+              ? "Withdrawal"
               : ""}
           </div>
           <div className={css(styles.metatext)}>
@@ -76,26 +78,33 @@ const TransactionCard = (props) => {
             </div>
           )}
           {transaction.source?.to_address && (
-            <div
-              className={css(
-                styles.row,
-                styles.metatext,
-                styles.colorBlack,
-                styles.walletLink
-              )}
-            >
-              Wallet Address:
-              <span className={css(styles.address)}>
-                {transaction.source?.to_address}
-                <span
-                  className={css(styles.infoIcon)}
-                  data-tip="User's wallet address"
-                >
-                  {icons["info-circle"]}
-                  <ReactTooltip />
+            <>
+              <div
+                className={css(
+                  styles.row,
+                  styles.metatext,
+                  styles.colorBlack,
+                  styles.walletLink
+                )}
+              >
+                Wallet Address:
+                <span className={css(styles.address)}>
+                  {transaction.source?.to_address}
+                  <span
+                    className={css(styles.infoIcon)}
+                    data-tip="User's wallet address"
+                  >
+                    {icons["info-circle"]}
+                    <ReactTooltip />
+                  </span>
                 </span>
-              </span>
-            </div>
+              </div>
+              <div
+                className={css(styles.row, styles.metatext, styles.colorBlack)}
+              >
+                {renderStatus(transaction.source.paid_status)}
+              </div>
+            </>
           )}
         </div>
         <div className={css(styles.amountContainer)}>
