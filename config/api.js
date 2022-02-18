@@ -812,6 +812,19 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    TRANSACTIONS: ({ transactionId, page }) => {
+      let url = BASE_URL + "transactions/";
+
+      if (page && typeof page === "number") {
+        url += `?page=${page}`;
+      }
+
+      if (transactionId) {
+        url += `${transactionId}/`;
+      }
+
+      return url;
+    },
     // Ethereum
     WITHDRAW_COIN: ({ transactionId, page }) => {
       let url = BASE_URL + "withdrawal/";
