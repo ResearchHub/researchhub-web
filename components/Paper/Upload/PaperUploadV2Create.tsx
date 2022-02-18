@@ -429,7 +429,6 @@ function PaperuploadV2Create({
                   labelStyle={formGenericStyles.labelStyle}
                   onChange={handleInputChange}
                   placeholder="Enter DOI of paper"
-                  required
                   value={doi}
                 />
               </span>

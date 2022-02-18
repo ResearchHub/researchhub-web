@@ -402,7 +402,6 @@ const Paper = ({
   const inlineCommentUnduxStore = InlineCommentUnduxStore.useStore();
   const shouldShowInlineComments =
     inlineCommentUnduxStore.get("displayableInlineComments").length > 0;
-
   return (
     <div>
       <PaperBanner
@@ -570,9 +569,10 @@ const Paper = ({
                   <a name="paper pdf" />
                   <div className={css(styles.paperTabContainer)}>
                     <PaperTab
-                      paperId={paper.id}
-                      paper={paper}
+                      isEditorOfHubs={isEditorOfHubs}
                       isModerator={isModerator}
+                      paper={paper}
+                      paperId={paper.id}
                     />
                   </div>
                 </div>
