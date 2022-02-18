@@ -19,6 +19,8 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import Loader from "../Loader/Loader";
 import Modal from "react-modal";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
 
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
 
@@ -31,13 +33,15 @@ export type AuthorClaimCaseProps = {
   setLastFetchTime: Function;
 };
 
-export default function AuthorClaimModal({
+function AuthorClaimModal({
   caseID,
   openModalType,
   profileImg,
   requestorName,
   setLastFetchTime,
   setOpenModalType,
+  showMessage,
+  setMessage,
 }: AuthorClaimCaseProps): ReactElement<typeof Modal> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { setNumNavInteractions, numNavInteractions } =
@@ -61,6 +65,11 @@ export default function AuthorClaimModal({
           setLastFetchTime(Date.now());
           closeModal(event);
         },
+        onError: (responseMsg) => {
+          showMessage({ load: false, show: true, error: true });
+          setMessage(responseMsg);
+          setIsSubmitting(false);
+        }
       });
     };
   };
@@ -270,3 +279,16 @@ const acceptRejectStyles = StyleSheet.create({
   },
   modalContentStyles: {},
 });
+
+const mapStateToProps = (state) => ({
+});
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthorClaimModal);

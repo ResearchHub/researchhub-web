@@ -26,7 +26,7 @@ export default function AuthorClaimCaseCard({
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [openModalType, setOpenModalType] =
     useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
-  const { caseData, requestor, targetAuthor } = authorClaimCase || {};
+  const { caseData, requestor } = authorClaimCase || {};
   const { createdDate, id: caseID, status: caseStatus } = caseData || {};
   const {
     name: requestorName,
@@ -108,7 +108,6 @@ export default function AuthorClaimCaseCard({
           <div className={css(styles.cardSubmain)}>
             <AuthorClaimCaseCardTargetAuthorSection
               caseCreatedDate={formattedCreatedDate}
-              targetAuthor={targetAuthor}
               caseData={caseData}
             />
           </div>
