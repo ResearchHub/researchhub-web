@@ -65,17 +65,17 @@ const TransactionCard = (props) => {
             Last Update:{" "}
             {formatTransactionDate(transformDate(transaction.updated_date))}
           </div>
-          {transaction.transaction_hash && (
+          {transaction.source?.transaction_hash && (
             <div
               className={css(styles.row, styles.metatext, styles.colorBlack)}
             >
               Transaction Details:
               <span className={css(styles.address)}>
-                {transaction.to_address}
+                {transaction.source.transaction_hash}
               </span>
             </div>
           )}
-          {transaction.to_address && (
+          {transaction.source?.to_address && (
             <div
               className={css(
                 styles.row,
@@ -86,7 +86,7 @@ const TransactionCard = (props) => {
             >
               Wallet Address:
               <span className={css(styles.address)}>
-                {transaction.to_address}
+                {transaction.source?.to_address}
                 <span
                   className={css(styles.infoIcon)}
                   data-tip="User's wallet address"
