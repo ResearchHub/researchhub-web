@@ -15,14 +15,15 @@ export const TransactionConstants = {
 export const TransactionActions = {
   getWithdrawals: (page = 1, prevState) => {
     return async (dispatch, getState) => {
-      return fetch(API.WITHDRAW_COIN({ page }), API.GET_CONFIG())
+      return fetch(API.TRANSACTIONS({ page }), API.GET_CONFIG())
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
+          console.log(res.results);
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {
-              userBalance: res.user.balance,
+              // userBalance: res.user.balance,
               withdrawals: [...res.results],
               count: res.count,
               next: res.next,
@@ -30,6 +31,7 @@ export const TransactionActions = {
           });
         })
         .catch((err) => {
+          console.log(err);
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {
