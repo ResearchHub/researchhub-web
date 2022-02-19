@@ -12,7 +12,7 @@ export function configureStore(initialState = {}) {
     const logger = createLogger({
       colors: false,
     });
-    middleware.push(logger); // Logger must be the last item in middleware
+    // middleware.push(logger); // Logger must be the last item in middleware
   }
 
   let store = createStore(

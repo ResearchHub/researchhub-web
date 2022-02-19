@@ -26,7 +26,7 @@ import Link from "next/link";
 import Loader from "~/components/Loader/Loader";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
 import OrcidConnectButton from "~/components/OrcidConnectButton";
-import UserTransactionsTab from "~/components/Author/Tabs/UserTransactions";
+import UserTransactions from "~/components/Author/Tabs/UserTransactions";
 import AuthorActivityFeed from "~/components/Author/Feed/AuthorActivityFeed";
 import HorizontalTabBar from "~/components/HorizontalTabBar";
 import ReactPlaceholder from "react-placeholder/lib";
@@ -367,7 +367,7 @@ function AuthorPage(props) {
             tabName === "transactions" ? styles.reveal : styles.hidden
           )}
         >
-          <UserTransactionsTab fetching={fetching} />
+          <UserTransactions fetching={fetching} />
         </div>
       )}
     </ComponentWrapper>

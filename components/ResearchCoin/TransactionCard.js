@@ -48,7 +48,17 @@ const TransactionCard = (props) => {
     >
       <div className={css(styles.row)}>
         <div className={css(styles.column)}>
-          <div className={css(styles.maintext)}>Withdrawal</div>
+          <div className={css(styles.maintext)}>
+            {transaction.source?.purchase_type === "BOOST"
+              ? "Support"
+              : transaction.source?.distribution_type
+              ? transaction.source?.distribution_type
+                  .replaceAll("_", " ")
+                  .toLocaleLowerCase()
+              : transaction.source?.to_address
+              ? "Withdrawal"
+              : ""}
+          </div>
           <div className={css(styles.metatext)}>
             Created:{" "}
             {formatTransactionDate(transformDate(transaction.created_date))}
@@ -57,36 +67,45 @@ const TransactionCard = (props) => {
             Last Update:{" "}
             {formatTransactionDate(transformDate(transaction.updated_date))}
           </div>
-          {transaction.transaction_hash && (
+          {transaction.source?.transaction_hash && (
             <div
               className={css(styles.row, styles.metatext, styles.colorBlack)}
             >
               Transaction Details:
               <span className={css(styles.address)}>
-                {transaction.to_address}
+                {transaction.source.transaction_hash}
               </span>
             </div>
           )}
-          <div
-            className={css(
-              styles.row,
-              styles.metatext,
-              styles.colorBlack,
-              styles.walletLink
-            )}
-          >
-            Wallet Address:
-            <span className={css(styles.address)}>
-              {transaction.to_address}
-              <span
-                className={css(styles.infoIcon)}
-                data-tip="User's wallet address"
+          {transaction.source?.to_address && (
+            <>
+              <div
+                className={css(
+                  styles.row,
+                  styles.metatext,
+                  styles.colorBlack,
+                  styles.walletLink
+                )}
               >
-                {icons["info-circle"]}
-                <ReactTooltip />
-              </span>
-            </span>
-          </div>
+                Wallet Address:
+                <span className={css(styles.address)}>
+                  {transaction.source?.to_address}
+                  <span
+                    className={css(styles.infoIcon)}
+                    data-tip="User's wallet address"
+                  >
+                    {icons["info-circle"]}
+                    <ReactTooltip />
+                  </span>
+                </span>
+              </div>
+              <div
+                className={css(styles.row, styles.metatext, styles.colorBlack)}
+              >
+                {renderStatus(transaction.source.paid_status)}
+              </div>
+            </>
+          )}
         </div>
         <div className={css(styles.amountContainer)}>
           {transaction.amount}
@@ -206,6 +225,7 @@ const styles = StyleSheet.create({
   maintext: {
     fontWeight: 500,
     marginBottom: 10,
+    textTransform: "capitalize",
     "@media only screen and (max-width: 620px)": {
       fontSize: 16,
     },
