@@ -9,8 +9,8 @@ type Args = {
   onError?: Function;
   onSuccess?: Function;
   userID: ID;
-  targetAuthorID: ID;
-  author?: Object;
+  targetAuthorName: string;
+  targetPaperId: ID;
 };
 
 type Params = {
@@ -19,20 +19,22 @@ type Params = {
   moderator?: ID;
   requestor: ID;
   provided_email: string;
-  target_author: ID;
   author?: Object;
+  target_paper_id: ID;
+  target_author_name: string;
 };
 
 export function createAuthorClaimCase({
   eduEmail,
   onError = emptyFncWithMsg,
   onSuccess = emptyFncWithMsg,
-  targetAuthorID,
   userID,
   author,
+  targetPaperId,
+  targetAuthorName,
 }: Args) {
   let params: Params = {
-    case_type: "AUTHOR_CLAIM",
+    case_type: "PAPER_CLAIM",
     creator: nullthrows(
       userID,
       "UserID must be present to create AuthorClaimCase"
@@ -45,12 +47,9 @@ export function createAuthorClaimCase({
       eduEmail,
       "EduEmail must be present to create AuthorClaimCase"
     ),
-    target_author: targetAuthorID,
+    target_paper_id: targetPaperId,
+    target_author_name: targetAuthorName
   };
-
-  if (author) {
-    params.author = author;
-  }
 
   fetch(API.AUTHOR_CLAIM_CASE(), API.POST_CONFIG(params))
     .then(Helpers.checkStatus)

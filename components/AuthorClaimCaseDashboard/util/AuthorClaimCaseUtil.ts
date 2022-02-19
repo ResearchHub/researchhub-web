@@ -8,7 +8,7 @@ export const getCardAllowedActions = (
 ): Array<ValueOf<typeof AUTHOR_CLAIM_STATUS>> => {
   switch (caseStatus) {
     case OPEN:
-      return [DENIED, APPROVED];
+      return [CLOSED, DENIED, APPROVED];
     default:
       return [];
   }

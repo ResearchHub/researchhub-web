@@ -19,6 +19,8 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import Loader from "../Loader/Loader";
 import Modal from "react-modal";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
 
 const BaseModal = dynamic(() => import("../Modals/BaseModal"));
 
@@ -31,13 +33,15 @@ export type AuthorClaimCaseProps = {
   setLastFetchTime: Function;
 };
 
-export default function AuthorClaimModal({
+function AuthorClaimModal({
   caseID,
   openModalType,
   profileImg,
   requestorName,
   setLastFetchTime,
   setOpenModalType,
+  showMessage,
+  setMessage,
 }: AuthorClaimCaseProps): ReactElement<typeof Modal> {
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const { setNumNavInteractions, numNavInteractions } =
@@ -47,14 +51,25 @@ export default function AuthorClaimModal({
     return (event: SyntheticEvent) => {
       event.stopPropagation(); /* prevents card collapse */
       setIsSubmitting(true);
+      let shouldNotifyUser = true;
+      let updateStatus = actionType;
+      if (actionType == AUTHOR_CLAIM_STATUS.CLOSED) {
+        shouldNotifyUser = false;
+        updateStatus = AUTHOR_CLAIM_STATUS.DENIED;
+      } 
       updateCaseStatus({
-        payload: { caseID, updateStatus: actionType },
+        payload: { caseID, updateStatus, shouldNotifyUser },
         onSuccess: () => {
           setNumNavInteractions(numNavInteractions + 1);
           setIsSubmitting(false);
           setLastFetchTime(Date.now());
           closeModal(event);
         },
+        onError: (responseMsg) => {
+          showMessage({ load: false, show: true, error: true });
+          setMessage(responseMsg);
+          setIsSubmitting(false);
+        }
       });
     };
   };
@@ -82,7 +97,7 @@ export default function AuthorClaimModal({
           <div className={css(acceptRejectStyles.rootContainer)}>
             <div className={css(acceptRejectStyles.titleContainer)}>
               <div className={css(acceptRejectStyles.title)}>
-                {`Are you sure you want to ${verb} the following user?`}
+                {`Are you sure you want to ${verb} claim for the following user?`}
               </div>
             </div>
             <div className={css(acceptRejectStyles.userMediaContianer)}>
@@ -264,3 +279,16 @@ const acceptRejectStyles = StyleSheet.create({
   },
   modalContentStyles: {},
 });
+
+const mapStateToProps = (state) => ({
+});
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(AuthorClaimModal);

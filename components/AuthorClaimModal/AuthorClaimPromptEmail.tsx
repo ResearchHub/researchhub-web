@@ -11,6 +11,7 @@ import { nullthrows } from "../../config/utils/nullchecks";
 import FormSelect from "../Form/FormSelect";
 import { breakpoints } from "../../config/themes/screen";
 import { MessageActions } from "../../redux/message";
+import { useRouter } from "next/router";
 
 export type AuthorClaimPromptEmailProps = {
   authorData: AuthorDatum[];
@@ -64,6 +65,7 @@ function AuthorClaimPromptEmail({
   setMessage,
   showMessage,
 }: AuthorClaimPromptEmailProps) {
+  const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
     eduEmail: true,
   });
@@ -96,12 +98,7 @@ function AuthorClaimPromptEmail({
         showMessage({ show: true, error: true });
         return;
       }
-      const name =
-        targetAuthor && targetAuthor.label && targetAuthor.label.split(" ");
-      const author = {
-        first_name: name && name.length > 0 ? name[0] : null,
-        last_name: name && name.length > 1 ? name[1] : null,
-      };
+
       setShouldDisplayError(false);
       setIsSubmitting(true);
       createAuthorClaimCase({
@@ -115,12 +112,9 @@ function AuthorClaimPromptEmail({
           setIsSubmitting(false);
           onSuccess();
         },
-        targetAuthorID: nullthrows(
-          nullthrows(targetAuthor).id,
-          "targetAuthorID must be present to make a request"
-        ),
         userID,
-        author,
+        targetAuthorName: targetAuthor.name,
+        targetPaperId: router.query.paperId,
       });
     }
   };
