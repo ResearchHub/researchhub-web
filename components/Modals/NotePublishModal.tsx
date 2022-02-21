@@ -97,37 +97,45 @@ function NotePublishModal({
     authors: [],
     hubs: [],
   });
+  const [authorOptions, setAuthorOptions] = useState([]);
+  const [hubOptions, setHubOptions] = useState([]);
   const [checkBoxOne, setCheckBoxOne] = useState(false);
   const [checkBoxTwo, setCheckBoxTwo] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
-  const [orgUsers, setOrgUsers] = useState([]);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
-  const [suggestedHubs, setSuggestedHubs] = useState([]);
-  const isPublished = Boolean(currentNote.post || currentNote.hypothesis);
+  const isPublished = Boolean(currentNote.post);
 
   useEffect(() => {
-    fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((resp) => {
-        /* @ts-ignore */
-        let hubs = resp.results
-          .map((hub, index) => {
-            return {
-              ...hub,
-              value: hub.id,
-              label: hub.name.charAt(0).toUpperCase() + hub.name.slice(1),
-            };
-          })
-          .sort((a, b) => {
-            return a.label.localeCompare(b.label);
-          });
-        setSuggestedHubs(hubs);
+    try {
+      fetch(API.HUB({ pageLimit: 1000 }), API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          /* @ts-ignore */
+          const hubs = resp.results
+            .map((hub, index) => {
+              return {
+                value: hub.id,
+                label: hub.name,
+              };
+            })
+            .sort((a, b) => {
+              return a.label.localeCompare(b.label);
+            });
+          setHubOptions(hubs);
+        });
+    } catch (error) {
+      setMessage("Failed to fetch data");
+      showMessage({ show: true, error: true });
+      captureEvent({
+        error,
+        msg: "Failed to fetch hubs in publish modal",
       });
+    }
   }, []);
 
   useEffect(() => {
-    const fetchAndSetOrgUsers = async () => {
+    const fetchAndSetAuthors = async () => {
       try {
         const response = await fetchOrgUsers({ orgId: currentOrganization.id });
         /* @ts-ignore */
@@ -143,7 +151,7 @@ function NotePublishModal({
               value: user.author_profile.id,
             };
           });
-        setOrgUsers(orgUsers);
+        setAuthorOptions(orgUsers);
       } catch (error) {
         setMessage("Failed to fetch data");
         showMessage({ show: true, error: true });
@@ -156,7 +164,7 @@ function NotePublishModal({
     };
 
     if (currentOrganization) {
-      fetchAndSetOrgUsers();
+      fetchAndSetAuthors();
     }
   }, [currentOrganization]);
 
@@ -270,7 +278,7 @@ function NotePublishModal({
             labelStyle={styles.label}
             menu={styles.dropDown}
             onChange={handleOnChangeFields}
-            options={orgUsers}
+            options={authorOptions}
             placeholder="Add authors"
             required
           />
@@ -290,7 +298,7 @@ function NotePublishModal({
             labelStyle={styles.label}
             menu={styles.dropDown}
             onChange={handleOnChangeFields}
-            options={suggestedHubs}
+            options={hubOptions}
             placeholder="Choose hubs to publish in"
             required
           />
