@@ -90,10 +90,8 @@ const Index = ({ auth }) => {
           <div className={css(styles.column, styles.titleContainer)}>
             <h1 className={css(styles.title)}>ResearchHub Referral Program</h1>
             <p className={css(styles.subtitle)}>
-              Invite your friends to ResearchHub. If you refer someone in an
-              advanced degree program or have already completed an advanced
-              degree program, then we will reward 1k RSC to the both of you on
-              an approval basis.
+              Invite your friends to ResearchHub. Both you and the person you
+              invite will receive 50 RSC.
             </p>
             <FormInput
               getRef={formInputRef}
