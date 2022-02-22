@@ -287,7 +287,6 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    minWidth: 48,
     height: 25,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
