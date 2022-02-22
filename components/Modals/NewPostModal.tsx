@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
 import { ReactElement, useState, SyntheticEvent } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -41,14 +42,13 @@ function NewPostModal({
       header: "Upload a Paper",
       description:
         "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
-      imgSrc: "/static/icons/uploadPaper.png",
       route: "/paper/upload/info",
+      icon: <PaperIcon width={40} height={40} withAnimation={false} />,
     },
     {
       header: "Publish a Post",
       description:
         "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
-      imgSrc: "/static/icons/publishProject.png",
       onClick: async () => {
         /* @ts-ignore */
         const note = await createNewNote({
@@ -58,13 +58,14 @@ function NewPostModal({
         /* @ts-ignore */
         router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
       },
+      icon: <PostIcon width={40} height={40} withAnimation={false} />,
     },
     {
       header: "Propose a Hypothesis",
       description:
         "Propose an explanation to an observation and back it up by citing relevant academic papers.",
-      imgSrc: "/static/icons/askQuestion.png",
       route: "/hypothesis/create",
+      icon: <HypothesisIcon width={40} height={40} withAnimation={false} />,
     },
   ];
 
@@ -88,7 +89,7 @@ function NewPostModal({
                 <ResearchhubOptionCard
                   description={option.description}
                   header={option.header}
-                  imgSrc={option.imgSrc}
+                  icon={option.icon}
                   isActive={index === selected}
                   isCheckboxSquare={false}
                   key={index}

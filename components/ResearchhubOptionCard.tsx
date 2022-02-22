@@ -6,7 +6,7 @@ import CheckBox from "./Form/CheckBox";
 export type ResearchhubOptionCardProps = {
   description: string;
   header: string;
-  imgSrc: string;
+  icon: any;
   isActive: boolean;
   isCheckboxSquare: boolean;
   onSelect: Function;
@@ -15,7 +15,7 @@ export type ResearchhubOptionCardProps = {
 export default function ResearchhubOptionCard({
   description,
   header,
-  imgSrc,
+  icon,
   isActive,
   isCheckboxSquare,
   onSelect,
@@ -33,13 +33,7 @@ export default function ResearchhubOptionCard({
           <div className={css(styles.mediaHeader)}> {header} </div>
           <div className={css(styles.mediaDescription)}> {description} </div>
         </div>
-        <div className={css(styles.mediaImgBox)}>
-          <img
-            src={imgSrc}
-            className={css(styles.mediaImg)}
-            draggable={false}
-          />
-        </div>
+        <div className={css(styles.mediaImgBox)}>{icon}</div>
       </div>
     </div>
   );
@@ -85,8 +79,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "75px",
     height: "75px",
-    borderRadius: "4px",
-    backgroundColor: "rgba(57, 113, 255, 0.07)",
+    borderRadius: "8px",
+    backgroundColor: "#eee",
     marginLeft: "25px",
   },
   mediaImg: {},
