@@ -918,7 +918,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   lowDropdown: {
-    bottom: -175,
+    bottom: -215,
   },
   noMargin: {
     margin: 0,
