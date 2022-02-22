@@ -139,38 +139,38 @@ function AuthorPage(props) {
       tabs = [
         {
           href: "overview",
-          label: "overview",
+          label: "Overview",
           name: "Overview",
         },
         {
           href: "discussions",
-          label: "comments",
+          label: "Comments",
           name: "Comments",
         },
         {
           href: "submissions",
-          label: "submissions",
+          label: "Submissions",
           name: "Submissions",
         },
         {
           href: "authored-papers",
-          label: "authored papers",
+          label: "Authored Papers",
           name: "Authored Papers",
         },
       ];
 
       if (allowEdit) {
         tabs.push({
-          href: "transactions",
-          label: "transactions",
-          name: "Transactions",
+          href: "rsc",
+          label: "RSC",
+          name: "RSC",
         });
       }
     } else {
       tabs = [
         {
           href: "authored-papers",
-          label: "authored papers",
+          label: "Authored Papers",
           name: "Authored Papers",
         },
       ];
@@ -362,11 +362,7 @@ function AuthorPage(props) {
         />
       </div>
       {allowEdit && (
-        <div
-          className={css(
-            tabName === "transactions" ? styles.reveal : styles.hidden
-          )}
-        >
+        <div className={css(tabName === "rsc" ? styles.reveal : styles.hidden)}>
           <UserTransactions fetching={fetching} />
         </div>
       )}
