@@ -5,6 +5,7 @@ import Link from "next/link";
 import Router, { useRouter } from "next/router";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
+import { Helpers } from "@quantfive/js-web-config";
 
 import { slide as Menu } from "@quantfive/react-burger-menu";
 import Collapsible from "react-collapsible";
@@ -36,6 +37,7 @@ import { NavbarContext } from "~/pages/Base";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import HubSelector from "~/components/HubSelector";
+import api from "~/config/api";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -66,7 +68,7 @@ const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
-
+  const [showReferral, setShowReferral] = useState(false);
   const { numNavInteractions } = useContext(NavbarContext);
 
   const {
@@ -277,6 +279,21 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
+  useEffect(() => {
+    function fetchReferrals() {
+      return fetch(api.SHOW_REFERRALS(), api.GET_CONFIG())
+        .then(Helpers.checKStatus)
+        .then(Helpers.parseJSON)
+        .then((res) => {
+          setShowReferral(res.show_referral);
+        });
+    }
+
+    if (auth.isLoggedIn) {
+      fetchReferrals();
+    }
+  }, [auth.isLoggedIn]);
+
   function navigateToRoute(route) {
     let { href, as } = route;
     if (href) {
@@ -428,15 +445,6 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  function addPaperModal(e) {
-    Router.push(`/paper/upload/info`);
-    setSideMenu(!sideMenu);
-  }
-
-  function onAddPaperClick() {
-    Router.push(`/paper/upload/info`, `/paper/upload/info`);
-  }
-
   const shouldShowELNButton = gateKeepCurrentUser({
     application: "ELN" /* application */,
     auth,
@@ -476,7 +484,6 @@ const Navbar = (props) => {
         <DndModal />
         <PromotionInfoModal />
         <ReCaptchaPrompt />
-        {/* <SectionBountyModal /> */}
         <Link href={"/"} as={`/`}>
           <a className={css(styles.logoContainer)}>
             <RHLogo iconStyle={styles.logo} withText={true} />
@@ -545,7 +552,10 @@ const Navbar = (props) => {
                 </div>
                 {openMenu && (
                   <div
-                    className={css(styles.dropdown)}
+                    className={css(
+                      styles.dropdown,
+                      !showReferral && styles.lowDropdown
+                    )}
                     ref={dropdownRef}
                     onClick={toggleMenu}
                   >
@@ -573,33 +583,20 @@ const Navbar = (props) => {
                         Settings
                       </div>
                     </Link>
-                    {/* <Link
-                      href={{
-                        pathname: "/paper/upload/info",
-                        query: { type: "pre_registration" },
-                      }}
-                    >
-                      <div className={css(styles.option)}>
-                        <i
-                          className={
-                            css(styles.profileIcon) + " fas fa-layer-plus"
-                          }
-                        ></i>
-                        Submit Funding Request
-                      </div>
-                    </Link> */}
-                    <Link
-                      href={{
-                        pathname: "/referral",
-                      }}
-                    >
-                      <div className={css(styles.option)}>
-                        <span className={css(styles.profileIcon)}>
-                          {icons.asterisk}
-                        </span>
-                        Refer a Friend
-                      </div>
-                    </Link>
+                    {showReferral && (
+                      <Link
+                        href={{
+                          pathname: "/referral",
+                        }}
+                      >
+                        <div className={css(styles.option)}>
+                          <span className={css(styles.profileIcon)}>
+                            {icons.asterisk}
+                          </span>
+                          Referral Program
+                        </div>
+                      </Link>
+                    )}
                     <div
                       className={css(styles.option, styles.lastOption)}
                       onClick={() => {
@@ -754,11 +751,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     outline: "none",
     borderRadius: 32,
-  },
-  dropdownClass: {
-    top: 40,
-    width: "100%",
-    minWidth: "unset",
   },
   collapsible: {
     color: "#fff",
@@ -942,6 +934,9 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
+  },
+  lowDropdown: {
+    bottom: -175,
   },
   noMargin: {
     margin: 0,

@@ -812,6 +812,10 @@ const routes = (BASE_URL) => {
       url = prepURL(url, params);
       return url;
     },
+    SHOW_REFERRALS: () => {
+      const url = BASE_URL + `user/get_referral_reputation/`;
+      return url;
+    },
     TRANSACTIONS: ({ transactionId, page }) => {
       let url = BASE_URL + "transactions/";
 
