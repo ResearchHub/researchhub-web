@@ -4,6 +4,8 @@ import { Helpers } from "@quantfive/js-web-config";
 import { isServer } from "~/config/server/isServer";
 import { useState, useRef, useEffect } from "react";
 import { useTransition, animated } from "react-spring";
+import nookies from "nookies";
+
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
@@ -18,6 +20,7 @@ import LeaderboardPlaceholder from "../../components/Placeholders/LeaderboardPla
 import Button from "../../components/Form/Button";
 import Loader from "../../components/Loader/Loader";
 import HowItWorks from "../../components/Referral/HowItWorks";
+import { AUTH_TOKEN } from "~/config/constants";
 
 const Index = ({ auth }) => {
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);
@@ -377,5 +380,32 @@ const styles = StyleSheet.create({
 const mapStateToProps = (state) => ({
   auth: state.auth,
 });
+
+export async function getServerSideProps(context) {
+  function fetchReferrals(authToken) {
+    return fetch(API.SHOW_REFERRALS(), API.GET_CONFIG(authToken))
+      .then(Helpers.checKStatus)
+      .then(Helpers.parseJSON)
+      .then((res) => {
+        return res.show_referral;
+      });
+  }
+
+  const cookies = nookies.get(context);
+  const authToken = cookies[AUTH_TOKEN];
+  const showReferral = await fetchReferrals(authToken);
+
+  if (!showReferral) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // Pass data to the page via props
+  return { props: { showReferral } };
+}
 
 export default connect(mapStateToProps)(Index);
