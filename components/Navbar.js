@@ -281,10 +281,7 @@ const Navbar = (props) => {
 
   useEffect(() => {
     function fetchReferrals() {
-      return fetch(
-        api.SHOW_REFERRALS({ reputation: user.reputation }),
-        api.GET_CONFIG()
-      )
+      return fetch(api.SHOW_REFERRALS(), api.GET_CONFIG())
         .then(Helpers.checKStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
