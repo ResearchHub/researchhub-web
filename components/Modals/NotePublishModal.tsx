@@ -42,7 +42,7 @@ function getDefaultAuthors(currentNote: any): any {
     authors?.map((author) => {
       return {
         label: author.first_name + " " + author.last_name,
-        value: author.user,
+        value: author.id,
       };
     }) ?? []
   );
