@@ -1,5 +1,6 @@
 import { StyleSheet, css } from "aphrodite";
 import ReactTooltip from "react-tooltip";
+import Link from "next/link";
 
 // Config
 import colors from "~/config/themes/colors";
@@ -41,6 +42,17 @@ const TransactionCard = (props) => {
     }
   }
 
+  const paper = transaction.source?.proof_item?.paper;
+  const comment = transaction.source?.proof_item?.source;
+  const commentSlug =
+    comment &&
+    (comment.paper_slug
+      ? `/paper/${comment.paper}/${comment.paper_slug}#comments`
+      : comment.hypothesis_slug
+      ? `/hypothesis/${comment.hypothesis}/${comment.hypothesis_slug}#comments`
+      : comment.post_slug &&
+        `/post/${comment.post}/${comment.post_slug}#comments`);
+
   return (
     <div
       className={css(styles.transactionCard, style && style)}
@@ -50,7 +62,9 @@ const TransactionCard = (props) => {
         <div className={css(styles.column)}>
           <div className={css(styles.maintext)}>
             {transaction.source?.purchase_type === "BOOST"
-              ? "Support"
+              ? "Supported Content"
+              : transaction.source?.distribution_type === "PURCHASE"
+              ? "Received Support"
               : transaction.source?.distribution_type
               ? transaction.source?.distribution_type
                   .replaceAll("_", " ")
@@ -59,6 +73,32 @@ const TransactionCard = (props) => {
               ? "Withdrawal"
               : ""}
           </div>
+          {paper && (
+            <Link href={`/paper/${paper.id}/${paper.slug}`}>
+              <a
+                className={css(styles.metatext)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <div className={css(styles.metatext)}>{paper.paper_title}</div>
+              </a>
+            </Link>
+          )}
+          {commentSlug && (
+            <Link href={commentSlug}>
+              <a
+                className={css(styles.metatext, styles.noUnderline)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <div
+                  className={css(styles.metatext)}
+                >{`"${comment.plain_text}"`}</div>
+              </a>
+            </Link>
+          )}
           <div className={css(styles.metatext)}>
             Created:{" "}
             {formatTransactionDate(transformDate(transaction.created_date))}
