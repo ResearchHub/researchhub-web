@@ -1,9 +1,9 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-import { Fragment, SyntheticEvent, useState } from "react";
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Fragment, SyntheticEvent, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
+import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -35,14 +35,12 @@ export default function NewPostButton({
           label={
             // isLink prop does not allow onClick to trigger on link click
             <div className={css(styles.newPostLabel)}>
-              <FontAwesomeIcon
-                style={{ fontSize: "1.5em", marginRight: 8 }}
-                icon={faPlus}
-              />
-              <span>{"New Post"}</span>
+              <FontAwesomeIcon style={{ marginRight: 8 }} icon={faPlus} />
+              <span>{"New"}</span>
             </div>
           }
           onClick={onClick && onClick}
+          size={"newPost"}
         />
       </PermissionNotificationWrapper>
       <NewPostModal
@@ -55,8 +53,10 @@ export default function NewPostButton({
 
 const styles = StyleSheet.create({
   newPostLabel: {
-    display: "flex",
     alignItems: "center",
+    display: "flex",
+    fontSize: 20,
+    fontWeight: 500,
   },
   rippleClass: {
     width: "100%",

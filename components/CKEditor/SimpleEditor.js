@@ -4,23 +4,28 @@ import { StyleSheet, css } from "aphrodite";
 import API from "~/config/api";
 import colors from "../../config/themes/colors";
 
-export default function SimpleEditor(props) {
-  const {
-    id,
-    containerStyle,
-    onChange,
-    initialData,
-    label,
-    labelStyle,
-    required,
-    placeholder,
-  } = props;
+export default function SimpleEditor({
+  containerStyle,
+  editing,
+  id,
+  initialData,
+  isBalloonEditor,
+  label,
+  labelStyle,
+  noTitle,
+  onChange,
+  placeholder,
+  readOnly,
+  required,
+}) {
   const editorRef = useRef();
   const [editorLoaded, setEditorLoaded] = useState(false);
   const [editorInstance, setEditorInstance] = useState(null);
-  const { CKEditor, Editor } = editorRef.current || {};
+  const { CKEditor, SimpleEditor, SimpleBalloonEditor } =
+    editorRef.current || {};
 
   const editorConfiguration = {
+    ...(noTitle && { removePlugins: ["Title"] }),
     simpleUpload: {
       // The URL that the images are uploaded to.
       uploadUrl: API.SAVE_IMAGE,
@@ -39,7 +44,9 @@ export default function SimpleEditor(props) {
   useEffect(() => {
     editorRef.current = {
       CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
-      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
+      SimpleEditor: require("@thomasvu/ckeditor5-custom-build").SimpleEditor,
+      SimpleBalloonEditor: require("@thomasvu/ckeditor5-custom-build")
+        .SimpleBalloonEditor,
     };
     setEditorLoaded(true);
   }, []);
@@ -61,26 +68,33 @@ export default function SimpleEditor(props) {
           </div>
         )}
         {editorLoaded && (
-          <CKEditor
-            placeholder={placeholder}
-            onChange={(event, editor) => {
-              onChange(id, editor.getData());
-            }}
-            onReady={(editor) => {
-              editor.editing.view.change((writer) => {
-                writer.setStyle(
-                  "min-height",
-                  "200px",
-                  editor.editing.view.document.getRoot()
-                );
-              });
-              setEditorInstance(editor);
-            }}
-            editor={Editor}
-            config={editorConfiguration}
-            data={initialData}
-            className={css(styles.editor)}
-          />
+          <div className={editing && "editing"}>
+            <CKEditor
+              className={css(styles.editor)}
+              config={editorConfiguration}
+              data={initialData}
+              editor={isBalloonEditor ? SimpleBalloonEditor : SimpleEditor}
+              id={id}
+              onChange={(event, editor) => {
+                onChange(id, editor.getData());
+              }}
+              onReady={(editor) => {
+                if (readOnly) {
+                  editor.isReadOnly = true;
+                } else {
+                  editor.editing.view.change((writer) => {
+                    writer.setStyle(
+                      "min-height",
+                      "200px",
+                      editor.editing.view.document.getRoot()
+                    );
+                  });
+                }
+                setEditorInstance(editor);
+              }}
+              placeholder={placeholder}
+            />
+          </div>
         )}
       </div>
     </Fragment>

@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     boxSizing: "border-box",
-    padding: "8px 15px 8px 12px",
+    padding: "10px 17px",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
   },

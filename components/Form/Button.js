@@ -90,7 +90,7 @@ function Button(props) {
         </div>
       </button>
     );
-    if (!hideRipples) {
+    if (!hideRipples && !disabled) {
       return (
         <Ripples
           className={css(styles.ripples, rippleClass)}
@@ -174,6 +174,10 @@ const styles = StyleSheet.create({
   big: {
     width: 160,
     height: 55,
+  },
+  newPost: {
+    width: 100,
+    height: 45,
   },
   disabled: {
     pointerEvents: "none",
