@@ -597,9 +597,7 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <NewPostButton
-            customButtonStyle={{ ...styles.button, ...styles.newPost }}
-          />
+          <NewPostButton />
         </div>
 
         <div

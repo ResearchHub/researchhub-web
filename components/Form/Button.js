@@ -175,6 +175,10 @@ const styles = StyleSheet.create({
     width: 160,
     height: 55,
   },
+  newPost: {
+    width: 100,
+    height: 45,
+  },
   disabled: {
     pointerEvents: "none",
     opacity: 0.4,
