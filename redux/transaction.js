@@ -19,7 +19,6 @@ export const TransactionActions = {
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
-          console.log(res.results);
           return dispatch({
             type: TransactionConstants.GET_WITHDRAWALS,
             payload: {
