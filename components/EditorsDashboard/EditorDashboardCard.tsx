@@ -5,8 +5,10 @@ import { timeAgo } from "~/config/utils/dates";
 import { toTitleCase } from "~/config/utils/string";
 import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
+import DesktopOnly from "../DesktopOnly";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
+import MobileOnly from "../MobileOnly";
 import UserRoleTag from "../shared/UserRoleTag";
 
 type Props = {
@@ -127,6 +129,13 @@ export default function EditorDashboardUserCard({
                     {hubActiveContributorsHTML}
                   </div>
                 )}
+                <DesktopOnly
+                  children={
+                    <div className={css(styles.hubName) + " clamp1"}>
+                      {hubNameTags}
+                    </div>
+                  }
+                />
               </div>
             </div>
             <div className={css(styles.contributionSection)}>
@@ -184,7 +193,13 @@ export default function EditorDashboardUserCard({
               </div>
             </div>
           </div>
-          <div className={css(styles.hubName) + " clamp1"}>{hubNameTags}</div>
+          <MobileOnly
+            children={
+              <div className={css(styles.hubName) + " clamp1"}>
+                {hubNameTags}
+              </div>
+            }
+          />
         </div>
       </a>
     </Link>
@@ -337,7 +352,12 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   hubName: {
-    marginTop: 10,
+    marginTop: 4,
+    marginLeft: 16,
+    "@media only screen and (max-width: 767px)": {
+      marginLeft: 0,
+      marginTop: 8
+    }
   },
   rep: {
     marginLeft: "auto",
