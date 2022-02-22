@@ -36,10 +36,7 @@ const Index = ({ code, user }) => {
             </h1>
             <p className={css(styles.text)}>
               Sign up for ResearchHub now and contribute to earn you and{" "}
-              {user.author_profile.first_name} a referral bonus of 50 RSC. If
-              you are in an advanced degree program or have already completed an
-              advanced degree program, then we will reward 1k RSC on an approval
-              basis.
+              {user.author_profile.first_name} a referral bonus of 50 RSC.
             </p>
             <GoogleLoginButton
               customLabel={
