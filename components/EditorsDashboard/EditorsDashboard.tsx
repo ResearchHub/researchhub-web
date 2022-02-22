@@ -1,20 +1,20 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
+import { fetchActiveContributorsForEditors } from "~/config/fetch";
 import { fetchEditors } from "./api/fetchEditors";
 import { ReactElement, useEffect, useMemo, useState } from "react";
 import EditorDashboardUserCard from "./EditorDashboardCard";
-import EditorDashboardNavbar, {
+import LeaderDashboardNavbar, {
   EditorDashFilters,
   upDownOptions,
-} from "./EditorDashboardNavbar";
+} from "./LeaderDashboardNavbar";
 import Head from "~/components/Head";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
 import Loader from "../Loader/Loader";
 import LoadMoreButton from "~/components/LoadMoreButton";
-import moment from 'moment';
+import moment from "moment";
 import ReactPlaceholder from "react-placeholder";
-import { fetchActiveContributorsForEditors } from "~/config/fetch";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -57,14 +57,16 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     },
     orderBy: upDownOptions[0],
   });
-  const [{page, hasMore, isLoadingMore}, setPaginationInfo] = useState<{
+  const [{ page, hasMore, isLoadingMore }, setPaginationInfo] = useState<{
     page: number;
     hasMore?: boolean;
     isLoadingMore: boolean;
   }>({ page: 1, isLoadingMore: false });
   const [editors, setEditors] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [editorActiveContributors, setEditorActiveContributors] = useState<any[]>([]);
+  const [editorActiveContributors, setEditorActiveContributors] = useState<
+    any[]
+  >([]);
 
   useEffectFetchEditors({
     filters,
@@ -93,11 +95,11 @@ export default function EditorsDashboard(): ReactElement<"div"> {
       const activeContributors = await fetchActiveContributorsForEditors({
         startDate: filters.timeframe?.startDate?.format(),
         endDate: filters.timeframe?.endDate?.format(),
-        userIds: userIds.join(',')
+        userIds: userIds.join(","),
       });
 
       setEditorActiveContributors(activeContributors);
-    }
+    };
     if (editors.length) {
       fetchEditorContributors();
     }
@@ -150,9 +152,10 @@ export default function EditorsDashboard(): ReactElement<"div"> {
   );
 
   return (
-    <div className={css(styles.editorsDashboard)}>
-      <EditorDashboardNavbar
+    <div className={css(styles.dashboard)}>
+      <LeaderDashboardNavbar
         currentFilters={filters}
+        headerLabel="Editor Dashboard"
         onFilterChange={(updatedFilters: EditorDashFilters): void => {
           setFilters({ ...updatedFilters });
           setIsLoading(true);
@@ -211,8 +214,8 @@ export default function EditorsDashboard(): ReactElement<"div"> {
   );
 }
 
-const styles = StyleSheet.create({
-  editorsDashboard: {
+export const styles = StyleSheet.create({
+  dashboard: {
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
@@ -223,7 +226,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: 767px})`]: {
       maxWidth: "unset",
       paddingTop: 32,
-      width: '100vw',
+      width: "100vw",
     },
   },
   editorCardContainer: {
@@ -239,7 +242,7 @@ const styles = StyleSheet.create({
     marginLeft: 60,
 
     "@media only screen and (max-width: 1023px)": {
-      display: 'none',
+      display: "none",
     },
   },
   navContainer: {
@@ -261,10 +264,11 @@ const styles = StyleSheet.create({
     },
   },
   rep: {
-    [`@media only screen and (max-width: ${breakpoints.bigDesktop.int - 1}px)`]: {
-      width: 50,
-      paddingRight: 50,
-    },
+    [`@media only screen and (max-width: ${breakpoints.bigDesktop.int - 1}px)`]:
+      {
+        width: 50,
+        paddingRight: 50,
+      },
     [`@media only screen and (min-width: ${breakpoints.bigDesktop.str})`]: {
       paddingRight: 50,
       width: 100,
