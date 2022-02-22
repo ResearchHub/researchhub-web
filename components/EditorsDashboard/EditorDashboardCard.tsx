@@ -338,10 +338,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   hubName: {
-    fontSize: 14,
-    fontWeight: 500,
-    opacity: 0.8,
-    marginTop: 4,
+    margin: "8px 0 8px 0",
   },
   rep: {
     marginLeft: "auto",
