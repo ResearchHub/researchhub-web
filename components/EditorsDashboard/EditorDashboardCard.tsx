@@ -7,6 +7,7 @@ import AuthorAvatar from "../AuthorAvatar";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import Link from "next/link";
+import UserRoleTag from "../shared/UserRoleTag";
 
 type Props = {
   authorProfile: any;
@@ -85,84 +86,105 @@ export default function EditorDashboardUserCard({
     last_name,
     is_hub_editor_of: isHubEditorOf,
   } = authorProfile;
-  const hubNames = (isHubEditorOf ?? [])
+  const hubNameTags = (isHubEditorOf ?? [])
     .map((hub: any): string => toTitleCase(hub?.name ?? ""))
-    .join(", ");
+    .map((hubName: string, index: number) => (
+      <UserRoleTag
+        backgroundColor={colors.EDITOR_TAG_BACKGROUND}
+        color={colors.EDITOR_TAG_TEXT}
+        fontSize="12px"
+        key={`${hubName}-${index}`}
+        label={hubName}
+        margin="0 8px 0 0"
+        padding="2px 10px"
+      />
+    ));
   return (
     <Link href={"/user/[authorId]/[tabName]"} as={`/user/${authorID}/overview`}>
       <a className={css(styles.link)}>
         <div className={css(styles.container, index === 0 && styles.borderTop)}>
-          <div className={css(styles.nameSection)}>
-            <AuthorAvatar author={authorProfile} disableLink={true} size={35} />
-            <div>
-              <div className={css(styles.name) + " clamp1"}>
-                {`${first_name ?? ""} ${last_name ?? ""}`}
-              </div>
-              <div className={css(styles.hubName) + " clamp1"}>
-                {`Editor of: ${hubNames}`}
-              </div>
-              <div className={css(styles.added)}>
-                <span className={css(styles.countResponse)}>
-                  added {timeAgo.format(new Date(editorAddedDate ?? null))}
-                </span>
-              </div>
-              {activeHubContributorCount !== null && (
-                <div className={css(styles.contributorCountWrapper)}>
-                  <span className={css(styles.contributorCount)}>
-                    active hub contributors: {activeHubContributorCount}
+          <div className={css(styles.row)}>
+            <div className={css(styles.nameSection)}>
+              <AuthorAvatar
+                author={authorProfile}
+                disableLink={true}
+                size={35}
+              />
+              <div>
+                <div className={css(styles.name) + " clamp1"}>
+                  {`${first_name ?? ""} ${last_name ?? ""}`}
+                </div>
+                <div className={css(styles.added)}>
+                  <span className={css(styles.countResponse)}>
+                    added {timeAgo.format(new Date(editorAddedDate ?? null))}
                   </span>
-                  {hubActiveContributorsHTML}
+                </div>
+                {activeHubContributorCount !== null && (
+                  <div className={css(styles.contributorCountWrapper)}>
+                    <span className={css(styles.contributorCount)}>
+                      active hub contributors: {activeHubContributorCount}
+                    </span>
+                    {hubActiveContributorsHTML}
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={css(styles.contributionSection)}>
+              {activeHubContributorCount !== null && (
+                <div
+                  className={css(
+                    styles.countLabel,
+                    styles.contributorCountLabel
+                  )}
+                >
+                  <span className={css(styles.mobileLabel)}>
+                    Hub Active Contributors
+                  </span>
+                  <span className={css(styles.countResponse)}>
+                    <span className={css(styles.contributorCount)}>
+                      {activeHubContributorCount}
+                    </span>
+                    {hubActiveContributorsHTML}
+                  </span>
                 </div>
               )}
-            </div>
-          </div>
-          <div className={css(styles.contributionSection)}>
-            {activeHubContributorCount !== null && (
-              <div
-                className={css(styles.countLabel, styles.contributorCountLabel)}
-              >
-                <span className={css(styles.mobileLabel)}>
-                  Hub Active Contributors
-                </span>
+              <div className={css(styles.countLabel, styles.submissionLabel)}>
+                <span className={css(styles.mobileLabel)}>Last Submission</span>
                 <span className={css(styles.countResponse)}>
-                  <span className={css(styles.contributorCount)}>
-                    {activeHubContributorCount}
-                  </span>
-                  {hubActiveContributorsHTML}
+                  {lastSubmissionDate
+                    ? timeAgo.format(new Date(lastSubmissionDate))
+                    : "never"}
                 </span>
               </div>
-            )}
-            <div className={css(styles.countLabel, styles.submissionLabel)}>
-              <span className={css(styles.mobileLabel)}>Last Submission</span>
-              <span className={css(styles.countResponse)}>
-                {lastSubmissionDate
-                  ? timeAgo.format(new Date(lastSubmissionDate))
-                  : "never"}
-              </span>
-            </div>
-            <div className={css(styles.countLabel, styles.submissionLabel)}>
-              <span className={css(styles.mobileLabel)}>Last Comment</span>
-              <span className={css(styles.countResponse)}>
-                {lastCommentDate
-                  ? timeAgo.format(new Date(lastCommentDate))
-                  : "never"}
-              </span>
-            </div>
-            <div className={css(styles.countLabel)}>
-              <span className={css(styles.mobileLabel)}>Submissions</span>
-              <span className={css(styles.countResponse)}>
-                {submissionCount}
-              </span>
-            </div>
-            <div className={css(styles.countLabel, styles.supportLabel)}>
-              <span className={css(styles.mobileLabel)}>Supports</span>
-              <span className={css(styles.countResponse)}>{supportCount}</span>
-            </div>
-            <div className={css(styles.countLabel)}>
-              <span className={css(styles.mobileLabel)}>Comments</span>
-              <span className={css(styles.countResponse)}>{commentCount}</span>
+              <div className={css(styles.countLabel, styles.submissionLabel)}>
+                <span className={css(styles.mobileLabel)}>Last Comment</span>
+                <span className={css(styles.countResponse)}>
+                  {lastCommentDate
+                    ? timeAgo.format(new Date(lastCommentDate))
+                    : "never"}
+                </span>
+              </div>
+              <div className={css(styles.countLabel)}>
+                <span className={css(styles.mobileLabel)}>Submissions</span>
+                <span className={css(styles.countResponse)}>
+                  {submissionCount}
+                </span>
+              </div>
+              <div className={css(styles.countLabel, styles.supportLabel)}>
+                <span className={css(styles.mobileLabel)}>Supports</span>
+                <span className={css(styles.countResponse)}>
+                  {supportCount}
+                </span>
+              </div>
+              <div className={css(styles.countLabel)}>
+                <span className={css(styles.mobileLabel)}>Comments</span>
+                <span className={css(styles.countResponse)}>
+                  {commentCount}
+                </span>
+              </div>
             </div>
           </div>
+          <div className={css(styles.hubName) + " clamp1"}>{hubNameTags}</div>
         </div>
       </a>
     </Link>
@@ -171,20 +193,29 @@ export default function EditorDashboardUserCard({
 
 const styles = StyleSheet.create({
   container: {
-    alignItems: "center",
     backgroundColor: "#FFF",
     border: `1px solid ${colors.GREY(0.5)}`,
+    borderTop: 0,
     cursor: "pointer",
     display: "flex",
-    borderTop: 0,
-    justifyContent: "space-between",
+    flexDirection: "column",
     minHeight: 72,
     padding: "8px 16px",
     [`@media only screen and (max-width: 1023px)`]: {
+      boxSizing: "border-box",
+      display: "inline-flex",
       overflow: "auto",
+      padding: 16,
+      width: "100%",
+    },
+  },
+  row: {
+    alignItems: "center",
+    display: "flex",
+    justifyContent: "space-between",
+    [`@media only screen and (max-width: 1023px)`]: {
       display: "inline-flex",
       flexDirection: "column",
-      padding: 16,
       width: "100%",
       boxSizing: "border-box",
     },
@@ -297,7 +328,6 @@ const styles = StyleSheet.create({
     width: "100%",
     color: colors.BLACK(1),
     textDecoration: "none",
-
     [`@media only screen and (max-width: 1023px)`]: {
       maxWidth: 500,
     },
@@ -307,11 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   hubName: {
-    marginLeft: 16,
-    fontSize: 14,
-    fontWeight: 500,
-    opacity: 0.8,
-    marginTop: 4,
+    marginTop: 10,
   },
   rep: {
     marginLeft: "auto",
