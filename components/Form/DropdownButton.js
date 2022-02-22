@@ -20,6 +20,7 @@ const DropdownButton = ({
   overrideOptionsStyle = null,
   overrideTargetStyle = null,
   overrideTitleStyle = null,
+  overrideDownIconStyle = null,
   closeAfterSelect = true,
   htmlBefore = null, // HTML to be injected before the list
   htmlAfter = null, // HTML to be injected after the list
@@ -83,7 +84,10 @@ const DropdownButton = ({
         >
           <div className={css(styles.targetBtn, customButtonClassName)}>
             {label}
-            <DownIcon withAnimation={false} overrideStyle={styles.downIcon} />
+            <DownIcon
+              withAnimation={false}
+              overrideStyle={[styles.downIcon, overrideDownIconStyle]}
+            />
           </div>
         </div>
       }

@@ -82,7 +82,7 @@ const HubSelector = ({ hubState }) => {
   return (
     <DropdownButton
       opts={hubOpts}
-      label={`Hub`}
+      label={`All Hubs`}
       isOpen={isHubSelectOpen}
       onClick={() => setIsHubSelectOpen(true)}
       dropdownClassName="hubSelect"
@@ -90,6 +90,8 @@ const HubSelector = ({ hubState }) => {
       positions={["bottom", "right"]}
       customButtonClassName={styles.hubSelectorButton}
       overrideOptionsStyle={styles.hubPopoverOptions}
+      overrideDownIconStyle={styles.downIcon}
+      overrideTargetStyle={styles.overrideTargetStyle}
       onSelect={() => {
         setIsHubSelectOpen(false);
       }}
@@ -99,6 +101,18 @@ const HubSelector = ({ hubState }) => {
 };
 
 const styles = StyleSheet.create({
+  downIcon: {
+    [`@media only screen and (max-width: 410px)`]: {
+      marginLeft: 2,
+    },
+  },
+  overrideTargetStyle: {
+    [`@media only screen and (max-width: 410px)`]: {
+      fontSize: 12,
+      whiteSpace: "pre",
+      lineHeight: "20px",
+    },
+  },
   squaresIcon: {
     marginRight: 10,
     color: colors.NEW_BLUE(),
