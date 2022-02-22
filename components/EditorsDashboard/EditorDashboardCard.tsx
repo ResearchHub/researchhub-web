@@ -328,7 +328,6 @@ const styles = StyleSheet.create({
     width: "100%",
     color: colors.BLACK(1),
     textDecoration: "none",
-
     [`@media only screen and (max-width: 1023px)`]: {
       maxWidth: 500,
     },
@@ -338,7 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
   },
   hubName: {
-    margin: "8px 0 8px 0",
+    marginTop: 10,
   },
   rep: {
     marginLeft: "auto",
