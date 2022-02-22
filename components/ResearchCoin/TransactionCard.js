@@ -44,6 +44,14 @@ const TransactionCard = (props) => {
 
   const paper = transaction.source?.proof_item?.paper;
   const comment = transaction.source?.proof_item?.source;
+  const commentSlug =
+    comment &&
+    (comment.paper_slug
+      ? `/paper/${comment.paper}/${comment.paper_slug}#comments`
+      : comment.hypothesis_slug
+      ? `/hypothesis/${comment.hypothesis}/${comment.hypothesis_slug}#comments`
+      : comment.post_slug &&
+        `/post/${comment.post}/${comment.post_slug}#comments`);
 
   return (
     <div
@@ -77,10 +85,8 @@ const TransactionCard = (props) => {
               </a>
             </Link>
           )}
-          {comment && (
-            <Link
-              href={`/paper/${comment.paper}/${comment.paper_slug}#comments`}
-            >
+          {commentSlug && (
+            <Link href={commentSlug}>
               <a
                 className={css(styles.metatext, styles.noUnderline)}
                 onClick={(e) => {
