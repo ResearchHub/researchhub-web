@@ -2,45 +2,29 @@ import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import Link from "next/link";
 import Modal from "react-modal";
-import { ReactElement, useState, SyntheticEvent, Fragment } from "react";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
+import { MessageActions } from "~/redux/message";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
+import { ReactElement, useState, SyntheticEvent } from "react";
 import { StyleSheet, css } from "aphrodite";
-import killswitch from "../../config/killswitch/killswitch";
+import { connect } from "react-redux";
+import { createNewNote } from "~/config/fetch";
 import { filterNull } from "~/config/utils/nullchecks";
-
-const items = [
-  {
-    header: "Upload a Paper",
-    description:
-      "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
-    imgSrc: "/static/icons/uploadPaper.png",
-    route: "/paper/upload/info",
-  },
-  {
-    header: "Create a Post",
-    description:
-      "All posts must be scientific in nature. Ideas, theories, and questions to the community are all welcome.",
-    imgSrc: "/static/icons/askQuestion.png",
-    route: "/post/create",
-  },
-  {
-    header: "Create a Hypothesis",
-    description:
-      "Propose an explanation to an observation and back it up by citing relevant academic papers.",
-    imgSrc: "/static/icons/publishProject.png",
-    route: "/hypothesis/create",
-  },
-];
+import { useRouter } from "next/router";
 
 export type NewPostModalProps = {
+  currentUser: any;
   isOpen: boolean;
   setIsOpen: (flag: boolean) => void;
 };
 
-export default function NewPostModal({
+function NewPostModal({
+  currentUser,
   isOpen,
   setIsOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
+  const router = useRouter();
   let [selected, setSelected] = useState(0);
 
   const closeModal = (e: SyntheticEvent): void => {
@@ -53,27 +37,42 @@ export default function NewPostModal({
     closeModal(e);
   };
 
-  const optionCards = filterNull(items).map((option, index) => {
-    return (
-      <ResearchhubOptionCard
-        description={option.description}
-        header={option.header}
-        imgSrc={option.imgSrc}
-        isActive={index === selected}
-        isCheckboxSquare={false}
-        key={index}
-        onSelect={(e: SyntheticEvent) => {
-          e.preventDefault();
-          setSelected(index);
-        }}
-      />
-    );
-  });
+  const items = [
+    {
+      header: "Upload a Paper",
+      description:
+        "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
+      route: "/paper/upload/info",
+      icon: <PaperIcon width={40} height={40} withAnimation={false} />,
+    },
+    {
+      header: "Publish a Post",
+      description:
+        "All posts must be academic in nature. Ideas, theories, and questions to the community are all welcome.",
+      onClick: async () => {
+        /* @ts-ignore */
+        const note = await createNewNote({
+          orgSlug: currentUser.organization_slug,
+          grouping: NOTE_GROUPS.WORKSPACE,
+        });
+        /* @ts-ignore */
+        router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
+      },
+      icon: <PostIcon width={40} height={40} withAnimation={false} />,
+    },
+    {
+      header: "Propose a Hypothesis",
+      description:
+        "Propose an explanation to an observation and back it up by citing relevant academic papers.",
+      route: "/hypothesis/create",
+      icon: <HypothesisIcon width={40} height={40} withAnimation={false} />,
+    },
+  ];
 
   return (
     <BaseModal
       children={
-        <Fragment>
+        <>
           <div className={css(styles.rootContainer)}>
             <img
               alt="Close Button"
@@ -85,22 +84,46 @@ export default function NewPostModal({
             <div className={css(styles.titleContainer)}>
               <div className={css(styles.title)}>{"Select your post type"}</div>
             </div>
-            <div className={css(styles.list)}>{optionCards}</div>
+            <div className={css(styles.list)}>
+              {filterNull(items).map((option, index) => (
+                <ResearchhubOptionCard
+                  description={option.description}
+                  header={option.header}
+                  icon={option.icon}
+                  isActive={index === selected}
+                  isCheckboxSquare={false}
+                  key={index}
+                  onSelect={(e: SyntheticEvent) => {
+                    e.preventDefault();
+                    setSelected(index);
+                  }}
+                />
+              ))}
+            </div>
             <div>
               <Button
                 customButtonStyle={styles.buttonCustomStyle}
                 customLabelStyle={styles.buttonLabel}
                 label={
-                  <Link href={items[selected]?.route ?? ""}>
-                    <div className={css(styles.buttonLabel)}>Continue</div>
-                  </Link>
+                  items[selected].onClick ? (
+                    <div
+                      onClick={items[selected].onClick}
+                      className={css(styles.buttonLabel)}
+                    >
+                      Continue
+                    </div>
+                  ) : (
+                    <Link href={items[selected]?.route ?? ""}>
+                      <div className={css(styles.buttonLabel)}>Continue</div>
+                    </Link>
+                  )
                 }
                 onClick={handleContinue}
                 rippleClass={styles.rippleClass}
               />
             </div>
           </div>
-        </Fragment>
+        </>
       }
       closeModal={closeModal}
       isOpen={isOpen}
@@ -200,3 +223,13 @@ const styles = StyleSheet.create({
     },
   },
 });
+
+const mapStateToProps = (state) => ({
+  currentUser: state.auth.user,
+});
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NewPostModal);
