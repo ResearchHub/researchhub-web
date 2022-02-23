@@ -1,4 +1,4 @@
-import { buildSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { connect, useStore, useDispatch } from "react-redux";
 import { Fragment, useEffect, useState, useRef, useMemo } from "react";
 import { StyleSheet, css } from "aphrodite";

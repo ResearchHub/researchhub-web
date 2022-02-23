@@ -1,6 +1,6 @@
 import { captureEvent } from "~/config/utils/events";
 
-import { buildSlug } from "../../../../config/utils/document";
+import { buildSlug } from "../../../../config/utils/buildSlug";
 import { FormState } from "../types/UploadComponentTypes";
 import { ID } from "../../../../config/types/root_types";
 import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
