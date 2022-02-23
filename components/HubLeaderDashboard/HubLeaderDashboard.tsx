@@ -14,6 +14,7 @@ import LoadMoreButton from "~/components/LoadMoreButton";
 import moment from "moment";
 import ReactPlaceholder from "react-placeholder";
 import { fetchLeadingHubs } from "./api/fetchLeadingHubs";
+import HubLeaderDashboardCard from "./HubLeaderDashboardCard";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -61,19 +62,16 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
     hasMore?: boolean;
     isLoadingMore: boolean;
   }>({ page: 1, isLoadingMore: false });
-  const [editors, setEditors] = useState<any[]>([]);
+  const [hubs, setHubs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [editorActiveContributors, setEditorActiveContributors] = useState<
-    any[]
-  >([]);
 
   useEffectFetchEditors({
     filters,
     isLoadingMore,
     onError: emptyFncWithMsg,
-    onSuccess: (editorResults: any): void => {
-      const { page, has_more } = editorResults;
-      setEditors([...editors, ...editorResults.result]);
+    onSuccess: (hubResults: any): void => {
+      const { page, has_more, result } = hubResults;
+      setHubs([...hubs, ...result]);
       setIsLoading(false);
       setPaginationInfo({
         hasMore: has_more,
@@ -86,22 +84,38 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
   });
 
   const editorCards = useMemo(
-    (): ReactElement<"div">[] =>
-      editors.map((editor: any, index: number): ReactElement<"div"> => {
-        const {
-          author_profile,
-          comment_count = 0,
-          submission_count = 0,
-          support_count = 0,
-          latest_comment_date = null,
-          latest_submission_date = null,
-          id,
-        } = editor ?? {};
+    (): ReactElement<typeof HubLeaderDashboardCard>[] =>
+      hubs.map(
+        (
+          hub: any,
+          index: number
+        ): ReactElement<typeof HubLeaderDashboardCard> => {
+          const {
+            comment_count = 0,
+            hub_image,
+            latest_comment_date = null,
+            latest_submission_date = null,
+            name,
+            submission_count = 0,
+            support_count = 0,
+          } = hub ?? {};
 
-        const added_as_editor_date = author_profile.added_as_editor_date;
-        return <div>{"card"}</div>;
-      }),
-    [editors, filters, editorActiveContributors]
+          return (
+            <HubLeaderDashboardCard
+              commentCount={comment_count}
+              hubImage={hub_image}
+              index={index}
+              key={`${name}-${index}`}
+              lastCommentDate={latest_comment_date ?? ""}
+              lastSubmissionDate={latest_submission_date ?? ""}
+              name={name}
+              submissionCount={submission_count}
+              supportCount={support_count}
+            />
+          );
+        }
+      ),
+    [hubs, filters]
   );
 
   return (
@@ -112,7 +126,7 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
         onFilterChange={(updatedFilters: EditorDashFilters): void => {
           setFilters({ ...updatedFilters });
           setIsLoading(true);
-          setEditors([]);
+          setHubs([]);
           setPaginationInfo({
             page: 1,
             hasMore: undefined,
