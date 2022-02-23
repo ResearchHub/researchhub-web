@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
   newPostLabel: {
     alignItems: "center",
     display: "flex",
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 500,
   },
   rippleClass: {
