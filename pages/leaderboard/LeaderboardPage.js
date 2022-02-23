@@ -295,7 +295,7 @@ class Index extends Component {
         filterBy: filterBy ? filterBy : defaultFilterBy,
       },
       () => {
-        if (type !== "editors") {
+        if (!["editors", "hubs"].includes(this.state.type)) {
           this.fetchLeaderboard(type);
         }
       }
@@ -308,7 +308,7 @@ class Index extends Component {
     }
 
     if (prevState.type !== this.state.type) {
-      if (this.state.type !== "editors") {
+      if (!["editors", "hubs"].includes(this.state.type)) {
         this.fetchLeaderboard(this.state.type);
       }
     }

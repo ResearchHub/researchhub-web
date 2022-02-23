@@ -13,6 +13,7 @@ import Loader from "../Loader/Loader";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import moment from "moment";
 import ReactPlaceholder from "react-placeholder";
+import { fetchLeadingHubs } from "./api/fetchLeadingHubs";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -34,15 +35,15 @@ const useEffectFetchEditors = ({
   const { orderBy, selectedHub, timeframe } = filters;
   useEffect((): void => {
     !isLoadingMore ?? setIsLoading(true);
-    // fetchEditors({
-    //   hub_id: selectedHub?.id ?? null,
-    //   onError,
-    //   onSuccess,
-    //   order_by: orderBy?.value,
-    //   page,
-    //   startDate: timeframe?.startDate?.toISOString(),
-    //   endDate: timeframe?.endDate?.toISOString(),
-    // });
+    fetchLeadingHubs({
+      hub_id: selectedHub?.id ?? null,
+      onError,
+      onSuccess,
+      order_by: orderBy?.value,
+      page,
+      start_date: timeframe?.startDate?.toISOString(),
+      end_date: timeframe?.endDate?.toISOString(),
+    });
   }, [orderBy, page, selectedHub, timeframe]);
 };
 

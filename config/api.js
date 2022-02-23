@@ -613,6 +613,10 @@ const routes = (BASE_URL) => {
     },
     HUB_NEW_EDITOR: BASE_URL + "hub/create_new_editor/",
     HUB_DELETE_EDITOR: BASE_URL + "hub/delete_editor/",
+    HUBS_BY_CONTRIBUTION: (params) =>
+      prepURL(BASE_URL + "hub/by_contributions/", {
+        querystring: params,
+      }),
     SORTED_HUB: (params = {}) => {
       // hard codedlimit to 10
       let url = BASE_URL + `hub/?ordering=-score&page_limit=10`;
