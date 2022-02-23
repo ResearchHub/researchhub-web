@@ -23,7 +23,7 @@ import colors from "~/config/themes/colors";
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { getNestedValue } from "~/config/utils/misc";
-import { buildSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { doesNotExist } from "~/config/utils/nullchecks";
 import {
   formatUnifiedDocPageUrl,
