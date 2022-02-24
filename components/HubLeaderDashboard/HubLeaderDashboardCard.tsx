@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     padding: "8px 16px",
-    [`@media only screen and (max-width: 1023px)`]: {
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       boxSizing: "border-box",
       display: "inline-flex",
       overflow: "auto",
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "space-between",
-    [`@media only screen and (max-width: 1023px)`]: {
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       display: "inline-flex",
       flexDirection: "column",
       width: "100%",
@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     height: 40,
     width: "100%",
-    [`@media only screen and (max-width: 1023px)`]: {
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       flexDirection: "column",
       height: "unset",
       alignItems: "flex-end",
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     width: "100%",
     color: colors.BLACK(1),
     textDecoration: "none",
-    [`@media only screen and (max-width: 1023px)`]: {
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       maxWidth: 500,
     },
   },
@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   hubName: {
     marginTop: 4,
     marginLeft: 16,
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})]`: {
       marginLeft: 0,
       marginTop: 8,
     },
