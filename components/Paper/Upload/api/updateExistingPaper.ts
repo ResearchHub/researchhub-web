@@ -1,7 +1,7 @@
-import { buildSlug } from "../../../../config/utils/buildSlug";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { FormState } from "../types/UploadComponentTypes";
-import { ID } from "../../../../config/types/root_types";
-import { isNullOrUndefined } from "../../../../config/utils/nullchecks";
+import { ID } from "~/config/types/root_types";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 type Args = {
   onError: Function;
