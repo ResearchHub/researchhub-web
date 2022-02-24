@@ -236,7 +236,7 @@ const styles = StyleSheet.create({
   hubName: {
     marginTop: 4,
     marginLeft: 16,
-    [`@media only screen and (max-width: ${breakpoints.small.str})]`: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginLeft: 0,
       marginTop: 8,
     },
