@@ -76,23 +76,6 @@ const NotebookSidebar = ({
     return sorted;
   };
 
-  const buildHtmlForGroup = ({ groupKey }) => {
-    return (
-      <NotebookSidebarGroup
-        availGroups={Object.keys(groupedNotes)}
-        currentNoteId={currentNoteId}
-        currentOrg={currentOrg}
-        groupKey={groupKey}
-        isOrgMember={isOrgMember}
-        key={groupKey}
-        notes={groupedNotes[groupKey] || []}
-        orgs={orgs}
-        redirectToNote={redirectToNote}
-        titles={titles}
-      />
-    );
-  };
-
   return (
     <div className={css(styles.sidebar)}>
       <ManageOrgModal
@@ -219,9 +202,20 @@ const NotebookSidebar = ({
           showLoadingAnimation
           customPlaceholder={<NoteEntryPlaceholder color="#d3d3d3" />}
         >
-          {getSidebarGroupKeys().map((groupKey) =>
-            buildHtmlForGroup({ groupKey })
-          )}
+          {getSidebarGroupKeys().map((groupKey) => (
+            <NotebookSidebarGroup
+              availGroups={Object.keys(groupedNotes)}
+              currentNoteId={currentNoteId}
+              currentOrg={currentOrg}
+              groupKey={groupKey}
+              isOrgMember={isOrgMember}
+              key={groupKey}
+              notes={groupedNotes[groupKey] || []}
+              orgs={orgs}
+              redirectToNote={redirectToNote}
+              titles={titles}
+            />
+          ))}
         </ReactPlaceholder>
       </div>
     </div>

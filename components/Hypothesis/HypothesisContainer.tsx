@@ -43,14 +43,14 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
 
   const {
     aggregate_citation_consensus: aggreCitationCons,
+    authors,
     created_by = {},
     hubs,
     id,
+    is_removed: isHypoRemoved,
     slug,
     title,
-    is_removed: isHypoRemoved,
   } = hypothesis || {};
-  const authors = [created_by?.author_profile ?? {}];
   return !isNullOrUndefined(hypothesis) ? (
     <div className={css(styles.hypothesisContainer)}>
       <PaperBanner
@@ -90,7 +90,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         />
         <div className={css(styles.metaContainerMobile)}>
           <AuthorStatsDropdown
-            authors={[created_by?.author_profile ?? {}]}
+            authors={authors}
             hubs={hubs}
             paper={hypothesis}
             paperId={id}
@@ -115,7 +115,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
         <CitationCommentSidebarWithMedia />
         <div className={css(styles.regSidebar)}>
           <PaperSideColumn
-            authors={[created_by?.author_profile ?? {}]}
+            authors={authors}
             hubs={hubs}
             isPost={true}
             paper={hypothesis}

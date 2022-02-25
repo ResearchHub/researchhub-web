@@ -30,7 +30,6 @@ import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
-import ReactHtmlParser from "react-html-parser";
 import VoteWidget from "~/components/VoteWidget";
 import ActionButton from "../ActionButton";
 import { breakpoints } from "~/config/themes/screen";
@@ -38,10 +37,9 @@ import {
   removeHypothesis,
   restoreHypothesis,
 } from "./api/postHypothesisStatus";
-import ColumnHubs from "../Paper/SideColumn/ColumnHubs";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import DiscussionCount from "~/components/DiscussionCount";
-
+import { useRouter } from "next/router";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -60,6 +58,7 @@ const getActionButtons = ({
   onUpdates: Function;
   setShowHypothesisEditor: (flag: boolean) => void;
 }): ReactNode => {
+  const router = useRouter();
   const {
     id: hypoID,
     is_removed: isHypoRemoved,
@@ -76,7 +75,20 @@ const getActionButtons = ({
   const actionConfigs = [
     {
       active: isCurrUserSubmitter,
-      button: (
+      button: hypothesis.note ? (
+        <div
+          onClick={() => {
+            router.push(
+              "/[orgSlug]/notebook/[noteId]",
+              `/${hypothesis.note.organization.slug}/notebook/${hypothesis.note.id}`
+            );
+          }}
+          className={css(styles.actionIcon)}
+          data-tip={"Edit Hypothesis"}
+        >
+          {icons.pencil}
+        </div>
+      ) : (
         <PermissionNotificationWrapper
           hideRipples
           loginRequired
@@ -141,14 +153,11 @@ const getActionButtons = ({
 };
 
 const getMetaData = ({
-  authors,
   hypothesis,
 }: {
-  authors: any[];
   hypothesis: any;
 }): ReactElement<"div"> => {
   const { created_date } = hypothesis;
-  const { first_name = "", last_name = "" } = authors[0];
   const metadata = [
     {
       label: "Published",
@@ -158,15 +167,6 @@ const getMetaData = ({
           property="datePublished"
         >
           {formatPublishedDate(dayjs(created_date), true)}
-        </span>
-      ),
-      active: created_date,
-    },
-    {
-      label: "Author",
-      value: (
-        <span className={css(styles.metadata) + " clamp2"} property="author">
-          {first_name + " " + last_name}
         </span>
       ),
       active: created_date,
@@ -288,12 +288,16 @@ function HypothesisPageCard({
     return showHypothesisEditor ? (
       <Fragment>
         <DynamicCKEditor
-          id="text"
+          editing
+          id="editHypothesisBody"
           initialData={displayableMarkdown}
+          isBalloonEditor
           labelStyle={styles.label}
+          noTitle
           onChange={(_id: ID, editorData: any): void =>
             setUpdatedMarkdown(editorData)
           }
+          readOnly={false}
         />
         <div className={css(styles.editButtonRow)}>
           <Button
@@ -325,9 +329,18 @@ function HypothesisPageCard({
       </Fragment>
     ) : (
       <Fragment>
-        {!isNullOrUndefined(displayableMarkdown)
-          ? ReactHtmlParser(displayableMarkdown)
-          : null}
+        {!isNullOrUndefined(displayableMarkdown) ? (
+          <div>
+            <DynamicCKEditor
+              id={"hypothesisBody"}
+              initialData={displayableMarkdown}
+              isBalloonEditor
+              labelStyle={styles.label}
+              noTitle
+              readOnly
+            />
+          </div>
+        ) : null}
         <div className={css(styles.bottomContainer)}>
           <div className={css(styles.bottomRow)}>
             <div className={css(styles.actions) + " action-bars"}>
@@ -349,35 +362,43 @@ function HypothesisPageCard({
       <div className={css(styles.voting)}>
         <VoteWidget {...voteWidgetProps} />
         <div className={css(styles.discussionCountWrapper)}>
-          <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
-        </div>        
+          <DiscussionCount
+            docType="hypothesis"
+            slug={hypothesis.slug}
+            id={hypothesis.id}
+            count={hypothesis.discussion_count}
+          />
+        </div>
       </div>
       <div className={css(styles.mobile)}>
         <div className={css(styles.votingMobile)}>
           <VoteWidget {...voteWidgetProps} horizontalView />
           <div className={css(styles.discussionCountWrapper)}>
-            <DiscussionCount docType="hypothesis" slug={hypothesis.slug} id={hypothesis.id} count={hypothesis.discussion_count} />
-            <a
-              href="#comments"
-              className={css(styles.discussionText)}
-            >
+            <DiscussionCount
+              docType="hypothesis"
+              slug={hypothesis.slug}
+              id={hypothesis.id}
+              count={hypothesis.discussion_count}
+            />
+            <a href="#comments" className={css(styles.discussionText)}>
               <span>Join the Discussion</span>
-            </a>            
-          </div>                 
+            </a>
+          </div>
         </div>
       </div>
       <div className={css(styles.column)}>
         <div className={css(styles.cardContainer)}>
           <div className={css(styles.metaContainer)}>
-            <div className={css(styles.titleHeader)}>
-              <div className={css(styles.row)}>
-                <h1 className={css(styles.title)} property={"headline"}>
-                  {title}
-                </h1>
+            {!hypothesis.note && (
+              <div className={css(styles.titleHeader)}>
+                <div className={css(styles.row)}>
+                  <h1 className={css(styles.title)} property={"headline"}>
+                    {title}
+                  </h1>
+                </div>
               </div>
-            </div>
-            <div className={css(styles.column)}>{formattedMetaData}</div>
-            <div className="ck-content">{hypoContent}</div>
+            )}
+            <div className={css(styles.hypothesisBody)}>{hypoContent}</div>
           </div>
         </div>
       </div>
@@ -397,7 +418,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 1,
       display: "flex",
-    }
+    },
   },
   discussionText: {
     whiteSpace: "nowrap",
@@ -406,7 +427,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginTop: 4,
     textDecoration: "none",
-  },  
+  },
   hypothesisCard: {
     display: "flex",
     flexDirection: "row",
@@ -427,6 +448,9 @@ const styles = StyleSheet.create({
       width: "100%",
       flexDirection: "column",
     },
+  },
+  hypothesisBody: {
+    wordBreak: "break-word",
   },
   voting: {
     display: "block",
