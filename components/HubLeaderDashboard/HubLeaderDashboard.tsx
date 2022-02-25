@@ -1,20 +1,20 @@
-import { breakpoints } from "~/config/themes/screen";
-import { css, StyleSheet } from "aphrodite";
+import { css } from "aphrodite";
+import { styles } from "~/components/EditorsDashboard/EditorsDashboard";
 import { emptyFncWithMsg } from "~/config/utils/nullchecks";
-import { fetchActiveContributorsForEditors } from "~/config/fetch";
-import { fetchEditors } from "./api/fetchEditors";
 import { ReactElement, useEffect, useMemo, useState } from "react";
-import EditorDashboardUserCard from "./EditorDashboardCard";
+// import EditorDashboardUserCard from "~/component/EditorsDashboard/EditorDashboardCard";
 import LeaderDashboardNavbar, {
   EditorDashFilters,
   upDownOptions,
-} from "./LeaderDashboardNavbar";
+} from "~/components/EditorsDashboard/LeaderDashboardNavbar";
 import Head from "~/components/Head";
 import LeaderboardFeedPlaceholder from "../Placeholders/LeaderboardFeedPlaceholder";
 import Loader from "../Loader/Loader";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import moment from "moment";
 import ReactPlaceholder from "react-placeholder";
+import { fetchLeadingHubs } from "./api/fetchLeadingHubs";
+import HubLeaderDashboardCard from "./HubLeaderDashboardCard";
 
 type UseEffectFetchEditorsArgs = {
   filters: EditorDashFilters;
@@ -36,19 +36,19 @@ const useEffectFetchEditors = ({
   const { orderBy, selectedHub, timeframe } = filters;
   useEffect((): void => {
     !isLoadingMore ?? setIsLoading(true);
-    fetchEditors({
+    fetchLeadingHubs({
       hub_id: selectedHub?.id ?? null,
       onError,
       onSuccess,
       order_by: orderBy?.value,
       page,
-      startDate: timeframe?.startDate?.toISOString(),
-      endDate: timeframe?.endDate?.toISOString(),
+      start_date: timeframe?.startDate?.toISOString(),
+      end_date: timeframe?.endDate?.toISOString(),
     });
   }, [orderBy, page, selectedHub, timeframe]);
 };
 
-export default function EditorsDashboard(): ReactElement<"div"> {
+export default function HubLeaderDashboard(): ReactElement<"div"> {
   const [filters, setFilters] = useState<EditorDashFilters>({
     selectedHub: null,
     timeframe: {
@@ -62,19 +62,16 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     hasMore?: boolean;
     isLoadingMore: boolean;
   }>({ page: 1, isLoadingMore: false });
-  const [editors, setEditors] = useState<any[]>([]);
+  const [hubs, setHubs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [editorActiveContributors, setEditorActiveContributors] = useState<
-    any[]
-  >([]);
 
   useEffectFetchEditors({
     filters,
     isLoadingMore,
     onError: emptyFncWithMsg,
-    onSuccess: (editorResults: any): void => {
-      const { page, has_more } = editorResults;
-      setEditors([...editors, ...editorResults.result]);
+    onSuccess: (hubResults: any): void => {
+      const { page, has_more, result } = hubResults;
+      setHubs([...hubs, ...result]);
       setIsLoading(false);
       setPaginationInfo({
         hasMore: has_more,
@@ -86,80 +83,50 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     setIsLoading,
   });
 
-  useEffect(() => {
-    const fetchEditorContributors = async () => {
-      const userIds = [];
-      for (let i = 0; i < editors.length; i++) {
-        userIds.push(editors[i].id);
-      }
-      const activeContributors = await fetchActiveContributorsForEditors({
-        startDate: filters.timeframe?.startDate?.format(),
-        endDate: filters.timeframe?.endDate?.format(),
-        userIds: userIds.join(","),
-      });
-
-      setEditorActiveContributors(activeContributors);
-    };
-    if (editors.length) {
-      fetchEditorContributors();
-    }
-  }, [editors]);
-
   const editorCards = useMemo(
-    (): ReactElement<typeof EditorDashboardUserCard>[] =>
-      editors.map(
+    (): ReactElement<typeof HubLeaderDashboardCard>[] =>
+      hubs.map(
         (
-          editor: any,
+          hub: any,
           index: number
-        ): ReactElement<typeof EditorDashboardUserCard> => {
+        ): ReactElement<typeof HubLeaderDashboardCard> => {
           const {
-            author_profile,
             comment_count = 0,
-            submission_count = 0,
-            support_count = 0,
+            hub_image,
             latest_comment_date = null,
             latest_submission_date = null,
-            id,
-          } = editor ?? {};
+            name,
+            submission_count = 0,
+            support_count = 0,
+          } = hub ?? {};
 
-          const added_as_editor_date = author_profile.added_as_editor_date;
           return (
-            <EditorDashboardUserCard
-              authorProfile={author_profile ?? {}}
+            <HubLeaderDashboardCard
               commentCount={comment_count}
-              key={`editor-dash-user-card-${index}`}
+              hubImage={hub_image}
+              index={index}
+              key={`${name}-${index}`}
+              lastCommentDate={latest_comment_date ?? ""}
+              lastSubmissionDate={latest_submission_date ?? ""}
+              name={name}
               submissionCount={submission_count}
               supportCount={support_count}
-              index={index}
-              lastCommentDate={latest_comment_date}
-              lastSubmissionDate={latest_submission_date}
-              editorAddedDate={added_as_editor_date}
-              activeHubContributorCount={
-                editorActiveContributors?.current_active_contributors
-                  ? editorActiveContributors?.current_active_contributors[id]
-                  : null
-              }
-              previousActiveHubContributorCount={
-                editorActiveContributors?.previous_active_contributors
-                  ? editorActiveContributors?.previous_active_contributors[id]
-                  : null
-              }
             />
           );
         }
       ),
-    [editors, filters, editorActiveContributors]
+    [hubs, filters]
   );
 
   return (
     <div className={css(styles.dashboard)}>
       <LeaderDashboardNavbar
         currentFilters={filters}
-        headerLabel="Editor Dashboard"
+        headerLabel="Hub Leaders"
         onFilterChange={(updatedFilters: EditorDashFilters): void => {
           setFilters({ ...updatedFilters });
           setIsLoading(true);
-          setEditors([]);
+          setHubs([]);
           setPaginationInfo({
             page: 1,
             hasMore: undefined,
@@ -213,74 +180,3 @@ export default function EditorsDashboard(): ReactElement<"div"> {
     </div>
   );
 }
-
-export const styles = StyleSheet.create({
-  dashboard: {
-    boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    height: "100%",
-    minHeight: "100vh",
-    padding: "0 32px",
-    width: "100%",
-    [`@media only screen and (max-width: 767px})`]: {
-      maxWidth: "unset",
-      paddingTop: 32,
-      width: "100vw",
-    },
-  },
-  editorCardContainer: {
-    marginTop: 35,
-    paddingBottom: 32,
-  },
-  placeholder: {
-    marginTop: -35,
-  },
-  nav: {
-    display: "flex",
-    // marginBottom: 16,
-    marginLeft: 60,
-
-    "@media only screen and (max-width: 1023px)": {
-      display: "none",
-    },
-  },
-  navContainer: {
-    display: "flex",
-    marginLeft: "auto",
-  },
-  navItem: {
-    color: "#241F3A",
-    opacity: 0.5,
-  },
-  last: {
-    "@media only screen and (min-width: 1024px)": {
-      paddingRight: 30,
-      width: 120,
-    },
-    "@media only screen and (min-width: 1200px)": {
-      paddingRight: 35,
-      width: 120,
-    },
-  },
-  rep: {
-    [`@media only screen and (max-width: ${breakpoints.bigDesktop.int - 1}px)`]:
-      {
-        width: 50,
-        paddingRight: 50,
-      },
-    [`@media only screen and (min-width: ${breakpoints.bigDesktop.str})`]: {
-      paddingRight: 50,
-      width: 100,
-    },
-  },
-  submissions: {
-    "@media only screen and (min-width: 1024px)": {
-      paddingRight: 70,
-    },
-  },
-  editorContainerWrap: {
-    boxSizing: "border-box",
-    marginTop: 16,
-  },
-});

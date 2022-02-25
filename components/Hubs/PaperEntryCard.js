@@ -9,7 +9,7 @@ import {
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { getUsersFromPaper, getJournalFromURL } from "~/config/utils/parsers";
 import { formatUploadedDate } from "~/config/utils/dates";
-import { buildSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { Helpers } from "@quantfive/js-web-config";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";

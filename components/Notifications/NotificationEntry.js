@@ -11,7 +11,7 @@ import { NotificationActions } from "~/redux/notification";
 
 // Config
 import colors from "../../config/themes/colors";
-import { buildSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { timeAgoStamp } from "~/config/utils/dates";
 import AuthorAvatar from "../AuthorAvatar";
 

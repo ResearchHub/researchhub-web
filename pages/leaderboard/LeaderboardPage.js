@@ -26,6 +26,7 @@ import HeadComponent from "../../components/Head";
 import SideColumn from "~/components/Home/SideColumn";
 import { HubActions } from "../../redux/hub";
 import EditorsDashboard from "~/components/EditorsDashboard/EditorsDashboard";
+import HubLeaderDashboard from "~/components/HubLeaderDashboard/HubLeaderDashboard";
 
 const filterOptions = [
   {
@@ -110,6 +111,12 @@ class Index extends Component {
         id: "editors",
         type: "editors",
         icon: icons.starFilled,
+      },
+      {
+        name: "Hubs",
+        id: "hubs",
+        type: "hubs",
+        icon: icons.hub,
       },
     ];
   }
@@ -288,7 +295,7 @@ class Index extends Component {
         filterBy: filterBy ? filterBy : defaultFilterBy,
       },
       () => {
-        if (type !== "editors") {
+        if (!["editors", "hubs"].includes(this.state.type)) {
           this.fetchLeaderboard(type);
         }
       }
@@ -301,7 +308,7 @@ class Index extends Component {
     }
 
     if (prevState.type !== this.state.type) {
-      if (this.state.type !== "editors") {
+      if (!["editors", "hubs"].includes(this.state.type)) {
         this.fetchLeaderboard(this.state.type);
       }
     }
@@ -520,6 +527,7 @@ class Index extends Component {
     return this.items.map((item, i) => {
       const { name, icon, id } = item;
       const isEditorTab = id === "editors";
+      const isHubBoard = id === "hubs";
       return (
         <Ripples
           className={css(
@@ -540,7 +548,7 @@ class Index extends Component {
         >
           <Link
             href={
-              !isEditorTab
+              !(isEditorTab || isHubBoard)
                 ? {
                     pathname: "/leaderboard/[type]/[hub]/[scope]",
                     query: {
@@ -554,11 +562,13 @@ class Index extends Component {
                   }
             }
             as={
-              !isEditorTab
-                ? `/leaderboard/${encodeURIComponent(item.type)}/${
+              isEditorTab
+                ? `/leaderboard/editors`
+                : isHubBoard
+                ? "/leaderboard/hubs"
+                : `/leaderboard/${encodeURIComponent(item.type)}/${
                     this.state.by.slug
                   }/${this.convertToSlug(this.state.filterBy.value)}`
-                : `/leaderboard/editors`
             }
           >
             <a className={css(styles.sidebarLink)}>
@@ -706,7 +716,14 @@ class Index extends Component {
 
   render() {
     const isEditorTab = this.state.type === "editors";
-    const mainFeed = isEditorTab ? <EditorsDashboard /> : this.renderMainFeed();
+    const isHubBoard = this.state.type === "hubs";
+    const mainFeed = isEditorTab ? (
+      <EditorsDashboard />
+    ) : isHubBoard ? (
+      <HubLeaderDashboard />
+    ) : (
+      this.renderMainFeed()
+    );
 
     return (
       <Fragment>

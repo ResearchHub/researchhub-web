@@ -4,7 +4,7 @@ import { StyleSheet, css } from "aphrodite";
 import colors from "../../config/themes/colors";
 import icons from "../../config/themes/icons";
 import * as moment from "dayjs";
-import { buildSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/buildSlug";
 
 const PaperEntry = ({
   data,
