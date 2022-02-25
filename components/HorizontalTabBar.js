@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.5),
     padding: "1rem",
     marginRight: 8,
-    textTransform: "capitalize",
+    textTransform: "unset",
     fontSize: 16,
     fontWeight: 500,
     cursor: "pointer",

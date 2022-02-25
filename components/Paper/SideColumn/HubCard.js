@@ -96,7 +96,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     fontWeight: 500,
-    padding: "10px 20px 10px 17px",
+    padding: "10px 17px",
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },

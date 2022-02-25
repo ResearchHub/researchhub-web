@@ -34,8 +34,6 @@ import { isDevEnv } from "~/config/utils/env";
 import { breakpoints } from "~/config/themes/screen";
 import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGetCounts";
 import { NavbarContext } from "~/pages/Base";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import gateKeepCurrentUser from "~/config/gatekeeper/gateKeepCurrentUser";
 import HubSelector from "~/components/HubSelector";
 import api from "~/config/api";
 
@@ -445,12 +443,6 @@ const Navbar = (props) => {
     setSideMenu(!sideMenu);
   }
 
-  const shouldShowELNButton = gateKeepCurrentUser({
-    application: "ELN" /* application */,
-    auth,
-    shouldRedirect: false /* should redirect */,
-  });
-
   return (
     <Fragment>
       <Menu
@@ -533,22 +525,6 @@ const Navbar = (props) => {
                       wsAuth={true}
                     />
                   </div>
-                  {shouldShowELNButton ? (
-                    <div
-                      className={css(styles.notification)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <Link href={`/${user.organization_slug}/notebook`}>
-                        <a>
-                          <img
-                            src={"/static/icons/notebook.svg"}
-                            height={24}
-                            width={24}
-                          />
-                        </a>
-                      </Link>
-                    </div>
-                  ) : null}
                 </div>
                 {openMenu && (
                   <div
@@ -573,6 +549,14 @@ const Navbar = (props) => {
                           {icons.portrait}
                         </span>
                         Profile
+                      </div>
+                    </Link>
+                    <Link href={`/${user.organization_slug}/notebook`}>
+                      <div className={css(styles.option)}>
+                        <span className={css(styles.profileIcon)}>
+                          {icons.bookOpen}
+                        </span>
+                        Notebook
                       </div>
                     </Link>
                     <Link href={"/settings"} as={`/settings`}>
@@ -613,9 +597,7 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <NewPostButton
-            customButtonStyle={{ ...styles.button, ...styles.newPost }}
-          />
+          <NewPostButton />
         </div>
 
         <div
@@ -925,7 +907,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -225,
+    bottom: -265,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
@@ -936,7 +918,7 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   lowDropdown: {
-    bottom: -175,
+    bottom: -215,
   },
   noMargin: {
     margin: 0,

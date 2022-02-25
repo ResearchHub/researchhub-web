@@ -1,40 +1,35 @@
-import { connect } from "react-redux";
-import { createRef, Component } from "react";
-import { formatPublishedDate } from "~/config/utils/dates";
-import { Helpers } from "@quantfive/js-web-config";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
-import { MessageActions } from "../redux/message";
-import { ModalActions } from "~/redux/modals";
-import { StyleSheet, css } from "aphrodite";
-import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
-import * as moment from "dayjs";
 import * as Sentry from "@sentry/browser";
-import ActionButton from "~/components/ActionButton";
 import API from "~/config/api";
-import AuthorAvatar from "~/components/AuthorAvatar";
+import ActionButton from "~/components/ActionButton";
 import Button from "~/components/Form/Button";
-import colors from "~/config/themes/colors";
+import DiscussionCount from "~/components/DiscussionCount";
 import HubTag from "~/components/Hubs/HubTag";
-import icons from "~/config/themes/icons";
 import Link from "next/link";
-import PaperMetadata from "./Paper/PaperMetadata";
 import PaperPromotionButton from "./Paper/PaperPromotionButton";
 import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ReactHtmlParser from "react-html-parser";
 import ReactTooltip from "react-tooltip";
-import removeMd from "remove-markdown";
-import Router from "next/router";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
-import DiscussionCount from "~/components/DiscussionCount";
-import { breakpoints } from "~/config/themes/screen";
-
-// Dynamic modules
+import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
+import icons from "~/config/themes/icons";
+import removeMd from "remove-markdown";
+import { Helpers } from "@quantfive/js-web-config";
+import { MessageActions } from "../redux/message";
+import { ModalActions } from "~/redux/modals";
+import { StyleSheet, css } from "aphrodite";
+import { UPVOTE, DOWNVOTE, userVoteToConstant } from "~/config/constants";
+import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
+import { createRef, Component } from "react";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
+
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
 );
+
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
@@ -46,7 +41,6 @@ class PostPageCard extends Component {
       previews: [],
       figureUrls: [],
       hovered: false,
-      toggleLightbox: true,
       fetching: false,
       slideIndex: 1,
       showAllHubs: false, // only needed when > 3 hubs,
@@ -58,6 +52,7 @@ class PostPageCard extends Component {
     };
     this.containerRef = createRef();
     this.metaContainerRef = createRef();
+    this.editorRef = createRef();
 
     this.onUpvote = this.createVoteHandler(UPVOTE);
     this.onDownvote = this.createVoteHandler(DOWNVOTE);
@@ -69,34 +64,12 @@ class PostPageCard extends Component {
     }
   }
 
-  revealPage = (timeout) => {
-    setTimeout(() => {
-      this.setState({ loading: false }, () => {
-        setTimeout(() => {
-          this.state.fetching && this.setState({ fetching: false });
-        }, 400);
-      });
-    }, timeout);
-  };
-
-  formatDoiUrl = (url) => {
-    let http = "http://dx.doi.org/";
-
-    let https = "https://dx.doi.org/";
-
-    if (!url) {
-      return;
-    }
-    if (url.startsWith(http)) {
-      return url;
-    }
-
-    if (!url.startsWith(https)) {
-      url = https + url;
-    }
-
-    return url;
-  };
+  componentDidMount() {
+    this.editorRef.current = {
+      CKEditor: require("@ckeditor/ckeditor5-react").CKEditor,
+      Editor: require("@thomasvu/ckeditor5-custom-build").SimpleBalloonEditor,
+    };
+  }
 
   restoreThisPost = () => {
     let {
@@ -173,7 +146,7 @@ class PostPageCard extends Component {
   firstImageFromHtml = (text) => {
     const elements = ReactHtmlParser(text);
     for (const element of elements) {
-      if (element.type === "figure") {
+      if (element?.type === "figure") {
         return element.props.children[0].props.src;
       }
     }
@@ -194,10 +167,10 @@ class PostPageCard extends Component {
     const { postBody } = this.state;
 
     const params = {
-      post_id: post.id,
       created_by: this.props.user.id,
       document_type: "DISCUSSION",
       full_src: postBody,
+      post_id: post.id,
       preview_img: this.firstImageFromHtml(postBody),
       renderable_text: this.toPlaintext(postBody),
       title: post.title,
@@ -215,29 +188,6 @@ class PostPageCard extends Component {
       });
   };
 
-  renderPostEditor = () => {
-    return (
-      <>
-        <DynamicCKEditor
-          id="text"
-          initialData={this.state.postBody}
-          labelStyle={styles.label}
-          onChange={(id, editorData) => this.setState({ postBody: editorData })}
-          containerStyle={styles.editor}
-        />
-        <div className={css(styles.editButtonRow)}>
-          <Button
-            isWhite={true}
-            label={"Cancel"}
-            onClick={this.toggleShowPostEditor}
-            size={"small"}
-          />
-          <Button label={"Save"} onClick={this.sendPost} size={"small"} />
-        </div>
-      </>
-    );
-  };
-
   downloadPDF = () => {
     let file = this.props.paper.file;
     window.open(file, "_blank");
@@ -251,97 +201,30 @@ class PostPageCard extends Component {
     this.state.hovered && this.setState({ hovered: false });
   };
 
-  toggleLightbox = () => {
-    this.setState({ toggleLightbox: !this.state.toggleLightbox });
-  };
-
-  toggleBoostHover = (state) => {
-    state !== this.state.boostHover && this.setState({ boostHover: state });
-  };
-
-  navigateToSubmitter = () => {
-    let { author_profile } = this.props.paper.uploaded_by;
-    let authorId = author_profile && author_profile.id;
-    Router.push("/user/[authorId]/[tabName]", `/user/${authorId}/overview`);
-  };
-
-  renderMetadata = () => {
-    const { post } = this.props;
-
-    this.metadata = [
-      {
-        label: "Published",
-        value: (
-          <span
-            className={css(styles.metadata) + " clamp1"}
-            property="datePublished"
-            dateTime={post.created_date}
-          >
-            {this.renderPublishDate()}
-          </span>
-        ),
-        active: post && post.created_date,
-      },
-    ];
-
-    const metadata = this.metadata.filter((data) => data.active);
-
-    return (
-      <div className={css(styles.row)}>
-        {metadata.map((props, i) => (
-          <PaperMetadata
-            key={`metadata-${i}`}
-            {...props}
-            containerStyles={i === 0 && styles.marginRight}
-          />
-        ))}
-      </div>
-    );
-  };
-
-  renderUploadedBy = () => {
-    const { uploaded_by } = this.props.paper;
-    if (uploaded_by) {
-      let { author_profile } = uploaded_by;
-      return (
-        <div className={css(styles.labelContainer)}>
-          <div
-            onClick={this.navigateToSubmitter}
-            className={css(styles.authorSection)}
-          >
-            <div className={css(styles.avatar)}>
-              <AuthorAvatar author={author_profile} size={25} />
-            </div>
-            <span className={css(styles.labelText)}>
-              {`${author_profile.first_name} ${author_profile.last_name}`}
-            </span>
-          </div>
-        </div>
-      );
-    }
-  };
-
   renderActions = () => {
-    const {
-      post,
-      isEditorOfHubs,
-      isModerator,
-      flagged,
-      setFlag,
-      isSubmitter,
-      user,
-      hubs,
-    } = this.props;
+    const { post, isEditorOfHubs, isModerator, isSubmitter, user } = this.props;
 
     const uploadedById =
       post && post.created_by && post.created_by.author_profile.id;
     const isUploaderSuspended =
       post && post.created_by && post.created_by.is_suspended;
 
+    const isAuthor = post.authors
+      .map((author) => author.user)
+      .includes(user.id);
     const actionButtons = [
       {
-        active: post.created_by && user.id === post.created_by.id,
-        button: (
+        active:
+          (isSubmitter || isAuthor) && !post.note?.unified_document.is_removed,
+        button: post.note ? (
+          <Link
+            href={`/${post.note.organization.slug}/notebook/${post.note.id}`}
+          >
+            <a className={css(styles.actionIcon)} data-tip={"Edit Post"}>
+              {icons.pencil}
+            </a>
+          </Link>
+        ) : (
           <PermissionNotificationWrapper
             modalMessage="edit post"
             onClick={this.toggleShowPostEditor}
@@ -381,21 +264,8 @@ class PostPageCard extends Component {
           </span>
         ),
       },
-      //{
-      //  active: !isSubmitter,
-      //  button: (
-      //    <span data-tip={"Flag Post"}>
-      //      <FlagButton
-      //        paperId={post.id}
-      //        flagged={flagged}
-      //        setFlag={setFlag}
-      //        style={styles.actionIcon}
-      //      />
-      //    </span>
-      //  ),
-      //},
       {
-        active: isModerator || isSubmitter || isEditorOfHubs,
+        active: isModerator || isSubmitter || isAuthor || isEditorOfHubs,
         button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
@@ -561,14 +431,6 @@ class PostPageCard extends Component {
     return authors;
   };
 
-  renderPublishDate = () => {
-    const { post } = this.props;
-    const created_date = post.created_date;
-    if (created_date) {
-      return formatPublishedDate(moment(created_date), true);
-    }
-  };
-
   renderHubs = () => {
     const { paper } = this.props;
 
@@ -607,19 +469,6 @@ class PostPageCard extends Component {
         </div>
       );
     }
-  };
-
-  renderPreregistrationTag = () => {
-    return (
-      <div className={css(styles.preRegContainer)}>
-        <img
-          src="/static/icons/wip.png"
-          className={css(styles.preRegIcon)}
-          alt="Preregistration Icon"
-        />
-        Funding Request
-      </div>
-    );
   };
 
   createVoteHandler = (voteType) => {
@@ -692,8 +541,7 @@ class PostPageCard extends Component {
 
   render() {
     const { post } = this.props;
-    const { fetching, figureUrls, postBody, previews, score, voteState } =
-      this.state;
+    const { fetching, postBody, previews, score, voteState } = this.state;
 
     const voteWidget = (horizontalView) => (
       <VoteWidget
@@ -711,7 +559,6 @@ class PostPageCard extends Component {
       <div className={css(styles.mainContainer)}>
         <div className={css(styles.main)}>
           <AuthorSupportModal />
-
           <div
             className={css(
               styles.container,
@@ -738,31 +585,22 @@ class PostPageCard extends Component {
               </div>
               <PaperPromotionIcon post={post} />
             </div>
-            <div
-              className={css(
-                styles.column,
-                !fetching && previews.length === 0 && styles.emptyPreview
-              )}
-              ref={this.metaContainerRef}
-            >
+            <div className={css(styles.column)} ref={this.metaContainerRef}>
               <div className={css(styles.reverseRow)}>
-                <div
-                  className={css(
-                    styles.cardContainer,
-                    !fetching && previews.length === 0 && styles.emptyPreview
-                  )}
-                >
+                <div className={css(styles.cardContainer)}>
                   <div className={css(styles.metaContainer)}>
-                    <div className={css(styles.titleHeader)}>
-                      <div className={css(styles.row)}>
-                        <h1 className={css(styles.title)} property={"headline"}>
-                          {post && post.title}
-                        </h1>
+                    {!post.note && (
+                      <div className={css(styles.titleHeader)}>
+                        <div className={css(styles.row)}>
+                          <h1
+                            className={css(styles.title)}
+                            property={"headline"}
+                          >
+                            {post.title}
+                          </h1>
+                        </div>
                       </div>
-                    </div>
-                    <div className={css(styles.column)}>
-                      {this.renderMetadata()}
-                    </div>
+                    )}
                   </div>
                 </div>
                 <div className={css(styles.rightColumn, styles.mobile)}>
@@ -788,12 +626,49 @@ class PostPageCard extends Component {
               </div>
             </div>
           </div>
-          <div className={css(styles.postBody) + " ck-content"}>
+          <div className={css(styles.postBody)}>
             {this.state.showPostEditor ? (
-              this.renderPostEditor()
+              <>
+                <DynamicCKEditor
+                  containerStyle={post.note && styles.editor}
+                  editing
+                  id="editPostBody"
+                  initialData={postBody}
+                  isBalloonEditor
+                  labelStyle={styles.label}
+                  noTitle={!post.note}
+                  onChange={(id, editorData) =>
+                    this.setState({ postBody: editorData })
+                  }
+                  readOnly={false}
+                />
+                <div className={css(styles.editButtonRow)}>
+                  <Button
+                    isWhite={true}
+                    label={"Cancel"}
+                    onClick={this.toggleShowPostEditor}
+                    size={"small"}
+                  />
+                  <Button
+                    label={"Save"}
+                    onClick={this.sendPost}
+                    size={"small"}
+                  />
+                </div>
+              </>
             ) : (
               <>
-                {postBody && ReactHtmlParser(postBody)}
+                <div>
+                  <DynamicCKEditor
+                    containerStyle={post.note && styles.editor}
+                    id={"postBody"}
+                    initialData={postBody}
+                    isBalloonEditor
+                    labelStyle={styles.label}
+                    noTitle={!post.note}
+                    readOnly
+                  />
+                </div>
                 <div className={css(styles.bottomContainer)}>
                   <div className={css(styles.bottomRow)}>
                     {this.renderActions()}
@@ -804,15 +679,6 @@ class PostPageCard extends Component {
             )}
           </div>
         </div>
-
-        {/*<div className={css(styles.previewBox)}>
-          <PaperPreview
-            paper={paper}
-            paperId={paper.id}
-            previewStyles={styles.previewStyles}
-            columnOverrideStyles={styles.columnOverrideStyles}
-          />
-        </div>*/}
       </div>
     );
   }
@@ -844,7 +710,6 @@ const styles = StyleSheet.create({
     marginRight: 16,
     width: "100%",
   },
-  previewStyles: {},
   container: {
     width: "100%",
     display: "flex",
@@ -855,49 +720,8 @@ const styles = StyleSheet.create({
   postBody: {
     wordBreak: "break-word",
   },
-  divider: {
-    width: 44,
-    border: "1px solid #E8E8F2",
-    margin: "15px 0",
-  },
   overflow: {
     overflow: "visible",
-  },
-  previewBox: {
-    marginLeft: "auto",
-    display: "flex",
-    flexDirection: "column",
-    maxWidth: "140px",
-    minHeight: "140px",
-
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  columnOverrideStyles: {
-    width: "100%",
-    height: "100%",
-  },
-  previewContainer: {
-    border: "1.5px solid rgba(36, 31, 58, 0.1)",
-    borderRadius: 3,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
-    boxSizing: "border-box",
-    "@media only screen and (min-width: 0px) and (max-width: 767px)": {
-      margin: "0 auto",
-      marginBottom: 16,
-    },
-  },
-  emptyPreview: {
-    minHeight: "unset",
-  },
-  image: {
-    height: "100%",
-    width: "100%",
-    objectFit: "contain",
   },
   column: {
     display: "flex",
@@ -906,15 +730,6 @@ const styles = StyleSheet.create({
     width: "100%",
     ":hover .action-bars": {
       opacity: 1,
-    },
-  },
-  half: {
-    alignItems: "flex-start",
-    width: "50%",
-    paddingRight: 10,
-    "@media only screen and (max-width: 768px)": {
-      width: "100%",
-      paddingRight: 0,
     },
   },
   cardContainer: {
@@ -933,13 +748,6 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     boxSizing: "border-box",
-  },
-  topRow: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
-    marginBottom: 15,
   },
   hubTags: {
     display: "flex",
@@ -974,43 +782,6 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 23,
   },
-  subtitle: {
-    color: "#241F3A",
-    opacity: 0.5,
-    fontSize: 16,
-    marginTop: 10,
-    fontWeight: "unset",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  tagline: {
-    color: "#241F3A",
-    opacity: 0.7,
-    fontSize: 16,
-    marginTop: 10,
-    whiteSpace: "pre-wrap",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  dateAuthorContainer: {
-    display: "flex",
-    alignItems: "center",
-  },
-  publishDate: {
-    fontSize: 16,
-    color: "#241F3A",
-    display: "flex",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  authors: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-start",
-  },
   authorName: {
     marginRight: 8,
     cursor: "pointer",
@@ -1028,64 +799,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
-  },
-  authors: {
-    display: "flex",
-    alignItems: "center",
-  },
-  marginTop: {
-    marginTop: 5,
-  },
-  authorLabelContainer: {
-    alignItems: "flex-start",
-  },
-  labelContainer: {
-    fontSize: 16,
-    color: "#241F3A",
-    display: "flex",
-    width: "100%",
-    marginTop: 5,
-    marginBottom: 5,
-    alignItems: "center",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  metadata: {
-    fontSize: 16,
-    color: colors.BLACK(0.7),
-    margin: 0,
-    padding: 0,
-    fontWeight: "unset",
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  labelText: {
-    display: "flex",
-    alignItems: "center",
-    flexWrap: "wrap",
-    opacity: 0.7,
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: 500,
-    color: "#241F3A",
-    width: 120,
-    opacity: 0.7,
-
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  authorLabel: {
-    marginRight: 0,
-    opacity: 0.7,
-    minWidth: 61,
-    width: 61,
-  },
-  authorsContainer: {
-    width: "100%",
   },
   voting: {
     display: "block",
@@ -1105,35 +818,6 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  buttonRow: {
-    width: "100%",
-    display: "flex",
-  },
-  downloadIcon: {
-    color: "#FFF",
-  },
-  viewIcon: {
-    marginRight: 10,
-  },
-  button: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 18,
-    width: "unset",
-    boxSizing: "border-box",
-    marginRight: 10,
-    padding: "5px 20px",
-  },
-  buttonRight: {
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    fontSize: 18,
-    width: "unset",
-    boxSizing: "border-box",
-    padding: "8px 30px",
-  },
   actions: {
     display: "flex",
     alignItems: "center",
@@ -1141,7 +825,6 @@ const styles = StyleSheet.create({
     opacity: 1,
     transition: "all ease-in-out 0.2s",
   },
-  actionsContainer: {},
   actionIcon: {
     padding: 5,
     borderRadius: "50%",
@@ -1220,19 +903,6 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
-  downloadActionIcon: {
-    color: "#fff",
-    backgroundColor: colors.BLUE(),
-    borderColor: colors.BLUE(),
-    ":hover": {
-      backgroundColor: "#3E43E8",
-      color: "#fff",
-      borderColor: "#3E43E8",
-    },
-  },
-  noMargin: {
-    margin: 0,
-  },
   borderRadius: {
     borderRadius: "50%",
   },
@@ -1254,19 +924,12 @@ const styles = StyleSheet.create({
       flexDirection: "column",
     },
   },
-  lastRow: {},
   reverseRow: {
     display: "flex",
     alignItems: "flex-start",
     width: "100%",
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column-reverse",
-    },
-  },
-  marginRight: {
-    marginRight: 40,
-    "@media only screen and (max-width: 1023px)": {
-      marginRight: 0,
     },
   },
   rightColumn: {
@@ -1278,29 +941,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 768px)": {
       width: "100%",
     },
-  },
-  actionMobileContainer: {
-    paddingTop: 2,
-    "@media only screen and (max-width: 768px)": {
-      display: "flex",
-    },
-  },
-  spacedRow: {
-    display: "flex",
-    width: "100%",
-    justifyContent: "space-between",
-  },
-  metaData: {
-    justifyContent: "flex-start",
-  },
-  absolutePreview: {
-    marginLeft: 16,
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-  left: {
-    marginRight: 20,
   },
   bottomContainer: {
     width: "100%",
@@ -1317,17 +957,6 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 767px)": {
-      // display: "none",
-    },
-  },
-  downloadPDF: {},
-  hubsRow: {},
-  flexendRow: {
-    justifyContent: "flex-end",
-  },
-  spaceBetween: {
-    justifyContent: "space-between",
   },
   mobile: {
     display: "none",
@@ -1340,105 +969,9 @@ const styles = StyleSheet.create({
       paddingBottom: 10,
     },
   },
-  summary: {
-    minWidth: "100%",
-    maxWidth: "100%",
-    whiteSpace: "pre-wrap",
-    color: "#4e4c5f",
-    fontSize: 14,
-    paddingBottom: 8,
-  },
-  mobileMargin: {
-    marginTop: 10,
-    marginBottom: 15,
-  },
-  uploadedByContainer: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    width: "100%",
-    marginTop: 10,
-    "@media only screen and (max-width: 767px)": {
-      marginBottom: 15,
-    },
-  },
-  uploadedBy: {
-    whiteSpace: "pre-wrap",
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    fontSize: 16,
-    color: "#646171",
-    cursor: "pointer",
-    marginBottom: 5,
-    width: "unset",
-    ":hover": {
-      color: colors.BLUE(),
-    },
-    "@media only screen and (max-width: 767px)": {
-      marginBottom: 0,
-      marginRight: 20,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  avatar: {
-    marginRight: 4,
-  },
-  authorSection: {
-    display: "flex",
-    cursor: "pointer",
-
-    ":hover": {
-      color: colors.PURPLE(1),
-    },
-  },
-  capitalize: {
-    textTransform: "capitalize",
-  },
-  uploadIcon: {
-    marginLeft: 10,
-    opacity: 1,
-  },
-  paperProgress: {
-    position: "absolute",
-    bottom: 30,
-    right: 220,
-  },
   atag: {
     color: "unset",
     textDecoration: "unset",
-  },
-  promotionButton: {
-    padding: "5px 20px",
-    borderRadius: 4,
-    display: "flex",
-    alignItems: "center",
-    border: `1px solid ${colors.BLUE()}`,
-    backgroundColor: colors.BLUE(),
-    color: "#FFF",
-    cursor: "pointer",
-    marginLeft: 20,
-    ":hover": {
-      backgroundColor: "#3E43E8",
-    },
-    "@media only screen and (max-width: 768px)": {
-      fontSize: 12,
-    },
-  },
-  boostIcon: {
-    color: "#FFF",
-    paddingTop: 2,
-  },
-  link: {
-    cursor: "pointer",
-    color: colors.BLUE(),
-    textDecoration: "unset",
-    ":hover": {
-      color: colors.BLUE(),
-      textDecoration: "underline",
-    },
   },
   tagStyle: {
     marginBottom: 5,
@@ -1465,81 +998,13 @@ const styles = StyleSheet.create({
       borderRadius: 3,
     },
   },
-  preregMobile: {
-    alignItems: "flex-start",
-  },
-  preRegContainer: {
-    display: "flex",
-    justifyContent: "flex-start",
-    alignItems: "flex-end",
-    color: "rgba(36, 31, 58, 0.7)",
-    marginTop: 15,
-    fontSize: 16,
-    fontWeight: 500,
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 14,
-    },
-  },
-  preRegIcon: {
-    height: 20,
-    marginRight: 8,
-    "@media only screen and (max-width: 415px)": {
-      height: 15,
-    },
-  },
   editButtonRow: {
     display: "flex",
     justifyContent: "space-between",
     marginTop: 10,
   },
-});
-
-const carousel = StyleSheet.create({
-  bottomControl: {
-    background: "rgba(36, 31, 58, 0.65)",
-    borderRadius: 230,
-    height: 30,
-    minWidth: 85,
-    whiteSpace: "nowrap",
-    color: "#FFF",
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 20,
-    opacity: 0,
-    fontSize: 14,
-    transition: "all ease-out 0.3s",
-  },
-  slideCount: {
-    padding: "0px 8px",
-  },
-  button: {
-    border: 0,
-    textTransform: "uppercase",
-    cursor: "pointer",
-    opacity: 0,
-    transition: "all ease-out 0.3s",
-    fontSize: 18,
-    userSelect: "none",
-    paddingTop: 1,
-    color: "rgba(255, 255, 255, 0.45)",
-    ":hover": {
-      color: "#FFF",
-    },
-  },
-  left: {
-    marginLeft: 8,
-    marginRight: 5,
-  },
-  right: {
-    marginRight: 8,
-    marginLeft: 5,
-  },
-  show: {
-    opacity: 1,
-  },
-  hide: {
-    display: "none",
+  editor: {
+    marginTop: -20,
   },
 });
 

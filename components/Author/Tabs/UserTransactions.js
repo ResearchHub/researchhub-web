@@ -76,8 +76,6 @@ class UserTransaction extends Component {
   render() {
     const { transactions, maxCardsToRender, auth } = this.props;
 
-    console.log(transactions);
-
     return (
       <ReactPlaceholder
         ready={transactions && !this.props.fetching}
