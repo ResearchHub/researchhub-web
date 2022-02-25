@@ -14,6 +14,7 @@ export type UniDocFetchParams = {
   page: number;
   subFilters: any;
   subscribedHubs: Boolean;
+  hotV2: Boolean;
 };
 
 export type PaginationInfo = {

@@ -58,6 +58,7 @@ function UnifiedDocFeedContainer({
     filterBy: filterOptions[0],
     scope: scopeOptions[0],
   });
+
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
     getPaginationInfoFromServerLoaded(serverLoadedData)
   );
@@ -80,6 +81,8 @@ function UnifiedDocFeedContainer({
     page,
     subFilters,
     subscribedHubs: isOnMyHubsTab,
+    // V2 of hot score
+    hotV2: router.query?.hot_v2 == 'true',
   };
 
   useEffectUpdateStatesOnServerChanges({

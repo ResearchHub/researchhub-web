@@ -657,6 +657,7 @@ const routes = (BASE_URL) => {
       subscribedHubs,
       timePeriod,
       type, // docType
+      hotV2 = false,
     }) => {
       const url =
         BASE_URL + "researchhub_unified_documents/get_unified_documents/";
@@ -671,9 +672,11 @@ const routes = (BASE_URL) => {
           start_date__gte: timePeriod.start,
           subscribed_hubs: subscribedHubs,
           type,
+          hot_v2: hotV2,
         },
       };
-      return prepURL(url, params);
+      const finalUrl = prepURL(url, params);
+      return finalUrl;
     },
     UNIFIED_DOC: ({ id }) => {
       const url = BASE_URL + "researchhub_unified_documents/";
