@@ -9,8 +9,8 @@ import {
   faLongArrowAltDown,
   faLongArrowAltUp,
 } from "@fortawesome/pro-solid-svg-icons";
-import 'react-dates/initialize';
-import { DateRangePicker } from 'react-dates';
+import "react-dates/initialize";
+import { DateRangePicker } from "react-dates";
 import "react-dates/lib/css/_datepicker.css";
 
 export type EditorDashFilters = {
@@ -19,7 +19,11 @@ export type EditorDashFilters = {
   orderBy: any;
 };
 
-type Props = { currentFilters: EditorDashFilters; onFilterChange: Function };
+type Props = {
+  currentFilters: EditorDashFilters;
+  headerLabel: string;
+  onFilterChange: Function;
+};
 
 const INPUT_STYLE = {
   fontWeight: 500,
@@ -89,8 +93,9 @@ export const upDownOptions = [
   },
 ];
 
-export default function EditorDashboardNavbar({
+export default function LeaderDashboardNavbar({
   currentFilters,
+  headerLabel,
   onFilterChange,
 }: Props): ReactElement<"div"> {
   const router = useRouter();
@@ -106,13 +111,8 @@ export default function EditorDashboardNavbar({
   } = currentFilters;
 
   return (
-    <div className={css(styles.editorDashboardNavbar)}>
-      <div className={css(styles.header)}>
-        {"Editor Dashboard"}
-        {/* <div className={css(styles.apply)}>
-        <a className={css(styles.applyHref)} href="https://researchhub.notion.site/Editor-Program-d0b62f9ba3cb44f3ba97709fe9a9ea03" target="_blank">Apply Here</a>
-      </div> */}
-      </div>
+    <div className={css(styles.LeaderDashboardNavbar)}>
+      <div className={css(styles.header)}>{headerLabel}</div>
       <div className={css(styles.navButtons)}>
         <FormSelect
           containerStyle={styles.hubDropdown}
@@ -131,7 +131,7 @@ export default function EditorDashboardNavbar({
           startDateId="start_id" // PropTypes.string.isRequired,
           endDate={currentTimeframe.endDate} // momentPropTypes.momentObj or null,
           endDateId="end_Id" // PropTypes.string.isRequired,
-          orientation={window.outerWidth > 767 ? 'horizontal' : 'vertical'}
+          orientation={window.outerWidth > 767 ? "horizontal" : "vertical"}
           onDatesChange={({ startDate, endDate }) => {
             const filter = {
               ...currentFilters,
@@ -145,15 +145,6 @@ export default function EditorDashboardNavbar({
           }}
           onFocusChange={(focusedInput) => setDatesOpen(focusedInput)} // PropTypes.func.isRequired,
         />
-        {/* <FormSelect
-          containerStyle={styles.dropdown}
-          inputStyle={INPUT_STYLE}
-          onChange={(_id: ID, timeframe: any): void =>
-            onFilterChange({ ...currentFilters, timeframe })
-          }
-          options={filterOptions}
-          value={currentTimeframe ?? null}
-        /> */}
         <FormSelect
           containerStyle={styles.dropdown}
           inputStyle={INPUT_STYLE}
@@ -169,7 +160,7 @@ export default function EditorDashboardNavbar({
 }
 
 const styles = StyleSheet.create({
-  editorDashboardNavbar: {
+  LeaderDashboardNavbar: {
     backgroundColor: "#FFF",
     justifyContent: "space-between",
     display: "flex",
@@ -191,7 +182,7 @@ const styles = StyleSheet.create({
     },
     "@media only screen and (max-width: 1149px)": {
       // width: 150,
-      width: '100%',
+      width: "100%",
       fontSize: 13,
     },
     "@media only screen and (max-width: 779px)": {
@@ -226,20 +217,20 @@ const styles = StyleSheet.create({
     fontWeight: 500,
 
     "@media only screen and (max-width: 767px)": {
-      textAlign: 'center',
-      display: 'unset',
+      textAlign: "center",
+      display: "unset",
     },
 
     "@media only screen and (max-width: 1250px)": {
-      flexDirection: 'column',
-    }
+      flexDirection: "column",
+    },
   },
   apply: {
     marginLeft: 16,
     fontSize: 18,
   },
   applyHref: {
-    color: 'rgb(78, 83, 255)',
+    color: "rgb(78, 83, 255)",
   },
   navButtons: {
     alignItems: "center",
@@ -251,7 +242,7 @@ const styles = StyleSheet.create({
       flexDirection: "column",
       height: "unset",
       width: 284,
-      margin: '0 auto',
+      margin: "0 auto",
     },
   },
   orderByIcon: {

@@ -2,7 +2,7 @@ import { Fragment } from "react";
 import Router from "next/router";
 import Error from "next/error";
 import Loader from "~/components/Loader/Loader";
-import { buildSlug } from "~/config/utils/document";
+import { buildSlug } from "~/config/utils/buildSlug";
 import API from "~/config/api";
 
 // Redux
