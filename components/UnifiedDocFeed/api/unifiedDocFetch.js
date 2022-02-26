@@ -119,6 +119,7 @@ export default function fetchUnifiedDocs({
   subscribedHubs,
   subFilters,
   prevDocuments = [],
+  hotV2,
 }) {
   const { filterBy, scope } = subFilters;
   /* PARAMS is: 
@@ -141,6 +142,7 @@ export default function fetchUnifiedDocs({
     subscribedHubs,
     timePeriod: calculateTimeScope(scope),
     type: docTypeFilter,
+    hotV2,
   };
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
