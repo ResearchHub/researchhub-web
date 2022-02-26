@@ -16,7 +16,8 @@ const Index = (props) => {
 Index.getInitialProps = async (ctx) => {
   // TODO: calvinhlee - refactor this
   const { query } = ctx;
-  const { type, filter } = ctx?.query ?? {};
+  const { type, filter, hot_v2 } = ctx?.query ?? {};
+
   const filterObj = filterOptions.filter((el) => el.value === filter)[0];
   const cookies = nookies.get(ctx);
   const authToken = cookies[AUTH_TOKEN];
@@ -47,6 +48,8 @@ Index.getInitialProps = async (ctx) => {
         subscribedHubs: false,
         timePeriod: getInitialScope(),
         type: urlDocType,
+        // V2 of hot score
+        ...(hot_v2 === "true" && { hotV2: true }),
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
