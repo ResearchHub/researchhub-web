@@ -89,11 +89,11 @@ const filterOptions = [
     disableScope: true,
     href: "newest",
   },
-  // {
-  //   value: "most_discussed",
-  //   label: "Most Discussed",
-  //   href: "most-discussed",
-  // },
+  {
+    value: "most_discussed",
+    label: "Most Discussed",
+    href: "most-discussed",
+  },
 ];
 
 const scopeOptions = [
