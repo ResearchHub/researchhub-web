@@ -545,7 +545,7 @@ class PostPageCard extends Component {
 
     const voteWidget = (horizontalView) => (
       <VoteWidget
-        score={score + post.boost_amount}
+        score={score}
         onUpvote={this.onUpvote}
         onDownvote={this.onDownvote}
         selected={voteState}
