@@ -14,17 +14,14 @@ const UnifiedDocFeedMenu = ({
   onScopeSelect,
 }) => {
   const router = useRouter();
-  const [isOpen, setIsOpen] = useState(false);
   const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
-
-  console.log("filterBy", filterBy);
-  console.log("scope", scope);
+  const [isFilterSelectOpen, setIsFilterSelectOpen] = useState(false);
 
   const getTabs = () => {
     const tabs = [
       {
         value: "hot",
-        label: "Best",
+        label: "Trending",
         icon: icons.starAlt,
         disableScope: true,
       },
@@ -51,7 +48,7 @@ const UnifiedDocFeedMenu = ({
     });
   };
 
-  const renderTab = (tabObj) => {
+  const renderFilterTab = (tabObj) => {
     return (
       <div
         className={css(
@@ -66,12 +63,54 @@ const UnifiedDocFeedMenu = ({
     );
   };
 
+  const renderFilterDropdownOpt = (tabObj) => {
+    return (
+      <div>
+        <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
+        <span className={css(styles.tabText)}>{tabObj.label}</span>
+      </div>
+    );
+  };
+
   const tabs = getTabs();
   const selectedTab = tabs.find((t) => t.isSelected);
+  const filterOptsAsHtml = tabs
+    .map((t) => renderFilterDropdownOpt(t))
+    .map((t, i) => ({ html: t, ...tabs[i] }));
+  const selectedFilterOpt = renderFilterDropdownOpt(selectedTab);
   return (
     <div className={css(styles.feedMenu)}>
-      {tabs.map((t) => renderTab(t))}
-      <div className={css(styles.subFilters)}>
+      <div className={css(styles.filtersAsTabs)}>
+        {tabs.map((t) => renderFilterTab(t))}
+      </div>
+      <div className={css(styles.filtersAsDropdown)}>
+        <DropdownButton
+          opts={filterOptsAsHtml}
+          labelAsHtml={selectedFilterOpt}
+          selected={filterBy.value}
+          isOpen={isFilterSelectOpen}
+          onClick={() => setIsFilterSelectOpen(true)}
+          dropdownClassName="filterSelect"
+          onClickOutside={() => {
+            setIsFilterSelectOpen(false);
+          }}
+          overrideTitleStyle={styles.customTitleStyle}
+          positions={["bottom", "right"]}
+          customButtonClassName={[
+            styles.dropdownButtonOverride,
+            styles.dropdownButtonOverrideForFilter,
+          ]}
+          overrideDownIconStyle={styles.overrideDownIconStyle}
+          onSelect={(selectedFilter) => {
+            const selectedFilterObj = tabs.find(
+              (t) => t.value === selectedFilter
+            );
+            onSubFilterSelect(selectedFilterObj);
+          }}
+          onClose={() => setIsFilterSelectOpen(false)}
+        />
+      </div>
+      <div className={css(styles.timeScope)}>
         {!selectedTab.disableScope && (
           <DropdownButton
             opts={scopeOptions}
@@ -103,7 +142,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  subFilters: {
+  timeScope: {
     display: "flex",
   },
   customTitleStyle: {
@@ -112,6 +151,18 @@ const styles = StyleSheet.create({
   iconWrapper: {
     marginRight: 7,
     fontSize: 20,
+  },
+  filtersAsTabs: {
+    display: "flex",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  filtersAsDropdown: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
   },
   tabTypePill: {
     color: pillNavColors.primary.unfilledTextColor,
@@ -146,15 +197,29 @@ const styles = StyleSheet.create({
   },
   dropdownButtonOverride: {
     whiteSpace: "nowrap",
+    display: "flex",
     backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     color: pillNavColors.secondary.filledTextColor,
     borderRadius: 40,
     fontWeight: 500,
     marginRight: 8,
+    padding: "9px 16px",
     ":hover": {
       borderRadius: 40,
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
+  },
+  dropdownButtonOverrideForFilter: {
+    padding: "7px 16px",
+    color: pillNavColors.primary.filledTextColor,
+    backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    ":hover": {
+      borderRadius: 40,
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    },
+  },
+  overrideDownIconStyle: {
+    padding: "6px 4px",
   },
 });
 
