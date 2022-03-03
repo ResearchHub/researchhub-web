@@ -295,6 +295,8 @@ class WithdrawalModal extends Component {
         .then((res) => {
           const { id, paid_status, transaction_hash } = res;
           this.setTransactionHash(transaction_hash);
+          this.getBalance();
+
           if (paid_status === "failed") {
             showMessage({ show: false });
             setMessage(
@@ -305,9 +307,6 @@ class WithdrawalModal extends Component {
             showMessage({ show: false });
             setMessage("Your transaction request has been made.");
             showMessage({ show: true });
-            this.setState({ transactionHash: true }, () => {
-              this.getBalance();
-            });
           }
         })
         .catch((err) => {
