@@ -73,15 +73,16 @@ export const useEffectPrefetchNext = ({
     const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
       prevFetchParams ?? {};
     const { docTypeFilter, subFilters } = fetchParams ?? {};
-    const readyToFetch =
+    const readyToPrefetch =
       shouldPrefetch &&
       prevDocTypeFilter === docTypeFilter &&
       prevSubFilters === subFilters;
 
-    if (readyToFetch) {
+    if (readyToPrefetch) {
       fetchUnifiedDocs(fetchParams);
       prevFetchParams = fetchParams;
     }
+    
   }, [shouldPrefetch, fetchParams]);
 };
 
