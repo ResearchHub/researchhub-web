@@ -56,7 +56,7 @@ function UnifiedDocFeedContainer({
   );
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
-    scope: scopeOptions[0],
+    scope: scopeOptions[1],
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
@@ -250,7 +250,6 @@ function UnifiedDocFeedContainer({
             subFilters={subFilters}
             onDocTypeFilterSelect={onDocTypeFilterSelect}
             onSubFilterSelect={(filterBy) => {
-              console.log('filterBy', filterBy);
               setSubFilters({ filterBy, scope: subFilters.scope });
             }}
             onScopeSelect={(scope) => {
