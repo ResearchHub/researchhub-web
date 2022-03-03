@@ -17,12 +17,16 @@ const UnifiedDocFeedMenu = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
 
+  console.log("filterBy", filterBy);
+  console.log("scope", scope);
+
   const getTabs = () => {
     const tabs = [
       {
         value: "hot",
         label: "Best",
         icon: icons.starAlt,
+        disableScope: true,
       },
       {
         value: "most_discussed",
@@ -31,7 +35,7 @@ const UnifiedDocFeedMenu = ({
       },
       {
         value: "newest",
-        label: "Most Discussed",
+        label: "Newest",
         icon: icons.calendar,
       },
       {
@@ -63,11 +67,12 @@ const UnifiedDocFeedMenu = ({
   };
 
   const tabs = getTabs();
+  const selectedTab = tabs.find((t) => t.isSelected);
   return (
     <div className={css(styles.feedMenu)}>
       {tabs.map((t) => renderTab(t))}
       <div className={css(styles.subFilters)}>
-        {!filterBy.disableScope && (
+        {!selectedTab.disableScope && (
           <DropdownButton
             opts={scopeOptions}
             label={scope.label}
