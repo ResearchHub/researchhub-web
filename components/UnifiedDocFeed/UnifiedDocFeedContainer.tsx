@@ -1,37 +1,31 @@
+import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isEmpty } from "../../config/utils/nullchecks";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { formatMainHeader } from "./UnifiedDocFeedUtil";
+import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 import { getDocumentCard } from "./utils/getDocumentCard";
-import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
+import { isServer } from "~/config/server/isServer";
 import {
-  PaginationInfo,
   getFilterFromRouter,
+  getPaginationInfoFromServerLoaded,
+  PaginationInfo,
   useEffectForceUpdate,
   useEffectPrefetchNext,
-  getPaginationInfoFromServerLoaded,
   useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useMemo, useRef, useState } from "react";
-import {
-  UnifiedDocFilterLabels,
-  UnifiedDocFilters,
-} from "./constants/UnifiedDocFilters";
 import { useRouter } from "next/router";
 import colors from "~/config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
+import dynamic from "next/dynamic";
 import EmptyFeedScreen from "../Home/EmptyFeedScreen";
 import FeedBlurWithButton from "./FeedBlurWithButton";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
-import UnifiedDocFeedFilterButton from "./UnifiedDocFeedFilterButton";
-import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
-import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { breakpoints } from "~/config/themes/screen";
-import dynamic from "next/dynamic";
-import { isServer } from "~/config/server/isServer";
+import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -82,7 +76,7 @@ function UnifiedDocFeedContainer({
     subFilters,
     subscribedHubs: isOnMyHubsTab,
     // V2 of hot score
-    hotV2: router.query?.hot_v2 == 'true',
+    hotV2: router.query?.hot_v2 == "true",
   };
 
   useEffectUpdateStatesOnServerChanges({
@@ -187,14 +181,12 @@ function UnifiedDocFeedContainer({
         delete query.type;
       }
 
-      router.push(
-        {
-          pathname: routerPathName,
-          query,
-        },
-      );
+      router.push({
+        pathname: routerPathName,
+        query,
+      });
     }
-  }
+  };
 
   const hasSubscribed = useMemo(
     (): boolean => auth.authChecked && hubState.subscribedHubs.length > 0,
@@ -235,15 +227,16 @@ function UnifiedDocFeedContainer({
           <CreateFeedBanner loggedIn={loggedIn} />
         </div>
       ) : null}
-      {isHomePage || isEmpty(hub)
-        ? <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
-        : <FeedInfoCard
-            hub={hub}
-            hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
-            isHomePage={isHomePage}
-            mainHeaderText={formattedMainHeader}
-          />
-      }
+      {isHomePage || isEmpty(hub) ? (
+        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+      ) : (
+        <FeedInfoCard
+          hub={hub}
+          hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+          isHomePage={isHomePage}
+          mainHeaderText={formattedMainHeader}
+        />
+      )}
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
           <UnifiedDocFeedMenu
@@ -271,7 +264,7 @@ function UnifiedDocFeedContainer({
         </div>
       )}
       {/* if not Loggedin & trying to view "My Hubs", redirect them to "All" */}
-      {!isLoggedIn && isOnMyHubsTab || unifiedDocsLoading ? null : (
+      {(!isLoggedIn && isOnMyHubsTab) || unifiedDocsLoading ? null : (
         <div className={css(styles.loadMoreWrap)}>
           {isLoadingMore ? (
             <Loader
