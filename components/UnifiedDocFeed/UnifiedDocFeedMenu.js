@@ -1,90 +1,93 @@
-import HorizontalTabBar from "~/components/HorizontalTabBar";
 import { css, StyleSheet } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { useRouter } from "next/router";
-import UnifiedDocFeedSubFilters from "./UnifiedDocFeedSubFilters";
 import { filterOptions, scopeOptions } from "~/config/utils/options";
 import { useState } from "react";
 import DropdownButton from "~/components/Form/DropdownButton";
 import colors, { pillNavColors } from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 const UnifiedDocFeedMenu = ({
-  subFilters,
+  subFilters: { filterBy, scope },
   onDocTypeFilterSelect,
   onSubFilterSelect,
   onScopeSelect,
 }) => {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
 
   const getTabs = () => {
     const tabs = [
       {
-        value: undefined,
-        label: "All",
+        value: "hot",
+        label: "Best",
+        icon: icons.starAlt,
       },
       {
-        value: "paper",
-        label: "Papers",
+        value: "most_discussed",
+        label: "Most Discussed",
+        icon: icons.commentsAlt,
       },
       {
-        value: "posts",
-        label: "Posts",
+        value: "newest",
+        label: "Most Discussed",
+        icon: icons.calendar,
       },
       {
-        value: "hypothesis",
-        label: "Hypotheses",
+        value: "top_rated",
+        label: "Top",
+        icon: icons.up,
       },
     ];
 
     return tabs.map((t) => {
-      t.isSelected = t.value === router.query.type ? true : false;
+      t.isSelected = t.value === filterBy.value;
       return t;
     });
   };
 
-  const tabs = getTabs();
-  const selectedTab = tabs.find((t) => t.isSelected);
+  const renderTab = (tabObj) => {
+    return (
+      <div
+        className={css(
+          styles.tabTypePill,
+          tabObj.isSelected && styles.tabTypePillSelected
+        )}
+        onClick={() => onSubFilterSelect(tabObj)}
+      >
+        <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
+        <span className={css(styles.tabText)}>{tabObj.label}</span>
+      </div>
+    );
+  };
 
+  const tabs = getTabs();
   return (
     <div className={css(styles.feedMenu)}>
-      <div className={css(styles.horizontalTabWrapper)}>
-        <HorizontalTabBar
-          type="PILL_NAV"
-          id="hpTabBar"
-          tabs={tabs}
-          onClick={(selected) => onDocTypeFilterSelect(selected.value)}
-          containerStyle={styles.horizontalMenuOverride}
-          dragging={true}
-          alignCenter={false}
-        />
-      </div>
-      <div className={css(styles.dropdownButtonMobile)}>
-        <DropdownButton
-          opts={tabs}
-          label={selectedTab.label}
-          isOpen={isOpen}
-          selected={selectedTab.value}
-          overrideTitleStyle={styles.overrideTitleStyle}
-          onClick={() => setIsOpen(true)}
-          dropdownClassName="filterSelect"
-          positions={["bottom", "right"]}
-          onClickOutside={() => {
-            setIsOpen(false);
-          }}
-          customButtonClassName={styles.dropdownButtonOverride}
-          onSelect={(selectedTab) => {
-            onDocTypeFilterSelect(selectedTab);
-          }}
-          onClose={() => setIsOpen(false)}
-        />
-      </div>
+      {tabs.map((t) => renderTab(t))}
       <div className={css(styles.subFilters)}>
-        <UnifiedDocFeedSubFilters
-          onSubFilterSelect={onSubFilterSelect}
-          onScopeSelect={onScopeSelect}
-          subFilters={subFilters}
-        />
+        {!filterBy.disableScope && (
+          <DropdownButton
+            opts={scopeOptions}
+            label={scope.label}
+            selected={scope.value}
+            isOpen={isScopeSelectOpen}
+            onClick={() => setIsScopeSelectOpen(true)}
+            dropdownClassName="scopeSelect"
+            onClickOutside={() => {
+              setIsScopeSelectOpen(false);
+            }}
+            overrideTitleStyle={styles.customTitleStyle}
+            positions={["bottom", "right"]}
+            customButtonClassName={styles.dropdownButtonOverride}
+            onSelect={(selectedScope) => {
+              const obj = scopeOptions.find((s) => selectedScope === s.value);
+              onScopeSelect(obj);
+            }}
+            onClose={() => setIsScopeSelectOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
@@ -95,41 +98,57 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  seperator: {
-    border: "1px solid",
-    marginRight: 15,
-    color: colors.BLACK(0.1),
-  },
-  horizontalMenuOverride: {
-    width: 307,
-  },
-  horizontalTabWrapper: {
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
-  dropdownButtonMobile: {
-    marginRight: 8,
-    [`@media only screen and (min-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
-  },
   subFilters: {
     display: "flex",
   },
-  overrideTitleStyle: {
+  customTitleStyle: {
     fontWeight: 400,
+  },
+  iconWrapper: {
+    marginRight: 10,
+    fontSize: 20,
+  },
+  tabTypePill: {
+    color: pillNavColors.primary.unfilledTextColor,
+    padding: "6px 12px",
+    marginRight: 8,
+    textTransform: "capitalize",
+    fontSize: 16,
+    lineHeight: "24px",
+    fontWeight: 400,
+    cursor: "pointer",
+    ":active": {
+      cursor: "pointer",
+    },
+    ":hover": {
+      borderRadius: 40,
+      background: pillNavColors.primary.unfilledHoverBackgroundColor,
+      color: pillNavColors.primary.unfilledHoverTextColor,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      padding: 16,
+      fontSize: 16,
+    },
+  },
+  tabTypePillSelected: {
+    color: pillNavColors.primary.filledTextColor,
+    borderRadius: "40px",
+    fontWeight: 500,
+    backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    ":hover": {
+      backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    },
   },
   dropdownButtonOverride: {
     whiteSpace: "nowrap",
-    backgroundColor: pillNavColors.primary.filledBackgroundColor,
-    color: pillNavColors.primary.filledTextColor,
+    backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    color: pillNavColors.secondary.filledTextColor,
     borderRadius: 40,
     fontWeight: 500,
+    marginRight: 8,
     ":hover": {
-      backgroundColor: pillNavColors.primary.filledBackgroundColor,
-      color: pillNavColors.primary.filledTextColor,
       borderRadius: 40,
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
   },
 });

@@ -250,6 +250,7 @@ function UnifiedDocFeedContainer({
             subFilters={subFilters}
             onDocTypeFilterSelect={onDocTypeFilterSelect}
             onSubFilterSelect={(filterBy) => {
+              console.log('filterBy', filterBy);
               setSubFilters({ filterBy, scope: subFilters.scope });
             }}
             onScopeSelect={(scope) => {
