@@ -16,6 +16,12 @@ export const toCheckSumAddress = (address) => {
   return ret;
 };
 
+export const getEtherscanLink = (transactionHash) => {
+  return process.env.REACT_APP_ENV === "production"
+    ? `https://etherscan.io/tx/${transactionHash}`
+    : `https://rinkeby.etherscan.io/tx/${transactionHash}`;
+};
+
 /**
  * Checks if the given string is an address
  *

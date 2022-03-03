@@ -7,6 +7,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
+import { getEtherscanLink } from "~/config/utils/crypto";
 
 const TransactionCard = (props) => {
   let { transaction, style } = props;
@@ -36,7 +37,7 @@ const TransactionCard = (props) => {
 
   function openTransactionHash() {
     if (transaction.transaction_hash) {
-      let url = `https://rinkeby.etherscan.io/tx/${transaction.transaction_hash}`;
+      let url = getEtherscanLink(transaction.transaction_hash);
       let win = window.open(url, "_blank");
       win.focus();
     }
@@ -53,10 +54,7 @@ const TransactionCard = (props) => {
       : comment.post_slug &&
         `/post/${comment.post}/${comment.post_slug}#comments`);
 
-  const etherscanLink =
-    process.env.REACT_APP_ENV === "production"
-      ? `https://etherscan.io/tx/${transaction.source?.transaction_hash}`
-      : `https://rinkeby.etherscan.io/tx/${transaction.source?.transaction_hash}`;
+  const etherscanLink = getEtherscanLink(transaction.source?.transaction_hash);
 
   return (
     <div
