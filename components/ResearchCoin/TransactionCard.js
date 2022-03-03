@@ -53,6 +53,11 @@ const TransactionCard = (props) => {
       : comment.post_slug &&
         `/post/${comment.post}/${comment.post_slug}#comments`);
 
+  const etherscanLink =
+    process.env.REACT_APP_ENV === "production"
+      ? `https://etherscan.io/tx/${transaction.source?.transaction_hash}`
+      : `https://rinkeby.etherscan.io/tx/${transaction.source?.transaction_hash}`;
+
   return (
     <div
       className={css(styles.transactionCard, style && style)}
@@ -73,6 +78,18 @@ const TransactionCard = (props) => {
               ? "Withdrawal"
               : ""}
           </div>
+          {transaction.source?.transaction_hash ? (
+            <a
+              href={etherscanLink}
+              target="_blank"
+              className={css(styles.metatext, styles.noUnderline)}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <div className={css(styles.metatext)}>{etherscanLink}</div>
+            </a>
+          ) : null}
           {paper && (
             <Link href={`/paper/${paper.id}/${paper.slug}`}>
               <a
