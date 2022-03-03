@@ -67,11 +67,22 @@ export const useEffectPrefetchNext = ({
   fetchParams: UniDocFetchParams;
   shouldPrefetch: Boolean;
 }): void => {
+  let prevFetchParams: UniDocFetchParams | null = null;
   useEffect((): void => {
-    if (shouldPrefetch) {
+    // comparing "memoized" filters to avoid unwanted prefetch
+    const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
+      prevFetchParams ?? {};
+    const { docTypeFilter, subFilters } = fetchParams ?? {};
+    const readyToFetch =
+      shouldPrefetch &&
+      prevDocTypeFilter === docTypeFilter &&
+      prevSubFilters === subFilters;
+
+    if (readyToFetch) {
       fetchUnifiedDocs(fetchParams);
+      prevFetchParams = fetchParams;
     }
-  }, [shouldPrefetch]);
+  }, [shouldPrefetch, fetchParams]);
 };
 
 export const useEffectForceUpdate = ({
@@ -82,8 +93,8 @@ export const useEffectForceUpdate = ({
 }: {
   fetchParams: UniDocFetchParams;
   updateOn: any[];
-  setUnifiedDocsLoading: any,
-  firstLoad: any,
+  setUnifiedDocsLoading: any;
+  firstLoad: any;
 }): void => {
   useEffect((): void => {
     if (firstLoad?.current) {
