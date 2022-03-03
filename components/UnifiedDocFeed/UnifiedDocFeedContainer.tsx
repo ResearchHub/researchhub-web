@@ -59,9 +59,6 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     serverLoadedData?.results || []
   );
-  const [docSetFetchedTime, setDocSetFetchedTime] = useState<number>(
-    Date.now()
-  );
   const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(false);
 
   const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
@@ -88,7 +85,7 @@ function UnifiedDocFeedContainer({
 
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const shouldPrefetch = page * 2 - 1 === localPage && hasMore
+  const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
   useEffectPrefetchNext({
     fetchParams: {
       ...fetchParamsWithoutCallbacks,
@@ -174,7 +171,6 @@ function UnifiedDocFeedContainer({
         localPage: 1,
         page: 1,
       });
-      setDocSetFetchedTime(Date.now());
 
       const query = { ...router.query, type: selected };
       if (!query.type) {
@@ -205,8 +201,7 @@ function UnifiedDocFeedContainer({
   );
 
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
-  const [cards, docSetFetchedTimeCheck] = getDocumentCard({
-    docSetFetchedTime,
+  const cards = getDocumentCard({
     hasSubscribed,
     isLoggedIn,
     isOnMyHubsTab,
