@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     fontWeight: 400,
   },
   iconWrapper: {
-    marginRight: 10,
+    marginRight: 7,
     fontSize: 20,
   },
   tabTypePill: {
