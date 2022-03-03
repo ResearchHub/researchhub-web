@@ -39,6 +39,7 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 // Constants
 import { ContentTypes, ChainStatus } from "./constants/SupportContent";
+import { getEtherscanLink } from "~/config/utils/crypto";
 const RinkebyRSCContractAddress = "0xD101dCC414F310268c37eEb4cD376CcFA507F571";
 const RinkebyAppPurchaseContractAddress =
   "0x9483992e2b67fd45683d9147b63734c7a9a7eb82";
@@ -702,7 +703,7 @@ class PaperTransactionModal extends Component {
                     className={css(styles.transactionHashLink)}
                     onClick={() =>
                       this.openTransactionConfirmation(
-                        `https://rinkeby.etherscan.io/tx/${transactionHash}`
+                        getEtherscanLink(transactionHash)
                       )
                     }
                   >
