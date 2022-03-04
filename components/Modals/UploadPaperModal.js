@@ -15,7 +15,7 @@ import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
 // Component
-import PaperEntryCard from "../Hubs/PaperEntryCard";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 const TRANSITION_TIME = 300;
 
@@ -90,12 +90,7 @@ class UploadPaperModal extends Component {
             className={css(styles.searchEntryContainer)}
             onClick={this.closeModal}
           >
-            <PaperEntryCard
-              paper={paper}
-              style={styles.paper}
-              onClick={this.closeModal}
-              mobileView={this.state.mobileView}
-            />
+            <FeedCard {...paper} formattedDocType={"paper"} paper={paper} />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
           {results.length > 1 && <div className={css(styles.divider)} />}

@@ -1,13 +1,10 @@
 import FeedCard from "~/components/Author/Tabs/FeedCard";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import React, { ReactElement } from "react";
 import { StyleSheet } from "aphrodite";
 import { filterNull } from "~/config/utils/nullchecks";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
-export type UnifiedCard = ReactElement<
-  typeof PaperEntryCard | typeof FeedCard
-> | null;
+export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
 export function getDocumentCard({
   hasSubscribed,

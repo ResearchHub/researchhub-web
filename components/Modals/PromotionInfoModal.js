@@ -5,7 +5,7 @@ import Ripples from "react-ripples";
 // Component
 import BaseModal from "./BaseModal";
 import { ScorePill } from "~/components/VoteWidget";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 // Redux
 import { ModalActions } from "~/redux/modals";
@@ -26,6 +26,8 @@ const PromotionInfoModal = (props) => {
     closeModal();
     dispatch(ModalActions.openPaperTransactionModal(true));
   };
+
+  const paper = store.getState().modals.openPromotionInfoModal.props;
 
   return (
     <BaseModal
@@ -66,12 +68,7 @@ const PromotionInfoModal = (props) => {
           </div>
         </div>
         <div className={css(styles.display, styles.title)}>
-          <PaperEntryCard
-            promotionSummary={true}
-            paper={store.getState().modals.openPromotionInfoModal.props}
-            mobileView={true}
-            style={styles.paper}
-          />
+          <FeedCard {...paper} formattedDocType={"paper"} paper={paper} />
         </div>
       </div>
       {store.getState().modals.openPromotionInfoModal.props.showPromotion && (
