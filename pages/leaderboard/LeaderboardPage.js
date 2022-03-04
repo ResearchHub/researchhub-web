@@ -20,7 +20,7 @@ import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import LeaderboardFeedPlaceholder from "../../components/Placeholders/LeaderboardFeedPlaceholder";
 import LeaderboardUser from "../../components/Leaderboard/LeaderboardUser";
 import Loader from "~/components/Loader/Loader";
-import PaperEntryCard from "../../components/Hubs/PaperEntryCard";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 import Head from "~/components/Head";
 import HeadComponent from "../../components/Head";
 import SideColumn from "~/components/Home/SideColumn";
@@ -418,13 +418,14 @@ class Index extends Component {
     }
     return this.state.items.map((paper, index) => {
       return (
-        <div className={css(styles.paperEntryContainer)}>
-          <PaperEntryCard
-            paper={paper}
-            index={index}
-            voteCallback={this.voteCallback}
-          />
-        </div>
+        <FeedCard
+          {...paper}
+          formattedDocType={"paper"}
+          index={index}
+          paper={paper}
+          vote={paper.user_vote}
+          voteCallback={this.voteCallback}
+        />
       );
     });
   };
@@ -690,7 +691,7 @@ class Index extends Component {
         <div className={css(mainFeedStyles.infiniteScroll)}>
           {!this.state.fetchingLeaderboard ? (
             <Fragment>
-              {this.renderItems()}
+              <div>{this.renderItems()}</div>
               {this.renderLoadMoreButton()}
             </Fragment>
           ) : (

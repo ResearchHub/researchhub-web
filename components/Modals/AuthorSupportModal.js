@@ -7,7 +7,7 @@ import { useAlert } from "react-alert";
 import BaseModal from "./BaseModal";
 import Button from "~/components/Form/Button";
 import OptionCard from "~/components/Payment/OptionCard";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 // Redux
 import { AuthActions } from "~/redux/auth";
@@ -299,11 +299,10 @@ const AuthorSupportModal = (props) => {
               </div>
               {paper && (
                 <div className={css(styles.paperContainer)}>
-                  <PaperEntryCard
-                    promotionSummary={true}
-                    paper={paper && paper}
-                    mobileView={true}
-                    style={styles.paper}
+                  <FeedCard
+                    {...paper}
+                    formattedDocType={"paper"}
+                    paper={paper}
                   />
                 </div>
               )}

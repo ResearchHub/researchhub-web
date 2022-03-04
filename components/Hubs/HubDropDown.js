@@ -75,7 +75,7 @@ const HubDropDown = (props) => {
       ref={(ref) => (dropdown = ref)}
     >
       <div className={css(styles.icon, isOpen && styles.active)}>
-        {icons.ellipsisH}
+        {`+${hubs.length - 1} more`}
       </div>
       <div className={css(styles.dropdown, isOpen && styles.open)}>
         {dropdownComponent}
@@ -123,8 +123,10 @@ const styles = StyleSheet.create({
     pointerEvents: "unset",
   },
   icon: {
-    fontSize: 14,
+    color: colors.NEW_BLUE(),
     cursor: "pointer",
+    fontSize: 15,
+    fontWeight: 500,
     ":hover": {
       color: colors.BLUE(),
     },

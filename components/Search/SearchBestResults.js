@@ -126,7 +126,6 @@ const styles = StyleSheet.create({
     border: `1px solid ${genericCardColors.BORDER}`,
   },
   sectionHeader: {
-    borderBottom: `1px solid ${genericCardColors.BORDER}`,
     paddingBottom: 10,
     marginBottom: 0,
     color: colors.BLACK(0.5),
@@ -141,7 +140,6 @@ const styles = StyleSheet.create({
   linkWrapper: {
     textAlign: "center",
     paddingTop: 16,
-    borderTop: `1px solid ${genericCardColors.BORDER}`,
   },
   link: {
     color: colors.BLUE(),
