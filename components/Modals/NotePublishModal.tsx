@@ -36,15 +36,21 @@ function validateFormField(fieldID: string, value: any): boolean {
   }
 }
 
-function getDefaultAuthors(currentNote: any): any {
+function getDefaultAuthors(currentNote: any, currentUser: any): any {
   const { authors } = currentNote.post || {};
+  const currentAuthor = currentUser.author_profile;
   return (
     authors?.map((author) => {
       return {
         label: author.first_name + " " + author.last_name,
         value: author.id,
       };
-    }) ?? []
+    }) ?? [
+      {
+        label: currentAuthor.first_name + " " + currentAuthor.last_name,
+        value: currentAuthor.id,
+      },
+    ]
   );
 }
 
@@ -170,11 +176,14 @@ function NotePublishModal({
 
   useEffect(() => {
     setFormErrors({
-      authors: !validateFormField("authors", getDefaultAuthors(currentNote)),
+      authors: !validateFormField(
+        "authors",
+        getDefaultAuthors(currentNote, currentUser)
+      ),
       hubs: !validateFormField("hubs", getDefaultHubs(currentNote)),
     });
     setMutableFormFields({
-      authors: getDefaultAuthors(currentNote),
+      authors: getDefaultAuthors(currentNote, currentUser),
       hubs: getDefaultHubs(currentNote),
     });
   }, [currentNote, isOpen]);
@@ -262,7 +271,7 @@ function NotePublishModal({
         <form>
           <FormSelect
             containerStyle={[styles.chooseHub, isPublished && styles.marginTop]}
-            defaultValue={getDefaultAuthors(currentNote)}
+            defaultValue={getDefaultAuthors(currentNote, currentUser)}
             error={
               shouldDisplayError &&
               formErrors.authors &&
