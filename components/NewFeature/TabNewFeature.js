@@ -1,8 +1,8 @@
 import { StyleSheet, css } from "aphrodite";
 import colors from "~/config/themes/colors";
 
-function TabNewFeature() {
-  return <div className={css(styles.newFeature)}>New</div>;
+function TabNewFeature({ overrideStyles }) {
+  return <div className={css(styles.newFeature, overrideStyles)}>New</div>;
 }
 
 const styles = StyleSheet.create({
