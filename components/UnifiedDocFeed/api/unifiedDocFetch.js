@@ -18,26 +18,23 @@ const calculateTimeScope = (scope) => {
 
   const scopeId = scope.value;
   const now = moment();
-  const today = moment().startOf("day");
-  const week = moment().startOf("day").subtract(7, "days");
-  const month = moment().startOf("day").subtract(30, "days");
-  const year = moment().startOf("day").subtract(365, "days");
 
   scope.end = now.unix();
   if (scopeId === "day") {
-    scope.start = today.unix();
+    scope.start = moment().subtract(1, "day").unix();
   } else if (scopeId === "week") {
-    scope.start = week.unix();
+    scope.start = moment().subtract(7, "day").unix();
   } else if (scopeId === "month") {
-    scope.start = month.unix();
+    scope.start = moment().subtract(30, "day").unix();
   } else if (scopeId === "year") {
-    scope.start = year.unix();
+    scope.start = moment().subtract(365, "day").unix();
   } else if (scopeId === "all-time") {
     const start = "2019-01-01";
     const diff = now.diff(start, "days") + 1;
     const alltime = now.startOf("day").subtract(diff, "days");
     scope.start = alltime.unix();
   }
+
   return scope;
 };
 
