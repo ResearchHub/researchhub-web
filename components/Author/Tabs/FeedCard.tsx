@@ -27,7 +27,6 @@ const PaperPDFModal = dynamic(
 );
 
 export type FeedCardProps = {
-  boost_amount: number;
   created_by: any;
   created_date: any;
   discussion_count: number;
@@ -63,7 +62,6 @@ export type FeedCardProps = {
 
 function FeedCard(props: FeedCardProps) {
   const {
-    boost_amount: boostAmount,
     created_by,
     created_date,
     discussion_count,
@@ -105,7 +103,7 @@ function FeedCard(props: FeedCardProps) {
   const [voteState, setVoteState] = useState<string | null>(
     userVoteToConstant(userVote)
   );
-  const [score, setScore] = useState<number>(initialScore + (boostAmount || 0));
+  const [score, setScore] = useState<number>(initialScore);
   const [isHubsOpen, setIsHubsOpen] = useState(false);
   const [previews] = useState(
     configurePreview([
