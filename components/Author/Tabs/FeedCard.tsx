@@ -244,7 +244,7 @@ function FeedCard(props: FeedCardProps) {
         </div>
       </DesktopOnly>
       <div className={css(styles.container)}>
-        <div className={css(styles.bottomBar)}>
+        <div>
           <div className={css(styles.rowContainer)}>
             <div className={css(styles.postCreatedBy)}>
               <LazyLoad offset={100} once>
@@ -281,75 +281,76 @@ function FeedCard(props: FeedCardProps) {
               )}
             </div>
           </div>
-        </div>
-        <div className={css(styles.rowContainer)}>
-          <div className={css(styles.column, styles.metaData)}>
-            <div className={css(styles.topRow)}>
+          <div className={css(styles.rowContainer)}>
+            <div className={css(styles.column, styles.metaData)}>
               <span className={css(styles.title)}>
                 {titleAsHtml ? titleAsHtml : title ? title : ""}
               </span>
-            </div>
-            <div
-              className={css(styles.metadataContainer, styles.publishContainer)}
-            >
-              <div className={css(styles.metadataIcon)}>
-                {documentIcons[formattedDocType!]}
-              </div>
-              <span className={css(styles.metadataText)}>
-                {formattedDocType}
-              </span>
-              <div className={css(styles.metadataIcon)}>
-                {icons.commentRegular}
-              </div>
-              <span className={css(styles.metadataText)}>
-                <span className={css(styles.commentCountText)}>
-                  {discussion_count}
+              <div
+                className={css(
+                  styles.metadataContainer,
+                  styles.publishContainer
+                )}
+              >
+                <div className={css(styles.metadataIcon)}>
+                  {documentIcons[formattedDocType!]}
+                </div>
+                <span className={css(styles.metadataText)}>
+                  {formattedDocType}
                 </span>
-                {` Comment${discussion_count === 1 ? "" : "s"}`}
-              </span>
-              <div className={css(styles.metadataIcon)}>{icons.date}</div>
-              <span className={css(styles.metadataText)}>
-                {formatDate(transformDate(created_date || uploaded_date))}
-              </span>
+                <div className={css(styles.metadataIcon)}>
+                  {icons.commentRegular}
+                </div>
+                <span className={css(styles.metadataText)}>
+                  <span className={css(styles.commentCountText)}>
+                    {discussion_count}
+                  </span>
+                  {` Comment${discussion_count === 1 ? "" : "s"}`}
+                </span>
+                <div className={css(styles.metadataIcon)}>{icons.date}</div>
+                <span className={css(styles.metadataText)}>
+                  {formatDate(transformDate(created_date || uploaded_date))}
+                </span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      {Boolean(previewImg) && (
-        <div className={css(styles.column, styles.rightColumn)}>
-          <div className={css(styles.preview, styles.imagePreview)}>
+        {Boolean(previewImg) && (
+          <div className={css(styles.column)}>
+            <div className={css(styles.preview, styles.imagePreview)}>
+              <LazyLoad offset={100} once>
+                <img src={previewImg} className={css(styles.image)} />
+              </LazyLoad>
+            </div>
+          </div>
+        )}
+        {previews.length > 0 && (
+          <div
+            className={css(styles.column)}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
             <LazyLoad offset={100} once>
-              <img src={previewImg} className={css(styles.image)} />
+              {isPreviewing && (
+                <PaperPDFModal
+                  paper={paper}
+                  onClose={() => setIsPreviewing(false)}
+                />
+              )}
+              <div className={css(styles.preview, styles.paperPreview)}>
+                <img
+                  src={previews[0].file}
+                  className={css(styles.image)}
+                  key={`preview_${previews[0].file}`}
+                  alt={`Paper Preview Page 1`}
+                  onClick={openPaperPDFModal}
+                />
+              </div>
             </LazyLoad>
           </div>
-        </div>
-      )}
-      {previews.length > 0 && (
-        <div
-          className={css(styles.column, styles.rightColumn)}
-          onClick={(e) => {
-            e.stopPropagation();
-          }}
-        >
-          <LazyLoad offset={100} once>
-            {isPreviewing && (
-              <PaperPDFModal
-                paper={paper}
-                onClose={() => setIsPreviewing(false)}
-              />
-            )}
-            <div className={css(styles.preview, styles.paperPreview)}>
-              <img
-                src={previews[0].file}
-                className={css(styles.image)}
-                key={`preview_${previews[0].file}`}
-                alt={`Paper Preview Page 1`}
-                onClick={openPaperPDFModal}
-              />
-            </div>
-          </LazyLoad>
-        </div>
-      )}
+        )}
+      </div>
     </Ripples>
   );
 }
@@ -396,7 +397,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: 5,
   },
   image: {
     objectFit: "contain",
@@ -404,12 +404,10 @@ const styles = StyleSheet.create({
     height: 90,
   },
   container: {
+    alignItems: "center",
     display: "flex",
-    flexDirection: "column",
     justifyContent: "space-between",
-    height: "100%",
     width: "100%",
-    boxSizing: "border-box",
   },
   rowContainer: {
     display: "flex",
@@ -436,7 +434,6 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
-    marginTop: 3,
   },
   publishContainer: {
     marginRight: 10,
@@ -449,15 +446,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 13,
     },
-  },
-  topRow: {
-    marginBottom: 5,
-  },
-  bottomBar: {
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    width: "100%",
   },
   mobileVoteWidget: {
     marginBottom: 10,
@@ -475,6 +463,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     fontSize: 20,
     fontWeight: 700,
+    marginBottom: 10,
+    marginTop: 8,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,
       fontWeight: 500,
@@ -497,12 +487,8 @@ const styles = StyleSheet.create({
     width: 70,
   },
   paperPreview: {
-    height: 90,
-    width: 80,
-    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      height: 80,
-      width: 70,
-    },
+    height: 80,
+    width: 70,
   },
   textLabel: {
     color: colors.TEXT_GREY(),
@@ -534,9 +520,6 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.5),
     fontSize: 14,
     marginRight: 5,
-  },
-  rightColumn: {
-    alignItems: "flex-end",
   },
 });
 
