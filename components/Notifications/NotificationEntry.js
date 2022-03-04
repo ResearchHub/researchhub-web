@@ -14,6 +14,7 @@ import colors from "../../config/themes/colors";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { timeAgoStamp } from "~/config/utils/dates";
 import AuthorAvatar from "../AuthorAvatar";
+import { getEtherscanLink } from "~/config/utils/crypto";
 
 const NotificationEntry = (props) => {
   const { notification, data } = props;
@@ -63,6 +64,10 @@ const NotificationEntry = (props) => {
       paper_title,
     } = notification;
 
+    if (content_type === "withdrawal") {
+      return null;
+    }
+
     const formattedSlug = !isNullOrUndefined(slug)
       ? slug
       : buildSlug(paper_official_title ?? paper_title);
@@ -107,6 +112,9 @@ const NotificationEntry = (props) => {
       document_type,
       slug,
       thread_id: threadId,
+      withdrawnAmount,
+      txHash,
+      toAddress,
     } = notification;
     const {
       first_name: creatorFName,
@@ -166,7 +174,28 @@ const NotificationEntry = (props) => {
       />
     );
 
+    const etherscanLink = getEtherscanLink(txHash);
+
     switch (content_type) {
+      case "withdrawal":
+        return (
+          <div className={css(styles.message)}>
+            Your withdrawal of {withdrawnAmount} RSC has now been completed!
+            <br />
+            <br />
+            View the transaction at{" "}
+            <a
+              href={etherscanLink}
+              target="_blank"
+              className={css(styles.metatext, styles.noUnderline)}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <div className={css(styles.metatext)}>{etherscanLink}</div>
+            </a>
+          </div>
+        );
       case "paper":
       case "post":
         return (
@@ -392,6 +421,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     lineHeight: 1.5,
     width: "100%",
+    wordBreak: "break-word",
   },
   atag: {
     color: "unset",

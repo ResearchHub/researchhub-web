@@ -24,7 +24,11 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import { useMetaMask } from "../connectEthereum";
 import { sanitizeNumber, formatBalance } from "~/config/utils/form";
-import { isAddress, toCheckSumAddress } from "~/config/utils/crypto";
+import {
+  getEtherscanLink,
+  isAddress,
+  toCheckSumAddress,
+} from "~/config/utils/crypto";
 
 const RINKEBY_CHAIN_ID = "4";
 const MAINNET_CHAIN_ID = "1";
@@ -264,9 +268,9 @@ class WithdrawalModal extends Component {
       return;
     }
 
-    if (amount < 100) {
+    if (amount < transactionFee) {
       showMessage({ show: false });
-      setMessage("Withdrawal amount must be at least 100 RSC");
+      setMessage(`Withdrawal amount must be at least ${transactionFee} RSC`);
       showMessage({ show: true, error: true });
       return;
     }
@@ -285,11 +289,14 @@ class WithdrawalModal extends Component {
         amount: `${amount}`,
         transaction_fee: transactionFee,
       };
-      fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
+      return fetch(API.WITHDRAW_COIN({}), API.POST_CONFIG(param))
         .then(Helpers.checkStatus)
         .then(Helpers.parseJSON)
         .then((res) => {
           const { id, paid_status, transaction_hash } = res;
+          this.setTransactionHash(transaction_hash);
+          this.getBalance();
+
           if (paid_status === "failed") {
             showMessage({ show: false });
             setMessage(
@@ -300,9 +307,6 @@ class WithdrawalModal extends Component {
             showMessage({ show: false });
             setMessage("Your transaction request has been made.");
             showMessage({ show: true });
-            this.setState({ transactionHash: true }, () => {
-              this.getBalance();
-            });
           }
         })
         .catch((err) => {
@@ -614,6 +618,8 @@ class WithdrawalModal extends Component {
       ? "Deposit Successful"
       : "Withdrawal Successful";
 
+    const etherscanLink = getEtherscanLink(transactionHash);
+
     const confirmationMessage = depositScreen ? (
       <Fragment>
         {
@@ -621,7 +627,7 @@ class WithdrawalModal extends Component {
         }
         Review your transaction details and status on
         <a
-          href={`https://rinkeby.etherscan.io/tx/${transactionHash}`}
+          href={etherscanLink}
           rel="noopener noreferrer"
           target="_blank"
           className={css(styles.transactionHashLink)}
@@ -647,7 +653,16 @@ class WithdrawalModal extends Component {
         {
           "Congrats! Your wallet balance will update when the transfer is fully processed.\n\n"
         }
-        Review your transactions in your
+        Review your transaction details and status on
+        <a
+          href={etherscanLink}
+          rel="noopener noreferrer"
+          target="_blank"
+          className={css(styles.transactionHashLink)}
+        >
+          Etherscan
+        </a>
+        {" or in your"}
         <Link
           href={"/user/[authorId]/[tabName]"}
           as={`/user/${this.props.auth.user.author_profile.id}/transactions`}

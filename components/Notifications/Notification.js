@@ -116,8 +116,22 @@ class Notification extends Component {
       ? unified_document?.documents[0]
       : unified_document?.documents;
 
-    if (!documentContent) {
+    const withdrawal = content_type === "withdrawal";
+
+    if (!documentContent && !withdrawal) {
       return null;
+    }
+
+    if (withdrawal) {
+      return {
+        action_tip: "",
+        content_type,
+        withdrawnAmount: notification.action.item.amount,
+        toAddress: notification.action.item.to_address,
+        txHash: notification.action.item.transaction_hash,
+        created_by: action_user,
+        created_date,
+      };
     }
 
     const {
