@@ -7,6 +7,7 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { formatTransactionDate } from "~/config/utils/dates";
 import { transformDate } from "~/redux/utils";
+import { getEtherscanLink } from "~/config/utils/crypto";
 
 const TransactionCard = (props) => {
   let { transaction, style } = props;
@@ -36,7 +37,7 @@ const TransactionCard = (props) => {
 
   function openTransactionHash() {
     if (transaction.transaction_hash) {
-      let url = `https://rinkeby.etherscan.io/tx/${transaction.transaction_hash}`;
+      let url = getEtherscanLink(transaction.transaction_hash);
       let win = window.open(url, "_blank");
       win.focus();
     }
@@ -52,6 +53,8 @@ const TransactionCard = (props) => {
       ? `/hypothesis/${comment.hypothesis}/${comment.hypothesis_slug}#comments`
       : comment.post_slug &&
         `/post/${comment.post}/${comment.post_slug}#comments`);
+
+  const etherscanLink = getEtherscanLink(transaction.source?.transaction_hash);
 
   return (
     <div
@@ -73,6 +76,18 @@ const TransactionCard = (props) => {
               ? "Withdrawal"
               : ""}
           </div>
+          {transaction.source?.transaction_hash ? (
+            <a
+              href={etherscanLink}
+              target="_blank"
+              className={css(styles.metatext, styles.noUnderline)}
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+            >
+              <div className={css(styles.metatext)}>{etherscanLink}</div>
+            </a>
+          ) : null}
           {paper && (
             <Link href={`/paper/${paper.id}/${paper.slug}`}>
               <a

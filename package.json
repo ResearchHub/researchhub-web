@@ -12,7 +12,7 @@
     "cy:open": "cypress open --project $PWD/tests",
     "cy:spec": "cypress run --project $PWD/tests --spec",
     "test": "cypress run --project $PWD/tests",
-    "build:prod": "docker buildx build --platform=linux/amd64 --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) -t researchhub-web .",
+    "build:prod": "docker buildx build --platform=linux/amd64 --build-arg SENTRY_RELEASE=production-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=production -t researchhub-web .",
     "build:staging": "docker buildx build --platform=linux/amd64 --build-arg SENTRY_RELEASE=staging-$(git rev-parse --short HEAD) --build-arg REACT_APP_ENV=staging -t researchhub-web-staging .",
     "sitemap": "node scripts/createSitemap.js",
     "sitemap-index": "node scripts/createSitemapIndex.js",

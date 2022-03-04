@@ -963,10 +963,10 @@ export async function getStaticProps(ctx) {
     });
   }
 
-  if (fetchedAuthor.merged_with) {
+  if (fetchedAuthor?.merged_with) {
     return {
       redirect: {
-        destination: `/user/${fetchedAuthor.merged_with}/overview`,
+        destination: `/user/${fetchedAuthor?.merged_with}/overview`,
         permanent: true,
       },
     };

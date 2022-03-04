@@ -307,36 +307,7 @@ const AuthorSupportModal = (props) => {
                 </div>
               )}
             </div>
-            {/* <Link
-                href={"/user/[authorId]/[tabName]"}
-                as={`/user/${props.author.id}/posts`}
-              >
-                <a
-                  href={"/user/[authorId]/[tabName]"}
-                  as={`/user/${props.author.id}/posts`}
-                  className={css(styles.transactionHashLink, styles.marginLeft)}
-                >
-                  Click to go back to{" "}
-                  {`${props.author.first_name} ${props.author.last_name}'s page`}
-                </a>
-              </Link> */}
           </div>
-          {/* {!offChain && (
-              <div className={css(styles.confirmation)}>
-                Click{" "}
-                <span
-                  className={css(styles.transactionHashLink)}
-                  onClick={() =>
-                    this.openTransactionConfirmation(
-                      `https://rinkeby.etherscan.io/tx/${transactionHash}`
-                    )
-                  }
-                >
-                  here
-                </span>{" "}
-                to view the transaction confirmation.
-              </div>
-            )} */}
         </div>
         <div className={css(styles.buttons, styles.confirmationButtons)}>
           <Button
