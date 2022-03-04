@@ -122,9 +122,9 @@ function UnifiedDocFeedContainer({
       },
       page: page + 1,
     },
-    shouldPrefetch,
     prevFetchParams,
     setPrevFetchParams,
+    shouldPrefetch,
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
