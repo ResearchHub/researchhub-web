@@ -62,28 +62,35 @@ export const useEffectUpdateStatesOnServerChanges = ({
 
 export const useEffectPrefetchNext = ({
   fetchParams,
+  prevFetchParams,
   shouldPrefetch,
+  setPrevFetchParams,
 }: {
   fetchParams: UniDocFetchParams;
+  prevFetchParams: UniDocFetchParams | null;
   shouldPrefetch: Boolean;
+  setPrevFetchParams: any;
 }): void => {
-  let prevFetchParams: UniDocFetchParams | null = null;
+  const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
+    prevFetchParams ?? {};
+  const { docTypeFilter, subFilters } = fetchParams ?? {};
   useEffect((): void => {
-    // comparing "memoized" filters to avoid unwanted prefetch
-    const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
-      prevFetchParams ?? {};
-    const { docTypeFilter, subFilters } = fetchParams ?? {};
     const readyToPrefetch =
-      shouldPrefetch &&
-      prevDocTypeFilter === docTypeFilter &&
-      prevSubFilters === subFilters;
-
+      prevFetchParams === null ||
+      (shouldPrefetch &&
+        prevDocTypeFilter == docTypeFilter &&
+        prevSubFilters == subFilters);
     if (readyToPrefetch) {
       fetchUnifiedDocs(fetchParams);
-      prevFetchParams = fetchParams;
+      setPrevFetchParams(fetchParams);
     }
-    
-  }, [shouldPrefetch, fetchParams]);
+  }, [
+    shouldPrefetch,
+    prevDocTypeFilter,
+    prevSubFilters,
+    docTypeFilter,
+    subFilters,
+  ]);
 };
 
 export const useEffectForceUpdate = ({

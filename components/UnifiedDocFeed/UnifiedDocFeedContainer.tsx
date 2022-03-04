@@ -11,6 +11,7 @@ import {
   getFilterFromRouter,
   getPaginationInfoFromServerLoaded,
   PaginationInfo,
+  UniDocFetchParams,
   useEffectForceUpdate,
   useEffectPrefetchNext,
   useEffectUpdateStatesOnServerChanges,
@@ -85,7 +86,9 @@ function UnifiedDocFeedContainer({
 
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
+  const shouldPrefetch = page < localPage * 2 && hasMore;
+  const [prevFetchParams, setPrevFetchParams] =
+    useState<UniDocFetchParams | null>(null);
   useEffectPrefetchNext({
     fetchParams: {
       ...fetchParamsWithoutCallbacks,
@@ -106,6 +109,7 @@ function UnifiedDocFeedContainer({
         documents: nextDocs,
       }): void => {
         setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+        console.warn("updatedPage: ", updatedPage);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,
@@ -118,6 +122,8 @@ function UnifiedDocFeedContainer({
       page: page + 1,
     },
     shouldPrefetch,
+    prevFetchParams,
+    setPrevFetchParams,
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
