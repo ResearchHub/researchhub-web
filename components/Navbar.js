@@ -17,11 +17,12 @@ import dynamic from "next/dynamic";
 
 // Components
 import AuthorAvatar from "~/components/AuthorAvatar";
-import UserStateBanner from "./Banner/UserStateBanner";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import NewPostButton from "./NewPostButton";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
+import TabNewFeature from "~/components/NewFeature/TabNewFeature";
+import UserStateBanner from "./Banner/UserStateBanner";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -557,6 +558,7 @@ const Navbar = (props) => {
                           {icons.bookOpen}
                         </span>
                         Notebook
+                        <TabNewFeature overrideStyles={styles.newFeature} />
                       </div>
                     </Link>
                     <Link href={"/settings"} as={`/settings`}>
@@ -1017,6 +1019,9 @@ const styles = StyleSheet.create({
     // fontSize: 18,
     // marginTop: 2,
     display: "flex",
+  },
+  newFeature: {
+    marginLeft: 10,
   },
 });
 

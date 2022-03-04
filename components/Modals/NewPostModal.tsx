@@ -59,6 +59,7 @@ function NewPostModal({
         router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
       },
       icon: <PostIcon width={40} height={40} withAnimation={false} />,
+      newFeature: true,
     },
     {
       header: "Propose a Hypothesis",
@@ -93,6 +94,7 @@ function NewPostModal({
                   isActive={index === selected}
                   isCheckboxSquare={false}
                   key={index}
+                  newFeature={option.newFeature}
                   onSelect={(e: SyntheticEvent) => {
                     e.preventDefault();
                     setSelected(index);
