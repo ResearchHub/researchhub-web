@@ -406,7 +406,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               {...post}
               formattedDocType={"post"}
               key={post?.id || index}
-              singleCard
               styleVariation={
                 context === "best-results" ? "noBorderVariation" : null
               }
@@ -426,7 +425,6 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
               index={index}
               key={paper.id}
               paper={paper}
-              singleCard
               styleVariation={
                 context === "best-results" ? "noBorderVariation" : null
               }
