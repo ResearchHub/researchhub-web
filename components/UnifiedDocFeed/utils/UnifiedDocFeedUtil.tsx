@@ -64,14 +64,14 @@ export const useEffectUpdateStatesOnServerChanges = ({
 export const useEffectPrefetchNext = ({
   fetchParams,
   shouldPrefetch,
+  prevFetchParams,
+  setPrevFetchParams,
 }: {
   fetchParams: UniDocFetchParams;
-  // prevFetchParams: UniDocFetchParams | null;
+  prevFetchParams: UniDocFetchParams | null;
   shouldPrefetch: Boolean;
-  // setPrevFetchParams: any;
+  setPrevFetchParams: any;
 }): void => {
-  const [prevFetchParams, setPrevFetchParams] =
-    useState<UniDocFetchParams | null>(null);
   const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
     prevFetchParams ?? {};
   const { docTypeFilter, subFilters } = fetchParams ?? {};
