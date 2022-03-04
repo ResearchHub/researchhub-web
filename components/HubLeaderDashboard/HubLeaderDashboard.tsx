@@ -136,7 +136,7 @@ export default function HubLeaderDashboard(): ReactElement<"div"> {
       />
       <Head />
       <div className={css(styles.nav)}>
-        <div className={css(styles.navItem)}>User</div>
+        <div className={css(styles.navItem)}>Hubs</div>
         <div className={css(styles.navContainer)}>
           <div className={css(styles.navItem, styles.rep, styles.last)}>
             Last Submission
