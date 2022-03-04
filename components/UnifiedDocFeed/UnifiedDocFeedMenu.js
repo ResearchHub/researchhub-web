@@ -215,6 +215,8 @@ const styles = StyleSheet.create({
   sortIcon: {
     marginLeft: 5,
     fontSize: 18,
+    marginRight: 4,
+    marginLeft: 4,
     [`@media only screen and (min-width: 1400px)`]: {
       display: "none",
     },
@@ -267,7 +269,6 @@ const styles = StyleSheet.create({
       color: pillNavColors.primary.unfilledHoverTextColor,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      // padding: 16,
       fontSize: 16,
     },
     [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
@@ -298,7 +299,6 @@ const styles = StyleSheet.create({
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      // padding: 16,
       fontSize: 16,
     },
     [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
@@ -314,14 +314,7 @@ const styles = StyleSheet.create({
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
   },
-  dropdownButtonOverrideForTypeFilter: {
-    paddingRight: 0,
-    backgroundColor: "unset",
-    fontWeight: 400,
-    ":hover": {
-      backgroundColor: "unset",
-    },
-  },
+  dropdownButtonOverrideForTypeFilter: {},
   overrideDownIconStyle: {
     padding: "6px 4px",
   },
