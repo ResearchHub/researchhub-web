@@ -397,49 +397,45 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
         <EmptyFeedScreen title="There are no results found for this criteria" />
       )}
 
-      {searchEntityType === "post" &&
-        results.map((post, index) => {
-          post.user_vote = userVotes[post.id];
+      <div>
+        {searchEntityType === "post" &&
+          results.map((post, index) => {
+            post.user_vote = userVotes[post.id];
 
-          return (
-            <FeedCard
-              {...post}
-              formattedDocType={"post"}
-              key={post?.id || index}
-              styleVariation={
-                context === "best-results" ? "noBorderVariation" : null
-              }
-              user_vote={post?.user_vote}
-            />
-          );
-        })}
-      {searchEntityType === "paper" &&
-        results.map((paper, index) => {
-          paper.promoted = false;
-          paper.user_vote = userVotes[paper.id];
+            return (
+              <FeedCard
+                {...post}
+                formattedDocType={"post"}
+                key={post?.id || index}
+                user_vote={post?.user_vote}
+              />
+            );
+          })}
+        {searchEntityType === "paper" &&
+          results.map((paper, index) => {
+            paper.promoted = false;
+            paper.user_vote = userVotes[paper.id];
 
-          return (
-            <FeedCard
-              {...paper}
-              formattedDocType={"paper"}
-              index={index}
-              key={paper.id}
-              paper={paper}
-              styleVariation={
-                context === "best-results" ? "noBorderVariation" : null
-              }
-              voteCallback={(arrIndex, currPaper) => {
-                const idx = results.findIndex((p) => p.id === currPaper.id);
+            return (
+              <FeedCard
+                {...paper}
+                formattedDocType={"paper"}
+                index={index}
+                key={paper.id}
+                paper={paper}
+                voteCallback={(arrIndex, currPaper) => {
+                  const idx = results.findIndex((p) => p.id === currPaper.id);
 
-                results[idx] = currPaper;
-                userVotes[currPaper.id] = currPaper.user_vote;
+                  results[idx] = currPaper;
+                  userVotes[currPaper.id] = currPaper.user_vote;
 
-                setResults(results);
-                setUserVotes(userVotes);
-              }}
-            />
-          );
-        })}
+                  setResults(results);
+                  setUserVotes(userVotes);
+                }}
+              />
+            );
+          })}
+      </div>
 
       {nextResultsUrl && (
         <LoadMoreButton onClick={loadMoreResults} isLoading={isLoadingMore} />
