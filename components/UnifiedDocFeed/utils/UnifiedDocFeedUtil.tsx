@@ -1,8 +1,9 @@
-import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { ID } from "~/config/types/root_types";
+import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
 import { useEffect } from "react";
+import { useState } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
 
 export type UniDocFetchParams = {
@@ -62,15 +63,15 @@ export const useEffectUpdateStatesOnServerChanges = ({
 
 export const useEffectPrefetchNext = ({
   fetchParams,
-  prevFetchParams,
   shouldPrefetch,
-  setPrevFetchParams,
 }: {
   fetchParams: UniDocFetchParams;
-  prevFetchParams: UniDocFetchParams | null;
+  // prevFetchParams: UniDocFetchParams | null;
   shouldPrefetch: Boolean;
-  setPrevFetchParams: any;
+  // setPrevFetchParams: any;
 }): void => {
+  const [prevFetchParams, setPrevFetchParams] =
+    useState<UniDocFetchParams | null>(null);
   const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
     prevFetchParams ?? {};
   const { docTypeFilter, subFilters } = fetchParams ?? {};

@@ -86,9 +86,8 @@ function UnifiedDocFeedContainer({
 
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const shouldPrefetch = page < localPage * 2 && hasMore;
-  const [prevFetchParams, setPrevFetchParams] =
-    useState<UniDocFetchParams | null>(null);
+  const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
+
   useEffectPrefetchNext({
     fetchParams: {
       ...fetchParamsWithoutCallbacks,
@@ -122,8 +121,8 @@ function UnifiedDocFeedContainer({
       page: page + 1,
     },
     shouldPrefetch,
-    prevFetchParams,
-    setPrevFetchParams,
+    // prevFetchParams,
+    // setPrevFetchParams,
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
