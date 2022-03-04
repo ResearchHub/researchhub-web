@@ -28,7 +28,8 @@ const UnifiedDocFeedMenu = ({
       },
       {
         value: "most_discussed",
-        label: "Most Discussed",
+        label: "Discussed",
+        labelLarge: "Most Discussed",
         icon: icons.commentsAlt,
       },
       {
@@ -165,7 +166,14 @@ const UnifiedDocFeedMenu = ({
       <div className={css(styles.typeFilter)}>
         <DropdownButton
           opts={types}
-          label={selectedType.label}
+          labelAsHtml={
+            <div>
+              <span className={css(styles.typeFilterText)}>
+                {selectedType.label}
+              </span>
+              <span className={css(styles.sortIcon)}>{icons.sort}</span>
+            </div>
+          }
           selected={selectedType.value}
           isOpen={isTypeFilterOpen}
           onClick={() => setIsTypeFilterOpen(true)}
@@ -179,6 +187,7 @@ const UnifiedDocFeedMenu = ({
             styles.dropdownButtonOverride,
             styles.dropdownButtonOverrideForTypeFilter,
           ]}
+          overrideDownIconStyle={styles.overrideDownIconForTypeFilter}
           onSelect={(selectedType) => {
             onDocTypeFilterSelect(selectedType);
           }}
@@ -190,10 +199,30 @@ const UnifiedDocFeedMenu = ({
 };
 
 const styles = StyleSheet.create({
-  typeFilter: {},
+  typeFilter: {
+    marginLeft: "auto",
+  },
+  typeFilterText: {
+    [`@media only screen and (max-width: 1400px)`]: {
+      display: "none",
+    },
+  },
+  overrideDownIconForTypeFilter: {
+    [`@media only screen and (max-width: 1400px)`]: {
+      display: "none",
+    },
+  },
+  sortIcon: {
+    marginLeft: 5,
+    fontSize: 18,
+    [`@media only screen and (min-width: 1400px)`]: {
+      display: "none",
+    },
+  },
   feedMenu: {
     display: "flex",
     alignItems: "center",
+    width: "100%",
   },
   timeScope: {
     display: "flex",
@@ -204,6 +233,9 @@ const styles = StyleSheet.create({
   iconWrapper: {
     marginRight: 7,
     fontSize: 20,
+    [`@media only screen and (max-width: 1400px)`]: {
+      fontSize: 14,
+    },
   },
   filtersAsTabs: {
     display: "flex",
@@ -235,8 +267,11 @@ const styles = StyleSheet.create({
       color: pillNavColors.primary.unfilledHoverTextColor,
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      padding: 16,
+      // padding: 16,
       fontSize: 16,
+    },
+    [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
+      fontSize: 14,
     },
   },
   tabTypePillSelected: {
@@ -256,10 +291,18 @@ const styles = StyleSheet.create({
     borderRadius: 40,
     fontWeight: 500,
     marginRight: 8,
-    padding: "9px 16px",
+    lineHeight: "22px",
+    padding: "8px 16px 7px 16px",
     ":hover": {
       borderRadius: 40,
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      // padding: 16,
+      fontSize: 16,
+    },
+    [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
+      fontSize: 14,
     },
   },
   dropdownButtonOverrideForFilter: {
@@ -274,6 +317,7 @@ const styles = StyleSheet.create({
   dropdownButtonOverrideForTypeFilter: {
     paddingRight: 0,
     backgroundColor: "unset",
+    fontWeight: 400,
     ":hover": {
       backgroundColor: "unset",
     },
