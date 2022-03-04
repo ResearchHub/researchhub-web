@@ -366,8 +366,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     display: "flex",
     justifyContent: "center",
+    margin: "20px 0px",
     width: "100%",
-    margin: "8px 0 16px",
   },
   initPlaceholder: {
     alignContent: "center",
