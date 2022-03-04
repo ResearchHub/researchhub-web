@@ -36,6 +36,7 @@ const UnifiedDocFeedMenu = ({
         value: "newest",
         label: "Newest",
         icon: icons.calendar,
+        disableScope: true,
       },
       {
         value: "top_rated",
