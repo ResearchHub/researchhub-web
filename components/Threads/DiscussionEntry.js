@@ -726,7 +726,7 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     alignItems: "flex-start",
     overflow: "visible",
-    borderRadius: 3,
+    borderRadius: 4,
     position: "relative",
     boxSizing: "border-box",
     backgroundColor: "#FFF",

@@ -17,15 +17,17 @@ const AuthorAvatar = (props) => {
 
   const {
     author,
+    boldName,
     border,
     disableLink,
     dropShadow,
+    fontSize = 16,
     showModeratorBadge,
     size = 30,
+    spacing,
     trueSize,
     twitterUrl,
     withAuthorName,
-    spacing,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -128,7 +130,15 @@ const AuthorAvatar = (props) => {
           >
             {avatarComponent}
             {Boolean(withAuthorName) ? (
-              <span style={{ marginLeft: spacing ?? 8, whiteSpace: "nowrap" }}>
+              <span
+                style={{
+                  color: colors.BLACK(),
+                  fontSize: fontSize,
+                  fontWeight: boldName ? 500 : 400,
+                  marginLeft: spacing ?? 8,
+                  whiteSpace: "nowrap",
+                }}
+              >
                 {fullName}
               </span>
             ) : null}

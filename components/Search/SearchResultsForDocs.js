@@ -9,9 +9,8 @@ import colors from "~/config/themes/colors";
 import { fetchURL } from "~/config/fetch";
 import FormSelect from "~/components/Form/FormSelect";
 import Badge from "~/components/Badge";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import EmptyFeedScreen from "~/components/Home/EmptyFeedScreen";
-import UserPostCard from "~/components/Author/Tabs/UserPostCard";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 import LoadMoreButton from "~/components/LoadMoreButton";
 import { fetchUserVote } from "~/components/UnifiedDocFeed/api/unifiedDocFetch";
 import { breakpoints } from "~/config/themes/screen";
@@ -403,14 +402,15 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           post.user_vote = userVotes[post.id];
 
           return (
-            <UserPostCard
+            <FeedCard
               {...post}
-              formattedDocType="post"
+              formattedDocType={"post"}
               key={post?.id || index}
-              user_vote={post?.user_vote}
+              singleCard
               styleVariation={
                 context === "best-results" ? "noBorderVariation" : null
               }
+              user_vote={post?.user_vote}
             />
           );
         })}
@@ -420,10 +420,13 @@ const SearchResultsForDocs = ({ apiResponse, entityType, context }) => {
           paper.user_vote = userVotes[paper.id];
 
           return (
-            <PaperEntryCard
-              paper={paper}
+            <FeedCard
+              {...paper}
+              formattedDocType={"paper"}
               index={index}
               key={paper.id}
+              paper={paper}
+              singleCard
               styleVariation={
                 context === "best-results" ? "noBorderVariation" : null
               }

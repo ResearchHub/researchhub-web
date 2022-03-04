@@ -1,13 +1,12 @@
-import { filterNull } from "~/config/utils/nullchecks";
-import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { StyleSheet } from "aphrodite";
-import HypothesisCard from "../document_cards/HypothesisCard";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
 import React, { ReactElement } from "react";
-import UserPostCard from "~/components/Author/Tabs/UserPostCard";
+import { StyleSheet } from "aphrodite";
+import { filterNull } from "~/config/utils/nullchecks";
+import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
 export type UnifiedCard = ReactElement<
-  typeof PaperEntryCard | typeof UserPostCard
+  typeof PaperEntryCard | typeof FeedCard
 > | null;
 
 export function getDocumentCard({
@@ -29,65 +28,32 @@ export function getDocumentCard({
       const shouldBlurDesktop =
         arrIndex > 1 && (!hasSubscribed || !isLoggedIn) && isOnMyHubsTab;
 
-      switch (formattedDocType) {
-        case "post":
-          return (
-            <UserPostCard
-              {...targetDoc}
-              formattedDocType={formattedDocType}
-              key={`${formattedDocType}-${docID}-${arrIndex}`}
-              style={[
-                styles.card,
-                styles.customUserPostCard,
-                shouldBlurMobile && styles.mobileBlurCard,
-                shouldBlurDesktop && styles.desktopBlurCard,
-              ]}
-              onBadgeClick={onBadgeClick}
-            />
-          );
-        case "hypothesis":
-          return (
-            <HypothesisCard
-              {...targetDoc}
-              formattedDocType={formattedDocType}
-              key={`${formattedDocType}-${docID}-${arrIndex}`}
-              style={[
-                styles.card,
-                styles.customUserPostCard,
-                shouldBlurMobile && styles.mobileBlurCard,
-                shouldBlurDesktop && styles.desktopBlurCard,
-              ]}
-              onBadgeClick={onBadgeClick}
-            />
-          );
-        case "paper":
-          return (
-            <PaperEntryCard
-              index={arrIndex}
-              key={`${formattedDocType}-${docID}-${arrIndex}`}
-              paper={uniDoc.documents}
-              onBadgeClick={onBadgeClick}
-              style={[
-                styles.card,
-                shouldBlurMobile && styles.mobileBlurCard,
-                shouldBlurDesktop && styles.desktopBlurCard,
-              ]}
-              vote={uniDoc.user_vote}
-              voteCallback={(arrIndex: number, currPaper: any): void => {
-                const [currUniDoc, newUniDocs] = [
-                  { ...uniDoc },
-                  [...unifiedDocumentData],
-                ];
-                currUniDoc.documents.user_vote = currPaper.user_vote;
-                currUniDoc.documents.score = currPaper.score;
-                newUniDocs[arrIndex] = currUniDoc;
-                setUnifiedDocuments(newUniDocs);
-              }}
-            />
-          );
-        default:
-          return null;
-      }
+      return (
+        <FeedCard
+          {...targetDoc}
+          formattedDocType={formattedDocType}
+          index={arrIndex}
+          key={`${formattedDocType}-${docID}-${arrIndex}`}
+          style={[
+            styles.card,
+            shouldBlurMobile && styles.mobileBlurCard,
+            shouldBlurDesktop && styles.desktopBlurCard,
+          ]}
+          onBadgeClick={onBadgeClick}
+          paper={uniDoc.documents}
+          vote={uniDoc.user_vote}
+          voteCallback={(arrIndex: number, currPaper: any): void => {
+            const [currUniDoc, newUniDocs] = [
+              { ...uniDoc },
+              [...unifiedDocumentData],
+            ];
+            currUniDoc.documents.user_vote = currPaper.user_vote;
+            currUniDoc.documents.score = currPaper.score;
+            newUniDocs[arrIndex] = currUniDoc;
+            setUnifiedDocuments(newUniDocs);
+          }}
+        />
+      );
     }
   );
 }
@@ -97,10 +63,6 @@ const styles = StyleSheet.create({
     ":first-child": {
       marginTop: 0,
     },
-  },
-  customUserPostCard: {
-    marginBottom: 12,
-    marginTop: 12,
   },
   desktopBlurCard: {
     "@media only screen and (min-width: 768px)": {

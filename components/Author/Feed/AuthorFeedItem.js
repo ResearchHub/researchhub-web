@@ -1,12 +1,9 @@
-import DiscussionEntry from "~/components/Threads/DiscussionEntry";
-import CommentEntry from "~/components/Threads/CommentEntry";
-import { StyleSheet, css } from "aphrodite";
-import PaperEntryCard from "~/components/Hubs/PaperEntryCard";
-import UserPostCard from "~/components/Author/Tabs/UserPostCard";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import DiscussionEntry from "~/components/Threads/DiscussionEntry";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 import Link from "next/link";
 import colors, { genericCardColors } from "~/config/themes/colors";
-import HypothesisCard from "~/components/UnifiedDocFeed/document_cards/HypothesisCard";
+import { StyleSheet, css } from "aphrodite";
 import { breakpoints } from "~/config/themes/screen";
 import { truncateText } from "~/config/utils/string";
 import {
@@ -34,29 +31,19 @@ const AuthorFeedItem = ({
     let html;
     switch (cardType) {
       case "paper":
-        html = (
-          <PaperEntryCard
-            paper={doc}
-            index={doc.id}
-            key={key}
-            voteCallback={paperVoteCallback}
-            index={itemIndex}
-          />
-        );
-        break;
       case "post":
-        html = (
-          <UserPostCard
-            {...doc}
-            formattedDocType="post"
-            key={key}
-            user_vote={doc?.user_vote}
-          />
-        );
-        break;
       case "hypothesis":
         html = (
-          <HypothesisCard {...doc} formattedDocType={"hypothesis"} key={key} />
+          <FeedCard
+            formattedDocType={cardType}
+            index={itemIndex}
+            key={key}
+            paper={doc}
+            singleCard
+            user_vote={doc?.user_vote}
+            voteCallback={paperVoteCallback}
+            {...doc}
+          />
         );
         break;
       case "comment":
@@ -241,7 +228,7 @@ var styles = StyleSheet.create({
     border: `1px solid ${genericCardColors.BORDER}`,
     marginTop: 12,
     marginBottom: 12,
-    borderRadius: 3,
+    borderRadius: 4,
     background: "white",
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       padding: "8px 8px 4px 8px",
