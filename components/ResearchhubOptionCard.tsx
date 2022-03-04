@@ -1,7 +1,8 @@
 // @ts-nocheck
+import CheckBox from "./Form/CheckBox";
+import TabNewFeature from "~/components/NewFeature/TabNewFeature";
 import { ReactElement } from "react";
 import { StyleSheet, css } from "aphrodite";
-import CheckBox from "./Form/CheckBox";
 
 export type ResearchhubOptionCardProps = {
   description: string;
@@ -9,6 +10,7 @@ export type ResearchhubOptionCardProps = {
   icon: any;
   isActive: boolean;
   isCheckboxSquare: boolean;
+  newFeature: boolean;
   onSelect: Function;
 };
 
@@ -18,6 +20,7 @@ export default function ResearchhubOptionCard({
   icon,
   isActive,
   isCheckboxSquare,
+  newFeature,
   onSelect,
 }: ResearchhubOptionCardProps): ReactElement<"div"> {
   return (
@@ -30,7 +33,10 @@ export default function ResearchhubOptionCard({
       </div>
       <div className={css(styles.mediaContainer)}>
         <div className={css(styles.mediaContent)}>
-          <div className={css(styles.mediaHeader)}> {header} </div>
+          <div className={css(styles.mediaHeader)}>
+            {header}
+            {newFeature && <TabNewFeature overrideStyles={styles.newFeature} />}
+          </div>
           <div className={css(styles.mediaDescription)}> {description} </div>
         </div>
         <div className={css(styles.mediaImgBox)}>{icon}</div>
@@ -108,5 +114,9 @@ const styles = StyleSheet.create({
   },
   contentAligner: {
     display: "flex",
+  },
+  newFeature: {
+    marginLeft: 10,
+    padding: "0px 6px",
   },
 });
