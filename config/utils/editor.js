@@ -287,6 +287,11 @@ export function convertToEditorValue(text) {
     return Plain.deserialize(text);
   }
 
+  if (text.hasOwnProperty("object")) {
+    const htmlStr = convertEditorValueToHtml(text);
+    return htmlStr;
+  }
+
   return undefined;
 }
 
