@@ -51,7 +51,7 @@ function UnifiedDocFeedContainer({
   );
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
-    scope: scopeOptions[1],
+    scope: scopeOptions[0],
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
@@ -169,8 +169,11 @@ function UnifiedDocFeedContainer({
 
   const onDocTypeFilterSelect = (selected) => {
     if (docTypeFilter !== selected) {
-      setPrevFetchParams(null); // forces prefetch to be triggered
+      // logical ordering
+      setUnifiedDocuments([]);
       setDocTypeFilter(selected);
+      setUnifiedDocsLoading(true);
+      setPrevFetchParams(null); // forces prefetch to be triggered
       setPaginationInfo({
         hasMore: false,
         isLoading: true,
@@ -218,10 +221,6 @@ function UnifiedDocFeedContainer({
     unifiedDocumentData: renderableUniDoc,
   });
 
-  /* we need time check here to ensure that payload formatting does not lead to 
-  UI rendering timing issues since document objects & formmatting can be heavy */
-  const areCardsReadyToBeRendered = !unifiedDocsLoading;
-
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       {!hasSubscribed ? (
@@ -254,7 +253,7 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      {!areCardsReadyToBeRendered ? (
+      {Boolean(unifiedDocsLoading) ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
