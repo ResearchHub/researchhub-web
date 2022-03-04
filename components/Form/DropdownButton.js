@@ -16,6 +16,7 @@ const DropdownButton = ({
   selected,
   positions = ["bottom", "top"],
   isOpen = false,
+  labelAsHtml = null,
   overridePopoverStyle = null,
   overrideOptionsStyle = null,
   overrideTargetStyle = null,
@@ -83,7 +84,7 @@ const DropdownButton = ({
           onClick={() => (isOpen ? onClose() : onClick())}
         >
           <div className={css(styles.targetBtn, customButtonClassName)}>
-            {label}
+            {labelAsHtml || label}
             <DownIcon
               withAnimation={false}
               overrideStyle={[styles.downIcon, overrideDownIconStyle]}
