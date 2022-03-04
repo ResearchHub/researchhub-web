@@ -298,14 +298,26 @@ function FeedCard(props: FeedCardProps) {
                 <span className={css(styles.metadataText)}>
                   {formattedDocType}
                 </span>
+                <div
+                  className={css(styles.upvoteMetadata, styles.metadataIcon)}
+                >
+                  {icons.upRegular}
+                </div>
+                <span
+                  className={css(styles.upvoteMetadata, styles.metadataText)}
+                >
+                  <span className={css(styles.boldText)}>{score}</span>
+                </span>
                 <div className={css(styles.metadataIcon)}>
                   {icons.commentRegular}
                 </div>
                 <span className={css(styles.metadataText)}>
-                  <span className={css(styles.commentCountText)}>
+                  <span className={css(styles.boldText)}>
                     {discussion_count}
                   </span>
-                  {` Comment${discussion_count === 1 ? "" : "s"}`}
+                  <span className={css(styles.hideTextMobile)}>{` Comment${
+                    discussion_count === 1 ? "" : "s"
+                  }`}</span>
                 </span>
                 <div className={css(styles.metadataIcon)}>{icons.date}</div>
                 <span className={css(styles.metadataText)}>
@@ -447,6 +459,17 @@ const styles = StyleSheet.create({
       fontSize: 13,
     },
   },
+  hideTextMobile: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "none",
+    },
+  },
+  upvoteMetadata: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      display: "unset",
+    },
+  },
   mobileVoteWidget: {
     marginBottom: 10,
   },
@@ -468,7 +491,6 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,
       fontWeight: 500,
-      padding: "3px 0px",
     },
   },
   preview: {
@@ -513,7 +535,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "column",
   },
-  commentCountText: {
+  boldText: {
     fontWeight: 700,
   },
   metadataIcon: {

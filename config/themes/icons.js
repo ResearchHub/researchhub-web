@@ -102,6 +102,7 @@ import {
   faTrashAlt,
 } from "@fortawesome/pro-light-svg-icons";
 import {
+  faArrowAltUp as faArrowAltUpRegular,
   faCalendarDay,
   faChevronDown,
   faChevronLeft,
@@ -399,6 +400,7 @@ const icons = {
   trophy: <FontAwesomeIcon icon={faTrophy} />,
   twitter: <FontAwesomeIcon icon={faTwitter} />,
   up: <FontAwesomeIcon icon={faArrowAltUp} />,
+  upRegular: <FontAwesomeIcon icon={faArrowAltUpRegular} />,
   upload: <FontAwesomeIcon icon={faUpload} />,
   user: <FontAwesomeIcon icon={faUserCircle} />,
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
