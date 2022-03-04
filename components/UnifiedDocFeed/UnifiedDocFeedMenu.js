@@ -16,6 +16,7 @@ const UnifiedDocFeedMenu = ({
   const router = useRouter();
   const [isScopeSelectOpen, setIsScopeSelectOpen] = useState(false);
   const [isFilterSelectOpen, setIsFilterSelectOpen] = useState(false);
+  const [isTypeFilterOpen, setIsTypeFilterOpen] = useState(false);
 
   const getTabs = () => {
     const tabs = [
@@ -48,6 +49,32 @@ const UnifiedDocFeedMenu = ({
     });
   };
 
+  const getTypeFilters = () => {
+    const types = [
+      {
+        value: undefined,
+        label: "All",
+      },
+      {
+        value: "paper",
+        label: "Papers",
+      },
+      {
+        value: "posts",
+        label: "Posts",
+      },
+      {
+        value: "hypothesis",
+        label: "Hypotheses",
+      },
+    ];
+
+    return types.map((t) => {
+      t.isSelected = t.value === router.query.type ? true : false;
+      return t;
+    });
+  };
+
   const renderFilterTab = (tabObj) => {
     return (
       <div
@@ -73,6 +100,8 @@ const UnifiedDocFeedMenu = ({
   };
 
   const tabs = getTabs();
+  const types = getTypeFilters();
+  const selectedType = types.find((t) => t.isSelected);
   const selectedTab = tabs.find((t) => t.isSelected);
   const filterOptsAsHtml = tabs
     .map((t) => renderFilterDropdownOpt(t))
@@ -133,11 +162,35 @@ const UnifiedDocFeedMenu = ({
           />
         )}
       </div>
+      <div className={css(styles.typeFilter)}>
+        <DropdownButton
+          opts={types}
+          label={selectedType.label}
+          selected={selectedType.value}
+          isOpen={isTypeFilterOpen}
+          onClick={() => setIsTypeFilterOpen(true)}
+          dropdownClassName="scopeSelect"
+          onClickOutside={() => {
+            setIsTypeFilterOpen(false);
+          }}
+          overrideTitleStyle={styles.customTitleStyle}
+          positions={["bottom", "right"]}
+          customButtonClassName={[
+            styles.dropdownButtonOverride,
+            styles.dropdownButtonOverrideForTypeFilter,
+          ]}
+          onSelect={(selectedType) => {
+            onDocTypeFilterSelect(selectedType);
+          }}
+          onClose={() => setIsTypeFilterOpen(false)}
+        />
+      </div>
     </div>
   );
 };
 
 const styles = StyleSheet.create({
+  typeFilter: {},
   feedMenu: {
     display: "flex",
     alignItems: "center",
@@ -216,6 +269,13 @@ const styles = StyleSheet.create({
     ":hover": {
       borderRadius: 40,
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    },
+  },
+  dropdownButtonOverrideForTypeFilter: {
+    paddingRight: 0,
+    backgroundColor: "unset",
+    ":hover": {
+      backgroundColor: "unset",
     },
   },
   overrideDownIconStyle: {
