@@ -4,7 +4,7 @@ import DesktopOnly from "~/components/DesktopOnly";
 import HubDropDown from "~/components/Hubs/HubDropDown";
 import LazyLoad from "react-lazyload";
 import Link from "next/link";
-import ResponsivePostVoteWidget from "./ResponsivePostVoteWidget";
+import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
 import Router from "next/router";
 import colors, { genericCardColors } from "~/config/themes/colors";
