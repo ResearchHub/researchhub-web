@@ -87,7 +87,7 @@ function UnifiedDocFeedContainer({
   /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
-  console.warn("hasMore: ", hasMore);
+
   const [prevFetchParams, setPrevFetchParams] =
     useState<UniDocFetchParams | null>(null);
 
@@ -111,7 +111,6 @@ function UnifiedDocFeedContainer({
         documents: nextDocs,
       }): void => {
         setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-        console.warn("updatedPage: ", updatedPage);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,

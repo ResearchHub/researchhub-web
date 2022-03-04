@@ -75,6 +75,7 @@ export const useEffectPrefetchNext = ({
   const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
     prevFetchParams ?? {};
   const { docTypeFilter, subFilters } = fetchParams ?? {};
+  
   useEffect((): void => {
     const readyToPrefetch =
       prevFetchParams === null ||
