@@ -215,10 +215,10 @@ function FeedCard(props: FeedCardProps) {
     <Ripples
       className={css(
         styles.feedCard,
-        styleVariation && styles[styleVariation],
         style && style,
         isHubsOpen && styles.overflow,
-        singleCard ? styles.fullBorder : styles.noBorder
+        singleCard ? styles.fullBorder : styles.noBorder,
+        styleVariation && styles[styleVariation]
       )}
       onClick={navigateToPage}
       key={`${formattedDocType}-${id}`}
@@ -379,6 +379,10 @@ const styles = StyleSheet.create({
     },
     ":last-child": {
       borderRadius: "0px 0px 4px 4px",
+    },
+    ":only-child": {
+      border: `1px solid ${genericCardColors.BORDER}`,
+      borderRadius: 4,
     },
   },
   fullBorder: {
