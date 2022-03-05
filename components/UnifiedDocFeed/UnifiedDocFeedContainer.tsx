@@ -84,6 +84,47 @@ function UnifiedDocFeedContainer({
     serverLoadedData,
   });
 
+
+  const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
+
+  /* Force update when hubs or docType changes. start from page 1 */
+  useEffectForceUpdate({
+    fetchParams: {
+      ...fetchParamsWithoutCallbacks,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: 1,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents,
+      }): void => {
+        setUnifiedDocsLoading(false);
+        setUnifiedDocuments(documents);
+        setPaginationInfo({
+          hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage: 1,
+          page: updatedPage,
+        });
+      },
+      page: 1 /* when force updating, start from page 1 */,
+    },
+    firstLoad,
+    setUnifiedDocsLoading,
+    updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
+  });
+
   /* NOTE (100): paginationInfo (BE) increments by 20 items. 
      localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
@@ -126,46 +167,6 @@ function UnifiedDocFeedContainer({
     prevFetchParams,
     setPrevFetchParams,
     shouldPrefetch,
-  });
-
-  const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
-
-  /* Force update when hubs or docType changes. start from page 1 */
-  useEffectForceUpdate({
-    fetchParams: {
-      ...fetchParamsWithoutCallbacks,
-      onError: (error: Error): void => {
-        emptyFncWithMsg(error);
-        setPaginationInfo({
-          hasMore,
-          isLoading: false,
-          isLoadingMore: false,
-          isServerLoaded: false,
-          localPage: 1,
-          page,
-        });
-      },
-      onSuccess: ({
-        hasMore: nextPageHasMore,
-        page: updatedPage,
-        documents,
-      }): void => {
-        setUnifiedDocsLoading(false);
-        setUnifiedDocuments(documents);
-        setPaginationInfo({
-          hasMore: nextPageHasMore,
-          isLoading: false,
-          isLoadingMore: false,
-          isServerLoaded: false,
-          localPage: 1,
-          page: updatedPage,
-        });
-      },
-      page: 1 /* when force updating, start from page 1 */,
-    },
-    firstLoad,
-    setUnifiedDocsLoading,
-    updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
   const onDocTypeFilterSelect = (selected) => {
@@ -211,6 +212,7 @@ function UnifiedDocFeedContainer({
       }),
     [hubName, feed, subFilters, isHomePage]
   );
+
   console.warn("unifiedDocs: ", unifiedDocuments);
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
