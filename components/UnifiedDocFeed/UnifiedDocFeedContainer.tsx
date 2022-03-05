@@ -84,7 +84,8 @@ function UnifiedDocFeedContainer({
     serverLoadedData,
   });
 
-  /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
+     localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
   const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
 
@@ -210,7 +211,7 @@ function UnifiedDocFeedContainer({
       }),
     [hubName, feed, subFilters, isHomePage]
   );
-
+  console.warn("unifiedDocs: ", unifiedDocuments);
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     hasSubscribed,
