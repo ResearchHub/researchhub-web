@@ -84,7 +84,6 @@ function UnifiedDocFeedContainer({
     serverLoadedData,
   });
 
-
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
 
   /* Force update when hubs or docType changes. start from page 1 */
@@ -109,6 +108,7 @@ function UnifiedDocFeedContainer({
       }): void => {
         setUnifiedDocsLoading(false);
         setUnifiedDocuments(documents);
+        console.warn("forced: ", documents);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,
@@ -128,7 +128,7 @@ function UnifiedDocFeedContainer({
   /* NOTE (100): paginationInfo (BE) increments by 20 items. 
      localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
+  const shouldPrefetch = page * 2 - 1 === localPage && hasMore && !unifiedDocsLoading
 
   const [prevFetchParams, setPrevFetchParams] =
     useState<UniDocFetchParams | null>(null);
@@ -153,6 +153,7 @@ function UnifiedDocFeedContainer({
         documents: nextDocs,
       }): void => {
         setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+        console.warn("pre: ", [...unifiedDocuments, ...nextDocs]);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,
@@ -175,7 +176,7 @@ function UnifiedDocFeedContainer({
       setUnifiedDocuments([]);
       setDocTypeFilter(selected);
       setUnifiedDocsLoading(true);
-      setPrevFetchParams(null); // forces prefetch to be triggered
+      // setPrevFetchParams(null); // forces prefetch to be triggered
       setPaginationInfo({
         hasMore: false,
         isLoading: true,
@@ -213,7 +214,6 @@ function UnifiedDocFeedContainer({
     [hubName, feed, subFilters, isHomePage]
   );
 
-  console.warn("unifiedDocs: ", unifiedDocuments);
   const renderableUniDoc = unifiedDocuments.slice(0, localPage * 10);
   const cards = getDocumentCard({
     hasSubscribed,
