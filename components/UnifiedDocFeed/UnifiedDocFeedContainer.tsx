@@ -108,7 +108,6 @@ function UnifiedDocFeedContainer({
       }): void => {
         setUnifiedDocsLoading(false);
         setUnifiedDocuments(documents);
-        console.warn("forced: ", documents);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,
@@ -158,7 +157,6 @@ function UnifiedDocFeedContainer({
         documents: nextDocs,
       }): void => {
         setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-        console.warn("pre: ", [...unifiedDocuments, ...nextDocs]);
         setIsPrefetching(false);
         setPaginationInfo({
           hasMore: nextPageHasMore,
