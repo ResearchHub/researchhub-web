@@ -253,9 +253,11 @@ function UnifiedDocFeedContainer({
             subFilters={subFilters}
             onDocTypeFilterSelect={onDocTypeFilterSelect}
             onSubFilterSelect={(filterBy) => {
+              setPrevFetchParams(null); // forces prefetch to be triggered
               setSubFilters({ filterBy, scope: subFilters.scope });
             }}
             onScopeSelect={(scope) => {
+              setPrevFetchParams(null); // forces prefetch to be triggered
               setSubFilters({ filterBy: subFilters.filterBy, scope });
             }}
           />
