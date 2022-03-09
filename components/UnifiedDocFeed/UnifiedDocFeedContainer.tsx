@@ -125,13 +125,18 @@ function UnifiedDocFeedContainer({
     updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
-  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
-     localPage is used to increment by 10 items for UI optimization */
   const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const shouldPrefetch = page * 2 - 1 === localPage && hasMore && !unifiedDocsLoading
-
   const [prevFetchParams, setPrevFetchParams] =
     useState<UniDocFetchParams | null>(null);
+  const [isPrefetching, setIsPrefetching] = useState<boolean>(false);
+
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
+     localPage is used to increment by 10 items for UI optimization */
+  const shouldPrefetch =
+    page * 2 - 1 === localPage - 1 &&
+    hasMore &&
+    !unifiedDocsLoading &&
+    !isPrefetching;
 
   useEffectPrefetchNext({
     fetchParams: {
@@ -154,6 +159,7 @@ function UnifiedDocFeedContainer({
       }): void => {
         setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
         console.warn("pre: ", [...unifiedDocuments, ...nextDocs]);
+        setIsPrefetch(false);
         setPaginationInfo({
           hasMore: nextPageHasMore,
           isLoading: false,
@@ -167,6 +173,7 @@ function UnifiedDocFeedContainer({
     },
     prevFetchParams,
     setPrevFetchParams,
+    setIsPrefetching,
     shouldPrefetch,
   });
 
@@ -176,7 +183,7 @@ function UnifiedDocFeedContainer({
       setUnifiedDocuments([]);
       setDocTypeFilter(selected);
       setUnifiedDocsLoading(true);
-      // setPrevFetchParams(null); // forces prefetch to be triggered
+      setPrevFetchParams(null); // forces prefetch to be triggered
       setPaginationInfo({
         hasMore: false,
         isLoading: true,
