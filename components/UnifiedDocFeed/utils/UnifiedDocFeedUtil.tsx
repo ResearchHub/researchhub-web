@@ -1,8 +1,9 @@
-import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { ID } from "~/config/types/root_types";
+import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
 import { useEffect } from "react";
+import { useState } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
 
 export type UniDocFetchParams = {
@@ -62,28 +63,43 @@ export const useEffectUpdateStatesOnServerChanges = ({
 
 export const useEffectPrefetchNext = ({
   fetchParams,
+  prevFetchParams,
+  setPrevFetchParams,
+  setIsPrefetching,
   shouldPrefetch,
 }: {
   fetchParams: UniDocFetchParams;
+  prevFetchParams: UniDocFetchParams | null;
+  setPrevFetchParams: any;
+  setIsPrefetching: (flag: boolean) => void;
   shouldPrefetch: Boolean;
 }): void => {
-  let prevFetchParams: UniDocFetchParams | null = null;
+  const {
+    docTypeFilter: prevDocTypeFilter,
+    subFilters: prevSubFilters,
+    page: prevPage,
+  } = prevFetchParams ?? {};
+  const { docTypeFilter, subFilters, page } = fetchParams ?? {};
+
   useEffect((): void => {
-    // comparing "memoized" filters to avoid unwanted prefetch
-    const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
-      prevFetchParams ?? {};
-    const { docTypeFilter, subFilters } = fetchParams ?? {};
     const readyToPrefetch =
       shouldPrefetch &&
-      prevDocTypeFilter === docTypeFilter &&
-      prevSubFilters === subFilters;
+      prevPage !== page &&
+      (prevFetchParams === null ||
+        (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
 
     if (readyToPrefetch) {
+      setIsPrefetching(true);
       fetchUnifiedDocs(fetchParams);
-      prevFetchParams = fetchParams;
+      setPrevFetchParams(fetchParams);
     }
-    
-  }, [shouldPrefetch, fetchParams]);
+  }, [
+    shouldPrefetch,
+    prevDocTypeFilter,
+    prevSubFilters,
+    docTypeFilter,
+    subFilters,
+  ]);
 };
 
 export const useEffectForceUpdate = ({
@@ -106,3 +122,15 @@ export const useEffectForceUpdate = ({
     }
   }, [...updateOn]);
 };
+
+const useEffectHandleFetch = ({
+  fetchParams,
+  updateOn,
+  setUnifiedDocsLoading,
+  firstLoad,
+}: {
+  fetchParams: UniDocFetchParams;
+  updateOn: any[];
+  setUnifiedDocsLoading: any;
+  firstLoad: any;
+}): void => {};
