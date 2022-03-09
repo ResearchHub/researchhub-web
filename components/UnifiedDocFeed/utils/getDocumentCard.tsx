@@ -1,8 +1,7 @@
+import FeedCard from "~/components/Author/Tabs/FeedCard";
+import { ReactElement } from "react";
 import { filterNull } from "~/config/utils/nullchecks";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { ReactElement } from "react";
-import { StyleSheet } from "aphrodite";
-import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
@@ -31,11 +30,6 @@ export function getDocumentCard({
           formattedDocType={formattedDocType}
           index={arrIndex}
           key={`${formattedDocType}-${docID}-${arrIndex}`}
-          style={[
-            styles.card,
-            shouldBlurMobile && styles.mobileBlurCard,
-            shouldBlurDesktop && styles.desktopBlurCard,
-          ]}
           onBadgeClick={onBadgeClick}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}
@@ -54,21 +48,3 @@ export function getDocumentCard({
     }
   );
 }
-
-const styles = StyleSheet.create({
-  card: {
-    ":first-child": {
-      marginTop: 0,
-    },
-  },
-  desktopBlurCard: {
-    "@media only screen and (min-width: 768px)": {
-      display: "none",
-    },
-  },
-  mobileBlurCard: {
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-  },
-});
