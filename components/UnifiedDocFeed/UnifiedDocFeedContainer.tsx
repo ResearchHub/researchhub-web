@@ -11,6 +11,7 @@ import {
   getFilterFromRouter,
   getPaginationInfoFromServerLoaded,
   PaginationInfo,
+  UniDocFetchParams,
   useEffectForceUpdate,
   useEffectPrefetchNext,
   useEffectUpdateStatesOnServerChanges,
@@ -50,7 +51,7 @@ function UnifiedDocFeedContainer({
   );
   const [subFilters, setSubFilters] = useState({
     filterBy: filterOptions[0],
-    scope: scopeOptions[1],
+    scope: scopeOptions[0],
   });
 
   const [paginationInfo, setPaginationInfo] = useState<PaginationInfo>(
@@ -81,43 +82,6 @@ function UnifiedDocFeedContainer({
     setPaginationInfo,
     routePath: routerPathName,
     serverLoadedData,
-  });
-
-  /* NOTE (100): paginationInfo (BE) increments by 20 items. localPage is used to increment by 10 items for UI optimization */
-  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const shouldPrefetch = page * 2 - 1 === localPage && hasMore;
-  useEffectPrefetchNext({
-    fetchParams: {
-      ...fetchParamsWithoutCallbacks,
-      onError: (error: Error): void => {
-        emptyFncWithMsg(error);
-        setPaginationInfo({
-          hasMore,
-          isLoading: false,
-          isLoadingMore: false,
-          isServerLoaded: false,
-          localPage,
-          page,
-        });
-      },
-      onSuccess: ({
-        hasMore: nextPageHasMore,
-        page: updatedPage,
-        documents: nextDocs,
-      }): void => {
-        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-        setPaginationInfo({
-          hasMore: nextPageHasMore,
-          isLoading: false,
-          isLoadingMore: false,
-          isServerLoaded: false,
-          localPage,
-          page: updatedPage,
-        });
-      },
-      page: page + 1,
-    },
-    shouldPrefetch,
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);
@@ -160,9 +124,64 @@ function UnifiedDocFeedContainer({
     updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
+  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
+  const [prevFetchParams, setPrevFetchParams] =
+    useState<UniDocFetchParams | null>(null);
+  const [isPrefetching, setIsPrefetching] = useState<boolean>(false);
+
+  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
+     localPage is used to increment by 10 items for UI optimization */
+  const shouldPrefetch =
+    page * 2 - 1 === localPage &&
+    hasMore &&
+    !unifiedDocsLoading &&
+    !isPrefetching;
+
+  useEffectPrefetchNext({
+    fetchParams: {
+      ...fetchParamsWithoutCallbacks,
+      onError: (error: Error): void => {
+        emptyFncWithMsg(error);
+        setPaginationInfo({
+          hasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage,
+          page,
+        });
+      },
+      onSuccess: ({
+        hasMore: nextPageHasMore,
+        page: updatedPage,
+        documents: nextDocs,
+      }): void => {
+        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+        setIsPrefetching(false);
+        setPaginationInfo({
+          hasMore: nextPageHasMore,
+          isLoading: false,
+          isLoadingMore: false,
+          isServerLoaded: false,
+          localPage,
+          page: updatedPage,
+        });
+      },
+      page: page + 1,
+    },
+    prevFetchParams,
+    setPrevFetchParams,
+    setIsPrefetching,
+    shouldPrefetch,
+  });
+
   const onDocTypeFilterSelect = (selected) => {
     if (docTypeFilter !== selected) {
+      // logical ordering
+      setUnifiedDocuments([]);
       setDocTypeFilter(selected);
+      setUnifiedDocsLoading(true);
+      setPrevFetchParams(null); // forces prefetch to be triggered
       setPaginationInfo({
         hasMore: false,
         isLoading: true,
@@ -210,10 +229,6 @@ function UnifiedDocFeedContainer({
     unifiedDocumentData: renderableUniDoc,
   });
 
-  /* we need time check here to ensure that payload formatting does not lead to 
-  UI rendering timing issues since document objects & formmatting can be heavy */
-  const areCardsReadyToBeRendered = !unifiedDocsLoading;
-
   return (
     <div className={css(styles.unifiedDocFeedContainer)}>
       {!hasSubscribed ? (
@@ -246,7 +261,7 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      {!areCardsReadyToBeRendered ? (
+      {Boolean(unifiedDocsLoading) ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />

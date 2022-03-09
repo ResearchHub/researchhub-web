@@ -143,7 +143,7 @@ export default function fetchUnifiedDocs({
   };
   fetchUnifiedDocFeed(PARAMS)
     .then(async (res) => {
-      const { count, next, results: fetchedUnifiedDocs } = res;
+      const { count, next, results: fetchedUnifiedDocs = [] } = res ?? {};
       const voteFormattedDocs = await fetchUserVote(
         filterNull(fetchedUnifiedDocs),
         isLoggedIn

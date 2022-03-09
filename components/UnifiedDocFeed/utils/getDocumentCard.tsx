@@ -1,8 +1,8 @@
-import FeedCard from "~/components/Author/Tabs/FeedCard";
-import React, { ReactElement } from "react";
-import { StyleSheet } from "aphrodite";
 import { filterNull } from "~/config/utils/nullchecks";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
+import { ReactElement } from "react";
+import { StyleSheet } from "aphrodite";
+import FeedCard from "~/components/Author/Tabs/FeedCard";
 
 export type UnifiedCard = ReactElement<typeof FeedCard> | null;
 
