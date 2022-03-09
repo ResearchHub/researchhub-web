@@ -87,7 +87,6 @@ export const useEffectPrefetchNext = ({
       prevPage !== page &&
       (prevFetchParams === null ||
         (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
-    console.warn("shouldPrefetch: ", shouldPrefetch);
 
     if (readyToPrefetch) {
       setIsPrefetching(true);
@@ -117,7 +116,6 @@ export const useEffectForceUpdate = ({
   useEffect((): void => {
     if (firstLoad?.current) {
       setUnifiedDocsLoading && setUnifiedDocsLoading(true);
-      console.warn("Force Update");
       fetchUnifiedDocs(fetchParams);
     } else if (firstLoad) {
       firstLoad.current = true;
