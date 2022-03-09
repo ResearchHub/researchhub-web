@@ -133,7 +133,7 @@ function UnifiedDocFeedContainer({
   /* NOTE (100): paginationInfo (BE) increments by 20 items. 
      localPage is used to increment by 10 items for UI optimization */
   const shouldPrefetch =
-    page * 2 - 1 === localPage - 1 &&
+    page * 2 - 1 === localPage &&
     hasMore &&
     !unifiedDocsLoading &&
     !isPrefetching;

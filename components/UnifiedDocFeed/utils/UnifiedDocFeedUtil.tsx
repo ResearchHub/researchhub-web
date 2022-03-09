@@ -74,13 +74,17 @@ export const useEffectPrefetchNext = ({
   setIsPrefetching: (flag: boolean) => void;
   shouldPrefetch: Boolean;
 }): void => {
-  const { docTypeFilter: prevDocTypeFilter, subFilters: prevSubFilters } =
-    prevFetchParams ?? {};
-  const { docTypeFilter, subFilters } = fetchParams ?? {};
+  const {
+    docTypeFilter: prevDocTypeFilter,
+    subFilters: prevSubFilters,
+    page: prevPage,
+  } = prevFetchParams ?? {};
+  const { docTypeFilter, subFilters, page } = fetchParams ?? {};
 
   useEffect((): void => {
     const readyToPrefetch =
       shouldPrefetch &&
+      prevPage !== page &&
       (prevFetchParams === null ||
         (prevDocTypeFilter == docTypeFilter && prevSubFilters == subFilters));
     console.warn("shouldPrefetch: ", shouldPrefetch);
