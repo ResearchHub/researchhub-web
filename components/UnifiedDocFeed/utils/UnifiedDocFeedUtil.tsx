@@ -3,7 +3,6 @@ import { isNullOrUndefined, nullthrows } from "~/config/utils/nullchecks";
 import { NextRouter } from "next/router";
 import { UnifiedDocFilters } from "../constants/UnifiedDocFilters";
 import { useEffect } from "react";
-import { useState } from "react";
 import fetchUnifiedDocs from "../api/unifiedDocFetch";
 
 export type UniDocFetchParams = {
@@ -122,15 +121,3 @@ export const useEffectForceUpdate = ({
     }
   }, [...updateOn]);
 };
-
-const useEffectHandleFetch = ({
-  fetchParams,
-  updateOn,
-  setUnifiedDocsLoading,
-  firstLoad,
-}: {
-  fetchParams: UniDocFetchParams;
-  updateOn: any[];
-  setUnifiedDocsLoading: any;
-  firstLoad: any;
-}): void => {};
