@@ -47,6 +47,14 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/permissions",
         }
       : null,
+    userAllowedOnPermissionsDash
+      ? {
+          icon: icons.coins,
+          id: "rsc",
+          name: "RSC",
+          pathname: "/moderators/rsc",
+        }
+      : null,
   ]);
 
   const listItems = SIDE_BAR_ITEMS.map(

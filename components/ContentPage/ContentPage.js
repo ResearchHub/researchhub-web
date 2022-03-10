@@ -24,6 +24,7 @@ class ContentPage extends Component {
 const styles = StyleSheet.create({
   content: {
     backgroundColor: "#FFF",
+    minHeight: "100vh",
   },
   column: {
     display: "flex",
