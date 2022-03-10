@@ -291,6 +291,10 @@ const routes = (BASE_URL) => {
       return `${BASE_URL}note/${token}/get_note_by_key/`;
     },
     SIGNOUT: BASE_URL + "auth/logout/",
+    SEND_RSC: () => {
+      const url = BASE_URL + "transactions/send_rsc/";
+      return url;
+    },
     SEARCH: ({
       filters,
       config,
