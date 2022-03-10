@@ -11,9 +11,7 @@ import {
   getFilterFromRouter,
   getPaginationInfoFromServerLoaded,
   PaginationInfo,
-  UniDocFetchParams,
   useEffectForceUpdate,
-  useEffectPrefetchNext,
   useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
 import { ReactElement, useMemo, useRef, useState } from "react";
@@ -27,6 +25,7 @@ import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import UnifiedDocFeedCardPlaceholder from "./UnifiedDocFeedCardPlaceholder";
 import UnifiedDocFeedMenu from "./UnifiedDocFeedMenu";
+import fetchUnifiedDocs from "./api/unifiedDocFetch";
 
 const FeedInfoCard = dynamic(() => import("./FeedInfoCard"), {
   ssr: false,
@@ -62,8 +61,7 @@ function UnifiedDocFeedContainer({
   );
   const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(false);
 
-  const { hasMore, isLoading, isLoadingMore, isServerLoaded, localPage, page } =
-    paginationInfo;
+  const { hasMore, isLoadingMore, localPage, page } = paginationInfo;
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
   const hubID = hub?.id ?? null;
   const fetchParamsWithoutCallbacks = {
@@ -124,56 +122,45 @@ function UnifiedDocFeedContainer({
     updateOn: [docTypeFilter, hubID, loggedIn, subFilters],
   });
 
-  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
-  const [prevFetchParams, setPrevFetchParams] =
-    useState<UniDocFetchParams | null>(null);
-  const [isPrefetching, setIsPrefetching] = useState<boolean>(false);
-
-  /* NOTE (100): paginationInfo (BE) increments by 20 items. 
-     localPage is used to increment by 10 items for UI optimization */
-  const shouldPrefetch =
-    page * 2 - 1 === localPage &&
-    hasMore &&
-    !unifiedDocsLoading &&
-    !isPrefetching;
-
-  useEffectPrefetchNext({
-    fetchParams: {
-      ...fetchParamsWithoutCallbacks,
-      onError: (error: Error): void => {
-        emptyFncWithMsg(error);
-        setPaginationInfo({
-          hasMore,
-          isLoading: false,
-          isLoadingMore: false,
-          isServerLoaded: false,
-          localPage,
-          page,
-        });
-      },
-      onSuccess: ({
-        hasMore: nextPageHasMore,
-        page: updatedPage,
-        documents: nextDocs,
-      }): void => {
-        setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
-        setIsPrefetching(false);
-        setPaginationInfo({
+  const loadMore = () => {
+    const nextLocalPage = localPage + 1;
+    setPaginationInfo({ ...paginationInfo, localPage: nextLocalPage });
+    if (nextLocalPage === page * 2 && hasMore) {
+      fetchUnifiedDocs({
+        ...fetchParamsWithoutCallbacks,
+        onError: (error: Error): void => {
+          emptyFncWithMsg(error);
+          setPaginationInfo({
+            hasMore,
+            isLoading: false,
+            isLoadingMore: false,
+            isServerLoaded: false,
+            localPage: nextLocalPage,
+            page,
+          });
+        },
+        onSuccess: ({
           hasMore: nextPageHasMore,
-          isLoading: false,
-          isLoadingMore: false,
-          isServerLoaded: false,
-          localPage,
           page: updatedPage,
-        });
-      },
-      page: page + 1,
-    },
-    prevFetchParams,
-    setPrevFetchParams,
-    setIsPrefetching,
-    shouldPrefetch,
-  });
+          documents: nextDocs,
+        }): void => {
+          setUnifiedDocsLoading(false);
+          setUnifiedDocuments([...unifiedDocuments, ...nextDocs]);
+          setPaginationInfo({
+            hasMore: nextPageHasMore,
+            isLoading: false,
+            isLoadingMore: false,
+            isServerLoaded: false,
+            localPage: nextLocalPage,
+            page: updatedPage,
+          });
+        },
+        page: page + 1,
+      });
+    }
+  };
+
+  const canShowLoadMoreButton = unifiedDocuments.length > localPage * 10;
 
   const onDocTypeFilterSelect = (selected) => {
     if (docTypeFilter !== selected) {
@@ -181,7 +168,6 @@ function UnifiedDocFeedContainer({
       setUnifiedDocuments([]);
       setDocTypeFilter(selected);
       setUnifiedDocsLoading(true);
-      setPrevFetchParams(null); // forces prefetch to be triggered
       setPaginationInfo({
         hasMore: false,
         isLoading: true,
@@ -252,14 +238,12 @@ function UnifiedDocFeedContainer({
           <UnifiedDocFeedMenu
             subFilters={subFilters}
             onDocTypeFilterSelect={onDocTypeFilterSelect}
-            onSubFilterSelect={(filterBy) => {
-              setPrevFetchParams(null); // forces prefetch to be triggered
-              setSubFilters({ filterBy, scope: subFilters.scope });
-            }}
-            onScopeSelect={(scope) => {
-              setPrevFetchParams(null); // forces prefetch to be triggered
-              setSubFilters({ filterBy: subFilters.filterBy, scope });
-            }}
+            onSubFilterSelect={(filterBy) =>
+              setSubFilters({ filterBy, scope: subFilters.scope })
+            }
+            onScopeSelect={(scope) =>
+              setSubFilters({ filterBy: subFilters.filterBy, scope })
+            }
           />
         </div>
       </div>
@@ -286,15 +270,7 @@ function UnifiedDocFeedContainer({
               color={colors.BLUE()}
             />
           ) : canShowLoadMoreButton ? (
-            <Ripples
-              className={css(styles.loadMoreButton)}
-              onClick={(): void =>
-                setPaginationInfo({
-                  ...paginationInfo,
-                  localPage: localPage + 1,
-                })
-              }
-            >
+            <Ripples className={css(styles.loadMoreButton)} onClick={loadMore}>
               {"Load More"}
             </Ripples>
           ) : null}
