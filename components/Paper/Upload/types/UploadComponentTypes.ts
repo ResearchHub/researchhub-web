@@ -16,6 +16,7 @@ export type FormErrorState = {
   year: boolean;
   month: boolean;
   hubs: boolean;
+  tags: boolean;
   dnd: boolean;
   author: boolean;
   tagline: boolean;
@@ -42,6 +43,7 @@ export type FormState = {
   doi: ID;
   file?: any; // most likely only used for create
   hubs: any[];
+  tags: any[];
   hypothesis_id?: ID;
   paper_title: string;
   paper_type: string;
@@ -66,6 +68,7 @@ export const defaultFormErrorState: FormErrorState = {
   year: false,
   month: false,
   hubs: false,
+  tags: false,
   dnd: false,
   author: false,
   tagline: false,
@@ -80,6 +83,7 @@ export const defaultFormState: FormState = {
   authors: [],
   doi: null,
   hubs: [],
+  tags: [],
   hypothesis_id: null,
   paper_title: "",
   paper_type: "REGULAR",

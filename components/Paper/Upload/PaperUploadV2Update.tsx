@@ -5,6 +5,8 @@ import { MessageActions } from "../../../redux/message";
 import { ModalActions } from "../../../redux/modals";
 import { PaperActions } from "../../../redux/paper";
 import { useEffectFetchSuggestedHubs } from "./api/useEffectGetSuggestedHubs";
+import { useEffectFetchSuggestedTags } from "./api/useEffectGetSuggestedTags";
+import { getSuggestedTags } from "./api/getSuggestedTags";
 import {
   defaultComponentState,
   defaultFormErrorState,
@@ -135,6 +137,7 @@ function PaperUploadV2Update({
     defaultFormErrorState
   );
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
+  const [suggestedTags, setSuggestedTags] = useState<any>([]);
   const currUserAuthorID = !isNullOrUndefined(authRedux.user.author_profile)
     ? authRedux.user.author_profile.id
     : null;
@@ -169,6 +172,26 @@ function PaperUploadV2Update({
     }
   };
 
+  const handleTagSelection = (_id: ID, selectedTags: any): void => {
+    if (isNullOrUndefined(selectedTags)) {
+      setFormState({ ...formState, tags: [] });
+      setFormErrors({ ...formErrors, tags: true });
+    } else {
+      setFormState({ ...formState, tags: selectedTags });
+      setFormErrors({ ...formErrors, tags: selectedTags.length < 1 });
+    }
+  };
+
+  const updateTagList = (value: string): void => {
+    getSuggestedTags({
+      onSuccess: (v) => {
+        setSuggestedTags(v)
+      },
+      onError: () => {},
+      searchString: value,
+    });
+  }
+
   const onFormSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     const isFormValid = getIsFormValid({
@@ -178,6 +201,7 @@ function PaperUploadV2Update({
     });
     if (isFormValid) {
       messageActions.showMessage({ load: true, show: true });
+      console.log(formState.tags)
       updateExistingPaper({
         onError: (respPayload: any): void => {
           // NOTE: calvinhlee - existing legacy logic
@@ -228,6 +252,7 @@ function PaperUploadV2Update({
   };
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  useEffectFetchSuggestedTags({ setSuggestedTags });
   useEffectInitAndParseToState({
     currUserAuthorID,
     messageActions,
@@ -242,6 +267,7 @@ function PaperUploadV2Update({
     authors: selectedAuthors = [],
     doi,
     hubs: selectedHubs,
+    tags: selectedTags,
     paper_title: paperTitle,
     published,
     title,
@@ -421,6 +447,24 @@ function PaperUploadV2Update({
             placeholder="Search Hubs"
             required
             value={selectedHubs}
+          />
+          <FormSelect
+            containerStyle={formGenericStyles.container}
+            error={formErrors.tags}
+            inputStyle={
+              (customStyles.input,
+              customStyles.capitalize)
+            }
+            id="tags"
+            label="Tags"
+            isMulti
+            labelStyle={formGenericStyles.labelStyle}
+            options={suggestedTags}
+            onChange={handleTagSelection}
+            onInputChange={updateTagList}
+            placeholder="Add tags"
+            required
+            value={selectedTags}
           />
           <span className={css(formGenericStyles.mobileDoi)}>
             <FormInput

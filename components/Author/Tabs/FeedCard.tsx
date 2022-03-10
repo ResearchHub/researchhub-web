@@ -56,6 +56,7 @@ export type FeedCardProps = {
   uploaded_by: any;
   uploaded_date: any;
   user: any;
+  tags: any[];
   user_vote: any;
   voteCallback: any;
 };
@@ -69,6 +70,7 @@ function FeedCard(props: FeedCardProps) {
     first_preview,
     formattedDocType,
     hubs,
+    tags,
     id,
     index,
     onBadgeClick,
@@ -284,6 +286,17 @@ function FeedCard(props: FeedCardProps) {
               <span className={css(styles.title)}>
                 {titleAsHtml ? titleAsHtml : title ? title : ""}
               </span>
+              <div className={css(styles.tagContainer)}>
+                {tags.map((tag, index) => (
+                  <div className={css(styles.tag, styles.firstTag)} key={index}>
+                    <Link href={`/search/all?q=${tag}`}>
+                      <a className={css(styles.tagLink)}>
+                        {`#${tag}`}
+                      </a>
+                    </Link>
+                  </div>
+                ))}
+              </div>
               <div
                 className={css(
                   styles.metadataContainer,
@@ -425,6 +438,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
   },
+  tagContainer: {
+    display: "block",
+    width: "100%",
+  },
   column: {
     display: "flex",
     flexDirection: "column",
@@ -541,6 +558,26 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginRight: 5,
   },
+  tag: {
+    display: "inline-block",
+    backgroundColor: "#E8EEFD",
+    color: "#4F53F6",
+    fontWeight: 600,  
+    padding: "6px 20px",
+    borderRadius: "18px",
+    margin: "0px 10px 10px 0px",
+  },
+  firstTag: {
+    marginLeft: 0,
+  },
+  tagLink: {
+    textDecoration: "none",
+    color: "inherit",
+    transition: "transform .2s",
+    ":hover": {
+      transform: "scale(1.5)"
+    }
+  }
 });
 
 const mapStateToProps = (state) => ({

@@ -36,6 +36,7 @@ export const paperPost = ({
   doi,
   file,
   hubs,
+  tags,
   hypothesis_id,
   paper_title,
   paper_type,
@@ -65,6 +66,7 @@ export const paperPost = ({
     hubs.forEach((hub) => {
       return formData.append("hubs", hub);
     });
+  tags && formData.append("tags", JSON.stringify(tags));
   doi && formData.append("doi", doi);
   // no boolean check for title because empty string is falsey in js.
   title && formData.append("title", title);

@@ -22,11 +22,12 @@ export async function updateExistingPaper({
       Coding practices like this must stop disregarding js-typing. 
       Referring to authors, hubs & published here.
   */
-  const { authors, published, hubs } = payload;
+  const { authors, published, hubs, tags } = payload;
   const formattedPayload: any = {
     ...payload,
     authors: (authors || []).map((author: any): ID => author.id),
     hubs: hubs.map((hub): ID => hub.id),
+    tags: tags.map((tag): ID => tag.key),
   };
 
   if (!isNullOrUndefined(published) && !isNullOrUndefined(published.year)) {

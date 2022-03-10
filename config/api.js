@@ -584,6 +584,20 @@ const routes = (BASE_URL) => {
       return url;
     },
 
+    TAG: ({ limit, search }) => {
+      let url = BASE_URL + `tag/?`;
+
+      if (limit) {
+        url += `limit=${limit}&`;
+      }
+
+      if (search) {
+        url += `search=${search}&`;
+      }
+
+      return url;
+    },
+
     HUB: ({ hubId, search, name, pageLimit, slug }) => {
       let url = BASE_URL + `hub/`;
 

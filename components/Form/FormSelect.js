@@ -62,6 +62,10 @@ class FormSelect extends Component {
     this.props.onChange && this.props.onChange(id, option);
   };
 
+  handleInputChange = (value) => {
+    this.props.onInputChange && this.props.onInputChange(value);
+  };
+
   render() {
     let {
       id,
@@ -193,6 +197,7 @@ class FormSelect extends Component {
           components={{ ...configuredComponents }}
           options={options}
           onChange={(option) => this.handleOnChange(id, option)}
+          onInputChange={(value) => this.handleInputChange(value)}
           styles={colorStyles}
           placeholder={placeholder}
           value={value}
