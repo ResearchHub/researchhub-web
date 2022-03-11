@@ -173,7 +173,9 @@ class SubscribedHubList extends Component {
             ready={this.state.ready}
             customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={5} />}
           >
-            {this.renderHubEntry()}
+            <div className={css(styles.hubsListContainer)}>
+              {this.renderHubEntry()}
+            </div>
           </ReactPlaceholder>
           {this.renderActionBar()}
         </div>
@@ -203,14 +205,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   hubsListContainer: {
-    height: "100%",
-    width: "100%",
+    boxShadow: "inset 0px 11px 8px -10px #ddd, inset 0px -11px 8px -10px #ddd",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    textAlign: "left",
-    cursor: "default",
+    width: "100%",
   },
   listLabel: {
     textTransform: "uppercase",
@@ -251,8 +249,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
-    borderRadius: 3,
-    borderBottom: "1px solid #F0F0F0",
     borderLeft: "3px solid #FFF",
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
@@ -331,10 +327,8 @@ const styles = StyleSheet.create({
     textTransform: "capitalize",
     fontSize: 16,
     padding: "10px 20px",
-    borderTop: "1px solid #F0F0F0",
     boxSizing: "border-box",
     width: "100%",
-    cursor: "pointer",
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
       textDecoration: "underline",

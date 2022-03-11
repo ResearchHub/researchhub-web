@@ -114,10 +114,7 @@ class HubsList extends Component {
       const { name, id, hub_image } = hub;
       return (
         <Ripples
-          className={css(
-            styles.hubEntry,
-            this.isCurrentHub(this.props.current, id) && styles.current
-          )}
+          className={css(styles.hubEntry)}
           onClick={this.props.onHubSelect}
           key={`${id}-${i}`}
         >
@@ -131,7 +128,12 @@ class HubsList extends Component {
             }}
             as={`/hubs/${encodeURIComponent(hub.slug)}`}
           >
-            <a className={css(styles.hubLink)}>
+            <a
+              className={css(
+                styles.hubLink,
+                this.isCurrentHub(this.props.current, id) && styles.current
+              )}
+            >
               <img
                 className={css(styles.hubImage)}
                 src={
@@ -229,25 +231,6 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
-    borderRadius: 3,
-    borderBottom: "1px solid #F0F0F0",
-    borderLeft: "3px solid #FFF",
-    ":hover": {
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-      backgroundColor: "#FAFAFA",
-    },
-    ":active": {
-      color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    },
-    ":focus": {
-      color: colors.NEW_BLUE(),
-      background:
-        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
-      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-    },
   },
   hubImage: {
     height: 35,
@@ -268,6 +251,23 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     padding: "10px 20px",
+    borderLeft: "3px solid #FFF",
+    ":hover": {
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+      backgroundColor: "#FAFAFA",
+    },
+    ":active": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
+    ":focus": {
+      color: colors.NEW_BLUE(),
+      background:
+        "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
+      borderLeft: `3px solid ${colors.NEW_BLUE()}`,
+    },
   },
   current: {
     color: colors.NEW_BLUE(),
@@ -305,7 +305,6 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
     },
   },
 });

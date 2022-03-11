@@ -6,7 +6,6 @@ import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
-import Router from "next/router";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 import icons from "~/config/themes/icons";
@@ -47,8 +46,6 @@ export type FeedCardProps = {
   score: number;
   singleCard: boolean;
   slug: string;
-  style: StyleSheet;
-  styleVariation: string;
   title: string;
   titleAsHtml: any;
   unified_document: any;
@@ -81,8 +78,6 @@ function FeedCard(props: FeedCardProps) {
     score: initialScore,
     singleCard,
     slug,
-    style,
-    styleVariation,
     title,
     titleAsHtml, // In some contexts we want to wrap the title/renderable_text with html. e.g. rendering search highlights.
     unified_document: unifiedDocument,
@@ -187,22 +182,6 @@ function FeedCard(props: FeedCardProps) {
     }
   }
 
-  const navigateToPage = (e) => {
-    const url = `/${formattedDocType}/${id}/${slug}`;
-    if (e.metaKey || e.shiftKey) {
-      window.open(url, "_blank");
-    } else {
-      Router.push(url);
-    }
-  };
-
-  const openPaperPDFModal = (e) => {
-    e && e.preventDefault();
-    e && e.stopPropagation();
-    setIsPreviewing(true);
-    props.openPaperPDFModal(true);
-  };
-
   const documentIcons = {
     paper: icons.paperRegular,
     post: icons.penSquare,
@@ -212,170 +191,186 @@ function FeedCard(props: FeedCardProps) {
   return (
     <Ripples
       className={css(
-        styles.feedCard,
-        style && style,
-        isHubsOpen && styles.overflow,
+        styles.ripples,
         singleCard ? styles.fullBorder : styles.noBorder,
-        styleVariation && styles[styleVariation]
+        isHubsOpen && styles.overflow
       )}
-      onClick={navigateToPage}
-      key={`${formattedDocType}-${id}`}
       data-test={isDevEnv() ? `document-${id}` : undefined}
+      key={`${formattedDocType}-${id}`}
     >
-      <DesktopOnly>
-        <div className={css(styles.leftSection)}>
-          <ResponsivePostVoteWidget
-            onDesktop
-            onDownvote={
-              formattedDocType === "paper"
-                ? () => onPaperVote(DOWNVOTE)
-                : createVoteHandler(DOWNVOTE)
-            }
-            onUpvote={
-              formattedDocType === "paper"
-                ? () => onPaperVote(UPVOTE)
-                : createVoteHandler(UPVOTE)
-            }
-            score={score}
-            voteState={voteState}
-          />
-        </div>
-      </DesktopOnly>
-      <div className={css(styles.container)}>
-        <div>
-          <div className={css(styles.rowContainer)}>
-            <div className={css(styles.postCreatedBy)}>
-              <LazyLoad offset={100} once>
-                <AuthorAvatar
-                  author={
-                    created_by?.author_profile || uploaded_by?.author_profile
-                  }
-                  boldName
-                  border="2px solid #F1F1F1"
-                  fontSize={15}
-                  size={20}
-                  spacing={5}
-                  withAuthorName
-                />
-              </LazyLoad>
-              <div className={css(styles.textLabel)}>in</div>
-              {hubs.slice(0, 1).map((tag, index) => (
-                <Link href={`/hubs/${tag.slug}`}>
-                  <a
-                    className={css(styles.hubLabel)}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                    }}
-                  >{`${tag.name}${hubs.length > 1 ? "," : ""}`}</a>
-                </Link>
-              ))}
-              {hubs.length > 1 && (
-                <HubDropDown
-                  hubs={hubs}
-                  labelStyle={styles.hubLabel}
-                  isOpen={isHubsOpen}
-                  setIsOpen={setIsHubsOpen}
-                />
-              )}
+      <Link href={`/${formattedDocType}/${id}/${slug}`}>
+        <a className={css(styles.feedCard)}>
+          <DesktopOnly>
+            <div className={css(styles.leftSection)}>
+              <ResponsivePostVoteWidget
+                onDesktop
+                onDownvote={
+                  formattedDocType === "paper"
+                    ? () => onPaperVote(DOWNVOTE)
+                    : createVoteHandler(DOWNVOTE)
+                }
+                onUpvote={
+                  formattedDocType === "paper"
+                    ? () => onPaperVote(UPVOTE)
+                    : createVoteHandler(UPVOTE)
+                }
+                score={score}
+                voteState={voteState}
+              />
             </div>
-          </div>
-          <div className={css(styles.rowContainer)}>
-            <div className={css(styles.column, styles.metaData)}>
-              <span className={css(styles.title)}>
-                {titleAsHtml ? titleAsHtml : title ? title : ""}
-              </span>
-              <div
-                className={css(
-                  styles.metadataContainer,
-                  styles.publishContainer
-                )}
-              >
-                <div className={css(styles.metadataIcon)}>
-                  {documentIcons[formattedDocType!]}
+          </DesktopOnly>
+          <div className={css(styles.container)}>
+            <div>
+              <div className={css(styles.rowContainer)}>
+                <div className={css(styles.postCreatedBy)}>
+                  <LazyLoad offset={100} once>
+                    <AuthorAvatar
+                      author={
+                        created_by?.author_profile ||
+                        uploaded_by?.author_profile
+                      }
+                      boldName
+                      border="2px solid #F1F1F1"
+                      fontSize={15}
+                      size={20}
+                      spacing={5}
+                      withAuthorName
+                    />
+                  </LazyLoad>
+                  <div className={css(styles.textLabel)}>in</div>
+                  {hubs.slice(0, 1).map((tag, index) => (
+                    <Link href={`/hubs/${tag.slug}`}>
+                      <a
+                        className={css(styles.hubLabel)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                        }}
+                      >{`${tag.name}${hubs.length > 1 ? "," : ""}`}</a>
+                    </Link>
+                  ))}
+                  {hubs.length > 1 && (
+                    <HubDropDown
+                      hubs={hubs}
+                      labelStyle={styles.hubLabel}
+                      isOpen={isHubsOpen}
+                      setIsOpen={setIsHubsOpen}
+                    />
+                  )}
                 </div>
-                <span className={css(styles.metadataText)}>
-                  {formattedDocType}
-                </span>
-                <div
-                  className={css(styles.upvoteMetadata, styles.metadataIcon)}
-                >
-                  {icons.upRegular}
-                </div>
-                <span
-                  className={css(styles.upvoteMetadata, styles.metadataText)}
-                >
-                  <span className={css(styles.boldText)}>{score}</span>
-                </span>
-                <div className={css(styles.metadataIcon)}>
-                  {icons.commentRegular}
-                </div>
-                <span className={css(styles.metadataText)}>
-                  <span className={css(styles.boldText)}>
-                    {discussion_count}
+              </div>
+              <div className={css(styles.rowContainer)}>
+                <div className={css(styles.column, styles.metaData)}>
+                  <span className={css(styles.title)}>
+                    {titleAsHtml ? titleAsHtml : title ? title : ""}
                   </span>
-                  <span className={css(styles.hideTextMobile)}>{` Comment${
-                    discussion_count === 1 ? "" : "s"
-                  }`}</span>
-                </span>
-                <div className={css(styles.metadataIcon)}>{icons.date}</div>
-                <span className={css(styles.metadataText)}>
-                  {formatDate(transformDate(created_date || uploaded_date))}
-                </span>
+                  <div
+                    className={css(
+                      styles.metadataContainer,
+                      styles.publishContainer
+                    )}
+                  >
+                    <div className={css(styles.metadataIcon)}>
+                      {documentIcons[formattedDocType!]}
+                    </div>
+                    <span className={css(styles.metadataText)}>
+                      {formattedDocType}
+                    </span>
+                    <div
+                      className={css(
+                        styles.upvoteMetadata,
+                        styles.metadataIcon
+                      )}
+                    >
+                      {icons.upRegular}
+                    </div>
+                    <span
+                      className={css(
+                        styles.upvoteMetadata,
+                        styles.metadataText
+                      )}
+                    >
+                      <span className={css(styles.boldText)}>{score}</span>
+                    </span>
+                    <div className={css(styles.metadataIcon)}>
+                      {icons.commentRegular}
+                    </div>
+                    <span className={css(styles.metadataText)}>
+                      <span className={css(styles.boldText)}>
+                        {discussion_count}
+                      </span>
+                      <span className={css(styles.hideTextMobile)}>{` Comment${
+                        discussion_count === 1 ? "" : "s"
+                      }`}</span>
+                    </span>
+                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
+                    <span className={css(styles.metadataText)}>
+                      {formatDate(transformDate(created_date || uploaded_date))}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-        {Boolean(previewImg) && (
-          <div className={css(styles.column)}>
-            <div className={css(styles.preview, styles.imagePreview)}>
-              <LazyLoad offset={100} once>
-                <img src={previewImg} className={css(styles.image)} />
-              </LazyLoad>
-            </div>
-          </div>
-        )}
-        {previews.length > 0 && (
-          <div
-            className={css(styles.column)}
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-          >
-            <LazyLoad offset={100} once>
-              {isPreviewing && (
-                <PaperPDFModal
-                  paper={paper}
-                  onClose={() => setIsPreviewing(false)}
-                />
-              )}
-              <div className={css(styles.preview, styles.paperPreview)}>
-                <img
-                  src={previews[0].file}
-                  className={css(styles.image)}
-                  key={`preview_${previews[0].file}`}
-                  alt={`Paper Preview Page 1`}
-                  onClick={openPaperPDFModal}
-                />
+            {Boolean(previewImg) && (
+              <div className={css(styles.column)}>
+                <div className={css(styles.preview, styles.imagePreview)}>
+                  <LazyLoad offset={100} once>
+                    <img src={previewImg} className={css(styles.image)} />
+                  </LazyLoad>
+                </div>
               </div>
-            </LazyLoad>
+            )}
+            {previews.length > 0 && (
+              <div
+                className={css(styles.column)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <LazyLoad offset={100} once>
+                  {isPreviewing && (
+                    <PaperPDFModal
+                      paper={paper}
+                      onClose={() => setIsPreviewing(false)}
+                    />
+                  )}
+                  <div className={css(styles.preview, styles.paperPreview)}>
+                    <img
+                      src={previews[0].file}
+                      className={css(styles.image)}
+                      key={`preview_${previews[0].file}`}
+                      alt={`Paper Preview Page 1`}
+                      onClick={(e) => {
+                        e && e.preventDefault();
+                        e && e.stopPropagation();
+                        setIsPreviewing(true);
+                        props.openPaperPDFModal(true);
+                      }}
+                    />
+                  </div>
+                </LazyLoad>
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </a>
+      </Link>
     </Ripples>
   );
 }
 
 const styles = StyleSheet.create({
+  ripples: {
+    display: "flex",
+  },
   feedCard: {
     alignItems: "flex-start",
     backgroundColor: "#FFF",
     borderLeft: `1px solid ${genericCardColors.BORDER}`,
     borderRight: `1px solid ${genericCardColors.BORDER}`,
-    boxSizing: "border-box",
     cursor: "pointer",
     display: "flex",
-    justifyContent: "flex-start",
     padding: 15,
+    textDecoration: "none",
+    width: "100%",
     ":hover": {
       backgroundColor: "#FAFAFA",
     },

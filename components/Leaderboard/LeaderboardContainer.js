@@ -156,7 +156,6 @@ const styles = StyleSheet.create({
     paddingLeft: 25,
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
     },
   },
 });
