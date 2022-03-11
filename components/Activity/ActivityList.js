@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     ":hover": {
       color: "rgba(78, 83, 255, .5)",
-      textDecoration: "underline",
     },
   },
 });
