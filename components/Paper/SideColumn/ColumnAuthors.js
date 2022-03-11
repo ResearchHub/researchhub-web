@@ -163,7 +163,7 @@ class ColumnAuthors extends Component {
                   className={css(styles.viewMoreButton)}
                   onClick={this.nextPage}
                 >
-                  View more
+                  View More
                 </div>
               )}
             </div>
@@ -220,7 +220,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     boxSizing: "border-box",
-    margin: "8px 0 0",
     padding: "10px 20px",
     width: "100%",
   },
@@ -232,19 +231,21 @@ const styles = StyleSheet.create({
   },
   claimButton: {
     alignItems: "center",
-    backgroundColor: colors.NEW_BLUE(1),
+    backgroundColor: colors.BLUE(),
     border: 0,
     borderRadius: 4,
     color: "#fff",
     cursor: "pointer",
     display: "flex",
     fontSize: 14,
-    // height: 24,
     justifyContent: "center",
     marginTop: 12,
     padding: 8,
     width: "100%",
     boxSizing: "border-box",
+    ":hover": {
+      backgroundColor: "#3E43E8",
+    },
   },
   claimCardTextGroup: {
     display: "flex",
@@ -290,13 +291,12 @@ const styles = StyleSheet.create({
     color: "rgba(78, 83, 255)",
     textTransform: "capitalize",
     fontSize: 16,
-    padding: "10px 20px",
+    padding: "10px 17px",
     boxSizing: "border-box",
     width: "100%",
     cursor: "pointer",
     borderLeft: `3px solid #FFF`,
     transition: "all ease-out 0.1s",
-    padding: "0 16px",
     ":hover": {
       background: "#FAFAFA",
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,

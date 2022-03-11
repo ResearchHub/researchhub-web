@@ -1,4 +1,4 @@
-import { Component, Fragment } from "react";
+import { Component } from "react";
 import { StyleSheet, css } from "aphrodite";
 import Router from "next/router";
 import { connect } from "react-redux";
@@ -97,25 +97,29 @@ class FeedList extends Component {
       const { label, icon, href, as } = feed;
 
       return (
-        <Fragment key={`${label}-${i}`}>
-          <Ripples
+        <>
+          <div
             className={css(
-              styles.listItem,
-              i === activeFeed && styles.activeListItem,
-              i === 1 && styles.lastItem
+              styles.listItemContainer,
+              i === activeFeed && styles.activeListItem
             )}
-            onClick={() => this.onClick({ href, as }, i)}
+            key={`${label}-${i}`}
           >
-            <div className={css(styles.link)}>
-              <span className={css(styles.icon)}>{icon}</span>
-              <span style={{ opacity: 1 }} className={"clamp1"}>
-                {label}
-              </span>
-              {this.renderDropdownButton(i)}
-            </div>
-          </Ripples>
+            <Ripples
+              className={css(styles.listItem)}
+              onClick={() => this.onClick({ href, as }, i)}
+            >
+              <div className={css(styles.link)}>
+                <span className={css(styles.icon)}>{icon}</span>
+                <span style={{ opacity: 1 }} className={"clamp1"}>
+                  {label}
+                </span>
+                {this.renderDropdownButton(i)}
+              </div>
+            </Ripples>
+          </div>
           {this.renderDropdown(i)}
-        </Fragment>
+        </>
       );
     });
   };
@@ -172,7 +176,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
     marginBottom: 10,
   },
-  listItem: {
+  listItemContainer: {
     fontSize: 16,
     fontWeight: 300,
     cursor: "pointer",
@@ -182,12 +186,12 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     width: "100%",
     transition: "all ease-out 0.1s",
-    borderRadius: 3,
-    borderLeft: "3px solid #fff",
-    borderBottom: "1px solid #F0F0F0",
-    padding: "10px 15px",
     color: colors.BLACK(0.6),
-    position: "relative",
+    borderLeft: "3px solid #fff",
+    ":last-child": {
+      borderBottom: "none",
+      borderRadius: "0px 0px 4px 4px",
+    },
     ":hover": {
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
       backgroundColor: "#FAFAFA",
@@ -205,14 +209,16 @@ const styles = StyleSheet.create({
       borderLeft: `3px solid ${colors.NEW_BLUE()}`,
     },
   },
+  listItem: {
+    width: "100%",
+    padding: "10px 15px",
+    position: "relative",
+  },
   activeListItem: {
     color: colors.NEW_BLUE(),
     background:
       "linear-gradient(90deg, rgba(57, 113, 255, 0.1) 0%, rgba(57, 113, 255, 0) 100%)",
     borderLeft: `3px solid ${colors.NEW_BLUE()}`,
-  },
-  lastItem: {
-    borderBottom: "none",
   },
   hubImage: {
     height: 35,
@@ -283,9 +289,6 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     width: "100%",
-    borderBottom: "1px solid #F0F0F0",
-    boxShadow:
-      "inset 0px 11px 8px -10px #EDEDED, inset 0px -11px 8px -10px #EDEDED",
   },
 });
 
