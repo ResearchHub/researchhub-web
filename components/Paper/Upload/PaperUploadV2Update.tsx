@@ -100,6 +100,7 @@ const useEffectInitAndParseToState = ({
       },
       onSuccess: ({ parsedFormState }): void => {
         // logical ordering
+        console.log(parsedFormState)
         setFormState(parsedFormState);
         messageActions.showMessage({
           load: false,
@@ -201,7 +202,6 @@ function PaperUploadV2Update({
     });
     if (isFormValid) {
       messageActions.showMessage({ load: true, show: true });
-      console.log(formState.tags)
       updateExistingPaper({
         onError: (respPayload: any): void => {
           // NOTE: calvinhlee - existing legacy logic

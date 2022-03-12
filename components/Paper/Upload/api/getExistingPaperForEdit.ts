@@ -34,6 +34,7 @@ export async function getExistingPaperForEdit({
         authors,
         doi,
         hubs,
+        tags,
         paper_publish_date,
         paper_title,
         paper_type,
@@ -48,6 +49,12 @@ export async function getExistingPaperForEdit({
         paper_title,
         abstract,
         paper_type,
+        tags: tags.map(tag => {
+          return {
+            label: tag.key,
+            value: tag.id
+          }
+        }),
         // NOTE: hubs here is same as "selectedHubs" in component level
         hubs: hubs.map((hub: any) => {
           const { id, name } = hub;

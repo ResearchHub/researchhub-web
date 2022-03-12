@@ -27,7 +27,7 @@ export async function updateExistingPaper({
     ...payload,
     authors: (authors || []).map((author: any): ID => author.id),
     hubs: hubs.map((hub): ID => hub.id),
-    tags: tags.map((tag): ID => tag.key),
+    tags: tags.map((tag): ID => tag.label),
   };
 
   if (!isNullOrUndefined(published) && !isNullOrUndefined(published.year)) {
