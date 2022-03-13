@@ -287,7 +287,7 @@ function FeedCard(props: FeedCardProps) {
                 {titleAsHtml ? titleAsHtml : title ? title : ""}
               </span>
               <div className={css(styles.tagContainer)}>
-                {tags.map((tag, index) => (
+                {(tags || []).map((tag, index) => (
                   <div className={css(styles.tag, styles.firstTag)} key={index}>
                     <a className={css(styles.tagLink)} href={`/?tag=${tag.id}&tag_key=${tag.key}`}>
                       {`#${tag.key}`}
