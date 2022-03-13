@@ -48,6 +48,7 @@ Index.getInitialProps = async (ctx) => {
         subscribedHubs: false,
         timePeriod: getInitialScope(),
         type: urlDocType,
+        tag_id: query.tag,
         // V2 of hot score
         ...(hot_v2 === "true" && { hotV2: true }),
       },

@@ -676,6 +676,7 @@ const routes = (BASE_URL) => {
       timePeriod,
       type, // docType
       hotV2 = false,
+      tag_id = 0,
     }) => {
       const url =
         BASE_URL + "researchhub_unified_documents/get_unified_documents/";
@@ -691,6 +692,7 @@ const routes = (BASE_URL) => {
           subscribed_hubs: subscribedHubs,
           type,
           hot_v2: hotV2,
+          tag_id,
         },
       };
       const finalUrl = prepURL(url, params);

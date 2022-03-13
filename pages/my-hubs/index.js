@@ -48,6 +48,7 @@ Index.getInitialProps = async (ctx) => {
         subscribedHubs: true,
         timePeriod: getInitialScope(),
         type: urlDocType,
+        tag_id: query.tag,
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */

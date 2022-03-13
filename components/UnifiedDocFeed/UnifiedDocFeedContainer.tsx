@@ -45,6 +45,8 @@ function UnifiedDocFeedContainer({
   subscribeButton,
 }): ReactElement<"div"> {
   const router = useRouter();
+  const hasTag = router.query.tag;
+  const tagName = router.query.tag_key;
   const routerPathName = router.pathname;
   const [docTypeFilter, setDocTypeFilter] = useState<string>(
     getFilterFromRouter(router)
@@ -238,7 +240,7 @@ function UnifiedDocFeedContainer({
         </div>
       ) : null}
       {isHomePage || isEmpty(hub) ? (
-        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+        <h1 className={css(styles.title) + " clamp2"}>{tagName ? `Papers tagged with "${tagName}"` : formattedMainHeader}</h1>
       ) : (
         <FeedInfoCard
           hub={hub}
@@ -249,7 +251,7 @@ function UnifiedDocFeedContainer({
       )}
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
-          <UnifiedDocFeedMenu
+          {!hasTag && <UnifiedDocFeedMenu
             subFilters={subFilters}
             onDocTypeFilterSelect={onDocTypeFilterSelect}
             onSubFilterSelect={(filterBy) => {
@@ -260,7 +262,7 @@ function UnifiedDocFeedContainer({
               setPrevFetchParams(null); // forces prefetch to be triggered
               setSubFilters({ filterBy: subFilters.filterBy, scope });
             }}
-          />
+          />}
         </div>
       </div>
       {Boolean(unifiedDocsLoading) ? (
