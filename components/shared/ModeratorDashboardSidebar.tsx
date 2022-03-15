@@ -22,6 +22,13 @@ export default function ModeratorDashboardSidebar({}: Props) {
     auth: reduxStore?.getState()?.auth ?? null,
     shouldRedirect: false,
   });
+
+  const userAllowedSendRSC = gateKeepCurrentUser({
+    application: "SEND_RSC",
+    auth: reduxStore?.getState()?.auth ?? null,
+    shouldRedirect: false,
+  });
+
   const ksCanUseEditorDash = killswitch("editorDash");
 
   const SIDE_BAR_ITEMS = filterNull([
@@ -45,6 +52,14 @@ export default function ModeratorDashboardSidebar({}: Props) {
           id: "permissions",
           name: "Update Editors",
           pathname: "/moderators/permissions",
+        }
+      : null,
+      userAllowedSendRSC
+      ? {
+          icon: icons.coins,
+          id: "rsc",
+          name: "RSC",
+          pathname: "/moderators/rsc",
         }
       : null,
   ]);
