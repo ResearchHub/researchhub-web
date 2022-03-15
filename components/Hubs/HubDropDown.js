@@ -36,6 +36,7 @@ const HubDropDown = (props) => {
   });
 
   const toggleDropdown = (e) => {
+    e.preventDefault();
     e.stopPropagation();
     setIsOpen(!isOpen);
   };
