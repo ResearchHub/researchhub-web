@@ -11,12 +11,13 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import { breakpoints } from "~/config/themes/screen";
 import icons from "~/config/themes/icons";
+import Link from "next/link";
 
 const UserCard = ({ authorProfile, reputation, styleVariation }) => {
   const router = useRouter();
 
   const goToProfile = (id) => {
-    router.push("/user/[authorId]/[tabName]", `/user/${id}/overview`);
+    router.push("/user/[authorId]/[tabName]");
   };
 
   const getName = (authorProfile) =>
@@ -29,48 +30,52 @@ const UserCard = ({ authorProfile, reputation, styleVariation }) => {
   const userSummary = createUserSummary(authorProfile);
 
   return (
-    <Ripples
-      className={css(styles.card, styleVariation && styles[styleVariation])}
+    <Link
       key={`person-${authorProfile.id}`}
-      onClick={() => goToProfile(authorProfile.id)}
+      href={`/user/${authorProfile.id}/overview`}
+      // onClick={() => goToProfile(authorProfile.id)}
     >
-      <div className={css(styles.detailsWrapper)}>
-        <AuthorAvatar
-          author={authorProfile}
-          name={name}
-          disableLink={true}
-          size={35}
-        />
-        <div className={css(styles.details)}>
-          <div
-            className={css(
-              styles.name,
-              isEmpty(userSummary) && styles.withoutSummary
-            )}
-          >
-            {getName(authorProfile)}
-          </div>
-          {userSummary && (
-            <div className={css(styles.summary)}>
-              <span className={css(styles.eduIcon)}>{icons.graduationCap}</span>
-              {userSummary}
-            </div>
-          )}
-        </div>
-      </div>
-      {reputation > 0 && (
-        <div className={css(styles.reputation)}>
-          <img
-            className={css(styles.logoIcon)}
-            src="/static/ResearchHubIcon.png"
+      <a className={css(styles.card, styleVariation && styles[styleVariation])}>
+        <div className={css(styles.detailsWrapper)}>
+          <AuthorAvatar
+            author={authorProfile}
+            name={name}
+            disableLink={true}
+            size={35}
           />
-          <span className={css(styles.lifetimeText)}>
-            Lifetime reputation:{" "}
-          </span>
-          {numeral(reputation).format("0,0")}
+          <div className={css(styles.details)}>
+            <div
+              className={css(
+                styles.name,
+                isEmpty(userSummary) && styles.withoutSummary
+              )}
+            >
+              {getName(authorProfile)}
+            </div>
+            {userSummary && (
+              <div className={css(styles.summary)}>
+                <span className={css(styles.eduIcon)}>
+                  {icons.graduationCap}
+                </span>
+                {userSummary}
+              </div>
+            )}
+          </div>
         </div>
-      )}
-    </Ripples>
+        {reputation > 0 && (
+          <div className={css(styles.reputation)}>
+            <img
+              className={css(styles.logoIcon)}
+              src="/static/ResearchHubIcon.png"
+            />
+            <span className={css(styles.lifetimeText)}>
+              Lifetime reputation:{" "}
+            </span>
+            {numeral(reputation).format("0,0")}
+          </div>
+        )}
+      </a>
+    </Link>
   );
 };
 
@@ -83,6 +88,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     background: "white",
     borderRadius: 2,
+    textDecoration: "none",
     ":hover": {
       backgroundColor: genericCardColors.BACKGROUND,
     },
