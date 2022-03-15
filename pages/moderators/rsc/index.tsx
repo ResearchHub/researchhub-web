@@ -83,7 +83,7 @@ export default function RSCDashboard(): ReactElement<
     e.preventDefault();
     const config = {
       amount: inputAmount,
-      recipient_id: chosenOption?.userObject?.id,
+      recipient_id: chosenOption?.userObject?.user?.id,
     };
     dispatch(MessageActions.showMessage({load: true, show:true}));
 
