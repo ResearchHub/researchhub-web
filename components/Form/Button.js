@@ -22,7 +22,7 @@ function Button(props) {
     hideRipples,
     rippleClass,
   } = props;
-  console.warn("size: ", size);
+
   if (isLink) {
     let { href, linkAs, query } = isLink;
     return (
