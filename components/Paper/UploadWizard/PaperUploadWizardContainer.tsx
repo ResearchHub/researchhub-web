@@ -1,8 +1,9 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useMemo, useState } from "react";
+import { Fragment, ReactElement, useMemo, useState } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
+import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 
 type Props = {};
 type State = {
@@ -20,6 +21,7 @@ function getWizardBody({
   switch (currentStep) {
     case "pdf_upload":
     case "standby":
+      return <PaperUploadWizardStandbyBody />;
     case "url_upload":
     default:
       return <PaperUploadWizardURLBody setCurrentStep={setCurrentStep} />;
