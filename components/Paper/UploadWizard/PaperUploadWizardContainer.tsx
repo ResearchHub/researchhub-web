@@ -1,27 +1,70 @@
-import { Element, ReactElement, useMemo, useState } from "react";
-import PaperUploadURLBody from "./PaperUploadURLBody";
+import { css, StyleSheet } from "aphrodite";
+import { ReactElement, useMemo, useState } from "react";
+import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
+import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 
 type Props = {};
 type State = {
   currentStep: WizardBodyTypes;
 };
-type WizardBodyTypes = "pdf_upload" | "standby" | "url_upload";
-type WizardBodyElements = ReactElement<typeof PaperUploadURLBody>;
+type WizardBodyElement = ReactElement<typeof PaperUploadWizardURLBody>;
 
-function getWizardBody(currentStep: WizardBodyTypes): WizardBodyElements {
+function getWizardBody({
+  currentStep,
+  setCurrentStep,
+}: {
+  currentStep: WizardBodyTypes;
+  setCurrentStep: (step: WizardBodyTypes) => void;
+}): WizardBodyElement {
   switch (currentStep) {
+    case "pdf_upload":
+    case "standby":
     case "url_upload":
     default:
-      return <PaperUploadURLBody />;
+      return <PaperUploadWizardURLBody setCurrentStep={setCurrentStep} />;
   }
 }
 
-export default function PaperUploadWizardContainer({}: Props): Element<Props> {
-  const [{ currentStep }, setCurrentStep] = useState<State>({
+export default function PaperUploadWizardContainer({}: Props): ReactElement<Props> {
+  const [{ currentStep }, setComponentState] = useState<State>({
     currentStep: "url_upload",
   });
 
-  const wizardBody = useMemo(() => getWizardBody(currentStep), [currentStep]);
+  const wizardBody = useMemo(
+    (): WizardBodyElement =>
+      getWizardBody({
+        currentStep,
+        setCurrentStep: (step: WizardBodyTypes): void =>
+          setComponentState({ currentStep: step }),
+      }),
+    [currentStep]
+  );
 
-  return <div>{wizardBody}</div>;
+  return (
+    <div className={css(styles.paperUploadWizardContainer)}>
+      <div className={css(styles.contentWrap)}>
+        <PaperUploadWizardHeader currentStep={currentStep} />
+        <div className={css(styles.bodyWrap)}>{wizardBody}</div>
+      </div>
+    </div>
+  );
 }
+
+const styles = StyleSheet.create({
+  paperUploadWizardContainer: {
+    alignItems: "center",
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    padding: "32px 0",
+    width: "100%",
+  },
+  bodyWrap: {
+    paddingTop: 32,
+  },
+  contentWrap: {
+    maxWidth: 720,
+    width: "100%",
+  },
+});
