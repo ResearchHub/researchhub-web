@@ -2,6 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useMemo, useState } from "react";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 
 type Props = {};
 type State = {
