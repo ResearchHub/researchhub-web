@@ -1,35 +1,47 @@
-import { useState } from "react";
+import { isStringURL } from "~/config/utils/isStringURL";
+import { SyntheticEvent, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
-import Button from "~/components/Form/Button";
-import Loader from "~/components/Loader/Loader";
-import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
+import Button from "~/components/Form/Button";
+import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 
-type ComponentState = { isSubmitting: boolean };
 type Props = { setCurrentStep: (step: WizardBodyTypes) => void };
-type FormValue = { url: string };
-
-// TODO: calvinhojin - add validation for the form
-// validateWebsiteUrl = websiteUrl => {
-//     const urlRegEx =
-//       '[-a-zA-Z0-9@:%_+.~#?&//=]{2,256}(.[a-z]{2,4})?\b(/[-a-zA-Z0-9@:%_+.~#?&//=]*)?';
-//     return urlRegEx.test(String(websiteUrl).toLowerCase());
-//   };
+type FormErrors = { url: boolean };
+type FormValues = { url: string };
 
 export default function PaperUploadWizardURLBody({ setCurrentStep }: Props) {
-  const [formValues, setFormValues] = useState<FormValue>({ url: "" });
+  const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
+  const [formValues, setFormValues] = useState<FormValues>({ url: "" });
+
+  const { url: urlError } = formErrors;
   const { url } = formValues;
 
+  const onSubmit = (event: SyntheticEvent): void => {
+    event.preventDefault();
+    const wtf = isStringURL(url);
+    const newFormErrors = { url: !wtf };
+    const hasError = Object.values(newFormErrors).includes(true);
+    if (hasError) {
+      setFormErrors(newFormErrors);
+    } else {
+      setFormErrors({ url: false });
+      setFormValues({ url: "" });
+      setCurrentStep("standby");
+      // TODO: calvinhlee - hook up to BE & wait for async response
+    }
+  };
+
   return (
-    <form key="upload-wizard">
+    <form onSubmit={onSubmit}>
       <PaperUploadWizardInput
+        error={urlError}
         label="Link to Paper"
         onChange={(value: null | string): void =>
           setFormValues({ ...formValues, url: value ?? "" })
         }
+        placeholder="Paste a url to source"
         required
         value={url}
-        placeholder="Paste a url to source"
       />
       <div
         style={{
