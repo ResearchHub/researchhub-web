@@ -1,3 +1,5 @@
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
+
 type Props = { setCurrentStep: (step: WizardBodyTypes) => void };
 
 export default function PaperUploadWizardURLBody({ setCurrentStep }: Props) {
