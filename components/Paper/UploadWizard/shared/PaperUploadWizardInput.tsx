@@ -18,9 +18,9 @@ export default function PaperUploadWizardInput({
   placeholder,
   required,
   value,
-}): ReactElement<"div"> {
+}: Props): ReactElement<"div"> {
   const valueLength = value !== null ? value.length : 0;
-  console.warn("error: ", error);
+
   return (
     <div className={css(styles.paperUploadWizardInput)}>
       <div className={css(styles.label)}>
@@ -35,9 +35,8 @@ export default function PaperUploadWizardInput({
             onChange(event.target?.value)
           }
           placeholder={placeholder ?? ""}
-          required={required}
           type="string"
-          value={value}
+          value={value ?? ""}
         />
         <div className={css(styles.valueLengthIndicator)}>
           {valueLength} {" / 250"}

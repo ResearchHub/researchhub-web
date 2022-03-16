@@ -24,6 +24,7 @@ export default function PaperUploadWizardURLBody({ setCurrentStep }: Props) {
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
+      // logical ordering
       setFormErrors({ url: false });
       setFormValues({ url: "" });
       setCurrentStep("standby");
