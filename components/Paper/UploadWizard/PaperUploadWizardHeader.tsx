@@ -15,7 +15,12 @@ export default function PaperUploadWizardHeader({
   }
 
   return (
-    <div className={css(formGenericStyles.header, formGenericStyles.text)}>
+    <div
+      className={css(formGenericStyles.header, formGenericStyles.text)}
+      style={{
+        paddingBottom: "16px !important" /* overrides default header padding */,
+      }}
+    >
       {currentStep === "url_upload" ? "Add Paper" : "Add PDF"}
       <a
         className={css(formGenericStyles.authorGuidelines)}
@@ -25,13 +30,9 @@ export default function PaperUploadWizardHeader({
       >
         {"Submission Guidelines"}
       </a>
-      {currentStep === "pdf_upload" && (
-        <div
-          className={css(formGenericStyles.sidenote, formGenericStyles.text)}
-        >
-          {"Up to 15MB (.pdf)"}
-        </div>
-      )}
+      <div className={css(formGenericStyles.sidenote, formGenericStyles.text)}>
+        {"Up to 15MB (.pdf)"}
+      </div>
     </div>
   );
 }
