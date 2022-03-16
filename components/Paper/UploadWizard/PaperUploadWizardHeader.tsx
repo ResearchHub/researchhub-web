@@ -1,9 +1,10 @@
 import { css } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
 import { ReactElement } from "react";
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 
 type Props = {
-  currentStep: string;
+  currentStep: WizardBodyTypes;
 };
 
 export default function PaperUploadWizardHeader({
