@@ -10,7 +10,7 @@ function Button(props) {
     type,
     label,
     isWhite,
-    size, // size is a enum; type string: ['xsmall', 'small', 'med', 'big']
+    size, // size is a enum; type string: ['xxsmall', 'xsmall', 'small', 'med', 'big']
     disabled,
     isLink,
     customButtonStyle,
@@ -22,6 +22,7 @@ function Button(props) {
     hideRipples,
     rippleClass,
   } = props;
+  console.warn("size: ", size);
   if (isLink) {
     let { href, linkAs, query } = isLink;
     return (
@@ -162,6 +163,12 @@ const styles = StyleSheet.create({
     width: "auto",
     paddingLeft: 10,
     paddingRight: 10,
+  },
+  xxsmall: {
+    borderRadius: 4,
+    maxHeight: 48,
+    maxWidth: 180,
+    padding: "0 10px",
   },
   small: {
     width: 126,
