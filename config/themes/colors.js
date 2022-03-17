@@ -23,6 +23,7 @@ const colors = {
   NEW_BLUE: (opacity = 1) => `rgba(57, 113, 255, ${opacity})`,
   ORANGE: (opacity = 1) => `rgba(255, 109, 0, ${opacity})`,
   ORANGE: (opacity = 1) => `rgba(255, 176, 0, ${opacity})`,
+  PASTEL_GREEN_TEXT: "#88cb88",
   PURPLE: (opacity = 1) => `rgba(78, 83, 255, ${opacity})`,
   RED: (opacity = 1) => `rgba(255, 45, 45, ${opacity})`,
   TEXT_DARKER_GREY: "#241F3A",
