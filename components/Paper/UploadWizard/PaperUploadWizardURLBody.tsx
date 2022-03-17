@@ -1,15 +1,22 @@
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { createPaperSubmissioncreatePaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
 import { isStringURL } from "~/config/utils/isStringURL";
+import { ModalActions } from "~/redux/modals";
 import { SyntheticEvent, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 
-type Props = { setCurrentStep: (step: WizardBodyTypes) => void };
+type Props = {
+  modalActions: any /* redux */;
+  setCurrentStep: (step: WizardBodyTypes) => void;
+};
 type FormErrors = { url: boolean };
 type FormValues = { url: string };
 
-export default function PaperUploadWizardURLBody({ setCurrentStep }: Props) {
+function PaperUploadWizardURLBody({ modalActions, setCurrentStep }: Props) {
   const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
   const [formValues, setFormValues] = useState<FormValues>({ url: "" });
 
@@ -18,17 +25,37 @@ export default function PaperUploadWizardURLBody({ setCurrentStep }: Props) {
 
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
-    const wtf = isStringURL(url);
-    const newFormErrors = { url: !wtf };
+    const newFormErrors = { url: !isStringURL(url) };
     const hasError = Object.values(newFormErrors).includes(true);
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
-      // logical ordering
-      setFormErrors({ url: false });
-      setFormValues({ url: "" });
-      setCurrentStep("standby");
-      // TODO: calvinhlee - hook up to BE & wait for async response
+      createPaperSubmissioncreatePaperSubmissionWithURL({
+        onError: (error) => {
+          debugger;
+          const { message, response } = error;
+          console.warn("ERROR: ", error);
+          switch (response.status) {
+            case 403:
+              const { data } = response;
+              modalActions.openUploadPaperModal(true, [
+                {
+                  searchResults: [data],
+                  isDuplicate: true,
+                },
+              ]);
+            default:
+              alert(error.message);
+          }
+        },
+        onSuccess: () => {
+          // logical ordering
+          setFormErrors({ url: false });
+          setFormValues({ url: "" });
+          setCurrentStep("standby");
+        },
+        url,
+      });
     }
   };
 
@@ -64,3 +91,14 @@ export default function PaperUploadWizardURLBody({ setCurrentStep }: Props) {
     </form>
   );
 }
+
+const mapStateToProps = (_state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  modalActions: bindActionCreators(ModalActions, dispatch),
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PaperUploadWizardURLBody);
