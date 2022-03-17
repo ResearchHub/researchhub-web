@@ -72,7 +72,11 @@ export default function PaperUploadWizardStandbyBody() {
             effectChange={0.2}
           />
         ) : (
-          "It's taking longer than expected :/ Feel free to checkout other pages. We will let you know when we finish importing!"
+          <Fragment>
+            <div>{"It's taking longer than expected :/"}</div>
+            <div>{"Feel free to checkout other pages."}</div>
+            <div>{"We will let you know when we finish importing!"}</div>
+          </Fragment>
         )}
       </div>
     </div>
@@ -90,5 +94,10 @@ const styles = StyleSheet.create({
     marginTop: 32,
     fontSize: 24,
     color: colors.PASTEL_GREEN_TEXT,
+    display: "flex",
+    width: "100%",
+    justifyContent: "center",
+    flexDirection: "column",
+    alignItems: "center",
   },
 });
