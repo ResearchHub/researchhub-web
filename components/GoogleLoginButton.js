@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+
 import { GoogleLogin } from "react-google-login";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -6,6 +8,7 @@ import * as Sentry from "@sentry/browser";
 import { sendAmpEvent } from "~/config/fetch";
 
 import Button from "~/components/Form/Button";
+import GoogleButton from "~/components/GoogleLoginButtonV2";
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -13,13 +16,26 @@ import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import { useEffect } from "react";
 import { isDevEnv } from "~/config/utils/env";
 
 const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
 
+  useEffect(() => {
+    const divRef = React.createRef();
+
+    if (divRef) {
+      window.google.accounts.id.initialize({
+        client_id: GOOGLE_CLIENT_ID,
+        callback: responseGoogle,
+      });
+      window.google.accounts.id.renderButton(divRef.current, {
+        theme: "outline",
+        size: "large",
+      });
+    }
+  });
   useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
@@ -82,7 +98,7 @@ const GoogleLoginButton = (props) => {
 
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
-    response["access_token"] = response["accessToken"];
+    console.log(response);
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
@@ -130,12 +146,19 @@ const GoogleLoginButton = (props) => {
     }
   }
 
+  function getAuthCode(client) {
+    client.requestCode();
+  }
+
+  return <GoogleButton login={responseGoogle} />;
+
   return (
     <GoogleLogin
       clientId={GOOGLE_CLIENT_ID}
       onSuccess={responseGoogle}
       onFailure={showLoginFailureMessage}
       cookiePolicy={"single_host_origin"}
+      responseType="code"
       render={(renderProps) => {
         if (hideButton) {
           return (

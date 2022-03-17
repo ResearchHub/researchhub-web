@@ -82,6 +82,7 @@
     "react-google-charts": "^3.0.15",
     "react-google-login": "^5.0.5",
     "react-google-recaptcha": "^2.1.0",
+    "react-helmet-async": "^1.2.3",
     "react-horizontal-scrolling-menu": "^0.7.8",
     "react-html-parser": "^2.0.2",
     "react-infinite-scroller": "^1.2.4",
