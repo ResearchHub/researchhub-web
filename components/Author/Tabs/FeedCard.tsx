@@ -188,6 +188,7 @@ function FeedCard(props: FeedCardProps) {
     post: icons.penSquare,
     hypothesis: icons.lightbulb,
   };
+  const resolvedHubs = hubs ?? [];
 
   return (
     <Ripples
@@ -245,17 +246,17 @@ function FeedCard(props: FeedCardProps) {
                     />
                   </LazyLoad>
                   <div className={css(styles.textLabel)}>in</div>
-                  {hubs.slice(0, 1).map((tag, index) => (
+                  {resolvedHubs.slice(0, 1).map((tag, index) => (
                     <Link href={`/hubs/${tag.slug}`}>
                       <a
                         className={css(styles.hubLabel)}
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
-                      >{`${tag.name}${hubs.length > 1 ? "," : ""}`}</a>
+                      >{`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}</a>
                     </Link>
                   ))}
-                  {hubs.length > 1 && (
+                  {resolvedHubs.length > 1 && (
                     <HubDropDown
                       hubs={hubs}
                       labelStyle={styles.hubLabel}
