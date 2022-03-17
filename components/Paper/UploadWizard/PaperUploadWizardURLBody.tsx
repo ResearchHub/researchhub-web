@@ -39,7 +39,6 @@ function PaperUploadWizardURLBody({
       createPaperSubmissioncreatePaperSubmissionWithURL({
         onError: (error) => {
           const { response } = error;
-          console.warn("ERROR: ", error);
           switch (response.status) {
             case 403:
               const { data } = response;
