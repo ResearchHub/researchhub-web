@@ -231,6 +231,24 @@ export const verifStyles = StyleSheet.create({
     zIndex: 2,
     marginTop: 40,
   },
+  buttonSecondary: {
+    background: "#fff",
+    border: "none",
+    color: colors.BLUE(1),
+    fontSize: "16px",
+    height: "55px",
+    lineHeight: "19px",
+    marginRight: 16,
+    padding: "18px 21px",
+    width: "258px",
+    "@media only screen and (max-width: 415px)": {
+      width: "100%",
+    },
+    ":hover": {
+      background: colors.LIGHTER_GREY(1),
+      color: colors.BLUE(1),
+    },
+  },
   buttonCustomStyle: {
     padding: "18px 21px",
     width: "258px",

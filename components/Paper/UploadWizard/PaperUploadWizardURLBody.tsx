@@ -13,6 +13,7 @@ import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 type Props = {
   messageActions: any /* redux */;
   modalActions: any /* redux */;
+  onExit: () => void;
   setCurrentStep: (step: WizardBodyTypes) => void;
 };
 type FormErrors = { url: boolean };
@@ -21,6 +22,7 @@ type FormValues = { url: string };
 function PaperUploadWizardURLBody({
   messageActions,
   modalActions,
+  onExit,
   setCurrentStep,
 }: Props) {
   const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
@@ -86,6 +88,23 @@ function PaperUploadWizardURLBody({
           width: "100%",
         }}
       >
+        <Button
+          customButtonStyle={verifStyles.buttonSecondary}
+          isWhite
+          key="upload-wizard-cancel"
+          label="Cancel"
+          rippleClass={verifStyles.rippleClass}
+          size="xxsmall"
+          type="cancel"
+          onClick={(event: SyntheticEvent): void => {
+            event?.preventDefault();
+            // logical ordering
+            setFormErrors({ url: false });
+            setFormValues({ url: "" });
+            setCurrentStep("standby");
+            onExit();
+          }}
+        />
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
           key="upload-wizard-button"
