@@ -25,6 +25,7 @@ export default function PaperUploadWizardStandbyBody() {
   const [src, setSrc] = useState<string>(ANIMATION_1);
   const [askRedirect, setAskRedirect] = useState<boolean>(false);
 
+  // TODO: calvinhlee - look at the new socket for success / error 
   useEffect(() => {
     timeLoop({
       src,
@@ -36,6 +37,8 @@ export default function PaperUploadWizardStandbyBody() {
 
   return (
     <Fragment>
+      {askRedirect &&
+        "It's taking longer than expected :/ Feel free to checkout other pages. We will let you know when we finish importing!"}
       <iframe
         src={src}
         width="100%"
