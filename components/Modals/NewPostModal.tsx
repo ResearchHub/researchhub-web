@@ -10,7 +10,7 @@ import { ReactElement, useState, SyntheticEvent } from "react";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
-import { filterNull } from "~/config/utils/nullchecks";
+import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 
@@ -79,7 +79,13 @@ function NewPostModal({
       children={
         bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)}>
-            <PaperUploadWizardContainer />
+            <PaperUploadWizardContainer
+              onExit={() => {
+                setSelected(0);
+                setBodyType(null);
+                setIsOpen(false);
+              }}
+            />
           </div>
         ) : (
           <>
@@ -125,6 +131,8 @@ function NewPostModal({
                       >
                         Continue
                       </div>
+                    ) : isNullOrUndefined(items[selected]?.route) ? (
+                      <div className={css(styles.buttonLabel)}>Continue</div>
                     ) : (
                       <Link href={items[selected]?.route ?? ""}>
                         <div className={css(styles.buttonLabel)}>Continue</div>
