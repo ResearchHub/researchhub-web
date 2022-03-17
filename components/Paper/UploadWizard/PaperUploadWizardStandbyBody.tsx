@@ -1,52 +1,94 @@
+import { css, StyleSheet } from "aphrodite";
 import { Fragment, useEffect, useState } from "react";
+import Grass from "./lottie_json/grass-animation.json";
+import JoyRide from "./lottie_json/joy-ride-animation.json";
+import Lottie from "react-lottie";
+import { Wave } from "react-animated-text";
+import colors from "~/config/themes/colors";
 
-const ANIMATION_1 = "https://giphy.com/embed/xTiN0uzf6bno09mXrG";
-const ANIMATION_2 = "https://giphy.com/embed/xTiN0yAuTXvtIH3EiI";
+const defaultLottieOptions = {
+  loop: true,
+  autoplay: true,
+  animationData: JoyRide,
+  rendererSettings: {
+    preserveAspectRatio: "xMidYMid slice",
+  },
+};
+
 const FOUR_SEC = 4000;
 const TWENTY_SEC = 20000;
 
 const timeLoop = ({
-  src,
-  setSrc,
+  loadIndex,
+  setLoadIndex,
   time,
 }: {
-  src: string;
-  setSrc: (str: string) => void;
+  loadIndex: number;
+  setLoadIndex: (ind: number) => void;
   time: number;
 }) => {
   setTimeout((): void => {
-    const nextSrc = src === ANIMATION_1 ? ANIMATION_2 : ANIMATION_1;
-    setSrc(nextSrc);
-    timeLoop({ src: nextSrc, setSrc, time });
+    const nextloadIndex = loadIndex === 0 ? 1 : 0;
+    setLoadIndex(nextloadIndex);
+    timeLoop({ loadIndex: nextloadIndex, setLoadIndex, time });
   }, time);
 };
 
 export default function PaperUploadWizardStandbyBody() {
-  const [src, setSrc] = useState<string>(ANIMATION_1);
+  const [loadIndex, setLoadIndex] = useState<number>(0);
   const [askRedirect, setAskRedirect] = useState<boolean>(false);
 
-  // TODO: calvinhlee - look at the new socket for success / error 
+  // TODO: calvinhlee - look at the new socket for success / error
   useEffect(() => {
     timeLoop({
-      src,
-      setSrc,
+      loadIndex,
+      setLoadIndex,
       time: FOUR_SEC,
     });
     setTimeout((): void => setAskRedirect(true), TWENTY_SEC);
   }, []);
 
   return (
-    <Fragment>
-      {askRedirect &&
-        "It's taking longer than expected :/ Feel free to checkout other pages. We will let you know when we finish importing!"}
-      <iframe
-        src={src}
-        width="100%"
-        height="100%"
-        frameBorder="0"
-        className="giphy-embed"
-        allowFullScreen
+    <div className={css(styles.wizardStandby)}>
+      <Lottie
+        options={{
+          ...defaultLottieOptions,
+          animationData: loadIndex === 0 ? JoyRide : Grass,
+        }}
+        height={320}
+        width={320}
       />
-    </Fragment>
+      <div className={css(styles.loadText)}>
+        {!askRedirect ? (
+          <Wave
+            delay={30}
+            duration={200}
+            hoverable
+            text={
+              loadIndex === 0
+                ? "Importing from source..."
+                : "Please be patient!"
+            }
+            effectChange={0.2}
+          />
+        ) : (
+          "It's taking longer than expected :/ Feel free to checkout other pages. We will let you know when we finish importing!"
+        )}
+      </div>
+    </div>
   );
 }
+
+const styles = StyleSheet.create({
+  wizardStandby: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
+  loadText: {
+    marginTop: 32,
+    fontSize: 24,
+    color: colors.PASTEL_GREEN_TEXT,
+  },
+});
