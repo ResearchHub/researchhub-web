@@ -188,6 +188,7 @@ function FeedCard(props: FeedCardProps) {
     post: icons.penSquare,
     hypothesis: icons.lightbulb,
   };
+  const resolvedHubs = hubs ?? [];
 
   return (
     <Ripples
@@ -256,10 +257,10 @@ function FeedCard(props: FeedCardProps) {
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
-                      >{`${tag.name}${hubs.length > 1 ? "," : ""}`}</a>
+                      >{`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}</a>
                     </Link>
                   ))}
-                  {hubs?.length > 1 && (
+                  {resolvedHubs.length > 1 && (
                     <HubDropDown
                       hubs={hubs}
                       labelStyle={styles.hubLabel}
