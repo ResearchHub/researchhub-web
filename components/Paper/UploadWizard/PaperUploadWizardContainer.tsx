@@ -6,7 +6,7 @@ import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import { breakpoints } from "~/config/themes/screen";
 
-type Props = {};
+type Props = { onExit: Function };
 type State = {
   currentStep: WizardBodyTypes;
 };
@@ -14,9 +14,11 @@ type WizardBodyElement = ReactElement<typeof PaperUploadWizardURLBody>;
 
 function getWizardBody({
   currentStep,
+  onExit,
   setCurrentStep,
 }: {
   currentStep: WizardBodyTypes;
+  onExit: () => void;
   setCurrentStep: (step: WizardBodyTypes) => void;
 }): WizardBodyElement {
   switch (currentStep) {
@@ -25,11 +27,18 @@ function getWizardBody({
       return <PaperUploadWizardStandbyBody />;
     case "url_upload":
     default:
-      return <PaperUploadWizardURLBody setCurrentStep={setCurrentStep} />;
+      return (
+        <PaperUploadWizardURLBody
+          setCurrentStep={setCurrentStep}
+          onExit={onExit}
+        />
+      );
   }
 }
 
-export default function PaperUploadWizardContainer({}: Props): ReactElement<Props> {
+export default function PaperUploadWizardContainer({
+  onExit,
+}: Props): ReactElement<Props> {
   const [{ currentStep }, setComponentState] = useState<State>({
     currentStep: "url_upload",
   });
@@ -40,6 +49,7 @@ export default function PaperUploadWizardContainer({}: Props): ReactElement<Prop
         currentStep,
         setCurrentStep: (step: WizardBodyTypes): void =>
           setComponentState({ currentStep: step }),
+        onExit,
       }),
     [currentStep]
   );
@@ -67,7 +77,7 @@ const styles = StyleSheet.create({
     minWidth: "600px",
     [`@media only screen and (max-width: ${breakpoints.small})`]: {
       minWidth: "0",
-      padding: "16px 0 0"
+      padding: "16px 0 0",
     },
   },
   bodyWrap: {
