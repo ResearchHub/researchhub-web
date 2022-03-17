@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import { createPaperSubmissioncreatePaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
 import { isStringURL } from "~/config/utils/isStringURL";
 import { ModalActions } from "~/redux/modals";
+import { MessageActions } from "~/redux/message";
 import { SyntheticEvent, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
@@ -10,13 +11,18 @@ import Button from "~/components/Form/Button";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 
 type Props = {
+  messageActions: any /* redux */;
   modalActions: any /* redux */;
   setCurrentStep: (step: WizardBodyTypes) => void;
 };
 type FormErrors = { url: boolean };
 type FormValues = { url: string };
 
-function PaperUploadWizardURLBody({ modalActions, setCurrentStep }: Props) {
+function PaperUploadWizardURLBody({
+  messageActions,
+  modalActions,
+  setCurrentStep,
+}: Props) {
   const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
   const [formValues, setFormValues] = useState<FormValues>({ url: "" });
 
@@ -32,8 +38,7 @@ function PaperUploadWizardURLBody({ modalActions, setCurrentStep }: Props) {
     } else {
       createPaperSubmissioncreatePaperSubmissionWithURL({
         onError: (error) => {
-          debugger;
-          const { message, response } = error;
+          const { response } = error;
           console.warn("ERROR: ", error);
           switch (response.status) {
             case 403:
@@ -44,8 +49,11 @@ function PaperUploadWizardURLBody({ modalActions, setCurrentStep }: Props) {
                   isDuplicate: true,
                 },
               ]);
+              break;
             default:
-              alert(error.message);
+              messageActions.setMessage("Please provide valid URL source");
+              messageActions.showMessage({ show: true, error: true });
+              return;
           }
         },
         onSuccess: () => {
@@ -96,6 +104,7 @@ const mapStateToProps = (_state) => ({});
 
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
+  messageActions: bindActionCreators(MessageActions, dispatch),
 });
 
 export default connect(
