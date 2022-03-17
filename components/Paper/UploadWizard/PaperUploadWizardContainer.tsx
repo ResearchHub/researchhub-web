@@ -4,6 +4,7 @@ import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {};
 type State = {
@@ -60,8 +61,14 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    padding: "64px 0",
+    padding: "32px 0 0",
     width: "100%",
+    height: "100%",
+    minWidth: "600px",
+    [`@media only screen and (max-width: ${breakpoints.small})`]: {
+      minWidth: "0",
+      padding: "16px 0 0"
+    },
   },
   bodyWrap: {
     paddingTop: 32,
