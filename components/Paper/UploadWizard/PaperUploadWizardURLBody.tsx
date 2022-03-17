@@ -95,9 +95,9 @@ function PaperUploadWizardURLBody({
           label="Cancel"
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"
-          type="cancel"
+          type="button"
           onClick={(event: SyntheticEvent): void => {
-            event?.preventDefault();
+            event.preventDefault();
             // logical ordering
             setFormErrors({ url: false });
             setFormValues({ url: "" });

@@ -6,7 +6,7 @@ import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import { breakpoints } from "~/config/themes/screen";
 
-type Props = { onExit: Function };
+type Props = { onExit: () => void };
 type State = {
   currentStep: WizardBodyTypes;
 };
