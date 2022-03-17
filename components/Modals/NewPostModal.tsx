@@ -12,6 +12,7 @@ import { connect } from "react-redux";
 import { createNewNote } from "~/config/fetch";
 import { filterNull } from "~/config/utils/nullchecks";
 import { useRouter } from "next/router";
+import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 
 export type NewPostModalProps = {
   currentUser: any;
@@ -25,7 +26,8 @@ function NewPostModal({
   setIsOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
-  let [selected, setSelected] = useState(0);
+  const [selected, setSelected] = useState(0);
+  const [bodyType, setBodyType] = useState<string | null>(null);
 
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
@@ -34,7 +36,11 @@ function NewPostModal({
 
   const handleContinue = (e: SyntheticEvent): void => {
     e && e.preventDefault();
-    closeModal(e);
+    if (selected === 0) {
+      setBodyType("paperWizard");
+    } else {
+      closeModal(e);
+    }
   };
 
   const items = [
@@ -42,7 +48,6 @@ function NewPostModal({
       header: "Upload a Paper",
       description:
         "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
-      route: "/paper/upload/info",
       icon: <PaperIcon width={40} height={40} withAnimation={false} />,
     },
     {
@@ -73,59 +78,67 @@ function NewPostModal({
   return (
     <BaseModal
       children={
-        <>
+        bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)}>
-            <img
-              alt="Close Button"
-              className={css(styles.closeButton)}
-              draggable={false}
-              onClick={closeModal}
-              src={"/static/icons/close.png"}
-            />
-            <div className={css(styles.titleContainer)}>
-              <div className={css(styles.title)}>{"Select your post type"}</div>
-            </div>
-            <div className={css(styles.list)}>
-              {filterNull(items).map((option, index) => (
-                <ResearchhubOptionCard
-                  description={option.description}
-                  header={option.header}
-                  icon={option.icon}
-                  isActive={index === selected}
-                  isCheckboxSquare={false}
-                  key={index}
-                  newFeature={option.newFeature}
-                  onSelect={(e: SyntheticEvent) => {
-                    e.preventDefault();
-                    setSelected(index);
-                  }}
-                />
-              ))}
-            </div>
-            <div>
-              <Button
-                customButtonStyle={styles.buttonCustomStyle}
-                customLabelStyle={styles.buttonLabel}
-                label={
-                  items[selected].onClick ? (
-                    <div
-                      onClick={items[selected].onClick}
-                      className={css(styles.buttonLabel)}
-                    >
-                      Continue
-                    </div>
-                  ) : (
-                    <Link href={items[selected]?.route ?? ""}>
-                      <div className={css(styles.buttonLabel)}>Continue</div>
-                    </Link>
-                  )
-                }
-                onClick={handleContinue}
-                rippleClass={styles.rippleClass}
-              />
-            </div>
+            <PaperUploadWizardContainer />
           </div>
-        </>
+        ) : (
+          <>
+            <div className={css(styles.rootContainer)}>
+              <img
+                alt="Close Button"
+                className={css(styles.closeButton)}
+                draggable={false}
+                onClick={closeModal}
+                src={"/static/icons/close.png"}
+              />
+              <div className={css(styles.titleContainer)}>
+                <div className={css(styles.title)}>
+                  {"Select your post type"}
+                </div>
+              </div>
+              <div className={css(styles.list)}>
+                {filterNull(items).map((option, index) => (
+                  <ResearchhubOptionCard
+                    description={option.description}
+                    header={option.header}
+                    icon={option.icon}
+                    isActive={index === selected}
+                    isCheckboxSquare={false}
+                    key={index}
+                    newFeature={option.newFeature}
+                    onSelect={(e: SyntheticEvent) => {
+                      e.preventDefault();
+                      setSelected(index);
+                    }}
+                  />
+                ))}
+              </div>
+              <div>
+                <Button
+                  customButtonStyle={styles.buttonCustomStyle}
+                  customLabelStyle={styles.buttonLabel}
+                  label={
+                    items[selected].onClick ? (
+                      <div
+                        onClick={items[selected].onClick}
+                        className={css(styles.buttonLabel)}
+                      >
+                        Continue
+                      </div>
+                    ) : (
+                      <Link href={items[selected]?.route ?? ""}>
+                        <div className={css(styles.buttonLabel)}>Continue</div>
+                      </Link>
+                    )
+                  }
+                  onClick={handleContinue}
+                  rippleClass={styles.rippleClass}
+                />
+              </div>
+            </div>
+          </>
+        )
       }
       closeModal={closeModal}
       isOpen={isOpen}
