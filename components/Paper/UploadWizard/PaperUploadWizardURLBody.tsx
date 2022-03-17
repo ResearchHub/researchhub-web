@@ -37,10 +37,10 @@ function PaperUploadWizardURLBody({
       setFormErrors(newFormErrors);
     } else {
       createPaperSubmissioncreatePaperSubmissionWithURL({
-        onError: (error) => {
+        onError: (error: any): void => {
           const { response } = error;
           switch (response.status) {
-            case 403:
+            case 403 /* Duplicate error */:
               const { data } = response;
               modalActions.openUploadPaperModal(true, [
                 {
