@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    padding: "32px 0",
+    padding: "64px 0",
     width: "100%",
   },
   bodyWrap: {
