@@ -8,6 +8,7 @@ import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import { NextRouter, useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
+import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 
 type Props = { onExit: () => void };
 type State = {
@@ -18,19 +19,20 @@ type WizardBodyElement = ReactElement<typeof PaperUploadWizardURLBody>;
 function getWizardBody({
   currentStep,
   onExit,
+  postedPaperID,
   setPostedPaperID,
   setWizardStep,
 }: {
   currentStep: WizardBodyTypes;
+  postedPaperID: ID;
   onExit: () => void;
   setPostedPaperID: (id: ID) => void;
   setWizardStep: (step: WizardBodyTypes) => void;
-  router: NextRouter;
 }): WizardBodyElement {
   switch (currentStep) {
     case "pdf_upload":
     case "posted_paper_update":
-      return <>THIS IS UPDATE</>;
+      return <PaperUploadWizardUpdatePaper />;
     case "standby":
       return (
         // @ts-ignore legacy socket hook
@@ -66,11 +68,11 @@ export default function PaperUploadWizardContainer({
     (): WizardBodyElement =>
       getWizardBody({
         currentStep,
+        onExit,
+        postedPaperID,
         setPostedPaperID,
         setWizardStep: (step: WizardBodyTypes): void =>
           setComponentState({ currentStep: step }),
-        onExit,
-        router,
       }),
     [currentStep, router.query]
   );
