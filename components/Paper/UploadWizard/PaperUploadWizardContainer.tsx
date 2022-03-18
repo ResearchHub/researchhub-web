@@ -31,7 +31,9 @@ function getWizardBody({
   switch (currentStep) {
     case "pdf_upload":
     case "posted_paper_update":
-      return <PaperUploadWizardUpdatePaper />;
+      return (
+        <PaperUploadWizardUpdatePaper onExit={onExit} paperID={postedPaperID} />
+      );
     case "standby":
       return (
         // @ts-ignore legacy socket hook
