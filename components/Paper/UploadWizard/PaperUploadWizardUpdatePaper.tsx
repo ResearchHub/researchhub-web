@@ -1,4 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
+import { useRouter } from "next/router";
 import { SyntheticEvent, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
@@ -38,7 +39,7 @@ const defaultFormState: FormState = {
   title: null,
 };
 
-export default function PaperUploadWizardUpdatePaper() {
+export default function PaperUploadWizardUpdatePaper({ onExit, paperID }) {
   // TODO: calvinhlee - migrate this to pure typeahead
   const [formError, setFormError] = useState<FormError>(defaulError);
   const [formState, setFormState] = useState<FormState>(defaultFormState);
@@ -74,9 +75,15 @@ export default function PaperUploadWizardUpdatePaper() {
   //     setFormErrors({ ...formErrors, hubs: selectedHubs.length < 1 });
   //   }
   // };
-
+  const router = useRouter();
   return (
-    <form>
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        router.push("/paper/[paperId]/", `/paper/${paperID}/`);
+        onExit();
+      }}
+    >
       <FormSelect
         containerStyle={formGenericStyles.container}
         error={formError.selectedHubs}
@@ -94,14 +101,14 @@ export default function PaperUploadWizardUpdatePaper() {
         options={suggestedHubs}
         placeholder="Search Hubs"
         required
-        value={selectedHubs}
+        // value={selectedHubs}
       />
       <FormInput
         label="DOI"
         placeholder="Jargon free version of the title that the average person would understand"
         containerStyle={formGenericStyles.container}
         labelStyle={formGenericStyles.labelStyle}
-        value={doi}
+        // value={doi}
         id="doi"
         onChange={(doi: string | string) => setFormState({ ...formState, doi })}
       />
@@ -110,12 +117,12 @@ export default function PaperUploadWizardUpdatePaper() {
         placeholder="Jargon free version of the title that the average person would understand"
         containerStyle={formGenericStyles.container}
         labelStyle={formGenericStyles.labelStyle}
-        value={title}
+        // value={title}
         id="title"
         onChange={(title: string | string) =>
           setFormState({ ...formState, title })
         }
-      />{" "}
+      />
       <div
         style={{
           display: "flex",
@@ -134,6 +141,7 @@ export default function PaperUploadWizardUpdatePaper() {
           type="button"
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
+            onExit();
             // logical ordering
           }}
         />
