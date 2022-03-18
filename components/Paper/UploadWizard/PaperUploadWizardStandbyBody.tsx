@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   },
   progreeBar: { width: "100%" },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 500,
     paddingBottom: 8,
     marginBottom: 16,
