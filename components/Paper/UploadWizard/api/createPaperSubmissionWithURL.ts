@@ -19,8 +19,11 @@ export function createPaperSubmissioncreatePaperSubmissionWithURL({
     .then(Helpers.parseJSON)
     .then((result: any): void => {
       if (result?.paper_status === "INITIATED") {
-        onSuccess();
+        onSuccess(result);
       }
     })
-    .catch((error: Error) => onError(error));
+    .catch((error: Error) => {
+      debugger;
+      onError(error);
+    });
 }

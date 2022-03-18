@@ -4,11 +4,12 @@ import { createPaperSubmissioncreatePaperSubmissionWithURL } from "./api/createP
 import { isStringURL } from "~/config/utils/isStringURL";
 import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
+import { useRouter } from "next/router";
 
 type Props = {
   messageActions: any /* redux */;
@@ -34,6 +35,12 @@ function PaperUploadWizardURLBody({
     setFormErrors({ url: false });
     setFormValues({ url: "" });
   };
+  const router = useRouter();
+
+  useEffect(() => {
+    return (): void => resetComponent();
+  }, []);
+
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     console.warn("url: ", url);
@@ -63,7 +70,14 @@ function PaperUploadWizardURLBody({
               return;
           }
         },
-        onSuccess: () => {
+        onSuccess: (result) => {
+          router.push({
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              paper_submission_id: result.id,
+            },
+          });
           // logical ordering
           resetComponent();
           setCurrentStep("standby");
