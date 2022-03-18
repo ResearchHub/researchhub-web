@@ -22,7 +22,7 @@ const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
 
-  useEffect(promptYolo, [auth.authChecked]);
+  // useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
     try {
