@@ -64,7 +64,7 @@ export default function PaperUploadWizardContainer({
         onExit,
         router,
       }),
-    [currentStep]
+    [currentStep, router.query]
   );
 
   return (
