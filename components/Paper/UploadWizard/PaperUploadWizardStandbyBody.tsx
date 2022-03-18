@@ -1,11 +1,23 @@
+import { bindActionCreators } from "redux";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { ID } from "~/config/types/root_types";
+import { ModalActions } from "~/redux/modals";
+import { nullthrows } from "~/config/utils/nullchecks";
 import { useEffect, useState } from "react";
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
 import withWebSocket from "~/components/withWebSocket";
 
-type Props = { onExit: () => void; wsResponse: any };
-const TWENTY_SEC = 20000;
+type Props = {
+  modalActions: any /* redux */;
+  onExit: () => void;
+  setPostedPaperID: (id: ID) => void;
+  setWizardStep: (step: WizardBodyTypes) => void;
+  wsResponse: any;
+};
+const TWENTY_FIVE_SEC = 25000;
 
 const FAKE_PERCENTS = [
   2, 7, 11, 13, 24, 28, 32, 50, 55, 63, 70, 81, 83, 85, 88, 89, 91,
@@ -14,39 +26,86 @@ const FAKE_PERCENTS = [
 const timeLoop = ({
   loadIndex,
   setLoadIndex,
+  setLoadRef,
   time,
 }: {
   loadIndex: number;
   setLoadIndex: (ind: number) => void;
+  setLoadRef: (ref: NodeJS.Timeout) => void;
   time: number;
 }) => {
-  setTimeout((): void => {
-    const nextloadIndex = loadIndex + 1;
-    if (nextloadIndex < FAKE_PERCENTS.length) {
-      setLoadIndex(nextloadIndex);
-      timeLoop({ loadIndex: nextloadIndex, setLoadIndex, time });
-    }
-  }, time);
+  setLoadRef(
+    setTimeout((): void => {
+      if (loadIndex === -1) {
+        setLoadIndex(-1); // keeps the bar in sync
+        return;
+      }
+
+      const nextloadIndex = loadIndex + 1;
+      if (nextloadIndex < FAKE_PERCENTS.length) {
+        setLoadIndex(nextloadIndex);
+        timeLoop({ loadIndex: nextloadIndex, setLoadIndex, setLoadRef, time });
+      }
+    }, time)
+  );
 };
 
-function PaperUploadWizardStandbyBody({ onExit, wsResponse }: Props) {
+function PaperUploadWizardStandbyBody({
+  modalActions,
+  onExit,
+  setPostedPaperID,
+  setWizardStep,
+  wsResponse,
+}: Props) {
   const [loadIndex, setLoadIndex] = useState<number>(0);
+  const [loadRef, setLoadRef] = useState<NodeJS.Timeout | null>(null);
   const [askRedirect, setAskRedirect] = useState<boolean>(false);
-  const percent = FAKE_PERCENTS[loadIndex];
 
   // TODO: calvinhlee - look at the new socket for success / error
+  const parsedWsResponse = JSON.parse(wsResponse);
+  const wsData = parsedWsResponse?.data ?? {};
+  const uploadStatus = wsData?.paper_status;
+
   useEffect(() => {
-    timeLoop({ loadIndex, setLoadIndex, time: 1456 });
-    setTimeout((): void => setAskRedirect(true), TWENTY_SEC);
+    timeLoop({ loadIndex, setLoadIndex, setLoadRef, time: 1200 });
+    setTimeout((): void => setAskRedirect(true), TWENTY_FIVE_SEC);
   }, []);
-  // const { data: note, type: responseType, requester } = JSON.parse(wsResponse);
-  console.warn("wsResponse: ", wsResponse);
+
+  useEffect((): void => {
+    if (uploadStatus === "COMPLETE") {
+      setLoadIndex(-1);
+      clearTimeout(nullthrows(loadRef, "Attempting to clear null ref"));
+      setTimeout((): void => {
+        setPostedPaperID(wsData?.paper);
+        setWizardStep("posted_paper_update");
+      }, 1600);
+    } else if (uploadStatus === "FAILED_DUPLICATE") {
+      onExit();
+      modalActions.openUploadPaperModal(true, [
+        {
+          searchResults: wsData?.duplicate_papers ?? [],
+          isDuplicate: true,
+        },
+      ]);
+    }
+  }, [uploadStatus]);
+
+  const percent = FAKE_PERCENTS[loadIndex] ?? 100;
+  const shouldRenderDelayText =
+    !["COMPLETE", "FAILED_DUPLICATE"].includes(uploadStatus) && askRedirect;
+  const progressText =
+    uploadStatus === "PROCESSING_CROSSREF"
+      ? "Cross referencing ..."
+      : uploadStatus === "COMPLETE"
+      ? "Done"
+      : "Importing from source ...";
+
   return (
     <div className={css(styles.wizardStandby)}>
       <div className={css(styles.wizardStandbyBox)}>
         <div className={css(styles.title)}>{"Uploading a paper"}</div>
         <div className={css(styles.statusText)}>
-          <div>{"Importing from source ..."}</div>
+          <div>{progressText}</div>
           <div>{`${percent}%`}</div>
         </div>
         <ProgressBar
@@ -59,7 +118,7 @@ function PaperUploadWizardStandbyBody({ onExit, wsResponse }: Props) {
         />
       </div>
 
-      {askRedirect && (
+      {shouldRenderDelayText && (
         <div className={css(styles.loadText)}>
           <div>
             {
@@ -78,8 +137,16 @@ function PaperUploadWizardStandbyBody({ onExit, wsResponse }: Props) {
   );
 }
 
-export default // @ts-ignore legacy hook
-withWebSocket(PaperUploadWizardStandbyBody);
+const mapStateToProps = (_state) => ({});
+
+const mapDispatchToProps = (dispatch) => ({
+  modalActions: bindActionCreators(ModalActions, dispatch),
+});
+
+export default withWebSocket(
+  // @ts-ignore legacy hook
+  connect(mapStateToProps, mapDispatchToProps)(PaperUploadWizardStandbyBody)
+);
 
 const styles = StyleSheet.create({
   wizardStandby: { marginTop: 32, width: "100%" },
