@@ -15,7 +15,7 @@ type Props = {
   messageActions: any /* redux */;
   modalActions: any /* redux */;
   onExit: () => void;
-  setCurrentStep: (step: WizardBodyTypes) => void;
+  setWizardStep: (step: WizardBodyTypes) => void;
 };
 type FormErrors = { url: boolean };
 type FormValues = { url: string };
@@ -24,7 +24,7 @@ function PaperUploadWizardURLBody({
   messageActions,
   modalActions,
   onExit,
-  setCurrentStep,
+  setWizardStep,
 }: Props) {
   const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
   const [formValues, setFormValues] = useState<FormValues>({ url: "" });
@@ -70,17 +70,10 @@ function PaperUploadWizardURLBody({
               return;
           }
         },
-        onSuccess: (result) => {
-          router.push({
-            pathname: router.pathname,
-            query: {
-              ...router.query,
-              paper_submission_id: result.id,
-            },
-          });
+        onSuccess: (_result: any) => {
           // logical ordering
           resetComponent();
-          setCurrentStep("standby");
+          setWizardStep("standby");
         },
         url,
       });
@@ -119,7 +112,7 @@ function PaperUploadWizardURLBody({
             event.preventDefault();
             // logical ordering
             resetComponent();
-            setCurrentStep("standby");
+            setWizardStep("standby");
             onExit();
           }}
         />
