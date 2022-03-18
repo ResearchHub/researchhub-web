@@ -80,7 +80,6 @@ class UploadPaperModal extends Component {
 
   renderSearchResults = () => {
     let results = this.props.modals.uploadPaperModal.suggestedPapers;
-
     return results.map((paper, index) => {
       paper.meta = {};
       return (
