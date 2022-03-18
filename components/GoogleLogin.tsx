@@ -16,7 +16,7 @@ interface GoogleButtonParams {
 }
 
 
-const GoogleButton: FunctionComponent<GoogleButtonParams> = ({
+const GoogleLogin: FunctionComponent<GoogleButtonParams> = ({
   onCredentialResponse,
   login,
   render,
@@ -48,4 +48,4 @@ const GoogleButton: FunctionComponent<GoogleButtonParams> = ({
   return render({onClick: getAuthCode});
 };
 
-export default GoogleButton;
+export default GoogleLogin;
