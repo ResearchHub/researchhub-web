@@ -31,7 +31,6 @@ const GoogleLogin: FunctionComponent<GoogleButtonParams> = ({
   }
 
   useEffect(() => {
-    console.log(GOOGLE_CLIENT_ID);
     if (scriptLoaded) {
       setClient(
         (window as any).google.accounts.oauth2.initCodeClient({
