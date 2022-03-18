@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
   },
   hubLink: {
     textDecoration: "none",
-    color: "#111",
+    color: colors.BLACK(),
     width: "100%",
     display: "flex",
     alignItems: "center",

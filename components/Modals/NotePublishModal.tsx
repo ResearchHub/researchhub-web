@@ -321,12 +321,13 @@ function NotePublishModal({
             <li>
               Be respectful of differing opinions, viewpoints, and experiences
             </li>
+            <li>Do not plagiarize any content, keep it original</li>
           </ul>
           <div className={css(styles.checkboxContainer)}>
             <CheckBox
               active={checkBoxOne}
               isSquare
-              label={"I have adhered to the ResearchHub posting guidelines."}
+              label={"I have adhered to the ResearchHub posting guidelines"}
               labelStyle={styles.label}
               onChange={() => setCheckBoxOne(!checkBoxOne)}
             />
@@ -335,20 +336,16 @@ function NotePublishModal({
             <CheckBox
               active={checkBoxTwo}
               isSquare
-              label={"This post is original and not published work."}
+              label={"[Optional] Assign a DOI to this post for 5 RSC"}
               labelStyle={styles.label}
               onChange={() => setCheckBoxTwo(!checkBoxTwo)}
             />
           </div>
           <div className={css(styles.buttonsContainer)}>
-            <div
-              className={css(
-                (!checkBoxOne || !checkBoxTwo) && styles.disabledCursor
-              )}
-            >
+            <div className={css(!checkBoxOne && styles.disabledCursor)}>
               <Button
                 customButtonStyle={styles.buttonStyle}
-                disabled={isSubmitting || !checkBoxOne || !checkBoxTwo}
+                disabled={isSubmitting || !checkBoxOne}
                 isWhite={false}
                 label={isPublished ? "Republish" : "Publish"}
                 onClick={handlePost}
