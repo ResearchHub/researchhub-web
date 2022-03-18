@@ -40,6 +40,11 @@ export default class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <script
+            src="https://accounts.google.com/gsi/client"
+            async
+            defer
+          ></script>
           {/* Google one tap */}
           <link rel="preconnect" href="https://fonts.gstatic.com/"></link>
           <link
