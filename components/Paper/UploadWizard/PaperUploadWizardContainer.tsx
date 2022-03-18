@@ -1,10 +1,12 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
-import { Fragment, ReactElement, useMemo, useState } from "react";
+import { ReactElement, useMemo, useState } from "react";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
-import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
-import { breakpoints } from "~/config/themes/screen";
+import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
+import { NextRouter, useRouter } from "next/router";
 
 type Props = { onExit: () => void };
 type State = {
@@ -16,15 +18,24 @@ function getWizardBody({
   currentStep,
   onExit,
   setCurrentStep,
+  router,
 }: {
   currentStep: WizardBodyTypes;
   onExit: () => void;
   setCurrentStep: (step: WizardBodyTypes) => void;
+  router: NextRouter;
 }): WizardBodyElement {
   switch (currentStep) {
     case "pdf_upload":
     case "standby":
-      return <PaperUploadWizardStandbyBody onExit={onExit} />;
+      return (
+        // @ts-ignore legacy socket hook
+        <PaperUploadWizardStandbyBody
+          onExit={onExit}
+          wsAuth={true}
+          wsUrl={WS_ROUTES.PAPER_SUBMISSION(53)}
+        />
+      );
     case "url_upload":
     default:
       return (
@@ -39,8 +50,9 @@ function getWizardBody({
 export default function PaperUploadWizardContainer({
   onExit,
 }: Props): ReactElement<Props> {
+  const router = useRouter();
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "standby",
+    currentStep: "url_upload",
   });
 
   const wizardBody = useMemo(
@@ -50,6 +62,7 @@ export default function PaperUploadWizardContainer({
         setCurrentStep: (step: WizardBodyTypes): void =>
           setComponentState({ currentStep: step }),
         onExit,
+        router,
       }),
     [currentStep]
   );
