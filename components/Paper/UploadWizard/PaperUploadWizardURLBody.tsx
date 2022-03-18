@@ -43,9 +43,11 @@ function PaperUploadWizardURLBody({
 
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
+    event.stopPropagation();
     console.warn("url: ", url);
     const newFormErrors = { url: !isStringURL(url) };
     const hasError = Object.values(newFormErrors).includes(true);
+
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
@@ -57,12 +59,7 @@ function PaperUploadWizardURLBody({
               const { data } = response;
               resetComponent();
               onExit();
-              modalActions.openUploadPaperModal(true, [
-                {
-                  searchResults: [data],
-                  isDuplicate: true,
-                },
-              ]);
+              modalActions.openUploadPaperModal(true, [error.message?.data]);
               break;
             default:
               messageActions.setMessage("Please provide valid URL source");

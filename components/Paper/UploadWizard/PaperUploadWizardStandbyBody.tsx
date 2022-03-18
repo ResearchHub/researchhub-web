@@ -80,13 +80,10 @@ function PaperUploadWizardStandbyBody({
         setWizardStep("posted_paper_update");
       }, 1600);
     } else if (uploadStatus === "FAILED_DUPLICATE") {
-      onExit();
       modalActions.openUploadPaperModal(true, [
-        {
-          searchResults: wsData?.duplicate_papers ?? [],
-          isDuplicate: true,
-        },
+        ...(parsedWsResponse?.duplicate_papers ?? []),
       ]);
+      onExit();
     }
   }, [uploadStatus]);
 

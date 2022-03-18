@@ -31,9 +31,10 @@ export default function PaperUploadWizardInput({
         <input
           className={css(styles.input, error && styles.inputError)}
           maxLength={250}
-          onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-            onChange(event.target?.value)
-          }
+          onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+            event.preventDefault();
+            onChange(event.target?.value);
+          }}
           placeholder={placeholder ?? ""}
           type="string"
           value={value ?? ""}
