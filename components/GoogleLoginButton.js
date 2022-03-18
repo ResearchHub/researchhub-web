@@ -1,3 +1,5 @@
+import React, { useEffect } from "react";
+
 import { GoogleLogin } from "react-google-login";
 import { StyleSheet, css } from "aphrodite";
 import { connect } from "react-redux";
@@ -6,6 +8,7 @@ import * as Sentry from "@sentry/browser";
 import { sendAmpEvent } from "~/config/fetch";
 
 import Button from "~/components/Form/Button";
+import GoogleButton from "~/components/GoogleLogin";
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -13,7 +16,6 @@ import { BannerActions } from "~/redux/banner";
 
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 import colors from "~/config/themes/colors";
-import { useEffect } from "react";
 import { isDevEnv } from "~/config/utils/env";
 
 const GoogleLoginButton = (props) => {
@@ -82,7 +84,6 @@ const GoogleLoginButton = (props) => {
 
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
-    response["access_token"] = response["accessToken"];
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
@@ -131,11 +132,8 @@ const GoogleLoginButton = (props) => {
   }
 
   return (
-    <GoogleLogin
-      clientId={GOOGLE_CLIENT_ID}
-      onSuccess={responseGoogle}
-      onFailure={showLoginFailureMessage}
-      cookiePolicy={"single_host_origin"}
+    <GoogleButton
+      login={responseGoogle}
       render={(renderProps) => {
         if (hideButton) {
           return (
@@ -153,7 +151,7 @@ const GoogleLoginButton = (props) => {
               data-test={isDevEnv() ? `google-login-btn` : undefined}
             >
               <Button
-                disabled={renderProps.disabled || disabled}
+                disabled={disabled}
                 onClick={renderProps.onClick}
                 customButtonStyle={[styles.button, props.styles]}
                 icon={"/static/icons/google.png"}
