@@ -2,11 +2,14 @@ import { css, StyleSheet } from "aphrodite";
 import { useEffect, useState } from "react";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
+import withWebSocket from "~/components/withWebSocket";
 
-type Props = { onExit: () => void };
+type Props = { onExit: () => void; wsResponse: any };
 const TWENTY_SEC = 20000;
 
-const FAKE_PERCENTS = [2, 7, 11, 13, 24, 28, 32, 50, 55, 63, 70, 81, 83, 85, 88, 89, 91];
+const FAKE_PERCENTS = [
+  2, 7, 11, 13, 24, 28, 32, 50, 55, 63, 70, 81, 83, 85, 88, 89, 91,
+];
 
 const timeLoop = ({
   loadIndex,
@@ -26,7 +29,7 @@ const timeLoop = ({
   }, time);
 };
 
-export default function PaperUploadWizardStandbyBody({ onExit }: Props) {
+function PaperUploadWizardStandbyBody({ onExit, wsResponse }: Props) {
   const [loadIndex, setLoadIndex] = useState<number>(0);
   const [askRedirect, setAskRedirect] = useState<boolean>(false);
   const percent = FAKE_PERCENTS[loadIndex];
@@ -36,7 +39,8 @@ export default function PaperUploadWizardStandbyBody({ onExit }: Props) {
     timeLoop({ loadIndex, setLoadIndex, time: 1456 });
     setTimeout((): void => setAskRedirect(true), TWENTY_SEC);
   }, []);
-
+  // const { data: note, type: responseType, requester } = JSON.parse(wsResponse);
+  console.warn("wsResponse: ", wsResponse);
   return (
     <div className={css(styles.wizardStandby)}>
       <div className={css(styles.wizardStandbyBox)}>
@@ -73,6 +77,9 @@ export default function PaperUploadWizardStandbyBody({ onExit }: Props) {
     </div>
   );
 }
+
+export default // @ts-ignore legacy hook
+withWebSocket(PaperUploadWizardStandbyBody);
 
 const styles = StyleSheet.create({
   wizardStandby: { marginTop: 32, width: "100%" },
