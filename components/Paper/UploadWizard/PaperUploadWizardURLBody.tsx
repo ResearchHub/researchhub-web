@@ -30,9 +30,13 @@ function PaperUploadWizardURLBody({
 
   const { url: urlError } = formErrors;
   const { url } = formValues;
-
+  const resetComponent = (): void => {
+    setFormErrors({ url: false });
+    setFormValues({ url: "" });
+  };
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
+    console.warn("url: ", url);
     const newFormErrors = { url: !isStringURL(url) };
     const hasError = Object.values(newFormErrors).includes(true);
     if (hasError) {
@@ -44,6 +48,8 @@ function PaperUploadWizardURLBody({
           switch (response.status) {
             case 403 /* Duplicate error */:
               const { data } = response;
+              resetComponent();
+              onExit();
               modalActions.openUploadPaperModal(true, [
                 {
                   searchResults: [data],
@@ -59,8 +65,7 @@ function PaperUploadWizardURLBody({
         },
         onSuccess: () => {
           // logical ordering
-          setFormErrors({ url: false });
-          setFormValues({ url: "" });
+          resetComponent();
           setCurrentStep("standby");
         },
         url,
@@ -69,7 +74,7 @@ function PaperUploadWizardURLBody({
   };
 
   return (
-    <form onSubmit={onSubmit}>
+    <form onSubmit={onSubmit} style={{ paddingTop: 32 }}>
       <PaperUploadWizardInput
         error={urlError}
         label="Link to Paper"
@@ -99,8 +104,7 @@ function PaperUploadWizardURLBody({
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
             // logical ordering
-            setFormErrors({ url: false });
-            setFormValues({ url: "" });
+            resetComponent();
             setCurrentStep("standby");
             onExit();
           }}

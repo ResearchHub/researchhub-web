@@ -24,7 +24,7 @@ function getWizardBody({
   switch (currentStep) {
     case "pdf_upload":
     case "standby":
-      return <PaperUploadWizardStandbyBody />;
+      return <PaperUploadWizardStandbyBody onExit={onExit} />;
     case "url_upload":
     default:
       return (
@@ -40,7 +40,7 @@ export default function PaperUploadWizardContainer({
   onExit,
 }: Props): ReactElement<Props> {
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "url_upload",
+    currentStep: "standby",
   });
 
   const wizardBody = useMemo(
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    padding: "32px 0 0",
+    padding: "32px 0",
     width: "100%",
     height: "100%",
     minWidth: "600px",
@@ -80,9 +80,7 @@ const styles = StyleSheet.create({
       padding: "16px 0 0",
     },
   },
-  bodyWrap: {
-    paddingTop: 32,
-  },
+  bodyWrap: {},
   contentWrap: {
     maxWidth: 720,
     width: "100%",
