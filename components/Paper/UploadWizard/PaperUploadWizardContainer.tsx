@@ -33,7 +33,7 @@ function getWizardBody({
         <PaperUploadWizardStandbyBody
           onExit={onExit}
           wsAuth={true}
-          wsUrl={WS_ROUTES.PAPER_SUBMISSION(53)}
+          wsUrl={WS_ROUTES.PAPER_SUBMISSION(1)}
         />
       );
     case "url_upload":
