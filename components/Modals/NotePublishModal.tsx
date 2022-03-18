@@ -38,7 +38,7 @@ function validateFormField(fieldID: string, value: any): boolean {
 
 function getDefaultAuthors(currentNote: any, currentUser: any): any {
   const { authors } = currentNote.post || {};
-  const currentAuthor = currentUser.author_profile;
+  const currentAuthor = currentUser.author_profile || {};
   return (
     authors?.map((author) => {
       return {
