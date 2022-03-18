@@ -23,7 +23,6 @@ export function createPaperSubmissioncreatePaperSubmissionWithURL({
       }
     })
     .catch((error: Error) => {
-      debugger;
       onError(error);
     });
 }

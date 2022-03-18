@@ -7,6 +7,7 @@ import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import { NextRouter, useRouter } from "next/router";
+import { ID } from "~/config/types/root_types";
 
 type Props = { onExit: () => void };
 type State = {
@@ -17,21 +18,26 @@ type WizardBodyElement = ReactElement<typeof PaperUploadWizardURLBody>;
 function getWizardBody({
   currentStep,
   onExit,
-  setCurrentStep,
-  router,
+  setPostedPaperID,
+  setWizardStep,
 }: {
   currentStep: WizardBodyTypes;
   onExit: () => void;
-  setCurrentStep: (step: WizardBodyTypes) => void;
+  setPostedPaperID: (id: ID) => void;
+  setWizardStep: (step: WizardBodyTypes) => void;
   router: NextRouter;
 }): WizardBodyElement {
   switch (currentStep) {
     case "pdf_upload":
+    case "posted_paper_update":
+      return <>THIS IS UPDATE</>;
     case "standby":
       return (
         // @ts-ignore legacy socket hook
         <PaperUploadWizardStandbyBody
           onExit={onExit}
+          setPostedPaperID={setPostedPaperID}
+          setWizardStep={setWizardStep}
           wsAuth={true}
           wsUrl={WS_ROUTES.PAPER_SUBMISSION(1)}
         />
@@ -40,8 +46,8 @@ function getWizardBody({
     default:
       return (
         <PaperUploadWizardURLBody
-          setCurrentStep={setCurrentStep}
           onExit={onExit}
+          setWizardStep={setWizardStep}
         />
       );
   }
@@ -54,12 +60,14 @@ export default function PaperUploadWizardContainer({
   const [{ currentStep }, setComponentState] = useState<State>({
     currentStep: "url_upload",
   });
+  const [postedPaperID, setPostedPaperID] = useState<ID>(null);
 
   const wizardBody = useMemo(
     (): WizardBodyElement =>
       getWizardBody({
         currentStep,
-        setCurrentStep: (step: WizardBodyTypes): void =>
+        setPostedPaperID,
+        setWizardStep: (step: WizardBodyTypes): void =>
           setComponentState({ currentStep: step }),
         onExit,
         router,
