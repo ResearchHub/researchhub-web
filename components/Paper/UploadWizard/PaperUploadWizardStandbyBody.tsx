@@ -94,11 +94,15 @@ function PaperUploadWizardStandbyBody({
   const shouldRenderDelayText =
     !["COMPLETE", "FAILED_DUPLICATE"].includes(uploadStatus) && askRedirect;
   const progressText =
-    uploadStatus === "PROCESSING_CROSSREF"
+    uploadStatus === "PROCESSING"
+      ? "Initiating ..."
+      : uploadStatus === "PROCESSING_MANUBOT"
+      ? "Importing from source ..."
+      : uploadStatus === "PROCESSING_CROSSREF"
       ? "Cross referencing ..."
       : uploadStatus === "COMPLETE"
       ? "Done"
-      : "Importing from source ...";
+      : "Processing ...";
 
   return (
     <div className={css(styles.wizardStandby)}>
