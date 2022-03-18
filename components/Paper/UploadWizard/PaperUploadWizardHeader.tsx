@@ -4,16 +4,12 @@ import { ReactElement } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 
 type Props = {
-  currentStep: WizardBodyTypes;
+  currentStep?: WizardBodyTypes;
 };
 
 export default function PaperUploadWizardHeader({
   currentStep,
 }: Props): ReactElement<"div"> | null {
-  if (currentStep === "standby") {
-    return null;
-  }
-
   return (
     <div
       className={css(formGenericStyles.header, formGenericStyles.text)}
@@ -21,7 +17,7 @@ export default function PaperUploadWizardHeader({
         paddingBottom: "16px !important" /* overrides default header padding */,
       }}
     >
-      {currentStep === "url_upload" ? "Add Paper" : "Add PDF"}
+      {currentStep !== "url_upload" ? "Add PDF" : "Add Paper"}
       <a
         className={css(formGenericStyles.authorGuidelines)}
         href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
