@@ -1,14 +1,13 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
+import { ID } from "~/config/types/root_types";
 import { ReactElement, useMemo, useState } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
-import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
-import { NextRouter, useRouter } from "next/router";
-import { ID } from "~/config/types/root_types";
 import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
+import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 
 type Props = { onExit: () => void };
 type State = {
@@ -58,9 +57,8 @@ function getWizardBody({
 export default function PaperUploadWizardContainer({
   onExit,
 }: Props): ReactElement<Props> {
-  const router = useRouter();
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "posted_paper_update",
+    currentStep: "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(null);
 
@@ -74,7 +72,7 @@ export default function PaperUploadWizardContainer({
         setWizardStep: (step: WizardBodyTypes): void =>
           setComponentState({ currentStep: step }),
       }),
-    [currentStep, router.query]
+    [currentStep]
   );
 
   return (
