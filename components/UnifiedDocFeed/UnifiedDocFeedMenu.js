@@ -55,7 +55,7 @@ const UnifiedDocFeedMenu = ({
     const types = [
       {
         value: undefined,
-        label: "All",
+        label: "All Content",
       },
       {
         value: "paper",
