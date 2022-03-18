@@ -8,7 +8,7 @@ import * as Sentry from "@sentry/browser";
 import { sendAmpEvent } from "~/config/fetch";
 
 import Button from "~/components/Form/Button";
-import GoogleButton from "~/components/GoogleLoginButtonV2";
+import GoogleButton from "~/components/GoogleLogin";
 import { AuthActions } from "../redux/auth";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -98,7 +98,6 @@ const GoogleLoginButton = (props) => {
 
   const responseGoogle = async (response) => {
     const { googleLogin, getUser } = props;
-    console.log(response);
     await googleLogin(response).then((action) => {
       if (action.loginFailed) {
         showLoginFailureMessage(action);
@@ -146,19 +145,9 @@ const GoogleLoginButton = (props) => {
     }
   }
 
-  function getAuthCode(client) {
-    client.requestCode();
-  }
-
-  return <GoogleButton login={responseGoogle} />;
-
   return (
-    <GoogleLogin
-      clientId={GOOGLE_CLIENT_ID}
-      onSuccess={responseGoogle}
-      onFailure={showLoginFailureMessage}
-      cookiePolicy={"single_host_origin"}
-      responseType="code"
+    <GoogleButton
+      login={responseGoogle}
       render={(renderProps) => {
         if (hideButton) {
           return (
@@ -176,7 +165,7 @@ const GoogleLoginButton = (props) => {
               data-test={isDevEnv() ? `google-login-btn` : undefined}
             >
               <Button
-                disabled={renderProps.disabled || disabled}
+                disabled={disabled}
                 onClick={renderProps.onClick}
                 customButtonStyle={[styles.button, props.styles]}
                 icon={"/static/icons/google.png"}
