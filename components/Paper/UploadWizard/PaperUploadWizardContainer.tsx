@@ -60,7 +60,7 @@ export default function PaperUploadWizardContainer({
 }: Props): ReactElement<Props> {
   const router = useRouter();
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "url_upload",
+    currentStep: "posted_paper_update",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(null);
 
