@@ -22,20 +22,6 @@ const GoogleLoginButton = (props) => {
   let { customLabel, hideButton, isLoggedIn, auth, disabled } = props;
   const router = useRouter();
 
-  useEffect(() => {
-    const divRef = React.createRef();
-
-    if (divRef) {
-      window.google.accounts.id.initialize({
-        client_id: GOOGLE_CLIENT_ID,
-        callback: responseGoogle,
-      });
-      window.google.accounts.id.renderButton(divRef.current, {
-        theme: "outline",
-        size: "large",
-      });
-    }
-  });
   useEffect(promptYolo, [auth.authChecked]);
 
   function promptYolo() {
