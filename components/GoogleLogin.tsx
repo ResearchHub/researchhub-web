@@ -3,6 +3,9 @@ import React, { FunctionComponent, useEffect, useState } from 'react';
 import { AuthActions } from "../redux/auth";
 import { GOOGLE_CLIENT_ID } from "~/config/constants";
 
+// Reference:
+// https://gist.github.com/pmckee11/13b1dffbf1d271a782ed7f65480b978f
+
 const googleUrl = 'https://accounts.google.com/gsi/client';
 
 export interface GoogleCredentialResponse {
