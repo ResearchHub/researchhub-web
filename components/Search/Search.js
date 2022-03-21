@@ -84,8 +84,8 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
   };
 
   const shouldShowSmallScreenSearch = () => {
+    // return false;
     const inputWidth = searchInputRef.current.offsetWidth;
-
     if (window.innerWidth <= breakpoints.small.int) {
       return true;
     } else if (inputWidth <= SMALLEST_ALLOWED_INPUT) {
@@ -240,6 +240,7 @@ const styles = StyleSheet.create({
   search: {
     width: "100%",
     maxWidth: 600,
+    minWidth: 400,
     borderRadius: 2,
     boxSizing: "border-box",
     background: "white",

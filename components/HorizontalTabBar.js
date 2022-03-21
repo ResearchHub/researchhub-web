@@ -18,6 +18,7 @@ const HorizontalTabBar = ({
   showArrows = false,
   type = "FLAT_NAV",
 }) => {
+  console.log("tabs", tabs);
   const [pageWidth, setPageWidth] = useState(
     process.browser ? window.innerWidth : 0
   );
