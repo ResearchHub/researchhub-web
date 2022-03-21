@@ -117,29 +117,17 @@ const Navbar = (props) => {
   const [sideMenu, setSideMenu] = useState(false);
 
   const tabData = [
-    { label: "Home", route: "/", icon: "home" },
-    { label: "Hubs", route: "/hubs", icon: "hub" },
-    { label: "About", route: "/about", icon: "info-circle" },
     {
-      label: "Blog",
-      route: "",
-      link: "https://medium.com/researchhub",
-      icon: "medium",
-      className: "lessImportantTab",
+      label: "Discuss",
+      route: "/",
     },
     {
-      label: "Help",
-      route: "",
-      link: "https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0",
-      icon: "help",
-      className: "lessImportantTab",
+      label: "Publish",
+      route: "/",
     },
-    { label: "Live", route: "/live", icon: "live" },
     {
       label: "Leaderboard",
       route: "/leaderboard/users",
-      icon: "trophy",
-      className: "lessImportantTab",
     },
     isUserModerator
       ? {
@@ -224,30 +212,9 @@ const Navbar = (props) => {
 
   function renderTabs() {
     let tabs = filterNull(tabData).map((tab, index) => {
-      if (tab.icon === "home") {
-        return null;
-      }
-      if (tab.link) {
-        return (
-          <div
-            key={index}
-            className={css(
-              styles.tab,
-              index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab,
-              styles[tab.className]
-            )}
-          >
-            <a
-              className={css(styles.tabLink)}
-              href={tab.link}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {tab.label}
-            </a>
-          </div>
-        );
+      let isSelected = false;
+      if (index == 0) {
+        isSelected = true;
       }
 
       return (
@@ -257,16 +224,16 @@ const Navbar = (props) => {
               className={css(
                 styles.tab,
                 index === 0 && styles.firstTab,
-                styles[tab.className]
+                isSelected && styles.tabSelected
               )}
             >
               {tab.label}
-              {tab.extra && tab.extra()}
             </div>
           </a>
         </Link>
       );
     });
+
     return tabs;
   }
 
@@ -482,15 +449,21 @@ const Navbar = (props) => {
             <RHLogo iconStyle={styles.logo} withText={true} />
           </a>
         </Link>
-        <div className={css(styles.tabs)}>{renderTabs()}</div>
+
+        <div className={css(styles.tabs)}>
+          {renderTabs()}
+          <div className={css(styles.searchWrapper)}>
+            <Search
+              overrideStyle={styles.navbarSearchOverride}
+              navbarRef={navbarRef}
+              id="navbarSearch"
+            />
+          </div>
+        </div>
+
         <div className={css(styles.hubPopoverWrapper)}>
           <HubSelector />
         </div>
-        <Search
-          overrideStyle={styles.navbarSearchOverride}
-          navbarRef={navbarRef}
-          id="navbarSearch"
-        />
         <div className={css(styles.actions)}>
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
@@ -505,7 +478,7 @@ const Navbar = (props) => {
                   >
                     <AuthorAvatar
                       author={user.author_profile}
-                      size={33}
+                      size={40}
                       textSizeRatio={2.5}
                       disableLink
                       showModeratorBadge={user && user.moderator}
@@ -677,7 +650,7 @@ const styles = StyleSheet.create({
     padding: "20px 20px",
     boxSizing: "border-box",
     display: "flex",
-    height: 80,
+    height: 68,
     background: "#fff",
     alignItems: "center",
     borderBottom: "1px solid #e8e8ef",
@@ -696,14 +669,10 @@ const styles = StyleSheet.create({
     position: "initial",
   },
   tabs: {
+    marginTop: 5,
     display: "flex",
     marginRight: "auto",
     "@media only screen and (max-width: 760px)": {
-      display: "none",
-    },
-  },
-  lessImportantTab: {
-    "@media only screen and (min-width: 760px) and (max-width: 900px)": {
       display: "none",
     },
   },
@@ -763,7 +732,7 @@ const styles = StyleSheet.create({
     width: 5,
   },
   firstTab: {
-    marginLeft: 30,
+    marginLeft: 15,
   },
   lastTab: {
     marginRight: 30,
@@ -781,19 +750,30 @@ const styles = StyleSheet.create({
       color: "#fff",
     },
   },
-  tab: {
+  searchWrapper: {
+    marginTop: 9,
     marginLeft: 15,
-    marginRight: 15,
+  },
+  tab: {
     cursor: "pointer",
     "@media only screen and (max-width: 1000px)": {
       margin: "0 10px 0 10px",
       fontSize: 14,
     },
+    padding: "20px 15px 20px 15px",
+    color: colors.BLACK(0.5),
+    fontSize: 16,
+    fontWeight: 500,
   },
   tabLink: {
     color: "#000",
     textDecoration: "none",
     position: "relative",
+  },
+  tabSelected: {
+    color: colors.PURPLE(),
+    borderBottom: "solid 3px",
+    borderColor: colors.PURPLE(),
   },
   notifications: {
     width: 12,
@@ -889,10 +869,11 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: 155,
+    width: 176,
     paddingBottom: 2.7,
     cursor: "pointer",
     userSelect: "none",
+    marginTop: 2,
   },
   logoContainerForMenu: {
     position: "absolute",
@@ -902,6 +883,7 @@ const styles = StyleSheet.create({
   logo: {
     objectFit: "contain",
     marginBottom: 8,
+    height: 40,
   },
   reputation: {
     cursor: "pointer",
