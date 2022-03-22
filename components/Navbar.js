@@ -550,6 +550,7 @@ const Navbar = (props) => {
                   <div
                     className={css(
                       styles.dropdown,
+                      isUserModerator && styles.dropdownForEditors,
                       !showReferral && styles.lowDropdown
                     )}
                     ref={dropdownRef}
@@ -950,7 +951,6 @@ const styles = StyleSheet.create({
   },
   actions: {
     display: "flex",
-    maxWidth: 265,
     alignItems: "center",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
@@ -991,7 +991,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -310,
+    bottom: -265,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
@@ -1000,6 +1000,9 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
+  },
+  dropdownForEditors: {
+    bottom: -310,
   },
   lowDropdown: {
     bottom: -215,
