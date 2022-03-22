@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   search: {
     width: "100%",
     maxWidth: 600,
-    width: 400,
+    width: 350,
     borderRadius: 4,
     boxSizing: "border-box",
     background: "white",
@@ -242,11 +242,8 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     position: "relative",
-    [`@media only screen and (max-width: ${breakpoints.xlarge.str})`]: {
-      width: 300,
-    },
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      width: "auto",
+      width: "100%",
     },
     ":hover": {
       borderColor: colors.BLUE(),
@@ -370,7 +367,9 @@ const styles = StyleSheet.create({
   searchInputExpanded: {
     padding: 10,
     height: "100%",
+    width: "100%",
     fontSize: 18,
+    display: "block",
     paddingLeft: 20,
     visibility: "visible",
     ":focus": {

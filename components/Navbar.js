@@ -827,7 +827,7 @@ const styles = StyleSheet.create({
       display: "none",
     },
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      marginTop: 14,
+      marginTop: 15,
       marginLeft: 10,
     },
   },
