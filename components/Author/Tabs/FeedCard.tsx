@@ -146,6 +146,7 @@ function FeedCard(props: FeedCardProps) {
     };
 
     return async (e: SyntheticEvent) => {
+      e.preventDefault();
       e.stopPropagation();
 
       if (
@@ -206,12 +207,18 @@ function FeedCard(props: FeedCardProps) {
                 onDesktop
                 onDownvote={
                   formattedDocType === "paper"
-                    ? () => onPaperVote(DOWNVOTE)
+                    ? (e) => {
+                        e.preventDefault();
+                        onPaperVote(DOWNVOTE);
+                      }
                     : createVoteHandler(DOWNVOTE)
                 }
                 onUpvote={
                   formattedDocType === "paper"
-                    ? () => onPaperVote(UPVOTE)
+                    ? (e) => {
+                        e.preventDefault();
+                        onPaperVote(UPVOTE);
+                      }
                     : createVoteHandler(UPVOTE)
                 }
                 score={score}
