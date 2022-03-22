@@ -324,6 +324,9 @@ const styles = StyleSheet.create({
     height: "inherit",
     width: "100%",
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      borderBottom: `unset`,
+    }
   },
   feedButtonContainer: {
     marginRight: 24,

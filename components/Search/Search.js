@@ -84,20 +84,14 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
   };
 
   const shouldShowSmallScreenSearch = () => {
-    // return false;
     const inputWidth = searchInputRef.current.offsetWidth;
-    if (window.innerWidth <= breakpoints.small.int) {
-      return true;
-    } else if (inputWidth <= SMALLEST_ALLOWED_INPUT) {
+    if (window.innerWidth <= breakpoints.large.int) {
       return true;
     } else {
       return false;
     }
   };
 
-  // IN non-mobile resolutions (over 760px) we allow
-  // the input field to render naturally. If it is smaller than
-  // SMALLEST_ALLOWED_INPUT, we also consider it to be "small screen"
   const setSmallScreenLayoutIfNeeded = () => {
     const inputWidth = searchInputRef.current.offsetWidth;
 
@@ -240,7 +234,7 @@ const styles = StyleSheet.create({
   search: {
     width: "100%",
     maxWidth: 600,
-    minWidth: 400,
+    width: 400,
     borderRadius: 4,
     boxSizing: "border-box",
     background: "white",
@@ -248,6 +242,12 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.xlarge.str})`]: {
+      width: 300,
+    },
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "auto",
+    },
     ":hover": {
       borderColor: colors.BLUE(),
     },
@@ -310,8 +310,8 @@ const styles = StyleSheet.create({
       background: 0,
     },
     [`@media only screen and (min-width: ${breakpoints.small.int + 1}px)`]: {
-      fontSize: 20,
-      marginRight: 10,
+      fontSize: 18,
+      marginRight: 0,
       opacity: 0.4,
     },
   },
@@ -359,7 +359,7 @@ const styles = StyleSheet.create({
   searchInputSmallScreen: {
     padding: 0,
     height: 0,
-    visibility: "hidden",
+    display: "none",
     ":focus": {
       boxShadow: "none",
       ":hover": {

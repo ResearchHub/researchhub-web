@@ -117,33 +117,6 @@ const Navbar = (props) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
 
-  const tabData = [
-    {
-      label: "Discuss",
-      route: "/",
-    },
-    {
-      label: "Publish",
-      route: "/",
-    },
-    {
-      label: "Leaderboard",
-      route: "/leaderboard/users",
-    },
-    isUserModerator
-      ? {
-          label: "Editors",
-          route: "/moderators/author-claim-case-dashboard?case_status=OPEN",
-          icon: "info-circle",
-          extra: () => {
-            return (
-              <div className={css(styles.notifications)}>{openCaseCounts}</div>
-            );
-          },
-        }
-      : null,
-  ];
-
   const menuTabsUpper = [
     {
       label: "Explore ResearchHub",
@@ -298,31 +271,6 @@ const Navbar = (props) => {
         </Link>
       </Fragment>
     );
-
-    //     let tabs = filterNull(tabData).map((tab, index) => {
-    //       let isSelected = false;
-    //       if (index == 0) {
-    //         isSelected = true;
-    //       }
-    //
-    //       return (
-    //         <Link href={tab.route} key={`navbar_tab_${index}`}>
-    //           <a className={css(styles.tabLink)}>
-    //             <div
-    //               className={css(
-    //                 styles.tab,
-    //                 index === 0 && styles.firstTab,
-    //                 isSelected && styles.tabSelected
-    //               )}
-    //             >
-    //               {tab.label}
-    //             </div>
-    //           </a>
-    //         </Link>
-    //       );
-    //     });
-    //
-    //     return tabs;
   }
 
   function toggleMenu(e) {
@@ -538,8 +486,8 @@ const Navbar = (props) => {
           </a>
         </Link>
 
-        <div className={css(styles.tabs)}>
-          {renderTabs()}
+        <div className={css(styles.tabsWrapper)}>
+          <div className={css(styles.tabs)}>{renderTabs()}</div>
           <div className={css(styles.searchWrapper)}>
             <Search
               overrideStyle={styles.navbarSearchOverride}
@@ -552,7 +500,17 @@ const Navbar = (props) => {
         <div className={css(styles.hubPopoverWrapper)}>
           <HubSelector />
         </div>
-        <div className={css(styles.actions)}>
+
+        <div className={css(styles.searchSmallScreen)}>
+          <Search
+            overrideStyle={styles.navbarSearchOverride}
+            navbarRef={navbarRef}
+            id="navbarSearch"
+          />
+        </div>
+        <div
+          className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
+        >
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
               renderLoginButtons(isLoggedIn)
@@ -566,7 +524,7 @@ const Navbar = (props) => {
                   >
                     <AuthorAvatar
                       author={user.author_profile}
-                      size={40}
+                      size={35}
                       textSizeRatio={2.5}
                       disableLink
                       showModeratorBadge={user && user.moderator}
@@ -613,6 +571,26 @@ const Navbar = (props) => {
                         Profile
                       </div>
                     </Link>
+
+                    {isUserModerator && (
+                      <Link
+                        href={"/user/[authorId]/[tabName]"}
+                        as={`/user/${user.author_profile.id}/overview`}
+                      >
+                        <div className={css(styles.option)}>
+                          <span className={css(styles.profileIcon)}>
+                            {icons.checkDouble}
+                          </span>
+                          <span className={css(styles.optionText)}>
+                            Editors{" "}
+                            <span className={css(styles.notifications)}>
+                              {openCaseCounts}
+                            </span>
+                          </span>
+                        </div>
+                      </Link>
+                    )}
+
                     <Link href={`/${user.organization_slug}/notebook`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
@@ -729,6 +707,7 @@ const burgerMenuStyle = {
 const styles = StyleSheet.create({
   hubPopoverWrapper: {
     display: "none",
+    marginRight: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
     },
@@ -756,13 +735,16 @@ const styles = StyleSheet.create({
   unstickyNavbar: {
     position: "initial",
   },
-  tabs: {
+  tabsWrapper: {
     marginTop: 5,
     display: "flex",
     marginRight: "auto",
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
+  },
+  tabs: {
+    display: "flex",
   },
   buttonLeft: {
     marginRight: 16,
@@ -777,7 +759,7 @@ const styles = StyleSheet.create({
   googleLoginButton: {
     margin: 0,
     width: "100%",
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
@@ -841,19 +823,37 @@ const styles = StyleSheet.create({
   searchWrapper: {
     marginTop: 9,
     marginLeft: 15,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      marginTop: 14,
+      marginLeft: 10,
+    },
+  },
+  searchSmallScreen: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
   },
   tab: {
     cursor: "pointer",
-    "@media only screen and (max-width: 1000px)": {
-      margin: "0 10px 0 10px",
-      fontSize: 14,
-    },
     padding: "20px 15px 20px 15px",
+    marginRight: 8,
     color: colors.BLACK(0.5),
     fontSize: 16,
     fontWeight: 500,
     ":hover": {
       color: colors.PURPLE(),
+    },
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      padding: "21px 8px 21px 8px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: "21px 8px 21px 8px",
+      marginRight: 5,
+      fontSize: 14,
     },
   },
   tabLink: {
@@ -875,14 +875,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     backgroundColor: colors.RED(),
     borderRadius: "50%",
-    position: "absolute",
-    top: -6,
-    right: 0,
     color: "#fff",
     padding: 3,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: "inline-block",
+    textAlign: "center",
   },
   caret: {
     marginLeft: 10,
@@ -891,7 +887,7 @@ const styles = StyleSheet.create({
   userDropdown: {
     position: "relative",
     zIndex: 5,
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
     // width: 210,
@@ -928,7 +924,7 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "rgba(250, 250, 250, 1)",
     },
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
@@ -948,16 +944,20 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
   actions: {
     display: "flex",
+    maxWidth: 265,
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
+  },
+  actionsLoggedIn: {
+    maxWidth: "auto",
   },
   logoContainer: {
     display: "flex",
@@ -968,6 +968,9 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     userSelect: "none",
     marginTop: 2,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: 148,
+    },
   },
   logoContainerForMenu: {
     position: "absolute",
@@ -978,6 +981,9 @@ const styles = StyleSheet.create({
     objectFit: "contain",
     marginBottom: 8,
     height: 38,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      height: 33,
+    },
   },
   reputation: {
     cursor: "pointer",
@@ -985,7 +991,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -265,
+    bottom: -310,
     right: 0,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
@@ -1056,6 +1062,9 @@ const styles = StyleSheet.create({
       background: "#eee",
     },
   },
+  optionText: {
+    position: "relative",
+  },
   navbarButtonContainer: {
     alignItems: "center",
     display: "flex",
@@ -1075,9 +1084,17 @@ const styles = StyleSheet.create({
     display: "none",
     fontSize: 22,
     cursor: "pointer",
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       display: "unset",
       position: "relative",
+      marginLeft: 20,
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: 0,
+      display: "unset",
     },
   },
   oauthContainer: {
