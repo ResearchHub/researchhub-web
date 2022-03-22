@@ -50,6 +50,7 @@ import {
   faUserEdit,
   faUserPlus,
   faUsers,
+  faCheckDouble,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebookF,
@@ -191,6 +192,7 @@ library.add(
   faCommentAltEdit,
   faCommentAltLines,
   faComments,
+  faCheckDouble,
   faDotCircle,
   faEdit,
   faEllipsisH,
@@ -319,6 +321,7 @@ const icons = {
   commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
   comments: <FontAwesomeIcon icon={faComments} />,
   commentsAlt: <FontAwesomeIcon icon={faCommentsNoBackground} />,
+  checkDouble: <FontAwesomeIcon icon={faCheckDouble} />,
   date: <FontAwesomeIcon icon={faCalendarDay} />,
   editHub: <FontAwesomeIcon icon={faEdit} />,
   ellipsisH: <FontAwesomeIcon icon={faEllipsisH} />,
