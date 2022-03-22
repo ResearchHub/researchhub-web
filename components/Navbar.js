@@ -23,6 +23,7 @@ import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import TabNewFeature from "~/components/NewFeature/TabNewFeature";
 import UserStateBanner from "./Banner/UserStateBanner";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -211,30 +212,117 @@ const Navbar = (props) => {
   };
 
   function renderTabs() {
-    let tabs = filterNull(tabData).map((tab, index) => {
-      let isSelected = false;
-      if (index == 0) {
-        isSelected = true;
-      }
+    const _isSelected = (path) => {
+      const paths = {
+        discuss: [
+          "/",
+          "/post*",
+          "/hubs*",
+          "/paper*",
+          "/hypothesis*",
+          "/my-hubs*",
+        ],
+        publish: ["/[orgSlug]*"],
+        leaderboard: ["/leaderboard/*"],
+      };
 
-      return (
-        <Link href={tab.route} key={`navbar_tab_${index}`}>
+      return paths[path].reduce((prev, curr) => {
+        if (curr.slice(-1) === "*") {
+          curr = curr.slice(0, -1);
+          return prev || router.pathname.indexOf(curr) >= 0;
+        } else {
+          return prev || router.pathname === curr;
+        }
+      }, false);
+    };
+
+    return (
+      <Fragment>
+        <Link href={"/"} key={`navbar_tab_discuss`}>
           <a className={css(styles.tabLink)}>
             <div
               className={css(
                 styles.tab,
-                index === 0 && styles.firstTab,
-                isSelected && styles.tabSelected
+                styles.firstTab,
+                _isSelected("discuss")
+                  ? styles.tabSelected
+                  : styles.tabUnselected
               )}
             >
-              {tab.label}
+              Discuss
             </div>
           </a>
         </Link>
-      );
-    });
+        {user?.id ? (
+          <Link
+            href={`/${user.organization_slug}/notebook`}
+            key={`navbar_tab_publish`}
+          >
+            <a className={css(styles.tabLink)}>
+              <div
+                className={css(
+                  styles.tab,
+                  _isSelected("publish")
+                    ? styles.tabSelected
+                    : styles.tabUnselected
+                )}
+              >
+                Publish
+              </div>
+            </a>
+          </Link>
+        ) : (
+          <PermissionNotificationWrapper
+            modalMessage="access our publishing tools"
+            loginRequired={true}
+            hideRipples={true}
+            onClick={() => router.push(`/${user.organization_slug}/notebook`)}
+            styling={styles.tab}
+          >
+            {`Publish`}
+          </PermissionNotificationWrapper>
+        )}
+        <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
+          <a className={css(styles.tabLink)}>
+            <div
+              className={css(
+                styles.tab,
+                _isSelected("leaderboard")
+                  ? styles.tabSelected
+                  : styles.tabUnselected
+              )}
+            >
+              Leaderboard
+            </div>
+          </a>
+        </Link>
+      </Fragment>
+    );
 
-    return tabs;
+    //     let tabs = filterNull(tabData).map((tab, index) => {
+    //       let isSelected = false;
+    //       if (index == 0) {
+    //         isSelected = true;
+    //       }
+    //
+    //       return (
+    //         <Link href={tab.route} key={`navbar_tab_${index}`}>
+    //           <a className={css(styles.tabLink)}>
+    //             <div
+    //               className={css(
+    //                 styles.tab,
+    //                 index === 0 && styles.firstTab,
+    //                 isSelected && styles.tabSelected
+    //               )}
+    //             >
+    //               {tab.label}
+    //             </div>
+    //           </a>
+    //         </Link>
+    //       );
+    //     });
+    //
+    //     return tabs;
   }
 
   function toggleMenu(e) {
@@ -764,6 +852,9 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.5),
     fontSize: 16,
     fontWeight: 500,
+    ":hover": {
+      color: colors.PURPLE(),
+    },
   },
   tabLink: {
     color: "#000",
@@ -774,6 +865,9 @@ const styles = StyleSheet.create({
     color: colors.PURPLE(),
     borderBottom: "solid 3px",
     borderColor: colors.PURPLE(),
+  },
+  tabUnselected: {
+    borderBottom: "3px solid transparent",
   },
   notifications: {
     width: 12,
@@ -883,7 +977,7 @@ const styles = StyleSheet.create({
   logo: {
     objectFit: "contain",
     marginBottom: 8,
-    height: 40,
+    height: 38,
   },
   reputation: {
     cursor: "pointer",

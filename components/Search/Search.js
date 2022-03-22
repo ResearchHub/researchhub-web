@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     width: "100%",
     maxWidth: 600,
     minWidth: 400,
-    borderRadius: 2,
+    borderRadius: 4,
     boxSizing: "border-box",
     background: "white",
     border: `1px solid rgba(151, 151, 151, 0.2)`,

@@ -311,8 +311,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 16,
-    marginBottom: 16,
+    marginTop: 10,
+    marginBottom: 20,
     overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
@@ -323,6 +323,7 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     width: "100%",
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
   },
   feedButtonContainer: {
     marginRight: 24,
