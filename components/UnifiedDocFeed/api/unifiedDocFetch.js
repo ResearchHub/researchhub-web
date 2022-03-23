@@ -91,7 +91,6 @@ export default function fetchUnifiedDocs({
   hotV2,
 }) {
   const { filterBy, scope } = subFilters;
-  console.log("scope", scope);
   /* PARAMS is: 
     { 
       externalSource,
