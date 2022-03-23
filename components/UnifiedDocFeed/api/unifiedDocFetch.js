@@ -10,34 +10,6 @@ import API from "~/config/api";
 import helpers from "@quantfive/js-web-config/helpers";
 import { getUnifiedDocType } from "~/config/utils/getUnifiedDocType";
 
-const calculateTimeScope = (scope) => {
-  const result = {
-    start: 0,
-    end: 0,
-  };
-
-  const scopeId = scope.value;
-  const now = moment();
-
-  scope.end = now.unix();
-  if (scopeId === "day") {
-    scope.start = moment().subtract(1, "day").unix();
-  } else if (scopeId === "week") {
-    scope.start = moment().subtract(7, "day").unix();
-  } else if (scopeId === "month") {
-    scope.start = moment().subtract(30, "day").unix();
-  } else if (scopeId === "year") {
-    scope.start = moment().subtract(365, "day").unix();
-  } else if (scopeId === "all-time") {
-    const start = "2019-01-01";
-    const diff = now.diff(start, "days") + 1;
-    const alltime = now.startOf("day").subtract(diff, "days");
-    scope.start = alltime.unix();
-  }
-
-  return scope;
-};
-
 export const fetchUserVote = (unifiedDocs = [], isLoggedIn, authToken) => {
   const userVoteIds = { hypothesis: [], paper: [], post: [] };
   unifiedDocs.forEach(({ documents, document_type }) => {
@@ -119,6 +91,7 @@ export default function fetchUnifiedDocs({
   hotV2,
 }) {
   const { filterBy, scope } = subFilters;
+  console.log("scope", scope);
   /* PARAMS is: 
     { 
       externalSource,
@@ -137,7 +110,7 @@ export default function fetchUnifiedDocs({
     ordering: filterBy.value,
     page,
     subscribedHubs,
-    timePeriod: calculateTimeScope(scope),
+    timePeriod: scope.valueForApi,
     type: docTypeFilter,
     hotV2,
   };
