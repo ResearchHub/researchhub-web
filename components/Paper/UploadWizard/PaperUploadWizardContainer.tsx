@@ -60,7 +60,7 @@ export default function PaperUploadWizardContainer({
   onExit,
 }: Props): ReactElement<Props> {
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "url_upload",
+    currentStep: "posted_paper_update",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(null);
 
