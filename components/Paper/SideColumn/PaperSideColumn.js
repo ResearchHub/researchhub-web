@@ -14,7 +14,7 @@ const PaperSideColumn = (props) => {
       {isPost && (
         <>
           <ColumnDate paper={paper} />
-          <ColumnDOI paper={paper} />
+          {paper.doi && <ColumnDOI paper={paper} />}
         </>
       )}
       <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
