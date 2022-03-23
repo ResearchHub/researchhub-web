@@ -104,17 +104,17 @@ const scopeOptions = [
   },
   {
     value: "week",
-    valueForApi: "this_week",
+    valueForApi: "week",
     label: "This Week",
   },
   {
     value: "month",
-    valueForApi: "this_month",
+    valueForApi: "month",
     label: "This Month",
   },
   {
     value: "year",
-    valueForApi: "this_year",
+    valueForApi: "year",
     label: "This Year",
   },
   {
