@@ -95,6 +95,7 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
     if (verdict) {
       //  calvinhlee - Refer to NOTE(100)
       const formattedPayload: any = {
+        // intentional nulls to avoid overriding BE-proccessed metadata
         ...formState,
         authors: null,
         publishDate: null,
