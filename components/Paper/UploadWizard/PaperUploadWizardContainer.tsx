@@ -41,7 +41,7 @@ function getWizardBody({
           onExit={onExit}
           setPostedPaperID={setPostedPaperID}
           setWizardStep={setWizardStep}
-          wsAuth={true}
+          wsAuth
           wsUrl={WS_ROUTES.PAPER_SUBMISSION(1)}
         />
       );
@@ -60,7 +60,7 @@ export default function PaperUploadWizardContainer({
   onExit,
 }: Props): ReactElement<Props> {
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "posted_paper_update",
+    currentStep: "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(null);
 

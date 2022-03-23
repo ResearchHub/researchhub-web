@@ -601,7 +601,10 @@ const Navbar = (props) => {
             )}
           </div>
           <NewPostButton />
-          <PaperUploadStateNotifier wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)} />
+          <PaperUploadStateNotifier
+            wsAuth
+            wsUrl={WS_ROUTES.PAPER_SUBMISSION(user.id)}
+          />
         </div>
 
         <div
