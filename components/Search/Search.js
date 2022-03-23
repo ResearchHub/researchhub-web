@@ -233,8 +233,6 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
 const styles = StyleSheet.create({
   search: {
     width: "100%",
-    maxWidth: 600,
-    width: 350,
     borderRadius: 4,
     boxSizing: "border-box",
     background: "white",
@@ -243,7 +241,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      width: "100%",
+      width: "auto",
     },
     ":hover": {
       borderColor: colors.BLUE(),
