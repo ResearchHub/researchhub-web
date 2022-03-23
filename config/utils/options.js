@@ -98,23 +98,28 @@ const filterOptions = [
 
 const scopeOptions = [
   {
-    value: "day",
+    value: "today",
+    valueForApi: "today",
     label: "Today",
   },
   {
     value: "week",
+    valueForApi: "week",
     label: "This Week",
   },
   {
     value: "month",
+    valueForApi: "month",
     label: "This Month",
   },
   {
     value: "year",
+    valueForApi: "year",
     label: "This Year",
   },
   {
     value: "all-time",
+    valueForApi: "all_time",
     label: "All Time",
   },
 ];
