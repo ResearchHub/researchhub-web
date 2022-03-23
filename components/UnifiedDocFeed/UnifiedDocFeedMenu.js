@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   },
   tab: {
     color: colors.BLACK(0.5),
-    padding: "1rem",
+    padding: "0 1rem 1rem 1rem",
     marginRight: 8,
     textTransform: "unset",
     fontSize: 16,
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginRight: 8,
     lineHeight: "22px",
-    padding: "8px 0px 7px 16px",
+    padding: "0px 0px 7px 16px",
     ":hover": {
       backgroundColor: "unset",
     },

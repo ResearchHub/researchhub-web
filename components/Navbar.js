@@ -187,9 +187,14 @@ const Navbar = (props) => {
   function renderTabs() {
     return (
       <Fragment>
+        <Link href={"/about"} key={`navbar_tab_about`}>
+          <a className={css(styles.tabLink, styles.lessImportantTab)}>
+            <div className={css(styles.tab, styles.firstTab)}>About</div>
+          </a>
+        </Link>
         <Link href={"/hubs"} key={`navbar_tab_hubs`}>
           <a className={css(styles.tabLink)}>
-            <div className={css(styles.tab, styles.firstTab)}>Hubs</div>
+            <div className={css(styles.tab)}>Hubs</div>
           </a>
         </Link>
         {user?.id ? (
@@ -496,7 +501,7 @@ const Navbar = (props) => {
                       <div className={css(styles.modBtnContainer)}>
                         <Link href="/moderators/author-claim-case-dashboard?case_status=OPEN">
                           <a className={css(styles.modBtn)}>
-                            {icons.checkList}
+                            {icons.flag}
                             {openCaseCounts > 0 && (
                               <div className={css(styles.notifCount)}>
                                 {openCaseCounts}
@@ -659,21 +664,18 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   modBtn: {
-    fontSize: 18,
+    fontSize: 20,
     display: "inline-block",
     cursor: "pointer",
-    padding: "2px 7px",
+    padding: "2px 10px",
     color: colors.BLACK(0.5),
     ":hover": {
       color: colors.BLUE(),
     },
-    "@media only screen and (max-width: 900px)": {
-      fontSize: 16,
-    },
   },
   navbarContainer: {
     width: "100%",
-    padding: "20px 20px",
+    padding: "28px 28px",
     boxSizing: "border-box",
     display: "flex",
     height: 68,
@@ -686,7 +688,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.large})`]: {
+      padding: "20px 20px",
       justifyContent: "space-between",
       height: 66,
     },
@@ -697,6 +700,7 @@ const styles = StyleSheet.create({
   tabsWrapper: {
     marginTop: 2,
     display: "flex",
+    width: "100%",
     marginRight: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
@@ -706,7 +710,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   buttonLeft: {
-    marginRight: 16,
+    marginRight: 15,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
       marginRight: 16,
@@ -760,11 +764,10 @@ const styles = StyleSheet.create({
   divider: {
     width: 5,
   },
-  firstTab: {
-    marginLeft: 15,
-  },
-  lastTab: {
-    marginRight: 30,
+  lessImportantTab: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
   },
   googleLabel: {
     color: colors.PURPLE(),
@@ -781,13 +784,18 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     marginTop: 9,
-    marginLeft: 0,
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      display: "none",
-    },
+    marginLeft: 15,
+    width: "100%",
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       marginTop: 15,
       marginLeft: 10,
+      width: "auto",
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      marginLeft: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
     },
   },
   searchSmallScreen: {
@@ -799,15 +807,18 @@ const styles = StyleSheet.create({
   tab: {
     cursor: "pointer",
     padding: "20px 15px 20px 15px",
-    marginRight: 8,
     color: colors.BLACK(),
     fontSize: 16,
     fontWeight: 500,
     ":hover": {
       color: colors.PURPLE(),
     },
+    ":first-child": {
+      marginLeft: 10,
+    },
     [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       padding: "21px 8px 21px 8px",
+      fontSize: 14,
     },
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       padding: "21px 8px 21px 8px",
@@ -1028,7 +1039,7 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   notification: {
-    marginLeft: 15,
+    marginLeft: 10,
     marginTop: 2,
     display: "flex",
     "@media only screen and (max-width: 900px)": {
@@ -1044,7 +1055,7 @@ const styles = StyleSheet.create({
     maxHeight: 10,
     position: "absolute",
     top: -2,
-    right: -5,
+    right: 2,
     padding: 3,
     float: "left",
     borderRadius: "50%",

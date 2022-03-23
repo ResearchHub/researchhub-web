@@ -223,16 +223,14 @@ function UnifiedDocFeedContainer({
           <CreateFeedBanner loggedIn={loggedIn} />
         </div>
       ) : null}
-      {isHomePage || isEmpty(hub) ? (
-        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
-      ) : (
+
+      {!isHomePage && 
         <FeedInfoCard
           hub={hub}
           hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
-          isHomePage={isHomePage}
           mainHeaderText={formattedMainHeader}
         />
-      )}
+      }
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
           <UnifiedDocFeedMenu

@@ -122,9 +122,10 @@ const ActivityList = (props) => {
         <SideColumnTitle
           title={"Latest Activity"}
           overrideStyles={styles.title}
+          overrideTitle={styles.title}
         >
           <Link href={"/live"}>
-            <a className={css(styles.link, styles.viewMoreButton)}>View All</a>
+            <a className={css(styles.viewMoreButton, styles.link)}>View All</a>
           </Link>
         </SideColumnTitle>
         <RenderActiviyList data={data} />
@@ -153,6 +154,7 @@ const styles = StyleSheet.create({
     textDecoration: "none",
     letterSpacing: "normal",
     fontSize: 14,
+    padding: 0,
     ":hover": {},
   },
   title: {
@@ -161,6 +163,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     background: "#FFF",
     width: "100%",
+
     justifyContent: "space-between",
     "@media only screen and (max-width: 415px)": {
       padding: "15px 0 5px",

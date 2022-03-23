@@ -17,8 +17,8 @@ export const SideColumnTitle = ({
       <div className={css(styles.titleContainer)}>
         {title ? title : null}
         {count ? <span className={css(styles.count)}>{count}</span> : null}
-        {children}
       </div>
+      {children}
       {onClick && (
         <div className={css(styles.toggleButton)} onClick={onClick}>
           {state ? icons.chevronUp : icons.chevronDown}
@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between",
-    width: "100%",
+    // justifyContent: "space-between",
+    // width: "100%",
   },
   count: {
     color: colors.BLUE(),

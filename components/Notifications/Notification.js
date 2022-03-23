@@ -207,7 +207,7 @@ class Notification extends Component {
           ref={(ref) => (this.notifIcon = ref)}
         >
           {icons.bell}
-          {this.state.count == 0 && (
+          {this.state.count > 0 && (
             <div className={css(styles.notifCount)}>{this.state.count}</div>
           )}
         </div>
@@ -222,16 +222,13 @@ const styles = StyleSheet.create({
     position: "relative",
   },
   bellIcon: {
-    fontSize: 18,
+    fontSize: 20,
     cursor: "pointer",
-    padding: "2px 7px",
+    padding: "2px 10px",
     color: colors.BLACK(0.5),
     position: "relative",
     ":hover": {
       color: colors.BLUE(),
-    },
-    "@media only screen and (max-width: 900px)": {
-      fontSize: 16,
     },
   },
   notifCount: {
@@ -243,7 +240,7 @@ const styles = StyleSheet.create({
     maxHeight: 10,
     position: "absolute",
     top: -2,
-    right: -2,
+    right: 2,
     padding: 3,
     float: "left",
     borderRadius: "50%",
