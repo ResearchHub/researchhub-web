@@ -665,22 +665,19 @@ const routes = (BASE_URL) => {
       subscribedHubs,
       timePeriod,
       type, // docType
-      hotV2 = false,
     }) => {
       const url =
         BASE_URL + "researchhub_unified_documents/get_unified_documents/";
       const params = {
         querystring: {
-          end_date__lte: timePeriod.end,
           external_source: externalSource,
           hub_id: hubId,
           ordering,
           page,
           slug,
-          start_date__gte: timePeriod.start,
           subscribed_hubs: subscribedHubs,
           type,
-          hot_v2: hotV2,
+          time: timePeriod,
         },
       };
       const finalUrl = prepURL(url, params);
