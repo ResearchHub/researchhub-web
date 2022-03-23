@@ -221,8 +221,8 @@ function NotePublishModal({
     let params;
     if (publishedType === "UNPUBLISHED") {
       params = {
+        assign_doi: checkBoxTwo,
         authors: mutableFormFields.authors.map((author) => author.value),
-        created_by: currentUser.id,
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
         hubs: mutableFormFields.hubs.map((hub) => hub.value),
@@ -233,6 +233,7 @@ function NotePublishModal({
       };
     } else {
       params = {
+        assign_doi: checkBoxTwo,
         authors: mutableFormFields.authors.map((author) => author.value),
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
@@ -332,15 +333,17 @@ function NotePublishModal({
               onChange={() => setCheckBoxOne(!checkBoxOne)}
             />
           </div>
-          <div className={css(styles.checkboxContainer)}>
-            <CheckBox
-              active={checkBoxTwo}
-              isSquare
-              label={"[Optional] Assign a DOI to this post for 5 RSC"}
-              labelStyle={styles.label}
-              onChange={() => setCheckBoxTwo(!checkBoxTwo)}
-            />
-          </div>
+          {!currentNote.post?.doi && (
+            <div className={css(styles.checkboxContainer)}>
+              <CheckBox
+                active={checkBoxTwo}
+                isSquare
+                label={"[Optional] Assign a DOI to this post for 5 RSC"}
+                labelStyle={styles.label}
+                onChange={() => setCheckBoxTwo(!checkBoxTwo)}
+              />
+            </div>
+          )}
           <div className={css(styles.buttonsContainer)}>
             <div className={css(!checkBoxOne && styles.disabledCursor)}>
               <Button
