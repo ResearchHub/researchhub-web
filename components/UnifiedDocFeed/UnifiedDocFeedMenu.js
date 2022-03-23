@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     fontWeight: 500,
     marginRight: 8,
     lineHeight: "22px",
-    padding: "0px 0px 7px 16px",
+    padding: "0px 0rem 1rem 1rem",
     ":hover": {
       backgroundColor: "unset",
     },
