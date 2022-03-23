@@ -185,45 +185,11 @@ const Navbar = (props) => {
   };
 
   function renderTabs() {
-    const _isSelected = (path) => {
-      const paths = {
-        discuss: [
-          "/",
-          "/post*",
-          "/hubs*",
-          "/paper*",
-          "/hypothesis*",
-          "/my-hubs*",
-        ],
-        publish: ["/[orgSlug]*"],
-        leaderboard: ["/leaderboard/*"],
-      };
-
-      return paths[path].reduce((prev, curr) => {
-        if (curr.slice(-1) === "*") {
-          curr = curr.slice(0, -1);
-          return prev || router.pathname.indexOf(curr) >= 0;
-        } else {
-          return prev || router.pathname === curr;
-        }
-      }, false);
-    };
-
     return (
       <Fragment>
-        <Link href={"/"} key={`navbar_tab_discuss`}>
+        <Link href={"/hubs"} key={`navbar_tab_hubs`}>
           <a className={css(styles.tabLink)}>
-            <div
-              className={css(
-                styles.tab,
-                styles.firstTab,
-                _isSelected("discuss")
-                  ? styles.tabSelected
-                  : styles.tabUnselected
-              )}
-            >
-              Discuss
-            </div>
+            <div className={css(styles.tab, styles.firstTab)}>Hubs</div>
           </a>
         </Link>
         {user?.id ? (
@@ -232,16 +198,7 @@ const Navbar = (props) => {
             key={`navbar_tab_publish`}
           >
             <a className={css(styles.tabLink)}>
-              <div
-                className={css(
-                  styles.tab,
-                  _isSelected("publish")
-                    ? styles.tabSelected
-                    : styles.tabUnselected
-                )}
-              >
-                Publish
-              </div>
+              <div className={css(styles.tab)}>Publish</div>
             </a>
           </Link>
         ) : (
@@ -257,16 +214,7 @@ const Navbar = (props) => {
         )}
         <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
           <a className={css(styles.tabLink)}>
-            <div
-              className={css(
-                styles.tab,
-                _isSelected("leaderboard")
-                  ? styles.tabSelected
-                  : styles.tabUnselected
-              )}
-            >
-              Leaderboard
-            </div>
+            <div className={css(styles.tab)}>Leaderboard</div>
           </a>
         </Link>
       </Fragment>
@@ -737,7 +685,7 @@ const styles = StyleSheet.create({
     position: "initial",
   },
   tabsWrapper: {
-    marginTop: 5,
+    marginTop: 2,
     display: "flex",
     marginRight: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
@@ -842,7 +790,7 @@ const styles = StyleSheet.create({
     cursor: "pointer",
     padding: "20px 15px 20px 15px",
     marginRight: 8,
-    color: colors.BLACK(0.5),
+    color: colors.BLACK(),
     fontSize: 16,
     fontWeight: 500,
     ":hover": {
@@ -861,14 +809,6 @@ const styles = StyleSheet.create({
     color: "#000",
     textDecoration: "none",
     position: "relative",
-  },
-  tabSelected: {
-    color: colors.PURPLE(),
-    borderBottom: "solid 3px",
-    borderColor: colors.PURPLE(),
-  },
-  tabUnselected: {
-    borderBottom: "3px solid transparent",
   },
   notifications: {
     width: 12,
