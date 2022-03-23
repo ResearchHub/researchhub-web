@@ -19,6 +19,7 @@ import dynamic from "next/dynamic";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import NewPostButton from "./NewPostButton";
+import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import TabNewFeature from "~/components/NewFeature/TabNewFeature";
@@ -582,6 +583,7 @@ const Navbar = (props) => {
             )}
           </div>
           <NewPostButton />
+          <PaperUploadStateNotifier wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)} />
         </div>
 
         <div
