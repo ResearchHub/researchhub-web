@@ -492,6 +492,20 @@ const Navbar = (props) => {
                       wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
                       wsAuth={true}
                     />
+                    {user?.moderator && (
+                      <div className={css(styles.modBtnContainer)}>
+                        <Link href="/moderators/author-claim-case-dashboard?case_status=OPEN">
+                          <a className={css(styles.modBtn)}>
+                            {icons.checkList}
+                            {openCaseCounts > 0 && (
+                              <div className={css(styles.notifCount)}>
+                                {openCaseCounts}
+                              </div>
+                            )}
+                          </a>
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
                 {openMenu && (
@@ -520,26 +534,6 @@ const Navbar = (props) => {
                         Profile
                       </div>
                     </Link>
-
-                    {isUserModerator && (
-                      <Link
-                        href={"/user/[authorId]/[tabName]"}
-                        as={`/user/${user.author_profile.id}/overview`}
-                      >
-                        <div className={css(styles.option)}>
-                          <span className={css(styles.profileIcon)}>
-                            {icons.checkDouble}
-                          </span>
-                          <span className={css(styles.optionText)}>
-                            Editors{" "}
-                            <span className={css(styles.notifications)}>
-                              {openCaseCounts}
-                            </span>
-                          </span>
-                        </div>
-                      </Link>
-                    )}
-
                     <Link href={`/${user.organization_slug}/notebook`}>
                       <div className={css(styles.option)}>
                         <span className={css(styles.profileIcon)}>
@@ -661,6 +655,22 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
+  modBtnContainer: {
+    position: "relative",
+  },
+  modBtn: {
+    fontSize: 18,
+    display: "inline-block",
+    cursor: "pointer",
+    padding: "2px 7px",
+    color: colors.BLACK(0.5),
+    ":hover": {
+      color: colors.BLUE(),
+    },
+    "@media only screen and (max-width: 900px)": {
+      fontSize: 16,
+    },
+  },
   navbarContainer: {
     width: "100%",
     padding: "20px 20px",
@@ -771,7 +781,7 @@ const styles = StyleSheet.create({
   },
   searchWrapper: {
     marginTop: 9,
-    marginLeft: 15,
+    marginLeft: 0,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
@@ -1019,19 +1029,41 @@ const styles = StyleSheet.create({
   },
   notification: {
     marginLeft: 15,
+    marginTop: 2,
+    display: "flex",
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },
+  },
+  notifCount: {
+    minWidth: 10,
+    width: 10,
+    maxWidth: 10,
+    minHeight: 10,
+    height: 10,
+    maxHeight: 10,
+    position: "absolute",
+    top: -2,
+    right: -5,
+    padding: 3,
+    float: "left",
+    borderRadius: "50%",
+    backgroundColor: colors.RED(),
+    color: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 10,
   },
   menuIcon: {
     display: "none",
     fontSize: 22,
     cursor: "pointer",
-    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
-      display: "unset",
-      position: "relative",
-      marginLeft: 20,
-    },
+    // [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+    //   display: "unset",
+    //   position: "relative",
+    //   marginLeft: 20,
+    // },
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
       display: "none",
     },
