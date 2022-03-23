@@ -813,9 +813,6 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.PURPLE(),
     },
-    ":first-child": {
-      marginLeft: 10,
-    },
     [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
       padding: "21px 8px 21px 8px",
       fontSize: 14,
@@ -830,6 +827,9 @@ const styles = StyleSheet.create({
     color: "#000",
     textDecoration: "none",
     position: "relative",
+    ":first-child": {
+      marginLeft: 15,
+    },
   },
   notifications: {
     width: 12,
