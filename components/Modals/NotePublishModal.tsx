@@ -356,7 +356,7 @@ function NotePublishModal({
                 active={checkBoxDOI}
                 isSquare
                 label={
-                  <div className={css(styles.checkBoxTwo)}>
+                  <div className={css(styles.checkBoxDOI)}>
                     <span>
                       [Optional] Assign a DOI to this post for{" "}
                       {CROSSREF_DOI_RSC_FEE}
@@ -465,7 +465,7 @@ const styles = StyleSheet.create({
   disabledCursor: {
     cursor: "not-allowed",
   },
-  checkBoxTwo: {
+  checkBoxDOI: {
     bottom: 3,
     position: "relative",
   },
