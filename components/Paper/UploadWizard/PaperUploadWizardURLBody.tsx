@@ -46,7 +46,7 @@ function PaperUploadWizardURLBody({
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
     event.stopPropagation();
-    console.warn("url: ", url);
+
     const WTF = !isStringURL(url);
     const newFormErrors = { url: WTF };
     const hasError = Object.values(newFormErrors).includes(true);

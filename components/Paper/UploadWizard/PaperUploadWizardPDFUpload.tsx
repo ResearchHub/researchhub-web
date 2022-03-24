@@ -7,7 +7,11 @@ import {
 } from "../Upload/styles/formGenericStyles";
 import { Fragment, SyntheticEvent, useState } from "react";
 import { ID } from "~/config/types/root_types";
-import { isEmpty } from "~/config/utils/nullchecks";
+import {
+  isEmpty,
+  isNullOrUndefined,
+  nullthrows,
+} from "~/config/utils/nullchecks";
 import { PaperActions } from "~/redux/paper";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import colors from "~/config/themes/colors";
@@ -19,8 +23,13 @@ import Ripples from "react-ripples";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
+import { uploadNewPaper } from "../Upload/api/uploadNewPaper";
+import { MessageActions } from "~/redux/message";
+import { useRouter } from "next/router";
+import { defaultFormState } from "../Upload/types/UploadComponentTypes";
 
 type Props = {
+  msgReduxActions: any;
   onExit: () => void;
   paperRedux?: any;
   paperReduxActions?: any;
@@ -33,6 +42,7 @@ type FormState = {
 };
 
 function PaperUploadWizardPDFUpload({
+  msgReduxActions,
   onExit,
   paperRedux,
   paperReduxActions,
@@ -46,9 +56,12 @@ function PaperUploadWizardPDFUpload({
     title: null,
     selectedHubs: [],
   });
-  const { doi, title, selectedHubs } = formState;
+  const router = useRouter();
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
+  const { doi, title, selectedHubs } = formState;
+  const { uploadedPaperMeta } = paperRedux ?? {};
 
   const resetComponent = () => {
     paperReduxActions.removePaperFromState();
@@ -61,8 +74,6 @@ function PaperUploadWizardPDFUpload({
       selectedHubs: [],
     });
   };
-
-  const { uploadedPaperMeta } = paperRedux ?? {};
 
   const handleHubSelection = (_id: ID, selectedHubs: any): void => {
     if (isEmpty(selectedHubs)) {
@@ -97,6 +108,53 @@ function PaperUploadWizardPDFUpload({
 
   const onFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    debugger;
+    if (isNullOrUndefined(uploadedPaperMeta)) {
+      return;
+      debugger;
+    }
+
+    uploadNewPaper({
+      onError: (respPayload: any): void => {
+        // NOTE: calvinhlee - existing legacy logic
+        const errorBody = respPayload.errorBody;
+        if (!isNullOrUndefined(errorBody) && errorBody.status === 429) {
+          msgReduxActions.showMessage({ show: false });
+        } else if (errorBody.status === 413) {
+          msgReduxActions.setMessage(
+            errorBody
+              ? errorBody.error
+              : "The max file size is 55mb. Please upload a smaller file."
+          );
+          msgReduxActions.showMessage({ show: true, error: true });
+          setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
+        } else {
+          msgReduxActions.setMessage(
+            errorBody ? errorBody.error : "You are not allowed to upload papers"
+          );
+          msgReduxActions.showMessage({ show: true, error: true });
+          setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
+        }
+      },
+      onSuccess: ({ paperID, paperName }): void => {
+        paperReduxActions.resetPaperState();
+        resetComponent();
+        onExit();
+        router.push(
+          "/paper/[paperId]/[paperName]",
+          `/paper/${paperID}/${paperName}`
+        );
+      },
+      paperActions: paperReduxActions,
+      paperRedux,
+      payload: {
+        ...defaultFormState,
+        ...formState,
+        paper_title: nullthrows(title),
+        title: nullthrows(title),
+      },
+    });
   };
 
   return (
@@ -293,12 +351,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = (state) => ({
-  paperRedux: state.paper,
   auth: state.auth,
+  paperRedux: state.paper,
 });
 
 const mapDispatchToProps = (dispatch) => ({
   paperReduxActions: bindActionCreators(PaperActions, dispatch),
+  msgReduxActions: bindActionCreators(MessageActions, dispatch),
 });
 
 export default connect(
