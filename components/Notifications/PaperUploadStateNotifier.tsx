@@ -13,6 +13,7 @@ import { ForceOpen } from "../Paper/UploadWizard/PaperUploadWizardContainer";
 type Props = {
   wsResponse: any /* socket */;
   setForceOpenPaperUpload: (args: ForceOpen) => void;
+  isNewPostModalOpen: boolean;
 };
 
 const getToastBody = (
@@ -57,20 +58,34 @@ const getToastBody = (
         </div>,
       ];
     default:
-      return [true, null];
+      return [
+        true,
+        <div className={css(styles.toastBody)}>
+          <div className={css(styles.toastBodyTitle)}>
+            {"PAPER UPLOADED FAILED"}
+          </div>
+          <div className={css(styles.toastSubtext)}>
+            <span style={{ marginRight: 6, color: colors.RED(1) }}>
+              {icons.exclamationCircle}
+            </span>
+            {"Please try again later or upload with a PDF"}
+          </div>
+        </div>,
+      ];
   }
 };
 
 function PaperUploadStateNotifier({
   wsResponse,
   setForceOpenPaperUpload,
+  isNewPostModalOpen,
 }: Props): ReactElement<typeof ToastContainer> {
   const router = useRouter();
   const parsedWsResponse = JSON.parse(wsResponse);
   const { paper_status: paperUploadStatus, paper: paperID } =
     parsedWsResponse?.data ?? {};
   console.warn("JSON.parse(wsResponse: ", JSON.parse(wsResponse)?.data);
-
+  console.warn("isNewPostModalOpen: ", isNewPostModalOpen);
   useEffect((): void => {
     const bodyResult = getToastBody(
       paperUploadStatus,
@@ -78,15 +93,11 @@ function PaperUploadStateNotifier({
       setForceOpenPaperUpload
     );
     console.warn("inside useEffect", bodyResult);
-    if (bodyResult[0]) {
+    if (bodyResult[0] && !isNewPostModalOpen) {
       console.warn("TOSTING: ", bodyResult[1], []);
-      toast(bodyResult[1], {
-        // onClose: (): void => {
-        //   router.push(`/paper/${68}`);
-        // },
-      });
+      toast(bodyResult[1]);
     }
-  }, [paperUploadStatus, paperID]);
+  }, [paperUploadStatus, paperID, isNewPostModalOpen]);
 
   return (
     <ToastContainer

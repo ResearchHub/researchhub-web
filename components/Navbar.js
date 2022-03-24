@@ -70,6 +70,7 @@ const Navbar = (props) => {
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const [showReferral, setShowReferral] = useState(false);
   const [forceOpenPaperUpload, setForceOpenPaperUpload] = useState(undefined);
+  const [isNewPostModalOpen, setNewButtonOpen] = useState(false);
   const { numNavInteractions } = useContext(NavbarContext);
   const {
     isLoggedIn,
@@ -400,6 +401,7 @@ const Navbar = (props) => {
           <NewPostButton
             customButtonStyle={[styles.newPostButton]}
             forceOpen={forceOpenPaperUpload}
+            setOpen={setNewButtonOpen}
             onClick={() => setSideMenu(!sideMenu)}
           />
         )}
@@ -601,11 +603,15 @@ const Navbar = (props) => {
               </div>
             )}
           </div>
-          <NewPostButton />
+          <NewPostButton
+            forceOpen={forceOpenPaperUpload}
+            setOpen={setNewButtonOpen}
+          />
           <PaperUploadStateNotifier
             wsAuth
             wsUrl={WS_ROUTES.PAPER_SUBMISSION(user.id)}
             setForceOpenPaperUpload={setForceOpenPaperUpload}
+            isNewPostModalOpen={isNewPostModalOpen}
           />
         </div>
 
