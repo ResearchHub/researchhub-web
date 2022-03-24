@@ -176,7 +176,7 @@ const styles = StyleSheet.create({
     height: 55,
   },
   newPost: {
-    width: 100,
+    width: 90,
     height: 45,
   },
   disabled: {

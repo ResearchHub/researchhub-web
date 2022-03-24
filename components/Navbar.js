@@ -23,6 +23,7 @@ import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import TabNewFeature from "~/components/NewFeature/TabNewFeature";
 import UserStateBanner from "./Banner/UserStateBanner";
+import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 
 // Styles
 import { filterNull, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -116,45 +117,6 @@ const Navbar = (props) => {
   const [openMenu, setOpenMenu] = useState(false);
   const [sideMenu, setSideMenu] = useState(false);
 
-  const tabData = [
-    { label: "Home", route: "/", icon: "home" },
-    { label: "Hubs", route: "/hubs", icon: "hub" },
-    { label: "About", route: "/about", icon: "info-circle" },
-    {
-      label: "Blog",
-      route: "",
-      link: "https://medium.com/researchhub",
-      icon: "medium",
-      className: "lessImportantTab",
-    },
-    {
-      label: "Help",
-      route: "",
-      link: "https://researchhub.notion.site/ResearchHub-a2a87270ebcf43ffb4b6050e3b766ba0",
-      icon: "help",
-      className: "lessImportantTab",
-    },
-    { label: "Live", route: "/live", icon: "live" },
-    {
-      label: "Leaderboard",
-      route: "/leaderboard/users",
-      icon: "trophy",
-      className: "lessImportantTab",
-    },
-    isUserModerator
-      ? {
-          label: "Editors",
-          route: "/moderators/author-claim-case-dashboard?case_status=OPEN",
-          icon: "info-circle",
-          extra: () => {
-            return (
-              <div className={css(styles.notifications)}>{openCaseCounts}</div>
-            );
-          },
-        }
-      : null,
-  ];
-
   const menuTabsUpper = [
     {
       label: "Explore ResearchHub",
@@ -223,51 +185,45 @@ const Navbar = (props) => {
   };
 
   function renderTabs() {
-    let tabs = filterNull(tabData).map((tab, index) => {
-      if (tab.icon === "home") {
-        return null;
-      }
-      if (tab.link) {
-        return (
-          <div
-            key={index}
-            className={css(
-              styles.tab,
-              index === 0 && styles.firstTab,
-              index === 2 && styles.lastTab,
-              styles[tab.className]
-            )}
-          >
-            <a
-              className={css(styles.tabLink)}
-              href={tab.link}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {tab.label}
-            </a>
-          </div>
-        );
-      }
-
-      return (
-        <Link href={tab.route} key={`navbar_tab_${index}`}>
-          <a className={css(styles.tabLink)}>
-            <div
-              className={css(
-                styles.tab,
-                index === 0 && styles.firstTab,
-                styles[tab.className]
-              )}
-            >
-              {tab.label}
-              {tab.extra && tab.extra()}
-            </div>
+    return (
+      <Fragment>
+        <Link href={"/about"} key={`navbar_tab_about`}>
+          <a className={css(styles.tabLink, styles.lessImportantTab)}>
+            <div className={css(styles.tab, styles.firstTab)}>About</div>
           </a>
         </Link>
-      );
-    });
-    return tabs;
+        <Link href={"/hubs"} key={`navbar_tab_hubs`}>
+          <a className={css(styles.tabLink)}>
+            <div className={css(styles.tab)}>Hubs</div>
+          </a>
+        </Link>
+        {user?.id ? (
+          <Link
+            href={`/${user.organization_slug}/notebook`}
+            key={`navbar_tab_publish`}
+          >
+            <a className={css(styles.tabLink)}>
+              <div className={css(styles.tab)}>Publish</div>
+            </a>
+          </Link>
+        ) : (
+          <PermissionNotificationWrapper
+            modalMessage="access our publishing tools"
+            loginRequired={true}
+            hideRipples={true}
+            onClick={() => router.push(`/${user.organization_slug}/notebook`)}
+            styling={styles.tab}
+          >
+            {`Publish`}
+          </PermissionNotificationWrapper>
+        )}
+        <Link href={"/leaderboard/users"} key={`navbar_tab_leaderboard`}>
+          <a className={css(styles.tabLink)}>
+            <div className={css(styles.tab)}>Leaderboard</div>
+          </a>
+        </Link>
+      </Fragment>
+    );
   }
 
   function toggleMenu(e) {
@@ -482,16 +438,32 @@ const Navbar = (props) => {
             <RHLogo iconStyle={styles.logo} withText={true} />
           </a>
         </Link>
-        <div className={css(styles.tabs)}>{renderTabs()}</div>
+
+        <div className={css(styles.tabsWrapper)}>
+          <div className={css(styles.tabs)}>{renderTabs()}</div>
+          <div className={css(styles.searchWrapper)}>
+            <Search
+              overrideStyle={styles.navbarSearchOverride}
+              navbarRef={navbarRef}
+              id="navbarSearch"
+            />
+          </div>
+        </div>
+
         <div className={css(styles.hubPopoverWrapper)}>
           <HubSelector />
         </div>
-        <Search
-          overrideStyle={styles.navbarSearchOverride}
-          navbarRef={navbarRef}
-          id="navbarSearch"
-        />
-        <div className={css(styles.actions)}>
+
+        <div className={css(styles.searchSmallScreen)}>
+          <Search
+            overrideStyle={styles.navbarSearchOverride}
+            navbarRef={navbarRef}
+            id="navbarSearch"
+          />
+        </div>
+        <div
+          className={css(styles.actions, isLoggedIn && styles.actionsLoggedIn)}
+        >
           <div className={css(styles.buttonLeft)}>
             {!isLoggedIn ? (
               renderLoginButtons(isLoggedIn)
@@ -505,7 +477,7 @@ const Navbar = (props) => {
                   >
                     <AuthorAvatar
                       author={user.author_profile}
-                      size={33}
+                      size={35}
                       textSizeRatio={2.5}
                       disableLink
                       showModeratorBadge={user && user.moderator}
@@ -525,12 +497,27 @@ const Navbar = (props) => {
                       wsUrl={WS_ROUTES.NOTIFICATIONS(user.id)}
                       wsAuth={true}
                     />
+                    {user?.moderator && (
+                      <div className={css(styles.modBtnContainer)}>
+                        <Link href="/moderators/author-claim-case-dashboard?case_status=OPEN">
+                          <a className={css(styles.modBtn)}>
+                            {icons.flag}
+                            {openCaseCounts > 0 && (
+                              <div className={css(styles.notifCount)}>
+                                {openCaseCounts}
+                              </div>
+                            )}
+                          </a>
+                        </Link>
+                      </div>
+                    )}
                   </div>
                 </div>
                 {openMenu && (
                   <div
                     className={css(
                       styles.dropdown,
+                      isUserModerator && styles.dropdownForEditors,
                       !showReferral && styles.lowDropdown
                     )}
                     ref={dropdownRef}
@@ -668,16 +655,30 @@ const burgerMenuStyle = {
 const styles = StyleSheet.create({
   hubPopoverWrapper: {
     display: "none",
+    marginRight: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "block",
     },
   },
+  modBtnContainer: {
+    position: "relative",
+  },
+  modBtn: {
+    fontSize: 20,
+    display: "inline-block",
+    cursor: "pointer",
+    padding: "2px 10px",
+    color: colors.BLACK(0.5),
+    ":hover": {
+      color: colors.BLUE(),
+    },
+  },
   navbarContainer: {
     width: "100%",
-    padding: "20px 20px",
+    padding: "28px 28px",
     boxSizing: "border-box",
     display: "flex",
-    height: 80,
+    height: 68,
     background: "#fff",
     alignItems: "center",
     borderBottom: "1px solid #e8e8ef",
@@ -687,7 +688,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     backgroundColor: "#FFF",
-    "@media only screen and (max-width: 767px)": {
+    [`@media only screen and (max-width: ${breakpoints.medium.large})`]: {
+      padding: "20px 20px",
       justifyContent: "space-between",
       height: 66,
     },
@@ -695,20 +697,20 @@ const styles = StyleSheet.create({
   unstickyNavbar: {
     position: "initial",
   },
+  tabsWrapper: {
+    marginTop: 2,
+    display: "flex",
+    width: "100%",
+    marginRight: "auto",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
   tabs: {
     display: "flex",
-    marginRight: "auto",
-    "@media only screen and (max-width: 760px)": {
-      display: "none",
-    },
-  },
-  lessImportantTab: {
-    "@media only screen and (min-width: 760px) and (max-width: 900px)": {
-      display: "none",
-    },
   },
   buttonLeft: {
-    marginRight: 16,
+    marginRight: 15,
     "@media only screen and (min-width: 1024px)": {
       marginLeft: 20,
       marginRight: 16,
@@ -720,7 +722,7 @@ const styles = StyleSheet.create({
   googleLoginButton: {
     margin: 0,
     width: "100%",
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
@@ -762,11 +764,10 @@ const styles = StyleSheet.create({
   divider: {
     width: 5,
   },
-  firstTab: {
-    marginLeft: 30,
-  },
-  lastTab: {
-    marginRight: 30,
+  lessImportantTab: {
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
   },
   googleLabel: {
     color: colors.PURPLE(),
@@ -781,12 +782,44 @@ const styles = StyleSheet.create({
       color: "#fff",
     },
   },
-  tab: {
+  searchWrapper: {
+    marginTop: 9,
     marginLeft: 15,
-    marginRight: 15,
+    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      marginTop: 15,
+      marginLeft: 10,
+      width: "auto",
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      marginLeft: 0,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "none",
+    },
+  },
+  searchSmallScreen: {
+    display: "none",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      display: "block",
+    },
+  },
+  tab: {
     cursor: "pointer",
-    "@media only screen and (max-width: 1000px)": {
-      margin: "0 10px 0 10px",
+    padding: "20px 15px 20px 15px",
+    color: colors.BLACK(),
+    fontSize: 16,
+    fontWeight: 400,
+    ":hover": {
+      color: colors.PURPLE(),
+    },
+    [`@media only screen and (max-width: ${breakpoints.desktop.str})`]: {
+      padding: "21px 8px 21px 8px",
+      fontSize: 14,
+    },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      padding: "21px 8px 21px 8px",
+      marginRight: 5,
       fontSize: 14,
     },
   },
@@ -794,6 +827,9 @@ const styles = StyleSheet.create({
     color: "#000",
     textDecoration: "none",
     position: "relative",
+    ":first-child": {
+      marginLeft: 15,
+    },
   },
   notifications: {
     width: 12,
@@ -801,14 +837,10 @@ const styles = StyleSheet.create({
     fontSize: 12,
     backgroundColor: colors.RED(),
     borderRadius: "50%",
-    position: "absolute",
-    top: -6,
-    right: 0,
     color: "#fff",
     padding: 3,
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
+    display: "inline-block",
+    textAlign: "center",
   },
   caret: {
     marginLeft: 10,
@@ -817,7 +849,7 @@ const styles = StyleSheet.create({
   userDropdown: {
     position: "relative",
     zIndex: 5,
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
     // width: 210,
@@ -854,7 +886,7 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "rgba(250, 250, 250, 1)",
     },
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
@@ -874,25 +906,32 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "#3E43E8",
     },
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
   },
   actions: {
     display: "flex",
     alignItems: "center",
-    "@media only screen and (max-width: 760px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       display: "none",
     },
+  },
+  actionsLoggedIn: {
+    maxWidth: "auto",
   },
   logoContainer: {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    width: 155,
+    width: 176,
     paddingBottom: 2.7,
     cursor: "pointer",
     userSelect: "none",
+    marginTop: 2,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: 148,
+    },
   },
   logoContainerForMenu: {
     position: "absolute",
@@ -902,6 +941,10 @@ const styles = StyleSheet.create({
   logo: {
     objectFit: "contain",
     marginBottom: 8,
+    height: 38,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      height: 33,
+    },
   },
   reputation: {
     cursor: "pointer",
@@ -918,6 +961,9 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
+  },
+  dropdownForEditors: {
+    bottom: -310,
   },
   lowDropdown: {
     bottom: -215,
@@ -980,6 +1026,9 @@ const styles = StyleSheet.create({
       background: "#eee",
     },
   },
+  optionText: {
+    position: "relative",
+  },
   navbarButtonContainer: {
     alignItems: "center",
     display: "flex",
@@ -990,18 +1039,48 @@ const styles = StyleSheet.create({
     display: "flex",
   },
   notification: {
-    marginLeft: 15,
+    marginLeft: 10,
+    marginTop: 2,
+    display: "flex",
     "@media only screen and (max-width: 900px)": {
       marginLeft: 10,
     },
+  },
+  notifCount: {
+    minWidth: 10,
+    width: 10,
+    maxWidth: 10,
+    minHeight: 10,
+    height: 10,
+    maxHeight: 10,
+    position: "absolute",
+    top: -2,
+    right: 2,
+    padding: 3,
+    float: "left",
+    borderRadius: "50%",
+    backgroundColor: colors.RED(),
+    color: "#fff",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    fontSize: 10,
   },
   menuIcon: {
     display: "none",
     fontSize: 22,
     cursor: "pointer",
-    "@media only screen and (max-width: 760px)": {
+    // [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+    //   display: "unset",
+    //   position: "relative",
+    //   marginLeft: 20,
+    // },
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      display: "none",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginLeft: 0,
       display: "unset",
-      position: "relative",
     },
   },
   oauthContainer: {

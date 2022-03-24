@@ -85,19 +85,13 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
 
   const shouldShowSmallScreenSearch = () => {
     const inputWidth = searchInputRef.current.offsetWidth;
-
-    if (window.innerWidth <= breakpoints.small.int) {
-      return true;
-    } else if (inputWidth <= SMALLEST_ALLOWED_INPUT) {
+    if (window.innerWidth <= breakpoints.large.int) {
       return true;
     } else {
       return false;
     }
   };
 
-  // IN non-mobile resolutions (over 760px) we allow
-  // the input field to render naturally. If it is smaller than
-  // SMALLEST_ALLOWED_INPUT, we also consider it to be "small screen"
   const setSmallScreenLayoutIfNeeded = () => {
     const inputWidth = searchInputRef.current.offsetWidth;
 
@@ -239,14 +233,16 @@ const Search = ({ navbarRef, id, overrideStyle }) => {
 const styles = StyleSheet.create({
   search: {
     width: "100%",
-    maxWidth: 600,
-    borderRadius: 2,
+    borderRadius: 4,
     boxSizing: "border-box",
     background: "white",
     border: `1px solid rgba(151, 151, 151, 0.2)`,
     display: "flex",
     alignItems: "center",
     position: "relative",
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "auto",
+    },
     ":hover": {
       borderColor: colors.BLUE(),
     },
@@ -276,6 +272,9 @@ const styles = StyleSheet.create({
     marginTop: 1,
     flexDirection: "row",
     boxShadow: `inset 0px 0px 0px 1px ${colors.BLUE()}`,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "100%",
+    },
   },
   backIcon: {
     color: colors.BLUE(),
@@ -304,13 +303,13 @@ const styles = StyleSheet.create({
     position: "static",
     fontSize: 16,
     opacity: 1,
-    marginRight: 20,
+    marginRight: 10,
     ":hover": {
       background: 0,
     },
     [`@media only screen and (min-width: ${breakpoints.small.int + 1}px)`]: {
-      fontSize: 20,
-      marginRight: 10,
+      fontSize: 18,
+      marginRight: 0,
       opacity: 0.4,
     },
   },
@@ -358,7 +357,7 @@ const styles = StyleSheet.create({
   searchInputSmallScreen: {
     padding: 0,
     height: 0,
-    visibility: "hidden",
+    display: "none",
     ":focus": {
       boxShadow: "none",
       ":hover": {
@@ -369,7 +368,9 @@ const styles = StyleSheet.create({
   searchInputExpanded: {
     padding: 10,
     height: "100%",
+    width: "100%",
     fontSize: 18,
+    display: "block",
     paddingLeft: 20,
     visibility: "visible",
     ":focus": {

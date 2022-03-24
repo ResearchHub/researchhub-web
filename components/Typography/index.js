@@ -8,6 +8,7 @@ export const SideColumnTitle = ({
   overrideStyles,
   onClick,
   state,
+  children,
 }) => {
   return (
     <h5
@@ -17,6 +18,7 @@ export const SideColumnTitle = ({
         {title ? title : null}
         {count ? <span className={css(styles.count)}>{count}</span> : null}
       </div>
+      {children}
       {onClick && (
         <div className={css(styles.toggleButton)} onClick={onClick}>
           {state ? icons.chevronUp : icons.chevronDown}
@@ -66,6 +68,8 @@ const styles = StyleSheet.create({
   titleContainer: {
     display: "flex",
     alignItems: "center",
+    // justifyContent: "space-between",
+    // width: "100%",
   },
   count: {
     color: colors.BLUE(),
