@@ -72,8 +72,11 @@ const getIsFormValid = ({
   return [verdict, errorResult];
 };
 
-function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
-  const paperID = 36;
+function PaperUploadWizardUpdatePaper({
+  onExit,
+  paperActions,
+  paperID,
+}: Props) {
   // TODO: calvinhlee - migrate this to pure typeahead
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
