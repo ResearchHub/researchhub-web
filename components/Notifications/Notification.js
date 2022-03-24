@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     cursor: "pointer",
     padding: "2px 10px",
-    color: colors.BLACK(0.5),
+    color: "rgb(193, 193, 206)",
     position: "relative",
     ":hover": {
       color: colors.BLUE(),

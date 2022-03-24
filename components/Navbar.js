@@ -501,7 +501,7 @@ const Navbar = (props) => {
                       <div className={css(styles.modBtnContainer)}>
                         <Link href="/moderators/author-claim-case-dashboard?case_status=OPEN">
                           <a className={css(styles.modBtn)}>
-                            {icons.flag}
+                            {icons.shield}
                             {openCaseCounts > 0 && (
                               <div className={css(styles.notifCount)}>
                                 {openCaseCounts}
@@ -662,13 +662,13 @@ const styles = StyleSheet.create({
   },
   modBtnContainer: {
     position: "relative",
+    padding: "2px 10px",
   },
   modBtn: {
     fontSize: 20,
     display: "inline-block",
     cursor: "pointer",
-    padding: "2px 10px",
-    color: colors.BLACK(0.5),
+    color: "rgb(193, 193, 206)",
     ":hover": {
       color: colors.BLUE(),
     },

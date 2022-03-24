@@ -80,6 +80,7 @@ import {
   faRss,
   faUserSlash,
   faVideoPlus,
+  faShieldAlt,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -340,6 +341,7 @@ const icons = {
   fileImport: <FontAwesomeIcon icon={faFileImport} />,
   fire: <FontAwesomeIcon icon={faFireAlt} />,
   flag: <FontAwesomeIcon icon={faFlag} />,
+  shield: <FontAwesomeIcon icon={faShieldAlt} />,
   flagOutline: <FontAwesomeIcon icon={faFlagOutline} />,
   friends: <FontAwesomeIcon icon={faUsers} />,
   github: <FontAwesomeIcon icon={faGithub} />,
