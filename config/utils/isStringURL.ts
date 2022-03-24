@@ -5,6 +5,7 @@ const urlRegEx = new RegExp(
 );
 
 export const isStringURL = (str: string | null): boolean => {
+  // console.warn("THE FUCK IS THIS: ", str)
   if (!isString(str)) {
     return false;
   }
