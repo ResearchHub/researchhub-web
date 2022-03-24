@@ -1,15 +1,17 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { createPaperSubmissioncreatePaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
+import { css, StyleSheet } from "aphrodite";
 import { isStringURL } from "~/config/utils/isStringURL";
-import { ModalActions } from "~/redux/modals";
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 import { SyntheticEvent, useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
-import { useRouter } from "next/router";
 
 type Props = {
   messageActions: any /* redux */;
@@ -45,7 +47,8 @@ function PaperUploadWizardURLBody({
     event.preventDefault();
     event.stopPropagation();
     console.warn("url: ", url);
-    const newFormErrors = { url: !isStringURL(url) };
+    const WTF = !isStringURL(url);
+    const newFormErrors = { url: WTF };
     const hasError = Object.values(newFormErrors).includes(true);
 
     if (hasError) {
@@ -81,7 +84,20 @@ function PaperUploadWizardURLBody({
     <form onSubmit={onSubmit} style={{ paddingTop: 32 }}>
       <PaperUploadWizardInput
         error={urlError}
-        label="Link to Paper"
+        label={
+          <div className={css(styles.inputLabel)}>
+            <div>
+              {"Link to Paper"}
+              <span style={{ color: colors.BLUE(1) }}>{" * "}</span>
+            </div>
+            <div
+              className={css(styles.pdfText)}
+              onClick={(): void => setWizardStep("pdf_upload")}
+            >
+              {"Upload a PDF"}
+            </div>
+          </div>
+        }
         onChange={(value: null | string): void =>
           setFormValues({ ...formValues, url: value ?? "" })
         }
@@ -131,6 +147,20 @@ const mapStateToProps = (_state) => ({});
 const mapDispatchToProps = (dispatch) => ({
   modalActions: bindActionCreators(ModalActions, dispatch),
   messageActions: bindActionCreators(MessageActions, dispatch),
+});
+
+const styles = StyleSheet.create({
+  inputLabel: {
+    alignItems: "baseline",
+    display: "flex",
+    width: "100%",
+    justifyContent: "space-between",
+  },
+  pdfText: {
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    fontSize: 12,
+  },
 });
 
 export default connect(
