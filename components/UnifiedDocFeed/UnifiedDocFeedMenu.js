@@ -295,6 +295,8 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 14,
       padding: "7px 16px",
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+      lineHeight: "22px",
     },
   },
   dropdownButtonOverrideForFilter: {
@@ -310,7 +312,11 @@ const styles = StyleSheet.create({
       lineHeight: "22px",
     },
   },
-  dropdownButtonOverrideForTypeFilter: {},
+  dropdownButtonOverrideForTypeFilter: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    },
+  },
   overrideDownIconStyle: {
     padding: "6px 4px",
   },
