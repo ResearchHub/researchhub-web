@@ -224,13 +224,16 @@ function UnifiedDocFeedContainer({
         </div>
       ) : null}
 
-      {!isHomePage && 
+      {isHomePage || isEmpty(hub) ? (
+        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+      ) : (
         <FeedInfoCard
           hub={hub}
           hubSubscribeButton={Boolean(hub) ? subscribeButton : null}
+          isHomePage={isHomePage}
           mainHeaderText={formattedMainHeader}
         />
-      }
+      )}
       <div className={css(styles.buttonGroup)}>
         <div className={css(styles.mainFilters)}>
           <UnifiedDocFeedMenu
@@ -309,8 +312,8 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 16,
+    marginBottom: 16,
     overflow: "auto",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       flexDirection: "column-reverse",
