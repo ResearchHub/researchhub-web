@@ -14,12 +14,14 @@ export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
   onClick?: (e: SyntheticEvent) => void;
   forceOpen?: ForceOpen;
+  setOpen: (flag: boolean) => void;
 };
 
 export default function NewPostButton({
   customButtonStyle,
   onClick,
   forceOpen,
+  setOpen,
 }: NewPostButtonProps) {
   const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(
     Boolean(forceOpen)
@@ -29,6 +31,10 @@ export default function NewPostButton({
     setIsNewPostModalOpen(Boolean(forceOpen));
   }, [forceOpen]);
 
+  useEffect(() => {
+    setOpen(isNewPostModalOpen);
+  }, [isNewPostModalOpen]);
+  
   return (
     <Fragment>
       <PermissionNotificationWrapper
