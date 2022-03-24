@@ -353,7 +353,21 @@ function NotePublishModal({
               <CheckBox
                 active={checkBoxTwo}
                 isSquare
-                label={"[Optional] Assign a DOI to this post for 5 RSC"}
+                label={
+                  <div className={css(styles.checkBoxTwo)}>
+                    <span>
+                      [Optional] Assign a DOI to this post for{" "}
+                      {CROSSREF_DOI_RSC_FEE}
+                    </span>
+                    <img
+                      src={"/static/icons/coin-filled.png"}
+                      draggable={false}
+                      className={css(styles.coinIcon)}
+                      alt="RSC Coin"
+                    />
+                    <span>RSC</span>
+                  </div>
+                }
                 labelStyle={styles.label}
                 onChange={() => setCheckBoxTwo(!checkBoxTwo)}
               />
@@ -448,6 +462,17 @@ const styles = StyleSheet.create({
   },
   disabledCursor: {
     cursor: "not-allowed",
+  },
+  checkBoxTwo: {
+    bottom: 3,
+    position: "relative",
+  },
+  coinIcon: {
+    borderRadius: "50%",
+    height: 20,
+    margin: "0px 6px",
+    position: "relative",
+    top: 4,
   },
 });
 
