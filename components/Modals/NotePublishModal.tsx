@@ -213,10 +213,12 @@ function NotePublishModal({
         .then((response) => {
           /* @ts-ignore */
           const { id, slug } = response;
-          let param = {
-            balance: currentUser.balance - CROSSREF_DOI_RSC_FEE,
-          };
-          updateUser(param);
+          if (checkBoxDOI) {
+            let param = {
+              balance: currentUser.balance - CROSSREF_DOI_RSC_FEE,
+            };
+            updateUser(param);
+          }
           router.push(`/post/${id}/${slug}`);
         })
         .catch((err) => {
