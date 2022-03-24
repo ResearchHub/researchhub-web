@@ -8,6 +8,7 @@ import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
+import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
 
 type Props = { onExit: () => void };
 type State = {
@@ -30,6 +31,7 @@ function getWizardBody({
 }): WizardBodyElement {
   switch (currentStep) {
     case "pdf_upload":
+      return <PaperUploadWizardPDFUpload />;
     case "posted_paper_update":
       return (
         <PaperUploadWizardUpdatePaper onExit={onExit} paperID={postedPaperID} />
@@ -63,6 +65,8 @@ export default function PaperUploadWizardContainer({
     currentStep: "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(null);
+
+  console.warn("currentStep", currentStep);
 
   const wizardBody = useMemo(
     (): WizardBodyElement =>
