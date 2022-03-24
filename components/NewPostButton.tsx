@@ -1,24 +1,33 @@
 import Button from "./Form/Button";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Fragment, SyntheticEvent, useState } from "react";
+import { Fragment, SyntheticEvent, useEffect, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
+import { ForceOpen } from "./Paper/UploadWizard/PaperUploadWizardContainer";
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
   onClick?: (e: SyntheticEvent) => void;
+  forceOpen?: ForceOpen;
 };
 
 export default function NewPostButton({
   customButtonStyle,
   onClick,
+  forceOpen,
 }: NewPostButtonProps) {
-  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
+  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(
+    Boolean(forceOpen)
+  );
+
+  useEffect(() => {
+    setIsNewPostModalOpen(Boolean(forceOpen));
+  }, [forceOpen]);
 
   return (
     <Fragment>
@@ -44,6 +53,7 @@ export default function NewPostButton({
         />
       </PermissionNotificationWrapper>
       <NewPostModal
+        forceOpen={forceOpen}
         isOpen={isNewPostModalOpen}
         setIsOpen={setIsNewPostModalOpen}
       />
