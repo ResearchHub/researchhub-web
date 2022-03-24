@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
     padding: "20px 15px 20px 15px",
     color: colors.BLACK(),
     fontSize: 16,
-    fontWeight: 500,
+    fontWeight: 400,
     ":hover": {
       color: colors.PURPLE(),
     },

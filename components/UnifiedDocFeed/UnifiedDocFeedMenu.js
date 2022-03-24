@@ -34,7 +34,7 @@ const UnifiedDocFeedMenu = ({
       },
       {
         value: "newest",
-        label: "Newest",
+        label: "New",
         icon: icons.date,
         disableScope: true,
       },
@@ -288,11 +288,13 @@ const styles = StyleSheet.create({
     ":hover": {
       backgroundColor: "unset",
     },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 16,
-    },
     [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
       fontSize: 14,
+      lineHeight: "16px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+      padding: "7px 16px",
     },
   },
   dropdownButtonOverrideForFilter: {
@@ -302,6 +304,10 @@ const styles = StyleSheet.create({
     ":hover": {
       borderRadius: 40,
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+      lineHeight: "22px",
     },
   },
   dropdownButtonOverrideForTypeFilter: {},
