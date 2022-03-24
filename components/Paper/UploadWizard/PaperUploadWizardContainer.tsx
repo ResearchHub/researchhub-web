@@ -31,7 +31,7 @@ function getWizardBody({
 }): WizardBodyElement {
   switch (currentStep) {
     case "pdf_upload":
-      return <PaperUploadWizardPDFUpload />;
+      return <PaperUploadWizardPDFUpload onExit={onExit} />;
     case "posted_paper_update":
       return (
         <PaperUploadWizardUpdatePaper onExit={onExit} paperID={postedPaperID} />
@@ -65,8 +65,6 @@ export default function PaperUploadWizardContainer({
     currentStep: "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(null);
-
-  console.warn("currentStep", currentStep);
 
   const wizardBody = useMemo(
     (): WizardBodyElement =>

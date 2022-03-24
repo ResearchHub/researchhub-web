@@ -5,7 +5,7 @@ import {
   customStyles,
   formGenericStyles,
 } from "../Upload/styles/formGenericStyles";
-import { Fragment, useState } from "react";
+import { Fragment, SyntheticEvent, useState } from "react";
 import { ID } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { PaperActions } from "~/redux/paper";
@@ -16,8 +16,12 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData.js";
 import Ripples from "react-ripples";
+import FormInput from "~/components/Form/FormInput";
+import Button from "~/components/Form/Button";
+import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 
 type Props = {
+  onExit: () => void;
   paperRedux?: any;
   paperReduxActions?: any;
 };
@@ -28,10 +32,13 @@ type FormState = {
   selectedHubs: any[];
 };
 
-function PaperUploadWizardPDFUpload({ paperRedux, paperReduxActions }: Props) {
+function PaperUploadWizardPDFUpload({
+  onExit,
+  paperRedux,
+  paperReduxActions,
+}: Props) {
   const [isFileDragged, setIsFiledDragged] = useState<boolean>(false);
   const [isFileDropped, setIsFileDropped] = useState<boolean>(false);
-  const [isFileLoading, setIsFiledLoading] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [formState, setFormState] = useState<FormState>({
@@ -42,6 +49,18 @@ function PaperUploadWizardPDFUpload({ paperRedux, paperReduxActions }: Props) {
   const { doi, title, selectedHubs } = formState;
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
+  const resetComponent = () => {
+    paperReduxActions.removePaperFromState();
+    setIsFileDropped(false);
+    setIsFileDropped(false);
+    setIsSubmitting(false);
+    setFormState({
+      doi: null,
+      title: null,
+      selectedHubs: [],
+    });
+  };
 
   const { uploadedPaperMeta } = paperRedux ?? {};
 
@@ -76,8 +95,12 @@ function PaperUploadWizardPDFUpload({ paperRedux, paperReduxActions }: Props) {
     setIsFileDropped(true);
   };
 
+  const onFormSubmit = (e: SyntheticEvent) => {
+    e.preventDefault();
+  };
+
   return (
-    <form>
+    <form onSubmit={onFormSubmit}>
       {isFileDropped ? (
         <PaperMetaData
           metaData={uploadedPaperMeta}
@@ -106,39 +129,65 @@ function PaperUploadWizardPDFUpload({ paperRedux, paperReduxActions }: Props) {
                   )}
                 >
                   <input {...getInputProps()} required={true} />
-                  {isFileLoading ? (
-                    <Loader loading={true} size={28} />
-                  ) : (
-                    <Fragment>
-                      <img
-                        className={css(styles.uploadImage)}
-                        src={"/static/background/homepage-empty-state.png"}
-                        alt="Drag N Drop Icon"
-                      />
-                      <div className={css(styles.instructions)}>
-                        {"Drag & drop \n"}
-                        <span className={css(styles.subtext)}>
-                          {"your file here, or "}
-                          <span className={css(styles.browse)} id={"browse"}>
-                            {"browse"}
-                          </span>
+                  <Fragment>
+                    <img
+                      className={css(styles.uploadImage)}
+                      src={"/static/background/homepage-empty-state.png"}
+                      alt="Drag N Drop Icon"
+                    />
+                    <div className={css(styles.instructions)}>
+                      {"Drag & drop \n"}
+                      <span className={css(styles.subtext)}>
+                        {"your file here, or "}
+                        <span className={css(styles.browse)} id={"browse"}>
+                          {"browse"}
                         </span>
-                      </div>
-                    </Fragment>
-                  )}
+                      </span>
+                    </div>
+                  </Fragment>
                 </div>
               </section>
             )}
           </Dropzone>
         </Ripples>
       )}
+      <FormInput
+        containerStyle={formGenericStyles.container}
+        disabled={isSubmitting}
+        id="title"
+        label="Editorialized Title"
+        labelStyle={formGenericStyles.labelStyle}
+        onChange={(_id: ID, title: string): void =>
+          setFormState({ ...formState, title: isEmpty(title) ? null : title })
+        }
+        placeholder="Jargon free version of the title that the average person would understand"
+        required
+        value={title}
+      />
+      <FormInput
+        containerStyle={formGenericStyles.container}
+        disabled={isSubmitting}
+        id="doi"
+        label="DOI"
+        labelStyle={formGenericStyles.labelStyle}
+        onChange={(_id: ID, doi: string): void =>
+          setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+        }
+        placeholder="DOI"
+        required
+        value={doi}
+      />
       <FormSelect
         containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
-        // error={formErrors.selectedHubs}
         id="hubs"
         isMulti
-        label="Hubs"
+        label={
+          <div>
+            {"Hubs"}
+            <span style={{ color: colors.BLUE(1) }}>{"* "}</span>
+          </div>
+        }
         inputStyle={
           (customStyles.input,
           selectedHubs.length > 0 && customStyles.capitalize)
@@ -150,6 +199,38 @@ function PaperUploadWizardPDFUpload({ paperRedux, paperReduxActions }: Props) {
         required
         value={selectedHubs}
       />
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          padding: "16px 0",
+          width: "100%",
+        }}
+      >
+        <Button
+          customButtonStyle={verifStyles.buttonSecondary}
+          isWhite
+          key="upload-wizard-cancel"
+          label="Cancel"
+          rippleClass={verifStyles.rippleClass}
+          size="xxsmall"
+          type="button"
+          onClick={(event: SyntheticEvent): void => {
+            event.preventDefault();
+            // logical ordering
+            resetComponent();
+            onExit();
+          }}
+        />
+        <Button
+          customButtonStyle={verifStyles.buttonCustomStyle}
+          key="upload-wizard-button"
+          label="Upload"
+          rippleClass={verifStyles.rippleClass}
+          size="xxsmall"
+          type="submit"
+        />
+      </div>
     </form>
   );
 }
