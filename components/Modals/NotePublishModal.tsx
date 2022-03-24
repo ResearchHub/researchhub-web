@@ -110,8 +110,8 @@ function NotePublishModal({
   });
   const [authorOptions, setAuthorOptions] = useState([]);
   const [hubOptions, setHubOptions] = useState([]);
-  const [checkBoxOne, setCheckBoxOne] = useState(false);
-  const [checkBoxTwo, setCheckBoxTwo] = useState(false);
+  const [checkBoxGuidelines, setCheckBoxGuidelines] = useState(false);
+  const [checkBoxDOI, setCheckBoxDOI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const isPublished = Boolean(currentNote.post);
@@ -197,8 +197,8 @@ function NotePublishModal({
     e && e.preventDefault();
     setIsOpen(false);
     setShouldDisplayError(false);
-    setCheckBoxOne(false);
-    setCheckBoxTwo(false);
+    setCheckBoxGuidelines(false);
+    setCheckBoxDOI(false);
   };
 
   const handlePost = (e: SyntheticEvent) => {
@@ -236,7 +236,7 @@ function NotePublishModal({
     let params;
     if (publishedType === "UNPUBLISHED") {
       params = {
-        assign_doi: checkBoxTwo,
+        assign_doi: checkBoxDOI,
         authors: mutableFormFields.authors.map((author) => author.value),
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
@@ -248,7 +248,7 @@ function NotePublishModal({
       };
     } else {
       params = {
-        assign_doi: checkBoxTwo,
+        assign_doi: checkBoxDOI,
         authors: mutableFormFields.authors.map((author) => author.value),
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
@@ -341,17 +341,17 @@ function NotePublishModal({
           </ul>
           <div className={css(styles.checkboxContainer)}>
             <CheckBox
-              active={checkBoxOne}
+              active={checkBoxGuidelines}
               isSquare
               label={"I have adhered to the ResearchHub posting guidelines"}
               labelStyle={styles.label}
-              onChange={() => setCheckBoxOne(!checkBoxOne)}
+              onChange={() => setCheckBoxGuidelines(!checkBoxGuidelines)}
             />
           </div>
           {!currentNote.post?.doi && (
             <div className={css(styles.checkboxContainer)}>
               <CheckBox
-                active={checkBoxTwo}
+                active={checkBoxDOI}
                 isSquare
                 label={
                   <div className={css(styles.checkBoxTwo)}>
@@ -369,15 +369,15 @@ function NotePublishModal({
                   </div>
                 }
                 labelStyle={styles.label}
-                onChange={() => setCheckBoxTwo(!checkBoxTwo)}
+                onChange={() => setCheckBoxDOI(!checkBoxDOI)}
               />
             </div>
           )}
           <div className={css(styles.buttonsContainer)}>
-            <div className={css(!checkBoxOne && styles.disabledCursor)}>
+            <div className={css(!checkBoxGuidelines && styles.disabledCursor)}>
               <Button
                 customButtonStyle={styles.buttonStyle}
-                disabled={isSubmitting || !checkBoxOne}
+                disabled={isSubmitting || !checkBoxGuidelines}
                 isWhite={false}
                 label={isPublished ? "Republish" : "Publish"}
                 onClick={handlePost}
