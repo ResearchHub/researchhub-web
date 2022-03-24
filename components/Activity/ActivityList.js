@@ -10,6 +10,7 @@ import ActivityCard from "./ActivityCard";
 import HubEntryPlaceholder from "../Placeholders/HubEntryPlaceholder";
 import Loader from "~/components/Loader/Loader";
 import ActivityEmptyState from "./ActivityEmptyState";
+import Link from "next/link";
 
 // Config
 import { fetchLatestActivity } from "~/config/fetch";
@@ -119,9 +120,14 @@ const ActivityList = (props) => {
         customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={3} />}
       >
         <SideColumnTitle
-          title={hubId ? `Latest Activity in ${hub.name}` : "Latest Activity"}
+          title={"Latest Activity"}
           overrideStyles={styles.title}
-        />
+          overrideTitle={styles.title}
+        >
+          <Link href={"/live"}>
+            <a className={css(styles.viewMoreButton, styles.link)}>View All</a>
+          </Link>
+        </SideColumnTitle>
         <RenderActiviyList data={data} />
         <RenderViewMore
           data={data}
@@ -141,11 +147,24 @@ const styles = StyleSheet.create({
     boxShadow:
       "inset 25px 0px 25px -25px rgba(255,255,255,1), inset -25px 0px 25px -25px rgba(255,255,255,1)",
   },
+  link: {
+    textTransform: "initial",
+    color: colors.BLUE(),
+    fontWeight: 500,
+    textDecoration: "none",
+    letterSpacing: "normal",
+    fontSize: 14,
+    padding: 0,
+    ":hover": {},
+  },
   title: {
     top: 0,
     padding: "15px 20px 10px 20px",
     zIndex: 2,
     background: "#FFF",
+    width: "100%",
+
+    justifyContent: "space-between",
     "@media only screen and (max-width: 415px)": {
       padding: "15px 0 5px",
     },

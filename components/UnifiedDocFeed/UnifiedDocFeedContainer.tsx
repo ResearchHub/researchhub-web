@@ -223,6 +223,7 @@ function UnifiedDocFeedContainer({
           <CreateFeedBanner loggedIn={loggedIn} />
         </div>
       ) : null}
+
       {isHomePage || isEmpty(hub) ? (
         <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
       ) : (
@@ -323,6 +324,10 @@ const styles = StyleSheet.create({
     display: "flex",
     height: "inherit",
     width: "100%",
+    borderBottom: `1px solid ${colors.BLACK(0.1)}`,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      borderBottom: `unset`,
+    }
   },
   feedButtonContainer: {
     marginRight: 24,

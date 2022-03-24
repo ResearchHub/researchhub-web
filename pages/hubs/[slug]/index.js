@@ -2,7 +2,6 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { Component } from "react";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { getInitialScope } from "~/config/utils/dates";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isServer } from "~/config/server/isServer";
 import { toTitleCase } from "~/config/utils/string";
@@ -49,7 +48,7 @@ class Index extends Component {
             // Initial Feed
             hubId: currentHub?.id,
             ordering: "hot",
-            timePeriod: getInitialScope(),
+            timePeriod: "today",
             type: urlDocType,
           },
           authToken,

@@ -34,8 +34,8 @@ const UnifiedDocFeedMenu = ({
       },
       {
         value: "newest",
-        label: "Newest",
-        icon: icons.calendar,
+        label: "New",
+        icon: icons.date,
         disableScope: true,
       },
       {
@@ -80,10 +80,7 @@ const UnifiedDocFeedMenu = ({
   const renderFilterTab = (tabObj) => {
     return (
       <div
-        className={css(
-          styles.tabTypePill,
-          tabObj.isSelected && styles.tabTypePillSelected
-        )}
+        className={css(styles.tab, tabObj.isSelected && styles.tabSelected)}
         onClick={() => onSubFilterSelect(tabObj)}
       >
         <span className={css(styles.iconWrapper)}>{tabObj.icon}</span>
@@ -252,22 +249,19 @@ const styles = StyleSheet.create({
       display: "block",
     },
   },
-  tabTypePill: {
-    color: pillNavColors.primary.unfilledTextColor,
-    padding: "6px 12px",
+  tab: {
+    color: colors.BLACK(0.5),
+    padding: "0 1rem 1rem 1rem",
     marginRight: 8,
-    textTransform: "capitalize",
+    textTransform: "unset",
     fontSize: 16,
-    lineHeight: "24px",
-    fontWeight: 400,
+    fontWeight: 500,
     cursor: "pointer",
     ":active": {
-      cursor: "pointer",
+      color: colors.PURPLE(),
     },
     ":hover": {
-      borderRadius: 40,
-      background: pillNavColors.primary.unfilledHoverBackgroundColor,
-      color: pillNavColors.primary.unfilledHoverTextColor,
+      color: colors.PURPLE(),
     },
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 16,
@@ -276,34 +270,33 @@ const styles = StyleSheet.create({
       fontSize: 14,
     },
   },
-  tabTypePillSelected: {
-    color: pillNavColors.primary.filledTextColor,
-    borderRadius: "40px",
-    fontWeight: 500,
-    backgroundColor: pillNavColors.primary.filledBackgroundColor,
-    ":hover": {
-      backgroundColor: pillNavColors.primary.filledBackgroundColor,
-    },
+  tabSelected: {
+    color: colors.PURPLE(),
+    borderBottom: "solid 3px",
+    borderColor: colors.PURPLE(),
   },
   dropdownButtonOverride: {
     whiteSpace: "nowrap",
     display: "flex",
-    backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    backgroundColor: "unset",
     color: pillNavColors.secondary.filledTextColor,
     borderRadius: 40,
     fontWeight: 500,
     marginRight: 8,
     lineHeight: "22px",
-    padding: "8px 16px 7px 16px",
+    padding: "0px 0rem 1rem 1rem",
     ":hover": {
-      borderRadius: 40,
-      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
-    },
-    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
-      fontSize: 16,
+      backgroundColor: "unset",
     },
     [`@media only screen and (max-width: ${breakpoints.bigDesktop.str})`]: {
       fontSize: 14,
+      lineHeight: "16px",
+    },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+      padding: "7px 16px",
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+      lineHeight: "22px",
     },
   },
   dropdownButtonOverrideForFilter: {
@@ -314,8 +307,17 @@ const styles = StyleSheet.create({
       borderRadius: 40,
       backgroundColor: pillNavColors.secondary.filledBackgroundColor,
     },
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      fontSize: 14,
+      lineHeight: "22px",
+      backgroundColor: pillNavColors.primary.filledBackgroundColor,
+    },
   },
-  dropdownButtonOverrideForTypeFilter: {},
+  dropdownButtonOverrideForTypeFilter: {
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      backgroundColor: pillNavColors.secondary.filledBackgroundColor,
+    },
+  },
   overrideDownIconStyle: {
     padding: "6px 4px",
   },

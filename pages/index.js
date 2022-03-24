@@ -2,7 +2,6 @@ import { AUTH_TOKEN } from "~/config/constants";
 import { fetchUnifiedDocFeed } from "~/config/fetch";
 import { filterOptions } from "~/config/utils/options";
 import { getBEUnifiedDocType } from "~/config/utils/getUnifiedDocType";
-import { getInitialScope } from "~/config/utils/dates";
 import { isServer } from "~/config/server/isServer";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import HubPage from "~/components/Hubs/HubPage";
@@ -46,10 +45,8 @@ Index.getInitialProps = async (ctx) => {
         page: 1,
         subfilters: filterObj,
         subscribedHubs: false,
-        timePeriod: getInitialScope(),
+        timePeriod: "today",
         type: urlDocType,
-        // V2 of hot score
-        ...(hot_v2 === "true" && { hotV2: true }),
       },
       authToken,
       !isNullOrUndefined(authToken) /* withVotes */
