@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       fontSize: 14,
       lineHeight: "22px",
+      backgroundColor: pillNavColors.primary.filledBackgroundColor,
     },
   },
   dropdownButtonOverrideForTypeFilter: {

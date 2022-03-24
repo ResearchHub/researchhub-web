@@ -272,6 +272,9 @@ const styles = StyleSheet.create({
     marginTop: 1,
     flexDirection: "row",
     boxShadow: `inset 0px 0px 0px 1px ${colors.BLUE()}`,
+    [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
+      width: "100%",
+    },
   },
   backIcon: {
     color: colors.BLUE(),
@@ -300,7 +303,7 @@ const styles = StyleSheet.create({
     position: "static",
     fontSize: 16,
     opacity: 1,
-    marginRight: 20,
+    marginRight: 10,
     ":hover": {
       background: 0,
     },
