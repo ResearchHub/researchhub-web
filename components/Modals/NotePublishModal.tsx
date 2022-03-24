@@ -5,6 +5,7 @@ import CheckBox from "~/components/Form/CheckBox";
 import FormSelect from "../Form/FormSelect";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
+import { AuthActions } from "~/redux/auth";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
@@ -73,6 +74,8 @@ const getPublishedType = (currentNote: any): string => {
   return "UNPUBLISHED";
 };
 
+const CROSSREF_DOI_RSC_FEE = 5;
+
 export type NotePublishModalProps = {
   currentNote: any;
   currentOrganization: any;
@@ -82,6 +85,7 @@ export type NotePublishModalProps = {
   setIsOpen: (flag: boolean) => void;
   setMessage: any;
   showMessage: any;
+  updateUser: any;
 };
 
 function NotePublishModal({
@@ -93,6 +97,7 @@ function NotePublishModal({
   setIsOpen,
   setMessage,
   showMessage,
+  updateUser,
 }: NotePublishModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
@@ -208,9 +213,19 @@ function NotePublishModal({
         .then((response) => {
           /* @ts-ignore */
           const { id, slug } = response;
+          let param = {
+            balance: currentUser.balance - CROSSREF_DOI_RSC_FEE,
+          };
+          updateUser(param);
           router.push(`/post/${id}/${slug}`);
         })
-        .catch((err) => setIsSubmitting(false));
+        .catch((err) => {
+          if (err.response.status === 402) {
+            setMessage("Not enough coins in balance");
+            showMessage({ show: true, error: true });
+          }
+          setIsSubmitting(false);
+        });
     }
   };
 
@@ -442,6 +457,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotePublishModal);
