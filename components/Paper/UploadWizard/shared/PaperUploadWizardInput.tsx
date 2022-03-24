@@ -1,10 +1,10 @@
 import { css, StyleSheet } from "aphrodite";
-import { ChangeEvent, ReactElement, SyntheticEvent } from "react";
+import { ChangeEvent, ReactElement, ReactNode } from "react";
 import colors from "~/config/themes/colors";
 
 type Props = {
   error?: boolean;
-  label: string;
+  label: ReactNode;
   onChange: (inputValue: null | string) => void;
   placeholder?: string;
   required?: boolean;
@@ -23,16 +23,12 @@ export default function PaperUploadWizardInput({
 
   return (
     <div className={css(styles.paperUploadWizardInput)}>
-      <div className={css(styles.label)}>
-        {label}
-        {required && <span style={{ color: colors.BLUE(1) }}>{" * "}</span>}
-      </div>
+      <div className={css(styles.label)}>{label}</div>
       <div className={css(styles.inputWrap)}>
         <input
           className={css(styles.input, error && styles.inputError)}
           maxLength={250}
           onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            event.preventDefault();
             onChange(event.target?.value);
           }}
           placeholder={placeholder ?? ""}
