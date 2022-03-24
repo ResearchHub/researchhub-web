@@ -115,8 +115,6 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
         onExit();
       } else {
         setIsSubmitting(false);
-        alert("ERROR");
-        console.warn("resPayload: ", resPayload);
       }
     } else {
       setFormErrors(formErrors);

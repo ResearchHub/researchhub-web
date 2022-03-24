@@ -118,7 +118,6 @@ function PaperUploadWizardStandbyBody({
           customLabel=" "
         />
       </div>
-
       {shouldRenderDelayText && (
         <div className={css(styles.loadText)}>
           <div>
