@@ -109,10 +109,9 @@ function PaperUploadWizardPDFUpload({
   const onFormSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    debugger;
+
     if (isNullOrUndefined(uploadedPaperMeta)) {
       return;
-      debugger;
     }
 
     uploadNewPaper({
@@ -267,6 +266,7 @@ function PaperUploadWizardPDFUpload({
       >
         <Button
           customButtonStyle={verifStyles.buttonSecondary}
+          disabled={isSubmitting}
           isWhite
           key="upload-wizard-cancel"
           label="Cancel"
@@ -282,8 +282,11 @@ function PaperUploadWizardPDFUpload({
         />
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
+          disabled={isSubmitting}
           key="upload-wizard-button"
-          label="Upload"
+          label={
+            !isSubmitting ? "Upload" : <Loader size={8} loading color="#fff" />
+          }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"
           type="submit"
