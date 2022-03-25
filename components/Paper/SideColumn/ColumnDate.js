@@ -1,9 +1,10 @@
 import * as moment from "dayjs";
+import colors from "~/config/themes/colors";
 import { SideColumnTitle } from "~/components/Typography";
 import { StyleSheet, css } from "aphrodite";
 import { formatPublishedDate } from "~/config/utils/dates";
 
-const ColumnHubs = ({ paper }) => {
+const ColumnDate = ({ paper }) => {
   return (
     <>
       <SideColumnTitle title={"Published"} overrideStyles={styles.title} />
@@ -20,6 +21,7 @@ const styles = StyleSheet.create({
   },
   date: {
     alignItems: "center",
+    color: colors.BLACK(),
     display: "flex",
     fontSize: 16,
     fontWeight: 500,
@@ -31,4 +33,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ColumnHubs;
+export default ColumnDate;

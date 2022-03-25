@@ -5,6 +5,7 @@ import CheckBox from "~/components/Form/CheckBox";
 import FormSelect from "../Form/FormSelect";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
+import { AuthActions } from "~/redux/auth";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "~/redux/message";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
@@ -73,6 +74,8 @@ const getPublishedType = (currentNote: any): string => {
   return "UNPUBLISHED";
 };
 
+const CROSSREF_DOI_RSC_FEE = 5;
+
 export type NotePublishModalProps = {
   currentNote: any;
   currentOrganization: any;
@@ -82,6 +85,7 @@ export type NotePublishModalProps = {
   setIsOpen: (flag: boolean) => void;
   setMessage: any;
   showMessage: any;
+  updateUser: any;
 };
 
 function NotePublishModal({
@@ -93,6 +97,7 @@ function NotePublishModal({
   setIsOpen,
   setMessage,
   showMessage,
+  updateUser,
 }: NotePublishModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormError>({
@@ -105,8 +110,8 @@ function NotePublishModal({
   });
   const [authorOptions, setAuthorOptions] = useState([]);
   const [hubOptions, setHubOptions] = useState([]);
-  const [checkBoxOne, setCheckBoxOne] = useState(false);
-  const [checkBoxTwo, setCheckBoxTwo] = useState(false);
+  const [checkBoxGuidelines, setCheckBoxGuidelines] = useState(false);
+  const [checkBoxDOI, setCheckBoxDOI] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [shouldDisplayError, setShouldDisplayError] = useState<boolean>(false);
   const isPublished = Boolean(currentNote.post);
@@ -192,8 +197,8 @@ function NotePublishModal({
     e && e.preventDefault();
     setIsOpen(false);
     setShouldDisplayError(false);
-    setCheckBoxOne(false);
-    setCheckBoxTwo(false);
+    setCheckBoxGuidelines(false);
+    setCheckBoxDOI(false);
   };
 
   const handlePost = (e: SyntheticEvent) => {
@@ -208,9 +213,24 @@ function NotePublishModal({
         .then((response) => {
           /* @ts-ignore */
           const { id, slug } = response;
+          if (checkBoxDOI) {
+            let param = {
+              balance: currentUser.balance - CROSSREF_DOI_RSC_FEE,
+            };
+            updateUser(param);
+          }
           router.push(`/post/${id}/${slug}`);
         })
-        .catch((err) => setIsSubmitting(false));
+        .catch((err) => {
+          if (err.response.status === 402) {
+            setMessage("Not enough coins in balance");
+            showMessage({ show: true, error: true });
+          } else {
+            setMessage("Something went wrong, please try again");
+            showMessage({ show: true, error: true });
+          }
+          setIsSubmitting(false);
+        });
     }
   };
 
@@ -221,8 +241,8 @@ function NotePublishModal({
     let params;
     if (publishedType === "UNPUBLISHED") {
       params = {
+        assign_doi: checkBoxDOI,
         authors: mutableFormFields.authors.map((author) => author.value),
-        created_by: currentUser.id,
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
         hubs: mutableFormFields.hubs.map((hub) => hub.value),
@@ -233,6 +253,7 @@ function NotePublishModal({
       };
     } else {
       params = {
+        assign_doi: checkBoxDOI,
         authors: mutableFormFields.authors.map((author) => author.value),
         document_type: "DISCUSSION",
         full_src: editorContent.full_src,
@@ -321,34 +342,57 @@ function NotePublishModal({
             <li>
               Be respectful of differing opinions, viewpoints, and experiences
             </li>
+            <li>Do not plagiarize any content, keep it original</li>
           </ul>
-          <div className={css(styles.checkboxContainer)}>
+          <div
+            className={css(styles.checkboxContainer)}
+            onClick={() => setCheckBoxGuidelines(!checkBoxGuidelines)}
+          >
             <CheckBox
-              active={checkBoxOne}
+              active={checkBoxGuidelines}
               isSquare
-              label={"I have adhered to the ResearchHub posting guidelines."}
+              label={"I have adhered to the ResearchHub posting guidelines"}
               labelStyle={styles.label}
-              onChange={() => setCheckBoxOne(!checkBoxOne)}
+              onChange={() => setCheckBoxGuidelines(!checkBoxGuidelines)}
             />
           </div>
-          <div className={css(styles.checkboxContainer)}>
-            <CheckBox
-              active={checkBoxTwo}
-              isSquare
-              label={"This post is original and not published work."}
-              labelStyle={styles.label}
-              onChange={() => setCheckBoxTwo(!checkBoxTwo)}
-            />
-          </div>
-          <div className={css(styles.buttonsContainer)}>
+          {!currentNote.post?.doi && (
             <div
-              className={css(
-                (!checkBoxOne || !checkBoxTwo) && styles.disabledCursor
-              )}
+              className={css(styles.checkboxContainer)}
+              onClick={() => setCheckBoxDOI(!checkBoxDOI)}
             >
+              <CheckBox
+                active={checkBoxDOI}
+                isSquare
+                label={
+                  <>
+                    <div className={css(styles.checkBoxDOI)}>
+                      <span>
+                        [Optional] Assign a DOI to this post for{" "}
+                        {CROSSREF_DOI_RSC_FEE} RSC
+                      </span>
+                      <img
+                        src={"/static/icons/coin-filled.png"}
+                        draggable={false}
+                        className={css(styles.coinIcon)}
+                        alt="RSC Coin"
+                      />
+                    </div>
+                    <div className={css(styles.subtitle)}>
+                      RSC will be deducted from your balance
+                    </div>
+                  </>
+                }
+                labelStyle={styles.label}
+                onChange={() => setCheckBoxDOI(!checkBoxDOI)}
+              />
+            </div>
+          )}
+          <div className={css(styles.buttonsContainer)}>
+            <div className={css(!checkBoxGuidelines && styles.disabledCursor)}>
               <Button
                 customButtonStyle={styles.buttonStyle}
-                disabled={isSubmitting || !checkBoxOne || !checkBoxTwo}
+                disabled={isSubmitting || !checkBoxGuidelines}
                 isWhite={false}
                 label={isPublished ? "Republish" : "Publish"}
                 onClick={handlePost}
@@ -429,10 +473,26 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   checkboxContainer: {
+    cursor: "pointer",
     margin: "10px 0px",
   },
   disabledCursor: {
     cursor: "not-allowed",
+  },
+  checkBoxDOI: {
+    bottom: 3,
+    position: "relative",
+  },
+  coinIcon: {
+    borderRadius: "50%",
+    height: 20,
+    marginLeft: 6,
+    position: "relative",
+    top: 4,
+  },
+  subtitle: {
+    color: colors.TEXT_GREY(),
+    fontSize: 14,
   },
 });
 
@@ -442,6 +502,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   showMessage: MessageActions.showMessage,
   setMessage: MessageActions.setMessage,
+  updateUser: AuthActions.updateUser,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(NotePublishModal);
