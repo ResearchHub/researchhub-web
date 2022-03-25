@@ -10,12 +10,12 @@ import Router from "next/router";
 // Components
 import { AuthActions } from "../redux/auth";
 import { HubActions } from "../redux/hub";
-import { UniversityActions } from "../redux/universities";
-import { TransactionActions } from "../redux/transaction";
-import { NotificationActions } from "~/redux/notification";
-import PermissionActions from "../redux/permission";
 import { isDevEnv } from "~/config/utils/env";
-import { NewPostButtonContext } from "~/components/NewPostButton";
+import { NewPostButtonContext } from "~/components/contexts/NewPostButtonContext.ts";
+import { NotificationActions } from "~/redux/notification";
+import { TransactionActions } from "../redux/transaction";
+import { UniversityActions } from "../redux/universities";
+import PermissionActions from "../redux/permission";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -41,7 +41,7 @@ function Base({
   pageProps,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
-  const [newPostButtonContext, setNewPostButtonContext] = useState({
+  const [newPostButtonValues, setNewPostButtonValues] = useState({
     isOpen: false,
     paperID: null,
   });
@@ -87,7 +87,10 @@ function Base({
         value={{ numNavInteractions, setNumNavInteractions }}
       >
         <NewPostButtonContext.Provider
-          value={{ newPostButtonContext, setNewPostButtonContext }}
+          value={{
+            values: newPostButtonValues,
+            setValues: setNewPostButtonValues,
+          }}
         >
           {isDevEnv() && SPEC__reloadClientSideData()}
           <div className={css(styles.pageWrapper)}>
