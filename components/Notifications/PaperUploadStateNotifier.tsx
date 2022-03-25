@@ -3,33 +3,42 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, ReactNode, SyntheticEvent, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { useRouter } from "next/router";
+import { NextRouter, useRouter } from "next/router";
 import withWebSocket from "../withWebSocket";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { ID } from "~/config/types/root_types";
 import { ForceOpen } from "../Paper/UploadWizard/PaperUploadWizardContainer";
+import { buildSlug } from "~/config/utils/buildSlug";
 
 type Props = {
   wsResponse: any /* socket */;
   setForceOpenPaperUpload: (args: ForceOpen) => void;
   isNewPostModalOpen: boolean;
 };
+type GetToastBodyArgs = {
+  status: string;
+  paperID: ID;
+  setForceOpenPaperUpload;
+  router: NextRouter;
+};
 
-const getToastBody = (
-  status: string,
-  paperID: ID,
-  setForceOpenPaperUpload
-): [boolean /* shouldRender */, ReactNode /* toastBody */] => {
+const getToastBody = ({
+  status,
+  paperID,
+  setForceOpenPaperUpload,
+  router,
+}: GetToastBodyArgs): [
+  boolean /* shouldRender */,
+  ReactNode /* toastBody */
+] => {
   switch (status) {
     case "COMPLETE":
       return [
         true,
         <div
           className={css(styles.toastBody)}
-          onClick={(event: SyntheticEvent): void => {
-            setForceOpenPaperUpload({ openType: "paper", paperID: 68 });
-          }}
+          onClick={(_event: SyntheticEvent): void => {router.push(`/paper/${paperID}/${buildSlug()}`)}}
         >
           <div className={css(styles.toastBodyTitle)}>{"PAPER UPLOADED"}</div>
           <div className={css(styles.toastSubtext)}>
@@ -58,20 +67,7 @@ const getToastBody = (
         </div>,
       ];
     default:
-      return [
-        true,
-        <div className={css(styles.toastBody)}>
-          <div className={css(styles.toastBodyTitle)}>
-            {"PAPER UPLOADED FAILED"}
-          </div>
-          <div className={css(styles.toastSubtext)}>
-            <span style={{ marginRight: 6, color: colors.RED(1) }}>
-              {icons.exclamationCircle}
-            </span>
-            {"Please try again later or upload with a PDF"}
-          </div>
-        </div>,
-      ];
+      return [false, null];
   }
 };
 
@@ -88,8 +84,9 @@ function PaperUploadStateNotifier({
   console.warn("isNewPostModalOpen: ", isNewPostModalOpen);
   useEffect((): void => {
     const bodyResult = getToastBody(
-      paperUploadStatus,
       paperID,
+      paperUploadStatus,
+      router,
       setForceOpenPaperUpload
     );
     console.warn("inside useEffect", bodyResult);
