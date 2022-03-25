@@ -1,46 +1,48 @@
-import Button from "./Form/Button";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Fragment, SyntheticEvent, useEffect, useState } from "react";
+import { createContext, useContext } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-
-// Dynamic modules
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Fragment, SyntheticEvent } from "react";
+import { ID } from "~/config/types/root_types";
+import Button from "./Form/Button";
 import dynamic from "next/dynamic";
-import { ForceOpen } from "./Paper/UploadWizard/PaperUploadWizardContainer";
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
+
+export type NewPostButtonContextParams = { isOpen: boolean; paperID?: ID };
+
+export type NewPostButtonContextType = {
+  newPostButtonContext: NewPostButtonContextParams;
+  setNewPostButtonContext: (NewPostButtonContextParams) => void;
+};
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
   onClick?: (e: SyntheticEvent) => void;
-  forceOpen?: ForceOpen;
-  setOpen: (flag: boolean) => void;
 };
+
+export const NewPostButtonContext = createContext<NewPostButtonContextType>({
+  newPostButtonContext: { isOpen: false, paperID: null },
+  setNewPostButtonContext: () => {},
+});
 
 export default function NewPostButton({
   customButtonStyle,
   onClick,
-  forceOpen,
-  setOpen,
 }: NewPostButtonProps) {
-  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(
-    Boolean(forceOpen)
-  );
+  const { newPostButtonContext, setNewPostButtonContext } =
+    useContext(NewPostButtonContext);
 
-  useEffect(() => {
-    setIsNewPostModalOpen(Boolean(forceOpen));
-  }, [forceOpen]);
+  const { isOpen, paperID } = newPostButtonContext ?? {};
+  const setIsOpen = (flag: boolean): void =>
+    setNewPostButtonContext({ ...newPostButtonContext, isOpen: flag });
 
-  useEffect(() => {
-    setOpen(isNewPostModalOpen);
-  }, [isNewPostModalOpen]);
-  
   return (
     <Fragment>
       <PermissionNotificationWrapper
         loginRequired
         modalMessage="create a new post"
-        onClick={() => setIsNewPostModalOpen(true)}
+        onClick={(): void => setIsOpen(true)}
         permissionKey="CreatePaper"
         styling={styles.rippleClass}
       >
@@ -58,11 +60,7 @@ export default function NewPostButton({
           size={"newPost"}
         />
       </PermissionNotificationWrapper>
-      <NewPostModal
-        forceOpen={forceOpen}
-        isOpen={isNewPostModalOpen}
-        setIsOpen={setIsNewPostModalOpen}
-      />
+      <NewPostModal isOpen={isOpen} setIsOpen={setIsOpen} />
     </Fragment>
   );
 }

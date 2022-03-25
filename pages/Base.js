@@ -15,6 +15,7 @@ import { TransactionActions } from "../redux/transaction";
 import { NotificationActions } from "~/redux/notification";
 import PermissionActions from "../redux/permission";
 import { isDevEnv } from "~/config/utils/env";
+import { NewPostButtonContext } from "~/components/NewPostButton";
 
 const DynamicPermissionNotification = dynamic(() =>
   import("../components/PermissionNotification")
@@ -40,6 +41,10 @@ function Base({
   pageProps,
 }) {
   const [numNavInteractions, setNumNavInteractions] = useState(0);
+  const [newPostButtonContext, setNewPostButtonContext] = useState({
+    isOpen: false,
+    paperID: null,
+  });
 
   useEffect(async () => {
     getUniversities();
@@ -81,14 +86,18 @@ function Base({
       <NavbarContext.Provider
         value={{ numNavInteractions, setNumNavInteractions }}
       >
-        {isDevEnv() && SPEC__reloadClientSideData()}
-        <div className={css(styles.pageWrapper)}>
-          <DynamicPermissionNotification />
-          <DynamicNavbar />
-          <Component {...pageProps} />
-          <DynamicMessage />
-        </div>
-        <DynamicFooter />
+        <NewPostButtonContext.Provider
+          value={{ newPostButtonContext, setNewPostButtonContext }}
+        >
+          {isDevEnv() && SPEC__reloadClientSideData()}
+          <div className={css(styles.pageWrapper)}>
+            <DynamicPermissionNotification />
+            <DynamicNavbar />
+            <Component {...pageProps} />
+            <DynamicMessage />
+          </div>
+          <DynamicFooter />
+        </NewPostButtonContext.Provider>
       </NavbarContext.Provider>
     </AlertProvider>
   );
