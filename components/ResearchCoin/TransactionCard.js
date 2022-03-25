@@ -64,7 +64,9 @@ const TransactionCard = (props) => {
       <div className={css(styles.row)}>
         <div className={css(styles.column)}>
           <div className={css(styles.maintext)}>
-            {transaction.source?.purchase_type === "BOOST"
+            {transaction.source?.purchase_type === "DOI"
+              ? `DOI`
+              : transaction.source?.purchase_type === "BOOST"
               ? "Supported Content"
               : transaction.source?.distribution_type === "PURCHASE"
               ? "Received Support"
@@ -97,6 +99,22 @@ const TransactionCard = (props) => {
                 }}
               >
                 <div className={css(styles.metatext)}>{paper.paper_title}</div>
+              </a>
+            </Link>
+          )}
+          {transaction.source?.purchase_type === "DOI" && (
+            <Link
+              href={`/post/${transaction.source.source.id}/${transaction.source.source.slug}`}
+            >
+              <a
+                className={css(styles.metatext)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              >
+                <div className={css(styles.metatext)}>
+                  {transaction.source.source.title}
+                </div>
               </a>
             </Link>
           )}
