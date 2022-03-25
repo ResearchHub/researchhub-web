@@ -718,6 +718,7 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
   },
   postBody: {
+    lineHeight: "24px",
     wordBreak: "break-word",
   },
   overflow: {

@@ -1,19 +1,22 @@
-import { StyleSheet, css } from "aphrodite";
-
-// Component
-import ColumnAuthors from "./ColumnAuthors";
-import ColumnDate from "./ColumnDate";
-import ColumnHubs from "./ColumnHubs";
-import ColumnJournal from "./ColumnJournal";
-
+import ColumnAuthors from "~/components/Paper/SideColumn/ColumnAuthors";
+import ColumnDOI from "~/components/Paper/SideColumn/ColumnDOI";
+import ColumnDate from "~/components/Paper/SideColumn/ColumnDate";
+import ColumnHubs from "~/components/Paper/SideColumn/ColumnHubs";
+import ColumnJournal from "~/components/Paper/SideColumn/ColumnJournal";
 import colors from "~/config/themes/colors";
+import { StyleSheet, css } from "aphrodite";
 
 const PaperSideColumn = (props) => {
   const { paper, paperId, authors, hubs, customStyle, isPost } = props;
 
   return (
     <div className={css(styles.root, customStyle && customStyle)}>
-      {isPost && <ColumnDate paper={paper} hubs={hubs} paperId={paperId} />}
+      {isPost && (
+        <>
+          <ColumnDate paper={paper} />
+          {paper.doi && <ColumnDOI paper={paper} />}
+        </>
+      )}
       <ColumnAuthors paper={paper} authors={authors} paperId={paperId} />
       <ColumnHubs paper={paper} hubs={hubs} paperId={paperId} />
       {!isPost && <ColumnJournal paper={paper} paperId={paperId} />}
