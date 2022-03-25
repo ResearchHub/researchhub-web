@@ -1,44 +1,42 @@
 import "react-toastify/dist/ReactToastify.css";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { ID, NullableString } from "~/config/types/root_types";
+import { NextRouter, useRouter } from "next/router";
 import { ReactElement, ReactNode, SyntheticEvent, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import { NextRouter, useRouter } from "next/router";
-import withWebSocket from "../withWebSocket";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { ID } from "~/config/types/root_types";
-import { ForceOpen } from "../Paper/UploadWizard/PaperUploadWizardContainer";
-import { buildSlug } from "~/config/utils/buildSlug";
+import withWebSocket from "../withWebSocket";
 
 type Props = {
   wsResponse: any /* socket */;
-  setForceOpenPaperUpload: (args: ForceOpen) => void;
   isNewPostModalOpen: boolean;
 };
 type GetToastBodyArgs = {
-  status: string;
   paperID: ID;
-  setForceOpenPaperUpload;
+  paperUploadStatus: NullableString;
   router: NextRouter;
 };
 
 const getToastBody = ({
-  status,
+  paperUploadStatus,
   paperID,
-  setForceOpenPaperUpload,
   router,
 }: GetToastBodyArgs): [
   boolean /* shouldRender */,
   ReactNode /* toastBody */
 ] => {
-  switch (status) {
+  switch (paperUploadStatus) {
     case "COMPLETE":
       return [
         true,
         <div
           className={css(styles.toastBody)}
-          onClick={(_event: SyntheticEvent): void => {router.push(`/paper/${paperID}/${buildSlug()}`)}}
+          onClick={(_event: SyntheticEvent): void => {
+            router.push(`/paper/${paperID}/${buildSlug()}`);
+          }}
         >
           <div className={css(styles.toastBodyTitle)}>{"PAPER UPLOADED"}</div>
           <div className={css(styles.toastSubtext)}>
@@ -73,28 +71,21 @@ const getToastBody = ({
 
 function PaperUploadStateNotifier({
   wsResponse,
-  setForceOpenPaperUpload,
-  isNewPostModalOpen,
 }: Props): ReactElement<typeof ToastContainer> {
   const router = useRouter();
   const parsedWsResponse = JSON.parse(wsResponse);
   const { paper_status: paperUploadStatus, paper: paperID } =
     parsedWsResponse?.data ?? {};
   console.warn("JSON.parse(wsResponse: ", JSON.parse(wsResponse)?.data);
-  console.warn("isNewPostModalOpen: ", isNewPostModalOpen);
+  
   useEffect((): void => {
-    const bodyResult = getToastBody(
-      paperID,
-      paperUploadStatus,
-      router,
-      setForceOpenPaperUpload
-    );
+    const bodyResult = getToastBody({ paperID, paperUploadStatus, router });
     console.warn("inside useEffect", bodyResult);
-    if (bodyResult[0] && !isNewPostModalOpen) {
+    if (bodyResult[0]) {
       console.warn("TOSTING: ", bodyResult[1], []);
       toast(bodyResult[1]);
     }
-  }, [paperUploadStatus, paperID, isNewPostModalOpen]);
+  }, [paperUploadStatus, paperID]);
 
   return (
     <ToastContainer

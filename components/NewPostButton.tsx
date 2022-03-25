@@ -1,48 +1,36 @@
-import { createContext, useContext } from "react";
+import { useContext } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Fragment, SyntheticEvent } from "react";
-import { ID } from "~/config/types/root_types";
 import Button from "./Form/Button";
 import dynamic from "next/dynamic";
 import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
+
 const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
-
-export type NewPostButtonContextParams = { isOpen: boolean; paperID?: ID };
-
-export type NewPostButtonContextType = {
-  newPostButtonContext: NewPostButtonContextParams;
-  setNewPostButtonContext: (NewPostButtonContextParams) => void;
-};
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
   onClick?: (e: SyntheticEvent) => void;
 };
 
-export const NewPostButtonContext = createContext<NewPostButtonContextType>({
-  newPostButtonContext: { isOpen: false, paperID: null },
-  setNewPostButtonContext: () => {},
-});
-
 export default function NewPostButton({
   customButtonStyle,
   onClick,
 }: NewPostButtonProps) {
-  const { newPostButtonContext, setNewPostButtonContext } =
-    useContext(NewPostButtonContext);
-
-  const { isOpen, paperID } = newPostButtonContext ?? {};
-  const setIsOpen = (flag: boolean): void =>
-    setNewPostButtonContext({ ...newPostButtonContext, isOpen: flag });
-
+  const { values: buttonValues, setValues: setButtonValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  console.warn("buttonValues: ", buttonValues);
   return (
     <Fragment>
       <PermissionNotificationWrapper
         loginRequired
         modalMessage="create a new post"
-        onClick={(): void => setIsOpen(true)}
+        onClick={(): void => setButtonValues({ ...buttonValues, isOpen: true })}
         permissionKey="CreatePaper"
         styling={styles.rippleClass}
       >
@@ -60,7 +48,7 @@ export default function NewPostButton({
           size={"newPost"}
         />
       </PermissionNotificationWrapper>
-      <NewPostModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <NewPostModal />
     </Fragment>
   );
 }
