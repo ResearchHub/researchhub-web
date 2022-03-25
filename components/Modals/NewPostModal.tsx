@@ -42,12 +42,6 @@ function NewPostModal({
     isOpen && paperID ? "paperWizard" : null
   );
 
-  useEffect((): void => {
-    if (!isNullOrUndefined(isOpen) && !isNullOrUndefined(paperID)) {
-      setBodyType("paperWizard");
-    }
-  });
-
   const setIsOpen = (flag: boolean): void =>
     setButtonValues({ ...buttonValues, isOpen: flag });
 
