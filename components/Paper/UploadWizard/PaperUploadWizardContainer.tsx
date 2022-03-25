@@ -10,9 +10,7 @@ import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
 
-export type ForceOpen = { paperID: ID; openType: "paper" };
-
-type Props = { onExit: () => void; forceOpen: ForceOpen };
+type Props = { onExit: () => void };
 type State = {
   currentStep: WizardBodyTypes;
 };
@@ -65,7 +63,9 @@ export default function PaperUploadWizardContainer({
   forceOpen,
 }: Props): ReactElement<Props> {
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: Boolean(forceOpen?.paperID) ? "posted_paper_update" : "url_upload",
+    currentStep: Boolean(forceOpen?.paperID)
+      ? "posted_paper_update"
+      : "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(
     forceOpen?.paperID ?? null

@@ -5,7 +5,13 @@ import { ID } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
-import { ReactElement, useState, SyntheticEvent, useEffect } from "react";
+import {
+  ReactElement,
+  useState,
+  SyntheticEvent,
+  useEffect,
+  useContext,
+} from "react";
 import { StyleSheet, css } from "aphrodite";
 import { useRouter } from "next/router";
 import BaseModal from "./BaseModal";
@@ -14,29 +20,37 @@ import Link from "next/link";
 import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 export type NewPostModalProps = {
   currentUser: any;
-  isOpen: boolean;
-  setIsOpen: (flag: boolean) => void;
-  forceOpen?: ForceOpen;
 };
 
 function NewPostModal({
   currentUser,
-  isOpen,
-  setIsOpen,
-  forceOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
+  const { values: buttonValues, setValues: setButtonValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  const { isOpen, paperID } = buttonValues;
+
   const [selected, setSelected] = useState(0);
-  const [bodyType, setBodyType] = useState<string | null>(null);
+  const [bodyType, setBodyType] = useState<string | null>(
+    isOpen && paperID ? "paperWizard" : null
+  );
 
   useEffect((): void => {
-    if (!isNullOrUndefined(forceOpen) && forceOpen?.openType === "paper") {
+    if (!isNullOrUndefined(isOpen) && !isNullOrUndefined(paperID)) {
       setBodyType("paperWizard");
     }
   });
+
+  const setIsOpen = (flag: boolean): void =>
+    setButtonValues({ ...buttonValues, isOpen: flag });
+
   const closeModal = (e: SyntheticEvent): void => {
     e && e.preventDefault();
     setIsOpen(false);
@@ -47,7 +61,7 @@ function NewPostModal({
     if (selected === 0) {
       setBodyType("paperWizard");
     } else {
-      closeModal(e);
+      setIsOpen(false);
     }
   };
 
@@ -93,7 +107,6 @@ function NewPostModal({
                 setBodyType(null);
                 setIsOpen(false);
               }}
-              forceOpen={forceOpen}
             />
           </div>
         ) : (
