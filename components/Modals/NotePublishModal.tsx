@@ -344,7 +344,10 @@ function NotePublishModal({
             </li>
             <li>Do not plagiarize any content, keep it original</li>
           </ul>
-          <div className={css(styles.checkboxContainer)}>
+          <div
+            className={css(styles.checkboxContainer)}
+            onClick={() => setCheckBoxGuidelines(!checkBoxGuidelines)}
+          >
             <CheckBox
               active={checkBoxGuidelines}
               isSquare
@@ -354,7 +357,10 @@ function NotePublishModal({
             />
           </div>
           {!currentNote.post?.doi && (
-            <div className={css(styles.checkboxContainer)}>
+            <div
+              className={css(styles.checkboxContainer)}
+              onClick={() => setCheckBoxDOI(!checkBoxDOI)}
+            >
               <CheckBox
                 active={checkBoxDOI}
                 isSquare
@@ -467,6 +473,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   checkboxContainer: {
+    cursor: "pointer",
     margin: "10px 0px",
   },
   disabledCursor: {
