@@ -225,6 +225,9 @@ function NotePublishModal({
           if (err.response.status === 402) {
             setMessage("Not enough coins in balance");
             showMessage({ show: true, error: true });
+          } else {
+            setMessage("Something went wrong, please try again");
+            showMessage({ show: true, error: true });
           }
           setIsSubmitting(false);
         });
@@ -356,19 +359,23 @@ function NotePublishModal({
                 active={checkBoxDOI}
                 isSquare
                 label={
-                  <div className={css(styles.checkBoxDOI)}>
-                    <span>
-                      [Optional] Assign a DOI to this post for{" "}
-                      {CROSSREF_DOI_RSC_FEE}
-                    </span>
-                    <img
-                      src={"/static/icons/coin-filled.png"}
-                      draggable={false}
-                      className={css(styles.coinIcon)}
-                      alt="RSC Coin"
-                    />
-                    <span>RSC</span>
-                  </div>
+                  <>
+                    <div className={css(styles.checkBoxDOI)}>
+                      <span>
+                        [Optional] Assign a DOI to this post for{" "}
+                        {CROSSREF_DOI_RSC_FEE} RSC
+                      </span>
+                      <img
+                        src={"/static/icons/coin-filled.png"}
+                        draggable={false}
+                        className={css(styles.coinIcon)}
+                        alt="RSC Coin"
+                      />
+                    </div>
+                    <div className={css(styles.subtitle)}>
+                      RSC will be deducted from your balance
+                    </div>
+                  </>
                 }
                 labelStyle={styles.label}
                 onChange={() => setCheckBoxDOI(!checkBoxDOI)}
@@ -472,9 +479,13 @@ const styles = StyleSheet.create({
   coinIcon: {
     borderRadius: "50%",
     height: 20,
-    margin: "0px 6px",
+    marginLeft: 6,
     position: "relative",
     top: 4,
+  },
+  subtitle: {
+    color: colors.TEXT_GREY(),
+    fontSize: 14,
   },
 });
 
