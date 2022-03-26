@@ -48,6 +48,36 @@ export function timeAgoStamp(date) {
   }
 }
 
+export function timeSince(date) {
+  const inputDate = moment(date);
+  const now = moment();
+  const minsInOneDay = 1440;
+
+  const deltaInMins = now.diff(inputDate, "minutes");
+  let timeSince = "";
+
+  if (deltaInMins <= 1) {
+    timeSince = "just now";
+  } else if (deltaInMins < 60) {
+    timeSince = Math.floor(deltaInMins);
+    timeSince += timeSince == 1 ? " minute ago" : " minutes ago";
+  } else if (deltaInMins < minsInOneDay) {
+    timeSince = Math.floor(deltaInMins / 60);
+    timeSince += timeSince === 1 ? " hour ago" : " hours ago";
+  } else if (deltaInMins < minsInOneDay * 30) {
+    timeSince = Math.floor(deltaInMins / 60 / 24);
+    timeSince += timeSince === 1 ? " day ago" : " days ago";
+  } else if (deltaInMins < minsInOneDay * 365) {
+    timeSince = Math.floor(deltaInMins / 30 / 60 / 24);
+    timeSince += timeSince === 1 ? " month ago" : " months ago";
+  } else {
+    timeSince = Math.floor(deltaInMins / 30 / 60 / 24 / 12);
+    timeSince += timeSince === 1 ? " year ago" : " years ago";
+  }
+
+  return timeSince;
+}
+
 export function calculateScopeFromSlug(scopeId) {
   let scope = {
     start: 0,
