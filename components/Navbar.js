@@ -541,7 +541,6 @@ const Navbar = (props) => {
                           {icons.bookOpen}
                         </span>
                         Notebook
-                        <TabNewFeature overrideStyles={styles.newFeature} />
                       </div>
                     </Link>
                     <Link href={"/settings"} as={`/settings`}>
