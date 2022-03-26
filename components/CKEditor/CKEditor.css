@@ -419,6 +419,22 @@
   border: 1px solid #cccccc;
 }
 
+.post-body .ck-content {
+  border: none !important;
+  line-height: 24px;
+  word-break: break-word;
+}
+
+.post-body .ck-content h1,
+h2,
+h3 {
+  line-height: normal;
+}
+
+.post-body .ck-content a {
+  text-decoration: none;
+}
+
 .eln .ck.ck-sticky-panel .ck-sticky-panel__content_sticky {
   position: absolute !important;
   z-index: 0 !important;
@@ -439,8 +455,10 @@
   background: #e1f7ff;
 }
 
-.eln .ck-content h1 {
-  line-height: 38px;
+.eln .ck-content h1,
+h2,
+h3 {
+  line-height: normal;
 }
 
 .eln .ck-content a {

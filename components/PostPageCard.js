@@ -626,7 +626,7 @@ class PostPageCard extends Component {
               </div>
             </div>
           </div>
-          <div className={css(styles.postBody)}>
+          <div className={"post-body"}>
             {this.state.showPostEditor ? (
               <>
                 <DynamicCKEditor
@@ -716,10 +716,6 @@ const styles = StyleSheet.create({
     position: "relative",
     overflow: "visible",
     boxSizing: "border-box",
-  },
-  postBody: {
-    lineHeight: "24px",
-    wordBreak: "break-word",
   },
   overflow: {
     overflow: "visible",
