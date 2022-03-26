@@ -23,7 +23,7 @@ import { ModalActions } from "~/redux/modals";
 // Config
 import { createUserSummary } from "~/config/utils/user";
 import { Helpers } from "@quantfive/js-web-config";
-import { timeAgo } from "~/config/utils/dates";
+import { timeSince, timeAgo } from "~/config/utils/dates";
 import API from "~/config/api";
 import colors, { voteWidgetColors } from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
@@ -399,7 +399,8 @@ function formatTimestamp(props) {
   if (props.fullDate) {
     return moment(date).format("MMM D, YYYY");
   }
-  return timeAgo.format(date);
+
+  return timeSince(date);
 }
 
 const HideButton = (props) => {
