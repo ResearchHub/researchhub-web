@@ -515,11 +515,7 @@ const Navbar = (props) => {
                 </div>
                 {openMenu && (
                   <div
-                    className={css(
-                      styles.dropdown,
-                      isUserModerator && styles.dropdownForEditors,
-                      !showReferral && styles.lowDropdown
-                    )}
+                    className={css(styles.dropdown)}
                     ref={dropdownRef}
                     onClick={toggleMenu}
                   >
@@ -952,8 +948,8 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: "absolute",
-    bottom: -265,
-    right: 0,
+    top: 45,
+    left: -25,
     width: 225,
     boxShadow: "rgba(129,148,167,0.2) 0px 3px 10px 0px",
     boxSizing: "border-box",
@@ -961,12 +957,6 @@ const styles = StyleSheet.create({
     border: "1px solid #eee",
     borderRadius: 4,
     zIndex: 3,
-  },
-  dropdownForEditors: {
-    bottom: -310,
-  },
-  lowDropdown: {
-    bottom: -215,
   },
   noMargin: {
     margin: 0,
