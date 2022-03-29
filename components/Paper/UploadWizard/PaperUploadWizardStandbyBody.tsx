@@ -101,8 +101,8 @@ function PaperUploadWizardStandbyBody({
       : uploadStatus === "COMPLETE"
       ? "Done"
       : "Processing ...";
-  const didProcessFail = true;
-  // uploadStatus === "FAILED";
+  const didProcessFail = uploadStatus === "FAILED";
+  
   return (
     <div className={css(styles.wizardStandby)}>
       {!didProcessFail ? (
@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     height: 80,
     justifyContent: "center",
     margin: "auto",
-    padding: "10px 16px",
+    padding: "16px",
     width: "100%",
   },
   failedTitle: {
