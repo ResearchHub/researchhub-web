@@ -24,8 +24,7 @@ export default function NewPostButton({
 }: NewPostButtonProps) {
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  console.warn("buttonValues: ", buttonValues);
-  console.warn("NewPostButton: ", Date.now())
+
   return (
     <Fragment>
       <PermissionNotificationWrapper
