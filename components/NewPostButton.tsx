@@ -11,7 +11,6 @@ import {
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
 
-const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
@@ -24,7 +23,7 @@ export default function NewPostButton({
 }: NewPostButtonProps) {
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-
+  
   return (
     <Fragment>
       <PermissionNotificationWrapper
@@ -48,7 +47,6 @@ export default function NewPostButton({
           size={"newPost"}
         />
       </PermissionNotificationWrapper>
-      <NewPostModal />
     </Fragment>
   );
 }
