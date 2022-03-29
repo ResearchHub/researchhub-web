@@ -5,6 +5,7 @@ import {
   customStyles,
   formGenericStyles,
 } from "../Upload/styles/formGenericStyles";
+import { defaultFormState } from "../Upload/types/UploadComponentTypes";
 import { Fragment, SyntheticEvent, useState } from "react";
 import { ID } from "~/config/types/root_types";
 import {
@@ -12,21 +13,20 @@ import {
   isNullOrUndefined,
   nullthrows,
 } from "~/config/utils/nullchecks";
+import { MessageActions } from "~/redux/message";
 import { PaperActions } from "~/redux/paper";
+import { uploadNewPaper } from "../Upload/api/uploadNewPaper";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
+import { useRouter } from "next/router";
+import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
+import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import Dropzone from "react-dropzone";
+import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData.js";
 import Ripples from "react-ripples";
-import FormInput from "~/components/Form/FormInput";
-import Button from "~/components/Form/Button";
-import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
-import { uploadNewPaper } from "../Upload/api/uploadNewPaper";
-import { MessageActions } from "~/redux/message";
-import { useRouter } from "next/router";
-import { defaultFormState } from "../Upload/types/UploadComponentTypes";
 
 type Props = {
   msgReduxActions: any;

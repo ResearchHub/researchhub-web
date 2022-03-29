@@ -1,7 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
-import { ReactElement, useMemo, useState } from "react";
+import { ReactElement, useContext, useMemo, useState } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
@@ -9,6 +9,10 @@ import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 type Props = { onExit: () => void };
 type State = {
@@ -60,16 +64,15 @@ function getWizardBody({
 
 export default function PaperUploadWizardContainer({
   onExit,
-  forceOpen,
 }: Props): ReactElement<Props> {
+  const {
+    values: { paperID },
+  } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: Boolean(forceOpen?.paperID)
-      ? "posted_paper_update"
-      : "url_upload",
+    currentStep: "standby"
+    // Boolean(paperID) ? "posted_paper_update" : "url_upload",
   });
-  const [postedPaperID, setPostedPaperID] = useState<ID>(
-    forceOpen?.paperID ?? null
-  );
+  const [postedPaperID, setPostedPaperID] = useState<ID>(paperID ?? null);
 
   const wizardBody = useMemo(
     (): WizardBodyElement =>
