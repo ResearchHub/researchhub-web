@@ -39,6 +39,7 @@ import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGet
 import { NavbarContext } from "~/pages/Base";
 import HubSelector from "~/components/HubSelector";
 import api from "~/config/api";
+import MobileOnly from "./MobileOnly";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -402,20 +403,24 @@ const Navbar = (props) => {
 
   return (
     <Fragment>
-      <Menu
-        top
-        isOpen={sideMenu}
-        styles={burgerMenuStyle}
-        customBurgerIcon={false}
-        onStateChange={menuChange}
-      >
-        <Link href={"/"} as={`/`}>
-          <a className={css(styles.logoContainer, styles.logoContainerForMenu)}>
-            <RHLogo iconStyle={styles.logo} white={true} />
-          </a>
-        </Link>
-        {renderMenuItems()}
-      </Menu>
+      <MobileOnly>
+        <Menu
+          top
+          isOpen={sideMenu}
+          styles={burgerMenuStyle}
+          customBurgerIcon={false}
+          onStateChange={menuChange}
+        >
+          <Link href={"/"} as={`/`}>
+            <a
+              className={css(styles.logoContainer, styles.logoContainerForMenu)}
+            >
+              <RHLogo iconStyle={styles.logo} white={true} />
+            </a>
+          </Link>
+          {renderMenuItems()}
+        </Menu>
+      </MobileOnly>
       <div
         ref={navbarRef}
         className={css(
