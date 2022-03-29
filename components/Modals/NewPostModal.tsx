@@ -25,6 +25,7 @@ import Modal from "react-modal";
 import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
 import {
+  DEFAULT_POST_BUTTON_VALUES,
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
@@ -44,22 +45,19 @@ function NewPostModal({
   const [selected, setSelected] = useState(0);
   const [bodyType, setBodyType] = useState<NullableString>(null);
 
-  console.warn("bodyType: ", bodyType);
-  const setIsOpen = (flag: boolean): void =>
-    setButtonValues({ ...buttonValues, isOpen: flag });
-
-  const closeModal = (e: SyntheticEvent): void => {
-    e && e.preventDefault();
-    setIsOpen(false);
+  const closeModal = (event?: SyntheticEvent): void => {
+    event && event.preventDefault();
+    setSelected(0);
     setBodyType(null);
+    setButtonValues(DEFAULT_POST_BUTTON_VALUES);
   };
 
-  const handleContinue = (e: SyntheticEvent): void => {
-    e && e.preventDefault();
+  const handleContinue = (event?: SyntheticEvent): void => {
+    event && event.preventDefault();
     if (selected === 0) {
       setBodyType("paperWizard");
     } else {
-      setIsOpen(false);
+      closeModal(event);
     }
   };
 
@@ -120,13 +118,7 @@ function NewPostModal({
       children={
         bodyType === "paperWizard" ? (
           <div className={css(styles.rootContainer)} key="paper-wizard">
-            <PaperUploadWizardContainer
-              onExit={() => {
-                setSelected(0);
-                setBodyType(null);
-                setIsOpen(false);
-              }}
-            />
+            <PaperUploadWizardContainer onExit={(): void => closeModal()} />
           </div>
         ) : (
           <div className={css(styles.rootContainer)} key="upload-type-selector">

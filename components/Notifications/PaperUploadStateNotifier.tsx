@@ -4,11 +4,22 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID, NullableString } from "~/config/types/root_types";
 import { NextRouter, useRouter } from "next/router";
-import { ReactElement, ReactNode, SyntheticEvent, useEffect } from "react";
+import {
+  ReactElement,
+  ReactNode,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+} from "react";
 import { ToastContainer, toast } from "react-toastify";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import withWebSocket from "../withWebSocket";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "../contexts/NewPostButtonContext";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 type Props = {
   wsResponse: any /* socket */;
@@ -73,19 +84,35 @@ function PaperUploadStateNotifier({
   wsResponse,
 }: Props): ReactElement<typeof ToastContainer> {
   const router = useRouter();
+  const { values: uploadButtonValues, setValues: setUploadButtonValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  const { isOpen: isUploadModalOpen, paperID: currentUploadingPaperID } =
+    uploadButtonValues;
   const parsedWsResponse = JSON.parse(wsResponse);
-  const { paper_status: paperUploadStatus, paper: paperID } =
+  const { paper_status: paperUploadStatus, paper: msgPaperID } =
     parsedWsResponse?.data ?? {};
   console.warn("JSON.parse(wsResponse: ", JSON.parse(wsResponse)?.data);
-  
+
   useEffect((): void => {
-    const bodyResult = getToastBody({ paperID, paperUploadStatus, router });
-    console.warn("inside useEffect", bodyResult);
-    if (bodyResult[0]) {
-      console.warn("TOSTING: ", bodyResult[1], []);
-      toast(bodyResult[1]);
+    const paperIDsMatch = msgPaperID === currentUploadingPaperID;
+    if (isUploadModalOpen && paperIDsMatch) {
+      /* mark notification as read  & dont show notification */
+      console.warn("mark notification as read  & dont show notification");
+    } else {
+      const bodyResult = getToastBody({
+        paperID: msgPaperID,
+        paperUploadStatus,
+        router,
+      });
+
+      bodyResult[0] && toast(bodyResult[1]);
     }
-  }, [paperUploadStatus, paperID]);
+  }, [
+    paperUploadStatus,
+    isUploadModalOpen,
+    currentUploadingPaperID,
+    msgPaperID,
+  ]);
 
   return (
     <ToastContainer

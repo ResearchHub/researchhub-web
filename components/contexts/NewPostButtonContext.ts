@@ -8,7 +8,9 @@ export type NewPostButtonContextType = {
   setValues: (NewPostButtonContextValues) => void;
 };
 
+export const DEFAULT_POST_BUTTON_VALUES = { isOpen: false, paperID: null };
+
 export const NewPostButtonContext = createContext<NewPostButtonContextType>({
-  values: { isOpen: false, paperID: null },
+  values: DEFAULT_POST_BUTTON_VALUES,
   setValues: () => {},
 });

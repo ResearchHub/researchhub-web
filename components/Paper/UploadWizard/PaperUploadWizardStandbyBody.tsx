@@ -62,7 +62,6 @@ function PaperUploadWizardStandbyBody({
   const [loadRef, setLoadRef] = useState<NodeJS.Timeout | null>(null);
   const [askRedirect, setAskRedirect] = useState<boolean>(false);
 
-  // TODO: calvinhlee - look at the new socket for success / error
   const parsedWsResponse = JSON.parse(wsResponse);
   const wsData = parsedWsResponse?.data ?? {};
   const uploadStatus = wsData?.paper_status;
@@ -102,7 +101,7 @@ function PaperUploadWizardStandbyBody({
       ? "Done"
       : "Processing ...";
   const didProcessFail = uploadStatus === "FAILED";
-  
+
   return (
     <div className={css(styles.wizardStandby)}>
       {!didProcessFail ? (
