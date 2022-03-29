@@ -31,6 +31,7 @@ const colors = {
   TOOLTIP_BACKGROUND_BLACK: "#E69A8DFF",
   TOOLTIP_TEXT_COLOR_WHITE: "5F4B8BFF",
   YELLOW: (opacity = 1) => `rgba(240, 182, 65, ${opacity})`,
+  ERROR_BACKGROUND: (opacity = 1) => `rgba(255, 83, 83, ${opacity})`,
 };
 
 export const genericCardColors = {

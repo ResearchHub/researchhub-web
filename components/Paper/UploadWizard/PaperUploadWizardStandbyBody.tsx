@@ -4,11 +4,12 @@ import { css, StyleSheet } from "aphrodite";
 import { ID } from "~/config/types/root_types";
 import { ModalActions } from "~/redux/modals";
 import { nullthrows } from "~/config/utils/nullchecks";
-import { useEffect, useState } from "react";
+import { SyntheticEvent, useEffect, useState } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
 import withWebSocket from "~/components/withWebSocket";
+import icons from "~/config/themes/icons";
 
 type Props = {
   modalActions: any /* redux */;
@@ -100,36 +101,67 @@ function PaperUploadWizardStandbyBody({
       : uploadStatus === "COMPLETE"
       ? "Done"
       : "Processing ...";
-
+  const didProcessFail = true;
+  // uploadStatus === "FAILED";
   return (
     <div className={css(styles.wizardStandby)}>
-      <div className={css(styles.wizardStandbyBox)}>
-        <div className={css(styles.title)}>{"Uploading a paper"}</div>
-        <div className={css(styles.statusText)}>
-          <div>{progressText}</div>
-          <div>{`${percent}%`}</div>
-        </div>
-        <ProgressBar
-          bgColor={colors.GREEN(1)}
-          baseBgColor={colors.LIGHT_GREY(1)}
-          className={css(styles.progreeBar)}
-          completed={percent}
-          height="8px"
-          customLabel=" "
-        />
-      </div>
-      {shouldRenderDelayText && (
-        <div className={css(styles.loadText)}>
-          <div>
-            {
-              "It's taking longer than expected. We'll send you a notification when the process is finished"
-            }
+      {!didProcessFail ? (
+        <div className={css(styles.wizardStandbyBox)}>
+          <div className={css(styles.title)}>{"Uploading a paper"}</div>
+          <div className={css(styles.statusText)}>
+            <div>{progressText}</div>
+            <div>{`${percent}%`}</div>
           </div>
-          <div
-            style={{ color: colors.BLUE(1), cursor: "pointer" }}
-            onClick={onExit}
-          >
-            {"exit"}
+          <ProgressBar
+            bgColor={colors.GREEN(1)}
+            baseBgColor={colors.LIGHT_GREY(1)}
+            className={css(styles.progreeBar)}
+            completed={percent}
+            height="8px"
+            customLabel=" "
+          />
+          {shouldRenderDelayText && (
+            <div className={css(styles.loadText)}>
+              <div>
+                {
+                  "It's taking longer than expected. We'll send you a notification when the process is finished"
+                }
+              </div>
+              <div
+                style={{ color: colors.BLUE(1), cursor: "pointer" }}
+                onClick={onExit}
+              >
+                {"exit"}
+              </div>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className={css(styles.wizardStandbyBox)}>
+          <div className={css(styles.failedBox)}>
+            <div className={css(styles.failedTitle)}>
+              <span
+                style={{
+                  marginRight: 6,
+                  color: colors.RED(1),
+                }}
+              >
+                {icons.exclamationCircle}
+              </span>
+              {"We weren't able to import source:"}
+            </div>
+            <div className={css(styles.failedBody)}>
+              <span>{"Please try again later or "}</span>
+              <span
+                onClick={(): void => setWizardStep("pdf_upload")}
+                style={{
+                  color: colors.BLUE(),
+                  cursor: "pointer",
+                }}
+              >
+                {"upload with a PDF"}
+              </span>
+            </div>
           </div>
         </div>
       )}
@@ -161,11 +193,36 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 16,
   },
+  failedBox: {
+    alignItems: "center",
+    background: colors.ERROR_BACKGROUND(0.1),
+    borderRadius: 3,
+    boxSizing: "border-box",
+    display: "flex",
+    flexDirection: "column",
+    height: 80,
+    justifyContent: "center",
+    margin: "auto",
+    padding: "10px 16px",
+    width: "100%",
+  },
+  failedTitle: {
+    color: colors.ERROR_BACKGROUND(),
+    fontSize: 16,
+    fontWeight: 500,
+    width: "100%",
+  },
+  failedBody: {
+    fontSize: 14,
+    marginTop: 4,
+    paddingLeft: 44,
+    width: "100%",
+  },
   loadText: {
     color: colors.TEXT_DARKER_GREY,
     fontSize: 12,
     fontWeight: 400,
-    marginBottom: 12,
+    margin: "12px 0",
     display: "flex",
     justifyContent: "space-between",
   },

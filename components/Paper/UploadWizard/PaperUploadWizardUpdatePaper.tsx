@@ -77,7 +77,6 @@ function PaperUploadWizardUpdatePaper({
   paperActions,
   paperID,
 }: Props) {
-  // TODO: calvinhlee - migrate this to pure typeahead
   const router = useRouter();
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
   const [formState, setFormState] = useState<FormState>({
@@ -98,10 +97,10 @@ function PaperUploadWizardUpdatePaper({
     if (verdict) {
       //  calvinhlee - Refer to NOTE(100)
       const formattedPayload: any = {
-        // intentional nulls to avoid overriding BE-proccessed metadata
+        // intentional undefined to avoid overriding BE-proccessed metadata
         ...formState,
-        authors: null,
-        publishDate: null,
+        authors: undefined,
+        publishDate: undefined,
         hubs: selectedHubs.map((hub): ID => hub.id),
       };
 

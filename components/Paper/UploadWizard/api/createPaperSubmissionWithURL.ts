@@ -9,7 +9,7 @@ type Props = {
   url: string;
 };
 
-export function createPaperSubmissioncreatePaperSubmissionWithURL({
+export function createPaperSubmissionWithURL({
   onError,
   onSuccess,
   url,
