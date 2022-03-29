@@ -69,8 +69,7 @@ export default function PaperUploadWizardContainer({
     values: { paperID },
   } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: "standby"
-    // Boolean(paperID) ? "posted_paper_update" : "url_upload",
+    currentStep: Boolean(paperID) ? "posted_paper_update" : "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(paperID ?? null);
 
