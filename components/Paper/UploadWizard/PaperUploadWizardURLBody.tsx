@@ -1,6 +1,6 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { createPaperSubmissioncreatePaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
+import { createPaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
 import { css, StyleSheet } from "aphrodite";
 import { isStringURL } from "~/config/utils/isStringURL";
 import { MessageActions } from "~/redux/message";
@@ -54,7 +54,7 @@ function PaperUploadWizardURLBody({
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
-      createPaperSubmissioncreatePaperSubmissionWithURL({
+      createPaperSubmissionWithURL({
         onError: (error: any): void => {
           const { response } = error;
           switch (response.status) {
