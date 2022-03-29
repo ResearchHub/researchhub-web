@@ -66,6 +66,8 @@ const Notification = dynamic(() =>
   import("~/components/Notifications/Notification")
 );
 
+const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
+
 const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
@@ -403,6 +405,7 @@ const Navbar = (props) => {
 
   return (
     <Fragment>
+      <NewPostModal />
       <MobileOnly>
         <Menu
           top
