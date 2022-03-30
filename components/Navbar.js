@@ -930,15 +930,20 @@ const styles = StyleSheet.create({
   },
   logoContainerForMenu: {
     position: "absolute",
-    top: 6,
-    left: 6,
+    top: 7,
+    left: ".6em",
+    marginTop: 0,
+    paddingBottom: 0,
+    [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
+      width: "unset",
+    },
   },
   logo: {
     objectFit: "contain",
     marginBottom: 8,
     height: 38,
     [`@media only screen and (max-width: ${breakpoints.medium.str})`]: {
-      height: 33,
+      height: 30,
     },
   },
   reputation: {
