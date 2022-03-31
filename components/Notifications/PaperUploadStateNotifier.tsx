@@ -1,13 +1,15 @@
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { ID, NullableString } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
+import { isEmpty } from "~/config/utils/nullchecks";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
   NewPostButtonContextValues,
 } from "../contexts/NewPostButtonContext";
 import { NextRouter, useRouter } from "next/router";
+import { PaperSubmissionStatus } from "../Paper/UploadWizard/types/PaperUploadWizardTypes";
 import {
   ReactElement,
   ReactNode,
@@ -19,7 +21,6 @@ import { ToastContainer, toast } from "react-toastify";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import withWebSocket from "../withWebSocket";
-import { isEmpty } from "~/config/utils/nullchecks";
 
 type Props = {
   isNewPostModalOpen: boolean;
@@ -28,7 +29,7 @@ type Props = {
 };
 type GetToastBodyArgs = {
   paperID: ID;
-  paperUploadStatus: NullableString;
+  paperUploadStatus: PaperSubmissionStatus;
   router: NextRouter;
   setUploaderContextValues: (values: NewPostButtonContextValues) => void;
   uploaderContextValues: NewPostButtonContextValues;
@@ -73,9 +74,10 @@ const getToastBody = ({
           onClick={(): void => {
             setUploaderContextValues({
               ...uploaderContextValues,
+              doi: null,
               isOpen: true,
               isWithDOI: true,
-              doi: null,
+              wizardBodyType: "doi_upload",
             });
           }}
         >
