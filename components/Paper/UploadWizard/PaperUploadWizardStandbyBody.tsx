@@ -69,7 +69,7 @@ function PaperUploadWizardStandbyBody({
     doi = null,
     paper: postedPaperID,
     paper_status: uploadStatus,
-  } = wsData?.paper_status;
+  } = wsData;
 
   useEffect(() => {
     timeLoop({ loadIndex, setLoadIndex, setLoadRef, time: 1200 });
