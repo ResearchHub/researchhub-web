@@ -45,26 +45,30 @@ export default function withWebSocket(
     const [response, setResponse] = useState(null);
     const [stopped, setStopped] = useState(false);
 
-    useEffect(configureWebSocket, [url]);
+    useEffect(configureWebSocket, [url, connected]);
+    useEffect(startingListening, [ws]);
+    useEffect(stopConnectAttempts, [connectAttempts]);
+
     function configureWebSocket() {
-      let token = null;
-      if (props.wsAuth) {
-        try {
-          token = window.localStorage[TOKEN_NAME];
-        } catch (err) {
-          console.error("Did not find auth token");
-          return err;
+      if (!connected) {
+        let token = null;
+        if (props.wsAuth) {
+          try {
+            token = window.localStorage[TOKEN_NAME];
+          } catch (err) {
+            console.error("Did not find auth token");
+            return err;
+          }
+          const webSocket = new WebSocket(url, ["Token", token]);
+          setWs(webSocket);
+        } else {
+          const webSocket = new WebSocket(url);
+          setWs(webSocket);
         }
-        const webSocket = new WebSocket(url, ["Token", token]);
-        setWs(webSocket);
-      } else {
-        const webSocket = new WebSocket(url);
-        setWs(webSocket);
+        setConnectAttempts(connectAttempts + 1);
       }
-      setConnectAttempts(connectAttempts + 1);
     }
 
-    useEffect(stopConnectAttempts, [connectAttempts]);
     function stopConnectAttempts() {
       if (connectAttempts >= connectAttemptLimit) {
         setStopped(true);
@@ -75,7 +79,6 @@ export default function withWebSocket(
       }
     }
 
-    useEffect(startingListening, [ws]);
     function startingListening() {
       if (ws && !stopped) {
         ws.readyState !== WebSocket.CLOSED && listen();
@@ -133,9 +136,8 @@ export default function withWebSocket(
     }
 
     function send(data) {
-      debugger;
       try {
-        return ws.send(JSON.stringify({ message: data }));
+        return ws.send(JSON.stringify({ ...data }));
       } catch (err) {
         debugger;
         return err;
