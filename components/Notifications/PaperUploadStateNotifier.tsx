@@ -91,7 +91,7 @@ const getToastBody = ({
               {icons.exclamationCircle}
             </span>
             {
-              "We weren't able to get DOI from the source. Click to try again by providing DOI"
+              "We weren't able to get DOI from the source. Click here to try again by providing DOI"
             }
           </div>
         </div>,
