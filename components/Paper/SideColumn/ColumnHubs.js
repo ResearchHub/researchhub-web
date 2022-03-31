@@ -1,11 +1,10 @@
 import { Fragment } from "react";
-import { StyleSheet } from "aphrodite";
-import ReactPlaceholder from "react-placeholder/lib";
-
-// Component
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { SideColumnTitle } from "~/components/Typography";
-import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
+import { StyleSheet } from "aphrodite";
 import HubCard from "./HubCard";
+import HubEntryPlaceholder from "~/components/Placeholders/HubEntryPlaceholder";
+import ReactPlaceholder from "react-placeholder/lib";
 
 const ColumnHubs = (props) => {
   const { paper, hubs } = props;
@@ -29,7 +28,7 @@ const ColumnHubs = (props) => {
   return (
     <ReactPlaceholder
       showLoadingAnimation
-      ready={isNullOrUndefined(hubs)}
+      ready={!isNullOrUndefined(hubs)}
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
     >
       {paper && hubs && hubs.length > 0 && (

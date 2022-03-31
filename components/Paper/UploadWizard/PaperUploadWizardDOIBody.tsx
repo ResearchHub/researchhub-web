@@ -4,7 +4,7 @@ import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
@@ -12,12 +12,15 @@ import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import { isString } from "~/config/utils/string";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 type Props = {
   messageActions: any /* redux */;
   modalActions: any /* redux */;
   onExit: () => void;
-  setWizardStep: (step: WizardBodyTypes) => void;
 };
 type FormErrors = { doi: boolean };
 type FormValues = { doi: string };
@@ -26,8 +29,10 @@ function PaperUploadWizardDOIBody({
   messageActions,
   modalActions,
   onExit,
-  setWizardStep,
 }: Props) {
+  const { values: uploaderContextValues, setValues: setUploaderContextValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+
   const [formErrors, setFormErrors] = useState<FormErrors>({ doi: false });
   const [formValues, setFormValues] = useState<FormValues>({ doi: "" });
 
@@ -37,7 +42,6 @@ function PaperUploadWizardDOIBody({
     setFormErrors({ doi: false });
     setFormValues({ doi: "" });
   };
-  const router = useRouter();
 
   useEffect(() => {
     return (): void => resetComponent();
@@ -71,7 +75,10 @@ function PaperUploadWizardDOIBody({
         onSuccess: (_result: any) => {
           // logical ordering
           resetComponent();
-          setWizardStep("standby");
+          setUploaderContextValues({
+            ...uploaderContextValues,
+            wizardBodyType: "standby",
+          });
         },
         doi,
       });
@@ -90,7 +97,12 @@ function PaperUploadWizardDOIBody({
             </div>
             <div
               className={css(styles.pdfText)}
-              onClick={(): void => setWizardStep("pdf_upload")}
+              onClick={(): void =>
+                setUploaderContextValues({
+                  ...uploaderContextValues,
+                  wizardBodyType: "pdf_upload",
+                })
+              }
             >
               {"Upload a PDF"}
             </div>
@@ -123,7 +135,12 @@ function PaperUploadWizardDOIBody({
             event.preventDefault();
             // logical ordering
             resetComponent();
-            setWizardStep("standby");
+            setUploaderContextValues({
+              ...uploaderContextValues,
+              doi,
+              isWithDOI: true,
+              wizardBodyType: "standby",
+            });
             onExit();
           }}
         />

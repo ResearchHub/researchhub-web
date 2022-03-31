@@ -5,19 +5,21 @@ import { css, StyleSheet } from "aphrodite";
 import { isStringURL } from "~/config/utils/isStringURL";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
-import { SyntheticEvent, useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 type Props = {
   messageActions: any /* redux */;
   modalActions: any /* redux */;
   onExit: () => void;
-  setWizardStep: (step: WizardBodyTypes) => void;
 };
 type FormErrors = { url: boolean };
 type FormValues = { url: string };
@@ -26,8 +28,10 @@ function PaperUploadWizardURLBody({
   messageActions,
   modalActions,
   onExit,
-  setWizardStep,
 }: Props) {
+  const { values: uploaderContextValues, setValues: setUploaderContextValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+
   const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
   const [formValues, setFormValues] = useState<FormValues>({ url: "" });
 
@@ -37,7 +41,6 @@ function PaperUploadWizardURLBody({
     setFormErrors({ url: false });
     setFormValues({ url: "" });
   };
-  const router = useRouter();
 
   useEffect(() => {
     return (): void => resetComponent();
@@ -57,7 +60,6 @@ function PaperUploadWizardURLBody({
           const { response } = error;
           switch (response.status) {
             case 403 /* Duplicate error */:
-              const { data } = response;
               resetComponent();
               onExit();
               modalActions.openUploadPaperModal(true, [error.message?.data]);
@@ -71,7 +73,10 @@ function PaperUploadWizardURLBody({
         onSuccess: (_result: any) => {
           // logical ordering
           resetComponent();
-          setWizardStep("standby");
+          setUploaderContextValues({
+            ...uploaderContextValues,
+            wizardBodyType: "standby",
+          });
         },
         url,
       });
@@ -90,7 +95,12 @@ function PaperUploadWizardURLBody({
             </div>
             <div
               className={css(styles.pdfText)}
-              onClick={(): void => setWizardStep("pdf_upload")}
+              onClick={(): void =>
+                setUploaderContextValues({
+                  ...uploaderContextValues,
+                  wizardBodyType: "pdf_upload",
+                })
+              }
             >
               {"Upload a PDF"}
             </div>
@@ -123,7 +133,10 @@ function PaperUploadWizardURLBody({
             event.preventDefault();
             // logical ordering
             resetComponent();
-            setWizardStep("standby");
+            setUploaderContextValues({
+              ...uploaderContextValues,
+              wizardBodyType: "standby",
+            });
             onExit();
           }}
         />

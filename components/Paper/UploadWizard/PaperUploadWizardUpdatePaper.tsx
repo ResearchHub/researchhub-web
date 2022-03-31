@@ -4,10 +4,10 @@ import {
 } from "../Upload/styles/formGenericStyles";
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { ID } from "~/config/types/root_types";
+import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { PaperActions } from "~/redux/paper";
-import { SyntheticEvent, useState } from "react";
+import { SyntheticEvent, useContext, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
@@ -16,6 +16,10 @@ import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import { buildSlug } from "~/config/utils/buildSlug";
 import Loader from "~/components/Loader/Loader";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 export type FormErrors = {
   paperID: boolean;
@@ -25,16 +29,15 @@ export type FormErrors = {
 };
 
 export type FormState = {
-  doi: null | string;
+  doi: NullableString;
   paperID: ID;
   selectedHubs: any[];
-  title: null | string /* editorialized title */;
+  title: NullableString /* editorialized title */;
 };
 
 type Props = {
   onExit: () => void;
   paperActions: any /* redux */;
-  paperID: ID;
 };
 
 type GetIsFormValidArgs = {
@@ -60,7 +63,7 @@ const getIsFormValid = ({
 }: GetIsFormValidArgs): [verdict: boolean, errors: FormErrors] => {
   let verdict = true;
   const errorResult = { ...defaulError };
-  const { doi, paperID, selectedHubs, title } = formState;
+  const { selectedHubs } = formState;
   if (isNullOrUndefined(formState.paperID)) {
     verdict = false;
     errorResult.paperID = true;
@@ -72,20 +75,19 @@ const getIsFormValid = ({
   return [verdict, errorResult];
 };
 
-function PaperUploadWizardUpdatePaper({
-  onExit,
-  paperActions,
-  paperID,
-}: Props) {
+function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
   const router = useRouter();
+  const { values: uploaderContextValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
   const [formState, setFormState] = useState<FormState>({
     ...defaultFormState,
-    paperID,
+    doi: uploaderContextValues?.doi ?? null,
+    paperID: uploaderContextValues?.paperID,
   });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
-  const { doi, title, selectedHubs } = formState;
+  const { doi, paperID, selectedHubs, title } = formState;
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const onFormSubmit = async (event: SyntheticEvent) => {
@@ -152,18 +154,20 @@ function PaperUploadWizardUpdatePaper({
         required
         value={selectedHubs}
       />
-      <FormInput
-        containerStyle={formGenericStyles.container}
-        disabled={isSubmitting}
-        id="doi"
-        label="DOI (optional)"
-        labelStyle={formGenericStyles.labelStyle}
-        onChange={(_id: ID, doi: string): void =>
-          setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
-        }
-        placeholder="DOI"
-        value={doi}
-      />
+      {!uploaderContextValues.isWithDOI ? (
+        <FormInput
+          containerStyle={formGenericStyles.container}
+          disabled={isSubmitting}
+          id="doi"
+          label="DOI (optional)"
+          labelStyle={formGenericStyles.labelStyle}
+          onChange={(_id: ID, doi: string): void =>
+            setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+          }
+          placeholder="DOI"
+          value={doi}
+        />
+      ) : null}
       <FormInput
         containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
