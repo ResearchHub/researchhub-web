@@ -10,6 +10,10 @@ import HubCard from "./HubCard";
 const ColumnHubs = (props) => {
   const { paper, hubs } = props;
 
+  if (Array.isArray(hubs) && hubs.length === 0) {
+    return null;
+  }
+
   const renderHubEntry = () => {
     const { hubs } = props;
 
@@ -22,11 +26,10 @@ const ColumnHubs = (props) => {
       />
     ));
   };
-
   return (
     <ReactPlaceholder
       showLoadingAnimation
-      ready={!!(hubs && hubs.length > 0)} // needs to be boolean, not undefined
+      ready={isNullOrUndefined(hubs)}
       customPlaceholder={<HubEntryPlaceholder color="#efefef" rows={1} />}
     >
       {paper && hubs && hubs.length > 0 && (
