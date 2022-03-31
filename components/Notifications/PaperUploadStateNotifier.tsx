@@ -19,8 +19,7 @@ import { ToastContainer, toast } from "react-toastify";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import withWebSocket from "../withWebSocket";
-import { markAsRead } from "./api/paperUploadMarkAsRead";
-import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
+import { isEmpty } from "~/config/utils/nullchecks";
 
 type Props = {
   isNewPostModalOpen: boolean;
