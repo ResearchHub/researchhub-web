@@ -1,21 +1,22 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { ID } from "~/config/types/root_types";
 import { ModalActions } from "~/redux/modals";
 import { nullthrows } from "~/config/utils/nullchecks";
-import { SyntheticEvent, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
 import withWebSocket from "~/components/withWebSocket";
 import icons from "~/config/themes/icons";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 type Props = {
   modalActions: any /* redux */;
   onExit: () => void;
-  setPostedPaperID: (id: ID) => void;
-  setWizardStep: (step: WizardBodyTypes) => void;
   wsResponse: any;
 };
 const TWENTY_FIVE_SEC = 25000;
@@ -54,17 +55,21 @@ const timeLoop = ({
 function PaperUploadWizardStandbyBody({
   modalActions,
   onExit,
-  setPostedPaperID,
-  setWizardStep,
   wsResponse,
 }: Props) {
+  const { values: uploaderContextValues, setValues: setUploaderContextValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [loadIndex, setLoadIndex] = useState<number>(0);
   const [loadRef, setLoadRef] = useState<NodeJS.Timeout | null>(null);
   const [askRedirect, setAskRedirect] = useState<boolean>(false);
 
   const parsedWsResponse = JSON.parse(wsResponse);
   const wsData = parsedWsResponse?.data ?? {};
-  const uploadStatus = wsData?.paper_status;
+  const {
+    doi = null,
+    paper: postedPaperID,
+    paper_status: uploadStatus,
+  } = wsData?.paper_status;
 
   useEffect(() => {
     timeLoop({ loadIndex, setLoadIndex, setLoadRef, time: 1200 });
@@ -76,8 +81,12 @@ function PaperUploadWizardStandbyBody({
       setLoadIndex(-1);
       clearTimeout(nullthrows(loadRef, "Attempting to clear null ref"));
       setTimeout((): void => {
-        setPostedPaperID(wsData?.paper);
-        setWizardStep("posted_paper_update");
+        setUploaderContextValues({
+          ...uploaderContextValues,
+          doi: doi,
+          paperID: postedPaperID,
+          wizardBodyType: "posted_paper_update",
+        });
       }, 1600);
     } else if (uploadStatus === "FAILED_DUPLICATE") {
       modalActions.openUploadPaperModal(true, [
@@ -85,7 +94,7 @@ function PaperUploadWizardStandbyBody({
       ]);
       onExit();
     }
-  }, [uploadStatus]);
+  }, [uploadStatus, postedPaperID]);
 
   const percent = FAKE_PERCENTS[loadIndex] ?? 100;
   const shouldRenderDelayText =
@@ -152,7 +161,12 @@ function PaperUploadWizardStandbyBody({
             <div className={css(styles.failedBody)}>
               <span>{"Please try again later or "}</span>
               <span
-                onClick={(): void => setWizardStep("pdf_upload")}
+                onClick={(): void =>
+                  setUploaderContextValues({
+                    ...uploaderContextValues,
+                    wizardBodyType: "pdf_upload",
+                  })
+                }
                 style={{
                   color: colors.BLUE(),
                   cursor: "pointer",
