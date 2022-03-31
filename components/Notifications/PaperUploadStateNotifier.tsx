@@ -28,7 +28,6 @@ type Props = {
   wsSend: (payload: any) => void /* socket */;
 };
 type GetToastBodyArgs = {
-  markAsRead: Function;
   paperID: ID;
   paperUploadStatus: NullableString;
   router: NextRouter;
@@ -37,7 +36,6 @@ type GetToastBodyArgs = {
 };
 
 const getToastBody = ({
-  markAsRead,
   paperID,
   paperUploadStatus,
   router,
@@ -54,7 +52,6 @@ const getToastBody = ({
         <div
           className={css(styles.toastBody)}
           onClick={(_event: SyntheticEvent): void => {
-            markAsRead();
             router.push(`/paper/${paperID}/new-upload`);
           }}
         >
@@ -74,14 +71,14 @@ const getToastBody = ({
         true,
         <div
           className={css(styles.toastBody)}
-          onClick={(): void =>
+          onClick={(): void => {
             setUploaderContextValues({
               ...uploaderContextValues,
               isOpen: true,
               isWithDOI: true,
               doi: null,
-            })
-          }
+            });
+          }}
         >
           <div className={css(styles.toastBodyTitle)}>
             {"FAILED TO GET DOI"}
@@ -133,20 +130,16 @@ function PaperUploadStateNotifier({
   } = parsedWsResponse?.data ?? {};
   console.warn("wsResponse: ", parsedWsResponse?.data);
 
-  const markAsRead = () => {
-    wsSend({ paper_submission_id: paperSubmissionID });
-  };
+  const markAsRead = () => wsSend({ paper_submission_id: paperSubmissionID });
 
   useEffect((): void => {
     if (!isEmpty(wsResponse) && !isNotificationRead) {
       const paperIDsMatch = msgPaperID === PaperID;
       if (isUploadModalOpen && paperIDsMatch) {
-        /* mark notification as read  & dont show notification */
         // console.warn("mark notification as read & dont show notification");
         markAsRead();
       } else if (!isUploadModalOpen) {
         const bodyResult = getToastBody({
-          markAsRead,
           paperID: msgPaperID,
           paperUploadStatus,
           router,
@@ -168,6 +161,7 @@ function PaperUploadStateNotifier({
     <ToastContainer
       autoClose={false}
       closeOnClick
+      onClick={markAsRead}
       hideProgressBar={false}
       limit={1} /* render only 1 at a time */
       newestOnTop={false}
