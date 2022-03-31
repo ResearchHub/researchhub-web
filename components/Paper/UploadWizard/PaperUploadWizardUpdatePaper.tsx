@@ -194,6 +194,7 @@ function PaperUploadWizardUpdatePaper({
           type="button"
           onClick={(event: SyntheticEvent): void => {
             event.preventDefault();
+            router.push(`/paper/${paperID}/new-upload`);
             onExit();
           }}
         />

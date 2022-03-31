@@ -362,6 +362,7 @@ const routes = (BASE_URL) => {
       BASE_URL +
       `paper/${paperId}/${isRemoved ? "censor_paper" : "restore_paper"}/`,
     PAPER_SUBMISSION: BASE_URL + "paper_submission/",
+    PAPER_SUBMISSION_WITH_DOI: BASE_URL + "paper_submission/create_from_doi/",
     AUTHOR: ({ authorId }) => {
       let url = BASE_URL + `author/${authorId}`;
 

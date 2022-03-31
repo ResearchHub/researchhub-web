@@ -19,7 +19,6 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "../contexts/NewPostButtonContext";
-import { isNullOrUndefined } from "~/config/utils/nullchecks";
 
 type Props = {
   wsResponse: any /* socket */;
@@ -46,7 +45,7 @@ const getToastBody = ({
         <div
           className={css(styles.toastBody)}
           onClick={(_event: SyntheticEvent): void => {
-            router.push(`/paper/${paperID}/${buildSlug()}`);
+            router.push(`/paper/${paperID}/new-upload`);
           }}
         >
           <div className={css(styles.toastBodyTitle)}>{"PAPER UPLOADED"}</div>
@@ -89,29 +88,34 @@ function PaperUploadStateNotifier({
   const { isOpen: isUploadModalOpen, paperID: currentUploadingPaperID } =
     uploadButtonValues;
   const parsedWsResponse = JSON.parse(wsResponse);
-  const { paper_status: paperUploadStatus, paper: msgPaperID } =
-    parsedWsResponse?.data ?? {};
+  const {
+    paper_status: paperUploadStatus,
+    paper: msgPaperID,
+    status_read: isNotificationRead,
+  } = parsedWsResponse?.data ?? {};
   console.warn("JSON.parse(wsResponse: ", JSON.parse(wsResponse)?.data);
 
   useEffect((): void => {
-    const paperIDsMatch = msgPaperID === currentUploadingPaperID;
-    if (isUploadModalOpen && paperIDsMatch) {
-      /* mark notification as read  & dont show notification */
-      console.warn("mark notification as read  & dont show notification");
-    } else {
-      const bodyResult = getToastBody({
-        paperID: msgPaperID,
-        paperUploadStatus,
-        router,
-      });
-
-      bodyResult[0] && toast(bodyResult[1]);
+    if (!isNotificationRead) {
+      const paperIDsMatch = msgPaperID === currentUploadingPaperID;
+      if (isUploadModalOpen && paperIDsMatch) {
+        /* mark notification as read  & dont show notification */
+        console.warn("mark notification as read  & dont show notification");
+      } else {
+        const bodyResult = getToastBody({
+          paperID: msgPaperID,
+          paperUploadStatus,
+          router,
+        });
+        bodyResult[0] && toast(bodyResult[1]);
+      }
     }
   }, [
-    paperUploadStatus,
-    isUploadModalOpen,
     currentUploadingPaperID,
+    isNotificationRead,
+    isUploadModalOpen,
     msgPaperID,
+    paperUploadStatus,
   ]);
 
   return (
@@ -119,6 +123,7 @@ function PaperUploadStateNotifier({
       autoClose={false}
       closeOnClick
       hideProgressBar={false}
+      limit={1} /* render only 1 at a time */
       newestOnTop={false}
       pauseOnFocusLoss
       pauseOnHover

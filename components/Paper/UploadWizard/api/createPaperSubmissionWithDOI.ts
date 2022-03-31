@@ -4,15 +4,15 @@ import API from "~/config/api";
 type Props = {
   onError: Function;
   onSuccess: Function;
-  url: string;
+  doi: string;
 };
 
-export function createPaperSubmissionWithURL({
+export function createPaperSubmissionWithDOI({
   onError,
   onSuccess,
-  url,
+  doi,
 }: Props): void {
-  fetch(API.PAPER_SUBMISSION, API.POST_CONFIG({ url }))
+  fetch(API.PAPER_SUBMISSION_WITH_DOI, API.POST_CONFIG({ doi }))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((result: any): void => {
