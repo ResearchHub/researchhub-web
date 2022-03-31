@@ -131,22 +131,20 @@ function PaperUploadStateNotifier({
     status_read: isNotificationRead,
     id: paperSubmissionID,
   } = parsedWsResponse?.data ?? {};
-  // console.warn("wsSend: ", wsSend);
   console.warn("wsResponse: ", parsedWsResponse?.data);
+
   const markAsRead = () => {
-    debugger;
     wsSend({ paper_submission_id: paperSubmissionID });
   };
-  console.warn("isNotificationRead: ", isNotificationRead);
+
   useEffect((): void => {
     if (!isEmpty(wsResponse) && !isNotificationRead) {
       const paperIDsMatch = msgPaperID === PaperID;
       if (isUploadModalOpen && paperIDsMatch) {
         /* mark notification as read  & dont show notification */
-        console.warn("mark notification as read & dont show notification");
+        // console.warn("mark notification as read & dont show notification");
         markAsRead();
       } else if (!isUploadModalOpen) {
-        debugger;
         const bodyResult = getToastBody({
           markAsRead,
           paperID: msgPaperID,

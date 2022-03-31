@@ -80,10 +80,12 @@ export default function withWebSocket(
     }
 
     function startingListening() {
-      if (ws && !stopped) {
-        ws.readyState !== WebSocket.CLOSED && listen();
+      if (ws && !stopped && ws.readyState !== WebSocket.CLOSED) {
+        listen();
       }
-      return stopListening;
+      if (ws?.readyState === WebSocket.CLOSED) {
+        return stopListening(CLOSE_CODES.GOING_AWAY, "WS is closed");
+      }
     }
 
     function listen() {
@@ -139,7 +141,6 @@ export default function withWebSocket(
       try {
         return ws.send(JSON.stringify({ ...data }));
       } catch (err) {
-        debugger;
         return err;
       }
     }
