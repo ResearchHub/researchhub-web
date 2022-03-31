@@ -1,6 +1,6 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { createPaperSubmissionWithdoi } from "./api/createPaperSubmissionWithdoi";
+import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
@@ -11,6 +11,7 @@ import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
+import { isString } from "~/config/utils/string";
 
 type Props = {
   messageActions: any /* redux */;
@@ -44,16 +45,14 @@ function PaperUploadWizardDOIBody({
 
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
-    event.stopPropagation();
 
-    const WTF = !isStringdoi(doi);
-    const newFormErrors = { doi: WTF };
+    const newFormErrors = { ...formErrors, doi: !isString(doi) };
     const hasError = Object.values(newFormErrors).includes(true);
 
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
-      createPaperSubmissionWithdoi({
+      createPaperSubmissionWithDOI({
         onError: (error: any): void => {
           const { response } = error;
           switch (response.status) {
@@ -86,7 +85,7 @@ function PaperUploadWizardDOIBody({
         label={
           <div className={css(styles.inputLabel)}>
             <div>
-              {"Link to Paper"}
+              {"DOI"}
               <span style={{ color: colors.BLUE(1) }}>{" * "}</span>
             </div>
             <div

@@ -13,6 +13,7 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
 
 type Props = { onExit: () => void };
 type State = {
@@ -34,6 +35,13 @@ function getWizardBody({
   setWizardStep: (step: WizardBodyTypes) => void;
 }): WizardBodyElement {
   switch (currentStep) {
+    case "doi_upload":
+      return (
+        <PaperUploadWizardDOIBody
+          onExit={onExit}
+          setWizardStep={setWizardStep}
+        />
+      );
     case "pdf_upload":
       return <PaperUploadWizardPDFUpload onExit={onExit} />;
     case "posted_paper_update":
@@ -69,7 +77,8 @@ export default function PaperUploadWizardContainer({
     values: { paperID },
   } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [{ currentStep }, setComponentState] = useState<State>({
-    currentStep: Boolean(paperID) ? "posted_paper_update" : "url_upload",
+    currentStep: 'doi_upload' 
+    // Boolean(paperID) ? "posted_paper_update" : "url_upload",
   });
   const [postedPaperID, setPostedPaperID] = useState<ID>(paperID ?? null);
 
