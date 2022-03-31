@@ -132,14 +132,12 @@ export default function withWebSocket(
       }
     }
 
-    function send(message) {
-      const data = {
-        message,
-      };
-
+    function send(data) {
+      debugger;
       try {
-        return ws.send(JSON.stringify(data));
+        return ws.send(JSON.stringify({ message: data }));
       } catch (err) {
+        debugger;
         return err;
       }
     }

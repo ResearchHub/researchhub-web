@@ -1,8 +1,12 @@
 import "react-toastify/dist/ReactToastify.css";
-import { buildSlug } from "~/config/utils/buildSlug";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ID, NullableString } from "~/config/types/root_types";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+  NewPostButtonContextValues,
+} from "../contexts/NewPostButtonContext";
 import { NextRouter, useRouter } from "next/router";
 import {
   ReactElement,
@@ -15,25 +19,30 @@ import { ToastContainer, toast } from "react-toastify";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import withWebSocket from "../withWebSocket";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "../contexts/NewPostButtonContext";
+import { markAsRead } from "./api/paperUploadMarkAsRead";
+import { isEmpty, nullthrows } from "~/config/utils/nullchecks";
 
 type Props = {
-  wsResponse: any /* socket */;
   isNewPostModalOpen: boolean;
+  wsResponse: any /* socket */;
+  wsSend: (payload: any) => void /* socket */;
 };
 type GetToastBodyArgs = {
+  markAsRead: Function;
   paperID: ID;
   paperUploadStatus: NullableString;
   router: NextRouter;
+  setUploaderContextValues: (values: NewPostButtonContextValues) => void;
+  uploaderContextValues: NewPostButtonContextValues;
 };
 
 const getToastBody = ({
-  paperUploadStatus,
+  markAsRead,
   paperID,
+  paperUploadStatus,
   router,
+  setUploaderContextValues,
+  uploaderContextValues,
 }: GetToastBodyArgs): [
   boolean /* shouldRender */,
   ReactNode /* toastBody */
@@ -45,6 +54,7 @@ const getToastBody = ({
         <div
           className={css(styles.toastBody)}
           onClick={(_event: SyntheticEvent): void => {
+            markAsRead();
             router.push(`/paper/${paperID}/new-upload`);
           }}
         >
@@ -59,6 +69,33 @@ const getToastBody = ({
       ];
     case "PROCESSING":
     case "PROCESSING_MANUBOT":
+    case "FAILED_DOI":
+      return [
+        true,
+        <div
+          className={css(styles.toastBody)}
+          onClick={(): void =>
+            setUploaderContextValues({
+              ...uploaderContextValues,
+              isOpen: true,
+              isWithDOI: true,
+              doi: null,
+            })
+          }
+        >
+          <div className={css(styles.toastBodyTitle)}>
+            {"FAILED TO GET DOI"}
+          </div>
+          <div className={css(styles.toastSubtext)}>
+            <span style={{ marginRight: 6, color: colors.RED(1) }}>
+              {icons.exclamationCircle}
+            </span>
+            {
+              "We weren't able to get DOI from the source. Click to try again by providing DOI"
+            }
+          </div>
+        </div>,
+      ];
     case "FAILED_DUPLICATE":
       return [
         true,
@@ -81,37 +118,48 @@ const getToastBody = ({
 
 function PaperUploadStateNotifier({
   wsResponse,
+  wsSend,
 }: Props): ReactElement<typeof ToastContainer> {
   const router = useRouter();
-  const { values: uploadButtonValues, setValues: setUploadButtonValues } =
+  const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const { isOpen: isUploadModalOpen, paperID: currentUploadingPaperID } =
-    uploadButtonValues;
+  const { isOpen: isUploadModalOpen, paperID: PaperID } = uploaderContextValues;
   const parsedWsResponse = JSON.parse(wsResponse);
   const {
     paper_status: paperUploadStatus,
     paper: msgPaperID,
     status_read: isNotificationRead,
+    id: paperSubmissionID,
   } = parsedWsResponse?.data ?? {};
-  console.warn("JSON.parse(wsResponse: ", JSON.parse(wsResponse)?.data);
-
+  // console.warn("wsSend: ", wsSend);
+  console.warn("wsResponse: ", parsedWsResponse?.data);
+  const markAsRead = () => {
+    debugger;
+    wsSend({ paper_submission_id: paperSubmissionID });
+  };
+  console.warn("isNotificationRead: ", isNotificationRead);
   useEffect((): void => {
-    if (!isNotificationRead) {
-      const paperIDsMatch = msgPaperID === currentUploadingPaperID;
+    if (!isEmpty(wsResponse) && !isNotificationRead) {
+      const paperIDsMatch = msgPaperID === PaperID;
       if (isUploadModalOpen && paperIDsMatch) {
         /* mark notification as read  & dont show notification */
-        console.warn("mark notification as read  & dont show notification");
-      } else {
+        console.warn("mark notification as read & dont show notification");
+        markAsRead();
+      } else if (!isUploadModalOpen) {
+        debugger;
         const bodyResult = getToastBody({
+          markAsRead,
           paperID: msgPaperID,
           paperUploadStatus,
           router,
+          setUploaderContextValues,
+          uploaderContextValues,
         });
         bodyResult[0] && toast(bodyResult[1]);
       }
     }
   }, [
-    currentUploadingPaperID,
+    PaperID,
     isNotificationRead,
     isUploadModalOpen,
     msgPaperID,
