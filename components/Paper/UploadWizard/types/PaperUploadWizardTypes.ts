@@ -6,3 +6,12 @@ export type WizardBodyTypes =
   | "posted_paper_update"
   | "standby"
   | "url_upload";
+
+
+export type PaperSubmissionStatus = 
+  | "COMPLETE"
+  | "FAILED_DOI"
+  | "FAILED_DUPLICATE"
+  | "PROCESSING_MANUBOT"
+  | "PROCESSING"
+  | null
