@@ -50,35 +50,35 @@ function PaperUploadWizardURLBody({
     event.preventDefault();
     const newFormErrors = { ...formErrors, url: !isStringURL(url) };
     const hasError = Object.values(newFormErrors).includes(true);
-
+    resetComponent(); /* intentional reset before execution */
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
-      createPaperSubmissionWithURL({
-        onError: (error: any): void => {
-          resetComponent();
-          const { response } = error;
-          switch (response?.status) {
-            case 403 /* Duplicate error */:
-              onExit();
-              modalActions.openUploadPaperModal(true, [error.message?.data]);
-              break;
-            default:
-              messageActions.setMessage("Please provide valid URL source");
-              messageActions.showMessage({ show: true, error: true });
-              return;
-          }
-        },
-        onSuccess: (_result: any) => {
-          // logical ordering
-          resetComponent();
-          setUploaderContextValues({
-            ...uploaderContextValues,
-            wizardBodyType: "standby",
-          });
-        },
-        url,
-      });
+      // createPaperSubmissionWithURL({
+      //   onError: (error: any): void => {
+      //     resetComponent();
+      //     const { response } = error;
+      //     switch (response?.status) {
+      //       case 403 /* Duplicate error */:
+      //         onExit();
+      //         modalActions.openUploadPaperModal(true, [error.message?.data]);
+      //         break;
+      //       default:
+      //         messageActions.setMessage("Please provide valid URL source");
+      //         messageActions.showMessage({ show: true, error: true });
+      //         return;
+      //     }
+      //   },
+      //   onSuccess: (_result: any) => {
+      //     // logical ordering
+      //     resetComponent();
+      //     setUploaderContextValues({
+      //       ...uploaderContextValues,
+      //       wizardBodyType: "standby",
+      //     });
+      //   },
+      //   url,
+      // });
     }
   };
 
