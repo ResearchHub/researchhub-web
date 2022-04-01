@@ -15,6 +15,7 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import { isString } from "~/config/utils/string";
 
 type Props = {
   messageActions: any /* redux */;
@@ -46,15 +47,15 @@ function PaperUploadWizardURLBody({
     return (): void => resetComponent();
   }, []);
 
-  const onSubmit = (event: SyntheticEvent): void => {
+  const onSubmit = async (event: SyntheticEvent): Promise<void> => {
     event.preventDefault();
-    const newFormErrors = { ...formErrors, url: !isStringURL(url) };
+    event.stopPropagation();
+    const newFormErrors = { url: !isString(url) };
     const hasError = Object.values(newFormErrors).includes(true);
-    resetComponent(); /* intentional reset before execution */
     if (hasError) {
       setFormErrors(newFormErrors);
     } else {
-      createPaperSubmissionWithURL({
+      await createPaperSubmissionWithURL({
         onError: (error: any): void => {
           const { response } = error;
           switch (response?.status) {
@@ -68,10 +69,12 @@ function PaperUploadWizardURLBody({
               return;
           }
         },
-        onSuccess: (_result: any) => {
+        onSuccess: (result: any) => {
           // logical ordering
+          resetComponent(); /* intentional reset before execution */
           setUploaderContextValues({
             ...uploaderContextValues,
+            submissionID: result?.id,
             wizardBodyType: "standby",
           });
         },

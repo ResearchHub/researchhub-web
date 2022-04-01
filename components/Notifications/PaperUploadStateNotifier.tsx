@@ -1,7 +1,7 @@
 import "react-toastify/dist/ReactToastify.css";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
-import { ID } from "~/config/types/root_types";
+import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty } from "~/config/utils/nullchecks";
 import {
   NewPostButtonContext,
@@ -21,6 +21,7 @@ import { ToastContainer, toast } from "react-toastify";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import withWebSocket from "../withWebSocket";
+import { useState } from "react";
 
 type Props = {
   isNewPostModalOpen: boolean;
@@ -42,13 +43,13 @@ const getToastBody = ({
   setUploaderContextValues,
   uploaderContextValues,
 }: GetToastBodyArgs): [
-  boolean /* shouldRender */,
+  boolean | string /* shouldRender */,
   ReactNode /* toastBody */
 ] => {
   switch (paperUploadStatus) {
     case "COMPLETE":
       return [
-        true,
+        "complete",
         <div
           className={css(styles.toastBody)}
           onClick={(_event: SyntheticEvent): void => {
@@ -66,7 +67,7 @@ const getToastBody = ({
       ];
     case "FAILED_DOI":
       return [
-        true,
+        "fail",
         <div
           className={css(styles.toastBody)}
           onClick={(): void => {
@@ -94,24 +95,22 @@ const getToastBody = ({
       ];
     case "FAILED_DUPLICATE":
       return [
-        true,
+        "fail",
         <div className={css(styles.toastBody)}>
-          <div className={css(styles.toastBodyTitle)}>
-            {"PAPER UPLOADED FAILED"}
-          </div>
+          <div className={css(styles.toastBodyTitle)}>{"DUPLICATE PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
             <span style={{ marginRight: 6, color: colors.RED(1) }}>
               {icons.exclamationCircle}
             </span>
-            {"Please try again later or upload with a PDF"}
+            {"We've found a duplicate paper"}
           </div>
         </div>,
       ];
+
     case "PROCESSING":
     case "PROCESSING_MANUBOT":
-    default:
       return [
-        true,
+        "process",
         <div className={css(styles.toastBody)}>
           <div className={css(styles.toastBodyTitle)}>{"UPLOADING PAPER"}</div>
           <div className={css(styles.toastSubtext)}>
@@ -122,6 +121,8 @@ const getToastBody = ({
           </div>
         </div>,
       ];
+    default:
+      return [false, null];
   }
 };
 
@@ -130,9 +131,14 @@ function PaperUploadStateNotifier({
   wsSend,
 }: Props): ReactElement<typeof ToastContainer> {
   const router = useRouter();
+  const [toastType, setToastType] = useState<NullableString>(null);
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const { isOpen: isUploadModalOpen, paperID: PaperID } = uploaderContextValues;
+  const {
+    isOpen: isUploadModalOpen,
+    paperID,
+    submissionID,
+  } = uploaderContextValues;
   const parsedWsResponse = JSON.parse(wsResponse);
   const {
     paper_status: paperUploadStatus,
@@ -146,9 +152,8 @@ function PaperUploadStateNotifier({
 
   useEffect((): void => {
     if (!isEmpty(wsResponse) && !isNotificationRead) {
-      const paperIDsMatch = msgPaperID === PaperID;
+      const paperIDsMatch = msgPaperID === paperID;
       if (isUploadModalOpen && paperIDsMatch) {
-        // console.warn("mark notification as read & dont show notification");
         markAsRead();
       } else if (!isUploadModalOpen) {
         const bodyResult = getToastBody({
@@ -158,14 +163,17 @@ function PaperUploadStateNotifier({
           setUploaderContextValues,
           uploaderContextValues,
         });
-        bodyResult[0] && toast(bodyResult[1]);
+        if (Boolean(bodyResult[0]) && toastType !== bodyResult[0]) {
+          toast(bodyResult[1], { onClose: markAsRead });
+          setToastType(bodyResult[0]);
+        }
       }
     }
   }, [
-    PaperID,
     isNotificationRead,
     isUploadModalOpen,
     msgPaperID,
+    paperID,
     paperUploadStatus,
   ]);
 
@@ -173,12 +181,10 @@ function PaperUploadStateNotifier({
     <ToastContainer
       autoClose={false}
       closeOnClick
-      onClick={markAsRead}
       hideProgressBar={false}
-      limit={1} /* render only 1 at a time */
-      newestOnTop={false}
-      pauseOnFocusLoss
-      pauseOnHover
+      // limit={1} /* render only 1 at a time */
+      newestOnTop
+      onClick={markAsRead}
       position="bottom-right"
       rtl={false}
     />
