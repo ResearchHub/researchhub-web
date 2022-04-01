@@ -58,11 +58,11 @@ function PaperUploadWizardDOIBody({
     } else {
       createPaperSubmissionWithDOI({
         onError: (error: any): void => {
+          resetComponent();
           const { response } = error;
           switch (response.status) {
             case 403 /* Duplicate error */:
               const { data } = response;
-              resetComponent();
               onExit();
               modalActions.openUploadPaperModal(true, [error.message?.data]);
               break;
