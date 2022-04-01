@@ -17,7 +17,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
-import { formatDate } from "~/config/utils/dates";
+import { formatDateStandard } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import { transformDate } from "~/redux/utils";
 
@@ -311,7 +311,9 @@ function FeedCard(props: FeedCardProps) {
                     </span>
                     <div className={css(styles.metadataIcon)}>{icons.date}</div>
                     <span className={css(styles.metadataText)}>
-                      {formatDate(transformDate(created_date || uploaded_date))}
+                      {formatDateStandard(
+                        transformDate(created_date || uploaded_date)
+                      )}
                     </span>
                   </div>
                 </div>

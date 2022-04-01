@@ -1,14 +1,13 @@
-import { createRef, Component, Fragment, useState } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { useTransition, animated } from "react-spring";
-
 import Collapsible from "~/components/Form/Collapsible";
 import Head from "~/components/Head";
 import ScrollMenu from "react-horizontal-scrolling-menu";
-import { NavigationArrow } from "~/components/HorizontalTabBar";
-
-import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
+import { NavigationArrow } from "~/components/HorizontalTabBar";
+import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { createRef, Component, Fragment, useState } from "react";
+import { useTransition, animated } from "react-spring";
 
 const points = [
   {
@@ -416,8 +415,14 @@ class Index extends Component {
                   earnings of ResearchCoin minus erosion due to downvotes.
                   Reputation is linked to certain privileges in the app, as well
                   as a mechanism for moderation within the community.{"\n \n"}
-                  Further details about ResearchCoin can also be found on the
-                  ResearchHub Notion page.
+                  Further details about ResearchCoin can also be found on the{" "}
+                  <a
+                    href="https://researchhub.notion.site/ResearchCoin-RSC-1e8e25b771ec4b92b9095e060c4095f6"
+                    target="_blank"
+                  >
+                    ResearchHub Notion
+                  </a>{" "}
+                  page.
                 </p>
               </div>
             </Fragment>
@@ -654,7 +659,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 800px)": {
       height: 300,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       height: 200,
     },
   },
@@ -700,14 +705,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     alignItems: "center",
-    width: 1180,
     scrollSnapAlign: "center",
-    "@media only screen and (max-width: 1200px)": {
-      width: 760,
-    },
-    "@media only screen and (max-width: 800px)": {
-      width: 600,
-    },
   },
   top: {
     padding: "50px 0 50px 0",
@@ -725,7 +723,7 @@ const styles = StyleSheet.create({
   },
   bottom: {
     padding: "50px 0 50px 0",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "100%",
       flexDirection: "column",
       justifyContent: "flex-start",
@@ -735,7 +733,14 @@ const styles = StyleSheet.create({
     },
   },
   infoContainer: {
+    display: "flex",
+    flexDirection: "column",
+    maxWidth: 1180,
     scrollSnapType: "y mandatory",
+    width: "80vw",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      width: "100%",
+    },
   },
   titleContainer: {
     display: "flex",
@@ -769,7 +774,7 @@ const styles = StyleSheet.create({
       width: 400,
       paddingBottom: 0,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: 280,
       fontSize: 18,
     },
@@ -800,7 +805,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 1200px)": {
       width: "100%",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "85%",
     },
   },
@@ -810,7 +815,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 800px)": {
       fontSize: 28,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       textAlign: "center",
       width: "100%",
     },
@@ -829,7 +834,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 800px)": {
       fontSize: 16,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       textAlign: "justify",
       paddingBottom: 50,
     },
@@ -846,7 +851,7 @@ const styles = StyleSheet.create({
   valuesTitle: {
     zIndex: 2,
     marginBottom: 50,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginBottom: 30,
     },
   },
@@ -859,7 +864,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 800px)": {
       marginRight: 20,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       flexDirection: "row",
       justifyContent: "center",
       marginRight: 0,
@@ -874,7 +879,7 @@ const styles = StyleSheet.create({
   },
   valuesList: {
     zIndex: 2,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       flexDirection: "column",
       justifyContent: "flex-start",
     },
@@ -885,7 +890,7 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: colors.BLUE(1),
     marginBottom: 50,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       marginBottom: 0,
       marginRight: 15,
       marginTop: 5,
@@ -901,7 +906,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 800px)": {
       fontSize: 16,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       textAlign: "justify",
       width: 230,
     },
@@ -920,7 +925,7 @@ const styles = StyleSheet.create({
       width: 600,
       marginTop: 0,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "unset",
       height: "unset",
       flexDirection: "column",
@@ -933,7 +938,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "flex-start",
     alignItems: "flex-start",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       height: "unset",
       marginBottom: 50,
     },
@@ -973,7 +978,7 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 800px)": {
       width: "90%",
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "100%",
     },
   },
@@ -1000,7 +1005,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
     boxShadow: "rgba(93, 83, 254, 0.18) 0px 4px 15px",
     zIndex: 3,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       padding: "20px 25px 20px 25px",
       width: 200,
       minWidth: 200,
@@ -1028,7 +1033,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 1.6,
     fontFamily: "Roboto",
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 14,
     },
   },
@@ -1041,7 +1046,7 @@ const styles = StyleSheet.create({
     top: 0,
     transition: "all ease-in-out 0.6s",
     opacity: 0,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 18,
       top: 40,
     },
@@ -1060,7 +1065,7 @@ const styles = StyleSheet.create({
       minWidth: 150,
       maxWidth: 150,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: 135,
       minWidth: 135,
       maxWidth: 135,
@@ -1163,7 +1168,7 @@ const styles = StyleSheet.create({
   },
   hubImageWrapper: {
     width: 500,
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       width: "85%",
     },
   },
