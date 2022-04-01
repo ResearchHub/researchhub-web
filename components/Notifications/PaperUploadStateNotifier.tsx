@@ -64,8 +64,6 @@ const getToastBody = ({
           </div>
         </div>,
       ];
-    case "PROCESSING":
-    case "PROCESSING_MANUBOT":
     case "FAILED_DOI":
       return [
         true,
@@ -109,8 +107,21 @@ const getToastBody = ({
           </div>
         </div>,
       ];
+    case "PROCESSING":
+    case "PROCESSING_MANUBOT":
     default:
-      return [false, null];
+      return [
+        true,
+        <div className={css(styles.toastBody)}>
+          <div className={css(styles.toastBodyTitle)}>{"UPLOADING PAPER"}</div>
+          <div className={css(styles.toastSubtext)}>
+            <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
+              {icons.checkCircle}
+            </span>
+            {"We are getting paper information..."}
+          </div>
+        </div>,
+      ];
   }
 };
 
