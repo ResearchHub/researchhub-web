@@ -16,6 +16,7 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import Loader from "~/components/Loader/Loader";
 
 type Props = {
   messageActions: any /* redux */;
@@ -35,12 +36,14 @@ function PaperUploadWizardDOIBody({
 
   const [formErrors, setFormErrors] = useState<FormErrors>({ doi: false });
   const [formValues, setFormValues] = useState<FormValues>({ doi: "" });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { doi: doiError } = formErrors;
   const { doi } = formValues;
   const resetComponent = (): void => {
     setFormErrors({ doi: false });
     setFormValues({ doi: "" });
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
@@ -49,10 +52,11 @@ function PaperUploadWizardDOIBody({
 
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
+    event.stopPropagation();
 
     const newFormErrors = { ...formErrors, doi: !isString(doi) };
     const hasError = Object.values(newFormErrors).includes(true);
-    resetComponent(); /* intentional reset before execution */
+    setIsSubmitting(true);
 
     if (hasError) {
       setFormErrors(newFormErrors);
@@ -127,6 +131,7 @@ function PaperUploadWizardDOIBody({
       >
         <Button
           customButtonStyle={verifStyles.buttonSecondary}
+          disabled={isSubmitting}
           isWhite
           key="upload-wizard-cancel"
           label="Cancel"
@@ -148,8 +153,11 @@ function PaperUploadWizardDOIBody({
         />
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
+          disabled={isSubmitting}
           key="upload-wizard-button"
-          label="Import"
+          label={
+            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Import"
+          }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"
           type="submit"
