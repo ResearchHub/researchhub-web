@@ -56,7 +56,6 @@ function PaperUploadWizardURLBody({
     } else {
       createPaperSubmissionWithURL({
         onError: (error: any): void => {
-          resetComponent();
           const { response } = error;
           switch (response?.status) {
             case 403 /* Duplicate error */:
@@ -71,7 +70,6 @@ function PaperUploadWizardURLBody({
         },
         onSuccess: (_result: any) => {
           // logical ordering
-          resetComponent();
           setUploaderContextValues({
             ...uploaderContextValues,
             wizardBodyType: "standby",
