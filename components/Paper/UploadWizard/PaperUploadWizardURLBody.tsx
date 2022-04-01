@@ -48,7 +48,6 @@ function PaperUploadWizardURLBody({
 
   const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
-
     const newFormErrors = { ...formErrors, url: !isStringURL(url) };
     const hasError = Object.values(newFormErrors).includes(true);
 
