@@ -225,7 +225,9 @@ function UnifiedDocFeedContainer({
       ) : null}
 
       {isHomePage || isEmpty(hub) ? (
-        <h1 className={css(styles.title) + " clamp2"}>{formattedMainHeader}</h1>
+        <div className={css(styles.title) + " clamp2"}>
+          {formattedMainHeader}
+        </div>
       ) : (
         <FeedInfoCard
           hub={hub}
@@ -327,7 +329,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       borderBottom: `unset`,
-    }
+    },
   },
   feedButtonContainer: {
     marginRight: 24,
@@ -399,7 +401,7 @@ const styles = StyleSheet.create({
     fontSize: 30,
     fontWeight: 500,
     textOverflow: "ellipsis",
-    marginBottom: 0,
+    marginBottom: 5,
     [`@media only screen and (max-width: ${breakpoints.large.str})`]: {
       fontSize: 30,
     },
