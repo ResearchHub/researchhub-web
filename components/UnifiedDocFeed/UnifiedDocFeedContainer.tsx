@@ -14,7 +14,7 @@ import {
   useEffectForceUpdate,
   useEffectUpdateStatesOnServerChanges,
 } from "./utils/UnifiedDocFeedUtil";
-import { ReactElement, useMemo, useRef, useState } from "react";
+import { ReactElement, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import colors from "~/config/themes/colors";
 import CreateFeedBanner from "../Home/CreateFeedBanner";
@@ -59,7 +59,7 @@ function UnifiedDocFeedContainer({
   const [unifiedDocuments, setUnifiedDocuments] = useState<any>(
     serverLoadedData?.results || []
   );
-  const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(false);
+  const [unifiedDocsLoading, setUnifiedDocsLoading] = useState(true);
 
   const { hasMore, isLoadingMore, localPage, page } = paginationInfo;
   const isOnMyHubsTab = ["/my-hubs"].includes(routerPathName);
@@ -74,6 +74,10 @@ function UnifiedDocFeedContainer({
     // V2 of hot score
     hotV2: router.query?.hot_v2 == "true",
   };
+
+  useEffect(() => {
+    setUnifiedDocsLoading(false);
+  }, []);
 
   useEffectUpdateStatesOnServerChanges({
     setUnifiedDocuments,
@@ -248,7 +252,7 @@ function UnifiedDocFeedContainer({
           />
         </div>
       </div>
-      {Boolean(unifiedDocsLoading) ? (
+      {unifiedDocsLoading || isServer() ? (
         <div className={css(styles.initPlaceholder)}>
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
           <UnifiedDocFeedCardPlaceholder color="#efefef" />
@@ -327,7 +331,7 @@ const styles = StyleSheet.create({
     borderBottom: `1px solid ${colors.BLACK(0.1)}`,
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       borderBottom: `unset`,
-    }
+    },
   },
   feedButtonContainer: {
     marginRight: 24,
