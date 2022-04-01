@@ -1,5 +1,11 @@
 import { breakpoints } from "~/config/themes/screen";
+import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { ID } from "~/config/types/root_types";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 import { ReactElement, useContext } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
@@ -8,19 +14,17 @@ import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
 import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
 import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
 
-type Props = { onExit: () => void };
+type Props = { user: any; /* redux */ onExit: () => void };
 type WizardBodyElement = ReactElement<typeof PaperUploadWizardURLBody>;
 
 function getWizardBody({
+  currentUserID,
   currentStep,
   onExit,
 }: {
+  currentUserID: ID;
   currentStep: WizardBodyTypes;
   onExit: () => void;
 }): WizardBodyElement {
@@ -37,7 +41,7 @@ function getWizardBody({
         <PaperUploadWizardStandbyBody
           onExit={onExit}
           wsAuth
-          wsUrl={WS_ROUTES.PAPER_SUBMISSION(1)}
+          wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
         />
       );
     case "url_upload":
@@ -46,13 +50,15 @@ function getWizardBody({
   }
 }
 
-export default function PaperUploadWizardContainer({
+function PaperUploadWizardContainer({
+  user,
   onExit,
 }: Props): ReactElement<Props> {
   const {
     values: { wizardBodyType },
   } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const wizardBody = getWizardBody({
+    currentUserID: user?.id,
     currentStep: wizardBodyType,
     onExit,
   });
@@ -66,6 +72,12 @@ export default function PaperUploadWizardContainer({
     </div>
   );
 }
+
+const mapStateToProps = (state) => ({
+  user: state.auth.user,
+});
+
+export default connect(mapStateToProps, {})(PaperUploadWizardContainer);
 
 const styles = StyleSheet.create({
   paperUploadWizardContainer: {

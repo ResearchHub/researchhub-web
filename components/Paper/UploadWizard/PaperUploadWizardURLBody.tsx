@@ -46,7 +46,7 @@ function PaperUploadWizardURLBody({
     return (): void => resetComponent();
   }, []);
 
-  const onSubmit = async (event: SyntheticEvent): Promise<void> => {
+  const onSubmit = (event: SyntheticEvent): void => {
     event.preventDefault();
 
     const newFormErrors = { ...formErrors, url: !isStringURL(url) };
