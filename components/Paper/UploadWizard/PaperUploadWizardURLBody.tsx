@@ -46,11 +46,10 @@ function PaperUploadWizardURLBody({
     return (): void => resetComponent();
   }, []);
 
-  const onSubmit = (event: SyntheticEvent): void => {
+  const onSubmit = async (event: SyntheticEvent): Promise<void> => {
     event.preventDefault();
 
     const newFormErrors = { ...formErrors, url: !isStringURL(url) };
-    console.warn("newFormErrors: ", newFormErrors)
     const hasError = Object.values(newFormErrors).includes(true);
 
     if (hasError) {
@@ -58,10 +57,10 @@ function PaperUploadWizardURLBody({
     } else {
       createPaperSubmissionWithURL({
         onError: (error: any): void => {
+          resetComponent();
           const { response } = error;
-          switch (response.status) {
+          switch (response?.status) {
             case 403 /* Duplicate error */:
-              resetComponent();
               onExit();
               modalActions.openUploadPaperModal(true, [error.message?.data]);
               break;
