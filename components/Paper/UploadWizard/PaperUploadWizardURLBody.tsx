@@ -50,6 +50,7 @@ function PaperUploadWizardURLBody({
     event.preventDefault();
 
     const newFormErrors = { ...formErrors, url: !isStringURL(url) };
+    console.warn("newFormErrors: ", newFormErrors)
     const hasError = Object.values(newFormErrors).includes(true);
 
     if (hasError) {
