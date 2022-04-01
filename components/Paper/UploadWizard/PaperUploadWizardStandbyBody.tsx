@@ -4,7 +4,6 @@ import { css, StyleSheet } from "aphrodite";
 import { ModalActions } from "~/redux/modals";
 import { nullthrows } from "~/config/utils/nullchecks";
 import { useContext, useEffect, useState } from "react";
-import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
 import withWebSocket from "~/components/withWebSocket";
@@ -109,7 +108,7 @@ function PaperUploadWizardStandbyBody({
       : uploadStatus === "COMPLETE"
       ? "Done"
       : "Processing ...";
-  const didProcessFail = uploadStatus === "FAILED";
+  const didProcessFail = ["FAILED", "FAILED_DOI"].includes(uploadStatus);
 
   return (
     <div className={css(styles.wizardStandby)}>
@@ -159,7 +158,7 @@ function PaperUploadWizardStandbyBody({
               {"We weren't able to import source:"}
             </div>
             <div className={css(styles.failedBody)}>
-              <span>{"Please try again later or "}</span>
+              <span>{"Please try again by loading with "}</span>
               <span
                 onClick={(): void =>
                   setUploaderContextValues({
@@ -172,7 +171,22 @@ function PaperUploadWizardStandbyBody({
                   cursor: "pointer",
                 }}
               >
-                {"upload with a PDF"}
+                {"PDF"}
+              </span>
+              <span>{" or "}</span>
+              <span
+                onClick={(): void =>
+                  setUploaderContextValues({
+                    ...uploaderContextValues,
+                    wizardBodyType: "doi_upload",
+                  })
+                }
+                style={{
+                  color: colors.BLUE(),
+                  cursor: "pointer",
+                }}
+              >
+                {"DOI"}
               </span>
             </div>
           </div>
