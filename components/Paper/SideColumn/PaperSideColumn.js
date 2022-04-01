@@ -8,7 +8,7 @@ import { StyleSheet, css } from "aphrodite";
 
 const PaperSideColumn = (props) => {
   const { paper, paperId, authors, hubs, customStyle, isPost } = props;
-
+  console.warn("authors: ", authors);
   return (
     <div className={css(styles.root, customStyle && customStyle)}>
       {isPost && (

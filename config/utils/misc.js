@@ -29,13 +29,9 @@ export function logFetchError(fetchResponse) {
  * returns the either the first / last or both is exists
  */
 export function getAuthorName(author) {
-  if (author.first_name && !author.last_name) {
-    return author.first_name;
-  } else if (author.last_name && !author.first_name) {
-    return author.last_name;
-  } else {
-    return `${author.first_name} ${author.last_name}`;
-  }
+  return `${author?.first_name ?? author?.given ?? ""} ${
+    author?.last_name ?? author?.family ?? ""
+  }`;
 }
 
 export function getBountyAmount({ type, paper }) {
