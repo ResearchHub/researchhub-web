@@ -43,7 +43,7 @@ const getToastBody = ({
   setUploaderContextValues,
   uploaderContextValues,
 }: GetToastBodyArgs): [
-  boolean | string /* shouldRender */,
+  NullableString /* shouldRender */,
   ReactNode /* toastBody */
 ] => {
   switch (paperUploadStatus) {
@@ -122,7 +122,7 @@ const getToastBody = ({
         </div>,
       ];
     default:
-      return [false, null];
+      return [null, null];
   }
 };
 

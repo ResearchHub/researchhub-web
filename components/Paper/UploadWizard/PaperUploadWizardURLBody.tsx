@@ -2,12 +2,10 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { createPaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
 import { css, StyleSheet } from "aphrodite";
-import { isStringURL } from "~/config/utils/isStringURL";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
-import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
@@ -16,6 +14,7 @@ import {
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
 import { isString } from "~/config/utils/string";
+import Loader from "~/components/Loader/Loader";
 
 type Props = {
   messageActions: any /* redux */;
@@ -35,12 +34,14 @@ function PaperUploadWizardURLBody({
 
   const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
   const [formValues, setFormValues] = useState<FormValues>({ url: "" });
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   const { url: urlError } = formErrors;
   const { url } = formValues;
   const resetComponent = (): void => {
     setFormErrors({ url: false });
     setFormValues({ url: "" });
+    setIsSubmitting(false);
   };
 
   useEffect(() => {
@@ -50,10 +51,14 @@ function PaperUploadWizardURLBody({
   const onSubmit = async (event: SyntheticEvent): Promise<void> => {
     event.preventDefault();
     event.stopPropagation();
+
     const newFormErrors = { url: !isString(url) };
     const hasError = Object.values(newFormErrors).includes(true);
+    setIsSubmitting(true);
+
     if (hasError) {
       setFormErrors(newFormErrors);
+      setIsSubmitting(false);
     } else {
       await createPaperSubmissionWithURL({
         onError: (error: any): void => {
@@ -71,7 +76,7 @@ function PaperUploadWizardURLBody({
         },
         onSuccess: (result: any) => {
           // logical ordering
-          resetComponent(); /* intentional reset before execution */
+          resetComponent();
           setUploaderContextValues({
             ...uploaderContextValues,
             submissionID: result?.id,
@@ -123,6 +128,7 @@ function PaperUploadWizardURLBody({
       >
         <Button
           customButtonStyle={verifStyles.buttonSecondary}
+          disabled={isSubmitting}
           isWhite
           key="upload-wizard-cancel"
           label="Cancel"
@@ -142,8 +148,11 @@ function PaperUploadWizardURLBody({
         />
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
+          disabled={isSubmitting}
           key="upload-wizard-button"
-          label="Import"
+          label={
+            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Import"
+          }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"
           type="submit"
