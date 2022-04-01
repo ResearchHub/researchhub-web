@@ -415,8 +415,14 @@ class Index extends Component {
                   earnings of ResearchCoin minus erosion due to downvotes.
                   Reputation is linked to certain privileges in the app, as well
                   as a mechanism for moderation within the community.{"\n \n"}
-                  Further details about ResearchCoin can also be found on the
-                  ResearchHub Notion page.
+                  Further details about ResearchCoin can also be found on the{" "}
+                  <a
+                    href="https://researchhub.notion.site/ResearchCoin-RSC-1e8e25b771ec4b92b9095e060c4095f6"
+                    target="_blank"
+                  >
+                    ResearchHub Notion
+                  </a>{" "}
+                  page.
                 </p>
               </div>
             </Fragment>
