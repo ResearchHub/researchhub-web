@@ -7,11 +7,11 @@ type Props = {
   url: string;
 };
 
-export function createPaperSubmissionWithURL({
+export async function createPaperSubmissionWithURL({
   onError,
   onSuccess,
   url,
-}: Props): void {
+}: Props) {
   fetch(API.PAPER_SUBMISSION, API.POST_CONFIG({ url }))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)

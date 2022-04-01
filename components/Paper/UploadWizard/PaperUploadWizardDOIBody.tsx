@@ -73,11 +73,12 @@ function PaperUploadWizardDOIBody({
               return;
           }
         },
-        onSuccess: (_result: any) => {
+        onSuccess: (result: any) => {
           // logical ordering
           resetComponent();
           setUploaderContextValues({
             ...uploaderContextValues,
+            submissionID: result?.id,
             wizardBodyType: "standby",
           });
         },

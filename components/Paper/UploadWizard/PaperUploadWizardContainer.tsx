@@ -41,7 +41,7 @@ function getWizardBody({
         <PaperUploadWizardStandbyBody
           onExit={onExit}
           wsAuth
-          wsUrl={WS_ROUTES.PAPER_SUBMISSION(1)}
+          wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
         />
       );
     case "url_upload":
