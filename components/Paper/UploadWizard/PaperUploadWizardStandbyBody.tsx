@@ -88,9 +88,10 @@ function PaperUploadWizardStandbyBody({
         });
       }, 1600);
     } else if (uploadStatus === "FAILED_DUPLICATE") {
-      modalActions.openUploadPaperModal(true, [
-        ...(parsedWsResponse?.duplicate_papers ?? []),
-      ]);
+      modalActions.openUploadPaperModal(
+        true,
+        parsedWsResponse?.duplicate_papers ?? []
+      );
       onExit();
     }
   }, [uploadStatus, postedPaperID]);

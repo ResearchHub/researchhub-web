@@ -69,7 +69,7 @@ function PaperUploadWizardDOIBody({
             case 403 /* Duplicate error */:
               const { data } = response;
               onExit();
-              modalActions.openUploadPaperModal(true, [error.message?.data]);
+              modalActions.openUploadPaperModal(true, error.message?.data);
               break;
             default:
               messageActions.setMessage("Please provide valid doi source");
