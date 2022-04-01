@@ -66,7 +66,7 @@ function PaperUploadWizardURLBody({
           switch (response?.status) {
             case 403 /* Duplicate error */:
               onExit();
-              modalActions.openUploadPaperModal(true, [error.message?.data]);
+              modalActions.openUploadPaperModal(true, error.message?.data);
               break;
             default:
               messageActions.setMessage("Please provide valid URL source");
