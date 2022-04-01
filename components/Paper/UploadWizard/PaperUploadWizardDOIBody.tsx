@@ -52,6 +52,7 @@ function PaperUploadWizardDOIBody({
 
     const newFormErrors = { ...formErrors, doi: !isString(doi) };
     const hasError = Object.values(newFormErrors).includes(true);
+    resetComponent(); /* intentional reset before execution */
 
     if (hasError) {
       setFormErrors(newFormErrors);
