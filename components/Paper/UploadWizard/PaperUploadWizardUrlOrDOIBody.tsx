@@ -17,6 +17,7 @@ import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import Loader from "~/components/Loader/Loader";
+import { isString } from "~/config/utils/string";
 
 type Props = {
   messageActions: any /* redux */;
@@ -54,8 +55,7 @@ function PaperUploadWizardURLBody({
     event.preventDefault();
     event.stopPropagation();
     const isStringUrl = isStringURL(urlOrDOI);
-    const isStringDoi = isStringDOI(urlOrDOI);
-    debugger;
+    const isStringDoi = isString(urlOrDOI); // assumption
     if (!isStringUrl && !isStringDoi) {
       setFormErrors({ urlOrDOI: true });
       setIsSubmitting(false);
