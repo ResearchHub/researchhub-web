@@ -12,9 +12,9 @@ import Ripples from "react-ripples";
 import { ClientLinkWrapper } from "~/components/LinkWrapper";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import ModeratorDeleteButton from "~/components/Moderator/ModeratorDeleteButton";
-import ShareAction from "~/components/ShareAction";
 import WidgetContentSupport from "~/components/Widget/WidgetContentSupport";
 import UserRoleTag from "~/components/shared/UserRoleTag";
+import ShareModal from "~/components/ShareModal";
 
 //Redux
 import { MessageActions } from "~/redux/message";
@@ -71,6 +71,7 @@ const DiscussionPostMetadata = (props) => {
   const [isFlagged, setFlagged] = useState(
     metaData && metaData.userFlag !== undefined && metaData.userFlag !== null
   );
+  const [shareModalIsOpen, setShareModalIsOpen] = useState(false);
   const dropdown = useRef();
   const ellipsis = useRef();
   let isUserOwnInlineComment = false;
@@ -156,11 +157,12 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const renderShareButton = () => {
-    const { hostname, threadPath, title, small } = props;
-    const shareUrl = hostname + threadPath;
+    function openShareModal() {
+      setShareModalIsOpen(true);
+    }
 
-    const ShareButton = (props) => {
-      return (
+    return (
+      <a onClick={openShareModal}>
         <div className={css(styles.dropdownItem)} onClick={(e) => e.persist()}>
           <span
             className={css(styles.icon, styles.expandIcon, styles.shareIcon)}
@@ -169,16 +171,7 @@ const DiscussionPostMetadata = (props) => {
           </span>
           <span className={css(styles.text, styles.expandText)}>Share</span>
         </div>
-      );
-    };
-
-    return (
-      <ShareAction
-        customButton={<ShareButton />}
-        title={"Share this discussion"}
-        subtitle={title}
-        url={shareUrl}
-      />
+      </a>
     );
   };
 
@@ -196,7 +189,6 @@ const DiscussionPostMetadata = (props) => {
             </div>
             {showDropDown && (
               <div className={css(styles.dropdown)} ref={dropdown}>
-                {threadPath ? <ExpandButton {...props} /> : null}
                 {threadPath && renderShareButton()}
                 <FlagButton
                   {...props}
@@ -256,6 +248,12 @@ const DiscussionPostMetadata = (props) => {
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
+      <ShareModal
+        isOpen={shareModalIsOpen}
+        setIsOpen={setShareModalIsOpen}
+        title={"Share this discussion"}
+        url={window.location.href + "#comments"}
+      />
       <AuthorAvatar
         author={authorProfile}
         name={username}
