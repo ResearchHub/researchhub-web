@@ -5,8 +5,8 @@ export const isStringDOI = (str: string | null): boolean => {
     return false;
   }
   // TODO: calvinhlee - improve this
-  return new RegExp("10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&'<>])S)+").test(
-    str!
-  );
   return true;
+  // return new RegExp("10[.][0-9]{4,}(?:[.][0-9]+)*/(?:(?![\"&'<>])S)+").test(
+  //   str!
+  // );
 };
