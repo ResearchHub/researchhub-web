@@ -18,10 +18,10 @@ import {
   useEffect,
 } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import { useState } from "react";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import withWebSocket from "../withWebSocket";
-import { useState } from "react";
 
 type Props = {
   isNewPostModalOpen: boolean;
@@ -106,7 +106,6 @@ const getToastBody = ({
           </div>
         </div>,
       ];
-
     case "PROCESSING":
     case "PROCESSING_MANUBOT":
       return [
@@ -117,7 +116,7 @@ const getToastBody = ({
             <span style={{ marginRight: 6, color: colors.GREEN(1) }}>
               {icons.checkCircle}
             </span>
-            {"We are getting paper information..."}
+            {"Fetching Paper Metadata..."}
           </div>
         </div>,
       ];
@@ -152,7 +151,12 @@ function PaperUploadStateNotifier({
   useEffect((): void => {
     if (!isEmpty(wsResponse) && !isNotificationRead) {
       const paperIDsMatch = msgPaperID === paperID;
-      if (isUploadModalOpen && paperIDsMatch) {
+      // automatically marking the notification as read if conditions are met
+      if (
+        isUploadModalOpen &&
+        paperIDsMatch &&
+        paperUploadStatus === "COMPLETE"
+      ) {
         markAsRead();
       } else if (!isUploadModalOpen) {
         const bodyResult = getToastBody({

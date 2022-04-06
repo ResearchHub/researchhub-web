@@ -55,7 +55,7 @@ export default function PaperUploadWizardHeader({
             "16px !important" /* overrides default header padding */,
         }}
       >
-        {currentStep !== "url_upload" ? "Add PDF" : "Add Paper"}
+        {currentStep !== "url_or_doi_upload" ? "Add PDF" : "Add Paper"}
         <a
           className={css(formGenericStyles.authorGuidelines)}
           style={{ color: colors.BLUE(1) }}

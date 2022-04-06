@@ -144,8 +144,8 @@ function PaperUploadWizardDOIBody({
             setUploaderContextValues({
               ...uploaderContextValues,
               doi,
-              isWithDOI: true,
-              wizardBodyType: "standby",
+              isWithDOI: false,
+              wizardBodyType: "url_or_doi_upload",
             });
             onExit();
           }}

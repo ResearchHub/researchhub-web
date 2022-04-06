@@ -56,6 +56,7 @@ function PaperUploadWizardURLBody({
     event.stopPropagation();
     const isStringUrl = isStringURL(urlOrDOI);
     const isStringDoi = isStringDOI(urlOrDOI);
+    setIsSubmitting(true);
     if (!isStringUrl && !isStringDoi) {
       setFormErrors({ urlOrDOI: true });
       setIsSubmitting(false);
@@ -125,7 +126,7 @@ function PaperUploadWizardURLBody({
         label={
           <div className={css(styles.inputLabel)}>
             <div>
-              {"Enter DOI or link to Paper"}
+              {"Enter DOI or a Paper URL"}
               <span style={{ color: colors.BLUE(1) }}>{" * "}</span>
             </div>
             <div
@@ -144,7 +145,6 @@ function PaperUploadWizardURLBody({
         onChange={(value: null | string): void =>
           setFormValues({ ...formValues, urlOrDOI: value ?? "" })
         }
-        placeholder="url or doi to source"
         required
         value={urlOrDOI}
       />
@@ -171,7 +171,7 @@ function PaperUploadWizardURLBody({
             resetComponent();
             setUploaderContextValues({
               ...uploaderContextValues,
-              wizardBodyType: "standby",
+              wizardBodyType: "url_or_doi_upload",
             });
             onExit();
           }}
