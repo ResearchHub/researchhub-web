@@ -55,6 +55,7 @@ export type FeedCardProps = {
   user: any;
   user_vote: any;
   voteCallback: any;
+  handleClick?: (SyntheticEvent) => void;
 };
 
 function FeedCard(props: FeedCardProps) {
@@ -199,6 +200,7 @@ function FeedCard(props: FeedCardProps) {
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
+      onClick={props.handleClick && props.handleClick}
     >
       <Link href={`/${formattedDocType}/${id}/${slug}`}>
         <a className={css(styles.feedCard)}>

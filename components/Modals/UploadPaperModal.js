@@ -70,7 +70,9 @@ class UploadPaperModal extends Component {
   /**
    * closes the modal on button click
    */
-  closeModal = () => {
+  closeModal = (event) => {
+    event.stopPropagation();
+    debugger;
     let { modalActions, paperActions } = this.props;
     this.setState({
       ...this.initialState,
@@ -89,7 +91,15 @@ class UploadPaperModal extends Component {
             className={css(styles.searchEntryContainer)}
             onClick={this.closeModal}
           >
-            <FeedCard {...paper} formattedDocType={"paper"} paper={paper} />
+            <FeedCard
+              {...paper}
+              formattedDocType={"paper"}
+              paper={paper}
+              handleClick={(event) => {
+                event?.preventDefault();
+                this.props.modalActions.openUploadPaperModal(false);
+              }}
+            />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
           {results.length > 1 && <div className={css(styles.divider)} />}
