@@ -4,8 +4,7 @@ export const isStringDOI = (str: string | null): boolean => {
   if (!isString(str)) {
     return false;
   }
-
-  return new RegExp(/10.\d{4,9}\/[-._;()\/:a-zA-Z0-9]+(?=[\"])/).test(
-    String(str).toLowerCase()
-  );
+  // TODO: calvinhlee - improve this
+  // return new RegExp("/^10.d{4,9}/[-._;()/:A-Z0-9]+$/i").test(str!);
+  return true;
 };
