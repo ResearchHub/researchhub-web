@@ -32,7 +32,7 @@ export default function PaperUploadWizardHeader({
             marginBottom: 26,
           }}
         >
-          {"Your file was uploaded successfully."}
+          {"Your paper was imported successfully."}
         </div>
         <div
           style={{
@@ -65,9 +65,7 @@ export default function PaperUploadWizardHeader({
         </a>
         <div
           className={css(formGenericStyles.sidenote, formGenericStyles.text)}
-        >
-          {"Up to 15MB (.pdf)"}
-        </div>
+        ></div>
       </div>
     );
   }
