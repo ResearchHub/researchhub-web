@@ -146,7 +146,6 @@ function PaperUploadStateNotifier({
     status_read: isNotificationRead,
     id: paperSubmissionID,
   } = parsedWsResponse?.data ?? {};
-  console.warn("wsResponse: ", parsedWsResponse?.data);
 
   const markAsRead = () => wsSend({ paper_submission_id: paperSubmissionID });
 

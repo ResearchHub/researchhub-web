@@ -2,19 +2,19 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI";
 import { css, StyleSheet } from "aphrodite";
+import { isStringDOI } from "~/config/utils/isStringDOI";
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
-import { ModalActions } from "~/redux/modals";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
-import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import Loader from "~/components/Loader/Loader";
-import { isString } from "~/config/utils/string";
+import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 
 type Props = {
   messageActions: any /* redux */;
@@ -52,7 +52,7 @@ function PaperUploadWizardDOIBody({
     event.preventDefault();
     event.stopPropagation();
 
-    const newFormErrors = { ...formErrors, doi: !isString(doi) };
+    const newFormErrors = { ...formErrors, doi: !isStringDOI(doi) };
     const hasError = Object.values(newFormErrors).includes(true);
     setIsSubmitting(true);
 
