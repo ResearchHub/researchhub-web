@@ -12,12 +12,12 @@ import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
 import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
-import PaperUploadWizardURLBody from "./PaperUploadWizardURLBody";
+import PaperUploadWizardUrlOrDOIBody from "./PaperUploadWizardUrlOrDOIBody";
 import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
 import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
 
 type Props = { user: any; /* redux */ onExit: () => void };
-type WizardBodyElement = ReactElement<typeof PaperUploadWizardURLBody>;
+type WizardBodyElement = ReactElement<typeof PaperUploadWizardUrlOrDOIBody>;
 
 function getWizardBody({
   currentUserID,
@@ -46,7 +46,7 @@ function getWizardBody({
       );
     case "url_upload":
     default:
-      return <PaperUploadWizardURLBody onExit={onExit} />;
+      return <PaperUploadWizardUrlOrDOIBody onExit={onExit} />;
   }
 }
 

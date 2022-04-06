@@ -95,7 +95,7 @@ function PaperUploadWizardURLBody({
         label={
           <div className={css(styles.inputLabel)}>
             <div>
-              {"Link to Paper"}
+              {"Enter DOI or link to Paper"}
               <span style={{ color: colors.BLUE(1) }}>{" * "}</span>
             </div>
             <div
