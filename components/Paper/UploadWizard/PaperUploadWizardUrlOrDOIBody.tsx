@@ -144,7 +144,7 @@ function PaperUploadWizardURLBody({
         onChange={(value: null | string): void =>
           setFormValues({ ...formValues, urlOrDOI: value ?? "" })
         }
-        placeholder="Paste a url to source"
+        placeholder="url or doi to source"
         required
         value={urlOrDOI}
       />
@@ -152,7 +152,7 @@ function PaperUploadWizardURLBody({
         style={{
           display: "flex",
           justifyContent: "flex-end",
-          padding: "16px 0",
+          padding: "16px 0 0",
           width: "100%",
         }}
       >

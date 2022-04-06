@@ -2,6 +2,7 @@ import { css } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
 import { ReactElement } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
+import colors from "~/config/themes/colors";
 
 type Props = {
   currentStep?: WizardBodyTypes;
@@ -57,15 +58,13 @@ export default function PaperUploadWizardHeader({
         {currentStep !== "url_upload" ? "Add PDF" : "Add Paper"}
         <a
           className={css(formGenericStyles.authorGuidelines)}
+          style={{ color: colors.BLUE(1) }}
           href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
           target="_blank"
           rel="noreferrer noopener"
         >
           {"Submission Guidelines"}
         </a>
-        <div
-          className={css(formGenericStyles.sidenote, formGenericStyles.text)}
-        ></div>
       </div>
     );
   }
