@@ -402,7 +402,6 @@ const Navbar = (props) => {
     props.openWithdrawalModal(true);
     setSideMenu(!sideMenu);
   }
-  console.warn("user.id: ", user.id);
 
   return (
     <Fragment>
