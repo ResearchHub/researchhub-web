@@ -1,19 +1,21 @@
 import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
+import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI";
 import { createPaperSubmissionWithURL } from "./api/createPaperSubmissionWithURL";
 import { css, StyleSheet } from "aphrodite";
+import { isStringDOI } from "~/config/utils/isStringDOI";
+import { isStringURL } from "~/config/utils/isStringURL";
 import { MessageActions } from "~/redux/message";
 import { ModalActions } from "~/redux/modals";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
-import { isString } from "~/config/utils/string";
 import Loader from "~/components/Loader/Loader";
 
 type Props = {
@@ -21,8 +23,8 @@ type Props = {
   modalActions: any /* redux */;
   onExit: () => void;
 };
-type FormErrors = { url: boolean };
-type FormValues = { url: string };
+type FormErrors = { urlOrDOI: boolean };
+type FormValues = { urlOrDOI: string };
 
 function PaperUploadWizardURLBody({
   messageActions,
@@ -32,15 +34,15 @@ function PaperUploadWizardURLBody({
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
 
-  const [formErrors, setFormErrors] = useState<FormErrors>({ url: false });
-  const [formValues, setFormValues] = useState<FormValues>({ url: "" });
+  const [formErrors, setFormErrors] = useState<FormErrors>({ urlOrDOI: false });
+  const [formValues, setFormValues] = useState<FormValues>({ urlOrDOI: "" });
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
-  const { url: urlError } = formErrors;
-  const { url } = formValues;
+  const { urlOrDOI: urlOrDOIError } = formErrors;
+  const { urlOrDOI } = formValues;
   const resetComponent = (): void => {
-    setFormErrors({ url: false });
-    setFormValues({ url: "" });
+    setFormErrors({ urlOrDOI: false });
+    setFormValues({ urlOrDOI: "" });
     setIsSubmitting(false);
   };
 
@@ -51,15 +53,15 @@ function PaperUploadWizardURLBody({
   const onSubmit = async (event: SyntheticEvent): Promise<void> => {
     event.preventDefault();
     event.stopPropagation();
+    const isStringUrl = isStringURL(urlOrDOI);
+    const isStringDoi = isStringDOI(urlOrDOI);
 
-    const newFormErrors = { url: !isString(url) };
-    const hasError = Object.values(newFormErrors).includes(true);
-    setIsSubmitting(true);
-
-    if (hasError) {
-      setFormErrors(newFormErrors);
+    if (!isStringUrl && !isStringDoi) {
+      setFormErrors({ urlOrDOI: true });
       setIsSubmitting(false);
-    } else {
+      return;
+    }
+    if (isStringUrl) {
       await createPaperSubmissionWithURL({
         onError: (error: any): void => {
           const { response } = error;
@@ -83,7 +85,35 @@ function PaperUploadWizardURLBody({
             wizardBodyType: "standby",
           });
         },
-        url,
+        url: urlOrDOI,
+      });
+    } else if (isStringDoi) {
+      createPaperSubmissionWithDOI({
+        onError: (error: any): void => {
+          resetComponent();
+          const { response } = error;
+          switch (response.status) {
+            case 403 /* Duplicate error */:
+              const { data } = response;
+              onExit();
+              modalActions.openUploadPaperModal(true, error.message?.data);
+              break;
+            default:
+              messageActions.setMessage("Please provide valid doi source");
+              messageActions.showMessage({ show: true, error: true });
+              return;
+          }
+        },
+        onSuccess: (result: any) => {
+          // logical ordering
+          resetComponent();
+          setUploaderContextValues({
+            ...uploaderContextValues,
+            submissionID: result?.id,
+            wizardBodyType: "standby",
+          });
+        },
+        doi: urlOrDOI,
       });
     }
   };
@@ -91,7 +121,7 @@ function PaperUploadWizardURLBody({
   return (
     <form onSubmit={onSubmit} style={{ paddingTop: 32 }}>
       <PaperUploadWizardInput
-        error={urlError}
+        error={urlOrDOIError}
         label={
           <div className={css(styles.inputLabel)}>
             <div>
@@ -112,11 +142,11 @@ function PaperUploadWizardURLBody({
           </div>
         }
         onChange={(value: null | string): void =>
-          setFormValues({ ...formValues, url: value ?? "" })
+          setFormValues({ ...formValues, urlOrDOI: value ?? "" })
         }
         placeholder="Paste a url to source"
         required
-        value={url}
+        value={urlOrDOI}
       />
       <div
         style={{

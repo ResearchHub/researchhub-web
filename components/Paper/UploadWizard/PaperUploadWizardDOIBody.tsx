@@ -3,19 +3,17 @@ import { connect } from "react-redux";
 import { createPaperSubmissionWithDOI } from "./api/createPaperSubmissionWithDOI";
 import { css, StyleSheet } from "aphrodite";
 import { MessageActions } from "~/redux/message";
-import { ModalActions } from "~/redux/modals";
-import { SyntheticEvent, useContext, useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
-import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
-import Button from "~/components/Form/Button";
-import colors from "~/config/themes/colors";
-import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
-import { isString } from "~/config/utils/string";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import { isStringDOI } from "~/config/utils/isStringDOI";
+import { ModalActions } from "~/redux/modals";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
+import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
+import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
+import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import Loader from "~/components/Loader/Loader";
 
 type Props = {
@@ -54,7 +52,7 @@ function PaperUploadWizardDOIBody({
     event.preventDefault();
     event.stopPropagation();
 
-    const newFormErrors = { ...formErrors, doi: !isString(doi) };
+    const newFormErrors = { ...formErrors, doi: !isStringDOI(doi) };
     const hasError = Object.values(newFormErrors).includes(true);
     setIsSubmitting(true);
 
