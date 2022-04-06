@@ -72,7 +72,6 @@ class UploadPaperModal extends Component {
    */
   closeModal = (event) => {
     event.stopPropagation();
-    debugger;
     let { modalActions, paperActions } = this.props;
     this.setState({
       ...this.initialState,

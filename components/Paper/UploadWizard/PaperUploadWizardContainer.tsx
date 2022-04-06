@@ -90,8 +90,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     minWidth: "600px",
-    [`@media only screen and (max-width: ${breakpoints.small})`]: {
-      minWidth: "0",
+    [`@media only screen and (max-width: ${breakpoints.mobile})`]: {
+      minWidth: "unset",
       padding: "16px 0 0",
     },
   },
