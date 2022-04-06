@@ -159,7 +159,7 @@ function PaperUploadWizardStandbyBody({
           </div>
           <div className={css(styles.failedBody)}>
             <span>{"Please try again by loading with "}</span>
-            <span
+            <div
               onClick={(): void =>
                 setUploaderContextValues({
                   ...uploaderContextValues,
@@ -169,10 +169,11 @@ function PaperUploadWizardStandbyBody({
               style={{
                 color: colors.BLUE(),
                 cursor: "pointer",
+                margin: "0 4px",
               }}
             >
               {"PDF"}
-            </span>
+            </div>
             <span>{" or "}</span>
             <span
               onClick={(): void =>
@@ -184,9 +185,10 @@ function PaperUploadWizardStandbyBody({
               style={{
                 color: colors.BLUE(),
                 cursor: "pointer",
+                margin: "0 4px",
               }}
             >
-              {"DOI"}
+              {" DOI "}
             </span>
           </div>
         </div>
@@ -234,14 +236,17 @@ const styles = StyleSheet.create({
   },
   failedTitle: {
     color: colors.ERROR_BACKGROUND(),
+    display: "flex",
     fontSize: 16,
     fontWeight: 500,
+    justifyContent: "center",
     width: "100%",
   },
   failedBody: {
+    display: "flex",
     fontSize: 14,
+    justifyContent: "center",
     marginTop: 4,
-    paddingLeft: 44,
     width: "100%",
   },
   loadText: {
