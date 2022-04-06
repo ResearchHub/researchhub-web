@@ -55,7 +55,7 @@ function PaperUploadWizardURLBody({
     event.stopPropagation();
     const isStringUrl = isStringURL(urlOrDOI);
     const isStringDoi = isStringDOI(urlOrDOI);
-
+    debugger;
     if (!isStringUrl && !isStringDoi) {
       setFormErrors({ urlOrDOI: true });
       setIsSubmitting(false);
