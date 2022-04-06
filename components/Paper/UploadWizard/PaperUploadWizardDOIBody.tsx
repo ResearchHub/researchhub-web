@@ -7,7 +7,6 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
-import { isStringDOI } from "~/config/utils/isStringDOI";
 import { ModalActions } from "~/redux/modals";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
@@ -15,6 +14,7 @@ import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import Loader from "~/components/Loader/Loader";
+import { isString } from "~/config/utils/string";
 
 type Props = {
   messageActions: any /* redux */;
@@ -52,12 +52,13 @@ function PaperUploadWizardDOIBody({
     event.preventDefault();
     event.stopPropagation();
 
-    const newFormErrors = { ...formErrors, doi: !isStringDOI(doi) };
+    const newFormErrors = { ...formErrors, doi: !isString(doi) };
     const hasError = Object.values(newFormErrors).includes(true);
     setIsSubmitting(true);
 
     if (hasError) {
       setFormErrors(newFormErrors);
+      setIsSubmitting(false);
     } else {
       createPaperSubmissionWithDOI({
         onError: (error: any): void => {
