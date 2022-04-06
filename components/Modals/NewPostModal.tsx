@@ -5,7 +5,7 @@ import {
   isNullOrUndefined,
   silentEmptyFnc,
 } from "~/config/utils/nullchecks";
-import { ID, NullableString } from "~/config/types/root_types";
+import { NullableString } from "~/config/types/root_types";
 import { MessageActions } from "~/redux/message";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
 import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
@@ -40,10 +40,16 @@ function NewPostModal({
   const router = useRouter();
   const { values: buttonValues, setValues: setButtonValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const { isOpen, paperID } = buttonValues;
-
+  const { isOpen, wizardBodyType } = buttonValues;
   const [selected, setSelected] = useState(0);
-  const [bodyType, setBodyType] = useState<NullableString>(null);
+  const [bodyType, setBodyType] = useState<NullableString>(
+    Boolean(wizardBodyType) ? "paperWizard" : null
+  );
+
+  useEffect(
+    (): void => setBodyType(Boolean(wizardBodyType) ? "paperWizard" : null),
+    [wizardBodyType]
+  );
 
   const closeModal = (event?: SyntheticEvent): void => {
     event && event.preventDefault();

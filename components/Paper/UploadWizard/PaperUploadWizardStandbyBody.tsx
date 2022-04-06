@@ -145,51 +145,49 @@ function PaperUploadWizardStandbyBody({
           )}
         </div>
       ) : (
-        <div className={css(styles.wizardStandbyBox)}>
-          <div className={css(styles.failedBox)}>
-            <div className={css(styles.failedTitle)}>
-              <span
-                style={{
-                  marginRight: 6,
-                  color: colors.RED(1),
-                }}
-              >
-                {icons.exclamationCircle}
-              </span>
-              {"We weren't able to import source:"}
-            </div>
-            <div className={css(styles.failedBody)}>
-              <span>{"Please try again by loading with "}</span>
-              <span
-                onClick={(): void =>
-                  setUploaderContextValues({
-                    ...uploaderContextValues,
-                    wizardBodyType: "pdf_upload",
-                  })
-                }
-                style={{
-                  color: colors.BLUE(),
-                  cursor: "pointer",
-                }}
-              >
-                {"PDF"}
-              </span>
-              <span>{" or "}</span>
-              <span
-                onClick={(): void =>
-                  setUploaderContextValues({
-                    ...uploaderContextValues,
-                    wizardBodyType: "doi_upload",
-                  })
-                }
-                style={{
-                  color: colors.BLUE(),
-                  cursor: "pointer",
-                }}
-              >
-                {"DOI"}
-              </span>
-            </div>
+        <div className={css(styles.wizardStandbyFailBox)}>
+          <div className={css(styles.failedTitle)}>
+            <span
+              style={{
+                marginRight: 6,
+                color: colors.RED(1),
+              }}
+            >
+              {icons.exclamationCircle}
+            </span>
+            {"We weren't able to import your paper"}
+          </div>
+          <div className={css(styles.failedBody)}>
+            <span>{"Please try again by loading with "}</span>
+            <span
+              onClick={(): void =>
+                setUploaderContextValues({
+                  ...uploaderContextValues,
+                  wizardBodyType: "pdf_upload",
+                })
+              }
+              style={{
+                color: colors.BLUE(),
+                cursor: "pointer",
+              }}
+            >
+              {"PDF"}
+            </span>
+            <span>{" or "}</span>
+            <span
+              onClick={(): void =>
+                setUploaderContextValues({
+                  ...uploaderContextValues,
+                  wizardBodyType: "doi_upload",
+                })
+              }
+              style={{
+                color: colors.BLUE(),
+                cursor: "pointer",
+              }}
+            >
+              {"DOI"}
+            </span>
           </div>
         </div>
       )}
@@ -221,7 +219,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 16,
   },
-  failedBox: {
+  wizardStandbyFailBox: {
     alignItems: "center",
     background: colors.ERROR_BACKGROUND(0.1),
     borderRadius: 3,

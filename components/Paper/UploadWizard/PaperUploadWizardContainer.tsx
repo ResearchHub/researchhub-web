@@ -44,7 +44,7 @@ function getWizardBody({
           wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
         />
       );
-    case "url_upload":
+    case "url_or_doi_upload":
     default:
       return <PaperUploadWizardUrlOrDOIBody onExit={onExit} />;
   }
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     minWidth: "600px",
-    [`@media only screen and (max-width: ${breakpoints.mobile})`]: {
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       minWidth: "unset",
       padding: "16px 0 0",
     },
