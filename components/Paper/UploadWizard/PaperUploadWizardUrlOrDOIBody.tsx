@@ -17,7 +17,6 @@ import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import PaperUploadWizardInput from "./shared/PaperUploadWizardInput";
 import Loader from "~/components/Loader/Loader";
-import { isString } from "~/config/utils/string";
 
 type Props = {
   messageActions: any /* redux */;
@@ -73,7 +72,7 @@ function PaperUploadWizardURLBody({
               modalActions.openUploadPaperModal(true, error.message?.data);
               break;
             default:
-              messageActions.setMessage("Please provide valid URL source");
+              messageActions.setMessage("Please provide valid DOI / URL source");
               messageActions.showMessage({ show: true, error: true });
               return;
           }
@@ -101,7 +100,7 @@ function PaperUploadWizardURLBody({
               modalActions.openUploadPaperModal(true, error.message?.data);
               break;
             default:
-              messageActions.setMessage("Please provide valid doi source");
+              messageActions.setMessage("Please provide valid DOI / URL source");
               messageActions.showMessage({ show: true, error: true });
               return;
           }
