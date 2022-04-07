@@ -1,7 +1,8 @@
+import { isEmpty } from "./nullchecks";
 import { isString } from "./string";
 
 export const isStringDOI = (str: string | null): boolean => {
-  if (!isString(str)) {
+  if (!isString(str) || isEmpty(str)) {
     return false;
   }
   // TODO: calvinhlee - improve this
