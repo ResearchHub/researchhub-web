@@ -1,8 +1,9 @@
-import { css } from "aphrodite";
+import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
 import { ReactElement } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   currentStep?: WizardBodyTypes;
@@ -26,24 +27,10 @@ export default function PaperUploadWizardHeader({
           style={{ width: 60, marginBottom: 16 }}
           src="/static/icons/check.svg"
         />
-        <div
-          style={{
-            fontSize: 26,
-            fontWeight: 500,
-            marginBottom: 26,
-          }}
-        >
+        <div className={css(styles.title)}>
           {"Your paper was imported successfully."}
         </div>
-        <div
-          style={{
-            fontSize: 18,
-            fontWeight: 500,
-            marginBottom: 18,
-          }}
-        >
-          {"Please add some metadata"}
-        </div>
+        <div className={css(styles.subTitle)}>{"Please add some metadata"}</div>
       </div>
     );
   } else {
@@ -69,3 +56,24 @@ export default function PaperUploadWizardHeader({
     );
   }
 }
+
+const styles = StyleSheet.create({
+  title: {
+    fontSize: 26,
+    fontWeight: 500,
+    marginBottom: 26,
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      fontSize: 20,
+      marginBottom:18
+    },
+  },
+  subTitle: {
+    fontSize: 18,
+    fontWeight: 500,
+    marginBottom: 18,
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      fontSize: 16,
+      marginBottom: 8,
+    },
+  },
+});

@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     minWidth: "600px",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       minWidth: "unset",
-      padding: "16px 0 0",
+      padding: "16px",
     },
   },
   bodyWrap: {},
