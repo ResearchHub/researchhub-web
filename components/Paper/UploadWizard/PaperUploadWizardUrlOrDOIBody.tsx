@@ -94,7 +94,7 @@ function PaperUploadWizardURLBody({
         onError: (error: any): void => {
           resetComponent();
           const { response } = error;
-          switch (response.status) {
+          switch (response?.status) {
             case 403 /* Duplicate error */:
               const { data } = response;
               onExit();
