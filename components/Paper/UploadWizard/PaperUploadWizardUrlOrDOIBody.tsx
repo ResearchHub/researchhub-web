@@ -65,6 +65,7 @@ function PaperUploadWizardURLBody({
     if (isStringUrl) {
       await createPaperSubmissionWithURL({
         onError: (error: any): void => {
+          resetComponent();
           const { response } = error;
           switch (response?.status) {
             case 403 /* Duplicate error */:
