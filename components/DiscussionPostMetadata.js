@@ -245,7 +245,6 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
-  console.log(router);
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
