@@ -230,22 +230,26 @@ function FeedCard(props: FeedCardProps) {
             <div>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.postCreatedBy)}>
-                  <LazyLoad offset={100} once>
-                    <AuthorAvatar
-                      author={
-                        created_by?.author_profile ||
-                        uploaded_by?.author_profile
-                      }
-                      boldName
-                      border="2px solid #F1F1F1"
-                      fontSize={15}
-                      size={20}
-                      spacing={5}
-                      withAuthorName
-                    />
-                  </LazyLoad>
-                  <div className={css(styles.textLabel)}>in</div>
-                  {hubs.slice(0, 1).map((tag, index) => (
+                  {uploaded_by || created_by ? (
+                    <LazyLoad offset={100} once>
+                      <AuthorAvatar
+                        author={
+                          created_by?.author_profile ||
+                          uploaded_by?.author_profile
+                        }
+                        boldName
+                        border="2px solid #F1F1F1"
+                        fontSize={15}
+                        size={20}
+                        spacing={5}
+                        withAuthorName
+                      />
+                    </LazyLoad>
+                  ) : null}
+                  {(uploaded_by || created_by) && hubs && (
+                    <div className={css(styles.textLabel)}>in</div>
+                  )}
+                  {hubs?.slice(0, 1).map((tag, index) => (
                     <Link href={`/hubs/${tag.slug}`}>
                       <a
                         className={css(styles.hubLabel)}
@@ -255,7 +259,7 @@ function FeedCard(props: FeedCardProps) {
                       >{`${tag.name}${hubs.length > 1 ? "," : ""}`}</a>
                     </Link>
                   ))}
-                  {hubs.length > 1 && (
+                  {hubs?.length > 1 && (
                     <HubDropDown
                       hubs={hubs}
                       labelStyle={styles.hubLabel}

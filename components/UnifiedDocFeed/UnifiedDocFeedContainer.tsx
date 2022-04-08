@@ -80,10 +80,9 @@ function UnifiedDocFeedContainer({
   }, []);
 
   useEffectUpdateStatesOnServerChanges({
-    setUnifiedDocuments,
-    setPaginationInfo,
     routePath: routerPathName,
     serverLoadedData,
+    setPaginationInfo,
   });
 
   const firstLoad = useRef(!isServer() && !unifiedDocuments.length);

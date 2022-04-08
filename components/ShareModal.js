@@ -9,11 +9,14 @@ import colors from "~/config/themes/colors";
 import dynamic from "next/dynamic";
 const BaseModal = dynamic(() => import("~/components/Modals/BaseModal"));
 
-const ShareModal = (props) => {
-  const { close, isOpen, title, subtitle, url } = props;
+const ShareModal = ({ isOpen, setIsOpen, title, url }) => {
   // const [formInputRef, setFormInputRef] = useState();
   const [copySuccessMessage, setCopySuccessMessage] = useState(null);
   const formInputRef = useRef();
+
+  function closeShareModal() {
+    setIsOpen(false);
+  }
 
   function copyToClipboard() {
     formInputRef.current.select();
@@ -23,7 +26,7 @@ const ShareModal = (props) => {
   }
 
   return (
-    <BaseModal isOpen={isOpen} closeModal={close} title={title}>
+    <BaseModal isOpen={isOpen} closeModal={closeShareModal} title={title}>
       <FormInput
         getRef={formInputRef}
         inlineNodeRight={<CopyLink onClick={copyToClipboard} />}
