@@ -36,7 +36,7 @@ export default function PaperUploadWizardHeader({
           src="/static/icons/check.svg"
         />
         <div className={css(styles.title)}>
-          {"Your paper was imported successfully."}
+          {"Your paper was uploaded successfully."}
         </div>
       </div>
     );
