@@ -92,10 +92,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderBottom: `1px solid ${colors.GREY_BORDER}`,
     display: "flex",
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 500,
     justifyContent: "space-between",
     paddingBottom: 8,
+    paddingTop: 20,
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 18,
