@@ -208,6 +208,28 @@ function PaperUploadWizardPDFUpload({
           </Dropzone>
         </Ripples>
       )}
+      <FormSelect
+        containerStyle={formGenericStyles.container}
+        disabled={isSubmitting}
+        id="hubs"
+        isMulti
+        label={
+          <div>
+            {"Hubs"}
+            <span style={{ color: colors.BLUE(1) }}>{"* "}</span>
+          </div>
+        }
+        inputStyle={
+          (customStyles.input,
+          selectedHubs.length > 0 && customStyles.capitalize)
+        }
+        labelStyle={formGenericStyles.labelStyle}
+        onChange={handleHubSelection}
+        options={suggestedHubs}
+        placeholder="Search Hubs"
+        required
+        value={selectedHubs}
+      />
       <FormInput
         containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
@@ -233,28 +255,6 @@ function PaperUploadWizardPDFUpload({
         placeholder="DOI"
         required
         value={doi}
-      />
-      <FormSelect
-        containerStyle={formGenericStyles.container}
-        disabled={isSubmitting}
-        id="hubs"
-        isMulti
-        label={
-          <div>
-            {"Hubs"}
-            <span style={{ color: colors.BLUE(1) }}>{"* "}</span>
-          </div>
-        }
-        inputStyle={
-          (customStyles.input,
-          selectedHubs.length > 0 && customStyles.capitalize)
-        }
-        labelStyle={formGenericStyles.labelStyle}
-        onChange={handleHubSelection}
-        options={suggestedHubs}
-        placeholder="Search Hubs"
-        required
-        value={selectedHubs}
       />
       <div
         style={{
