@@ -245,6 +245,7 @@ const DiscussionPostMetadata = (props) => {
     }
   };
 
+  console.log(router);
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
@@ -252,7 +253,7 @@ const DiscussionPostMetadata = (props) => {
         isOpen={shareModalIsOpen}
         setIsOpen={setShareModalIsOpen}
         title={"Share this discussion"}
-        url={window.location.href + "#comments"}
+        url={`${process.env.HOST}${router.asPath}#comments`}
       />
       <AuthorAvatar
         author={authorProfile}
