@@ -49,14 +49,12 @@ export const getPaginationInfoFromServerLoaded = (
 };
 
 export const useEffectUpdateStatesOnServerChanges = ({
-  setPaginationInfo,
-  setUnifiedDocuments,
-  serverLoadedData,
   routePath,
+  serverLoadedData,
+  setPaginationInfo,
 }): void => {
   useEffect((): void => {
     setPaginationInfo(getPaginationInfoFromServerLoaded(serverLoadedData));
-    setUnifiedDocuments(serverLoadedData?.results || []);
   }, [routePath, serverLoadedData]);
 };
 
