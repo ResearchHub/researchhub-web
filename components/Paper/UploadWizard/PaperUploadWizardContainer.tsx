@@ -28,26 +28,26 @@ function getWizardBody({
   currentStep: WizardBodyTypes;
   onExit: () => void;
 }): WizardBodyElement {
-  switch (currentStep) {
-    case "doi_upload":
-      return <PaperUploadWizardDOIBody onExit={onExit} />;
-    case "pdf_upload":
-      return <PaperUploadWizardPDFUpload onExit={onExit} />;
-    case "posted_paper_update":
+  // switch (currentStep) {
+    // case "doi_upload":
+    //   return <PaperUploadWizardDOIBody onExit={onExit} />;
+    // case "pdf_upload":
+    //   return <PaperUploadWizardPDFUpload onExit={onExit} />;
+    // case "posted_paper_update":
       return <PaperUploadWizardUpdatePaper onExit={onExit} />;
-    case "standby":
-      return (
-        // @ts-ignore legacy socket hook
-        <PaperUploadWizardStandbyBody
-          onExit={onExit}
-          wsAuth
-          wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
-        />
-      );
-    case "url_or_doi_upload":
-    default:
-      return <PaperUploadWizardUrlOrDOIBody onExit={onExit} />;
-  }
+    // case "standby":
+    //   return (
+    //     // @ts-ignore legacy socket hook
+    //     <PaperUploadWizardStandbyBody
+    //       onExit={onExit}
+    //       wsAuth
+    //       wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
+    //     />
+    //   );
+    // case "url_or_doi_upload":
+    // default:
+    //   return <PaperUploadWizardUrlOrDOIBody onExit={onExit} />;
+  // }
 }
 
 function PaperUploadWizardContainer({

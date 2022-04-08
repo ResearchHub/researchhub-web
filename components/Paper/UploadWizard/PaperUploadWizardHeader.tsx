@@ -20,7 +20,7 @@ export default function PaperUploadWizardHeader({
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
 
-  if (currentStep === "posted_paper_update") {
+  // if (currentStep === "posted_paper_update") {
     return (
       <div
         style={{
@@ -41,50 +41,50 @@ export default function PaperUploadWizardHeader({
         <div className={css(styles.subTitle)}>{"Please add some metadata"}</div>
       </div>
     );
-  } else {
-    return (
-      <div className={css(formGenericStyles.text, styles.header)}>
-        {currentStep === "pdf_upload" ? (
-          <div
-            style={{
-              alignItems: "center",
-              display: "flex",
-            }}
-          >
-            <span
-              style={{
-                color: colors.TEXT_GREY(1),
-                cursor: "pointer",
-                fontSize: 16,
-                marginRight: 8,
-              }}
-              onClick={(event: SyntheticEvent): void => {
-                event.preventDefault();
-                setUploaderContextValues({
-                  ...uploaderContextValues,
-                  wizardBodyType: "url_or_doi_upload",
-                });
-              }}
-            >
-              {icons.longArrowLeft}
-            </span>
-            {" Add PDF "}
-          </div>
-        ) : (
-          "Add Paper"
-        )}
-        <a
-          className={css(formGenericStyles.authorGuidelines)}
-          style={{ color: colors.BLUE(1) }}
-          href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
-          target="_blank"
-          rel="noreferrer noopener"
-        >
-          {"Submission Guidelines"}
-        </a>
-      </div>
-    );
-  }
+  // } else {
+  //   return (
+  //     <div className={css(formGenericStyles.text, styles.header)}>
+  //       {currentStep === "pdf_upload" ? (
+  //         <div
+  //           style={{
+  //             alignItems: "center",
+  //             display: "flex",
+  //           }}
+  //         >
+  //           <span
+  //             style={{
+  //               color: colors.TEXT_GREY(1),
+  //               cursor: "pointer",
+  //               fontSize: 16,
+  //               marginRight: 8,
+  //             }}
+  //             onClick={(event: SyntheticEvent): void => {
+  //               event.preventDefault();
+  //               setUploaderContextValues({
+  //                 ...uploaderContextValues,
+  //                 wizardBodyType: "url_or_doi_upload",
+  //               });
+  //             }}
+  //           >
+  //             {icons.longArrowLeft}
+  //           </span>
+  //           {" Add PDF "}
+  //         </div>
+  //       ) : (
+  //         "Add Paper"
+  //       )}
+  //       <a
+  //         className={css(formGenericStyles.authorGuidelines)}
+  //         style={{ color: colors.BLUE(1) }}
+  //         href="https://www.notion.so/researchhub/Paper-Submission-Guidelines-a2cfa1d9b53c431a91c9816e17f212e1"
+  //         target="_blank"
+  //         rel="noreferrer noopener"
+  //       >
+  //         {"Submission Guidelines"}
+  //       </a>
+  //     </div>
+  //   );
+  // }
 }
 
 const styles = StyleSheet.create({
@@ -103,11 +103,12 @@ const styles = StyleSheet.create({
     },
   },
   title: {
+    display: "flex", 
     fontSize: 26,
     fontWeight: 500,
     marginBottom: 26,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
-      fontSize: 20,
+      fontSize: 18,
       marginBottom: 18,
     },
   },
