@@ -200,7 +200,7 @@ function FeedCard(props: FeedCardProps) {
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
-      onClick={props.handleClick && props.handleClick}
+      onClick={props?.handleClick}
     >
       <Link href={`/${formattedDocType}/${id}/${slug}`}>
         <a className={css(styles.feedCard)}>
