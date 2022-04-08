@@ -1,9 +1,14 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
-import { ReactElement } from "react";
+import { ReactElement, SyntheticEvent, useContext } from "react";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
-import { breakpoints } from "~/config/themes/screen";
+import icons from "~/config/themes/icons";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 type Props = {
   currentStep?: WizardBodyTypes;
@@ -12,6 +17,9 @@ type Props = {
 export default function PaperUploadWizardHeader({
   currentStep,
 }: Props): ReactElement<"div"> | null {
+  const { values: uploaderContextValues, setValues: setUploaderContextValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+
   if (currentStep === "posted_paper_update") {
     return (
       <div
@@ -42,7 +50,25 @@ export default function PaperUploadWizardHeader({
             "16px !important" /* overrides default header padding */,
         }}
       >
-        {currentStep !== "url_or_doi_upload" ? "Add PDF" : "Add Paper"}
+        {currentStep !== "url_or_doi_upload" ? (
+          <div>
+            <span
+              style={{ color: colors.TEXT_GREY(1), cursor: "pointer" }}
+              onClick={(event: SyntheticEvent): void => {
+                event.preventDefault();
+                setUploaderContextValues({
+                  ...uploaderContextValues,
+                  wizardBodyType: "url_or_doi_upload",
+                });
+              }}
+            >
+              {icons.longArrowLeft}
+            </span>
+            {" Add PDF "}
+          </div>
+        ) : (
+          "Add Paper"
+        )}
         <a
           className={css(formGenericStyles.authorGuidelines)}
           style={{ color: colors.BLUE(1) }}
@@ -64,7 +90,7 @@ const styles = StyleSheet.create({
     marginBottom: 26,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 20,
-      marginBottom:18
+      marginBottom: 18,
     },
   },
   subTitle: {
