@@ -85,11 +85,10 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
-    padding: "32px 0",
-    width: "100%",
     height: "100%",
+    justifyContent: "center",
     minWidth: "600px",
+    width: "100%",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       minWidth: "unset",
       padding: "16px",

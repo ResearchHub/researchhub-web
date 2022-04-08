@@ -46,16 +46,17 @@ export default function PaperUploadWizardInput({
 const styles = StyleSheet.create({
   paperUploadWizardInput: { boxSizing: "border-box" },
   input: {
+    background: colors.INPUT_BACKGROUND_GREY,
     border: `1px solid ${colors.LIGHT_GREY_BORDER}`,
     borderRadius: 3,
     boxSizing: "border-box",
+    color: "#232038",
     fontSize: 16,
     fontWeight: 400,
     height: 52,
     padding: "0 80px 0 16px",
     width: "100%",
     ":focus": { outline: "none" },
-    color: "#232038",
   },
   inputError: {
     border: `1px solid ${colors.RED(1)}`,
