@@ -72,7 +72,9 @@ function PaperUploadWizardURLBody({
               modalActions.openUploadPaperModal(true, error.message?.data);
               break;
             default:
-              messageActions.setMessage("Please provide valid DOI / URL source");
+              messageActions.setMessage(
+                "Please provide valid DOI / URL source"
+              );
               messageActions.showMessage({ show: true, error: true });
               return;
           }
@@ -100,7 +102,9 @@ function PaperUploadWizardURLBody({
               modalActions.openUploadPaperModal(true, error.message?.data);
               break;
             default:
-              messageActions.setMessage("Please provide valid DOI / URL source");
+              messageActions.setMessage(
+                "Please provide valid DOI / URL source"
+              );
               messageActions.showMessage({ show: true, error: true });
               return;
           }
@@ -181,7 +185,7 @@ function PaperUploadWizardURLBody({
           disabled={isSubmitting}
           key="upload-wizard-button"
           label={
-            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Import"
+            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Upload"
           }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"

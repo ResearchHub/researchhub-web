@@ -43,18 +43,7 @@ export default function PaperUploadWizardHeader({
     );
   } else {
     return (
-      <div
-        className={css(formGenericStyles.header, formGenericStyles.text)}
-        style={{
-          /* overrides default header padding */
-          paddingBottom: "16px !important",
-          [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
-            paddingLeft: "0 !important",
-            paddingRight: "0 !important",
-            padding: "unset !important",
-          },
-        }}
-      >
+      <div className={css(formGenericStyles.text, styles.header)}>
         {currentStep === "pdf_upload" ? (
           <div
             style={{
@@ -99,6 +88,19 @@ export default function PaperUploadWizardHeader({
 }
 
 const styles = StyleSheet.create({
+  header: {
+    alignItems: "center",
+    borderBottom: `1px solid ${colors.GREY_BORDER}`,
+    display: "flex",
+    fontSize: 24,
+    fontWeight: 500,
+    justifyContent: "space-between",
+    paddingBottom: 8,
+    width: "100%",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      fontSize: 18,
+    },
+  },
   title: {
     fontSize: 26,
     fontWeight: 500,

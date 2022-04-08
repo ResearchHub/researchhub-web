@@ -116,7 +116,6 @@ function PaperUploadWizardDOIBody({
         onChange={(value: null | string): void =>
           setFormValues({ ...formValues, doi: value ?? "" })
         }
-        placeholder="Paste a doi to source"
         required
         value={doi}
       />
@@ -155,7 +154,7 @@ function PaperUploadWizardDOIBody({
           disabled={isSubmitting}
           key="upload-wizard-button"
           label={
-            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Import"
+            isSubmitting ? <Loader size={8} loading color="#fff" /> : "Upload"
           }
           rippleClass={verifStyles.rippleClass}
           size="xxsmall"
