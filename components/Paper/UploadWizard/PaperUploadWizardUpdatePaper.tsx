@@ -20,6 +20,7 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import colors from "~/config/themes/colors";
 
 export type FormErrors = {
   paperID: boolean;
@@ -142,7 +143,12 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
         error={formErrors.selectedHubs}
         id="hubs"
         isMulti
-        label="Hubs"
+        label={
+          <div>
+            <span>{"Hubs"}</span>
+            <span style={{ color: colors.BLUE(1) }}>{"*"}</span>
+          </div>
+        }
         inputStyle={
           (customStyles.input,
           selectedHubs.length > 0 && customStyles.capitalize)
@@ -159,7 +165,8 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
           containerStyle={formGenericStyles.container}
           disabled={isSubmitting}
           id="doi"
-          label="DOI (optional)"
+          label="DOI"
+          required
           labelStyle={formGenericStyles.labelStyle}
           onChange={(_id: ID, doi: string): void =>
             setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
