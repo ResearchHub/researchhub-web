@@ -56,9 +56,19 @@ export default function PaperUploadWizardHeader({
         }}
       >
         {currentStep === "pdf_upload" ? (
-          <div>
+          <div
+            style={{
+              alignItems: "center",
+              display: "flex",
+            }}
+          >
             <span
-              style={{ color: colors.TEXT_GREY(1), cursor: "pointer" }}
+              style={{
+                color: colors.TEXT_GREY(1),
+                cursor: "pointer",
+                fontSize: 16,
+                marginRight: 8,
+              }}
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
                 setUploaderContextValues({
