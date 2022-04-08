@@ -196,20 +196,6 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
         }}
       >
         <Button
-          customButtonStyle={verifStyles.buttonSecondary}
-          isWhite
-          key="upload-wizard-cancel"
-          label="Skip"
-          rippleClass={verifStyles.rippleClass}
-          size="xxsmall"
-          type="button"
-          onClick={(event: SyntheticEvent): void => {
-            event.preventDefault();
-            router.push(`/paper/${paperID}/new-upload`);
-            onExit();
-          }}
-        />
-        <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
           disabled={isSubmitting}
           key="upload-wizard-button"

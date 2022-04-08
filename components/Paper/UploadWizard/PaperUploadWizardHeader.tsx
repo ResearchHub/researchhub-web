@@ -38,7 +38,6 @@ export default function PaperUploadWizardHeader({
         <div className={css(styles.title)}>
           {"Your paper was imported successfully."}
         </div>
-        <div className={css(styles.subTitle)}>{"Please add some metadata"}</div>
       </div>
     );
   } else {
@@ -106,10 +105,10 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 26,
     fontWeight: 500,
-    marginBottom: 26,
+    marginBottom: 16,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 18,
-      marginBottom: 18,
+      marginBottom: 8,
     },
   },
   subTitle: {
