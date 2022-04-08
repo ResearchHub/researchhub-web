@@ -46,11 +46,16 @@ export default function PaperUploadWizardHeader({
       <div
         className={css(formGenericStyles.header, formGenericStyles.text)}
         style={{
-          paddingBottom:
-            "16px !important" /* overrides default header padding */,
+          /* overrides default header padding */
+          paddingBottom: "16px !important",
+          [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+            paddingLeft: "0 !important",
+            paddingRight: "0 !important",
+            padding: "unset !important",
+          },
         }}
       >
-        {currentStep !== "url_or_doi_upload" ? (
+        {currentStep === "pdf_upload" ? (
           <div>
             <span
               style={{ color: colors.TEXT_GREY(1), cursor: "pointer" }}

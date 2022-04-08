@@ -55,12 +55,20 @@ const styles = StyleSheet.create({
     padding: "0 80px 0 16px",
     width: "100%",
     ":focus": { outline: "none" },
+    color: "#232038",
   },
   inputError: {
     border: `1px solid ${colors.RED(1)}`,
   },
   inputWrap: { boxSizing: "border-box", position: "relative", width: "100%" },
-  label: { fontWeight: 500, fontSize: 18, paddingBottom: 8 },
+  label: {
+    fontWeight: 500,
+    fontSize: 18,
+    paddingBottom: 8,
+    "@media only screen and (max-width: 665px)": {
+      fontSize: 14,
+    },
+  },
   valueLengthIndicator: {
     color: colors.LIGHT_GREY_TEXT,
     fontSize: 16,
