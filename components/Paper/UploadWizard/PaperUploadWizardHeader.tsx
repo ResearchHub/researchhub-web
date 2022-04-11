@@ -56,12 +56,7 @@ export default function PaperUploadWizardHeader({
             }}
           >
             <span
-              style={{
-                color: colors.BLUE(1),
-                cursor: "pointer",
-                fontSize: 18,
-                marginRight: 8,
-              }}
+              className={css(styles.back)}
               onClick={(event: SyntheticEvent): void => {
                 event.preventDefault();
                 setUploaderContextValues({
@@ -72,7 +67,7 @@ export default function PaperUploadWizardHeader({
             >
               {icons.longArrowLeft}
             </span>
-            {" Add PDF "}
+            {"Upload PDF"}
           </div>
         ) : (
           "Upload Paper"
@@ -107,13 +102,25 @@ const styles = StyleSheet.create({
       fontSize: 18,
     },
   },
+  back: {
+    color: colors.BLUE(1),
+    cursor: "pointer",
+    fontSize: 18,
+    marginRight: 8,
+    position: "absolute",
+    left: 0,
+    top: -12,
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      top: -28,
+    },
+  },
   close: {
     cursor: "pointer",
     fontSize: 18,
     position: "absolute",
     right: 0,
     top: -12,
-    opacity: .4,
+    opacity: 0.4,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 20,
       top: -32,
