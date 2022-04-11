@@ -1,14 +1,14 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
-import { ReactElement, SyntheticEvent, useContext } from "react";
-import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
-import colors from "~/config/themes/colors";
-import icons from "~/config/themes/icons";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import { ReactElement, SyntheticEvent, useContext } from "react";
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
+import colors from "~/config/themes/colors";
+import icons from "~/config/themes/icons";
 
 type Props = {
   currentStep?: WizardBodyTypes;

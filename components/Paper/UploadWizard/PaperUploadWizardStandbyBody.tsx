@@ -2,16 +2,16 @@ import { bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { ModalActions } from "~/redux/modals";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 import { nullthrows } from "~/config/utils/nullchecks";
 import { useContext, useEffect, useState } from "react";
 import colors from "~/config/themes/colors";
 import ProgressBar from "@ramonak/react-progress-bar";
 import withWebSocket from "~/components/withWebSocket";
 import icons from "~/config/themes/icons";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
 
 type Props = {
   modalActions: any /* redux */;

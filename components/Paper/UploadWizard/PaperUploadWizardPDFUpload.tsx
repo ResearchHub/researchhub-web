@@ -14,6 +14,7 @@ import {
   nullthrows,
 } from "~/config/utils/nullchecks";
 import { MessageActions } from "~/redux/message";
+import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
 import { uploadNewPaper } from "../Upload/api/uploadNewPaper";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
@@ -27,8 +28,6 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData.js";
 import Ripples from "react-ripples";
-import error from "next/error";
-import { ModalActions } from "~/redux/modals";
 
 type Props = {
   modalReduxActions?: any;
