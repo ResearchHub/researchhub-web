@@ -30,7 +30,7 @@ export async function uploadNewPaper({
         ? payloadTitle
         : payloadPaperTitle,
   };
-  const response = await paperActions.postPaper(formattedPayload);
+  const response = await paperActions.postPaper(formattedPayload, );
   const { payload: resPayload } = response;
   if (resPayload.success) {
     const { postedPaper } = resPayload;

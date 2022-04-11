@@ -202,7 +202,7 @@ function FeedCard(props: FeedCardProps) {
       key={`${formattedDocType}-${id}`}
       onClick={props?.handleClick}
     >
-      <Link href={`/${formattedDocType}/${id}/${slug}`}>
+      <Link href={`/${formattedDocType}/${id}/${slug ?? 'new-paper'}`}>
         <a className={css(styles.feedCard)}>
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
@@ -376,6 +376,7 @@ function FeedCard(props: FeedCardProps) {
 const styles = StyleSheet.create({
   ripples: {
     display: "flex",
+    width: "100%",
   },
   feedCard: {
     alignItems: "flex-start",
