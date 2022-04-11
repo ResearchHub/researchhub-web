@@ -8,7 +8,7 @@ export type NewPostButtonContextValues = {
   isWithDOI?: boolean;
   paperID?: ID;
   submissionID?: ID;
-  wizardBodyType: WizardBodyTypes;
+  wizardBodyType: WizardBodyTypes | null;
 };
 
 export type NewPostButtonContextType = {
@@ -22,7 +22,7 @@ export const DEFAULT_POST_BUTTON_VALUES: NewPostButtonContextValues = {
   isWithDOI: false,
   paperID: undefined,
   submissionID: undefined,
-  wizardBodyType: "url_or_doi_upload",
+  wizardBodyType: null,
 };
 
 export const NewPostButtonContext = createContext<NewPostButtonContextType>({
