@@ -55,7 +55,7 @@ function NewPostModal({
     event && event.preventDefault();
     setSelected(0);
     setBodyType(null);
-    setButtonValues(DEFAULT_POST_BUTTON_VALUES);
+    setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
   };
 
   const handleContinue = (event?: SyntheticEvent): void => {

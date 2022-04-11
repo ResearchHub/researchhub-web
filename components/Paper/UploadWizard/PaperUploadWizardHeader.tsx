@@ -12,10 +12,12 @@ import {
 
 type Props = {
   currentStep?: WizardBodyTypes;
+  onExit?: () => void;
 };
 
 export default function PaperUploadWizardHeader({
   currentStep,
+  onExit,
 }: Props): ReactElement<"div"> | null {
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
@@ -43,6 +45,9 @@ export default function PaperUploadWizardHeader({
   } else {
     return (
       <div className={css(formGenericStyles.text, styles.header)}>
+        <span className={css(styles.close)} onClick={onExit}>
+          {icons.times}
+        </span>
         {currentStep === "pdf_upload" ? (
           <div
             style={{
@@ -96,9 +101,22 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingBottom: 8,
     paddingTop: 20,
+    position: "relative",
     width: "100%",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 18,
+    },
+  },
+  close: {
+    cursor: "pointer",
+    fontSize: 18,
+    position: "absolute",
+    right: 0,
+    top: -12,
+    opacity: .4,
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      fontSize: 20,
+      top: -32,
     },
   },
   title: {

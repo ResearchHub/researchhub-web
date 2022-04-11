@@ -15,6 +15,7 @@ import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardUrlOrDOIBody from "./PaperUploadWizardUrlOrDOIBody";
 import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
 import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
+import { nullthrows } from "~/config/utils/nullchecks";
 
 type Props = { user: any; /* redux */ onExit: () => void };
 type WizardBodyElement = ReactElement<typeof PaperUploadWizardUrlOrDOIBody>;
@@ -59,14 +60,23 @@ function PaperUploadWizardContainer({
   } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const wizardBody = getWizardBody({
     currentUserID: user?.id,
-    currentStep: wizardBodyType,
+    currentStep: nullthrows(
+      wizardBodyType,
+      `Unrecognized wizardBodyType: ${wizardBodyType}`
+    ),
     onExit,
   });
 
   return (
     <div className={css(styles.paperUploadWizardContainer)}>
       <div className={css(styles.contentWrap)}>
-        <PaperUploadWizardHeader currentStep={wizardBodyType} />
+        <PaperUploadWizardHeader
+          currentStep={nullthrows(
+            wizardBodyType,
+            `Unrecognized wizardBodyType: ${wizardBodyType}`
+          )}
+          onExit={onExit}
+        />
         <div className={css(styles.bodyWrap)}>{wizardBody}</div>
       </div>
     </div>
