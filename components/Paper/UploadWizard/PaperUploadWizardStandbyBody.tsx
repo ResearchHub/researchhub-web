@@ -159,6 +159,22 @@ function PaperUploadWizardStandbyBody({
           </div>
           <div className={css(styles.failedBody)}>
             <span>{"Please try again by loading with "}</span>
+            <span
+              onClick={(): void =>
+                setUploaderContextValues({
+                  ...uploaderContextValues,
+                  wizardBodyType: "url_or_doi_upload",
+                })
+              }
+              style={{
+                color: colors.BLUE(),
+                cursor: "pointer",
+                margin: "0 0 0 4px",
+              }}
+            >
+              {" another link"}
+            </span>
+            <span>{", "}</span>
             <div
               onClick={(): void =>
                 setUploaderContextValues({

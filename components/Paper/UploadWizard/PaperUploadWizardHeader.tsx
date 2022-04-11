@@ -57,9 +57,9 @@ export default function PaperUploadWizardHeader({
           >
             <span
               style={{
-                color: colors.TEXT_GREY(1),
+                color: colors.BLUE(1),
                 cursor: "pointer",
-                fontSize: 16,
+                fontSize: 18,
                 marginRight: 8,
               }}
               onClick={(event: SyntheticEvent): void => {
