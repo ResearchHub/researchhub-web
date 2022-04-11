@@ -27,8 +27,11 @@ import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
 import PaperMetaData from "~/components/SearchSuggestion/PaperMetaData.js";
 import Ripples from "react-ripples";
+import error from "next/error";
+import { ModalActions } from "~/redux/modals";
 
 type Props = {
+  modalReduxActions?: any;
   msgReduxActions: any;
   onExit: () => void;
   paperRedux?: any;
@@ -42,6 +45,7 @@ type FormState = {
 };
 
 function PaperUploadWizardPDFUpload({
+  modalReduxActions,
   msgReduxActions,
   onExit,
   paperRedux,
@@ -116,11 +120,9 @@ function PaperUploadWizardPDFUpload({
 
     uploadNewPaper({
       onError: (respPayload: any): void => {
-        // NOTE: calvinhlee - existing legacy logic
-        const errorBody = respPayload.errorBody;
-        if (!isNullOrUndefined(errorBody) && errorBody.status === 429) {
-          msgReduxActions.showMessage({ show: false });
-        } else if (errorBody.status === 413) {
+        const errorBody = respPayload.errorBody ?? {};
+        const { status: errorStatus, error: errorMsg } = errorBody;
+        if (errorStatus === 413) {
           msgReduxActions.setMessage(
             errorBody
               ? errorBody.error
@@ -128,9 +130,17 @@ function PaperUploadWizardPDFUpload({
           );
           msgReduxActions.showMessage({ show: true, error: true });
           setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
+          setIsSubmitting(false);
+        } else if (errorStatus === 403 /* duplicate error */) {
+          onExit();
+          respPayload;
+          modalReduxActions.openUploadPaperModal(
+            true,
+            respPayload?.message?.data
+          );
         } else {
           msgReduxActions.setMessage(
-            errorBody ? errorBody.error : "You are not allowed to upload papers"
+            errorMsg ?? "You are not allowed to upload papers"
           );
           msgReduxActions.showMessage({ show: true, error: true });
           setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
@@ -358,6 +368,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   paperReduxActions: bindActionCreators(PaperActions, dispatch),
   msgReduxActions: bindActionCreators(MessageActions, dispatch),
+  modalReduxActions: bindActionCreators(ModalActions, dispatch),
 });
 
 export default connect(
