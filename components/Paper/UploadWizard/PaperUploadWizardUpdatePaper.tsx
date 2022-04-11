@@ -3,24 +3,24 @@ import {
   formGenericStyles,
 } from "../Upload/styles/formGenericStyles";
 import { bindActionCreators } from "redux";
+import { buildSlug } from "~/config/utils/buildSlug";
 import { connect } from "react-redux";
 import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
 import { SyntheticEvent, useContext, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
 import Button from "~/components/Form/Button";
+import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
-import { buildSlug } from "~/config/utils/buildSlug";
 import Loader from "~/components/Loader/Loader";
-import {
-  NewPostButtonContext,
-  NewPostButtonContextType,
-} from "~/components/contexts/NewPostButtonContext";
-import colors from "~/config/themes/colors";
 
 export type FormErrors = {
   paperID: boolean;
@@ -138,7 +138,6 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
   return (
     <form onSubmit={onFormSubmit}>
       <FormSelect
-        containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
         error={formErrors.selectedHubs}
         id="hubs"
@@ -162,7 +161,6 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
       />
       {!uploaderContextValues.isWithDOI ? (
         <FormInput
-          containerStyle={formGenericStyles.container}
           disabled={isSubmitting}
           id="doi"
           label="DOI"
@@ -176,7 +174,6 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
         />
       ) : null}
       <FormInput
-        containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
         id="title"
         label="Editorialized Title (optional)"
