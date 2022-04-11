@@ -75,7 +75,7 @@ export default function PaperUploadWizardHeader({
             {" Add PDF "}
           </div>
         ) : (
-          "Add Paper"
+          "Upload Paper"
         )}
         <a
           className={css(formGenericStyles.authorGuidelines)}
