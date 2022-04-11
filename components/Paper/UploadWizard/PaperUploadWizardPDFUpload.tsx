@@ -209,7 +209,6 @@ function PaperUploadWizardPDFUpload({
         </Ripples>
       )}
       <FormSelect
-        containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
         id="hubs"
         isMulti
@@ -231,7 +230,6 @@ function PaperUploadWizardPDFUpload({
         value={selectedHubs}
       />
       <FormInput
-        containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
         id="title"
         label="Editorialized Title"
@@ -244,7 +242,6 @@ function PaperUploadWizardPDFUpload({
         value={title}
       />
       <FormInput
-        containerStyle={formGenericStyles.container}
         disabled={isSubmitting}
         id="doi"
         label="DOI"

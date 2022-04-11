@@ -5,26 +5,26 @@ import colors from "../../../../config/themes/colors";
 export const customStyles = {
   container: {
     width: 600,
-    "@media only screen and (max-width: 665px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str}`]: {
       width: 380,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str}`]: {
       width: 338,
     },
-    "@media only screen and (max-width: 321px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str}`]: {
       width: 270,
     },
   },
   input: {
     width: 600,
     display: "flex",
-    "@media only screen and (max-width: 665px)": {
+    [`@media only screen and (max-width: ${breakpoints.small.str}`]: {
       width: 380,
     },
-    "@media only screen and (max-width: 415px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str}`]: {
       width: 338,
     },
-    "@media only screen and (max-width: 321px)": {
+    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str}`]: {
       width: 270,
     },
   },
