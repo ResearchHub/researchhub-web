@@ -103,13 +103,13 @@ const styles = StyleSheet.create({
     },
   },
   back: {
-    color: colors.BLUE(1),
     cursor: "pointer",
     fontSize: 18,
-    marginRight: 8,
-    position: "absolute",
     left: 0,
-    top: -12,
+    marginRight: 8,
+    opacity: 0.6,
+    position: "absolute",
+    top: -10,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       top: -28,
     },
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 0,
     top: -12,
-    opacity: 0.4,
+    opacity: 0.6,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 20,
       top: -32,
