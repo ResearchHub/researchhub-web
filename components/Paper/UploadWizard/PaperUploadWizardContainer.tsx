@@ -6,6 +6,7 @@ import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
+import { nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, useContext } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
@@ -15,7 +16,6 @@ import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardUrlOrDOIBody from "./PaperUploadWizardUrlOrDOIBody";
 import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
 import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
-import { nullthrows } from "~/config/utils/nullchecks";
 
 type Props = { user: any; /* redux */ onExit: () => void };
 type WizardBodyElement = ReactElement<typeof PaperUploadWizardUrlOrDOIBody>;
