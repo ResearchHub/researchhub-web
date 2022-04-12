@@ -1,40 +1,75 @@
+import { connect } from "react-redux";
+import { createNewNote } from "~/config/fetch";
+import {
+  filterNull,
+  isNullOrUndefined,
+  silentEmptyFnc,
+} from "~/config/utils/nullchecks";
+import { NullableString } from "~/config/types/root_types";
+import { MessageActions } from "~/redux/message";
+import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
+import {
+  ReactElement,
+  useState,
+  SyntheticEvent,
+  useEffect,
+  useContext,
+} from "react";
+import { StyleSheet, css } from "aphrodite";
+import { useRouter } from "next/router";
 import BaseModal from "./BaseModal";
 import Button from "../Form/Button";
 import Link from "next/link";
 import Modal from "react-modal";
+import PaperUploadWizardContainer from "../Paper/UploadWizard/PaperUploadWizardContainer";
 import ResearchhubOptionCard from "../ResearchhubOptionCard";
-import { MessageActions } from "~/redux/message";
-import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
-import { PostIcon, PaperIcon, HypothesisIcon } from "~/config/themes/icons";
-import { ReactElement, useState, SyntheticEvent } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { connect } from "react-redux";
-import { createNewNote } from "~/config/fetch";
-import { filterNull } from "~/config/utils/nullchecks";
-import { useRouter } from "next/router";
+import {
+  DEFAULT_POST_BUTTON_VALUES,
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
 
 export type NewPostModalProps = {
   currentUser: any;
-  isOpen: boolean;
-  setIsOpen: (flag: boolean) => void;
 };
 
 function NewPostModal({
   currentUser,
-  isOpen,
-  setIsOpen,
 }: NewPostModalProps): ReactElement<typeof Modal> {
   const router = useRouter();
-  let [selected, setSelected] = useState(0);
+  const { values: buttonValues, setValues: setButtonValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  const { isOpen, wizardBodyType } = buttonValues;
+  const [selected, setSelected] = useState(0);
+  const [bodyType, setBodyType] = useState<NullableString>(
+    Boolean(wizardBodyType) ? "paperWizard" : null
+  );
 
-  const closeModal = (e: SyntheticEvent): void => {
-    e && e.preventDefault();
-    setIsOpen(false);
+  useEffect(
+    (): void => setBodyType(Boolean(wizardBodyType) ? "paperWizard" : null),
+    [wizardBodyType]
+  );
+
+  const closeModal = (event?: SyntheticEvent): void => {
+    event && event.preventDefault();
+    setSelected(0);
+    setBodyType(null);
+    setButtonValues({ ...DEFAULT_POST_BUTTON_VALUES });
   };
 
-  const handleContinue = (e: SyntheticEvent): void => {
-    e && e.preventDefault();
-    closeModal(e);
+  const handleContinue = (event?: SyntheticEvent): void => {
+    event && event.preventDefault();
+    if (selected === 0) {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        wizardBodyType: "url_or_doi_upload",
+      });
+      setBodyType("paperWizard");
+    } else {
+      closeModal(event);
+    }
   };
 
   const items = [
@@ -42,8 +77,14 @@ function NewPostModal({
       header: "Upload a Paper",
       description:
         "Upload a paper that has already been published. Upload it via a link to the journal, or upload the PDF directly.",
-      route: "/paper/upload/info",
-      icon: <PaperIcon width={40} height={40} withAnimation={false} />,
+      icon: (
+        <PaperIcon
+          height={40}
+          onClick={silentEmptyFnc}
+          width={40}
+          withAnimation={false}
+        />
+      ),
     },
     {
       header: "Publish a Post",
@@ -58,22 +99,40 @@ function NewPostModal({
         /* @ts-ignore */
         router.push(`/${currentUser.organization_slug}/notebook/${note.id}`);
       },
-      icon: <PostIcon width={40} height={40} withAnimation={false} />,
+      icon: (
+        <PostIcon
+          height={40}
+          onClick={silentEmptyFnc}
+          width={40}
+          withAnimation={false}
+        />
+      ),
+      newFeature: true,
     },
     {
       header: "Propose a Hypothesis",
       description:
         "Propose an explanation to an observation and back it up by citing relevant academic papers.",
       route: "/hypothesis/create",
-      icon: <HypothesisIcon width={40} height={40} withAnimation={false} />,
+      icon: (
+        <HypothesisIcon
+          height={40}
+          onClick={silentEmptyFnc}
+          width={40}
+          withAnimation={false}
+        />
+      ),
     },
   ];
-
   return (
     <BaseModal
       children={
-        <>
-          <div className={css(styles.rootContainer)}>
+        bodyType === "paperWizard" ? (
+          <div className={css(styles.rootContainer)} key="paper-wizard">
+            <PaperUploadWizardContainer onExit={(): void => closeModal()} />
+          </div>
+        ) : (
+          <div className={css(styles.rootContainer)} key="upload-type-selector">
             <img
               alt="Close Button"
               className={css(styles.closeButton)}
@@ -113,6 +172,8 @@ function NewPostModal({
                     >
                       Continue
                     </div>
+                  ) : isNullOrUndefined(items[selected]?.route) ? (
+                    <div className={css(styles.buttonLabel)}>Continue</div>
                   ) : (
                     <Link href={items[selected]?.route ?? ""}>
                       <div className={css(styles.buttonLabel)}>Continue</div>
@@ -124,7 +185,7 @@ function NewPostModal({
               />
             </div>
           </div>
-        </>
+        )
       }
       closeModal={closeModal}
       isOpen={isOpen}

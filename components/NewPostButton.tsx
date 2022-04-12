@@ -1,13 +1,16 @@
-import Button from "./Form/Button";
-import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Fragment, SyntheticEvent, useState } from "react";
+import { useContext } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { faPlus } from "@fortawesome/pro-regular-svg-icons";
-
-// Dynamic modules
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { Fragment, SyntheticEvent } from "react";
+import Button from "./Form/Button";
 import dynamic from "next/dynamic";
-const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
+import PermissionNotificationWrapper from "./PermissionNotificationWrapper";
+import {
+  NewPostButtonContext,
+  NewPostButtonContextType,
+} from "~/components/contexts/NewPostButtonContext";
+
 
 export type NewPostButtonProps = {
   customButtonStyle?: StyleSheet;
@@ -18,14 +21,15 @@ export default function NewPostButton({
   customButtonStyle,
   onClick,
 }: NewPostButtonProps) {
-  const [isNewPostModalOpen, setIsNewPostModalOpen] = useState(false);
-
+  const { values: buttonValues, setValues: setButtonValues } =
+    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  
   return (
     <Fragment>
       <PermissionNotificationWrapper
         loginRequired
         modalMessage="create a new post"
-        onClick={() => setIsNewPostModalOpen(true)}
+        onClick={(): void => setButtonValues({ ...buttonValues, isOpen: true })}
         permissionKey="CreatePaper"
         styling={styles.rippleClass}
       >
@@ -43,10 +47,6 @@ export default function NewPostButton({
           size={"newPost"}
         />
       </PermissionNotificationWrapper>
-      <NewPostModal
-        isOpen={isNewPostModalOpen}
-        setIsOpen={setIsNewPostModalOpen}
-      />
     </Fragment>
   );
 }
