@@ -55,6 +55,7 @@ export type FeedCardProps = {
   user: any;
   user_vote: any;
   voteCallback: any;
+  handleClick?: (SyntheticEvent) => void;
 };
 
 function FeedCard(props: FeedCardProps) {
@@ -188,6 +189,7 @@ function FeedCard(props: FeedCardProps) {
     post: icons.penSquare,
     hypothesis: icons.lightbulb,
   };
+  const resolvedHubs = hubs ?? [];
 
   return (
     <Ripples
@@ -198,8 +200,9 @@ function FeedCard(props: FeedCardProps) {
       )}
       data-test={isDevEnv() ? `document-${id}` : undefined}
       key={`${formattedDocType}-${id}`}
+      onClick={props?.handleClick}
     >
-      <Link href={`/${formattedDocType}/${id}/${slug}`}>
+      <Link href={`/${formattedDocType}/${id}/${slug ?? 'new-paper'}`}>
         <a className={css(styles.feedCard)}>
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
@@ -256,10 +259,10 @@ function FeedCard(props: FeedCardProps) {
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
-                      >{`${tag.name}${hubs.length > 1 ? "," : ""}`}</a>
+                      >{`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}</a>
                     </Link>
                   ))}
-                  {hubs?.length > 1 && (
+                  {resolvedHubs.length > 1 && (
                     <HubDropDown
                       hubs={hubs}
                       labelStyle={styles.hubLabel}
@@ -373,6 +376,7 @@ function FeedCard(props: FeedCardProps) {
 const styles = StyleSheet.create({
   ripples: {
     display: "flex",
+    width: "100%",
   },
   feedCard: {
     alignItems: "flex-start",

@@ -19,6 +19,7 @@ import dynamic from "next/dynamic";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import GoogleLoginButton from "../components/GoogleLoginButton";
 import NewPostButton from "./NewPostButton";
+import PaperUploadStateNotifier from "~/components/Notifications/PaperUploadStateNotifier.tsx";
 import Reputation from "./Reputation";
 import Search from "./Search/Search";
 import TabNewFeature from "~/components/NewFeature/TabNewFeature";
@@ -38,6 +39,7 @@ import { getCaseCounts } from "./AuthorClaimCaseDashboard/api/AuthorClaimCaseGet
 import { NavbarContext } from "~/pages/Base";
 import HubSelector from "~/components/HubSelector";
 import api from "~/config/api";
+import MobileOnly from "./MobileOnly";
 
 // Dynamic modules
 const DndModal = dynamic(() => import("~/components/Modals/DndModal"));
@@ -64,13 +66,14 @@ const Notification = dynamic(() =>
   import("~/components/Notifications/Notification")
 );
 
+const NewPostModal = dynamic(() => import("./Modals/NewPostModal"));
+
 const Navbar = (props) => {
   const router = useRouter();
   const navbarRef = useRef(null);
   const [openCaseCounts, setOpenCaseCounts] = useState(0);
   const [showReferral, setShowReferral] = useState(false);
   const { numNavInteractions } = useContext(NavbarContext);
-
   const {
     isLoggedIn,
     user,
@@ -402,20 +405,25 @@ const Navbar = (props) => {
 
   return (
     <Fragment>
-      <Menu
-        top
-        isOpen={sideMenu}
-        styles={burgerMenuStyle}
-        customBurgerIcon={false}
-        onStateChange={menuChange}
-      >
-        <Link href={"/"} as={`/`}>
-          <a className={css(styles.logoContainer, styles.logoContainerForMenu)}>
-            <RHLogo iconStyle={styles.logo} white={true} />
-          </a>
-        </Link>
-        {renderMenuItems()}
-      </Menu>
+      <NewPostModal />
+      <MobileOnly>
+        <Menu
+          top
+          isOpen={sideMenu}
+          styles={burgerMenuStyle}
+          customBurgerIcon={false}
+          onStateChange={menuChange}
+        >
+          <Link href={"/"} as={`/`}>
+            <a
+              className={css(styles.logoContainer, styles.logoContainerForMenu)}
+            >
+              <RHLogo iconStyle={styles.logo} white={true} />
+            </a>
+          </Link>
+          {renderMenuItems()}
+        </Menu>
+      </MobileOnly>
       <div
         ref={navbarRef}
         className={css(
@@ -582,6 +590,12 @@ const Navbar = (props) => {
             )}
           </div>
           <NewPostButton />
+          {Boolean(user.id) && (
+            <PaperUploadStateNotifier
+              wsAuth
+              wsUrl={WS_ROUTES.PAPER_SUBMISSION(user.id)}
+            />
+          )}
         </div>
 
         <div

@@ -3,6 +3,7 @@ export const BASE_URL = setBaseUrl();
 export const ROUTES = {
   NOTE: (orgSlug) => `${BASE_URL}${orgSlug}/notebook/`,
   NOTIFICATIONS: (userId) => `${BASE_URL}notifications/${userId}/`,
+  PAPER_SUBMISSION: (userID) => `${BASE_URL}${userID}/paper_submissions/`,
 };
 
 function setBaseUrl() {

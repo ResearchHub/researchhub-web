@@ -70,7 +70,8 @@ class UploadPaperModal extends Component {
   /**
    * closes the modal on button click
    */
-  closeModal = () => {
+  closeModal = (event) => {
+    event?.stopPropagation();
     let { modalActions, paperActions } = this.props;
     this.setState({
       ...this.initialState,
@@ -80,7 +81,6 @@ class UploadPaperModal extends Component {
 
   renderSearchResults = () => {
     let results = this.props.modals.uploadPaperModal.suggestedPapers;
-
     return results.map((paper, index) => {
       paper.meta = {};
       return (
@@ -90,7 +90,15 @@ class UploadPaperModal extends Component {
             className={css(styles.searchEntryContainer)}
             onClick={this.closeModal}
           >
-            <FeedCard {...paper} formattedDocType={"paper"} paper={paper} />
+            <FeedCard
+              {...paper}
+              formattedDocType={"paper"}
+              paper={paper}
+              handleClick={(event) => {
+                event?.preventDefault();
+                this.props.modalActions.openUploadPaperModal(false);
+              }}
+            />
           </Ripple>
           {/** separate div needed to prevent ripple behavior which leaks to padding/margin */}
           {results.length > 1 && <div className={css(styles.divider)} />}
@@ -128,7 +136,6 @@ class UploadPaperModal extends Component {
             onClick={this.closeModal}
             alt="Close Button"
           />
-          <div className={css(styles.header)}>Search Results:</div>
           <div className={css(styles.searchCount)}>{this.renderText()}</div>
           <div className={css(styles.searchResults)}>
             {this.renderSearchResults()}
