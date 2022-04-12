@@ -1,7 +1,7 @@
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
-import { ID, ValueOf } from "../../../config/types/root_types";
+import { ID, NullableString, ValueOf } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 
 export type Requestor = {
@@ -14,10 +14,21 @@ export type Requestor = {
 export type CaseData = {
   createdDate: string;
   id: ID;
-  status: string;
-  updatedDate: string;
   paper: any;
+  status: string;
+  targetAuthorName?: NullableString;
+  updatedDate: string;
 };
+
+export type ApiOnSuccess = ({
+  data,
+  hasMore,
+  page,
+}: {
+  caseData: CaseData[];
+  hasMore: boolean;
+  page: number;
+}) => void;
 
 export type AuthorClaimCase = {
   caseData: CaseData;
@@ -26,7 +37,7 @@ export type AuthorClaimCase = {
 
 type ApiArgs = {
   caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
-  onSuccess: Function;
+  onSuccess: ApiOnSuccess;
   onError?: Function;
 };
 
@@ -42,7 +53,7 @@ export function getCases({
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
     .then((response: any): void => {
-      const formattedResponse = (response || []).map(
+      const caseData = (response || []).map(
         (caseData: any): AuthorClaimCase => {
           const {
             created_date,
@@ -81,7 +92,7 @@ export function getCases({
           };
         }
       );
-      onSuccess(formattedResponse);
+      onSuccess({formattedResponse});
     })
     .catch((e) => onError(e));
 }
