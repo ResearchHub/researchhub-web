@@ -109,7 +109,7 @@ function PaperUploadWizardPDFUpload({
     setIsFileDropped(true);
   };
 
-  const onFormSubmit = (e: SyntheticEvent) => {
+  const onFormSubmit = async (e: SyntheticEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
 
@@ -117,30 +117,27 @@ function PaperUploadWizardPDFUpload({
       return;
     }
 
-    uploadNewPaper({
+    await uploadNewPaper({
       onError: (respPayload: any): void => {
-        const errorBody = respPayload.errorBody ?? {};
-        const { status: errorStatus, error: errorMsg } = errorBody;
+        const { response: errorResponse, message: errorMsg } = respPayload ?? {};
+        const { status: errorStatus } = errorResponse ?? {};
+        setIsSubmitting(false);
         if (errorStatus === 413) {
           msgReduxActions.setMessage(
-            errorBody
-              ? errorBody.error
-              : "The max file size is 55mb. Please upload a smaller file."
+            "The max file size is 55mb. Please upload a smaller file."
           );
           msgReduxActions.showMessage({ show: true, error: true });
-          setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
-          setIsSubmitting(false);
+          setTimeout(() => {
+            msgReduxActions.showMessage({ show: false });
+          }, 2000);
         } else if (errorStatus === 403 /* duplicate error */) {
           onExit();
-          respPayload;
           modalReduxActions.openUploadPaperModal(
             true,
-            respPayload?.message?.data
+            errorMsg?.data
           );
         } else {
-          msgReduxActions.setMessage(
-            errorMsg ?? "You are not allowed to upload papers"
-          );
+          msgReduxActions.setMessage("You are not allowed to upload papers");
           msgReduxActions.showMessage({ show: true, error: true });
           setTimeout(() => msgReduxActions.showMessage({ show: false }), 2000);
         }
