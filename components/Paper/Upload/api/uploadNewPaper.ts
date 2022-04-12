@@ -31,18 +31,13 @@ export async function uploadNewPaper({
         : payloadPaperTitle,
   };
   try {
-    const response = await paperActions.postPaper(formattedPayload);
-    const { payload: resPayload } = response;
-    if (resPayload.success) {
-      const { postedPaper } = resPayload;
-      const { id: paperID, paper_title, slug, title } = postedPaper || {};
+    await paperActions.postPaper(formattedPayload, onError, (response) => {
+      const { id: paperID, paper_title, slug, title } = response || {};
       const paperName = !isNullOrUndefined(slug)
         ? slug
         : buildSlug(paper_title ? paper_title : title);
       onSuccess({ paperID, paperName });
-    } else {
-      onError(resPayload);
-    }
+    });
   } catch (error) {
     onError(error);
   }

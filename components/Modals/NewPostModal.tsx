@@ -61,6 +61,11 @@ function NewPostModal({
   const handleContinue = (event?: SyntheticEvent): void => {
     event && event.preventDefault();
     if (selected === 0) {
+      setButtonValues({
+        ...DEFAULT_POST_BUTTON_VALUES,
+        isOpen: true,
+        wizardBodyType: "url_or_doi_upload",
+      });
       setBodyType("paperWizard");
     } else {
       closeModal(event);

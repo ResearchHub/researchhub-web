@@ -8,6 +8,7 @@ import { sendAmpEvent } from "~/config/fetch";
 import { handleCatch } from "../utils";
 import { logFetchError } from "~/config/utils/misc";
 import { captureEvent } from "~/config/utils/events";
+import { isNullOrUndefined } from "~/config/utils/nullchecks";
 /**********************************
  *        ACTIONS SECTION         *
  **********************************/
@@ -298,12 +299,26 @@ export const PaperActions = {
     };
   },
 
-  postPaper: (body) => {
+  postPaper: (body, onError, onSuccess) => {
     return async (dispatch, getState) => {
-      const response = await fetch(
-        API.POST_PAPER(),
-        API.POST_FILE_CONFIG(shims.paperPost(body))
-      ).catch(handleCatch);
+      let response = null;
+      await fetch(API.POST_PAPER(), API.POST_FILE_CONFIG(shims.paperPost(body)))
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((resp) => {
+          response = resp;
+          if (!isNullOrUndefined(onSuccess)) {
+            onSuccess(resp);
+            return;
+          }
+        })
+        .catch((error) => {
+          response = error;
+          if (!isNullOrUndefined(onError) && error.response.status >= 400) {
+            onError(error);
+            return;
+          }
+        });
 
       captureEvent({
         msg: "Paper Upload",
