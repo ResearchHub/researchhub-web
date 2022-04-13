@@ -142,7 +142,12 @@ const TransactionCard = (props) => {
           </div>
           {transaction.source?.transaction_hash && (
             <div
-              className={css(styles.row, styles.metatext, styles.colorBlack)}
+              className={css(
+                styles.row,
+                styles.metatext,
+                styles.colorBlack,
+                styles.walletLink
+              )}
             >
               Transaction Details:
               <span className={css(styles.address)}>
@@ -234,20 +239,15 @@ const styles = StyleSheet.create({
   },
   timestamp: {
     fontSize: 14,
-    "@media only screen and (max-width: 620px)": {
-      fontSize: 13,
-    },
   },
   metatext: {
     fontSize: 14,
     color: "rgba(36, 31, 58, 0.5)",
     marginBottom: 5,
     width: "100%",
-    "@media only screen and (max-width: 620px)": {
-      fontSize: 13,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 12,
+    wordBreak: "break-all",
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
     },
   },
   colorBlack: {
@@ -322,14 +322,11 @@ const styles = StyleSheet.create({
       margin: 0,
       marginTop: 5,
     },
-    "@media only screen and (max-width: 415px)": {
-      maxWidth: 200,
-    },
   },
   addressContainer: {
     display: "flex",
-    "@media only screen and (max-width: 620px)": {
-      fontSize: 13,
+    "@media only screen and (max-width: 767px)": {
+      fontSize: 14,
     },
   },
   amountContainer: {
@@ -337,11 +334,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     fontWeight: 500,
     fontSize: 15,
-    "@media only screen and (max-width: 620px)": {
+    "@media only screen and (max-width: 767px)": {
       position: "absolute",
       top: 27,
       right: 20,
-      fontSize: 13,
+      fontSize: 14,
     },
   },
   coin: {
