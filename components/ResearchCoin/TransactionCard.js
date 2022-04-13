@@ -336,8 +336,8 @@ const styles = StyleSheet.create({
     fontSize: 15,
     "@media only screen and (max-width: 767px)": {
       position: "absolute",
-      top: 27,
-      right: 20,
+      top: 16,
+      right: 16,
       fontSize: 14,
     },
   },
@@ -357,12 +357,10 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     color: colors.BLACK(0.4),
     fontSize: 14,
-    "@media only screen and (max-width: 620px)": {
-      // display: 'none'
-    },
   },
   walletLink: {
-    "@media only screen and (max-width: 620px)": {
+    justifyContent: "unset",
+    "@media only screen and (max-width: 767px)": {
       display: "block",
       flexDirection: "column",
       alignItems: "flex-start",
