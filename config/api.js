@@ -1096,6 +1096,10 @@ const routes = (BASE_URL) => {
     },
 
     SUPPORT: BASE_URL + "support/",
+
+    PEER_REVIEW_REQUESTS: () => {
+      return BASE_URL + "peer_review_requests/";
+    },
   };
 
   function buildPaperChainUrl(
