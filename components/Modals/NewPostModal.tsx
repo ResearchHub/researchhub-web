@@ -107,7 +107,6 @@ function NewPostModal({
           withAnimation={false}
         />
       ),
-      newFeature: true,
     },
     {
       header: "Propose a Hypothesis",
