@@ -30,6 +30,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   });
 
   const ksCanUseEditorDash = killswitch("editorDash");
+  const userAllowedToManagePeerReviews = true;
 
   const SIDE_BAR_ITEMS = filterNull([
     {
@@ -54,12 +55,12 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/permissions",
         }
       : null,
-      userAllowedSendRSC
+      userAllowedToManagePeerReviews
       ? {
-          icon: icons.coins,
-          id: "rsc",
-          name: "RSC",
-          pathname: "/moderators/rsc",
+          icon: icons.commentCheck,
+          id: "review",
+          name: "Peer Reviews",
+          pathname: "/moderators/reviews",
         }
       : null,
   ]);
