@@ -2,7 +2,6 @@ import API from "~/config/api";
 import AuthorAvatar from "~/components/AuthorAvatar";
 import DesktopOnly from "~/components/DesktopOnly";
 import HubDropDown from "~/components/Hubs/HubDropDown";
-import LazyLoad from "react-lazyload";
 import Link from "next/link";
 import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVoteWidget";
 import Ripples from "react-ripples";
@@ -202,7 +201,7 @@ function FeedCard(props: FeedCardProps) {
       key={`${formattedDocType}-${id}`}
       onClick={props?.handleClick}
     >
-      <Link href={`/${formattedDocType}/${id}/${slug ?? 'new-paper'}`}>
+      <Link href={`/${formattedDocType}/${id}/${slug ?? "new-paper"}`}>
         <a className={css(styles.feedCard)}>
           <DesktopOnly>
             <div className={css(styles.leftSection)}>
@@ -234,20 +233,18 @@ function FeedCard(props: FeedCardProps) {
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.postCreatedBy)}>
                   {uploaded_by || created_by ? (
-                    <LazyLoad offset={100} once>
-                      <AuthorAvatar
-                        author={
-                          created_by?.author_profile ||
-                          uploaded_by?.author_profile
-                        }
-                        boldName
-                        border="2px solid #F1F1F1"
-                        fontSize={15}
-                        size={20}
-                        spacing={5}
-                        withAuthorName
-                      />
-                    </LazyLoad>
+                    <AuthorAvatar
+                      author={
+                        created_by?.author_profile ||
+                        uploaded_by?.author_profile
+                      }
+                      boldName
+                      border="2px solid #F1F1F1"
+                      fontSize={15}
+                      size={20}
+                      spacing={5}
+                      withAuthorName
+                    />
                   ) : null}
                   {(uploaded_by || created_by) && hubs && (
                     <div className={css(styles.textLabel)}>in</div>
@@ -329,9 +326,7 @@ function FeedCard(props: FeedCardProps) {
             {Boolean(previewImg) && (
               <div className={css(styles.column)}>
                 <div className={css(styles.preview, styles.imagePreview)}>
-                  <LazyLoad offset={100} once>
-                    <img src={previewImg} className={css(styles.image)} />
-                  </LazyLoad>
+                  <img src={previewImg} className={css(styles.image)} />
                 </div>
               </div>
             )}
@@ -342,28 +337,26 @@ function FeedCard(props: FeedCardProps) {
                   e.stopPropagation();
                 }}
               >
-                <LazyLoad offset={100} once>
-                  {isPreviewing && (
-                    <PaperPDFModal
-                      paper={paper}
-                      onClose={() => setIsPreviewing(false)}
-                    />
-                  )}
-                  <div className={css(styles.preview, styles.paperPreview)}>
-                    <img
-                      src={previews[0].file}
-                      className={css(styles.image)}
-                      key={`preview_${previews[0].file}`}
-                      alt={`Paper Preview Page 1`}
-                      onClick={(e) => {
-                        e && e.preventDefault();
-                        e && e.stopPropagation();
-                        setIsPreviewing(true);
-                        props.openPaperPDFModal(true);
-                      }}
-                    />
-                  </div>
-                </LazyLoad>
+                {isPreviewing && (
+                  <PaperPDFModal
+                    paper={paper}
+                    onClose={() => setIsPreviewing(false)}
+                  />
+                )}
+                <div className={css(styles.preview, styles.paperPreview)}>
+                  <img
+                    src={previews[0].file}
+                    className={css(styles.image)}
+                    key={`preview_${previews[0].file}`}
+                    alt={`Paper Preview Page 1`}
+                    onClick={(e) => {
+                      e && e.preventDefault();
+                      e && e.stopPropagation();
+                      setIsPreviewing(true);
+                      props.openPaperPDFModal(true);
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>
