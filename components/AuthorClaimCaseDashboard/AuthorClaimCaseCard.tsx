@@ -24,6 +24,7 @@ export default function AuthorClaimCaseCard({
 }: Props): ReactElement<"div"> {
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
   const [openModalType, setOpenModalType] =
     useState<ValueOf<typeof AUTHOR_CLAIM_STATUS>>("");
   const { caseData, requestor } = authorClaimCase || {};
@@ -47,7 +48,10 @@ export default function AuthorClaimCaseCard({
             isDisabled={isSubmitting}
             index={index}
             key={`actionbutton-case-${caseID}-button-${actionType}`}
-            onClick={() => setOpenModalType(actionType)}
+            onClick={(event: SyntheticEvent): void => {
+              event.stopPropagation(); /* prevents card from collapsing */
+              setOpenModalType(actionType);
+            }}
           />
         )
       )
@@ -55,7 +59,6 @@ export default function AuthorClaimCaseCard({
       <AuthorClaimCaseCardStatusLabel status={caseStatus} />
     );
   }, [caseStatus]);
-
 
   return (
     <div

@@ -4,13 +4,21 @@ import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
 import { ID, NullableString, ValueOf } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 
-export type Requestor = {
-  name: string;
-  profileImg: string;
-  providedEmail: string;
-  requestorAuthorID: ID;
+type ApiArgs = {
+  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
+  onError?: Function;
+  onSuccess: (formattedResult: formattedResult) => void;
+  page: number;
 };
-
+export type formattedResult = {
+  claimCases: AuthorClaimCase[];
+  hasMore: boolean;
+  page: number;
+};
+export type AuthorClaimCase = {
+  caseData: CaseData;
+  requestor: Requestor;
+};
 export type CaseData = {
   createdDate: string;
   id: ID;
@@ -19,42 +27,43 @@ export type CaseData = {
   targetAuthorName?: NullableString;
   updatedDate: string;
 };
-
-export type ApiOnSuccess = ({
-  data,
-  hasMore,
-  page,
-}: {
-  caseData: CaseData[];
+export type PaginationInfo = {
+  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | null;
   hasMore: boolean;
+  isLoadingMore: boolean;
+  isPageLoading: boolean;
   page: number;
-}) => void;
-
-export type AuthorClaimCase = {
-  caseData: CaseData;
-  requestor: Requestor;
+};
+export type Requestor = {
+  name: string;
+  profileImg: string;
+  providedEmail: string;
+  requestorAuthorID: ID;
 };
 
-type ApiArgs = {
-  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
-  onSuccess: ApiOnSuccess;
-  onError?: Function;
+export const defaultPaginationInfo: PaginationInfo = {
+  caseStatus: null,
+  hasMore: false,
+  isLoadingMore: false,
+  isPageLoading: true,
+  page: 1,
 };
 
 export function getCases({
   caseStatus = AUTHOR_CLAIM_STATUS.OPEN,
   onSuccess,
   onError = emptyFncWithMsg,
+  page,
 }: ApiArgs): void {
   fetch(
-    API.AUTHOR_CLAIM_MODERATORS({ case_status: caseStatus }),
+    API.AUTHOR_CLAIM_MODERATORS({ case_status: caseStatus, page }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((response: any): void => {
-      const caseData = (response || []).map(
-        (caseData: any): AuthorClaimCase => {
+    .then(({ count: _count, has_more: hasMore, page, result }: any): void => {
+      onSuccess({
+        claimCases: (result || []).map((resultData: any): AuthorClaimCase => {
           const {
             created_date,
             id,
@@ -64,7 +73,7 @@ export function getCases({
             updated_date,
             paper,
             target_author_name,
-          } = caseData;
+          } = resultData;
           const {
             id: requestorID,
             author_profile: {
@@ -90,9 +99,10 @@ export function getCases({
               requestorAuthorID,
             },
           };
-        }
-      );
-      onSuccess({formattedResponse});
+        }),
+        hasMore,
+        page,
+      });
     })
     .catch((e) => onError(e));
 }
