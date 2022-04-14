@@ -26,7 +26,7 @@ const ALink: FunctionComponent<Props> = ({ href, as, children, theme = themes.de
 
 const styles = StyleSheet.create({
     "ALink": {
-        color: colors.BLACK(0.8),
+        color: colors.BLACK(),
         fontSize: 14,
         fontWeight: 500,
         textDecoration: "none",
