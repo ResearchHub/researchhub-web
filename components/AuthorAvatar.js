@@ -42,15 +42,16 @@ const AuthorAvatar = (props) => {
 
   function renderAvatar() {
     let finalSize = size;
+    const profileImage = author.profile_image || author.profileImage;
     if (deviceWidth < 768 && !trueSize) {
       finalSize = size - 5;
     }
 
     return (
       <>
-        {author && author.profile_image && !error ? (
+        {author && profileImage && !error ? (
           <img
-            src={author.profile_image}
+            src={profileImage}
             style={{
               minWidth: finalSize,
               width: finalSize,
@@ -94,7 +95,9 @@ const AuthorAvatar = (props) => {
   }
 
   const avatarComponent = renderAvatar();
-  const fullName = `${author?.first_name ?? ""} ${author?.last_name ?? ""}`;
+  const fullName = `${author?.first_name ?? author?.firstName ?? ""} ${
+    author?.last_name ?? author.lastName ?? ""
+  }`;
 
   if (twitterUrl) {
     return (
@@ -138,6 +141,7 @@ const AuthorAvatar = (props) => {
                   marginLeft: spacing ?? 8,
                   whiteSpace: "nowrap",
                 }}
+                className={css(styles.name)}
               >
                 {fullName}
               </span>
@@ -181,6 +185,11 @@ const styles = StyleSheet.create({
     position: "relative",
     // top: 2,
     left: 0.25,
+  },
+  name: {
+    ":hover": {
+      color: colors.NEW_BLUE(),
+    },
   },
 });
 
