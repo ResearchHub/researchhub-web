@@ -8,6 +8,7 @@ import { getUrlToUniDoc } from "~/config/utils/routing";
 import { timeSince } from "~/config/utils/dates";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { ID } from "~/config/types/root_types";
+import PeerReviewRequestModal from "./PeerReviewInviteModal";
 
 
 type Props = {
@@ -30,10 +31,16 @@ function PeerReviewRequestCard({
   }];
 
   const [manageDropdownOpenFor, setManageDropdownOpenFor] = useState<ID>(null)
+  const [isInviteModalOpen, setsIsInviteModalOpen] = useState<Boolean>(false);
   const author = peerReviewRequest?.requestedByUser?.authorProfile
 
   return (
     <div className={css(styles.PeerReviewRequestCard)}>
+      <PeerReviewRequestModal
+        peerReviewRequest={peerReviewRequest}
+        isOpen={isInviteModalOpen}
+        closeModal={() => setsIsInviteModalOpen(false)}
+      />
       <div className={css(styles.detailsContainer)}>
         <span className={css(styles.avatarContainer)}>
           <AuthorAvatar
@@ -68,10 +75,15 @@ function PeerReviewRequestCard({
           positions={["bottom", "right"]}
           customButtonClassName={styles.d}
           overrideTargetStyle={null}
-          onSelect={() => {
+          onSelect={(selected) => {
+            if (selected === "invite") {
+              setsIsInviteModalOpen(true);
+            }
             setManageDropdownOpenFor(null);
           } }
-          onClose={() => setManageDropdownOpenFor(null)} onClickOutside={undefined} selected={undefined} labelAsHtml={undefined} overridePopoverStyle={undefined} overrideOptionsStyle={undefined} overrideTitleStyle={undefined} overrideDownIconStyle={undefined} htmlBefore={undefined} htmlAfter={undefined}        />        
+          onClose={() => setManageDropdownOpenFor(null)}
+          onClickOutside={() => setManageDropdownOpenFor(null)}
+        />        
       </div>
     </div>
   )

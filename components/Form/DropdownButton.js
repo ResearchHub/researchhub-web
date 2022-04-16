@@ -13,15 +13,15 @@ const DropdownButton = ({
   onClickOutside,
   dropdownClassName,
   customButtonClassName,
-  selected,
-  labelAsHtml,
-  overridePopoverStyle,
-  overrideOptionsStyle,
-  overrideTargetStyle,
-  overrideTitleStyle,
-  overrideDownIconStyle,
-  htmlBefore, // HTML to be injected before the list
-  htmlAfter, // HTML to be injected after the list
+  labelAsHtml = null,
+  selected = null,
+  overridePopoverStyle = null,
+  overrideOptionsStyle = null,
+  overrideTargetStyle = null,
+  overrideTitleStyle = null,
+  overrideDownIconStyle = null,
+  htmlBefore = null, // HTML to be injected before the list
+  htmlAfter = null, // HTML to be injected after the list
   closeAfterSelect = true,
   positions = ["bottom", "top"],
   isOpen = false,
