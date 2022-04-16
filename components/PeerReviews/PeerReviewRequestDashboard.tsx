@@ -20,8 +20,8 @@ function PeerReviewRequestDashboard() : ReactElement<"div"> {
   }, [])
 
   return (
-    <div>
-      <h3>Manage Peer Review Reuquests</h3>
+    <div className={css(styles.dashboardContainer)}>
+      <h1 className={css(styles.header)}>Peer Review Requests</h1>
       <div className="cardsContainer">
         {peerReviewRequests.map((req: PeerReviewRequest): ReactElement<typeof PeerReviewRequestCard> => {
           return (
@@ -37,7 +37,13 @@ function PeerReviewRequestDashboard() : ReactElement<"div"> {
 }
 
 const styles = StyleSheet.create({
-
+  "header": {
+    fontSize: 30,
+    fontWeight: 500,
+  },
+  "dashboardContainer": {
+    padding: "0 32px",
+  }
 })
 
 export default PeerReviewRequestDashboard;
