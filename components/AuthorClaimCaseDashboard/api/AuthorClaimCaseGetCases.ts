@@ -1,6 +1,6 @@
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
+import { emptyFncWithMsg, isEmpty } from "../../../config/utils/nullchecks";
 import { ID, NullableString, ValueOf } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 
@@ -61,9 +61,9 @@ export function getCases({
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then(({ count: _count, has_more: hasMore, page, result }: any): void => {
+    .then(({ count: _count, next, results }: any): void => {
       onSuccess({
-        claimCases: (result || []).map((resultData: any): AuthorClaimCase => {
+        claimCases: (results || []).map((resultData: any): AuthorClaimCase => {
           const {
             created_date,
             id,
@@ -100,7 +100,7 @@ export function getCases({
             },
           };
         }),
-        hasMore,
+        hasMore: !isEmpty(next),
         page,
       });
     })

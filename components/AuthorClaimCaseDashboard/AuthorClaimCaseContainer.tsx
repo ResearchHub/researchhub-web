@@ -27,12 +27,10 @@ type Props = {
 
 const useEffectHandleCaseFetch = ({
   appendClaimCases,
-  lastFetchTime,
   paginationInfo,
   setPaginationInfo,
 }: {
   appendClaimCases: (moreCases: AuthorClaimCase[]) => void;
-  lastFetchTime: number;
   paginationInfo: PaginationInfo;
   setPaginationInfo: (info: PaginationInfo) => void;
 }): void => {
@@ -62,7 +60,7 @@ const useEffectHandleCaseFetch = ({
       },
       page,
     });
-  }, [caseStatus, page, lastFetchTime]);
+  }, [caseStatus, page]);
 };
 
 export default function AuthorClaimCaseContainer({
@@ -80,6 +78,7 @@ export default function AuthorClaimCaseContainer({
   const { hasMore, isLoadingMore, isPageLoading, page } = paginationInfo;
 
   useEffect((): void => {
+    setClaimCases([]);
     setPaginationInfo({
       ...defaultPaginationInfo,
       caseStatus: queryCaseStatus,
@@ -88,8 +87,7 @@ export default function AuthorClaimCaseContainer({
 
   useEffectHandleCaseFetch({
     appendClaimCases: (moreCases: AuthorClaimCase[]): void =>
-      setClaimCases([...(page === 1 ? [] : claimCases), ...moreCases]),
-    lastFetchTime,
+      setClaimCases([...claimCases, ...moreCases]),
     paginationInfo,
     setPaginationInfo,
   });
