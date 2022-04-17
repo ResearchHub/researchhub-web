@@ -111,11 +111,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   "d": {
-    background: colors.NEW_BLUE(),
+    background: colors.BLUE(),
     color: "white",
     borderRadius: "4px",
     ":hover": {
-      background: colors.NEW_BLUE(),
+      background: colors.BLUE(),
       opacity: 0.9,  
     }
   },
