@@ -1100,6 +1100,9 @@ const routes = (BASE_URL) => {
     PEER_REVIEW_REQUESTS: () => {
       return BASE_URL + "peer_review_requests/";
     },
+    PEER_REVIEW_INVITE_REVIEWER: () => {
+      return BASE_URL + "peer_review_invites/invite/";
+    },
   };
 
   function buildPaperChainUrl(
