@@ -9,6 +9,7 @@ import { timeSince } from "~/config/utils/dates";
 import DropdownButton from "~/components/Form/DropdownButton";
 import { ID } from "~/config/types/root_types";
 import PeerReviewRequestModal from "./PeerReviewInviteModal";
+import PeerReviewPerson from "./PeerReviewPerson";
 
 
 type Props = {
@@ -52,17 +53,28 @@ function PeerReviewRequestCard({
           // withAuthorName
           />
         </span>
-        <div className={css(styles.mainTextRow)}>
-          <ALink href={getUrlToUniDoc(peerReviewRequest?.unifiedDocument)}>
-            {author?.firstName} {author?.lastName}
-          </ALink>
-          <span> has requested a peer review on </span>
-          <ALink href={getUrlToUniDoc(peerReviewRequest?.unifiedDocument)}>
-            {peerReviewRequest?.unifiedDocument?.document?.title}
-          </ALink>
-        </div>
-        <div className={css(styles.dateRow)}>
-          {timeSince(peerReviewRequest.createdDate)}
+        <div>
+          <div className={css(styles.mainTextRow)}>
+            <ALink href={getUrlToUniDoc(peerReviewRequest?.unifiedDocument)}>
+              {author?.firstName} {author?.lastName}
+            </ALink>
+            <span> has requested a peer review on </span>
+            <ALink href={getUrlToUniDoc(peerReviewRequest?.unifiedDocument)}>
+              {peerReviewRequest?.unifiedDocument?.document?.title}
+            </ALink>
+          </div>
+          <div className={css(styles.dateRow)}>
+            {timeSince(peerReviewRequest.createdDate)}
+          </div>
+          <div className={css(styles.invitedRow)}>
+            {peerReviewRequest?.invites?.map((invite) => (
+              <PeerReviewPerson
+                id={invite?.id}
+                status={invite?.status}
+                authorProfile={invite?.recipient?.authorProfile}
+              />
+            ))}
+          </div>
         </div>
       </div>
       <div className={css(styles.buttonContainer)}>
@@ -73,7 +85,7 @@ function PeerReviewRequestCard({
           onClick={() => setManageDropdownOpenFor(peerReviewRequest.id)}
           dropdownClassName="managePeerReview"
           positions={["bottom", "right"]}
-          customButtonClassName={styles.d}
+          customButtonClassName={styles.manageButton}
           overrideTargetStyle={null}
           onSelect={(selected) => {
             if (selected === "invite") {
@@ -110,7 +122,7 @@ const styles = StyleSheet.create({
     display: "flex",
     alignItems: "center",
   },
-  "d": {
+  "manageButton": {
     background: colors.BLUE(),
     color: "white",
     borderRadius: "4px",
@@ -120,13 +132,18 @@ const styles = StyleSheet.create({
     }
   },
   "mainTextRow": {
-    marginLeft: 10,
+    lineHeight: "26px",
   },
   "dateRow": {
-
+    // marginTop: 4,
+  },
+  "invitedRow": {
+    marginTop: 10,
   },
   "avatarContainer": {
     display: "inline-block",
+    alignSelf: "flex-start",
+    marginRight: 10,
   }
 })
 
