@@ -1,22 +1,30 @@
-import { ReactElement, useState, useEffect } from "react";
+import { ReactElement, useState, useEffect, useCallback } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { fetchPeerReviewRequests } from "./config/PeerReviewRequestAPI";
 import { PeerReviewRequest } from "./config/PeerReviewTypes";
 import PeerReviewRequestCard from "./PeerReviewRequestCard";
+import { captureEvent } from "~/config/utils/events";
 
 function PeerReviewRequestDashboard() : ReactElement<"div"> {
-
   const [peerReviewRequests, setPeerReviewRequests] = useState<Array<PeerReviewRequest>>([])
 
-  useEffect(() => {
+  const handleFetchReviewRequests = useCallback(() => {
     fetchPeerReviewRequests({
       onSuccess: (peerReviewRequests: PeerReviewRequest[]): void => {
         setPeerReviewRequests(peerReviewRequests);
       },
       onError: (error: any): void => {
-        console.log(error);
+        captureEvent({
+          error,
+          msg: "Failed to fetch review requests",
+          data: { },
+        });
       }
     })
+  }, [peerReviewRequests])
+
+  useEffect(() => {
+    handleFetchReviewRequests();
   }, [])
 
   return (
@@ -28,6 +36,7 @@ function PeerReviewRequestDashboard() : ReactElement<"div"> {
             <PeerReviewRequestCard
               peerReviewRequest={req}
               key={req.id}
+              fetchReviewRequests={handleFetchReviewRequests}
             />
           )
         })}

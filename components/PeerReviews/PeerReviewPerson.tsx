@@ -71,6 +71,10 @@ function PeerReviewPerson({
 const styles = StyleSheet.create({
   "PeerReviewPerson": {
     position: "relative",
+    marginLeft: 15,
+    ":first-child": {
+      marginLeft: 0,
+    }
   },
   "avatarContainer": {
     display: "inline-block",
@@ -79,10 +83,10 @@ const styles = StyleSheet.create({
     position: "absolute",
     background: "white",
     borderRadius: 50,
-    height: 20,
-    fontSize: 20,
-    top: -24,
-    right: -9,
+    height: 17,
+    fontSize: 17,
+    top: -20,
+    right: -6,
     zIndex: 1,
   },
   "questionIcon": {
