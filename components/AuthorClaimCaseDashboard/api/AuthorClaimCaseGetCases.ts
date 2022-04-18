@@ -1,9 +1,39 @@
 import API from "../../../config/api";
 import { Helpers } from "@quantfive/js-web-config";
-import { emptyFncWithMsg } from "../../../config/utils/nullchecks";
-import { ID, ValueOf } from "../../../config/types/root_types";
+import { emptyFncWithMsg, isEmpty } from "../../../config/utils/nullchecks";
+import { ID, NullableString, ValueOf } from "../../../config/types/root_types";
 import { AUTHOR_CLAIM_STATUS } from "../constants/AuthorClaimStatus";
 
+type ApiArgs = {
+  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
+  onError?: Function;
+  onSuccess: (formattedResult: formattedResult) => void;
+  page: number;
+};
+export type formattedResult = {
+  claimCases: AuthorClaimCase[];
+  hasMore: boolean;
+  page: number;
+};
+export type AuthorClaimCase = {
+  caseData: CaseData;
+  requestor: Requestor;
+};
+export type CaseData = {
+  createdDate: string;
+  id: ID;
+  paper: any;
+  status: string;
+  targetAuthorName?: NullableString;
+  updatedDate: string;
+};
+export type PaginationInfo = {
+  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS> | null;
+  hasMore: boolean;
+  isLoadingMore: boolean;
+  isPageLoading: boolean;
+  page: number;
+};
 export type Requestor = {
   name: string;
   profileImg: string;
@@ -11,39 +41,29 @@ export type Requestor = {
   requestorAuthorID: ID;
 };
 
-export type CaseData = {
-  createdDate: string;
-  id: ID;
-  status: string;
-  updatedDate: string;
-  paper: any;
-};
-
-export type AuthorClaimCase = {
-  caseData: CaseData;
-  requestor: Requestor;
-};
-
-type ApiArgs = {
-  caseStatus: ValueOf<typeof AUTHOR_CLAIM_STATUS>;
-  onSuccess: Function;
-  onError?: Function;
+export const defaultPaginationInfo: PaginationInfo = {
+  caseStatus: null,
+  hasMore: false,
+  isLoadingMore: false,
+  isPageLoading: true,
+  page: 1,
 };
 
 export function getCases({
   caseStatus = AUTHOR_CLAIM_STATUS.OPEN,
   onSuccess,
   onError = emptyFncWithMsg,
+  page,
 }: ApiArgs): void {
   fetch(
-    API.AUTHOR_CLAIM_MODERATORS({ case_status: caseStatus }),
+    API.AUTHOR_CLAIM_MODERATORS({ case_status: caseStatus, page }),
     API.GET_CONFIG()
   )
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
-    .then((response: any): void => {
-      const formattedResponse = (response || []).map(
-        (caseData: any): AuthorClaimCase => {
+    .then(({ count: _count, next, results }: any): void => {
+      onSuccess({
+        claimCases: (results || []).map((resultData: any): AuthorClaimCase => {
           const {
             created_date,
             id,
@@ -53,7 +73,7 @@ export function getCases({
             updated_date,
             paper,
             target_author_name,
-          } = caseData;
+          } = resultData;
           const {
             id: requestorID,
             author_profile: {
@@ -79,9 +99,10 @@ export function getCases({
               requestorAuthorID,
             },
           };
-        }
-      );
-      onSuccess(formattedResponse);
+        }),
+        hasMore: !isEmpty(next),
+        page,
+      });
     })
     .catch((e) => onError(e));
 }
