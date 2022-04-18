@@ -30,7 +30,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
   });
 
   const ksCanUseEditorDash = killswitch("editorDash");
-  const userAllowedToManagePeerReviews = true;
+  const userAllowedToManagePeerReviews = killswitch("peerReview");
 
   const SIDE_BAR_ITEMS = filterNull([
     {
