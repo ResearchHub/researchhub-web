@@ -5,8 +5,8 @@ export type AppSwitchConfig = {
   staging?: boolean;
 };
 
-const KillsiwtchApps = ["paperSummary", "editorDash"] as const;
-export type KillswitchApp = typeof KillsiwtchApps[number];
+const KillSwitchApps = ["paperSummary", "editorDash", "peerReview"] as const;
+export type KillswitchApp = typeof KillSwitchApps[number];
 
 const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
   paperSummary: {
@@ -18,6 +18,11 @@ const KillswtichConfigs: Record<KillswitchApp, AppSwitchConfig> = {
     development: true,
     staging: true,
     production: true,
+  },
+  peerReview: {
+    development: true,
+    staging: true,
+    production: false,
   },
 } as const;
 
