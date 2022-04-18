@@ -387,6 +387,7 @@ const Notebook = ({ auth, user, wsResponse }) => {
         orgs={organizations}
         redirectToNote={redirectToNote}
         refetchTemplates={fetchAndSetOrgTemplates}
+        setTemplates={setTemplates}
         templates={templates}
         titles={titles}
       />
