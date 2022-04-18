@@ -34,6 +34,7 @@ function PeerReviewRequestCard({
   const [manageDropdownOpenFor, setManageDropdownOpenFor] = useState<ID>(null)
   const [isInviteModalOpen, setsIsInviteModalOpen] = useState<Boolean>(false);
   const author = peerReviewRequest?.requestedByUser?.authorProfile
+  const invites = peerReviewRequest?.invites ?? [];
 
   return (
     <div className={css(styles.PeerReviewRequestCard)}>
@@ -46,11 +47,9 @@ function PeerReviewRequestCard({
         <span className={css(styles.avatarContainer)}>
           <AuthorAvatar
             author={(peerReviewRequest?.requestedByUser ?? {})["authorProfile"]}
-            boldName
-            fontSize={15}
-            size={25}
+            fontSize={16}
+            size={35}
             spacing={5}
-          // withAuthorName
           />
         </span>
         <div>
@@ -66,18 +65,20 @@ function PeerReviewRequestCard({
           <div className={css(styles.dateRow)}>
             {timeSince(peerReviewRequest.createdDate)}
           </div>
-          <div className={css(styles.invitedRow)}>
-            {peerReviewRequest?.invites?.map((invite) => (
-              <PeerReviewPerson
-                id={invite?.id}
-                status={invite?.status}
-                authorProfile={invite?.recipient?.authorProfile}
-              />
-            ))}
-          </div>
+          {invites.length > 0 &&
+            <div className={css(styles.invitedRow)}>
+              {invites.map((invite) => (
+                <PeerReviewPerson
+                  id={invite?.id}
+                  status={invite?.status}
+                  authorProfile={invite?.recipient?.authorProfile}
+                />
+              ))}
+            </div>
+          }
         </div>
       </div>
-      <div className={css(styles.buttonContainer)}>
+      <div className={css(styles.manageButtonContainer)}>
         <DropdownButton
           opts={opts}
           label={`Manage`}
@@ -112,11 +113,11 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     alignItems: "center",
     justifyContent: "space-between",
-    fontSize: 14,
+    fontSize: 16,
     marginBottom: 16,
   },
-  "buttonContainer": {
-
+  "manageButtonContainer": {
+    alignSelf: "flex-start",
   },
   "detailsContainer": {
     display: "flex",
@@ -132,13 +133,15 @@ const styles = StyleSheet.create({
     }
   },
   "mainTextRow": {
-    lineHeight: "26px",
+    lineHeight: "20px",
   },
   "dateRow": {
-    // marginTop: 4,
+    color: colors.BLACK(0.5),
+    fontWeight: 400,
+    fontSize: 14,
   },
   "invitedRow": {
-    marginTop: 10,
+    marginTop: 15,
   },
   "avatarContainer": {
     display: "inline-block",
