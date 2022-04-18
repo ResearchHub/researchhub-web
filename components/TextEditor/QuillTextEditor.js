@@ -177,26 +177,27 @@ class Editor extends Component {
   }
 
   onEditorChange = (value, delta, source, editor) => {
+    const editorContents = editor.getContents();
     if (this.props.editing) {
       return this.setState(
         {
-          editValue: editor.getContents(),
+          editValue: editorContents,
         },
         () => {
-          this.props.onChange && this.props.onChange();
+          this.props.onChange && this.props.onChange(editorContents);
         }
       );
     }
 
     this.setState(
       {
-        value: editor.getContents(),
+        value: editorContents,
         events: [`[${source}] text-change`, ...this.state.events],
         plainText: editor.getText(),
-        editValue: editor.getContents(),
+        editValue: editorContents,
       },
       () => {
-        this.props.onChange && this.props.onChange();
+        this.props.onChange && this.props.onChange(editorContents);
       }
     );
   };
@@ -254,7 +255,9 @@ class Editor extends Component {
     this.quillRef.setContents([]);
   };
 
-  onCancel = () => {
+  onCancel = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     if (this.props.editing) {
       let content = this.convertHtmlToDelta(this.state.value);
       this.quillRef.setContents(content);
@@ -270,7 +273,9 @@ class Editor extends Component {
     );
   };
 
-  onSubmit = () => {
+  onSubmit = (event) => {
+    event?.preventDefault();
+    event?.stopPropagation();
     let content = this.quillRef.getContents();
     let plainText = this.quillRef.getText();
     this.setState({
