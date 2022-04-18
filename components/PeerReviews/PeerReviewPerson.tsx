@@ -23,6 +23,10 @@ function PeerReviewPerson({
 
     if (status === "INVITED") {
       return `${authorProfile?.firstName} ${authorProfile?.lastName} has been invited`
+    } else if (status === "ACCEPTED") {
+      return `${authorProfile?.firstName} ${authorProfile?.lastName} accepted invite`
+    } else if (status === "DECLINED") {
+      return `${authorProfile?.firstName} ${authorProfile?.lastName} declined invite`
     }
   }
 
@@ -42,9 +46,12 @@ function PeerReviewPerson({
         </ReactTooltip>
 
         
-        {status == "INVITED"
-          ? <span
-              className={css(styles.status, styles.questionIcon)}>{icons.question}</span>
+        {status == "INVITED" ? 
+            <span className={css(styles.statusIcon, styles.questionIcon)}>{icons.question}</span>
+          : status == "ACCEPTED" ?
+            <span className={css(styles.statusIcon, styles.checkIcon)}>{icons.checkCircleSolid}</span>
+          : status == "DECLINED" ?
+            <span className={css(styles.statusIcon, styles.timesIcon)}>{icons.timesCircleSolid}</span>
           : null
         }
         <div
@@ -53,7 +60,7 @@ function PeerReviewPerson({
           <AuthorAvatar
             author={authorProfile}
             fontSize={15}
-            size={25}
+            size={30}
             spacing={5}
           />
       </div>
@@ -68,14 +75,24 @@ const styles = StyleSheet.create({
   "avatarContainer": {
     display: "inline-block",
   },
-  "status": {
+  "statusIcon": {
     position: "absolute",
-    top: -16,
-    right: -5,
+    background: "white",
+    borderRadius: 50,
+    height: 20,
+    fontSize: 20,
+    top: -24,
+    right: -9,
     zIndex: 1,
   },
   "questionIcon": {
     color: colors.ORANGE(),  
+  },
+  "checkIcon": {
+    color: colors.GREEN(),
+  },
+  "timesIcon": {
+    color: colors.RED(),
   }
 });
 
