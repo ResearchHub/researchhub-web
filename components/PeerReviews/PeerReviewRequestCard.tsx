@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   "invitedRow": {
-    marginTop: 20,
+    marginTop: 15,
   },
   "avatarContainer": {
     display: "inline-block",

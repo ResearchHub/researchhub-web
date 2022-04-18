@@ -71,7 +71,7 @@ function PeerReviewPerson({
 const styles = StyleSheet.create({
   "PeerReviewPerson": {
     position: "relative",
-    marginLeft: 15,
+    marginLeft: 10,
     ":first-child": {
       marginLeft: 0,
     }
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     height: 17,
     fontSize: 17,
-    top: -20,
+    top: 0,
     right: -6,
     zIndex: 1,
   },
