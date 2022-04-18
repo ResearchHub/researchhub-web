@@ -184,7 +184,7 @@ const DiscussionTab = (props) => {
     setPage(1);
   };
 
-  const cancel = (what) => {
+  const cancel = () => {
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
     setShowEditor(false);
