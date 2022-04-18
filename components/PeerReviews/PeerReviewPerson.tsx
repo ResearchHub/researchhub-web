@@ -1,5 +1,5 @@
 import AuthorAvatar from "~/components/AuthorAvatar";
-import { AuthorProfile, PeerReviewInvite } from "./config/PeerReviewTypes";
+import { AuthorProfile } from "~/config/types/root_types";
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement } from "react";
 import icons from "~/config/themes/icons";

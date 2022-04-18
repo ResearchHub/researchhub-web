@@ -1,5 +1,5 @@
 import { ReactElement, useState } from "react";
-import { PeerReviewRequest } from "./config/PeerReviewTypes";
+import { PeerReviewRequest } from "~/config/types/peerReview";
 import { css, StyleSheet } from "aphrodite";
 import ALink from "~/components/ALink";
 import AuthorAvatar from "~/components/AuthorAvatar";
