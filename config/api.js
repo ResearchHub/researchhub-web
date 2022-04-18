@@ -391,9 +391,12 @@ const routes = (BASE_URL) => {
     AUTHOR_CLAIM_CASE_COUNT: () => BASE_URL + "author_claim_case/count/",
     AUTHOR_CLAIM_TOKEN_VALIDATION: () =>
       BASE_URL + `author_claim_case/author_claim_token_validation/`,
-    AUTHOR_CLAIM_MODERATORS: ({ case_status }) =>
+    AUTHOR_CLAIM_MODERATORS: ({ case_status, page }) =>
       !isNullOrUndefined(case_status)
-        ? BASE_URL + `author_claim_case/moderator/?case_status=${case_status}`
+        ? BASE_URL +
+          `author_claim_case/moderator/?case_status=${case_status}&page=${
+            page ?? 1
+          }`
         : BASE_URL + `author_claim_case/moderator/`,
     AUTHORED_PAPER: ({ authorId, page }) => {
       let url =
