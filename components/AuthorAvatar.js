@@ -11,7 +11,7 @@ const AuthorAvatar = (props) => {
   const hasMounted = useHasMounted();
 
   // fixes an error with `style` Prop not matching on Server/Client
-  if (!hasMounted) {
+  if (!hasMounted || !props.author) {
     return null;
   }
 

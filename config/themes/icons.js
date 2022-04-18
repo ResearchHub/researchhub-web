@@ -51,6 +51,7 @@ import {
   faUserPlus,
   faUsers,
   faCheckDouble,
+  faQuestionCircle as solidQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebookF,
@@ -415,6 +416,7 @@ const icons = {
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
+  question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
   coinStack: ({ styles, grey }) => (

@@ -29,6 +29,11 @@ export type User = {
   id: ID,
 }
 
+export type PeerReviewInvite = {
+  id?: ID,
+  recipient?: User,
+  status?: string,
+}
 export type PeerReviewRequest = {
   id: ID,
   requestedByUser?: User,
@@ -37,6 +42,7 @@ export type PeerReviewRequest = {
   status?: string,
   peerReview?: PeerReview,
   createdDate?: Date,
+  invites?: PeerReviewInvite[],
 }
 
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
@@ -100,8 +106,17 @@ export const parsePeerReviewRequest = (raw: any): PeerReviewRequest => {
     peerReview: raw.peer_review,
     requestedByUser: parseUser(raw.requested_by_user),
     status: raw.status,
+    invites: (raw.invites ?? []).map((i: any) : PeerReviewInvite => parseInvite(i)),
     unifiedDocument: parseUnifiedDocument(raw.unified_document),
   }
 
   return mapped;
+}
+
+export const parseInvite = (raw: any): PeerReviewInvite => {
+  return {
+    id: raw.id,
+    recipient: parseUser(raw.recipient),
+    status: raw.status,
+  }
 }
