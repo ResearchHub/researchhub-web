@@ -1,11 +1,17 @@
 import API from "~/config/api";
 import BaseModal from "~/components/Modals/BaseModal";
 import Button from "~/components/Form/Button";
+import Loader from "~/components/Loader/Loader";
 import Modal from "react-modal";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { AUTH_TOKEN } from "~/config/constants";
 import { NOTE_GROUPS } from "~/components/Notebook/config/notebookConstants";
+import { StyleSheet, css } from "aphrodite";
+import { breakpoints } from "~/config/themes/screen";
+import { createNewNote, createNoteContent } from "~/config/fetch";
+import { fetchOrgTemplates } from "~/config/fetch";
+import { useAlert } from "react-alert";
 import {
   ReactElement,
   SyntheticEvent,
@@ -13,9 +19,14 @@ import {
   useRef,
   useState,
 } from "react";
-import { StyleSheet, css } from "aphrodite";
-import { breakpoints } from "~/config/themes/screen";
-import { createNewNote, createNoteContent } from "~/config/fetch";
+
+export type TemplateSidebarEntryProps = {
+  orgSlug: string;
+  selected: boolean;
+  setSelected: any;
+  setTemplates: any;
+  template: any;
+};
 
 export type NoteTemplateModalProps = {
   isOpen: boolean;
@@ -23,8 +34,73 @@ export type NoteTemplateModalProps = {
   redirectToNote: any;
   refetchTemplates: any;
   setIsOpen: (flag: boolean) => void;
+  setTemplates: any;
   templates: any;
 };
+
+function TemplateSidebarEntry({
+  orgSlug,
+  selected,
+  setSelected,
+  setTemplates,
+  template,
+}: TemplateSidebarEntryProps): ReactElement<"div"> {
+  const alert = useAlert();
+  const [isHovered, setIsHovered] = useState(false);
+  const [menuLoading, setMenuLoading] = useState(false);
+
+  return (
+    <div
+      className={css(
+        styles.sidebarSectionContent,
+        template.id === selected && styles.active
+      )}
+      key={template.id}
+      onClick={() => setSelected(template.id)}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {template.name}
+      {!template.is_default && (
+        <div
+          style={{ fontSize: 12 }}
+          className={css(styles.trashButton)}
+          onClick={(e) => {
+            e && e.stopPropagation();
+            alert.show({
+              text: (
+                <div>
+                  Permanently delete <b>{template.name}</b>? This cannot be
+                  undone.
+                </div>
+              ),
+              buttonText: "Yes",
+              onClick: async () => {
+                setMenuLoading(true);
+                await fetch(
+                  API.NOTE_TEMPLATE_DELETE({ templateId: template.id }),
+                  API.POST_CONFIG()
+                );
+                const resp = await fetchOrgTemplates(orgSlug);
+                setTemplates(resp);
+                if (template.id === selected) {
+                  setSelected(resp[0]?.id);
+                }
+                setMenuLoading(false);
+              },
+            });
+          }}
+        >
+          {menuLoading ? (
+            <Loader size={18} />
+          ) : (
+            <div className={css(!isHovered && styles.hide)}>{icons.trash}</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
 
 export default function NoteTemplateModal({
   isOpen,
@@ -32,6 +108,7 @@ export default function NoteTemplateModal({
   redirectToNote,
   refetchTemplates,
   setIsOpen,
+  setTemplates,
   templates,
 }: NoteTemplateModalProps): ReactElement<typeof Modal> {
   const editorRef = useRef<any>();
@@ -54,7 +131,7 @@ export default function NoteTemplateModal({
 
   useEffect(() => {
     if (templates && !selected) {
-      setSelected(templates[0]?.id)
+      setSelected(templates[0]?.id);
     }
   }, [templates]);
 
@@ -75,7 +152,11 @@ export default function NoteTemplateModal({
     const noteParams = {
       grouping: NOTE_GROUPS.WORKSPACE,
       orgSlug,
-      title: editorInstance?.plugins.get("Title").getTitle().replace(/&nbsp;/g, ' ') || "Untitled",
+      title:
+        editorInstance?.plugins
+          .get("Title")
+          .getTitle()
+          .replace(/&nbsp;/g, " ") || "Untitled",
     };
 
     const note = await createNewNote(noteParams);
@@ -157,16 +238,13 @@ export default function NoteTemplateModal({
           {!hideTemplates && (
             <div>
               {templates.map((template) => (
-                <div
-                  className={css(
-                    styles.sidebarSectionContent,
-                    template.id === selected && styles.active
-                  )}
-                  key={template.id}
-                  onClick={() => setSelected(template.id)}
-                >
-                  {template.name}
-                </div>
+                <TemplateSidebarEntry
+                  orgSlug={orgSlug}
+                  selected={selected}
+                  setSelected={setSelected}
+                  setTemplates={setTemplates}
+                  template={template}
+                />
               ))}
             </div>
           )}
@@ -218,7 +296,9 @@ const styles = StyleSheet.create({
     display: "flex",
     fontSize: 14,
     fontWeight: 500,
-    padding: "8px 20px",
+    justifyContent: "space-between",
+    padding: "8px 40px 8px 20px",
+    position: "relative",
     textDecoration: "none",
     userSelect: "none",
     wordBreak: "break-word",
@@ -274,5 +354,26 @@ const styles = StyleSheet.create({
   },
   rippleClass: {
     width: "100%",
+  },
+  trashButton: {
+    alignItems: "center",
+    borderRadius: "50%",
+    bottom: 0,
+    color: colors.RED(0.7),
+    cursor: "pointer",
+    display: "flex",
+    height: 27,
+    justifyContent: "center",
+    margin: "auto",
+    position: "absolute",
+    right: 7,
+    top: 0,
+    width: 27,
+    ":hover": {
+      backgroundColor: colors.GREY(0.7),
+    },
+  },
+  hide: {
+    display: "none",
   },
 });

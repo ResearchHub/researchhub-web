@@ -33,6 +33,7 @@ const NotebookSidebar = ({
   orgs,
   redirectToNote,
   refetchTemplates,
+  setTemplates,
   templates,
   titles,
 }) => {
@@ -95,6 +96,7 @@ const NotebookSidebar = ({
         redirectToNote={redirectToNote}
         refetchTemplates={refetchTemplates}
         setIsOpen={setIsNoteTemplateModalOpen}
+        setTemplates={setTemplates}
         templates={templates}
       />
       <div className={css(styles.sidebarOrgContainer)}>

@@ -253,6 +253,9 @@ const routes = (BASE_URL) => {
         return `${BASE_URL}note_template/`;
       }
     },
+    NOTE_TEMPLATE_DELETE: ({ templateId }) => {
+      return `${BASE_URL}note_template/${templateId}/delete/`;
+    },
     GET_ACTIVE_CONTRIBUTORS_FOR_EDITORS: ({ startDate, endDate, userIds }) => {
       let url = `${BASE_URL}get_hub_active_contributors/`;
 
