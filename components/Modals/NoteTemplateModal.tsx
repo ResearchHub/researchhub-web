@@ -61,41 +61,43 @@ function TemplateSidebarEntry({
       onMouseLeave={() => setIsHovered(false)}
     >
       {template.name}
-      <div
-        style={{ fontSize: 12 }}
-        className={css(styles.trashButton)}
-        onClick={(e) => {
-          e && e.stopPropagation();
-          alert.show({
-            text: (
-              <div>
-                Permanently delete <b>{template.name}</b>? This cannot be
-                undone.
-              </div>
-            ),
-            buttonText: "Yes",
-            onClick: async () => {
-              setMenuLoading(true);
-              await fetch(
-                API.NOTE_TEMPLATE_DELETE({ templateId: template.id }),
-                API.POST_CONFIG()
-              );
-              const resp = await fetchOrgTemplates(orgSlug);
-              setTemplates(resp);
-              if (template.id === selected) {
-                setSelected(resp[0]?.id);
-              }
-              setMenuLoading(false);
-            },
-          });
-        }}
-      >
-        {menuLoading ? (
-          <Loader size={18} />
-        ) : (
-          <div className={css(!isHovered && styles.hide)}>{icons.trash}</div>
-        )}
-      </div>
+      {!template.is_default && (
+        <div
+          style={{ fontSize: 12 }}
+          className={css(styles.trashButton)}
+          onClick={(e) => {
+            e && e.stopPropagation();
+            alert.show({
+              text: (
+                <div>
+                  Permanently delete <b>{template.name}</b>? This cannot be
+                  undone.
+                </div>
+              ),
+              buttonText: "Yes",
+              onClick: async () => {
+                setMenuLoading(true);
+                await fetch(
+                  API.NOTE_TEMPLATE_DELETE({ templateId: template.id }),
+                  API.POST_CONFIG()
+                );
+                const resp = await fetchOrgTemplates(orgSlug);
+                setTemplates(resp);
+                if (template.id === selected) {
+                  setSelected(resp[0]?.id);
+                }
+                setMenuLoading(false);
+              },
+            });
+          }}
+        >
+          {menuLoading ? (
+            <Loader size={18} />
+          ) : (
+            <div className={css(!isHovered && styles.hide)}>{icons.trash}</div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
