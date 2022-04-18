@@ -14,10 +14,12 @@ import PeerReviewPerson from "./PeerReviewPerson";
 
 type Props = {
   peerReviewRequest: PeerReviewRequest;
+  fetchReviewRequests: Function;
 };
 
 function PeerReviewRequestCard({
-  peerReviewRequest
+  peerReviewRequest,
+  fetchReviewRequests,
 }: Props): ReactElement {
 
   const opts = [{
@@ -42,6 +44,7 @@ function PeerReviewRequestCard({
         peerReviewRequest={peerReviewRequest}
         isOpen={isInviteModalOpen}
         closeModal={() => setsIsInviteModalOpen(false)}
+        fetchReviewRequests={fetchReviewRequests}
       />
       <div className={css(styles.detailsContainer)}>
         <span className={css(styles.avatarContainer)}>
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   "invitedRow": {
-    marginTop: 15,
+    marginTop: 20,
   },
   "avatarContainer": {
     display: "inline-block",

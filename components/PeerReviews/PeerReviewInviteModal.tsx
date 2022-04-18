@@ -8,9 +8,11 @@ import { inviteReviewer } from "./config/PeerReviewInviteAPI";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import Loader from "~/components/Loader/Loader";
+import colors from "~/config/themes/colors";
 
 type Props = {
   peerReviewRequest: PeerReviewRequest;
+  fetchReviewRequests: Function;
   isOpen: Boolean;
   closeModal: Function;
   setMessage: Function;
@@ -19,6 +21,7 @@ type Props = {
 
 function PeerReviewRequestModal({
   peerReviewRequest,
+  fetchReviewRequests,
   isOpen,
   closeModal,
   setMessage,
@@ -56,6 +59,7 @@ function PeerReviewRequestModal({
       onSuccess: () => {
         setEmail("");
         setIsLoading(false);
+        fetchReviewRequests();
       },
     })
   }
@@ -69,7 +73,10 @@ function PeerReviewRequestModal({
     >
       <div className={css(styles.rootContainer)}>
         <div className={css(styles.reviewDetails)}>
-          Paper: {peerReviewRequest?.unifiedDocument?.document?.title}
+          <div className={css(styles.attrRow)}>
+            <div className={css(styles.attrName)}>Paper</div>
+            <div className={css(styles.attrValue)}>{peerReviewRequest?.unifiedDocument?.document?.title}</div>
+          </div>
         </div>
         <form
           onSubmit={(e) => handleSubmit(e)}
@@ -79,6 +86,7 @@ function PeerReviewRequestModal({
             getRef={formInputRef}
             required
             type="email"
+            placeholder="Email"
             onKeyDown={handleKeyDown}
             onChange={(id, value) => setEmail(value)}
           />
@@ -98,12 +106,27 @@ function PeerReviewRequestModal({
 
 const styles = StyleSheet.create({
   "rootContainer": {
-
+    width: "100%",
+    textAlign: "center",
   },
   "modalStyle": {
-    
+    minWidth: 600,
   },
   "reviewDetails": {
+    borderRadius: "4px",
+    border: `1px solid ${colors.GREY(0.5)}`,
+    textAlign: "left",
+    marginTop: 30,
+  },
+  "attrRow": {
+    padding: 15,
+    display: "flex",
+  },
+  "attrName": {
+    fontWeight: 500,
+    width: "25%",
+  },
+  "attrValue": {
 
   }
 });
