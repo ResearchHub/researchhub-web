@@ -1,6 +1,6 @@
 import { ReactElement, useRef, useState } from "react";
 import { css, StyleSheet } from "aphrodite";
-import { PeerReviewRequest } from "./config/PeerReviewTypes";
+import { PeerReviewRequest } from "~/config/types/peerReview";
 import BaseModal from "~/components/Modals/BaseModal";
 import FormInput from "~/components/Form/FormInput";
 import Button from "~/components/Form/Button";

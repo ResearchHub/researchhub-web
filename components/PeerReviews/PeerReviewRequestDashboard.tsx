@@ -1,7 +1,7 @@
 import { ReactElement, useState, useEffect, useCallback } from "react";
 import { css, StyleSheet } from "aphrodite";
 import { fetchPeerReviewRequests } from "./config/PeerReviewRequestAPI";
-import { PeerReviewRequest } from "./config/PeerReviewTypes";
+import { PeerReviewRequest } from "~/config/types/peerReview";
 import PeerReviewRequestCard from "./PeerReviewRequestCard";
 import { captureEvent } from "~/config/utils/events";
 
