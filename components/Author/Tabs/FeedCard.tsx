@@ -246,7 +246,7 @@ function FeedCard(props: FeedCardProps) {
                       withAuthorName
                     />
                   ) : null}
-                  {(uploaded_by || created_by) && hubs && (
+                  {(uploaded_by || created_by) && hubs.length > 0 && (
                     <div className={css(styles.textLabel)}>in</div>
                   )}
                   {hubs?.slice(0, 1).map((tag, index) => (
