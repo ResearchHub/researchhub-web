@@ -86,12 +86,18 @@ export function slugToFilterQuery(slug) {
 }
 
 export function getUrlToUniDoc(uniDoc) {
-  const doc = Array.isArray(uniDoc.documents)
-    ? uniDoc.documents[0]
-    : uniDoc.documents;
+  let doc;
+  if (uniDoc.document) {
+    doc = uniDoc.document;
+  } else if (Array.isArray(uniDoc.documents)) {
+    doc = uniDoc.documents[0];
+  } else {
+    doc = uniDoc.documents;
+  }
 
+  const docType = uniDoc.document_type ?? uniDoc.documentType;
   let url = "";
-  switch (uniDoc.document_type) {
+  switch (docType) {
     case "PAPER":
       url = `/paper/${doc.id}/${doc.slug}`;
       break;
