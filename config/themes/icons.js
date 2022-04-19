@@ -51,6 +51,7 @@ import {
   faUserPlus,
   faUsers,
   faCheckDouble,
+  faQuestionCircle as solidQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faFacebookF,
@@ -65,6 +66,8 @@ import {
   faArrowToBottom,
   faBracketsCurly,
   faChartNetwork,
+  faCommentCheck,
+  faCheckCircle as checkCircleSolid,
   faFileEdit,
   faH1,
   faH2,
@@ -78,6 +81,7 @@ import {
   faPencil,
   faQuoteRight,
   faRss,
+  faTimesCircle as timesCircleSolid,
   faUserSlash,
   faVideoPlus,
   faShieldAlt,
@@ -308,6 +312,7 @@ const icons = {
   chat: <FontAwesomeIcon icon={faComment} />,
   check: <FontAwesomeIcon icon={faCheck} />,
   checkCircle: <FontAwesomeIcon icon={faCheckCircle} />,
+  checkCircleSolid: <FontAwesomeIcon icon={checkCircleSolid} />,
   chevronDown: <FontAwesomeIcon icon={faChevronDown} />,
   chevronDownLeft: <FontAwesomeIcon icon={falChevronDown} />,
   chevronLeft: <FontAwesomeIcon icon={faChevronLeft} />,
@@ -321,6 +326,7 @@ const icons = {
   commentAltDots: <FontAwesomeIcon icon={faCommentAltDots} />,
   commentAltEdit: <FontAwesomeIcon icon={faCommentAltEdit} />,
   commentAltLine: <FontAwesomeIcon icon={faCommentAltLines} />,
+  commentCheck: <FontAwesomeIcon icon={faCommentCheck} />,
   commentRegular: <FontAwesomeIcon icon={faCommentRegular} />,
   comments: <FontAwesomeIcon icon={faComments} />,
   commentsAlt: <FontAwesomeIcon icon={faCommentsNoBackground} />,
@@ -403,6 +409,7 @@ const icons = {
   takeaway: <FontAwesomeIcon icon={faList} />,
   times: <FontAwesomeIcon icon={faTimes} />,
   timesCircle: <FontAwesomeIcon icon={faTimesCircle} />,
+  timesCircleSolid: <FontAwesomeIcon icon={timesCircleSolid} />,
   trash: <FontAwesomeIcon icon={faTrashAlt} />,
   trophy: <FontAwesomeIcon icon={faTrophy} />,
   twitter: <FontAwesomeIcon icon={faTwitter} />,
@@ -413,6 +420,7 @@ const icons = {
   userEdit: <FontAwesomeIcon icon={faUserEdit} />,
   userPlus: <FontAwesomeIcon icon={faUserPlus} />,
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
+  question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   // customIcons
   coinStack: ({ styles, grey }) => (

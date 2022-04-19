@@ -13,18 +13,18 @@ const DropdownButton = ({
   onClickOutside,
   dropdownClassName,
   customButtonClassName,
-  selected,
-  positions = ["bottom", "top"],
-  isOpen = false,
   labelAsHtml = null,
+  selected = null,
   overridePopoverStyle = null,
   overrideOptionsStyle = null,
   overrideTargetStyle = null,
   overrideTitleStyle = null,
   overrideDownIconStyle = null,
-  closeAfterSelect = true,
   htmlBefore = null, // HTML to be injected before the list
   htmlAfter = null, // HTML to be injected after the list
+  closeAfterSelect = true,
+  positions = ["bottom", "top"],
+  isOpen = false,
 }) => {
   return (
     <ResearchHubPopover
