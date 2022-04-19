@@ -9,7 +9,7 @@ import { ID } from "~/config/types/root_types";
 
 type Props = {
   id: ID,
-  status?: string,
+  status?: "ACCEPTED" | "DECLINED" | "INVITED",
   authorProfile?: AuthorProfile,
 };
 
@@ -18,17 +18,17 @@ function PeerReviewPerson({
   status,
   authorProfile,
 }: Props): ReactElement {
-  
-  const getTooltipMessage = () => {
 
-    if (status === "INVITED") {
-      return `${authorProfile?.firstName} ${authorProfile?.lastName} has been invited`
-    } else if (status === "ACCEPTED") {
-      return `${authorProfile?.firstName} ${authorProfile?.lastName} accepted invite`
-    } else if (status === "DECLINED") {
-      return `${authorProfile?.firstName} ${authorProfile?.lastName} declined invite`
-    }
-  }
+  const authorName = `${authorProfile?.firstName} ${authorProfile?.lastName}`;
+  const tooltipMessage = (
+    (status === "INVITED") ?
+      `${authorName} has been invited`
+    : (status === "ACCEPTED") ?
+      `${authorName} accepted invite`
+    : (status === "DECLINED") ?
+      `${authorName} declined invite`
+    : null
+  );
 
   return (
     <span
@@ -42,7 +42,7 @@ function PeerReviewPerson({
           delayShow={250}
           id={`person-${id}-${authorProfile?.id}`}
         >
-          {getTooltipMessage()}
+          {tooltipMessage}
         </ReactTooltip>
 
         

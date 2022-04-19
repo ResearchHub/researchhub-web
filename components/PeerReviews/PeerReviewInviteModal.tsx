@@ -28,8 +28,13 @@ function PeerReviewRequestModal({
   showMessage,
 }: Props): ReactElement {
   const formInputRef = useRef();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  const handleClose = () => {
+    setEmail("");
+    closeModal();
+  }
 
   const handleKeyDown = (e) => {
     if (e?.key === 13 /*Enter*/) {
@@ -38,7 +43,7 @@ function PeerReviewRequestModal({
   };
 
   const handleSubmit = async (e) => {
-    e && e.preventDefault();
+    e?.preventDefault();
 
     if (email.length > 0) {
       invite();
@@ -66,7 +71,7 @@ function PeerReviewRequestModal({
 
   return (
     <BaseModal
-      closeModal={closeModal}
+      closeModal={handleClose}
       isOpen={isOpen}
       modalStyle={styles.modalStyle}
       title="Invite Peer Reviewers"
