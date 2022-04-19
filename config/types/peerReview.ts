@@ -7,7 +7,7 @@ export type PeerReview = {
 export type PeerReviewInvite = {
   id?: ID,
   recipient?: RHUser,
-  status?: string,
+  status?: "ACCEPTED" | "DECLINED" | "INVITED",
 }
 
 export type PeerReviewRequest = {

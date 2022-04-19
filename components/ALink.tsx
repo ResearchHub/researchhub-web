@@ -1,4 +1,4 @@
-import { FunctionComponent, ReactElement } from "react"
+import { FunctionComponent, ReactElement, ReactNode } from "react"
 import Link from "next/link";
 import { css, StyleSheet } from "aphrodite";
 import colors from "~/config/themes/colors";
@@ -11,7 +11,7 @@ interface Props {
   theme?: string,
   href: any,
   as?: any,
-  children?: React.ReactNode,
+  children?: ReactNode,
 }
 
 const ALink: FunctionComponent<Props> = ({ href, as, children, theme = themes.default }): ReactElement => {

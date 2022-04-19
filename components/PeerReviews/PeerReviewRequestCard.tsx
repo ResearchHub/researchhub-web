@@ -11,6 +11,16 @@ import { ID } from "~/config/types/root_types";
 import PeerReviewRequestModal from "./PeerReviewInviteModal";
 import PeerReviewPerson from "./PeerReviewPerson";
 
+const opts = [{
+  label: "Invite",
+  value: "invite"
+}, {
+  label: "Decline",
+  value: "decline"
+}, {
+  label: "Close",
+  value: "close"    
+}];
 
 type Props = {
   peerReviewRequest: PeerReviewRequest;
@@ -22,21 +32,17 @@ function PeerReviewRequestCard({
   fetchReviewRequests,
 }: Props): ReactElement {
 
-  const opts = [{
-    label: "Invite",
-    value: "invite"
-  }, {
-    label: "Decline",
-    value: "decline"
-  }, {
-    label: "Close",
-    value: "close"    
-  }];
-
   const [manageDropdownOpenFor, setManageDropdownOpenFor] = useState<ID>(null)
   const [isInviteModalOpen, setsIsInviteModalOpen] = useState<Boolean>(false);
   const author = peerReviewRequest?.requestedByUser?.authorProfile
   const invites = peerReviewRequest?.invites ?? [];
+  const invitedPeople = invites.map((invite) => (
+    <PeerReviewPerson
+      id={invite?.id}
+      status={invite?.status}
+      authorProfile={invite?.recipient?.authorProfile}
+    />
+  ))
 
   return (
     <div className={css(styles.PeerReviewRequestCard)}>
@@ -70,13 +76,7 @@ function PeerReviewRequestCard({
           </div>
           {invites.length > 0 &&
             <div className={css(styles.invitedRow)}>
-              {invites.map((invite) => (
-                <PeerReviewPerson
-                  id={invite?.id}
-                  status={invite?.status}
-                  authorProfile={invite?.recipient?.authorProfile}
-                />
-              ))}
+              {invitedPeople}
             </div>
           }
         </div>
