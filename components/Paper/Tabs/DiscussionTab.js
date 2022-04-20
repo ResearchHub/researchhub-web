@@ -35,7 +35,14 @@ import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
+import CheckBox from "~/components/Form/CheckBox";
+
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
+
+const TYPES = {
+  comment: "comment",
+  review: "review",
+};
 
 const DiscussionTab = (props) => {
   const initialDiscussionState = {
@@ -96,6 +103,7 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
+  const [discussionType, setDiscussionType] = useState(TYPES.comment);
 
   useEffect(() => {
     handleWindowResize();
@@ -411,6 +419,23 @@ const DiscussionTab = (props) => {
       <div className={css(stylesEditor.box)}>
         <Message />
         <div className={css(stylesEditor.discussionInputWrapper)}>
+          <div className={css(styles.dicussionTypeContainer)}>
+            <div className={css(styles.dicussionType)}>
+              <CheckBox
+                label="Comment"
+                active={discussionType == TYPES.comment}
+                onChange={() => setDiscussionType(TYPES.comment)}
+              />
+            </div>
+            <div className={css(styles.dicussionType)}>
+              <CheckBox
+                label="Review"
+                active={discussionType == TYPES.review}
+                onChange={() => setDiscussionType(TYPES.review)}
+              />
+              (New)
+            </div>
+          </div>
           <div
             className={css(stylesEditor.discussionTextEditor)}
             onClick={() => editorDormant && setEditorDormant(false)}
