@@ -41,8 +41,8 @@ import CheckBox from "~/components/Form/CheckBox";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const TYPES = {
-  comment: "comment",
-  review: "review",
+  COMMENT: "COMMENT",
+  REVIEW: "REVIEW",
 };
 
 const DiscussionTab = (props) => {
@@ -226,6 +226,11 @@ const DiscussionTab = (props) => {
         plain_text: plain_text,
       };
     }
+
+    if (discussionType === TYPES.REVIEW) {
+      param["score"] = 43;
+    }
+
     props.showMessage({ load: true, show: true });
     let config = API.POST_CONFIG(param);
 
@@ -424,20 +429,20 @@ const DiscussionTab = (props) => {
             <div className={css(styles.dicussionType)}>
               <CheckBox
                 label="Comment"
-                active={discussionType == TYPES.comment}
-                onChange={() => setDiscussionType(TYPES.comment)}
+                active={discussionType == TYPES.COMMENT}
+                onChange={() => setDiscussionType(TYPES.COMMENT)}
               />
             </div>
             <div className={css(styles.dicussionType)}>
               <CheckBox
                 label="Review"
-                active={discussionType == TYPES.review}
-                onChange={() => setDiscussionType(TYPES.review)}
+                active={discussionType == TYPES.REVIEW}
+                onChange={() => setDiscussionType(TYPES.REVIEW)}
               />
               (New)
             </div>
           </div>
-          {discussionType == TYPES.review && (
+          {discussionType == TYPES.REVIEW && (
             <div className={css(styles.scoreContainer)}>
               <ScoreInput onSelect={() => null} value={4} />
             </div>
