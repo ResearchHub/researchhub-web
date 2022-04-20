@@ -3,7 +3,7 @@ import { ReactElement, useState } from "react";
 
 type Props = {
     value: number;
-    onSelect: Function    
+    onSelect: Function;  
 };
 
 const MAX_SCORE = 10;
