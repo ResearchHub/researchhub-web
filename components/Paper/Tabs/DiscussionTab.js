@@ -11,6 +11,7 @@ import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
 import FormSelect from "~/components/Form/FormSelect";
+import ScoreInput from "~/components/Form/ScoreInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
@@ -436,6 +437,11 @@ const DiscussionTab = (props) => {
               (New)
             </div>
           </div>
+          {discussionType == TYPES.review && (
+            <div className={css(styles.scoreContainer)}>
+              <ScoreInput onSelect={() => null} value={4} />
+            </div>
+          )}
           <div
             className={css(stylesEditor.discussionTextEditor)}
             onClick={() => editorDormant && setEditorDormant(false)}
