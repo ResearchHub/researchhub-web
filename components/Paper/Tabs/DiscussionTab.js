@@ -425,18 +425,26 @@ const DiscussionTab = (props) => {
       <div className={css(stylesEditor.box)}>
         <Message />
         <div className={css(stylesEditor.discussionInputWrapper)}>
-          <div className={css(styles.dicussionTypeContainer)}>
-            <Toggle
-              options={[
-                { label: "Comment", value: TYPES.COMMENT },
-                { label: "Review", value: TYPES.REVIEW },
-              ]}
-              selected={discussionType}
-              onSelect={(selected) => setDiscussionType(selected.value)}
-            />
+          <div className={css(styles.discussionTypeHeaderContainer)}>
+            <div className={css(styles.discussionTypeHeader)}>
+              {discussionType === TYPES.COMMENT
+                ? "Write a comment"
+                : "Write a review"}
+            </div>
+            <div className={css(styles.dicussionToggleContainer)}>
+              <Toggle
+                options={[
+                  { label: "Comment", value: TYPES.COMMENT },
+                  { label: "Review", value: TYPES.REVIEW },
+                ]}
+                selected={discussionType}
+                onSelect={(selected) => setDiscussionType(selected.value)}
+              />
+            </div>
           </div>
           {discussionType == TYPES.REVIEW && (
-            <div className={css(styles.scoreContainer)}>
+            <div className={css(styles.reviewDetails)}>
+              <div className={css(styles.reviewHeader)}>Score</div>
               <ScoreInput onSelect={() => null} value={4} />
             </div>
           )}
@@ -591,7 +599,7 @@ const DiscussionTab = (props) => {
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Comments
+              Comments & Reviews
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -1062,8 +1070,25 @@ var styles = StyleSheet.create({
   placeholderContainer: {
     marginTop: 15,
   },
-  dicussionTypeContainer: {
+  dicussionToggleContainer: {
     display: "flex",
+  },
+  discussionTypeHeaderContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  discussionTypeHeader: {
+    fontSize: 18,
+    fontWeight: 400,
+    alignSelf: "center",
+  },
+  reviewDetails: {
+    marginBottom: 15,
+  },
+  reviewHeader: {
+    fontSize: 18,
+    margin: "10px 0",
   },
 });
 
