@@ -15,6 +15,7 @@ import ScoreInput from "~/components/Form/ScoreInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import Toggle from "~/components/Form/Toggle";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -36,7 +37,6 @@ import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
-import CheckBox from "~/components/Form/CheckBox";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -104,7 +104,7 @@ const DiscussionTab = (props) => {
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
-  const [discussionType, setDiscussionType] = useState(TYPES.comment);
+  const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
 
   useEffect(() => {
     handleWindowResize();
@@ -426,21 +426,14 @@ const DiscussionTab = (props) => {
         <Message />
         <div className={css(stylesEditor.discussionInputWrapper)}>
           <div className={css(styles.dicussionTypeContainer)}>
-            <div className={css(styles.dicussionType)}>
-              <CheckBox
-                label="Comment"
-                active={discussionType == TYPES.COMMENT}
-                onChange={() => setDiscussionType(TYPES.COMMENT)}
-              />
-            </div>
-            <div className={css(styles.dicussionType)}>
-              <CheckBox
-                label="Review"
-                active={discussionType == TYPES.REVIEW}
-                onChange={() => setDiscussionType(TYPES.REVIEW)}
-              />
-              (New)
-            </div>
+            <Toggle
+              options={[
+                { label: "Comment", value: TYPES.COMMENT },
+                { label: "Review", value: TYPES.REVIEW },
+              ]}
+              selected={discussionType}
+              onSelect={(selected) => setDiscussionType(selected.value)}
+            />
           </div>
           {discussionType == TYPES.REVIEW && (
             <div className={css(styles.scoreContainer)}>
@@ -1068,6 +1061,9 @@ var styles = StyleSheet.create({
   },
   placeholderContainer: {
     marginTop: 15,
+  },
+  dicussionTypeContainer: {
+    display: "flex",
   },
 });
 

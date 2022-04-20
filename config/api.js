@@ -463,6 +463,7 @@ const routes = (BASE_URL) => {
       source,
       targetId,
       twitter,
+      discussionType = "COMMENT",
     }) => {
       let url = `${BASE_URL}${documentType}/${documentId}/discussion/${
         targetId != null ? targetId + "/" : ""
@@ -474,8 +475,10 @@ const routes = (BASE_URL) => {
           ordering: filter,
           source: source != null ? source : twitter ? "twitter" : "researchhub",
           is_removed: Boolean(isRemoved) ? "True" : "False",
+          discussion_type: discussionType,
         },
       };
+
       url = prepURL(url, params);
 
       return url;
