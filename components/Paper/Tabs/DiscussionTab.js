@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { connect } from "react-redux";
 import { StyleSheet, css } from "aphrodite";
@@ -35,6 +35,7 @@ import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent } from "~/config/fetch";
+import { isEmpty } from "~/config/utils/nullchecks";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const DiscussionTab = (props) => {
@@ -304,7 +305,6 @@ const DiscussionTab = (props) => {
   const handleDiscussionTextEditor = (editorState) => {
     let newDiscussion = { ...discussion };
     newDiscussion.question = editorState;
-
     setDiscussion(newDiscussion);
   };
 
@@ -406,35 +406,41 @@ const DiscussionTab = (props) => {
     );
   };
 
-  const renderDiscussionTextEditor = () => {
+  const editor = useMemo(() => {
+    // This is a temp solution
     return (
-      <div className={css(stylesEditor.box)}>
-        <Message />
-        <div className={css(stylesEditor.discussionInputWrapper)}>
-          <div
-            className={css(stylesEditor.discussionTextEditor)}
-            onClick={() => editorDormant && setEditorDormant(false)}
-          >
-            <TextEditor
-              canEdit={true}
-              readOnly={false}
-              // onChange={handleDiscussionTextEditor}
-              placeholder={
-                "Leave a question or a comment for the Author of the paper or the community"
-              }
-              initialValue={discussion.question}
-              commentEditor={true}
-              smallToolBar={true}
-              onCancel={cancel}
-              onSubmit={save}
-              commentEditorStyles={styles.commentEditorStyles}
-              focusEditor={focus}
-            />
-          </div>
+      <TextEditor
+        canEdit
+        commentEditor
+        commentEditorStyles={styles.commentEditorStyles}
+        focusEditor={focus}
+        initialValue={discussion.question}
+        onCancel={cancel}
+        onSubmit={save}
+        placeholder={
+          "Leave a question or a comment for the Author of the paper or the community"
+        }
+        readOnly={false}
+        smallToolBar
+      />
+    );
+  }, []);
+
+  const discussionTextEditor = !showEditor ? (
+    renderAddDiscussion()
+  ) : (
+    <div className={css(stylesEditor.box)}>
+      <Message />
+      <div className={css(stylesEditor.discussionInputWrapper)}>
+        <div
+          className={css(stylesEditor.discussionTextEditor)}
+          onClick={() => editorDormant && setEditorDormant(false)}
+        >
+          {editor}
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 
   return (
     <Fragment>
@@ -496,9 +502,7 @@ const DiscussionTab = (props) => {
           </div>
           <div className={css(styles.box, !addView && styles.right)}>
             <div className={css(styles.addDiscussionContainer)}>
-              {showEditor &&
-                !showTwitterComments &&
-                renderDiscussionTextEditor()}
+              {!showTwitterComments && discussionTextEditor}
             </div>
           </div>
           {renderThreads(formattedThreads, hostname)}
@@ -575,31 +579,9 @@ const DiscussionTab = (props) => {
                   ""
                 )}
               </span>
-              {/* <div className={css(styles.tabRow)}>
-                <div
-                  className={css(
-                    styles.tab,
-                    !showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(false)}
-                >
-                  Comments
-                </div>
-                <div
-                  className={css(
-                    styles.tab,
-                    showTwitterComments && styles.activeTab
-                  )}
-                  onClick={() => toggleTwitterComments(true)}
-                >
-                  Tweets
-                </div>
-              </div> */}
             </div>
           </div>
-          {showEditor
-            ? !showTwitterComments && renderDiscussionTextEditor()
-            : !showTwitterComments && renderAddDiscussion()}
+          {discussionTextEditor}
           {renderThreads(formattedThreads, hostname)}
         </div>
       )}
@@ -1036,6 +1018,9 @@ var styles = StyleSheet.create({
 });
 
 const stylesEditor = StyleSheet.create({
+  visibilityHidden: {
+    visibility: "hidden",
+  },
   box: {
     display: "flex",
     alignItems: "center",
