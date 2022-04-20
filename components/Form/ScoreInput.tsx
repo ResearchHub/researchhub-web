@@ -47,14 +47,15 @@ function ScoreInput({
   const barInput = buildBarInput();
   return (
     <div className={css(styles.scoreInput)}>
-      {barInput}
+        {barInput}
+        <div className={css(styles.scoreText)}>{selectedValue}/{MAX_SCORE}</div>
     </div>
   )
 }
 
 const styles = StyleSheet.create({
   "scoreInput": {
-
+    display: "flex",
   },
   "barInput": {
     display: "flex",
@@ -74,6 +75,11 @@ const styles = StyleSheet.create({
     background: "#3971FF",
     transition: "0.2s",
   },
+  "scoreText": {
+    marginLeft: 20,
+    fontSize: 14,
+    fontWeight: 400,
+  }
 })
 
 export default ScoreInput;

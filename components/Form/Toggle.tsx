@@ -53,12 +53,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: "6px 12px",
     cursor: "pointer",
-    transition: "0.2s",
   },
   "optionSelected": {
     background: "#3971FF",
     color: "white",
-    transition: "0.2s",
+    transition: "0.1s",
   }
 });
 
