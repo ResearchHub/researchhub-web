@@ -144,31 +144,6 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     boxSizing: "border-box",
   },
-  formSelectContainer: {
-    padding: 0,
-    margin: 0,
-    width: "100%",
-    minHeight: "unset",
-  },
-  formSelectInput: {
-    width: "100%",
-  },
-  multiTagStyle: {
-    margin: "5px 0",
-    marginRight: 5,
-    border: "1px solid #fff",
-    padding: "5px 8px",
-    ":hover": {
-      border: `1px solid ${colors.BLUE()}`,
-    },
-  },
-  multiTagLabelStyle: {
-    color: colors.PURPLE(1),
-    fontSize: 12,
-    fontWeight: 500,
-    letterSpacing: 1,
-    textTransform: "uppercase",
-  },
   inputFieldContainer: {
     width: "100%",
     fontSize: 16,
@@ -187,21 +162,6 @@ const styles = StyleSheet.create({
     color: "#FFF",
     position: "absolute",
     right: 5,
-  },
-  editIcon: {
-    cursor: "pointer",
-    borderRadius: "50%",
-    color: "#afb5bc",
-    boxSizing: "border-box",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    height: 32,
-    width: 32,
-    ":hover": {
-      color: colors.BLACK(),
-      backgroundColor: "#EDEDED",
-    },
   },
   formContainer: {
     display: "flex",
