@@ -2,7 +2,7 @@ import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
 import { ID } from "~/config/types/root_types";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import API from "~/config/api";
 import colors from "~/config/themes/colors";
@@ -13,25 +13,32 @@ import Ripples from "react-ripples";
 import { captureEvent } from "@sentry/nextjs";
 
 function useEffectGetUserApiToken({
+  isLoggedIn,
   tokenName,
   setApiToken,
   setIsLoading,
 }: {
+  isLoggedIn: boolean;
   tokenName?: string;
-  setApiToken: (token: ID) => void;
+  setApiToken: (token: any) => void;
   setIsLoading: (flag: boolean) => void;
 }): void {
-  // useEffect((): void => {
-  //   setIsLoading(true);
-  //   fetch(API.USER_EXTERNAL_API_TOKEN, API.GET_CONFIG({ name: tokenName }))
-  //     .then(Helpers.checkStatus)
-  //     .then(Helpers.parseJSON)
-  //     .then((payload: any): void => {
-  //       console.warn("payload: ", payload);
-  //       setApiToken(payload?.results[0]);
-  //     })
-  //     .catch((error: Error) => captureEvent(error));
-  // }, []);
+  useEffect((): void => {
+    setIsLoading(true);
+    if (isLoggedIn) {
+      fetch(API.USER_EXTERNAL_API_TOKEN, API.GET_CONFIG())
+        .then(Helpers.checkStatus)
+        .then(Helpers.parseJSON)
+        .then((payload: any): void => {
+          setApiToken(payload?.results[0]);
+          setIsLoading(false);
+        })
+        .catch((error: Error) => {
+          setIsLoading(false);
+          captureEvent(error);
+        });
+    }
+  }, [isLoggedIn]);
 }
 
 function UserApiTokenInputField({
@@ -39,18 +46,44 @@ function UserApiTokenInputField({
 }: {
   user: any /* redux*/;
 }): ReactElement<"div"> {
-  console.warn("  user  ", user);
+  const isLoggedIn = !isNullOrUndefined(user?.id);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [apiToken, setApiToken] = useState<ID>(null);
+  const [apiToken, setApiToken] = useState<any>({});
 
-  // useEffectGetUserApiToken({ setApiToken, setIsLoading });
+  useEffectGetUserApiToken({ isLoggedIn, setApiToken, setIsLoading });
 
-  const userHasApiToken = !isLoading && !isEmpty(apiToken);
+  const { token, prefix } = apiToken ?? {};
+  const userHasApiToken = !isLoading && (!isEmpty(token) || !isEmpty(prefix));
+
   const handleSubmit = (event: SyntheticEvent): void => {
     event?.preventDefault();
-    userHasApiToken;
+    if (isLoading) {
+      return;
+    }
     setIsLoading(true);
+    fetch(
+      userHasApiToken
+        ? API.USER_EXTERNAL_API_TOKEN_DELETE
+        : API.USER_EXTERNAL_API_TOKEN,
+      userHasApiToken ? API.DELETE_CONFIG() : API.POST_CONFIG()
+    )
+      .then(Helpers.checkStatus)
+      .then(Helpers.parseJSON)
+      .then((payload: any): void => {
+        setApiToken(payload);
+        setIsLoading(false);
+      })
+      .catch((error: Error) => {
+        setIsLoading(false);
+        captureEvent(error);
+      });
   };
+
+  const displayableValue = userHasApiToken
+    ? !isEmpty(token)
+      ? token
+      : `Begins with: ${prefix}`
+    : "";
 
   return (
     <div className={css(styles.container)}>
@@ -59,20 +92,24 @@ function UserApiTokenInputField({
           {"API Token"}
         </div>
       </div>
-      <div className={css(styles.inputFieldContainer)} onSubmit={handleSubmit}>
+      <div className={css(styles.inputFieldContainer)}>
         <form className={css(styles.formContainer)}>
           <FormInput
             containerStyle={styles.inputStyles}
+            disabled
             inputStyle={styles.input}
             placeholder={
               isLoading
                 ? "Getting Api token ..."
                 : "Click the plus button to create a token"
             }
-            value={apiToken}
-            disabled
+            value={displayableValue}
           />
-          <Ripples className={css(styles.saveIcon)} role="button">
+          <Ripples
+            className={css(styles.saveIcon)}
+            role="button"
+            onClick={handleSubmit}
+          >
             {isLoading ? (
               <Loader size={12} color={colors.TOOLTIP_TEXT_COLOR_WHITE} />
             ) : userHasApiToken ? (
