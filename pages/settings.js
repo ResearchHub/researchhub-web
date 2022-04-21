@@ -1,35 +1,34 @@
-import { createRef, Component, Fragment } from "react";
-import { css, StyleSheet } from "aphrodite";
-import { connect } from "react-redux";
-import Ripples from "react-ripples";
-import Toggle from "react-toggle";
-import { withAlert } from "react-alert";
-
-import Head from "~/components/Head";
-import FormSelect from "~/components/Form/FormSelect";
-import FormInput from "~/components/Form/FormInput";
-import ComponentWrapper from "~/components/ComponentWrapper";
-
-import { DIGEST_FREQUENCY } from "~/config/constants";
-import { defaultStyles, hubStyles, selectStyles } from "~/config/themes/styles";
-import {
-  updateEmailPreference,
-  fetchEmailPreference,
-  subscribeToHub,
-  unsubscribeFromHub,
-} from "~/config/fetch";
+import { AuthActions } from "~/redux/auth";
 import {
   buildSubscriptionPatch,
   digestSubscriptionPatch,
   emailPreferencePatch,
 } from "~/config/shims";
-import { AuthActions } from "~/redux/auth";
-import { MessageActions } from "~/redux/message";
-import { HubActions } from "~/redux/hub";
-import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
 import { capitalize } from "~/config/utils/string";
+import { connect } from "react-redux";
+import { createRef, Component } from "react";
+import { css, StyleSheet } from "aphrodite";
+import { defaultStyles, hubStyles, selectStyles } from "~/config/themes/styles";
+import { DIGEST_FREQUENCY } from "~/config/constants";
+import { doesNotExist, isEmpty } from "~/config/utils/nullchecks";
+import {
+  fetchEmailPreference,
+  subscribeToHub,
+  unsubscribeFromHub,
+  updateEmailPreference,
+} from "~/config/fetch";
+import { HubActions } from "~/redux/hub";
+import { MessageActions } from "~/redux/message";
+import { withAlert } from "react-alert";
+import ComponentWrapper from "~/components/ComponentWrapper";
+import FormInput from "~/components/Form/FormInput";
+import FormSelect from "~/components/Form/FormSelect";
+import Head from "~/components/Head";
+import Ripples from "react-ripples";
+import Toggle from "react-toggle";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import UserApiTokenInputField from "~/components/shared/UserApiTokenInputField";
 
 const frequencyOptions = Object.keys(DIGEST_FREQUENCY).map((key) => {
   return {
@@ -180,7 +179,6 @@ class UserSettings extends Component {
 
   renderPrimaryEmail = () => {
     const { email, activeEmailInput, transition } = this.state;
-
     return (
       <div className={css(styles.container)}>
         <div className={css(styles.labelContainer)}>
@@ -567,6 +565,7 @@ class UserSettings extends Component {
         <div className={css(styles.settingsPage)}>
           <div className={css(defaultStyles.title, styles.title)}>Settings</div>
           {this.renderPrimaryEmail()}
+          <UserApiTokenInputField />
           {this.renderFrequencySelect()}
           {this.renderSubscribedHubs()}
           <div className={css(styles.container)}>
