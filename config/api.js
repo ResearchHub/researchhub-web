@@ -158,6 +158,8 @@ const routes = (BASE_URL) => {
       return url;
     },
     USER_EXTERNAL_API_TOKEN: BASE_URL + "user_external_token/",
+    USER_EXTERNAL_API_TOKEN_DELETE:
+      BASE_URL + "user_external_token/revoke_token",
     LEADERBOARD: ({ page, limit, hubId, timeframe, type, dateOption }) => {
       let url = BASE_URL + `user/leaderboard/`;
       let params = {
