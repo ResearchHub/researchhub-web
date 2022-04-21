@@ -1,7 +1,7 @@
+import { captureEvent } from "@sentry/nextjs";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Helpers } from "@quantfive/js-web-config";
-import { ID } from "~/config/types/root_types";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { ReactElement, SyntheticEvent, useEffect, useState } from "react";
 import API from "~/config/api";
@@ -10,7 +10,6 @@ import FormInput from "../Form/FormInput";
 import icons from "~/config/themes/icons";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
-import { captureEvent } from "@sentry/nextjs";
 
 function useEffectGetUserApiToken({
   isLoggedIn,
