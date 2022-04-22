@@ -36,7 +36,8 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
-import { sendAmpEvent } from "~/config/fetch";
+import { sendAmpEvent, saveReview } from "~/config/fetch";
+import { captureEvent } from "~/config/utils/events";
 
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
@@ -105,6 +106,7 @@ const DiscussionTab = (props) => {
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
   const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
+  const [reviewScore, setReviewScore] = useState(0);
 
   useEffect(() => {
     handleWindowResize();
@@ -113,6 +115,12 @@ const DiscussionTab = (props) => {
       window.removeEventListener("resize", handleWindowResize);
     };
   }, []);
+
+  useEffect(() => {
+    if (discussionType === TYPES.REVIEW) {
+      setReviewScore(0);
+    }
+  }, [discussionType]);
 
   useEffect(() => {
     fetchDiscussionThreads(false, true);
@@ -200,8 +208,7 @@ const DiscussionTab = (props) => {
     props.openAddDiscussionModal(false);
   };
 
-  const save = (text, plain_text) => {
-    // Note: calvinhlee - this is not scaleable at all we need to change this
+  const save = async (text, plain_text) => {
     let param;
     let documentId;
     if (documentType === "paper") {
@@ -228,7 +235,26 @@ const DiscussionTab = (props) => {
     }
 
     if (discussionType === TYPES.REVIEW) {
-      param["score"] = 43;
+      console.log(reviewScore);
+      return;
+      if (reviewScore === 0) {
+        props.showMessage({ show: true, error: true });
+        props.setMessage("Select a rating first");
+        return;
+      }
+
+      try {
+        await saveReview({ documentId, review: { score: reviewScore } });
+      } catch (error) {
+        captureEvent({
+          error,
+          msg: "Failed to save review",
+          data: { reviewScore },
+        });
+        props.setMessage("Something went wrong");
+        props.showMessage({ show: true, error: true });
+        return false;
+      }
     }
 
     props.showMessage({ load: true, show: true });
@@ -445,7 +471,10 @@ const DiscussionTab = (props) => {
           {discussionType == TYPES.REVIEW && (
             <div className={css(styles.reviewDetails)}>
               <div className={css(styles.reviewHeader)}>Score</div>
-              <ScoreInput onSelect={() => null} value={4} />
+              <ScoreInput
+                onSelect={(value) => setReviewScore(value)}
+                value={0}
+              />
             </div>
           )}
           <div

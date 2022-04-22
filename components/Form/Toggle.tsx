@@ -53,6 +53,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     padding: "6px 12px",
     cursor: "pointer",
+    ":hover": {
+      opacity: 0.9
+    }
   },
   "optionSelected": {
     background: "#3971FF",
