@@ -17,11 +17,13 @@ import { Helpers } from "@quantfive/js-web-config";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
+import { saveReview } from "~/config/fetch";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
+import ScoreInput from "../Form/ScoreInput";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -41,6 +43,9 @@ class DiscussionEntry extends Component {
       // Edit
       canEdit: false,
       editing: false,
+      // Review
+      isReview: false,
+      review: null,
     };
     this.divRef = null;
   }
@@ -57,6 +62,8 @@ class DiscussionEntry extends Component {
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
+        isReview: data?.review?.id ? true : false,
+        review: data?.review,
         canEdit:
           data.source !== "twitter"
             ? this.props.auth.user.id === data.created_by.id
@@ -257,22 +264,36 @@ class DiscussionEntry extends Component {
       paper: paperId,
     };
     updateThreadPending();
-    await updateThread(
-      documentType,
-      paperId,
-      documentId,
-      discussionThreadId,
-      body
-    );
-    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
-      setMessage("Post successfully updated!");
-      showMessage({ show: true });
-      callback();
-      this.setState({ editing: false });
-    } else {
-      setMessage("Something went wrong");
-      showMessage({ show: true, error: true });
-    }
+    saveReview({ documentId, review: this.state.review })
+      .then((response) => {
+        console.log("response", response);
+        this.setState({ review: response });
+
+        return updateThread(
+          documentType,
+          paperId,
+          documentId,
+          discussionThreadId,
+          body
+        );
+      })
+      .then(() => {
+        if (
+          this.props.discussion.doneUpdating &&
+          this.props.discussion.success
+        ) {
+          setMessage("Comment successfully updated!");
+          showMessage({ show: true });
+          callback();
+          this.setState({ editing: false });
+        } else {
+          throw new Error("update not successful");
+        }
+      })
+      .catch((err) => {
+        setMessage("Something went wrong");
+        showMessage({ show: true, error: true });
+      });
   };
 
   toggleCommentView = (e) => {
@@ -289,6 +310,10 @@ class DiscussionEntry extends Component {
 
   toggleEdit = () => {
     this.setState({ editing: !this.state.editing });
+  };
+
+  onScoreSelect = (value) => {
+    this.setState({ review: { ...this.state.review, score: value } });
   };
 
   onRemove = ({ paperID, threadID, commentID, replyID, postID }) => {
@@ -479,6 +504,9 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
+
+    const { review, isReview } = this.state;
+
     const commentCount =
       data.comment_count +
         data.comments
@@ -603,6 +631,16 @@ class DiscussionEntry extends Component {
                     this.state.editing && styles.contentEdit
                   )}
                 >
+                  {isReview ? (
+                    <div className={css(styles.reviewContainer)}>
+                      <div className={css(styles.reviewBadge)}>Review</div>
+                      <ScoreInput
+                        value={review?.score}
+                        readOnly={this.state.editing ? false : true}
+                        onSelect={this.onScoreSelect}
+                      />
+                    </div>
+                  ) : null}
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
@@ -845,6 +883,16 @@ const styles = StyleSheet.create({
   withPadding: {
     padding: 16,
     height: "unset",
+  },
+  reviewContainer: {
+    display: "flex",
+  },
+  reviewBadge: {
+    background: colors.NEW_BLUE(),
+    color: "white",
+    padding: "2px 8px",
+    fontWeight: 500,
+    fontSize: 12,
   },
 });
 
