@@ -84,7 +84,6 @@ function TextEditor(props) {
         setMessage("Content cannot be empty.");
         return showMessage({ error: true, show: true, clickoff: true });
       }
-
       onSubmit && onSubmit(content, plain_text, callback);
       if (clearOnSubmit) {
         callback();
