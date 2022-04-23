@@ -236,8 +236,12 @@ const DiscussionTab = (props) => {
         return;
       }
 
+      let reviewResponse;
       try {
-        await saveReview({ documentId, review: { score: reviewScore } });
+        reviewResponse = await saveReview({
+          documentId,
+          review: { score: reviewScore },
+        });
       } catch (error) {
         captureEvent({
           error,
@@ -248,6 +252,8 @@ const DiscussionTab = (props) => {
         props.showMessage({ show: true, error: true });
         return false;
       }
+
+      param["review"] = reviewResponse.id;
     }
 
     props.showMessage({ load: true, show: true });
@@ -265,6 +271,7 @@ const DiscussionTab = (props) => {
         props.showMessage({ show: true });
         // update state & redux
         let newDiscussion = { ...resp };
+
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
@@ -285,7 +292,7 @@ const DiscussionTab = (props) => {
           },
         };
         props.setCount(props.calculatedCount + 1);
-        props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+        // props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
         sendAmpEvent(payload);
       })
