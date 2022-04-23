@@ -52,6 +52,7 @@ class DiscussionEntry extends Component {
 
   componentDidMount = async () => {
     const { data, newCard } = this.props;
+
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
@@ -266,7 +267,6 @@ class DiscussionEntry extends Component {
     updateThreadPending();
     saveReview({ documentId, review: this.state.review })
       .then((response) => {
-        console.log("response", response);
         this.setState({ review: response });
 
         return updateThread(
