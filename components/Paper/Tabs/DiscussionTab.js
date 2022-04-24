@@ -206,8 +206,10 @@ const DiscussionTab = (props) => {
   const save = async (text, plain_text) => {
     let param;
     let documentId;
+    let unifiedDocumentId;
     if (documentType === "paper") {
       documentId = router.query.paperId;
+      unifiedDocumentId = props.paperState.unified_document_id;
       param = {
         text: text,
         paper: paperId,
@@ -215,6 +217,7 @@ const DiscussionTab = (props) => {
       };
     } else if (documentType === "post") {
       documentId = router.query.documentId;
+      unifiedDocumentId = props.post.unified_document_id;
       param = {
         text: text,
         post: documentId,
@@ -222,6 +225,7 @@ const DiscussionTab = (props) => {
       };
     } else if (documentType === "hypothesis") {
       documentId = router.query.documentId;
+      unifiedDocumentId = props.hypothesis.unified_document_id;
       param = {
         text: text,
         hypothesis: documentId,
@@ -239,7 +243,7 @@ const DiscussionTab = (props) => {
       let reviewResponse;
       try {
         reviewResponse = await saveReview({
-          documentId,
+          unifiedDocumentId,
           review: { score: reviewScore },
         });
       } catch (error) {
