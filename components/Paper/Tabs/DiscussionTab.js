@@ -292,6 +292,7 @@ const DiscussionTab = (props) => {
           },
         };
         props.setCount(props.calculatedCount + 1);
+        // TODO: Figure out whether to show this modal or not
         // props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
         sendAmpEvent(payload);
