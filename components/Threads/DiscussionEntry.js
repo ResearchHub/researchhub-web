@@ -239,6 +239,13 @@ class DiscussionEntry extends Component {
     }
   };
 
+  onSaveError = async (error) => {
+    let { showMessage, setMessage } = this.props;
+
+    setMessage("Something went wrong");
+    showMessage({ show: true, error: true });
+  };
+
   saveEditsThread = async (text, plain_text, callback) => {
     let {
       data,
@@ -250,6 +257,9 @@ class DiscussionEntry extends Component {
       hypothesis,
       documentType,
     } = this.props;
+
+    const { review, isReview } = this.state;
+
     let discussionThreadId = data.id;
     let paperId = data.paper;
     let documentId;
@@ -264,36 +274,32 @@ class DiscussionEntry extends Component {
       plain_text,
       paper: paperId,
     };
-    updateThreadPending();
-    saveReview({ documentId, review: this.state.review })
-      .then((response) => {
-        this.setState({ review: response });
 
-        return updateThread(
-          documentType,
-          paperId,
-          documentId,
-          discussionThreadId,
-          body
-        );
-      })
-      .then(() => {
-        if (
-          this.props.discussion.doneUpdating &&
-          this.props.discussion.success
-        ) {
-          setMessage("Comment successfully updated!");
-          showMessage({ show: true });
-          callback();
-          this.setState({ editing: false });
-        } else {
-          throw new Error("update not successful");
-        }
-      })
-      .catch((err) => {
-        setMessage("Something went wrong");
-        showMessage({ show: true, error: true });
-      });
+    updateThreadPending();
+
+    if (isReview) {
+      await saveReview({ documentId, review: this.state.review });
+      this.setState({ review: response });
+    }
+
+    updateThread(
+      documentType,
+      paperId,
+      documentId,
+      discussionThreadId,
+      body
+    ).catch((error) => {
+      return Promise.reject(error);
+    });
+
+    if (this.props.discussion.doneUpdating && this.props.discussion.success) {
+      setMessage("");
+      showMessage({ show: true });
+      callback();
+      this.setState({ editing: false });
+    } else {
+      return Promise.reject();
+    }
   };
 
   toggleCommentView = (e) => {
@@ -649,6 +655,7 @@ class DiscussionEntry extends Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
+                    onError={this.onSaveError}
                     mediaOnly={isInlineComment}
                   />
                 </div>
