@@ -275,26 +275,28 @@ class DiscussionEntry extends Component {
       paper: paperId,
     };
 
-    updateThreadPending();
-
     if (isReview) {
-      await saveReview({ documentId, review: this.state.review });
+      const response = await saveReview({
+        documentId,
+        review: this.state.review,
+      });
       this.setState({ review: response });
     }
 
-    updateThread(
-      documentType,
-      paperId,
-      documentId,
-      discussionThreadId,
-      body
-    ).catch((error) => {
+    updateThreadPending();
+    try {
+      await updateThread(
+        documentType,
+        paperId,
+        documentId,
+        discussionThreadId,
+        body
+      );
+    } catch (error) {
       return Promise.reject(error);
-    });
+    }
 
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
-      setMessage("");
-      showMessage({ show: true });
       callback();
       this.setState({ editing: false });
     } else {

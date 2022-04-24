@@ -276,6 +276,10 @@ const DiscussionTab = (props) => {
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
         cancel();
+        console.log("newDiscussion", newDiscussion);
+        console.log("threads", threads);
+        console.log("formattedDiscussion", formattedDiscussion);
+        console.log("formattedThreads", formattedThreads);
 
         // amp events
         let payload = {
@@ -309,6 +313,8 @@ const DiscussionTab = (props) => {
   };
 
   const createFormattedDiscussion = (newDiscussion) => {
+    console.log("newDiscussion", newDiscussion);
+    console.log("newDiscussion.key", newDiscussion.key);
     if (newDiscussion.key) return;
     let discussionObject = {
       data: newDiscussion,

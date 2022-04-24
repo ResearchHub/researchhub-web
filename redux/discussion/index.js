@@ -42,6 +42,7 @@ export function updateThread(
     let action = actions.setUpdateThreadFailure();
 
     if (response.ok) {
+      console.log("++++");
       const body = await response.json();
       const thread = shims.thread(body);
       action = actions.setUpdateThread(thread);
