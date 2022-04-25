@@ -271,8 +271,8 @@ const DiscussionTab = (props) => {
       .then(Helpers.parseJSON)
       .then((resp) => {
         props.showMessage({ show: false });
-        props.setMessage("Successfully Saved!");
-        props.showMessage({ show: true });
+        props.setMessage("");
+        props.showMessage({ show: true, error: false });
         // update state & redux
         let newDiscussion = { ...resp };
 
@@ -280,10 +280,6 @@ const DiscussionTab = (props) => {
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
         cancel();
-        console.log("newDiscussion", newDiscussion);
-        console.log("threads", threads);
-        console.log("formattedDiscussion", formattedDiscussion);
-        console.log("formattedThreads", formattedThreads);
 
         // amp events
         let payload = {
@@ -299,9 +295,9 @@ const DiscussionTab = (props) => {
             is_removed: resp.is_removed,
           },
         };
+
         props.setCount(props.calculatedCount + 1);
-        // TODO: Figure out whether to show this modal or not
-        // props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
+        props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
         sendAmpEvent(payload);
       })
@@ -317,8 +313,6 @@ const DiscussionTab = (props) => {
   };
 
   const createFormattedDiscussion = (newDiscussion) => {
-    console.log("newDiscussion", newDiscussion);
-    console.log("newDiscussion.key", newDiscussion.key);
     if (newDiscussion.key) return;
     let discussionObject = {
       data: newDiscussion,
@@ -366,49 +360,27 @@ const DiscussionTab = (props) => {
       setFetching(true);
     }
     setLoading(true);
-    if (postId) {
-      const currentPost = post;
-      const res = await getPostThreads({
-        documentId: postId,
-        post: currentPost,
-        filter,
-        loadMore,
-        twitter: showTwitterComments,
-      });
-      const threads = res.payload.threads;
-      setFetching(false);
-      setLoading(false);
-      setThreads(threads);
-      setFormattedThreads(formatThreads(threads, basePath));
-    } else if (hypothesisId) {
-      const currentHypothesis = hypothesis;
-      const res = await getHypothesisThreads({
-        documentId: hypothesisId,
-        hypothesis: currentHypothesis,
-        filter,
-        loadMore,
-        twitter: showTwitterComments,
-      });
-      const threads = res.payload.threads;
-      setFetching(false);
-      setLoading(false);
-      setThreads(threads);
-      setFormattedThreads(formatThreads(threads, basePath));
-    } else if (paperId) {
-      const currentPaper = props.paper;
-      const res = await getThreads({
-        paperId: paperId,
-        paper: currentPaper,
-        filter,
-        loadMore,
-        twitter: showTwitterComments,
-      });
-      const threads = res.payload.threads;
-      setFetching(false);
-      setLoading(false);
-      setThreads(threads);
-      setFormattedThreads(formatThreads(threads, basePath));
+
+    let documentId;
+    if (documentType === "paper") {
+      documentId = router.query.paperId;
+    } else {
+      documentId = router.query.documentId;
     }
+    const res = await getThreads({
+      documentId,
+      documentType,
+      document: props.paper,
+      filter,
+      loadMore,
+      twitter: showTwitterComments,
+    });
+
+    const threads = res.payload.threads;
+    setFetching(false);
+    setLoading(false);
+    setThreads(threads);
+    setFormattedThreads(formatThreads(threads, basePath));
   };
 
   const renderAddDiscussion = () => {
@@ -456,25 +428,22 @@ const DiscussionTab = (props) => {
     );
   };
 
-  const editor = useMemo(() => {
-    // This is a temp solution
-    return (
-      <TextEditor
-        canEdit
-        commentEditor
-        commentEditorStyles={styles.commentEditorStyles}
-        focusEditor={focus}
-        initialValue={discussion.question}
-        onCancel={cancel}
-        onSubmit={save}
-        placeholder={
-          "Leave a question or a comment for the Author of the paper or the community"
-        }
-        readOnly={false}
-        smallToolBar
-      />
-    );
-  }, [reviewScore, discussionType]);
+  const editor = (
+    <TextEditor
+      canEdit
+      commentEditor
+      commentEditorStyles={styles.commentEditorStyles}
+      focusEditor={focus}
+      initialValue={discussion.question}
+      onCancel={cancel}
+      onSubmit={save}
+      placeholder={
+        "Leave a question or a comment for the Author of the paper or the community"
+      }
+      readOnly={false}
+      smallToolBar
+    />
+  );
 
   const discussionTextEditor = !showEditor ? (
     renderAddDiscussion()
@@ -539,7 +508,7 @@ const DiscussionTab = (props) => {
         >
           <div className={css(styles.header)}>
             <h3 className={css(styles.discussionTitle)}>
-              Comments
+              Discussion
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
@@ -645,7 +614,7 @@ const DiscussionTab = (props) => {
         <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
           <div className={css(styles.header)}>
             <div className={css(styles.discussionTitle)}>
-              Comments & Reviews
+              Discussion
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
                   <Loader
