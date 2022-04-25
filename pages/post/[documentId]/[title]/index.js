@@ -27,7 +27,7 @@ const PaperTransactionModal = dynamic(() =>
   import("~/components/Modals/PaperTransactionModal")
 );
 
-function useEffectFetchPost({ post, setPost, query }) {
+function useEffectFetchPost({ setPost, query }) {
   useEffect(() => {
     fetch(
       API.RESEARCHHUB_POSTS({ post_id: query.documentId }),
@@ -38,7 +38,7 @@ function useEffectFetchPost({ post, setPost, query }) {
       .then((data) => {
         setPost(data.results[0]);
       });
-  }, [post, query]);
+  }, [query]);
 }
 
 const Post = (props) => {
@@ -56,22 +56,20 @@ const Post = (props) => {
 
   const store = useStore();
 
-  const [post, setPost] = useState(props.post || {});
-  useEffectFetchPost({ post: props.post, setPost, query: props.query });
+  const [post, setPost] = useState({});
+  const [discussionCount, setCount] = useState(0);
 
-  const [flagged, setFlag] = useState(props.paper && props.paper.user_flag);
+  useEffectFetchPost({ setPost, query: props.query });
 
-  const [discussionCount, setCount] = useState(
-    calculateCommentCount(props.post)
-  );
+  useEffect(() => {
+    if (post?.id) {
+      setCount(post.discussion_count);
+    }
+  }, [post]);
 
   const isModerator = store.getState().auth.user.moderator;
   const isSubmitter =
     post && post.created_by && post.created_by.id === props.auth.user.id;
-
-  useEffect(() => {
-    setPost(props.post);
-  }, [props.post, props.query]);
 
   const restorePost = () => {
     setPost({ ...post, is_removed: false });
@@ -80,14 +78,6 @@ const Post = (props) => {
   const removePost = () => {
     setPost({ ...post, is_removed: true });
   };
-
-  function calculateCommentCount(post) {
-    let discussionCount = 0;
-    if (post) {
-      discussionCount = post.discussion_count;
-    }
-    return discussionCount;
-  }
 
   function formatDescription() {
     const { title } = post;
