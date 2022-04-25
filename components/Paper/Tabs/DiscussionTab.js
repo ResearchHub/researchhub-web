@@ -39,6 +39,7 @@ import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent, saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { isEmpty } from "~/config/utils/nullchecks";
+import { genClientId } from "~/config/utils/id";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const TYPES = {
@@ -107,6 +108,7 @@ const DiscussionTab = (props) => {
   const [focus, setFocus] = useState(false);
   const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
   const [reviewScore, setReviewScore] = useState(0);
+  const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   useEffect(() => {
     handleWindowResize();
@@ -442,6 +444,7 @@ const DiscussionTab = (props) => {
       }
       readOnly={false}
       smallToolBar
+      uid={textEditorKey}
     />
   );
 
