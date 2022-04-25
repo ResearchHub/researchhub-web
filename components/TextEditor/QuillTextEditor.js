@@ -412,7 +412,10 @@ class Editor extends Component {
       this.linkHandler
     );
     return (
-      <div className={css(styles.editor, this.props.containerStyles)}>
+      <div
+        className={css(styles.editor, this.props.containerStyles)}
+        key={this.props.uid}
+      >
         {this.props.commentEditor ? (
           <div
             className={css(

@@ -13,6 +13,7 @@ import { MessageActions } from "~/redux/message";
 
 // Config
 import { convertToEditorToHTML } from "~/config/utils/editor";
+import { genClientId } from "~/config/utils/id";
 
 function TextEditor(props) {
   const {
@@ -46,12 +47,11 @@ function TextEditor(props) {
     mediaOnly,
     setMessage,
     showMessage,
+    uid = genClientId(),
   } = props;
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
-
-  const uid = createUid();
 
   useEffect(() => {
     setValue(initialValue);
@@ -93,10 +93,6 @@ function TextEditor(props) {
 
   function setInternalRef(editor) {
     props.setRef && props.setRef(editor);
-  }
-
-  function createUid() {
-    return "_" + Math.random().toString(36).substr(2, 9);
   }
 
   return (
