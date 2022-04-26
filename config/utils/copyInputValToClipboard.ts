@@ -14,10 +14,8 @@ export function copyInputValToClipboard({
     return false;
   }
 
-  // typing
-  inputEl = nullthrows(inputEl);
   // @ts-ignore HTMLEl has attr value
-  const inputElValue = inputEl.value;
+  const inputElValue = nullthrows(inputEl).value;
   if (isEmpty(inputElValue)) {
     return false;
   }
