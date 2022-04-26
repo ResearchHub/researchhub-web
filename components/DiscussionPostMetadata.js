@@ -129,11 +129,19 @@ const DiscussionPostMetadata = (props) => {
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
     let { paperId, threadId, commentId, replyId, postId } = metaData;
+    let { documentType } = props;
     let config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
     return fetch(
-      API.FLAG_POST({ paperId, threadId, commentId, replyId, postId }),
+      API.FLAG_POST({
+        documentType,
+        paperId,
+        threadId,
+        commentId,
+        replyId,
+        postId,
+      }),
       config
     )
       .then(Helpers.checkStatus)
