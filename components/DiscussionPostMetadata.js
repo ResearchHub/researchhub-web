@@ -128,7 +128,7 @@ const DiscussionPostMetadata = (props) => {
 
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId, postId } = metaData;
+    let { paperId, threadId, commentId, replyId, documentId } = metaData;
     let { documentType } = props;
     let config = isFlagged
       ? API.DELETE_CONFIG()
@@ -140,7 +140,7 @@ const DiscussionPostMetadata = (props) => {
         threadId,
         commentId,
         replyId,
-        postId,
+        documentId,
       }),
       config
     )
