@@ -10,12 +10,12 @@ import ReactPlaceholder from "react-placeholder";
 import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
-import FormSelect from "~/components/Form/FormSelect";
 import ScoreInput from "~/components/Form/ScoreInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import Toggle from "~/components/Form/Toggle";
+import DropdownButton from "~/components/Form/DropdownButton";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -71,22 +71,6 @@ const DiscussionTab = (props) => {
     hypothesisId,
   } = props;
 
-  // TODO: move to config
-  const filterOptions = [
-    {
-      value: "-created_date",
-      label: "Most Recent",
-    },
-    {
-      value: "created_date",
-      label: "Oldest",
-    },
-    {
-      value: "-score",
-      label: "Top",
-    },
-  ];
-
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const [formattedThreads, setFormattedThreads] = useState(
@@ -101,6 +85,7 @@ const DiscussionTab = (props) => {
   const [mobileView, setMobileView] = useState(false);
   const [threads, setThreads] = useState([]);
   const [filter, setFilter] = useState("-score");
+  const [filterDropdownIsOpen, setFilterDropdownIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const [showTwitterComments, toggleTwitterComments] = useState(false);
@@ -190,10 +175,32 @@ const DiscussionTab = (props) => {
     );
   }
 
-  const handleFilterChange = (id, filter) => {
-    let { value } = filter;
-    setFilter(value);
+  const handleFilterChange = (filter) => {
+    setFilter(filter);
     setPage(1);
+  };
+
+  const getFilterOptions = () => {
+    const options = [
+      {
+        value: "-score",
+        label: "Top",
+        default: true,
+      },
+      {
+        value: "-created_date",
+        label: "Most Recent",
+      },
+      {
+        value: "created_date",
+        label: "Oldest",
+      },
+    ];
+
+    return options.map((o) => {
+      o.isSelected = o.value === filter;
+      return o;
+    });
   };
 
   const cancel = () => {
@@ -476,7 +483,10 @@ const DiscussionTab = (props) => {
         </div>
         {discussionType == TYPES.REVIEW && (
           <div className={css(styles.reviewDetails)}>
-            <div className={css(styles.reviewHeader)}>Overall Rating</div>
+            <div className={css(styles.reviewHeader)}>
+              Overall Rating
+              <span className={css(stylesEditor.asterick)}>*</span>
+            </div>
             <ScoreInput
               onSelect={(value) => {
                 setReviewScore(value);
@@ -496,6 +506,10 @@ const DiscussionTab = (props) => {
     </div>
   );
 
+  const filterOptions = getFilterOptions();
+  const selectedFilter =
+    filterOptions.find((f) => f.isSelected) ||
+    filterOptions.find((f) => f.default);
   return (
     <Fragment>
       <AddDiscussionModal
@@ -528,23 +542,29 @@ const DiscussionTab = (props) => {
             </h3>
             <div className={css(styles.filterContainer)}>
               <div className={css(styles.filterSelect)}>
-                <FormSelect
-                  id={"thread-filter"}
-                  options={filterOptions}
-                  defaultValue={filterOptions[2]}
-                  placeholder={"Sort Threads"}
-                  onChange={handleFilterChange}
-                  containerStyle={styles.overrideFormSelect}
-                  inputStyle={{
-                    minHeight: "unset",
-                    padding: 0,
-                    backgroundColor: "#FFF",
-                    fontSize: 14,
-                    width: 150,
-                    "@media only screen and (max-width: 415px)": {
-                      fontSize: 12,
-                    },
+                <DropdownButton
+                  opts={filterOptions}
+                  labelAsHtml={
+                    <div>
+                      <span className={css(styles.typeFilterText)}>
+                        {selectedFilter.label}
+                      </span>
+                    </div>
+                  }
+                  selected={selectedFilter.value}
+                  isOpen={filterDropdownIsOpen}
+                  onClick={() => setFilterDropdownIsOpen(true)}
+                  dropdownClassName="filter"
+                  onClickOutside={() => {
+                    setFilterDropdownIsOpen(false);
                   }}
+                  positions={["bottom", "right"]}
+                  customButtonClassName={[styles.dropdownButtonOverride]}
+                  overrideTitleStyle={styles.dropdownOption}
+                  onSelect={(selected) => {
+                    handleFilterChange(selected);
+                  }}
+                  onClose={() => setFilterDropdownIsOpen(false)}
                 />
               </div>
             </div>
@@ -926,7 +946,7 @@ var styles = StyleSheet.create({
     color: "#00ACEE",
   },
   asterick: {
-    color: colors.BLUE(1),
+    color: colors.NEW_BLUE(),
   },
   componentWrapperStyles: {
     "@media only screen and (max-width: 415px)": {
@@ -1084,6 +1104,12 @@ var styles = StyleSheet.create({
   reviewHeader: {
     fontSize: 15,
     marginRight: 20,
+  },
+  dropdownButtonOverride: {
+    display: "flex",
+  },
+  dropdownOption: {
+    fontWeight: 400,
   },
 });
 
