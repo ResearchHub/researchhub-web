@@ -430,6 +430,11 @@ const DiscussionTab = (props) => {
     );
   };
 
+  const editorPlaceholder =
+    discussionType === TYPES.REVIEW
+      ? `Review one or more aspects of this paper such as readability, methodologies, data, ... \nBe objective and constructive.`
+      : `Engage the community and author by leaving a comment.\n- Avoid comments like "Thanks", "+1" or "I agree".\n- Be constructive and/or inquisitive.`;
+
   const editor = (
     <TextEditor
       canEdit
@@ -439,9 +444,7 @@ const DiscussionTab = (props) => {
       initialValue={discussion.question}
       onCancel={cancel}
       onSubmit={save}
-      placeholder={
-        "Leave a question or a comment for the Author of the paper or the community"
-      }
+      placeholder={editorPlaceholder}
       readOnly={false}
       smallToolBar
       uid={textEditorKey}
@@ -458,13 +461,13 @@ const DiscussionTab = (props) => {
           <div className={css(styles.discussionTypeHeader)}>
             {discussionType === TYPES.COMMENT
               ? "Write a comment"
-              : "Write a review"}
+              : "Write a peer review"}
           </div>
           <div className={css(styles.dicussionToggleContainer)}>
             <Toggle
               options={[
                 { label: "Comment", value: TYPES.COMMENT },
-                { label: "Review", value: TYPES.REVIEW },
+                { label: "Peer Review", value: TYPES.REVIEW },
               ]}
               selected={discussionType}
               onSelect={(selected) => setDiscussionType(selected.value)}
@@ -473,7 +476,7 @@ const DiscussionTab = (props) => {
         </div>
         {discussionType == TYPES.REVIEW && (
           <div className={css(styles.reviewDetails)}>
-            <div className={css(styles.reviewHeader)}>Score</div>
+            <div className={css(styles.reviewHeader)}>Overall Rating</div>
             <ScoreInput
               onSelect={(value) => {
                 setReviewScore(value);
@@ -514,12 +517,7 @@ const DiscussionTab = (props) => {
               Discussion
               <span className={css(styles.discussionCount)}>
                 {fetching ? (
-                  <Loader
-                    loading={true}
-                    size={2}
-                    color={"rgba(36, 31, 58, 0.5)"}
-                    type="beat"
-                  />
+                  <Loader loading={true} size={10} />
                 ) : showTwitterComments ? (
                   calculateCount()
                 ) : (
@@ -841,11 +839,6 @@ var styles = StyleSheet.create({
   revisionTitle: {
     padding: 10,
   },
-  discussionInputWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    marginTop: 20,
-  },
   label: {
     fontFamily: "Roboto",
     fontWeight: 500,
@@ -959,13 +952,18 @@ var styles = StyleSheet.create({
     alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
+    margin: 0,
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
   },
   discussionCount: {
-    color: "rgba(36, 31, 58, 0.5)",
-    fontSize: 17,
+    color: colors.BLACK(),
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "3px",
+    padding: "3px 10px",
+    border: `1px solid ${colors.GREY()}`,
+    fontSize: 14,
     fontWeight: 500,
     marginLeft: 15,
     marginTop: 3,
@@ -1072,19 +1070,20 @@ var styles = StyleSheet.create({
   discussionTypeHeaderContainer: {
     display: "flex",
     justifyContent: "space-between",
-    marginBottom: 10,
+    marginBottom: 20,
   },
   discussionTypeHeader: {
     fontSize: 18,
-    fontWeight: 400,
+    fontWeight: 500,
     alignSelf: "center",
   },
   reviewDetails: {
-    marginBottom: 15,
+    marginBottom: 20,
+    display: "flex",
   },
   reviewHeader: {
-    fontSize: 18,
-    margin: "10px 0",
+    fontSize: 15,
+    marginRight: 20,
   },
 });
 
@@ -1110,6 +1109,9 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     marginBottom: 5,
+    paddingLeft: 20,
+    marginTop: 15,
+    boxSizing: "border-box",
   },
   discussionTextEditor: {
     width: "100%",
