@@ -878,12 +878,12 @@ const routes = (BASE_URL) => {
       threadId,
       commentId,
       replyId,
-      postId,
+      documentId,
     }) => {
       let url = buildPaperChainUrl(
         documentType,
         paperId,
-        postId,
+        documentId,
         threadId,
         commentId,
         replyId
