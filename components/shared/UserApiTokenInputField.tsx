@@ -10,6 +10,9 @@ import FormInput from "../Form/FormInput";
 import icons from "~/config/themes/icons";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
+import { copyInputValToClipboard } from "~/config/utils/copyInputValToClipboard";
+
+const USER_API_TOKEN_INPUT_ID = "USER_API_TOKEN_INPUT_ID";
 
 function useEffectGetUserApiToken({
   isLoggedIn,
@@ -48,11 +51,28 @@ function UserApiTokenInputField({
   const isLoggedIn = !isNullOrUndefined(user?.id);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [apiToken, setApiToken] = useState<any>({});
+  const [copyButtonStatus, setCopyButtonStatus] = useState<
+    "copied" | null | "ready"
+  >(null);
 
   useEffectGetUserApiToken({ isLoggedIn, setApiToken, setIsLoading });
 
   const { token, prefix } = apiToken ?? {};
   const userHasApiToken = !isLoading && (!isEmpty(token) || !isEmpty(prefix));
+
+  const handleCopy = (event: SyntheticEvent): void => {
+    event?.preventDefault();
+    const result = copyInputValToClipboard({
+      inputID: USER_API_TOKEN_INPUT_ID,
+    });
+    if (result) {
+      setCopyButtonStatus("copied");
+      setTimeout(
+        (): void => setCopyButtonStatus("ready"),
+        2000 /* 2 seconds */
+      );
+    }
+  };
 
   const handleSubmit = (event: SyntheticEvent): void => {
     event?.preventDefault();
@@ -71,6 +91,7 @@ function UserApiTokenInputField({
       .then((payload: any): void => {
         setApiToken(payload);
         setIsLoading(false);
+        setCopyButtonStatus(!userHasApiToken ? "ready" : null);
       })
       .catch((error: Error) => {
         setIsLoading(false);
@@ -96,6 +117,7 @@ function UserApiTokenInputField({
           <FormInput
             containerStyle={styles.inputStyles}
             disabled
+            id={USER_API_TOKEN_INPUT_ID}
             inputStyle={styles.input}
             placeholder={
               isLoading
@@ -104,13 +126,22 @@ function UserApiTokenInputField({
             }
             value={displayableValue}
           />
+          {copyButtonStatus && (
+            <div className={css(styles.copyButtonTextStatus)}>
+              {"Please make sure to copy api token."}
+            </div>
+          )}
           <Ripples
             className={css(styles.saveIcon)}
             role="button"
-            onClick={handleSubmit}
+            onClick={copyButtonStatus ? handleCopy : handleSubmit}
           >
             {isLoading ? (
               <Loader size={12} color={colors.TOOLTIP_TEXT_COLOR_WHITE} />
+            ) : copyButtonStatus === "ready" ? (
+              icons.file
+            ) : copyButtonStatus === "copied" ? (
+              icons.checkCircle
             ) : userHasApiToken ? (
               icons.times
             ) : (
@@ -162,11 +193,14 @@ const styles = StyleSheet.create({
     color: "#FFF",
     position: "absolute",
     right: 5,
+    top: 10,
   },
   formContainer: {
     display: "flex",
-    alignItems: "center",
+    alignItems: "flex-start",
     position: "relative",
+    flexDirection: "column",
+    justifyContent: "center",
     marginTop: 5,
   },
   inputStyles: {
@@ -180,6 +214,10 @@ const styles = StyleSheet.create({
   },
   optOut: {
     fontWeight: 400,
+  },
+  copyButtonTextStatus: {
+    color: colors.RED(1),
+    marginTop: 4,
   },
 });
 
