@@ -6,6 +6,8 @@ type Props = {
     value?: number;
     onSelect?: Function;  
     readOnly?: Boolean;
+    overrideBarStyle?: any;
+    scoreInputStyleOverride?: any;
 };
 
 const MAX_SCORE = 10;
@@ -15,6 +17,8 @@ function ScoreInput({
   value = MIN_SCORE,
   onSelect,
   readOnly,
+  overrideBarStyle = null,
+  scoreInputStyleOverride = null,
 }: Props): ReactElement {
 
   const [selectedValue, setSelectedValue] = useState<number>(value);
@@ -32,7 +36,7 @@ function ScoreInput({
 
       if (readOnly) {
         return (
-          <div className={css(styles.bar, styles.readOnly)}>
+          <div className={css(styles.bar, styles.readOnly, overrideBarStyle)}>
             <div className={css(styles.barFill, isBarSelected && styles.selectedBar)}></div>
           </div>
         )
@@ -40,7 +44,7 @@ function ScoreInput({
       else {
         return (
           <div
-            className={css(styles.bar)}
+            className={css(styles.bar, overrideBarStyle)}
             onClick={() => handleSelect(barNumber)}
             onMouseEnter={() => setHoveredValue(barNumber)}
             onMouseLeave={() => setHoveredValue(0)}
@@ -59,13 +63,13 @@ function ScoreInput({
 
   const barInput = buildBarInput();
   return (
-    <div className={css(styles.scoreInput)}>
-        {barInput}
-        {Boolean(selectedValue) && 
-          <div className={css(styles.scoreText)}>
-            <span className={css(styles.selectedScoreText)}>{selectedValue}</span>/{MAX_SCORE}
-          </div>
-        }
+    <div className={css(styles.scoreInput, scoreInputStyleOverride)}>
+      {barInput}
+      {Boolean(selectedValue) && 
+        <div className={css(styles.scoreText)}>
+          <span className={css(styles.selectedScoreText)}>{selectedValue}</span>/{MAX_SCORE}
+        </div>
+      }
     </div>
   )
 }

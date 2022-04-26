@@ -539,7 +539,6 @@ class DiscussionEntry extends Component {
       contentType: "thread",
       objectId: data.id,
     };
-    const isInlineComment = ["block_key"] in data;
 
     return (
       <div
@@ -646,6 +645,8 @@ class DiscussionEntry extends Component {
                         value={review?.score}
                         readOnly={this.state.editing ? false : true}
                         onSelect={this.onScoreSelect}
+                        scoreInputStyleOverride={styles.scoreInputStyleOverride}
+                        overrideBarStyle={styles.overrideBar}
                       />
                     </div>
                   ) : null}
@@ -658,7 +659,6 @@ class DiscussionEntry extends Component {
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
                     onError={this.onSaveError}
-                    mediaOnly={isInlineComment}
                   />
                 </div>
               </Fragment>
@@ -895,13 +895,26 @@ const styles = StyleSheet.create({
   },
   reviewContainer: {
     display: "flex",
+    alignItems: "end",
+    lineHeight: 1.4,
+    marginBottom: 15,
   },
   reviewBadge: {
     background: colors.NEW_BLUE(),
     color: "white",
-    padding: "2px 8px",
+    padding: "2px 6px",
     fontWeight: 500,
     fontSize: 12,
+    marginRight: 10,
+    borderRadius: "2px",
+    lineHeight: "15px",
+  },
+  overrideBar: {
+    width: 16,
+    height: 10,
+  },
+  scoreInputStyleOverride: {
+    alignItems: "center",
   },
 });
 
