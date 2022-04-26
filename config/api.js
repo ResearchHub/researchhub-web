@@ -872,8 +872,16 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    FLAG_POST: ({ paperId, threadId, commentId, replyId, postId }) => {
+    FLAG_POST: ({
+      documentType,
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      postId,
+    }) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
         postId,
         threadId,
