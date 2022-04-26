@@ -263,7 +263,7 @@ class Editor extends Component {
   };
 
   onCancel = (event) => {
-    const isConfirm = confirm("Your comment changes will be removed");
+    const isConfirm = confirm("Your changes will be removed");
     if (!isConfirm) {
       return false;
     }
