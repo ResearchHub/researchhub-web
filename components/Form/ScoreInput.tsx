@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
+import colors from "~/config/themes/colors";
 
 type Props = {
     value?: number;
@@ -61,7 +62,9 @@ function ScoreInput({
     <div className={css(styles.scoreInput)}>
         {barInput}
         {Boolean(selectedValue) && 
-          <div className={css(styles.scoreText)}>{selectedValue}/{MAX_SCORE}</div>
+          <div className={css(styles.scoreText)}>
+            <span className={css(styles.selectedScoreText)}>{selectedValue}</span>/{MAX_SCORE}
+          </div>
         }
     </div>
   )
@@ -87,13 +90,20 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   "selectedBar": {
-    background: "#3971FF",
+    background: colors.NEW_BLUE(),
     transition: "0.2s",
   },
   "scoreText": {
     marginLeft: 20,
     fontSize: 14,
     fontWeight: 400,
+  },
+  "selectedScoreText": {
+    color: colors.NEW_BLUE(),
+    fontSize: 18,
+    fontWeight: 500,
+    lineHeight: "14px",
+    marginRight: 3,
   },
   "readOnly": {
     cursor: "initial",
