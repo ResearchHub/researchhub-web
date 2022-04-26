@@ -16,12 +16,6 @@ export function copyInputValToClipboard({
 
   // typing
   inputEl = nullthrows(inputEl);
-
-  // // @ts-ignore HTMLEl has attr select
-  // inputEl.select();
-  // // @ts-ignore HTMLEl has attr setSelectionRange
-  // inputEl.setSelectionRange(0, 99999); /* For mobile devices */
-
   // @ts-ignore HTMLEl has attr value
   const inputElValue = inputEl.value;
   if (isEmpty(inputElValue)) {
