@@ -40,6 +40,7 @@ import { sendAmpEvent, saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { genClientId } from "~/config/utils/id";
+import { breakpoints } from "~/config/themes/screen";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const TYPES = {
@@ -470,7 +471,7 @@ const DiscussionTab = (props) => {
               ? "Write a comment"
               : "Write a peer review"}
           </div>
-          <div className={css(styles.dicussionToggleContainer)}>
+          <div className={css(styles.discussionToggleContainer)}>
             <Toggle
               options={[
                 { label: "Comment", value: TYPES.COMMENT },
@@ -541,7 +542,7 @@ const DiscussionTab = (props) => {
               {!showEditor && !showTwitterComments && renderAddDiscussion()}
             </h3>
             <div className={css(styles.filterContainer)}>
-              <div className={css(styles.filterSelect)}>
+              <div>
                 <DropdownButton
                   opts={filterOptions}
                   labelAsHtml={
@@ -959,17 +960,12 @@ var styles = StyleSheet.create({
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "start",
     width: "100%",
     marginBottom: 15,
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-      alignItems: "flex-start",
-    },
   },
   discussionTitle: {
     display: "flex",
-    alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
     margin: 0,
@@ -1005,12 +1001,10 @@ var styles = StyleSheet.create({
   filterContainer: {
     display: "flex",
     alignItems: "center",
+    marginTop: -4,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 15,
     },
-  },
-  filterSelect: {
-    width: 150,
   },
   filterText: {
     textTransform: "uppercase",
@@ -1084,26 +1078,42 @@ var styles = StyleSheet.create({
   placeholderContainer: {
     marginTop: 15,
   },
-  dicussionToggleContainer: {
+  discussionToggleContainer: {
     display: "flex",
+    alignItems: "flex-start",
   },
   discussionTypeHeaderContainer: {
     display: "flex",
     justifyContent: "space-between",
     marginBottom: 20,
+    [`@media only screen and (max-width: 400px)`]: {
+      justifyContent: "center",
+    },
   },
   discussionTypeHeader: {
     fontSize: 18,
     fontWeight: 500,
     alignSelf: "center",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 16,
+    },
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    },
   },
   reviewDetails: {
     marginBottom: 20,
     display: "flex",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+    },
   },
   reviewHeader: {
     fontSize: 15,
     marginRight: 20,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginBottom: 10,
+    },
   },
   dropdownButtonOverride: {
     display: "flex",
@@ -1138,10 +1148,13 @@ const stylesEditor = StyleSheet.create({
     paddingLeft: 20,
     marginTop: 15,
     boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   discussionTextEditor: {
     width: "100%",
-    // border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
   label: {
