@@ -737,9 +737,6 @@ const toolbarStyles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     width: "100%",
-    "@media only screen and (max-width: 577px)": {
-      marginTop: 16,
-    },
   },
   smallButtonRow: {
     justifyContent: "space-between",
