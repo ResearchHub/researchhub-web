@@ -186,6 +186,8 @@ const DiscussionPostMetadata = (props) => {
   const renderDropdown = () => {
     /* NOTE: this is a temp measure for deal with spammers. Eventually we want to check for specific comments */
     const isCurrentUserEditor = Boolean(authorProfile?.is_hub_editor);
+    console.warn("isCurrentUserEditor: ", isCurrentUserEditor);
+    console.warn("authorProfile: ", authorProfile);
     return (
       <Fragment>
         {dropDownEnabled && (
