@@ -11,6 +11,9 @@ import icons from "~/config/themes/icons";
 import Loader from "../Loader/Loader";
 import Ripples from "react-ripples";
 import { copyInputValToClipboard } from "~/config/utils/copyInputValToClipboard";
+import { ID } from "~/config/types/root_types";
+
+type ApiToken = { token?: ID; prefix?: ID };
 
 const USER_API_TOKEN_INPUT_ID = "USER_API_TOKEN_INPUT_ID";
 
@@ -50,7 +53,7 @@ function UserApiTokenInputField({
 }): ReactElement<"div"> {
   const isLoggedIn = !isNullOrUndefined(user?.id);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [apiToken, setApiToken] = useState<any>({});
+  const [apiToken, setApiToken] = useState<ApiToken>({});
   const [copyButtonStatus, setCopyButtonStatus] = useState<
     "copied" | null | "ready"
   >(null);
