@@ -32,18 +32,32 @@ function ScoreInput({
   }
 
   const buildBarInput = () => {
+    let remainderWasCalculated = false;
     const bars = Array(MAX_SCORE).fill(null).map((v, index) => {
       const barNumber = index+1;
-      const isBarSelected =  barNumber <= selectedValue || barNumber <= hoveredValue;
-
+      
+      
       if (readOnly) {
+        const q = Math.floor(selectedValue / barNumber);
+        let coverPercentage = 0;
+        
+        if (q > 0) {
+          coverPercentage = 100;
+        }
+        else if (q === 0 && !remainderWasCalculated) {
+          coverPercentage = (selectedValue % 1) * 100
+          remainderWasCalculated = true
+        }
         return (
           <div className={css(styles.bar, styles.readOnly, overrideBarStyle)}>
-            <div className={css(styles.barFill, isBarSelected && styles.selectedBar)}></div>
+            <div className={css(styles.cover)} style={{"width": `${coverPercentage}%`}}></div>
+            <div className={css(styles.barFill)}></div>
           </div>
         )
       }
       else {
+        const isBarSelected =  barNumber <= selectedValue || barNumber <= hoveredValue;
+
         return (
           <div
             className={css(styles.bar, overrideBarStyle)}
@@ -51,6 +65,7 @@ function ScoreInput({
             onMouseEnter={() => setHoveredValue(barNumber)}
             onMouseLeave={() => setHoveredValue(0)}
           >
+            <div className={css(styles.cover)} style={{"width": `${ isBarSelected ? 100 : 0}%`}}></div>
             <div className={css(styles.barFill, isBarSelected && styles.selectedBar)}></div>
           </div>
         )
@@ -87,12 +102,20 @@ const styles = StyleSheet.create({
   "bar": {
     width: 24,
     height: 16,
-    paddingRight: 2,
+    marginRight: 2,
     borderRadius: "1px",
     cursor: "pointer",
+    position: "relative",
   },
   "barFill": {
     background: "#3971FF1A",
+    height: "100%",
+  },
+  "cover": {
+    background: colors.NEW_BLUE(),
+    position: "absolute",
+    left: 0,
+    top: 0,
     height: "100%",
   },
   "selectedBar": {
