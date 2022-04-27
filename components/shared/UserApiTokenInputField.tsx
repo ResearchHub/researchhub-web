@@ -128,7 +128,9 @@ function UserApiTokenInputField({
           />
           {copyButtonStatus && (
             <div className={css(styles.copyButtonTextStatus)}>
-              {"Please make sure to copy api token."}
+              {
+                "Please copy your API Token. You won't be able to copy it again after exiting this page"
+              }
             </div>
           )}
           <Ripples
@@ -145,7 +147,7 @@ function UserApiTokenInputField({
             ) : userHasApiToken ? (
               icons.times
             ) : (
-              icons.plusCircle
+              icons.plusCircleSolid
             )}
           </Ripples>
         </form>
