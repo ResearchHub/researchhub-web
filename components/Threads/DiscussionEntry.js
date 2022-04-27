@@ -251,8 +251,6 @@ class DiscussionEntry extends Component {
       data,
       updateThread,
       updateThreadPending,
-      showMessage,
-      setMessage,
       post,
       hypothesis,
       documentType,
@@ -262,6 +260,7 @@ class DiscussionEntry extends Component {
 
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let unifiedDocumentId = data.unified_document.id;
     let documentId;
     if (documentType === "post") {
       documentId = post.id;
@@ -277,7 +276,7 @@ class DiscussionEntry extends Component {
 
     if (isReview) {
       const response = await saveReview({
-        documentId,
+        unifiedDocumentId,
         review: this.state.review,
       });
       this.setState({ review: response });
