@@ -441,7 +441,7 @@ const DiscussionTab = (props) => {
   const editorPlaceholder =
     discussionType === TYPES.REVIEW
       ? `Review one or more aspects of this paper such as readability, methodologies, data, ... \nBe objective and constructive.`
-      : `Engage the community and author by leaving a comment.\n- Avoid comments like "Thanks", "+1" or "I agree".\n- Be constructive and/or inquisitive.`;
+      : `Engage the community and author by leaving a comment.\n- Avoid comments like "Thanks", "+1" or "I agree".\n- Be constructive and inquisitive.`;
 
   const editor = (
     <TextEditor
