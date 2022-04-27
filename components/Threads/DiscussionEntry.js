@@ -639,7 +639,7 @@ class DiscussionEntry extends Component {
                 >
                   {isReview ? (
                     <div className={css(styles.reviewContainer)}>
-                      <div className={css(styles.reviewBadge)}>Review</div>
+                      <div className={css(styles.reviewBadge)}>Peer Review</div>
                       <ScoreInput
                         value={review?.score}
                         readOnly={this.state.editing ? false : true}

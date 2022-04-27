@@ -686,18 +686,20 @@ const toolbarStyles = StyleSheet.create({
     borderColor: "rgb(235, 235, 235)",
     padding: 16,
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
     background: "#fff",
     "@media only screen and (max-width: 577px)": {
-      flexDirection: "column",
+      flexDirection: "row",
     },
   },
   iconRow: {
     display: "flex",
     flexWrap: "wrap",
-    marginBottom: 10,
+    marginBottom: 0,
+    whiteSpace: "nowrap",
+    alignSelf: "center",
   },
   smallToolBar: {
     fontSize: 11,

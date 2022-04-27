@@ -47,6 +47,7 @@ function TextEditor(props) {
     mediaOnly,
     setMessage,
     showMessage,
+    children,
     uid = genClientId(),
   } = props;
 
@@ -126,7 +127,9 @@ function TextEditor(props) {
       focusEditor={focusEditor && focusEditor}
       hasHeader={hasHeader && hasHeader}
       summary={summary && summary}
-    />
+    >
+      {children}
+    </QuillTextEditor>
   );
 }
 
