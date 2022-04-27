@@ -41,6 +41,7 @@ import { captureEvent } from "~/config/utils/events";
 import { isEmpty } from "~/config/utils/nullchecks";
 import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
+import ALink from "~/components/ALink";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const TYPES = {
@@ -88,6 +89,7 @@ const DiscussionTab = (props) => {
   const [filter, setFilter] = useState("-score");
   const [filterDropdownIsOpen, setFilterDropdownIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitInProgress, setSubmitInProgress] = useState(false);
   const [page, setPage] = useState(1);
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
@@ -205,6 +207,7 @@ const DiscussionTab = (props) => {
   };
 
   const cancel = () => {
+    setSubmitInProgress(false);
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
     setShowEditor(false);
@@ -214,6 +217,7 @@ const DiscussionTab = (props) => {
   };
 
   const save = async (text, plain_text) => {
+    setSubmitInProgress(true);
     let param;
     let documentId;
     let unifiedDocumentId;
@@ -247,6 +251,7 @@ const DiscussionTab = (props) => {
       if (reviewScore === 0) {
         props.showMessage({ show: true, error: true });
         props.setMessage("Rating cannot be empty");
+        setSubmitInProgress(false);
         return;
       }
 
@@ -257,6 +262,7 @@ const DiscussionTab = (props) => {
           review: { score: reviewScore },
         });
       } catch (error) {
+        setSubmitInProgress(false);
         captureEvent({
           error,
           msg: "Failed to save review",
@@ -270,7 +276,6 @@ const DiscussionTab = (props) => {
       param["review"] = reviewResponse.id;
     }
 
-    props.showMessage({ load: true, show: true });
     let config = API.POST_CONFIG(param);
 
     return fetch(
@@ -280,6 +285,7 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        setSubmitInProgress(false);
         props.showMessage({ show: false });
         props.setMessage("");
         props.showMessage({ show: true, error: false });
@@ -312,6 +318,7 @@ const DiscussionTab = (props) => {
         sendAmpEvent(payload);
       })
       .catch((err) => {
+        setSubmitInProgress(false);
         if (err.response.status === 429) {
           props.showMessage({ show: false });
           return props.openRecaptchaPrompt(true);
@@ -454,9 +461,14 @@ const DiscussionTab = (props) => {
       onSubmit={save}
       placeholder={editorPlaceholder}
       readOnly={false}
+      loading={submitInProgress}
       smallToolBar
       uid={textEditorKey}
-    />
+    >
+      <span className={css(styles.postingGuidelinesLink)}>
+        Posting Guidelines
+      </span>
+    </TextEditor>
   );
 
   const discussionTextEditor = !showEditor ? (
@@ -1120,6 +1132,21 @@ var styles = StyleSheet.create({
   },
   dropdownOption: {
     fontWeight: 400,
+  },
+  postingGuidelinesLink: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
+    fontSize: 14,
+    cursor: "pointer",
+    ":hover": {
+      opacity: 0.8,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 12,
+    },
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    },
   },
 });
 
