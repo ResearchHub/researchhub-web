@@ -157,6 +157,9 @@ const routes = (BASE_URL) => {
 
       return url;
     },
+    USER_EXTERNAL_API_TOKEN: BASE_URL + "user_external_token/",
+    USER_EXTERNAL_API_TOKEN_DELETE:
+      BASE_URL + "user_external_token/revoke_token",
     LEADERBOARD: ({ page, limit, hubId, timeframe, type, dateOption }) => {
       let url = BASE_URL + `user/leaderboard/`;
       let params = {
@@ -873,10 +876,18 @@ const routes = (BASE_URL) => {
 
       return url;
     },
-    FLAG_POST: ({ paperId, threadId, commentId, replyId, postId }) => {
+    FLAG_POST: ({
+      documentType,
+      paperId,
+      threadId,
+      commentId,
+      replyId,
+      documentId,
+    }) => {
       let url = buildPaperChainUrl(
+        documentType,
         paperId,
-        postId,
+        documentId,
         threadId,
         commentId,
         replyId

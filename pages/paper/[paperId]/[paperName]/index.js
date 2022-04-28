@@ -132,7 +132,11 @@ const Paper = ({
   const isModerator = store.getState().auth.user.moderator;
   const currUserID = auth?.user?.id ?? null;
   const isSubmitter = uploaded_by && uploaded_by?.id === currUserID;
-  const isEditorOfHubs = isUserEditorOfHubs({ currUserID, hubs });
+  const isEditorOfHubs =
+    /* NOTE: this is a temp measure for deal with spammers. Eventually we want to only use the first conditional */
+    isUserEditorOfHubs({ currUserID, hubs }) ||
+    Boolean(auth?.user?.author_profile?.is_hub_editor);
+
   const commentsRef = useRef(null);
 
   const structuredDataForSEO = useMemo(

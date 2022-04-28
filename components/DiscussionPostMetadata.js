@@ -42,6 +42,7 @@ const DiscussionPostMetadata = (props) => {
     authorProfile,
     containerStyle,
     currentAuthorId,
+    currentUser,
     data,
     dropDownEnabled,
     fetching,
@@ -128,12 +129,20 @@ const DiscussionPostMetadata = (props) => {
 
   const flagPost = async () => {
     dispatch(MessageActions.showMessage({ load: true, show: true }));
-    let { paperId, threadId, commentId, replyId, postId } = metaData;
+    let { paperId, threadId, commentId, replyId, documentId } = metaData;
+    let { documentType } = props;
     let config = isFlagged
       ? API.DELETE_CONFIG()
       : await API.POST_CONFIG({ reason: "censor" });
     return fetch(
-      API.FLAG_POST({ paperId, threadId, commentId, replyId, postId }),
+      API.FLAG_POST({
+        documentType,
+        paperId,
+        threadId,
+        commentId,
+        replyId,
+        documentId,
+      }),
       config
     )
       .then(Helpers.checkStatus)
@@ -176,6 +185,10 @@ const DiscussionPostMetadata = (props) => {
   };
 
   const renderDropdown = () => {
+    /* NOTE: this is a temp measure for deal with spammers. Eventually we want to check for specific comments */
+    const isCurrentUserEditor = Boolean(
+      currentUser?.author_profile?.is_hub_editor
+    );
     return (
       <Fragment>
         {dropDownEnabled && (
@@ -196,27 +209,29 @@ const DiscussionPostMetadata = (props) => {
                   isFlagged={isFlagged}
                 />
                 <ModeratorDeleteButton
-                  containerStyle={styles.dropdownItem}
-                  labelStyle={[styles.text, styles.removeText]}
-                  iconStyle={styles.expandIcon}
-                  label={"Remove"}
                   actionType={"post"}
+                  containerStyle={styles.dropdownItem}
                   documentType={props.documentType}
+                  forceRender={isUserOwnInlineComment}
+                  iconStyle={styles.expandIcon}
+                  isEditorOfHubs={isCurrentUserEditor}
+                  isModerator={isModerator}
+                  label={"Remove"}
+                  labelStyle={[styles.text, styles.removeText]}
                   metaData={metaData}
                   onRemove={onRemove}
-                  isModerator={isModerator}
-                  forceRender={isUserOwnInlineComment}
                 />
                 <ModeratorDeleteButton
-                  containerStyle={styles.dropdownItem}
-                  labelStyle={[styles.text, styles.removeText]}
-                  iconStyle={styles.expandIcon}
-                  icon={icons.ban}
-                  label={"Ban User"}
                   actionType={"user"}
+                  containerStyle={styles.dropdownItem}
+                  icon={icons.ban}
+                  iconStyle={styles.expandIcon}
+                  isEditorOfHubs={isCurrentUserEditor}
+                  isModerator={isModerator}
+                  label={"Ban User"}
+                  labelStyle={[styles.text, styles.removeText]}
                   metaData={metaData}
                   onRemove={onRemove}
-                  isModerator={isModerator}
                 />
               </div>
             )}
@@ -244,7 +259,6 @@ const DiscussionPostMetadata = (props) => {
       );
     }
   };
-
   return (
     <div className={css(styles.container, containerStyle && containerStyle)}>
       <ContentSupportModal />
@@ -696,6 +710,7 @@ const styles = StyleSheet.create({
 const mapStateToProps = ({ auth }) => ({
   isLoggedIn: auth.isLoggedIn,
   isModerator: auth.user.moderator,
+  currentUser: auth.user,
   currentAuthorId:
     auth.user && auth.user.author_profile ? auth.user.author_profile.id : null,
 });
