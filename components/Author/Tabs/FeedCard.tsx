@@ -333,15 +333,14 @@ function FeedCard(props: FeedCardProps) {
               </div>
             </div>
             <div className={css(styles.column)}>
-              {Boolean(previewImg) ||
-                (previews.length > 0 && (
-                  <span className={css(styles.row, styles.docType)}>
-                    <span className={css(styles.metadataIcon)}>
-                      {documentIcons[formattedDocType!]}
-                    </span>
-                    <span>{formattedDocType}</span>
+              {(Boolean(previewImg) || previews.length > 0) && (
+                <span className={css(styles.row, styles.docType)}>
+                  <span className={css(styles.metadataIcon)}>
+                    {documentIcons[formattedDocType!]}
                   </span>
-                ))}
+                  <span>{formattedDocType}</span>
+                </span>
+              )}
               {Boolean(previewImg) && (
                 <div className={css(styles.preview, styles.imagePreview)}>
                   <img src={previewImg} className={css(styles.image)} />
