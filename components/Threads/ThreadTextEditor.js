@@ -61,12 +61,19 @@ class ThreadTextEditor extends Component {
   onEditSubmit = (content, plain_text) => {
     this.setState({ loading: true }, () => {
       this.props.onEditSubmit &&
-        this.props.onEditSubmit(content, plain_text, () => {
-          this.setState({
-            loading: false,
-            editorState: content,
+        this.props
+          .onEditSubmit(content, plain_text, () => {
+            this.setState({
+              loading: false,
+              editorState: content,
+            });
+          })
+          .catch((error) => {
+            this.props.onError && this.props.onError(error);
+            this.setState({
+              loading: false,
+            });
           });
-        });
     });
   };
 

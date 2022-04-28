@@ -19,6 +19,9 @@ import { emptyFncWithMsg, isNullOrUndefined } from "~/config/utils/nullchecks";
 import { formatDateStandard } from "~/config/utils/dates";
 import { isDevEnv } from "~/config/utils/env";
 import { transformDate } from "~/redux/utils";
+import ScoreInput from "~/components/Form/ScoreInput";
+import ALink from "~/components/ALink";
+import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -43,6 +46,7 @@ export type FeedCardProps = {
   preview_img: string;
   renderableTextAsHtml: any;
   renderable_text: string;
+  reviews: any;
   score: number;
   singleCard: boolean;
   slug: string;
@@ -77,6 +81,7 @@ function FeedCard(props: FeedCardProps) {
     preview_img: previewImg,
     renderableTextAsHtml,
     renderable_text: renderableText,
+    reviews,
     score: initialScore,
     singleCard,
     slug,
@@ -108,6 +113,7 @@ function FeedCard(props: FeedCardProps) {
       first_figure && first_figure,
     ])
   );
+  const docUrl = `/${formattedDocType}/${id}/${slug ?? "new-paper"}`;
 
   useEffect((): void => {
     setVoteState(userVoteToConstant(userVote));
@@ -287,6 +293,14 @@ function FeedCard(props: FeedCardProps) {
                   {abstract && (
                     <div className={css(styles.abstract) + " clamp2"}>
                       {abstract}
+                    </div>
+                  )}
+                  {reviews?.count > 0 && (
+                    <div className={css(styles.reviewSummaryContainer)}>
+                      <PeerReviewScoreSummary
+                        summary={reviews}
+                        docUrl={docUrl}
+                      />
                     </div>
                   )}
                   <div
@@ -583,6 +597,9 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.5),
     fontSize: 14,
     marginRight: 5,
+  },
+  reviewSummaryContainer: {
+    marginBottom: 10,
   },
 });
 

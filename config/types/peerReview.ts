@@ -4,6 +4,11 @@ export type PeerReview = {
   id: ID,
 }
 
+export type PeerReviewScoreSummary = {
+  avg: number,
+  count: number,
+}
+
 export type PeerReviewInvite = {
   id?: ID,
   recipient?: RHUser,
@@ -41,5 +46,12 @@ export const parseInvite = (raw: any): PeerReviewInvite => {
     id: raw.id,
     recipient: parseUser(raw.recipient),
     status: raw.status,
+  }
+}
+
+export const parsePeerReviewScoreSummary = (raw: any): PeerReviewScoreSummary => {
+  return {
+    avg: raw.avg,
+    count: raw.count,
   }
 }

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 // Utility
 import colors from "~/config/themes/colors";
+import { breakpoints } from "~/config/themes/screen";
 
 const PaperMetadata = (props) => {
   const { active, centered, label, value, containerStyles } = props;
@@ -28,8 +29,8 @@ const PaperMetadata = (props) => {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    alignItems: "flex-start",
-    marginBottom: "5px",
+    alignItems: "center",
+    marginBottom: "12px",
     "@media only screen and (max-width: 768px)": {
       width: "100%",
       boxSizing: "border-box",
@@ -42,8 +43,12 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "flex-start",
     marginRight: 15,
+    minWidth: 75,
     "@media only screen and (max-width: 1023px)": {
       minWidth: 80, // Align items when the screen is small and each PaperMetadata is on a new line
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minWidth: "auto",
     },
   },
   label: {
@@ -61,7 +66,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.7),
     display: "flex",
     alignItems: "center",
-    lineHeight: 1.3,
+    lineHeight: 1.0,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },

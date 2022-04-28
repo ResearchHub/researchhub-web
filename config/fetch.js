@@ -449,3 +449,11 @@ export const isFollowingUser = ({ authorId: userId }) => {
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON);
 };
+
+export const saveReview = ({ unifiedDocumentId, review = null }) => {
+  let config = review?.id ? API.PATCH_CONFIG(review) : API.POST_CONFIG(review);
+
+  return fetch(API.REVIEW({ unifiedDocumentId, reviewId: review?.id }), config)
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON);
+};
