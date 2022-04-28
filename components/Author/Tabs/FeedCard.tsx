@@ -25,6 +25,7 @@ const PaperPDFModal = dynamic(
 );
 
 export type FeedCardProps = {
+  abstract: string;
   created_by: any;
   created_date: any;
   discussion_count: number;
@@ -59,6 +60,7 @@ export type FeedCardProps = {
 
 function FeedCard(props: FeedCardProps) {
   const {
+    abstract,
     created_by,
     created_date,
     discussion_count,
@@ -229,7 +231,7 @@ function FeedCard(props: FeedCardProps) {
             </div>
           </DesktopOnly>
           <div className={css(styles.container)}>
-            <div>
+            <div className={css(styles.fullWidth)}>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.postCreatedBy)}>
                   {uploaded_by || created_by ? (
@@ -268,23 +270,36 @@ function FeedCard(props: FeedCardProps) {
                     />
                   )}
                 </div>
+                {!Boolean(previewImg) && previews.length === 0 && (
+                  <span className={css(styles.row, styles.docType)}>
+                    <span className={css(styles.metadataIcon)}>
+                      {documentIcons[formattedDocType!]}
+                    </span>
+                    <span>{formattedDocType}</span>
+                  </span>
+                )}
               </div>
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
                   <span className={css(styles.title)}>
                     {titleAsHtml ? titleAsHtml : title ? title : ""}
                   </span>
+                  {abstract && (
+                    <div className={css(styles.abstract) + " clamp2"}>
+                      {abstract}
+                    </div>
+                  )}
                   <div
                     className={css(
                       styles.metadataContainer,
                       styles.publishContainer
                     )}
                   >
-                    <div className={css(styles.metadataIcon)}>
-                      {documentIcons[formattedDocType!]}
-                    </div>
+                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
                     <span className={css(styles.metadataText)}>
-                      {formattedDocType}
+                      {formatDateStandard(
+                        transformDate(created_date || uploaded_date)
+                      )}
                     </span>
                     <div
                       className={css(
@@ -313,52 +328,54 @@ function FeedCard(props: FeedCardProps) {
                         discussion_count === 1 ? "" : "s"
                       }`}</span>
                     </span>
-                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
-                    <span className={css(styles.metadataText)}>
-                      {formatDateStandard(
-                        transformDate(created_date || uploaded_date)
-                      )}
-                    </span>
                   </div>
                 </div>
               </div>
             </div>
-            {Boolean(previewImg) && (
-              <div className={css(styles.column)}>
+            <div className={css(styles.column)}>
+              {Boolean(previewImg) ||
+                (previews.length > 0 && (
+                  <span className={css(styles.row, styles.docType)}>
+                    <span className={css(styles.metadataIcon)}>
+                      {documentIcons[formattedDocType!]}
+                    </span>
+                    <span>{formattedDocType}</span>
+                  </span>
+                ))}
+              {Boolean(previewImg) && (
                 <div className={css(styles.preview, styles.imagePreview)}>
                   <img src={previewImg} className={css(styles.image)} />
                 </div>
-              </div>
-            )}
-            {previews.length > 0 && (
-              <div
-                className={css(styles.column)}
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-              >
-                {isPreviewing && (
-                  <PaperPDFModal
-                    paper={paper}
-                    onClose={() => setIsPreviewing(false)}
-                  />
-                )}
-                <div className={css(styles.preview, styles.paperPreview)}>
-                  <img
-                    src={previews[0].file}
-                    className={css(styles.image)}
-                    key={`preview_${previews[0].file}`}
-                    alt={`Paper Preview Page 1`}
-                    onClick={(e) => {
-                      e && e.preventDefault();
-                      e && e.stopPropagation();
-                      setIsPreviewing(true);
-                      props.openPaperPDFModal(true);
-                    }}
-                  />
+              )}
+              {previews.length > 0 && (
+                <div
+                  onClick={(e) => {
+                    e.stopPropagation();
+                  }}
+                >
+                  {isPreviewing && (
+                    <PaperPDFModal
+                      paper={paper}
+                      onClose={() => setIsPreviewing(false)}
+                    />
+                  )}
+                  <div className={css(styles.preview, styles.paperPreview)}>
+                    <img
+                      src={previews[0].file}
+                      className={css(styles.image)}
+                      key={`preview_${previews[0].file}`}
+                      alt={`Paper Preview Page 1`}
+                      onClick={(e) => {
+                        e && e.preventDefault();
+                        e && e.stopPropagation();
+                        setIsPreviewing(true);
+                        props.openPaperPDFModal(true);
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </a>
       </Link>
@@ -419,9 +436,11 @@ const styles = StyleSheet.create({
     height: 90,
   },
   container: {
-    alignItems: "center",
     display: "flex",
     justifyContent: "space-between",
+    width: "100%",
+  },
+  fullWidth: {
     width: "100%",
   },
   rowContainer: {
@@ -431,12 +450,32 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   column: {
+    alignContent: "flex-start",
     display: "flex",
     flexDirection: "column",
     justifyContent: "flex-start",
-    alignItems: "flex-start",
-    height: "100%",
     position: "relative",
+  },
+  row: {
+    alignItems: "center",
+    display: "flex",
+    flexDirection: "row",
+  },
+  docType: {
+    color: colors.BLACK(0.5),
+    display: "flex",
+    fontSize: 14,
+    justifyContent: "flex-end",
+    marginBottom: 8,
+    textTransform: "capitalize",
+    [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
+      fontSize: 13,
+    },
+  },
+  abstract: {
+    color: colors.BLACK(0.6),
+    marginBottom: 10,
+    fontSize: 15,
   },
   metaData: {
     height: "100%",
@@ -489,8 +528,8 @@ const styles = StyleSheet.create({
     color: colors.BLACK(),
     fontSize: 20,
     fontWeight: 700,
-    marginBottom: 10,
-    marginTop: 8,
+    marginBottom: 8,
+    marginTop: 7,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,
       fontWeight: 500,
