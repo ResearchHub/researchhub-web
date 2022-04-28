@@ -320,6 +320,8 @@ const DiscussionTab = (props) => {
         props.setCount(props.calculatedCount + 1);
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
+        setReviewScore(0);
+        setTextEditorKey(genClientId());
         sendAmpEvent(payload);
       })
       .catch((err) => {

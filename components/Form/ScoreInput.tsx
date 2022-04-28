@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState } from "react";
+import { ReactElement, useEffect, useMemo, useState } from "react";
 import colors from "~/config/themes/colors";
 
 type Props = {
@@ -25,6 +25,12 @@ function ScoreInput({
 
   const [selectedValue, setSelectedValue] = useState<number>(value);
   const [hoveredValue, setHoveredValue] = useState<number>(0);
+
+  useEffect(() => {
+    if (value !== selectedValue) {
+      setSelectedValue(value);
+    }
+  }, [value])
 
   const handleSelect = (value) => {
     setSelectedValue(value);
@@ -70,7 +76,6 @@ function ScoreInput({
           </div>
         )
       }
-
     });
 
     return (
@@ -78,7 +83,10 @@ function ScoreInput({
     )
   }
 
-  const barInput = buildBarInput();
+  const barInput = useMemo(() => {
+    return buildBarInput();
+  }, [selectedValue, hoveredValue, readOnly, withText]);
+
   return (
     <div className={css(styles.scoreInput, scoreInputStyleOverride)}>
       {barInput}
