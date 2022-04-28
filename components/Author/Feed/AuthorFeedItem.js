@@ -89,7 +89,11 @@ const AuthorFeedItem = ({
     const cardType = getCardType({ item, itemType });
     let actionText = null;
     if (itemType === "CONTRIBUTION" && item.contribution_type === "COMMENTER") {
-      actionText = `commented`;
+      if (item.source?.review?.id) {
+        actionText = `reviewed`;
+      } else {
+        actionText = `commented`;
+      }
     } else if (
       itemType === "CONTRIBUTION" &&
       item.contribution_type === "SUBMITTER"
@@ -163,7 +167,7 @@ const AuthorFeedItem = ({
           <div>
             <Link href={url}>
               <a className={css(styles.link, styles.title)}>
-                {truncateText(doc.title, 50)}
+                {truncateText(doc.title, 70)}
               </a>
             </Link>
           </div>

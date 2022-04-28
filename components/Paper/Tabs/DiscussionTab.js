@@ -7,18 +7,22 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
-import FormSelect from "~/components/Form/FormSelect";
+import ScoreInput from "~/components/Form/ScoreInput";
 import Loader from "~/components/Loader/Loader";
 import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
+import Toggle from "~/components/Form/Toggle";
+import DropdownButton from "~/components/Form/DropdownButton";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
 const AddDiscussionModal = dynamic(() =>
   import("~/components/Modals/AddDiscussionModal")
+);
+const PostingGuidelinesModal = dynamic(() =>
+  import("~/components/Threads/PostingGuidelinesModal")
 );
 
 // Redux
@@ -34,9 +38,16 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
-import { sendAmpEvent } from "~/config/fetch";
-import { isEmpty } from "~/config/utils/nullchecks";
+import { sendAmpEvent, saveReview } from "~/config/fetch";
+import { captureEvent } from "~/config/utils/events";
+import { genClientId } from "~/config/utils/id";
+import { breakpoints } from "~/config/themes/screen";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
+
+const TYPES = {
+  COMMENT: "COMMENT",
+  REVIEW: "REVIEW",
+};
 
 const DiscussionTab = (props) => {
   const initialDiscussionState = {
@@ -62,22 +73,6 @@ const DiscussionTab = (props) => {
     hypothesisId,
   } = props;
 
-  // TODO: move to config
-  const filterOptions = [
-    {
-      value: "-created_date",
-      label: "Most Recent",
-    },
-    {
-      value: "created_date",
-      label: "Oldest",
-    },
-    {
-      value: "-score",
-      label: "Top",
-    },
-  ];
-
   const router = useRouter();
   const basePath = formatBasePath(router.asPath);
   const [formattedThreads, setFormattedThreads] = useState(
@@ -92,11 +87,18 @@ const DiscussionTab = (props) => {
   const [mobileView, setMobileView] = useState(false);
   const [threads, setThreads] = useState([]);
   const [filter, setFilter] = useState("-score");
+  const [filterDropdownIsOpen, setFilterDropdownIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitInProgress, setSubmitInProgress] = useState(false);
   const [page, setPage] = useState(1);
   const [showTwitterComments, toggleTwitterComments] = useState(false);
   const [fetching, setFetching] = useState(false);
   const [focus, setFocus] = useState(false);
+  const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
+  const [reviewScore, setReviewScore] = useState(0);
+  const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
+    useState(false);
+  const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   useEffect(() => {
     handleWindowResize();
@@ -178,26 +180,53 @@ const DiscussionTab = (props) => {
     );
   }
 
-  const handleFilterChange = (id, filter) => {
-    let { value } = filter;
-    setFilter(value);
+  const handleFilterChange = (filter) => {
+    setFilter(filter);
     setPage(1);
   };
 
+  const getFilterOptions = () => {
+    const options = [
+      {
+        value: "-score",
+        label: "Top",
+        default: true,
+      },
+      {
+        value: "-created_date",
+        label: "Most Recent",
+      },
+      {
+        value: "created_date",
+        label: "Oldest",
+      },
+    ];
+
+    return options.map((o) => {
+      o.isSelected = o.value === filter;
+      return o;
+    });
+  };
+
   const cancel = () => {
+    setSubmitInProgress(false);
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
-    setShowEditor(false);
     setFocus(false);
+    setReviewScore(0);
+    setTextEditorKey(genClientId());
     props.openAddDiscussionModal(false);
   };
 
-  const save = (text, plain_text) => {
-    // Note: calvinhlee - this is not scaleable at all we need to change this
+  const save = async (text, plain_text) => {
+    setSubmitInProgress(true);
     let param;
     let documentId;
+    let unifiedDocumentId;
+
     if (documentType === "paper") {
       documentId = router.query.paperId;
+      unifiedDocumentId = props.paperState.unified_document.id;
       param = {
         text: text,
         paper: paperId,
@@ -205,6 +234,7 @@ const DiscussionTab = (props) => {
       };
     } else if (documentType === "post") {
       documentId = router.query.documentId;
+      unifiedDocumentId = props.post.unified_document.id;
       param = {
         text: text,
         post: documentId,
@@ -212,13 +242,43 @@ const DiscussionTab = (props) => {
       };
     } else if (documentType === "hypothesis") {
       documentId = router.query.documentId;
+      unifiedDocumentId = props.hypothesis.unified_document;
       param = {
         text: text,
         hypothesis: documentId,
         plain_text: plain_text,
       };
     }
-    props.showMessage({ load: true, show: true });
+
+    if (discussionType === TYPES.REVIEW) {
+      if (reviewScore === 0) {
+        props.showMessage({ show: true, error: true });
+        props.setMessage("Rating cannot be empty");
+        setSubmitInProgress(false);
+        return;
+      }
+
+      let reviewResponse;
+      try {
+        reviewResponse = await saveReview({
+          unifiedDocumentId,
+          review: { score: reviewScore },
+        });
+      } catch (error) {
+        setSubmitInProgress(false);
+        captureEvent({
+          error,
+          msg: "Failed to save review",
+          data: { reviewScore },
+        });
+        props.setMessage("Something went wrong");
+        props.showMessage({ show: true, error: true });
+        return false;
+      }
+
+      param["review"] = reviewResponse.id;
+    }
+
     let config = API.POST_CONFIG(param);
 
     return fetch(
@@ -228,11 +288,13 @@ const DiscussionTab = (props) => {
       .then(Helpers.checkStatus)
       .then(Helpers.parseJSON)
       .then((resp) => {
+        setSubmitInProgress(false);
         props.showMessage({ show: false });
-        props.setMessage("Successfully Saved!");
-        props.showMessage({ show: true });
+        props.setMessage("");
+        props.showMessage({ show: true, error: false });
         // update state & redux
         let newDiscussion = { ...resp };
+
         setThreads([newDiscussion, ...threads]);
         let formattedDiscussion = createFormattedDiscussion(newDiscussion);
         setFormattedThreads([formattedDiscussion, ...formattedThreads]);
@@ -252,12 +314,16 @@ const DiscussionTab = (props) => {
             is_removed: resp.is_removed,
           },
         };
+
         props.setCount(props.calculatedCount + 1);
         props.checkUserFirstTime(!props.auth.user.has_seen_first_coin_modal);
         props.getUser();
+        setReviewScore(0);
+        setTextEditorKey(genClientId());
         sendAmpEvent(payload);
       })
       .catch((err) => {
+        setSubmitInProgress(false);
         if (err.response.status === 429) {
           props.showMessage({ show: false });
           return props.openRecaptchaPrompt(true);
@@ -316,115 +382,57 @@ const DiscussionTab = (props) => {
       setFetching(true);
     }
     setLoading(true);
-    if (postId) {
-      const currentPost = post;
-      const res = await getPostThreads({
-        documentId: postId,
-        post: currentPost,
-        filter,
-        loadMore,
-        twitter: showTwitterComments,
-      });
-      const threads = res.payload.threads;
-      setFetching(false);
-      setLoading(false);
-      setThreads(threads);
-      setFormattedThreads(formatThreads(threads, basePath));
-    } else if (hypothesisId) {
-      const currentHypothesis = hypothesis;
-      const res = await getHypothesisThreads({
-        documentId: hypothesisId,
-        hypothesis: currentHypothesis,
-        filter,
-        loadMore,
-        twitter: showTwitterComments,
-      });
-      const threads = res.payload.threads;
-      setFetching(false);
-      setLoading(false);
-      setThreads(threads);
-      setFormattedThreads(formatThreads(threads, basePath));
-    } else if (paperId) {
-      const currentPaper = props.paper;
-      const res = await getThreads({
-        paperId: paperId,
-        paper: currentPaper,
-        filter,
-        loadMore,
-        twitter: showTwitterComments,
-      });
-      const threads = res.payload.threads;
-      setFetching(false);
-      setLoading(false);
-      setThreads(threads);
-      setFormattedThreads(formatThreads(threads, basePath));
+
+    let documentId;
+    if (documentType === "paper") {
+      documentId = router.query.paperId;
+    } else {
+      documentId = router.query.documentId;
     }
+    const res = await getThreads({
+      documentId,
+      documentType,
+      document: props.paper,
+      filter,
+      loadMore,
+      twitter: showTwitterComments,
+    });
+
+    const threads = res.payload.threads;
+    setFetching(false);
+    setLoading(false);
+    setThreads(threads);
+    setFormattedThreads(formatThreads(threads, basePath));
   };
 
-  const renderAddDiscussion = () => {
-    return (
-      <div
-        className={css(
-          styles.box,
-          !fetching && threads.length < 1 && styles.emptyStateBox
-        )}
-        onClick={() => {
-          setShowEditor(true);
-          setFocus(true);
-        }}
+  const editorPlaceholder =
+    discussionType === TYPES.REVIEW
+      ? `Review one or more aspects of this paper such as readability, methodologies, data, ... \nBe objective and constructive.`
+      : `Engage the community and author by leaving a comment.\n- Avoid comments like "Thanks", "+1" or "I agree".\n- Be constructive and inquisitive.`;
+
+  const editor = (
+    <TextEditor
+      canEdit
+      commentEditor
+      commentEditorStyles={styles.commentEditorStyles}
+      focusEditor={focus}
+      initialValue={discussion.question}
+      onCancel={cancel}
+      onSubmit={save}
+      placeholder={editorPlaceholder}
+      readOnly={false}
+      loading={submitInProgress}
+      smallToolBar
+      uid={textEditorKey}
+    >
+      <span
+        className={css(styles.postingGuidelinesLink)}
+        onClick={() => setShowPostingGuidelinesModal(true)}
       >
-        {threads.length < 1 && (
-          <Fragment>
-            <span className={css(styles.icon)}>{icons.comments}</span>
-            <h2 className={css(styles.noSummaryTitle)}>
-              Ask a question for the author or community
-            </h2>
-            <p className={css(styles.text)}>
-              Contribute a thought or post a question for this paper.
-            </p>
-          </Fragment>
-        )}
-        <PermissionNotificationWrapper
-          onClick={() => {
-            setShowEditor(true);
-            setFocus(true);
-          }}
-          modalMessage="create a discussion thread"
-          permissionKey="CreateDiscussionThread"
-          loginRequired={true}
-        >
-          <button
-            className={css(
-              styles.addDiscussionButton,
-              threads.length > 0 && styles.plainButton
-            )}
-          >
-            Add Comment
-          </button>
-        </PermissionNotificationWrapper>
-      </div>
-    );
-  };
-
-  const editor = useMemo(() => {
-    // This is a temp solution
-    return (
-      <TextEditor
-        canEdit
-        commentEditor
-        commentEditorStyles={styles.commentEditorStyles}
-        focusEditor={focus}
-        initialValue={discussion.question}
-        onCancel={cancel}
-        onSubmit={save}
-        placeholder={
-          "Leave a question or a comment for the Author of the paper or the community"
-        }
-        readOnly={false}
-        smallToolBar
-      />
-    );
-  }, []);
+        Posting Guidelines
+      </span>
+    </TextEditor>
+  );
 
   const discussionTextEditor = !showEditor ? (
     renderAddDiscussion()
@@ -432,6 +440,38 @@ const DiscussionTab = (props) => {
     <div className={css(stylesEditor.box)}>
       <Message />
       <div className={css(stylesEditor.discussionInputWrapper)}>
+        <div className={css(styles.discussionTypeHeaderContainer)}>
+          <div className={css(styles.discussionTypeHeader)}>
+            {discussionType === TYPES.COMMENT
+              ? "Write a comment"
+              : "Write a peer review"}
+          </div>
+          <div className={css(styles.discussionToggleContainer)}>
+            <Toggle
+              options={[
+                { label: "Comment", value: TYPES.COMMENT },
+                { label: "Peer Review", value: TYPES.REVIEW },
+              ]}
+              selected={discussionType}
+              onSelect={(selected) => setDiscussionType(selected.value)}
+            />
+          </div>
+        </div>
+        {discussionType == TYPES.REVIEW && (
+          <div className={css(styles.reviewDetails)}>
+            <div className={css(styles.reviewHeader)}>
+              Overall Rating
+              <span className={css(stylesEditor.asterick)}>*</span>
+            </div>
+            <ScoreInput
+              onSelect={(value) => {
+                setReviewScore(value);
+              }}
+              value={reviewScore}
+            />
+          </div>
+        )}
+
         <div
           className={css(stylesEditor.discussionTextEditor)}
           onClick={() => editorDormant && setEditorDormant(false)}
@@ -442,8 +482,17 @@ const DiscussionTab = (props) => {
     </div>
   );
 
+  const filterOptions = getFilterOptions();
+  const selectedFilter =
+    filterOptions.find((f) => f.isSelected) ||
+    filterOptions.find((f) => f.default);
+
   return (
     <Fragment>
+      <PostingGuidelinesModal
+        isOpen={showPostingGuidelinesModal}
+        closeModal={() => setShowPostingGuidelinesModal(false)}
+      />
       <AddDiscussionModal
         handleDiscussionTextEditor={handleDiscussionTextEditor}
         discussion={discussion}
@@ -451,99 +500,62 @@ const DiscussionTab = (props) => {
         cancel={cancel}
         save={save}
       />
-      {calculatedCount > 0 ? (
-        <div
-          className={css(
-            styles.threadsContainer,
-            styles.discussionThreadContainer
-          )}
-        >
-          <div className={css(styles.header)}>
-            <h3 className={css(styles.discussionTitle)}>
-              Comments
-              <span className={css(styles.discussionCount)}>
-                {fetching ? (
-                  <Loader
-                    loading={true}
-                    size={2}
-                    color={"rgba(36, 31, 58, 0.5)"}
-                    type="beat"
-                  />
-                ) : showTwitterComments ? (
-                  calculateCount()
-                ) : (
-                  props.calculatedCount
-                )}
-              </span>
-              {!showEditor && !showTwitterComments && renderAddDiscussion()}
-            </h3>
-            <div className={css(styles.filterContainer)}>
-              <div className={css(styles.filterSelect)}>
-                <FormSelect
-                  id={"thread-filter"}
-                  options={filterOptions}
-                  defaultValue={filterOptions[2]}
-                  placeholder={"Sort Threads"}
-                  onChange={handleFilterChange}
-                  containerStyle={styles.overrideFormSelect}
-                  inputStyle={{
-                    minHeight: "unset",
-                    padding: 0,
-                    backgroundColor: "#FFF",
-                    fontSize: 14,
-                    width: 150,
-                    "@media only screen and (max-width: 415px)": {
-                      fontSize: 12,
-                    },
-                  }}
-                />
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.box, !addView && styles.right)}>
-            <div className={css(styles.addDiscussionContainer)}>
-              {!showTwitterComments && discussionTextEditor}
-            </div>
-          </div>
-          {renderThreads(formattedThreads, hostname)}
-          {formattedThreads.length > 2 && isCollapsible ? (
-            expandComments ? (
-              <div>
-                {props.paper.nextDiscussion && !fetching && (
-                  <div className={css(styles.buttonContainer)}>
-                    {loading ? (
-                      <Loader loading={true} size={10} type="beat" />
-                    ) : (
-                      <Ripples
-                        className={css(styles.loadMoreButton)}
-                        onClick={() => fetchDiscussionThreads(true)}
-                      >
-                        Load More
-                      </Ripples>
-                    )}
+      <div
+        className={css(
+          styles.threadsContainer,
+          styles.discussionThreadContainer
+        )}
+      >
+        <div className={css(styles.header)}>
+          <h3 className={css(styles.discussionTitle)}>
+            Discussion
+            <span className={css(styles.discussionCount)}>
+              {fetching ? (
+                <Loader loading={true} size={10} />
+              ) : showTwitterComments ? (
+                calculateCount()
+              ) : (
+                props.calculatedCount
+              )}
+            </span>
+          </h3>
+          <div className={css(styles.filterContainer)}>
+            <div>
+              <DropdownButton
+                opts={filterOptions}
+                labelAsHtml={
+                  <div>
+                    <span className={css(styles.typeFilterText)}>
+                      {selectedFilter.label}
+                    </span>
                   </div>
-                )}
-                <div className={css(styles.expandDiv)}>
-                  <button
-                    className={css(styles.expandButton)}
-                    onClick={() => setExpandComments(false)}
-                  >
-                    See Fewer Comments
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className={css(styles.expandDiv)}>
-                <button
-                  className={css(styles.expandButton)}
-                  onClick={() => setExpandComments(true)}
-                >
-                  View {calculateHiddenCount()} More Comment
-                  {calculateHiddenCount() === 1 ? "" : "s"}
-                </button>
-              </div>
-            )
-          ) : (
+                }
+                selected={selectedFilter.value}
+                isOpen={filterDropdownIsOpen}
+                onClick={() => setFilterDropdownIsOpen(true)}
+                dropdownClassName="filter"
+                onClickOutside={() => {
+                  setFilterDropdownIsOpen(false);
+                }}
+                positions={["bottom", "right"]}
+                customButtonClassName={[styles.dropdownButtonOverride]}
+                overrideTitleStyle={styles.dropdownOption}
+                onSelect={(selected) => {
+                  handleFilterChange(selected);
+                }}
+                onClose={() => setFilterDropdownIsOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={css(styles.box, !addView && styles.right)}>
+          <div className={css(styles.addDiscussionContainer)}>
+            {!showTwitterComments && discussionTextEditor}
+          </div>
+        </div>
+        {renderThreads(formattedThreads, hostname)}
+        {formattedThreads.length > 2 && isCollapsible ? (
+          expandComments ? (
             <div>
               {props.paper.nextDiscussion && !fetching && (
                 <div className={css(styles.buttonContainer)}>
@@ -559,32 +571,45 @@ const DiscussionTab = (props) => {
                   )}
                 </div>
               )}
+              <div className={css(styles.expandDiv)}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(false)}
+                >
+                  See Fewer Comments
+                </button>
+              </div>
             </div>
-          )}
-        </div>
-      ) : (
-        <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
-          <div className={css(styles.header)}>
-            <div className={css(styles.discussionTitle)}>
-              Comments
-              <span className={css(styles.discussionCount)}>
-                {fetching ? (
-                  <Loader
-                    loading={true}
-                    size={2}
-                    color={"rgba(36, 31, 58, 0.5)"}
-                    type="beat"
-                  />
+          ) : (
+            <div className={css(styles.expandDiv)}>
+              <button
+                className={css(styles.expandButton)}
+                onClick={() => setExpandComments(true)}
+              >
+                View {calculateHiddenCount()} More Comment
+                {calculateHiddenCount() === 1 ? "" : "s"}
+              </button>
+            </div>
+          )
+        ) : (
+          <div>
+            {props.paper.nextDiscussion && !fetching && (
+              <div className={css(styles.buttonContainer)}>
+                {loading ? (
+                  <Loader loading={true} size={10} type="beat" />
                 ) : (
-                  ""
+                  <Ripples
+                    className={css(styles.loadMoreButton)}
+                    onClick={() => fetchDiscussionThreads(true)}
+                  >
+                    Load More
+                  </Ripples>
                 )}
-              </span>
-            </div>
+              </div>
+            )}
           </div>
-          {discussionTextEditor}
-          {renderThreads(formattedThreads, hostname)}
-        </div>
-      )}
+        )}
+      </div>
     </Fragment>
   );
 };
@@ -790,11 +815,6 @@ var styles = StyleSheet.create({
   revisionTitle: {
     padding: 10,
   },
-  discussionInputWrapper: {
-    display: "flex",
-    flexDirection: "column",
-    marginTop: 20,
-  },
   label: {
     fontFamily: "Roboto",
     fontWeight: 500,
@@ -882,7 +902,7 @@ var styles = StyleSheet.create({
     color: "#00ACEE",
   },
   asterick: {
-    color: colors.BLUE(1),
+    color: colors.NEW_BLUE(),
   },
   componentWrapperStyles: {
     "@media only screen and (max-width: 415px)": {
@@ -895,29 +915,28 @@ var styles = StyleSheet.create({
   header: {
     display: "flex",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "start",
     width: "100%",
     marginBottom: 15,
-    "@media only screen and (max-width: 767px)": {
-      flexDirection: "column",
-      alignItems: "flex-start",
-    },
   },
   discussionTitle: {
     display: "flex",
-    alignItems: "center",
     fontSize: 22,
     fontWeight: 500,
+    margin: 0,
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
   },
   discussionCount: {
-    color: "rgba(36, 31, 58, 0.5)",
-    fontSize: 17,
+    color: colors.BLACK(),
+    background: colors.LIGHTER_GREY(),
+    borderRadius: "3px",
+    padding: "3px 10px",
+    border: `1px solid ${colors.GREY()}`,
+    fontSize: 14,
     fontWeight: 500,
     marginLeft: 15,
-    marginTop: 3,
   },
   rowContainer: {
     width: "100%",
@@ -936,12 +955,10 @@ var styles = StyleSheet.create({
   filterContainer: {
     display: "flex",
     alignItems: "center",
+    marginTop: -4,
     "@media only screen and (max-width: 767px)": {
       marginBottom: 15,
     },
-  },
-  filterSelect: {
-    width: 150,
   },
   filterText: {
     textTransform: "uppercase",
@@ -1015,6 +1032,64 @@ var styles = StyleSheet.create({
   placeholderContainer: {
     marginTop: 15,
   },
+  discussionToggleContainer: {
+    display: "flex",
+    alignItems: "flex-start",
+  },
+  discussionTypeHeaderContainer: {
+    display: "flex",
+    justifyContent: "space-between",
+    marginBottom: 20,
+    [`@media only screen and (max-width: 400px)`]: {
+      justifyContent: "center",
+    },
+  },
+  discussionTypeHeader: {
+    fontSize: 18,
+    fontWeight: 500,
+    alignSelf: "center",
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      fontSize: 16,
+    },
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    },
+  },
+  reviewDetails: {
+    marginBottom: 20,
+    display: "flex",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      flexDirection: "column",
+    },
+  },
+  reviewHeader: {
+    fontSize: 15,
+    marginRight: 20,
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      marginBottom: 10,
+    },
+  },
+  dropdownButtonOverride: {
+    display: "flex",
+  },
+  dropdownOption: {
+    fontWeight: 400,
+  },
+  postingGuidelinesLink: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
+    fontSize: 14,
+    cursor: "pointer",
+    ":hover": {
+      opacity: 0.8,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 12,
+    },
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    },
+  },
 });
 
 const stylesEditor = StyleSheet.create({
@@ -1039,10 +1114,16 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     marginBottom: 5,
+    paddingLeft: 20,
+    marginTop: 15,
+    boxSizing: "border-box",
+    [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
   },
   discussionTextEditor: {
     width: "100%",
-    // border: "1px solid #E8E8F2",
     backgroundColor: "#FBFBFD",
   },
   label: {

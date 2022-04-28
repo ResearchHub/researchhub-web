@@ -17,11 +17,14 @@ import { Helpers } from "@quantfive/js-web-config";
 import { UPVOTE, DOWNVOTE } from "~/config/constants";
 import { checkVoteTypeChanged } from "~/config/utils/reputation";
 import { getNestedValue } from "~/config/utils/misc";
+import { saveReview } from "~/config/fetch";
 
 // Redux
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
+import ScoreInput from "~/components/Form/ScoreInput";
+import { breakpoints } from "~/config/themes/screen";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -41,12 +44,16 @@ class DiscussionEntry extends Component {
       // Edit
       canEdit: false,
       editing: false,
+      // Review
+      isReview: false,
+      review: null,
     };
     this.divRef = null;
   }
 
   componentDidMount = async () => {
     const { data, newCard } = this.props;
+
     const comments = data.comments || [];
     const selectedVoteType = getNestedValue(data, ["user_vote", "vote_type"]);
     this.setState(
@@ -57,6 +64,8 @@ class DiscussionEntry extends Component {
         revealComment: comments.length > 0 && comments.length < 6,
         highlight: this.shouldHighlight(),
         removed: this.props.data.is_removed,
+        isReview: data?.review?.id ? true : false,
+        review: data?.review,
         canEdit:
           data.source !== "twitter"
             ? this.props.auth.user.id === data.created_by.id
@@ -231,19 +240,28 @@ class DiscussionEntry extends Component {
     }
   };
 
+  onSaveError = async (error) => {
+    let { showMessage, setMessage } = this.props;
+
+    setMessage("Something went wrong");
+    showMessage({ show: true, error: true });
+  };
+
   saveEditsThread = async (text, plain_text, callback) => {
     let {
       data,
       updateThread,
       updateThreadPending,
-      showMessage,
-      setMessage,
       post,
       hypothesis,
       documentType,
     } = this.props;
+
+    const { review, isReview } = this.state;
+
     let discussionThreadId = data.id;
     let paperId = data.paper;
+    let unifiedDocumentId = data.unified_document.id;
     let documentId;
     if (documentType === "post") {
       documentId = post.id;
@@ -256,22 +274,33 @@ class DiscussionEntry extends Component {
       plain_text,
       paper: paperId,
     };
+
+    if (isReview) {
+      const response = await saveReview({
+        unifiedDocumentId,
+        review: this.state.review,
+      });
+      this.setState({ review: response });
+    }
+
     updateThreadPending();
-    await updateThread(
-      documentType,
-      paperId,
-      documentId,
-      discussionThreadId,
-      body
-    );
+    try {
+      await updateThread(
+        documentType,
+        paperId,
+        documentId,
+        discussionThreadId,
+        body
+      );
+    } catch (error) {
+      return Promise.reject(error);
+    }
+
     if (this.props.discussion.doneUpdating && this.props.discussion.success) {
-      setMessage("Post successfully updated!");
-      showMessage({ show: true });
       callback();
       this.setState({ editing: false });
     } else {
-      setMessage("Something went wrong");
-      showMessage({ show: true, error: true });
+      return Promise.reject();
     }
   };
 
@@ -289,6 +318,10 @@ class DiscussionEntry extends Component {
 
   toggleEdit = () => {
     this.setState({ editing: !this.state.editing });
+  };
+
+  onScoreSelect = (value) => {
+    this.setState({ review: { ...this.state.review, score: value } });
   };
 
   onRemove = ({ paperID, threadID, commentID, replyID, postID }) => {
@@ -479,6 +512,9 @@ class DiscussionEntry extends Component {
       shouldShowContextTitle = true,
       store: inlineCommentStore,
     } = this.props;
+
+    const { review, isReview } = this.state;
+
     const commentCount =
       data.comment_count +
         data.comments
@@ -503,7 +539,6 @@ class DiscussionEntry extends Component {
       contentType: "thread",
       objectId: data.id,
     };
-    const isInlineComment = ["block_key"] in data;
 
     return (
       <div
@@ -603,6 +638,18 @@ class DiscussionEntry extends Component {
                     this.state.editing && styles.contentEdit
                   )}
                 >
+                  {isReview ? (
+                    <div className={css(styles.reviewContainer)}>
+                      <div className={css(styles.reviewBadge)}>Peer Review</div>
+                      <ScoreInput
+                        value={review?.score}
+                        readOnly={this.state.editing ? false : true}
+                        onSelect={this.onScoreSelect}
+                        scoreInputStyleOverride={styles.scoreInputStyleOverride}
+                        overrideBarStyle={styles.overrideBar}
+                      />
+                    </div>
+                  ) : null}
                   <ThreadTextEditor
                     readOnly={true}
                     initialValue={body}
@@ -611,7 +658,7 @@ class DiscussionEntry extends Component {
                     editing={this.state.editing}
                     onEditCancel={this.toggleEdit}
                     onEditSubmit={this.saveEditsThread}
-                    mediaOnly={isInlineComment}
+                    onError={this.onSaveError}
                   />
                 </div>
               </Fragment>
@@ -845,6 +892,34 @@ const styles = StyleSheet.create({
   withPadding: {
     padding: 16,
     height: "unset",
+  },
+  reviewContainer: {
+    display: "flex",
+    alignItems: "end",
+    lineHeight: 1.4,
+    marginBottom: 15,
+
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      flexDirection: "column",
+      alignItems: "start",
+    },
+  },
+  reviewBadge: {
+    background: colors.NEW_BLUE(),
+    color: "white",
+    padding: "2px 6px",
+    fontWeight: 500,
+    fontSize: 12,
+    marginRight: 10,
+    borderRadius: "2px",
+    lineHeight: "15px",
+  },
+  overrideBar: {
+    width: 16,
+    height: 10,
+  },
+  scoreInputStyleOverride: {
+    alignItems: "center",
   },
 });
 

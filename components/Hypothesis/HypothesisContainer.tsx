@@ -36,6 +36,7 @@ function HypothesisContainer(props: Props): ReactElement<"div"> | null {
       onSuccess: (hypothesis: any): void => {
         setHypothesis(hypothesis);
         setIsLoading(false);
+        setDiscussionCount(hypothesis.discussion_count);
       },
       onError: emptyFncWithMsg,
     });
