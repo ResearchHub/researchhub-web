@@ -22,6 +22,9 @@ import dynamic from "next/dynamic";
 const AddDiscussionModal = dynamic(() =>
   import("~/components/Modals/AddDiscussionModal")
 );
+const PostingGuidelinesModal = dynamic(() =>
+  import("~/components/Threads/PostingGuidelinesModal")
+);
 
 // Redux
 import { MessageActions } from "~/redux/message";
@@ -96,6 +99,8 @@ const DiscussionTab = (props) => {
   const [focus, setFocus] = useState(false);
   const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
   const [reviewScore, setReviewScore] = useState(0);
+  const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
+    useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   useEffect(() => {
@@ -465,7 +470,10 @@ const DiscussionTab = (props) => {
       smallToolBar
       uid={textEditorKey}
     >
-      <span className={css(styles.postingGuidelinesLink)}>
+      <span
+        className={css(styles.postingGuidelinesLink)}
+        onClick={() => setShowPostingGuidelinesModal(true)}
+      >
         Posting Guidelines
       </span>
     </TextEditor>
@@ -523,8 +531,13 @@ const DiscussionTab = (props) => {
   const selectedFilter =
     filterOptions.find((f) => f.isSelected) ||
     filterOptions.find((f) => f.default);
+
   return (
     <Fragment>
+      <PostingGuidelinesModal
+        isOpen={showPostingGuidelinesModal}
+        closeModal={() => setShowPostingGuidelinesModal(false)}
+      />
       <AddDiscussionModal
         handleDiscussionTextEditor={handleDiscussionTextEditor}
         discussion={discussion}
