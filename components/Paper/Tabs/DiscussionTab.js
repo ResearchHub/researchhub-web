@@ -7,7 +7,6 @@ import Ripples from "react-ripples";
 import ReactPlaceholder from "react-placeholder";
 
 // Components
-import PermissionNotificationWrapper from "../../PermissionNotificationWrapper";
 import TextEditor from "~/components/TextEditor";
 import Message from "~/components/Loader/Message";
 import ScoreInput from "~/components/Form/ScoreInput";
@@ -41,10 +40,8 @@ import discussionScaffold from "~/components/Paper/discussionScaffold.json";
 import { endsWithSlash } from "~/config/utils/routing";
 import { sendAmpEvent, saveReview } from "~/config/fetch";
 import { captureEvent } from "~/config/utils/events";
-import { isEmpty } from "~/config/utils/nullchecks";
 import { genClientId } from "~/config/utils/id";
 import { breakpoints } from "~/config/themes/screen";
-import ALink from "~/components/ALink";
 const discussionScaffoldInitialValue = Value.fromJSON(discussionScaffold);
 
 const TYPES = {
