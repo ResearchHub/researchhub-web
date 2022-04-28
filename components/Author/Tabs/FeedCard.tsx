@@ -280,14 +280,14 @@ function FeedCard(props: FeedCardProps) {
                   <span className={css(styles.title)}>
                     {titleAsHtml ? titleAsHtml : title ? title : ""}
                   </span>
-                  <div className={css(styles.reviewSummaryContainer)}>
-                    {reviews?.count > 0 &&
-                      <PeerReviewScoreSummary
-                        summary={reviews}
-                        docUrl={docUrl}
-                      />
-                    }
-                  </div>
+                  {reviews?.count > 0 &&
+                    <div className={css(styles.reviewSummaryContainer)}>
+                        <PeerReviewScoreSummary
+                          summary={reviews}
+                          docUrl={docUrl}
+                        />
+                    </div>
+                  }
                   <div
                     className={css(
                       styles.metadataContainer,
