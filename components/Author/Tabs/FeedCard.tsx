@@ -21,6 +21,7 @@ import { isDevEnv } from "~/config/utils/env";
 import { transformDate } from "~/redux/utils";
 import ScoreInput from "~/components/Form/ScoreInput";
 import ALink from "~/components/ALink";
+import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -175,35 +176,6 @@ function FeedCard(props: FeedCardProps) {
     };
   };
 
-  const getReviewHTML = () => {
-    if (reviews?.count > 0) {
-      return (
-      <div className={css(styles.reviewContainer)}>
-        <span className={css(styles.reviewScoreContainer)}>
-          <span className={css(styles.reviewScore)}>{reviews?.avg}</span>/10
-        </span>
-        <div className={css(styles.scoreContainer)}>
-          <span className={css(styles.dot)}>&bull;</span>
-          <ScoreInput
-            value={reviews?.avg}
-            readOnly={true}
-            withText={false}
-            overrideBarStyle={styles.overrideReviewBar}
-          />
-        </div>
-        <div className={css(styles.reviewCountContainer)}>
-          <span className={css(styles.dot)}>&bull;</span>
-          <ALink href={`${docUrl}#comments`} overrideStyle={styles.reviewCount}>
-            {reviews?.count} {reviews?.count === 1 ? "Review" : "Reviews"}
-          </ALink>
-        </div>
-      </div>
-      )
-    }
-
-    return null;
-  }
-
   async function onPaperVote(voteType) {
     const curPaper = { ...paper };
     const increment = voteType === UPVOTE ? 1 : -1;
@@ -217,7 +189,6 @@ function FeedCard(props: FeedCardProps) {
     }
   }
 
-  const reviewHTML = getReviewHTML();
   const documentIcons = {
     paper: icons.paperRegular,
     post: icons.penSquare,
@@ -309,7 +280,14 @@ function FeedCard(props: FeedCardProps) {
                   <span className={css(styles.title)}>
                     {titleAsHtml ? titleAsHtml : title ? title : ""}
                   </span>
-                  {reviewHTML}
+                  <div className={css(styles.reviewSummaryContainer)}>
+                    {reviews?.count > 0 &&
+                      <PeerReviewScoreSummary
+                        summary={reviews}
+                        docUrl={docUrl}
+                      />
+                    }
+                  </div>
                   <div
                     className={css(
                       styles.metadataContainer,
@@ -582,55 +560,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginRight: 5,
   },
-
-  reviewContainer: {
-    display: "flex",
-    alignItems: "center",
+  reviewSummaryContainer: {
     marginBottom: 10,
-  },
-  reviewScoreContainer: {
-    color: colors.BLACK(),
-    fontSize: 14,
-    lineHeight: "19px",
-  },
-  reviewScore: {
-    color: colors.NEW_BLUE(),
-    fontSize: 18,
-    fontWeight: 500,
-    marginRight: 3,
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      fontSize: 16,
-    },
-  },
-  reviewCountContainer: {
-    display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      display: "none",
-    },
-  },
-  reviewCount: {
-    fontSize: 14,
-    paddingTop: 1,
-    fontWeight: 400,
-    color: colors.BLACK(0.5)
-  },
-  overrideReviewBar: {
-    width: 16,
-    height: 10,
-  },
-  scoreContainer: {
-    display: "flex",
-    alignItems: "center",
-    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
-      display: "none",
-    },
-  },
-  dot: {
-    fontSize: 18,
-    color: colors.GREY(),
-    marginRight: 8,
-    marginLeft: 8,
-  },
+  }
 });
 
 const mapStateToProps = (state) => ({
