@@ -22,8 +22,7 @@ import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
-import ScoreInput from "~/components/Form/ScoreInput";
-import ALink from "./ALink";
+import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -236,28 +235,7 @@ class PaperPageCard extends Component {
 
       {
         label: "Rating",
-        value: (
-          <div className={css(styles.reviewContainer)}>
-            <span className={css(styles.reviewScoreContainer)}>
-              <span className={css(styles.reviewScore)}>{reviews?.avg}</span>/10
-            </span>
-            <div className={css(styles.scoreContainer)}>
-              <span className={css(styles.dot)}>&bull;</span>
-              <ScoreInput
-                value={reviews?.avg}
-                readOnly={true}
-                withText={false}
-                overrideBarStyle={styles.overrideReviewBar}
-              />
-            </div>
-            <div className={css(styles.reviewCountContainer)}>
-              <span className={css(styles.dot)}>&bull;</span>
-              <ALink href="#comments" overrideStyle={styles.reviewCount}>
-                {reviews?.count} {reviews?.count === 1 ? "Review" : "Reviews"}
-              </ALink>
-            </div>
-          </div>
-        ),
+        value: <PeerReviewScoreSummary summary={reviews} />,
         active: paper?.unified_document?.reviews?.count > 0,
       },
     ];
@@ -1435,53 +1413,6 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       height: 15,
     },
-  },
-  reviewContainer: {
-    display: "flex",
-    alignItems: "center",
-  },
-  reviewScoreContainer: {
-    color: colors.BLACK(),
-    fontSize: 14,
-    lineHeight: "19px",
-  },
-  reviewScore: {
-    color: colors.NEW_BLUE(),
-    fontSize: 18,
-    fontWeight: 500,
-    marginRight: 3,
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      fontSize: 16,
-    },
-  },
-  reviewCountContainer: {
-    display: "flex",
-    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
-      display: "none",
-    },
-  },
-  reviewCount: {
-    fontSize: 14,
-    paddingTop: 1,
-    color: colors.BLACK(0.5),
-    fontWeight: 400,
-  },
-  overrideReviewBar: {
-    width: 16,
-    height: 10,
-  },
-  scoreContainer: {
-    display: "flex",
-    alignItems: "center",
-    [`@media only screen and (max-width: ${breakpoints.xxxsmall.str})`]: {
-      display: "none",
-    },
-  },
-  dot: {
-    fontSize: 18,
-    color: colors.GREY(),
-    marginRight: 8,
-    marginLeft: 8,
   },
 });
 
