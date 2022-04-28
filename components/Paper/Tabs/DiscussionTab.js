@@ -215,9 +215,9 @@ const DiscussionTab = (props) => {
     setSubmitInProgress(false);
     setDiscussion(initialDiscussionState);
     setEditorDormant(true);
-    setShowEditor(false);
     setFocus(false);
     setReviewScore(0);
+    setTextEditorKey(genClientId());
     props.openAddDiscussionModal(false);
   };
 
@@ -545,100 +545,62 @@ const DiscussionTab = (props) => {
         cancel={cancel}
         save={save}
       />
-      {calculatedCount > 0 ? (
-        <div
-          className={css(
-            styles.threadsContainer,
-            styles.discussionThreadContainer
-          )}
-        >
-          <div className={css(styles.header)}>
-            <h3 className={css(styles.discussionTitle)}>
-              Discussion
-              <span className={css(styles.discussionCount)}>
-                {fetching ? (
-                  <Loader loading={true} size={10} />
-                ) : showTwitterComments ? (
-                  calculateCount()
-                ) : (
-                  props.calculatedCount
-                )}
-              </span>
-              {!showEditor && !showTwitterComments && renderAddDiscussion()}
-            </h3>
-            <div className={css(styles.filterContainer)}>
-              <div>
-                <DropdownButton
-                  opts={filterOptions}
-                  labelAsHtml={
-                    <div>
-                      <span className={css(styles.typeFilterText)}>
-                        {selectedFilter.label}
-                      </span>
-                    </div>
-                  }
-                  selected={selectedFilter.value}
-                  isOpen={filterDropdownIsOpen}
-                  onClick={() => setFilterDropdownIsOpen(true)}
-                  dropdownClassName="filter"
-                  onClickOutside={() => {
-                    setFilterDropdownIsOpen(false);
-                  }}
-                  positions={["bottom", "right"]}
-                  customButtonClassName={[styles.dropdownButtonOverride]}
-                  overrideTitleStyle={styles.dropdownOption}
-                  onSelect={(selected) => {
-                    handleFilterChange(selected);
-                  }}
-                  onClose={() => setFilterDropdownIsOpen(false)}
-                />
-              </div>
-            </div>
-          </div>
-          <div className={css(styles.box, !addView && styles.right)}>
-            <div className={css(styles.addDiscussionContainer)}>
-              {!showTwitterComments && discussionTextEditor}
-            </div>
-          </div>
-          {renderThreads(formattedThreads, hostname)}
-          {formattedThreads.length > 2 && isCollapsible ? (
-            expandComments ? (
-              <div>
-                {props.paper.nextDiscussion && !fetching && (
-                  <div className={css(styles.buttonContainer)}>
-                    {loading ? (
-                      <Loader loading={true} size={10} type="beat" />
-                    ) : (
-                      <Ripples
-                        className={css(styles.loadMoreButton)}
-                        onClick={() => fetchDiscussionThreads(true)}
-                      >
-                        Load More
-                      </Ripples>
-                    )}
+      <div
+        className={css(
+          styles.threadsContainer,
+          styles.discussionThreadContainer
+        )}
+      >
+        <div className={css(styles.header)}>
+          <h3 className={css(styles.discussionTitle)}>
+            Discussion
+            <span className={css(styles.discussionCount)}>
+              {fetching ? (
+                <Loader loading={true} size={10} />
+              ) : showTwitterComments ? (
+                calculateCount()
+              ) : (
+                props.calculatedCount
+              )}
+            </span>
+          </h3>
+          <div className={css(styles.filterContainer)}>
+            <div>
+              <DropdownButton
+                opts={filterOptions}
+                labelAsHtml={
+                  <div>
+                    <span className={css(styles.typeFilterText)}>
+                      {selectedFilter.label}
+                    </span>
                   </div>
-                )}
-                <div className={css(styles.expandDiv)}>
-                  <button
-                    className={css(styles.expandButton)}
-                    onClick={() => setExpandComments(false)}
-                  >
-                    See Fewer Comments
-                  </button>
-                </div>
-              </div>
-            ) : (
-              <div className={css(styles.expandDiv)}>
-                <button
-                  className={css(styles.expandButton)}
-                  onClick={() => setExpandComments(true)}
-                >
-                  View {calculateHiddenCount()} More Comment
-                  {calculateHiddenCount() === 1 ? "" : "s"}
-                </button>
-              </div>
-            )
-          ) : (
+                }
+                selected={selectedFilter.value}
+                isOpen={filterDropdownIsOpen}
+                onClick={() => setFilterDropdownIsOpen(true)}
+                dropdownClassName="filter"
+                onClickOutside={() => {
+                  setFilterDropdownIsOpen(false);
+                }}
+                positions={["bottom", "right"]}
+                customButtonClassName={[styles.dropdownButtonOverride]}
+                overrideTitleStyle={styles.dropdownOption}
+                onSelect={(selected) => {
+                  handleFilterChange(selected);
+                }}
+                onClose={() => setFilterDropdownIsOpen(false)}
+              />
+            </div>
+          </div>
+        </div>
+        <div className={css(styles.box, !addView && styles.right)}>
+          <div className={css(styles.addDiscussionContainer)}>
+            {!showTwitterComments && discussionTextEditor}
+          </div>
+        </div>
+        {renderThreads(formattedThreads, hostname)}
+        {formattedThreads.length > 2 && isCollapsible ? (
+          expandComments ? (
             <div>
               {props.paper.nextDiscussion && !fetching && (
                 <div className={css(styles.buttonContainer)}>
@@ -654,32 +616,45 @@ const DiscussionTab = (props) => {
                   )}
                 </div>
               )}
+              <div className={css(styles.expandDiv)}>
+                <button
+                  className={css(styles.expandButton)}
+                  onClick={() => setExpandComments(false)}
+                >
+                  See Fewer Comments
+                </button>
+              </div>
             </div>
-          )}
-        </div>
-      ) : (
-        <div className={css(styles.addDiscussionContainer, styles.emptyState)}>
-          <div className={css(styles.header)}>
-            <div className={css(styles.discussionTitle)}>
-              Discussion
-              <span className={css(styles.discussionCount)}>
-                {fetching ? (
-                  <Loader
-                    loading={true}
-                    size={2}
-                    color={"rgba(36, 31, 58, 0.5)"}
-                    type="beat"
-                  />
+          ) : (
+            <div className={css(styles.expandDiv)}>
+              <button
+                className={css(styles.expandButton)}
+                onClick={() => setExpandComments(true)}
+              >
+                View {calculateHiddenCount()} More Comment
+                {calculateHiddenCount() === 1 ? "" : "s"}
+              </button>
+            </div>
+          )
+        ) : (
+          <div>
+            {props.paper.nextDiscussion && !fetching && (
+              <div className={css(styles.buttonContainer)}>
+                {loading ? (
+                  <Loader loading={true} size={10} type="beat" />
                 ) : (
-                  ""
+                  <Ripples
+                    className={css(styles.loadMoreButton)}
+                    onClick={() => fetchDiscussionThreads(true)}
+                  >
+                    Load More
+                  </Ripples>
                 )}
-              </span>
-            </div>
+              </div>
+            )}
           </div>
-          {discussionTextEditor}
-          {renderThreads(formattedThreads, hostname)}
-        </div>
-      )}
+        )}
+      </div>
     </Fragment>
   );
 };
@@ -1007,7 +982,6 @@ var styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 500,
     marginLeft: 15,
-    marginTop: 3,
   },
   rowContainer: {
     width: "100%",
