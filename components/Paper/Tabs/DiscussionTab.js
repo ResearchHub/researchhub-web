@@ -405,51 +405,6 @@ const DiscussionTab = (props) => {
     setFormattedThreads(formatThreads(threads, basePath));
   };
 
-  const renderAddDiscussion = () => {
-    return (
-      <div
-        className={css(
-          styles.box,
-          !fetching && threads.length < 1 && styles.emptyStateBox
-        )}
-        onClick={() => {
-          setShowEditor(true);
-          setFocus(true);
-        }}
-      >
-        {threads.length < 1 && (
-          <Fragment>
-            <span className={css(styles.icon)}>{icons.comments}</span>
-            <h2 className={css(styles.noSummaryTitle)}>
-              Ask a question for the author or community
-            </h2>
-            <p className={css(styles.text)}>
-              Contribute a thought or post a question for this paper.
-            </p>
-          </Fragment>
-        )}
-        <PermissionNotificationWrapper
-          onClick={() => {
-            setShowEditor(true);
-            setFocus(true);
-          }}
-          modalMessage="create a discussion thread"
-          permissionKey="CreateDiscussionThread"
-          loginRequired={true}
-        >
-          <button
-            className={css(
-              styles.addDiscussionButton,
-              threads.length > 0 && styles.plainButton
-            )}
-          >
-            Add Comment
-          </button>
-        </PermissionNotificationWrapper>
-      </div>
-    );
-  };
-
   const editorPlaceholder =
     discussionType === TYPES.REVIEW
       ? `Review one or more aspects of this paper such as readability, methodologies, data, ... \nBe objective and constructive.`
