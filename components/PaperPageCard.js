@@ -1463,7 +1463,7 @@ const styles = StyleSheet.create({
   reviewCount: {
     fontSize: 14,
     paddingTop: 1,
-    color: "inherit",
+    color: colors.BLACK(0.5),
     fontWeight: 400,
   },
   overrideReviewBar: {
