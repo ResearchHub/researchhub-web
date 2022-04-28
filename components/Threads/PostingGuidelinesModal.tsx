@@ -8,7 +8,7 @@ type Props = {
   closeModal: Function;
 };
   
-function PostingGuidelinesModal({
+export default function PostingGuidelinesModal({
   isOpen,
   closeModal,
 }: Props): ReactElement {
@@ -63,5 +63,3 @@ const styles = StyleSheet.create({
     maxWidth: 400,
   },
 });
-
-export default PostingGuidelinesModal;

@@ -11,7 +11,7 @@ type Props = {
   docUrl: string,
 };
 
-function PeerReviewSummary({
+export default function PeerReviewSummary({
   summary,
   docUrl = "",
 }: Props): ReactElement {
@@ -24,7 +24,7 @@ function PeerReviewSummary({
         <span className={css(styles.dot)}>&bull;</span>
         <ScoreInput
           value={summary?.avg}
-          readOnly={true}
+          readOnly
           withText={false}
           overrideBarStyle={styles.overrideReviewBar}
         />
@@ -88,5 +88,3 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
-
-export default PeerReviewSummary;
