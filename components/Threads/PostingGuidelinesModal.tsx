@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import BaseModal from "~/components/Modals/BaseModal";
 import { css, StyleSheet } from "aphrodite";
-
+import { breakpoints } from "~/config/themes/screen";
 
 type Props = {
   isOpen: Boolean;
@@ -48,6 +48,9 @@ const styles = StyleSheet.create({
   },
   "modalStyle": {
     minWidth: 600,
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      minWidth: "unset",
+    },
   },
   guidelinesContent: {
     color: "#241F3A",

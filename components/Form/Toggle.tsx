@@ -1,5 +1,6 @@
 import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState } from "react";
+import colors from "~/config/themes/colors";
 
 type ToggleOption = {
   label: string;
@@ -47,7 +48,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   "option": {
-    color: "#3971FF",
+    color: colors.NEW_BLUE(),
     fontWeight: 500,
     borderRadius: 50,
     fontSize: 14,
@@ -58,7 +59,7 @@ const styles = StyleSheet.create({
     }
   },
   "optionSelected": {
-    background: "#3971FF",
+    background: colors.NEW_BLUE(),
     color: "white",
     transition: "0.1s",
   }

@@ -23,7 +23,7 @@ import { saveReview } from "~/config/fetch";
 import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
-import ScoreInput from "../Form/ScoreInput";
+import ScoreInput from "~/components/Form/ScoreInput";
 
 class DiscussionEntry extends Component {
   constructor(props) {
