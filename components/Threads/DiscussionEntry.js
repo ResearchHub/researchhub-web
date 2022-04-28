@@ -24,6 +24,7 @@ import DiscussionActions from "../../redux/discussion";
 import { MessageActions } from "~/redux/message";
 import { createUsername } from "~/config/utils/user";
 import ScoreInput from "~/components/Form/ScoreInput";
+import { breakpoints } from "~/config/themes/screen";
 
 class DiscussionEntry extends Component {
   constructor(props) {
@@ -897,6 +898,11 @@ const styles = StyleSheet.create({
     alignItems: "end",
     lineHeight: 1.4,
     marginBottom: 15,
+
+    [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
+      flexDirection: "column",
+      alignItems: "start",
+    },
   },
   reviewBadge: {
     background: colors.NEW_BLUE(),
