@@ -14,20 +14,16 @@ type Props = {
   selected: any;
 };
 
-function Toggle({
+export default function Toggle({
   options,
   onSelect,
   selected,
 }: Props): ReactElement {
 
-  const handleSelect = (opt:ToggleOption) => {
-    onSelect(opt);
-  }
-
   const optionElems = options.map((opt) => (
     <div
       className={css(styles.option, selected === opt.value && styles.optionSelected)}
-      onClick={() => handleSelect(opt)}
+      onClick={() => onSelect(opt)}
     >
       {opt.label}
     </div>
@@ -64,5 +60,3 @@ const styles = StyleSheet.create({
     transition: "0.1s",
   }
 });
-
-export default Toggle;

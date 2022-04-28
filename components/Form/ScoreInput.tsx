@@ -3,18 +3,18 @@ import { ReactElement, useEffect, useMemo, useState } from "react";
 import colors from "~/config/themes/colors";
 
 type Props = {
-    value?: number;
-    onSelect?: Function;  
-    readOnly?: Boolean;
-    overrideBarStyle?: any;
-    scoreInputStyleOverride?: any;
-    withText ?: Boolean;
+  value?: number;
+  onSelect?: Function;
+  readOnly?: Boolean;
+  overrideBarStyle?: any;
+  scoreInputStyleOverride?: any;
+  withText?: Boolean;
 };
 
 const MAX_SCORE = 10;
 const MIN_SCORE = 1;
 
-function ScoreInput({
+export default function ScoreInput({
   value = MIN_SCORE,
   onSelect,
   readOnly,
@@ -37,32 +37,31 @@ function ScoreInput({
     onSelect && onSelect(value);
   }
 
-  const buildBarInput = () => {
+  const barInput = useMemo(() => {
     let remainderWasCalculated = false;
     const bars = Array(MAX_SCORE).fill(null).map((v, index) => {
-      const barNumber = index+1;
-      
-      
+      const barNumber = index + 1;
+
       if (readOnly) {
-        const q = Math.floor(selectedValue / barNumber);
+        const quotient = Math.floor(selectedValue / barNumber);
         let coverPercentage = 0;
-        
-        if (q > 0) {
+
+        if (quotient > 0) {
           coverPercentage = 100;
         }
-        else if (q === 0 && !remainderWasCalculated) {
-          coverPercentage = (selectedValue % 1) * 100
-          remainderWasCalculated = true
+        else if (quotient === 0 && !remainderWasCalculated) {
+          coverPercentage = (selectedValue % 1) * 100;
+          remainderWasCalculated = true;
         }
         return (
           <div className={css(styles.bar, styles.readOnly, overrideBarStyle)}>
-            <div className={css(styles.cover)} style={{"width": `${coverPercentage}%`}}></div>
+            <div className={css(styles.cover)} style={{ "width": `${coverPercentage}%` }}></div>
             <div className={css(styles.barFill)}></div>
           </div>
         )
       }
       else {
-        const isBarSelected =  barNumber <= selectedValue || barNumber <= hoveredValue;
+        const isBarSelected = barNumber <= selectedValue || barNumber <= hoveredValue;
 
         return (
           <div
@@ -71,7 +70,7 @@ function ScoreInput({
             onMouseEnter={() => setHoveredValue(barNumber)}
             onMouseLeave={() => setHoveredValue(0)}
           >
-            <div className={css(styles.cover)} style={{"width": `${ isBarSelected ? 100 : 0}%`}}></div>
+            <div className={css(styles.cover)} style={{ "width": `${isBarSelected ? 100 : 0}%` }}></div>
             <div className={css(styles.barFill, isBarSelected && styles.selectedBar)}></div>
           </div>
         )
@@ -80,11 +79,7 @@ function ScoreInput({
 
     return (
       <div className={css(styles.barInput)}>{bars}</div>
-    )
-  }
-
-  const barInput = useMemo(() => {
-    return buildBarInput();
+    )    
   }, [selectedValue, hoveredValue, readOnly, withText]);
 
   return (
@@ -146,5 +141,3 @@ const styles = StyleSheet.create({
     cursor: "initial",
   }
 })
-
-export default ScoreInput;
