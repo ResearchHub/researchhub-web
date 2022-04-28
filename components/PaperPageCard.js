@@ -22,6 +22,7 @@ import PaperPromotionIcon from "./Paper/PaperPromotionIcon";
 import PermissionNotificationWrapper from "~/components/PermissionNotificationWrapper";
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
+import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -42,6 +43,7 @@ import DiscussionCount from "~/components/DiscussionCount";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
+import { initialize } from "react-ga";
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
@@ -197,6 +199,7 @@ class PaperPageCard extends Component {
 
   renderMetadata = () => {
     const { paper } = this.props;
+    const reviews = paper?.unified_document?.reviews;
 
     this.metadata = [
       {
@@ -228,6 +231,12 @@ class PaperPageCard extends Component {
           </a>
         ),
         active: paper && paper.doi,
+      },
+
+      {
+        label: "Rating",
+        value: <PeerReviewScoreSummary summary={reviews} />,
+        active: paper?.unified_document?.reviews?.count > 0,
       },
     ];
 
@@ -1163,13 +1172,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     width: "100%",
     flexWrap: "wrap",
-
-    /**
-     * Set the width of the Label ("Paper Title:", "Published:") to align text, but only do so
-     * to the first element on each row. This selector is equivalent to row > "first child". */
-    ":nth-child(1n) > *:nth-child(1) > div": {
-      minWidth: 80,
-    },
+    flexDirection: "column",
 
     "@media only screen and (max-width: 1023px)": {
       flexDirection: "column",

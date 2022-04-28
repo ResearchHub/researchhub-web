@@ -479,6 +479,7 @@ const routes = (BASE_URL) => {
           is_removed: Boolean(isRemoved) ? "True" : "False",
         },
       };
+
       url = prepURL(url, params);
 
       return url;
@@ -1121,6 +1122,19 @@ const routes = (BASE_URL) => {
     },
     PEER_REVIEW_INVITE_REVIEWER: () => {
       return BASE_URL + "peer_review_invites/invite/";
+    },
+    REVIEW: ({ unifiedDocumentId, reviewId }) => {
+      if (reviewId) {
+        return (
+          BASE_URL +
+          `researchhub_unified_documents/${unifiedDocumentId}/review/${reviewId}/`
+        );
+      } else {
+        return (
+          BASE_URL +
+          `researchhub_unified_documents/${unifiedDocumentId}/review/`
+        );
+      }
     },
   };
 

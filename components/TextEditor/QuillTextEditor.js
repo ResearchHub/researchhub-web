@@ -70,6 +70,13 @@ class Editor extends Component {
         editValue: this.props.value,
       });
     }
+
+    if (prevProps.placeholder !== this.props.placeholder) {
+      this.quillRef.root.setAttribute(
+        "data-placeholder",
+        this.props.placeholder
+      );
+    }
   }
 
   addLinkSantizer = () => {
@@ -256,6 +263,11 @@ class Editor extends Component {
   };
 
   onCancel = (event) => {
+    const isConfirmed = confirm("Your changes will be removed");
+    if (!isConfirmed) {
+      return false;
+    }
+
     event?.preventDefault();
     event?.stopPropagation();
     if (this.props.editing) {
@@ -353,26 +365,17 @@ class Editor extends Component {
           props.smallToolBar && toolbarStyles.smallToolBar
         )}
       >
-        <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
-        <div
-          className={css(
-            toolbarStyles.buttonRow,
-            props.smallToolBar && toolbarStyles.smallButtonRow
-          )}
-        >
+        {props.children && (
+          <div className={css(toolbarStyles.iconRow)}>{props.children}</div>
+        )}
+        <div className={css(toolbarStyles.buttonRow)}>
           {!props.hideButton && !props.hideCancelButton && (
-            <FormButton
-              isWhite={true}
+            <div
               onClick={this.onCancel}
-              label={"Cancel"}
-              size={props.smallToolBar && "med"}
-              rippleClass={styles.ripples}
-              customButtonStyle={
-                props.smallToolBar
-                  ? toolbarStyles.smallButton
-                  : toolbarStyles.cancelButton
-              }
-            />
+              className={css(toolbarStyles.cancelButton)}
+            >
+              Cancel
+            </div>
           )}
           <span className={css(toolbarStyles.divider)} />
           {!props.hideButton &&
@@ -411,8 +414,12 @@ class Editor extends Component {
       this.imageHandler,
       this.linkHandler
     );
+
     return (
-      <div className={css(styles.editor, this.props.containerStyles)}>
+      <div
+        className={css(styles.editor, this.props.containerStyles)}
+        key={this.props.uid}
+      >
         {this.props.commentEditor ? (
           <div
             className={css(
@@ -530,6 +537,7 @@ const styles = StyleSheet.create({
   editable: {},
   focus: {},
   editSection: {
+    minHeight: 75,
     padding: 16,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
@@ -553,12 +561,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     outline: "none",
     cursor: "pointer",
-  },
-  cancel: {
-    background: "transparent",
-    color: colors.PURPLE(),
-    border: "1px solid",
-    marginRight: 24,
   },
   submit: {
     background: colors.PURPLE(),
@@ -684,18 +686,20 @@ const toolbarStyles = StyleSheet.create({
     borderColor: "rgb(235, 235, 235)",
     padding: 16,
     display: "flex",
-    flexDirection: "column",
+    flexDirection: "row",
     alignItems: "flex-start",
     justifyContent: "space-between",
     background: "#fff",
     "@media only screen and (max-width: 577px)": {
-      flexDirection: "column",
+      flexDirection: "row",
     },
   },
   iconRow: {
     display: "flex",
     flexWrap: "wrap",
-    marginBottom: 10,
+    marginBottom: 0,
+    whiteSpace: "nowrap",
+    alignSelf: "center",
   },
   smallToolBar: {
     fontSize: 11,
@@ -735,27 +739,15 @@ const toolbarStyles = StyleSheet.create({
     justifyContent: "flex-end",
     alignItems: "center",
     width: "100%",
-    "@media only screen and (max-width: 577px)": {
-      marginTop: 16,
-    },
   },
   smallButtonRow: {
     justifyContent: "space-between",
   },
   cancelButton: {
-    height: 37,
-    width: 126,
-    minWidth: 126,
+    color: colors.BLACK(),
     fontSize: 15,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    marginRight: 15,
     cursor: "pointer",
-    borderRadius: 4,
-    userSelect: "none",
-    "@media only screen and (max-width: 577px)": {
-      width: 100,
-    },
   },
   buttonStyle: {
     height: 37,
@@ -768,11 +760,17 @@ const toolbarStyles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+    background: colors.NEW_BLUE(),
+    ":hover": {
+      opacity: 0.9,
+      background: colors.NEW_BLUE(),
+    },
     "@media only screen and (max-width: 577px)": {
       width: 100,
     },
   },
   smallButton: {
+    width: 100,
     height: 37,
     fontSize: 15,
     display: "flex",
@@ -781,6 +779,11 @@ const toolbarStyles = StyleSheet.create({
     cursor: "pointer",
     borderRadius: 4,
     userSelect: "none",
+    background: colors.NEW_BLUE(),
+    ":hover": {
+      opacity: 0.9,
+      background: colors.NEW_BLUE(),
+    },
   },
   ripples: {
     flex: 1,

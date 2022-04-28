@@ -56,8 +56,8 @@ const DropdownButton = ({
                       <div
                         className={css(
                           styles.optTitle,
-                          overrideTitleStyle,
-                          option.titleStyle
+                          option.titleStyle,
+                          overrideTitleStyle
                         )}
                       >
                         {option.title || option.label}

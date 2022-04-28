@@ -33,6 +33,7 @@ export function getDocumentCard({
           onBadgeClick={onBadgeClick}
           paper={uniDoc.documents}
           vote={uniDoc.user_vote}
+          reviews={uniDoc.reviews}
           voteCallback={(arrIndex: number, currPaper: any): void => {
             const [currUniDoc, newUniDocs] = [
               { ...uniDoc },

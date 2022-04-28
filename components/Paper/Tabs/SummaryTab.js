@@ -793,7 +793,7 @@ var styles = StyleSheet.create({
     width: "100%",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingBottom: 10,
+    paddingBottom: 15,
     "@media only screen and (max-width: 767px)": {
       flexDirection: "column",
       alignItems: "flex-start",
@@ -801,7 +801,7 @@ var styles = StyleSheet.create({
     },
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: 500,
     color: colors.BLACK(),
     display: "flex",
