@@ -226,6 +226,7 @@ const DiscussionTab = (props) => {
     let param;
     let documentId;
     let unifiedDocumentId;
+
     if (documentType === "paper") {
       documentId = router.query.paperId;
       unifiedDocumentId = props.paperState.unified_document_id;
