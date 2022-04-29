@@ -116,11 +116,11 @@ function PaperUploadWizardUpdatePaper({
       submissionType: uploaderContextValues.wizardBodyType ?? null,
     });
     if (verdict) {
-      setUploaderContextValues({
-        ...uploaderContextValues,
-        wizardBodyType: "async_updated",
-      });
       if (uploaderContextValues.wizardBodyType === "standby") {
+        setUploaderContextValues({
+          ...uploaderContextValues,
+          wizardBodyType: "async_updated",
+        });
         // create async paper updator
         createAsyncPaperUpdator({
           currentUserID: userRedux.id,
