@@ -133,11 +133,7 @@ function PaperUploadStateNotifier({
   const [toastType, setToastType] = useState<NullableString>(null);
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-  const {
-    isOpen: isUploadModalOpen,
-    paperID,
-    submissionID,
-  } = uploaderContextValues;
+  const { isOpen: isUploadModalOpen, paperID } = uploaderContextValues;
   const parsedWsResponse = JSON.parse(wsResponse);
   const {
     paper_status: paperUploadStatus,

@@ -1,7 +1,7 @@
 import { Helpers } from "@quantfive/js-web-config";
 import API from "~/config/api";
 
-type Props = {
+type Args = {
   onError: Function;
   onSuccess: Function;
   url: string;
@@ -11,7 +11,7 @@ export async function createPaperSubmissionWithURL({
   onError,
   onSuccess,
   url,
-}: Props) {
+}: Args) {
   fetch(API.PAPER_SUBMISSION, API.POST_CONFIG({ url }))
     .then(Helpers.checkStatus)
     .then(Helpers.parseJSON)
