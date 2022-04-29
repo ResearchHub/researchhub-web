@@ -100,7 +100,7 @@ function PaperUploadWizardUpdatePaper({
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   useEffect(() => {
     setFormState({
-      ...defaultFormState,
+      ...formState,
       doi: uploaderContextValues?.doi ?? null,
       paperID: uploaderContextValues?.paperID,
     });
@@ -108,7 +108,6 @@ function PaperUploadWizardUpdatePaper({
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
 
   const { doi, paperID, selectedHubs, title } = formState;
-
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
