@@ -95,18 +95,19 @@ function PaperUploadWizardUpdatePaper({
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
-  const [formState, setFormState] = useState<FormState>({
-    ...defaultFormState,
-    doi: uploaderContextValues?.doi ?? null,
-    paperID: uploaderContextValues?.paperID,
-  });
+  const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
-  const { doi, paperID, selectedHubs, title } = formState;
   useEffect(() => {
-    setFormState({ ...formState, doi: uploaderContextValues?.doi ?? null });
-  }, [uploaderContextValues?.doi]);
+    setFormState({
+      ...defaultFormState,
+      doi: uploaderContextValues?.doi ?? null,
+      paperID: uploaderContextValues?.paperID,
+    });
+  }, [uploaderContextValues?.doi, uploaderContextValues?.paperID]);
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
+  const { doi, paperID, selectedHubs, title } = formState;
 
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -134,7 +135,6 @@ function PaperUploadWizardUpdatePaper({
           title,
         });
       } else {
-        debugger;
         // update paper instance directly
         const formattedPayload: any = {
           // intentional undefined to avoid overriding BE-proccessed metadata
