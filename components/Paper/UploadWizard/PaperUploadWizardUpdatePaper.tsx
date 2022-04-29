@@ -75,7 +75,7 @@ const getIsFormValid = ({
   let verdict = true;
   const errorResult = { ...defaulError };
   const { selectedHubs } = formState;
-  if (submissionType === "standby" && isNullOrUndefined(formState.paperID)) {
+  if (submissionType !== "standby" && isNullOrUndefined(formState.paperID)) {
     verdict = false;
     errorResult.paperID = true;
   }
@@ -115,6 +115,7 @@ function PaperUploadWizardUpdatePaper({
       formState,
       submissionType: uploaderContextValues.wizardBodyType ?? null,
     });
+    debugger;
     if (verdict) {
       if (uploaderContextValues.wizardBodyType === "standby") {
         // create async paper updator
