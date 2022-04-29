@@ -15,14 +15,12 @@ import DiscussionEntry from "../../Threads/DiscussionEntry";
 import PaperPlaceholder from "~/components/Placeholders/PaperPlaceholder";
 import Toggle from "~/components/Form/Toggle";
 import DropdownButton from "~/components/Form/DropdownButton";
+import { PLACEHOLDERS } from "../../Threads/config/constants";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
 const AddDiscussionModal = dynamic(() =>
   import("~/components/Modals/AddDiscussionModal")
-);
-const PostingGuidelinesModal = dynamic(() =>
-  import("~/components/Threads/PostingGuidelinesModal")
 );
 
 // Redux
@@ -96,8 +94,6 @@ const DiscussionTab = (props) => {
   const [focus, setFocus] = useState(false);
   const [discussionType, setDiscussionType] = useState(TYPES.COMMENT);
   const [reviewScore, setReviewScore] = useState(0);
-  const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
-    useState(false);
   const [textEditorKey, setTextEditorKey] = useState(genClientId());
 
   useEffect(() => {
@@ -407,8 +403,8 @@ const DiscussionTab = (props) => {
 
   const editorPlaceholder =
     discussionType === TYPES.REVIEW
-      ? `Review one or more aspects of this paper such as readability, methodologies, data, ... \nBe objective and constructive.`
-      : `Engage the community and author by leaving a comment.\n- Avoid comments like "Thanks", "+1" or "I agree".\n- Be constructive and inquisitive.`;
+      ? PLACEHOLDERS.REVIEW
+      : PLACEHOLDERS.COMMENT;
 
   const editor = (
     <TextEditor
@@ -424,14 +420,7 @@ const DiscussionTab = (props) => {
       loading={submitInProgress}
       smallToolBar
       uid={textEditorKey}
-    >
-      <span
-        className={css(styles.postingGuidelinesLink)}
-        onClick={() => setShowPostingGuidelinesModal(true)}
-      >
-        Posting Guidelines
-      </span>
-    </TextEditor>
+    />
   );
 
   const discussionTextEditor = !showEditor ? (
@@ -489,10 +478,6 @@ const DiscussionTab = (props) => {
 
   return (
     <Fragment>
-      <PostingGuidelinesModal
-        isOpen={showPostingGuidelinesModal}
-        closeModal={() => setShowPostingGuidelinesModal(false)}
-      />
       <AddDiscussionModal
         handleDiscussionTextEditor={handleDiscussionTextEditor}
         discussion={discussion}

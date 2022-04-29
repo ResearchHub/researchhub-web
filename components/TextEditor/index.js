@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
+import { StyleSheet, css } from "aphrodite";
 
 // NPM Components
 import PropTypes from "prop-types";
@@ -6,6 +8,9 @@ import { connect } from "react-redux";
 
 // Components
 import QuillTextEditor from "./QuillTextEditor";
+const PostingGuidelinesModal = dynamic(() =>
+  import("~/components/Threads/PostingGuidelinesModal")
+);
 
 // Redux
 import { ModalActions } from "../../redux/modals";
@@ -14,6 +19,8 @@ import { MessageActions } from "~/redux/message";
 // Config
 import { convertToEditorToHTML } from "~/config/utils/editor";
 import { genClientId } from "~/config/utils/id";
+import { breakpoints } from "~/config/themes/screen";
+import colors from "~/config/themes/colors";
 
 function TextEditor(props) {
   const {
@@ -53,6 +60,8 @@ function TextEditor(props) {
 
   const [value, setValue] = useState(convertToEditorToHTML(initialValue)); // need this only to initialize value, not to keep state
   const [editorRef, setEditorRef] = useState(null);
+  const [showPostingGuidelinesModal, setShowPostingGuidelinesModal] =
+    useState(false);
 
   useEffect(() => {
     setValue(initialValue);
@@ -128,7 +137,13 @@ function TextEditor(props) {
       hasHeader={hasHeader && hasHeader}
       summary={summary && summary}
     >
-      {children}
+      <PostingGuidelinesModal
+        isOpen={showPostingGuidelinesModal}
+        closeModal={() => setShowPostingGuidelinesModal(false)}
+      />
+      <span className={"d"} onClick={() => setShowPostingGuidelinesModal(true)}>
+        Posting Guidelines
+      </span>
     </QuillTextEditor>
   );
 }
@@ -150,6 +165,24 @@ TextEditor.propTypes = {
   loading: PropTypes.bool,
   focusEditor: PropTypes.bool,
 };
+
+const styles = StyleSheet.create({
+  postingGuidelinesLink: {
+    color: colors.NEW_BLUE(),
+    fontWeight: 500,
+    fontSize: 14,
+    cursor: "pointer",
+    ":hover": {
+      opacity: 0.8,
+    },
+    [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
+      fontSize: 12,
+    },
+    [`@media only screen and (max-width: 400px)`]: {
+      display: "none",
+    },
+  },
+});
 
 const mapStateToProps = (state) => ({
   isLoggedIn: state.auth.isLoggedIn,
