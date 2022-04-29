@@ -115,8 +115,11 @@ function PaperUploadWizardUpdatePaper({
       formState,
       submissionType: uploaderContextValues.wizardBodyType ?? null,
     });
-    debugger;
     if (verdict) {
+      setUploaderContextValues({
+        ...uploaderContextValues,
+        wizardBodyType: "async_updated",
+      });
       if (uploaderContextValues.wizardBodyType === "standby") {
         // create async paper updator
         createAsyncPaperUpdator({
