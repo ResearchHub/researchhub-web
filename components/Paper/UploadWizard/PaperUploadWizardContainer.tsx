@@ -28,13 +28,14 @@ function getWizardBody({
   onExit: () => void;
 }): WizardBodyElement {
   switch (currentStep) {
+    case "async_updated":
+    case "posted_paper_update":
+    case "standby":
+      return <PaperUploadWizardUpdatePaper onExit={onExit} />;
     case "doi_upload":
       return <PaperUploadWizardDOIBody onExit={onExit} />;
     case "pdf_upload":
       return <PaperUploadWizardPDFUpload onExit={onExit} />;
-    case "posted_paper_update":
-    case "standby":
-      return <PaperUploadWizardUpdatePaper onExit={onExit} />;
     case "url_or_doi_upload":
     default:
       return <PaperUploadWizardUrlOrDOIBody onExit={onExit} />;
