@@ -5,6 +5,7 @@ import {
 import { bindActionCreators } from "redux";
 import { buildSlug } from "~/config/utils/buildSlug";
 import { connect } from "react-redux";
+import { createAsyncPaperUpdator } from "./api/createAsyncPaperUpdator";
 import { ID, NullableString } from "~/config/types/root_types";
 import {
   emptyFncWithMsg,
@@ -21,13 +22,12 @@ import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
-import { createAsyncPaperUpdator } from "./api/createAsyncPaperUpdator";
-import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 
 export type FormErrors = {
   paperID: boolean;
@@ -115,10 +115,6 @@ function PaperUploadWizardUpdatePaper({
       formState,
       submissionType: uploaderContextValues.wizardBodyType ?? null,
     });
-    console.warn(
-      "uploaderContextValues?.submissionID: ",
-      uploaderContextValues?.submissionID
-    );
     if (verdict) {
       if (uploaderContextValues.wizardBodyType === "standby") {
         // create async paper updator
