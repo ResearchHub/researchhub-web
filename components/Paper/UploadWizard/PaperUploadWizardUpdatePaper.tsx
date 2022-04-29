@@ -203,6 +203,17 @@ function PaperUploadWizardUpdatePaper({
         required
         value={selectedHubs}
       />
+      <FormInput
+        disabled={isSubmitting}
+        id="title"
+        label="Editorialized Title (optional)"
+        labelStyle={formGenericStyles.labelStyle}
+        onChange={(_id: ID, title: string): void =>
+          setFormState({ ...formState, title: isEmpty(title) ? null : title })
+        }
+        placeholder="Jargon free version of the title that the average person would understand"
+        value={title}
+      />
       {!uploaderContextValues.isWithDOI ? (
         <FormInput
           disabled={isSubmitting}
@@ -217,17 +228,6 @@ function PaperUploadWizardUpdatePaper({
           value={doi}
         />
       ) : null}
-      <FormInput
-        disabled={isSubmitting}
-        id="title"
-        label="Editorialized Title (optional)"
-        labelStyle={formGenericStyles.labelStyle}
-        onChange={(_id: ID, title: string): void =>
-          setFormState({ ...formState, title: isEmpty(title) ? null : title })
-        }
-        placeholder="Jargon free version of the title that the average person would understand"
-        value={title}
-      />
       <div
         style={{
           display: "flex",
