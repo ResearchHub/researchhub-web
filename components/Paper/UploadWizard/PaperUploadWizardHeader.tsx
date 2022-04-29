@@ -1,28 +1,41 @@
 import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { formGenericStyles } from "../Upload/styles/formGenericStyles";
+import { ID } from "~/config/types/root_types";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
 import { ReactElement, SyntheticEvent, useContext } from "react";
+import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
 
 type Props = {
   currentStep?: WizardBodyTypes;
+  currentUserID: ID;
   onExit?: () => void;
 };
 
 export default function PaperUploadWizardHeader({
   currentStep,
+  currentUserID,
   onExit,
-}: Props): ReactElement<"div"> | null {
+}: Props): ReactElement {
   const { values: uploaderContextValues, setValues: setUploaderContextValues } =
     useContext<NewPostButtonContextType>(NewPostButtonContext);
-
-  if (currentStep === "posted_paper_update") {
+  if (currentStep === "standby") {
+    return (
+      // @ts-ignore legacy socket hook
+      <PaperUploadWizardStandbyBody
+        onExit={onExit}
+        wsAuth
+        wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
+      />
+    );
+  } else if (currentStep === "posted_paper_update") {
     return (
       <div
         style={{
