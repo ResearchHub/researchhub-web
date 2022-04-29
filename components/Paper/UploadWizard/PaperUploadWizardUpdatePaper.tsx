@@ -134,6 +134,7 @@ function PaperUploadWizardUpdatePaper({
           title,
         });
       } else {
+        debugger;
         // update paper instance directly
         const formattedPayload: any = {
           // intentional undefined to avoid overriding BE-proccessed metadata
