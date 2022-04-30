@@ -255,19 +255,19 @@ function FeedCard(props: FeedCardProps) {
                     />
                   ) : null}
                   {(uploaded_by || created_by) && hubs.length > 0 && (
-                    <div className={css(styles.textLabel)}>in</div>
+                    <div className={css(styles.textLabel)}>uploaded in</div>
                   )}
-                  {hubs?.slice(0, 1).map((tag, index) => (
+                  {hubs?.slice(0, 7).map((tag, index) => (
                     <Link href={`/hubs/${tag.slug}`}>
                       <a
                         className={css(styles.hubLabel)}
                         onClick={(e) => {
                           e.stopPropagation();
                         }}
-                      >{`${tag.name}${resolvedHubs.length > 1 ? "," : ""}`}</a>
+                      >{`${tag.name}${resolvedHubs.length > 7 ? "," : ""}`}</a>
                     </Link>
                   ))}
-                  {resolvedHubs.length > 1 && (
+                  {resolvedHubs.length > 7 && (
                     <HubDropDown
                       hubs={hubs}
                       labelStyle={styles.hubLabel}
@@ -275,6 +275,14 @@ function FeedCard(props: FeedCardProps) {
                       setIsOpen={setIsHubsOpen}
                     />
                   )}
+                  <div className={css(styles.textLabel, styles.noMargin)}>
+                    <span className={css(styles.metadataText)}>
+                      on{" "}
+                      {formatDateStandard(
+                        transformDate(created_date || uploaded_date)
+                      )}
+                    </span>
+                  </div>
                 </div>
                 {!Boolean(previewImg) && previews.length === 0 && (
                   <span className={css(styles.row, styles.docType)}>
@@ -309,12 +317,6 @@ function FeedCard(props: FeedCardProps) {
                       styles.publishContainer
                     )}
                   >
-                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
-                    <span className={css(styles.metadataText)}>
-                      {formatDateStandard(
-                        transformDate(created_date || uploaded_date)
-                      )}
-                    </span>
                     <div
                       className={css(
                         styles.upvoteMetadata,
@@ -509,7 +511,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.5),
     fontSize: 14,
     marginRight: 15,
-    textTransform: "capitalize",
+    // textTransform: "capitalize",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 13,
     },
@@ -572,6 +574,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 500,
     margin: "0px 5px",
+  },
+  noMargin: {
+    margin: 0,
   },
   hubLabel: {
     color: colors.NEW_BLUE(),
