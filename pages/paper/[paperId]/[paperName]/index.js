@@ -64,6 +64,7 @@ import {
   isQuillDelta,
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
+import { row } from "~/config/themes/styles";
 
 const steps = [
   {
@@ -448,65 +449,67 @@ const Paper = ({
         </Waypoint>
         <div className={css(styles.container)}>
           <div className={css(styles.main)}>
-            <div className={css(styles.paperPageContainer, styles.top)}>
-              <PaperPageCard
-                discussionCount={discussionCount}
-                doneFetchingPaper={isFetchComplete}
-                downvote={downvote}
-                flagged={flagged}
-                isEditorOfHubs={isEditorOfHubs}
-                isModerator={isModerator}
-                isSubmitter={isSubmitter}
-                paper={paper}
-                paperId={paper.id}
-                removePaper={removePaper}
-                restorePaper={restorePaper}
-                score={score}
-                selectedVoteType={selectedVoteType}
-                setFlag={setFlag}
-                shareUrl={process.browser && window.location.href}
-                upvote={upvote}
-              />
-            </div>
-            <div className={css(styles.paperMetaContainerMobile)}>
-              <AuthorStatsDropdown
-                authors={getAllAuthors()}
-                paper={paper}
-                hubs={paper.hubs}
-                paperId={paper.id}
-                isPaper
-              />
-            </div>
-            <div className={css(styles.stickyComponent)}>
-              <PaperTabBar
-                paperId={paper.id}
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                paperDraftSections={paperDraftSections}
-                paperDraftExists={paperDraftExists}
-              />
-            </div>
-            <div
-              className={css(styles.paperPageContainer, styles.noMarginLeft)}
-            >
-              <Waypoint
-                onEnter={() => onSectionEnter(1)}
-                topOffset={40}
-                bottomOffset={"95%"}
+            <div class={css(styles.publishedContent)}>
+              <div className={css(styles.paperPageContainer, styles.top)}>
+                <PaperPageCard
+                  discussionCount={discussionCount}
+                  doneFetchingPaper={isFetchComplete}
+                  downvote={downvote}
+                  flagged={flagged}
+                  isEditorOfHubs={isEditorOfHubs}
+                  isModerator={isModerator}
+                  isSubmitter={isSubmitter}
+                  paper={paper}
+                  paperId={paper.id}
+                  removePaper={removePaper}
+                  restorePaper={restorePaper}
+                  score={score}
+                  selectedVoteType={selectedVoteType}
+                  setFlag={setFlag}
+                  shareUrl={process.browser && window.location.href}
+                  upvote={upvote}
+                />
+              </div>
+              <div className={css(styles.paperMetaContainerMobile)}>
+                <AuthorStatsDropdown
+                  authors={getAllAuthors()}
+                  paper={paper}
+                  hubs={paper.hubs}
+                  paperId={paper.id}
+                  isPaper
+                />
+              </div>
+              <div className={css(styles.stickyComponent)}>
+                <PaperTabBar
+                  paperId={paper.id}
+                  activeTab={activeTab}
+                  setActiveTab={setActiveTab}
+                  paperDraftSections={paperDraftSections}
+                  paperDraftExists={paperDraftExists}
+                />
+              </div>
+              <div
+                className={css(styles.paperPageContainer, styles.noMarginLeft)}
               >
-                <div>
-                  <a name="abstract" />
-                  <SummaryTab
-                    paperId={paper.id}
-                    paper={paper}
-                    summary={summary}
-                    updatePaperState={updatePaperState}
-                    updateSummary={setSummary}
-                    loadingSummary={loadingSummary}
-                    userVoteChecked={userVoteChecked}
-                  />
-                </div>
-              </Waypoint>
+                <Waypoint
+                  onEnter={() => onSectionEnter(1)}
+                  topOffset={40}
+                  bottomOffset={"95%"}
+                >
+                  <div>
+                    <a name="abstract" />
+                    <SummaryTab
+                      paperId={paper.id}
+                      paper={paper}
+                      summary={summary}
+                      updatePaperState={updatePaperState}
+                      updateSummary={setSummary}
+                      loadingSummary={loadingSummary}
+                      userVoteChecked={userVoteChecked}
+                    />
+                  </div>
+                </Waypoint>
+              </div>
             </div>
             {isFetchComplete /* Performance Optimization */ && (
               <Waypoint
@@ -684,6 +687,9 @@ export async function getStaticProps(ctx) {
 }
 
 const styles = StyleSheet.create({
+  publishedContent: {
+    borderLeft: "1px solid rgb(232, 232, 239)",
+  },
   componentWrapperStyles: {
     width: "100%",
     paddingLeft: 0,
@@ -699,6 +705,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "flex-start",
     width: "100%",
+    border: "1px solid rgb(232, 232, 239)",
   },
   container: {
     marginLeft: "auto",
@@ -706,24 +713,35 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     borderCollapse: "separate",
     borderSpacing: "30px 40px",
+
     "@media only screen and (max-width: 767px)": {
       width: "100%",
       borderSpacing: "0",
       display: "flex",
       flexDirection: "column",
     },
-    "@media only screen and (min-width: 768px)": {
-      display: "flex",
-      marginTop: 16,
-      width: "90%",
-    },
-    "@media only screen and (min-width: 1024px)": {
-      width: "100%",
-      display: "table",
-    },
-    "@media only screen and (min-width: 1200px)": {
-      width: "90%",
-    },
+    // "@media only screen and (min-width: 768px)": {
+    //   display: "flex",
+    //   marginTop: 16,
+    //   width: "90%",
+
+    // },
+    // "@media only screen and (min-width: 1024px)": {
+    //   width: "100%",
+    //   display: "table",
+    // },
+    // "@media only screen and (min-width: 1200px)": {
+    //   width: "90%",
+    // },
+
+    /* ---- */
+    display: "flex",
+    alignItems: "normal",
+    flexDirection: "row",
+    width: "100%",
+    justifyContent: "center",
+    background: "white",
+    marginTop: 30,
   },
   desktop: {
     display: "none",
@@ -736,35 +754,42 @@ const styles = StyleSheet.create({
     boxSizing: "border-box",
     verticalAlign: "top",
     position: "relative",
-    "@media only screen and (max-width: 767px)": {
-      display: "none",
-    },
-    "@media only screen and (min-width: 768px)": {
-      width: "20%",
-      marginLeft: 16,
-    },
-    "@media only screen and (min-width: 1024px)": {
-      minWidth: 250,
-      maxWidth: 280,
-      width: 280,
-      marginLeft: 0,
-    },
+    // "@media only screen and (max-width: 767px)": {
+    //   display: "none",
+    // },
+    // "@media only screen and (min-width: 768px)": {
+    //   width: "20%",
+    //   marginLeft: 16,
+    // },
+    // "@media only screen and (min-width: 1024px)": {
+    //   minWidth: 250,
+    //   maxWidth: 280,
+    //   width: 280,
+    //   marginLeft: 0,
+    // },
+    /* ---- */
+    width: 300,
   },
   main: {
     display: "table-cell",
     boxSizing: "border-box",
     position: "relative",
-    "@media only screen and (max-width: 767px)": {
-      width: "100%",
-    },
-    "@media only screen and (min-width: 768px)": {
-      width: "80%",
-      maxWidth: 600,
-    },
-    "@media only screen and (min-width: 1024px)": {
-      width: "unset",
-      maxWidth: 700,
-    },
+    // "@media only screen and (max-width: 767px)": {
+    //   width: "100%",
+    // },
+    // "@media only screen and (min-width: 768px)": {
+    //   width: "80%",
+    //   maxWidth: 600,
+    // },
+    // "@media only screen and (min-width: 1024px)": {
+    //   width: "unset",
+    //   maxWidth: 700,
+    // },
+
+    /* ---- */
+    width: "800px",
+    maxWidth: "unset",
+    display: "block",
   },
   contentContainer: {
     padding: "30px 0px",
@@ -840,7 +865,7 @@ const styles = StyleSheet.create({
   voting: {
     position: "absolute",
     width: 70,
-    left: -80,
+    left: -85,
     top: 18,
     "@media only screen and (max-width: 767px)": {
       display: "none",
@@ -932,7 +957,7 @@ const styles = StyleSheet.create({
     display: "none",
   },
   space: {
-    marginTop: 30,
+    // marginTop: 30,
   },
   paperMetaContainerMobile: {
     display: "none",
@@ -1037,16 +1062,24 @@ const styles = StyleSheet.create({
     padding: "20px 30px 30px 90px",
     boxSizing: "border-box",
     borderRadius: 4,
-    "@media only screen and (max-width: 767px)": {
-      borderRadius: "0px",
-      borderTop: "none",
-      padding: 20,
-      width: "100%",
-    },
+    // marginTop: 20,
+    // "@media only screen and (max-width: 767px)": {
+    //   borderRadius: "0px",
+    //   borderTop: "none",
+    //   padding: 20,
+    //   width: "100%",
+    // },
+
+    /* ------ */
+    border: 0,
+    paddingLeft: 30,
+    paddingTop: 0,
+    paddingBottom: 0,
+    boxShadow: "none",
   },
   noMarginLeft: {
-    padding: 30,
-    marginTop: 30,
+    // padding: 30,
+    marginTop: 15,
   },
   top: {
     // paddingBottom: 0,

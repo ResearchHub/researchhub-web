@@ -753,6 +753,13 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 967px)": {
       fontSize: 14,
     },
+
+    /* ----- */
+    fontSize: 18,
+    lineHeight: "30px",
+    whiteSpace: "pre-line",
+    wordBreak: "break-word",
+    paddingBottom: 10,
   },
   abstractText: {
     lineHeight: 1.6,
@@ -799,6 +806,10 @@ var styles = StyleSheet.create({
       alignItems: "flex-start",
       paddingBottom: 0,
     },
+    width: "calc(100% - 20px)",
+    paddingBottom: 10,
+    borderBottom: "1px solid rgb(232, 232, 239)",
+    marginBottom: 10,
   },
   sectionTitle: {
     fontSize: 22,

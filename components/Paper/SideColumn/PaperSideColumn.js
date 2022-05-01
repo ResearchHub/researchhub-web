@@ -27,7 +27,7 @@ const PaperSideColumn = (props) => {
 const styles = StyleSheet.create({
   root: {
     width: "100%",
-    border: "1.5px solid #F0F0F0",
+    border: "1px solid rgb(232, 232, 239)",
     borderRadius: 4,
     backgroundColor: "#fff",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",

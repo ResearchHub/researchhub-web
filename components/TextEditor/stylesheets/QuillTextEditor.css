@@ -22,8 +22,8 @@
   /* cursor: text; */
   padding: 0;
   font-family: "Roboto";
-  line-height: 1.8;
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 26px;
 }
 
 .toolbar {

@@ -242,13 +242,19 @@ const VoteButton = (props) => {
 const UpvoteButton = (props) => {
   return (
     <VoteButton {...props} right={props.horizontalView}>
-      {voteWidgetIcons.upvote}
+      {props.selected ? voteWidgetIcons.upvoteSelected : voteWidgetIcons.upvote}
     </VoteButton>
   );
 };
 
 const DownvoteButton = (props) => {
-  return <VoteButton {...props}>{voteWidgetIcons.downvote}</VoteButton>;
+  return (
+    <VoteButton {...props}>
+      {props.selected
+        ? voteWidgetIcons.downvoteSelected
+        : voteWidgetIcons.downvote}
+    </VoteButton>
+  );
 };
 
 function getScore(props) {
@@ -265,7 +271,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     flexDirection: "column",
     textAlign: "center",
-    marginRight: 17,
+    marginRight: 19,
   },
   horizontalView: {
     flexDirection: "row",
@@ -291,6 +297,10 @@ const styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,
     },
+
+    /* ---- */
+    background: "unset",
+    fontSize: 18,
   },
   hideScore: {
     visibility: "hidden",
@@ -317,6 +327,7 @@ const styles = StyleSheet.create({
     ":hover": {
       color: colors.BLUE(1),
     },
+    fontSize: 20,
   },
   iconBlue: {
     color: "#eaebfe",

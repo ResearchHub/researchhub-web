@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     alignItems: "center",
-    marginBottom: "12px",
+    marginBottom: "8px",
     "@media only screen and (max-width: 768px)": {
       width: "100%",
       boxSizing: "border-box",
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 500,
     whiteSpace: "nowrap",
-    color: colors.BLACK(),
+    color: colors.BLACK(0.6),
     margin: 0,
     "@media only screen and (max-width: 415px)": {
       fontSize: 14,

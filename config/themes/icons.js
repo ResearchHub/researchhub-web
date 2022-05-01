@@ -85,6 +85,8 @@ import {
   faUserSlash,
   faVideoPlus,
   faShieldAlt,
+  faArrowAltUp as faUpBtnSolid,
+  faArrowAltDown as faDownBtnSolid,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -107,6 +109,9 @@ import {
   faTimes,
   faTimesCircle,
   faTrashAlt,
+  faArrowAltUp as faUpBtn,
+  faArrowAltDown as faDownBtn,
+  faComments as faCommentsLight,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -163,6 +168,11 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faCommentsLight,
+  faUpBtn,
+  faDownBtn,
+  faUpBtnSolid,
+  faDownBtnSolid,
   faAngleDown,
   faAngleLeft,
   faAngleRight,
@@ -422,6 +432,7 @@ const icons = {
   userSlash: <FontAwesomeIcon icon={faUserSlash} />,
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
+  commentsLight: <FontAwesomeIcon icon={faCommentsLight} />,
   // customIcons
   coinStack: ({ styles, grey }) => (
     <img
@@ -457,8 +468,10 @@ const icons = {
 };
 
 export const voteWidgetIcons = {
-  downvote: <FontAwesomeIcon icon={faCaretDown} />,
-  upvote: <FontAwesomeIcon icon={faCaretUp} />,
+  downvote: <FontAwesomeIcon icon={faDownBtn} />,
+  upvote: <FontAwesomeIcon icon={faUpBtn} />,
+  upvoteSelected: <FontAwesomeIcon icon={faUpBtnSolid} />,
+  downvoteSelected: <FontAwesomeIcon icon={faDownBtnSolid} />,
 };
 
 export const textEditorIcons = {

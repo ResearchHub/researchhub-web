@@ -23,6 +23,7 @@ import PermissionNotificationWrapper from "~/components/PermissionNotificationWr
 import ShareAction from "~/components/ShareAction";
 import VoteWidget from "~/components/VoteWidget";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
+import { formatDateStandard, formatPublishedDate } from "~/config/utils/dates";
 
 // redux
 import { ModalActions } from "~/redux/modals";
@@ -34,12 +35,12 @@ import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
 import { Helpers } from "@quantfive/js-web-config";
 import { MessageActions } from "../redux/message";
-import { formatPublishedDate } from "~/config/utils/dates";
 import { removeLineBreaksInStr, stripHTML } from "~/config/utils/string";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
 import DiscussionCount from "~/components/DiscussionCount";
+import { transformDate } from "~/redux/utils";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -213,7 +214,7 @@ class PaperPageCard extends Component {
             {this.renderPublishDate()}
           </span>
         ),
-        active: paper && paper.paper_publish_date,
+        active: true,
       },
 
       {
@@ -541,6 +542,8 @@ class PaperPageCard extends Component {
     const { paper } = this.props;
     if (paper.paper_publish_date) {
       return formatPublishedDate(moment(paper.paper_publish_date), true);
+    } else {
+      return <span>Missing</span>;
     }
   };
 
@@ -754,7 +757,10 @@ class PaperPageCard extends Component {
 
 const styles = StyleSheet.create({
   discussionCountWrapper: {
+    paddingTop: 10,
     marginTop: 10,
+    width: 45,
+    borderTop: "1px solid rgb(232, 232, 239)",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {
       marginTop: 1,
       display: "flex",
@@ -891,19 +897,24 @@ const styles = StyleSheet.create({
     margin: 0,
     display: "block",
     borderSpacing: "initial",
-    "@media only screen and (max-width: 760px)": {
-      fontSize: 24,
-    },
-    "@media only screen and (max-width: 415px)": {
-      fontSize: 22,
-    },
-    "@media only screen and (max-width: 321px)": {
-      fontSize: 20,
-    },
+    // "@media only screen and (max-width: 760px)": {
+    //   fontSize: 24,
+    // },
+    // "@media only screen and (max-width: 415px)": {
+    //   fontSize: 22,
+    // },
+    // "@media only screen and (max-width: 321px)": {
+    //   fontSize: 20,
+    // },
+
+    /* ------ */
+    fontWeight: 600,
+    lineHeight: "40px",
+    fontSize: 32,
   },
   titleHeader: {
-    marginTop: 5,
-    marginBottom: 23,
+    marginTop: -5,
+    marginBottom: 15,
   },
   subtitle: {
     color: "#241F3A",
@@ -1024,7 +1035,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     position: "absolute",
     top: 0,
-    left: -70,
+    left: -85,
     "@media only screen and (max-width: 767px)": {
       display: "none",
     },
@@ -1232,6 +1243,9 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "flex-end",
     marginTop: 15,
+
+    /* ------ */
+    display: "none",
   },
   bottomRow: {
     maxWidth: "100%",
@@ -1360,10 +1374,10 @@ const styles = StyleSheet.create({
   },
   link: {
     cursor: "pointer",
-    color: colors.BLUE(),
+    color: colors.NEW_BLUE(),
     textDecoration: "unset",
     ":hover": {
-      color: colors.BLUE(),
+      color: colors.NEW_BLUE(),
       textDecoration: "underline",
     },
   },

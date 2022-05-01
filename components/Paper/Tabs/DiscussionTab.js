@@ -493,6 +493,9 @@ const DiscussionTab = (props) => {
       >
         <div className={css(styles.header)}>
           <h3 className={css(styles.discussionTitle)}>
+            <span className={css(styles.discussionIcon)}>
+              {icons.commentsLight}
+            </span>
             Discussion
             <span className={css(styles.discussionCount)}>
               {fetching ? (
@@ -617,6 +620,10 @@ function formatThreads(threads, basePath) {
 }
 
 var styles = StyleSheet.create({
+  discussionIcon: {
+    marginRight: 16,
+    marginLeft: -10,
+  },
   container: {
     width: "100%",
     display: "flex",
@@ -767,9 +774,6 @@ var styles = StyleSheet.create({
   pencilIcon: {
     marginRight: 5,
   },
-  discussionIcon: {
-    marginRight: 5,
-  },
   draftContainer: {
     width: "100%",
     display: "flex",
@@ -843,7 +847,8 @@ var styles = StyleSheet.create({
   discussionThreadContainer: {
     backgroundColor: "#fff",
     padding: 30,
-    border: "1.5px solid #F0F0F0",
+    paddingLeft: 0,
+    // border: "1.5px solid #F0F0F0",
     boxSizing: "border-box",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
@@ -903,6 +908,8 @@ var styles = StyleSheet.create({
     alignItems: "start",
     width: "100%",
     marginBottom: 15,
+    paddingBottom: 10,
+    borderBottom: "1px solid rgb(232, 232, 239)",
   },
   discussionTitle: {
     display: "flex",
@@ -1031,7 +1038,7 @@ var styles = StyleSheet.create({
   },
   discussionTypeHeader: {
     fontSize: 18,
-    fontWeight: 500,
+    fontWeight: 400,
     alignSelf: "center",
     [`@media only screen and (max-width: ${breakpoints.xxsmall.str})`]: {
       fontSize: 16,
@@ -1099,7 +1106,7 @@ const stylesEditor = StyleSheet.create({
     flexDirection: "column",
     width: "100%",
     marginBottom: 5,
-    paddingLeft: 20,
+    // paddingLeft: 20,
     marginTop: 15,
     boxSizing: "border-box",
     [`@media only screen and (max-width: ${breakpoints.small.str})`]: {

@@ -304,13 +304,16 @@ var styles = StyleSheet.create({
     boxSizing: "border-box",
     padding: 25,
     backgroundColor: "#FFF",
-    marginTop: 30,
-    border: "1.5px solid #F0F0F0",
+    // marginTop: 30,
+    // border: "1.5px solid #F0F0F0",
     boxShadow: "0px 3px 4px rgba(0, 0, 0, 0.02)",
     borderRadius: 4,
     "@media only screen and (max-width: 767px)": {
       padding: 25,
     },
+    marginTop: 0,
+    paddingTop: 0,
+    paddingLeft: 30,
   },
   downloadIcon: {
     color: "#FFF",
@@ -487,6 +490,9 @@ var styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     width: "100%",
+    borderBottom: "1px solid rgb(232, 232, 239)",
+    paddingBottom: 10,
+    marginBottom: 15,
   },
   title: {
     display: "flex",
@@ -496,6 +502,7 @@ var styles = StyleSheet.create({
     "@media only screen and (max-width: 415px)": {
       fontSize: 20,
     },
+    margin: 0,
   },
   showPaperButton: {
     marginTop: 15,

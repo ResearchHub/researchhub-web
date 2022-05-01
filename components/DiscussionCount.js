@@ -19,7 +19,7 @@ const DiscussionCount = ({ docType, count, id, slug }) => {
       >
         <div className={css(styles.discussion)}>
           <div className={css(styles.discussionIcon)}>
-            {PaperDiscussionIcon({})}
+            {icons.commentsLight}
           </div>
           <div className={css(styles.discussionCount)}>{count}</div>
         </div>
@@ -30,7 +30,8 @@ const DiscussionCount = ({ docType, count, id, slug }) => {
 
 const styles = StyleSheet.create({
   discussionIcon: {
-    color: colors.BLUE(),
+    // color: colors.BLUE(),
+    color: colors.BLACK(0.5),
   },
   link: {
     textDecoration: "none",
@@ -44,8 +45,8 @@ const styles = StyleSheet.create({
   discussion: {
     cursor: "pointer",
     position: "relative",
-    fontSize: 14,
-    background: discussionPageColors.ICON,
+    fontSize: 20,
+    // background: discussionPageColors.ICON,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -64,10 +65,10 @@ const styles = StyleSheet.create({
     },
   },
   discussionCount: {
-    color: colors.BLUE(),
-    fontWeight: "bold",
-    marginLeft: 3,
-    fontSize: 14,
+    color: colors.BLACK(0.5),
+    fontWeight: 400,
+    marginLeft: 8,
+    fontSize: 16,
   },
 });
 

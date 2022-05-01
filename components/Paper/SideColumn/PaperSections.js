@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     position: "sticky",
     top: 20,
     borderRadius: 4,
+    border: "1px solid rgb(232, 232, 239)",
   },
   title: {
     display: "flex",

@@ -141,7 +141,10 @@ function TextEditor(props) {
         isOpen={showPostingGuidelinesModal}
         closeModal={() => setShowPostingGuidelinesModal(false)}
       />
-      <span className={"d"} onClick={() => setShowPostingGuidelinesModal(true)}>
+      <span
+        className={css(styles.postingGuidelinesLink)}
+        onClick={() => setShowPostingGuidelinesModal(true)}
+      >
         Posting Guidelines
       </span>
     </QuillTextEditor>
