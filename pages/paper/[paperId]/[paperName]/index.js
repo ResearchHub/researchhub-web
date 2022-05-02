@@ -1079,7 +1079,7 @@ const styles = StyleSheet.create({
   },
   noMarginLeft: {
     // padding: 30,
-    marginTop: 15,
+    marginTop: 25,
   },
   top: {
     // paddingBottom: 0,
