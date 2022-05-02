@@ -28,6 +28,7 @@ const AuthorAvatar = (props) => {
     trueSize,
     twitterUrl,
     withAuthorName,
+    withAvatar = false,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
@@ -61,6 +62,7 @@ const AuthorAvatar = (props) => {
               maxHeight: finalSize,
               objectFit: "cover",
               borderRadius: "50%",
+              marginRight: 8,
               border,
               // border: border ? border : "3px solid #F1F1F1",
               boxShadow: dropShadow && "0px 2px 4px rgba(185, 185, 185, 0.25)",
@@ -131,7 +133,7 @@ const AuthorAvatar = (props) => {
               e.stopPropagation();
             }}
           >
-            {avatarComponent}
+            {withAvatar && avatarComponent}
             {Boolean(withAuthorName) ? (
               <span
                 style={{
@@ -187,6 +189,7 @@ const styles = StyleSheet.create({
     left: 0.25,
   },
   name: {
+    marginLeft: 0,
     ":hover": {
       color: colors.NEW_BLUE(),
     },

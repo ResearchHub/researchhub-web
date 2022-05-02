@@ -9,19 +9,27 @@ import colors from "~/config/themes/colors";
 type Props = {
   summary: PeerReviewScoreSummary,
   docUrl: string,
+  withReviewCount: Boolean,
+  withDot: Boolean,
+  scoreStyleOverride: any,
 };
 
 export default function PeerReviewSummary({
   summary,
   docUrl = "",
+  withReviewCount = true,
+  withDot = true,
+  scoreStyleOverride = null,
 }: Props): ReactElement {
   return (
     <div className={css(styles.reviewContainer)}>
-      <span className={css(styles.reviewScoreContainer)}>
-        <span className={css(styles.reviewScore)}>{summary?.avg}</span>/10
+      <span className={css(styles.reviewScoreContainer, scoreStyleOverride)}>
+        <span className={css(styles.reviewScore)}>{summary?.avg.toFixed(1)}</span>
       </span>
       <div className={css(styles.scoreContainer)}>
-        <span className={css(styles.dot)}>&bull;</span>
+        {withDot &&
+          <span className={css(styles.dot)}>&bull;</span>
+        }
         <ScoreInput
           value={summary?.avg}
           readOnly
@@ -29,12 +37,14 @@ export default function PeerReviewSummary({
           overrideBarStyle={styles.overrideReviewBar}
         />
       </div>
-      <div className={css(styles.reviewCountContainer)}>
-        <span className={css(styles.dot)}>&bull;</span>
-        <ALink href={`${docUrl}#comments`} overrideStyle={styles.reviewCount}>
-          {summary?.count} {summary?.count === 1 ? "Review" : "Reviews"}
-        </ALink>
-      </div>
+      {withReviewCount &&
+        <div className={css(styles.reviewCountContainer)}>
+          <span className={css(styles.dot)}>&bull;</span>
+          <ALink href={`${docUrl}#comments`} overrideStyle={styles.reviewCount}>
+            {summary?.count} {summary?.count === 1 ? "Review" : "Reviews"}
+          </ALink>
+        </div>
+      }
     </div>
   )
 }
@@ -51,8 +61,8 @@ const styles = StyleSheet.create({
   },
   reviewScore: {
     color: colors.NEW_BLUE(),
-    fontSize: 18,
-    fontWeight: 500,
+    fontSize: 16,
+    fontWeight: 400,
     marginRight: 3,
     [`@media only screen and (max-width: ${breakpoints.xsmall.str})`]: {
       fontSize: 16,
@@ -71,8 +81,8 @@ const styles = StyleSheet.create({
     fontWeight: 400,
   },
   overrideReviewBar: {
-    width: 16,
-    height: 10,
+    width: 12,
+    height: 8,
   },
   scoreContainer: {
     display: "flex",

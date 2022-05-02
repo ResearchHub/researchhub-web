@@ -7,7 +7,7 @@ import ResponsivePostVoteWidget from "~/components/Author/Tabs/ResponsivePostVot
 import Ripples from "react-ripples";
 import colors, { genericCardColors } from "~/config/themes/colors";
 import dynamic from "next/dynamic";
-import icons from "~/config/themes/icons";
+import icons, {voteWidgetIcons} from "~/config/themes/icons";
 import { DOWNVOTE, UPVOTE, userVoteToConstant } from "~/config/constants";
 import { ModalActions } from "~/redux/modals";
 import { PaperActions } from "~/redux/paper";
@@ -22,6 +22,7 @@ import { transformDate } from "~/redux/utils";
 import ScoreInput from "~/components/Form/ScoreInput";
 import ALink from "~/components/ALink";
 import PeerReviewScoreSummary from "~/components/PeerReviews/PeerReviewScoreSummary";
+import { timeSince } from "~/config/utils/dates";
 
 const PaperPDFModal = dynamic(
   () => import("~/components/Modals/PaperPDFModal")
@@ -63,6 +64,7 @@ export type FeedCardProps = {
 
 function FeedCard(props: FeedCardProps) {
   const {
+    abstract,
     created_by,
     created_date,
     discussion_count,
@@ -209,7 +211,9 @@ function FeedCard(props: FeedCardProps) {
     >
       <Link href={`/${formattedDocType}/${id}/${slug ?? "new-paper"}`}>
         <a className={css(styles.feedCard)}>
-          <DesktopOnly>
+
+        <div className={css(styles.meta)}>
+          {/* <DesktopOnly>
             <div className={css(styles.leftSection)}>
               <ResponsivePostVoteWidget
                 onDesktop
@@ -233,10 +237,22 @@ function FeedCard(props: FeedCardProps) {
                 voteState={voteState}
               />
             </div>
-          </DesktopOnly>
+          </DesktopOnly> */}
+          {/* <div className={css(styles.discussion)}>
+            <div className={css(styles.discussionIcon)}>
+              {icons.commentsLight}
+            </div>
+            <div className={css(styles.discussionCount)}>{discussion_count}</div>
+          </div> */}
+          {/* <div className={css(styles.pr)}>
+            8.0
+          </div> */}
+        </div>
+
           <div className={css(styles.container)}>
             <div>
-              <div className={css(styles.rowContainer)}>
+
+            <div className={css(styles.rowContainer)}>
                 <div className={css(styles.postCreatedBy)}>
                   {uploaded_by || created_by ? (
                     <AuthorAvatar
@@ -247,15 +263,17 @@ function FeedCard(props: FeedCardProps) {
                       boldName
                       border="2px solid #F1F1F1"
                       fontSize={15}
-                      size={20}
+                      size={25}
                       spacing={5}
+                      border={0}
                       withAuthorName
+                      withAvatar
                     />
                   ) : null}
                   {(uploaded_by || created_by) && hubs.length > 0 && (
-                    <div className={css(styles.textLabel)}>in</div>
+                    <div className={css(styles.textLabel)}>posted in</div>
                   )}
-                  {hubs?.slice(0, 1).map((tag, index) => (
+                  {hubs?.slice(0, 2).map((tag, index) => (
                     <Link href={`/hubs/${tag.slug}`}>
                       <a
                         className={css(styles.hubLabel)}
@@ -273,33 +291,42 @@ function FeedCard(props: FeedCardProps) {
                       setIsOpen={setIsHubsOpen}
                     />
                   )}
+                  <span className={css(styles.time)}>
+                    <span className={css(styles.dot)}>•</span>
+                    {timeSince(created_date || uploaded_date)}
+                  </span>
                 </div>
               </div>
+
               <div className={css(styles.rowContainer)}>
                 <div className={css(styles.column, styles.metaData)}>
                   <span className={css(styles.title)}>
                     {titleAsHtml ? titleAsHtml : title ? title : ""}
-                  </span>
-                  {reviews?.count > 0 &&
+                  </span>            
+                  {abstract && (
+                    <div className={css(styles.abstract) + " clamp2"}>
+                      {abstract}
+                    </div>
+                  )}
+
+                  {/* {reviews?.count > 0 &&
                     <div className={css(styles.reviewSummaryContainer)}>
                         <PeerReviewScoreSummary
                           summary={reviews}
                           docUrl={docUrl}
                         />
                     </div>
-                  }
-                  <div
-                    className={css(
-                      styles.metadataContainer,
-                      styles.publishContainer
-                    )}
-                  >
-                    <div className={css(styles.metadataIcon)}>
-                      {documentIcons[formattedDocType!]}
-                    </div>
-                    <span className={css(styles.metadataText)}>
-                      {formattedDocType}
-                    </span>
+                  } */}
+                </div>
+              </div>
+              <div className={css(styles.rowContainer, styles.metaRow)}>
+
+              <div
+                className={css(
+                  styles.metadataContainer,
+                  styles.publishContainer
+                )}
+              >
                     <div
                       className={css(
                         styles.upvoteMetadata,
@@ -316,6 +343,27 @@ function FeedCard(props: FeedCardProps) {
                     >
                       <span className={css(styles.boldText)}>{score}</span>
                     </span>
+                    <div className={css(styles.metadataIcon, styles.voteIcon)}>
+                      {voteWidgetIcons.upvote}
+                    </div>
+                    <span className={css(styles.metadataText, styles.voteText)}>
+                      <span className={css(styles.boldText)}>
+                        {score}
+                      </span>
+                      <span className={css(styles.hideTextMobile)}>{` Upvote${
+                        score === 1 ? "" : "s"
+                      }`}</span>
+                    </span>
+
+                    {/* <span>
+                      <PeerReviewScoreSummary
+                        summary={reviews}
+                        docUrl={docUrl}
+                        withReviewCount={false}
+                        withDot={false}
+                        scoreStyleOverride={styles.scoreStyleOverride}
+                      />
+                    </span> */}
                     <div className={css(styles.metadataIcon)}>
                       {icons.commentRegular}
                     </div>
@@ -327,14 +375,16 @@ function FeedCard(props: FeedCardProps) {
                         discussion_count === 1 ? "" : "s"
                       }`}</span>
                     </span>
-                    <div className={css(styles.metadataIcon)}>{icons.date}</div>
+
+                    {/* <div className={css(styles.metadataIcon)}>
+                      {documentIcons[formattedDocType!]}
+                    </div>
                     <span className={css(styles.metadataText)}>
-                      {formatDateStandard(
-                        transformDate(created_date || uploaded_date)
-                      )}
-                    </span>
+                      {formattedDocType}
+                    </span> */}
                   </div>
-                </div>
+
+
               </div>
             </div>
             {Boolean(previewImg) && (
@@ -381,9 +431,60 @@ function FeedCard(props: FeedCardProps) {
 }
 
 const styles = StyleSheet.create({
+  time: {
+    fontSize: 12,
+    fontWeight: 400,
+    color: colors.BLACK(0.6),
+    marginLeft: 5,
+  },
+  dot: {
+    fontSize: 14,
+    marginRight: 5,
+  },
+  voteIcon: {
+    color: colors.GREEN()
+  },
+  voteText: {
+    color: colors.GREEN()
+  },
+  metaRow: {
+    // marginTop: 10,
+  },
+  pr: {
+    display: "flex",  
+  },
+  discussion: {
+    display: "flex",
+    color: colors.BLACK(),
+    fontSize: 18,
+    alignItems: "center",
+    borderTop: "1px solid rgb(232, 232, 239)",
+    paddingTop: 10,
+    marginTop: 10,
+    width: 47,
+
+  },
+  discussionCount: {
+    fontSize: 16,
+    marginLeft: 6,
+    fontWeight: 500,
+  },
+
+  scoreStyleOverride: {
+    marginRight: 10,
+  },
   ripples: {
     display: "flex",
     width: "100%",
+  },
+  abstract: {
+    color: colors.BLACK(0.6),
+    marginBottom: 10,
+    fontSize: 15,
+    lineHeight: "19px"
+  },
+  authors: {
+    color: colors.BLACK(0.6),
   },
   feedCard: {
     alignItems: "flex-start",
@@ -437,6 +538,7 @@ const styles = StyleSheet.create({
     display: "flex",
     justifyContent: "space-between",
     width: "100%",
+    marginLeft: 0,
   },
   rowContainer: {
     display: "flex",
@@ -463,6 +565,7 @@ const styles = StyleSheet.create({
     maxWidth: "100%",
     display: "flex",
     alignItems: "center",
+    // display: "none",
   },
   publishContainer: {
     marginRight: 10,
@@ -471,6 +574,7 @@ const styles = StyleSheet.create({
     color: colors.BLACK(0.5),
     fontSize: 14,
     marginRight: 15,
+    fontWeight: 500,
     textTransform: "capitalize",
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 13,
@@ -504,7 +608,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 700,
     marginBottom: 10,
-    marginTop: 8,
+    marginTop: 10,
     [`@media only screen and (max-width: ${breakpoints.mobile.str})`]: {
       fontSize: 16,
       fontWeight: 500,
@@ -530,9 +634,9 @@ const styles = StyleSheet.create({
     width: 70,
   },
   textLabel: {
-    color: colors.TEXT_GREY(),
+    color: colors.BLACK(),
     fontSize: 15,
-    fontWeight: 500,
+    fontWeight: 400,
     margin: "0px 5px",
   },
   hubLabel: {
