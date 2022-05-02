@@ -28,7 +28,7 @@ const AuthorAvatar = (props) => {
     trueSize,
     twitterUrl,
     withAuthorName,
-    withAvatar = false,
+    withAvatar = true,
   } = props;
   let deviceWidth = null;
   if (process.browser) {
