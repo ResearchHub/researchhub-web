@@ -10,41 +10,40 @@ import { nullthrows } from "~/config/utils/nullchecks";
 import { ReactElement, useContext } from "react";
 import { ROUTES as WS_ROUTES } from "~/config/ws";
 import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
+import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
 import PaperUploadWizardHeader from "./PaperUploadWizardHeader";
-import PaperUploadWizardStandbyBody from "./PaperUploadWizardStandbyBody";
+import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
 import PaperUploadWizardUpdatePaper from "./PaperUploadWizardUpdatePaper";
 import PaperUploadWizardUrlOrDOIBody from "./PaperUploadWizardUrlOrDOIBody";
-import PaperUploadWizardPDFUpload from "./PaperUploadWizardPDFUpload";
-import PaperUploadWizardDOIBody from "./PaperUploadWizardDOIBody";
 
-type Props = { user: any; /* redux */ onExit: () => void };
+type Props = { userRedux: any; /* redux */ onExit: () => void };
 type WizardBodyElement = ReactElement<typeof PaperUploadWizardUrlOrDOIBody>;
 
 function getWizardBody({
-  currentUserID,
   currentStep,
+  currentUserID,
   onExit,
 }: {
-  currentUserID: ID;
   currentStep: WizardBodyTypes;
+  currentUserID: ID;
   onExit: () => void;
 }): WizardBodyElement {
   switch (currentStep) {
-    case "doi_upload":
-      return <PaperUploadWizardDOIBody onExit={onExit} />;
-    case "pdf_upload":
-      return <PaperUploadWizardPDFUpload onExit={onExit} />;
+    case "async_updated":
     case "posted_paper_update":
-      return <PaperUploadWizardUpdatePaper onExit={onExit} />;
     case "standby":
       return (
         // @ts-ignore legacy socket hook
-        <PaperUploadWizardStandbyBody
+        <PaperUploadWizardUpdatePaper
           onExit={onExit}
           wsAuth
           wsUrl={WS_ROUTES.PAPER_SUBMISSION(currentUserID)}
         />
       );
+    case "doi_upload":
+      return <PaperUploadWizardDOIBody onExit={onExit} />;
+    case "pdf_upload":
+      return <PaperUploadWizardPDFUpload onExit={onExit} />;
     case "url_or_doi_upload":
     default:
       return <PaperUploadWizardUrlOrDOIBody onExit={onExit} />;
@@ -52,18 +51,19 @@ function getWizardBody({
 }
 
 function PaperUploadWizardContainer({
-  user,
+  userRedux,
   onExit,
 }: Props): ReactElement<Props> {
+  const currentUserID = userRedux?.id ?? null;
   const {
     values: { wizardBodyType },
   } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const wizardBody = getWizardBody({
-    currentUserID: user?.id,
     currentStep: nullthrows(
       wizardBodyType,
       `Unrecognized wizardBodyType: ${wizardBodyType}`
     ),
+    currentUserID,
     onExit,
   });
 
@@ -75,6 +75,10 @@ function PaperUploadWizardContainer({
             wizardBodyType,
             `Unrecognized wizardBodyType: ${wizardBodyType}`
           )}
+          currentUserID={nullthrows(
+            currentUserID,
+            "User must be present to upload a paper"
+          )}
           onExit={onExit}
         />
         <div className={css(styles.bodyWrap)}>{wizardBody}</div>
@@ -84,7 +88,7 @@ function PaperUploadWizardContainer({
 }
 
 const mapStateToProps = (state) => ({
-  user: state.auth.user,
+  userRedux: state.auth.user,
 });
 
 export default connect(mapStateToProps, {})(PaperUploadWizardContainer);
