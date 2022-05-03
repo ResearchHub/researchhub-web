@@ -1,18 +1,12 @@
+import { bindActionCreators } from "redux";
+import { buildSlug } from "~/config/utils/buildSlug";
 import {
   customStyles,
   formGenericStyles,
 } from "../Upload/styles/formGenericStyles";
-import { bindActionCreators } from "redux";
-import { buildSlug } from "~/config/utils/buildSlug";
 import { connect } from "react-redux";
-import { createAsyncPaperUpdator } from "./api/createAsyncPaperUpdator";
 import { ID, NullableString } from "~/config/types/root_types";
-import {
-  emptyFncWithMsg,
-  isEmpty,
-  isNullOrUndefined,
-  nullthrows,
-} from "~/config/utils/nullchecks";
+import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
@@ -28,6 +22,7 @@ import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
+import withWebSocket from "~/components/withWebSocket";
 
 export type FormErrors = {
   paperID: boolean;
@@ -47,6 +42,7 @@ type Props = {
   onExit: () => void;
   paperActions: any /* redux */;
   userRedux: any;
+  wsResponse: any /* socket */;
 };
 
 type GetIsFormValidArgs = {
@@ -89,25 +85,42 @@ const getIsFormValid = ({
 function PaperUploadWizardUpdatePaper({
   onExit,
   paperActions,
-  userRedux,
+  userRedux: _userRedux,
+  wsResponse,
 }: Props) {
   const router = useRouter();
-  const { values: uploaderContextValues, setValues: setUploaderContextValues } =
-    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  const {
+    values: uploaderContextValues,
+    setValues: _setUploaderContextValues,
+  } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
   const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
+  const parsedWsResponse = JSON.parse(wsResponse) ?? null;
+
+  const { paper_status: asyncPaperStatus } = parsedWsResponse?.data ?? {};
+  const { paper_title: asyncPaperTitle } =
+    parsedWsResponse?.current_paper ?? {};
+  const isAsyncComplete = asyncPaperStatus === "COMPLETE";
+  const { doi, paperID, selectedHubs, title } = formState;
+
+  useEffectFetchSuggestedHubs({
+    setSuggestedHubs,
+  });
   useEffect(() => {
     setFormState({
       ...formState,
       doi: uploaderContextValues?.doi ?? null,
       paperID: uploaderContextValues?.paperID,
+      title: asyncPaperTitle ?? null,
     });
-  }, [uploaderContextValues?.doi, uploaderContextValues?.paperID]);
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  }, [
+    asyncPaperTitle,
+    uploaderContextValues?.doi,
+    uploaderContextValues?.paperID,
+  ]);
 
-  const { doi, paperID, selectedHubs, title } = formState;
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
@@ -115,55 +128,29 @@ function PaperUploadWizardUpdatePaper({
       formState,
       submissionType: uploaderContextValues.wizardBodyType ?? null,
     });
-    if (verdict) {
-      if (uploaderContextValues.wizardBodyType === "standby") {
-        setUploaderContextValues({
-          ...uploaderContextValues,
-          wizardBodyType: "async_updated",
-        });
-        // create async paper updator
-        createAsyncPaperUpdator({
-          currentUserID: userRedux.id,
-          doi: nullthrows(formState.doi, "DOI must be present for update"),
-          hubs: selectedHubs.map((hub): ID => hub.id),
-          onError: emptyFncWithMsg,
-          onSuccess: (result: any): void => {
-            setIsSubmitting(false);
-            onExit();
-          },
-          submissionID: nullthrows(
-            uploaderContextValues?.submissionID,
-            "SubmissinID must be present to update paper"
-          ),
-          title,
-        });
-      } else {
-        // update paper instance directly
-        const formattedPayload: any = {
-          // intentional undefined to avoid overriding BE-proccessed metadata
-          ...formState,
-          authors: undefined,
-          publishDate: undefined,
-          hubs: selectedHubs.map((hub): ID => hub.id),
-        };
+    if (verdict && isAsyncComplete) {
+      // update paper instance directly
+      const formattedPayload: any = {
+        // intentional undefined to avoid overriding BE-proccessed metadata
+        ...formState,
+        authors: undefined,
+        publishDate: undefined,
+        hubs: selectedHubs.map((hub): ID => hub.id),
+      };
 
-        const response = await paperActions.patchPaper(
-          paperID,
-          formattedPayload
-        );
-        const { payload: resPayload } = response;
-        if (resPayload.success) {
-          const { postedPaper } = resPayload;
-          const { id: paperID, paper_title, slug, title } = postedPaper || {};
-          setIsSubmitting(false);
-          const paperSlug = !isEmpty(slug)
-            ? slug
-            : buildSlug(paper_title ? paper_title : title);
-          router.push(`/paper/${paperID}/${paperSlug}`);
-          onExit();
-        } else {
-          setIsSubmitting(false);
-        }
+      const response = await paperActions.patchPaper(paperID, formattedPayload);
+      const { payload: resPayload } = response;
+      if (resPayload.success) {
+        const { postedPaper } = resPayload;
+        const { id: paperID, paper_title, slug, title } = postedPaper || {};
+        setIsSubmitting(false);
+        const paperSlug = !isEmpty(slug)
+          ? slug
+          : buildSlug(paper_title ? paper_title : title);
+        router.push(`/paper/${paperID}/${paperSlug}`);
+        onExit();
+      } else {
+        setIsSubmitting(false);
       }
     } else {
       setFormErrors(formErrors);
@@ -203,31 +190,33 @@ function PaperUploadWizardUpdatePaper({
         required
         value={selectedHubs}
       />
-      <FormInput
-        disabled={isSubmitting}
-        id="title"
-        label="Editorialized Title (optional)"
-        labelStyle={formGenericStyles.labelStyle}
-        onChange={(_id: ID, title: string): void =>
-          setFormState({ ...formState, title: isEmpty(title) ? null : title })
-        }
-        placeholder="Jargon free version of the title that the average person would understand"
-        value={title}
-      />
-      {!uploaderContextValues.isWithDOI ? (
+      {isAsyncComplete && [
+        !uploaderContextValues.isWithDOI ? (
+          <FormInput
+            disabled={isSubmitting}
+            id="doi"
+            label="DOI"
+            required
+            labelStyle={formGenericStyles.labelStyle}
+            onChange={(_id: ID, doi: string): void =>
+              setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+            }
+            placeholder="DOI"
+            value={doi}
+          />
+        ) : null,
         <FormInput
           disabled={isSubmitting}
-          id="doi"
-          label="DOI"
-          required
+          id="title"
+          label="Editorialized Title (optional)"
           labelStyle={formGenericStyles.labelStyle}
-          onChange={(_id: ID, doi: string): void =>
-            setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+          onChange={(_id: ID, title: string): void =>
+            setFormState({ ...formState, title: isEmpty(title) ? null : title })
           }
-          placeholder="DOI"
-          value={doi}
-        />
-      ) : null}
+          placeholder="Jargon free version of the title that the average person would understand"
+          value={title}
+        />,
+      ]}
       <div
         style={{
           display: "flex",
@@ -238,7 +227,7 @@ function PaperUploadWizardUpdatePaper({
       >
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isAsyncComplete}
           key="upload-wizard-button"
           label={
             !isSubmitting ? "Save" : <Loader size={8} loading color="#fff" />
@@ -261,7 +250,7 @@ const mapDispatchToProps = (dispatch: any) => ({
   paperActions: bindActionCreators(PaperActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperUploadWizardUpdatePaper);
+export default withWebSocket(
+  // @ts-ignore legacy hook
+  connect(mapStateToProps, mapDispatchToProps)(PaperUploadWizardUpdatePaper)
+);
