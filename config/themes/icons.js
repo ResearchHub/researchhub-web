@@ -112,6 +112,7 @@ import {
   faArrowAltUp as faUpBtn,
   faArrowAltDown as faDownBtn,
   faComments as faCommentsLight,
+  faFlask,
 } from "@fortawesome/pro-light-svg-icons";
 import {
   faArrowAltUp as faArrowAltUpRegular,
@@ -168,6 +169,7 @@ import {
 } from "@fortawesome/pro-duotone-svg-icons";
 
 library.add(
+  faFlask,
   faCommentsLight,
   faUpBtn,
   faDownBtn,
@@ -433,6 +435,7 @@ const icons = {
   question: <FontAwesomeIcon icon={solidQuestion} />,
   wallet: <FontAwesomeIcon icon={faWallet} />,
   commentsLight: <FontAwesomeIcon icon={faCommentsLight} />,
+  flask: <FontAwesomeIcon icon={faFlask} />,
   // customIcons
   coinStack: ({ styles, grey }) => (
     <img

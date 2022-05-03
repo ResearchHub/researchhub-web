@@ -65,6 +65,8 @@ import {
 } from "~/config/utils/editor";
 import * as shims from "~/redux/paper/shims";
 import { row } from "~/config/themes/styles";
+import icons, { CloseIcon } from "~/config/themes/icons";
+import ALink from "~/components/ALink";
 
 const steps = [
   {
@@ -592,6 +594,23 @@ const Paper = ({
               <InlineCommentThreadsDisplayBarWithMediaSize isShown />
             ) : (
               <Fragment>
+                <div className={css(styles.missingAlert)}>
+                  <span className={css(styles.missingIcon)}>
+                    {icons.question}
+                  </span>
+                  {/* <CloseIcon/> */}
+                  <span className={css(styles.infoMissingText)}>
+                    Missing Content
+                  </span>
+                  Help make this page complete by entering missing information
+                  <ALink overrideStyle={styles.learnHow} href="#">
+                    View missing{" "}
+                    <span className={css(styles.down)}>
+                      {" "}
+                      {icons.chevronDown}
+                    </span>
+                  </ALink>
+                </div>
                 <PaperSideColumn
                   authors={getAllAuthors()}
                   paper={paper}
@@ -687,6 +706,43 @@ export async function getStaticProps(ctx) {
 }
 
 const styles = StyleSheet.create({
+  down: {
+    fontSize: 16,
+    marginLeft: 8,
+    color: colors.NEW_BLUE(),
+  },
+  missingIcon: {
+    fontSize: 32,
+    display: "flex",
+    justifyContent: "center",
+    color: colors.NEW_BLUE(),
+    marginBottom: 15,
+    display: "none",
+  },
+  infoMissingText: {
+    display: "flex",
+    fontWeight: 500,
+    marginBottom: 10,
+  },
+  learnHow: {
+    display: "flex",
+    marginTop: 10,
+    fontWeight: 400,
+    color: colors.NEW_BLUE(),
+    // textDecoration: "underline",
+  },
+  missingAlert: {
+    padding: "10px 17px",
+    // height: 100,
+    border: "1px solid rgb(232, 232, 239)",
+    // background: "#FFD639",
+    borderRadius: "4px",
+    marginBottom: 20,
+    fontSize: 16,
+    fontWeight: 400,
+    background: "#fff3e3",
+    border: "3px solid #FBAF00",
+  },
   publishedContent: {
     borderLeft: "1px solid rgb(232, 232, 239)",
   },
