@@ -80,12 +80,14 @@ function PaperUploadWizardStandbyBody({
       setLoadIndex(-1);
       clearTimeout(nullthrows(loadRef, "Attempting to clear null ref"));
       setTimeout((): void => {
-        setUploaderContextValues({
-          ...uploaderContextValues,
-          doi: doi,
-          paperID: postedPaperID,
-          wizardBodyType: "posted_paper_update",
-        });
+        if (uploaderContextValues?.wizardBodyType !== "async_updated") {
+          setUploaderContextValues({
+            ...uploaderContextValues,
+            doi: doi,
+            paperID: postedPaperID,
+            wizardBodyType: "posted_paper_update",
+          });
+        }
       }, 1600);
     } else if (uploadStatus === "FAILED_DUPLICATE") {
       modalActions.openUploadPaperModal(

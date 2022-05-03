@@ -1,9 +1,9 @@
+import { bindActionCreators } from "redux";
+import { buildSlug } from "~/config/utils/buildSlug";
 import {
   customStyles,
   formGenericStyles,
 } from "../Upload/styles/formGenericStyles";
-import { bindActionCreators } from "redux";
-import { buildSlug } from "~/config/utils/buildSlug";
 import { connect } from "react-redux";
 import { ID, NullableString } from "~/config/types/root_types";
 import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
@@ -12,15 +12,17 @@ import {
   NewPostButtonContextType,
 } from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
-import { SyntheticEvent, useContext, useState } from "react";
+import { SyntheticEvent, useContext, useEffect, useState } from "react";
 import { useEffectFetchSuggestedHubs } from "../Upload/api/useEffectGetSuggestedHubs";
 import { useRouter } from "next/router";
 import { verifStyles } from "~/components/AuthorClaimModal/AuthorClaimPromptEmail";
+import { WizardBodyTypes } from "./types/PaperUploadWizardTypes";
 import Button from "~/components/Form/Button";
 import colors from "~/config/themes/colors";
 import FormInput from "~/components/Form/FormInput";
 import FormSelect from "~/components/Form/FormSelect";
 import Loader from "~/components/Loader/Loader";
+import withWebSocket from "~/components/withWebSocket";
 
 export type FormErrors = {
   paperID: boolean;
@@ -39,10 +41,13 @@ export type FormState = {
 type Props = {
   onExit: () => void;
   paperActions: any /* redux */;
+  userRedux: any;
+  wsResponse: any /* socket */;
 };
 
 type GetIsFormValidArgs = {
   formState: FormState;
+  submissionType: WizardBodyTypes | null;
 };
 
 const defaulError: FormErrors = {
@@ -61,11 +66,12 @@ const defaultFormState: FormState = {
 
 const getIsFormValid = ({
   formState,
+  submissionType,
 }: GetIsFormValidArgs): [verdict: boolean, errors: FormErrors] => {
   let verdict = true;
   const errorResult = { ...defaulError };
   const { selectedHubs } = formState;
-  if (isNullOrUndefined(formState.paperID)) {
+  if (submissionType !== "standby" && isNullOrUndefined(formState.paperID)) {
     verdict = false;
     errorResult.paperID = true;
   }
@@ -76,29 +82,54 @@ const getIsFormValid = ({
   return [verdict, errorResult];
 };
 
-function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
+function PaperUploadWizardUpdatePaper({
+  onExit,
+  paperActions,
+  userRedux: _userRedux,
+  wsResponse,
+}: Props) {
   const router = useRouter();
-  const { values: uploaderContextValues } =
-    useContext<NewPostButtonContextType>(NewPostButtonContext);
+  const {
+    values: uploaderContextValues,
+    setValues: _setUploaderContextValues,
+  } = useContext<NewPostButtonContextType>(NewPostButtonContext);
   const [formErrors, setFormErrors] = useState<FormErrors>(defaulError);
-  const [formState, setFormState] = useState<FormState>({
-    ...defaultFormState,
-    doi: uploaderContextValues?.doi ?? null,
-    paperID: uploaderContextValues?.paperID,
-  });
+  const [formState, setFormState] = useState<FormState>(defaultFormState);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
+  const parsedWsResponse = JSON.parse(wsResponse) ?? null;
+
+  const { paper_status: asyncPaperStatus } = parsedWsResponse?.data ?? {};
+  const { paper_title: asyncPaperTitle } =
+    parsedWsResponse?.current_paper ?? {};
+  const isAsyncComplete = asyncPaperStatus === "COMPLETE";
   const { doi, paperID, selectedHubs, title } = formState;
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+
+  useEffectFetchSuggestedHubs({
+    setSuggestedHubs,
+  });
+  useEffect(() => {
+    setFormState({
+      ...formState,
+      doi: uploaderContextValues?.doi ?? null,
+      paperID: uploaderContextValues?.paperID,
+      title: asyncPaperTitle ?? null,
+    });
+  }, [
+    asyncPaperTitle,
+    uploaderContextValues?.doi,
+    uploaderContextValues?.paperID,
+  ]);
 
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
     setIsSubmitting(true);
     const [verdict, formErrors] = getIsFormValid({
       formState,
+      submissionType: uploaderContextValues.wizardBodyType ?? null,
     });
-    if (verdict) {
-      //  calvinhlee - Refer to NOTE(100)
+    if (verdict && isAsyncComplete) {
+      // update paper instance directly
       const formattedPayload: any = {
         // intentional undefined to avoid overriding BE-proccessed metadata
         ...formState,
@@ -159,31 +190,33 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
         required
         value={selectedHubs}
       />
-      {!uploaderContextValues.isWithDOI ? (
+      {isAsyncComplete && [
+        !uploaderContextValues.isWithDOI ? (
+          <FormInput
+            disabled={isSubmitting}
+            id="doi"
+            label="DOI"
+            required
+            labelStyle={formGenericStyles.labelStyle}
+            onChange={(_id: ID, doi: string): void =>
+              setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+            }
+            placeholder="DOI"
+            value={doi}
+          />
+        ) : null,
         <FormInput
           disabled={isSubmitting}
-          id="doi"
-          label="DOI"
-          required
+          id="title"
+          label="Editorialized Title (optional)"
           labelStyle={formGenericStyles.labelStyle}
-          onChange={(_id: ID, doi: string): void =>
-            setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+          onChange={(_id: ID, title: string): void =>
+            setFormState({ ...formState, title: isEmpty(title) ? null : title })
           }
-          placeholder="DOI"
-          value={doi}
-        />
-      ) : null}
-      <FormInput
-        disabled={isSubmitting}
-        id="title"
-        label="Editorialized Title (optional)"
-        labelStyle={formGenericStyles.labelStyle}
-        onChange={(_id: ID, title: string): void =>
-          setFormState({ ...formState, title: isEmpty(title) ? null : title })
-        }
-        placeholder="Jargon free version of the title that the average person would understand"
-        value={title}
-      />
+          placeholder="Jargon free version of the title that the average person would understand"
+          value={title}
+        />,
+      ]}
       <div
         style={{
           display: "flex",
@@ -194,7 +227,7 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
       >
         <Button
           customButtonStyle={verifStyles.buttonCustomStyle}
-          disabled={isSubmitting}
+          disabled={isSubmitting || !isAsyncComplete}
           key="upload-wizard-button"
           label={
             !isSubmitting ? "Save" : <Loader size={8} loading color="#fff" />
@@ -210,13 +243,14 @@ function PaperUploadWizardUpdatePaper({ onExit, paperActions }: Props) {
 
 const mapStateToProps = (state: any) => ({
   paperRedux: state.paper,
+  userRedux: state.auth.user,
 });
 
 const mapDispatchToProps = (dispatch: any) => ({
   paperActions: bindActionCreators(PaperActions, dispatch),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PaperUploadWizardUpdatePaper);
+export default withWebSocket(
+  // @ts-ignore legacy hook
+  connect(mapStateToProps, mapDispatchToProps)(PaperUploadWizardUpdatePaper)
+);
