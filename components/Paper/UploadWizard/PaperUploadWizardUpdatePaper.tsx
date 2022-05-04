@@ -122,7 +122,7 @@ function PaperUploadWizardUpdatePaper({
 
   const isAsyncComplete = parsedWsResponse?.data?.paper_status === "COMPLETE";
   const asyncPaperTitle = parsedWsResponse?.current_paper?.paper_title ?? null;
-
+  const asyncDOI = parsedWsResponse?.data?.doi ?? null;
   const { doi, paperID, selectedHubs, title } = formState;
 
   useEffectFetchSuggestedHubs({
@@ -206,9 +206,9 @@ function PaperUploadWizardUpdatePaper({
       />
       {!uploaderContextValues.isWithDOI ? (
         <FormInput
-          disabled={isSubmitting}
+          disabled={isSubmitting || isEmpty(asyncDOI)}
           id="doi"
-          label="DOI"
+          label={["DOI ", isEmpty(asyncDOI) && <Loader size={12} />]}
           required
           labelStyle={formGenericStyles.labelStyle}
           onChange={(_id: ID, doi: string): void =>
