@@ -63,6 +63,14 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/reviews",
         }
       : null,
+      true
+      ? {
+          icon: icons.commentCheck,
+          id: "audit",
+          name: "Audit Content",
+          pathname: "/moderators/audit/all",
+        }
+      : null,
   ]);
 
   const listItems = SIDE_BAR_ITEMS.map(
