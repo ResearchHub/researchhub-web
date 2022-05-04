@@ -114,6 +114,7 @@ class FormSelect extends Component {
     };
 
     const colorStyles = {
+      menuPortal: (base) => ({ ...base, zIndex: 100000000 }),
       control: (styles) => ({
         ...styles,
         display: "flex",
@@ -191,18 +192,20 @@ class FormSelect extends Component {
         </div>
         <Select
           components={{ ...configuredComponents }}
-          options={options}
-          onChange={(option) => this.handleOnChange(id, option)}
-          styles={colorStyles}
-          placeholder={placeholder}
-          value={value}
           defaultValue={defaultValue}
-          required={required ? required : "false"}
+          isClearable={isClearable}
+          isDisabled={isDisabled}
           isMulti={isMulti}
           isSearchable={isSearchable === null ? true : isSearchable}
-          isDisabled={isDisabled}
-          isClearable={isClearable}
           maxMenuHeight={maxMenuHeight && maxMenuHeight}
+          menuPortalTarget={document.body}
+          menuPosition="fixed"
+          onChange={(option) => this.handleOnChange(id, option)}
+          options={options}
+          placeholder={placeholder}
+          required={required ? required : "false"}
+          styles={colorStyles}
+          value={value}
         />
         {error && <p className={css(styles.text, styles.error)}>{error}</p>}
       </div>
