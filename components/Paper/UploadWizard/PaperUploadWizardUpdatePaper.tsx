@@ -10,6 +10,7 @@ import { isEmpty, isNullOrUndefined } from "~/config/utils/nullchecks";
 import {
   NewPostButtonContext,
   NewPostButtonContextType,
+  NewPostButtonContextValues,
 } from "~/components/contexts/NewPostButtonContext";
 import { PaperActions } from "~/redux/paper";
 import { SyntheticEvent, useContext, useEffect, useState } from "react";
@@ -82,6 +83,26 @@ const getIsFormValid = ({
   return [verdict, errorResult];
 };
 
+function useEffectPasteMetaDataToForm({
+  currentFormState,
+  parsedWsResponse,
+  setFormState,
+  uploaderContextValues,
+}: {
+  currentFormState: FormState;
+  parsedWsResponse: any;
+  setFormState: (data: FormState) => void;
+  uploaderContextValues: NewPostButtonContextValues;
+}): void {
+  const asyncDOI = parsedWsResponse?.data?.doi ?? null;
+  useEffect(() => {
+    setFormState({
+      ...currentFormState,
+      doi: asyncDOI ?? uploaderContextValues?.doi ?? null,
+      paperID: uploaderContextValues?.paperID,
+    });
+  }, [asyncDOI, uploaderContextValues?.doi, uploaderContextValues?.paperID]);
+}
 function PaperUploadWizardUpdatePaper({
   onExit,
   paperActions,
@@ -99,27 +120,20 @@ function PaperUploadWizardUpdatePaper({
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const parsedWsResponse = JSON.parse(wsResponse) ?? null;
 
-  const { paper_status: asyncPaperStatus } = parsedWsResponse?.data ?? {};
-  const { paper_title: asyncPaperTitle } =
-    parsedWsResponse?.current_paper ?? {};
-  const isAsyncComplete = asyncPaperStatus === "COMPLETE";
+  const isAsyncComplete = parsedWsResponse?.data?.paper_status === "COMPLETE";
+  const asyncPaperTitle = parsedWsResponse?.current_paper?.paper_title ?? null;
+  const asyncDOI = parsedWsResponse?.data?.doi ?? null;
   const { doi, paperID, selectedHubs, title } = formState;
 
   useEffectFetchSuggestedHubs({
     setSuggestedHubs,
   });
-  useEffect(() => {
-    setFormState({
-      ...formState,
-      doi: uploaderContextValues?.doi ?? null,
-      paperID: uploaderContextValues?.paperID,
-      title: asyncPaperTitle ?? null,
-    });
-  }, [
-    asyncPaperTitle,
-    uploaderContextValues?.doi,
-    uploaderContextValues?.paperID,
-  ]);
+  useEffectPasteMetaDataToForm({
+    currentFormState: formState,
+    parsedWsResponse,
+    setFormState,
+    uploaderContextValues,
+  });
 
   const onFormSubmit = async (event: SyntheticEvent) => {
     event.preventDefault();
@@ -190,33 +204,34 @@ function PaperUploadWizardUpdatePaper({
         required
         value={selectedHubs}
       />
-      {isAsyncComplete && [
-        !uploaderContextValues.isWithDOI ? (
-          <FormInput
-            disabled={isSubmitting}
-            id="doi"
-            label="DOI"
-            required
-            labelStyle={formGenericStyles.labelStyle}
-            onChange={(_id: ID, doi: string): void =>
-              setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
-            }
-            placeholder="DOI"
-            value={doi}
-          />
-        ) : null,
+      {!uploaderContextValues.isWithDOI ? (
+        <FormInput
+          disabled={isSubmitting || isEmpty(asyncDOI)}
+          id="doi"
+          label={["DOI ", isEmpty(asyncDOI) && <Loader size={12} />]}
+          required
+          labelStyle={formGenericStyles.labelStyle}
+          onChange={(_id: ID, doi: string): void =>
+            setFormState({ ...formState, doi: isEmpty(doi) ? null : doi })
+          }
+          placeholder="DOI"
+          value={doi}
+        />
+      ) : null}
+      {isAsyncComplete && (
         <FormInput
           disabled={isSubmitting}
           id="title"
           label="Editorialized Title (optional)"
           labelStyle={formGenericStyles.labelStyle}
+          subtitle={asyncPaperTitle ?? null}
           onChange={(_id: ID, title: string): void =>
             setFormState({ ...formState, title: isEmpty(title) ? null : title })
           }
           placeholder="Jargon free version of the title that the average person would understand"
           value={title}
-        />,
-      ]}
+        />
+      )}
       <div
         style={{
           display: "flex",
