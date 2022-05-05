@@ -7,6 +7,14 @@ import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEf
 import fetchAuditContributions from "./config/fetchAuditContributions";
 import CheckBox from "~/components/Form/CheckBox";
 
+const visibilityOpts = [{
+  "label": "Live content",
+  "value": "live"
+}, {
+  "label": "Removed only",
+  "value": "removed"
+}];
+
 export function AuditContentDashboard() : ReactElement<"div"> {
   const router = useRouter();
 
@@ -14,8 +22,8 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   const [results, setResults] = useState<any>([]);
   const [resultCount, setResultCount] = useState<number>(0);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
-  const [showRemovedOnly, setShowRemovedOnly] = useState<any>(
-    router.query.is_removed ?? false
+  const [selectedVisibility, setSelectedVisibility] = useState<any>(
+    router.query.visibility ?? visibilityOpts[0]
   );
   const [selectedHub, setSelectedHub] = useState<any>(
     router.query.hub_id
@@ -31,7 +39,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     fetchAuditContributions({
       pageUrl: nextResultsUrl || null,
       filters: {
-        is_removed: showRemovedOnly,
+        is_removed: selectedVisibility.value === "removed" ? true : false,
         hub_id: selectedHub?.id,
       },
       onSuccess: (response) => {
@@ -42,15 +50,17 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     })    
   }, [])
 
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
+  useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
+    setSuggestedHubs([{label: "All", value: null}, ...hubs])
+  } });
   
-  const handleRemovedFilterChange = (id, value) => {
+  const handleVisibilityFilterChange = (selectedVisibility: any) => {
     let query = {
       ...router.query,
-      is_removed: value,
+      visibility: selectedVisibility.value,
     };
 
-    setShowRemovedOnly(value);
+    setSelectedVisibility(selectedVisibility);
 
     router.push({
       query,
@@ -112,13 +122,18 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         {process.browser &&
           <div className={css(styles.filters)}>
             <div className={css(styles.filter)}>
-              <CheckBox
-                label={"Removed only"}
-                isSquare
-                active={showRemovedOnly}
-                onChange={handleRemovedFilterChange}
-                labelStyle={undefined}
-              />
+              <FormSelect
+                  containerStyle={styles.hubDropdown}
+                  inputStyle={styles.inputOverride}
+                  id="visibility"
+                  label=""
+                  onChange={(_id: ID, selectedVisibility: any): void =>
+                    handleVisibilityFilterChange(selectedVisibility)
+                  }
+                  options={visibilityOpts}
+                  placeholder=""
+                  value={selectedVisibility}
+                />
             </div>
             <div className={css(styles.filter)}>
               <FormSelect
@@ -130,7 +145,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
                   handleHubFilterChange(selectedHub)
                 }
                 options={suggestedHubs}
-                placeholder="Search Hubs"
+                placeholder=""
                 value={selectedHub ?? null}
               />       
             </div>
@@ -141,7 +156,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         {resultCount} results.
         {selectedResultIds.length > 0 &&
           <div className={css(styles.bulkActions)}>
-            {showRemovedOnly ? (
+            {selectedVisibility.value === "removed" ? (
               <div className={css(styles.bulkAction, styles.undoRemove)}>  
                 Undo remove
               </div>
