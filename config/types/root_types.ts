@@ -118,6 +118,13 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (Array.isArray(raw.documents)) {
     parsed["document"] = parsePost(raw.documents[0]);
   }
+  else if (typeof(raw.documents) === "object") {
+    parsed["document"] = {
+      id: raw.documents.id,
+      title: raw.documents.title,
+      slug: raw.documents.slug,      
+    }  
+  }
 
   return parsed;
 }

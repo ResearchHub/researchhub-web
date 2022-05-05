@@ -28,7 +28,9 @@ export default function fetchAuditContributions({
         "created_by": {
           "author_profile": {
             "id": 5178735,
-            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c"
+            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GieST7Py5kmh3_9cFfAZJb1UHKAJR7uRCZ9ORGT=s96-c",
+            "first_name": "Calvin",
+            "last_name": "Lee"
           },
           "first_name": "Calvin",
           "id": 286838,
@@ -54,7 +56,9 @@ export default function fetchAuditContributions({
         "created_by": {
           "author_profile": {
             "id": 931945,
-            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GifvAKky7h2lXbgMYS14mLAcI6yl3SDVD8Rejv7Sg=s96-c"
+            "profile_image": "https://lh3.googleusercontent.com/a-/AOh14GifvAKky7h2lXbgMYS14mLAcI6yl3SDVD8Rejv7Sg=s96-c",
+            "first_name": "Simon",
+            "last_name": "Vidal"
           },
           "first_name": "Simon",
           "id": 33882,
@@ -82,7 +86,9 @@ export default function fetchAuditContributions({
         "created_by": {
           "author_profile": {
             "id": 942542,
-            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/12/blob_Pj9eQzV?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xF5mF47nM4HEwuFHOzgXJwZ9WW4%3D&Expires=1652273523"
+            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/12/blob_Pj9eQzV?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xF5mF47nM4HEwuFHOzgXJwZ9WW4%3D&Expires=1652273523",
+            "first_name": "Arshia",
+            "last_name": "Malek"
           },
           "first_name": "Arshia",
           "id": 35436,
@@ -108,7 +114,9 @@ export default function fetchAuditContributions({
         "created_by": {
           "author_profile": {
             "id": 942542,
-            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/12/blob_Pj9eQzV?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xF5mF47nM4HEwuFHOzgXJwZ9WW4%3D&Expires=1652273523"
+            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/12/blob_Pj9eQzV?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xF5mF47nM4HEwuFHOzgXJwZ9WW4%3D&Expires=1652273523",
+            "first_name": "Arshia",
+            "last_name": "Malek"
           },
           "first_name": "Arshia",
           "id": 35436,
@@ -137,7 +145,9 @@ export default function fetchAuditContributions({
         "created_by": {
           "author_profile": {
             "id": 942542,
-            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/12/blob_Pj9eQzV?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xF5mF47nM4HEwuFHOzgXJwZ9WW4%3D&Expires=1652273523"
+            "profile_image": "https://researchhub-paper-prod.s3.amazonaws.com/uploads/author_profile_images/2022/04/12/blob_Pj9eQzV?AWSAccessKeyId=AKIA3RZN3OVNPLBMN3JX&Signature=xF5mF47nM4HEwuFHOzgXJwZ9WW4%3D&Expires=1652273523",
+            "first_name": "Arshia",
+            "last_name": "Malek"
           },
           "first_name": "Arshia",
           "id": 35436,
@@ -148,7 +158,13 @@ export default function fetchAuditContributions({
           "slug": "an-hypothesis-goes-in-here",
           "title": "An hypothesis goes in here",
           "unified_document": {
-            "id": 1247263        
+            "document_type": "PAPER",
+            "id": 1270378,
+            "documents": {
+              "id": 1270378,
+              "slug": "an-hypothesis-goes-in-here",
+              "title": "An hypothesis goes in here",
+            }
           }
         }
       }
