@@ -71,6 +71,14 @@ export default function ModeratorDashboardSidebar({}: Props) {
           pathname: "/moderators/audit/all",
         }
       : null,
+      true
+      ? {
+          icon: icons.flag,
+          id: "audit",
+          name: "Flagged Content",
+          pathname: "/moderators/audit/flagged",
+        }
+      : null,
   ]);
 
   const listItems = SIDE_BAR_ITEMS.map(

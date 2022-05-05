@@ -4,34 +4,42 @@ import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
-import fetchAuditContributions from "./config/fetchAuditContributions";
+import fetchFlaggedContributions from "./config/fetchFlaggedContributions";
 import CheckBox from "~/components/Form/CheckBox";
 
-export function AuditContentDashboard() : ReactElement<"div"> {
+const visibilityOpts = [{
+  "label": "Flagged",
+  "value": "flagged"
+}, {
+  "label": "Reviewed",
+  "value": "reviewed"  
+}];
+
+export function FlaggedContentDashboard() : ReactElement<"div"> {
   const router = useRouter();
 
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [results, setResults] = useState<any>([]);
   const [resultCount, setResultCount] = useState<number>(0);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
-  const [showRemovedOnly, setShowRemovedOnly] = useState<any>(
-    router.query.is_removed ?? false
-  );
   const [selectedHub, setSelectedHub] = useState<any>(
     router.query.hub_id
+  );
+  const [selectedVisibility, setSelectedVisibility] = useState<any>(
+    router.query.visibility ?? visibilityOpts[0]
   );
   const [selectedResultIds, setSelectedResultIds] = useState<Array<[]>>([]);
 
   useEffect(() => {
     const selected = suggestedHubs.find(h => h.id)
     setSelectedHub(selected);
-  }, [suggestedHubs])
+  }, [suggestedHubs]);
 
   useEffect(() => {
-    fetchAuditContributions({
+    fetchFlaggedContributions({
       pageUrl: nextResultsUrl || null,
       filters: {
-        is_removed: showRemovedOnly,
+        visibility: selectedVisibility,
         hub_id: selectedHub?.id,
       },
       onSuccess: (response) => {
@@ -44,13 +52,14 @@ export function AuditContentDashboard() : ReactElement<"div"> {
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs });
   
-  const handleRemovedFilterChange = (id, value) => {
+
+  const handleVisibilityFilterChange = (selectedVisibility: any) => {
     let query = {
       ...router.query,
-      is_removed: value,
+      visibility: selectedVisibility.value,
     };
 
-    setShowRemovedOnly(value);
+    setSelectedVisibility(selectedVisibility);
 
     router.push({
       query,
@@ -107,17 +116,22 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     <div className={css(styles.dashboardContainer)}>
       <div className={css(styles.header)}>
         <div className={css(styles.title)}>
-          Audit Content
+          Flagged Content
         </div>
         {process.browser &&
           <div className={css(styles.filters)}>
             <div className={css(styles.filter)}>
-              <CheckBox
-                label={"Removed only"}
-                isSquare
-                active={showRemovedOnly}
-                onChange={handleRemovedFilterChange}
-                labelStyle={undefined}
+              <FormSelect
+                containerStyle={styles.hubDropdown}
+                inputStyle={styles.inputOverride}
+                id="visibility"
+                label=""
+                onChange={(_id: ID, selectedVisibility: any): void =>
+                  handleVisibilityFilterChange(selectedVisibility)
+                }
+                options={visibilityOpts}
+                placeholder=""
+                value={selectedVisibility}
               />
             </div>
             <div className={css(styles.filter)}>
@@ -141,16 +155,11 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         {resultCount} results.
         {selectedResultIds.length > 0 &&
           <div className={css(styles.bulkActions)}>
-            {showRemovedOnly ? (
-              <div className={css(styles.bulkAction, styles.undoRemove)}>  
-                Undo remove
+            {selectedVisibility?.value === "flagged" && (
+              <div className={css(styles.bulkAction, styles.markReviewed)}>
+                Mark reviewed
               </div>
-            ) : (
-              <div className={css(styles.bulkAction)}>  
-                Flag &amp; Remove
-              </div>
-            )
-            }
+            )}
           </div>
           }
         </div>
@@ -184,6 +193,7 @@ const styles = StyleSheet.create({
   "title": {
     fontSize: 30,
     fontWeight: 500,
+    justifyContent: "space-between",
   },
   "detailsRow": {
     padding: "10px 0",
@@ -210,13 +220,13 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   "bulkActions": {
-    marginTop: 10,
     fontSize: 14,
     color: "red",
     textDecoration: "underline",
     cursor: "pointer",
   },
-  "undoRemove": {
+  "markReviewed": {
+    marginTop: 10,
     color: "green"
   }
 });
