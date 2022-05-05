@@ -23,7 +23,7 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
   const [resultCount, setResultCount] = useState<number>(0);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [selectedHub, setSelectedHub] = useState<any>(
-    router.query.hub_id
+    router.query.hub_id ?? {label: "All", value: undefined}
   );
   const [selectedVisibility, setSelectedVisibility] = useState<any>(
     router.query.visibility ?? visibilityOpts[0]
@@ -31,9 +31,9 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
   const [selectedResultIds, setSelectedResultIds] = useState<Array<[]>>([]);
 
   useEffect(() => {
-    const selected = suggestedHubs.find(h => h.id)
+    const selected = suggestedHubs.find(h => h.id === router.query.hub_id)
     setSelectedHub(selected);
-  }, [suggestedHubs]);
+  }, [suggestedHubs])
 
   useEffect(() => {
     fetchFlaggedContributions({
@@ -50,8 +50,9 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
     })    
   }, [])
 
-  useEffectFetchSuggestedHubs({ setSuggestedHubs });
-  
+  useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
+    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
+  } });
 
   const handleVisibilityFilterChange = (selectedVisibility: any) => {
     let query = {
@@ -67,10 +68,14 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
   }
 
   const handleHubFilterChange = (selectedHub: any) => {
-    let query = {
-      ...router.query,
-      hub_id: selectedHub.id,
-    };
+
+    let query = { ...router.query }
+    if (selectedHub.value) {
+      query.hub_id = selectedHub.id;
+    }
+    else {
+      delete query.hub_id;    
+    }
 
     setSelectedHub(selectedHub)
 
@@ -189,6 +194,7 @@ const resultsStyles = StyleSheet.create({
 const styles = StyleSheet.create({
   "header": {
     display: "flex",
+    justifyContent: "space-between",
   },
   "title": {
     fontSize: 30,
@@ -215,6 +221,7 @@ const styles = StyleSheet.create({
   "filter": {
     display: "flex",
     width: 200,
+    marginLeft: 15,
   },
   "resultsContainer": {
     marginTop: 15,
