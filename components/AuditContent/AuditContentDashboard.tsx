@@ -7,9 +7,7 @@ import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEf
 import fetchAuditContributions from "./config/fetchAuditContributions";
 import CheckBox from "~/components/Form/CheckBox";
 import AuthorAvatar from "../AuthorAvatar";
-import ALink from "../ALink";
-import { getUrlToUniDoc } from "~/config/utils/routing";
-import { timeSince } from "~/config/utils/dates";
+import renderEntry from "./utils/renderEntry";
 
 const visibilityOpts = [{
   "label": "Live content",
@@ -103,8 +101,8 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   const resultCards = () => {
     return results.map((r) => {
       return (
-        <div className={css(resultsStyles.result)}>
-          <div className={css(resultsStyles.checkbox)}>
+        <div className={css(styles.result)}>
+          <div className={css(styles.checkbox)}>
             <CheckBox
               key={`${r.content_type}-${r.id}`}
               label=""
@@ -115,7 +113,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
               labelStyle={undefined}
             />          
           </div>
-          <div className={css(resultsStyles.entry)}>
+          <div className={css(styles.entry)}>
             <div className={css(styles.avatarContainer)}>
               <AuthorAvatar author={r.created_by.author_profile} />
             </div>
@@ -126,63 +124,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     })
   }
 
-  const renderEntry = (entry) => {
-    const {
-      item,
-      created_by,
-      created_date: createdDate,
-      content_type: contentType,
-    } = entry;
 
-    const uniDoc = parseUnifiedDocument(item.unified_document)
-    const authorProfile = parseAuthorProfile(created_by);
-    
-    switch (entry.content_type) {
-      case "thread":
-      case "comment":
-      case "reply":
-        return (
-          <div className={css(resultsStyles.entryContent)}>
-            <ALink href={`/user/${authorProfile.id}/overview`}>{authorProfile.firstName} {authorProfile.lastName}</ALink>
-            <ALink href="link-to-comment">commented</ALink>
-            <div className={css(resultsStyles.entryContent)}>{item.plain_text}</div>
-            <ALink href={getUrlToUniDoc(uniDoc)}>{uniDoc.document?.title}</ALink>
-            <span>•</span>
-            <span>{timeSince(createdDate)}</span>
-          </div>
-        )
-        case "paper":
-          return (
-            <div className={css(resultsStyles.entryContent)}>
-              <ALink href={`/user/${authorProfile.id}/overview`}>{authorProfile.firstName} {authorProfile.lastName}</ALink>
-              uploaded paper
-              <ALink href={getUrlToUniDoc(uniDoc)}>{uniDoc.document?.title}</ALink>
-              <span>•</span>
-              <span>{timeSince(createdDate)}</span>
-            </div>
-          )
-        case "hypothesis":
-          return (
-            <div className={css(resultsStyles.entryContent)}>
-              <ALink href={`/user/${authorProfile.id}/overview`}>{authorProfile.firstName} {authorProfile.lastName}</ALink>
-              created hypothesis
-              <ALink href={getUrlToUniDoc(uniDoc)}>{uniDoc.document?.title}</ALink>
-              <span>•</span>
-              <span>{timeSince(createdDate)}</span>
-            </div>
-          )
-          case "researchhubpost":
-            return (
-              <div className={css(resultsStyles.entryContent)}>
-                <ALink href={`/user/${authorProfile.id}/overview`}>{authorProfile.firstName} {authorProfile.lastName}</ALink>
-                created post
-                <ALink href={getUrlToUniDoc(uniDoc)}>{uniDoc.document?.title}</ALink>
-                <span>•</span>
-                <span>{timeSince(createdDate)}</span>
-              </div>
-            )            
-    } 
-  }
 
   return (
     <div className={css(styles.dashboardContainer)}>
@@ -247,8 +189,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   )
 }
 
-
-const resultsStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   "result": {
     display: "flex",
     marginBottom: 10,
@@ -265,10 +206,7 @@ const resultsStyles = StyleSheet.create({
   },
   "checkbox": {
     alignSelf: "center",
-  }
-})
-
-const styles = StyleSheet.create({
+  },
   "header": {
     display: "flex",
     justifyContent: "space-between",
