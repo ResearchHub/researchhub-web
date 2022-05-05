@@ -26,12 +26,12 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     router.query.visibility ?? visibilityOpts[0]
   );
   const [selectedHub, setSelectedHub] = useState<any>(
-    router.query.hub_id
+    router.query.hub_id ?? {label: "All", value: undefined}
   );
   const [selectedResultIds, setSelectedResultIds] = useState<Array<[]>>([]);
 
   useEffect(() => {
-    const selected = suggestedHubs.find(h => h.id)
+    const selected = suggestedHubs.find(h => h.id === router.query.hub_id)
     setSelectedHub(selected);
   }, [suggestedHubs])
 
@@ -51,7 +51,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   }, [])
 
   useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
-    setSuggestedHubs([{label: "All", value: null}, ...hubs])
+    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
   } });
   
   const handleVisibilityFilterChange = (selectedVisibility: any) => {
@@ -68,10 +68,14 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   }
 
   const handleHubFilterChange = (selectedHub: any) => {
-    let query = {
-      ...router.query,
-      hub_id: selectedHub.id,
-    };
+
+    let query = { ...router.query }
+    if (selectedHub.value) {
+      query.hub_id = selectedHub.id;
+    }
+    else {
+      delete query.hub_id;    
+    }
 
     setSelectedHub(selectedHub)
 
@@ -195,6 +199,7 @@ const resultsStyles = StyleSheet.create({
 const styles = StyleSheet.create({
   "header": {
     display: "flex",
+    justifyContent: "space-between",
   },
   "title": {
     fontSize: 30,
@@ -220,6 +225,7 @@ const styles = StyleSheet.create({
   "filter": {
     display: "flex",
     width: 200,
+    marginLeft: 15,
   },
   "resultsContainer": {
     marginTop: 15,
