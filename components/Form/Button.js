@@ -21,6 +21,7 @@ function Button(props) {
     customIconStyle,
     hideRipples,
     rippleClass,
+    children,
   } = props;
 
   if (isLink) {
@@ -88,6 +89,7 @@ function Button(props) {
           )}
         >
           {label && typeof label === "function" ? label() : label}
+          {children}
         </div>
       </button>
     );
