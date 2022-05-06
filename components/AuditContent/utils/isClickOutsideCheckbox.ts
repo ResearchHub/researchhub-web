@@ -10,6 +10,7 @@ export default function isClickOutsideCheckbox(event, ignoreElems: Array<any> = 
 
   for (let i=0; i < ignoreElems.length; i++) {
     const ignoreEl = ignoreElems[i];
+    if (!ignoreEl) continue;
     if (ignoreEl.contains(event.target) || ignoreEl === event.target) {
       return false;
     }
