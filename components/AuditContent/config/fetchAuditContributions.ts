@@ -1,21 +1,40 @@
+import API from "~/config/api";
+import { Helpers } from "@quantfive/js-web-config";
+import { captureEvent } from "~/config/utils/events";
+
 type Filters = {
-  is_removed?: boolean;
-  hub_id?: number; 
+  hubId?: number; 
 }
 
 type Args = {
   pageUrl: string|null;
-  // onError: Function;
+  onError?: Function;
   onSuccess: Function;
   filters: Filters;
 }
 
 export default function fetchAuditContributions({
   pageUrl,
-  // onError,
+  onError,
   onSuccess,
   filters,
 }: Args) {
+
+  return fetch(
+    API.CONTRIBUTIONS({ ...filters }),
+    API.GET_CONFIG()
+  )
+    .then(Helpers.checkStatus)
+    .then(Helpers.parseJSON)
+    .then((response) => onSuccess(response))
+    .catch((error) => {
+      captureEvent({
+        error,
+        msg: "Failed to fetch contributions",
+        data: { filters, pageUrl },
+      });
+      onError && onError(error)
+    })
 
   const results = {
     "count": 5,

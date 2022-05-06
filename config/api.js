@@ -85,6 +85,9 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
+    CONTRIBUTIONS: ({ hubId }) => {
+      return BASE_URL + "dashboard/?" + (hubId ? `hub_id=${hubId}` : "");
+    },
     ORGANIZATION: ({ userId, orgId, orgSlug }) => {
       let url = `${BASE_URL}organization/`;
       let restId = null;

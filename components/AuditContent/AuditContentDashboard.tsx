@@ -2,7 +2,7 @@ import { css, StyleSheet } from "aphrodite";
 import { ReactElement, useState, useEffect, useCallback, useRef, createRef } from "react";
 import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
-import { ID, parseAuthorProfile, parseUnifiedDocument } from "~/config/types/root_types";
+import { ID } from "~/config/types/root_types";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
 import fetchAuditContributions from "./config/fetchAuditContributions";
 import CheckBox from "~/components/Form/CheckBox";
@@ -11,6 +11,7 @@ import renderContributionEntry from "./utils/renderEntry";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
+import { Contribution, parseContribution } from "~/config/types/contribution";
 
 
 export function AuditContentDashboard() : ReactElement<"div"> {
@@ -22,9 +23,9 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     router.query.hub_id ?? {label: "All", value: undefined}
   );
 
-  const [results, setResults] = useState<any>([]);
+  const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
-  const [selectedResultIds, setSelectedResultIds] = useState<Array<[]>>([]);
+  const [selectedResultIds, setSelectedResultIds] = useState<Array<ID>>([]);
   
 
   useEffect(() => {
@@ -36,10 +37,10 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     fetchAuditContributions({
       pageUrl: nextResultsUrl || null,
       filters: {
-        hub_id: selectedHub?.id,
+        hubId: selectedHub?.id,
       },
       onSuccess: (response) => {
-        setResults(response.results);
+        setResults(response.results.map(r => parseContribution(r)));
         setNextResultsUrl(response.next);
       }
     })    
@@ -97,18 +98,19 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         <div className={css(styles.result)}>
           <div className={`${css(styles.checkbox)} cbx`}>
             <CheckBox
-              key={`${r.content_type}-${r.id}`}
+              key={`${r.contentType}-${r.id}`}
               label=""
               isSquare
-              id={r.item.id}
-              active={selectedResultIds.includes(r.item.id)}
+              // @ts-ignore
+              id={(r.id)}
+              active={selectedResultIds.includes(r.id)}
               onChange={(id) => handleResultSelect(id)}
               labelStyle={undefined}
             />          
           </div>
           <div className={css(styles.entry)}>
             <div className={css(styles.avatarContainer)}>
-              <AuthorAvatar author={r.created_by.author_profile} />
+              <AuthorAvatar author={r.createdBy.authorProfile} />
             </div>
             {renderContributionEntry(r)}
           </div>
@@ -232,9 +234,6 @@ const styles = StyleSheet.create({
   },
   "resultsContainer": {
     marginTop: 15,
-  },
-  "undoRemove": {
-    color: "green"
   },
   "avatarContainer": {
 
