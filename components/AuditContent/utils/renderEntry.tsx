@@ -4,7 +4,7 @@ import ALink from "~/components/ALink";
 import { getUrlToUniDoc } from "~/config/utils/routing";
 import { timeSince } from "~/config/utils/dates";
 
-export default function renderEntry(entry) {
+export default function renderContributionEntry(entry) {
     const {
       item,
       created_by,
@@ -64,5 +64,6 @@ export default function renderEntry(entry) {
 
 const resultsStyles = StyleSheet.create({
   "entryContent": {
+    
   },
 })

@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState, useEffect, useCallback } from "react";
+import { ReactElement, useState, useEffect, useCallback, useRef, createRef } from "react";
 import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID, parseAuthorProfile, parseUnifiedDocument } from "~/config/types/root_types";
@@ -7,30 +7,25 @@ import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEf
 import fetchAuditContributions from "./config/fetchAuditContributions";
 import CheckBox from "~/components/Form/CheckBox";
 import AuthorAvatar from "../AuthorAvatar";
-import renderEntry from "./utils/renderEntry";
+import renderContributionEntry from "./utils/renderEntry";
+import icons from "~/config/themes/icons";
+import colors from "~/config/themes/colors";
+import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 
-const visibilityOpts = [{
-  "label": "Live content",
-  "value": "live"
-}, {
-  "label": "Removed only",
-  "value": "removed"
-}];
 
 export function AuditContentDashboard() : ReactElement<"div"> {
   const router = useRouter();
+  const flagAndRemoveRef = useRef(null);
 
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
-  const [results, setResults] = useState<any>([]);
-  const [resultCount, setResultCount] = useState<number>(0);
-  const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
-  const [selectedVisibility, setSelectedVisibility] = useState<any>(
-    router.query.visibility ?? visibilityOpts[0]
-  );
   const [selectedHub, setSelectedHub] = useState<any>(
     router.query.hub_id ?? {label: "All", value: undefined}
   );
+
+  const [results, setResults] = useState<any>([]);
+  const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
   const [selectedResultIds, setSelectedResultIds] = useState<Array<[]>>([]);
+  
 
   useEffect(() => {
     const selected = suggestedHubs.find(h => h.id === router.query.hub_id)
@@ -41,33 +36,32 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     fetchAuditContributions({
       pageUrl: nextResultsUrl || null,
       filters: {
-        is_removed: selectedVisibility.value === "removed" ? true : false,
         hub_id: selectedHub?.id,
       },
       onSuccess: (response) => {
         setResults(response.results);
-        setResultCount(response.count);
         setNextResultsUrl(response.next);
       }
     })    
   }, [])
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const isOutsideClick = isClickOutsideCheckbox(event, [flagAndRemoveRef.current]);
+
+      if (isOutsideClick) {
+        setSelectedResultIds([]);
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [])
+
   useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
     setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
   } });
-  
-  const handleVisibilityFilterChange = (selectedVisibility: any) => {
-    let query = {
-      ...router.query,
-      visibility: selectedVisibility.value,
-    };
 
-    setSelectedVisibility(selectedVisibility);
-
-    router.push({
-      query,
-    });
-  }
 
   const handleHubFilterChange = (selectedHub: any) => {
 
@@ -79,7 +73,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
       delete query.hub_id;    
     }
 
-    setSelectedHub(selectedHub)
+    setSelectedHub(selectedHub);
 
     router.push({
       query,
@@ -88,7 +82,6 @@ export function AuditContentDashboard() : ReactElement<"div"> {
 
   const handleResultSelect = (selectedId) => {
     if (selectedResultIds.includes(selectedId)) {
-      console.log('delete', selectedId)
       setSelectedResultIds(
         selectedResultIds.filter(id => id !== selectedId)
       )
@@ -102,7 +95,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     return results.map((r) => {
       return (
         <div className={css(styles.result)}>
-          <div className={css(styles.checkbox)}>
+          <div className={`${css(styles.checkbox)} cbx`}>
             <CheckBox
               key={`${r.content_type}-${r.id}`}
               label=""
@@ -117,13 +110,12 @@ export function AuditContentDashboard() : ReactElement<"div"> {
             <div className={css(styles.avatarContainer)}>
               <AuthorAvatar author={r.created_by.author_profile} />
             </div>
-            {renderEntry(r)}
+            {renderContributionEntry(r)}
           </div>
         </div>
       )
     })
   }
-
 
 
   return (
@@ -134,20 +126,6 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         </div>
         {process.browser &&
           <div className={css(styles.filters)}>
-            <div className={css(styles.filter)}>
-              <FormSelect
-                  containerStyle={styles.hubDropdown}
-                  inputStyle={styles.inputOverride}
-                  id="visibility"
-                  label=""
-                  onChange={(_id: ID, selectedVisibility: any): void =>
-                    handleVisibilityFilterChange(selectedVisibility)
-                  }
-                  options={visibilityOpts}
-                  placeholder=""
-                  value={selectedVisibility}
-                />
-            </div>
             <div className={css(styles.filter)}>
               <FormSelect
                 containerStyle={styles.hubDropdown}
@@ -166,22 +144,15 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         }
       </div>
       <div className={css(styles.detailsRow)}>
-        {resultCount} results.
-        {selectedResultIds.length > 0 &&
-          <div className={css(styles.bulkActions)}>
-            {selectedVisibility.value === "removed" ? (
-              <div className={css(styles.bulkAction, styles.undoRemove)}>  
-                Undo remove
-              </div>
-            ) : (
-              <div className={css(styles.bulkAction)}>  
-                Flag &amp; Remove
-              </div>
-            )
-            }
-          </div>
+        <div className={css(styles.bulkActions)}>
+          {selectedResultIds.length > 0 &&
+            <div className={css(styles.bulkAction, styles.removeAction)} ref={flagAndRemoveRef}>
+              <span className={css(styles.bulkActionIcon)}>{icons.trash}</span>
+              Flag &amp; Remove  
+            </div>
           }
         </div>
+      </div>
       <div className={css(styles.resultsContainer)}>
         {resultCards()}
       </div>
@@ -201,6 +172,7 @@ const styles = StyleSheet.create({
     border: "1px solid black",
     width: "100%",
     display: "flex",
+    userSelect: "none",
   },
   "entryContent": {
   },
@@ -210,13 +182,14 @@ const styles = StyleSheet.create({
   "header": {
     display: "flex",
     justifyContent: "space-between",
+    paddingLeft: 40,
   },
   "title": {
     fontSize: 30,
     fontWeight: 500,
   },
   "detailsRow": {
-    padding: "10px 0",
+    paddingLeft: 40,
   }, 
   "dashboardContainer": {
     padding: "0 32px",
@@ -238,17 +211,32 @@ const styles = StyleSheet.create({
     width: 200,
     marginLeft: 15,
   },
+  "bulkActions": {
+    height: 33,
+    marginTop: 10,
+    transition: "0.2s",
+  },
+  "bulkAction": {
+    fontSize: 14,
+    cursor: "pointer",
+  },
+  "removeAction": {
+    background: colors.RED(),
+    padding: "8px 12px",
+    color: "white",
+    borderRadius: 4,
+    display: "inline-block",
+  },
+  "bulkActionIcon": {
+    marginRight: 10,
+  },
   "resultsContainer": {
     marginTop: 15,
   },
-  "bulkActions": {
-    marginTop: 10,
-    fontSize: 14,
-    color: "red",
-    textDecoration: "underline",
-    cursor: "pointer",
-  },
   "undoRemove": {
     color: "green"
+  },
+  "avatarContainer": {
+
   }
 });
