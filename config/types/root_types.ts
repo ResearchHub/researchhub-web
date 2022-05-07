@@ -11,7 +11,7 @@ export type Post = {
 
 export type UnifiedDocument = {
   id: ID,
-  documentType: string,
+  documentType: "post" | "paper" | "hypothesis",
   document?: Post,
 }
 
@@ -112,7 +112,11 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
 
   const parsed = {
     id: raw.id,
-    documentType: raw.document_type,
+    documentType:  raw.document_type.toLowerCase(),
+  }
+
+  if (parsed.documentType === "discussion") {
+    parsed.documentType = "post";
   }
 
   if (Array.isArray(raw.documents)) {

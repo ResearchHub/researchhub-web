@@ -12,6 +12,7 @@ import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import { Contribution, parseContribution } from "~/config/types/contribution";
+import LoadMoreButton from "../LoadMoreButton";
 
 
 export function AuditContentDashboard() : ReactElement<"div"> {
@@ -22,6 +23,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   const [selectedHub, setSelectedHub] = useState<any>(
     router.query.hub_id ?? {label: "All", value: undefined}
   );
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
 
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
@@ -34,16 +36,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   }, [suggestedHubs])
 
   useEffect(() => {
-    fetchAuditContributions({
-      pageUrl: nextResultsUrl || null,
-      filters: {
-        hubId: selectedHub?.id,
-      },
-      onSuccess: (response) => {
-        setResults(response.results.map(r => parseContribution(r)));
-        setNextResultsUrl(response.next);
-      }
-    })    
+    handleLoadResults();
   }, [])
 
   useEffect(() => {
@@ -90,6 +83,23 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     else {
       setSelectedResultIds([...selectedResultIds, selectedId]);
     }
+  }
+
+  const handleLoadResults = () => {
+    setIsLoading(true);
+
+    fetchAuditContributions({
+      pageUrl: nextResultsUrl || null,
+      filters: {
+        hubId: selectedHub?.id,
+      },
+      onSuccess: (response) => {
+        const incomingResults = response.results.map(r => parseContribution(r))
+        setResults([...results, ...incomingResults]);
+        setNextResultsUrl(response.next);
+        setIsLoading(false);
+      }
+    })
   }
 
   const resultCards = () => {
@@ -158,6 +168,10 @@ export function AuditContentDashboard() : ReactElement<"div"> {
       <div className={css(styles.resultsContainer)}>
         {resultCards()}
       </div>
+      {nextResultsUrl && (
+        // @ts-ignore
+        <LoadMoreButton onClick={handleLoadResults} isLoading={isLoading} />
+      )}
     </div>
   )
 }
@@ -169,14 +183,12 @@ const styles = StyleSheet.create({
   },
   "entry": {
     borderRadius: 2,  
-    minHeight: 50,
     background: "white",
-    border: "1px solid black",
+    border: `1px solid ${colors.GREY()}`,
     width: "100%",
     display: "flex",
     userSelect: "none",
-  },
-  "entryContent": {
+    padding: 10,
   },
   "checkbox": {
     alignSelf: "center",
@@ -236,6 +248,6 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   "avatarContainer": {
-
+    marginRight: 15,
   }
 });
