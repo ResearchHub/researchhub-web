@@ -119,9 +119,9 @@ export function AuditContentDashboard() : ReactElement<"div"> {
             />          
           </div>
           <div className={css(styles.entry)}>
-            <div className={css(styles.avatarContainer)}>
+            {/* <div className={css(styles.avatarContainer)}>
               <AuthorAvatar author={r.createdBy.authorProfile} />
-            </div>
+            </div> */}
             {renderContributionEntry(r)}
           </div>
         </div>
@@ -207,7 +207,7 @@ const styles = StyleSheet.create({
   }, 
   "dashboardContainer": {
     padding: "0 32px",
-    maxWidth: 1280,
+    maxWidth: 1200,
   },
   "filters": {
     display: "flex",
