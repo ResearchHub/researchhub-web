@@ -159,7 +159,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         <div className={css(styles.bulkActions)}>
           {selectedResultIds.length > 0 &&
             <div className={css(styles.bulkAction, styles.removeAction)} ref={flagAndRemoveRef}>
-              <span className={css(styles.bulkActionIcon)}>{icons.trash}</span>
+              <span className={css(styles.bulkActionIcon)}>{icons.flag}</span>
               Flag &amp; Remove  
             </div>
           }
@@ -232,7 +232,11 @@ const styles = StyleSheet.create({
   },
   "bulkAction": {
     fontSize: 14,
+    fontWeight: 500,
     cursor: "pointer",
+    ":hover": {
+      "opacity": 0.8 
+    }
   },
   "removeAction": {
     background: colors.RED(),
