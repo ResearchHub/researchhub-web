@@ -5,6 +5,7 @@ import colors from "~/config/themes/colors";
 
 const themes = {
   default: "linkThemeDefault",
+  solidPrimary: "linkThemeSolidPrimary",
 }
 
 interface Props {
@@ -22,9 +23,10 @@ const ALink: FunctionComponent<Props> = ({
   theme = themes.default,
   overrideStyle = null,
 }): ReactElement => {
+
   return (
     <Link href={href} as={as}>
-      <a className={css(styles.ALink, styles[theme], overrideStyle)}>
+      <a className={css(styles.ALink, styles[themes[theme]], overrideStyle)}>
         {children}
       </a>
     </Link>
@@ -41,6 +43,12 @@ const styles = StyleSheet.create({
     }
   },
   "linkThemeDefault": {
+  },
+  "linkThemeSolidPrimary": {
+    color: colors.NEW_BLUE(),
+    ":hover": {
+      color: colors.NEW_BLUE()
+    }
   }
 })
 
