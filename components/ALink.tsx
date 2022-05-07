@@ -47,7 +47,8 @@ const styles = StyleSheet.create({
   "linkThemeSolidPrimary": {
     color: colors.NEW_BLUE(),
     ":hover": {
-      color: colors.NEW_BLUE()
+      color: colors.NEW_BLUE(),
+      textDecoration: "underline",
     }
   }
 })

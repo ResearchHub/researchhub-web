@@ -73,7 +73,7 @@ export const parseContribution = (raw: any): Contribution => {
       "contentType": "paper",
     }
   }
-  else if (raw.content_type === "post") {
+  else if (raw.content_type === "researchhubpost") {
     mapped = {
       "id": raw.id,
       "createdBy": parseCreatedBy(raw.created_by),
@@ -123,6 +123,9 @@ export const parsePaperContribution = (raw: any): PaperContribution => {
 }
 
 export const parseHypothesisContribution = (raw: any): HypothesisContribution => {
+
+  console.log('item', raw)
+
   const mapped = {
     "title": raw.title,
     "slug": raw.slug,

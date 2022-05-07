@@ -112,7 +112,7 @@ export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
 
   const parsed = {
     id: raw.id,
-    documentType:  raw.document_type.toLowerCase(),
+    documentType:  raw?.document_type?.toLowerCase(),
   }
 
   if (parsed.documentType === "discussion") {
