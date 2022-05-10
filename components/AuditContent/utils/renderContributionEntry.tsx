@@ -7,8 +7,10 @@ import { truncateText } from "~/config/utils/string";
 import colors from "~/config/themes/colors";
 import icons, { HypothesisIcon }  from "~/config/themes/icons";
 import AuthorAvatar from "~/components/AuthorAvatar";
+import { ReactNode } from "react";
+import ReactTooltip from "react-tooltip";
 
-export default function renderContributionEntry(entry: Contribution) {
+export default function renderContributionEntry(entry: Contribution, actions: Array<any>) {
 
     const renderHeader = (entry: Contribution) => {
       const {
@@ -25,6 +27,7 @@ export default function renderContributionEntry(entry: Contribution) {
   
       return (
         <div className={css(styles.header)}>
+          <ReactTooltip />
           <div className={css(styles.avatarContainer)}>
             <AuthorAvatar author={createdBy.authorProfile} size={20} />
           </div>
@@ -68,7 +71,9 @@ export default function renderContributionEntry(entry: Contribution) {
             <span className={css(styles.timestamp)}>{timeSince(createdDate)}</span>
           </div>
           <div className={`${css(styles.actions)} actions`}>
-            <span className={css(styles.flagAndRemove)}>{icons.flagOutline}</span>
+            {actions.map((action) => (
+              <span className={css(action.style)} data-tip={action.label} onClick={action.onClick}>{action.icon}</span>
+            ))}
           </div>
         </div>
       )
@@ -169,9 +174,4 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     opacity: 0,
   },
-  "flagAndRemove": {
-    color: colors.RED(),
-    cursor: "pointer",
-    padding: 10,
-  }
 })

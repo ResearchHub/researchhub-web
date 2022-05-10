@@ -1,4 +1,4 @@
-import { AuthorProfile, ID, parseAuthorProfile, parseUnifiedDocument, UnifiedDocument } from "./root_types"
+import { AuthorProfile, CreatedBy, ID, parseAuthorProfile, parseUnifiedDocument, UnifiedDocument } from "./root_types"
 
 export type CommentContribution = {
   unifiedDocument: UnifiedDocument,
@@ -27,13 +27,6 @@ export type PostContribution = {
   createdBy: CreatedBy,
 }
 
-export type CreatedBy = {
-  firstName: string,
-  lastName: string,
-  id: ID,
-  authorProfile: AuthorProfile,
-}
-
 export type Contribution = {
   id: ID,
   item: PaperContribution | PostContribution | HypothesisContribution | CommentContribution,
@@ -42,7 +35,6 @@ export type Contribution = {
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
-  console.log('raw', raw)
   raw.author_profile.first_name = raw.first_name;
   raw.author_profile.last_name = raw.last_name;
 

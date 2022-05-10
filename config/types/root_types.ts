@@ -105,6 +105,13 @@ export type AuthStore = {
   walletLink: any; // TODO
 };
 
+export type CreatedBy = {
+  firstName: string,
+  lastName: string,
+  id: ID,
+  authorProfile: AuthorProfile,
+}
+
 export const parseUnifiedDocument = (raw: any): UnifiedDocument => {
   if (typeof(raw) !== "object") {
     return raw;
