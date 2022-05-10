@@ -10,16 +10,16 @@ export function AdminButton() {
     label: "Remove page",
     value: "remove",
     onClick: () => null
-  }, {
-    icon: icons.trash,
-    label: "Remove page ",
+  },{
+    icon: icons.longArrowDown,
+    label: "Remove from trending",
     value: "remove",
     onClick: () => null
   }]
 
   const [isOpen, setIsOpen] = useState(false);
 
-  const renderDropdownOpt = (opt) => {
+  const renderDropdownOpt = (opt: any) => {
     return (
       <div>
         <span className={css(styles.iconWrapper)}>{opt.icon}</span>
