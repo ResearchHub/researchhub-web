@@ -104,6 +104,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
 
   const resultCards = () => {
     return results.map((r) => {
+      console.log('r', r)
       return (
         <div className={css(styles.result)}>
           <div className={`${css(styles.checkbox)} cbx`}>
