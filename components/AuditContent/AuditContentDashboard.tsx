@@ -7,7 +7,7 @@ import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEf
 import fetchAuditContributions from "./config/fetchAuditContributions";
 import CheckBox from "~/components/Form/CheckBox";
 import AuthorAvatar from "../AuthorAvatar";
-import renderContributionEntry from "./utils/renderEntry";
+import renderContributionEntry from "./utils/renderContributionEntry";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
@@ -103,27 +103,30 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   }
 
   const resultCards = () => {
+    const cardActions = [{
+      icon: icons.flagOutline,
+      label: "Flag & Remove",
+      onClick: () => alert('flag & remove'),
+      style: styles.flagAndRemove,
+    }]
+
     return results.map((r) => {
-      console.log('r', r)
       return (
-        <div className={css(styles.result)}>
+        <div className={css(styles.result)} key={r.id}>
           <div className={`${css(styles.checkbox)} cbx`}>
             <CheckBox
               key={`${r.contentType}-${r.id}`}
               label=""
               isSquare
               // @ts-ignore
-              id={(r.id)}
+              id={r.id}
               active={selectedResultIds.includes(r.id)}
               onChange={(id) => handleResultSelect(id)}
               labelStyle={undefined}
             />          
           </div>
           <div className={css(styles.entry)}>
-            {/* <div className={css(styles.avatarContainer)}>
-              <AuthorAvatar author={r.createdBy.authorProfile} />
-            </div> */}
-            {renderContributionEntry(r)}
+            {renderContributionEntry(r, cardActions)}
           </div>
         </div>
       )
@@ -193,6 +196,7 @@ const styles = StyleSheet.create({
   },
   "checkbox": {
     alignSelf: "center",
+    marginRight: 5,
   },
   "header": {
     display: "flex",
@@ -254,5 +258,11 @@ const styles = StyleSheet.create({
   },
   "avatarContainer": {
     marginRight: 15,
-  }
+  },
+  "flagAndRemove": {
+    color: colors.RED(),
+    cursor: "pointer",
+    padding: 10,
+    fontSize:20,
+  },
 });

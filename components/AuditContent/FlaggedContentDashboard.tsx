@@ -1,5 +1,5 @@
 import { css, StyleSheet } from "aphrodite";
-import { ReactElement, useState, useEffect, useCallback, useRef } from "react";
+import { ReactElement, useState, useEffect, useRef } from "react";
 import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
@@ -10,7 +10,10 @@ import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import AuthorAvatar from "../AuthorAvatar";
-import renderContributionEntry from "./utils/renderEntry";
+import renderContributionEntry from "./utils/renderContributionEntry";
+import { FlaggedContribution, parseFlaggedContribution } from "~/config/types/flag";
+import ALink from "../ALink";
+import { timeSince } from "~/config/utils/dates";
 
 const visibilityOpts = [{
   "label": "Open",
@@ -32,10 +35,11 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
   const [selectedHub, setSelectedHub] = useState<any>(
     router.query.hub_id ?? {label: "All", value: undefined}
   );
+  const [isLoading, setIsLoading] = useState<Boolean>(false);
 
-  const [results, setResults] = useState<any>([]);
+  const [results, setResults] = useState<Array<FlaggedContribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
-  const [selectedResultIds, setSelectedResultIds] = useState<Array<[]>>([]);
+  const [selectedResultIds, setSelectedResultIds] = useState<Array<ID>>([]);
   
   const [selectedVisibility, setSelectedVisibility] = useState<any>(
     router.query.visibility ?? visibilityOpts[0]
@@ -47,18 +51,25 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
   }, [suggestedHubs])
 
   useEffect(() => {
-    fetchFlaggedContributions({
-      pageUrl: nextResultsUrl || null,
-      filters: {
-        visibility: selectedVisibility,
-        hub_id: selectedHub?.id,
-      },
-      onSuccess: (response) => {
-        setResults(response.results);
-        setNextResultsUrl(response.next);
-      }
-    })    
+    handleLoadResults();
   }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const isOutsideClick = isClickOutsideCheckbox(event, [flagAndRemoveRef.current]);
+
+      if (isOutsideClick) {
+        setSelectedResultIds([]);
+      }
+    }
+
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, [])
+
+  useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
+    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
+  } });
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -73,9 +84,6 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
     return () => document.removeEventListener("click", handleClickOutside);
   }, [])
 
-  useEffectFetchSuggestedHubs({ setSuggestedHubs: (hubs) => {
-    setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
-  } });
 
   const handleVisibilityFilterChange = (selectedVisibility: any) => {
     let query = {
@@ -118,30 +126,65 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
     }
   }
 
+  const handleLoadResults = () => {
+    setIsLoading(true);
+
+    fetchFlaggedContributions({
+      pageUrl: nextResultsUrl || null,
+      filters: {
+        hubId: selectedHub?.id,
+      },
+      onSuccess: (response) => {
+        const incomingResults = response.results.map(r => parseFlaggedContribution(r))
+        setResults([...results, ...incomingResults]);
+        setNextResultsUrl(response.next);
+        setIsLoading(false);
+      }
+    })
+  }  
+
   const resultCards = () => {
+    const cardActions = [{
+      icon: icons.trashSolid,
+      label: "Remove content",
+      onClick: () => alert('flag & remove'),
+      style: styles.flagAndRemove,
+    }, {
+      icon: icons.check,
+      label: "Content looks OK",
+      onClick: () => alert('LOOKS OK'),
+      style: styles.looksOk,
+    }]
+
     return results.map((r) => {
       return (
-        <div className={css(styles.result)}>
-          <div className={css(styles.flagInfo)}>
-            <AuthorAvatar author={{}} /> flagged this content as spam
+        <div className={css(styles.result)} key={r.id}>
+          <div className={css(styles.actionDetailsRow)}>
+            <div className={css(styles.avatarContainer)}>
+              <AuthorAvatar size={25} author={r.flaggedBy.authorProfile} />
+            </div>
+            <span className={css(styles.actionContainer)}>
+              <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.flaggedBy.authorProfile.firstName} {r.flaggedBy.authorProfile.lastName}</ALink>
+              <span className={css(styles.flagText)}>&nbsp;flagged this content as <span className={css(styles.reason)}>{r.reason}</span></span>
+            </span>
+            <span className={css(styles.dot)}> • </span>
+            <span className={css(styles.timestamp)}>2 days ago</span>
           </div>
           <div className={css(styles.entryContainer)}>
             <div className={`${css(styles.checkbox)} cbx`}>
               <CheckBox
-                key={`${r.content_type}-${r.id}`}
+                key={`${r.contentType}-${r.id}`}
                 label=""
                 isSquare
-                id={r.item.id}
-                active={selectedResultIds.includes(r.item.id)}
+                // @ts-ignore
+                id={r.id}
+                active={selectedResultIds.includes(r.id)}
                 onChange={(id) => handleResultSelect(id)}
                 labelStyle={undefined}
               />          
             </div>
             <div className={css(styles.entry)}>
-              <div className={css(styles.avatarContainer)}>
-                <AuthorAvatar author={r.created_by.author_profile} />
-              </div>
-              {renderContributionEntry(r)}
+              {renderContributionEntry(r, cardActions)}
             </div>
           </div>
         </div>
@@ -216,26 +259,43 @@ const styles = StyleSheet.create({
   "entryContainer": {
     display: "flex",
   },
-  "flagInfo": {
+  "actionDetailsRow": {
     display: "flex",
+    marginBottom: 10,
+    alignItems: "center",
+  },
+  "actionContainer": {
+  },
+  "flagText": {
   },
   "result": {
-    display: "block",
-    marginBottom: 10,
+    marginBottom: 15,
+    fontSize: 14,
   },
+  "reason": {
+    fontWeight: 500,
+  },
+  "timestamp": {
+    color: colors.BLACK(0.5),
+  },
+  "dot": {
+    color: colors.BLACK(0.5),
+    whiteSpace: "pre",
+  },  
   "entry": {
     borderRadius: 2,  
-    minHeight: 50,
     background: "white",
-    border: "1px solid black",
+    border: `1px solid ${colors.GREY()}`,
     width: "100%",
     display: "flex",
     userSelect: "none",
+    padding: 10,
   },
   "entryContent": {
   },
   "checkbox": {
     alignSelf: "center",
+    marginRight: 5,
   },
   "header": {
     display: "flex",
@@ -298,6 +358,18 @@ const styles = StyleSheet.create({
     marginTop: 15,
   },
   "avatarContainer": {
-
+    marginRight: 8,
+  },
+  "flagAndRemove": {
+    color: colors.RED(),
+    cursor: "pointer",
+    padding: 10,
+    fontSize:20,
+  },
+  "looksOk": {
+    color: colors.GREEN(),
+    cursor: "pointer",
+    padding: 10,
+    fontSize:20,
   }
 });

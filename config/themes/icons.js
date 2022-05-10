@@ -85,6 +85,7 @@ import {
   faUserSlash,
   faVideoPlus,
   faShieldAlt,
+  faTrash as faTrashSolid,
 } from "@fortawesome/pro-solid-svg-icons";
 import {
   faAngleDown,
@@ -414,6 +415,7 @@ const icons = {
   timesCircle: <FontAwesomeIcon icon={faTimesCircle} />,
   timesCircleSolid: <FontAwesomeIcon icon={timesCircleSolid} />,
   trash: <FontAwesomeIcon icon={faTrashAlt} />,
+  trashSolid: <FontAwesomeIcon icon={faTrashSolid} />,
   trophy: <FontAwesomeIcon icon={faTrophy} />,
   twitter: <FontAwesomeIcon icon={faTwitter} />,
   up: <FontAwesomeIcon icon={faArrowAltUp} />,
