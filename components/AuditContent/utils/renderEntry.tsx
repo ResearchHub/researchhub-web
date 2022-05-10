@@ -13,12 +13,15 @@ export default function renderContributionEntry(entry: Contribution) {
     const renderHeader = (entry: Contribution) => {
       const {
         item,
-        createdBy,
         createdDate,
         contentType,
       } = entry;
 
-      const uniDoc = item.unifiedDocument;
+      const {
+        createdBy,
+        unifiedDocument: uniDoc
+      } = item;
+
   
       return (
         <div className={css(styles.header)}>
@@ -27,7 +30,7 @@ export default function renderContributionEntry(entry: Contribution) {
           </div>
           <div className={css(styles.details)}>
             <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
-            {entry.contentType === "comment" ? (
+            {contentType === "comment" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.commentsAlt}</span>
@@ -35,7 +38,7 @@ export default function renderContributionEntry(entry: Contribution) {
                 {` in `}
                 <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">{truncateText(uniDoc.document?.title, 200)}</ALink>
               </>
-            ) : entry.contentType === "paper" ? (
+            ) : contentType === "paper" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.fileUpload}</span>
@@ -43,14 +46,14 @@ export default function renderContributionEntry(entry: Contribution) {
                 {/*// @ts-ignore*/}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
               </>              
-            ) : entry.contentType === "post" ? (
+            ) : contentType === "post" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.penSquare}</span>
                 {` created post `}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(uniDoc.document?.title, 200)}</ALink>
               </>              
-            ) : entry.contentType === "hypothesis" ? (
+            ) : contentType === "hypothesis" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.lightbulb}</span>
@@ -73,13 +76,10 @@ export default function renderContributionEntry(entry: Contribution) {
 
     const {
       item,
-      createdBy,
-      createdDate,
       contentType,
     } = entry;
-    const uniDoc = item.unifiedDocument;
 
-    switch (entry.contentType) {
+    switch (contentType) {
       case "comment":
         return (
           <div className={css(styles.entryContent)}>

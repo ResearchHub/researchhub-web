@@ -3,24 +3,28 @@ import { AuthorProfile, ID, parseAuthorProfile, parseUnifiedDocument, UnifiedDoc
 export type CommentContribution = {
   unifiedDocument: UnifiedDocument,
   plainText: string,
+  createdBy: CreatedBy,
 }
 
 export type PaperContribution = {
   unifiedDocument: UnifiedDocument,
   title: string,
   slug: string,
+  createdBy: CreatedBy,
 }
 
 export type HypothesisContribution = {
   unifiedDocument: UnifiedDocument,
   title: string,
   slug: string,
+  createdBy: CreatedBy,
 }
 
 export type PostContribution = {
   unifiedDocument: UnifiedDocument,
   title: string,
   slug: string,
+  createdBy: CreatedBy,
 }
 
 export type CreatedBy = {
@@ -33,12 +37,12 @@ export type CreatedBy = {
 export type Contribution = {
   id: ID,
   item: PaperContribution | PostContribution | HypothesisContribution | CommentContribution,
-  createdBy: CreatedBy,
   createdDate: Date,
   contentType: "paper" | "post" | "hypothesis" | "comment" 
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
+  console.log('raw', raw)
   raw.author_profile.first_name = raw.first_name;
   raw.author_profile.last_name = raw.last_name;
 
@@ -58,7 +62,6 @@ export const parseContribution = (raw: any): Contribution => {
   if (["thread", "comment", "reply"].includes(raw.content_type)) {
     mapped = {
       "id": raw.id,
-      "createdBy": parseCreatedBy(raw.created_by),
       "createdDate": raw.created_date,
       "item": parseCommentContribution(raw.item),
       "contentType": "comment",
@@ -67,16 +70,14 @@ export const parseContribution = (raw: any): Contribution => {
   else if (raw.content_type === "paper") {
     mapped = {
       "id": raw.id,
-      "createdBy": parseCreatedBy(raw.created_by),
       "createdDate": raw.created_date,
       "item": parsePaperContribution(raw.item),
       "contentType": "paper",
     }
   }
-  else if (raw.content_type === "researchhubpost") {
+  else if (raw.content_type === "researchhub post") {
     mapped = {
       "id": raw.id,
-      "createdBy": parseCreatedBy(raw.created_by),
       "createdDate": raw.created_date,
       "item": parsePostContribution(raw.item),
       "contentType": "post",
@@ -85,11 +86,13 @@ export const parseContribution = (raw: any): Contribution => {
   else if (raw.content_type === "hypothesis") {
     mapped = {
       "id": raw.id,
-      "createdBy": parseCreatedBy(raw.created_by),
       "createdDate": raw.created_date,
       "item": parseHypothesisContribution(raw.item),
       "contentType": "hypothesis",
     }
+  }
+  else {
+    throw Error("Could not parse object with content_type=" + raw.content_type)
   }
 
   return mapped;
@@ -98,6 +101,7 @@ export const parseContribution = (raw: any): Contribution => {
 export const parseCommentContribution = (raw: any): CommentContribution => {
   const mapped = {
     "plainText": raw.plain_text,
+    "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
   }
 
@@ -116,6 +120,7 @@ export const parsePaperContribution = (raw: any): PaperContribution => {
     "id": raw.id,
     "title": raw.title,
     "slug": raw.slug,
+    "createdBy": parseCreatedBy(raw.uploaded_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
   }
 
@@ -123,12 +128,10 @@ export const parsePaperContribution = (raw: any): PaperContribution => {
 }
 
 export const parseHypothesisContribution = (raw: any): HypothesisContribution => {
-
-  console.log('item', raw)
-
   const mapped = {
     "title": raw.title,
     "slug": raw.slug,
+    "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
   }
 
@@ -139,28 +142,10 @@ export const parsePostContribution = (raw: any): PostContribution => {
   const mapped = {
     "title": raw.title,
     "slug": raw.slug,
+    "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
   }
 
   return mapped;
 }
 
-export const parseContributionItem = (raw: any) => {
-  let mapped;
-
-  if (["thread", "comment", "reply"].includes(raw.content_type)) {
-    mapped = {
-      "plainText": raw.plain_text,
-      "unifiedDocument": parseUnifiedDocument(raw.unified_document),
-    }
-  }
-  else if (raw.content_type === "paper") {
-    mapped = {
-      "title": raw.title,
-      "slug": raw.slug,
-      "unifiedDocument": parseUnifiedDocument(raw.unified_document),
-    }    
-  }
-
-  return mapped;
-}

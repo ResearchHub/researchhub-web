@@ -74,7 +74,7 @@ export default function ModeratorDashboardSidebar({}: Props) {
       true
       ? {
           icon: icons.flag,
-          id: "audit",
+          id: "flag",
           name: "Flagged Content",
           pathname: "/moderators/audit/flagged",
         }
