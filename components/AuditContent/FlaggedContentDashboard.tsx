@@ -165,6 +165,7 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
             </div>
             <span className={css(styles.actionContainer)}>
               <ALink href={`/user/${r.flaggedBy.authorProfile.id}/overview`}>{r.flaggedBy.authorProfile.firstName} {r.flaggedBy.authorProfile.lastName}</ALink>
+              <span className={css(styles.icon)}>&nbsp;{icons.flagOutline}</span>
               <span className={css(styles.flagText)}>&nbsp;flagged this content as <span className={css(styles.reason)}>{r.reason}</span></span>
             </span>
             <span className={css(styles.dot)}> • </span>
@@ -258,6 +259,12 @@ export function FlaggedContentDashboard() : ReactElement<"div"> {
 const styles = StyleSheet.create({
   "entryContainer": {
     display: "flex",
+  },
+  "icon": {
+    fontSize: 14,
+    color: colors.BLACK(0.75),
+    marginLeft: 3,
+    marginRight: 3,
   },
   "actionDetailsRow": {
     display: "flex",

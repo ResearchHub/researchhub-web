@@ -17,7 +17,9 @@ import LoadMoreButton from "../LoadMoreButton";
 
 export function AuditContentDashboard() : ReactElement<"div"> {
   const router = useRouter();
-  const flagAndRemoveRef = useRef(null);
+  const flagAndRemoveRef = useRef<HTMLElement>(null);
+  const multiSelectRef = useRef<HTMLElement>(null);
+  const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
 
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [selectedHub, setSelectedHub] = useState<any>(
@@ -56,6 +58,32 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     setSuggestedHubs([{label: "All", value: undefined}, ...hubs])
   } });
 
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleWindowScroll);
+
+    return () => {
+      window.addEventListener("scroll", handleWindowScroll);
+    }
+  }, [])
+
+  
+  const handleWindowScroll = () => {
+    const navEl:(HTMLElement|null) = document.querySelector(".navbar");
+    const multiSelectEl:HTMLElement|null = multiSelectRef.current;
+
+    console.log("navEl.clientHeight", navEl.clientHeight)
+    console.log('window.scrollY', window.scrollY)
+    // @ts-ignore
+    if (multiSelectEl && window.scrollY > navEl.clientHeight) {
+      // @ts-ignore
+      multiSelectEl.style.top = (navEl?.clientHeight + 1) + "px";
+      setIsMultiSelectSticky(true);
+    }
+    else {
+      setIsMultiSelectSticky(false);
+    }
+  }
 
   const handleHubFilterChange = (selectedHub: any) => {
 
@@ -159,15 +187,15 @@ export function AuditContentDashboard() : ReactElement<"div"> {
           </div>
         }
       </div>
-      <div className={css(styles.detailsRow)}>
-        <div className={css(styles.bulkActions)}>
-          {selectedResultIds.length > 0 &&
-            <div className={css(styles.bulkAction, styles.removeAction)} ref={flagAndRemoveRef}>
-              <span className={css(styles.bulkActionIcon)}>{icons.flag}</span>
-              Flag &amp; Remove  
+      <div className={css(styles.multiSelect, isMultiSelectSticky && styles.multiSelectSticky)} ref={multiSelectRef}>
+        {selectedResultIds.length > 0 &&
+          <div className={css(styles.activeDetailsRow)}>
+            <span className={css(styles.numSelected)}>{selectedResultIds.length} selected.</span>
+            <div className={css(styles.bulkActions)}>
+              <span className={css(styles.bulkAction, styles.bulkActionRemove)}>{icons.flagOutline}<span className={css(styles.actionText)}>Flag &amp; Remove</span></span>
             </div>
-          }
-        </div>
+          </div>
+        }
       </div>
       <div className={css(styles.resultsContainer)}>
         {resultCards()}
@@ -201,15 +229,33 @@ const styles = StyleSheet.create({
   "header": {
     display: "flex",
     justifyContent: "space-between",
-    paddingLeft: 40,
   },
   "title": {
     fontSize: 30,
     fontWeight: 500,
   },
-  "detailsRow": {
-    paddingLeft: 40,
-  }, 
+  "multiSelect": {
+    borderRadius: 2,
+    width: "100%",
+    boxSizing: "border-box",
+    marginTop: 15,
+    marginBottom: 15,
+    fontSize: 14,
+    height: 44,
+  },
+  "multiSelectSticky": {
+    position: "fixed",
+    zIndex: 2,
+    margin: 0,
+    width: 1200,
+  },
+  "activeDetailsRow": {
+    lineHeight: "22px",
+    padding: "10px 10px 10px 17px",
+    display: "flex",
+    border: `1px solid ${colors.NEW_BLUE()}`,
+    background: colors.LIGHTER_BLUE(),
+  },
   "dashboardContainer": {
     padding: "0 32px",
     maxWidth: 1200,
@@ -231,30 +277,25 @@ const styles = StyleSheet.create({
     marginLeft: 15,
   },
   "bulkActions": {
-    height: 33,
-    marginTop: 10,
     transition: "0.2s",
-  },
-  "bulkAction": {
     fontSize: 14,
     fontWeight: 500,
-    cursor: "pointer",
-    ":hover": {
-      "opacity": 0.8 
-    }
   },
-  "removeAction": {
-    background: colors.RED(),
-    padding: "8px 12px",
-    color: "white",
-    borderRadius: 4,
-    display: "inline-block",
+  "bulkAction": {
+
+  },
+  "bulkActionRemove": {
+    color: colors.RED(),
+    cursor: "pointer",
   },
   "bulkActionIcon": {
     marginRight: 10,
   },
+  "actionText": {
+    marginLeft: 5,
+    textDecoration: "underline",
+  },
   "resultsContainer": {
-    marginTop: 15,
   },
   "avatarContainer": {
     marginRight: 15,
@@ -262,7 +303,12 @@ const styles = StyleSheet.create({
   "flagAndRemove": {
     color: colors.RED(),
     cursor: "pointer",
-    padding: 10,
-    fontSize:20,
+    fontWeight: 500,
+    ":hover": {
+      textDecoration: "underline",
+    }
   },
+  "numSelected": {
+    marginRight: 10,
+  }
 });
