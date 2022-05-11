@@ -2,7 +2,7 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Fragment, ReactElement, useState } from "react";
-import { NullableString } from "~/config/types/root_types";
+import { KeyOf, NullableString } from "~/config/types/root_types";
 import ResearchHubRadioChoices, {
   RhRadioInputOption,
 } from "./ResearchHubRadioChoices";
@@ -13,6 +13,7 @@ import icons from "~/config/themes/icons";
 
 type Props = {
   modalHeaderText: string;
+  onSubmit: (flagReason: KeyOf<typeof FLAG_REASONS>) => void;
   subHeaderText?: string;
 };
 
@@ -25,7 +26,11 @@ const FLAG_REASONS = {
   SPAM: "Spam",
 };
 
-function FlagButtonV2({ modalHeaderText, subHeaderText }: Props): ReactElement {
+function FlagButtonV2({
+  modalHeaderText,
+  onSubmit,
+  subHeaderText,
+}: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [flagReason, setFlagReason] = useState<NullableString>("SPAM");
 
@@ -65,7 +70,7 @@ function FlagButtonV2({ modalHeaderText, subHeaderText }: Props): ReactElement {
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
-              <Button label="Flag to report" size="small" />
+              <Button label="Flag to report" size="small" onClick={onSubmit} />
               <div className={css(styles.cancelButton)}>Cancel</div>
             </div>
           </div>

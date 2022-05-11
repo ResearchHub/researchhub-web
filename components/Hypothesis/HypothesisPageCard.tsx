@@ -1,3 +1,4 @@
+import { breakpoints } from "~/config/themes/screen";
 import { css, StyleSheet } from "aphrodite";
 import { connect } from "react-redux";
 import {
@@ -21,8 +22,15 @@ import {
   useMemo,
   useState,
 } from "react";
+import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import { postHypothesisVote } from "./api/postHypothesisVote";
+import {
+  removeHypothesis,
+  restoreHypothesis,
+} from "./api/postHypothesisStatus";
 import { updateHypothesis } from "./api/updateHypothesis";
+import { useRouter } from "next/router";
+import ActionButton from "../ActionButton";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import dayjs from "dayjs";
@@ -31,15 +39,7 @@ import icons from "~/config/themes/icons";
 import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import VoteWidget from "~/components/VoteWidget";
-import ActionButton from "../ActionButton";
-import { breakpoints } from "~/config/themes/screen";
-import {
-  removeHypothesis,
-  restoreHypothesis,
-} from "./api/postHypothesisStatus";
-import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import DiscussionCount from "~/components/DiscussionCount";
-import { useRouter } from "next/router";
 import FlagButtonV2 from "../shared/FlagButtonV2";
 
 const DynamicCKEditor = dynamic(
@@ -108,6 +108,7 @@ const getActionButtons = ({
       active: true,
       button: (
         <FlagButtonV2
+          onSubmit={emptyFncWithMsg}
           modalHeaderText="Flagging"
           subHeaderText="Why isn't this suited for ResearchHub?"
         />
