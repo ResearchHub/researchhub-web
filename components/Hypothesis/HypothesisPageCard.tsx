@@ -40,6 +40,7 @@ import {
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import DiscussionCount from "~/components/DiscussionCount";
 import { useRouter } from "next/router";
+import FlagButtonV2 from "../shared/FlagButtonV2";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -101,6 +102,15 @@ const getActionButtons = ({
             {icons.pencil}
           </div>
         </PermissionNotificationWrapper>
+      ),
+    },
+    {
+      active: true,
+      button: (
+        <FlagButtonV2
+          modalHeaderText="Flagging"
+          subHeaderText="Why isn't this suited for ResearchHub?"
+        />
       ),
     },
     {
