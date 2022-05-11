@@ -1,7 +1,7 @@
 import { Fragment, ReactElement, ReactNode, SyntheticEvent } from "react";
 import { NullableString } from "~/config/types/root_types";
-import { StyleSheet, css } from "aphrodite";
-import colors from "~/config/themes/colors";
+import { silentEmptyFnc } from "~/config/utils/nullchecks";
+import CheckBox from "~/components//Form/CheckBox";
 
 export type RhRadioInputOption = { id: string; label: ReactNode };
 type Props = {
@@ -28,12 +28,11 @@ export default function ResearchHubRadioChoices({
           onChange(id);
         }}
       >
-        <div
-          className={css(
-            styles.button,
-            selectedID === id ? styles.buttonActive : styles.buttonInactive
-          )}
-          id={id}
+        <CheckBox
+          active={selectedID === id}
+          isSquare={false}
+          onChange={silentEmptyFnc}
+          small
         />
         <label htmlFor={id}>{label}</label>
       </div>
@@ -41,14 +40,3 @@ export default function ResearchHubRadioChoices({
   );
   return <Fragment>{formattedInputs}</Fragment>;
 }
-
-const styles = StyleSheet.create({
-  button: {
-    width: 8,
-    height: 8,
-    borderRadius: 50,
-    border: `2px solid ${colors.LIGHT_GREY_BORDER}`,
-  },
-  buttonActive: { background: colors.BLUE(1) },
-  buttonInactive: { background: colors.LIGHT_GREY(1) },
-});
