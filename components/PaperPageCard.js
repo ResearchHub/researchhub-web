@@ -40,6 +40,8 @@ import { isNullOrUndefined } from "~/config/utils/nullchecks";
 import { isDevEnv } from "~/config/utils/env";
 import { parseMath } from "~/config/utils/latex";
 import DiscussionCount from "~/components/DiscussionCount";
+import censorDocument from "~/components/Admin/api/censorDocAPI";
+import restoreDocument from "~/components/Admin/api/restoreDocAPI";
 
 // Dynamic modules
 import dynamic from "next/dynamic";
@@ -123,6 +125,28 @@ class PaperPageCard extends Component {
     }
 
     return url;
+  };
+
+  restorePaper = () => {
+    restoreDocument({
+      unifiedDocumentId: this.props.paper.unified_document.id,
+      onSuccess: this.props.restorePaper,
+      onError: () => {
+        setMessage("Failed to restore page");
+        showMessage({ show: true, error: true });
+      },
+    });
+  };
+
+  removePaper = () => {
+    censorDocument({
+      unifiedDocumentId: this.props.paper.unified_document.id,
+      onSuccess: this.props.removePaper,
+      onError: () => {
+        setMessage("Failed to remove page");
+        showMessage({ show: true, error: true });
+      },
+    });
   };
 
   toggleShowHubs = () => {
@@ -330,18 +354,32 @@ class PaperPageCard extends Component {
         ),
       },
       {
-        active: isEditorOfHubs || isModerator,
+        active: isModerator || isSubmitter || isEditorOfHubs,
+        button: (
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
+          >
+            <ActionButton
+              isModerator={true}
+              paperId={paper.id}
+              restore={paper.is_removed}
+              icon={paper.is_removed ? icons.plus : icons.minus}
+              onAction={paper.is_removed ? this.restorePaper : this.removePaper}
+              containerStyle={styles.moderatorContainer}
+              iconStyle={styles.moderatorIcon}
+            />
+          </span>
+        ),
+      },
+      {
+        active: isModerator,
         button: (
           <span
             className={css(styles.actionIcon, styles.moderatorAction)}
             data-tip="Admin"
           >
-            <AdminButton
-              unifiedDocumentId={paper?.unified_document?.id}
-              onCensor={this.props.removePaper}
-              onRestore={this.props.restorePaper}
-              isPageRemoved={paper.is_removed}
-            />
+            <AdminButton unifiedDocumentId={paper?.unified_document?.id} />
           </span>
         ),
       },

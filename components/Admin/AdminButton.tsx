@@ -4,29 +4,22 @@ import DropdownButton from "../Form/DropdownButton";
 import { useState } from "react";
 import excludeFromFeed from "./api/excludeDocFromFeedAPI";
 import includeInFeed from "./api/includeDocInFeedAPI";
-import censorDocument from "./api/censorDocAPI";
-import restoreDocument from "./api/restoreDocAPI";
 import CheckBox from "../Form/CheckBox";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
 import { ID } from "~/config/types/root_types";
+import colors from "~/config/themes/colors";
 
 type Args = {
   unifiedDocumentId: ID,
-  isPageRemoved: Boolean,
   setMessage: Function,
   showMessage: Function,
-  onCensor: Function,
-  onRestore: Function,
 }
 
 function AdminButton({
   unifiedDocumentId,
-  isPageRemoved,
   setMessage,
   showMessage,
-  onCensor,
-  onRestore,
 }: Args) {
 
   const [excludeFromFeedSelectedChoices, setExcludeFromFeedSelectedChoices] = useState(["homepage", "hubs"]);
@@ -71,36 +64,6 @@ function AdminButton({
         },
         onError: () => {
           setMessage("Failed to include in feed");
-          showMessage({ show: true, error: true });
-        }
-      })
-    }
-  },{
-    icon: icons.trash,
-    label: "Remove page",
-    value: "remove",
-    isVisible: !isPageRemoved,
-    onSelect: () => {
-      censorDocument({
-        unifiedDocumentId,
-        onSuccess: onCensor,
-        onError: () => {
-          setMessage("Failed to remove page");
-          showMessage({ show: true, error: true });
-        }
-      })
-    }
-  },{
-    icon: icons.plus,
-    label: "Restore page",
-    value: "restore",
-    isVisible: isPageRemoved,
-    onSelect: () => {
-      restoreDocument({
-        unifiedDocumentId,
-        onSuccess: onRestore,
-        onError: () => {
-          setMessage("Failed to remove page");
           showMessage({ show: true, error: true });
         }
       })
@@ -254,11 +217,11 @@ const styles = StyleSheet.create({
   },
   "overrideTargetButton": {
     backgroundColor: "none",
-    color: "rgba(36, 31, 58, 0.35)",
     paddingTop: 11,
     paddingLeft: 17,
+    color: colors.RED(0.6),
     ":hover": {
-      color: "inherit",
+      color: colors.RED(1),
       backgroundColor: "inherit",
       borderColor: "inherit",
     },    
