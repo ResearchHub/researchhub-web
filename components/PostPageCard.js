@@ -25,6 +25,9 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { createRef, Component } from "react";
 import { isNullOrUndefined } from "~/config/utils/nullchecks";
+import censorDocument from "~/components/Admin/api/censorDocAPI";
+import restoreDocument from "~/components/Admin/api/restoreDocAPI";
+import AdminButton from "./Admin/AdminButton";
 
 const DynamicCKEditor = dynamic(() =>
   import("~/components/CKEditor/SimpleEditor")
@@ -72,71 +75,25 @@ class PostPageCard extends Component {
   }
 
   restoreThisPost = () => {
-    let {
-      isEditorOfHubs,
-      isModerator,
-      isSubmitter,
-      post,
-      restorePost,
-      setMessage,
-      showMessage,
-    } = this.props;
-    let params = {};
-    if (isModerator || isSubmitter || isEditorOfHubs) {
-      params.is_removed = false;
-    }
-
-    return fetch(
-      API.RESTORE_DOC({ documentId: post.unified_document_id }),
-      API.PATCH_CONFIG(params)
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setMessage("Post Successfully Restored.");
-        showMessage({ show: true });
-        restorePost && restorePost();
-      })
-      .catch((error) => {
-        setMessage("Post could not be restored");
+    restoreDocument({
+      unifiedDocumentId: this.props.post.unified_document_id,
+      onSuccess: this.props.restorePost,
+      onError: () => {
+        setMessage("Failed to restore page");
         showMessage({ show: true, error: true });
-        console.log(error);
-        Sentry.captureEvent(error);
-      });
+      },
+    });
   };
 
   removeThisPost = () => {
-    let {
-      isEditorOfHubs,
-      isModerator,
-      isSubmitter,
-      post,
-      removePost,
-      setMessage,
-      showMessage,
-    } = this.props;
-    let params = {};
-    if (isModerator || isSubmitter || isEditorOfHubs) {
-      params.is_removed = true;
-    }
-
-    return fetch(
-      API.CENSOR_DOC({ documentId: post.unified_document_id }),
-      API.PATCH_CONFIG(params)
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setMessage("Post Successfully Removed.");
-        showMessage({ show: true });
-        removePost && removePost();
-      })
-      .catch((error) => {
-        setMessage("Post not removed");
+    censorDocument({
+      unifiedDocumentId: this.props.post.unified_document_id,
+      onSuccess: this.props.removePost,
+      onError: () => {
+        setMessage("Failed to remove page");
         showMessage({ show: true, error: true });
-        console.log(error);
-        Sentry.captureEvent(error);
-      });
+      },
+    });
   };
 
   toggleShowHubs = () => {
@@ -286,25 +243,14 @@ class PostPageCard extends Component {
         ),
       },
       {
-        active: isModerator && !isNullOrUndefined(uploadedById),
+        active: isModerator,
         button: (
-          <>
-            <ReactTooltip />
-            <span
-              className={css(styles.actionIcon, styles.moderatorAction)}
-              data-tip={isUploaderSuspended ? "Reinstate User" : "Ban User"}
-            >
-              <ActionButton
-                isModerator={isModerator}
-                paperId={post.id}
-                uploadedById={uploadedById}
-                isUploaderSuspended={isUploaderSuspended}
-                containerStyle={styles.moderatorContainer}
-                iconStyle={styles.moderatorIcon}
-                actionType="user"
-              />
-            </span>
-          </>
+          <span
+            className={css(styles.actionIcon, styles.moderatorAction)}
+            data-tip="Admin"
+          >
+            <AdminButton unifiedDocumentId={post?.unified_document?.id} />
+          </span>
         ),
       },
     ].filter((action) => action.active);
