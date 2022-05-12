@@ -33,13 +33,12 @@ import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import VoteWidget from "~/components/VoteWidget";
 import ActionButton from "../ActionButton";
 import { breakpoints } from "~/config/themes/screen";
-import {
-  removeHypothesis,
-  restoreHypothesis,
-} from "./api/postHypothesisStatus";
+import censorDocument from "~/components/Admin/api/censorDocAPI";
+import restoreDocument from "~/components/Admin/api/restoreDocAPI";
 import { isUserEditorOfHubs } from "../UnifiedDocFeed/utils/getEditorUserIDsFromHubs";
 import DiscussionCount from "~/components/DiscussionCount";
 import { useRouter } from "next/router";
+import AdminButton from "../Admin/AdminButton";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
@@ -117,14 +116,14 @@ const getActionButtons = ({
             icon={isHypoRemoved ? icons.plus : icons.minus}
             onAction={() => {
               if (isHypoRemoved) {
-                restoreHypothesis({
-                  hypoUniDocID,
+                restoreDocument({
+                  unifiedDocumentId: hypoUniDocID,
                   onError: (error: Error) => emptyFncWithMsg(error),
                   onSuccess: (): void => onUpdates(Date.now()),
                 });
               } else {
-                removeHypothesis({
-                  hypoUniDocID,
+                censorDocument({
+                  unifiedDocumentId: hypoUniDocID,
                   onError: (error: Error) => emptyFncWithMsg(error),
                   onSuccess: (): void => onUpdates(Date.now()),
                 });
@@ -133,6 +132,17 @@ const getActionButtons = ({
             containerStyle={styles.moderatorContainer}
             iconStyle={styles.moderatorIcon}
           />
+        </span>
+      ),
+    },
+    {
+      active: isModerator,
+      button: (
+        <span
+          className={css(styles.actionIcon, styles.moderatorAction)}
+          data-tip="Admin"
+        >
+          <AdminButton unifiedDocumentId={hypoUniDocID} />
         </span>
       ),
     },
