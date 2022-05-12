@@ -2,13 +2,33 @@ import icons from "~/config/themes/icons";
 import { css, StyleSheet } from "aphrodite";
 import DropdownButton from "../Form/DropdownButton";
 import { useState } from "react";
-import excludeFromFeed from "./api/excludeDocFromFeed";
-import includeInFeed from "./api/includeDocInFeed";
+import excludeFromFeed from "./api/excludeDocFromFeedAPI";
+import includeInFeed from "./api/includeDocInFeedAPI";
+import censorDocument from "./api/censorDocAPI";
+import restoreDocument from "./api/restoreDocAPI";
 import CheckBox from "../Form/CheckBox";
 import { MessageActions } from "~/redux/message";
 import { connect } from "react-redux";
+import { ID } from "~/config/types/root_types";
 
-function AdminButton({ unifiedDocumentId, setMessage, showMessage }) {
+type Args = {
+  unifiedDocumentId: ID,
+  isPageRemoved: Boolean,
+  setMessage: Function,
+  showMessage: Function,
+  onCensor: Function,
+  onRestore: Function,
+}
+
+function AdminButton({
+  unifiedDocumentId,
+  isPageRemoved,
+  setMessage,
+  showMessage,
+  onCensor,
+  onRestore,
+}: Args) {
+
   const [excludeFromFeedSelectedChoices, setExcludeFromFeedSelectedChoices] = useState(["homepage", "hubs"]);
   const [isOpen, setIsOpen] = useState(false);
   const [isExcludeSubmenuOpen, setIsExcludeSubmenuOpen] = useState(false);
@@ -17,6 +37,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }) {
     icon: icons.eyeSlash,
     label: "Exclude from Trending",
     value: "exclude",
+    isVisible: true,
     onSelect: () => {
       const params = {
         excludeFromHomepage: excludeFromFeedSelectedChoices.includes("homepage"),
@@ -31,7 +52,7 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }) {
           showMessage({ show: true, error: false });
         },
         onError: () => {
-          setMessage("Error");
+          setMessage("Failed to exclude from feed");
           showMessage({ show: true, error: true });
         }
       })
@@ -40,15 +61,16 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }) {
     icon: icons.eye,
     label: "Include in Trending",
     value: "include",
+    isVisible: true,
     onSelect: () => {
       includeInFeed({
         unifiedDocumentId,
         onSuccess: () => {
-          setMessage("Include in Feed");
+          setMessage("Included in Feed");
           showMessage({ show: true, error: false });
         },
         onError: () => {
-          setMessage("Error");
+          setMessage("Failed to include in feed");
           showMessage({ show: true, error: true });
         }
       })
@@ -57,8 +79,33 @@ function AdminButton({ unifiedDocumentId, setMessage, showMessage }) {
     icon: icons.trash,
     label: "Remove page",
     value: "remove",
-    onSelect: () => null
-  }]
+    isVisible: !isPageRemoved,
+    onSelect: () => {
+      censorDocument({
+        unifiedDocumentId,
+        onSuccess: onCensor,
+        onError: () => {
+          setMessage("Failed to remove page");
+          showMessage({ show: true, error: true });
+        }
+      })
+    }
+  },{
+    icon: icons.plus,
+    label: "Restore page",
+    value: "restore",
+    isVisible: isPageRemoved,
+    onSelect: () => {
+      restoreDocument({
+        unifiedDocumentId,
+        onSuccess: onRestore,
+        onError: () => {
+          setMessage("Failed to remove page");
+          showMessage({ show: true, error: true });
+        }
+      })
+    }
+  }].filter((opt) => opt.isVisible)
 
   const handleExcludeFromFeedCheckbox = (id, state, event) => {
     event.stopPropagation();
