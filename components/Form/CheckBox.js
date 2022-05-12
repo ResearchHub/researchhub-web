@@ -4,15 +4,17 @@ import { StyleSheet, css } from "aphrodite";
 import icons from "~/config/themes/icons";
 import colors from "../../config/themes/colors";
 
-const CheckBox = ({
-  active,
-  id = 0,
-  isSquare,
-  label,
-  labelStyle,
-  onChange,
-  onClickLabel = false,
-}) => {
+const CheckBox = (props) => {
+  const {
+    active,
+    id = 0,
+    isSquare,
+    label,
+    labelStyle,
+    onChange,
+    onClickLabel = false,
+    small,
+  } = props;
   return (
     <div
       className={css(styles.checkboxContainer, onClickLabel && styles.pointer)}
@@ -27,7 +29,7 @@ const CheckBox = ({
     >
       <div
         className={css(
-          styles.checkBox,
+          small ? styles.checkBoxSmall : styles.checkBox,
           active && styles.active,
           isSquare && styles.square
         )}
@@ -45,7 +47,12 @@ const CheckBox = ({
             {icons.check}
           </span>
         ) : (
-          <div className={css(styles.dot, active && styles.white)} />
+          <div
+            className={css(
+              small ? styles.dotSmall : styles.dot,
+              active && styles.white
+            )}
+          />
         )}
       </div>
       <p className={css(styles.label, labelStyle && labelStyle)}>
@@ -75,9 +82,29 @@ const styles = StyleSheet.create({
       borderColor: "#D2D2E6",
     },
   },
+  checkBoxSmall: {
+    minHeight: 12,
+    minWidth: 12,
+    borderRadius: "50%",
+    border: "1px solid #e8e8f1",
+    cursor: "pointer",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#FBFBFD",
+    ":hover": {
+      borderColor: "#D2D2E6",
+    },
+  },
   dot: {
     height: 12,
     width: 12,
+    borderRadius: "50%",
+    backgroundColor: "#FBFBFD",
+  },
+  dotSmall: {
+    height: 6,
+    width: 6,
     borderRadius: "50%",
     backgroundColor: "#FBFBFD",
   },
