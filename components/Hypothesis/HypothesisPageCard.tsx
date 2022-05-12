@@ -104,16 +104,16 @@ const getActionButtons = ({
         </PermissionNotificationWrapper>
       ),
     },
-    {
-      active: true,
-      button: (
-        <FlagButtonV2
-          onSubmit={emptyFncWithMsg}
-          modalHeaderText="Flagging"
-          subHeaderText="Why isn't this suited for ResearchHub?"
-        />
-      ),
-    },
+    // {
+    //   active: true,
+    //   button: (
+    //     <FlagButtonV2
+    //       onSubmit={emptyFncWithMsg}
+    //       modalHeaderText="Flagging"
+    //       subHeaderText="Why isn't this suited for ResearchHub?"
+    //     />
+    //   ),
+    // },
     {
       active: isModerator || isCurrUserSubmitter || isEditorOfHubs,
       button: (
