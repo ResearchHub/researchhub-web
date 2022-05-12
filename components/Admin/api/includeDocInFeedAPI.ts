@@ -9,7 +9,7 @@ type Args = {
   onSuccess: Function;
 }
 
-export default function excludeFromFeed({
+export default function includeInFeed({
   unifiedDocumentId,
   onError,
   onSuccess,
@@ -24,7 +24,7 @@ export default function excludeFromFeed({
     .catch((error) => {
       captureEvent({
         error,
-        msg: "Failed to exclude from feed",
+        msg: "Failed to include in feed",
         data: { unifiedDocumentId },
       });
       onError && onError(error)

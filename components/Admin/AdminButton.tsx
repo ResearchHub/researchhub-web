@@ -148,24 +148,13 @@ function AdminButton({
       opts={optsAsHTML}
       // @ts-ignore
       labelAsHtml={icons.shield}
-      // selected={filterBy.value}
       isOpen={isOpen}
       onClick={() => setIsOpen(true)}
-      // dropdownClassName="adminSelect"
       onClickOutside={() => {
         setIsOpen(false);
       }}
-      // overrideTitleStyle={styles.customTitleStyle}
       positions={["right", "bottom"]}
-      // customButtonClassName={[
-      //   styles.dropdownButtonOverride,
-      //   styles.dropdownButtonOverrideForFilter,
-      // ]}
-      // overrideDownIconStyle={styles.overrideDownIconStyle}
       onSelect={(selected) => {
-        // const selectedFilterObj = tabs.find(
-        //   (t) => t.value === selectedFilter
-        // );
         console.log(selected)
       }}
       // @ts-ignore
