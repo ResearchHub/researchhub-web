@@ -12,6 +12,8 @@ const CheckBox = ({
   labelStyle,
   onChange,
   onClickLabel = false,
+  checkboxStyleOverride = null,
+  checkStyleOverride = null,
 }) => {
   return (
     <div
@@ -29,19 +31,23 @@ const CheckBox = ({
         className={css(
           styles.checkBox,
           active && styles.active,
-          isSquare && styles.square
+          isSquare && styles.square,
+          checkboxStyleOverride
         )}
         onClick={
           !onClickLabel
-            ? () => {
+            ? (event) => {
                 let state = !active;
-                onChange && onChange(id, state);
+                onChange && onChange(id, state, event);
               }
             : null
         }
       >
         {isSquare ? (
-          <span style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}>
+          <span
+            style={{ color: `${active ? "#FFF" : "#FBFBFD"}` }}
+            className={css(checkStyleOverride)}
+          >
             {icons.check}
           </span>
         ) : (
