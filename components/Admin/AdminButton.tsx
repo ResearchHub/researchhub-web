@@ -3,10 +3,12 @@ import { css, StyleSheet } from "aphrodite";
 import DropdownButton from "../Form/DropdownButton";
 import { useState } from "react";
 import excludeFromFeed from "./api/excludeDocFromFeed";
+import includeInFeed from "./api/includeDocInFeed";
 import CheckBox from "../Form/CheckBox";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
 
-
-export function AdminButton({ unifiedDocumentId }) {
+function AdminButton({ unifiedDocumentId, setMessage, showMessage }) {
   const [excludeFromFeedSelectedChoices, setExcludeFromFeedSelectedChoices] = useState(["homepage", "hubs"]);
   const [isOpen, setIsOpen] = useState(false);
   const [isExcludeSubmenuOpen, setIsExcludeSubmenuOpen] = useState(false);
@@ -25,10 +27,12 @@ export function AdminButton({ unifiedDocumentId }) {
         unifiedDocumentId,
         params,
         onSuccess: () => {
-          alert('success')
+          setMessage("Excluded from Feed");
+          showMessage({ show: true, error: false });
         },
         onError: () => {
-          alert('failed')
+          setMessage("Error");
+          showMessage({ show: true, error: true });
         }
       })
     }
@@ -36,7 +40,19 @@ export function AdminButton({ unifiedDocumentId }) {
     icon: icons.eye,
     label: "Include in Trending",
     value: "include",
-    onSelect: () => null
+    onSelect: () => {
+      includeInFeed({
+        unifiedDocumentId,
+        onSuccess: () => {
+          setMessage("Include in Feed");
+          showMessage({ show: true, error: false });
+        },
+        onError: () => {
+          setMessage("Error");
+          showMessage({ show: true, error: true });
+        }
+      })
+    }
   },{
     icon: icons.trash,
     label: "Remove page",
@@ -201,3 +217,13 @@ const styles = StyleSheet.create({
     },    
   }
 });
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+const mapStateToProps = () => ({
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(AdminButton);

@@ -44,7 +44,8 @@ import DiscussionCount from "~/components/DiscussionCount";
 // Dynamic modules
 import dynamic from "next/dynamic";
 import { initialize } from "react-ga";
-import { AdminButton } from "./Admin/AdminButton";
+import AdminButton from "./Admin/AdminButton";
+
 const AuthorSupportModal = dynamic(() =>
   import("~/components/Modals/AuthorSupportModal")
 );
@@ -122,46 +123,6 @@ class PaperPageCard extends Component {
     }
 
     return url;
-  };
-
-  restorePaper = () => {
-    const { setMessage, showMessage, paperId, restorePaper } = this.props;
-
-    return fetch(
-      API.PAPER_CENSOR({ paperId, isRemoved: false }),
-      API.PATCH_CONFIG({ id: paperId })
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setMessage("Paper Successfully Restored.");
-        showMessage({ show: true });
-        restorePaper();
-      })
-      .catch((_error) => {
-        setMessage("Unable to Restore Paper.");
-        showMessage({ show: true });
-      });
-  };
-
-  removePaper = () => {
-    const { paperId, removePaper, setMessage, showMessage } = this.props;
-
-    return fetch(
-      API.PAPER_CENSOR({ paperId, isRemoved: true }),
-      API.PATCH_CONFIG({ id: paperId })
-    )
-      .then(Helpers.checkStatus)
-      .then(Helpers.parseJSON)
-      .then((res) => {
-        setMessage("Paper Successfully Removed.");
-        showMessage({ show: true });
-        removePaper();
-      })
-      .catch((_error) => {
-        setMessage("Unable to Remove Paper.");
-        showMessage({ show: true });
-      });
   };
 
   toggleShowHubs = () => {
