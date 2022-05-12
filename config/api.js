@@ -85,6 +85,12 @@ const routes = (BASE_URL) => {
     CITATIONS_VOTE: ({ citationID, voteType }) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
+    EXCLUDE_FROM_FEED: ({ unifiedDocumentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/exclude_from_feed/`;
+    },
+    INCLUDE_IN_FEED: ({ unifiedDocumentId }) => {
+      return `${BASE_URL}researchhub_unified_documents/${unifiedDocumentId}/include_in_feed/`;
+    },
     ORGANIZATION: ({ userId, orgId, orgSlug }) => {
       let url = `${BASE_URL}organization/`;
       let restId = null;

@@ -394,7 +394,7 @@ class PaperPageCard extends Component {
             className={css(styles.actionIcon, styles.moderatorAction)}
             data-tip="Admin"
           >
-            <AdminButton />
+            <AdminButton unifiedDocumentId={paper?.unified_document?.id} />
           </span>
         ),
       },

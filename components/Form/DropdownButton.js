@@ -43,7 +43,12 @@ const DropdownButton = ({
                   option.value === selected && styles.selectedOpt
                 )}
                 onClick={() => {
-                  onSelect(option.value);
+                  option.onSelect
+                    ? // Specific onSelect per option
+                      option.onSelect(option.value)
+                    : // Generic, top level onSelect function
+                      onSelect(option.value);
+
                   if (closeAfterSelect) {
                     onClose();
                   }
