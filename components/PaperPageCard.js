@@ -329,25 +329,6 @@ class PaperPageCard extends Component {
           </span>
         ),
       },
-      // {
-      //   active: isModerator || isSubmitter || isEditorOfHubs,
-      //   button: (
-      //     <span
-      //       className={css(styles.actionIcon, styles.moderatorAction)}
-      //       data-tip={paper.is_removed ? "Restore Page" : "Remove Page"}
-      //     >
-      //       <ActionButton
-      //         isModerator={true}
-      //         paperId={paper.id}
-      //         restore={paper.is_removed}
-      //         icon={paper.is_removed ? icons.plus : icons.minus}
-      //         onAction={paper.is_removed ? this.restorePaper : this.removePaper}
-      //         containerStyle={styles.moderatorContainer}
-      //         iconStyle={styles.moderatorIcon}
-      //       />
-      //     </span>
-      //   ),
-      // },
       {
         active: isEditorOfHubs || isModerator,
         button: (
@@ -355,37 +336,15 @@ class PaperPageCard extends Component {
             className={css(styles.actionIcon, styles.moderatorAction)}
             data-tip="Admin"
           >
-            <AdminButton unifiedDocumentId={paper?.unified_document?.id} />
+            <AdminButton
+              unifiedDocumentId={paper?.unified_document?.id}
+              onCensor={this.props.removePaper}
+              onRestore={this.props.restorePaper}
+              isPageRemoved={paper.is_removed}
+            />
           </span>
         ),
       },
-      // {
-      //   active: isModerator && !isNullOrUndefined(uploadedById),
-      //   button: (
-      //     <>
-      //       <ReactTooltip />
-      //       <span
-      //         className={css(styles.actionIcon, styles.moderatorAction)}
-      //         data-tip={
-      //           isUploaderSuspended
-      //             ? "Reinstate User"
-      //             : "Remove Page & Ban User"
-      //         }
-      //       >
-      //         <ActionButton
-      //           isModerator={isModerator}
-      //           paperId={paper.id}
-      //           uploadedById={uploadedById}
-      //           isUploaderSuspended={isUploaderSuspended}
-      //           containerStyle={styles.moderatorContainer}
-      //           onAfterAction={this.removePaper}
-      //           iconStyle={styles.moderatorIcon}
-      //           actionType="user"
-      //         />
-      //       </span>
-      //     </>
-      //   ),
-      // },
     ].filter((action) => action.active);
 
     return (
