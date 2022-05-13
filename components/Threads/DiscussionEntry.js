@@ -672,6 +672,8 @@ class DiscussionEntry extends Component {
             {noRespond ? null : (
               <div className={css(styles.row, styles.bottom)}>
                 <ThreadActionBar
+                  contentType="thread"
+                  contentID={data?.id}
                   editing={this.state.editing}
                   toggleEdit={this.state.canEdit && this.toggleEdit}
                   title={title}

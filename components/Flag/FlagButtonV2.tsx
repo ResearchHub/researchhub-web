@@ -1,6 +1,7 @@
 import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
+import { FLAG_REASON } from "./config/constants";
 import { Fragment, ReactElement, useState } from "react";
 import { KeyOf } from "~/config/types/root_types";
 import ResearchHubRadioChoices, {
@@ -10,11 +11,13 @@ import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
-import { FLAG_REASON } from "./config/constants";
 
 type Props = {
+  buttonText?: string;
   modalHeaderText: string;
+  noButtonBackground?: boolean;
   onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
+  size?: number;
   subHeaderText?: string;
   flagIconOverride?: any;
   iconOverride?: any;
@@ -22,15 +25,19 @@ type Props = {
 };
 
 function FlagButtonV2({
+  buttonText,
   modalHeaderText,
+  noButtonBackground,
   onSubmit,
+  size,
   subHeaderText,
   flagIconOverride,
   iconOverride,
-  defaultReason = "SPAM"
+  defaultReason = "SPAM",
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [flagReason, setFlagReason] = useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
+  const [flagReason, setFlagReason] =
+    useState<KeyOf<typeof FLAG_REASON>>(defaultReason);
 
   const formattedInputOptions = Object.keys(FLAG_REASON).map(
     (key: string): RhRadioInputOption => ({
@@ -42,6 +49,12 @@ function FlagButtonV2({
       ),
     })
   );
+
+  const handleSubmit = (flagReason: KeyOf<typeof FLAG_REASON>): void => {
+    setIsModalOpen(false);
+    setFlagReason("SPAM");
+    onSubmit(flagReason);
+  };
 
   return (
     <Fragment>
@@ -68,11 +81,20 @@ function FlagButtonV2({
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
-              <Button label="Flag to report" size="small" onClick={() => {
-                onSubmit(flagReason);
-                setIsModalOpen(false);
-              }} />
-              <div className={css(styles.cancelButton)} onClick={() => setIsModalOpen(false)}>Cancel</div>
+              <Button
+                label="Flag to report"
+                size="small"
+                onClick={() => {
+                  onSubmit(flagReason);
+                  setIsModalOpen(false);
+                }}
+              />
+              <div
+                className={css(styles.cancelButton)}
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </div>
             </div>
           </div>
         }
@@ -128,6 +150,9 @@ const customModalStyle = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
+  flagButtonWrap: {
+    cursor: "pointer",
+  },
   flagIcon: {
     padding: 5,
     borderRadius: "50%",
@@ -158,6 +183,25 @@ const styles = StyleSheet.create({
       height: 15,
       minHeight: 15,
       maxHeight: 15,
+    },
+  },
+  noButtonBackground: {
+    backgroundColor: "none",
+    border: "none",
+    display: "flex",
+    alignItems: "center",
+    color: colors.LIGHT_GREY_TEXT,
+    ":hover": {
+      color: colors.BLUE(1),
+      background: "none",
+      border: "none",
+    },
+  },
+  flagButtonText: {
+    fontSize: 14,
+    marginLeft: 4,
+    "@media only screen and (max-width: 415px)": {
+      fontSize: 12,
     },
   },
   inputWrapStyle: {

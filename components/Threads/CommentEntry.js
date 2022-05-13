@@ -634,6 +634,8 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
+                    contentType="comment"
+                    contentID={data?.id}
                     hostname={hostname}
                     count={commentCount}
                     comment={true}
@@ -661,6 +663,8 @@ class CommentEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
+                    contentType="comment"
+                    contentID={data?.id}
                     hostname={hostname}
                     count={commentCount}
                     comment={true}

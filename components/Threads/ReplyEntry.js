@@ -494,6 +494,8 @@ class ReplyEntry extends Component {
                 </div>
                 <div className={css(styles.row, styles.bottom)}>
                   <ThreadActionBar
+                    contentType="reply"
+                    contentID={data?.id}
                     hostname={hostname}
                     count={dataCount}
                     comment={true}

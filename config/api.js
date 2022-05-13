@@ -105,6 +105,9 @@ const routes = (BASE_URL) => {
         (verdict ? `verdict=${verdict}` : "")
       );
     },
+    /* GRM = Generic Reaction Model */
+    FLAG_GRM_CONTENT: ({ contentType, ID }) =>
+      `${BASE_URL}${contentType}/${ID}/flag/`,
     FLAG_AND_REMOVE: () => {
       return BASE_URL + "audit/flag_and_remove/";
     },
