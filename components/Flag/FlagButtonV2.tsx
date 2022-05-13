@@ -2,28 +2,20 @@ import { breakpoints } from "~/config/themes/screen";
 import { connect } from "react-redux";
 import { css, StyleSheet } from "aphrodite";
 import { Fragment, ReactElement, useState } from "react";
-import { KeyOf, NullableString } from "~/config/types/root_types";
+import { KeyOf } from "~/config/types/root_types";
 import ResearchHubRadioChoices, {
   RhRadioInputOption,
-} from "./ResearchHubRadioChoices";
+} from "../shared/ResearchHubRadioChoices";
 import BaseModal from "../Modals/BaseModal";
 import Button from "../Form/Button";
 import colors from "~/config/themes/colors";
 import icons from "~/config/themes/icons";
+import { FLAG_REASON } from "./config/constants";
 
 type Props = {
   modalHeaderText: string;
-  onSubmit: (flagReason: KeyOf<typeof FLAG_REASONS>) => void;
+  onSubmit: (flagReason: KeyOf<typeof FLAG_REASON>) => void;
   subHeaderText?: string;
-};
-
-const FLAG_REASONS = {
-  COPYRIGHT: "Copyright Infringement",
-  LOW_QUALITY: "Low Quality",
-  NOT_CONSTRUCTIVE: "Not Constructive",
-  PLAGIARISM: "Plagiarism",
-  RUDE_OR_ABUSIVE: "Rude or Abusive",
-  SPAM: "Spam",
 };
 
 function FlagButtonV2({
@@ -32,14 +24,14 @@ function FlagButtonV2({
   subHeaderText,
 }: Props): ReactElement {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [flagReason, setFlagReason] = useState<NullableString>("SPAM");
+  const [flagReason, setFlagReason] = useState<KeyOf<typeof FLAG_REASON>>("SPAM");
 
-  const formattedInputOptions = Object.keys(FLAG_REASONS).map(
+  const formattedInputOptions = Object.keys(FLAG_REASON).map(
     (key: string): RhRadioInputOption => ({
       id: key,
       label: (
         <div className={css(styles.optionLabel)} key={key}>
-          {FLAG_REASONS[key]}
+          {FLAG_REASON[key]}
         </div>
       ),
     })
@@ -64,14 +56,14 @@ function FlagButtonV2({
             <ResearchHubRadioChoices
               inputOptions={formattedInputOptions}
               onChange={(optionID: string): void => {
-                setFlagReason(optionID);
+                setFlagReason(optionID as KeyOf<typeof FLAG_REASON>);
               }}
               inputWrapStyle={css(styles.inputWrapStyle)}
               selectedID={flagReason}
             />
             <div className={css(styles.buttonWrap)}>
-              <Button label="Flag to report" size="small" onClick={onSubmit} />
-              <div className={css(styles.cancelButton)}>Cancel</div>
+              <Button label="Flag to report" size="small" onClick={() => onSubmit(flagReason)} />
+              <div className={css(styles.cancelButton)} onClick={() => setIsModalOpen(false)}>Cancel</div>
             </div>
           </div>
         }

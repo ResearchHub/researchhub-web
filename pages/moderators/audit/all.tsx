@@ -1,5 +1,5 @@
 import { ReactElement } from "react";
-import { AuditContentDashboard } from "~/components/AuditContent/AuditContentDashboard";
+import AuditContentDashboard from "~/components/AuditContent/AuditContentDashboard";
 import ContentPage from "~/components/ContentPage/ContentPage";
 import SideColumn from "~/components/Home/SideColumn";
 import ModeratorDashboardSidebar from "~/components/shared/ModeratorDashboardSidebar";

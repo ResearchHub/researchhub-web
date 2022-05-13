@@ -10,6 +10,7 @@ import AuthorAvatar from "~/components/AuthorAvatar";
 import { ReactNode } from "react";
 import ReactTooltip from "react-tooltip";
 
+
 export default function renderContributionEntry(entry: Contribution, actions: Array<any>) {
 
     const renderHeader = (entry: Contribution) => {
@@ -72,7 +73,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
           </div>
           <div className={`${css(styles.actions)} actions`}>
             {actions.map((action) => (
-              <span className={css(action.style)} data-tip={action.label} onClick={action.onClick}>{action.icon}</span>
+              <span className={css(action.style)} data-tip={action.label} onClick={action.onClick}>{action.html}</span>
             ))}
           </div>
         </div>
