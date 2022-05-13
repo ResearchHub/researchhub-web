@@ -33,7 +33,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
           </div>
           <div className={css(styles.details)}>
             <ALink href={`/user/${createdBy.authorProfile.id}/overview`}>{createdBy.authorProfile.firstName} {createdBy.authorProfile.lastName}</ALink>
-            {contentType === "comment" ? (
+            {contentType.name === "comment" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.commentsAlt}</span>
@@ -41,7 +41,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
                 {` in `}
                 <ALink href={getUrlToUniDoc(uniDoc)} theme="solidPrimary">{truncateText(uniDoc.document?.title, 200)}</ALink>
               </>
-            ) : contentType === "paper" ? (
+            ) : contentType.name === "paper" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.fileUpload}</span>
@@ -49,14 +49,14 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
                 {/*// @ts-ignore*/}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(item?.title, 200)}</ALink>
               </>              
-            ) : contentType === "post" ? (
+            ) : contentType.name === "post" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.penSquare}</span>
                 {` created post `}
                 <ALink theme="solidPrimary" href={getUrlToUniDoc(uniDoc)}>{truncateText(uniDoc.document?.title, 200)}</ALink>
               </>              
-            ) : contentType === "hypothesis" ? (
+            ) : contentType.name === "hypothesis" ? (
               <>
                 {` `}
                 <span className={css(styles.icon)}>{icons.lightbulb}</span>
@@ -84,7 +84,7 @@ export default function renderContributionEntry(entry: Contribution, actions: Ar
       contentType,
     } = entry;
 
-    switch (contentType) {
+    switch (contentType.name) {
       case "comment":
         return (
           <div className={css(styles.entryContent)}>

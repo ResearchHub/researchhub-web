@@ -13,6 +13,11 @@ export type PaperContribution = {
   createdBy: CreatedBy,
 }
 
+export type ContentType = {
+  name: "paper" | "post" | "hypothesis" | "comment" ,
+  id: ID,
+}
+
 export type HypothesisContribution = {
   unifiedDocument: UnifiedDocument,
   title: string,
@@ -31,7 +36,7 @@ export type Contribution = {
   id: ID,
   item: PaperContribution | PostContribution | HypothesisContribution | CommentContribution,
   createdDate: Date,
-  contentType: "paper" | "post" | "hypothesis" | "comment" 
+  contentType: ContentType,
 }
 
 export const parseCreatedBy = (raw: any): CreatedBy => {
@@ -48,43 +53,67 @@ export const parseCreatedBy = (raw: any): CreatedBy => {
   return mapped;
 }
 
+export const parseContentType = (raw: any): ContentType => {
+  let contentTypeName;
+  if (["thread", "comment", "reply"].includes(raw.name)) {
+    contentTypeName = "comment";
+  }
+  else if (raw.name === "paper") {
+    contentTypeName = "paper";
+  }
+  else if (raw.name === "researchhubpost") {
+    contentTypeName = "post";
+  }
+  else if (raw.name === "hypothesis") {
+    contentTypeName = "hypothesis";
+  }
+  else {
+    throw Error("Could not parse object with content_type=" + raw.name)
+  }    
+
+  return {
+    id: raw.id,
+    name: contentTypeName,
+  }
+}
+
 export const parseContribution = (raw: any): Contribution => {
   let mapped;
 
-  if (["thread", "comment", "reply"].includes(raw.content_type)) {
+  if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
     mapped = {
       "id": raw.id,
       "createdDate": raw.created_date,
       "item": parseCommentContribution(raw.item),
-      "contentType": "comment",
+      "contentType": parseContentType(raw.content_type),
     }
   }
-  else if (raw.content_type === "paper") {
+  else if (raw.content_type.name === "paper") {
     mapped = {
       "id": raw.id,
       "createdDate": raw.created_date,
       "item": parsePaperContribution(raw.item),
-      "contentType": "paper",
+      "contentType": parseContentType(raw.content_type),
     }
   }
-  else if (raw.content_type === "researchhub post") {
+  else if (raw.content_type.name === "researchhubpost") {
     mapped = {
       "id": raw.id,
       "createdDate": raw.created_date,
       "item": parsePostContribution(raw.item),
-      "contentType": "post",
+      "contentType": parseContentType(raw.content_type),
     }
   }
-  else if (raw.content_type === "hypothesis") {
+  else if (raw.content_type.name === "hypothesis") {
     mapped = {
       "id": raw.id,
       "createdDate": raw.created_date,
       "item": parseHypothesisContribution(raw.item),
-      "contentType": "hypothesis",
+      "contentType": parseContentType(raw.content_type),
     }
   }
   else {
-    throw Error("Could not parse object with content_type=" + raw.content_type)
+    throw Error("Could not parse object with content_type=" + raw.content_type.name)
   }
 
   return mapped;
