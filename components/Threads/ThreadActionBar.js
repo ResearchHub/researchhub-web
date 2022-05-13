@@ -5,7 +5,10 @@ import ThreadTextEditor from "./ThreadTextEditor";
 
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
-import { doesNotExist } from "~/config/utils/nullchecks";
+import { doesNotExist, silentEmptyFnc } from "~/config/utils/nullchecks";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
+import { captureEvent } from "~/config/utils/events";
+import { flagGrmContent } from "../Flag/api/postGrmFlag";
 
 const DYNAMIC_HREF = "/paper/[paperId]/[paperName]/[discussionThreadId]";
 
@@ -171,6 +174,22 @@ class ThreadActionBar extends Component {
           )}
           {this.props.toggleEdit && editButton}
           {!this.props.hideCount && commentCount}
+
+          {/* TODO: calvinhlee - needs BE endpoint pathing 
+          <FlagButtonV2
+            buttonText="Flag"
+            noButtonBackground
+            size={12}
+            onSubmit={(flagReason) => {
+              flagGrmContent({
+                contentID: this.props.contentID,
+                contentType: this.props.contentType,
+                flagReason,
+                onError: captureEvent,
+                onSuccess: silentEmptyFnc,
+              });
+            }}
+          /> */}
         </div>
         {!this.props.hideReply && (
           <div className={css(styles.container)}>{this.renderReplyBox()}</div>
