@@ -17,7 +17,6 @@ import LoadMoreButton from "../LoadMoreButton";
 
 export function AuditContentDashboard() : ReactElement<"div"> {
   const router = useRouter();
-  const flagAndRemoveRef = useRef<HTMLElement>(null);
   const multiSelectRef = useRef<HTMLElement>(null);
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
 
@@ -43,7 +42,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      const isOutsideClick = isClickOutsideCheckbox(event, [flagAndRemoveRef.current]);
+      const isOutsideClick = isClickOutsideCheckbox(event, [multiSelectRef.current]);
 
       if (isOutsideClick) {
         setSelectedResultIds([]);
@@ -63,7 +62,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     window.addEventListener("scroll", handleWindowScroll);
 
     return () => {
-      window.addEventListener("scroll", handleWindowScroll);
+      window.removeEventListener("scroll", handleWindowScroll);
     }
   }, [])
 
@@ -71,9 +70,6 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   const handleWindowScroll = () => {
     const navEl:(HTMLElement|null) = document.querySelector(".navbar");
     const multiSelectEl:HTMLElement|null = multiSelectRef.current;
-
-    console.log("navEl.clientHeight", navEl.clientHeight)
-    console.log('window.scrollY', window.scrollY)
     // @ts-ignore
     if (multiSelectEl && window.scrollY > navEl.clientHeight) {
       // @ts-ignore
@@ -248,13 +244,14 @@ const styles = StyleSheet.create({
     zIndex: 2,
     margin: 0,
     width: 1200,
+    // border: `1px solid ${colors.NEW_BLUE()}`,
   },
   "activeDetailsRow": {
     lineHeight: "22px",
     padding: "10px 10px 10px 17px",
     display: "flex",
-    border: `1px solid ${colors.NEW_BLUE()}`,
     background: colors.LIGHTER_BLUE(),
+    justifyContent: "space-between",
   },
   "dashboardContainer": {
     padding: "0 32px",
