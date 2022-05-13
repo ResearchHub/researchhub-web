@@ -4,27 +4,33 @@ import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
-import fetchAuditContributions from "./config/fetchAuditContributions";
+import fetchAuditContributions from "./api/fetchAuditContributionsAPI";
+import flagAndRemove, { buildParamsForFlagAndRemoveAPI } from "./api/flagAndRemoveAPI";
 import CheckBox from "~/components/Form/CheckBox";
-import AuthorAvatar from "../AuthorAvatar";
 import renderContributionEntry from "./utils/renderContributionEntry";
 import icons from "~/config/themes/icons";
 import colors from "~/config/themes/colors";
 import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import { Contribution, parseContribution } from "~/config/types/contribution";
 import LoadMoreButton from "../LoadMoreButton";
+import FlagButtonV2 from "~/components/Flag/FlagButtonV2";
+import { MessageActions } from "~/redux/message";
+import { connect } from "react-redux";
+import { FLAG_REASON } from "../Flag/config/constants";
+import { KeyOf } from "~/config/types/root_types";
+import Loader from "../Loader/Loader";
 
-
-export function AuditContentDashboard() : ReactElement<"div"> {
+function AuditContentDashboard({ showMessage, setMessage }) : ReactElement<"div"> {
   const router = useRouter();
-  const multiSelectRef = useRef<HTMLElement>(null);
+  const multiSelectRef = useRef<HTMLDivElement>(null);
   const [isMultiSelectSticky, setIsMultiSelectSticky] = useState(false);
 
   const [suggestedHubs, setSuggestedHubs] = useState<any>([]);
   const [selectedHub, setSelectedHub] = useState<any>(
     router.query.hub_id ?? {label: "All", value: undefined}
   );
-  const [isLoading, setIsLoading] = useState<Boolean>(false);
+  const [isLoadingMore, setIsLoadingMore] = useState<Boolean>(false);
+  const [isLoadingPage, setIsLoadingPage] = useState<Boolean>(false);
 
   const [results, setResults] = useState<Array<Contribution>>([]);
   const [nextResultsUrl, setNextResultsUrl] = useState<any>(null);
@@ -37,8 +43,8 @@ export function AuditContentDashboard() : ReactElement<"div"> {
   }, [suggestedHubs])
 
   useEffect(() => {
-    handleLoadResults();
-  }, [])
+    loadResults();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -64,7 +70,7 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     return () => {
       window.removeEventListener("scroll", handleWindowScroll);
     }
-  }, [])
+  }, []);
 
   
   const handleWindowScroll = () => {
@@ -91,7 +97,12 @@ export function AuditContentDashboard() : ReactElement<"div"> {
       delete query.hub_id;    
     }
 
+    setIsLoadingPage(true);
+    setNextResultsUrl(null);
+    setSelectedResultIds([]);
+    setResults([]);
     setSelectedHub(selectedHub);
+    loadResults();
 
     router.push({
       query,
@@ -109,8 +120,8 @@ export function AuditContentDashboard() : ReactElement<"div"> {
     }
   }
 
-  const handleLoadResults = () => {
-    setIsLoading(true);
+  const loadResults = () => {
+    setIsLoadingMore(true);
 
     fetchAuditContributions({
       pageUrl: nextResultsUrl || null,
@@ -121,20 +132,43 @@ export function AuditContentDashboard() : ReactElement<"div"> {
         const incomingResults = response.results.map(r => parseContribution(r))
         setResults([...results, ...incomingResults]);
         setNextResultsUrl(response.next);
-        setIsLoading(false);
+        setIsLoadingMore(false);
+        setIsLoadingPage(false);
       }
     })
   }
 
   const resultCards = () => {
-    const cardActions = [{
-      icon: icons.flagOutline,
-      label: "Flag & Remove",
-      onClick: () => alert('flag & remove'),
-      style: styles.flagAndRemove,
-    }]
-
+    
     return results.map((r) => {
+      const cardActions = [{
+        html: (
+          <FlagButtonV2
+            modalHeaderText="Flag and Remove"
+            onSubmit={(verdict:KeyOf<typeof FLAG_REASON>) => {
+
+              // results.filter(r => selectedIds.includes(r.id))
+              const apiParams = buildParamsForFlagAndRemoveAPI({ selected:r,  verdict });
+              flagAndRemove({
+                apiParams,
+                onSuccess: () => {
+                  setMessage("Content flagged & removed");
+                  showMessage({ show: true, error: false });
+                },
+                onError: () => {
+                  setMessage("Failed to flag & remove");
+                  showMessage({ show: true, error: true });                  
+                },
+              });
+
+            }}
+            subHeaderText={"hellow there"}
+          />        
+        ),
+        label: "Flag & Remove",
+        style: styles.flagAndRemove,
+      }]
+
       return (
         <div className={css(styles.result)} key={r.id}>
           <div className={`${css(styles.checkbox)} cbx`}>
@@ -193,12 +227,18 @@ export function AuditContentDashboard() : ReactElement<"div"> {
           </div>
         }
       </div>
-      <div className={css(styles.resultsContainer)}>
-        {resultCards()}
-      </div>
-      {nextResultsUrl && (
-        // @ts-ignore
-        <LoadMoreButton onClick={handleLoadResults} isLoading={isLoading} />
+      {isLoadingPage ? (
+        <Loader containerStyle={styles.pageLoader} key={"loader"} loading={true} size={45} color={colors.NEW_BLUE()} />
+      ) : (
+        <>
+          <div className={css(styles.resultsContainer)}>
+            {resultCards()}
+          </div>
+          {nextResultsUrl && (
+            // @ts-ignore
+            <LoadMoreButton onClick={loadResults} isLoadingMore={isLoadingMore} />
+          )}
+        </>
       )}
     </div>
   )
@@ -307,5 +347,19 @@ const styles = StyleSheet.create({
   },
   "numSelected": {
     marginRight: 10,
+  },
+  "pageLoader": {
+    marginTop: 150,
   }
 });
+
+const mapDispatchToProps = {
+  showMessage: MessageActions.showMessage,
+  setMessage: MessageActions.setMessage,
+};
+
+const mapStateToProps = () => ({
+
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuditContentDashboard);

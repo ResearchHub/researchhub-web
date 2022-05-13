@@ -93,6 +93,9 @@ const routes = (BASE_URL) => {
     FLAGS: ({ hubId }) => {
       return BASE_URL + "audit/flagged/?" + (hubId ? `hub_id=${hubId}` : "");
     },
+    FLAG_AND_REMOVE: () => {
+      return BASE_URL + "audit/flag_and_remove/";
+    },
     ORGANIZATION: ({ userId, orgId, orgSlug }) => {
       let url = `${BASE_URL}organization/`;
       let restId = null;

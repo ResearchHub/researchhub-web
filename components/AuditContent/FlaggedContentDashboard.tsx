@@ -4,7 +4,7 @@ import FormSelect from "~/components/Form/FormSelect";
 import { useRouter } from "next/router";
 import { ID } from "~/config/types/root_types";
 import { useEffectFetchSuggestedHubs } from "~/components/Paper/Upload/api/useEffectGetSuggestedHubs";
-import fetchFlaggedContributions from "./config/fetchFlaggedContributions";
+import fetchFlaggedContributions from "./api/fetchFlaggedContributionsAPI";
 import CheckBox from "~/components/Form/CheckBox";
 import isClickOutsideCheckbox from "./utils/isClickOutsideCheckbox";
 import icons from "~/config/themes/icons";

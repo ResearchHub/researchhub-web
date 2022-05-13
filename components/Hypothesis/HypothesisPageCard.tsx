@@ -40,7 +40,7 @@ import PaperMetadata from "~/components/Paper/PaperMetadata";
 import PermissionNotificationWrapper from "../PermissionNotificationWrapper";
 import VoteWidget from "~/components/VoteWidget";
 import DiscussionCount from "~/components/DiscussionCount";
-import FlagButtonV2 from "../shared/FlagButtonV2";
+import FlagButtonV2 from "../Flag/FlagButtonV2";
 
 const DynamicCKEditor = dynamic(
   () => import("~/components/CKEditor/SimpleEditor")
