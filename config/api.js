@@ -86,8 +86,9 @@ const routes = (BASE_URL) => {
       return BASE_URL + `citation/${citationID}/${voteType}/`;
     },
     CONTRIBUTIONS: ({ hubId }) => {
+      console.log("h", hubId);
       return (
-        BASE_URL + "audit/contributions/?" + (hubId ? `hub_id=${hubId}` : "")
+        BASE_URL + "audit/contributions/?" + (hubId ? `hubs=${hubId}` : "")
       );
     },
     FLAGS: ({ hubId }) => {

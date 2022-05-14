@@ -1,16 +1,17 @@
 import API from "~/config/api";
 import { Helpers } from "@quantfive/js-web-config";
 import { captureEvent } from "~/config/utils/events";
+import { ID } from "~/config/types/root_types";
 
-type Filters = {
-  hubId?: number; 
+export type ApiFilters = {
+  hubId?: ID,
 }
 
 type Args = {
   pageUrl: string|null;
   onError?: Function;
   onSuccess: Function;
-  filters: Filters;
+  filters: ApiFilters;
 }
 
 export default function fetchAuditContributions({
@@ -19,7 +20,6 @@ export default function fetchAuditContributions({
   onSuccess,
   filters,
 }: Args) {
-
   const url = pageUrl ||  API.CONTRIBUTIONS({ ...filters })
 
   return fetch(

@@ -4,6 +4,7 @@ export type CommentContribution = {
   unifiedDocument: UnifiedDocument,
   plainText: string,
   createdBy: CreatedBy,
+  id: ID,
 }
 
 export type PaperContribution = {
@@ -11,6 +12,7 @@ export type PaperContribution = {
   title: string,
   slug: string,
   createdBy: CreatedBy,
+  id: ID,
 }
 
 export type ContentType = {
@@ -23,6 +25,7 @@ export type HypothesisContribution = {
   title: string,
   slug: string,
   createdBy: CreatedBy,
+  id: ID,
 }
 
 export type PostContribution = {
@@ -30,10 +33,10 @@ export type PostContribution = {
   title: string,
   slug: string,
   createdBy: CreatedBy,
+  id: ID,
 }
 
 export type Contribution = {
-  id: ID,
   item: PaperContribution | PostContribution | HypothesisContribution | CommentContribution,
   createdDate: Date,
   contentType: ContentType,
@@ -82,7 +85,6 @@ export const parseContribution = (raw: any): Contribution => {
 
   if (["thread", "comment", "reply"].includes(raw.content_type.name)) {
     mapped = {
-      "id": raw.id,
       "createdDate": raw.created_date,
       "item": parseCommentContribution(raw.item),
       "contentType": parseContentType(raw.content_type),
@@ -90,7 +92,6 @@ export const parseContribution = (raw: any): Contribution => {
   }
   else if (raw.content_type.name === "paper") {
     mapped = {
-      "id": raw.id,
       "createdDate": raw.created_date,
       "item": parsePaperContribution(raw.item),
       "contentType": parseContentType(raw.content_type),
@@ -98,7 +99,6 @@ export const parseContribution = (raw: any): Contribution => {
   }
   else if (raw.content_type.name === "researchhubpost") {
     mapped = {
-      "id": raw.id,
       "createdDate": raw.created_date,
       "item": parsePostContribution(raw.item),
       "contentType": parseContentType(raw.content_type),
@@ -106,7 +106,6 @@ export const parseContribution = (raw: any): Contribution => {
   }
   else if (raw.content_type.name === "hypothesis") {
     mapped = {
-      "id": raw.id,
       "createdDate": raw.created_date,
       "item": parseHypothesisContribution(raw.item),
       "contentType": parseContentType(raw.content_type),
@@ -124,6 +123,7 @@ export const parseCommentContribution = (raw: any): CommentContribution => {
     "plainText": raw.plain_text,
     "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
+    "id": raw.id,
   }
 
   return mapped;
@@ -154,6 +154,7 @@ export const parseHypothesisContribution = (raw: any): HypothesisContribution =>
     "slug": raw.slug,
     "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
+    "id": raw.id,
   }
 
   return mapped;
@@ -165,6 +166,7 @@ export const parsePostContribution = (raw: any): PostContribution => {
     "slug": raw.slug,
     "createdBy": parseCreatedBy(raw.created_by),
     "unifiedDocument": parseUnifiedDocument(raw.unified_document),
+    "id": raw.id,
   }
 
   return mapped;
